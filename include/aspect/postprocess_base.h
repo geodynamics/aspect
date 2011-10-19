@@ -4,8 +4,8 @@
 //    Copyright (C) 2011 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
-#ifndef __aspect__post_processor_h
-#define __aspect__post_processor_h
+#ifndef __aspect__postprocess_base_h
+#define __aspect__postprocess_base_h
 
 
 #include <deal.II/lac/trilinos_vector.h>
