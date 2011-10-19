@@ -26,4 +26,5 @@
 --align-reference=name
 
 --max-instatement-indent=80
+--suffix=none
 #--verbose
