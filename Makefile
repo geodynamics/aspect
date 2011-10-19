@@ -56,16 +56,17 @@ lib-h-files := $(shell echo $D/include/deal.II/*/*.h)
 libs.g   := $(lib-deal2.g)
 libs.o   := $(lib-deal2.o)
 
+INCLUDE += -Iinclude
 
 
 # Now use the information from above to define the set of libraries to
 # link with and the flags to be passed to the compiler:
 ifeq ($(debug-mode),on)
   libraries = $(go-files) $(libs.g)
-  flags     = $(CXXFLAGS.g) -Iinclude
+  flags     = $(CXXFLAGS.g)
 else
   libraries = $(o-files) $(libs.o)
-  flags     = $(CXXFLAGS.o) -Iinclude
+  flags     = $(CXXFLAGS.o)
 endif
 
 
