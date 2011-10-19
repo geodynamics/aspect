@@ -279,7 +279,7 @@ namespace aspect
                                         const TrilinosWrappers::MPI::BlockVector &helper);
 
       class Postprocessor;
-      
+
       friend class boost::serialization::access;
       friend class Postprocess::SimulatorAccess<dim>;
   };
