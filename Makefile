@@ -99,7 +99,11 @@ run: $(target)$(EXEEXT)
 doc:
 	@cd doc ; make
 
-.PHONY: doc
+indent:
+	@echo "============ Indenting all files"
+	@astyle --options=lib/astyle.rc include/aspect/*h source/*cc
+
+.PHONY: run doc indent
 
 
 # Rule how to clean up. This is split into several different rules to
