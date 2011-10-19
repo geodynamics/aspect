@@ -96,11 +96,17 @@ $(target)$(EXEEXT) : $(libraries) Makefile
 run: $(target)$(EXEEXT)
 	./$(target)$(EXEEXT) $(run-parameters)
 
+doc:
+	@cd doc ; make
+
+.PHONY: doc
+
 
 # Rule how to clean up. This is split into several different rules to
 # allow for parallel execution of commands:
 clean: clean-lib clean-data
 	-rm -f *~ */*~ */*/*~ lib/Makefile.dep
+	-cd doc ; make clean
 
 clean-lib:
 	-rm -f lib/?d/*.$(OBJEXT) lib/?d/*.g.$(OBJEXT) $(target)$(EXEEXT) lib/TAGS
