@@ -27,4 +27,5 @@
 
 --max-instatement-indent=80
 --suffix=none
+--quiet
 #--verbose
