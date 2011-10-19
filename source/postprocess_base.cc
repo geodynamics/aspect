@@ -59,6 +59,15 @@ namespace aspect
 
 
     template <int dim>
+    const parallel::distributed::Triangulation<dim> &
+    SimulatorAccess<dim>::get_triangulation () const
+    {
+      return simulator->triangulation;
+    }
+
+
+
+    template <int dim>
     const TrilinosWrappers::MPI::BlockVector &
     SimulatorAccess<dim>::get_stokes_solution () const
     {

@@ -47,13 +47,13 @@ namespace aspect
     class Interface
     {
       public:
-	/**
-	 * Destructor. Does nothing but is virtual so that derived classes
-	 * destructors are also virtual.
-	 **/
-	virtual
-	~Interface ();
-	
+        /**
+         * Destructor. Does nothing but is virtual so that derived classes
+         * destructors are also virtual.
+         **/
+        virtual
+        ~Interface ();
+
         /**
          * Execute this postprocessor. Derived classes will implement this function
          * to do whatever they want to do to evaluate the solution at the current
@@ -156,6 +156,13 @@ namespace aspect
          * Return the current number of a time step.
          */
         double get_timestep_number () const;
+
+        /**
+         * Return a reference to the triangulation in use by the simulator
+         * object.
+         */
+        const parallel::distributed::Triangulation<dim> &
+        get_triangulation () const;
         /** @} */
 
 
