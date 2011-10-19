@@ -5,11 +5,10 @@
 D           ?= ../../../deal.II
 include $D/common/Make.global_options
 
-aspect-files    = $(shell echo ../include/aspect/*.h)
+aspect-files    = $(shell echo ../include/aspect/*.h modules/*h)
 
 aspect.tag: $(aspect-files) options.dox
-	@echo "=====aspect=================== Regenerating documentation"
-	@echo "This can take several minutes..."
+	@echo "=====aspect=================== Generating documentation"
 	@echo '@INCLUDE = options.dox'                                > aspect.dox
 	@echo 'INCLUDE_PATH           = $D/include/deal.II'          >> aspect.dox
 	@echo 'PROJECT_NAME = "ASPECT mantle convection simulator"'  >> aspect.dox
