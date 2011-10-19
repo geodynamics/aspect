@@ -61,7 +61,7 @@ namespace aspect
   }
 
   template <int dim>
-  class Simulator
+  class Simulator : public Subscriptor
   {
     public:
       struct Parameters;

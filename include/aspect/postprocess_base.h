@@ -76,8 +76,8 @@ namespace aspect
          * state in a string that is deposited under a key in the map through
          * which the respective class can later find the status again when the
          * program is restarted. A legitimate key to store data under is
-	 * <code>typeid(*this).name()</code>. It is up to derived classes to
-	 * decide how they want to encode their state.
+        * <code>typeid(*this).name()</code>. It is up to derived classes to
+        * decide how they want to encode their state.
          *
          * The default implementation of this function does nothing, i.e., it
          * represents a stateless object for which nothing needs to be stored
@@ -226,7 +226,7 @@ namespace aspect
         /** @} */
 
       private:
-        const std_cxx1x::shared_ptr<const Simulator<dim> > simulator;
+        const SmartPointer<const Simulator<dim> > simulator;
     };
 
   }

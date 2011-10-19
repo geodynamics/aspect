@@ -8,6 +8,8 @@
 #include <aspect/postprocess_base.h>
 #include <aspect/simulator.h>
 
+#include <typeinfo>
+
 
 namespace aspect
 {
@@ -30,7 +32,7 @@ namespace aspect
     template <int dim>
     SimulatorAccess<dim>::SimulatorAccess (const Simulator<dim> &simulator_object)
       :
-      simulator (&simulator_object)
+      simulator (&simulator_object, typeid(*this).name())
     {}
 
 
