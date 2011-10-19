@@ -7,14 +7,17 @@
 #ifndef __aspect__postprocess_base_h
 #define __aspect__postprocess_base_h
 
-
+#include <deal.II/base/table_handler.h>
 #include <deal.II/lac/trilinos_vector.h>
 #include <deal.II/lac/trilinos_block_vector.h>
 #include <deal.II/dofs/dof_handler.h>
+#include <deal.II/distributed/tria.h>
 
 
 namespace aspect
 {
+  using namespace dealii;
+
   template <int dim> class Simulator;
 
 
@@ -32,41 +35,41 @@ namespace aspect
      * must implement a function that can be called at the end of each time step
      * to evaluate the current solution, as well as functions that save the state
      * of the object and restore it (for checkpoint/restart capabilities).
-     * 
+     *
      * Access to the data of the simulator is granted by the @p protected member functions
      * of the SimulatorAccessor class, i.e., classes implementing this interface will
      * in general want to derive from both this Interface class as well as from the
      * SimulatorAccess class.
-     * 
+     *
      * @ingroup Postprocessing
      */
     template <int dim>
     class Interface
     {
       public:
-	/**
-	 * Execute this postprocessor. Derived classes will implement this function
-	 * to do whatever they want to do to evaluate the solution at the current
-	 * time step.
-	 *
-	 * @param statistics An object that contains statistics that are collected
-	 * throughout the simulation and that will be written to an output file at
-	 * the end of each time step. Postprocessors may deposit data in these
-	 * tables for later visualization or further processing.
-	 * 
-	 * @return A pair of strings that will be
-	 * printed to the screen after running the postprocessor in two columns;
-	 * typically the first column contains a description of what the data is
-	 * and the second contains a numerical value of this data. If there is
-	 * nothing to print, simply return two empty strings.
-	 **/
-	virtual 
-	std::pair<std::string,std::string> 
-	execute (TableHandler &statistics) = 0;
+        /**
+         * Execute this postprocessor. Derived classes will implement this function
+         * to do whatever they want to do to evaluate the solution at the current
+         * time step.
+         *
+         * @param statistics An object that contains statistics that are collected
+         * throughout the simulation and that will be written to an output file at
+         * the end of each time step. Postprocessors may deposit data in these
+         * tables for later visualization or further processing.
+         *
+         * @return A pair of strings that will be
+         * printed to the screen after running the postprocessor in two columns;
+         * typically the first column contains a description of what the data is
+         * and the second contains a numerical value of this data. If there is
+         * nothing to print, simply return two empty strings.
+         **/
+        virtual
+        std::pair<std::string,std::string>
+        execute (TableHandler &statistics) = 0;
     };
 
-    
-    
+
+
     /**
      * Base class for postprocessors. This class provides access to
      * the various variables of the main class that postprocessors may want to use
@@ -88,15 +91,15 @@ namespace aspect
     class SimulatorAccess
     {
       public:
-	/**
-	 * Constructor.
-	 *
-	 * @param simulator A reference to the main simulator object to which the
-	 * postprocessor implemented in the derived class should be applied.
-	 **/
-	SimulatorAccess (const Simulator<dim> &simulator);
-	
-    protected:
+        /**
+         * Constructor.
+         *
+         * @param simulator A reference to the main simulator object to which the
+         * postprocessor implemented in the derived class should be applied.
+         **/
+        SimulatorAccess (const Simulator<dim> &simulator);
+
+      protected:
         /** @name Accessing variables that identify overall properties of the simulator */
         /** @{ */
 
@@ -125,7 +128,7 @@ namespace aspect
          * @note In general the vector is a distributed vector; however, it
          * contains ghost elements for all locally relevant degrees of freedom.
          */
-        const TrilinosWrappers::Vector &
+        const TrilinosWrappers::MPI::BlockVector &
         get_stokes_solution () const;
 
         /**
@@ -137,14 +140,14 @@ namespace aspect
          * @note In general the vector is a distributed vector; however, it
          * contains ghost elements for all locally relevant degrees of freedom.
          */
-        const TrilinosWrappers::Vector &
+        const TrilinosWrappers::MPI::BlockVector &
         get_old_stokes_solution () const;
 
         /**
          * Return a reference to the DoFHandler that is used to discretize
          * the Stokes system of velocity and pressure.
          */
-        const parallel::distributed::DoFhandler<dim> &
+        const DoFHandler<dim> &
         get_stokes_dof_handler () const;
         /** @} */
 
@@ -162,7 +165,7 @@ namespace aspect
          * @note In general the vector is a distributed vector; however, it
          * contains ghost elements for all locally relevant degrees of freedom.
          */
-        const TrilinosWrappers::Vector &
+        const TrilinosWrappers::MPI::Vector &
         get_temperature_solution () const;
 
         /**
@@ -174,18 +177,21 @@ namespace aspect
          * @note In general the vector is a distributed vector; however, it
          * contains ghost elements for all locally relevant degrees of freedom.
          */
-        const TrilinosWrappers::Vector &
+        const TrilinosWrappers::MPI::Vector &
         get_old_temperature_solution () const;
 
         /**
          * Return a reference to the DoFHandler that is used to discretize
          * the temperature equation.
          */
-        const parallel::distributed::DoFhandler<dim> &
+        const DoFHandler<dim> &
         get_temperature_dof_handler () const;
         /** @} */
+
+      private:
+        const std_cxx1x::shared_ptr<const Simulator<dim> > simulator;
     };
-    
+
   }
 }
 

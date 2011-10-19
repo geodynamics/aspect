@@ -4015,7 +4015,6 @@ void Simulator<dim>::make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVe
 
 
 				 // @sect4{Simulator::output_results}
-
 template <int dim>
 class Simulator<dim>::Postprocessor : public DataPostprocessor<dim>
 {
@@ -4267,8 +4266,8 @@ void Simulator<dim>::resume_from_snapshot()
 
 //why do we need this?!
 }
-//BOOST_CLASS_TRACKING (aspect::Simulator<2>, boost::serialization::track_never)
-//BOOST_CLASS_TRACKING (aspect::Simulator<3>, boost::serialization::track_never)
+BOOST_CLASS_TRACKING (aspect::Simulator<2>, boost::serialization::track_never)
+BOOST_CLASS_TRACKING (aspect::Simulator<3>, boost::serialization::track_never)
 namespace aspect{
 
 template <int dim>
@@ -4833,9 +4832,8 @@ int main (int argc, char *argv[])
       else
 	parameter_filename = "step-32.prm";
 
-      const int dim = 2;
-      aspect::Simulator<dim>::Parameters  parameters(parameter_filename);
-      aspect::Simulator<dim> flow_problem (parameters);
+      aspect::Simulator<deal_II_dimension>::Parameters  parameters(parameter_filename);
+      aspect::Simulator<deal_II_dimension> flow_problem (parameters);
       flow_problem.run ();
     }
   catch (std::exception &exc)
