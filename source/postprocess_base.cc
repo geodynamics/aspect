@@ -18,6 +18,11 @@ namespace aspect
 // ------------------------------ Interface -----------------------------
 
     template <int dim>
+    Interface<dim>::~Interface ()
+    {}
+
+
+    template <int dim>
     void Interface<dim>::save (std::map<std::string,std::string> &) const
     {}
 

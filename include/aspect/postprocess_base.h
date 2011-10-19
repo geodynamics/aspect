@@ -47,6 +47,13 @@ namespace aspect
     class Interface
     {
       public:
+	/**
+	 * Destructor. Does nothing but is virtual so that derived classes
+	 * destructors are also virtual.
+	 **/
+	virtual
+	~Interface ();
+	
         /**
          * Execute this postprocessor. Derived classes will implement this function
          * to do whatever they want to do to evaluate the solution at the current
@@ -90,7 +97,6 @@ namespace aspect
         virtual
         void save (std::map<std::string, std::string> &status_strings) const;
 
-        virtual
         /**
          * Restore the state of the object by looking up a description of the
          * state in the passed argument under the same key under which it
@@ -102,6 +108,7 @@ namespace aspect
          * be restored by looking up the value for a key specific to this
          * derived class.
          **/
+        virtual
         void load (const std::map<std::string, std::string> &status_strings);
     };
 
