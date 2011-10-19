@@ -13,6 +13,20 @@ namespace aspect
 {
   namespace Postprocess
   {
+// ------------------------------ Interface -----------------------------
+
+    template <int dim>
+    void Interface<dim>::save (std::map<std::string,std::string> &) const
+    {}
+
+
+    template <int dim>
+    void Interface<dim>::load (const std::map<std::string,std::string> &)
+    {}
+
+
+// ------------------------------ SimulatorAccess -----------------------
+
     template <int dim>
     SimulatorAccess<dim>::SimulatorAccess (const Simulator<dim> &simulator_object)
       :
@@ -92,11 +106,12 @@ namespace aspect
 }
 
 
-// explicit instantiation
+// explicit instantiations
 namespace aspect
 {
   namespace Postprocess
   {
+    template class Interface<deal_II_dimension>;
     template class SimulatorAccess<deal_II_dimension>;
   }
 }

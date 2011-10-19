@@ -52,7 +52,7 @@ namespace aspect
          * to do whatever they want to do to evaluate the solution at the current
          * time step.
          *
-         * @param statistics An object that contains statistics that are collected
+         * @param[in,out] statistics An object that contains statistics that are collected
          * throughout the simulation and that will be written to an output file at
          * the end of each time step. Postprocessors may deposit data in these
          * tables for later visualization or further processing.
@@ -66,6 +66,41 @@ namespace aspect
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics) = 0;
+
+
+        /**
+         * Save the state of this object to the argument given to this function.
+         * This function is in support of checkpoint/restart functionality.
+         *
+         * Derived classes can implement this function and should store their
+         * state in a string that is deposited under a key in the map through
+         * which the respective class can later find the status again when the
+         * program is restarted.
+         *
+         * The default implementation of this function does nothing, i.e., it
+         * represents a stateless object for which nothing needs to be stored
+         * at checkpoint time and nothing needs to be restored at restart time.
+         *
+         * @param[in,out] status_strings The object into which implementations
+         * in derived classes can place their status under a key that they can
+         * use to retrieve the data.
+         **/
+        virtual
+        void save (std::map<std::string, std::string> &status_strings) const;
+
+        virtual
+        /**
+         * Restore the state of the object by looking up a description of the
+         * state in the passed argument under the same key under which it
+         * was previously stored.
+         *
+         * The default implementation does nothing.
+         *
+         * @param[in] status_strings The object from which the status will
+         * be restored by looking up the value for a key specific to this
+         * derived class.
+         **/
+        void load (const std::map<std::string, std::string> &status_strings);
     };
 
 
