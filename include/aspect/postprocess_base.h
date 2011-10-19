@@ -28,38 +28,26 @@ namespace aspect
   {
 
     /**
-     * Base class for postprocessors. Basically, this class provides access to
-     * the various variables of the main class that postprocessors may want to use
-     * in their evaluations, such as solution vectors, the current time, time step
-     * sizes, or the triangulations and DoFHandlers that correspond to solutions.
-     *
-     * This class is the interface between postprocessors and the main simulator
-     * class. Using this insulation layer, postprocessors need not know anything
-     * about the internal details of the simulation class.
-     *
-     * Since the functions providing access to details of the simulator class
-     * are meant to be used only by derived classes of this base class, these
-     * functions are made @p protected.
-     *
+     * This class declares the public interface of postprocessors. Postprocessors
+     * must implement a function that can be called at the end of each time step
+     * to evaluate the current solution, as well as functions that save the state
+     * of the object and restore it (for checkpoint/restart capabilities).
+     * 
+     * Access to the data of the simulator is granted by the @p protected member functions
+     * of the SimulatorAccessor class, i.e., classes implementing this interface will
+     * in general want to derive from both this Interface class as well as from the
+     * SimulatorAccess class.
+     * 
      * @ingroup Postprocessing
      */
     template <int dim>
-    class Base
+    class Interface
     {
       public:
 	/**
-	 * Constructor.
-	 *
-	 * @param simulator A reference to the main simulator object to which the
-	 * postprocessor implemented in the derived class should be applied.
-	 **/
-	Base (const Simulator<dim> &simulator);
-	
-	/**
 	 * Execute this postprocessor. Derived classes will implement this function
 	 * to do whatever they want to do to evaluate the solution at the current
-	 * time step. Access to the data is granted by the @p protected member functions
-	 * of this class.
+	 * time step.
 	 *
 	 * @param statistics An object that contains statistics that are collected
 	 * throughout the simulation and that will be written to an output file at
@@ -69,13 +57,46 @@ namespace aspect
 	 * @return A pair of strings that will be
 	 * printed to the screen after running the postprocessor in two columns;
 	 * typically the first column contains a description of what the data is
-	 * and the second contains a numerical value of this data.
+	 * and the second contains a numerical value of this data. If there is
+	 * nothing to print, simply return two empty strings.
 	 **/
 	virtual 
 	std::pair<std::string,std::string> 
 	execute (TableHandler &statistics) = 0;
+    };
+
+    
+    
+    /**
+     * Base class for postprocessors. This class provides access to
+     * the various variables of the main class that postprocessors may want to use
+     * in their evaluations, such as solution vectors, the current time, time step
+     * sizes, or the triangulations and DoFHandlers that correspond to solutions.
+     *
+     * This class is the interface between postprocessors and the main simulator
+     * class. Using this insulation layer, postprocessors need not know anything
+     * about the internal details of the simulation class.
+     *
+     * Since the functions providing access to details of the simulator class
+     * are meant to be used only by derived classes of this class (rather
+     * than becoming part of the public interface of these classes), the
+     * functions of this class are made @p protected.
+     *
+     * @ingroup Postprocessing
+     */
+    template <int dim>
+    class SimulatorAccess
+    {
+      public:
+	/**
+	 * Constructor.
+	 *
+	 * @param simulator A reference to the main simulator object to which the
+	 * postprocessor implemented in the derived class should be applied.
+	 **/
+	SimulatorAccess (const Simulator<dim> &simulator);
 	
-      protected:
+    protected:
         /** @name Accessing variables that identify overall properties of the simulator */
         /** @{ */
 
@@ -164,6 +185,7 @@ namespace aspect
         get_temperature_dof_handler () const;
         /** @} */
     };
+    
   }
 }
 
