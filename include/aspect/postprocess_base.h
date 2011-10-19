@@ -55,6 +55,26 @@ namespace aspect
 	 **/
 	Base (const Simulator<dim> &simulator);
 	
+	/**
+	 * Execute this postprocessor. Derived classes will implement this function
+	 * to do whatever they want to do to evaluate the solution at the current
+	 * time step. Access to the data is granted by the @p protected member functions
+	 * of this class.
+	 *
+	 * @param statistics An object that contains statistics that are collected
+	 * throughout the simulation and that will be written to an output file at
+	 * the end of each time step. Postprocessors may deposit data in these
+	 * tables for later visualization or further processing.
+	 * 
+	 * @return A pair of strings that will be
+	 * printed to the screen after running the postprocessor in two columns;
+	 * typically the first column contains a description of what the data is
+	 * and the second contains a numerical value of this data.
+	 **/
+	virtual 
+	std::pair<std::string,std::string> 
+	execute (TableHandler &statistics) = 0;
+	
       protected:
         /** @name Accessing variables that identify overall properties of the simulator */
         /** @{ */
