@@ -26,8 +26,6 @@
 #include <deal.II/fe/fe_system.h>
 #include <deal.II/fe/mapping_q.h>
 
-class P;
-class P;
 
 namespace aspect
 {
@@ -278,8 +276,6 @@ namespace aspect
       void make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector,
                                         const TrilinosWrappers::MPI::BlockVector &helper);
 
-      class Postprocessor;
-
       friend class boost::serialization::access;
       friend class Postprocess::SimulatorAccess<dim>;
   };
@@ -287,5 +283,3 @@ namespace aspect
 
 
 #endif
-
-class C;
