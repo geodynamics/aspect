@@ -4511,7 +4511,7 @@ namespace aspect
 
     // see if graphical output is
     // requested
-    static double next_output_time = 0;
+    static double next_output_time = time;
     if ((parameters.generate_graphical_output == true)
         &&
         (time >= next_output_time))
