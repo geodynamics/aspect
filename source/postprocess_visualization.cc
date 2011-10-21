@@ -400,19 +400,19 @@ namespace aspect
       if ((next_output_time == 0)
           ||
           (next_output_time + output_interval < this->get_time()))
-	next_output_time = this->get_time() - this->get_timestep()/100;
+        next_output_time = this->get_time() - this->get_timestep()/100;
     }
-}
+  }
 }
 
 
 // explicit instantiations
-    namespace aspect
+namespace aspect
 {
-namespace Postprocess
-{
-  template class Visualization<deal_II_dimension>;
+  namespace Postprocess
+  {
+    template class Visualization<deal_II_dimension>;
 
-  ASPECT_REGISTER_POSTPROCESSOR("visualization", Visualization)
+    ASPECT_REGISTER_POSTPROCESSOR("visualization", Visualization)
   }
 }
