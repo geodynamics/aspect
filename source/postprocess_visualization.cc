@@ -12,6 +12,9 @@
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
 
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+
 
 namespace aspect
 {
@@ -185,8 +188,7 @@ namespace aspect
     template <int dim>
     Visualization<dim>::Visualization ()
       :
-      // TODO: do something sensible here
-      output_interval (50000),
+      output_interval (0),
       next_output_time (0),
       output_file_number (0)
     {}
@@ -333,25 +335,84 @@ namespace aspect
 
     template <int dim>
     void
+    Visualization<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        prm.declare_entry ("Time between graphical output", "50",
+                           Patterns::Double (0),
+                           "The time interval (in years) between each generation of "
+                           "graphical output files.");
+      }
+      prm.leave_subsection();
+    }
+
+
+    template <int dim>
+    void
+    Visualization<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        output_interval = prm.get_double ("Time between graphical output")
+                          * EquationData::year_in_seconds;
+      }
+      prm.leave_subsection();
+    }
+
+
+    template <int dim>
+    template <class Archive>
+    void Visualization<dim>::serialize (Archive &ar, const unsigned int)
+    {
+      ar &next_output_time
+      & output_file_number;
+    }
+
+
+    template <int dim>
+    void
     Visualization<dim>::save (std::map<std::string, std::string> &status_strings) const
-    {}
+    {
+      std::ostringstream os;
+      boost::archive::text_oarchive oa (os);
+      oa << (*this);
+
+      status_strings["Visualization"] = os.str();
+    }
 
 
     template <int dim>
     void
     Visualization<dim>::load (const std::map<std::string, std::string> &status_strings)
-    {}
-  }
+    {
+      // see if something was saved
+      if (status_strings.find("Visualization") != status_strings.end())
+        {
+          std::istringstream is (status_strings.find("Visualization")->second);
+          boost::archive::text_iarchive ia (is);
+          ia >> (*this);
+        }
+
+      // if the next_output_time is zero, then no previous output was produced.
+      // similarly, if previously the output interval may have been very long, then
+      // no output was produced recently. in both cases produce output now
+      if ((next_output_time == 0)
+          ||
+          (next_output_time + output_interval < this->get_time()))
+	next_output_time = this->get_time() - this->get_timestep()/100;
+    }
+}
 }
 
 
 // explicit instantiations
-namespace aspect
+    namespace aspect
 {
-  namespace Postprocess
-  {
-    template class Visualization<deal_II_dimension>;
-    
-    ASPECT_REGISTER_POSTPROCESSOR("visualization", Visualization)
+namespace Postprocess
+{
+  template class Visualization<deal_II_dimension>;
+
+  ASPECT_REGISTER_POSTPROCESSOR("visualization", Visualization)
   }
 }

@@ -34,6 +34,20 @@ namespace aspect
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
 
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter
+         * file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
 
         /**
          * Save the state of this object.
@@ -46,6 +60,13 @@ namespace aspect
          **/
         virtual
         void load (const std::map<std::string, std::string> &status_strings);
+
+        /**
+         * Serialize the contents of this class as far as they are not
+         * read from input parameter files.
+         */
+        template <class Archive>
+        void serialize (Archive &ar, const unsigned int version);
 
       private:
         /**
