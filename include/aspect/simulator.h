@@ -26,6 +26,8 @@
 #include <deal.II/fe/fe_system.h>
 #include <deal.II/fe/mapping_q.h>
 
+#include <aspect/postprocess_base.h>
+
 
 namespace aspect
 {
@@ -63,7 +65,11 @@ namespace aspect
   {
     public:
       struct Parameters;
-      Simulator (Parameters &parameters);
+      Simulator (ParameterHandler &prm);
+
+      static
+      void declare_parameters (ParameterHandler &prm);
+
       void run ();
 
     private:
@@ -84,7 +90,6 @@ namespace aspect
       std::pair<double,double> get_extrapolated_temperature_range () const;
       void solve ();
       void postprocess ();
-      void output_results ();
       void refine_mesh (const unsigned int max_grid_level);
 
       double
@@ -110,7 +115,7 @@ namespace aspect
     public:
       struct Parameters
       {
-        Parameters (const std::string &parameter_filename);
+        Parameters (ParameterHandler &prm);
 
         static void declare_parameters (ParameterHandler &prm);
         void parse_parameters (ParameterHandler &prm);
@@ -125,9 +130,6 @@ namespace aspect
         double       coarsening_fraction;
 
         std::vector<double> additional_refinement_times;
-
-        bool         generate_graphical_output;
-        double       graphical_output_interval;
 
         unsigned int adaptive_refinement_interval;
 
@@ -167,8 +169,11 @@ namespace aspect
       };
 
     private:
-      Parameters                           &parameters;
+      Parameters                          parameters;
       ConditionalOStream                  pcout;
+
+      Postprocess::Manager<dim>           postprocess_manager;
+      TableHandler                        statistics;
 
       parallel::distributed::Triangulation<dim> triangulation;
       double                              global_Omega_diameter;
@@ -208,7 +213,6 @@ namespace aspect
       double time_step;
       double old_time_step;
       unsigned int timestep_number;
-      unsigned int out_index;
 
       std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionAMG> Amg_preconditioner;
       std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionILU> Mp_preconditioner;

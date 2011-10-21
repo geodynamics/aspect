@@ -7,13 +7,6 @@ set Resume computation            = false
 # The end time of the simulation in years.
 set End time                            = 1e10
 
-# Whether graphical output is to be generated or not. You may not want to get
-# graphical output if the number of processors is large.
-set Generate graphical output           = true
-
-# The time interval (in years) between each generation of graphical output files.
-set Time between graphical output = 5e8
-
 
 subsection Mesh refinement
   # The number of adaptive refinement steps performed after initial global
@@ -48,10 +41,10 @@ set Angle = 4.71238898038468985769
   # The radial distance where the center of the perturbation is placed.
 set non-dim depth = 0.7
 
-  # The amplitude of the perturbation.  
+  # The amplitude of the perturbation.
 set Amplitude = 0.01
 
-  # The standard deviation of the Gaussian perturbation 
+  # The standard deviation of the Gaussian perturbation
 set Sigma = 0.2
 
   # The sign of the perturbation
@@ -91,7 +84,7 @@ subsection ModelParameters
   set thermal_conductivity = 4.7
   set R1 = 10415e3
   set R0 = 5698e3
-  set apperture_angle = 180 
+  set apperture_angle = 180
   set T1 = 300
   set T0 = 6300
   set reference_gravity = 30
@@ -108,4 +101,21 @@ subsection Stabilization parameters
   # The beta factor in the artificial viscosity stabilization. An appropriate
   # value for 2d is 0.052 and 0.078 for 3d.
   set beta  = 0.078
+end
+
+
+subsection Postprocess
+  # A comma separated list of postprocessor objects that should be run at the
+  # end of each time step. Some of these postprocessors will declare their own
+  # parameters which may, for example, include that they will actually do
+  # something only every so many time steps or years.
+  set List of postprocessors = visualization
+
+
+  subsection Visualization
+    # The time interval (in years) between each generation of graphical output
+    # files.
+    set Time between graphical output = 5e8
+  end
+
 end

@@ -1247,34 +1247,8 @@ namespace aspect
 
   // @sect4{Simulator::Parameters}
   template <int dim>
-  Simulator<dim>::Parameters::Parameters (const std::string &parameter_filename)
+  Simulator<dim>::Parameters::Parameters (ParameterHandler &prm)
   {
-    ParameterHandler prm;
-    Simulator<dim>::Parameters::declare_parameters (prm);
-
-    std::ifstream parameter_file (parameter_filename.c_str());
-
-    if (!parameter_file)
-      {
-        parameter_file.close ();
-
-        std::ostringstream message;
-        message << "Input parameter file <"
-                << parameter_filename << "> not found. Creating a"
-                << std::endl
-                << "template file of the same name."
-                << std::endl;
-
-        std::ofstream parameter_out (parameter_filename.c_str());
-        prm.print_parameters (parameter_out,
-                              ParameterHandler::Text);
-
-        AssertThrow (false, ExcMessage (message.str().c_str()));
-      }
-
-    const bool success = prm.read_input (parameter_file);
-    AssertThrow (success, ExcMessage ("Invalid input parameter file."));
-
     parse_parameters (prm);
   }
 
@@ -1291,16 +1265,6 @@ namespace aspect
     prm.declare_entry ("End time", "1e8",
                        Patterns::Double (0),
                        "The end time of the simulation in years.");
-
-    prm.declare_entry ("Generate graphical output", "false",
-                       Patterns::Bool (),
-                       "Whether graphical output is to be generated or not. "
-                       "You may not want to get graphical output if the number "
-                       "of processors is large.");
-    prm.declare_entry ("Time between graphical output", "50",
-                       Patterns::Double (0),
-                       "The time interval (in years) between each generation of "
-                       "graphical output files.");
 
     prm.enter_subsection ("Mesh refinement");
     {
@@ -1464,12 +1428,7 @@ namespace aspect
   parse_parameters (ParameterHandler &prm)
   {
     resume_computation      = prm.get_bool ("Resume computation");
-    end_time                    = prm.get_double ("End time");
-
-    generate_graphical_output   = prm.get_bool ("Generate graphical output");
-    graphical_output_interval   = prm.get_double ("Time between graphical output")
-                                  *
-                                  EquationData::year_in_seconds;
+    end_time                = prm.get_double ("End time");
 
     prm.enter_subsection ("Mesh refinement");
     {
@@ -1596,9 +1555,9 @@ namespace aspect
   // program which shows us wallclock times
   // (as opposed to CPU times).
   template <int dim>
-  Simulator<dim>::Simulator (Parameters &parameters_)
+  Simulator<dim>::Simulator (ParameterHandler &prm)
     :
-    parameters (parameters_),
+    parameters (prm),
     pcout (std::cout,
            (Utilities::MPI::
             this_mpi_process(MPI_COMM_WORLD)
@@ -1631,7 +1590,6 @@ namespace aspect
     time_step (0),
     old_time_step (0),
     timestep_number (0),
-    out_index (0),
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true),
     rebuild_temperature_matrices (true),
@@ -1639,8 +1597,23 @@ namespace aspect
 
     computing_timer (pcout, TimerOutput::summary,
                      TimerOutput::wall_times)
-  {}
+  {
+    postprocess_manager.parse_parameters (prm);
+    postprocess_manager.initialize (*this);
 
+    // make sure that we don't have to fill every column of the statistics
+    // object in each time step.
+    statistics.set_auto_fill_mode(true);
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::declare_parameters (ParameterHandler &prm)
+  {
+    Parameters::declare_parameters (prm);
+    Postprocess::Manager<dim>::declare_parameters (prm);
+  }
 
 
   // @sect4{The Simulator helper functions}
@@ -4153,6 +4126,9 @@ namespace aspect
     boost::archive::text_iarchive ia (ifs);
     ia >> (*this);
 
+    // re-initialize the postprocessors with the current object
+    postprocess_manager.initialize (*this);
+
     pcout << "*** resuming from Snapshot!" << std::endl;
   }
 
@@ -4171,87 +4147,11 @@ namespace aspect
     ar &time_step;
     ar &old_time_step;
     ar &timestep_number;
-    ar &out_index;
+
+    ar &postprocess_manager &statistics;
 
 // how about global_volume, global_Omega_diameter
   }
-
-
-  // This function does mostly what the
-  // corresponding one did in to
-  // step-31, in particular merging
-  // data from the two DoFHandler
-  // objects (for the Stokes and the
-  // temperature parts of the problem)
-  // into one is the same. There are
-  // three minor changes: we make sure
-  // that only a single processor
-  // actually does some work here; take
-  // care of scaling variables in a
-  // useful way; and in addition to the
-  // Stokes and temperature parts in
-  // the <code>joint_fe</code> finite
-  // element, we also add a piecewise
-  // constant field that denotes the
-  // subdomain id a cell corresponds
-  // to. This allows us to visualize
-  // the partitioning of the domain. As
-  // a consequence, we also have to
-  // change the assertion about the
-  // number of degrees of freedom in
-  // the joint DoFHandler object (which
-  // is now equal to the number of
-  // Stokes degrees of freedom plus the
-  // temperature degrees of freedom
-  // plus the number of active cells as
-  // that is the number of partition
-  // variables we want to add), and
-  // adjust the number of elements in
-  // the arrays we use to name the
-  // components of the joint solution
-  // vector and to identify which of
-  // these components are scalars or
-  // parts of dim-dimensional vectors.
-  //
-  // As for scaling: as mentioned in
-  // the introduction, to keep the
-  // Stokes equations properly scaled
-  // and symmetric, we introduced a new
-  // pressure $\hat p =
-  // \frac{L}{\eta}p$. What we really
-  // wanted, however, was the original
-  // pressure $p$, so while copying
-  // data from the Stokes DoFHandler
-  // into the joint one, we undo this
-  // scaling. While we're at it messing
-  // with the results of the
-  // simulation, we do two more things:
-  // First, the pressure is only
-  // defined up to a constant. To make
-  // it more easily comparable, we
-  // compute the minimal value of the
-  // pressure computed and shift all
-  // values up by that amount -- in
-  // essence making all pressure
-  // variables positive or
-  // zero. Secondly, let's also take
-  // care of the awkward units we use
-  // for the velocity: it is computed
-  // in SI units of meters per second,
-  // which of course is a very small
-  // number in the earth mantle. We
-  // therefore rescale things into
-  // centimeters per year, the unit
-  // commonly used in geophysics.
-  template <int dim>
-  void Simulator<dim>::output_results ()
-  {
-    Postprocess::Visualization<dim> visualizer;
-    visualizer.initialize(*this);
-    TableHandler table;
-    visualizer.execute (table);
-  }
-
 
 
   template <int dim>
@@ -4260,16 +4160,35 @@ namespace aspect
     computing_timer.enter_section ("Postprocessing");
     pcout << "   Postprocessing:" << std::endl;
 
-    // see if graphical output is
-    // requested
-    static double next_output_time = time;
-    if ((parameters.generate_graphical_output == true)
-        &&
-        (time >= next_output_time))
-      {
-        output_results ();
-        next_output_time += parameters.graphical_output_interval;
-      }
+    // run all the postprocessing routines and then write
+    // the current state of the statistics table to a file
+    std::list<std::pair<std::string,std::string> >
+    output_list = postprocess_manager.execute (statistics);
+
+    std::ofstream stat_file ("bin/statistics");
+    statistics.set_scientific("Time (years)", true);
+    statistics.set_scientific("Time step size (year)", true);
+    statistics.write_text (stat_file);
+
+    // determine the width of the first column of text so that
+    // everything gets nicely aligned; then output everything
+    {
+      unsigned int width = 0;
+      for (std::list<std::pair<std::string,std::string> >::const_iterator
+           p = output_list.begin();
+           p != output_list.end(); ++p)
+        width = std::max<unsigned int> (width, p->first.size());
+
+      for (std::list<std::pair<std::string,std::string> >::const_iterator
+           p = output_list.begin();
+           p != output_list.end(); ++p)
+        pcout << "     "
+              << std::setw(width)
+              << p->first
+              << " "
+              << p->second
+              << std::endl;
+    }
 
     compute_temperature_stats ();
     compute_heat_flux_stats ();
@@ -4494,6 +4413,11 @@ namespace aspect
               << " years"
               << std::endl;
 
+        // set global statistics about this time step
+        statistics.add_value("Time step number", timestep_number);
+        statistics.add_value("Time (years)", time / EquationData::year_in_seconds);
+        statistics.add_value("Time step size (year)", time_step / EquationData::year_in_seconds);
+
         assemble_stokes_system ();
         build_stokes_preconditioner ();
         assemble_temperature_matrix ();
@@ -4596,14 +4520,41 @@ int main (int argc, char *argv[])
     {
       deallog.depth_console (0);
 
+      // see which parameter file to use
       std::string parameter_filename;
       if (argc>=2)
         parameter_filename = argv[1];
       else
-        parameter_filename = "step-32.prm";
+        parameter_filename = "aspect.prm";
 
-      aspect::Simulator<deal_II_dimension>::Parameters  parameters(parameter_filename);
-      aspect::Simulator<deal_II_dimension> flow_problem (parameters);
+      // declare parameters so that we can create a default file
+      // if there is no parameter file
+      ParameterHandler prm;
+      aspect::Simulator<deal_II_dimension>::declare_parameters(prm);
+
+      std::ifstream parameter_file (parameter_filename.c_str());
+      if (!parameter_file)
+        {
+          parameter_file.close ();
+
+          std::ostringstream message;
+          message << "Input parameter file <"
+                  << parameter_filename << "> not found. Creating a"
+                  << std::endl
+                  << "template file of the same name."
+                  << std::endl;
+
+          std::ofstream parameter_out (parameter_filename.c_str());
+          prm.print_parameters (parameter_out,
+                                ParameterHandler::Text);
+
+          AssertThrow (false, ExcMessage (message.str().c_str()));
+        }
+
+      const bool success = prm.read_input (parameter_file);
+      AssertThrow (success, ExcMessage ("Invalid input parameter file."));
+
+      aspect::Simulator<deal_II_dimension> flow_problem (prm);
       flow_problem.run ();
     }
   catch (std::exception &exc)
