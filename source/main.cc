@@ -4165,7 +4165,7 @@ namespace aspect
 
   template <int dim>
   template<class Archive>
-  void Simulator<dim>::serialize (Archive &ar, const unsigned int version)
+  void Simulator<dim>::serialize (Archive &ar, const unsigned int)
   {
     ar &time;
     ar &time_step;
