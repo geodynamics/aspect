@@ -289,13 +289,21 @@ namespace aspect
     {
       public:
         /**
-         * Execute all of the postprocessor objects that have been
-         * requested in the input file. These objects also fill the
-         * contents of the statistics object.
+         * Initialize the postprocessors handled by this object for a given simulator.
          *
-         * The function returns a concatenation of the text returned by
-         * the individual postprocessors.
-         */
+         * @param simulator A reference to the main simulator object to which the
+         * postprocessor implemented in the derived class should be applied.
+         **/
+        void initialize (const Simulator<dim> &simulator);
+
+        /**
+               * Execute all of the postprocessor objects that have been
+               * requested in the input file. These objects also fill the
+               * contents of the statistics object.
+               *
+               * The function returns a concatenation of the text returned by
+               * the individual postprocessors.
+               */
         std::list<std::pair<std::string,std::string> >
         execute (TableHandler &statistics);
 

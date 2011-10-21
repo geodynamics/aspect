@@ -148,6 +148,19 @@ namespace aspect
 // ------------------------------ Manager -----------------------------
 
     template <int dim>
+    void
+    Manager<dim>::initialize (const Simulator<dim> &simulator)
+    {
+      std::list<std::pair<std::string,std::string> > output_list;
+      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::iterator
+           p = postprocessors.begin();
+           p != postprocessors.end(); ++p)
+        dynamic_cast<SimulatorAccess<dim>&>(**p).initialize (simulator);
+    }
+
+
+
+    template <int dim>
     std::list<std::pair<std::string,std::string> >
     Manager<dim>::execute (TableHandler &statistics)
     {
@@ -209,7 +222,7 @@ namespace aspect
         // construct a string for Patterns::MultipleSelection that
         // contains the names of all registered postprocessors
         std::string pattern_of_names;
-	std::string default_names;
+        std::string default_names;
         for (typename std::list<PostprocessorInfo>::const_iterator
              p = registered_postprocessors->begin();
              p != registered_postprocessors->end(); ++p)
@@ -218,13 +231,13 @@ namespace aspect
               pattern_of_names += "|";
             pattern_of_names += std_cxx1x::get<0>(*p);
 
-	    if (default_names.size() > 0)
+            if (default_names.size() > 0)
               default_names += ",";
             default_names += std_cxx1x::get<0>(*p);
           }
 
-        prm.declare_entry("List of postprocessors", 
-			  default_names,
+        prm.declare_entry("List of postprocessors",
+                          default_names,
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma separated list of postprocessor objects that should be run "
                           "at the end of each time step. Some of these postprocessors will "
