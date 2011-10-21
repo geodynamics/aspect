@@ -208,18 +208,24 @@ namespace aspect
       {
         // construct a string for Patterns::MultipleSelection that
         // contains the names of all registered postprocessors
-        std::string list_of_names;
+        std::string pattern_of_names;
+	std::string default_names;
         for (typename std::list<PostprocessorInfo>::const_iterator
              p = registered_postprocessors->begin();
              p != registered_postprocessors->end(); ++p)
           {
-            if (list_of_names.size() > 0)
-              list_of_names += "|";
-            list_of_names += std_cxx1x::get<0>(*p);
+            if (pattern_of_names.size() > 0)
+              pattern_of_names += "|";
+            pattern_of_names += std_cxx1x::get<0>(*p);
+
+	    if (default_names.size() > 0)
+              default_names += ",";
+            default_names += std_cxx1x::get<0>(*p);
           }
 
-        prm.declare_entry("List of postprocessors", "",
-                          Patterns::MultipleSelection(list_of_names),
+        prm.declare_entry("List of postprocessors", 
+			  default_names,
+                          Patterns::MultipleSelection(pattern_of_names),
                           "A comma separated list of postprocessor objects that should be run "
                           "at the end of each time step. Some of these postprocessors will "
                           "declare their own parameters which may, for example, include that "
