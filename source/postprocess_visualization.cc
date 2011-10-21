@@ -197,7 +197,7 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    Visualization<dim>::execute (TableHandler &)
+    Visualization<dim>::execute (TableHandler &statistics)
     {
       // see if graphical output is requested at this time
       if (this->get_time() < next_output_time)
@@ -332,14 +332,19 @@ namespace aspect
           data_out.write_visit_record (visit_master, filenames);
         }
 
+      // record the file base file name in the output file
+      statistics.add_value ("Visualization file name",
+                            std::string ("bin/solution-") + Utilities::int_to_string (output_file_number, 5));
+
       // up the counter of the number of the file by one; also
       // up the next time we need output
       ++output_file_number;
       set_next_output_time (this->get_time());
 
-      // return what should be printed to the screen
+      // return what should be printed to the screen. note that we had
+      // just incremented the number, so use the previous value
       return std::make_pair (std::string ("Writing graphical output:"),
-                             std::string ("bin/solution-") + Utilities::int_to_string (output_file_number, 5));
+                             std::string ("bin/solution-") + Utilities::int_to_string (output_file_number-1, 5));
     }
 
 
