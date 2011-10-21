@@ -87,6 +87,16 @@ namespace aspect
          * will create output the next time we get to it.
          */
         unsigned int output_file_number;
+
+        /**
+         * Compute the next output time from the current one. In
+         * the simplest case, this is simply the previous
+         * next output time plus the interval, but in general
+         * we'd like to ensure that it is larger than the current
+         * time to avoid falling behind with next_output_time and
+         * having to catch up once the time step becomes larger.
+         */
+        void set_next_output_time (const double current_time);
     };
   }
 }

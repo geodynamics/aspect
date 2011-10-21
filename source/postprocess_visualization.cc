@@ -199,6 +199,13 @@ namespace aspect
     std::pair<std::string,std::string>
     Visualization<dim>::execute (TableHandler &)
     {
+      // see if graphical output is requested at this time
+      if (this->get_time() < next_output_time)
+        return std::pair<std::string,std::string>();
+
+
+      // build a representation of the entire solution. this process is
+      // described in the documentation of step-32
       const FESystem<dim> joint_fe (this->get_stokes_dof_handler().get_fe(), 1,
                                     this->get_temperature_dof_handler().get_fe(), 1);
 
@@ -278,7 +285,7 @@ namespace aspect
                                     (this->get_triangulation().locally_owned_subdomain(), 4) +
                                     ".vtu");
 
-      //throttle output
+      // throttle output
       const unsigned int concurrent_writers = 10;
       unsigned int myid = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
       unsigned int nproc = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
@@ -296,10 +303,11 @@ namespace aspect
               sleep(1);
               MPI_Barrier(MPI_COMM_WORLD);
             }
-
         }
 
 
+      // let the master processor write the master record for all the distributed
+      // files
       if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
         {
           std::vector<std::string> filenames;
@@ -324,8 +332,10 @@ namespace aspect
           data_out.write_visit_record (visit_master, filenames);
         }
 
-      // up the counter of the number of the file by one
+      // up the counter of the number of the file by one; also
+      // up the next time we need output
       ++output_file_number;
+      set_next_output_time (this->get_time());
 
       // return what should be printed to the screen
       return std::make_pair (std::string ("Writing graphical output:"),
@@ -339,14 +349,14 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-	prm.enter_subsection("Visualization");
-	{
-	  prm.declare_entry ("Time between graphical output", "50",
-			     Patterns::Double (0),
-			     "The time interval (in years) between each generation of "
-			     "graphical output files.");
-	}
-	prm.leave_subsection();
+        prm.enter_subsection("Visualization");
+        {
+          prm.declare_entry ("Time between graphical output", "50",
+                             Patterns::Double (0),
+                             "The time interval (in years) between each generation of "
+                             "graphical output files.");
+        }
+        prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -358,12 +368,12 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-	prm.enter_subsection("Visualization");
-	{
-	  output_interval = prm.get_double ("Time between graphical output")
-	                    * EquationData::year_in_seconds;
-	}
-	prm.leave_subsection();
+        prm.enter_subsection("Visualization");
+        {
+          output_interval = prm.get_double ("Time between graphical output")
+                            * EquationData::year_in_seconds;
+        }
+        prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -402,13 +412,20 @@ namespace aspect
           ia >> (*this);
         }
 
-      // if the next_output_time is zero, then no previous output was produced.
-      // similarly, if previously the output interval may have been very long, then
-      // no output was produced recently. in both cases produce output now
-      if ((next_output_time == 0)
-          ||
-          (next_output_time + output_interval < this->get_time()))
-        next_output_time = this->get_time() - this->get_timestep()/100;
+      // set next output time to something useful
+      next_output_time = 0;
+      set_next_output_time (this->get_time());
+    }
+
+
+    template <int dim>
+    void
+    Visualization<dim>::set_next_output_time (const double current_time)
+    {
+      // if output_interval is positive, then set the next output interval to
+      // a positive multiple
+      if (output_interval > 0)
+        next_output_time = std::ceil(current_time / output_interval) * output_interval;
     }
   }
 }
