@@ -15,6 +15,8 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/distributed/tria.h>
 
+#include <boost/serialization/split_member.hpp>
+
 
 namespace aspect
 {
@@ -316,6 +318,27 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
+         * Write the data of this object to a
+         * stream for the purpose of
+         * serialization.
+         */
+        template <class Archive>
+        void save (Archive &ar,
+                   const unsigned int version) const;
+
+        /**
+         * Read the data of this object from a
+         * stream for the purpose of
+         * serialization.
+         */
+        template <class Archive>
+        void load (Archive &ar,
+                   const unsigned int version);
+
+        BOOST_SERIALIZATION_SPLIT_MEMBER()
+
+
+        /**
          * A function that is used to register postprocessor objects
          * in such a way that the Manager can deal with all of them
          * without having to know them by name. This allows the files
@@ -351,6 +374,42 @@ namespace aspect
          */
         std::list<std_cxx1x::shared_ptr<Interface<dim> > > postprocessors;
     };
+
+
+    template <int dim>
+    template <class Archive>
+    void Manager<dim>::save (Archive &ar,
+                             const unsigned int) const
+    {
+      // let all the postprocessors save their data in a map and then
+      // serialize that
+      std::map<std::string,std::string> saved_text;
+      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >
+           p = postprocessors.begin();
+           p != postprocessors.end(); ++p)
+        p->save (saved_text);
+
+      ar &saved_text;
+    }
+
+
+    template <int dim>
+    template <class Archive>
+    void Manager<dim>::load (Archive &ar,
+                             const unsigned int)
+    {
+      // get the map back out of the stream; then let the postprocessors
+      // that we currently have get their data from there. note that this
+      // may not be the same set of postprocessors we had when we saved
+      // their data
+      std::map<std::string,std::string> saved_text;
+      ar &saved_text;
+
+      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >
+           p = postprocessors.begin();
+           p != postprocessors.end(); ++p)
+        p->load (saved_text);
+    }
 
 
     namespace internal
