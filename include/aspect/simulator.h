@@ -270,7 +270,7 @@ namespace aspect
       void create_snapshot();
       void resume_from_snapshot();
 
-      template<class Archive>
+      template <class Archive>
       void serialize (Archive &ar, const unsigned int version);
 
       void make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector,
