@@ -4149,9 +4149,9 @@ namespace aspect
     stokes_solution = distributed_stokes;
     old_stokes_solution = old_distributed_stokes;
 
-    std::ifstream ofs ("bin/resume.txt");
-    boost::archive::text_iarchive oa (ofs);
-    oa >> (*this);
+    std::ifstream ifs ("bin/resume.txt");
+    boost::archive::text_iarchive ia (ifs);
+    ia >> (*this);
 
     pcout << "*** resuming from Snapshot!" << std::endl;
   }
