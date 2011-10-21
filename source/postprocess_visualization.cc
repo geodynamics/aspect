@@ -358,8 +358,12 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-        output_interval = prm.get_double ("Time between graphical output")
-                          * EquationData::year_in_seconds;
+	prm.enter_subsection("Visualization");
+	{
+	  output_interval = prm.get_double ("Time between graphical output")
+	                    * EquationData::year_in_seconds;
+	}
+	prm.leave_subsection();
       }
       prm.leave_subsection();
     }
