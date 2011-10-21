@@ -68,9 +68,17 @@ namespace aspect
 
 
     template <int dim>
-    double SimulatorAccess<dim>::get_timestep_number () const
+    double SimulatorAccess<dim>::get_timestep () const
     {
       return simulator->time_step;
+    }
+
+
+
+    template <int dim>
+    unsigned int SimulatorAccess<dim>::get_timestep_number () const
+    {
+      return simulator->timestep_number;
     }
 
 
@@ -267,7 +275,7 @@ namespace aspect
                 goto found_it;
               }
           AssertThrow (false,
-		       ExcPostprocessorNameNotFound(postprocessor_names[name]));
+                       ExcPostprocessorNameNotFound(postprocessor_names[name]));
 
         found_it:
           ;
@@ -304,7 +312,7 @@ namespace aspect
     template class Interface<deal_II_dimension>;
     template class SimulatorAccess<deal_II_dimension>;
     template class Manager<deal_II_dimension>;
-    
+
     Manager<deal_II_dimension> m;
   }
 }

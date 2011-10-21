@@ -182,9 +182,14 @@ namespace aspect
         double get_time () const;
 
         /**
+         * Return the size of the last time step.
+         */
+        double get_timestep () const;
+
+        /**
          * Return the current number of a time step.
          */
-        double get_timestep_number () const;
+        unsigned int get_timestep_number () const;
 
         /**
          * Return a reference to the triangulation in use by the simulator
@@ -269,10 +274,10 @@ namespace aspect
         /** @} */
 
       private:
-	/**
-	 * A pointer to the simulator object to which we want to
-	 * get access.
-	 */
+        /**
+         * A pointer to the simulator object to which we want to
+         * get access.
+         */
         SmartPointer<const Simulator<dim> > simulator;
     };
 
@@ -331,14 +336,14 @@ namespace aspect
                                 void (*declare_parameters_function) (ParameterHandler &),
                                 Interface<dim> * (*factory_function) ());
 
-	/**
-	 * Exception.
-	 */
-	DeclException1 (ExcPostprocessorNameNotFound,
-			std::string,
-		 << "Could not find entry <"
-		 << arg1
-		 << "> among the names of registered postprocessors.");
+        /**
+         * Exception.
+         */
+        DeclException1 (ExcPostprocessorNameNotFound,
+                        std::string,
+                        << "Could not find entry <"
+                        << arg1
+                        << "> among the names of registered postprocessors.");
       private:
         /**
          * A list of postprocessor objects that have been requested
@@ -346,9 +351,9 @@ namespace aspect
          */
         std::list<std_cxx1x::shared_ptr<Interface<dim> > > postprocessors;
     };
-    
-    
-    namespace internal 
+
+
+    namespace internal
     {
       /**
        * An internal class that is used in the definition of the
@@ -357,32 +362,33 @@ namespace aspect
        * Manager class.
        */
       template <const char **name, class PostprocessorClass>
-      struct PostprocessHelper {
-	PostprocessHelper ()
-	{
-  	  aspect::Postprocess::Manager<deal_II_dimension>::register_postprocessor
-	  (*name,
-	   &PostprocessorClass::declare_parameters,
-	   &factory);
-	}
-	
-	static
-	Interface<deal_II_dimension> * factory ()
-	{
-	  return new PostprocessorClass();
-	}
+      struct PostprocessHelper
+      {
+        PostprocessHelper ()
+        {
+          aspect::Postprocess::Manager<deal_II_dimension>::register_postprocessor
+          (*name,
+           &PostprocessorClass::declare_parameters,
+           &factory);
+        }
+
+        static
+        Interface<deal_II_dimension> * factory ()
+        {
+          return new PostprocessorClass();
+        }
       };
     }
 
-/**
- * Given a name and a classname for a postprocessor, register it with
- * the aspect::Postprocess::Manager class.
- */
+    /**
+     * Given a name and a classname for a postprocessor, register it with
+     * the aspect::Postprocess::Manager class.
+     */
 #define ASPECT_REGISTER_POSTPROCESSOR(name,classname) \
-    namespace ASPECT_REGISTER_POSTPROCESSOR_ ## classname \
-              { const char *local_name = name; \
-                aspect::Postprocess::internal::PostprocessHelper<&local_name,classname<deal_II_dimension> > \
-                dummy_ ## classname; }
+  namespace ASPECT_REGISTER_POSTPROCESSOR_ ## classname \
+  { const char *local_name = name; \
+    aspect::Postprocess::internal::PostprocessHelper<&local_name,classname<deal_II_dimension> > \
+    dummy_ ## classname; }
   }
 }
 
