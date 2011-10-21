@@ -25,7 +25,7 @@ namespace aspect
     class Visualization : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        Visualization (const Simulator<dim> &simulator_object);
+        Visualization ();
 
         /**
          * Generate graphical output from the current solution.

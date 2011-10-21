@@ -7,6 +7,7 @@
 #ifndef __aspect__postprocess_base_h
 #define __aspect__postprocess_base_h
 
+#include <deal.II/base/std_cxx1x/shared_ptr.h>
 #include <deal.II/base/table_handler.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/lac/trilinos_vector.h>
@@ -75,34 +76,34 @@ namespace aspect
         std::pair<std::string,std::string>
         execute (TableHandler &statistics) = 0;
 
-	/**
-	 * Declare the parameters this class takes through input files.
-	 * Derived classes should overload this function if they actually
-	 * do take parameters; this class declares a fall-back function
-	 * that does nothing, so that postprocessor classes that do not
-	 * take any parameters do not have to do anything at all.
-	 * 
-	 * This function is static (and needs to be static in derived
-	 * classes) so that it can be called without creating actual
-	 * objects (because declaring parameters happens before we read
-	 * the input file and thus at a time when we don't even know yet
-	 * which postprocessor objects we need).
-	 */
-	static
-	void
-	declare_parameters (ParameterHandler &prm);
+        /**
+         * Declare the parameters this class takes through input files.
+         * Derived classes should overload this function if they actually
+         * do take parameters; this class declares a fall-back function
+         * that does nothing, so that postprocessor classes that do not
+         * take any parameters do not have to do anything at all.
+         *
+         * This function is static (and needs to be static in derived
+         * classes) so that it can be called without creating actual
+         * objects (because declaring parameters happens before we read
+         * the input file and thus at a time when we don't even know yet
+         * which postprocessor objects we need).
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
 
-	/**
-	 * Read the parameters this class declares from the parameter
-	 * file. The default implementation in this class does nothing,
-	 * so that derived classes that do not need any parameters do 
-	 * not need to implement it.
-	 */
-	virtual
-	void
-	parse_parameters (ParameterHandler &prm);
-	
-	
+        /**
+         * Read the parameters this class declares from the parameter
+         * file. The default implementation in this class does nothing,
+         * so that derived classes that do not need any parameters do
+         * not need to implement it.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+
         /**
          * Save the state of this object to the argument given to this function.
          * This function is in support of checkpoint/restart functionality.
@@ -164,12 +165,12 @@ namespace aspect
     {
       public:
         /**
-         * Constructor.
+         * Initialize this class for a given simulator.
          *
          * @param simulator A reference to the main simulator object to which the
          * postprocessor implemented in the derived class should be applied.
          **/
-        SimulatorAccess (const Simulator<dim> &simulator);
+        void initialize (const Simulator<dim> &simulator);
 
       protected:
         /** @name Accessing variables that identify overall properties of the simulator */
@@ -268,11 +269,124 @@ namespace aspect
         /** @} */
 
       private:
-        const SmartPointer<const Simulator<dim> > simulator;
+	/**
+	 * A pointer to the simulator object to which we want to
+	 * get access.
+	 */
+        SmartPointer<const Simulator<dim> > simulator;
     };
 
+
+    template <int dim>
+    class Manager
+    {
+      public:
+        /**
+         * Execute all of the postprocessor objects that have been
+         * requested in the input file. These objects also fill the
+         * contents of the statistics object.
+         *
+         * The function returns a concatenation of the text returned by
+         * the individual postprocessors.
+         */
+        std::list<std::pair<std::string,std::string> >
+        execute (TableHandler &statistics);
+
+        /**
+         * Declare the parameters of all known postprocessors, as
+         * well as of ones this class has itself.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter
+         * file. This determines which postprocessor objects will be
+         * created; then let these objects read their parameters as
+         * well.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+        /**
+         * A function that is used to register postprocessor objects
+         * in such a way that the Manager can deal with all of them
+         * without having to know them by name. This allows the files
+         * in which individual postprocessors are implement to register
+         * these postprocessors, rather than also having to modify the
+         * Manage class by adding the new postprocessor class.
+         *
+         * @param name The name under which this postprocessor is to
+         * be called in parameter files.
+         * @param declare_parameters_function A pointer to a function
+         * that declares the parameters for this postprocessor.
+         * @param factory_function A pointer to a function that creates
+         * such a postprocessor object and returns a pointer to it.
+         **/
+        static
+        void
+        register_postprocessor (const std::string &name,
+                                void (*declare_parameters_function) (ParameterHandler &),
+                                Interface<dim> * (*factory_function) ());
+
+	/**
+	 * Exception.
+	 */
+	DeclException1 (ExcPostprocessorNameNotFound,
+			std::string,
+		 << "Could not find entry <"
+		 << arg1
+		 << "> among the names of registered postprocessors.");
+      private:
+        /**
+         * A list of postprocessor objects that have been requested
+         * in the parameter file.
+         */
+        std::list<std_cxx1x::shared_ptr<Interface<dim> > > postprocessors;
+    };
+    
+    
+    namespace internal 
+    {
+      /**
+       * An internal class that is used in the definition of the
+       * ASPECT_REGISTER_POSTPROCESSOR macro below. Given a name
+       * and a classname, it registers the postprocessor with the
+       * Manager class.
+       */
+      template <const char **name, class PostprocessorClass>
+      struct PostprocessHelper {
+	PostprocessHelper ()
+	{
+  	  aspect::Postprocess::Manager<deal_II_dimension>::register_postprocessor
+	  (*name,
+	   &PostprocessorClass::declare_parameters,
+	   &factory);
+	}
+	
+	static
+	Interface<deal_II_dimension> * factory ()
+	{
+	  return new PostprocessorClass();
+	}
+      };
+    }
+
+/**
+ * Given a name and a classname for a postprocessor, register it with
+ * the aspect::Postprocess::Manager class.
+ */
+#define ASPECT_REGISTER_POSTPROCESSOR(name,classname) \
+    namespace ASPECT_REGISTER_POSTPROCESSOR_ ## classname \
+              { const char *local_name = name; \
+                aspect::Postprocess::internal::PostprocessHelper<&local_name,classname<deal_II_dimension> > \
+                dummy_ ## classname; }
   }
 }
 
 
 #endif
+
+class P;

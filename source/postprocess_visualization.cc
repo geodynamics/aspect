@@ -183,9 +183,8 @@ namespace aspect
 
 
     template <int dim>
-    Visualization<dim>::Visualization (const Simulator<dim> &simulator_object)
+    Visualization<dim>::Visualization ()
       :
-      SimulatorAccess<dim> (simulator_object),
       // TODO: do something sensible here
       output_interval (50000),
       next_output_time (0),
@@ -352,5 +351,7 @@ namespace aspect
   namespace Postprocess
   {
     template class Visualization<deal_II_dimension>;
+    
+    ASPECT_REGISTER_POSTPROCESSOR("visualization", Visualization)
   }
 }

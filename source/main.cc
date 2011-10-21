@@ -4246,7 +4246,8 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::output_results ()
   {
-    Postprocess::Visualization<dim> visualizer (*this);
+    Postprocess::Visualization<dim> visualizer;
+    visualizer.initialize(*this);
     TableHandler table;
     visualizer.execute (table);
   }
