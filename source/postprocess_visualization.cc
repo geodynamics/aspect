@@ -339,10 +339,14 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.declare_entry ("Time between graphical output", "50",
-                           Patterns::Double (0),
-                           "The time interval (in years) between each generation of "
-                           "graphical output files.");
+	prm.enter_subsection("Visualization");
+	{
+	  prm.declare_entry ("Time between graphical output", "50",
+			     Patterns::Double (0),
+			     "The time interval (in years) between each generation of "
+			     "graphical output files.");
+	}
+	prm.leave_subsection();
       }
       prm.leave_subsection();
     }
