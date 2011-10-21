@@ -384,10 +384,10 @@ namespace aspect
       // let all the postprocessors save their data in a map and then
       // serialize that
       std::map<std::string,std::string> saved_text;
-      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >
+      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
-        p->save (saved_text);
+        (*p)->save (saved_text);
 
       ar &saved_text;
     }
@@ -405,10 +405,10 @@ namespace aspect
       std::map<std::string,std::string> saved_text;
       ar &saved_text;
 
-      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >
+      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
-        p->load (saved_text);
+        (*p)->load (saved_text);
     }
 
 
