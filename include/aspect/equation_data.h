@@ -21,6 +21,10 @@ namespace EquationData
   extern const double year_in_seconds;
   extern double T0;
 
+  extern double R0, R1;
+  extern double T0, T1;
+  extern double apperture_angle;
+  extern double thermal_conductivity;
 
   template <int dim>
   double adiabatic_pressure (const Point<dim> &p);

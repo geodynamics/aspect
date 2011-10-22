@@ -80,11 +80,6 @@ using namespace dealii;
 // introduction:
 namespace EquationData
 {
-  namespace IO
-  {
-    FILE *NuInnerout = fopen("NuInner.dat", "w");
-    FILE *NuOuterout = fopen("NuOuter.dat", "w");
-  }
   double kappa                 = 1e-6;
   double reference_density     = 3300;    /* kg / m^3   */
   double reference_temperature = 293;     /* K          */
@@ -1613,94 +1608,6 @@ namespace aspect
     Postprocess::Manager<dim>::declare_parameters (prm);
   }
 
-
-
-  template <int dim>
-  void Simulator<dim>::compute_heat_flux_stats ()
-  {
-    QGauss<dim-1> quadrature (parameters.temperature_degree + 1);
-    FEFaceValues<dim>  fe_face_values (temperature_fe, quadrature,
-                                       update_gradients | update_normal_vectors | update_JxW_values);
-
-    std::vector<Tensor<1,dim> > temperature_gradients (quadrature.size());
-
-    double inner_boundary_flux = 0;
-    double outer_boundary_flux = 0;
-
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = temperature_dof_handler.begin_active(),
-    endc = temperature_dof_handler.end();
-
-    // for every core-mantle or surface face owned by this processor,
-    // integrate the normal heat flux given by the formula
-    //   j =  - k* n . grad T
-    for (; cell!=endc; ++cell)
-      if (cell->is_locally_owned())
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->at_boundary(f))
-            {
-              fe_face_values.reinit (cell, f);
-              fe_face_values.get_function_gradients (temperature_solution,
-                                                     temperature_gradients);
-
-              double local_normal_flux = 0;
-              for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                local_normal_flux
-                +=
-                  -EquationData::thermal_conductivity *
-                  (temperature_gradients[q] *
-                   fe_face_values.normal_vector(q)) *
-                  fe_face_values.JxW(q);
-
-              if (cell->face(f)->boundary_indicator() == 0)
-                inner_boundary_flux += local_normal_flux;
-              else if (cell->face(f)->boundary_indicator() == 1)
-                outer_boundary_flux += local_normal_flux;
-              /*    else
-                    printf("cell->face(f)->boundary_indicator() %d\n", cell->face(f)->boundary_indicator());
-                    Assert (false, ExcInternalError());*/
-            }
-
-    {
-      double local_values[2] = { inner_boundary_flux, outer_boundary_flux };
-      double global_values[2];
-
-      Utilities::MPI::sum (local_values, MPI_COMM_WORLD, global_values);
-
-      inner_boundary_flux = global_values[0];
-      outer_boundary_flux = global_values[1];
-    }
-
-    // print output. note that we have compute the outward normal
-    // flux, but at the core-mantle boundary we need the flux
-    // into the mantle, i.e. in direction -normal
-    pcout << "     Core-mantle heat flux:                        "
-          << inner_boundary_flux
-          << " W"
-          << std::endl;
-    pcout << "     Surface heat flux:                            "
-          << outer_boundary_flux
-          << " W"
-          << std::endl;
-    /*-------------------------------------------------
-      output Inner/Outer Nu number to file per timestep*/
-
-    double Scaling = 1e0 /(EquationData::T0 - EquationData::T1);
-    double dTdr = (inner_boundary_flux/EquationData::thermal_conductivity)*Scaling;
-    double BoundaryCurveLength = EquationData::R0/(EquationData::R1 - EquationData::R0) *
-                                 EquationData::apperture_angle;
-
-    fprintf(EquationData::IO::NuInnerout,"%e %e\n", time, dTdr / BoundaryCurveLength);
-
-    dTdr = (outer_boundary_flux/EquationData::thermal_conductivity)*Scaling;
-    BoundaryCurveLength = EquationData::R1/(EquationData::R1 - EquationData::R0) *
-                          EquationData::apperture_angle;
-
-    fprintf(EquationData::IO::NuOuterout,"%e %e\n", time, dTdr / BoundaryCurveLength);
-
-    fflush(EquationData::IO::NuInnerout);
-    fflush(EquationData::IO::NuOuterout);
-  }
 
 
   template <int dim>
@@ -3963,8 +3870,6 @@ namespace aspect
               << p->second
               << std::endl;
     }
-
-    compute_heat_flux_stats ();
 
     pcout << std::endl;
     computing_timer.exit_section ();
