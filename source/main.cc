@@ -82,7 +82,6 @@ namespace EquationData
   namespace IO
   {
     FILE *Tavout = fopen("Tav.dat", "w");
-    FILE *Vrmsout = fopen("Vrms.dat", "w");
     FILE *NuInnerout = fopen("NuInner.dat", "w");
     FILE *NuOuterout = fopen("NuOuter.dat", "w");
   }
@@ -1748,109 +1747,6 @@ namespace aspect
     fprintf(EquationData::IO::Tavout,"%e %e\n", time, global_temperature_integral / global_volume / EquationData::T0);
     fflush(EquationData::IO::Tavout);
   }
-
-
-  template <int dim>
-  void Simulator<dim>::compute_velocity_stats ()
-  {
-    const QGauss<dim> quadrature_formula (parameters.stokes_velocity_degree+1);
-    const unsigned int n_q_points = quadrature_formula.size();
-
-    FEValues<dim> fe_values (mapping, stokes_fe, quadrature_formula,
-                             update_values   |
-                             update_quadrature_points |
-                             update_JxW_values);
-    std::vector<Tensor<1,dim> > velocity_values(n_q_points);
-
-    const FEValuesExtractors::Vector velocities (0);
-
-    double local_velocity_square_integral = 0;
-    double max_local_velocity = 0;
-    double min_local_velocity = 1e12;
-    double sum_local_velocity = 0;
-    double max_JxW = 0;
-    double min_JxW = 1e12;
-
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = stokes_dof_handler.begin_active(),
-    endc = stokes_dof_handler.end();
-    for (; cell!=endc; ++cell)
-      if (cell->is_locally_owned())
-        {
-          fe_values.reinit (cell);
-          fe_values[velocities].get_function_values (stokes_solution,
-                                                     velocity_values);
-          for (unsigned int q = 0; q < n_q_points; ++q)
-            {
-              local_velocity_square_integral += ((velocity_values[q] * velocity_values[q]) *
-                                                 fe_values.JxW(q));
-              sum_local_velocity += std::sqrt(velocity_values[q]*velocity_values[q]);
-            }
-        }
-
-    const double global_velocity_square_integral
-      = Utilities::MPI::sum (local_velocity_square_integral, MPI_COMM_WORLD);
-
-    double rho = EquationData::reference_density;
-    pcout << "     reference density:                            "
-          << rho
-          << " kg/m^3"
-          << std::endl;
-
-    double g = EquationData::reference_gravity;
-    pcout << "     reference gravity:                            "
-          << g
-          << " m/s^2"
-          << std::endl;
-    double alpha = EquationData::thermal_expansivity;
-    pcout << "     reference thermal expansivity:                "
-          << alpha
-          << " 1/K"
-          << std::endl;
-    double deltaT = EquationData::T0-EquationData::T1;
-    double h = (EquationData::R1-EquationData::R0);
-    double kappa = EquationData::kappa;
-    pcout << "     reference kappa:                              "
-          << kappa
-          << " m^2/s"
-          << std::endl;
-    double eta = EquationData::reference_eta;
-    pcout << "     reference viscosity:                          "
-          << eta
-          << " Pas"
-          << std::endl;
-    double Scaling = h/kappa;
-    pcout << "     velocity scaling:                             "
-          << Scaling
-          << " h/kappa (m/s)"
-          << std::endl;
-    double vrms = std::sqrt(global_velocity_square_integral) / std::sqrt(global_volume);
-    pcout << "     RMS velocity:                                 "
-          << vrms *EquationData::year_in_seconds * 100
-          << " cm/year"
-          << std::endl;
-    pcout << "     RMS velocity (non dimensional):               "
-          << vrms *Scaling
-          << std::endl;
-//TODO: This can probably be merged with the loops above
-    pcout << "     Maximal velocity:                             "
-          << get_maximal_velocity() * EquationData::year_in_seconds * 100
-          << " cm/year"
-          << std::endl;
-
-    pcout << "     Ra number 				       "
-          << std::endl;
-    pcout << "	 (rho*alpha*g*deltaT*h^3)/(kappa*eta)=         "
-          << (rho*g*alpha*deltaT*std::pow(h,3))/(kappa*eta)  << std::endl;
-
-    /*---------------------------------
-      output vrms to file per timestep*/
-
-    fprintf(EquationData::IO::Vrmsout,"%e %e\n", time, vrms * Scaling);
-    fflush(EquationData::IO::Vrmsout);
-
-  }
-
 
 
   template <int dim>
@@ -4192,7 +4088,6 @@ namespace aspect
 
     compute_temperature_stats ();
     compute_heat_flux_stats ();
-    compute_velocity_stats ();
 
     pcout << std::endl;
     computing_timer.exit_section ();

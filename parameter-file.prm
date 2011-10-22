@@ -109,7 +109,7 @@ subsection Postprocess
   # end of each time step. Some of these postprocessors will declare their own
   # parameters which may, for example, include that they will actually do
   # something only every so many time steps or years.
-  set List of postprocessors = visualization
+  set List of postprocessors = visualization, velocity statistics
 
 
   subsection Visualization

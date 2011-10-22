@@ -85,7 +85,6 @@ namespace aspect
       double get_cfl_number () const;
       double get_entropy_variation (const double average_temperature) const;
       void compute_temperature_stats ();
-      void compute_velocity_stats ();
       void compute_heat_flux_stats ();
       std::pair<double,double> get_extrapolated_temperature_range () const;
       void solve ();
