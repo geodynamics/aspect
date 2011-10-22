@@ -98,8 +98,7 @@ namespace EquationData
 
   double R0      = 6371000.-2890000.;     /* m          */
   double R1      = 6371000.-  35000.;     /* m          */
-  double pi = std::acos(-1e0);
-  double apperture_angle = pi;     /* m          */
+  double apperture_angle = numbers::PI;     /* m          */
 
   double T0      = 4000+273;              /* K          */
   double T1      =  700+273;              /* K          */
