@@ -6,8 +6,8 @@
 //-------------------------------------------------------------
 
 #include <aspect/postprocess_velocity_statistics.h>
-#include <aspect/simulator.h>
 #include <aspect/equation_data.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -73,8 +73,7 @@ namespace aspect
       output << vrms *EquationData::year_in_seconds * 100
              << " cm/year, "
              << global_max_velocity *EquationData::year_in_seconds * 100
-             << " cm/year"
-             << std::endl;
+             << " cm/year";
 
       return std::pair<std::string, std::string> ("RMS, max velocity:",
                                                   output.str());
