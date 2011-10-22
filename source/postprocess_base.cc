@@ -240,7 +240,6 @@ namespace aspect
         // construct a string for Patterns::MultipleSelection that
         // contains the names of all registered postprocessors
         std::string pattern_of_names;
-        std::string default_names;
         for (typename std::list<PostprocessorInfo>::const_iterator
              p = registered_postprocessors->begin();
              p != registered_postprocessors->end(); ++p)
@@ -248,20 +247,20 @@ namespace aspect
             if (pattern_of_names.size() > 0)
               pattern_of_names += "|";
             pattern_of_names += std_cxx1x::get<0>(*p);
-
-            if (default_names.size() > 0)
-              default_names += ",";
-            default_names += std_cxx1x::get<0>(*p);
           }
+        if (pattern_of_names.size() > 0)
+          pattern_of_names += "|";
+        pattern_of_names += "all";
 
         prm.declare_entry("List of postprocessors",
-                          default_names,
+                          "all",
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma separated list of postprocessor objects that should be run "
                           "at the end of each time step. Some of these postprocessors will "
                           "declare their own parameters which may, for example, include that "
                           "they will actually do something only every so many time steps or "
-                          "years.");
+                          "years. Alternatively, the text 'all' indicates that all available "
+                          "postprocessors should be run after each time step.");
       }
       prm.leave_subsection();
 
@@ -290,6 +289,19 @@ namespace aspect
           = Utilities::split_string_list(prm.get("List of postprocessors"));
       }
       prm.leave_subsection();
+
+      // see if 'all' was selected (or is part of the list). if so
+      // simply replace the list with one that contains all names
+      if (std::find (postprocessor_names.begin(),
+                     postprocessor_names.end(),
+                     "all") != postprocessor_names.end())
+        {
+          postprocessor_names.clear();
+          for (std::list<PostprocessorInfo>::const_iterator
+               p = registered_postprocessors->begin();
+               p != registered_postprocessors->end(); ++p)
+            postprocessor_names.push_back (std_cxx1x::get<0>(*p));
+        }
 
       // then go through the list, create objects and let them parse
       // their own parameters
