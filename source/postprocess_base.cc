@@ -93,6 +93,24 @@ namespace aspect
 
 
     template <int dim>
+    double
+    SimulatorAccess<dim>::get_volume () const
+    {
+      return simulator->global_volume;
+    }
+
+
+
+    template <int dim>
+    const Mapping<dim> &
+    SimulatorAccess<dim>::get_mapping () const
+    {
+      return simulator->mapping;
+    }
+
+
+
+    template <int dim>
     const TrilinosWrappers::MPI::BlockVector &
     SimulatorAccess<dim>::get_stokes_solution () const
     {

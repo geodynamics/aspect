@@ -14,6 +14,7 @@
 #include <deal.II/lac/trilinos_block_vector.h>
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/distributed/tria.h>
+#include <deal.II/fe/mapping.h>
 
 #include <boost/serialization/split_member.hpp>
 
@@ -199,6 +200,19 @@ namespace aspect
          */
         const parallel::distributed::Triangulation<dim> &
         get_triangulation () const;
+
+        /**
+         * Return the global volume of the computational domain.
+         */
+        double
+        get_volume () const;
+
+        /**
+         * Return a reference to the mapping used to describe the boundary
+        * of the domain.
+         */
+        const Mapping<dim> &
+        get_mapping () const;
         /** @} */
 
 
