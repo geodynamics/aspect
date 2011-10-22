@@ -3552,10 +3552,6 @@ namespace aspect
                    (parameters.temperature_degree *
                     cfl_number));
 
-      pcout << "   Time step: "
-            << time_step/EquationData::year_in_seconds
-            << " years"
-            << std::endl;
       statistics.add_value("Time step size (year)", time_step / EquationData::year_in_seconds);
 
       temperature_solution = old_temperature_solution;
