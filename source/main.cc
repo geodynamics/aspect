@@ -3848,7 +3848,8 @@ namespace aspect
     std::ofstream stat_file ("bin/statistics");
     statistics.set_scientific("Time (years)", true);
     statistics.set_scientific("Time step size (year)", true);
-    statistics.write_text (stat_file);
+    statistics.write_text (stat_file,
+			   TableHandler::table_with_separate_column_description);
 
     // determine the width of the first column of text so that
     // everything gets nicely aligned; then output everything
