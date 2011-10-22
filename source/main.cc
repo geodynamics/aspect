@@ -3617,12 +3617,17 @@ namespace aspect
 
       normalize_pressure(stokes_solution);
 
+      // print the number of iterations to screen and record it in the
+      // statistics file
       if (solver_control_expensive.last_step() == 0)
         pcout << solver_control_cheap.last_step()  << " iterations.";
       else
         pcout << solver_control_cheap.last_step() << '+'
               << solver_control_expensive.last_step() << " iterations.";
       pcout << std::endl;
+
+      statistics.add_value("Iterations for Stokes solver",
+                           solver_control_cheap.last_step() + solver_control_expensive.last_step());
     }
     computing_timer.exit_section();
 
@@ -3668,10 +3673,15 @@ namespace aspect
       temperature_constraints.distribute (distributed_temperature_solution);
       temperature_solution = distributed_temperature_solution;
 
+      // print number of iterations and also record it in the
+      // statistics file
       pcout << solver_control.last_step()
             << " iterations." << std::endl;
-      computing_timer.exit_section();
+
+      statistics.add_value("Iterations for temperature solver",
+                           solver_control.last_step());
     }
+    computing_timer.exit_section();
   }
 
   /*
