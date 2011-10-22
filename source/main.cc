@@ -3649,6 +3649,7 @@ namespace aspect
             << time_step/EquationData::year_in_seconds
             << " years"
             << std::endl;
+      statistics.add_value("Time step size (year)", time_step / EquationData::year_in_seconds);
 
       temperature_solution = old_temperature_solution;
       assemble_temperature_system ();
@@ -4187,7 +4188,6 @@ namespace aspect
         // set global statistics about this time step
         statistics.add_value("Time step number", timestep_number);
         statistics.add_value("Time (years)", time / EquationData::year_in_seconds);
-        statistics.add_value("Time step size (year)", time_step / EquationData::year_in_seconds);
 
         assemble_stokes_system ();
         build_stokes_preconditioner ();
