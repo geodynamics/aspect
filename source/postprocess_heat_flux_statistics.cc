@@ -28,9 +28,9 @@ namespace aspect
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
-					this->get_temperature_dof_handler().get_fe(),
-					quadrature_formula,
-					update_gradients | update_normal_vectors | update_JxW_values);
+                                        this->get_temperature_dof_handler().get_fe(),
+                                        quadrature_formula,
+                                        update_gradients | update_normal_vectors | update_JxW_values);
 
       std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
 
@@ -52,11 +52,11 @@ namespace aspect
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-	    // check if the face is at the boundary and has either boundary indicator
-	  // zero (inner boundary) or one (outer boundary)
+            // check if the face is at the boundary and has either boundary indicator
+            // zero (inner boundary) or one (outer boundary)
             if (cell->at_boundary(f)
-	      &&
-	      (cell->face(f)->boundary_indicator() < 2))
+                &&
+                (cell->face(f)->boundary_indicator() < 2))
               {
                 fe_face_values.reinit (cell, f);
                 fe_face_values.get_function_gradients (this->get_temperature_solution(),
@@ -118,10 +118,8 @@ namespace aspect
       output << global_inner_boundary_flux << " W, "
              << global_outer_boundary_flux << " W";
 
-      return std::pair<std::string, std::string> ("Inner/outer heat fluxes",
+      return std::pair<std::string, std::string> ("Inner/outer heat fluxes:",
                                                   output.str());
-
-
     }
   }
 }
