@@ -82,7 +82,6 @@ namespace EquationData
 {
   namespace IO
   {
-    FILE *Tavout = fopen("Tav.dat", "w");
     FILE *NuInnerout = fopen("NuInner.dat", "w");
     FILE *NuOuterout = fopen("NuOuter.dat", "w");
   }
@@ -1614,139 +1613,6 @@ namespace aspect
     Postprocess::Manager<dim>::declare_parameters (prm);
   }
 
-
-  // @sect4{The Simulator helper functions}
-  //
-  // Except two small details, this
-  // function is the very same as in
-  // step-31. The first detail is
-  // actually common to all functions
-  // that implement loop over all cells
-  // in the triangulation: When
-  // operating in %parallel, each
-  // processor only works on a chunk of
-  // cells. This chunk of cells is
-  // identified via a so-called
-  // <code>subdomain_id</code>, as we
-  // also did in step-18. All we need
-  // to change is hence to perform the
-  // cell-related operations only on
-  // the process with the correct
-  // ID. The second difference is the
-  // way we calculate the maximum
-  // value. Before, we could simply
-  // have a <code>double</code>
-  // variable that we checked against
-  // on each quadrature point for each
-  // cell. Now, we have to be a bit
-  // more careful since each processor
-  // only operates on a subset of
-  // cells. What we do is to first let
-  // each processor calculate the
-  // maximum among its cells, and then
-  // do a global communication
-  // operation called
-  // <code>MaxAll</code> that searches
-  // for the maximum value among all
-  // the maximum values of the
-  // individual processors. MPI
-  // provides such a call, but it's
-  // even simpler to use the respective
-  // function of the MPI
-  // communicator object since that
-  // will do the right thing even if we
-  // work without MPI and on a single
-  // machine only. The call to
-  // <code>MaxAll</code> needs three
-  // arguments, namely the local
-  // maximum (input), a field for the
-  // global maximum (output), and an
-  // integer value one that says that
-  // we only work on one double.
-  template <int dim>
-  void Simulator<dim>::compute_temperature_stats ()
-  {
-    const QGauss<dim> quadrature_formula (parameters.temperature_degree+1);
-    const unsigned int n_q_points = quadrature_formula.size();
-
-    FEValues<dim> fe_values (mapping, temperature_fe, quadrature_formula,
-                             update_values   |
-                             update_quadrature_points |
-                             update_JxW_values);
-
-    std::vector<double> temperature_values(n_q_points);
-
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = temperature_dof_handler.begin_active(),
-    endc = temperature_dof_handler.end();
-
-    double local_temperature_integral = 0;
-
-    // compute the integral quantities by quadrature
-    for (; cell!=endc; ++cell)
-      if (cell->is_locally_owned())
-        {
-          fe_values.reinit (cell);
-          fe_values.get_function_values (temperature_solution,
-                                         temperature_values);
-          for (unsigned int q=0; q<n_q_points; ++q)
-            local_temperature_integral += temperature_values[q]*fe_values.JxW(q);
-        }
-
-    // compute min/max by simply
-    // looping over the elements of the
-    // solution vector. the reason is
-    // that minimum and maximum are
-    // usually attained at the
-    // boundary, and so taking their
-    // values at Gauss quadrature
-    // points gives an inaccurate
-    // picture of their true values
-    double local_min_temperature = std::numeric_limits<double>::max();
-    double local_max_temperature = std::numeric_limits<double>::min();
-    for (unsigned int i=0; i<temperature_solution.local_size(); ++i)
-      {
-        local_min_temperature
-          = std::min<double> (local_min_temperature,
-                              temperature_solution.trilinos_vector()[0][i]);
-        local_max_temperature
-          = std::max<double> (local_max_temperature,
-                              temperature_solution.trilinos_vector()[0][i]);
-      }
-
-    const double global_temperature_integral
-      = Utilities::MPI::sum (local_temperature_integral, MPI_COMM_WORLD);
-    double global_min_temperature = 0;
-    double global_max_temperature = 0;
-
-    // now do the reductions that are
-    // min/max operations. do them in
-    // one communication by multiplying
-    // one value by -1
-    {
-      double local_values[2] = { -local_min_temperature, local_max_temperature };
-      double global_values[2];
-
-      Utilities::MPI::max (local_values, MPI_COMM_WORLD, global_values);
-
-      global_min_temperature = -global_values[0];
-      global_max_temperature = global_values[1];
-    }
-
-    pcout << "     Temperature range:                            "
-          << global_min_temperature << "..." << global_max_temperature
-          << " K"
-          << std::endl;
-    pcout << "     Volume average temperature:                   "
-          << global_temperature_integral / global_volume
-          << " K"
-          << std::endl;
-    pcout << "     Volume average temperature (non dimensional): "
-          << global_temperature_integral / global_volume / EquationData::T0
-          << std::endl;
-    fprintf(EquationData::IO::Tavout,"%e %e\n", time, global_temperature_integral / global_volume / EquationData::T0);
-    fflush(EquationData::IO::Tavout);
-  }
 
 
   template <int dim>
@@ -4087,7 +3953,6 @@ namespace aspect
               << std::endl;
     }
 
-    compute_temperature_stats ();
     compute_heat_flux_stats ();
 
     pcout << std::endl;
