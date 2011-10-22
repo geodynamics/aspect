@@ -65,6 +65,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <limits>
 #include <locale>
@@ -4078,6 +4079,7 @@ namespace aspect
            p = output_list.begin();
            p != output_list.end(); ++p)
         pcout << "     "
+              << std::left
               << std::setw(width)
               << p->first
               << " "
