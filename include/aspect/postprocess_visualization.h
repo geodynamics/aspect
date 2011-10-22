@@ -25,9 +25,9 @@ namespace aspect
     class Visualization : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-	/**
-	 * Constructor.
-	 */
+        /**
+         * Constructor.
+         */
         Visualization ();
 
         /**
