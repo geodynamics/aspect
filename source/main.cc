@@ -951,55 +951,13 @@ namespace aspect
 
 
         template <int dim>
-        struct TemperatureMatrix
+        struct TemperatureSystem
         {
-          TemperatureMatrix (const FiniteElement<dim> &temperature_fe,
+          TemperatureSystem (const FiniteElement<dim> &temperature_fe,
+                             const FiniteElement<dim> &stokes_fe,
                              const Mapping<dim>       &mapping,
-                             const Quadrature<dim>    &temperature_quadrature);
-          TemperatureMatrix (const TemperatureMatrix &data);
-
-          FEValues<dim>               temperature_fe_values;
-
-          std::vector<double>         phi_T;
-          std::vector<Tensor<1,dim> > grad_phi_T;
-        };
-
-        template <int dim>
-        TemperatureMatrix<dim>::
-        TemperatureMatrix (const FiniteElement<dim> &temperature_fe,
-                           const Mapping<dim>       &mapping,
-                           const Quadrature<dim>    &temperature_quadrature)
-          :
-          temperature_fe_values (mapping,
-                                 temperature_fe, temperature_quadrature,
-                                 update_values    | update_gradients |
-                                 update_JxW_values),
-          phi_T (temperature_fe.dofs_per_cell),
-          grad_phi_T (temperature_fe.dofs_per_cell)
-        {}
-
-
-        template <int dim>
-        TemperatureMatrix<dim>::
-        TemperatureMatrix (const TemperatureMatrix &scratch)
-          :
-          temperature_fe_values (scratch.temperature_fe_values.get_mapping(),
-                                 scratch.temperature_fe_values.get_fe(),
-                                 scratch.temperature_fe_values.get_quadrature(),
-                                 scratch.temperature_fe_values.get_update_flags()),
-          phi_T (scratch.phi_T),
-          grad_phi_T (scratch.grad_phi_T)
-        {}
-
-
-        template <int dim>
-        struct TemperatureRHS
-        {
-          TemperatureRHS (const FiniteElement<dim> &temperature_fe,
-                          const FiniteElement<dim> &stokes_fe,
-                          const Mapping<dim>       &mapping,
-                          const Quadrature<dim>    &quadrature);
-          TemperatureRHS (const TemperatureRHS &data);
+                             const Quadrature<dim>    &quadrature);
+          TemperatureSystem (const TemperatureSystem &data);
 
           FEValues<dim>               temperature_fe_values;
           FEValues<dim>               stokes_fe_values;
@@ -1025,11 +983,11 @@ namespace aspect
         };
 
         template <int dim>
-        TemperatureRHS<dim>::
-        TemperatureRHS (const FiniteElement<dim> &temperature_fe,
-                        const FiniteElement<dim> &stokes_fe,
-                        const Mapping<dim>       &mapping,
-                        const Quadrature<dim>    &quadrature)
+        TemperatureSystem<dim>::
+        TemperatureSystem (const FiniteElement<dim> &temperature_fe,
+                           const FiniteElement<dim> &stokes_fe,
+                           const Mapping<dim>       &mapping,
+                           const Quadrature<dim>    &quadrature)
           :
           temperature_fe_values (mapping,
                                  temperature_fe, quadrature,
@@ -1038,19 +996,17 @@ namespace aspect
                                  update_hessians  |
                                  update_quadrature_points |
                                  update_JxW_values),
-          stokes_fe_values (mapping,
-                            stokes_fe, quadrature,
-                            update_values | update_gradients),
+          stokes_fe_values(mapping, stokes_fe, quadrature,
+                           update_values    | update_gradients |
+                           update_JxW_values),
           phi_T (temperature_fe.dofs_per_cell),
           grad_phi_T (temperature_fe.dofs_per_cell),
-
           old_velocity_values (quadrature.size()),
           old_old_velocity_values (quadrature.size()),
           old_pressure (quadrature.size()),
           old_old_pressure (quadrature.size()),
           old_strain_rates (quadrature.size()),
           old_old_strain_rates (quadrature.size()),
-
           old_temperature_values (quadrature.size()),
           old_old_temperature_values(quadrature.size()),
           old_temperature_grads(quadrature.size()),
@@ -1061,8 +1017,8 @@ namespace aspect
 
 
         template <int dim>
-        TemperatureRHS<dim>::
-        TemperatureRHS (const TemperatureRHS &scratch)
+        TemperatureSystem<dim>::
+        TemperatureSystem (const TemperatureSystem &scratch)
           :
           temperature_fe_values (scratch.temperature_fe_values.get_mapping(),
                                  scratch.temperature_fe_values.get_fe(),
@@ -1074,14 +1030,12 @@ namespace aspect
                             scratch.stokes_fe_values.get_update_flags()),
           phi_T (scratch.phi_T),
           grad_phi_T (scratch.grad_phi_T),
-
           old_velocity_values (scratch.old_velocity_values),
           old_old_velocity_values (scratch.old_old_velocity_values),
           old_pressure (scratch.old_pressure),
           old_old_pressure (scratch.old_old_pressure),
           old_strain_rates (scratch.old_strain_rates),
           old_old_strain_rates (scratch.old_old_strain_rates),
-
           old_temperature_values (scratch.old_temperature_values),
           old_old_temperature_values (scratch.old_old_temperature_values),
           old_temperature_grads (scratch.old_temperature_grads),
@@ -1164,74 +1118,45 @@ namespace aspect
         {}
 
 
-
         template <int dim>
-        struct TemperatureMatrix
+        struct TemperatureSystem
         {
-          TemperatureMatrix (const FiniteElement<dim> &temperature_fe);
-          TemperatureMatrix (const TemperatureMatrix &data);
+          TemperatureSystem (const FiniteElement<dim> &temperature_fe);
+          TemperatureSystem (const TemperatureSystem &data);
 
-          FullMatrix<double>          local_mass_matrix;
-          FullMatrix<double>          local_stiffness_matrix;
+          FullMatrix<double>          local_matrix;
+          Vector<double>              local_rhs;
           std::vector<unsigned int>   local_dof_indices;
         };
 
         template <int dim>
-        TemperatureMatrix<dim>::
-        TemperatureMatrix (const FiniteElement<dim> &temperature_fe)
+        TemperatureSystem<dim>::
+        TemperatureSystem (const FiniteElement<dim> &temperature_fe)
           :
-          local_mass_matrix (temperature_fe.dofs_per_cell,
-                             temperature_fe.dofs_per_cell),
-          local_stiffness_matrix (temperature_fe.dofs_per_cell,
-                                  temperature_fe.dofs_per_cell),
+          local_matrix (temperature_fe.dofs_per_cell,
+                        temperature_fe.dofs_per_cell),
+          local_rhs (temperature_fe.dofs_per_cell),
           local_dof_indices (temperature_fe.dofs_per_cell)
         {}
 
 
         template <int dim>
-        TemperatureMatrix<dim>::
-        TemperatureMatrix (const TemperatureMatrix &data)
+        TemperatureSystem<dim>::
+        TemperatureSystem (const TemperatureSystem &data)
           :
-          local_mass_matrix (data.local_mass_matrix),
-          local_stiffness_matrix (data.local_stiffness_matrix),
-          local_dof_indices (data.local_dof_indices)
-        {}
-
-
-        template <int dim>
-        struct TemperatureRHS
-        {
-          TemperatureRHS (const FiniteElement<dim> &temperature_fe);
-          TemperatureRHS (const TemperatureRHS &data);
-
-          Vector<double>              local_rhs;
-          std::vector<unsigned int>   local_dof_indices;
-          FullMatrix<double>          matrix_for_bc;
-        };
-
-        template <int dim>
-        TemperatureRHS<dim>::
-        TemperatureRHS (const FiniteElement<dim> &temperature_fe)
-          :
-          local_rhs (temperature_fe.dofs_per_cell),
-          local_dof_indices (temperature_fe.dofs_per_cell),
-          matrix_for_bc (temperature_fe.dofs_per_cell,
-                         temperature_fe.dofs_per_cell)
-        {}
-
-
-        template <int dim>
-        TemperatureRHS<dim>::
-        TemperatureRHS (const TemperatureRHS &data)
-          :
+          local_matrix (data.local_matrix),
           local_rhs (data.local_rhs),
-          local_dof_indices (data.local_dof_indices),
-          matrix_for_bc (data.matrix_for_bc)
+          local_dof_indices (data.local_dof_indices)
         {}
       }
     }
+
+
   }
 }
+
+
+
 
 namespace aspect
 {
@@ -1585,8 +1510,6 @@ namespace aspect
     timestep_number (0),
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true),
-    rebuild_temperature_matrices (true),
-    rebuild_temperature_preconditioner (true),
 
     computing_timer (pcout, TimerOutput::summary,
                      TimerOutput::wall_times)
@@ -1947,7 +1870,7 @@ namespace aspect
     // needs to write into it and we can not
     // write into vectors with ghost elements
     TrilinosWrappers::MPI::Vector
-    solution (temperature_mass_matrix.row_partitioner());
+    solution (temperature_matrix.row_partitioner());
 
     // interpolate the initial values
     VectorTools::interpolate (mapping,
@@ -2227,11 +2150,9 @@ namespace aspect
 
   template <int dim>
   void Simulator<dim>::
-  setup_temperature_matrices (const IndexSet &temperature_partitioner)
+  setup_temperature_matrix (const IndexSet &temperature_partitioner)
   {
     T_preconditioner.reset ();
-    temperature_mass_matrix.clear ();
-    temperature_stiffness_matrix.clear ();
     temperature_matrix.clear ();
 
     TrilinosWrappers::SparsityPattern sp (temperature_partitioner,
@@ -2243,8 +2164,6 @@ namespace aspect
     sp.compress();
 
     temperature_matrix.reinit (sp);
-    temperature_mass_matrix.reinit (sp);
-    temperature_stiffness_matrix.reinit (sp);
   }
 
 
@@ -2452,7 +2371,7 @@ namespace aspect
 
     setup_stokes_matrix (stokes_partitioning);
     setup_stokes_preconditioner (stokes_partitioning);
-    setup_temperature_matrices (temperature_partitioning);
+    setup_temperature_matrix (temperature_partitioning);
 
     stokes_rhs.reinit (stokes_partitioning, MPI_COMM_WORLD);
     stokes_rhs_helper.reinit (stokes_partitioning, MPI_COMM_WORLD);
@@ -2466,8 +2385,6 @@ namespace aspect
 
     rebuild_stokes_matrix              = true;
     rebuild_stokes_preconditioner      = true;
-    rebuild_temperature_matrices       = true;
-    rebuild_temperature_preconditioner = true;
 
     computing_timer.exit_section();
   }
@@ -2963,150 +2880,28 @@ namespace aspect
   // similar services as the ones above.
   template <int dim>
   void Simulator<dim>::
-  local_assemble_temperature_matrix (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                     internal::Assembly::Scratch::TemperatureMatrix<dim> &scratch,
-                                     internal::Assembly::CopyData::TemperatureMatrix<dim> &data)
-  {
-    const unsigned int dofs_per_cell = scratch.temperature_fe_values.get_fe().dofs_per_cell;
-    const unsigned int n_q_points    = scratch.temperature_fe_values.n_quadrature_points;
-
-    scratch.temperature_fe_values.reinit (cell);
-    cell->get_dof_indices (data.local_dof_indices);
-
-    data.local_mass_matrix = 0;
-    data.local_stiffness_matrix = 0;
-
-    for (unsigned int q=0; q<n_q_points; ++q)
-      {
-        for (unsigned int k=0; k<dofs_per_cell; ++k)
-          {
-            scratch.grad_phi_T[k] = scratch.temperature_fe_values.shape_grad (k,q);
-            scratch.phi_T[k]      = scratch.temperature_fe_values.shape_value (k, q);
-          }
-
-        for (unsigned int i=0; i<dofs_per_cell; ++i)
-          for (unsigned int j=0; j<dofs_per_cell; ++j)
-            {
-              data.local_mass_matrix(i,j)
-              += (scratch.phi_T[i] * scratch.phi_T[j]
-                  *
-                  scratch.temperature_fe_values.JxW(q));
-              data.local_stiffness_matrix(i,j)
-              += (EquationData::kappa * scratch.grad_phi_T[i] * scratch.grad_phi_T[j]
-                  *
-                  scratch.temperature_fe_values.JxW(q));
-            }
-      }
-  }
-
-
-
-  template <int dim>
-  void
-  Simulator<dim>::
-  copy_local_to_global_temperature_matrix (const internal::Assembly::CopyData::TemperatureMatrix<dim> &data)
-  {
-    temperature_constraints.distribute_local_to_global (data.local_mass_matrix,
-                                                        data.local_dof_indices,
-                                                        temperature_mass_matrix);
-    temperature_constraints.distribute_local_to_global (data.local_stiffness_matrix,
-                                                        data.local_dof_indices,
-                                                        temperature_stiffness_matrix);
-  }
-
-
-  template <int dim>
-  void Simulator<dim>::assemble_temperature_matrix ()
-  {
-    if (rebuild_temperature_matrices == false)
-      return;
-
-    computing_timer.enter_section ("   Assemble temperature matrices");
-    temperature_mass_matrix = 0;
-    temperature_stiffness_matrix = 0;
-
-    const QGauss<dim> quadrature_formula(parameters.temperature_degree+2);
-
-    typedef
-    FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
-    CellFilter;
-
-    WorkStream::
-    run (CellFilter (IteratorFilters::LocallyOwnedCell(),
-                     temperature_dof_handler.begin_active()),
-         CellFilter (IteratorFilters::LocallyOwnedCell(),
-                     temperature_dof_handler.end()),
-         std_cxx1x::bind (&Simulator<dim>::
-                          local_assemble_temperature_matrix,
-                          this,
-                          std_cxx1x::_1,
-                          std_cxx1x::_2,
-                          std_cxx1x::_3),
-         std_cxx1x::bind (&Simulator<dim>::
-                          copy_local_to_global_temperature_matrix,
-                          this,
-                          std_cxx1x::_1),
-         internal::Assembly::Scratch::
-         TemperatureMatrix<dim> (temperature_fe, mapping, quadrature_formula),
-         internal::Assembly::CopyData::
-         TemperatureMatrix<dim> (temperature_fe));
-
-    temperature_mass_matrix.compress();
-    temperature_stiffness_matrix.compress();
-
-    rebuild_temperature_matrices = false;
-    rebuild_temperature_preconditioner = true;
-
-    computing_timer.exit_section();
-  }
-
-
-  // @sect5{Temperature right hand side assembly}
-
-  // This is the last assembly function. It
-  // calculates the right hand side of the
-  // temperature system, which includes the
-  // convection and the stabilization
-  // terms. It includes a lot of evaluations
-  // of old solutions at the quadrature
-  // points (which are necessary for
-  // calculating the artificial viscosity of
-  // stabilization), but is otherwise similar
-  // to the other assembly functions. Notice,
-  // once again, how we resolve the dilemma
-  // of having inhomogeneous boundary
-  // conditions, but just making a right hand
-  // side at this point (compare the comments
-  // for the project function): We create
-  // some matrix columns with exactly the
-  // values that would be entered for the
-  // temperature stiffness matrix, in case we
-  // have inhomogeneously constrained
-  // dofs. That will account for the correct
-  // balance of the right hand side vector
-  // with the matrix system of temperature.
-  template <int dim>
-  void Simulator<dim>::
-  local_assemble_temperature_rhs (const std::pair<double,double> global_T_range,
-                                  const double                   global_max_velocity,
-                                  const double                   global_entropy_variation,
-                                  const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                  internal::Assembly::Scratch::TemperatureRHS<dim> &scratch,
-                                  internal::Assembly::CopyData::TemperatureRHS<dim> &data)
+  local_assemble_temperature_system (const std::pair<double,double> global_T_range,
+                                     const double                   global_max_velocity,
+                                     const double                   global_entropy_variation,
+                                     const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                     internal::Assembly::Scratch::TemperatureSystem<dim> &scratch,
+                                     internal::Assembly::CopyData::TemperatureSystem<dim> &data)
   {
     const bool use_bdf2_scheme = (timestep_number != 0);
 
-    const unsigned int dofs_per_cell = scratch.temperature_fe_values.get_fe().dofs_per_cell;
-    const unsigned int n_q_points    = scratch.temperature_fe_values.n_quadrature_points;
+
 
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
 
-    data.local_rhs = 0;
-    data.matrix_for_bc = 0;
-    cell->get_dof_indices (data.local_dof_indices);
+    const unsigned int dofs_per_cell = scratch.temperature_fe_values.get_fe().dofs_per_cell;
+    const unsigned int n_q_points    = scratch.temperature_fe_values.n_quadrature_points;
 
     scratch.temperature_fe_values.reinit (cell);
+    cell->get_dof_indices (data.local_dof_indices);
+
+    data.local_matrix = 0;
+    data.local_rhs = 0;
 
     typename DoFHandler<dim>::active_cell_iterator
     stokes_cell (&triangulation,
@@ -3144,7 +2939,6 @@ namespace aspect
     scratch.stokes_fe_values[pressure].get_function_values (old_stokes_solution,
                                                             scratch.old_old_pressure);
 
-    scratch.temperature_fe_values.get_quadrature_points();
     const double nu
       = compute_viscosity (scratch.old_temperature_values,
                            scratch.old_old_temperature_values,
@@ -3169,8 +2963,8 @@ namespace aspect
       {
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
-            scratch.phi_T[k]      = scratch.temperature_fe_values.shape_value (k, q);
             scratch.grad_phi_T[k] = scratch.temperature_fe_values.shape_grad (k,q);
+            scratch.phi_T[k]      = scratch.temperature_fe_values.shape_value (k, q);
           }
 
         const double T_term_for_rhs
@@ -3250,103 +3044,58 @@ namespace aspect
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           {
             data.local_rhs(i) += (T_term_for_rhs * scratch.phi_T[i]
-                                  -
-                                  time_step *
-                                  extrapolated_u * ext_grad_T * scratch.phi_T[i]
-                                  -
-                                  time_step *
-                                  nu * ext_grad_T * scratch.grad_phi_T[i]
+//                                   -
+//                                   time_step *
+//                                   extrapolated_u * ext_grad_T * scratch.phi_T[i]
+//                                  -
+//                                  time_step *
+//                                  nu * ext_grad_T * scratch.grad_phi_T[i]
                                   +
                                   time_step *
                                   gamma * scratch.phi_T[i])
                                  *
                                  scratch.temperature_fe_values.JxW(q);
 
-            if (temperature_constraints.is_inhomogeneously_constrained(data.local_dof_indices[i]))
+            for (unsigned int j=0; j<dofs_per_cell; ++j)
               {
-                for (unsigned int j=0; j<dofs_per_cell; ++j)
-                  data.matrix_for_bc(j,i) += (scratch.phi_T[i] * scratch.phi_T[j] *
-                                              (use_bdf2_scheme ?
-                                               ((2*time_step + old_time_step) /
-                                                (time_step + old_time_step)) : 1.)
-                                              +
-                                              scratch.grad_phi_T[i] *
-                                              scratch.grad_phi_T[j] *
-                                              EquationData::kappa *
-                                              time_step)
-                                             *
-                                             scratch.temperature_fe_values.JxW(q);
+                const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
+                                                          (time_step + old_time_step)) : 1.0;
+                data.local_matrix(i,j)
+                += (
+                     (time_step * (EquationData::kappa+nu) * scratch.grad_phi_T[i] * scratch.grad_phi_T[j])
+                     + (time_step * (extrapolated_u * scratch.grad_phi_T[j] * scratch.phi_T[i]))
+                     + (factor * scratch.phi_T[i] * scratch.phi_T[j])
+                   )
+                   * scratch.temperature_fe_values.JxW(q);
+
               }
           }
       }
+
+
   }
+
 
 
   template <int dim>
   void
   Simulator<dim>::
-  copy_local_to_global_temperature_rhs (const internal::Assembly::CopyData::TemperatureRHS<dim> &data)
+  copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data)
   {
-    temperature_constraints.distribute_local_to_global (data.local_rhs,
+    temperature_constraints.distribute_local_to_global (data.local_matrix,
+                                                        data.local_rhs,
                                                         data.local_dof_indices,
-                                                        temperature_rhs,
-                                                        data.matrix_for_bc);
+                                                        temperature_matrix,
+                                                        temperature_rhs
+                                                       );
   }
 
 
-
-  // In the function that runs the WorkStream
-  // for actually calculating the right hand
-  // side, we also generate the final
-  // matrix. As mentioned above, it is a sum
-  // of the mass matrix and the Laplace
-  // matrix, times some time step
-  // weight. This weight is specified by the
-  // BDF-2 time integration scheme, see the
-  // introduction in step-31. What is new in
-  // this tutorial program (in addition to
-  // the use of MPI parallelization and the
-  // WorkStream class), is that we now
-  // precompute the temperature
-  // preconditioner as well. The reason is
-  // that the setup of the IC preconditioner
-  // takes a noticable time compared to the
-  // solver because we usually only need
-  // between 10 and 20 iterations for solving
-  // the temperature system. Hence, it is
-  // more efficient to precompute the
-  // preconditioner, even though the matrix
-  // entries may slightly change because the
-  // time step might change. This is not
-  // too big a problem because we remesh every
-  // fifth time step (and regenerate the
-  // preconditioner then).
   template <int dim>
   void Simulator<dim>::assemble_temperature_system ()
   {
-    const bool use_bdf2_scheme = (timestep_number != 0);
-
-    if (use_bdf2_scheme == true)
-      {
-        temperature_matrix.copy_from (temperature_mass_matrix);
-        temperature_matrix *= (2*time_step + old_time_step) /
-                              (time_step + old_time_step);
-        temperature_matrix.add (time_step, temperature_stiffness_matrix);
-      }
-    else
-      {
-        temperature_matrix.copy_from (temperature_mass_matrix);
-        temperature_matrix.add (time_step, temperature_stiffness_matrix);
-      }
-    temperature_matrix.compress();
-
-    if (rebuild_temperature_preconditioner == true)
-      {
-        T_preconditioner.reset (new TrilinosWrappers::PreconditionIC());
-        T_preconditioner->initialize (temperature_matrix);
-        rebuild_temperature_preconditioner = false;
-      }
-
+    computing_timer.enter_section ("   Assemble temperature system");
+    temperature_matrix = 0;
     temperature_rhs = 0;
 
     const QGauss<dim> quadrature_formula(parameters.temperature_degree+2);
@@ -3376,7 +3125,7 @@ namespace aspect
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      temperature_dof_handler.end()),
          std_cxx1x::bind (&Simulator<dim>::
-                          local_assemble_temperature_rhs,
+                          local_assemble_temperature_system,
                           this,
                           global_T_range,
                           maximal_velocity,
@@ -3385,18 +3134,22 @@ namespace aspect
                           std_cxx1x::_2,
                           std_cxx1x::_3),
          std_cxx1x::bind (&Simulator<dim>::
-                          copy_local_to_global_temperature_rhs,
+                          copy_local_to_global_temperature_system,
                           this,
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
-         TemperatureRHS<dim> (temperature_fe, stokes_fe, mapping,
-                              quadrature_formula),
+         TemperatureSystem<dim> (temperature_fe, stokes_fe, mapping, quadrature_formula),
          internal::Assembly::CopyData::
-         TemperatureRHS<dim> (temperature_fe));
+         TemperatureSystem<dim> (temperature_fe));
 
+    temperature_matrix.compress();
     temperature_rhs.compress(Add);
-  }
 
+    T_preconditioner.reset (new TrilinosWrappers::PreconditionILU());
+    T_preconditioner->initialize (temperature_matrix);
+
+    computing_timer.exit_section();
+  }
 
 
 
@@ -3539,7 +3292,6 @@ namespace aspect
     computing_timer.exit_section();
 
 
-    computing_timer.enter_section ("   Assemble temperature rhs");
     {
       old_time_step = time_step;
       const double cfl_number = get_cfl_number();
@@ -3557,7 +3309,6 @@ namespace aspect
       temperature_solution = old_temperature_solution;
       assemble_temperature_system ();
     }
-    computing_timer.exit_section ();
 
     computing_timer.enter_section ("   Solve temperature system");
     {
@@ -3565,14 +3316,15 @@ namespace aspect
 
       SolverControl solver_control (temperature_matrix.m(),
                                     1e-12*temperature_rhs.l2_norm());
-      SolverCG<TrilinosWrappers::MPI::Vector>   cg (solver_control);
+      SolverGMRES<TrilinosWrappers::MPI::Vector>   solver (solver_control,
+                                                           SolverGMRES<TrilinosWrappers::MPI::Vector>::AdditionalData(30,true));
 
       TrilinosWrappers::MPI::Vector
       distributed_temperature_solution (temperature_rhs);
       distributed_temperature_solution = temperature_solution;
 
-      cg.solve (temperature_matrix, distributed_temperature_solution,
-                temperature_rhs, *T_preconditioner);
+      solver.solve (temperature_matrix, distributed_temperature_solution,
+                    temperature_rhs, *T_preconditioner);
 
       temperature_constraints.distribute (distributed_temperature_solution);
       temperature_solution = distributed_temperature_solution;
@@ -3845,7 +3597,7 @@ namespace aspect
     statistics.set_scientific("Time (years)", true);
     statistics.set_scientific("Time step size (year)", true);
     statistics.write_text (stat_file,
-			   TableHandler::table_with_separate_column_description);
+                           TableHandler::table_with_separate_column_description);
 
     // determine the width of the first column of text so that
     // everything gets nicely aligned; then output everything
@@ -4093,7 +3845,6 @@ namespace aspect
 
         assemble_stokes_system ();
         build_stokes_preconditioner ();
-        assemble_temperature_matrix ();
 
         solve ();
 
@@ -4167,9 +3918,7 @@ namespace aspect
             // matrices will be regenerated after a resume, so do that here too
             // to be consistent.
             rebuild_stokes_matrix =
-              rebuild_stokes_preconditioner =
-                rebuild_temperature_matrices =
-                  rebuild_temperature_preconditioner = true;
+              rebuild_stokes_preconditioner = true;
           }
 
         // if we are at the end of

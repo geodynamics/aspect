@@ -41,16 +41,14 @@ namespace aspect
       {
         template <int dim>      struct StokesPreconditioner;
         template <int dim>      struct StokesSystem;
-        template <int dim>      struct TemperatureMatrix;
-        template <int dim>      struct TemperatureRHS;
+        template <int dim>      struct TemperatureSystem;
       }
 
       namespace CopyData
       {
         template <int dim>      struct StokesPreconditioner;
         template <int dim>      struct StokesSystem;
-        template <int dim>      struct TemperatureMatrix;
-        template <int dim>      struct TemperatureRHS;
+        template <int dim>      struct TemperatureSystem;
       }
     }
   }
@@ -77,7 +75,6 @@ namespace aspect
       void assemble_stokes_preconditioner ();
       void build_stokes_preconditioner ();
       void assemble_stokes_system ();
-      void assemble_temperature_matrix ();
       void assemble_temperature_system ();
       void set_initial_temperature_field ();
       void compute_initial_pressure_field ();
@@ -196,8 +193,6 @@ namespace aspect
       DoFHandler<dim>                     temperature_dof_handler;
       ConstraintMatrix                    temperature_constraints;
 
-      TrilinosWrappers::SparseMatrix      temperature_mass_matrix;
-      TrilinosWrappers::SparseMatrix      temperature_stiffness_matrix;
       TrilinosWrappers::SparseMatrix      temperature_matrix;
 
       TrilinosWrappers::MPI::Vector       temperature_solution;
@@ -213,18 +208,16 @@ namespace aspect
 
       std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionAMG> Amg_preconditioner;
       std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionILU> Mp_preconditioner;
-      std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionIC>  T_preconditioner;
+      std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionILU>  T_preconditioner;
 
       bool rebuild_stokes_matrix;
       bool rebuild_stokes_preconditioner;
-      bool rebuild_temperature_matrices;
-      bool rebuild_temperature_preconditioner;
 
       TimerOutput computing_timer;
 
       void setup_stokes_matrix (const std::vector<IndexSet> &stokes_partitioning);
       void setup_stokes_preconditioner (const std::vector<IndexSet> &stokes_partitioning);
-      void setup_temperature_matrices (const IndexSet &temperature_partitioning);
+      void setup_temperature_matrix (const IndexSet &temperature_partitioning);
 
       void
       local_assemble_stokes_preconditioner (const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -245,25 +238,15 @@ namespace aspect
 
 
       void
-      local_assemble_temperature_matrix (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                         internal::Assembly::Scratch::TemperatureMatrix<dim>  &scratch,
-                                         internal::Assembly::CopyData::TemperatureMatrix<dim> &data);
+      local_assemble_temperature_system (const std::pair<double,double> global_T_range,
+                                         const double                   global_max_velocity,
+                                         const double                   global_entropy_variation,
+                                         const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                         internal::Assembly::Scratch::TemperatureSystem<dim>  &scratch,
+                                         internal::Assembly::CopyData::TemperatureSystem<dim> &data);
 
       void
-      copy_local_to_global_temperature_matrix (const internal::Assembly::CopyData::TemperatureMatrix<dim> &data);
-
-
-
-      void
-      local_assemble_temperature_rhs (const std::pair<double,double> global_T_range,
-                                      const double                   global_max_velocity,
-                                      const double                   global_entropy_variation,
-                                      const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                      internal::Assembly::Scratch::TemperatureRHS<dim> &scratch,
-                                      internal::Assembly::CopyData::TemperatureRHS<dim> &data);
-
-      void
-      copy_local_to_global_temperature_rhs (const internal::Assembly::CopyData::TemperatureRHS<dim> &data);
+      copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data);
 
       void normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
 
