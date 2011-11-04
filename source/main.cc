@@ -2318,8 +2318,6 @@ namespace aspect
     IndexSet temperature_partitioning (n_T), temperature_relevant_partitioning (n_T);
     IndexSet stokes_relevant_set;
     {
-      const unsigned int my_id =
-        Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
       IndexSet stokes_index_set = stokes_dof_handler.locally_owned_dofs();
       stokes_partitioning.push_back(stokes_index_set.get_view(0,n_u));
       stokes_partitioning.push_back(stokes_index_set.get_view(n_u,n_u+n_p));
@@ -2995,11 +2993,6 @@ namespace aspect
               use_bdf2_scheme, old_time_step, time_step,
               scratch.old_old_temperature_values[q], scratch.old_temperature_values[q]);
 
-        const Tensor<1,dim> ext_grad_T
-          = aspect::internal::bdf2_extrapolate(
-              use_bdf2_scheme, old_time_step, time_step,
-              scratch.old_old_temperature_grads[q], scratch.old_temperature_grads[q]);
-
         const Tensor<1,dim> extrapolated_u
           = aspect::internal::bdf2_extrapolate(
               use_bdf2_scheme, old_time_step, time_step,
@@ -3342,7 +3335,6 @@ namespace aspect
       const unsigned int n_q_points = quadrature.size();
       FEFaceValues<dim> fe_face_values (mapping, stokes_fe,  quadrature,
                                         update_JxW_values | update_values);
-      const unsigned int dofs_per_cell = fe_face_values.get_fe().dofs_per_cell;
       const FEValuesExtractors::Scalar pressure (dim);
 
       std::vector<double> pressure_values(n_q_points);

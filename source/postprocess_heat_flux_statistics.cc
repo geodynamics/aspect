@@ -25,7 +25,6 @@ namespace aspect
     HeatFluxStatistics<dim>::execute (TableHandler &statistics)
     {
       const QGauss<dim-1> quadrature_formula (this->get_temperature_dof_handler().get_fe().degree+1);
-      const unsigned int n_q_points = quadrature_formula.size();
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_temperature_dof_handler().get_fe(),
