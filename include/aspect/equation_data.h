@@ -33,21 +33,7 @@ namespace EquationData
   double adiabatic_temperature (const Point<dim> &p);
 
 
-  namespace MaterialModel
-  {
-    template <int dim>
-    double eta (const double temperature, const double pressure, const Point<dim> &position);
 
-    template <int dim>
-    double real_viscosity (const double                 temperature,
-                           const double                  pressure,
-                           const Point<dim> &position,
-                           const SymmetricTensor<2, dim> &strain_rate);
-    template <int dim>
-    double density (const double temperature,
-                    const double pressure,
-                    const Point<dim> &position);
-  }
 }
 
 

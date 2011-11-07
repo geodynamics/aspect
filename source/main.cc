@@ -13,6 +13,9 @@
 #include <aspect/simulator.h>
 #include <aspect/equation_data.h>
 #include <aspect/postprocess_visualization.h>
+#include <aspect/model.h>
+#include <aspect/model_simple.h>
+#include <aspect/model_table.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/logstream.h>
@@ -83,12 +86,22 @@ namespace EquationData
   double kappa                 = 1e-6;
   double reference_density     = 3300;    /* kg / m^3   */
   double reference_temperature = 293;     /* K          */
-  const double reference_specific_heat = 1250;    /* J / K / kg */  //??
+	  const double reference_specific_heat = 1250;    /* J / K / kg */  //??
   double radiogenic_heating    = 7.4e-12; /* W / kg     */  //??
   double thermal_expansivity    = 4e-5;
   double thermal_conductivity = 4.7;
   double reference_gravity    = 30;
   double reference_eta    = 5e24;
+
+  // scale not by R1-R0, but by a
+  // typical length scale, say 10km,
+  // of variation ("plume
+  // diameter"). this choice also
+  // roughly equilibrates the sizes
+  // of the velocity and pressure
+  // components of the solution
+  // vectors
+  const double pressure_scaling = reference_eta / 10000;
 
 
   double R0      = 6371000.-2890000.;     /* m          */
@@ -116,157 +129,7 @@ namespace EquationData
 
   Perturbation perturbation;
 
-  namespace internal
-  {
-    /**
-     * A class that is used to read and and evaluate the pressure and temperature
-     * dependent density, thermal expansivity and c_p values.
-     **/
-    class P_T_LookupFunction
-    {
-      public:
-        /**
-         * @brief Constructor
-         *
-         * @param filename The name of the file in which the values the variable
-         * represented by this object are stored.
-         **/
-        P_T_LookupFunction (const std::string &filename);
 
-        /**
-         * @brief Evaluate the table for a given value of pressure
-         * and temperature.
-         **/
-        double value (const double T,
-                      const double p) const;
-
-        /**
-         * @brief Evaluate the table for the derivative with respect to
-         * pressure at a given value of pressure and temperature.
-         **/
-        double d_by_dp (const double T,
-                        const double p) const;
-      private:
-        /**
-         * Number of data points in p and T directions.
-         */
-        const unsigned int n_p, n_T;
-
-        /**
-         * Minimal and maximal value for the pressure and temperature
-         * for which data exists in the table.
-         */
-        const double min_p, max_p;
-        const double min_T, max_T;
-        /**
-         * Step sizes in p and T directions.
-         */
-        const double delta_p, delta_T;
-
-        Table<2,double> values;
-    };
-
-    inline
-    P_T_LookupFunction::
-    P_T_LookupFunction (const std::string &filename)
-      :
-      n_p (1000),
-      n_T (1000),
-      min_p (0.001),
-      max_p (min_p + 1000*0.12012002002002e+01),
-      min_T (200),
-      max_T (min_T + 1000*0.98098098098098e+01),
-      delta_p ((max_p-min_p)/(n_p-1)),
-      delta_T ((max_T-min_T)/(n_T-1)),
-      values (n_p, n_T)
-    {
-      std::ifstream in (filename.c_str(), std::ios::binary);
-      AssertThrow (in, ExcIO());
-
-      // allocate the following on the heap so as not to bust
-      // stack size limits
-      double *array = new double[1000*1000];
-      in.read (reinterpret_cast<char *>(&(array[0])),
-               1000*1000*sizeof(double));
-
-      for (unsigned int i=0; i<n_p; ++i)
-        for (unsigned int j=0; j<n_T; ++j)
-          values[i][j] = array[i*1000+j];
-
-      delete[] array;
-    }
-
-
-    inline
-    double
-    P_T_LookupFunction::value ( double T,
-                                const double p) const
-    {
-      // the pressure is given in Pa, but we need GPa in the lookup table
-      // TODO: clamping into the valid range in all cases okay?
-      const double pressure = std::min(min_p, std::max(p/1e9, max_p-delta_p));
-
-      Assert (pressure >= min_p, ExcMessage ("Not in range"));
-      Assert (pressure <= max_p, ExcMessage ("Not in range"));
-
-      if (T<min_T)
-        T=min_T;
-
-      const unsigned int i = (T-min_T) / delta_T;
-      const unsigned int j = (pressure-min_p) / delta_p;
-      Assert (i < n_T-1, ExcInternalError());
-      Assert (j < n_p-1, ExcInternalError());
-
-      // compute the coordinates of this point in the
-      // reference cell between the data points
-      const double xi  = ((T-min_T) / delta_T - i);
-      const double eta = ((pressure-min_p) / delta_p - j);
-      Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
-      Assert ((0 <= eta) && (eta <= 1), ExcInternalError());
-
-      // use these co-ordinates for a bilinear interpolation
-      return ((1-xi)*(1-eta)*values[i][j] +
-              xi    *(1-eta)*values[i+1][j] +
-              (1-xi)*eta    *values[i][j+1] +
-              xi    *eta    *values[i+1][j+1]);
-    }
-
-
-    inline
-    double
-    P_T_LookupFunction::d_by_dp (const double T,
-                                 const double p) const
-    {
-      // the pressure is given in Pa, but we need GPa in the lookup table
-      // TODO: clamping into the valid range in all cases okay?
-      const double pressure = std::min(min_p, std::max(p/1e9, max_p-delta_p));
-
-      Assert (pressure >= min_p, ExcMessage ("Not in range"));
-      Assert (pressure <= max_p, ExcMessage ("Not in range"));
-      Assert (T >= min_T, ExcMessage ("Not in range"));
-      Assert (T <= max_T, ExcMessage ("Not in range"));
-
-      const unsigned int i = (T-min_T) / delta_T;
-      const unsigned int j = (pressure-min_p) / delta_p;
-      Assert (i < n_T-1, ExcInternalError());
-      Assert (j < n_p-1, ExcInternalError());
-
-      // compute the coordinates of this point in the
-      // reference cell between the data points
-      //
-      // since the derivative in p-direction (eta direction)
-      // is constant for the bilinear interpolation, we really
-      // only need xi here
-      const double xi  = ((T-min_T) / delta_T - i);
-      Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
-
-      // use these co-ordinates for a bilinear interpolation
-      // note that delta_p is computed in GPa but everywhere else
-      // we compute in Pa, so we have to multiply it by 1e9
-      return ((1-xi)*(values[i][j+1] - values[i][j]) +
-              xi    *(values[i+1][j+1] - values[i+1][j])) / (delta_p*1e9);
-    }
-  }
 
 
 
@@ -287,86 +150,10 @@ namespace EquationData
 
   namespace MaterialModel
   {
-    const double eta_0  = reference_eta;    /* Pa s       */
-
-    // scale not by R1-R0, but by a
-    // typical length scale, say 10km,
-    // of variation ("plume
-    // diameter"). this choice also
-    // roughly equilibrates the sizes
-    // of the velocity and pressure
-    // components of the solution
-    // vectors
-    const double pressure_scaling = eta_0 / 10000;
+//   const double eta_0  = reference_eta;    /* Pa s       */
 
 
-    template <int dim>
-    double eta (const double temperature, const double pressure, const Point<dim> &position)
-    {
-      return reference_eta;
-    }
 
-
-    template <int dim>
-    inline
-    double real_viscosity (const double                 temperature,
-                           const double                  pressure,
-                           const Point<dim> &position,
-                           const SymmetricTensor<2,dim> &strain_rate)
-    {
-      // this is currently only used
-      // in generating graphical
-      // output
-      return eta (temperature, pressure, position);
-    }
-
-
-    // rho-cp
-    inline
-    double specific_heat (const double temperature,
-                          const double pressure)
-    {
-      if (!IsCompressible) return reference_specific_heat;
-      static internal::P_T_LookupFunction cp("../DataDir/cp_bin");
-      return cp.value(temperature, pressure);
-    }
-
-    template <int dim>
-    inline
-    double density (const double temperature,
-                    const double pressure,
-                    const Point<dim> &position)
-    {
-      if (!IsCompressible) return reference_density*(1e0-thermal_expansivity*temperature);
-      static internal::P_T_LookupFunction rho("../DataDir/rho_bin");
-      return rho.value(temperature, pressure);
-    }
-
-
-    /**
-     * Compute 1/rho * drho/dp. This denotes the fractional change
-     * in density as the pressure is increased by 1 Pa.
-     */
-    template <int dim>
-    double compressibility (const double temperature,
-                            const double pressure,
-                            const Point<dim> &position)
-    {
-      if (!IsCompressible) return 0;
-      static internal::P_T_LookupFunction rho("../DataDir/rho_bin");
-      return rho.d_by_dp(temperature, pressure) / rho.value(temperature,pressure);
-    }
-
-
-    template <int dim>
-    double expansion_coefficient (const double temperature,
-                                  const double pressure,
-                                  const Point<dim> &position)
-    {
-      if (!IsCompressible) return thermal_expansivity;
-      static internal::P_T_LookupFunction alpha("../DataDir/alpha_bin");
-      return alpha.value(temperature, pressure);
-    }
   }
 
 
@@ -378,7 +165,7 @@ namespace EquationData
     class AdiabaticConditions
     {
       public:
-        AdiabaticConditions ();
+        AdiabaticConditions (const aspect::MaterialModel<dim> * model_data);
 
         double temperature (const Point<dim> &p) const;
         double pressure (const Point<dim> &p) const;
@@ -390,7 +177,7 @@ namespace EquationData
 
 
     template <int dim>
-    AdiabaticConditions<dim>::AdiabaticConditions()
+    AdiabaticConditions<dim>::AdiabaticConditions(const aspect::MaterialModel<dim> * model_data)
       :
       n_points(1000),
       temperatures(n_points, -1),
@@ -418,7 +205,7 @@ namespace EquationData
           const Point<dim> representative_point
             = Point<dim>::unit_vector(0) * (R1-z);
 
-          const double density = MaterialModel::density(temperatures[i-1], pressures[i-1], representative_point);
+          const double density = model_data->density(temperatures[i-1], pressures[i-1], representative_point);
 
           pressures[i] = (pressures[i-1]
                           + pressures[i-1] * 2/z
@@ -461,6 +248,10 @@ namespace EquationData
       //TODO: interpolate linearly
       return temperatures[i];
     }
+
+
+    std::shared_ptr<AdiabaticConditions<deal_II_dimension> > adiabatic_conditions;
+
   }
 
   template <int dim>
@@ -470,8 +261,7 @@ namespace EquationData
       double value (const Point<dim> &p,
                     const unsigned int = 0) const
       {
-        static internal::AdiabaticConditions<dim> adiabatic_conditions;
-        return adiabatic_conditions.pressure (p);
+        return internal::adiabatic_conditions->pressure (p);
       }
   };
 
@@ -490,8 +280,7 @@ namespace EquationData
       double value (const Point<dim> &p,
                     const unsigned int = 0) const
       {
-        static internal::AdiabaticConditions<dim> adiabatic_conditions;
-        return adiabatic_conditions.temperature (p);
+        return internal::adiabatic_conditions->temperature (p);
       }
   };
 
@@ -633,22 +422,6 @@ namespace EquationData
   template
   double adiabatic_temperature (const Point<deal_II_dimension> &p);
 
-
-  namespace MaterialModel
-  {
-    template
-    double eta (const double temperature, const double pressure, const Point<deal_II_dimension> &position);
-
-    template
-    double real_viscosity (const double                 temperature,
-                           const double                  pressure,
-                           const Point<deal_II_dimension> &position,
-                           const SymmetricTensor<2, deal_II_dimension> &strain_rate);
-    template
-    double density (const double temperature,
-                    const double pressure,
-                    const Point<deal_II_dimension> &position);
-  }
 }
 
 
@@ -1493,10 +1266,14 @@ namespace aspect
             this_mpi_process(MPI_COMM_WORLD)
             == 0)),
 
+    model_data ( new MaterialModel_Table<dim>()),
+
     triangulation (MPI_COMM_WORLD,
                    typename Triangulation<dim>::MeshSmoothing
                    (Triangulation<dim>::smoothing_on_refinement |
-                    Triangulation<dim>::smoothing_on_coarsening)),
+                    Triangulation<dim>::smoothing_on_coarsening),
+                   parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning
+                  ),
 
     mapping (4),
 
@@ -1526,6 +1303,9 @@ namespace aspect
     computing_timer (pcout, TimerOutput::summary,
                      TimerOutput::wall_times)
   {
+	EquationData::internal::adiabatic_conditions.reset(
+	  new EquationData::internal::AdiabaticConditions<dim>(model_data.get()));
+	
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
 
@@ -1831,13 +1611,13 @@ namespace aspect
                                      * (old_temperature_laplacians[q] +
                                         old_old_temperature_laplacians[q]) / 2;
 
-        const double density = EquationData::MaterialModel::density(T, p, evaluation_points[q]);
+        const double density = model_data->density(T, p, evaluation_points[q]);
 
         const double gamma
           = ((EquationData::radiogenic_heating * density
               +
-              EquationData::ShearHeating*2 * EquationData::MaterialModel::eta(T, p, evaluation_points[q]) * strain_rate * strain_rate) /
-             (density * EquationData::MaterialModel::specific_heat(T, p)));
+              EquationData::ShearHeating*2 * model_data->eta(T, p, evaluation_points[q]) * strain_rate * strain_rate) /
+             (density * model_data->specific_heat(T, p)));
 
         double residual
           = std::abs(dT_dt + u_grad_T - kappa_Delta_T - gamma);
@@ -1922,11 +1702,13 @@ namespace aspect
               switch (component)
                 {
                   case dim:
-                    return EquationData::AdiabaticPressure<dim>().value (p);
+                    return adiabatic_pressure.value (p);
                   default:
                     return 0;
                 }
             }
+
+            EquationData::AdiabaticPressure<dim> adiabatic_pressure;
         };
 
         TrilinosWrappers::MPI::BlockVector stokes_tmp;
@@ -2492,9 +2274,9 @@ namespace aspect
             scratch.phi_p[k]       = scratch.stokes_fe_values[pressure].value (k, q);
           }
 
-        double eta = EquationData::MaterialModel::eta(old_temperature,
-                                                      old_pressure,
-                                                      scratch.stokes_fe_values.quadrature_point(q) );
+        double eta = model_data->eta(old_temperature,
+                                     old_pressure,
+                                     scratch.stokes_fe_values.quadrature_point(q) );
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           for (unsigned int j=0; j<dofs_per_cell; ++j)
@@ -2506,8 +2288,8 @@ namespace aspect
                                           scratch.grads_phi_u[j])
                                          +
                                          (1./eta) *
-                                         EquationData::MaterialModel::pressure_scaling *
-                                         EquationData::MaterialModel::pressure_scaling *
+                                         EquationData::pressure_scaling *
+                                         EquationData::pressure_scaling *
                                          (scratch.phi_p[i] * scratch.phi_p[j]))
                                         * scratch.stokes_fe_values.JxW(q);
       }
@@ -2743,38 +2525,38 @@ namespace aspect
               }
           }
 
-        const double eta = EquationData::MaterialModel::eta(old_temperature,
-                                                            old_pressure,
-                                                            scratch.stokes_fe_values.quadrature_point(q));
+        const double eta = model_data->eta(old_temperature,
+                                           old_pressure,
+                                           scratch.stokes_fe_values.quadrature_point(q));
 
         const Tensor<1,dim>
         gravity = EquationData::gravity_vector (scratch.stokes_fe_values.quadrature_point(q));
 
 
-        const double compressibility = EquationData::MaterialModel::compressibility(old_temperature,
-                                                                                    old_pressure,
-                                                                                    scratch.stokes_fe_values
-                                                                                    .quadrature_point(q));
-        const double density = EquationData::MaterialModel::density(old_temperature,
-                                                                    old_pressure,
-                                                                    scratch.stokes_fe_values
-                                                                    .quadrature_point(q));
+        const double compressibility = model_data->compressibility(old_temperature,
+                                                                   old_pressure,
+                                                                   scratch.stokes_fe_values
+                                                                   .quadrature_point(q));
+        const double density = model_data->density(old_temperature,
+                                                   old_pressure,
+                                                   scratch.stokes_fe_values
+                                                   .quadrature_point(q));
 
         if (rebuild_stokes_matrix)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             for (unsigned int j=0; j<dofs_per_cell; ++j)
               data.local_matrix(i,j) += ( eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
                                           - EquationData::IsCompressible * eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
-                                          - (EquationData::MaterialModel::pressure_scaling *
+                                          - (EquationData::pressure_scaling *
                                              scratch.div_phi_u[i] * scratch.phi_p[j])
-                                          - (EquationData::MaterialModel::pressure_scaling *
+                                          - (EquationData::pressure_scaling *
                                              scratch.phi_p[i] * scratch.div_phi_u[j]))
                                         * scratch.stokes_fe_values.JxW(q);
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           data.local_rhs(i) += (  // TODO: extrapolation von old_velocity
                                  (density * gravity * scratch.phi_u[i])
-                                 + EquationData::IsCompressible * (EquationData::MaterialModel::pressure_scaling *
+                                 + EquationData::IsCompressible * (EquationData::pressure_scaling *
                                                                    compressibility * density *
                                                                    (scratch.old_velocity_values[q] * gravity) *
                                                                    scratch.phi_p[i])
@@ -3251,7 +3033,7 @@ namespace aspect
       stokes_constraints.distribute (distributed_stokes_solution);
 
       // now rescale the pressure back to real physical units
-      distributed_stokes_solution.block(1) *= EquationData::MaterialModel::pressure_scaling;
+      distributed_stokes_solution.block(1) *= EquationData::pressure_scaling;
 
       stokes_solution = distributed_stokes_solution;
 

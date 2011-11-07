@@ -163,6 +163,14 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    const MaterialModel<dim> *
+    SimulatorAccess<dim>::get_model_data () const
+    {
+      return simulator->model_data.get();
+    }
+
 // ------------------------------ Manager -----------------------------
 
     template <int dim>

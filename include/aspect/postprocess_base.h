@@ -7,6 +7,8 @@
 #ifndef __aspect__postprocess_base_h
 #define __aspect__postprocess_base_h
 
+#include <aspect/model.h>
+
 #include <deal.II/base/std_cxx1x/shared_ptr.h>
 #include <deal.II/base/table_handler.h>
 #include <deal.II/base/parameter_handler.h>
@@ -287,6 +289,14 @@ namespace aspect
          */
         const DoFHandler<dim> &
         get_temperature_dof_handler () const;
+
+
+        /**
+         * Return a pointer to the material model to access function like density()
+         */
+        const MaterialModel<dim> *
+        get_model_data () const;
+
         /** @} */
 
       private:

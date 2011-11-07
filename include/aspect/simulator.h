@@ -166,6 +166,8 @@ namespace aspect
       Parameters                          parameters;
       ConditionalOStream                  pcout;
 
+      std::auto_ptr<MaterialModel<dim> >    model_data;
+
       Postprocess::Manager<dim>           postprocess_manager;
       TableHandler                        statistics;
 

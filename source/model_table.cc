@@ -1,0 +1,258 @@
+//-------------------------------------------------------------
+//    $Id$
+//
+//    Copyright (C) 2011 by the authors of the ASPECT code
+//
+//-------------------------------------------------------------
+
+#include <aspect/model_table.h>
+#include <fstream>
+
+using namespace dealii;
+
+namespace aspect
+{
+
+
+
+  namespace internal
+  {
+    /**
+     * A class that is used to read and and evaluate the pressure and temperature
+     * dependent density, thermal expansivity and c_p values.
+     **/
+    class P_T_LookupFunction
+    {
+      public:
+        /**
+         * @brief Constructor
+         *
+         * @param filename The name of the file in which the values the variable
+         * represented by this object are stored.
+         **/
+        P_T_LookupFunction (const std::string &filename);
+
+        /**
+         * @brief Evaluate the table for a given value of pressure
+         * and temperature.
+         **/
+        double value (const double T,
+                      const double p) const;
+
+        /**
+         * @brief Evaluate the table for the derivative with respect to
+         * pressure at a given value of pressure and temperature.
+         **/
+        double d_by_dp (const double T,
+                        const double p) const;
+      private:
+        /**
+         * Number of data points in p and T directions.
+         */
+        const unsigned int n_p, n_T;
+
+        /**
+         * Minimal and maximal value for the pressure and temperature
+         * for which data exists in the table.
+         */
+        const double min_p, max_p;
+        const double min_T, max_T;
+        /**
+         * Step sizes in p and T directions.
+         */
+        const double delta_p, delta_T;
+
+        Table<2,double> values;
+    };
+
+    inline
+    P_T_LookupFunction::
+    P_T_LookupFunction (const std::string &filename)
+      :
+      n_p (1000),
+      n_T (1000),
+      min_p (0.001),
+      max_p (min_p + 1000*0.12012002002002e+01),
+      min_T (200),
+      max_T (min_T + 1000*0.98098098098098e+01),
+      delta_p ((max_p-min_p)/(n_p-1)),
+      delta_T ((max_T-min_T)/(n_T-1)),
+      values (n_p, n_T)
+    {
+      std::ifstream in (filename.c_str(), std::ios::binary);
+      AssertThrow (in, ExcIO());
+
+      // allocate the following on the heap so as not to bust
+      // stack size limits
+      double *array = new double[1000*1000];
+      in.read (reinterpret_cast<char *>(&(array[0])),
+               1000*1000*sizeof(double));
+
+      for (unsigned int i=0; i<n_p; ++i)
+        for (unsigned int j=0; j<n_T; ++j)
+          values[i][j] = array[i*1000+j];
+
+      delete[] array;
+    }
+
+
+    inline
+    double
+    P_T_LookupFunction::value ( double T,
+                                const double p) const
+    {
+      // the pressure is given in Pa, but we need GPa in the lookup table
+      // TODO: clamping into the valid range in all cases okay?
+      const double pressure = std::max(min_p, std::min(p/1e9, max_p-delta_p));
+
+      Assert (pressure >= min_p, ExcMessage ("Not in range"));
+      Assert (pressure <= max_p, ExcMessage ("Not in range"));
+
+//       if (T<min_T)
+//         T=min_T;
+      T=std::max(min_T, std::min(T, max_T-delta_T));
+
+      const unsigned int i = (T-min_T) / delta_T;
+      const unsigned int j = (pressure-min_p) / delta_p;
+      Assert (i < n_T-1, ExcInternalError());
+      Assert (j < n_p-1, ExcInternalError());
+
+      // compute the coordinates of this point in the
+      // reference cell between the data points
+      const double xi  = ((T-min_T) / delta_T - i);
+      const double eta = ((pressure-min_p) / delta_p - j);
+      Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
+      Assert ((0 <= eta) && (eta <= 1), ExcInternalError());
+
+      // use these co-ordinates for a bilinear interpolation
+      return ((1-xi)*(1-eta)*values[i][j] +
+              xi    *(1-eta)*values[i+1][j] +
+              (1-xi)*eta    *values[i][j+1] +
+              xi    *eta    *values[i+1][j+1]);
+    }
+
+
+    inline
+    double
+    P_T_LookupFunction::d_by_dp (const double T,
+                                 const double p) const
+    {
+      // the pressure is given in Pa, but we need GPa in the lookup table
+      // TODO: clamping into the valid range in all cases okay?
+      const double pressure = std::max(min_p, std::min(p/1e9, max_p-delta_p));
+
+      Assert (pressure >= min_p, ExcMessage ("Not in range"));
+      Assert (pressure <= max_p, ExcMessage ("Not in range"));
+      Assert (T >= min_T, ExcMessage ("Not in range"));
+      Assert (T <= max_T, ExcMessage ("Not in range"));
+
+      const unsigned int i = (T-min_T) / delta_T;
+      const unsigned int j = (pressure-min_p) / delta_p;
+      Assert (i < n_T-1, ExcInternalError());
+      Assert (j < n_p-1, ExcInternalError());
+
+      // compute the coordinates of this point in the
+      // reference cell between the data points
+      //
+      // since the derivative in p-direction (eta direction)
+      // is constant for the bilinear interpolation, we really
+      // only need xi here
+      const double xi  = ((T-min_T) / delta_T - i);
+      Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
+
+      // use these co-ordinates for a bilinear interpolation
+      // note that delta_p is computed in GPa but everywhere else
+      // we compute in Pa, so we have to multiply it by 1e9
+      return ((1-xi)*(values[i][j+1] - values[i][j]) +
+              xi    *(values[i+1][j+1] - values[i+1][j])) / (delta_p*1e9);
+    }
+  }
+
+
+
+  template <int dim>
+  double
+  MaterialModel_Table<dim>::
+  eta (const double temperature, const double pressure, const Point<dim> &position) const
+  {
+    double reference_eta    = 5e24;
+    return reference_eta;
+  }
+
+  template <int dim>
+  double
+  MaterialModel_Table<dim>::
+  real_viscosity (const double                 temperature,
+                  const double                  pressure,
+                  const Point<dim> &position,
+                  const SymmetricTensor<2,dim> &strain_rate) const
+  {
+    // this is currently only used
+    // in generating graphical
+    // output
+    return eta (temperature, pressure, position);
+  }
+
+
+  // rho-cp
+  template <int dim>
+  double
+  MaterialModel_Table<dim>::
+  specific_heat (const double temperature,
+                 const double pressure) const
+  {
+//    const double reference_specific_heat = 1250;    /* J / K / kg */  //??
+//      if (!IsCompressible) return reference_specific_heat; TODO
+    static internal::P_T_LookupFunction cp("DataDir/cp_bin");
+    return cp.value(temperature, pressure);
+  }
+
+  template <int dim>
+  double
+  MaterialModel_Table<dim>::
+  density (const double temperature,
+           const double pressure,
+           const Point<dim> &position) const
+  {
+//      if (!IsCompressible) return reference_density*(1e0-thermal_expansivity*temperature);
+    static internal::P_T_LookupFunction rho("DataDir/rho_bin");
+    return rho.value(temperature, pressure);
+  }
+
+
+  template <int dim>
+  double
+  MaterialModel_Table<dim>::
+  compressibility (const double temperature,
+                   const double pressure,
+                   const Point<dim> &position) const
+  {
+//      if (!IsCompressible) return 0;
+    static internal::P_T_LookupFunction rho("DataDir/rho_bin");
+    return rho.d_by_dp(temperature, pressure) / rho.value(temperature,pressure);
+  }
+
+
+  template <int dim>
+  double
+  MaterialModel_Table<dim>::
+  expansion_coefficient (const double temperature,
+                         const double pressure,
+                         const Point<dim> &position) const
+  {
+//      if (!IsCompressible) return thermal_expansivity;
+    static internal::P_T_LookupFunction alpha("DataDir/alpha_bin");
+    return alpha.value(temperature, pressure);
+  }
+
+
+
+}
+
+// explicit instantiations
+namespace aspect
+{
+
+  template class MaterialModel_Table<deal_II_dimension>;
+
+}
