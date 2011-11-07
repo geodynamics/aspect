@@ -1303,9 +1303,9 @@ namespace aspect
     computing_timer (pcout, TimerOutput::summary,
                      TimerOutput::wall_times)
   {
-	EquationData::internal::adiabatic_conditions.reset(
-	  new EquationData::internal::AdiabaticConditions<dim>(model_data.get()));
-	
+    EquationData::internal::adiabatic_conditions.reset(
+      new EquationData::internal::AdiabaticConditions<dim>(model_data.get()));
+
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
 
@@ -2791,17 +2791,17 @@ namespace aspect
               scratch.old_old_pressure[q], scratch.old_pressure[q]);
 
         const double density
-          = EquationData::MaterialModel::density(ext_T,
-                                                 ext_pressure,
-                                                 scratch.temperature_fe_values.quadrature_point(q));
+          = model_data->density(ext_T,
+                                ext_pressure,
+                                scratch.temperature_fe_values.quadrature_point(q));
         const double gamma
           = (EquationData::radiogenic_heating * density
              +
-             EquationData::ShearHeating*2 * EquationData::MaterialModel::eta(ext_T,
-                                                                             ext_pressure,
-                                                                             scratch.temperature_fe_values.quadrature_point(q))
+             EquationData::ShearHeating*2 * model_data->eta(ext_T,
+                                                            ext_pressure,
+                                                            scratch.temperature_fe_values.quadrature_point(q))
              * extrapolated_strain_rate * extrapolated_strain_rate)
-            / (density * EquationData::MaterialModel::specific_heat(ext_T, ext_pressure));
+            / (density * model_data->specific_heat(ext_T, ext_pressure));
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           {
@@ -2974,7 +2974,7 @@ namespace aspect
       distributed_stokes_solution = stokes_solution;
 
       // before solving we scale the initial solution to the right dimensions
-      distributed_stokes_solution.block(1) /= EquationData::MaterialModel::pressure_scaling;
+      distributed_stokes_solution.block(1) /= EquationData::pressure_scaling;
 
       const unsigned int
       start = (distributed_stokes_solution.block(0).size() +
