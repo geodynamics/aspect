@@ -426,31 +426,6 @@ namespace EquationData
 
 
 
-// @sect3{Linear solvers and preconditioners}
-
-// In comparison to step-31, we did one
-// change in the linear algebra of the
-// problem: We exchange the
-// <code>InverseMatrix</code> that
-// previously held the approximation of the
-// Schur complement by a preconditioner
-// only (we will choose ILU in the
-// application code below), as discussed in
-// the introduction. This trick we already
-// did for the velocity block - the idea of
-// this is that the solver iterations on
-// the block system will eventually also
-// make the approximation for the Schur
-// complement good. If the preconditioner
-// we're using is good enough, there will
-// be no increase in the outer iteration
-// count compared to using converged solves
-// for the inverse matrices of velocity and
-// Schur complement. All we need to do for
-// implementing that change is to give the
-// respective variable in the
-// BlockSchurPreconditioner class another
-// name.
 namespace LinearSolvers
 {
   template <class PreconditionerA, class PreconditionerMp>
@@ -522,68 +497,6 @@ namespace LinearSolvers
 
 
 
-// @sect3{Definition of assembly data structures}
-//
-// As described in the introduction, we will
-// use the WorkStream mechanism discussed in
-// the @ref threads module to parallelize
-// operations among the processors of a
-// single machine. The WorkStream class
-// requires that data is passed around in two
-// kinds of data structures, one for scratch
-// data and one to pass data from the
-// assembly function to the function that
-// copies local contributions into global
-// objects.
-//
-// The following namespace (and the two
-// sub-namespaces) contains a collection of
-// data structures that serve this purpose,
-// one pair for each of the four operations
-// discussed in the introduction that we will
-// want to parallelize. Each
-// assembly routine gets two sets of data: a
-// Scratch array that collects all the
-// classes and arrays that are used for the
-// calculation of the cell contribution, and
-// a CopyData array that keeps local matrices
-// and vectors which will be written into the
-// global matrix. Whereas CopyData is a
-// container for the final data that is
-// written into the global matrices and
-// vector (and, thus, absolutely necessary),
-// the Scratch arrays are merely there for
-// performance reasons &mdash; it would be
-// much more expensive to set up a FEValues
-// object on each cell, than creating it only
-// once and updating some derivative data.
-//
-// Using the program in step-31, we have
-// four assembly routines. One for the
-// preconditioner matrix of the Stokes
-// system, one for the Stokes matrix and
-// right hand side, one for the
-// temperature matrices and one for the
-// right hand side of the temperature
-// equation. We organize the scratch
-// arrays and a CopyData arrays for each
-// of those four assembly components
-// using a <code>struct</code>
-// environment.
-//
-// Regarding the Scratch array, each
-// struct is equipped with a constructor
-// that create an FEValues object for a
-// @ref FiniteElement "finite element", a
-// @ref Quadrature "quadrature formula"
-// and some
-// @ref UpdateFlags "update flags".
-// Moreover, we manually
-// implement a copy constructor (since
-// the FEValues class is not copyable by
-// itself), and provide some additional
-// vector fields that are used to improve
-// performance of assembly.
 namespace aspect
 {
   namespace internal
@@ -946,9 +859,6 @@ namespace aspect
 namespace aspect
 {
 
-  // @sect3{Simulator class implementation}
-
-  // @sect4{Simulator::Parameters}
   template <int dim>
   Simulator<dim>::Parameters::Parameters (ParameterHandler &prm)
   {
@@ -1213,50 +1123,6 @@ namespace aspect
 
 
 
-
-  // @sect4{Simulator::Simulator}
-  //
-  // The constructor of the problem is very
-  // similar to the constructor in
-  // step-31. What is different is the
-  // %parallel communication: Trilinos uses a
-  // message passing interface (MPI) for data
-  // distribution. When entering the
-  // Simulator class, we have to
-  // decide how the parallization is to be
-  // done. We choose a rather simple strategy
-  // and let all processors that are running
-  // the program work together, specified by
-  // the communicator
-  // <code>comm_world()</code>. Next, we
-  // create some modified output stream as we
-  // already did in step-18. In MPI, all the
-  // processors run the same program
-  // individually (they simply operate on
-  // different chunks of data and exchange
-  // some part of that data from time to
-  // time). Next, we need to initialize the
-  // <code>pcout</code> object in order to
-  // print the user information only on one
-  // processor. The implementation of this
-  // idea is to check the process number when
-  // <code>pcout</code> gets a true argument,
-  // and it uses the <code>std::cout</code>
-  // stream for output. If we are one
-  // processor five, for instance, then we
-  // will give a <code>false</code> argument
-  // to <code>pcout</code>, which means that
-  // the output of that processor will not be
-  // printed anywhere.
-  //
-  // Finally, we enter the preferred options
-  // for the TimerOutput object to its
-  // constructor. We restrict the output to
-  // the <code>pcout</code> stream (processor
-  // 0), and then we specify that we want to
-  // get a summary table in the end of the
-  // program which shows us wallclock times
-  // (as opposed to CPU times).
   template <int dim>
   Simulator<dim>::Simulator (ParameterHandler &prm)
     :
@@ -1470,15 +1336,6 @@ namespace aspect
 
 
 
-  // Again, this is only a slightly
-  // modified version of the respective
-  // function in step-31. What is new is
-  // that each processor works on its
-  // partition of cells, and gets a minimum
-  // and maximum temperature on that
-  // partition. Two global communication
-  // steps synchronize the data among the
-  // processors.
   template <int dim>
   std::pair<double,double>
   Simulator<dim>::get_extrapolated_temperature_range () const
@@ -1803,84 +1660,6 @@ namespace aspect
   }
 
 
-
-  // @sect4{The Simulator setup functions}
-
-  // The following three functions set
-  // up the Stokes matrix, the matrix
-  // used for the Stokes
-  // preconditioner, and the
-  // temperature matrix. The code is
-  // mostly the same as in step-31, but
-  // it has been broken out into three
-  // functions of their own for
-  // simplicity, but also so that they
-  // can easily be run in %parallel on
-  // multiple threads (unless we are
-  // running with MPI, in which case
-  // this is not possible, as explained
-  // in the introduction).
-  //
-  // The main functional difference
-  // between the code here and that in
-  // step-31 is that the matrices we
-  // want to set up are distributed
-  // across multiple processors. Since
-  // we still want to build up the
-  // sparsity pattern first for
-  // efficiency reasons, we could
-  // continue to build the
-  // <i>entire</i> sparsity pattern as
-  // a
-  // BlockCompressedSimpleSparsityPattern,
-  // as we did in step-31. However,
-  // that would be inefficient: every
-  // processor would build the same
-  // sparsity pattern, but only
-  // initialize a small part of the
-  // matrix using it.
-  //
-  // Rather, we use an object of type
-  // TrilinosWrappers::BlockSparsityPattern,
-  // which is (obviously) a wrapper
-  // around a sparsity pattern object
-  // provided by Trilinos. The
-  // advantage is that the Trilinos
-  // sparsity pattern class can
-  // communicate across multiple
-  // processors: if this processor
-  // fills in all the nonzero entries
-  // that result from the cells it
-  // owns, and every other processor
-  // does so as well, then at the end
-  // after some MPI communication
-  // initiated by the
-  // <code>compress()</code> call, we
-  // will have the globally assembled
-  // sparsity pattern available with
-  // which the global matrix can be
-  // initialized.
-  //
-  // The only other change we need to
-  // make is to tell the
-  // DoFTools::make_sparsity_pattern
-  // function that it is only supposed
-  // to work on a subset of cells,
-  // namely the ones whose
-  // <code>subdomain_id</code> equals
-  // the number of the current
-  // processor, and to ignore all other
-  // cells.
-  //
-  // This strategy is replicated across
-  // all three of the following
-  // functions.
-  //
-  // Note that Trilinos matrices store the
-  // information contained in the sparsity
-  // patterns, so we can safely release the
-  // <code>sp</code> variable once the matrix
-  // has been given the sparsity structure.
   template <int dim>
   void Simulator<dim>::
   setup_stokes_matrix (const std::vector<IndexSet> &stokes_partitioning)
@@ -1962,84 +1741,6 @@ namespace aspect
 
 
 
-  // The remainder of the setup function
-  // (after splitting out the three functions
-  // above) mostly has to deal with the
-  // things we need to do for parallelization
-  // across processors. In particular, at the
-  // top it calls
-  // GridTools::partition_triangulation to
-  // subdivide all cells into subdomains of
-  // roughly equal size and roughly minimal
-  // interface length (using METIS). We then
-  // distribute degrees of freedom for Stokes
-  // and temperature DoFHandler objects, and
-  // re-sort them in such a way that all
-  // degrees of freedom associated with
-  // subdomain zero come before all those
-  // associated with subdomain one, etc. For
-  // the Stokes part, this entails, however,
-  // that velocities and pressures become
-  // intermixed, but this is trivially solved
-  // by sorting again by blocks; it is worth
-  // noting that this latter operation leaves
-  // the relative ordering of all velocities
-  // and pressures alone, i.e. within the
-  // velocity block we will still have all
-  // those associated with subdomain zero
-  // before all velocities associated with
-  // subdomain one, etc. This is important
-  // since we store each of the blocks of
-  // this matrix distributed across all
-  // processors and want this to be done in
-  // such a way that each processor stores
-  // that part of the matrix that is roughly
-  // equal to the degrees of freedom located
-  // on those cells that it will actually
-  // work on. Note how we set boundary
-  // conditions on the temperature by using
-  // the ConstraintMatrix object.
-  //
-  // After this, we have to set up the
-  // various partitioners (of type
-  // <code>IndexSet</code>, see the
-  // introduction) that describe which parts
-  // of each matrix or vector will be stored
-  // where, then call the functions that
-  // actually set up the matrices
-  // (concurrently if not using MPI
-  // but sequentially otherwise, as explained
-  // in the introduction), and at the end also
-  // resize the various vectors we keep
-  // around in this program. We given those
-  // vectors the correct size using the
-  // aforementioned Epetra_Map. Most of the
-  // vectors are actually localized, i.e.,
-  // they store all dofs in the problem on
-  // each processor. In that case, the only
-  // information that is used is the global
-  // size. This is different for the two
-  // right hand side vectors, which are
-  // distributed ones, see also the class
-  // declaration.
-  //
-  // Note how this function enters and leaves
-  // a timed section so that we can get a
-  // time report at the end of the
-  // program. Note also the use of the
-  // <code>pcout</code> variable: to every
-  // process it looks like we can write to
-  // screen, but only the output of the first
-  // processor actually ends up somewhere. We
-  // could of course have achieved the same
-  // effect by writing to
-  // <code>std::cout</code> but would then
-  // have had to guard every access to that
-  // stream by something like <code>if
-  // (Utilities::MPI::
-  // this_mpi_process
-  // (MPI_COMM_WORLD) == 0)</code>,
-  // hardly a pretty solution.
   template <int dim>
   void Simulator<dim>::setup_dofs ()
   {
@@ -2183,57 +1884,6 @@ namespace aspect
 
 
 
-  // @sect4{The Simulator assembly functions}
-  //
-  // Following the discussion in the
-  // introduction and in the @ref threads
-  // module, we split the assembly functions
-  // into different parts:
-  //
-  // <ul>
-  // <li> The local calculations of matrices
-  // and right hand sides, given a certain cell
-  // as input (these functions are named
-  // <code>local_assemble_*</code> below). The
-  // resulting function is, in other words,
-  // essentially the body of the loop over all
-  // cells in step-31. Note, however, that
-  // these functions store the result from the
-  // local calculations in variables of classes
-  // from the CopyData namespace.
-  //
-  // <li>These objects are then given to the
-  // second step which writes the local data
-  // into the global data structures (these
-  // functions are named
-  // <code>copy_local_to_global_*</code>
-  // below). These functions are pretty
-  // trivial.
-  //
-  // <li>These two subfunctions are then used
-  // in the respective assembly routine (called
-  // <code>assemble_*</code> below), where a
-  // WorkStream object is set up and runs over
-  // all the cells that belong to the
-  // processor's subdomain.
-  // </ul>
-
-  // @sect5{Stokes preconditioner assembly}
-  //
-  // Let us start with the functions that
-  // builds the Stokes preconditioner. The
-  // first two of these are pretty trivial,
-  // given the discussion above. Note in
-  // particular that the main point in using
-  // the scratch data object is that we want to
-  // avoid allocating any objects on the free
-  // space each time we visit a new cell. As a
-  // consequence, the assembly function below
-  // only has automatic local variables, and
-  // everything else is accessed through the
-  // scratch data object, which is allocated
-  // only once before we start the loop over
-  // all cells:
   template <int dim>
   void
   Simulator<dim>::
@@ -2311,58 +1961,6 @@ namespace aspect
 
 
 
-  // When we create the WorkStream, we modify
-  // the start and end iterator into a
-  // so-called <code>SubdomainFilter</code>
-  // that tells the individual processes which
-  // cells to work on. This is exactly the case
-  // discussed in the introduction. Note how we
-  // use the construct
-  // <code>std_cxx1x::bind</code> to create a
-  // function object that is compatible with
-  // the WorkStream class. It uses placeholders
-  // <code>_1, std_cxx1x::_2, _3</code> for the local
-  // assembly function that specify cell,
-  // scratch data, and copy data, as well as
-  // the placeholder <code>_1</code> for the
-  // copy function that expects the data to be
-  // written into the global matrix. On the
-  // other hand, the implicit zeroth argument
-  // of member functions (namely the
-  // <code>this</code> pointer of the object on
-  // which that member function is to operate
-  // on) is <i>bound</i> to the
-  // <code>this</code> pointer of the current
-  // function. The WorkStream class, as a
-  // consequence, does not need to know
-  // anything about the object these functions
-  // work on.
-  //
-  // When the
-  // WorkStream is executed, it will create
-  // several local assembly routines of the
-  // first kind for several cells and let
-  // some available processors work on
-  // them. The function that needs to be
-  // synchronized, i.e., the write operation
-  // into the global matrix, however, is
-  // executed by only one thread at a time in
-  // the prescribed order. Of course, this
-  // only holds for the parallelization on a
-  // single MPI process. Different MPI
-  // processes will have their own WorkStream
-  // objects and do that work completely
-  // independently. In a distributed
-  // calculation, some data will accumulate
-  // at degrees of freedom that are not owned
-  // by the respective processor. It would be
-  // inefficient to send data around every
-  // time we encounter such a dof. What
-  // happens instead is that the Trilinos
-  // sparse matrix will keep that data and
-  // send it to the owner at the end of
-  // assembly, by calling the
-  // <code>compress()</code> command.
   template <int dim>
   void
   Simulator<dim>::assemble_stokes_preconditioner ()
@@ -2407,15 +2005,6 @@ namespace aspect
 
 
 
-  // The final function in this block initiates
-  // assemble of the Stokes preconditioner
-  // matrix and then builds the Stokes
-  // preconditioner. It is mostly the same as
-  // in the serial case. The only difference to
-  // step-31 is that we use an ILU
-  // preconditioner for the pressure mass
-  // matrix instead of IC, as discussed in the
-  // introduction.
   template <int dim>
   void
   Simulator<dim>::build_stokes_preconditioner ()
@@ -2454,27 +2043,7 @@ namespace aspect
     computing_timer.exit_section();
   }
 
-  // @sect5{Stokes system assembly}
 
-  // The next three functions implement the
-  // assembly of the Stokes system, again
-  // split up into a part performing local
-  // calculations, one for writing the local
-  // data into the global matrix and vector,
-  // and one for actually running the loop
-  // over all cells with the help of the
-  // WorkStream class. Note that the assembly
-  // of the Stokes matrix needs only to be
-  // done in case we have changed the
-  // mesh. Otherwise, just the
-  // (temperature-dependent) right hand side
-  // needs to be calculated here. Since we
-  // are working with distributed matrices
-  // and vectors, we have to call the
-  // respective <code>compress()</code>
-  // functions in the end of the assembly in
-  // order to send non-local data to the
-  // owner process.
   template <int dim>
   void
   Simulator<dim>::
@@ -2655,21 +2224,6 @@ namespace aspect
   }
 
 
-  // @sect5{Temperature matrix assembly}
-
-  // The task to be performed by the next three
-  // functions is to calculate a mass matrix
-  // and a Laplace matrix on the temperature
-  // system. These will be combined in order to
-  // yield the semi-implicit time stepping
-  // matrix that consists of the mass matrix
-  // plus a time step weight times the Laplace
-  // matrix. This function is again essentially
-  // the body of the loop over all cells from
-  // step-31.
-  //
-  // The two following functions perform
-  // similar services as the ones above.
   template <int dim>
   void Simulator<dim>::
   local_assemble_temperature_system (const std::pair<double,double> global_T_range,
@@ -2806,12 +2360,6 @@ namespace aspect
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           {
             data.local_rhs(i) += (T_term_for_rhs * scratch.phi_T[i]
-//                                   -
-//                                   time_step *
-//                                   extrapolated_u * ext_grad_T * scratch.phi_T[i]
-//                                  -
-//                                  time_step *
-//                                  nu * ext_grad_T * scratch.grad_phi_T[i]
                                   +
                                   time_step *
                                   gamma * scratch.phi_T[i])
@@ -2915,52 +2463,6 @@ namespace aspect
 
 
 
-  // @sect4{Simulator::solve}
-
-  // This function solves the linear systems
-  // in each time step of the Boussinesq
-  // problem. First, we
-  // work on the Stokes system and then on
-  // the temperature system. In essence, it
-  // does the same things as the respective
-  // function in step-31. However, there are
-  // a few things that we need to pay some
-  // attention to. The first thing is, as
-  // mentioned in the introduction, the way
-  // we store our solution: we keep the full
-  // vector with all degrees of freedom on
-  // each MPI node. When we enter a solver
-  // which is supposed to perform
-  // matrix-vector products with a
-  // distributed matrix, this is not the
-  // appropriate form, though. There, we will
-  // want to have the solution vector to be
-  // distributed in the same way as the
-  // matrix. So what we do first (after
-  // initializing the Schur-complement based
-  // preconditioner) is to generate a
-  // distributed vector called
-  // <code>distributed_stokes_solution</code>
-  // and put only the locally owned dofs into
-  // that, which is neatly done by the
-  // <code>operator=</code> of the Trilinos
-  // vector. Next, we need to set the
-  // pressure values at hanging nodes to
-  // zero. This we also did in step-31 in
-  // order not to disturb the Schur
-  // complement by some vector entries that
-  // actually are irrelevant during the solve
-  // stage. As a difference to step-31, here
-  // we do it only for the locally owned
-  // pressure dofs. After solving for the
-  // Stokes solution, each processor copies
-  // distributed solution back into the solution
-  // vector for which every element is locally
-  // owned.
-  //
-  // Apart from these two changes, everything
-  // is the same as in step-31, so we don't
-  // need to further comment on it.
   template <int dim>
   void Simulator<dim>::solve ()
   {
@@ -3319,10 +2821,13 @@ namespace aspect
     pcout << "*** resuming from Snapshot!" << std::endl;
   }
 
-//why do we need this?!
 }
+
+//why do we need this?!
 BOOST_CLASS_TRACKING (aspect::Simulator<2>, boost::serialization::track_never)
 BOOST_CLASS_TRACKING (aspect::Simulator<3>, boost::serialization::track_never)
+
+
 namespace aspect
 {
 
@@ -3512,17 +3017,6 @@ namespace aspect
 
 
 
-  // @sect4{Simulator::run}
-
-  // This is the final function in this
-  // class. It actually runs the program. It
-  // is, once more, very similar to
-  // step-31. The only thing that really
-  // changed is that we use the
-  // <code>set_initial_temperature_field()</code>
-  // function instead of the library function
-  // <code>VectorTools::project</code>, the
-  // rest is as before.
   template <int dim>
   void Simulator<dim>::run ()
   {
@@ -3690,9 +3184,9 @@ namespace aspect
 
 
 }
-// @sect3{The <code>main</code> function}
 
-// This is copied verbatim from step-31:
+
+
 int main (int argc, char *argv[])
 {
   Utilities::MPI::MPI_InitFinalize mpi_initialization(argc, argv);
