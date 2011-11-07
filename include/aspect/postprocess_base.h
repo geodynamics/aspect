@@ -485,5 +485,3 @@ namespace aspect
 
 
 #endif
-
-class P;
