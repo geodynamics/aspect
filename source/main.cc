@@ -3147,8 +3147,6 @@ namespace aspect
           }
     }
 
-//  std::cout << "my pressure= " << EquationData::MaterialModel::pressure_scaling*my_pressure << " myarea= " << my_area << std::endl;
-
     double surf_pressure = 0;
     // sum up the surface integrals from each processor
     {
