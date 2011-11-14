@@ -1,0 +1,27 @@
+when computing the CFL number, compute it with the shortest edge length
+instead of the cell diameter
+
+treat artificial diffusion implicitly if this yields a significantly larger
+time step
+
+Rename artificial viscosity stability parameter from beta to alpha to match
+the paper.
+
+Consider making the convection term u* grad T* semi implicit by writing it
+as u* grad T instead. This could lead to less restrictions for the time step
+size.
+
+
+done:
+2011/10/13 interpolate initial temperature instead of projection (TH)
+
+
+
+
+Topics for an ASPECT II paper:
+
+- Compressibility
+- Nonlinearity
+- Checkpoint/restart
+- Mesh refinement criteria
+- How implicit to be?
