@@ -9,6 +9,13 @@
 
 namespace aspect
 {
+  namespace
+  {
+    const double reference_density     = 3300;    /* kg / m^3   */
+    const double reference_temperature = 293;     /* K          */
+    const double reference_eta    = 5e24;
+  }
+
   template <int dim>
   MaterialModel_Simple<dim>::~MaterialModel_Simple ()
   {}
@@ -18,7 +25,7 @@ namespace aspect
   MaterialModel_Simple<dim>::
   eta (const double temperature, const double pressure, const dealii::Point<dim> &position) const
   {
-    return 1e21;
+    return reference_eta;
   }
 
   template <int dim>
@@ -75,12 +82,10 @@ namespace aspect
            const double pressure,
            const dealii::Point<dim> &position) const
   {
-    const double reference_density     = 3300;    /* kg / m^3   */
-    const double reference_temperature = 293;     /* K          */
-    const double expansion_coefficient = 2e-5;    /* 1/K        */
+    const double expansion_coefficient_ = expansion_coefficient (temperature, pressure, position);
     return (reference_density *
-            (1 - expansion_coefficient * (temperature -
-                                          reference_temperature)));
+            (1 - expansion_coefficient_ * (temperature -
+                                           reference_temperature)));
   }
 
   template <int dim>
@@ -90,7 +95,7 @@ namespace aspect
                    const double pressure,
                    const dealii::Point<dim> &position) const
   {
-    return 1.0;
+    return 0.0;
   }
 
   template <int dim>
