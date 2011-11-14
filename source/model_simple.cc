@@ -136,9 +136,9 @@ namespace aspect
     {
       prm.enter_subsection("MaterialModel_Simple");
       {
-        reference_density = prm.get_double ("Time between graphical output");
-        reference_temperature = prm.get_double ("Time between graphical output");
-        reference_eta = prm.get_double ("Time between graphical output");
+        reference_density = prm.get_double ("reference_density");
+        reference_temperature = prm.get_double ("reference_temperature");
+        reference_eta = prm.get_double ("reference_eta");
       }
       prm.leave_subsection();
     }
