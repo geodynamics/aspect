@@ -7,14 +7,10 @@
 
 #include <aspect/model_simple.h>
 
+using namespace dealii;
+
 namespace aspect
 {
-  namespace
-  {
-    const double reference_density     = 3300;    /* kg / m^3   */
-    const double reference_temperature = 293;     /* K          */
-    const double reference_eta    = 5e24;
-  }
 
   template <int dim>
   MaterialModel_Simple<dim>::~MaterialModel_Simple ()
@@ -107,6 +103,48 @@ namespace aspect
   {
     return 2e-5;
   }
+
+  template <int dim>
+  void
+  MaterialModel_Simple<dim>::declare_parameters (ParameterHandler &prm)
+  {
+    prm.enter_subsection("ModelParameters");
+    {
+      prm.enter_subsection("MaterialModel_Simple");
+      {
+        prm.declare_entry ("reference_density", "3300",
+                           Patterns::Double (),
+                           "rho0 in kg / m^3");
+        prm.declare_entry ("reference_temperature", "293",
+                           Patterns::Double (),
+                           "T0 in K");
+        prm.declare_entry ("reference_eta", "5e24",
+                           Patterns::Double (),
+                           "eta0");
+      }
+      prm.leave_subsection();
+    }
+    prm.leave_subsection();
+  }
+
+
+  template <int dim>
+  void
+  MaterialModel_Simple<dim>::parse_parameters (ParameterHandler &prm)
+  {
+    prm.enter_subsection("ModelParameters");
+    {
+      prm.enter_subsection("MaterialModel_Simple");
+      {
+        reference_density = prm.get_double ("Time between graphical output");
+        reference_temperature = prm.get_double ("Time between graphical output");
+        reference_eta = prm.get_double ("Time between graphical output");
+      }
+      prm.leave_subsection();
+    }
+    prm.leave_subsection();
+  }
+
 }
 
 // explicit instantiations

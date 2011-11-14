@@ -10,6 +10,7 @@
 #include <deal.II/numerics/vectors.h>
 #include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/base/point.h>
+#include <deal.II/base/parameter_handler.h>
 
 namespace aspect
 {
@@ -42,6 +43,22 @@ namespace aspect
       virtual double expansion_coefficient (const double temperature,
                                             const double pressure,
                                             const dealii::Point<dim> &position) const = 0;
+
+      /**
+       * Declare the parameters this class takes through input files.
+       */
+      static
+      void
+      declare_parameters (dealii::ParameterHandler &prm);
+
+      /**
+       * Read the parameters this class declares from the parameter
+       * file.
+       */
+      virtual
+      void
+      parse_parameters (dealii::ParameterHandler &prm);
+
   };
 
 }

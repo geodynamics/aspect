@@ -85,8 +85,6 @@ using namespace dealii;
 namespace EquationData
 {
   double kappa                 = 1e-6;
-  double reference_density     = 3300;    /* kg / m^3   */
-  double reference_temperature = 293;     /* K          */
 	  const double reference_specific_heat = 1250;    /* J / K / kg */  //??
   double radiogenic_heating    = 7.4e-12; /* W / kg     */  //??
   double thermal_expansivity    = 4e-5;
@@ -854,12 +852,6 @@ namespace aspect
       prm.declare_entry ("kappa", "4.548e-7",
                          Patterns::Double (),
                          "thermal diffusivity (k/(rho*cp)");
-      prm.declare_entry ("reference_density", "8.267e3",
-                         Patterns::Double (),
-                         "rho0)");
-      prm.declare_entry ("reference_temperature", "293",
-                         Patterns::Double (),
-                         "T0");
       prm.declare_entry ("radiogenic_heating", "0e0",
                          Patterns::Double (),
                          "H0");
@@ -976,8 +968,6 @@ namespace aspect
     prm.enter_subsection ("ModelParameters");
     {
       EquationData::kappa = prm.get_double ("kappa");
-      EquationData::reference_density = prm.get_double ("reference_density");
-      EquationData::reference_temperature = prm.get_double ("reference_temperature");
       EquationData::radiogenic_heating = prm.get_double ("radiogenic_heating");
       EquationData::thermal_expansivity = prm.get_double ("thermal_expansivity");
       EquationData::thermal_conductivity = prm.get_double ("thermal_conductivity");
@@ -1054,6 +1044,8 @@ namespace aspect
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
 
+	model_data->parse_parameters(prm);
+
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
     statistics.set_auto_fill_mode(true);
@@ -1066,6 +1058,8 @@ namespace aspect
   {
     Parameters::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
+    MaterialModel_Simple<dim>::declare_parameters (prm);
+    MaterialModel_Table<dim>::declare_parameters (prm);
   }
 
 
