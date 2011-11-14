@@ -61,6 +61,7 @@ namespace aspect
           const unsigned int partition;
           const double       minimal_pressure;
           const MaterialModel<dim> * model_data;
+          EquationData::AdiabaticConditions<dim> adiabatic_conditions;
       };
 
 
@@ -73,7 +74,8 @@ namespace aspect
         :
         partition (partition),
         minimal_pressure (minimal_pressure),
-        model_data( model_data)
+        model_data(model_data),
+        adiabatic_conditions (model_data)
       {}
 
 
@@ -180,10 +182,10 @@ namespace aspect
                                                                        evaluation_points[q],
                                                                        strain_rate);
 
-            computed_quantities[q](dim+5) = pressure - EquationData::adiabatic_pressure (evaluation_points[q]);
+            computed_quantities[q](dim+5) = pressure - adiabatic_conditions.pressure (evaluation_points[q]);
 
             computed_quantities[q](dim+6) = temperature -
-                                            EquationData::adiabatic_temperature (evaluation_points[q]);
+                                            adiabatic_conditions.temperature (evaluation_points[q]);
 
             computed_quantities[q](dim+7) = model_data->density(temperature, pressure, evaluation_points[q]);
           }

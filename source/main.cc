@@ -158,140 +158,102 @@ namespace EquationData
   }
 
 
-  namespace internal
+
+
+
+  template <int dim>
+  AdiabaticConditions<dim>::AdiabaticConditions(const aspect::MaterialModel<dim> * model_data)
+    :
+    n_points(1000),
+    temperatures(n_points, -1),
+    pressures(n_points, -1)
   {
+    const double delta_z = (R1-R0)/(n_points-1);
+    //TODO: look up real value!
+    const double dTdp = 2.5e-8;
 
+    // start with these values: 1200K, 1MPa
+    temperatures[0] = 1200;
+    pressures[0] = 1e6;
 
-    template <int dim>
-    class AdiabaticConditions
-    {
-      public:
-        AdiabaticConditions (const aspect::MaterialModel<dim> * model_data);
+    // now integrate downward using the explicit Euler method for simplicity
+    //
+    // note: p'(z) = rho(p,T) * g
+    //       T'(z) = dT/dp|s dp/dz = dT/dp|S rho(p,T) * g
+    double z = delta_z;
+    for (unsigned int i=1; i<n_points; ++i, z+=delta_z)
+      {
+        Assert (i < pressures.size(), ExcInternalError());
+        Assert (i < temperatures.size(), ExcInternalError());
 
-        double temperature (const Point<dim> &p) const;
-        double pressure (const Point<dim> &p) const;
+        //TODO: use the real gravity model here as a function of z
+        const Point<dim> representative_point
+          = Point<dim>::unit_vector(0) * (R1-z);
 
-      private:
-        const unsigned int n_points;
-        std::vector<double> temperatures, pressures;
-    };
+        const double density = model_data->density(temperatures[i-1], pressures[i-1], representative_point);
 
+        pressures[i] = (pressures[i-1]
+                        + pressures[i-1] * 2/z
+                        - density *
+                        (gravity_vector(representative_point)*Point<dim>::unit_vector(0)) * delta_z);
+        temperatures[i] = (temperatures[i-1] -
+                           dTdp * density *
+                           (gravity_vector(representative_point)*Point<dim>::unit_vector(0)) * delta_z);
+      }
 
-    template <int dim>
-    AdiabaticConditions<dim>::AdiabaticConditions(const aspect::MaterialModel<dim> * model_data)
-      :
-      n_points(1000),
-      temperatures(n_points, -1),
-      pressures(n_points, -1)
-    {
-      const double delta_z = (R1-R0)/(n_points-1);
-      //TODO: look up real value!
-      const double dTdp = 2.5e-8;
-
-      // start with these values: 1200K, 1MPa
-      temperatures[0] = 1200;
-      pressures[0] = 1e6;
-
-      // now integrate downward using the explicit Euler method for simplicity
-      //
-      // note: p'(z) = rho(p,T) * g
-      //       T'(z) = dT/dp|s dp/dz = dT/dp|S rho(p,T) * g
-      double z = delta_z;
-      for (unsigned int i=1; i<n_points; ++i, z+=delta_z)
-        {
-          Assert (i < pressures.size(), ExcInternalError());
-          Assert (i < temperatures.size(), ExcInternalError());
-
-          //TODO: use the real gravity model here as a function of z
-          const Point<dim> representative_point
-            = Point<dim>::unit_vector(0) * (R1-z);
-
-          const double density = model_data->density(temperatures[i-1], pressures[i-1], representative_point);
-
-          pressures[i] = (pressures[i-1]
-                          + pressures[i-1] * 2/z
-                          - density *
-                          (gravity_vector(representative_point)*Point<dim>::unit_vector(0)) * delta_z);
-          temperatures[i] = (temperatures[i-1] -
-                             dTdp * density *
-                             (gravity_vector(representative_point)*Point<dim>::unit_vector(0)) * delta_z);
-        }
-
-      Assert (*min_element (pressures.begin(), pressures.end()) >= 0, ExcInternalError());
-      Assert (*min_element (temperatures.begin(), temperatures.end()) >= 0, ExcInternalError());
-    }
-
-    template <int dim>
-    double AdiabaticConditions<dim>::pressure (const Point<dim> &p) const
-    {
-      const double delta_z = (R1-R0)/(n_points-1);
-
-      // clamp the depth to be positive, can happen due to rounding errors on the mesh
-      const double z = std::min(std::max(R1 - p.norm(), 0.0), R1-R0 - delta_z);
-
-      const unsigned int i = z/delta_z;
-      Assert (z >= 0, ExcInternalError());
-
-      const double d=1.0+i-z/delta_z;
-      return d*pressures[i]+(1-d)*pressures[i+1];
-    }
-
-    template <int dim>
-    double AdiabaticConditions<dim>::temperature (const Point<dim> &p) const
-    {
-      // clamp the depth to be positive, can happen due to rounding errors on the mesh
-      const double z = std::max(R1 - p.norm(), 0.0);
-      const double delta_z = (R1-R0)/(n_points-1);
-
-      const unsigned int i = z/delta_z;
-      Assert (i < pressures.size(), ExcInternalError());
-
-      //TODO: interpolate linearly
-      return temperatures[i];
-    }
-
-
-    std::shared_ptr<AdiabaticConditions<deal_II_dimension> > adiabatic_conditions;
-
+    Assert (*min_element (pressures.begin(), pressures.end()) >= 0, ExcInternalError());
+    Assert (*min_element (temperatures.begin(), temperatures.end()) >= 0, ExcInternalError());
   }
+
+  template <int dim>
+  double AdiabaticConditions<dim>::pressure (const Point<dim> &p) const
+  {
+    const double delta_z = (R1-R0)/(n_points-1);
+
+    // clamp the depth to be positive, can happen due to rounding errors on the mesh
+    const double z = std::min(std::max(R1 - p.norm(), 0.0), R1-R0 - delta_z);
+
+    const unsigned int i = z/delta_z;
+    Assert (z >= 0, ExcInternalError());
+
+    const double d=1.0+i-z/delta_z;
+    return d*pressures[i]+(1-d)*pressures[i+1];
+  }
+
+  template <int dim>
+  double AdiabaticConditions<dim>::temperature (const Point<dim> &p) const
+  {
+    // clamp the depth to be positive, can happen due to rounding errors on the mesh
+    const double z = std::max(R1 - p.norm(), 0.0);
+    const double delta_z = (R1-R0)/(n_points-1);
+
+    const unsigned int i = z/delta_z;
+    Assert (i < pressures.size(), ExcInternalError());
+
+    //TODO: interpolate linearly
+    return temperatures[i];
+  }
+
+
+//instantiation:
+  template class AdiabaticConditions<deal_II_dimension>;
+
 
   template <int dim>
   class AdiabaticPressure : public Function<dim>
   {
     public:
+      AdiabaticPressure(const AdiabaticConditions<dim> & ad_c)
+        : adiabatic_conditions(ad_c)
+      {}
       double value (const Point<dim> &p,
                     const unsigned int = 0) const
       {
-        return internal::adiabatic_conditions->pressure (p);
+        return adiabatic_conditions.pressure (p);
       }
+    private:
+      const AdiabaticConditions<dim> & adiabatic_conditions;
   };
-
-
-  template <int dim>
-  double adiabatic_pressure (const Point<dim> &p)
-  {
-    return EquationData::AdiabaticPressure<dim>().value (p);
-  }
-
-
-  template <int dim>
-  class AdiabaticTemperature : public Function<dim>
-  {
-    public:
-      double value (const Point<dim> &p,
-                    const unsigned int = 0) const
-      {
-        return internal::adiabatic_conditions->temperature (p);
-      }
-  };
-
-
-  template <int dim>
-  double adiabatic_temperature (const Point<dim> &p)
-  {
-    return EquationData::AdiabaticTemperature<dim>().value (p);
-  }
-
 
 
   template <int dim>
@@ -412,19 +374,6 @@ namespace EquationData
       values(c) = TemperatureInitialValues<dim>::value (p, c);
   }
 }
-
-
-// instantiate some functions
-namespace EquationData
-{
-  template
-  double adiabatic_pressure (const Point<deal_II_dimension> &p);
-
-  template
-  double adiabatic_temperature (const Point<deal_II_dimension> &p);
-
-}
-
 
 
 
@@ -1065,6 +1014,7 @@ namespace aspect
             == 0)),
 
     model_data ( new MaterialModel_Table<dim>()),
+    adiabatic_conditions(model_data.get()),
 
     triangulation (MPI_COMM_WORLD,
                    typename Triangulation<dim>::MeshSmoothing
@@ -1101,9 +1051,6 @@ namespace aspect
     computing_timer (pcout, TimerOutput::summary,
                      TimerOutput::wall_times)
   {
-    EquationData::internal::adiabatic_conditions.reset(
-      new EquationData::internal::AdiabaticConditions<dim>(model_data.get()));
-
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
 
@@ -1484,26 +1431,29 @@ namespace aspect
         class InitialConditions : public Function<dim>
         {
           public:
-            InitialConditions () : Function<dim> (dim+1) {}
+            InitialConditions (const EquationData::AdiabaticConditions<dim> &ad_c)
+              : Function<dim> (dim+1), adiabatic_conditions (ad_c)
+            {}
+
             double value (const Point<dim> &p,
                           const unsigned int component) const
             {
               switch (component)
                 {
                   case dim:
-                    return adiabatic_pressure.value (p);
+                    return adiabatic_conditions.pressure (p);
                   default:
                     return 0;
                 }
             }
 
-            EquationData::AdiabaticPressure<dim> adiabatic_pressure;
+            const EquationData::AdiabaticConditions<dim> & adiabatic_conditions;
         };
 
         TrilinosWrappers::MPI::BlockVector stokes_tmp;
         stokes_tmp.reinit (stokes_rhs);
         VectorTools::interpolate (mapping, stokes_dof_handler,
-                                  InitialConditions(),
+                                  InitialConditions(adiabatic_conditions),
                                   stokes_tmp);
         old_stokes_solution = stokes_tmp;
       }
@@ -1534,6 +1484,9 @@ namespace aspect
 
         std::vector<double> rhs_values(n_q_points);
 
+        EquationData::AdiabaticPressure<dim> ad_pressure (adiabatic_conditions);
+
+
         typename DoFHandler<dim>::active_cell_iterator
         cell = stokes_dof_handler.begin_active(),
         endc = stokes_dof_handler.end();
@@ -1544,7 +1497,7 @@ namespace aspect
               cell->get_dof_indices (local_dof_indices);
               fe_values.reinit(cell);
 
-              EquationData::AdiabaticPressure<dim>().value_list
+              ad_pressure.value_list
               (fe_values.get_quadrature_points(), rhs_values);
 
               cell_vector = 0;

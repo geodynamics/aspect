@@ -27,12 +27,18 @@ namespace EquationData
   extern double thermal_conductivity;
 
   template <int dim>
-  double adiabatic_pressure (const Point<dim> &p);
+  class AdiabaticConditions
+  {
+    public:
+      AdiabaticConditions (const aspect::MaterialModel<dim> * model_data);
 
-  template <int dim>
-  double adiabatic_temperature (const Point<dim> &p);
+      double temperature (const dealii::Point<dim> &p) const;
+      double pressure (const dealii::Point<dim> &p) const;
 
-
+    private:
+      const unsigned int n_points;
+      std::vector<double> temperatures, pressures;
+  };
 
 }
 
