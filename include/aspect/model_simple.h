@@ -21,8 +21,8 @@ namespace aspect
 
       virtual double eta (const double temperature, const double pressure, const dealii::Point<dim> &position) const;
 
-      virtual double real_viscosity (const double                 temperature,
-                                     const double                  pressure,
+      virtual double real_viscosity (const double temperature,
+                                     const double pressure,
                                      const dealii::Point<dim> &position,
                                      const dealii::SymmetricTensor<2,dim> &strain_rate) const;
 

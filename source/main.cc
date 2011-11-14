@@ -1044,7 +1044,7 @@ namespace aspect
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
 
-	model_data->parse_parameters(prm);
+    model_data->parse_parameters(prm);
 
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
