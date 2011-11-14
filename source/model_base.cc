@@ -6,6 +6,9 @@
 //-------------------------------------------------------------
 
 #include <aspect/model.h>
+#include <aspect/model_simple.h>
+#include <aspect/model_table.h>
+#include <deal.II/base/exceptions.h>
 
 namespace aspect
 {
@@ -26,6 +29,18 @@ namespace aspect
   void
   MaterialModel<dim>::parse_parameters (dealii::ParameterHandler &prm)
   {}
+
+  template <int dim>
+  MaterialModel<dim> *
+  MaterialModel<dim>::create( const std::string name)
+  {
+    if (name == "simple")
+      return new MaterialModel_Simple<dim>();
+    else if (name == "table")
+      return new MaterialModel_Table<dim>();
+    else
+      throw dealii::ExcNotImplemented();
+  }
 
 }
 

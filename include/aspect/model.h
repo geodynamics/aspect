@@ -59,6 +59,10 @@ namespace aspect
       void
       parse_parameters (dealii::ParameterHandler &prm);
 
+      static
+      MaterialModel<dim> *
+      create( const std::string name);
+
   };
 
 }

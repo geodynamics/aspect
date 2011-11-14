@@ -147,6 +147,7 @@ namespace aspect
         int IsCompressible;
         int ShearHeating;
         int AdiabaticCompression;
+        std::string model;
         double kappa;
         double reference_density;
         double reference_temperature;

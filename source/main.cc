@@ -849,6 +849,9 @@ namespace aspect
 
     prm.enter_subsection ("ModelParameters");
     {
+      prm.declare_entry ("model", "simple",
+                         Patterns::Selection ("simple|table"),
+                         "select the active model: simple|table");
       prm.declare_entry ("kappa", "4.548e-7",
                          Patterns::Double (),
                          "thermal diffusivity (k/(rho*cp)");
@@ -967,6 +970,7 @@ namespace aspect
 
     prm.enter_subsection ("ModelParameters");
     {
+      model = prm.get ("model");
       EquationData::kappa = prm.get_double ("kappa");
       EquationData::radiogenic_heating = prm.get_double ("radiogenic_heating");
       EquationData::thermal_expansivity = prm.get_double ("thermal_expansivity");
@@ -1003,7 +1007,9 @@ namespace aspect
             this_mpi_process(MPI_COMM_WORLD)
             == 0)),
 
-    model_data ( new MaterialModel_Table<dim>()),
+    model_data (
+      MaterialModel<dim>::create(parameters.model)
+    ),
     adiabatic_conditions(model_data.get()),
 
     triangulation (MPI_COMM_WORLD,

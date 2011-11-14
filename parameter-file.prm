@@ -76,6 +76,9 @@ subsection ModelSettings
 end
 
 subsection ModelParameters
+  # select the active model: simple|table
+  set model                = table
+
   set kappa = 4.548e-7
   set radiogenic_heating = 0e0
   set thermal_expansivity = 4e-5
