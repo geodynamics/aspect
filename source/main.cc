@@ -112,8 +112,6 @@ namespace EquationData
 
   const double year_in_seconds  = 60*60*24*365.2425;
 
-  int AdiabaticCompression = 0;
-
   struct Perturbation
   {
     double Angle;
@@ -829,9 +827,6 @@ namespace aspect
                          "physical viewpoint, shear heating should always be used but may "
                          "be undesirable when comparing results with known benchmarks that "
                          "do not include this term in the temperature equation.");
-      prm.declare_entry ("AdiabaticCompression", "1",
-                         Patterns::Integer (0),
-                         "Is model compressible yes/no (1/0)");
     }
     prm.leave_subsection ();
 
@@ -951,7 +946,6 @@ namespace aspect
     prm.enter_subsection ("ModelSettings");
     {
       include_shear_heating = prm.get_bool ("Include shear heating");
-      EquationData::AdiabaticCompression = prm.get_integer ("AdiabaticCompression");
     }
     prm.leave_subsection ();
 

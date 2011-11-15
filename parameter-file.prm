@@ -71,7 +71,6 @@ end
 
 subsection ModelSettings
   set Include shear heating = false
-  set AdiabaticCompression = 0
 end
 
 subsection ModelParameters
