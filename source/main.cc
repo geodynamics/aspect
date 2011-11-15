@@ -150,7 +150,7 @@ namespace EquationData
 
 
   template <int dim>
-  AdiabaticConditions<dim>::AdiabaticConditions(const aspect::MaterialModel<dim> * model_data)
+  AdiabaticConditions<dim>::AdiabaticConditions(const aspect::MaterialModel<dim> * material_model)
     :
     n_points(1000),
     temperatures(n_points, -1),
@@ -178,7 +178,7 @@ namespace EquationData
         const Point<dim> representative_point
           = Point<dim>::unit_vector(0) * (R1-z);
 
-        const double density = model_data->density(temperatures[i-1], pressures[i-1], representative_point);
+        const double density = material_model->density(temperatures[i-1], pressures[i-1], representative_point);
 
         pressures[i] = (pressures[i-1]
                         + pressures[i-1] * 2/z
@@ -997,10 +997,10 @@ namespace aspect
             this_mpi_process(MPI_COMM_WORLD)
             == 0)),
 
-    model_data (
+    material_model (
       MaterialModel<dim>::create(parameters.model)
     ),
-    adiabatic_conditions(model_data.get()),
+    adiabatic_conditions(material_model.get()),
 
     triangulation (MPI_COMM_WORLD,
                    typename Triangulation<dim>::MeshSmoothing
@@ -1040,7 +1040,7 @@ namespace aspect
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
 
-    model_data->parse_parameters(prm);
+    material_model->parse_parameters(prm);
 
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
@@ -1337,13 +1337,13 @@ namespace aspect
                                      * (old_temperature_laplacians[q] +
                                         old_old_temperature_laplacians[q]) / 2;
 
-        const double density = model_data->density(T, p, evaluation_points[q]);
+        const double density = material_model->density(T, p, evaluation_points[q]);
 
         const double gamma
           = ((EquationData::radiogenic_heating * density
               +
-              EquationData::ShearHeating*2 * model_data->viscosity(T, p, evaluation_points[q]) * strain_rate * strain_rate) /
-             (density * model_data->specific_heat(T, p, evaluation_points[q])));
+              EquationData::ShearHeating*2 * material_model->viscosity(T, p, evaluation_points[q]) * strain_rate * strain_rate) /
+             (density * material_model->specific_heat(T, p, evaluation_points[q])));
 
         double residual
           = std::abs(dT_dt + u_grad_T - kappa_Delta_T - gamma);
@@ -1799,9 +1799,9 @@ namespace aspect
             scratch.phi_p[k]       = scratch.stokes_fe_values[pressure].value (k, q);
           }
 
-        double eta = model_data->viscosity(old_temperature,
-                                           old_pressure,
-                                           scratch.stokes_fe_values.quadrature_point(q) );
+        double eta = material_model->viscosity(old_temperature,
+                                               old_pressure,
+                                               scratch.stokes_fe_values.quadrature_point(q) );
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           for (unsigned int j=0; j<dofs_per_cell; ++j)
@@ -1969,22 +1969,22 @@ namespace aspect
               }
           }
 
-        const double eta = model_data->viscosity(old_temperature,
-                                                 old_pressure,
-                                                 scratch.stokes_fe_values.quadrature_point(q));
+        const double eta = material_model->viscosity(old_temperature,
+                                                     old_pressure,
+                                                     scratch.stokes_fe_values.quadrature_point(q));
 
         const Tensor<1,dim>
         gravity = EquationData::gravity_vector (scratch.stokes_fe_values.quadrature_point(q));
 
 
-        const double compressibility = model_data->compressibility(old_temperature,
-                                                                   old_pressure,
-                                                                   scratch.stokes_fe_values
-                                                                   .quadrature_point(q));
-        const double density = model_data->density(old_temperature,
-                                                   old_pressure,
-                                                   scratch.stokes_fe_values
-                                                   .quadrature_point(q));
+        const double compressibility = material_model->compressibility(old_temperature,
+                                                                       old_pressure,
+                                                                       scratch.stokes_fe_values
+                                                                       .quadrature_point(q));
+        const double density = material_model->density(old_temperature,
+                                                       old_pressure,
+                                                       scratch.stokes_fe_values
+                                                       .quadrature_point(q));
 
         if (rebuild_stokes_matrix)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
@@ -2220,18 +2220,18 @@ namespace aspect
               scratch.old_old_pressure[q], scratch.old_pressure[q]);
 
         const double density
-          = model_data->density(ext_T,
-                                ext_pressure,
-                                scratch.temperature_fe_values.quadrature_point(q));
+          = material_model->density(ext_T,
+                                    ext_pressure,
+                                    scratch.temperature_fe_values.quadrature_point(q));
         const double gamma
           = (EquationData::radiogenic_heating * density
              +
-             EquationData::ShearHeating*2 * model_data->viscosity(ext_T,
-                                                                  ext_pressure,
-                                                                  scratch.temperature_fe_values.quadrature_point(q))
+             EquationData::ShearHeating*2 * material_model->viscosity(ext_T,
+                                                                      ext_pressure,
+                                                                      scratch.temperature_fe_values.quadrature_point(q))
              * extrapolated_strain_rate * extrapolated_strain_rate)
-            / (density * model_data->specific_heat(ext_T, ext_pressure,
-                                                   scratch.temperature_fe_values.quadrature_point(q)));
+            / (density * material_model->specific_heat(ext_T, ext_pressure,
+                                                       scratch.temperature_fe_values.quadrature_point(q)));
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           {

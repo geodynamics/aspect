@@ -169,7 +169,7 @@ namespace aspect
       Parameters                          parameters;
       ConditionalOStream                  pcout;
 
-      std::auto_ptr<MaterialModel<dim> >    model_data;
+      std::auto_ptr<MaterialModel<dim> >    material_model;
       EquationData::AdiabaticConditions<dim> adiabatic_conditions;
 
       Postprocess::Manager<dim>           postprocess_manager;
