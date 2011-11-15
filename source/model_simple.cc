@@ -77,7 +77,7 @@ namespace aspect
     void
     Simple<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("ModelParameters");
+      prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Simple model");
         {
@@ -102,7 +102,7 @@ namespace aspect
     void
     Simple<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("ModelParameters");
+      prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Simple model");
         {

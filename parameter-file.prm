@@ -74,9 +74,6 @@ subsection ModelSettings
 end
 
 subsection ModelParameters
-  # select the active model: simple|table
-  set model                = table
-
   set kappa = 4.548e-7
   set radiogenic_heating = 0e0
   set thermal_conductivity = 4.7
@@ -87,8 +84,11 @@ subsection ModelParameters
   set T0 = 6300
   set reference_gravity = 30
   set reference_eta = 5e24
+end
 
-
+subsection Material model
+  # select the active model: simple|table
+  set model                = table
 
   subsection Simple model
     # rho0 in kg / m^3

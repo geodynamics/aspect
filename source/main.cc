@@ -829,11 +829,16 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    prm.enter_subsection ("ModelParameters");
+    prm.enter_subsection ("Material model");
     {
       prm.declare_entry ("model", "simple",
                          Patterns::Selection ("simple|table"),
                          "select the active model: simple|table");
+    }
+    prm.leave_subsection ();
+
+    prm.enter_subsection ("ModelParameters");
+    {
       prm.declare_entry ("kappa", "4.548e-7",
                          Patterns::Double (),
                          "thermal diffusivity (k/(rho*cp)");
@@ -945,9 +950,14 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    prm.enter_subsection ("ModelParameters");
+    prm.enter_subsection ("Material model");
     {
       model = prm.get ("model");
+    }
+    prm.leave_subsection ();
+
+    prm.enter_subsection ("ModelParameters");
+    {
       EquationData::kappa = prm.get_double ("kappa");
       EquationData::radiogenic_heating = prm.get_double ("radiogenic_heating");
       EquationData::thermal_conductivity = prm.get_double ("thermal_conductivity");
