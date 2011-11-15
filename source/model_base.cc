@@ -5,7 +5,7 @@
 //
 //-------------------------------------------------------------
 
-#include <aspect/model.h>
+#include <aspect/model_base.h>
 #include <aspect/model_simple.h>
 #include <aspect/model_table.h>
 #include <deal.II/base/exceptions.h>

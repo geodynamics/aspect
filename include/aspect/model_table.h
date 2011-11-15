@@ -7,7 +7,7 @@
 #ifndef __aspect__model_table_h
 #define __aspect__model_table_h
 
-#include <aspect/model.h>
+#include <aspect/model_base.h>
 
 namespace aspect
 {
