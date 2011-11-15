@@ -321,13 +321,13 @@ namespace aspect
         void initialize (const Simulator<dim> &simulator);
 
         /**
-               * Execute all of the postprocessor objects that have been
-               * requested in the input file. These objects also fill the
-               * contents of the statistics object.
-               *
-               * The function returns a concatenation of the text returned by
-               * the individual postprocessors.
-               */
+         * Execute all of the postprocessor objects that have been
+         * requested in the input file. These objects also fill the
+         * contents of the statistics object.
+         *
+         * The function returns a concatenation of the text returned by
+         * the individual postprocessors.
+         */
         std::list<std::pair<std::string,std::string> >
         execute (TableHandler &statistics);
 
