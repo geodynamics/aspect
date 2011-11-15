@@ -87,7 +87,6 @@ namespace EquationData
   double kappa                 = 1e-6;
   const double reference_specific_heat = 1250;    /* J / K / kg */  //??
   double radiogenic_heating    = 7.4e-12; /* W / kg     */  //??
-  double thermal_expansivity    = 4e-5;
   double thermal_conductivity = 4.7;
   double reference_gravity    = 30;
   double reference_eta    = 5e24;
@@ -841,9 +840,6 @@ namespace aspect
       prm.declare_entry ("radiogenic_heating", "0e0",
                          Patterns::Double (),
                          "H0");
-      prm.declare_entry ("thermal_expansivity", "4e-5",
-                         Patterns::Double (),
-                         "alpha0");
       prm.declare_entry ("thermal_conductivity", "4.7",
                          Patterns::Double (),
                          "k");
@@ -954,7 +950,6 @@ namespace aspect
       model = prm.get ("model");
       EquationData::kappa = prm.get_double ("kappa");
       EquationData::radiogenic_heating = prm.get_double ("radiogenic_heating");
-      EquationData::thermal_expansivity = prm.get_double ("thermal_expansivity");
       EquationData::thermal_conductivity = prm.get_double ("thermal_conductivity");
       EquationData::R1 = prm.get_double ("R1");
       EquationData::R0 = prm.get_double ("R0");
