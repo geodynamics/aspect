@@ -182,23 +182,8 @@ namespace aspect
     return reference_eta;
   }
 
-  template <int dim>
-  double
-  MaterialModel_Table<dim>::
-  real_viscosity (const double                 temperature,
-                  const double                  pressure,
-                  const Point<dim> &position,
-                  const SymmetricTensor<2,dim> &strain_rate) const
-  {
-    // this is currently only used
-    // in generating graphical
-    // output
-    return viscosity (temperature, pressure, position);
-  }
 
-
-  // rho-cp
-  template <int dim>
+template <int dim>
   double
   MaterialModel_Table<dim>::
   specific_heat (const double temperature,

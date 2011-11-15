@@ -40,11 +40,6 @@ namespace aspect
 				const double      pressure, 
 				const Point<dim> &position) const = 0;
 
-      virtual double real_viscosity (const double      temperature,
-                                     const double      pressure,
-                                     const Point<dim> &position,
-                                     const SymmetricTensor<2,dim> &strain_rate) const = 0;
-
       /**
        * Return the specific heat (i.e. $c_P$) of the model as a function of temperature,
        * pressure and position.

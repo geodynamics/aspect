@@ -12,11 +12,6 @@ using namespace dealii;
 
 namespace aspect
 {
-
-  template <int dim>
-  MaterialModel_Simple<dim>::~MaterialModel_Simple ()
-  {}
-
   template <int dim>
   double
   MaterialModel_Simple<dim>::
@@ -27,42 +22,6 @@ namespace aspect
     return reference_eta;
   }
 
-  template <int dim>
-  double
-  MaterialModel_Simple<dim>::
-  real_viscosity (const double                 temperature,
-                  const double                  pressure,
-                  const Point<dim> &position,
-                  const SymmetricTensor<2,dim> &strain_rate) const
-  {
-    // this is currently only used
-    // in generating graphical
-    // output
-    return viscosity (temperature, pressure, position);
-
-// we could use something more complicated, like the following:
-
-    //                                       // This is the function used
-    //                                       // for the lower mantle in the
-    //                                       // Science paper by Stadler et
-    //                                       // al., see
-    //       // http://www.sciencemag.org/content/329/5995/1033/suppl/\DC1
-    // const double d    = 9.3e4;
-    // const double p    = 3;
-    // const double A    = 1;
-    // const double C_OH = 1e3;         /* ppm */
-    // const double r    = 1;
-    // const double E_a  = 335e3;       /* J/mol */
-    // const double V_a  = 1.25e-6;     /* m^3/mol */
-    // const double R    = 8.31447215;  /* J/mol/K */
-    // const double n    = 1;
-
-    // return (std::pow(std::pow(d,p)/(A*std::pow(C_OH,r)), 1./n)
-    //              *
-    //              std::pow(second_invariant(strain_rate), (1.-n)/n)
-    //              *
-    //              std::exp((E_a+pressure*V_a)/(n*R*temperature)));
-  }
 
   template <int dim>
   double

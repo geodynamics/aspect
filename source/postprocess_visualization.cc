@@ -177,10 +177,9 @@ namespace aspect
 
             computed_quantities[q](dim+3) = partition;
 
-            computed_quantities[q](dim+4) = model_data->real_viscosity(temperature,
-                                                                       pressure,
-                                                                       evaluation_points[q],
-                                                                       strain_rate);
+            computed_quantities[q](dim+4) = model_data->viscosity(temperature,
+								  pressure,
+								  evaluation_points[q]);
 
             computed_quantities[q](dim+5) = pressure - adiabatic_conditions.pressure (evaluation_points[q]);
 

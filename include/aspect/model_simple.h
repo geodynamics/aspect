@@ -17,16 +17,9 @@ namespace aspect
   class MaterialModel_Simple: public MaterialModel<dim>
   {
     public:
-      ~MaterialModel_Simple();
-
       virtual double viscosity (const double temperature, 
 				const double pressure, 
 				const Point<dim> &position) const;
-
-      virtual double real_viscosity (const double temperature,
-                                     const double pressure,
-                                     const Point<dim> &position,
-                                     const SymmetricTensor<2,dim> &strain_rate) const;
 
       virtual double specific_heat (const double temperature,
                                     const double pressure,

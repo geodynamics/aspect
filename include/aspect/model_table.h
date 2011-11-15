@@ -20,11 +20,6 @@ namespace aspect
       virtual double viscosity (const double temperature, 
 				const double pressure, 
 				const Point<dim> &position) const;
-      virtual double real_viscosity (const double                 temperature,
-                                     const double                  pressure,
-                                     const Point<dim> &position,
-                                     const SymmetricTensor<2,dim> &strain_rate) const;
-      // aka rho-cp:
       virtual double specific_heat (const double temperature,
                                     const double pressure,
 				    const Point<dim> &position) const;
