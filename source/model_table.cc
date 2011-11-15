@@ -174,21 +174,21 @@ namespace aspect
   template <int dim>
   double
   MaterialModel_Table<dim>::
-  viscosity (const double temperature, 
-	     const double pressure,
-	     const Point<dim> &position) const
+  viscosity (const double temperature,
+             const double pressure,
+             const Point<dim> &position) const
   {
     double reference_eta    = 5e24;
     return reference_eta;
   }
 
 
-template <int dim>
+  template <int dim>
   double
   MaterialModel_Table<dim>::
   specific_heat (const double temperature,
                  const double pressure,
-		 const Point<dim> &) const
+                 const Point<dim> &) const
   {
 //    const double reference_specific_heat = 1250;    /* J / K / kg */  //??
 //      if (!IsCompressible) return reference_specific_heat; TODO

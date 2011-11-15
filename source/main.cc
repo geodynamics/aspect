@@ -85,7 +85,7 @@ using namespace dealii;
 namespace EquationData
 {
   double kappa                 = 1e-6;
-	  const double reference_specific_heat = 1250;    /* J / K / kg */  //??
+  const double reference_specific_heat = 1250;    /* J / K / kg */  //??
   double radiogenic_heating    = 7.4e-12; /* W / kg     */  //??
   double thermal_expansivity    = 4e-5;
   double thermal_conductivity = 4.7;
@@ -1800,8 +1800,8 @@ namespace aspect
           }
 
         double eta = model_data->viscosity(old_temperature,
-					   old_pressure,
-					   scratch.stokes_fe_values.quadrature_point(q) );
+                                           old_pressure,
+                                           scratch.stokes_fe_values.quadrature_point(q) );
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           for (unsigned int j=0; j<dofs_per_cell; ++j)
@@ -1970,8 +1970,8 @@ namespace aspect
           }
 
         const double eta = model_data->viscosity(old_temperature,
-						 old_pressure,
-						 scratch.stokes_fe_values.quadrature_point(q));
+                                                 old_pressure,
+                                                 scratch.stokes_fe_values.quadrature_point(q));
 
         const Tensor<1,dim>
         gravity = EquationData::gravity_vector (scratch.stokes_fe_values.quadrature_point(q));
@@ -2227,11 +2227,11 @@ namespace aspect
           = (EquationData::radiogenic_heating * density
              +
              EquationData::ShearHeating*2 * model_data->viscosity(ext_T,
-								  ext_pressure,
-								  scratch.temperature_fe_values.quadrature_point(q))
+                                                                  ext_pressure,
+                                                                  scratch.temperature_fe_values.quadrature_point(q))
              * extrapolated_strain_rate * extrapolated_strain_rate)
             / (density * model_data->specific_heat(ext_T, ext_pressure,
-						   scratch.temperature_fe_values.quadrature_point(q)));
+                                                   scratch.temperature_fe_values.quadrature_point(q)));
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           {

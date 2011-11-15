@@ -15,9 +15,9 @@ namespace aspect
   template <int dim>
   double
   MaterialModel_Simple<dim>::
-  viscosity (const double temperature, 
-	     const double pressure,
-	     const Point<dim> &position) const
+  viscosity (const double temperature,
+             const double pressure,
+             const Point<dim> &position) const
   {
     return reference_eta;
   }
@@ -28,7 +28,7 @@ namespace aspect
   MaterialModel_Simple<dim>::
   specific_heat (const double temperature,
                  const double pressure,
-		 const Point<dim> &) const
+                 const Point<dim> &) const
   {
     return 1250.0;
   }
@@ -44,7 +44,7 @@ namespace aspect
     const double thermal_expansion_coefficient_ = 2e-5;
     return (reference_density *
             (1 - thermal_expansion_coefficient_ * (temperature -
-                                           reference_temperature)));
+                                                   reference_temperature)));
   }
 
 

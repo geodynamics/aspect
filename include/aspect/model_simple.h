@@ -12,18 +12,18 @@
 namespace aspect
 {
   using namespace dealii;
-  
+
   template <int dim>
   class MaterialModel_Simple: public MaterialModel<dim>
   {
     public:
-      virtual double viscosity (const double temperature, 
-				const double pressure, 
-				const Point<dim> &position) const;
+      virtual double viscosity (const double temperature,
+                                const double pressure,
+                                const Point<dim> &position) const;
 
       virtual double specific_heat (const double temperature,
                                     const double pressure,
-				    const Point<dim> &position) const;
+                                    const Point<dim> &position) const;
 
       virtual double density (const double temperature,
                               const double pressure,

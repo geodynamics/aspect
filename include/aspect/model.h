@@ -15,7 +15,7 @@
 namespace aspect
 {
   using namespace dealii;
-  
+
   /**
    * A base class for parameterizations of material models.Classes derived from
    * this class will need to implement functions that provide material parameters
@@ -36,9 +36,9 @@ namespace aspect
        * Return the viscosity $\eta$ of the model as a function of temperature,
        * pressure and position.
        */
-      virtual double viscosity (const double      temperature, 
-				const double      pressure, 
-				const Point<dim> &position) const = 0;
+      virtual double viscosity (const double      temperature,
+                                const double      pressure,
+                                const Point<dim> &position) const = 0;
 
       /**
        * Return the specific heat (i.e. $c_P$) of the model as a function of temperature,
@@ -46,15 +46,15 @@ namespace aspect
        */
       virtual double specific_heat (const double      temperature,
                                     const double      pressure,
-				    const Point<dim> &position) const = 0;
+                                    const Point<dim> &position) const = 0;
 
       /**
        * Return the density $\rho$ of the model as a function of temperature,
        * pressure and position.
        */
       virtual double density (const double      temperature,
-			      const double      pressure,
-			      const Point<dim> &position) const = 0;
+                              const double      pressure,
+                              const Point<dim> &position) const = 0;
 
       /**
        * Return the compressibility coefficient of the model as a function of temperature,
