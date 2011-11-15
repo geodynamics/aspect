@@ -2649,6 +2649,7 @@ namespace aspect
   void Simulator<dim>::resume_from_snapshot()
   {
     triangulation.load ("bin/mesh");
+    global_volume = GridTools::volume (triangulation, mapping);
     setup_dofs();
 
     TrilinosWrappers::MPI::Vector
@@ -2931,13 +2932,14 @@ namespace aspect
     triangulation.set_boundary (0, boundary);
     triangulation.set_boundary (1, boundary);
 
+    global_Omega_diameter = GridTools::diameter (triangulation);
+
     if (parameters.resume_computation == true)
       {
         resume_from_snapshot();
       }
     else
       {
-        global_Omega_diameter = GridTools::diameter (triangulation);
         triangulation.refine_global (parameters.initial_global_refinement);
         global_volume = GridTools::volume (triangulation, mapping);
 
