@@ -137,6 +137,9 @@ namespace aspect
         bool         use_locally_conservative_discretization;
 
         unsigned int temperature_degree;
+
+	bool         include_shear_heating;
+
         double perturbation_Angle;
         double perturbation_depth;
         double perturbation_Amplitude;
@@ -144,8 +147,6 @@ namespace aspect
         double perturbation_Sign;
         bool perturbation_GaussianPerturbation;
 
-        int IsCompressible;
-        int ShearHeating;
         int AdiabaticCompression;
         std::string model;
         double kappa;

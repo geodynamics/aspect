@@ -112,7 +112,6 @@ namespace EquationData
 
   const double year_in_seconds  = 60*60*24*365.2425;
 
-  int ShearHeating = 0;
   int AdiabaticCompression = 0;
 
   struct Perturbation
@@ -824,9 +823,12 @@ namespace aspect
 
     prm.enter_subsection ("ModelSettings");
     {
-      prm.declare_entry ("ShearHeating", "1",
-                         Patterns::Integer (0),
-                         "Is model compressible yes/no (1/0)");
+      prm.declare_entry ("Include shear heating", "true",
+                         Patterns::Bool (),
+                         "Whether to include shear heating into the model or not. From a "
+                         "physical viewpoint, shear heating should always be used but may "
+                         "be undesirable when comparing results with known benchmarks that "
+                         "do not include this term in the temperature equation.");
       prm.declare_entry ("AdiabaticCompression", "1",
                          Patterns::Integer (0),
                          "Is model compressible yes/no (1/0)");
@@ -948,7 +950,7 @@ namespace aspect
 
     prm.enter_subsection ("ModelSettings");
     {
-      EquationData::ShearHeating = prm.get_integer ("ShearHeating");
+      include_shear_heating = prm.get_bool ("Include shear heating");
       EquationData::AdiabaticCompression = prm.get_integer ("AdiabaticCompression");
     }
     prm.leave_subsection ();
@@ -1335,22 +1337,27 @@ namespace aspect
         const double density = material_model->density(T, p, evaluation_points[q]);
 
         const double gamma
-          = ((EquationData::radiogenic_heating * density
+          = (EquationData::radiogenic_heating * density
               +
-              EquationData::ShearHeating*2 * material_model->viscosity(T, p, evaluation_points[q]) * strain_rate * strain_rate) /
-             (density * material_model->specific_heat(T, p, evaluation_points[q])));
+              (parameters.include_shear_heating
+               ?
+               2 * material_model->viscosity(T, p, evaluation_points[q]) * 
+               strain_rate * strain_rate  /
+              (density * material_model->specific_heat(T, p, evaluation_points[q]))
+               :
+               0));
 
-        double residual
-          = std::abs(dT_dt + u_grad_T - kappa_Delta_T - gamma);
-        if (parameters.stabilization_alpha == 2)
-          residual *= std::abs(T - average_temperature);
+             double residual
+             = std::abs(dT_dt + u_grad_T - kappa_Delta_T - gamma);
+             if (parameters.stabilization_alpha == 2)
+             residual *= std::abs(T - average_temperature);
 
-        max_residual = std::max (residual,        max_residual);
-        max_velocity = std::max (std::sqrt (u*u), max_velocity);
+             max_residual = std::max (residual,        max_residual);
+             max_velocity = std::max (std::sqrt (u*u), max_velocity);
       }
 
-    const double max_viscosity = (parameters.stabilization_beta *
-                                  max_velocity * cell_diameter);
+       const double max_viscosity = (parameters.stabilization_beta *
+                                     max_velocity * cell_diameter);
     if (timestep_number == 0)
       return max_viscosity;
     else
@@ -2232,12 +2239,17 @@ namespace aspect
         const double gamma
           = (EquationData::radiogenic_heating * density
              +
-             EquationData::ShearHeating*2 * material_model->viscosity(ext_T,
-                                                                      ext_pressure,
-                                                                      scratch.temperature_fe_values.quadrature_point(q))
-             * extrapolated_strain_rate * extrapolated_strain_rate)
-            / (density * material_model->specific_heat(ext_T, ext_pressure,
-                                                       scratch.temperature_fe_values.quadrature_point(q)));
+             (parameters.include_shear_heating
+              ?
+              2 * material_model->viscosity(ext_T,
+                                            ext_pressure,
+                                            scratch.temperature_fe_values.quadrature_point(q)) *
+              extrapolated_strain_rate * extrapolated_strain_rate /
+              (density * material_model->specific_heat(ext_T, ext_pressure,
+                                                       scratch.temperature_fe_values.quadrature_point(q)))
+              :
+              0)
+            );
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           {
