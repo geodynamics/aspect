@@ -34,9 +34,6 @@ namespace aspect
       virtual double compressibility (const double temperature,
                                       const double pressure,
                                       const Point<dim> &position) const;
-      virtual double thermal_expansion_coefficient (const double temperature,
-						    const double pressure,
-						    const Point<dim> &position) const;
   };
 }
 

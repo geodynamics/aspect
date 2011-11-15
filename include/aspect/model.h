@@ -70,14 +70,6 @@ namespace aspect
                                       const Point<dim> &position) const = 0;
 
       /**
-       * Return the thermal expansion coefficient of the model as a function of temperature,
-       * pressure and position.
-       */
-      virtual double thermal_expansion_coefficient (const double temperature,
-						    const double pressure,
-						    const Point<dim> &position) const = 0;
-
-      /**
        * Declare the parameters this class takes through input files.
        */
       static

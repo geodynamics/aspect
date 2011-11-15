@@ -6,6 +6,7 @@
 //-------------------------------------------------------------
 
 #include <aspect/model_simple.h>
+#include <deal.II/base/parameter_handler.h>
 
 using namespace dealii;
 
@@ -71,8 +72,8 @@ namespace aspect
 		 const Point<dim> &) const
   {
     return 1250.0;
-
   }
+
 
   template <int dim>
   double
@@ -81,11 +82,12 @@ namespace aspect
            const double pressure,
            const Point<dim> &position) const
   {
-    const double expansion_coefficient_ = thermal_expansion_coefficient (temperature, pressure, position);
+    const double thermal_expansion_coefficient_ = 2e-5;
     return (reference_density *
-            (1 - expansion_coefficient_ * (temperature -
+            (1 - thermal_expansion_coefficient_ * (temperature -
                                            reference_temperature)));
   }
+
 
   template <int dim>
   double
@@ -97,15 +99,7 @@ namespace aspect
     return 0.0;
   }
 
-  template <int dim>
-  double
-  MaterialModel_Simple<dim>::
-  thermal_expansion_coefficient (const double temperature,
-				 const double pressure,
-				 const Point<dim> &position) const
-  {
-    return 2e-5;
-  }
+
 
   template <int dim>
   void
@@ -131,6 +125,7 @@ namespace aspect
   }
 
 
+
   template <int dim>
   void
   MaterialModel_Simple<dim>::parse_parameters (ParameterHandler &prm)
@@ -153,7 +148,5 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-
   template class MaterialModel_Simple<deal_II_dimension>;
-
 }

@@ -6,6 +6,7 @@
 //-------------------------------------------------------------
 
 #include <aspect/model_table.h>
+#include <deal.II/base/parameter_handler.h>
 #include <fstream>
 
 using namespace dealii;
@@ -236,26 +237,10 @@ namespace aspect
   }
 
 
-  template <int dim>
-  double
-  MaterialModel_Table<dim>::
-  thermal_expansion_coefficient (const double temperature,
-				 const double pressure,
-				 const Point<dim> &position) const
-  {
-//      if (!IsCompressible) return thermal_expansivity;
-    static internal::P_T_LookupFunction alpha("DataDir/alpha_bin");
-    return alpha.value(temperature, pressure);
-  }
-
-
-
 }
 
 // explicit instantiations
 namespace aspect
 {
-
   template class MaterialModel_Table<deal_II_dimension>;
-
 }

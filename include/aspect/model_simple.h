@@ -8,7 +8,6 @@
 #define __aspect__model_simple_h
 
 #include <aspect/model.h>
-#include <deal.II/base/parameter_handler.h>
 
 namespace aspect
 {
@@ -40,10 +39,6 @@ namespace aspect
       virtual double compressibility (const double temperature,
                                       const double pressure,
                                       const Point<dim> &position) const;
-
-      virtual double thermal_expansion_coefficient (const double temperature,
-						    const double pressure,
-						    const Point<dim> &position) const;
 
       /**
        * Declare the parameters this class takes through input files.
