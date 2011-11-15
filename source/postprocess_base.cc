@@ -165,7 +165,7 @@ namespace aspect
 
 
     template <int dim>
-    const MaterialModel<dim> &
+    const MaterialModel::Interface<dim> &
     SimulatorAccess<dim>::get_material_model () const
     {
       return *simulator->material_model.get();

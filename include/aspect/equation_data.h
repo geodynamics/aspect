@@ -30,7 +30,7 @@ namespace EquationData
   class AdiabaticConditions
   {
     public:
-      AdiabaticConditions (const aspect::MaterialModel<dim> * material_model);
+      AdiabaticConditions (const aspect::MaterialModel::Interface<dim> * material_model);
 
       double temperature (const dealii::Point<dim> &p) const;
       double pressure (const dealii::Point<dim> &p) const;

@@ -90,7 +90,7 @@ subsection ModelParameters
 
 
 
-  subsection MaterialModel_Simple
+  subsection Simple model
     # rho0 in kg / m^3
     set reference_density     = 3300
 

@@ -11,30 +11,33 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
-  template <int dim>
-  class MaterialModel_Table: public MaterialModel<dim>
+  namespace MaterialModel
   {
-    public:
-      virtual double viscosity (const double temperature,
-                                const double pressure,
-                                const Point<dim> &position) const;
+    using namespace dealii;
 
-      virtual double specific_heat (const double temperature,
-                                    const double pressure,
-                                    const Point<dim> &position) const;
+    template <int dim>
+    class Table: public MaterialModel::Interface<dim>
+    {
+      public:
+        virtual double viscosity (const double temperature,
+                                  const double pressure,
+                                  const Point<dim> &position) const;
 
-      virtual double density (const double temperature,
-                              const double pressure,
-                              const Point<dim> &position) const;
-
-      virtual double compressibility (const double temperature,
+        virtual double specific_heat (const double temperature,
                                       const double pressure,
                                       const Point<dim> &position) const;
 
-      virtual bool is_compressible () const;
-  };
+        virtual double density (const double temperature,
+                                const double pressure,
+                                const Point<dim> &position) const;
+
+        virtual double compressibility (const double temperature,
+                                        const double pressure,
+                                        const Point<dim> &position) const;
+
+        virtual bool is_compressible () const;
+    };
+  }
 }
 
 #endif

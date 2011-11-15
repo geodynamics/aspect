@@ -138,7 +138,7 @@ namespace aspect
 
         unsigned int temperature_degree;
 
-	bool         include_shear_heating;
+        bool         include_shear_heating;
 
         double perturbation_Angle;
         double perturbation_depth;
@@ -170,8 +170,8 @@ namespace aspect
       Parameters                          parameters;
       ConditionalOStream                  pcout;
 
-      std::auto_ptr<MaterialModel<dim> >    material_model;
-      EquationData::AdiabaticConditions<dim> adiabatic_conditions;
+      std::auto_ptr<MaterialModel::Interface<dim> > material_model;
+      EquationData::AdiabaticConditions<dim>        adiabatic_conditions;
 
       Postprocess::Manager<dim>           postprocess_manager;
       TableHandler                        statistics;

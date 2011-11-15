@@ -33,9 +33,9 @@ namespace aspect
       class Postprocessor : public DataPostprocessor<dim>
       {
         public:
-          Postprocessor (const unsigned int        partition,
-                         const double              minimal_pressure,
-                         const MaterialModel<dim> &material_model);
+          Postprocessor (const unsigned int                   partition,
+                         const double                         minimal_pressure,
+                         const MaterialModel::Interface<dim> &material_model);
 
           virtual
           void
@@ -59,16 +59,16 @@ namespace aspect
         private:
           const unsigned int partition;
           const double       minimal_pressure;
-          const MaterialModel<dim> &material_model;
+          const MaterialModel::Interface<dim> &material_model;
           EquationData::AdiabaticConditions<dim> adiabatic_conditions;
       };
 
 
       template <int dim>
       Postprocessor<dim>::
-      Postprocessor (const unsigned int partition,
-                     const double       minimal_pressure,
-                     const MaterialModel<dim> &material_model)
+      Postprocessor (const unsigned int                   partition,
+                     const double                         minimal_pressure,
+                     const MaterialModel::Interface<dim> &material_model)
         :
         partition (partition),
         minimal_pressure (minimal_pressure),

@@ -145,7 +145,7 @@ namespace EquationData
 
 
   template <int dim>
-  AdiabaticConditions<dim>::AdiabaticConditions(const aspect::MaterialModel<dim> * material_model)
+  AdiabaticConditions<dim>::AdiabaticConditions(const aspect::MaterialModel::Interface<dim> * material_model)
     :
     n_points(1000),
     temperatures(n_points, -1),
@@ -983,9 +983,7 @@ namespace aspect
             this_mpi_process(MPI_COMM_WORLD)
             == 0)),
 
-    material_model (
-      MaterialModel<dim>::create(parameters.model)
-    ),
+    material_model (MaterialModel::create<dim>(parameters.model)),
     adiabatic_conditions(material_model.get()),
 
     triangulation (MPI_COMM_WORLD,
@@ -1040,8 +1038,8 @@ namespace aspect
   {
     Parameters::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
-    MaterialModel_Simple<dim>::declare_parameters (prm);
-    MaterialModel_Table<dim>::declare_parameters (prm);
+    MaterialModel::Simple<dim>::declare_parameters (prm);
+    MaterialModel::Table<dim>::declare_parameters (prm);
   }
 
 
@@ -1327,26 +1325,26 @@ namespace aspect
 
         const double gamma
           = (EquationData::radiogenic_heating * density
-              +
-              (parameters.include_shear_heating
-               ?
-               2 * material_model->viscosity(T, p, evaluation_points[q]) * 
-               strain_rate * strain_rate  /
+             +
+             (parameters.include_shear_heating
+              ?
+              2 * material_model->viscosity(T, p, evaluation_points[q]) *
+              strain_rate * strain_rate  /
               (density * material_model->specific_heat(T, p, evaluation_points[q]))
-               :
-               0));
+              :
+              0));
 
-             double residual
-             = std::abs(dT_dt + u_grad_T - kappa_Delta_T - gamma);
-             if (parameters.stabilization_alpha == 2)
-             residual *= std::abs(T - average_temperature);
+        double residual
+          = std::abs(dT_dt + u_grad_T - kappa_Delta_T - gamma);
+        if (parameters.stabilization_alpha == 2)
+          residual *= std::abs(T - average_temperature);
 
-             max_residual = std::max (residual,        max_residual);
-             max_velocity = std::max (std::sqrt (u*u), max_velocity);
+        max_residual = std::max (residual,        max_residual);
+        max_velocity = std::max (std::sqrt (u*u), max_velocity);
       }
 
-       const double max_viscosity = (parameters.stabilization_beta *
-                                     max_velocity * cell_diameter);
+    const double max_viscosity = (parameters.stabilization_beta *
+                                  max_velocity * cell_diameter);
     if (timestep_number == 0)
       return max_viscosity;
     else

@@ -294,7 +294,7 @@ namespace aspect
         /**
          * Return a pointer to the material model to access function like density()
          */
-        const MaterialModel<dim> &
+        const MaterialModel::Interface<dim> &
         get_material_model () const;
 
         /** @} */

@@ -12,42 +12,51 @@
 
 namespace aspect
 {
-  template <int dim>
-  MaterialModel<dim>::~MaterialModel ()
-  {}
-
-
-  template <int dim>
-
-  void
-  MaterialModel<dim>::
-  declare_parameters (dealii::ParameterHandler &prm)
-  {}
-
-
-  template <int dim>
-  void
-  MaterialModel<dim>::parse_parameters (dealii::ParameterHandler &prm)
-  {}
-
-  template <int dim>
-  MaterialModel<dim> *
-  MaterialModel<dim>::create( const std::string name)
+  namespace MaterialModel
   {
-    if (name == "simple")
-      return new MaterialModel_Simple<dim>();
-    else if (name == "table")
-      return new MaterialModel_Table<dim>();
-    else
-      throw dealii::ExcNotImplemented();
-  }
+    template <int dim>
+    Interface<dim>::~Interface ()
+    {}
 
+
+    template <int dim>
+
+    void
+    Interface<dim>::
+    declare_parameters (dealii::ParameterHandler &prm)
+    {}
+
+
+    template <int dim>
+    void
+    Interface<dim>::parse_parameters (dealii::ParameterHandler &prm)
+    {}
+
+
+    template <int dim>
+    Interface<dim> *
+    create (const std::string &name)
+    {
+      if (name == "simple")
+        return new Simple<dim>();
+      else if (name == "table")
+        return new Table<dim>();
+      else
+        throw dealii::ExcNotImplemented();
+    }
+
+  }
 }
 
 // explicit instantiations
 namespace aspect
 {
+  namespace MaterialModel
+  {
+    template class Interface<deal_II_dimension>;
 
-  template class MaterialModel<deal_II_dimension>;
-
+    template
+    Interface<deal_II_dimension> *
+    create<deal_II_dimension> (const std::string &);
+  }
 }
