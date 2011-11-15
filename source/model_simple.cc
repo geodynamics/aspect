@@ -61,6 +61,16 @@ namespace aspect
 
 
   template <int dim>
+  bool
+  MaterialModel_Simple<dim>::
+  is_compressible () const
+  {
+    return false;
+  }
+
+
+
+  template <int dim>
   void
   MaterialModel_Simple<dim>::declare_parameters (ParameterHandler &prm)
   {

@@ -20,15 +20,20 @@ namespace aspect
       virtual double viscosity (const double temperature,
                                 const double pressure,
                                 const Point<dim> &position) const;
+
       virtual double specific_heat (const double temperature,
                                     const double pressure,
                                     const Point<dim> &position) const;
+
       virtual double density (const double temperature,
                               const double pressure,
                               const Point<dim> &position) const;
+
       virtual double compressibility (const double temperature,
                                       const double pressure,
                                       const Point<dim> &position) const;
+
+      virtual bool is_compressible () const;
   };
 }
 

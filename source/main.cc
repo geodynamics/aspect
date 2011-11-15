@@ -112,7 +112,6 @@ namespace EquationData
 
   const double year_in_seconds  = 60*60*24*365.2425;
 
-  int IsCompressible = 0;
   int ShearHeating = 0;
   int AdiabaticCompression = 0;
 
@@ -825,9 +824,6 @@ namespace aspect
 
     prm.enter_subsection ("ModelSettings");
     {
-      prm.declare_entry ("IsCompressible", "1",
-                         Patterns::Integer (0),
-                         "Is model compressible yes/no (1/0)");
       prm.declare_entry ("ShearHeating", "1",
                          Patterns::Integer (0),
                          "Is model compressible yes/no (1/0)");
@@ -952,7 +948,6 @@ namespace aspect
 
     prm.enter_subsection ("ModelSettings");
     {
-      EquationData::IsCompressible = prm.get_integer ("IsCompressible");
       EquationData::ShearHeating = prm.get_integer ("ShearHeating");
       EquationData::AdiabaticCompression = prm.get_integer ("AdiabaticCompression");
     }
@@ -1952,6 +1947,9 @@ namespace aspect
     data.local_rhs = 0;
     data.local_rhs_helper = 0;
 
+    // cache whether the model is compressible or not
+    const bool is_compressible = material_model->is_compressible ();
+
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
@@ -1990,7 +1988,11 @@ namespace aspect
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             for (unsigned int j=0; j<dofs_per_cell; ++j)
               data.local_matrix(i,j) += ( eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
-                                          - EquationData::IsCompressible * eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                          - (is_compressible
+                                             ?
+                                             eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                             :
+                                             0)
                                           - (EquationData::pressure_scaling *
                                              scratch.div_phi_u[i] * scratch.phi_p[j])
                                           - (EquationData::pressure_scaling *
@@ -2000,10 +2002,14 @@ namespace aspect
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           data.local_rhs(i) += (  // TODO: extrapolation von old_velocity
                                  (density * gravity * scratch.phi_u[i])
-                                 + EquationData::IsCompressible * (EquationData::pressure_scaling *
-                                                                   compressibility * density *
-                                                                   (scratch.old_velocity_values[q] * gravity) *
-                                                                   scratch.phi_p[i])
+                                 + (is_compressible
+                                    ?
+                                    (EquationData::pressure_scaling *
+                                     compressibility * density *
+                                     (scratch.old_velocity_values[q] * gravity) *
+                                     scratch.phi_p[i])
+                                    :
+                                    0)
                                )
                                * scratch.stokes_fe_values.JxW(q);
 
@@ -2363,7 +2369,11 @@ namespace aspect
         if (stokes_constraints.is_constrained (i))
           distributed_stokes_solution(i) = 0;
 
-      make_pressure_rhs_compatible(stokes_rhs, stokes_rhs_helper);
+      // if the model is compressible then we need to adjust the right hand
+      // side of the equation to make it compatible with the matrix on the
+      // left
+      if (material_model->is_compressible ())
+        make_pressure_rhs_compatible(stokes_rhs, stokes_rhs_helper);
 
       PrimitiveVectorMemory< TrilinosWrappers::MPI::BlockVector > mem;
 

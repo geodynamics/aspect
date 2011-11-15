@@ -33,6 +33,8 @@ namespace aspect
                                       const double pressure,
                                       const Point<dim> &position) const;
 
+      virtual bool is_compressible () const;
+
       /**
        * Declare the parameters this class takes through input files.
        */

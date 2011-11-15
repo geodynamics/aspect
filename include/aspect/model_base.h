@@ -65,6 +65,11 @@ namespace aspect
                                       const Point<dim> &position) const = 0;
 
       /**
+       * Return whether the model is compressible or not.
+       **/
+      virtual bool is_compressible () const = 0;
+
+      /**
        * Declare the parameters this class takes through input files.
        */
       static

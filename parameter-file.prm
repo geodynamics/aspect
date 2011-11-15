@@ -5,7 +5,7 @@
 set Resume computation            = false
 
 # The end time of the simulation in years.
-set End time                            = 1e10
+set End time                            = 4e7
 
 
 subsection Mesh refinement
@@ -70,7 +70,6 @@ subsection Discretization
 end
 
 subsection ModelSettings
-  set IsCompressible = 0
   set ShearHeating = 0
   set AdiabaticCompression = 0
 end

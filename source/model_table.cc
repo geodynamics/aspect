@@ -222,6 +222,13 @@ namespace aspect
   }
 
 
+  template <int dim>
+  bool
+  MaterialModel_Table<dim>::
+  is_compressible () const
+  {
+    return true;
+  }
 }
 
 // explicit instantiations
