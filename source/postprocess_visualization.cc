@@ -33,10 +33,9 @@ namespace aspect
       class Postprocessor : public DataPostprocessor<dim>
       {
         public:
-          Postprocessor (const unsigned int partition,
-                         const double       minimal_pressure,
-                         const MaterialModel<dim> * model_data
-                        );
+          Postprocessor (const unsigned int        partition,
+                         const double              minimal_pressure,
+                         const MaterialModel<dim> &model_data);
 
           virtual
           void
@@ -60,7 +59,7 @@ namespace aspect
         private:
           const unsigned int partition;
           const double       minimal_pressure;
-          const MaterialModel<dim> * model_data;
+          const MaterialModel<dim> &model_data;
           EquationData::AdiabaticConditions<dim> adiabatic_conditions;
       };
 
@@ -69,13 +68,12 @@ namespace aspect
       Postprocessor<dim>::
       Postprocessor (const unsigned int partition,
                      const double       minimal_pressure,
-                     const MaterialModel<dim> * model_data
-                    )
+                     const MaterialModel<dim> &model_data)
         :
         partition (partition),
         minimal_pressure (minimal_pressure),
         model_data(model_data),
-        adiabatic_conditions (model_data)
+        adiabatic_conditions (&model_data)
       {}
 
 
@@ -172,12 +170,12 @@ namespace aspect
             for (unsigned int d=0; d<dim; ++d)
               grad_u[d] = duh[q][d];
             const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
-            computed_quantities[q](dim+2) = 2 * model_data->viscosity(temperature, pressure, evaluation_points[q]) *
+            computed_quantities[q](dim+2) = 2 * model_data.viscosity(temperature, pressure, evaluation_points[q]) *
                                             strain_rate * strain_rate;
 
             computed_quantities[q](dim+3) = partition;
 
-            computed_quantities[q](dim+4) = model_data->viscosity(temperature,
+            computed_quantities[q](dim+4) = model_data.viscosity(temperature,
                                                                   pressure,
                                                                   evaluation_points[q]);
 
@@ -186,7 +184,7 @@ namespace aspect
             computed_quantities[q](dim+6) = temperature -
                                             adiabatic_conditions.temperature (evaluation_points[q]);
 
-            computed_quantities[q](dim+7) = model_data->density(temperature, pressure, evaluation_points[q]);
+            computed_quantities[q](dim+7) = model_data.density(temperature, pressure, evaluation_points[q]);
           }
       }
     }
@@ -279,8 +277,7 @@ namespace aspect
 
       internal::Postprocessor<dim> postprocessor (this->get_triangulation().locally_owned_subdomain(),
                                                   this->get_stokes_solution().block(1).minimal_value(),
-                                                  this->get_model_data()
-                                                 );
+                                                  this->get_model_data());
 
       DataOut<dim> data_out;
       data_out.attach_dof_handler (joint_dof_handler);
