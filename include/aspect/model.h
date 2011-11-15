@@ -14,42 +14,75 @@
 
 namespace aspect
 {
-
+  using namespace dealii;
+  
+  /**
+   * A base class for parameterizations of material models.Classes derived from
+   * this class will need to implement functions that provide material parameters
+   * such as the viscosity, density, etc, typically as a function of position,
+   * temperature and pressure at that location.
+   */
   template <int dim>
   class MaterialModel
   {
     public:
+      /**
+       * Destructor. Made virtual to enforce that derived classes also have
+       * virtual destructors.
+       */
       virtual ~MaterialModel();
 
-      virtual double eta (const double temperature, const double pressure, const dealii::Point<dim> &position) const = 0;
+      /**
+       * Return the viscosity $\eta$ of the model as a function of temperature,
+       * pressure and position.
+       */
+      virtual double viscosity (const double      temperature, 
+				const double      pressure, 
+				const Point<dim> &position) const = 0;
 
-      virtual double real_viscosity (const double                 temperature,
-                                     const double                  pressure,
-                                     const dealii::Point<dim> &position,
-                                     const dealii::SymmetricTensor<2,dim> &strain_rate) const = 0;
+      virtual double real_viscosity (const double      temperature,
+                                     const double      pressure,
+                                     const Point<dim> &position,
+                                     const SymmetricTensor<2,dim> &strain_rate) const = 0;
 
-      // aka rho-cp:
-      virtual double specific_heat (const double temperature,
-                                    const double pressure) const = 0;
+      /**
+       * Return the specific heat (i.e. $c_P$) of the model as a function of temperature,
+       * pressure and position.
+       */
+      virtual double specific_heat (const double      temperature,
+                                    const double      pressure,
+				    const Point<dim> &position) const = 0;
 
-      virtual double density (const double temperature,
-                              const double pressure,
-                              const dealii::Point<dim> &position) const = 0;
+      /**
+       * Return the density $\rho$ of the model as a function of temperature,
+       * pressure and position.
+       */
+      virtual double density (const double      temperature,
+			      const double      pressure,
+			      const Point<dim> &position) const = 0;
 
+      /**
+       * Return the compressibility coefficient of the model as a function of temperature,
+       * pressure and position.
+       */
       virtual double compressibility (const double temperature,
                                       const double pressure,
-                                      const dealii::Point<dim> &position) const = 0;
+                                      const Point<dim> &position) const = 0;
 
-      virtual double expansion_coefficient (const double temperature,
-                                            const double pressure,
-                                            const dealii::Point<dim> &position) const = 0;
+      /**
+       * Return the thermal expansion coefficient of the model as a function of temperature,
+       * pressure and position.
+       */
+      virtual double thermal_expansion_coefficient (const double temperature,
+						    const double pressure,
+						    const Point<dim> &position) const = 0;
 
       /**
        * Declare the parameters this class takes through input files.
        */
       static
       void
-      declare_parameters (dealii::ParameterHandler &prm);
+      declare_parameters (ParameterHandler &prm);
 
       /**
        * Read the parameters this class declares from the parameter
@@ -57,7 +90,7 @@ namespace aspect
        */
       virtual
       void
-      parse_parameters (dealii::ParameterHandler &prm);
+      parse_parameters (ParameterHandler &prm);
 
       static
       MaterialModel<dim> *

@@ -173,7 +173,9 @@ namespace aspect
   template <int dim>
   double
   MaterialModel_Table<dim>::
-  eta (const double temperature, const double pressure, const Point<dim> &position) const
+  viscosity (const double temperature, 
+	     const double pressure,
+	     const Point<dim> &position) const
   {
     double reference_eta    = 5e24;
     return reference_eta;
@@ -190,7 +192,7 @@ namespace aspect
     // this is currently only used
     // in generating graphical
     // output
-    return eta (temperature, pressure, position);
+    return viscosity (temperature, pressure, position);
   }
 
 
@@ -199,7 +201,8 @@ namespace aspect
   double
   MaterialModel_Table<dim>::
   specific_heat (const double temperature,
-                 const double pressure) const
+                 const double pressure,
+		 const Point<dim> &) const
   {
 //    const double reference_specific_heat = 1250;    /* J / K / kg */  //??
 //      if (!IsCompressible) return reference_specific_heat; TODO
@@ -236,9 +239,9 @@ namespace aspect
   template <int dim>
   double
   MaterialModel_Table<dim>::
-  expansion_coefficient (const double temperature,
-                         const double pressure,
-                         const Point<dim> &position) const
+  thermal_expansion_coefficient (const double temperature,
+				 const double pressure,
+				 const Point<dim> &position) const
   {
 //      if (!IsCompressible) return thermal_expansivity;
     static internal::P_T_LookupFunction alpha("DataDir/alpha_bin");

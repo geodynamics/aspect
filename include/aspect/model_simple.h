@@ -12,41 +12,45 @@
 
 namespace aspect
 {
-
+  using namespace dealii;
+  
   template <int dim>
   class MaterialModel_Simple: public MaterialModel<dim>
   {
     public:
       ~MaterialModel_Simple();
 
-      virtual double eta (const double temperature, const double pressure, const dealii::Point<dim> &position) const;
+      virtual double viscosity (const double temperature, 
+				const double pressure, 
+				const Point<dim> &position) const;
 
       virtual double real_viscosity (const double temperature,
                                      const double pressure,
-                                     const dealii::Point<dim> &position,
-                                     const dealii::SymmetricTensor<2,dim> &strain_rate) const;
+                                     const Point<dim> &position,
+                                     const SymmetricTensor<2,dim> &strain_rate) const;
 
       virtual double specific_heat (const double temperature,
-                                    const double pressure) const;
+                                    const double pressure,
+				    const Point<dim> &position) const;
 
       virtual double density (const double temperature,
                               const double pressure,
-                              const dealii::Point<dim> &position) const;
+                              const Point<dim> &position) const;
 
       virtual double compressibility (const double temperature,
                                       const double pressure,
-                                      const dealii::Point<dim> &position) const;
+                                      const Point<dim> &position) const;
 
-      virtual double expansion_coefficient (const double temperature,
-                                            const double pressure,
-                                            const dealii::Point<dim> &position) const;
+      virtual double thermal_expansion_coefficient (const double temperature,
+						    const double pressure,
+						    const Point<dim> &position) const;
 
       /**
        * Declare the parameters this class takes through input files.
        */
       static
       void
-      declare_parameters (dealii::ParameterHandler &prm);
+      declare_parameters (ParameterHandler &prm);
 
       /**
        * Read the parameters this class declares from the parameter
@@ -54,7 +58,7 @@ namespace aspect
        */
       virtual
       void
-      parse_parameters (dealii::ParameterHandler &prm);
+      parse_parameters (ParameterHandler &prm);
     private:
       double reference_density;
       double reference_temperature;

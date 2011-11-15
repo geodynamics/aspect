@@ -172,7 +172,7 @@ namespace aspect
             for (unsigned int d=0; d<dim; ++d)
               grad_u[d] = duh[q][d];
             const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
-            computed_quantities[q](dim+2) = 2 * model_data->eta(temperature, pressure, evaluation_points[q]) *
+            computed_quantities[q](dim+2) = 2 * model_data->viscosity(temperature, pressure, evaluation_points[q]) *
                                             strain_rate * strain_rate;
 
             computed_quantities[q](dim+3) = partition;

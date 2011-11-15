@@ -147,16 +147,6 @@ namespace EquationData
   }
 
 
-  namespace MaterialModel
-  {
-//   const double eta_0  = reference_eta;    /* Pa s       */
-
-
-
-  }
-
-
-
 
 
   template <int dim>
@@ -1352,8 +1342,8 @@ namespace aspect
         const double gamma
           = ((EquationData::radiogenic_heating * density
               +
-              EquationData::ShearHeating*2 * model_data->eta(T, p, evaluation_points[q]) * strain_rate * strain_rate) /
-             (density * model_data->specific_heat(T, p)));
+              EquationData::ShearHeating*2 * model_data->viscosity(T, p, evaluation_points[q]) * strain_rate * strain_rate) /
+             (density * model_data->specific_heat(T, p, evaluation_points[q])));
 
         double residual
           = std::abs(dT_dt + u_grad_T - kappa_Delta_T - gamma);
@@ -1809,9 +1799,9 @@ namespace aspect
             scratch.phi_p[k]       = scratch.stokes_fe_values[pressure].value (k, q);
           }
 
-        double eta = model_data->eta(old_temperature,
-                                     old_pressure,
-                                     scratch.stokes_fe_values.quadrature_point(q) );
+        double eta = model_data->viscosity(old_temperature,
+					   old_pressure,
+					   scratch.stokes_fe_values.quadrature_point(q) );
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           for (unsigned int j=0; j<dofs_per_cell; ++j)
@@ -1979,9 +1969,9 @@ namespace aspect
               }
           }
 
-        const double eta = model_data->eta(old_temperature,
-                                           old_pressure,
-                                           scratch.stokes_fe_values.quadrature_point(q));
+        const double eta = model_data->viscosity(old_temperature,
+						 old_pressure,
+						 scratch.stokes_fe_values.quadrature_point(q));
 
         const Tensor<1,dim>
         gravity = EquationData::gravity_vector (scratch.stokes_fe_values.quadrature_point(q));
@@ -2236,11 +2226,12 @@ namespace aspect
         const double gamma
           = (EquationData::radiogenic_heating * density
              +
-             EquationData::ShearHeating*2 * model_data->eta(ext_T,
-                                                            ext_pressure,
-                                                            scratch.temperature_fe_values.quadrature_point(q))
+             EquationData::ShearHeating*2 * model_data->viscosity(ext_T,
+								  ext_pressure,
+								  scratch.temperature_fe_values.quadrature_point(q))
              * extrapolated_strain_rate * extrapolated_strain_rate)
-            / (density * model_data->specific_heat(ext_T, ext_pressure));
+            / (density * model_data->specific_heat(ext_T, ext_pressure,
+						   scratch.temperature_fe_values.quadrature_point(q)));
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           {

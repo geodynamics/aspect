@@ -19,7 +19,9 @@ namespace aspect
   template <int dim>
   double
   MaterialModel_Simple<dim>::
-  eta (const double temperature, const double pressure, const dealii::Point<dim> &position) const
+  viscosity (const double temperature, 
+	     const double pressure,
+	     const Point<dim> &position) const
   {
     return reference_eta;
   }
@@ -29,13 +31,13 @@ namespace aspect
   MaterialModel_Simple<dim>::
   real_viscosity (const double                 temperature,
                   const double                  pressure,
-                  const dealii::Point<dim> &position,
-                  const dealii::SymmetricTensor<2,dim> &strain_rate) const
+                  const Point<dim> &position,
+                  const SymmetricTensor<2,dim> &strain_rate) const
   {
     // this is currently only used
     // in generating graphical
     // output
-    return eta (temperature, pressure, position);
+    return viscosity (temperature, pressure, position);
 
 // we could use something more complicated, like the following:
 
@@ -65,7 +67,8 @@ namespace aspect
   double
   MaterialModel_Simple<dim>::
   specific_heat (const double temperature,
-                 const double pressure) const
+                 const double pressure,
+		 const Point<dim> &) const
   {
     return 1250.0;
 
@@ -76,9 +79,9 @@ namespace aspect
   MaterialModel_Simple<dim>::
   density (const double temperature,
            const double pressure,
-           const dealii::Point<dim> &position) const
+           const Point<dim> &position) const
   {
-    const double expansion_coefficient_ = expansion_coefficient (temperature, pressure, position);
+    const double expansion_coefficient_ = thermal_expansion_coefficient (temperature, pressure, position);
     return (reference_density *
             (1 - expansion_coefficient_ * (temperature -
                                            reference_temperature)));
@@ -89,7 +92,7 @@ namespace aspect
   MaterialModel_Simple<dim>::
   compressibility (const double temperature,
                    const double pressure,
-                   const dealii::Point<dim> &position) const
+                   const Point<dim> &position) const
   {
     return 0.0;
   }
@@ -97,9 +100,9 @@ namespace aspect
   template <int dim>
   double
   MaterialModel_Simple<dim>::
-  expansion_coefficient (const double temperature,
-                         const double pressure,
-                         const dealii::Point<dim> &position) const
+  thermal_expansion_coefficient (const double temperature,
+				 const double pressure,
+				 const Point<dim> &position) const
   {
     return 2e-5;
   }
