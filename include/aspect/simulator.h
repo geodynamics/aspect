@@ -180,6 +180,8 @@ namespace aspect
       double                              global_Omega_diameter;
       double                              global_volume;
 
+      double                              pressure_scaling;
+      
       const MappingQ<dim>                 mapping;
 
       const FESystem<dim>                 stokes_fe;

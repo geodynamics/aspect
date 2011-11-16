@@ -48,6 +48,16 @@ namespace aspect
                                   const Point<dim> &position) const = 0;
 
         /**
+         * Return a reference value typical of the viscosities that
+         * appear in this model. This value is not actually used in the
+         * material description itself, but is used in scaling variables
+         * to the same numerical order of magnitude when solving linear
+         * systems. Specifically, the reference viscosity appears in
+         * the factor scaling the pressure against the velocity.
+         */
+        virtual double reference_viscosity () const = 0;
+
+        /**
          * Return the specific heat (i.e. $c_P$) of the model as a function of temperature,
          * pressure and position.
          */

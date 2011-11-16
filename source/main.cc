@@ -99,7 +99,7 @@ namespace EquationData
   // of the velocity and pressure
   // components of the solution
   // vectors
-  const double pressure_scaling = reference_eta / 10000;
+  const double length_scale = 10000;
 
 
   double R0      = 6371000.-2890000.;     /* m          */
@@ -1036,6 +1036,8 @@ namespace aspect
 
     material_model->parse_parameters(prm);
 
+    pressure_scaling = material_model->reference_viscosity() / EquationData::length_scale;
+    
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
     statistics.set_auto_fill_mode(true);
@@ -1812,8 +1814,8 @@ namespace aspect
                                           scratch.grads_phi_u[j])
                                          +
                                          (1./eta) *
-                                         EquationData::pressure_scaling *
-                                         EquationData::pressure_scaling *
+                                         pressure_scaling *
+                                         pressure_scaling *
                                          (scratch.phi_p[i] * scratch.phi_p[j]))
                                         * scratch.stokes_fe_values.JxW(q);
       }
@@ -1997,9 +1999,9 @@ namespace aspect
                                              eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                              :
                                              0)
-                                          - (EquationData::pressure_scaling *
+                                          - (pressure_scaling *
                                              scratch.div_phi_u[i] * scratch.phi_p[j])
-                                          - (EquationData::pressure_scaling *
+                                          - (pressure_scaling *
                                              scratch.phi_p[i] * scratch.div_phi_u[j]))
                                         * scratch.stokes_fe_values.JxW(q);
 
@@ -2008,7 +2010,7 @@ namespace aspect
                                  (density * gravity * scratch.phi_u[i])
                                  + (is_compressible
                                     ?
-                                    (EquationData::pressure_scaling *
+                                    (pressure_scaling *
                                      compressibility * density *
                                      (scratch.old_velocity_values[q] * gravity) *
                                      scratch.phi_p[i])
@@ -2367,7 +2369,7 @@ namespace aspect
       distributed_stokes_solution = stokes_solution;
 
       // before solving we scale the initial solution to the right dimensions
-      distributed_stokes_solution.block(1) /= EquationData::pressure_scaling;
+      distributed_stokes_solution.block(1) /= pressure_scaling;
 
       const unsigned int
       start = (distributed_stokes_solution.block(0).size() +
@@ -2430,7 +2432,7 @@ namespace aspect
       stokes_constraints.distribute (distributed_stokes_solution);
 
       // now rescale the pressure back to real physical units
-      distributed_stokes_solution.block(1) *= EquationData::pressure_scaling;
+      distributed_stokes_solution.block(1) *= pressure_scaling;
 
       stokes_solution = distributed_stokes_solution;
 

@@ -29,6 +29,16 @@ namespace aspect
     template <int dim>
     double
     Simple<dim>::
+    reference_viscosity () const
+    {
+      return reference_eta;
+    }
+
+
+
+    template <int dim>
+    double
+    Simple<dim>::
     specific_heat (const double temperature,
                    const double pressure,
                    const Point<dim> &) const

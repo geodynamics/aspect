@@ -180,9 +180,21 @@ namespace aspect
                const double pressure,
                const Point<dim> &position) const
     {
-      double reference_eta    = 5e24;
+      const double reference_eta    = 5e24;
       return reference_eta;
     }
+
+
+
+    template <int dim>
+    double
+    Table<dim>::
+    reference_viscosity () const
+    {
+      const double reference_eta    = 5e24;
+      return reference_eta;
+    }
+
 
 
     template <int dim>
