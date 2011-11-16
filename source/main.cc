@@ -13,9 +13,9 @@
 #include <aspect/simulator.h>
 #include <aspect/equation_data.h>
 #include <aspect/postprocess_visualization.h>
-#include <aspect/model_base.h>
-#include <aspect/model_simple.h>
-#include <aspect/model_table.h>
+#include <aspect/material_model_base.h>
+#include <aspect/material_model_simple.h>
+#include <aspect/material_model_table.h>
 #include <aspect/solver.h>
 #include <aspect/adiabatic_conditions.h>
 

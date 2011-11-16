@@ -8,7 +8,7 @@
 #define __aspect__adiabatic_conditions_h
 
 
-#include <aspect/model_base.h>
+#include <aspect/material_model_base.h>
 #include <deal.II/base/point.h>
 
 

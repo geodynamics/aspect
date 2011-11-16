@@ -5,9 +5,9 @@
 //
 //-------------------------------------------------------------
 
-#include <aspect/model_base.h>
-#include <aspect/model_simple.h>
-#include <aspect/model_table.h>
+#include <aspect/material_model_base.h>
+#include <aspect/material_model_simple.h>
+#include <aspect/material_model_table.h>
 #include <deal.II/base/exceptions.h>
 
 namespace aspect

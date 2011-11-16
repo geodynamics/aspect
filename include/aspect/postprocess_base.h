@@ -7,7 +7,7 @@
 #ifndef __aspect__postprocess_base_h
 #define __aspect__postprocess_base_h
 
-#include <aspect/model_base.h>
+#include <aspect/material_model_base.h>
 
 #include <deal.II/base/std_cxx1x/shared_ptr.h>
 #include <deal.II/base/table_handler.h>

@@ -4,10 +4,10 @@
 //    Copyright (C) 2011 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
-#ifndef __aspect__model_table_h
-#define __aspect__model_table_h
+#ifndef __aspect__model_simple_h
+#define __aspect__model_simple_h
 
-#include <aspect/model_base.h>
+#include <aspect/material_model_base.h>
 
 namespace aspect
 {
@@ -16,7 +16,7 @@ namespace aspect
     using namespace dealii;
 
     template <int dim>
-    class Table: public MaterialModel::Interface<dim>
+    class Simple: public MaterialModel::Interface<dim>
     {
       public:
         virtual double viscosity (const double temperature,
@@ -40,7 +40,27 @@ namespace aspect
                                         const Point<dim> &position) const;
 
         virtual bool is_compressible () const;
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter
+         * file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+      private:
+        double reference_density;
+        double reference_temperature;
+        double reference_eta;
     };
+
   }
 }
 
