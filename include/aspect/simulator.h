@@ -164,8 +164,6 @@ namespace aspect
         double T0;
         double reference_eta;
         double reference_gravity;
-
-
       };
 
     private:
@@ -219,7 +217,7 @@ namespace aspect
 
       std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionAMG> Amg_preconditioner;
       std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionILU> Mp_preconditioner;
-      std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionILU>  T_preconditioner;
+      std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionILU> T_preconditioner;
 
       bool rebuild_stokes_matrix;
       bool rebuild_stokes_preconditioner;
