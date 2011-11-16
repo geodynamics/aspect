@@ -83,7 +83,6 @@ subsection ModelParameters
   set T1 = 300
   set T0 = 6300
   set reference_gravity = 30
-  set reference_eta = 5e24
 end
 
 subsection Material model

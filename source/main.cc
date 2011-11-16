@@ -89,7 +89,6 @@ namespace EquationData
   double radiogenic_heating    = 7.4e-12; /* W / kg     */  //??
   double thermal_conductivity = 4.7;
   double reference_gravity    = 30;
-  double reference_eta    = 5e24;
 
   // scale not by R1-R0, but by a
   // typical length scale, say 10km,
@@ -866,9 +865,6 @@ namespace aspect
       prm.declare_entry ("reference_gravity", "30",
                          Patterns::Double (),
                          "g0");
-      prm.declare_entry ("reference_eta", "5e24",
-                         Patterns::Double (),
-                         "eta0");
     }
     prm.leave_subsection ();
 
@@ -967,7 +963,6 @@ namespace aspect
       EquationData::T0 = prm.get_double ("T0");
       EquationData::T1 = prm.get_double ("T1");
       EquationData::reference_gravity = prm.get_double ("reference_gravity");
-      EquationData::reference_eta = prm.get_double ("reference_eta");
     }
 
     prm.leave_subsection ();
