@@ -65,7 +65,7 @@ namespace aspect
   {
     public:
       struct Parameters;
-      
+
       Simulator (ParameterHandler &prm);
 
       static
@@ -140,7 +140,7 @@ namespace aspect
         unsigned int temperature_degree;
 
         bool         include_shear_heating;
-	double       radiogenic_heating_rate;
+        double       radiogenic_heating_rate;
 
         double perturbation_Angle;
         double perturbation_depth;
@@ -183,7 +183,7 @@ namespace aspect
       double                              global_volume;
 
       double                              pressure_scaling;
-      
+
       const MappingQ<dim>                 mapping;
 
       const FESystem<dim>                 stokes_fe;
