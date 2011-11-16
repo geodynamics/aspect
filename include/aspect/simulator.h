@@ -142,28 +142,7 @@ namespace aspect
         bool         include_shear_heating;
         double       radiogenic_heating_rate;
 
-        double perturbation_Angle;
-        double perturbation_depth;
-        double perturbation_Amplitude;
-        double perturbation_Sigma;
-        double perturbation_Sign;
-        bool perturbation_GaussianPerturbation;
-
-        int AdiabaticCompression;
         std::string model;
-        double kappa;
-        double reference_density;
-        double reference_temperature;
-        double radiogenic_heating;
-        double thermal_expansivity;
-        double thermal_conductivity;
-        double R1;
-        double R0;
-        double apperture_angle;
-        double T1;
-        double T0;
-        double reference_eta;
-        double reference_gravity;
       };
 
     private:
