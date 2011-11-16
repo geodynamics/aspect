@@ -210,6 +210,8 @@ namespace aspect
     }
 
 
+// -------------------------------- Deal with registering postprocessors and automating
+// -------------------------------- their setup and selection at run time
 
     namespace
     {
@@ -233,6 +235,8 @@ namespace aspect
       // constructor has successfully run
       std::list<PostprocessorInfo> *registered_postprocessors = 0;
     }
+
+
 
     template <int dim>
     void

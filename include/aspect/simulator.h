@@ -149,8 +149,8 @@ namespace aspect
       Parameters                          parameters;
       ConditionalOStream                  pcout;
 
-      std::auto_ptr<MaterialModel::Interface<dim> > material_model;
-      AdiabaticConditions<dim>            adiabatic_conditions;
+      const std::auto_ptr<MaterialModel::Interface<dim> > material_model;
+      const AdiabaticConditions<dim>            adiabatic_conditions;
 
       Postprocess::Manager<dim>           postprocess_manager;
       TableHandler                        statistics;

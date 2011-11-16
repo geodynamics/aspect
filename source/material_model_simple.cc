@@ -144,5 +144,7 @@ namespace aspect
   namespace MaterialModel
   {
     template class Simple<deal_II_dimension>;
+
+    ASPECT_REGISTER_MATERIAL_MODEL("simple", Simple)
   }
 }

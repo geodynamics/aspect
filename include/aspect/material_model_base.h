@@ -108,15 +108,76 @@ namespace aspect
     };
 
 
+
+
+    /**
+     * Register a material model so that it can be selected from the parameter file.
+     *
+     * @param name A string that identifies the material model
+     * @param declare_parameters_function A pointer to a function that can be used to
+     *   declare the parameters that this material model wants to read from input files.
+     * @param factory_function A pointer to a function that can create an object of
+     *   this material model.
+     **/
+    template <int dim>
+    void
+    register_material_model (const std::string &name,
+                             void (*declare_parameters_function) (ParameterHandler &),
+                             Interface<dim> * (*factory_function) ());
+
     /**
      * A function that given the name of a model returns a pointer to an object
      * that describes it. Ownership of the pointer is transferred to the caller.
      */
     template <int dim>
     Interface<dim> *
-    create (const std::string &name);
-  }
+    create_material_model (const std::string &name);
 
+
+    /**
+     * Declare the runtime parameters of the registered material models.
+     */
+    void
+    declare_parameters (ParameterHandler &prm);
+
+    namespace internal
+    {
+      /**
+       * An internal class that is used in the definition of the
+       * ASPECT_REGISTER_MATERIAL_MODEL macro below. Given a name
+       * and a classname, it registers the material model.
+       */
+      template <const char **name, class MaterialModelClass>
+      struct MaterialModelHelper
+      {
+        MaterialModelHelper ()
+        {
+          register_material_model
+          (*name,
+           &MaterialModelClass::declare_parameters,
+           &factory);
+        }
+
+        static
+        Interface<deal_II_dimension> * factory ()
+        {
+          return new MaterialModelClass();
+        }
+      };
+    }
+
+
+    /**
+    * Given a name and a classname for a postprocessor, register it with
+    * the aspect::Postprocess::Manager class.
+    */
+#define ASPECT_REGISTER_MATERIAL_MODEL(name,classname) \
+  namespace ASPECT_REGISTER_MATERIAL_MODEL_ ## classname \
+  { const char *local_name = name; \
+    aspect::MaterialModel::internal::MaterialModelHelper<&local_name,classname<deal_II_dimension> > \
+    dummy_ ## classname; }
+  }
 }
+
 
 #endif

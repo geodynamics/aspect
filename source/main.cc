@@ -14,8 +14,6 @@
 #include <aspect/equation_data.h>
 #include <aspect/postprocess_visualization.h>
 #include <aspect/material_model_base.h>
-#include <aspect/material_model_simple.h>
-#include <aspect/material_model_table.h>
 #include <aspect/solver.h>
 #include <aspect/adiabatic_conditions.h>
 
@@ -886,7 +884,7 @@ namespace aspect
             this_mpi_process(MPI_COMM_WORLD)
             == 0)),
 
-    material_model (MaterialModel::create<dim>(parameters.model)),
+    material_model (MaterialModel::create_material_model<dim>(parameters.model)),
     adiabatic_conditions(*material_model),
 
     triangulation (MPI_COMM_WORLD,
@@ -943,8 +941,7 @@ namespace aspect
   {
     Parameters::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
-    MaterialModel::Simple<dim>::declare_parameters (prm);
-    MaterialModel::Table<dim>::declare_parameters (prm);
+    MaterialModel::declare_parameters (prm);
   }
 
 

@@ -265,5 +265,7 @@ namespace aspect
   namespace MaterialModel
   {
     template class Table<deal_II_dimension>;
+
+    ASPECT_REGISTER_MATERIAL_MODEL("table", Table)
   }
 }
