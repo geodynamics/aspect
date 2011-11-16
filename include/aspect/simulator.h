@@ -65,6 +65,7 @@ namespace aspect
   {
     public:
       struct Parameters;
+      
       Simulator (ParameterHandler &prm);
 
       static
@@ -139,6 +140,7 @@ namespace aspect
         unsigned int temperature_degree;
 
         bool         include_shear_heating;
+	double       radiogenic_heating_rate;
 
         double perturbation_Angle;
         double perturbation_depth;

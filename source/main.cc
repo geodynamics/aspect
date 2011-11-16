@@ -86,7 +86,6 @@ namespace EquationData
 {
   double kappa                 = 1e-6;
   const double reference_specific_heat = 1250;    /* J / K / kg */  //??
-  double radiogenic_heating    = 7.4e-12; /* W / kg     */  //??
   double thermal_conductivity = 4.7;
   double reference_gravity    = 30;
 
@@ -841,7 +840,7 @@ namespace aspect
       prm.declare_entry ("kappa", "4.548e-7",
                          Patterns::Double (),
                          "thermal diffusivity (k/(rho*cp)");
-      prm.declare_entry ("radiogenic_heating", "0e0",
+      prm.declare_entry ("Radiogenic heating rate", "0e0",
                          Patterns::Double (),
                          "H0");
       prm.declare_entry ("thermal_conductivity", "4.7",
@@ -955,7 +954,7 @@ namespace aspect
     prm.enter_subsection ("ModelParameters");
     {
       EquationData::kappa = prm.get_double ("kappa");
-      EquationData::radiogenic_heating = prm.get_double ("radiogenic_heating");
+      radiogenic_heating_rate = prm.get_double ("Radiogenic heating rate");
       EquationData::thermal_conductivity = prm.get_double ("thermal_conductivity");
       EquationData::R1 = prm.get_double ("R1");
       EquationData::R0 = prm.get_double ("R0");
@@ -1331,7 +1330,7 @@ namespace aspect
         const double density = material_model->density(T, p, evaluation_points[q]);
 
         const double gamma
-          = (EquationData::radiogenic_heating * density
+          = (parameters.radiogenic_heating_rate * density
              +
              (parameters.include_shear_heating
               ?
@@ -2231,7 +2230,7 @@ namespace aspect
                                     ext_pressure,
                                     scratch.temperature_fe_values.quadrature_point(q));
         const double gamma
-          = (EquationData::radiogenic_heating * density
+          = (parameters.radiogenic_heating_rate * density
              +
              (parameters.include_shear_heating
               ?
