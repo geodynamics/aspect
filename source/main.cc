@@ -85,7 +85,6 @@ using namespace dealii;
 namespace EquationData
 {
   double kappa                 = 1e-6;
-  const double reference_specific_heat = 1250;    /* J / K / kg */  //??
   double thermal_conductivity = 4.7;
   double reference_gravity    = 30;
 
@@ -1031,7 +1030,7 @@ namespace aspect
     material_model->parse_parameters(prm);
 
     pressure_scaling = material_model->reference_viscosity() / EquationData::length_scale;
-    
+
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
     statistics.set_auto_fill_mode(true);
