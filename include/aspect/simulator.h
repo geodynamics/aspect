@@ -27,7 +27,7 @@
 #include <deal.II/fe/mapping_q.h>
 
 #include <aspect/postprocess_base.h>
-#include <aspect/equation_data.h>
+#include <aspect/adiabatic_conditions.h>
 
 
 
@@ -173,7 +173,7 @@ namespace aspect
       ConditionalOStream                  pcout;
 
       std::auto_ptr<MaterialModel::Interface<dim> > material_model;
-      EquationData::AdiabaticConditions<dim>        adiabatic_conditions;
+      AdiabaticConditions<dim>            adiabatic_conditions;
 
       Postprocess::Manager<dim>           postprocess_manager;
       TableHandler                        statistics;

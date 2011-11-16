@@ -57,10 +57,10 @@ namespace aspect
           virtual UpdateFlags get_needed_update_flags () const;
 
         private:
-          const unsigned int partition;
-          const double       minimal_pressure;
+          const unsigned int                   partition;
+          const double                         minimal_pressure;
           const MaterialModel::Interface<dim> &material_model;
-          EquationData::AdiabaticConditions<dim> adiabatic_conditions;
+          AdiabaticConditions<dim>             adiabatic_conditions;
       };
 
 
@@ -73,7 +73,7 @@ namespace aspect
         partition (partition),
         minimal_pressure (minimal_pressure),
         material_model(material_model),
-        adiabatic_conditions (&material_model)
+        adiabatic_conditions (material_model)
       {}
 
 

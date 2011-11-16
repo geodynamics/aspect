@@ -9,7 +9,6 @@
 
 
 #include <deal.II/base/point.h>
-#include <deal.II/base/symmetric_tensor.h>
 
 
 
@@ -25,19 +24,7 @@ namespace EquationData
   extern double apperture_angle;
 
   template <int dim>
-  class AdiabaticConditions
-  {
-    public:
-      AdiabaticConditions (const aspect::MaterialModel::Interface<dim> * material_model);
-
-      double temperature (const dealii::Point<dim> &p) const;
-      double pressure (const dealii::Point<dim> &p) const;
-
-    private:
-      const unsigned int n_points;
-      std::vector<double> temperatures, pressures;
-  };
-
+  Tensor<1,dim> gravity_vector (const Point<dim> &p);
 }
 
 
