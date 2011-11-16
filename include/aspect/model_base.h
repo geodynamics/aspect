@@ -58,12 +58,17 @@ namespace aspect
         virtual double reference_viscosity () const = 0;
 
         /**
-         * Return the specific heat (i.e. $c_P$) of the model as a function of temperature,
+         * Return the specific heat $c_P$ of the model as a function of temperature,
          * pressure and position.
          */
         virtual double specific_heat (const double      temperature,
                                       const double      pressure,
                                       const Point<dim> &position) const = 0;
+
+        /**
+         * Return the thermal conductivity $k$ of the model.
+         */
+        virtual double thermal_conductivity () const = 0;
 
         /**
          * Return the density $\rho$ of the model as a function of temperature,

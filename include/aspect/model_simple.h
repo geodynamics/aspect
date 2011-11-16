@@ -29,6 +29,8 @@ namespace aspect
                                       const double pressure,
                                       const Point<dim> &position) const;
 
+        virtual double thermal_conductivity () const;
+
         virtual double density (const double temperature,
                                 const double pressure,
                                 const Point<dim> &position) const;

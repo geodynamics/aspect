@@ -210,6 +210,18 @@ namespace aspect
       return cp.value(temperature, pressure);
     }
 
+
+
+    template <int dim>
+    double
+    Table<dim>::
+    thermal_conductivity () const
+    {
+      return 4.7;
+    }
+
+
+
     template <int dim>
     double
     Table<dim>::

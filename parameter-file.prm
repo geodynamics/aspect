@@ -76,7 +76,6 @@ end
 subsection ModelParameters
   set kappa = 4.548e-7
   set Radiogenic heating rate = 0e0
-  set thermal_conductivity = 4.7
   set R1 = 10415e3
   set R0 = 5698e3
   set apperture_angle = 180

@@ -85,7 +85,6 @@ using namespace dealii;
 namespace EquationData
 {
   double kappa                 = 1e-6;
-  double thermal_conductivity = 4.7;
   double reference_gravity    = 30;
 
   // scale not by R1-R0, but by a
@@ -842,9 +841,6 @@ namespace aspect
       prm.declare_entry ("Radiogenic heating rate", "0e0",
                          Patterns::Double (),
                          "H0");
-      prm.declare_entry ("thermal_conductivity", "4.7",
-                         Patterns::Double (),
-                         "k");
       prm.declare_entry ("R1", "10415e3",
                          Patterns::Double (),
                          "Outer radius");
@@ -954,7 +950,6 @@ namespace aspect
     {
       EquationData::kappa = prm.get_double ("kappa");
       radiogenic_heating_rate = prm.get_double ("Radiogenic heating rate");
-      EquationData::thermal_conductivity = prm.get_double ("thermal_conductivity");
       EquationData::R1 = prm.get_double ("R1");
       EquationData::R0 = prm.get_double ("R0");
       EquationData::apperture_angle = (std::acos(-1e0)/180e0)*prm.get_double ("apperture_angle");

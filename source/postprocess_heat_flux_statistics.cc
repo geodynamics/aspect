@@ -33,6 +33,8 @@ namespace aspect
 
       std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
 
+      const double thermal_conductivity = this->get_material_model().thermal_conductivity();
+
       double local_inner_boundary_flux = 0;
       double local_outer_boundary_flux = 0;
 
@@ -65,7 +67,7 @@ namespace aspect
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   local_normal_flux
                   +=
-                    -EquationData::thermal_conductivity *
+                    -thermal_conductivity *
                     (temperature_gradients[q] *
                      fe_face_values.normal_vector(q)) *
                     fe_face_values.JxW(q);
@@ -106,9 +108,9 @@ namespace aspect
       const double outer_boundary_curve_length = EquationData::R1/(EquationData::R1 - EquationData::R0) *
                                                  EquationData::apperture_angle;
 
-      const double dTdr_inner = (global_inner_boundary_flux/EquationData::thermal_conductivity)*Scaling;
+      const double dTdr_inner = (global_inner_boundary_flux / thermal_conductivity)*Scaling;
       statistics.add_value ("Inner Nu number", dTdr_inner / inner_boundary_curve_length);
-      const double dTdr_outer = (global_outer_boundary_flux/EquationData::thermal_conductivity)*Scaling;
+      const double dTdr_outer = (global_outer_boundary_flux / thermal_conductivity)*Scaling;
       statistics.add_value ("Outer Nu number", dTdr_outer / outer_boundary_curve_length);
 
       // finally have something for the screen
