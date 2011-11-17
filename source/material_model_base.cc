@@ -80,7 +80,7 @@ namespace aspect
       std::string model_name;
       prm.enter_subsection ("Material model");
       {
-        model_name = prm.get ("Model");
+        model_name = prm.get ("Model name");
       }
       prm.leave_subsection ();
 
@@ -113,7 +113,7 @@ namespace aspect
       // then declare the actual entry in the parameter file
       prm.enter_subsection ("Material model");
       {
-        prm.declare_entry ("Model", "",
+        prm.declare_entry ("Model name", "",
                            Patterns::Selection (model_names),
                            "Select one of the available material models");
       }
