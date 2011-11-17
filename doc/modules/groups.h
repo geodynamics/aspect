@@ -16,3 +16,14 @@
  * and many other parameters depend on pressure, temperature, and/or position within
  * the fluid.
  */
+
+/**
+ * @defgroup GeometryModels Describing the properties of the domain
+ *
+ * A module for the definition of properties of the geometry. This 
+ * primarily includes the definition of the shape of the domain
+ * (e.g. whether it is a full spherical shell, a quadrant/octant,
+ * a description of the geoid, etc. The classes and functions of this
+ * module also describe which kinds of boundary conditions hold on
+ * the different parts of the boundary of the geometry.
+ */
