@@ -73,13 +73,20 @@ namespace aspect
 
     template <int dim>
     Interface<dim> *
-    create_material_model (const std::string &name)
+    create_material_model (ParameterHandler &prm)
     {
       Assert (registered_material_models != 0, ExcInternalError());
 
+      std::string model_name;
+      prm.enter_subsection ("Material model");
+      {
+        model_name = prm.get ("Model");
+      }
+      prm.leave_subsection ();
+
       for (std::list<MaterialModelInfo>::const_iterator p = registered_material_models->begin();
            p != registered_material_models->end(); ++p)
-        if (std_cxx1x::get<0>(*p) == name)
+        if (std_cxx1x::get<0>(*p) == model_name)
           return std_cxx1x::get<2>(*p)();
 
       AssertThrow (false, ExcNotImplemented());
@@ -92,6 +99,25 @@ namespace aspect
     declare_parameters (ParameterHandler &prm)
     {
       Assert (registered_material_models != 0, ExcInternalError());
+
+      // first collect a list of all registered models
+      std::string model_names;
+      for (std::list<MaterialModelInfo>::const_iterator p = registered_material_models->begin();
+           p != registered_material_models->end(); ++p)
+        {
+          if (model_names.size() > 0)
+            model_names += "|";
+          model_names += std_cxx1x::get<0>(*p);
+        }
+
+      // then declare the actual entry in the parameter file
+      prm.enter_subsection ("Material model");
+      {
+        prm.declare_entry ("Model", "",
+                           Patterns::Selection (model_names),
+                           "Select one of the available material models");
+      }
+      prm.leave_subsection ();
 
       for (std::list<MaterialModelInfo>::const_iterator p = registered_material_models->begin();
            p != registered_material_models->end(); ++p)
@@ -116,6 +142,6 @@ namespace aspect
 
     template
     Interface<deal_II_dimension> *
-    create_material_model<deal_II_dimension> (const std::string &);
+    create_material_model<deal_II_dimension> (ParameterHandler &prm);
   }
 }

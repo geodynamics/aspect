@@ -728,14 +728,6 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    prm.enter_subsection ("Material model");
-    {
-      prm.declare_entry ("model", "simple",
-                         Patterns::Selection ("simple|table"),
-                         "select the active model: simple|table");
-    }
-    prm.leave_subsection ();
-
     prm.enter_subsection ("ModelParameters");
     {
       prm.declare_entry ("kappa", "4.548e-7",
@@ -843,12 +835,6 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    prm.enter_subsection ("Material model");
-    {
-      model = prm.get ("model");
-    }
-    prm.leave_subsection ();
-
     prm.enter_subsection ("ModelParameters");
     {
       EquationData::kappa = prm.get_double ("kappa");
@@ -884,7 +870,7 @@ namespace aspect
             this_mpi_process(MPI_COMM_WORLD)
             == 0)),
 
-    material_model (MaterialModel::create_material_model<dim>(parameters.model)),
+    material_model (MaterialModel::create_material_model<dim>(prm)),
     adiabatic_conditions(*material_model),
 
     triangulation (MPI_COMM_WORLD,

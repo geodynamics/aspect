@@ -141,8 +141,6 @@ namespace aspect
 
         bool         include_shear_heating;
         double       radiogenic_heating_rate;
-
-        std::string model;
       };
 
     private:

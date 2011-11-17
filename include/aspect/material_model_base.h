@@ -131,7 +131,7 @@ namespace aspect
      */
     template <int dim>
     Interface<dim> *
-    create_material_model (const std::string &name);
+    create_material_model (ParameterHandler &prm);
 
 
     /**

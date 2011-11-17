@@ -85,8 +85,7 @@ subsection ModelParameters
 end
 
 subsection Material model
-  # select the active model: simple|table
-  set model                = table
+  set Model                = table
 
   subsection Simple model
     # rho0 in kg / m^3
