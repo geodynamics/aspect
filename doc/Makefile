@@ -2,8 +2,7 @@
 # $Id: Makefile 4165 2011-03-28 13:10:33Z bangerth $
 ############################################################
 
-D           ?= ../../../deal.II
-include $D/common/Make.global_options
+D           ?= ../../../../../deal.II
 
 aspect-files    = $(shell echo ../include/aspect/*.h modules/*h)
 

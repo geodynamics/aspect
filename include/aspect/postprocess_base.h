@@ -117,8 +117,8 @@ namespace aspect
          * state in a string that is deposited under a key in the map through
          * which the respective class can later find the status again when the
          * program is restarted. A legitimate key to store data under is
-        * <code>typeid(*this).name()</code>. It is up to derived classes to
-        * decide how they want to encode their state.
+         * <code>typeid(*this).name()</code>. It is up to derived classes to
+         * decide how they want to encode their state.
          *
          * The default implementation of this function does nothing, i.e., it
          * represents a stateless object for which nothing needs to be stored
@@ -308,6 +308,15 @@ namespace aspect
     };
 
 
+    /**
+     * A class that manages all objects that provide functionality to postprocess
+     * solutions. It declares run time parameters for input files, reads their
+     * values from such an input file, manages a list of all postprocessors selected
+     * in the input file, and upon request through the execute() function calls
+     * them in turn.
+     *
+     * @ingroup Postprocessing
+     */
     template <int dim>
     class Manager
     {
@@ -474,6 +483,8 @@ namespace aspect
     /**
      * Given a name and a classname for a postprocessor, register it with
      * the aspect::Postprocess::Manager class.
+     *
+     * @ingroup Postprocessing
      */
 #define ASPECT_REGISTER_POSTPROCESSOR(name,classname) \
   namespace ASPECT_REGISTER_POSTPROCESSOR_ ## classname \

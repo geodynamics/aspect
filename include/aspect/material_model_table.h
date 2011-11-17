@@ -15,6 +15,13 @@ namespace aspect
   {
     using namespace dealii;
 
+    /**
+     * A material model that reads the essential values of coefficients from
+     * tables in input files that describe their dependence as a function of
+     * pressure and temperature.
+     *
+     * @ingroup MaterialModels
+     */
     template <int dim>
     class Table: public MaterialModel::Interface<dim>
     {

@@ -18,6 +18,8 @@ namespace aspect
    * A namespace in which we define everything that has to do with modeling
    * convecting material, including descriptions of material parameters such
    * as viscosities, densities, etc.
+   *
+   * @ingroup MaterialModels
    */
   namespace MaterialModel
   {
@@ -28,6 +30,8 @@ namespace aspect
      * this class will need to implement functions that provide material parameters
      * such as the viscosity, density, etc, typically as a function of position,
      * temperature and pressure at that location.
+     *
+     * @ingroup MaterialModels
      */
     template <int dim>
     class Interface
@@ -118,6 +122,8 @@ namespace aspect
      *   declare the parameters that this material model wants to read from input files.
      * @param factory_function A pointer to a function that can create an object of
      *   this material model.
+    *
+    * @ingroup MaterialModels
      **/
     template <int dim>
     void
@@ -128,6 +134,8 @@ namespace aspect
     /**
      * A function that given the name of a model returns a pointer to an object
      * that describes it. Ownership of the pointer is transferred to the caller.
+    *
+    * @ingroup MaterialModels
      */
     template <int dim>
     Interface<dim> *
@@ -136,6 +144,8 @@ namespace aspect
 
     /**
      * Declare the runtime parameters of the registered material models.
+    *
+    * @ingroup MaterialModels
      */
     void
     declare_parameters (ParameterHandler &prm);
@@ -170,6 +180,8 @@ namespace aspect
     /**
     * Given a name and a classname for a postprocessor, register it with
     * the aspect::Postprocess::Manager class.
+    *
+    * @ingroup MaterialModels
     */
 #define ASPECT_REGISTER_MATERIAL_MODEL(name,classname) \
   namespace ASPECT_REGISTER_MATERIAL_MODEL_ ## classname \

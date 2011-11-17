@@ -15,8 +15,15 @@ namespace aspect
   {
     using namespace dealii;
 
+    /**
+     * A material model that consists of globally constant values for all material
+     * parameters. The model is thus also incompressible. This is essentially the
+     * material model used in the step-32 tutorial program.
+     *
+     * @ingroup MaterialModels
+     */
     template <int dim>
-    class Simple: public MaterialModel::Interface<dim>
+    class Simple : public MaterialModel::Interface<dim>
     {
       public:
         virtual double viscosity (const double temperature,
