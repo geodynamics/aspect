@@ -31,6 +31,8 @@ namespace aspect
      * Base class for classes that describe particular geometries for the
      * domain. These classes must also be able to create coarse meshes
      * and describe what kinds of boundary conditions hold where.
+     *
+     * @ingroup GeometryModels
      */
     template <int dim>
     class Interface
