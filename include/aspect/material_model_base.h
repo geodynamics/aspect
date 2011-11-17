@@ -92,14 +92,14 @@ namespace aspect
 
         /**
          * Return whether the model is compressible or not.
-         **/
+         */
         virtual bool is_compressible () const = 0;
 
         /**
          * Declare the parameters this class takes through input files.
-        * The default implementation of this function does not describe
-        * any parameters. Consequently, derived classes do not have to
-        * overload this function if they do not take any runtime parameters.
+         * The default implementation of this function does not describe
+         * any parameters. Consequently, derived classes do not have to
+         * overload this function if they do not take any runtime parameters.
          */
         static
         void
@@ -108,8 +108,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter
          * file. The default implementation of this function does not read
-        * any parameters. Consequently, derived classes do not have to
-        * overload this function if they do not take any runtime parameters.
+         * any parameters. Consequently, derived classes do not have to
+         * overload this function if they do not take any runtime parameters.
          */
         virtual
         void
@@ -127,9 +127,9 @@ namespace aspect
      *   declare the parameters that this material model wants to read from input files.
      * @param factory_function A pointer to a function that can create an object of
      *   this material model.
-    *
-    * @ingroup MaterialModels
-     **/
+     *
+     * @ingroup MaterialModels
+     */
     template <int dim>
     void
     register_material_model (const std::string &name,
@@ -139,8 +139,8 @@ namespace aspect
     /**
      * A function that given the name of a model returns a pointer to an object
      * that describes it. Ownership of the pointer is transferred to the caller.
-    *
-    * @ingroup MaterialModels
+     *
+     * @ingroup MaterialModels
      */
     template <int dim>
     Interface<dim> *
@@ -149,8 +149,8 @@ namespace aspect
 
     /**
      * Declare the runtime parameters of the registered material models.
-    *
-    * @ingroup MaterialModels
+     *
+     * @ingroup MaterialModels
      */
     void
     declare_parameters (ParameterHandler &prm);
@@ -183,11 +183,11 @@ namespace aspect
 
 
     /**
-    * Given a name and a classname for a postprocessor, register it with
-    * the aspect::Postprocess::Manager class.
-    *
-    * @ingroup MaterialModels
-    */
+     * Given a name and a classname for a postprocessor, register it with
+     * the aspect::Postprocess::Manager class.
+     *
+     * @ingroup MaterialModels
+     */
 #define ASPECT_REGISTER_MATERIAL_MODEL(name,classname) \
   namespace ASPECT_REGISTER_MATERIAL_MODEL_ ## classname \
   { const char *local_name = name; \
