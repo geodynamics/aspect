@@ -4,8 +4,8 @@
 //    Copyright (C) 2011 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
-#ifndef __aspect__material_model_h
-#define __aspect__material_model_h
+#ifndef __aspect__material_model_base_h
+#define __aspect__material_model_base_h
 
 #include <deal.II/numerics/vectors.h>
 #include <deal.II/base/symmetric_tensor.h>
