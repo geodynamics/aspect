@@ -29,13 +29,14 @@ namespace aspect
     template <int dim>
     double spherical_shell (const Point<dim> &p,
                             const double R0,
-                            const double R1,
-			    const double delta_z)
+                            const double R1)
     {
-      // clamp the depth to be positive, can happen due to rounding errors on the mesh
+      // clamp the depth to be positive, can happen due to rounding errors on the mesh.
+      // also limit the depth to the maximally possible for this geometry so that
+      // we don't get into trouble when looking things up from tables
       return std::min(std::max(R1 - p.norm(),
                                        0.0),
-                              R1-R0 - delta_z);
+                              R1-R0);
     }
   }
 
@@ -57,7 +58,7 @@ namespace aspect
       delta_z = (R1-R0)/(n_points-1);
       point_to_depth_converter = std_cxx1x::bind (&PointToDepthConversion::spherical_shell<dim>,
 						  std_cxx1x::_1,
-						  R0, R1, delta_z);
+						  R0, R1);
     }
     else
       Assert (false, ExcNotImplemented());
@@ -83,7 +84,8 @@ namespace aspect
 
         //TODO: use the real gravity model here as a function of z
         const Point<dim> representative_point
-          = Point<dim>::unit_vector(0) * (dynamic_cast<const GeometryModel::SphericalShell<dim>&>(geometry_model).outer_radius()-z);
+          = Point<dim>::unit_vector(0) *
+	  (dynamic_cast<const GeometryModel::SphericalShell<dim>&>(geometry_model).outer_radius()-z);
 
         const double density = material_model.density(temperatures[i-1], pressures[i-1], representative_point);
 
@@ -138,7 +140,7 @@ namespace aspect
 }
 
 
-//instantiation:
+// explicit instantiations
 namespace aspect
 {
   template class AdiabaticConditions<deal_II_dimension>;
