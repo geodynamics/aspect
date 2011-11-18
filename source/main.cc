@@ -641,6 +641,10 @@ namespace aspect
                        Patterns::Double (0),
                        "The end time of the simulation in years.");
 
+    prm.declare_entry ("Time step scaling", "1.0",
+                       Patterns::Double (0),
+                       "Time step size is given as scaling/cfl_number, default: 1.0");
+
     prm.enter_subsection ("Mesh refinement");
     {
       prm.declare_entry ("Initial global refinement", "2",
@@ -777,6 +781,7 @@ namespace aspect
   {
     resume_computation      = prm.get_bool ("Resume computation");
     end_time                = prm.get_double ("End time");
+    time_step_scaling       = prm.get_double ("Time step scaling");
 
     prm.enter_subsection ("Mesh refinement");
     {
@@ -1060,7 +1065,9 @@ namespace aspect
             max_local_velocity = std::max (max_local_velocity,
                                            velocity_values[q].norm());
           max_local_cfl = std::max(max_local_cfl,
-                                   max_local_velocity / cell->diameter());
+                                   max_local_velocity
+                                   /
+                                   cell->minimum_vertex_distance());
         }
 
     return Utilities::MPI::max (max_local_cfl, MPI_COMM_WORLD);
@@ -2327,11 +2334,7 @@ namespace aspect
       old_time_step = time_step;
       const double cfl_number = get_cfl_number();
 
-      // we found out that we need
-      // approximately a quarter the time step
-      // size in 3d
-      double scaling = (dim==3)?0.25:1.0;
-      time_step = (scaling/(2.1*dim*std::sqrt(1.*dim)) /
+      time_step = (parameters.time_step_scaling /
                    (parameters.temperature_degree *
                     cfl_number));
 

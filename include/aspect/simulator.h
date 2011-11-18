@@ -120,6 +120,7 @@ namespace aspect
         void parse_parameters (ParameterHandler &prm);
 
         double end_time;
+        double time_step_scaling;
 
         bool resume_computation;
 
