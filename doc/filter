@@ -16,25 +16,6 @@ s/\\\@f\$/\$/g;
 #    http://bugzilla.gnome.org/show_bug.cgi?id=365053
 s/(::)?dealii::/::/g;
 
-# Replace all occurrences of something like step-xx by
-#    @ref step_xx "step-xx"
-# so that doxygen properly cross references them. Before we had
-# this rule, we actually had to write this sequence out in our
-# documentation. Unfortunately, as a consequence, there are vestiges
-# of this style, so we can't substitute things that look like
-# "step-xx".
-#
-# There is other exceptions:
-# - the scripts in doc/doxygen/tutorial produce files that have
-#   table of contents entries. We don't want these cross-linked
-#   to itself.
-# - things like step_12.solution.png that typically appear in
-#   @image commands.
-# - things in headings
-s/(?<!\")step-(\d+)(?!\")/\@ref step_\1 \"step-\1\"/gi
-  if !m/(\@page|\@image|<h\d>)/i;
-
-
 s#(static dealii::ExceptionBase\&)#\n//\! \@ingroup Exceptions\n \1#g;
 
 # doxygen version 1.7.1 and later have the habit of thinking that
