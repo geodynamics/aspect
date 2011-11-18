@@ -29,16 +29,17 @@ namespace aspect
     template <int dim>
     double spherical_shell (const Point<dim> &p,
                             const double R0,
-                            const double R1)
+                            const double R1,
+			    const double delta_z)
     {
-      // clamp the depth to be positive, can happen due to rounding errors on the mesh      
+      // clamp the depth to be positive, can happen due to rounding errors on the mesh
       return std::min(std::max(R1 - p.norm(),
                                        0.0),
-                              R1-R0);
+                              R1-R0 - delta_z);
     }
   }
-  
-  
+
+
   template <int dim>
   AdiabaticConditions<dim>::AdiabaticConditions(const GeometryModel::Interface<dim> &geometry_model,
 			                        const aspect::MaterialModel::Interface<dim> &material_model)
@@ -56,12 +57,12 @@ namespace aspect
       delta_z = (R1-R0)/(n_points-1);
       point_to_depth_converter = std_cxx1x::bind (&PointToDepthConversion::spherical_shell<dim>,
 						  std_cxx1x::_1,
-						  R0, R1);
+						  R0, R1, delta_z);
     }
     else
       Assert (false, ExcNotImplemented());
-      
-    
+
+
     //TODO: look up real value!
     const double dTdp = 2.5e-8;
 
