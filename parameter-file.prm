@@ -5,7 +5,7 @@
 set Resume computation            = false
 
 # The end time of the simulation in years.
-set End time                            = 4e7
+set End time                            = 1e10
 
 # Time step size is given as scaling/cfl_number, default: 1.0
 set Time step scaling                   = 1.0
@@ -21,7 +21,7 @@ subsection Mesh refinement
 
   # The number of time steps after which the mesh is to be adapted based on
   # computed error indicators.
-  set Time steps between mesh refinement  = 10
+  set Time steps between mesh refinement  = 5
 
   set Refinement fraction                 = 0.3
   set Coarsening fraction                 = 0.05
@@ -33,7 +33,7 @@ subsection Mesh refinement
   # on a relatively coarse mesh, and then refine again when we
   # are in a time range that we are interested in and where
   # we would like to use a finer mesh.
-  set Additional refinement times         = 1e7
+  set Additional refinement times         = #1e7
 end
 
 subsection Thermal perturbation
@@ -53,7 +53,7 @@ subsection Thermal perturbation
   set Sign = 1
   #
   # use gaussian point perturbation
-  set gaussian perturbation = true
+  set gaussian perturbation = false
 end
 
 subsection Discretization
