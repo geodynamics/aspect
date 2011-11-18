@@ -38,7 +38,6 @@
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/filtered_iterator.h>
-#include <deal.II/grid/tria_boundary_lib.h>
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/grid/grid_refinement.h>
 
@@ -74,6 +73,7 @@
 #include <locale>
 #include <string>
 
+
 using namespace dealii;
 
 // In the following namespace, we define the
@@ -96,10 +96,6 @@ namespace EquationData
   // vectors
   const double length_scale = 10000;
 
-
-  double R0      = 6371000.-2890000.;     /* m          */
-  double R1      = 6371000.-  35000.;     /* m          */
-  double apperture_angle = numbers::PI;     /* m          */
 
   double T0      = 4000+273;              /* K          */
   double T1      =  700+273;              /* K          */
@@ -159,6 +155,9 @@ namespace EquationData
                                         const unsigned int) const
   {
     const double r = p.norm();
+    //TODO: do something more reasonable here: query the geometry description
+    const double R0 = 5698e3;
+    const double R1 = 10415e3;
     const double h = R1-R0;
 
     // s = fraction of the way from
@@ -736,15 +735,6 @@ namespace aspect
       prm.declare_entry ("Radiogenic heating rate", "0e0",
                          Patterns::Double (),
                          "H0");
-      prm.declare_entry ("R1", "10415e3",
-                         Patterns::Double (),
-                         "Outer radius");
-      prm.declare_entry ("R0", "4717e3",
-                         Patterns::Double (),
-                         "Inner radius");
-      prm.declare_entry ("apperture_angle", "180",
-                         Patterns::Double (),
-                         "apperture angle (opening angle)");
       prm.declare_entry ("T1", "0",
                          Patterns::Double (),
                          "temperature at outer boundary (lythosphere water/air)");
@@ -839,9 +829,6 @@ namespace aspect
     {
       EquationData::kappa = prm.get_double ("kappa");
       radiogenic_heating_rate = prm.get_double ("Radiogenic heating rate");
-      EquationData::R1 = prm.get_double ("R1");
-      EquationData::R0 = prm.get_double ("R0");
-      EquationData::apperture_angle = (std::acos(-1e0)/180e0)*prm.get_double ("apperture_angle");
       EquationData::T0 = prm.get_double ("T0");
       EquationData::T1 = prm.get_double ("T1");
       EquationData::reference_gravity = prm.get_double ("reference_gravity");
@@ -870,15 +857,14 @@ namespace aspect
             this_mpi_process(MPI_COMM_WORLD)
             == 0)),
 
+    geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
     material_model (MaterialModel::create_material_model<dim>(prm)),
-    adiabatic_conditions(*material_model),
 
     triangulation (MPI_COMM_WORLD,
                    typename Triangulation<dim>::MeshSmoothing
                    (Triangulation<dim>::smoothing_on_refinement |
                     Triangulation<dim>::smoothing_on_coarsening),
-                   parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning
-                  ),
+                   parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning),
 
     mapping (4),
 
@@ -911,7 +897,11 @@ namespace aspect
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
 
-    material_model->parse_parameters(prm);
+    geometry_model->create_coarse_mesh (triangulation);
+    global_Omega_diameter = GridTools::diameter (triangulation);
+
+    adiabatic_conditions.reset (new AdiabaticConditions<dim>(*geometry_model,
+			 *material_model));
 
     pressure_scaling = material_model->reference_viscosity() / EquationData::length_scale;
 
@@ -928,6 +918,7 @@ namespace aspect
     Parameters::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MaterialModel::declare_parameters (prm);
+    GeometryModel::declare_parameters (prm);
   }
 
 
@@ -1320,7 +1311,7 @@ namespace aspect
         TrilinosWrappers::MPI::BlockVector stokes_tmp;
         stokes_tmp.reinit (stokes_rhs);
         VectorTools::interpolate (mapping, stokes_dof_handler,
-                                  InitialConditions(adiabatic_conditions),
+                                  InitialConditions(*adiabatic_conditions),
                                   stokes_tmp);
         old_stokes_solution = stokes_tmp;
       }
@@ -1353,7 +1344,7 @@ namespace aspect
 
         ScalarFunctionFromFunctionObject<dim>
         ad_pressure (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
-                                      std_cxx1x::cref(adiabatic_conditions),
+                                      std_cxx1x::cref(*adiabatic_conditions),
                                       std_cxx1x::_1));
 
 
@@ -2797,43 +2788,6 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::run ()
   {
-    if (EquationData::apperture_angle == std::acos(-1e0)*2e0)
-      {
-
-        GridGenerator::hyper_shell (triangulation,
-                                    Point<dim>(),
-                                    EquationData::R0,
-                                    EquationData::R1,
-                                    (dim==3) ? 96 : 12,
-                                    true);
-      }
-    else if (EquationData::apperture_angle == std::acos(-1e0)/2e0)
-      {
-        GridGenerator::quarter_hyper_shell (triangulation,
-                                            Point<dim>(),
-                                            EquationData::R0,
-                                            EquationData::R1,0,
-                                            true);
-      }
-    else if (EquationData::apperture_angle == std::acos(-1e0))
-      {
-        GridGenerator::half_hyper_shell (triangulation,
-                                         Point<dim>(),
-                                         EquationData::R0,
-                                         EquationData::R1,0,
-                                         true);
-      }
-    else
-      {
-        Assert (false, ExcInternalError());
-      }
-
-    static HyperShellBoundary<dim> boundary;
-    triangulation.set_boundary (0, boundary);
-    triangulation.set_boundary (1, boundary);
-
-    global_Omega_diameter = GridTools::diameter (triangulation);
-
     if (parameters.resume_computation == true)
       {
         resume_from_snapshot();

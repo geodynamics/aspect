@@ -171,6 +171,24 @@ namespace aspect
       return *simulator->material_model.get();
     }
 
+
+
+    template <int dim>
+    const GeometryModel::Interface<dim> &
+    SimulatorAccess<dim>::get_geometry_model () const
+    {
+      return *simulator->geometry_model.get();
+    }
+
+
+
+    template <int dim>
+    const AdiabaticConditions<dim> &
+    SimulatorAccess<dim>::get_adiabatic_conditions () const
+    {
+      return *simulator->adiabatic_conditions.get();
+    }
+
 // ------------------------------ Manager -----------------------------
 
     template <int dim>

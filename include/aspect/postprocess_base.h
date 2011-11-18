@@ -8,6 +8,8 @@
 #define __aspect__postprocess_base_h
 
 #include <aspect/material_model_base.h>
+#include <aspect/geometry_model_base.h>
+#include <aspect/adiabatic_conditions.h>
 
 #include <deal.II/base/std_cxx1x/shared_ptr.h>
 #include <deal.II/base/table_handler.h>
@@ -289,6 +291,11 @@ namespace aspect
          */
         const DoFHandler<dim> &
         get_temperature_dof_handler () const;
+        /** @} */
+
+
+        /** @name Accessing variables that identify aspects of the simulation */
+        /** @{ */
 
 
         /**
@@ -296,6 +303,20 @@ namespace aspect
          */
         const MaterialModel::Interface<dim> &
         get_material_model () const;
+	
+	
+        /**
+         * Return a pointer to the geometry model.
+         */
+        const GeometryModel::Interface<dim> &
+        get_geometry_model () const;
+	
+	
+        /**
+         * Return a pointer to the object that describes the adiabatic conditions.
+         */
+        const AdiabaticConditions<dim> &
+        get_adiabatic_conditions () const;
 
         /** @} */
 

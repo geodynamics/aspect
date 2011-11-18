@@ -70,8 +70,8 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
     };
-    
-    
+
+
     /**
      * Register a geometry model so that it can be selected from the parameter file.
      *
@@ -108,6 +108,8 @@ namespace aspect
     void
     declare_parameters (ParameterHandler &prm);
 
+    
+    
     namespace internal
     {
       /**

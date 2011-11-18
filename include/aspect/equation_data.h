@@ -18,10 +18,7 @@ namespace EquationData
   using namespace dealii;
 
   extern const double year_in_seconds;
-
-  extern double R0, R1;
   extern double T0, T1;
-  extern double apperture_angle;
 
   template <int dim>
   Tensor<1,dim> gravity_vector (const Point<dim> &p);

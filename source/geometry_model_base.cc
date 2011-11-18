@@ -88,7 +88,11 @@ namespace aspect
       for (std::list<GeometryModelInfo>::const_iterator p = registered_geometry_models->begin();
            p != registered_geometry_models->end(); ++p)
         if (std_cxx1x::get<0>(*p) == model_name)
-          return std_cxx1x::get<2>(*p)();
+	{
+	  Interface<dim> *i = std_cxx1x::get<2>(*p)();
+	  i->parse_parameters (prm);
+	  return i;
+	}
 
       AssertThrow (false, ExcNotImplemented());
       return 0;

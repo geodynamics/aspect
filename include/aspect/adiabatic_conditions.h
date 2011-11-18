@@ -9,6 +9,7 @@
 
 
 #include <aspect/material_model_base.h>
+#include <aspect/geometry_model_base.h>
 #include <deal.II/base/point.h>
 
 
@@ -32,9 +33,10 @@ namespace aspect
     public:
       /**
        * Constructor. Compute the adiabatic conditions along a vertical
-       * transect based on the given material mode.
+       * transect of the geometry based on the given material model.
        */
-      AdiabaticConditions (const MaterialModel::Interface<dim> &material_model);
+      AdiabaticConditions (const GeometryModel::Interface<dim> &geometry_model,
+			   const MaterialModel::Interface<dim> &material_model);
 
       /**
        * Return the adiabatic temperature at a given point of the domain.
@@ -58,6 +60,22 @@ namespace aspect
        * of this class interpolate linearly between these points.
        */
       std::vector<double> temperatures, pressures;
+      
+      /**
+       * Interval spacing between each two data points in the tables above
+       * with regard to the depth coordinate.
+       */
+      double delta_z;
+      
+      /**
+       * Function object that can be used to convert from a given point to 
+       * the (positive) depth with which we can look up in the table what the
+       * corresponding conditions would be.
+       * 
+       * This object is set in the constructor where we have knowledge of the
+       * geometry object in use.
+       */
+      std_cxx1x::function<double (const Point<dim>&)> point_to_depth_converter;
   };
 
 }

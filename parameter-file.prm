@@ -76,28 +76,29 @@ end
 subsection ModelParameters
   set kappa = 4.548e-7
   set Radiogenic heating rate = 0e0
-  set R1 = 10415e3
-  set R0 = 5698e3
-  set apperture_angle = 180
   set T1 = 300
   set T0 = 6300
   set reference_gravity = 30
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Outer radius = 10415e3
+    set Inner radius = 5698e3
+    set Opening angle = 180
+  end
 end
 
 subsection Material model
   set Model name              = table
 
   subsection Simple model
-    # rho0 in kg / m^3
     set reference_density     = 3300
-
-    # eta0
     set reference_eta         = 5e24
-
-    # T0 in K
     set reference_temperature = 293
   end
-
 end
 
 subsection Stabilization parameters

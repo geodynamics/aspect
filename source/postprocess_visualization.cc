@@ -35,7 +35,8 @@ namespace aspect
         public:
           Postprocessor (const unsigned int                   partition,
                          const double                         minimal_pressure,
-                         const MaterialModel::Interface<dim> &material_model);
+                         const MaterialModel::Interface<dim> &material_model,
+			 const AdiabaticConditions<dim>      &adiabatic_conditions);
 
           virtual
           void
@@ -60,7 +61,7 @@ namespace aspect
           const unsigned int                   partition;
           const double                         minimal_pressure;
           const MaterialModel::Interface<dim> &material_model;
-          AdiabaticConditions<dim>             adiabatic_conditions;
+          const AdiabaticConditions<dim>      &adiabatic_conditions;
       };
 
 
@@ -68,12 +69,13 @@ namespace aspect
       Postprocessor<dim>::
       Postprocessor (const unsigned int                   partition,
                      const double                         minimal_pressure,
-                     const MaterialModel::Interface<dim> &material_model)
+                     const MaterialModel::Interface<dim> &material_model,
+	             const AdiabaticConditions<dim>      &adiabatic_conditions)
         :
         partition (partition),
         minimal_pressure (minimal_pressure),
         material_model(material_model),
-        adiabatic_conditions (material_model)
+        adiabatic_conditions (adiabatic_conditions)
       {}
 
 
@@ -277,7 +279,8 @@ namespace aspect
 
       internal::Postprocessor<dim> postprocessor (this->get_triangulation().locally_owned_subdomain(),
                                                   this->get_stokes_solution().block(1).minimal_value(),
-                                                  this->get_material_model());
+                                                  this->get_material_model(),
+                                                  this->get_adiabatic_conditions());
 
       DataOut<dim> data_out;
       data_out.attach_dof_handler (joint_dof_handler);

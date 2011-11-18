@@ -6,14 +6,12 @@
 //-------------------------------------------------------------
 
 #include <aspect/postprocess_heat_flux_statistics.h>
+#include <aspect/geometry_model_spherical_shell.h>
 #include <aspect/equation_data.h>
 #include <aspect/simulator.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
-
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 
 
 namespace aspect
@@ -24,6 +22,9 @@ namespace aspect
     std::pair<std::string,std::string>
     HeatFluxStatistics<dim>::execute (TableHandler &statistics)
     {
+      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model()) != 0,
+	      ExcNotImplemented());
+
       const QGauss<dim-1> quadrature_formula (this->get_temperature_dof_handler().get_fe().degree+1);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
@@ -103,10 +104,14 @@ namespace aspect
 
       // check that the following formula makes sense in 3d as well.
       Assert (dim==2, ExcNotImplemented());
-      const double inner_boundary_curve_length = EquationData::R0/(EquationData::R1 - EquationData::R0) *
-                                                 EquationData::apperture_angle;
-      const double outer_boundary_curve_length = EquationData::R1/(EquationData::R1 - EquationData::R0) *
-                                                 EquationData::apperture_angle;
+
+      const GeometryModel::SphericalShell<dim> &geometry
+      = dynamic_cast<const GeometryModel::SphericalShell<dim> &>(this->get_geometry_model());
+
+      const double inner_boundary_curve_length = geometry.inner_radius()/(geometry.outer_radius() - geometry.inner_radius()) *
+                                                 (geometry.opening_angle() / 360 * 2 * numbers::PI);
+      const double outer_boundary_curve_length = geometry.outer_radius()/(geometry.outer_radius() - geometry.inner_radius()) *
+                                                 (geometry.opening_angle() / 360 * 2 * numbers::PI);
 
       const double dTdr_inner = (global_inner_boundary_flux / thermal_conductivity)*Scaling;
       statistics.add_value ("Inner Nu number", dTdr_inner / inner_boundary_curve_length);
