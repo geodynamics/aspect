@@ -1,6 +1,3 @@
-when computing the CFL number, compute it with the shortest edge length
-instead of the cell diameter
-
 Rename artificial viscosity stability parameter from beta to alpha to match
 the paper.
 
