@@ -91,11 +91,11 @@ namespace aspect
       for (std::list<MaterialModelInfo>::const_iterator p = registered_material_models->begin();
            p != registered_material_models->end(); ++p)
         if (std_cxx1x::get<0>(*p) == model_name)
- 	{
-	  Interface<dim> *i = std_cxx1x::get<2>(*p)();
-	  i->parse_parameters (prm);
-	  return i;
-	}
+          {
+            Interface<dim> *i = std_cxx1x::get<2>(*p)();
+            i->parse_parameters (prm);
+            return i;
+          }
 
       AssertThrow (false, ExcNotImplemented());
       return 0;

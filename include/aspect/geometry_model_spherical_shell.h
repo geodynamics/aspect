@@ -21,7 +21,7 @@ namespace aspect
      * precise, at least in 2d this class can also simulate just a sector
      * of the spherical shell geometry, in particular a half ring and a
      * quarter ring.
-     * 
+     *
      * The parameters that describe this geometry and that are read from
      * the input file are the inner and outer radii of the shell and the
      * opening angle of the section of the shell we want to build.
@@ -79,11 +79,11 @@ namespace aspect
          * Inner and outer radii of the spherical shell.
          */
         double R0, R1;
-	
-	/**
-	 * Opening angle of the section of the shell that we simulate.
-	 */
-	double phi;
+
+        /**
+         * Opening angle of the section of the shell that we simulate.
+         */
+        double phi;
     };
   }
 }

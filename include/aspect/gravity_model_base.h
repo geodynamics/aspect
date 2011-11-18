@@ -81,8 +81,8 @@ namespace aspect
     template <int dim>
     void
     register_gravity_model (const std::string &name,
-                             void (*declare_parameters_function) (ParameterHandler &),
-                             Interface<dim> * (*factory_function) ());
+                            void (*declare_parameters_function) (ParameterHandler &),
+                            Interface<dim> * (*factory_function) ());
 
     /**
      * A function that given the name of a model returns a pointer to an object
@@ -103,8 +103,8 @@ namespace aspect
     void
     declare_parameters (ParameterHandler &prm);
 
-    
-    
+
+
     namespace internal
     {
       /**

@@ -23,7 +23,7 @@ namespace aspect
     HeatFluxStatistics<dim>::execute (TableHandler &statistics)
     {
       Assert (dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model()) != 0,
-	      ExcNotImplemented());
+              ExcNotImplemented());
 
       const QGauss<dim-1> quadrature_formula (this->get_temperature_dof_handler().get_fe().degree+1);
 
@@ -106,7 +106,7 @@ namespace aspect
       Assert (dim==2, ExcNotImplemented());
 
       const GeometryModel::SphericalShell<dim> &geometry
-      = dynamic_cast<const GeometryModel::SphericalShell<dim> &>(this->get_geometry_model());
+        = dynamic_cast<const GeometryModel::SphericalShell<dim> &>(this->get_geometry_model());
 
       const double inner_boundary_curve_length = geometry.inner_radius()/(geometry.outer_radius() - geometry.inner_radius()) *
                                                  (geometry.opening_angle() / 360 * 2 * numbers::PI);

@@ -108,8 +108,8 @@ namespace aspect
     void
     declare_parameters (ParameterHandler &prm);
 
-    
-    
+
+
     namespace internal
     {
       /**

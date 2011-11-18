@@ -36,7 +36,7 @@ namespace aspect
           Postprocessor (const unsigned int                   partition,
                          const double                         minimal_pressure,
                          const MaterialModel::Interface<dim> &material_model,
-			 const AdiabaticConditions<dim>      &adiabatic_conditions);
+                         const AdiabaticConditions<dim>      &adiabatic_conditions);
 
           virtual
           void
@@ -70,7 +70,7 @@ namespace aspect
       Postprocessor (const unsigned int                   partition,
                      const double                         minimal_pressure,
                      const MaterialModel::Interface<dim> &material_model,
-	             const AdiabaticConditions<dim>      &adiabatic_conditions)
+                     const AdiabaticConditions<dim>      &adiabatic_conditions)
         :
         partition (partition),
         minimal_pressure (minimal_pressure),

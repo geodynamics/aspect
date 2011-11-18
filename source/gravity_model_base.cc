@@ -61,8 +61,8 @@ namespace aspect
     template <int dim>
     void
     register_gravity_model (const std::string &name,
-                             void (*declare_parameters_function) (ParameterHandler &),
-                             Interface<dim> * (*factory_function) ())
+                            void (*declare_parameters_function) (ParameterHandler &),
+                            Interface<dim> * (*factory_function) ())
     {
       // see if this is the first time we get into this
       // function and if so initialize the variable above
@@ -71,8 +71,8 @@ namespace aspect
 
       // now add one record to the list
       registered_gravity_models->push_back (GravityModelInfo(name,
-                                                               declare_parameters_function,
-                                                               factory_function));
+                                                             declare_parameters_function,
+                                                             factory_function));
     }
 
 
@@ -92,11 +92,11 @@ namespace aspect
       for (std::list<GravityModelInfo>::const_iterator p = registered_gravity_models->begin();
            p != registered_gravity_models->end(); ++p)
         if (std_cxx1x::get<0>(*p) == model_name)
- 	{
-	  Interface<dim> *i = std_cxx1x::get<2>(*p)();
-	  i->parse_parameters (prm);
-	  return i;
-	}
+          {
+            Interface<dim> *i = std_cxx1x::get<2>(*p)();
+            i->parse_parameters (prm);
+            return i;
+          }
 
       AssertThrow (false, ExcNotImplemented());
       return 0;
@@ -146,8 +146,8 @@ namespace aspect
     template
     void
     register_gravity_model<deal_II_dimension> (const std::string &,
-                                                void ( *) (ParameterHandler &),
-                                                Interface<deal_II_dimension> * ( *) ());
+                                               void ( *) (ParameterHandler &),
+                                               Interface<deal_II_dimension> * ( *) ());
 
     template
     Interface<deal_II_dimension> *

@@ -21,35 +21,35 @@ namespace aspect
     SphericalShell<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-    if (phi == 360)
-      {
-        GridGenerator::hyper_shell (coarse_grid,
-                                    Point<dim>(),
-                                    R0,
-                                    R1,
-                                    (dim==3) ? 96 : 12,
-                                    true);
-      }
-    else if (phi == 90)
-      {
-        GridGenerator::quarter_hyper_shell (coarse_grid,
-                                            Point<dim>(),
-                                            R0,
-                                            R1,0,
-                                            true);
-      }
-    else if (phi == 180)
-      {
-        GridGenerator::half_hyper_shell (coarse_grid,
-                                         Point<dim>(),
-                                         R0,
-                                         R1,0,
-                                         true);
-      }
-    else
-      {
-        Assert (false, ExcInternalError());
-      }
+      if (phi == 360)
+        {
+          GridGenerator::hyper_shell (coarse_grid,
+                                      Point<dim>(),
+                                      R0,
+                                      R1,
+                                      (dim==3) ? 96 : 12,
+                                      true);
+        }
+      else if (phi == 90)
+        {
+          GridGenerator::quarter_hyper_shell (coarse_grid,
+                                              Point<dim>(),
+                                              R0,
+                                              R1,0,
+                                              true);
+        }
+      else if (phi == 180)
+        {
+          GridGenerator::half_hyper_shell (coarse_grid,
+                                           Point<dim>(),
+                                           R0,
+                                           R1,0,
+                                           true);
+        }
+      else
+        {
+          Assert (false, ExcInternalError());
+        }
 
       static const HyperShellBoundary<dim> boundary;
       coarse_grid.set_boundary (0, boundary);
@@ -94,10 +94,10 @@ namespace aspect
           prm.declare_entry ("Outer radius", "6336000",  // 6371-35 in km
                              Patterns::Double (0),
                              "Outer radius of the spherical shell in units [m].");
-           prm.declare_entry ("Opening angle", "360",
+          prm.declare_entry ("Opening angle", "360",
                              Patterns::Double (0, 360),
                              "Opening angle in degrees of the section of the shell that we want to build.");
-       }
+        }
         prm.leave_subsection();
       }
       prm.leave_subsection();

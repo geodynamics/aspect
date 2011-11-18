@@ -303,15 +303,15 @@ namespace aspect
          */
         const MaterialModel::Interface<dim> &
         get_material_model () const;
-	
-	
+
+
         /**
          * Return a pointer to the geometry model.
          */
         const GeometryModel::Interface<dim> &
         get_geometry_model () const;
-	
-	
+
+
         /**
          * Return a pointer to the object that describes the adiabatic conditions.
          */

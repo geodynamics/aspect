@@ -906,7 +906,7 @@ namespace aspect
     global_Omega_diameter = GridTools::diameter (triangulation);
 
     adiabatic_conditions.reset (new AdiabaticConditions<dim>(*geometry_model,
-			 *material_model));
+                                                             *material_model));
 
     pressure_scaling = material_model->reference_viscosity() / EquationData::length_scale;
 
