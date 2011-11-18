@@ -15,6 +15,8 @@
 #include <aspect/equation_data.h>
 #include <aspect/geometry_model_spherical_shell.h>
 
+#include <base/std_cxx1x/bind.h>
+
 
 namespace aspect
 {

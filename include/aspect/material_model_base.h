@@ -7,8 +7,6 @@
 #ifndef __aspect__material_model_base_h
 #define __aspect__material_model_base_h
 
-#include <deal.II/numerics/vectors.h>
-#include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
 
