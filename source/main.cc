@@ -2613,7 +2613,6 @@ namespace aspect
 
     ar &postprocess_manager &statistics;
 
-// how about global_volume, global_Omega_diameter
   }
 
 
