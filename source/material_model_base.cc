@@ -7,6 +7,10 @@
 
 #include <aspect/material_model_base.h>
 #include <deal.II/base/exceptions.h>
+#include <deal.II/base/std_cxx1x/tuple.h>
+
+#include <list>
+
 
 namespace aspect
 {
