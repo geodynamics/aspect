@@ -20,7 +20,10 @@ Topics for preview release:
 - Clean-up
 - temperature equation must contain adiabatic terms in the compressible case
 - look at parameterization of geometry and initial temperature field
-- Documentation
+- Documentation. talk about
+     . reference step-31, 32, paper
+     . physical units: MKS throughout, but output sometimes in cm/year
+     . extensibility through plugin-concept in models
 - Refinement criterion in 3d?
 - Attach a proper license and adjust headers of all files
 
