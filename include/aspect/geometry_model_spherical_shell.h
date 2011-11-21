@@ -36,7 +36,17 @@ namespace aspect
         virtual
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const;
 
-        /**
+	/**
+	 * Return the typical length scale one would expect of features in this geometry,
+	 * assuming realistic parameters.
+	 * 
+	 * As discussed in the step-32 tutorial program, an appropriate length scale for
+	 * this geometry is 10km, so we return $10^4$ here.
+	 */
+	virtual
+	double length_scale () const;
+
+	/**
          * Declare the parameters this class takes through input files.
          * The default implementation of this function does not describe
          * any parameters. Consequently, derived classes do not have to

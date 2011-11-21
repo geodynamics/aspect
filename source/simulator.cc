@@ -85,17 +85,6 @@ namespace EquationData
 {
   double kappa                 = 1e-6;
 
-  // scale not by R1-R0, but by a
-  // typical length scale, say 10km,
-  // of variation ("plume
-  // diameter"). this choice also
-  // roughly equilibrates the sizes
-  // of the velocity and pressure
-  // components of the solution
-  // vectors
-  const double length_scale = 10000;
-
-
   double T0      = 4000+273;              /* K          */
   double T1      =  700+273;              /* K          */
 
@@ -888,7 +877,7 @@ namespace aspect
                                                              *gravity_model,
                                                              *material_model));
 
-    pressure_scaling = material_model->reference_viscosity() / EquationData::length_scale;
+    pressure_scaling = material_model->reference_viscosity() / geometry_model->length_scale();
 
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.

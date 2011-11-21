@@ -58,6 +58,15 @@ namespace aspect
 
 
     template <int dim>
+    double
+    SphericalShell<dim>::
+    length_scale () const
+    {
+      return 1e4;
+    }
+     
+     
+     template <int dim>
     double SphericalShell<dim>::inner_radius () const
     {
       return R0;
