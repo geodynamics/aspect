@@ -38,8 +38,7 @@ namespace aspect
         virtual ~Interface();
 
         /**
-         * Return the viscosity $\eta$ of the model as a function of temperature,
-         * pressure and position.
+         * Return the gravity vector as a function of position.
          */
         virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const = 0;
 
