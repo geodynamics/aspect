@@ -50,21 +50,21 @@ namespace aspect
         virtual
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const = 0;
 
-	/**
-	 * Return the typical length scale one would expect of features in this geometry,
-	 * assuming realistic parameters.
-	 * 
-	 * The result of this function is used in computing the scaling factor for the
-	 * pressure in the Stokes equation. There, the scaling factor is chosen as the
-	 * ratio of the reference viscosity divided by the length scale. As an example,
-	 * in the step-32 tutorial program we have determined that a suitable length
-	 * scale for scaling is 10km, in a domain that is 12,000km across. This length
-	 * scale suitably matches the order of magnitude for the diameter of plumes
-	 * in the earth.
-	 */
-	virtual
-	double length_scale () const = 0;
-	
+        /**
+         * Return the typical length scale one would expect of features in this geometry,
+         * assuming realistic parameters.
+         *
+         * The result of this function is used in computing the scaling factor for the
+         * pressure in the Stokes equation. There, the scaling factor is chosen as the
+         * ratio of the reference viscosity divided by the length scale. As an example,
+         * in the step-32 tutorial program we have determined that a suitable length
+         * scale for scaling is 10km, in a domain that is 12,000km across. This length
+         * scale suitably matches the order of magnitude for the diameter of plumes
+         * in the earth.
+         */
+        virtual
+        double length_scale () const = 0;
+
         /**
          * Declare the parameters this class takes through input files.
          * The default implementation of this function does not describe
