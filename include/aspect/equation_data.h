@@ -18,6 +18,7 @@ namespace EquationData
   using namespace dealii;
 
   extern double T0, T1;
+  extern double kappa;
 }
 
 
