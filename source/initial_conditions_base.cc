@@ -5,7 +5,7 @@
 //
 //-------------------------------------------------------------
 
-#include <aspect/initial_conditions_model.h>
+#include <aspect/initial_conditions_base.h>
 
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx1x/tuple.h>
@@ -15,7 +15,7 @@
 
 namespace aspect
 {
-  namespace InitialConditionsModel
+  namespace InitialConditions
   {
     template <int dim>
     Interface<dim>::~Interface ()
@@ -23,7 +23,16 @@ namespace aspect
 
 
     template <int dim>
+    void
+    Interface<dim>::initialize (const GeometryModel::Interface<dim> &geometry_model_,
+                                const AdiabaticConditions<dim>      &adiabatic_conditions_)
+    {
+      geometry_model = &geometry_model_;
+      adiabatic_conditions = &adiabatic_conditions_;
+    }
 
+
+    template <int dim>
     void
     Interface<dim>::
     declare_parameters (dealii::ParameterHandler &prm)
@@ -78,7 +87,9 @@ namespace aspect
 
     template <int dim>
     Interface<dim> *
-    create_initial_conditions_model (ParameterHandler &prm)
+    create_initial_conditions (ParameterHandler &prm,
+                               const GeometryModel::Interface<dim> &geometry_model,
+                               const AdiabaticConditions<dim>      &adiabatic_conditions)
     {
       Assert (registered_initial_conditions_models != 0, ExcInternalError());
 
@@ -95,6 +106,7 @@ namespace aspect
           {
             Interface<dim> *i = std_cxx1x::get<2>(*p)();
             i->parse_parameters (prm);
+            i->initialize (geometry_model, adiabatic_conditions);
             return i;
           }
 
@@ -139,7 +151,7 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace InitialConditionsModel
+  namespace InitialConditions
   {
     template class Interface<deal_II_dimension>;
 
@@ -151,6 +163,8 @@ namespace aspect
 
     template
     Interface<deal_II_dimension> *
-    create_initial_conditions_model<deal_II_dimension> (ParameterHandler &prm);
+    create_initial_conditions<deal_II_dimension> (ParameterHandler &prm,
+                                                  const GeometryModel::Interface<deal_II_dimension> &geometry_model,
+                                                  const AdiabaticConditions<deal_II_dimension>      &adiabatic_conditions);
   }
 }

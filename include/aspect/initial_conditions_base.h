@@ -7,6 +7,9 @@
 #ifndef __aspect__initial_conditions_base_h
 #define __aspect__initial_conditions_base_h
 
+#include <aspect/geometry_model_base.h>
+#include <aspect/adiabatic_conditions.h>
+
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
 
@@ -31,6 +34,14 @@ namespace aspect
     class Interface
     {
       public:
+        /**
+         * Initialization function. Take references to the geometry model and the
+         * adiabatic conditions and store them so that derived classes can access them.
+         */
+        void
+        initialize (const GeometryModel::Interface<dim> &geometry_model,
+                    const AdiabaticConditions<dim>      &adiabatic_conditions);
+
         /**
          * Destructor. Made virtual to enforce that derived classes also have
          * virtual destructors.
@@ -62,6 +73,17 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+
+      protected:
+        /**
+         * Pointer to the geometry object in use.
+         */
+        const GeometryModel::Interface<dim> *geometry_model;
+
+        /**
+         * Pointer to an object that describes adiabatic conditions.
+         */
+        const AdiabaticConditions<dim>      *adiabatic_conditions;
     };
 
 
@@ -88,11 +110,17 @@ namespace aspect
      * A function that given the name of a model returns a pointer to an object
      * that describes it. Ownership of the pointer is transferred to the caller.
      *
+     * This function makes the newly created object read its parameters from the
+     * input parameter object, and then initializes it with the given geometry
+     * model and adiabatic conditions object.
+     *
      * @ingroup InitialConditionsModels
      */
     template <int dim>
     Interface<dim> *
-    create_initial_conditions_model (ParameterHandler &prm);
+    create_initial_conditions (ParameterHandler &prm,
+                               const GeometryModel::Interface<dim> &geometry_model,
+                               const AdiabaticConditions<dim>      &adiabatic_conditions);
 
 
     /**
@@ -138,8 +166,8 @@ namespace aspect
      *
      * @ingroup InitialConditionsModels
      */
-#define ASPECT_REGISTER_GRAVITY_MODEL(name,classname) \
-  namespace ASPECT_REGISTER_GRAVITY_MODEL_ ## classname \
+#define ASPECT_REGISTER_INITIAL_CONDITIONS(name,classname) \
+  namespace ASPECT_REGISTER_INITIAL_CONDITIONS_ ## classname \
   { const char *local_name = name; \
     aspect::InitialConditionsModel::internal::InitialConditionsModelHelper<&local_name,classname<deal_II_dimension> > \
     dummy_ ## classname; }
