@@ -1,0 +1,20 @@
+//-------------------------------------------------------------
+//    $Id: simulator.h 232 2011-10-19 13:30:15Z bangerth $
+//
+//    Copyright (C) 2011 by the authors of the ASPECT code
+//
+//-------------------------------------------------------------
+#ifndef __aspect__global_h
+#define __aspect__global_h
+
+
+namespace aspect
+{
+  /**
+   * A variable whose value denotes the number of seconds in one year.
+   **/
+  extern const double year_in_seconds;
+}
+
+
+#endif

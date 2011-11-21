@@ -8,6 +8,7 @@
 #include <aspect/postprocess_velocity_statistics.h>
 #include <aspect/equation_data.h>
 #include <aspect/simulator.h>
+#include <aspect/global.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -65,14 +66,14 @@ namespace aspect
         = Utilities::MPI::max (local_max_velocity, MPI_COMM_WORLD);
 
       const double vrms = std::sqrt(global_velocity_square_integral) / std::sqrt(this->get_volume());
-      statistics.add_value ("RMS velocity (cm/year)", vrms * EquationData::year_in_seconds * 100);
-      statistics.add_value ("Max. velocity (cm/year)", global_max_velocity * EquationData::year_in_seconds * 100);
+      statistics.add_value ("RMS velocity (cm/year)", vrms * year_in_seconds * 100);
+      statistics.add_value ("Max. velocity (cm/year)", global_max_velocity * year_in_seconds * 100);
 
       std::ostringstream output;
       output.precision(3);
-      output << vrms *EquationData::year_in_seconds * 100
+      output << vrms *year_in_seconds * 100
              << " cm/year, "
-             << global_max_velocity *EquationData::year_in_seconds * 100
+             << global_max_velocity *year_in_seconds * 100
              << " cm/year";
 
       return std::pair<std::string, std::string> ("RMS, max velocity:",

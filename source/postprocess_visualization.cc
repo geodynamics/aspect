@@ -8,6 +8,7 @@
 #include <aspect/postprocess_visualization.h>
 #include <aspect/simulator.h>
 #include <aspect/equation_data.h>
+#include <aspect/global.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -156,7 +157,7 @@ namespace aspect
             // velocity; rescale in cm/year
             for (unsigned int d=0; d<dim; ++d)
               computed_quantities[q](d)
-                = (uh[q](d) *  EquationData::year_in_seconds * 100);
+                = (uh[q](d) *  year_in_seconds * 100);
 
             // pressure
             const double pressure_at_surface = 1e6;
@@ -385,7 +386,7 @@ namespace aspect
         prm.enter_subsection("Visualization");
         {
           output_interval = prm.get_double ("Time between graphical output")
-                            * EquationData::year_in_seconds;
+                            * year_in_seconds;
         }
         prm.leave_subsection();
       }

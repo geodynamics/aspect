@@ -12,6 +12,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/equation_data.h>
+#include <aspect/global.h>
 #include <aspect/postprocess_visualization.h>
 #include <aspect/material_model_base.h>
 #include <aspect/solver.h>
@@ -98,8 +99,6 @@ namespace EquationData
 
   double T0      = 4000+273;              /* K          */
   double T1      =  700+273;              /* K          */
-
-  const double year_in_seconds  = 60*60*24*365.2425;
 
   struct Perturbation
   {
@@ -781,7 +780,7 @@ namespace aspect
       std::sort (additional_refinement_times.begin(),
                  additional_refinement_times.end());
       for (unsigned int i=0; i<additional_refinement_times.size(); ++i)
-        additional_refinement_times[i] *= EquationData::year_in_seconds;
+        additional_refinement_times[i] *= year_in_seconds;
     }
     prm.leave_subsection ();
 
@@ -2325,7 +2324,7 @@ namespace aspect
                    (parameters.temperature_degree *
                     cfl_number));
 
-      statistics.add_value("Time step size (year)", time_step / EquationData::year_in_seconds);
+      statistics.add_value("Time step size (year)", time_step / year_in_seconds);
 
       temperature_solution = old_temperature_solution;
       assemble_temperature_system ();
@@ -2809,13 +2808,13 @@ namespace aspect
     do
       {
         pcout << "*** Timestep " << timestep_number
-              << ":  t=" << time/EquationData::year_in_seconds
+              << ":  t=" << time/year_in_seconds
               << " years"
               << std::endl;
 
         // set global statistics about this time step
         statistics.add_value("Time step number", timestep_number);
-        statistics.add_value("Time (years)", time / EquationData::year_in_seconds);
+        statistics.add_value("Time (years)", time / year_in_seconds);
 
         assemble_stokes_system ();
         build_stokes_preconditioner ();
@@ -2897,7 +2896,7 @@ namespace aspect
 
         // if we are at the end of
         // time, stop now
-        if (time > parameters.end_time * EquationData::year_in_seconds)
+        if (time > parameters.end_time * year_in_seconds)
           break;
       }
     while (true);
