@@ -27,3 +27,21 @@
  * module also describe which kinds of boundary conditions hold on
  * the different parts of the boundary of the geometry.
  */
+
+/**
+ * @defgroup GravityModels Describing the properties of the gravity
+ *
+ * A module for the definition of gravity. Gravity is described as
+ * a class that provides a function that returns the gravity vector
+ * direction and magnitude as a function of location. The module also
+ * contains the various functions necessary to add different gravity
+ * models that can then be selected in the input file.
+ */
+
+/**
+ * @defgroup InitialConditionsModels Describing initial conditions
+ *
+ * A module for the definition of functions and classes that have to
+ * do with initial conditions for the temperature and, if necessary,
+ * other quantities.
+ */
