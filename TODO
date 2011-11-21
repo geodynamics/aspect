@@ -22,7 +22,7 @@ Topics for preview release:
 - look at parameterization of geometry and initial temperature field
 - Documentation. talk about
      . reference step-31, 32, paper
-     . physical units: MKS throughout, but output sometimes in cm/year
+     . physical units: MKS throughout, but output sometimes in cm/year, also some input parameters
      . extensibility through plugin-concept in models
 - Refinement criterion in 3d?
 - Attach a proper license and adjust headers of all files
