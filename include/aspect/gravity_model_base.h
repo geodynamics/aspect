@@ -137,8 +137,8 @@ namespace aspect
      *
      * @ingroup GravityModels
      */
-#define ASPECT_REGISTER_MATERIAL_MODEL(name,classname) \
-  namespace ASPECT_REGISTER_MATERIAL_MODEL_ ## classname \
+#define ASPECT_REGISTER_GRAVITY_MODEL(name,classname) \
+  namespace ASPECT_REGISTER_GRAVITY_MODEL_ ## classname \
   { const char *local_name = name; \
     aspect::GravityModel::internal::GravityModelHelper<&local_name,classname<deal_II_dimension> > \
     dummy_ ## classname; }
