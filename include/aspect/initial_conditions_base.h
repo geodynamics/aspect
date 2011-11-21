@@ -169,7 +169,7 @@ namespace aspect
 #define ASPECT_REGISTER_INITIAL_CONDITIONS(name,classname) \
   namespace ASPECT_REGISTER_INITIAL_CONDITIONS_ ## classname \
   { const char *local_name = name; \
-    aspect::InitialConditionsModel::internal::InitialConditionsModelHelper<&local_name,classname<deal_II_dimension> > \
+    aspect::InitialConditions::internal::InitialConditionsModelHelper<&local_name,classname<deal_II_dimension> > \
     dummy_ ## classname; }
   }
 }
