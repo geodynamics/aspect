@@ -80,7 +80,6 @@ subsection ModelParameters
   set Radiogenic heating rate = 0e0
   set T1 = 300
   set T0 = 6300
-  set reference_gravity = 30
 end
 
 subsection Geometry model

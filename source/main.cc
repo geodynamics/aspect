@@ -906,6 +906,7 @@ namespace aspect
     Postprocess::Manager<dim>::declare_parameters (prm);
     MaterialModel::declare_parameters (prm);
     GeometryModel::declare_parameters (prm);
+    GravityModel::declare_parameters (prm);
   }
 
 
