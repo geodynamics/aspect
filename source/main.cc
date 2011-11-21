@@ -84,7 +84,6 @@ using namespace dealii;
 namespace EquationData
 {
   double kappa                 = 1e-6;
-  double reference_gravity    = 30;
 
   // scale not by R1-R0, but by a
   // typical length scale, say 10km,
@@ -116,21 +115,6 @@ namespace EquationData
 
 
 
-
-
-
-  template <int dim>
-  Tensor<1,dim> gravity_vector (const Point<dim> &p)
-  {
-// interpolate the following values with a physically realistic model:
-//    const double g0      = 10.7;                  /* m / s^2    */
-//    const double g1      = 9.81;                  /* m / s^2    */
-
-    const double r = p.norm();
-    return -reference_gravity*p/r;
-    /*  for now we use a constant gravity */
-    /*    return -(1.245e-6 * r + 7.714e13/r/r) * p / r;*/
-  }
 
 
 
@@ -745,9 +729,6 @@ namespace aspect
       prm.declare_entry ("T0", "6000",
                          Patterns::Double (),
                          "temperature at inner boundary (core mantle boundary");
-      prm.declare_entry ("reference_gravity", "30",
-                         Patterns::Double (),
-                         "g0");
     }
     prm.leave_subsection ();
 
@@ -836,7 +817,6 @@ namespace aspect
       radiogenic_heating_rate = prm.get_double ("Radiogenic heating rate");
       EquationData::T0 = prm.get_double ("T0");
       EquationData::T1 = prm.get_double ("T1");
-      EquationData::reference_gravity = prm.get_double ("reference_gravity");
     }
 
     prm.leave_subsection ();
@@ -864,6 +844,7 @@ namespace aspect
 
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
     material_model (MaterialModel::create_material_model<dim>(prm)),
+    gravity_model (GravityModel::create_gravity_model<dim>(prm)),
 
     triangulation (MPI_COMM_WORLD,
                    typename Triangulation<dim>::MeshSmoothing
@@ -906,6 +887,7 @@ namespace aspect
     global_Omega_diameter = GridTools::diameter (triangulation);
 
     adiabatic_conditions.reset (new AdiabaticConditions<dim>(*geometry_model,
+                                                             *gravity_model,
                                                              *material_model));
 
     pressure_scaling = material_model->reference_viscosity() / EquationData::length_scale;
@@ -1855,13 +1837,17 @@ namespace aspect
                                                      scratch.stokes_fe_values.quadrature_point(q));
 
         const Tensor<1,dim>
-        gravity = EquationData::gravity_vector (scratch.stokes_fe_values.quadrature_point(q));
+        gravity = gravity_model->gravity_vector (scratch.stokes_fe_values.quadrature_point(q));
 
-
-        const double compressibility = material_model->compressibility(old_temperature,
-                                                                       old_pressure,
-                                                                       scratch.stokes_fe_values
-                                                                       .quadrature_point(q));
+        const double compressibility
+          = (is_compressible
+             ?
+             material_model->compressibility(old_temperature,
+                                             old_pressure,
+                                             scratch.stokes_fe_values
+                                             .quadrature_point(q))
+             :
+             1./0.);
         const double density = material_model->density(old_temperature,
                                                        old_pressure,
                                                        scratch.stokes_fe_values

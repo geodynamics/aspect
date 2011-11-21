@@ -45,6 +45,7 @@ namespace aspect
 
   template <int dim>
   AdiabaticConditions<dim>::AdiabaticConditions(const GeometryModel::Interface<dim> &geometry_model,
+                                                const GravityModel::Interface<dim>  &gravity_model,
                                                 const aspect::MaterialModel::Interface<dim> &material_model)
     :
     n_points(1000),
@@ -63,6 +64,9 @@ namespace aspect
                                                     R0, R1);
       }
     else
+      // the following pretty much assumes that we have a spherical shell, for example
+      // when we pick a representative point. the code needs to be audited if we
+      // have other geometries
       Assert (false, ExcNotImplemented());
 
 
@@ -94,10 +98,12 @@ namespace aspect
         pressures[i] = (pressures[i-1]
                         + pressures[i-1] * 2/z
                         - density *
-                        (EquationData::gravity_vector(representative_point)*Point<dim>::unit_vector(0)) * delta_z);
+                        (gravity_model.gravity_vector(representative_point)*Point<dim>::unit_vector(0))
+                        * delta_z);
         temperatures[i] = (temperatures[i-1] -
                            dTdp * density *
-                           (EquationData::gravity_vector(representative_point)*Point<dim>::unit_vector(0)) * delta_z);
+                           (gravity_model.gravity_vector(representative_point)*Point<dim>::unit_vector(0))
+                           * delta_z);
       }
 
     Assert (*min_element (pressures.begin(), pressures.end()) >= 0, ExcInternalError());

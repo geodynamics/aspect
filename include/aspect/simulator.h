@@ -28,6 +28,7 @@
 
 #include <aspect/material_model_base.h>
 #include <aspect/geometry_model_base.h>
+#include <aspect/gravity_model_base.h>
 #include <aspect/postprocess_base.h>
 #include <aspect/adiabatic_conditions.h>
 
@@ -151,11 +152,12 @@ namespace aspect
       ConditionalOStream                  pcout;
 
       const std::auto_ptr<const GeometryModel::Interface<dim> > geometry_model;
+      const std::auto_ptr<MaterialModel::Interface<dim> > material_model;
+      const std::auto_ptr<GravityModel::Interface<dim> > gravity_model;
+
+      std::auto_ptr<const AdiabaticConditions<dim> >      adiabatic_conditions;
       double                                              global_Omega_diameter;
       double                                              global_volume;
-
-      const std::auto_ptr<MaterialModel::Interface<dim> > material_model;
-      std::auto_ptr<const AdiabaticConditions<dim> >      adiabatic_conditions;
 
       Postprocess::Manager<dim>           postprocess_manager;
       TableHandler                        statistics;

@@ -10,6 +10,7 @@
 
 #include <aspect/material_model_base.h>
 #include <aspect/geometry_model_base.h>
+#include <aspect/gravity_model_base.h>
 #include <deal.II/base/point.h>
 
 
@@ -36,6 +37,7 @@ namespace aspect
        * transect of the geometry based on the given material model.
        */
       AdiabaticConditions (const GeometryModel::Interface<dim> &geometry_model,
+                           const GravityModel::Interface<dim>  &gravity_model,
                            const MaterialModel::Interface<dim> &material_model);
 
       /**

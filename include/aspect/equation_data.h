@@ -19,9 +19,6 @@ namespace EquationData
 
   extern const double year_in_seconds;
   extern double T0, T1;
-
-  template <int dim>
-  Tensor<1,dim> gravity_vector (const Point<dim> &p);
 }
 
 

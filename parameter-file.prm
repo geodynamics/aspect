@@ -103,6 +103,15 @@ subsection Material model
   end
 end
 
+subsection Gravity model
+  set Model name              = Radial constant
+
+  subsection Radial constant
+    set Magnitude             = 30
+  end
+end
+
+
 subsection Stabilization parameters
   # The exponent in the entropy viscosity stabilization.
   set alpha = 2
