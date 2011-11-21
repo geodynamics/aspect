@@ -35,18 +35,18 @@ namespace aspect
     {
       public:
         /**
+         * Destructor. Made virtual to enforce that derived classes also have
+         * virtual destructors.
+         */
+        virtual ~Interface();
+
+        /**
          * Initialization function. Take references to the geometry model and the
          * adiabatic conditions and store them so that derived classes can access them.
          */
         void
         initialize (const GeometryModel::Interface<dim> &geometry_model,
                     const AdiabaticConditions<dim>      &adiabatic_conditions);
-
-        /**
-         * Destructor. Made virtual to enforce that derived classes also have
-         * virtual destructors.
-         */
-        virtual ~Interface();
 
         /**
          * Return the initial temperature as a function of position.
