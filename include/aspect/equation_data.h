@@ -17,7 +17,6 @@ namespace EquationData
 {
   using namespace dealii;
 
-  extern const double year_in_seconds;
   extern double T0, T1;
 }
 
