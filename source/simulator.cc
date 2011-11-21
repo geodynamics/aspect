@@ -16,6 +16,7 @@
 #include <aspect/postprocess_visualization.h>
 #include <aspect/material_model_base.h>
 #include <aspect/adiabatic_conditions.h>
+#include <aspect/initial_conditions_base.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/logstream.h>
@@ -81,135 +82,8 @@ namespace EquationData
 {
   double kappa                 = 1e-6;
 
-  double T0      = 4000+273;              /* K          */
-  double T1      =  700+273;              /* K          */
-
-  Perturbation perturbation;
-
-
-
-
-
-  template <int dim>
-  class TemperatureInitialValues : public Function<dim>
-  {
-    public:
-      TemperatureInitialValues () : Function<dim>(1) {}
-
-      virtual double value (const Point<dim>   &p,
-                            const unsigned int  component = 0) const;
-
-      virtual void vector_value (const Point<dim> &p,
-                                 Vector<double>   &value) const;
-  };
-
-
-
-  template <int dim>
-  double
-  TemperatureInitialValues<dim>::value (const Point<dim>  &p,
-                                        const unsigned int) const
-  {
-    const double r = p.norm();
-    //TODO: do something more reasonable here: query the geometry description
-    const double R0 = 5698e3;
-    const double R1 = 10415e3;
-    const double h = R1-R0;
-
-    // s = fraction of the way from
-    // the inner to the outer
-    // boundary; 0<=s<=1
-    const double s = (r-R0)/h;
-    double Perturbation = 0e0;
-    double InterpolVal = 0e0;
-    double depth[4];
-    double geotherm[4];
-    double x, y;
-    double scale=R1/(R1 - R0);
-    float eps = 1e-4;
-    if (!EquationData::perturbation.GaussianPerturbation)
-      {
-
-        /* now compute an angular variation of the linear temperature field by
-           stretching the variable s appropriately. note that the following
-           formula leaves the end points s=0 and s=1 fixed, but stretches the
-           region in between depending on the angle phi=atan2(x,y).
-
-           For a plot, see
-           http://www.wolframalpha.com/input/?i=plot+%28%282*sqrt%28x^2%2By^2%29-1%29%2B0.2*%282*sqrt%28x^2%2By^2%29-1%29*%281-%282*sqrt%28x^2%2By^2%29-1%29%29*sin%286*atan2%28x%2Cy%29%29%29%2C+x%3D-1+to+1%2C+y%3D-1+to+1
-        */
-        const double scale = (dim==3)?std::max(0.0,cos(3.14159*abs(p(2)/R1))):1.0;
-        const double phi   = std::atan2(p(0),p(1));
-        const double s_mod = s
-                             +
-                             0.2 * s * (1-s) * std::sin(6*phi) * scale;
-
-        return T0*(1.0-s_mod) + T1*s_mod;
-      }
-    else
-      {
-        geotherm[3]=T1;
-        geotherm[2]=T1 + 1200e0;
-        geotherm[1]=T0 - 1300e0;
-        geotherm[0]=T0;
-        depth[0]=R0-1e-2*R0;
-        depth[1]=R0+500e3;
-        depth[2]=R1-500e3;
-        depth[3]=R1+1e-2*R1;
-
-        int indx = -1;
-        for (unsigned int i=0; i<3; ++i)
-          {
-            if ((depth[i] - r) < eps && (depth[i+1] - r) > eps)
-              {
-                indx = i;
-                break;
-              }
-          }
-        Assert (indx >= 0,                  ExcInternalError());
-        Assert (indx < 3,                  ExcInternalError());
-        int indx1 = indx + 1;
-        float dx = depth[indx1] - depth[indx];
-        float dy = geotherm[indx1] - geotherm[indx];
-
-        if ( dx > 0.5*eps)
-          {
-            // linear interpolation
-            InterpolVal = std::max(geotherm[3],geotherm[indx] + (r-depth[indx]) * (dy/dx));
-          }
-        else
-          {
-            // eval.point in discontinuity
-            InterpolVal = 0.5*( geotherm[indx] + geotherm[indx1] );
-          }
-        x = (scale - EquationData::perturbation.depth)*std::cos(EquationData::perturbation.Angle);
-        y = (scale - EquationData::perturbation.depth)*std::sin(EquationData::perturbation.Angle);
-        Perturbation = EquationData::perturbation.Sign*EquationData::perturbation.Amplitude*T0*std::exp( -( std::pow((p(0)*scale/R1-x),2) +std::pow((p(1)*scale/R1-y),2) ) / EquationData::perturbation.Sigma) ;
-        if (r > R1 - 1e-2*R1)
-          {
-            return geotherm[3];
-          }
-        else if (r < R0 + 1e-2*R0)
-          {
-            return geotherm[0];
-          }
-        else
-          {
-            return InterpolVal + Perturbation;
-          }
-      }
-  }
-
-
-
-  template <int dim>
-  void
-  TemperatureInitialValues<dim>::vector_value (const Point<dim> &p,
-                                               Vector<double>   &values) const
-  {
-    for (unsigned int c=0; c<this->n_components; ++c)
-      values(c) = TemperatureInitialValues<dim>::value (p, c);
-  }
+  double T0      = 6300;//4000+273;              /* K          */
+  double T1      = 300;// 700+273;              /* K          */
 }
 
 
@@ -228,6 +102,9 @@ namespace aspect
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
     material_model (MaterialModel::create_material_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
+    initial_conditions (InitialConditions::create_initial_conditions (prm,
+                                                                      *geometry_model,
+                                                                      *adiabatic_conditions)),
 
     triangulation (MPI_COMM_WORLD,
                    typename Triangulation<dim>::MeshSmoothing
@@ -290,6 +167,7 @@ namespace aspect
     MaterialModel::declare_parameters (prm);
     GeometryModel::declare_parameters (prm);
     GravityModel::declare_parameters (prm);
+    InitialConditions::declare_parameters (prm);
   }
 
 
@@ -536,7 +414,9 @@ namespace aspect
     // interpolate the initial values
     VectorTools::interpolate (mapping,
                               temperature_dof_handler,
-                              EquationData::TemperatureInitialValues<dim>(),
+                              ScalarFunctionFromFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
+                                                                    std_cxx1x::cref(*initial_conditions),
+                                                                    std_cxx1x::_1)),
                               solution);
 
     // then apply constraints and copy the
@@ -872,13 +752,19 @@ namespace aspect
 
       DoFTools::make_hanging_node_constraints (temperature_dof_handler,
                                                temperature_constraints);
+      
+      //TODO: do something more sensible here than just taking the initial values
       VectorTools::interpolate_boundary_values (temperature_dof_handler,
                                                 0,
-                                                EquationData::TemperatureInitialValues<dim>(),
+						ScalarFunctionFromFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
+                                                                    std_cxx1x::cref(*initial_conditions),
+                                                                    std_cxx1x::_1)),
                                                 temperature_constraints);
       VectorTools::interpolate_boundary_values (temperature_dof_handler,
                                                 1,
-                                                EquationData::TemperatureInitialValues<dim>(),
+                                                ScalarFunctionFromFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
+                                                                    std_cxx1x::cref(*initial_conditions),
+                                                                    std_cxx1x::_1)),
                                                 temperature_constraints);
       temperature_constraints.close ();
     }

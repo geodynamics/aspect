@@ -45,14 +45,14 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
-	
-    private:
-      double angle;
-      double depth;
-      double amplitude;
-      double sigma;
-      double sign;
-      bool gaussian_perturbation;
+
+      private:
+        double angle;
+        double depth;
+        double amplitude;
+        double sigma;
+        double sign;
+        bool gaussian_perturbation;
     };
   }
 }

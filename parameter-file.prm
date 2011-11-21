@@ -36,24 +36,17 @@ subsection Mesh refinement
   set Additional refinement times         = #1e7
 end
 
-subsection Thermal perturbation
-  # The angle where the center of the perturbation is placed.
-  set Angle = 4.71238898038468985769
+subsection Initial conditions
+  set Model name = Spherical shell perturbed
 
-  # The radial distance where the center of the perturbation is placed.
-  set non-dim depth = 0.7
-
-  # The amplitude of the perturbation.
-  set Amplitude = 0.01
-
-  # The standard deviation of the Gaussian perturbation
-  set Sigma = 0.2
-
-  # The sign of the perturbation
-  set Sign = 1
-  #
-  # use gaussian point perturbation
-  set gaussian perturbation = false
+  subsection Spherical shell perturbed
+    set Angle = 4.71238898038468985769
+    set Non-dimensional depth = 0.7
+    set Amplitude = 0.01
+    set Sigma = 0.2
+    set Sign = 1
+    set Gaussian perturbation = false
+  end
 end
 
 subsection Discretization

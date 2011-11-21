@@ -6,6 +6,7 @@
 //-------------------------------------------------------------
 
 #include <aspect/initial_conditions_spherical_shell.h>
+#include <aspect/equation_data.h>
 
 #include <deal.II/base/tensor.h>
 
@@ -18,8 +19,97 @@ namespace aspect
     SphericalShellPerturbed<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      return 0;
+      const double r = position.norm();
+      //TODO: do something more reasonable here: query the geometry description
+      const double R0 = 5698e3;
+      const double R1 = 10415e3;
+      const double h = R1-R0;
+
+      // s = fraction of the way from
+      // the inner to the outer
+      // boundary; 0<=s<=1
+      const double s = (r-R0)/h;
+      double Perturbation = 0e0;
+      double InterpolVal = 0e0;
+      double depth[4];
+      double geotherm[4];
+      double x, y;
+      double scale=R1/(R1 - R0);
+      float eps = 1e-4;
+
+      if (!gaussian_perturbation)
+        {
+
+          /* now compute an angular variation of the linear temperature field by
+             stretching the variable s appropriately. note that the following
+             formula leaves the end points s=0 and s=1 fixed, but stretches the
+             region in between depending on the angle phi=atan2(x,y).
+
+             For a plot, see
+             http://www.wolframalpha.com/input/?i=plot+%28%282*sqrt%28x^2%2By^2%29-1%29%2B0.2*%282*sqrt%28x^2%2By^2%29-1%29*%281-%282*sqrt%28x^2%2By^2%29-1%29%29*sin%286*atan2%28x%2Cy%29%29%29%2C+x%3D-1+to+1%2C+y%3D-1+to+1
+          */
+          const double scale = (dim==3)?std::max(0.0,cos(3.14159*abs(position(2)/R1))):1.0;
+          const double phi   = std::atan2(position(0),position(1));
+          const double s_mod = s
+                               +
+                               0.2 * s * (1-s) * std::sin(6*phi) * scale;
+
+          return EquationData::T0*(1.0-s_mod) + EquationData::T1*s_mod;
+        }
+      else
+        {
+          geotherm[3]=EquationData::T1;
+          geotherm[2]=EquationData::T1 + 1200e0;
+          geotherm[1]=EquationData::T0 - 1300e0;
+          geotherm[0]=EquationData::T0;
+          depth[0]=R0-1e-2*R0;
+          depth[1]=R0+500e3;
+          depth[2]=R1-500e3;
+          depth[3]=R1+1e-2*R1;
+
+          int indx = -1;
+          for (unsigned int i=0; i<3; ++i)
+            {
+              if ((depth[i] - r) < eps && (depth[i+1] - r) > eps)
+                {
+                  indx = i;
+                  break;
+                }
+            }
+          Assert (indx >= 0,                  ExcInternalError());
+          Assert (indx < 3,                  ExcInternalError());
+          int indx1 = indx + 1;
+          float dx = depth[indx1] - depth[indx];
+          float dy = geotherm[indx1] - geotherm[indx];
+
+          if ( dx > 0.5*eps)
+            {
+              // linear interpolation
+              InterpolVal = std::max(geotherm[3],geotherm[indx] + (r-depth[indx]) * (dy/dx));
+            }
+          else
+            {
+              // eval.point in discontinuity
+              InterpolVal = 0.5*( geotherm[indx] + geotherm[indx1] );
+            }
+          x = (scale - this->depth)*std::cos(angle);
+          y = (scale - this->depth)*std::sin(angle);
+          Perturbation = sign*amplitude*EquationData::T0*std::exp( -( std::pow((position(0)*scale/R1-x),2) +std::pow((position(1)*scale/R1-y),2) ) / sigma) ;
+          if (r > R1 - 1e-2*R1)
+            {
+              return geotherm[3];
+            }
+          else if (r < R0 + 1e-2*R0)
+            {
+              return geotherm[0];
+            }
+          else
+            {
+              return InterpolVal + Perturbation;
+            }
+        }
     }
+
 
     template <int dim>
     void
@@ -29,24 +119,24 @@ namespace aspect
       {
         prm.enter_subsection("Spherical shell perturbed");
         {
-      prm.declare_entry ("Angle", "0e0",
-                         Patterns::Double (0),
-                         "The angle where the center of the perturbation is placed.");
-      prm.declare_entry ("Non-dimensional depth", "0.7",
-                         Patterns::Double (0),
-                         "The radial distance where the center of the perturbation is placed.");
-      prm.declare_entry ("Amplitude", "0.01",
-                         Patterns::Double (0),
-                         "The amplitude of the perturbation.");
-      prm.declare_entry ("Sigma", "0.2",
-                         Patterns::Double (0),
-                         "The standard deviation of the Gaussian perturbation.");
-      prm.declare_entry ("Sign", "1",
-                         Patterns::Double (),
-                         "The sign of the perturbation.");
-      prm.declare_entry ("Gaussian perturbation", "true",
-                         Patterns::Bool (),
-                         "The sign of the perturbation.");
+          prm.declare_entry ("Angle", "0e0",
+                             Patterns::Double (0),
+                             "The angle where the center of the perturbation is placed.");
+          prm.declare_entry ("Non-dimensional depth", "0.7",
+                             Patterns::Double (0),
+                             "The radial distance where the center of the perturbation is placed.");
+          prm.declare_entry ("Amplitude", "0.01",
+                             Patterns::Double (0),
+                             "The amplitude of the perturbation.");
+          prm.declare_entry ("Sigma", "0.2",
+                             Patterns::Double (0),
+                             "The standard deviation of the Gaussian perturbation.");
+          prm.declare_entry ("Sign", "1",
+                             Patterns::Double (),
+                             "The sign of the perturbation.");
+          prm.declare_entry ("Gaussian perturbation", "true",
+                             Patterns::Bool (),
+                             "The sign of the perturbation.");
         }
         prm.leave_subsection ();
       }
@@ -62,12 +152,12 @@ namespace aspect
       {
         prm.enter_subsection("Spherical shell perturbed");
         {
-	  angle = prm.get_double ("Angle");
-	  depth = prm.get_double ("Non-dimensional depth");
-	  amplitude  = prm.get_double ("Amplitude");
-	  sigma  = prm.get_double ("Sigma");
-	  sign  = prm.get_double ("Sign");
-	  gaussian_perturbation  = prm.get_bool ("Gaussian perturbation");
+          angle = prm.get_double ("Angle");
+          depth = prm.get_double ("Non-dimensional depth");
+          amplitude  = prm.get_double ("Amplitude");
+          sigma  = prm.get_double ("Sigma");
+          sign  = prm.get_double ("Sign");
+          gaussian_perturbation  = prm.get_bool ("Gaussian perturbation");
         }
         prm.leave_subsection ();
       }

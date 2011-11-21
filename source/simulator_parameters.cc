@@ -96,29 +96,6 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    prm.enter_subsection ("Thermal perturbation");
-    {
-      prm.declare_entry ("Angle", "0e0",
-                         Patterns::Double (0),
-                         "The angle where the center of the perturbation is placed.");
-      prm.declare_entry ("non-dim depth", "0.7",
-                         Patterns::Double (0),
-                         "The radial distance where the center of the perturbation is placed.");
-      prm.declare_entry ("Amplitude", "0.01",
-                         Patterns::Double (0),
-                         "The amplitude of the perturbation.");
-      prm.declare_entry ("Sigma", "0.2",
-                         Patterns::Double (0),
-                         "The standard deviation of the Gaussian perturbation.");
-      prm.declare_entry ("Sign", "1",
-                         Patterns::Double (),
-                         "The sign of the perturbation.");
-      prm.declare_entry ("gaussian perturbation", "true",
-                         Patterns::Bool (),
-                         "The sign of the perturbation.");
-    }
-    prm.leave_subsection ();
-
     prm.enter_subsection ("ModelSettings");
     {
       prm.declare_entry ("Include shear heating", "true",
@@ -205,18 +182,6 @@ namespace aspect
       stabilization_alpha = prm.get_double ("alpha");
       stabilization_c_R   = prm.get_double ("c_R");
       stabilization_beta  = prm.get_double ("beta");
-    }
-    prm.leave_subsection ();
-
-    prm.enter_subsection ("Thermal perturbation");
-    {
-      EquationData::perturbation.Angle = prm.get_double ("Angle");
-      EquationData::perturbation.depth = prm.get_double ("non-dim depth");
-      //EquationData::perturbation.depth = EquationData::R1 - (EquationData::R1 - EquationData::R0)*prm.get_double ("non-dim depth");
-      EquationData::perturbation.Amplitude  = prm.get_double ("Amplitude");
-      EquationData::perturbation.Sigma  = prm.get_double ("Sigma");
-      EquationData::perturbation.Sign  = prm.get_double ("Sign");
-      EquationData::perturbation.GaussianPerturbation  = prm.get_bool ("gaussian perturbation");
     }
     prm.leave_subsection ();
 

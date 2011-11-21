@@ -19,18 +19,6 @@ namespace EquationData
 
   extern double T0, T1;
   extern double kappa;
-
-  struct Perturbation
-  {
-    double Angle;
-    double depth;
-    double Amplitude;
-    double Sigma;
-    double Sign;
-    bool GaussianPerturbation;
-  };
-
-  extern Perturbation perturbation;
 }
 
 
