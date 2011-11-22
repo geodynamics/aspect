@@ -6,6 +6,7 @@
 //-------------------------------------------------------------
 
 #include <aspect/initial_conditions_spherical_shell.h>
+#include <aspect/geometry_model_spherical_shell.h>
 #include <aspect/equation_data.h>
 
 #include <deal.II/base/tensor.h>
@@ -19,23 +20,24 @@ namespace aspect
     SphericalShellPerturbed<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      const double r = position.norm();
-      //TODO: do something more reasonable here: query the geometry description
-      const double R0 = 5698e3;
-      const double R1 = 10415e3;
+      // this initial condition only makes sense if the geometry is a
+      // spherical shell. verify that it is indeed
+      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*>
+              (this->geometry_model)
+              != 0,
+              ExcMessage ("This initial condition can only be used if the geometry "
+                          "is a spherical shell."));
+
+      const double
+      R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).inner_radius(),
+      R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).outer_radius();
       const double h = R1-R0;
 
       // s = fraction of the way from
       // the inner to the outer
       // boundary; 0<=s<=1
+      const double r = position.norm();
       const double s = (r-R0)/h;
-      double Perturbation = 0e0;
-      double InterpolVal = 0e0;
-      double depth[4];
-      double geotherm[4];
-      double x, y;
-      double scale=R1/(R1 - R0);
-      float eps = 1e-4;
 
       if (!gaussian_perturbation)
         {
@@ -48,7 +50,12 @@ namespace aspect
              For a plot, see
              http://www.wolframalpha.com/input/?i=plot+%28%282*sqrt%28x^2%2By^2%29-1%29%2B0.2*%282*sqrt%28x^2%2By^2%29-1%29*%281-%282*sqrt%28x^2%2By^2%29-1%29%29*sin%286*atan2%28x%2Cy%29%29%29%2C+x%3D-1+to+1%2C+y%3D-1+to+1
           */
-          const double scale = (dim==3)?std::max(0.0,cos(3.14159*abs(position(2)/R1))):1.0;
+          const double scale = ((dim==3)
+                                ?
+                                std::max(0.0,
+                                         cos(3.14159 * abs(position(2)/R1)))
+                                :
+                                1.0);
           const double phi   = std::atan2(position(0),position(1));
           const double s_mod = s
                                +
@@ -58,14 +65,20 @@ namespace aspect
         }
       else
         {
-          geotherm[3]=EquationData::T1;
-          geotherm[2]=EquationData::T1 + 1200e0;
-          geotherm[1]=EquationData::T0 - 1300e0;
-          geotherm[0]=EquationData::T0;
-          depth[0]=R0-1e-2*R0;
-          depth[1]=R0+500e3;
-          depth[2]=R1-500e3;
-          depth[3]=R1+1e-2*R1;
+          const double scale=R1/(R1 - R0);
+          const float eps = 1e-4;
+
+          const double geotherm[4] = { EquationData::T0,
+                                       EquationData::T0 - 1300,
+                                       EquationData::T1 + 1200,
+                                       EquationData::T1
+                                     };
+
+          const double depth[4] = { R0-1e-2*R0,
+                                    R0+500e3,
+                                    R1-500e3,
+                                    R1+1e-2*R1
+                                  };
 
           int indx = -1;
           for (unsigned int i=0; i<3; ++i)
@@ -76,37 +89,34 @@ namespace aspect
                   break;
                 }
             }
-          Assert (indx >= 0,                  ExcInternalError());
-          Assert (indx < 3,                  ExcInternalError());
+          Assert (indx >= 0, ExcInternalError());
+          Assert (indx < 3,  ExcInternalError());
           int indx1 = indx + 1;
           float dx = depth[indx1] - depth[indx];
           float dy = geotherm[indx1] - geotherm[indx];
 
-          if ( dx > 0.5*eps)
-            {
-              // linear interpolation
-              InterpolVal = std::max(geotherm[3],geotherm[indx] + (r-depth[indx]) * (dy/dx));
-            }
-          else
-            {
-              // eval.point in discontinuity
-              InterpolVal = 0.5*( geotherm[indx] + geotherm[indx1] );
-            }
-          x = (scale - this->depth)*std::cos(angle);
-          y = (scale - this->depth)*std::sin(angle);
-          Perturbation = sign*amplitude*EquationData::T0*std::exp( -( std::pow((position(0)*scale/R1-x),2) +std::pow((position(1)*scale/R1-y),2) ) / sigma) ;
+          const double
+          InterpolVal = (( dx > 0.5*eps)
+                         ?
+                         // linear interpolation
+                         std::max(geotherm[3],geotherm[indx] + (r-depth[indx]) * (dy/dx))
+                         :
+                         // eval.point in discontinuity
+                         0.5*( geotherm[indx] + geotherm[indx1] ));
+
+          const double x = (scale - this->depth)*std::cos(angle);
+          const double y = (scale - this->depth)*std::sin(angle);
+          const double Perturbation = (sign * amplitude * EquationData::T0 *
+                                       std::exp( -( std::pow((position(0)*scale/R1-x),2)
+                                                    +
+                                                    std::pow((position(1)*scale/R1-y),2) ) / sigma));
+
           if (r > R1 - 1e-2*R1)
-            {
-              return geotherm[3];
-            }
+            return geotherm[3];
           else if (r < R0 + 1e-2*R0)
-            {
-              return geotherm[0];
-            }
+            return geotherm[0];
           else
-            {
-              return InterpolVal + Perturbation;
-            }
+            return InterpolVal + Perturbation;
         }
     }
 
