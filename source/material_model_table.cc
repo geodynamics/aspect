@@ -9,6 +9,7 @@
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/table.h>
 #include <fstream>
+#include <iostream>
 
 using namespace dealii;
 
@@ -52,18 +53,18 @@ namespace aspect
           /**
            * Number of data points in p and T directions.
            */
-          const unsigned int n_p, n_T;
+          unsigned int n_p, n_T;
 
           /**
            * Minimal and maximal value for the pressure and temperature
            * for which data exists in the table.
            */
-          const double min_p, max_p;
-          const double min_T, max_T;
+          double min_p, max_p;
+          double min_T, max_T;
           /**
            * Step sizes in p and T directions.
            */
-          const double delta_p, delta_T;
+          double delta_p, delta_T;
 
           dealii::Table<2,double> values;
       };
@@ -71,29 +72,45 @@ namespace aspect
       inline
       P_T_LookupFunction::
       P_T_LookupFunction (const std::string &filename)
-        :
-        n_p (1000),
-        n_T (1000),
-        min_p (0.001),
-        max_p (min_p + 1000*0.12012002002002e+01),
-        min_T (200),
-        max_T (min_T + 1000*0.98098098098098e+01),
-        delta_p ((max_p-min_p)/(n_p-1)),
-        delta_T ((max_T-min_T)/(n_T-1)),
-        values (n_p, n_T)
       {
+        {
+          // read in definitions from data file
+          std::string temp;
+          std::ifstream in("DataDir/tabeldatastruct.txt", std::ios::in);
+          AssertThrow (in, ExcIO());
+          in >> n_p >> n_T;
+          getline(in, temp); // eat remainder of the line
+
+          in >> min_p;
+          getline(in, temp); // eat remainder of the line
+
+          in >> min_T;
+          getline(in, temp); // eat remainder of the line
+
+          in >> delta_p;
+          getline(in, temp); // eat remainder of the line
+
+          in >> delta_T;
+          getline(in, temp); // eat remainder of the line
+
+          max_T = min_T + n_T*delta_T;
+          max_p = min_p + n_p*delta_p;
+
+          values.reinit(n_p, n_T);
+        }
+
         std::ifstream in (filename.c_str(), std::ios::binary);
         AssertThrow (in, ExcIO());
 
         // allocate the following on the heap so as not to bust
         // stack size limits
-        double *array = new double[1000*1000];
+        double *array = new double[n_p*n_T];
         in.read (reinterpret_cast<char *>(&(array[0])),
-                 1000*1000*sizeof(double));
+                 n_p*n_T*sizeof(double));
 
         for (unsigned int i=0; i<n_p; ++i)
           for (unsigned int j=0; j<n_T; ++j)
-            values[i][j] = array[i*1000+j];
+            values[i][j] = array[i*n_p+j];
 
         delete[] array;
       }
