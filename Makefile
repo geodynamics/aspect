@@ -88,8 +88,8 @@ lib/$(deal_II_dimension)d/%.$(OBJEXT) :
 
 
 # Next define how to link the executable
-$(target)$(EXEEXT) : build
-build : $(libraries) Makefile
+build : $(target)$(EXEEXT)
+$(target)$(EXEEXT) : $(libraries) Makefile
 	@echo =====$(application-name)=======$(deal_II_dimension)d==============$(MT)== Linking $(@F)
 	@$(CXX) -o $@ $(libraries) $(LIBS) $(LDFLAGS)
 
