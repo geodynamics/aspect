@@ -383,6 +383,87 @@ namespace aspect
   }
 
 
+  /**
+   * Compute the variation in the entropy needed in the definition of the
+   * artificial viscosity used to stabilize the temperature equation.
+   */
+  template <int dim>
+  double
+  Simulator<dim>::get_entropy_variation (const double average_temperature) const
+  {
+    // only do this if we really need entropy
+    // variation. otherwise return something that's obviously
+    // nonsensical
+    if (parameters.stabilization_alpha != 2)
+      return 1./0;
+
+    // record maximal entropy on Gauss quadrature
+    // points
+    const QGauss<dim> quadrature_formula (parameters.temperature_degree+1);
+    const unsigned int n_q_points = quadrature_formula.size();
+
+    FEValues<dim> fe_values (temperature_fe, quadrature_formula,
+                             update_values | update_JxW_values);
+    std::vector<double> old_temperature_values(n_q_points);
+    std::vector<double> old_old_temperature_values(n_q_points);
+
+    double min_entropy = std::numeric_limits<double>::max(),
+           max_entropy = -std::numeric_limits<double>::max(),
+           area = 0,
+           entropy_integrated = 0;
+
+    // loop over all locally owned cells and evaluate the entrop
+    // at all quadrature points. keep a running tally of the
+    // integral over the entropy as well as the area and the
+    // maximal and minimal entropy
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = temperature_dof_handler.begin_active(),
+    endc = temperature_dof_handler.end();
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          fe_values.get_function_values (old_temperature_solution,
+                                         old_temperature_values);
+          fe_values.get_function_values (old_old_temperature_solution,
+                                         old_old_temperature_values);
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              const double T = (old_temperature_values[q] +
+                                old_old_temperature_values[q]) / 2;
+              const double entropy = ((T-average_temperature) *
+                                      (T-average_temperature));
+
+              min_entropy = std::min (min_entropy, entropy);
+              max_entropy = std::max (max_entropy, entropy);
+
+              area += fe_values.JxW(q);
+              entropy_integrated += fe_values.JxW(q) * entropy;
+            }
+        }
+
+    // do MPI data exchange: we need to sum over
+    // the two integrals (area,
+    // entropy_integrated), and get the extrema
+    // for maximum and minimum. combine
+    // MPI_Allreduce for two values since that is
+    // an expensive operation
+    const double local_for_sum[2] = { entropy_integrated, area },
+                                    local_for_max[2] = { -min_entropy, max_entropy };
+    double global_for_sum[2], global_for_max[2];
+
+    Utilities::MPI::sum (local_for_sum, MPI_COMM_WORLD, global_for_sum);
+    Utilities::MPI::max (local_for_max, MPI_COMM_WORLD, global_for_max);
+
+    const double average_entropy = global_for_sum[0] / global_for_sum[1];
+
+    // return the maximal deviation of the entropy everywhere from the
+    // average value
+    return std::max(global_for_max[1] - average_entropy,
+                    average_entropy - (-global_for_max[0]));
+  }
+
+
 
   template <int dim>
   double
@@ -1023,25 +1104,12 @@ namespace aspect
   void Simulator<dim>::assemble_temperature_system ()
   {
     computing_timer.enter_section ("   Assemble temperature system");
+
     temperature_matrix = 0;
     temperature_rhs = 0;
 
-    const QGauss<dim> quadrature_formula(parameters.temperature_degree+2);
     const std::pair<double,double>
     global_T_range = get_extrapolated_temperature_range();
-
-    // use midpoint between maximum and minimum
-    // temperature for definition of average
-    // temperature in entropy viscosity. Could
-    // also use the integral average, but the
-    // results are not very sensitive to this
-    // choice.
-    const double average_temperature = 0.5 * (global_T_range.first +
-                                              global_T_range.second);
-    const double global_entropy_variation =
-      get_entropy_variation (average_temperature);
-
-    const double maximal_velocity = get_maximal_velocity();
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
@@ -1056,8 +1124,12 @@ namespace aspect
                           local_assemble_temperature_system,
                           this,
                           global_T_range,
-                          maximal_velocity,
-                          global_entropy_variation,
+                          get_maximal_velocity(),
+                          // use the mid temperature instead of the
+                          // integral mean. results are not very
+                          // sensitive to this and this is far simpler
+                          get_entropy_variation ((global_T_range.first +
+                                                  global_T_range.second) / 2),
                           std_cxx1x::_1,
                           std_cxx1x::_2,
                           std_cxx1x::_3),
@@ -1066,7 +1138,7 @@ namespace aspect
                           this,
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
-         TemperatureSystem<dim> (temperature_fe, stokes_fe, mapping, quadrature_formula),
+         TemperatureSystem<dim> (temperature_fe, stokes_fe, mapping, QGauss<dim>(parameters.temperature_degree+2)),
          internal::Assembly::CopyData::
          TemperatureSystem<dim> (temperature_fe));
 

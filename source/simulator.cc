@@ -90,6 +90,9 @@ namespace EquationData
 
 namespace aspect
 {
+  /**
+   * Constructor. Initialize all member variables.
+   **/
   template <int dim>
   Simulator<dim>::Simulator (ParameterHandler &prm)
     :
@@ -140,6 +143,8 @@ namespace aspect
     computing_timer (pcout, TimerOutput::summary,
                      TimerOutput::wall_times)
   {
+    // continue with initializing members that can't be initialized for one reason
+    // or another in the member initializer list above
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
 
@@ -159,12 +164,19 @@ namespace aspect
 
 
 
+  /**
+   * Find the largest velocity throughout the domain.
+   **/
   template <int dim>
   double Simulator<dim>::get_maximal_velocity () const
   {
+    // use a quadrature formula that has one point at
+    // the location of each degree of freedom in the
+    // velocity element
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
                                              parameters.stokes_velocity_degree);
     const unsigned int n_q_points = quadrature_formula.size();
+
 
     FEValues<dim> fe_values (mapping, stokes_fe, quadrature_formula, update_values);
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
@@ -173,6 +185,9 @@ namespace aspect
 
     double max_local_velocity = 0;
 
+    // loop over all locally owned cells and evaluate the velocities at each
+    // quadrature point (i.e. each node). keep a running tally of the largest
+    // such velocity
     typename DoFHandler<dim>::active_cell_iterator
     cell = stokes_dof_handler.begin_active(),
     endc = stokes_dof_handler.end();
@@ -188,77 +203,8 @@ namespace aspect
                                            velocity_values[q].norm());
         }
 
+    // return the largest value over all processors
     return Utilities::MPI::max (max_local_velocity, MPI_COMM_WORLD);
-  }
-
-
-
-  template <int dim>
-  double
-  Simulator<dim>::get_entropy_variation (const double average_temperature) const
-  {
-    // only do this if we really need entropy
-    // variation
-    if (parameters.stabilization_alpha != 2)
-      return 1.;
-
-    // record maximal entropy on Gauss quadrature
-    // points
-    const QGauss<dim> quadrature_formula (parameters.temperature_degree+1);
-    const unsigned int n_q_points = quadrature_formula.size();
-
-    FEValues<dim> fe_values (temperature_fe, quadrature_formula,
-                             update_values | update_JxW_values);
-    std::vector<double> old_temperature_values(n_q_points);
-    std::vector<double> old_old_temperature_values(n_q_points);
-
-    double min_entropy = std::numeric_limits<double>::max(),
-           max_entropy = -std::numeric_limits<double>::max(),
-           area = 0,
-           entropy_integrated = 0;
-
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = temperature_dof_handler.begin_active(),
-    endc = temperature_dof_handler.end();
-    for (; cell!=endc; ++cell)
-      if (cell->is_locally_owned())
-        {
-          fe_values.reinit (cell);
-          fe_values.get_function_values (old_temperature_solution,
-                                         old_temperature_values);
-          fe_values.get_function_values (old_old_temperature_solution,
-                                         old_old_temperature_values);
-          for (unsigned int q=0; q<n_q_points; ++q)
-            {
-              const double T = (old_temperature_values[q] +
-                                old_old_temperature_values[q]) / 2;
-              const double entropy = ((T-average_temperature) *
-                                      (T-average_temperature));
-
-              min_entropy = std::min (min_entropy, entropy);
-              max_entropy = std::max (max_entropy, entropy);
-              area += fe_values.JxW(q);
-              entropy_integrated += fe_values.JxW(q) * entropy;
-            }
-        }
-
-    // do MPI data exchange: we need to sum over
-    // the two integrals (area,
-    // entropy_integrated), and get the extrema
-    // for maximum and minimum. combine
-    // MPI_Allreduce for two values since that is
-    // an expensive operation
-    const double local_for_sum[2] = { entropy_integrated, area },
-                                    local_for_max[2] = { -min_entropy, max_entropy };
-    double global_for_sum[2], global_for_max[2];
-
-    Utilities::MPI::sum (local_for_sum, MPI_COMM_WORLD, global_for_sum);
-    Utilities::MPI::max (local_for_max, MPI_COMM_WORLD, global_for_max);
-
-    const double average_entropy = global_for_sum[0] / global_for_sum[1];
-    const double entropy_diff = std::max(global_for_max[1] - average_entropy,
-                                         average_entropy - (-global_for_max[0]));
-    return entropy_diff;
   }
 
 
@@ -545,22 +491,11 @@ namespace aspect
     {
 
       stokes_constraints.clear ();
-//    IndexSet stokes_la;
-//    DoFTools::extract_locally_active_dofs (stokes_dof_handler,
-//             stokes_la);
       stokes_constraints.reinit (stokes_relevant_set);
 
       DoFTools::make_hanging_node_constraints (stokes_dof_handler,
                                                stokes_constraints);
 
-      /*    std::vector<bool> velocity_mask (dim+1, true);
-      velocity_mask[dim] = false;
-      VectorTools::interpolate_boundary_values (stokes_dof_handler,
-                  0,
-                  ZeroFunction<dim>(dim+1),
-                  stokes_constraints,
-                  velocity_mask);
-      */
       std::set<unsigned char> no_normal_flux_boundaries;
       no_normal_flux_boundaries.insert (0);
       no_normal_flux_boundaries.insert (1);
@@ -574,7 +509,7 @@ namespace aspect
     }
     {
       temperature_constraints.clear ();
-      temperature_constraints.reinit (temperature_relevant_partitioning);//temp_locally_active);
+      temperature_constraints.reinit (temperature_relevant_partitioning);
 
       DoFTools::make_hanging_node_constraints (temperature_dof_handler,
                                                temperature_constraints);
@@ -732,7 +667,6 @@ namespace aspect
     double mean = vector.block(1).mean_value();
     double correct = -mean*vector.block(1).size()/global_volume;
 
-//  pcout << "    pressure correction: " << correct << std::endl;
     vector.block(1).add(correct, helper.block(1));
   }
 
@@ -910,9 +844,16 @@ namespace aspect
 
 
 
+  /**
+   * This is the main function of the program, containing the overall
+   * logic which function is called when.
+   */
   template <int dim>
   void Simulator<dim>::run ()
   {
+    // if we want to resume a computation from an earlier point
+    // then reload it from a snapshot. otherwise do the basic
+    // start-up
     if (parameters.resume_computation == true)
       {
         resume_from_snapshot();
@@ -927,7 +868,6 @@ namespace aspect
 
     unsigned int max_refinement_level = parameters.initial_global_refinement +
                                         parameters.initial_adaptive_refinement;
-
     unsigned int pre_refinement_step = 0;
 
   start_time_iteration:
@@ -942,6 +882,7 @@ namespace aspect
         time_step = old_time_step = 0;
       }
 
+    // start the principal loop over time steps:
     do
       {
         pcout << "*** Timestep " << timestep_number
@@ -953,9 +894,10 @@ namespace aspect
         statistics.add_value("Time step number", timestep_number);
         statistics.add_value("Time (years)", time / year_in_seconds);
 
+
+        // then do the core work: assemble systems and solve
         assemble_stokes_system ();
         build_stokes_preconditioner ();
-
         solve ();
 
         pcout << std::endl;
@@ -997,46 +939,48 @@ namespace aspect
               (timestep_number % parameters.adaptive_refinement_interval == 0))
             refine_mesh (max_refinement_level);
 
-        // prepare for the next time
-        // step
-        TrilinosWrappers::MPI::BlockVector old_old_stokes_solution;
-        old_old_stokes_solution      = old_stokes_solution;
-        old_stokes_solution          = stokes_solution;
-        old_old_temperature_solution = old_temperature_solution;
-        old_temperature_solution     = temperature_solution;
-        if (old_time_step > 0)
-          {
-            stokes_solution.sadd (1.+time_step/old_time_step, -time_step/old_time_step,
-                                  old_old_stokes_solution);
-            temperature_solution.sadd (1.+time_step/old_time_step,
-                                       -time_step/old_time_step,
-                                       old_old_temperature_solution);
-          }
 
-        // every 100 time steps output
-        // a summary of the current
+        // every 100 time steps output a summary of the current
         // timing information
         if ((timestep_number > 0) && (timestep_number % 100 == 0))
           computing_timer.print_summary ();
 
+        // increment time step by one. then prepare
+        // for the next time step by shifting solution vectors
+        // by one time step and presetting the current solution based
+        // on an extrapolation
         time += time_step;
         ++timestep_number;
+        {
+          TrilinosWrappers::MPI::BlockVector old_old_stokes_solution;
+          old_old_stokes_solution      = old_stokes_solution;
+          old_stokes_solution          = stokes_solution;
+          old_old_temperature_solution = old_temperature_solution;
+          old_temperature_solution     = temperature_solution;
+          if (old_time_step > 0)
+            {
+              stokes_solution.sadd (1.+time_step/old_time_step, -time_step/old_time_step,
+                                    old_old_stokes_solution);
+              temperature_solution.sadd (1.+time_step/old_time_step,
+                                         -time_step/old_time_step,
+                                         old_old_temperature_solution);
+            }
+        }
 
+        // periodically generate snapshots so that we can resume here
+        // if the program aborts or is terminated
         if (timestep_number % 50 == 0)
           {
             create_snapshot();
             // matrices will be regenerated after a resume, so do that here too
-            // to be consistent.
+            // to be consistent. otherwise we would get different results
+            // for a restarted computation than for one that ran straight
+            // through
             rebuild_stokes_matrix =
               rebuild_stokes_preconditioner = true;
           }
-
-        // if we are at the end of
-        // time, stop now
-        if (time > parameters.end_time * year_in_seconds)
-          break;
       }
-    while (true);
+    while (time < parameters.end_time * year_in_seconds);
   }
 }
 
