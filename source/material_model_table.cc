@@ -110,7 +110,7 @@ namespace aspect
 
         for (unsigned int i=0; i<n_p; ++i)
           for (unsigned int j=0; j<n_T; ++j)
-            values[i][j] = array[i*n_p+j];
+            values[i][j] = array[i*n_T+j];
 
         delete[] array;
       }
