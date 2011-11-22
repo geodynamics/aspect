@@ -752,19 +752,19 @@ namespace aspect
 
       DoFTools::make_hanging_node_constraints (temperature_dof_handler,
                                                temperature_constraints);
-      
+
       //TODO: do something more sensible here than just taking the initial values
       VectorTools::interpolate_boundary_values (temperature_dof_handler,
                                                 0,
-						ScalarFunctionFromFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
-                                                                    std_cxx1x::cref(*initial_conditions),
-                                                                    std_cxx1x::_1)),
+                                                ScalarFunctionFromFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
+                                                                                      std_cxx1x::cref(*initial_conditions),
+                                                                                      std_cxx1x::_1)),
                                                 temperature_constraints);
       VectorTools::interpolate_boundary_values (temperature_dof_handler,
                                                 1,
                                                 ScalarFunctionFromFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
-                                                                    std_cxx1x::cref(*initial_conditions),
-                                                                    std_cxx1x::_1)),
+                                                                                      std_cxx1x::cref(*initial_conditions),
+                                                                                      std_cxx1x::_1)),
                                                 temperature_constraints);
       temperature_constraints.close ();
     }

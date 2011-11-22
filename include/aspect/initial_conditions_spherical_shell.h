@@ -22,7 +22,25 @@ namespace aspect
      * @ingroup InitialConditionsModels
      */
     template <int dim>
-    class SphericalShellPerturbed : public Interface<dim>
+    class SphericalHexagonalPerturbation : public Interface<dim>
+    {
+      public:
+        /**
+         * Return the initial temperature as a function of position.
+         */
+        virtual
+        double initial_temperature (const Point<dim> &position) const;
+    };
+
+
+    /**
+     * A class that describes a perturbed initial temperature field for
+     * the spherical shell.
+     *
+     * @ingroup InitialConditionsModels
+     */
+    template <int dim>
+    class SphericalGaussianPerturbation : public Interface<dim>
     {
       public:
         /**
@@ -52,7 +70,6 @@ namespace aspect
         double amplitude;
         double sigma;
         double sign;
-        bool gaussian_perturbation;
     };
   }
 }

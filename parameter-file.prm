@@ -37,15 +37,14 @@ subsection Mesh refinement
 end
 
 subsection Initial conditions
-  set Model name = Spherical shell perturbed
+  set Model name = Spherical hexagonal perturbation
 
-  subsection Spherical shell perturbed
+  subsection Spherical gaussian perturbation
     set Angle = 4.71238898038468985769
     set Non-dimensional depth = 0.7
     set Amplitude = 0.01
     set Sigma = 0.2
     set Sign = 1
-    set Gaussian perturbation = false
   end
 end
 
