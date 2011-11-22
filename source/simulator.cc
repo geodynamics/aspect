@@ -428,32 +428,20 @@ namespace aspect
     // we can compute a local projection onto the pressure space
     if (parameters.use_locally_conservative_discretization == false)
       {
-        class InitialConditions : public Function<dim>
-        {
-          public:
-            InitialConditions (const AdiabaticConditions<dim> &ad_c)
-              : Function<dim> (dim+1), adiabatic_conditions (ad_c)
-            {}
-
-            double value (const Point<dim> &p,
-                          const unsigned int component) const
-            {
-              switch (component)
-                {
-                  case dim:
-                    return adiabatic_conditions.pressure (p);
-                  default:
-                    return 0;
-                }
-            }
-
-            const AdiabaticConditions<dim> & adiabatic_conditions;
-        };
-
         TrilinosWrappers::MPI::BlockVector stokes_tmp;
         stokes_tmp.reinit (stokes_rhs);
+
+        // interpolate the pressure given by the adiabatic conditions
+        // object onto the solution space. note that interpolate
+        // wants a function that represents all components of the
+        // solution vector, so create such a function object
+        // that is simply zero for all velocity components
         VectorTools::interpolate (mapping, stokes_dof_handler,
-                                  InitialConditions(*adiabatic_conditions),
+                                  VectorFunctionFromScalarFunctionObject<dim> (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
+                                                                               std_cxx1x::cref (*adiabatic_conditions),
+                                                                               std_cxx1x::_1),
+                                                                               dim,
+                                                                               dim+1),
                                   stokes_tmp);
         old_stokes_solution = stokes_tmp;
       }
