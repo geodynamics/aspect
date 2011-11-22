@@ -160,19 +160,6 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::declare_parameters (ParameterHandler &prm)
-  {
-    Parameters::declare_parameters (prm);
-    Postprocess::Manager<dim>::declare_parameters (prm);
-    MaterialModel::declare_parameters (prm);
-    GeometryModel::declare_parameters (prm);
-    GravityModel::declare_parameters (prm);
-    InitialConditions::declare_parameters (prm);
-  }
-
-
-
-  template <int dim>
   double Simulator<dim>::get_maximal_velocity () const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),

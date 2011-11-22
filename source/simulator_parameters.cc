@@ -210,6 +210,19 @@ namespace aspect
     }
     prm.leave_subsection ();
   }
+
+
+
+  template <int dim>
+  void Simulator<dim>::declare_parameters (ParameterHandler &prm)
+  {
+    Parameters::declare_parameters (prm);
+    Postprocess::Manager<dim>::declare_parameters (prm);
+    MaterialModel::declare_parameters (prm);
+    GeometryModel::declare_parameters (prm);
+    GravityModel::declare_parameters (prm);
+    InitialConditions::declare_parameters (prm);
+  }
 }
 
 
@@ -217,5 +230,5 @@ namespace aspect
 namespace aspect
 {
   template
-  class Simulator<deal_II_dimension>::Parameters;
+  class Simulator<deal_II_dimension>;
 }
