@@ -120,7 +120,7 @@ indent:
 # Rule how to clean up. This is split into several different rules to
 # allow for parallel execution of commands:
 clean: clean-lib clean-data
-	-rm -f *~ */*~ */*/*~ lib/Makefile.dep
+	-rm -f *~ */*~ */*/*~ source/Makefile.dep source/*/Makefile.dep
 	-cd doc ; make clean
 
 clean-lib:
