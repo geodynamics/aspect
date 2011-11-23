@@ -93,11 +93,11 @@ namespace aspect
           in >> delta_T;
           getline(in, temp); // eat remainder of the line
 
-	  // now note that in these files pressures are always given in GPa
-	  // whereas in the rest of the program we use SI (meter-kilogram-seconds)
-	  // units. so multiply all pressure related quantities by 1e9
-	  min_p *= 1e9;
-	  delta_p *= 1e9;
+          // now note that in these files pressures are always given in GPa
+          // whereas in the rest of the program we use SI (meter-kilogram-seconds)
+          // units. so multiply all pressure related quantities by 1e9
+          min_p *= 1e9;
+          delta_p *= 1e9;
 
           max_T = min_T + (n_T-1)*delta_T;
           max_p = min_p + (n_p-1)*delta_p;
@@ -125,7 +125,7 @@ namespace aspect
       inline
       double
       P_T_LookupFunction::value (const double T,
-				 const double p) const
+                                 const double p) const
       {
 // TODO: clamping into the valid range in all cases okay?
         const double pressure = std::max(min_p, std::min(p, max_p-delta_p));
