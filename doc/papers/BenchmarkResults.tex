@@ -1,0 +1,15 @@
+\section{Benchmark results}
+To show the correctness of our implementation we reproduced the 2D compressible benchmark by \cite{Tan}.
+Figure \ref{fig:Convergence} gives the relative errors of the solution compared to a pseudo analytical solution as a function  of the number of nodal points in the vertical direction.
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.8\textwidth]{../tangurnis/conv_compr_uz-crop.pdf}
+
+ \includegraphics[width=0.8\textwidth]{../tangurnis/conv_incom_uz-crop.pdf}
+ % Convergence.png: 792x612 pixel, 150dpi, 13.41x10.36 cm, bb=0 0 380 294
+ \caption{The convergence of the error is order three}
+ \label{fig:Convergence}
+\end{figure}
+
+For the compressible case we present results for $Di/\gamma = 0.5$, the value used in the Tan-Gurnis paper.

@@ -1,0 +1,44 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amstext, amsfonts}
+\usepackage[pdftex]{graphicx,color}
+
+\begin{document}
+
+\title{Notes: Phase Change Mantle Convection}
+\author{...}
+\maketitle
+
+\section{Introduction}
+
+goal: reproduce 2d results for phase changes from Jacobs/van den Berg(2011) and do simulation in 3d
+
+
+\section{setup}
+
+\begin{itemize}
+ \item Geometry
+\begin{itemize}
+ \item 2d/3d shell, as we have right now (should be enough for now)
+ \item nice to have/try: surface features, topology (doesn't make a difference?!)
+ \item interesting: oblateness (easy to do, likely bigger influence)
+\end{itemize}
+ \item compressibility
+ \item variable viscosity (todo: adapt mass matrix of the stokes preconditioner)
+ \item lookup table for phase changes
+\begin{itemize}
+ \item lookup with temperature and pressure
+ \item take them from old time step for now
+ \item quantities to look up: density, viscosity, thermal conductivity\dots
+\end{itemize}
+
+\end{itemize}
+
+\input{./CompressibleBenchmark.tex}
+\input{./BenchmarkResults.tex}
+\input{./BulkModulus.tex}
+\input{./Divergence.tex}
+\input{./CompressibleSolver.tex}
+\input{./CheckImplementation.tex)
+\end{document}

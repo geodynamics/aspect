@@ -1,0 +1,78 @@
+\section{Compressible benchmark}
+The set of non dimensional equations that have to be solved,
+\begin{eqnarray}
+ \nabla \cdot (\rho_{r}\bf u) = 0 \\
+-\nabla P + \nabla \cdot \tau = Ra \bf e_{z} T
+\end{eqnarray} 
+
+The model setup to reproduce the compressible benchmark of Tan and Gurnis is as follows
+
+\subsection{Model domain}
+The model domain is a unit box with 16, 32 or 64 elements in each direction (equal spacing)
+free slip boundary conditions are applied.
+\subsection{boundary conditions}
+impermeable free slip boundary conditions are applied to all boundaries.
+\subsection{viscosity}
+the viscosity variations are restricted to the vertical direction (1D) to be able to do a FFT decomposition of the equation allowing for a semi analytical solution.
+The 1D viscosity profile is given as,
+\begin{equation}
+\eta = e^{az}
+\end{equation} 
+with $a$ a constant either 0 or 2 
+\subsection{Right hand side}
+The model is driven by a lateral temperature perturbation of the form 
+\begin{equation}
+T(x,z) = sin(\pi z)cos(\pi k x)
+\end{equation}
+with k the wavenumber
+\subsection{Density}
+the reference  density is expressed as 
+\begin{equation}
+\rho_{r}(z) = e^{\beta(1-z)}
+\end{equation} 
+with $\beta = Di/\gamma$ \\
+for the  incompressible Bousinesq approximation  (BA) $Di = 0$ and $\gamma = \inf$ for the truncated anelastic approximation (TALA) $Di = 0.5$ and $\gamma = 1$.
+The density anomaly is given by,
+\begin{equation}
+\Delta \rho (x,z) = \rho_{r}(z)T(x,z)
+T(x,z) = sin(\pi z)cos(\pi k x)
+\end{equation}
+The analytical solution to the flow is given as
+\begin{equation}
+\partial \left[ 
+\begin{array}{c}
+U_{z} \\
+U_{x} \\
+\sum_{zz}/2\eta_{0}k  \\
+\sum_{xz}/2\eta_{0}k  \\            
+\end{array}
+\right ]
+=
+\left[ 
+\begin{array}{cccc}
+ \beta & -k & 0 & 0 \\
+k &  0 & 0 & 2 k / \eta^{*} \\
+0 & 0 & 0 & -\kappa \\
+-\beta \eta^{*} & 2\kappa \eta^{*} & k & 0 \\
+\end{array}
+\right ]
+\cdot
+\left[ 
+\begin{array}{c}
+U_{z} \\
+U_{x} \\
+\sum_{zz}/2\eta_{0}k  \\
+\sum_{xz}/2\eta_{0}k  \\   
+\end{array}
+  \right ]
++
+\left[ 
+\begin{array}{c}
+0 \\
+0 \\
+\Omega Ra / 2 \eta_{0} k  \\
+0  \\   
+\end{array}
+  \right ]
+\end{equation}
+ 
