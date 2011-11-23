@@ -19,6 +19,8 @@ Topics for preview release:
 - Implicit time stepping
 - Clean-up
 - temperature equation must contain adiabatic terms in the compressible case
+- temperature equation also must contain phase-change heating terms (see the paper
+  in doc/papers)
 - look at parameterization of geometry and initial temperature field
 - Documentation. talk about
      . reference step-31, 32, paper
