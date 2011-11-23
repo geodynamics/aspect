@@ -93,6 +93,12 @@ namespace aspect
           in >> delta_T;
           getline(in, temp); // eat remainder of the line
 
+	  // now note that in these files pressures are always given in GPa
+	  // whereas in the rest of the program we use SI (meter-kilogram-seconds)
+	  // units. so multiply all pressure related quantities by 1e9
+	  min_p *= 1e9;
+	  delta_p *= 1e9;
+
           max_T = min_T + (n_T-1)*delta_T;
           max_p = min_p + (n_p-1)*delta_p;
 
@@ -121,15 +127,13 @@ namespace aspect
       P_T_LookupFunction::value ( double T,
                                   const double p) const
       {
-        // the pressure is given in Pa, but we need GPa in the lookup table
-        // TODO: clamping into the valid range in all cases okay?
-        const double pressure = std::max(min_p, std::min(p/1e9, max_p-delta_p));
+// TODO: clamping into the valid range in all cases okay?
+        const double pressure = std::max(min_p, std::min(p, max_p-delta_p));
 
         Assert (pressure >= min_p, ExcMessage ("Not in range"));
         Assert (pressure <= max_p, ExcMessage ("Not in range"));
 
-//       if (T<min_T)
-//         T=min_T;
+// TODO: clamping into the valid range in all cases okay?
         T=std::max(min_T, std::min(T, max_T-delta_T));
 
         const unsigned int i = (T-min_T) / delta_T;
@@ -157,9 +161,8 @@ namespace aspect
       P_T_LookupFunction::d_by_dp (const double T,
                                    const double p) const
       {
-        // the pressure is given in Pa, but we need GPa in the lookup table
-        // TODO: clamping into the valid range in all cases okay?
-        const double pressure = std::max(min_p, std::min(p/1e9, max_p-delta_p));
+// TODO: clamping into the valid range in all cases okay?
+        const double pressure = std::max(min_p, std::min(p, max_p-delta_p));
 
         Assert (pressure >= min_p, ExcMessage ("Not in range"));
         Assert (pressure <= max_p, ExcMessage ("Not in range"));
@@ -181,10 +184,8 @@ namespace aspect
         Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
 
         // use these co-ordinates for a bilinear interpolation
-        // note that delta_p is computed in GPa but everywhere else
-        // we compute in Pa, so we have to multiply it by 1e9
         return ((1-xi)*(values[i][j+1] - values[i][j]) +
-                xi    *(values[i+1][j+1] - values[i+1][j])) / (delta_p*1e9);
+                xi    *(values[i+1][j+1] - values[i+1][j])) / delta_p;
       }
     }
 
@@ -246,7 +247,6 @@ namespace aspect
              const double pressure,
              const Point<dim> &position) const
     {
-//      if (!IsCompressible) return reference_density*(1e0-thermal_expansivity*temperature);
       static internal::P_T_LookupFunction rho("DataDir/rho_bin");
       return rho.value(temperature, pressure);
     }
@@ -259,7 +259,6 @@ namespace aspect
                      const double pressure,
                      const Point<dim> &position) const
     {
-//      if (!IsCompressible) return 0;
       static internal::P_T_LookupFunction rho("DataDir/rho_bin");
       return rho.d_by_dp(temperature, pressure) / rho.value(temperature,pressure);
     }
