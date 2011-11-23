@@ -124,8 +124,8 @@ namespace aspect
 
       inline
       double
-      P_T_LookupFunction::value ( double T,
-                                  const double p) const
+      P_T_LookupFunction::value (const double T,
+				 const double p) const
       {
 // TODO: clamping into the valid range in all cases okay?
         const double pressure = std::max(min_p, std::min(p, max_p-delta_p));
@@ -134,16 +134,16 @@ namespace aspect
         Assert (pressure <= max_p, ExcMessage ("Not in range"));
 
 // TODO: clamping into the valid range in all cases okay?
-        T=std::max(min_T, std::min(T, max_T-delta_T));
+        const double temperature = std::max(min_T, std::min(T, max_T-delta_T));
 
-        const unsigned int i = (T-min_T) / delta_T;
+        const unsigned int i = (temperature-min_T) / delta_T;
         const unsigned int j = (pressure-min_p) / delta_p;
         Assert (i < n_T-1, ExcInternalError());
         Assert (j < n_p-1, ExcInternalError());
 
         // compute the coordinates of this point in the
         // reference cell between the data points
-        const double xi  = ((T-min_T) / delta_T - i);
+        const double xi  = ((temperature-min_T) / delta_T - i);
         const double eta = ((pressure-min_p) / delta_p - j);
         Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
         Assert ((0 <= eta) && (eta <= 1), ExcInternalError());
