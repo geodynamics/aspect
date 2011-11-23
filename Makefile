@@ -28,7 +28,7 @@ run-parameters  = parameter-file.prm
 
 # Now, this is the last variable you need to set, namely the path to
 # the deal.II toplevel directory:
-DEAL_DIR?=../../../../deal.II
+DEAL_DIR?=../../deal.II
 D = $(DEAL_DIR)
 
 
@@ -57,7 +57,7 @@ tmp1     := $(shell echo $(cc-files) | $(PERL) -pi -e 's,source/,,g; s,/,_,g;')
 o-files  := $(addprefix lib/$(deal_II_dimension)d/, $(tmp1:.cc=.$(OBJEXT)) )
 go-files := $(addprefix lib/$(deal_II_dimension)d/, $(tmp1:.cc=.g.$(OBJEXT)))
 
-h-files     := $(wildcard include/*.h)
+h-files     := $(wildcard include/aspect/*.h include/aspect/*/*h)
 lib-h-files := $(shell echo $D/include/deal.II/*/*.h)
 
 # As before, define two variables that denote the debug and optimized
@@ -112,7 +112,7 @@ doc:
 
 indent:
 	@echo "============ Indenting all files"
-	@astyle --options=lib/astyle.rc include/aspect/*h source/*cc
+	@astyle --options=lib/astyle.rc $(h-files) $(cc-files)
 
 .PHONY: run build doc indent
 
