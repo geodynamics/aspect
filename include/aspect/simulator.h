@@ -26,11 +26,11 @@
 #include <deal.II/fe/fe_system.h>
 #include <deal.II/fe/mapping_q.h>
 
-#include <aspect/material_model_base.h>
-#include <aspect/geometry_model_base.h>
-#include <aspect/gravity_model_base.h>
-#include <aspect/initial_conditions_base.h>
-#include <aspect/postprocess_base.h>
+#include <aspect/material_model/interface.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/initial_conditions/interface.h>
+#include <aspect/postprocess/interface.h>
 #include <aspect/adiabatic_conditions.h>
 
 

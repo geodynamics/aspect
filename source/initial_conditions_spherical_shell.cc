@@ -5,8 +5,8 @@
 //
 //-------------------------------------------------------------
 
-#include <aspect/initial_conditions_spherical_shell.h>
-#include <aspect/geometry_model_spherical_shell.h>
+#include <aspect/initial_conditions/spherical_shell.h>
+#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/equation_data.h>
 
 #include <deal.II/base/tensor.h>

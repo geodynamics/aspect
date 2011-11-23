@@ -13,10 +13,10 @@
 #include <aspect/simulator.h>
 #include <aspect/equation_data.h>
 #include <aspect/global.h>
-#include <aspect/postprocess_visualization.h>
-#include <aspect/material_model_base.h>
+#include <aspect/postprocess/visualization.h>
+#include <aspect/material_model/interface.h>
 #include <aspect/adiabatic_conditions.h>
-#include <aspect/initial_conditions_base.h>
+#include <aspect/initial_conditions/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/logstream.h>

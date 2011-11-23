@@ -5,7 +5,7 @@
 //
 //-------------------------------------------------------------
 
-#include <aspect/postprocess_temperature_statistics.h>
+#include <aspect/postprocess/temperature_statistics.h>
 #include <aspect/equation_data.h>
 #include <aspect/simulator.h>
 

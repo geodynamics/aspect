@@ -8,9 +8,9 @@
 #define __aspect__adiabatic_conditions_h
 
 
-#include <aspect/material_model_base.h>
-#include <aspect/geometry_model_base.h>
-#include <aspect/gravity_model_base.h>
+#include <aspect/material_model/interface.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/gravity_model/interface.h>
 #include <deal.II/base/point.h>
 
 

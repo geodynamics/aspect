@@ -4,10 +4,10 @@
 //    Copyright (C) 2011 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
-#ifndef __aspect__initial_conditions_base_h
-#define __aspect__initial_conditions_base_h
+#ifndef __aspect__initial_conditions_interface_h
+#define __aspect__initial_conditions_interface_h
 
-#include <aspect/geometry_model_base.h>
+#include <aspect/geometry_model/interface.h>
 #include <aspect/adiabatic_conditions.h>
 
 #include <deal.II/base/point.h>

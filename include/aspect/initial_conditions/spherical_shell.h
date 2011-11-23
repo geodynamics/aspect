@@ -7,7 +7,7 @@
 #ifndef __aspect__initial_conditions_spherical_shell_h
 #define __aspect__initial_conditions_spherical_shell_h
 
-#include <aspect/initial_conditions_base.h>
+#include <aspect/initial_conditions/interface.h>
 
 namespace aspect
 {

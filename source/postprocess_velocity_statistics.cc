@@ -5,7 +5,7 @@
 //
 //-------------------------------------------------------------
 
-#include <aspect/postprocess_velocity_statistics.h>
+#include <aspect/postprocess/velocity_statistics.h>
 #include <aspect/equation_data.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>

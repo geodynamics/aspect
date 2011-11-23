@@ -4,11 +4,11 @@
 //    Copyright (C) 2011 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
-#ifndef __aspect__postprocess_base_h
-#define __aspect__postprocess_base_h
+#ifndef __aspect__postprocess_interface_h
+#define __aspect__postprocess_interface_h
 
-#include <aspect/material_model_base.h>
-#include <aspect/geometry_model_base.h>
+#include <aspect/material_model/interface.h>
+#include <aspect/geometry_model/interface.h>
 #include <aspect/adiabatic_conditions.h>
 
 #include <deal.II/base/std_cxx1x/shared_ptr.h>

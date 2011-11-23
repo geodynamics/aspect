@@ -4,8 +4,8 @@
 //    Copyright (C) 2011 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
-#ifndef __aspect__gravity_model_base_h
-#define __aspect__gravity_model_base_h
+#ifndef __aspect__gravity_model_interface_h
+#define __aspect__gravity_model_interface_h
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>

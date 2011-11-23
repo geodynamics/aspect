@@ -5,7 +5,7 @@
 //
 //-------------------------------------------------------------
 
-#include <aspect/material_model_simple.h>
+#include <aspect/material_model/simple.h>
 #include <deal.II/base/parameter_handler.h>
 
 using namespace dealii;

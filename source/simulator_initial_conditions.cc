@@ -12,7 +12,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/adiabatic_conditions.h>
-#include <aspect/initial_conditions_base.h>
+#include <aspect/initial_conditions/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/function.h>

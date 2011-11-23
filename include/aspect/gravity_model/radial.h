@@ -4,10 +4,10 @@
 //    Copyright (C) 2011 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
-#ifndef __aspect__gravity_model_shell_h
-#define __aspect__gravity_model_shell_h
+#ifndef __aspect__gravity_model_radial_h
+#define __aspect__gravity_model_radial_h
 
-#include <aspect/gravity_model_base.h>
+#include <aspect/gravity_model/interface.h>
 
 namespace aspect
 {

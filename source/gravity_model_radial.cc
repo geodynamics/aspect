@@ -5,7 +5,7 @@
 //
 //-------------------------------------------------------------
 
-#include <aspect/gravity_model_shell.h>
+#include <aspect/gravity_model/radial.h>
 
 #include <deal.II/base/tensor.h>
 

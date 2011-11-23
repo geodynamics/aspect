@@ -4,10 +4,10 @@
 //    Copyright (C) 2011 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
-#ifndef __aspect__postprocess_heat_flux_statistics_h
-#define __aspect__postprocess_heat_flux_statistics_h
+#ifndef __aspect__postprocess_temperature_statistics_h
+#define __aspect__postprocess_temperature_statistics_h
 
-#include <aspect/postprocess_base.h>
+#include <aspect/postprocess/interface.h>
 
 
 namespace aspect
@@ -16,16 +16,16 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes some statistics about the heat_flux.
+     * A postprocessor that computes some statistics about the temperature.
      *
      * @ingroup Postprocessing
      */
     template <int dim>
-    class HeatFluxStatistics : public Interface<dim>, public SimulatorAccess<dim>
+    class TemperatureStatistics : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
-         * Evaluate the solution for some heat_flux statistics.
+         * Evaluate the solution for some temperature statistics.
          **/
         virtual
         std::pair<std::string,std::string>

@@ -5,7 +5,7 @@
 //
 //-------------------------------------------------------------
 
-#include <aspect/material_model_table.h>
+#include <aspect/material_model/table.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/table.h>
 #include <fstream>

@@ -5,7 +5,7 @@
 //
 //-------------------------------------------------------------
 
-#include <aspect/postprocess_base.h>
+#include <aspect/postprocess/interface.h>
 #include <aspect/simulator.h>
 
 #include <typeinfo>

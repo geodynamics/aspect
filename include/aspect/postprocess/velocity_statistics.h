@@ -7,7 +7,7 @@
 #ifndef __aspect__postprocess_velocity_statistics_h
 #define __aspect__postprocess_velocity_statistics_h
 
-#include <aspect/postprocess_base.h>
+#include <aspect/postprocess/interface.h>
 
 
 namespace aspect

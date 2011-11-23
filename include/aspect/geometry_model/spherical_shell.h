@@ -7,7 +7,7 @@
 #ifndef __aspect__geometry_model_spherical_shell_h
 #define __aspect__geometry_model_spherical_shell_h
 
-#include <aspect/geometry_model_base.h>
+#include <aspect/geometry_model/interface.h>
 
 
 namespace aspect
