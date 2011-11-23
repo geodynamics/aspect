@@ -23,6 +23,8 @@
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/fe/fe_values.h>
 
+#include <limits>
+
 
 namespace aspect
 {
@@ -395,7 +397,7 @@ namespace aspect
     // variation. otherwise return something that's obviously
     // nonsensical
     if (parameters.stabilization_alpha != 2)
-      return 1./0;
+      return std::numeric_limits<double>::quiet_NaN();
 
     // record maximal entropy on Gauss quadrature
     // points
