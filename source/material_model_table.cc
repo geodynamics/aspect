@@ -93,8 +93,8 @@ namespace aspect
           in >> delta_T;
           getline(in, temp); // eat remainder of the line
 
-          max_T = min_T + n_T*delta_T;
-          max_p = min_p + n_p*delta_p;
+          max_T = min_T + (n_T-1)*delta_T;
+          max_p = min_p + (n_p-1)*delta_p;
 
           values.reinit(n_p, n_T);
         }
