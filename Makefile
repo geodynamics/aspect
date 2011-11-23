@@ -42,13 +42,21 @@ D = $(DEAL_DIR)
 include $D/common/Make.global_options
 
 
-# First get a list of files belonging to the project. Include files
-# are expected in `include/', while implementation files are expected
-# in `source/'. Object files are placed into `lib/[123]d', using the
-# same base name as the `.cc' file.
-cc-files    := $(shell echo source/*.cc)
-o-files     := $(cc-files:source/%.cc=lib/$(deal_II_dimension)d/%.$(OBJEXT))
-go-files    := $(cc-files:source/%.cc=lib/$(deal_II_dimension)d/%.g.$(OBJEXT))
+# list the directories and the various kinds of files
+all-dirs := source \
+            source/geometry_model \
+            source/gravity_model \
+            source/initial_conditions \
+            source/material_model \
+            source/postprocess \
+	    source/simulator
+
+cc-files := $(shell for i in $(all-dirs) ; do echo $$i/*.cc ; done)
+
+tmp1     := $(shell echo $(cc-files) | $(PERL) -pi -e 's,source/,,g; s,/,_,g;')
+o-files  := $(addprefix lib/$(deal_II_dimension)d/, $(tmp1:.cc=.$(OBJEXT)) )
+go-files := $(addprefix lib/$(deal_II_dimension)d/, $(tmp1:.cc=.g.$(OBJEXT)))
+
 h-files     := $(wildcard include/*.h)
 lib-h-files := $(shell echo $D/include/deal.II/*/*.h)
 
@@ -126,16 +134,24 @@ clean-data:
 .PHONY: clean clean-data clean-lib run
 
 
+# Rule to generate the dependency files, one for each source
+# directory. These file are automagically remade whenever needed,
+# i.e. whenever one of the cc-/h-files changed. Make detects whether
+# to remake this file upon inclusion below.
+#
+# If the command fails, then remove Makefile.dep again and fail
+%/Makefile.dep: $(filter $(dir $@)%, $(cc-files)) \
+                $(h-files) \
+		$(lib-h-files) \
+		Makefile
+	@echo "====================================== Remaking $@"
+	@(($D/common/scripts/make_dependencies -n $(INCLUDE) "-Blib/$(deal_II_dimension)d" \
+			$(filter $(dir $@)%, $(cc-files)) \
+		| $(PERL) -pe 's!debug/(.*)\.o:!$(subst source_,,$(subst /,_,$(dir $@)))\1.g.o:!g;' \
+		| $(PERL) -pe 's!optimized/(.*)\.o:!$(subst source_,,$(subst /,_,$(dir $@)))\1.o:!g;' \
+	  ) > $@) \
+	 || (rm -f $@ ; false)
 
-# Finally produce the list of dependencies. Note that this time, the
-# object files end up in directories of their own, so we have to
-# modify the output a bit. The file with the dependencies is put into
-# `lib/'.
-lib/Makefile.dep: $(cc-files) $(h-files) $(lib-h-files) Makefile
-	@echo =====$(application-name)=======$(deal_II_dimension)d================== Remaking $@
-	@$D/common/scripts/make_dependencies $(INCLUDE) -Blib $(cc-files) \
-	 | $(PERL) -p -e 's!^lib/(.*):!lib/$(deal_II_dimension)d/$$1:!g;' \
-		> $@
 
-include lib/Makefile.dep
-
+# include all the dependencies
+include $(addsuffix /Makefile.dep, $(all-dirs))
