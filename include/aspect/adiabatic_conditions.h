@@ -1,5 +1,5 @@
 //-------------------------------------------------------------
-//    $Id: simulator.h 232 2011-10-19 13:30:15Z bangerth $
+//    $Id$
 //
 //    Copyright (C) 2011 by the authors of the ASPECT code
 //

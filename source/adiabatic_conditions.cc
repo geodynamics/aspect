@@ -1,4 +1,4 @@
-/* $Id: step-32.cc 234 2011-10-19 18:07:35Z bangerth $ */
+/* $Id$ */
 /* Author: Martin Kronbichler, Uppsala University,
            Wolfgang Bangerth, Texas A&M University,
      Timo Heister, University of Goettingen, 2008-2011 */
