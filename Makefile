@@ -45,12 +45,13 @@ include $D/common/Make.global_options
 # list the directories and the various kinds of files
 all-dirs := source \
 	    source/simulator \
+            source/geometry_model \
             source/gravity_model \
             source/initial_conditions \
             source/material_model \
             source/postprocess
 
-cc-files := $(shell for i in $(all-dirs) ; do echo $$i/*.cc ; done | sort)
+cc-files := $(shell for i in $(all-dirs) ; do echo $$i/*.cc ; done)
 
 tmp1     := $(shell echo $(cc-files) | $(PERL) -pi -e 's,source/,,g; s,/,_,g;')
 o-files  := $(addprefix lib/$(deal_II_dimension)d/, $(tmp1:.cc=.$(OBJEXT)) )
