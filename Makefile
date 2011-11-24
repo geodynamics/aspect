@@ -44,14 +44,13 @@ include $D/common/Make.global_options
 
 # list the directories and the various kinds of files
 all-dirs := source \
-            source/geometry_model \
+	    source/simulator \
             source/gravity_model \
             source/initial_conditions \
             source/material_model \
-            source/postprocess \
-	    source/simulator
+            source/postprocess
 
-cc-files := $(shell for i in $(all-dirs) ; do echo $$i/*.cc ; done)
+cc-files := $(shell for i in $(all-dirs) ; do echo $$i/*.cc ; done | sort)
 
 tmp1     := $(shell echo $(cc-files) | $(PERL) -pi -e 's,source/,,g; s,/,_,g;')
 o-files  := $(addprefix lib/$(deal_II_dimension)d/, $(tmp1:.cc=.$(OBJEXT)) )
@@ -87,10 +86,10 @@ flags += -Ddeal_II_dimension=$(deal_II_dimension)
 # The following two rules define how to compile C++ files into object
 # files:
 lib/$(deal_II_dimension)d/%.g.$(OBJEXT) :
-	@echo =====$(application-name)=======$(deal_II_dimension)d====debug=====$(MT)== $(<F)
+	@echo =====$(application-name)=======$(deal_II_dimension)d====debug=====$(MT)== $<
 	@$(CXX) $(flags) -c $< -o $@
 lib/$(deal_II_dimension)d/%.$(OBJEXT) :
-	@echo =====$(application-name)=======$(deal_II_dimension)d====optimized=$(MT)== $(<F)
+	@echo =====$(application-name)=======$(deal_II_dimension)d====optimized=$(MT)== $<
 	@$(CXX) $(flags) -c $< -o $@
 
 
@@ -98,7 +97,7 @@ lib/$(deal_II_dimension)d/%.$(OBJEXT) :
 # Next define how to link the executable
 build : $(target)$(EXEEXT)
 $(target)$(EXEEXT) : $(libraries) Makefile
-	@echo =====$(application-name)=======$(deal_II_dimension)d==============$(MT)== Linking $(@F)
+	@echo =====$(application-name)=======$(deal_II_dimension)d==============$(MT)== Linking $@
 	@$(CXX) -o $@ $(libraries) $(LIBS) $(LDFLAGS)
 
 
