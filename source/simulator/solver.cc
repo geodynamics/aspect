@@ -15,6 +15,7 @@
 
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/constraint_matrix.h>
+#include <deal.II/lac/trilinos_solver.h>
 
 
 namespace aspect

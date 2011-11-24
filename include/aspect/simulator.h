@@ -8,16 +8,13 @@
 #define __aspect__simulator_h
 
 #include <deal.II/base/timer.h>
-#include <deal.II/base/tensor.h>
-#include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/conditional_ostream.h>
+#include <deal.II/base/symmetric_tensor.h>
 
 #include <deal.II/lac/trilinos_block_vector.h>
-#include <deal.II/lac/trilinos_sparse_matrix.h>
 #include <deal.II/lac/trilinos_block_sparse_matrix.h>
 #include <deal.II/lac/trilinos_precondition.h>
-#include <deal.II/lac/trilinos_solver.h>
 
 #include <deal.II/distributed/tria.h>
 
