@@ -22,6 +22,20 @@
 
 namespace aspect
 {
+  namespace
+  {
+    /**
+     * Move/rename a file from the given old to the given new name.
+     */
+    void move_file (const std::string &old_name,
+                    const std::string &new_name)
+    {
+      const int error = system (("mv " + old_name + " " + new_name).c_str());
+      AssertThrow (error == 0, ExcMessage("Can't move files."));
+    }
+  }
+  
+  
   template <int dim>
   void Simulator<dim>::create_snapshot()
   {
@@ -30,9 +44,12 @@ namespace aspect
     if (myid == 0)
       {
         // keep the last snapshot in case this one fails to save
-        system ("mv bin/mesh bin/mesh.old");
-        system ("mv bin/mesh.info bin/mesh.info.old");
-        system ("mv bin/resume.txt bin/resume.txt.old");
+        move_file (parameters.output_directory + "mesh",
+                   parameters.output_directory + "mesh.old");
+        move_file (parameters.output_directory + "mesh.info",
+                   parameters.output_directory + "mesh.info.old");
+        move_file (parameters.output_directory + "resume.txt",
+                   parameters.output_directory + "resume.txt.old");
       }
 
     //save Triangulation and Solution vectors:
@@ -53,14 +70,13 @@ namespace aspect
       temperature_trans.prepare_serialization (x_temperature);
       stokes_trans.prepare_serialization (x_stokes);
 
-      const char *filename = "bin/mesh";
-      triangulation.save (filename);
+      triangulation.save ((parameters.output_directory + "mesh").c_str());
     }
 
     //save general information
     if (myid == 0)
-      {
-        std::ofstream ofs ("bin/resume.txt");
+    {
+        std::ofstream ofs ((parameters.output_directory + "resume.txt").c_str());
         boost::archive::text_oarchive oa (ofs);
         oa << (*this);
       }
@@ -72,7 +88,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::resume_from_snapshot()
   {
-    triangulation.load ("bin/mesh");
+    triangulation.load ((parameters.output_directory + "mesh").c_str());
     global_volume = GridTools::volume (triangulation, mapping);
     setup_dofs();
 
@@ -112,7 +128,7 @@ namespace aspect
     stokes_solution = distributed_stokes;
     old_stokes_solution = old_distributed_stokes;
 
-    std::ifstream ifs ("bin/resume.txt");
+    std::ifstream ifs ((parameters.output_directory + "resume.txt").c_str());
     boost::archive::text_iarchive ia (ifs);
     ia >> (*this);
 

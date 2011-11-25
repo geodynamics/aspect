@@ -111,6 +111,15 @@ namespace aspect
 
 
     template <int dim>
+    std::string
+    SimulatorAccess<dim>::get_output_directory () const
+    {
+      return simulator->parameters.output_directory;
+    }
+
+
+
+    template <int dim>
     const TrilinosWrappers::MPI::BlockVector &
     SimulatorAccess<dim>::get_stokes_solution () const
     {

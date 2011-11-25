@@ -121,9 +121,10 @@ namespace aspect
          * @name Global parameters
          * @{
          */
-        bool resume_computation;
-        double end_time;
-        double CFL_number;
+        bool        resume_computation;
+        double      end_time;
+        double      CFL_number;
+        std::string output_directory;
         /**
          * @}
          */

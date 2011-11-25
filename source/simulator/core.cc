@@ -366,7 +366,7 @@ namespace aspect
     std::list<std::pair<std::string,std::string> >
     output_list = postprocess_manager.execute (statistics);
 
-    std::ofstream stat_file ("bin/statistics");
+    std::ofstream stat_file ((parameters.output_directory+"statistics").c_str());
     statistics.set_scientific("Time (years)", true);
     statistics.set_scientific("Time step size (year)", true);
     statistics.write_text (stat_file,

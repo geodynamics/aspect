@@ -288,7 +288,8 @@ namespace aspect
       data_out.add_data_vector (locally_relevant_joint_solution, postprocessor);
       data_out.build_patches ();
 
-      const std::string filename = ("bin/solution-" +
+      const std::string filename = (this->get_output_directory() +
+      "solution-" +
                                     Utilities::int_to_string (output_file_number, 5) +
                                     "." +
                                     Utilities::int_to_string
@@ -328,14 +329,16 @@ namespace aspect
                                  Utilities::int_to_string(i, 4) +
                                  ".vtu");
           const std::string
-          pvtu_master_filename = ("bin/solution-" +
+          pvtu_master_filename = (this->get_output_directory() +
+          "solution-" +
                                   Utilities::int_to_string (output_file_number, 5) +
                                   ".pvtu");
           std::ofstream pvtu_master (pvtu_master_filename.c_str());
           data_out.write_pvtu_record (pvtu_master, filenames);
 
           const std::string
-          visit_master_filename = ("bin/solution-" +
+          visit_master_filename = (this->get_output_directory() +
+          "solution-" +
                                    Utilities::int_to_string (output_file_number, 5) +
                                    ".visit");
           std::ofstream visit_master (visit_master_filename.c_str());
@@ -344,7 +347,8 @@ namespace aspect
 
       // record the file base file name in the output file
       statistics.add_value ("Visualization file name",
-                            std::string ("bin/solution-") + Utilities::int_to_string (output_file_number, 5));
+                            this->get_output_directory() + "solution-" + 
+                            Utilities::int_to_string (output_file_number, 5));
 
       // up the counter of the number of the file by one; also
       // up the next time we need output
@@ -354,7 +358,8 @@ namespace aspect
       // return what should be printed to the screen. note that we had
       // just incremented the number, so use the previous value
       return std::make_pair (std::string ("Writing graphical output:"),
-                             std::string ("bin/solution-") + Utilities::int_to_string (output_file_number-1, 5));
+                             this->get_output_directory() +"solution-" +
+                             Utilities::int_to_string (output_file_number-1, 5));
     }
 
 

@@ -56,6 +56,11 @@ namespace aspect
                        "one can choose $c>1$) though a CFL number significantly larger than "
                        "one will yield rather diffusive solutions. Units: None.");
 
+    prm.declare_entry ("Output directory", "output",
+                       Patterns::DirectoryName(),
+                       "The name of the directory into which all output files should be "
+                       "placed. This may be an absolute or a relative path.");
+    
     prm.enter_subsection ("Model settings");
     {
       prm.declare_entry ("Include shear heating", "true",
@@ -165,7 +170,12 @@ namespace aspect
     resume_computation      = prm.get_bool ("Resume computation");
     end_time                = prm.get_double ("End time");
     CFL_number              = prm.get_double ("CFL number");
-
+    output_directory        = prm.get ("Output directory");
+    if (output_directory.size() == 0)
+      output_directory = "./";
+    else if (output_directory[output_directory.size()-1] != '/')
+      output_directory += "/";
+    
     prm.enter_subsection ("Mesh refinement");
     {
       initial_global_refinement   = prm.get_integer ("Initial global refinement");

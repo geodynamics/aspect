@@ -217,6 +217,14 @@ namespace aspect
          */
         const Mapping<dim> &
         get_mapping () const;
+        
+        /**
+         * Return the directory specified in the input parameter file to be
+         * the place where output files are to be placed. The string is
+         * terminated by a directory separator (i.e., '/').
+         */
+        std::string
+        get_output_directory () const;
         /** @} */
 
 
