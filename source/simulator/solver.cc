@@ -238,7 +238,7 @@ namespace aspect
       old_time_step = time_step;
       const double cfl_number = get_cfl_number();
 
-      time_step = (parameters.time_step_scaling /
+      time_step = (parameters.CFL_number /
                    (parameters.temperature_degree *
                     cfl_number));
 

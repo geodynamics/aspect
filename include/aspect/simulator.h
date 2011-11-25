@@ -123,7 +123,7 @@ namespace aspect
          */
         bool resume_computation;
         double end_time;
-        double time_step_scaling;
+        double CFL_number;
         /**
          * @}
          */

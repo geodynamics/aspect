@@ -41,7 +41,7 @@ namespace aspect
                        Patterns::Double (0),
                        "The end time of the simulation. Units: years.");
 
-    prm.declare_entry ("Time step scaling", "1.0",
+    prm.declare_entry ("CFL number", "1.0",
                        Patterns::Double (0),
                        "In computations, the time step $k$ is chosen according to "
                        "$k = c \\min_K \\frac{h_K}{\\|u\\|_{\\infty,K} p_T}$ where $h_K$ is the "
@@ -164,7 +164,7 @@ namespace aspect
   {
     resume_computation      = prm.get_bool ("Resume computation");
     end_time                = prm.get_double ("End time");
-    time_step_scaling       = prm.get_double ("Time step scaling");
+    CFL_number              = prm.get_double ("CFL number");
 
     prm.enter_subsection ("Mesh refinement");
     {

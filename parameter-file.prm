@@ -5,10 +5,10 @@
 set Resume computation            = false
 
 # The end time of the simulation in years.
-set End time                            = 1e10
+set End time                      = 1e10
 
 # Time step size is given as scaling/cfl_number, default: 1.0
-set Time step scaling                   = 1.0
+set CFL number                    = 1.0
 
 subsection Mesh refinement
   # The number of adaptive refinement steps performed after initial global
