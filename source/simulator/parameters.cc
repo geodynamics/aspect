@@ -34,15 +34,50 @@ namespace aspect
   {
     prm.declare_entry ("Resume computation", "false",
                        Patterns::Bool (),
-                       "Whether the last computation be resumed from a saved checkpoint or not.");
+                       "A flag indicating whether the computation should be resumed from "
+                       "a previously saved state (if true) or start from scratch (if false).");
 
     prm.declare_entry ("End time", "1e8",
                        Patterns::Double (0),
-                       "The end time of the simulation in years.");
+                       "The end time of the simulation. Units: years.");
 
     prm.declare_entry ("Time step scaling", "1.0",
                        Patterns::Double (0),
-                       "Time step size is given as scaling/cfl_number, default: 1.0");
+                       "In computations, the time step $k$ is chosen according to "
+                       "$k = c \\min_K \\frac{h_K}{\\|u\\|_{\\infty,K} p_T}$ where $h_K$ is the "
+                       "diameter of cell $K$, and the denominator is the maximal magnitude "
+                       "of the velocity on cell $K$ times the polynomial degree $p_T$ of the "
+                       "temperature discretization. The dimensionless constant $c$ is called the "
+                       "CFL number in this program. For time discretizations that have explicit "
+                       "components, $c$ must be less than a constant that depends on the "
+                       "details of the time discretization and that is no larger than one. "
+                       "On the other hand, for implicit discretizations such as the one chosen "
+                       "here, one can choose the time step as large as one wants (in particular, "
+                       "one can choose $c>1$) though a CFL number significantly larger than "
+                       "one will yield rather diffusive solutions. Units: None.");
+
+    prm.enter_subsection ("Model settings");
+    {
+      prm.declare_entry ("Include shear heating", "true",
+                         Patterns::Bool (),
+                         "Whether to include shear heating into the model or not. From a "
+                         "physical viewpoint, shear heating should always be used but may "
+                         "be undesirable when comparing results with known benchmarks that "
+                         "do not include this term in the temperature equation.");
+      prm.declare_entry ("kappa", "4.548e-7",
+                         Patterns::Double (),
+                         "Thermal diffusivity k/(rho*cp)");
+      prm.declare_entry ("Radiogenic heating rate", "0e0",
+                         Patterns::Double (),
+                         "H0");
+      prm.declare_entry ("T1", "0",
+                         Patterns::Double (),
+                         "Temperature at the outer boundary (lithosphere water/air). Units: Kelvin.");
+      prm.declare_entry ("T0", "6000",
+                         Patterns::Double (),
+                         "Temperature at the inner boundary (core mantle boundary). Units: Kelvin.");
+    }
+    prm.leave_subsection ();
 
     prm.enter_subsection ("Mesh refinement");
     {
@@ -54,11 +89,12 @@ namespace aspect
       prm.declare_entry ("Initial adaptive refinement", "2",
                          Patterns::Integer (0),
                          "The number of adaptive refinement steps performed after "
-                         "initial global refinement.");
+                         "initial global refinement but while still within the first "
+                         "time step.");
       prm.declare_entry ("Time steps between mesh refinement", "10",
                          Patterns::Integer (1),
                          "The number of time steps after which the mesh is to be "
-                         "adapted based on computed error indicators.");
+                         "adapted again based on computed error indicators.");
       prm.declare_entry ("Refinement fraction", "0.3",
                          Patterns::Double(0,1),
                          "The fraction of cells with the largest error that "
@@ -69,13 +105,14 @@ namespace aspect
                          "should be flagged for coarsening.");
       prm.declare_entry ("Additional refinement times", "",
                          Patterns::List (Patterns::Double(0)),
-                         "A list of times (in years) so that if the end time of a time step "
+                         "A list of times so that if the end time of a time step "
                          "is beyond this time, an additional round of mesh refinement "
                          "is triggered. This is mostly useful to make sure we "
                          "can get through the initial transient phase of a simulation "
                          "on a relatively coarse mesh, and then refine again when we "
                          "are in a time range that we are interested in and where "
-                         "we would like to use a finer mesh.");
+                         "we would like to use a finer mesh. Units: each element of the "
+                         "list has units years.");
     }
     prm.leave_subsection();
 
@@ -83,44 +120,16 @@ namespace aspect
     {
       prm.declare_entry ("alpha", "2",
                          Patterns::Double (1, 2),
-                         "The exponent in the entropy viscosity stabilization.");
+                         "The exponent in the entropy viscosity stabilization. Units: None.");
       prm.declare_entry ("c_R", "0.11",
                          Patterns::Double (0),
                          "The c_R factor in the entropy viscosity "
-                         "stabilization.");
+                         "stabilization. Units: None.");
       prm.declare_entry ("beta", "0.078",
                          Patterns::Double (0),
                          "The beta factor in the artificial viscosity "
                          "stabilization. An appropriate value for 2d is 0.052 "
-                         "and 0.078 for 3d.");
-    }
-    prm.leave_subsection ();
-
-    prm.enter_subsection ("ModelSettings");
-    {
-      prm.declare_entry ("Include shear heating", "true",
-                         Patterns::Bool (),
-                         "Whether to include shear heating into the model or not. From a "
-                         "physical viewpoint, shear heating should always be used but may "
-                         "be undesirable when comparing results with known benchmarks that "
-                         "do not include this term in the temperature equation.");
-    }
-    prm.leave_subsection ();
-
-    prm.enter_subsection ("ModelParameters");
-    {
-      prm.declare_entry ("kappa", "4.548e-7",
-                         Patterns::Double (),
-                         "thermal diffusivity (k/(rho*cp)");
-      prm.declare_entry ("Radiogenic heating rate", "0e0",
-                         Patterns::Double (),
-                         "H0");
-      prm.declare_entry ("T1", "0",
-                         Patterns::Double (),
-                         "temperature at outer boundary (lythosphere water/air)");
-      prm.declare_entry ("T0", "6000",
-                         Patterns::Double (),
-                         "temperature at inner boundary (core mantle boundary");
+                         "and 0.078 for 3d. Units: None.");
     }
     prm.leave_subsection ();
 
@@ -130,17 +139,18 @@ namespace aspect
       prm.declare_entry ("Stokes velocity polynomial degree", "2",
                          Patterns::Integer (1),
                          "The polynomial degree to use for the velocity variables "
-                         "in the Stokes system.");
+                         "in the Stokes system. Units: None.");
       prm.declare_entry ("Temperature polynomial degree", "2",
                          Patterns::Integer (1),
-                         "The polynomial degree to use for the temperature variable.");
+                         "The polynomial degree to use for the temperature variable. "
+                         "Units: None->");
       prm.declare_entry ("Use locally conservative discretization", "true",
                          Patterns::Bool (),
                          "Whether to use a Stokes discretization that is locally "
                          "conservative at the expense of a larger number of degrees "
-                         "of freedom, or to go with a cheaper discretization "
-                         "that does not locally conserve mass (although it is "
-                         "globally conservative.");
+                         "of freedom (true), or to go with a cheaper discretization "
+                         "that does not locally conserve mass, although it is "
+                         "globally conservative (false).");
     }
     prm.leave_subsection ();
   }
@@ -185,20 +195,14 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    prm.enter_subsection ("ModelSettings");
+    prm.enter_subsection ("Model settings");
     {
       include_shear_heating = prm.get_bool ("Include shear heating");
-    }
-    prm.leave_subsection ();
-
-    prm.enter_subsection ("ModelParameters");
-    {
       EquationData::kappa = prm.get_double ("kappa");
       radiogenic_heating_rate = prm.get_double ("Radiogenic heating rate");
       EquationData::T0 = prm.get_double ("T0");
       EquationData::T1 = prm.get_double ("T1");
     }
-
     prm.leave_subsection ();
 
     prm.enter_subsection ("Discretization");

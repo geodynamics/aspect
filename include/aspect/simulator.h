@@ -74,7 +74,17 @@ namespace aspect
   {
     public:
       /**
-       * Declaration of the structure that holds run-time parameters.
+       * A structure that holds run-time parameters. These parameters are all
+       * declared for the ParameterHandler class in the declare_parameters()
+       * member function, and read in the parse_parameters() function.
+       *
+       * Each of the member variables of this class corresponds to a parameter
+       * declared for the ParameterHandler class. Rather than duplicating the
+       * documentation of each of these parameters for the member variables
+       * here, please refer to the documentation of run-time parameters in
+       * the ASPECT manual for more information.
+       *
+       * @ingroup Simulator
        */
       struct Parameters
       {
@@ -111,34 +121,9 @@ namespace aspect
          * @name Global parameters
          * @{
          */
-
-        /**
-         * A flag indicating whether the computation should be resumed from
-         * a previously saved state (if true) or start from scratch (if false).
-         */
         bool resume_computation;
-
-        /**
-         * The end time of the simulation in years.
-         */
         double end_time;
-
-        /**
-         * In computations, the time step $k$ is chosen according to
-         * $k = c \min_K \frac{h_K}{p_T \|u\|_{\infty,K}}$ where $h_K$ is the
-         * diameter of cell $K$, and the denominator is the maximal magnitude
-         * of the velocity on cell $K$ times the polynomial degree $p_T$ of the
-         * temperature discretization. The dimensionless constant $c$ is called the
-         * CFL number in this program. For time discretizations that have explicit
-         * components, $c$ must be less than a constant that depends on the
-         * details of the time discretization and that is no larger than one.
-         * On the other hand, for implicit discretizations such as the one chosen
-         * here, one can choose the time step as large as one wants (in particular,
-         * one can choose $c>1$) though a CFL number significantly larger than
-         * one will yield rather diffusive solutions.
-         */
         double time_step_scaling;
-
         /**
          * @}
          */
@@ -146,9 +131,6 @@ namespace aspect
         /**
          * @name Parameters that have to do with terms in the model
          * @{
-         */
-        /**
-         * Whether or not to include
          */
         bool         include_shear_heating;
         double       radiogenic_heating_rate;
@@ -160,16 +142,12 @@ namespace aspect
          * @name Parameters that have to do with mesh refinement
          * @{
          */
-
-        unsigned int initial_global_refinement;
-        unsigned int initial_adaptive_refinement;
-        double       refinement_fraction;
-        double       coarsening_fraction;
-
+        unsigned int        initial_global_refinement;
+        unsigned int        initial_adaptive_refinement;
+        double              refinement_fraction;
+        double              coarsening_fraction;
         std::vector<double> additional_refinement_times;
-
-        unsigned int adaptive_refinement_interval;
-
+        unsigned int        adaptive_refinement_interval;
         /**
          * @}
          */
@@ -178,11 +156,9 @@ namespace aspect
          * @name Parameters that have to do with the stabilization of transport equations
          * @{
          */
-
         double       stabilization_alpha;
         double       stabilization_c_R;
         double       stabilization_beta;
-
         /**
          * @}
          */
@@ -191,12 +167,9 @@ namespace aspect
          * @name Parameters that have to do with spatial discretizations
          * @{
          */
-
         unsigned int stokes_velocity_degree;
         bool         use_locally_conservative_discretization;
-
         unsigned int temperature_degree;
-
         /**
          * @}
          */

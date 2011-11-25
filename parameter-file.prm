@@ -63,11 +63,8 @@ subsection Discretization
   set Use locally conservative discretization = false
 end
 
-subsection ModelSettings
+subsection Model settings
   set Include shear heating = false
-end
-
-subsection ModelParameters
   set kappa = 4.548e-7
   set Radiogenic heating rate = 0e0
   set T1 = 300
