@@ -136,7 +136,7 @@ namespace aspect
       {
         prm.declare_entry ("Model name", "",
                            Patterns::Selection (model_names),
-                           "Select one of the available initial_conditions models");
+                           "Select one of the available initial conditions.");
       }
       prm.leave_subsection ();
 

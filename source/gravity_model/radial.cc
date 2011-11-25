@@ -34,7 +34,7 @@ namespace aspect
         {
           prm.declare_entry ("Magnitude", "30",
                              Patterns::Double (0),
-                             "Magnitude of the gravity vector in m/s^2. The direction is "
+                             "Magnitude of the gravity vector in $m/s^2$. The direction is "
                              "always radially outward from the center of the earth.");
         }
         prm.leave_subsection ();

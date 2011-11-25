@@ -124,7 +124,7 @@ namespace aspect
       {
         prm.declare_entry ("Model name", "",
                            Patterns::Selection (model_names),
-                           "Select one of the available gravity models");
+                           "Select one of the available gravity models.");
       }
       prm.leave_subsection ();
 
