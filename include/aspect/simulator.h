@@ -61,17 +61,174 @@ namespace aspect
     template <int dim> class SimulatorAccess;
   }
 
+
+  /**
+   * This is the main class of ASPECT. It implements the overall simulation
+   * algorithm using the numerical methods discussed in the papers and manuals
+   * that accompany ASPECT.
+   *
+   * @ingroup Simulator
+   */
   template <int dim>
   class Simulator : public Subscriptor
   {
     public:
-      struct Parameters;
+      /**
+       * Declaration of the structure that holds run-time parameters.
+       */
+      struct Parameters
+      {
+        /**
+         * Constructor. Fills the values of member functions from the
+         * given parameter object.
+         *
+         * @param prm The parameter object that has previously been filled
+         * with content by reading an input file.
+         **/
+        Parameters (ParameterHandler &prm);
 
+        /**
+         * Declare the run-time parameters this class takes,
+         * and call the respective <code>declare_parameters</code>
+         * functions of the namespaces that describe geometries,
+         * material models, etc.
+         *
+         * @param prm The object in which the run-time parameters
+         * are to be declared.
+         **/
+        static
+        void declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read run-time parameters from an object that has previously
+         * parsed an input file.
+         *
+         * @param prm The object from which to obtain the run-time parameters.
+         **/
+        void parse_parameters (ParameterHandler &prm);
+
+        /**
+         * @name Global parameters
+         * @{
+         */
+
+        /**
+         * A flag indicating whether the computation should be resumed from
+         * a previously saved state (if true) or start from scratch (if false).
+         */
+        bool resume_computation;
+
+        /**
+         * The end time of the simulation in years.
+         */
+        double end_time;
+
+        /**
+         * In computations, the time step $k$ is chosen according to
+         * $k = c \min_K \frac{h_K}{p_T \|u\|_{\infty,K}}$ where $h_K$ is the
+         * diameter of cell $K$, and the denominator is the maximal magnitude
+         * of the velocity on cell $K$ times the polynomial degree $p_T$ of the
+         * temperature discretization. The dimensionless constant $c$ is called the
+         * CFL number in this program. For time discretizations that have explicit
+         * components, $c$ must be less than a constant that depends on the
+         * details of the time discretization and that is no larger than one.
+         * On the other hand, for implicit discretizations such as the one chosen
+         * here, one can choose the time step as large as one wants (in particular,
+         * one can choose $c>1$) though a CFL number significantly larger than
+         * one will yield rather diffusive solutions.
+         */
+        double time_step_scaling;
+
+        /**
+         * @}
+         */
+
+        /**
+         * @name Parameters that have to do with terms in the model
+         * @{
+         */
+        /**
+         * Whether or not to include
+         */
+        bool         include_shear_heating;
+        double       radiogenic_heating_rate;
+        /**
+         * @}
+         */
+
+        /**
+         * @name Parameters that have to do with mesh refinement
+         * @{
+         */
+
+        unsigned int initial_global_refinement;
+        unsigned int initial_adaptive_refinement;
+        double       refinement_fraction;
+        double       coarsening_fraction;
+
+        std::vector<double> additional_refinement_times;
+
+        unsigned int adaptive_refinement_interval;
+
+        /**
+         * @}
+         */
+
+        /**
+         * @name Parameters that have to do with the stabilization of transport equations
+         * @{
+         */
+
+        double       stabilization_alpha;
+        double       stabilization_c_R;
+        double       stabilization_beta;
+
+        /**
+         * @}
+         */
+
+        /**
+         * @name Parameters that have to do with spatial discretizations
+         * @{
+         */
+
+        unsigned int stokes_velocity_degree;
+        bool         use_locally_conservative_discretization;
+
+        unsigned int temperature_degree;
+
+        /**
+         * @}
+         */
+      };
+
+      /**
+       * Constructor
+       *
+       * @param prm The run-time parameter object from which this class
+       * obtains its settings.
+       **/
       Simulator (ParameterHandler &prm);
 
+
+      /**
+       * Declare the run-time parameters this class takes,
+       * and call the respective <code>declare_parameters</code>
+       * functions of the namespaces that describe geometries,
+       * material models, etc.
+       *
+       * @param prm The object in which the run-time parameters
+       * are to be declared.
+       **/
       static
       void declare_parameters (ParameterHandler &prm);
 
+      /**
+       * The function that runs the overall algorithm. It
+       * contains the loop over all time steps as well as the logic
+       * of what to do when before the loop starts and within the time
+       * loop.
+       **/
       void run ();
 
     private:
@@ -109,41 +266,6 @@ namespace aspect
                         const double                        global_entropy_variation,
                         const std::vector<Point<dim> >     &evaluation_points,
                         const double                        cell_diameter) const;
-
-    public:
-      struct Parameters
-      {
-        Parameters (ParameterHandler &prm);
-
-        static void declare_parameters (ParameterHandler &prm);
-        void parse_parameters (ParameterHandler &prm);
-
-        double end_time;
-        double time_step_scaling;
-
-        bool resume_computation;
-
-        unsigned int initial_global_refinement;
-        unsigned int initial_adaptive_refinement;
-        double       refinement_fraction;
-        double       coarsening_fraction;
-
-        std::vector<double> additional_refinement_times;
-
-        unsigned int adaptive_refinement_interval;
-
-        double       stabilization_alpha;
-        double       stabilization_c_R;
-        double       stabilization_beta;
-
-        unsigned int stokes_velocity_degree;
-        bool         use_locally_conservative_discretization;
-
-        unsigned int temperature_degree;
-
-        bool         include_shear_heating;
-        double       radiogenic_heating_rate;
-      };
 
     private:
       Parameters                          parameters;
