@@ -132,6 +132,12 @@ namespace aspect
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
     statistics.set_auto_fill_mode(true);
+
+    // finally produce a record of the run-time parameters by writing
+    // the currently used values into a file
+    std::ofstream prm_out ((parameters.output_directory + "parameters.prm").c_str());
+    AssertThrow (prm_out, ExcIO());
+    prm.print_parameters(prm_out, ParameterHandler::Text);
   }
 
 

@@ -34,8 +34,8 @@ namespace aspect
       AssertThrow (error == 0, ExcMessage("Can't move files."));
     }
   }
-  
-  
+
+
   template <int dim>
   void Simulator<dim>::create_snapshot()
   {
@@ -75,7 +75,7 @@ namespace aspect
 
     //save general information
     if (myid == 0)
-    {
+      {
         std::ofstream ofs ((parameters.output_directory + "resume.txt").c_str());
         boost::archive::text_oarchive oa (ofs);
         oa << (*this);

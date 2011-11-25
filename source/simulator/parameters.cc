@@ -60,7 +60,7 @@ namespace aspect
                        Patterns::DirectoryName(),
                        "The name of the directory into which all output files should be "
                        "placed. This may be an absolute or a relative path.");
-    
+
     prm.enter_subsection ("Model settings");
     {
       prm.declare_entry ("Include shear heating", "true",
@@ -148,7 +148,7 @@ namespace aspect
       prm.declare_entry ("Temperature polynomial degree", "2",
                          Patterns::Integer (1),
                          "The polynomial degree to use for the temperature variable. "
-                         "Units: None->");
+                         "Units: None.");
       prm.declare_entry ("Use locally conservative discretization", "true",
                          Patterns::Bool (),
                          "Whether to use a Stokes discretization that is locally "
@@ -175,7 +175,7 @@ namespace aspect
       output_directory = "./";
     else if (output_directory[output_directory.size()-1] != '/')
       output_directory += "/";
-    
+
     prm.enter_subsection ("Mesh refinement");
     {
       initial_global_refinement   = prm.get_integer ("Initial global refinement");

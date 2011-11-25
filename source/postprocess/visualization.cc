@@ -289,7 +289,7 @@ namespace aspect
       data_out.build_patches ();
 
       const std::string filename = (this->get_output_directory() +
-      "solution-" +
+                                    "solution-" +
                                     Utilities::int_to_string (output_file_number, 5) +
                                     "." +
                                     Utilities::int_to_string
@@ -330,7 +330,7 @@ namespace aspect
                                  ".vtu");
           const std::string
           pvtu_master_filename = (this->get_output_directory() +
-          "solution-" +
+                                  "solution-" +
                                   Utilities::int_to_string (output_file_number, 5) +
                                   ".pvtu");
           std::ofstream pvtu_master (pvtu_master_filename.c_str());
@@ -338,7 +338,7 @@ namespace aspect
 
           const std::string
           visit_master_filename = (this->get_output_directory() +
-          "solution-" +
+                                   "solution-" +
                                    Utilities::int_to_string (output_file_number, 5) +
                                    ".visit");
           std::ofstream visit_master (visit_master_filename.c_str());
@@ -347,7 +347,7 @@ namespace aspect
 
       // record the file base file name in the output file
       statistics.add_value ("Visualization file name",
-                            this->get_output_directory() + "solution-" + 
+                            this->get_output_directory() + "solution-" +
                             Utilities::int_to_string (output_file_number, 5));
 
       // up the counter of the number of the file by one; also
