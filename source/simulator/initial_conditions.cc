@@ -89,8 +89,6 @@ namespace aspect
                                                                                dim+1),
                                   stokes_tmp);
         old_stokes_solution = stokes_tmp;
-//TODO: should we make these initial values honor the temperature boundary conditions even if the
-//initial condition object does not?
       }
     else
       {
