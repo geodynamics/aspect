@@ -512,8 +512,8 @@ namespace aspect
                                      old_old_temperature_grads[q]) / 2;
 
         const double density = material_model->density(T, p, evaluation_points[q]);
-        const double kappa = material_model->thermal_conductivity() /
-                             (density * material_model->specific_heat (T, p, evaluation_points[q]));
+        const double kappa = material_model->thermal_conductivity(T, p, evaluation_points[q]) /
+                             (density * material_model->specific_heat(T, p, evaluation_points[q]));
         const double kappa_Delta_T = kappa
                                      * (old_temperature_laplacians[q] +
                                         old_old_temperature_laplacians[q]) / 2;
@@ -1045,7 +1045,9 @@ namespace aspect
                                     scratch.temperature_fe_values.quadrature_point(q));
 
         const double kappa
-          = material_model->thermal_conductivity() /
+          = material_model->thermal_conductivity(ext_T,
+                                                 ext_pressure,
+                                                 scratch.temperature_fe_values.quadrature_point(q)) /
             (density * material_model->specific_heat (ext_T,
                                                       ext_pressure,
                                                       scratch.temperature_fe_values.quadrature_point(q)));

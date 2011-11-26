@@ -233,8 +233,11 @@ namespace aspect
     template <int dim>
     double
     Table<dim>::
-    thermal_conductivity () const
+    thermal_conductivity (const double,
+                          const double,
+                          const Point<dim> &) const
     {
+      // this model assumes that the thermal conductivity is in fact constant
       return 4.7;
     }
 

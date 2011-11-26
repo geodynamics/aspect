@@ -68,9 +68,12 @@ namespace aspect
                                       const Point<dim> &position) const = 0;
 
         /**
-         * Return the thermal conductivity $k$ of the model.
+         * Return the thermal conductivity $k$ of the model as a function of temperature,
+         * pressure and position.
          */
-        virtual double thermal_conductivity () const = 0;
+        virtual double thermal_conductivity (const double temperature,
+                                             const double pressure,
+                                             const Point<dim> &position) const = 0;
 
         /**
          * Return the density $\rho$ of the model as a function of temperature,

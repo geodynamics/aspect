@@ -18,9 +18,9 @@ namespace aspect
     template <int dim>
     double
     Simple<dim>::
-    viscosity (const double temperature,
-               const double pressure,
-               const Point<dim> &position) const
+    viscosity (const double,
+               const double,
+               const Point<dim> &) const
     {
       return reference_eta;
     }
@@ -39,8 +39,8 @@ namespace aspect
     template <int dim>
     double
     Simple<dim>::
-    specific_heat (const double temperature,
-                   const double pressure,
+    specific_heat (const double,
+                   const double,
                    const Point<dim> &) const
     {
       return 1250.0;
@@ -51,7 +51,9 @@ namespace aspect
     template <int dim>
     double
     Simple<dim>::
-    thermal_conductivity () const
+    thermal_conductivity (const double,
+                          const double,
+                          const Point<dim> &) const
     {
       return 4.7;
     }
@@ -62,8 +64,8 @@ namespace aspect
     double
     Simple<dim>::
     density (const double temperature,
-             const double pressure,
-             const Point<dim> &position) const
+             const double,
+             const Point<dim> &) const
     {
       const double thermal_expansion_coefficient_ = 2e-5;
       return (reference_density *
@@ -75,9 +77,9 @@ namespace aspect
     template <int dim>
     double
     Simple<dim>::
-    compressibility (const double temperature,
-                     const double pressure,
-                     const Point<dim> &position) const
+    compressibility (const double,
+                     const double,
+                     const Point<dim> &) const
     {
       return 0.0;
     }
