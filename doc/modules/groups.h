@@ -1,4 +1,11 @@
 /**
+ * @defgroup Simulator The main class implementing the mantle convection problem
+ *
+ * This group contains the primary class implementing the mantle convection
+ * problem as well as other things that may be directly related to it.
+ */
+
+/**
  * @defgroup Postprocessing Postprocessing solutions
  *
  * This group contains all classes, namespaces and functions that have to do
@@ -44,4 +51,11 @@
  * A module for the definition of functions and classes that have to
  * do with initial conditions for the temperature and, if necessary,
  * other quantities.
+ */
+
+/**
+ * @defgroup BoundaryTemperatures Describing temperature boundary conditions
+ *
+ * A module for the definition of functions and classes that have to
+ * do with describing boundary values for the temperature.
  */
