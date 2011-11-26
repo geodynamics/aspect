@@ -305,13 +305,33 @@ namespace aspect
                                                stokes_constraints);
 
       // obtain the boundary indicators that belong to zero velocity
-      // type and compute the constraints that correspond to it
-      const std::set<unsigned char>
+      // and no-normal-flux type
+      typedef unsigned char boundary_indicator_t;
+      const std::set<boundary_indicator_t>
       zero_boundary_indicators
         = geometry_model->get_zero_velocity_boundary_indicators ();
+
+      const std::set<boundary_indicator_t>
+      no_normal_flux_boundary_indicators
+        = geometry_model->get_tangential_velocity_boundary_indicators ();
+
+      // also make sure that the same indicator isn't used for both
+      {
+        std::vector<boundary_indicator_t> intersection;
+        std::set_intersection (zero_boundary_indicators.begin(),
+                               zero_boundary_indicators.end(),
+                               no_normal_flux_boundary_indicators.begin(),
+                               no_normal_flux_boundary_indicators.end(),
+                               std::back_inserter(intersection));
+        Assert (intersection.size() == 0,
+                ExcMessage ("Some boundary indicators are declared to be both "
+                            "zero velocity and tangential velocity. That can't work!"));
+      }
+
+      // do the interpolation for zero velocity
       std::vector<bool> velocity_mask (dim+1, true);
       velocity_mask[dim] = false;
-      for (std::set<unsigned char>::const_iterator
+      for (std::set<boundary_indicator_t>::const_iterator
            p = zero_boundary_indicators.begin();
            p != zero_boundary_indicators.end(); ++p)
         VectorTools::interpolate_boundary_values (stokes_dof_handler,
@@ -321,9 +341,6 @@ namespace aspect
                                                   velocity_mask);
 
       // do the same for no-normal-flux boundaries
-      const std::set<unsigned char>
-      no_normal_flux_boundary_indicators
-        = geometry_model->get_tangential_velocity_boundary_indicators ();
       VectorTools::compute_no_normal_flux_constraints (stokes_dof_handler,
                                                        /* first_vector_component= */ 0,
                                                        no_normal_flux_boundary_indicators,
