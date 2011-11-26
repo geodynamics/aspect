@@ -47,6 +47,7 @@ all-dirs := source \
 	    source/simulator \
             source/geometry_model \
             source/gravity_model \
+            source/boundary_temperature \
             source/initial_conditions \
             source/material_model \
             source/postprocess

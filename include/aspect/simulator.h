@@ -26,6 +26,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/boundary_temperature/interface.h>
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/adiabatic_conditions.h>
@@ -248,6 +249,7 @@ namespace aspect
       const std::auto_ptr<const GeometryModel::Interface<dim> > geometry_model;
       const std::auto_ptr<MaterialModel::Interface<dim> > material_model;
       const std::auto_ptr<GravityModel::Interface<dim> > gravity_model;
+      const std::auto_ptr<BoundaryTemperature::Interface<dim> > boundary_temperature;
       std::auto_ptr<const InitialConditions::Interface<dim> > initial_conditions;
 
 

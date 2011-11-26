@@ -100,7 +100,9 @@ namespace aspect
 
       // now also compute Inner/Outer Nu number and put that into the statistics
       // object as well
-      const double Scaling = 1. /(EquationData::T0 - EquationData::T1);
+      const double Scaling = 1. /(this->get_boundary_temperature().maximal_temperature()
+                                  -
+                                  this->get_boundary_temperature().minimal_temperature());
 
       // check that the following formula makes sense in 3d as well.
       Assert (dim==2, ExcNotImplemented());

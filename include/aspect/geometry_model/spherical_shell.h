@@ -47,11 +47,24 @@ namespace aspect
         double length_scale () const;
 
         /**
-               * Declare the parameters this class takes through input files.
-               * The default implementation of this function does not describe
-               * any parameters. Consequently, derived classes do not have to
-               * overload this function if they do not take any runtime parameters.
-               */
+         * Return a set of boundary indicators that correspond to parts of the
+         * boundary on which the temperature is fixed, i.e., on which Dirichlet
+         * boundary conditions are posed. These boundary conditions for the temperature
+         * are then described by classes derived from BoundaryTemperature::Interface.
+         *
+         * For the geometry used by this class, the returned set is $\{0,1\}$,
+         * corresponding to the inner and outer parts of the boundary.
+         */
+        virtual
+        std::set<unsigned char>
+        get_temperature_dirichlet_boundary_indicators () const;
+
+        /**
+         * Declare the parameters this class takes through input files.
+         * The default implementation of this function does not describe
+         * any parameters. Consequently, derived classes do not have to
+         * overload this function if they do not take any runtime parameters.
+         */
         static
         void
         declare_parameters (ParameterHandler &prm);

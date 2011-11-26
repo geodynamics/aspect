@@ -53,9 +53,6 @@ using namespace dealii;
 namespace EquationData
 {
   double kappa                 = 1e-6;
-
-  double T0      = 6300;//4000+273;              /* K          */
-  double T1      = 300;// 700+273;              /* K          */
 }
 
 
@@ -77,8 +74,10 @@ namespace aspect
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
     material_model (MaterialModel::create_material_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
+    boundary_temperature (BoundaryTemperature::create_boundary_temperature<dim>(prm)),
     initial_conditions (InitialConditions::create_initial_conditions (prm,
                                                                       *geometry_model,
+                                                                      *boundary_temperature,
                                                                       *adiabatic_conditions)),
 
     triangulation (MPI_COMM_WORLD,
@@ -323,19 +322,20 @@ namespace aspect
       DoFTools::make_hanging_node_constraints (temperature_dof_handler,
                                                temperature_constraints);
 
-      //TODO: do something more sensible here than just taking the initial values
-      VectorTools::interpolate_boundary_values (temperature_dof_handler,
-                                                0,
-                                                ScalarFunctionFromFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
-                                                                                      std_cxx1x::cref(*initial_conditions),
-                                                                                      std_cxx1x::_1)),
-                                                temperature_constraints);
-      VectorTools::interpolate_boundary_values (temperature_dof_handler,
-                                                1,
-                                                ScalarFunctionFromFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
-                                                                                      std_cxx1x::cref(*initial_conditions),
-                                                                                      std_cxx1x::_1)),
-                                                temperature_constraints);
+      std::set<unsigned char>
+      temperature_dirichlet_boundary_indicators
+        = geometry_model->get_temperature_dirichlet_boundary_indicators ();
+
+      for (std::set<unsigned char>::const_iterator
+           p = temperature_dirichlet_boundary_indicators.begin();
+           p != temperature_dirichlet_boundary_indicators.end(); ++p)
+        //TODO: do something more sensible here than just taking the initial values
+        VectorTools::interpolate_boundary_values (temperature_dof_handler,
+                                                  *p,
+                                                  ScalarFunctionFromFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
+                                                                                        std_cxx1x::cref(*initial_conditions),
+                                                                                        std_cxx1x::_1)),
+                                                  temperature_constraints);
       temperature_constraints.close ();
     }
 

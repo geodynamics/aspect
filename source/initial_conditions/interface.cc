@@ -24,10 +24,12 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::initialize (const GeometryModel::Interface<dim> &geometry_model_,
-                                const AdiabaticConditions<dim>      &adiabatic_conditions_)
+    Interface<dim>::initialize (const GeometryModel::Interface<dim>       &geometry_model_,
+                                const BoundaryTemperature::Interface<dim> &boundary_temperature_,
+                                const AdiabaticConditions<dim>            &adiabatic_conditions_)
     {
-      geometry_model = &geometry_model_;
+      geometry_model       = &geometry_model_;
+      boundary_temperature = &boundary_temperature_;
       adiabatic_conditions = &adiabatic_conditions_;
     }
 
@@ -89,6 +91,7 @@ namespace aspect
     Interface<dim> *
     create_initial_conditions (ParameterHandler &prm,
                                const GeometryModel::Interface<dim> &geometry_model,
+                               const BoundaryTemperature::Interface<dim> &boundary_temperature,
                                const AdiabaticConditions<dim>      &adiabatic_conditions)
     {
       Assert (registered_initial_conditions_models != 0, ExcInternalError());
@@ -106,7 +109,9 @@ namespace aspect
           {
             Interface<dim> *i = std_cxx1x::get<2>(*p)();
             i->parse_parameters (prm);
-            i->initialize (geometry_model, adiabatic_conditions);
+            i->initialize (geometry_model,
+                           boundary_temperature,
+                           adiabatic_conditions);
             return i;
           }
 
@@ -165,6 +170,7 @@ namespace aspect
     Interface<deal_II_dimension> *
     create_initial_conditions<deal_II_dimension> (ParameterHandler &prm,
                                                   const GeometryModel::Interface<deal_II_dimension> &geometry_model,
+                                                  const BoundaryTemperature::Interface<deal_II_dimension> &boundary_temperature,
                                                   const AdiabaticConditions<deal_II_dimension>      &adiabatic_conditions);
   }
 }

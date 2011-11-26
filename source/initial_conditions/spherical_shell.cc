@@ -58,7 +58,9 @@ namespace aspect
                            +
                            0.2 * s * (1-s) * std::sin(6*phi) * scale;
 
-      return EquationData::T0*(1.0-s_mod) + EquationData::T1*s_mod;
+      return (this->boundary_temperature->maximal_temperature()*(1.0-s_mod)
+              +
+              this->boundary_temperature->minimal_temperature()*s_mod);
     }
 
 
@@ -90,10 +92,10 @@ namespace aspect
       const double scale=R1/(R1 - R0);
       const float eps = 1e-4;
 
-      const double geotherm[4] = { EquationData::T0,
-                                   EquationData::T0 - 1300,
-                                   EquationData::T1 + 1200,
-                                   EquationData::T1
+      const double geotherm[4] = { this->boundary_temperature->maximal_temperature(),
+                                   this->boundary_temperature->maximal_temperature() - 1300,
+                                   this->boundary_temperature->minimal_temperature() + 1200,
+                                   this->boundary_temperature->minimal_temperature()
                                  };
 
       const double depth[4] = { R0-1e-2*R0,
@@ -114,21 +116,20 @@ namespace aspect
       Assert (indx >= 0, ExcInternalError());
       Assert (indx < 3,  ExcInternalError());
       int indx1 = indx + 1;
-      float dx = depth[indx1] - depth[indx];
-      float dy = geotherm[indx1] - geotherm[indx];
+      const float dx = depth[indx1] - depth[indx];
+      const float dy = geotherm[indx1] - geotherm[indx];
 
-      const double
-      InterpolVal = (( dx > 0.5*eps)
-                     ?
-                     // linear interpolation
-                     std::max(geotherm[3],geotherm[indx] + (r-depth[indx]) * (dy/dx))
-                     :
-                     // evaluate the point in the discontinuity
-                     0.5*( geotherm[indx] + geotherm[indx1] ));
+      const double InterpolVal = (( dx > 0.5*eps)
+                                  ?
+                                  // linear interpolation
+                                  std::max(geotherm[3],geotherm[indx] + (r-depth[indx]) * (dy/dx))
+                                  :
+                                  // evaluate the point in the discontinuity
+                                  0.5*( geotherm[indx] + geotherm[indx1] ));
 
       const double x = (scale - this->depth)*std::cos(angle);
       const double y = (scale - this->depth)*std::sin(angle);
-      const double Perturbation = (sign * amplitude * EquationData::T0 *
+      const double Perturbation = (sign * amplitude * this->boundary_temperature->maximal_temperature() *
                                    std::exp( -( std::pow((position(0)*scale/R1-x),2)
                                                 +
                                                 std::pow((position(1)*scale/R1-y),2) ) / sigma));

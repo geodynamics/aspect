@@ -10,6 +10,8 @@
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
 
+#include <set>
+
 
 namespace aspect
 {
@@ -64,6 +66,23 @@ namespace aspect
          */
         virtual
         double length_scale () const = 0;
+
+        /**
+         * Return a set of boundary indicators that correspond to parts of the
+         * boundary on which the temperature is fixed, i.e., on which Dirichlet
+         * boundary conditions are posed. These boundary conditions for the temperature
+         * are then described by classes derived from BoundaryTemperature::Interface.
+         *
+         * All boundary indicators used by the mesh created by this class that are
+         * not listed in the set returned here correspond to parts of the boundary
+         * at which no heat flux occurs (i.e., the normal derivative of the temperature
+         * times the heat conduction coefficient is zero). This is typically the case for
+         * symmetry boundary conditions, for example if only a part of the earth mantle
+         * shell is simulated.
+         */
+        virtual
+        std::set<unsigned char>
+        get_temperature_dirichlet_boundary_indicators () const = 0;
 
         /**
          * Declare the parameters this class takes through input files.

@@ -58,6 +58,17 @@ namespace aspect
 
 
     template <int dim>
+    std::set<unsigned char>
+    SphericalShell<dim>::
+    get_temperature_dirichlet_boundary_indicators () const
+    {
+      const unsigned char s[] = { 0, 1 };
+      return std::set<unsigned char>(&s[0],
+                                     &s[sizeof(s)/sizeof(s[0])]);
+    }
+
+
+    template <int dim>
     double
     SphericalShell<dim>::
     length_scale () const

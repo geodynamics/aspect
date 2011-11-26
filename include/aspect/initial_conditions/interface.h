@@ -8,6 +8,7 @@
 #define __aspect__initial_conditions_interface_h
 
 #include <aspect/geometry_model/interface.h>
+#include <aspect/boundary_temperature/interface.h>
 #include <aspect/adiabatic_conditions.h>
 
 #include <deal.II/base/point.h>
@@ -41,12 +42,14 @@ namespace aspect
         virtual ~Interface();
 
         /**
-         * Initialization function. Take references to the geometry model and the
+         * Initialization function. Take references to the geometry model, the
+         * object that describes the temperature boundary values, and the
          * adiabatic conditions and store them so that derived classes can access them.
          */
         void
-        initialize (const GeometryModel::Interface<dim> &geometry_model,
-                    const AdiabaticConditions<dim>      &adiabatic_conditions);
+        initialize (const GeometryModel::Interface<dim>       &geometry_model,
+                    const BoundaryTemperature::Interface<dim> &boundary_temperature,
+                    const AdiabaticConditions<dim>            &adiabatic_conditions);
 
         /**
          * Return the initial temperature as a function of position.
@@ -78,12 +81,18 @@ namespace aspect
         /**
          * Pointer to the geometry object in use.
          */
-        const GeometryModel::Interface<dim> *geometry_model;
+        const GeometryModel::Interface<dim>       *geometry_model;
+
+        /**
+         * Pointer to an object that described the boundary values
+         * for the temperature field.
+         */
+        const BoundaryTemperature::Interface<dim> *boundary_temperature;
 
         /**
          * Pointer to an object that describes adiabatic conditions.
          */
-        const AdiabaticConditions<dim>      *adiabatic_conditions;
+        const AdiabaticConditions<dim>            *adiabatic_conditions;
     };
 
 
@@ -112,7 +121,7 @@ namespace aspect
      *
      * This function makes the newly created object read its parameters from the
      * input parameter object, and then initializes it with the given geometry
-     * model and adiabatic conditions object.
+     * model, boundary values object, and adiabatic conditions object.
      *
      * @ingroup InitialConditionsModels
      */
@@ -120,6 +129,7 @@ namespace aspect
     Interface<dim> *
     create_initial_conditions (ParameterHandler &prm,
                                const GeometryModel::Interface<dim> &geometry_model,
+                               const BoundaryTemperature::Interface<dim> &boundary_temperature,
                                const AdiabaticConditions<dim>      &adiabatic_conditions);
 
 

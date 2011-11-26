@@ -75,12 +75,6 @@ namespace aspect
       prm.declare_entry ("Radiogenic heating rate", "0e0",
                          Patterns::Double (),
                          "H0");
-      prm.declare_entry ("T1", "0",
-                         Patterns::Double (),
-                         "Temperature at the outer boundary (lithosphere water/air). Units: Kelvin.");
-      prm.declare_entry ("T0", "6000",
-                         Patterns::Double (),
-                         "Temperature at the inner boundary (core mantle boundary). Units: Kelvin.");
     }
     prm.leave_subsection ();
 
@@ -210,8 +204,6 @@ namespace aspect
       include_shear_heating = prm.get_bool ("Include shear heating");
       EquationData::kappa = prm.get_double ("kappa");
       radiogenic_heating_rate = prm.get_double ("Radiogenic heating rate");
-      EquationData::T0 = prm.get_double ("T0");
-      EquationData::T1 = prm.get_double ("T1");
     }
     prm.leave_subsection ();
 
@@ -236,6 +228,7 @@ namespace aspect
     GeometryModel::declare_parameters (prm);
     GravityModel::declare_parameters (prm);
     InitialConditions::declare_parameters (prm);
+    BoundaryTemperature::declare_parameters (prm);
   }
 }
 

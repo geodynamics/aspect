@@ -9,6 +9,7 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/boundary_temperature/interface.h>
 #include <aspect/adiabatic_conditions.h>
 
 #include <deal.II/base/std_cxx1x/shared_ptr.h>
@@ -325,6 +326,13 @@ namespace aspect
          */
         const AdiabaticConditions<dim> &
         get_adiabatic_conditions () const;
+
+        /**
+         * Return a pointer to the object that describes the temperature boundary
+         * values.
+         */
+        const BoundaryTemperature::Interface<dim> &
+        get_boundary_temperature () const;
 
         /** @} */
 

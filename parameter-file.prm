@@ -69,8 +69,15 @@ subsection Model settings
   set Include shear heating = false
   set kappa = 4.548e-7
   set Radiogenic heating rate = 0e0
-  set T1 = 300
-  set T0 = 6300
+end
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 6300
+    set Outer temperature = 300
+  end
 end
 
 subsection Geometry model
