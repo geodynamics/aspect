@@ -129,7 +129,7 @@ namespace aspect
     {
       /**
        * An internal class that is used in the definition of the
-       * ASPECT_REGISTER_MATERIAL_MODEL macro below. Given a name
+       * ASPECT_REGISTER_GEOMETRY_MODEL macro below. Given a name
        * and a classname, it registers the geometry model.
        */
       template <const char **name, class GeometryModelClass>
@@ -153,8 +153,8 @@ namespace aspect
 
 
     /**
-     * Given a name and a classname for a postprocessor, register it with
-     * the aspect::Postprocess::Manager class.
+     * Given a name and a classname for a geometry model, register it with
+     * the functions that can declare their parameters and create these objects.
      *
      * @ingroup GeometryModels
      */

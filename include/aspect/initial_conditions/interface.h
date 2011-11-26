@@ -137,7 +137,7 @@ namespace aspect
     {
       /**
        * An internal class that is used in the definition of the
-       * ASPECT_REGISTER_MATERIAL_MODEL macro below. Given a name
+       * ASPECT_REGISTER_INITIAL_CONDITIONS macro below. Given a name
        * and a classname, it registers the initial conditions model.
        */
       template <const char **name, class InitialConditionsModelClass>
@@ -161,8 +161,8 @@ namespace aspect
 
 
     /**
-     * Given a name and a classname for a postprocessor, register it with
-     * the aspect::Postprocess::Manager class.
+     * Given a name and a classname for a initial conditions model, register it with
+     * the functions that can declare their parameters and create these objects.
      *
      * @ingroup InitialConditionsModels
      */

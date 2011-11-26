@@ -183,8 +183,8 @@ namespace aspect
 
 
     /**
-     * Given a name and a classname for a postprocessor, register it with
-     * the aspect::Postprocess::Manager class.
+     * Given a name and a classname for a material model, register it with
+     * the functions that can declare their parameters and create these objects.
      *
      * @ingroup MaterialModels
      */

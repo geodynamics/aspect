@@ -108,7 +108,7 @@ namespace aspect
     {
       /**
        * An internal class that is used in the definition of the
-       * ASPECT_REGISTER_MATERIAL_MODEL macro below. Given a name
+       * ASPECT_REGISTER_GRAVITY_MODEL macro below. Given a name
        * and a classname, it registers the gravity model.
        */
       template <const char **name, class GravityModelClass>
@@ -132,8 +132,8 @@ namespace aspect
 
 
     /**
-     * Given a name and a classname for a postprocessor, register it with
-     * the aspect::Postprocess::Manager class.
+     * Given a name and a classname for a gravity model, register it with
+     * the functions that can declare their parameters and create these objects.
      *
      * @ingroup GravityModels
      */
