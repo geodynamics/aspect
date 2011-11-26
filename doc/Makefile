@@ -5,7 +5,7 @@
 D           ?= ../../../deal.II
 include $D/common/Make.global_options
 
-aspect-files    = $(shell echo ../include/aspect/*.h modules/*h)
+aspect-files    = $(shell echo ../include/aspect/*.h ../include/aspect/*/*h modules/*h)
 
 aspect.tag: $(aspect-files) options.dox
 	@echo "=====aspect=================== Generating documentation"
