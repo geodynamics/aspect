@@ -101,7 +101,7 @@ namespace aspect
                             global_max_temperature);
       statistics.add_value ("Average nondimensional temperature (K)",
                             global_temperature_integral / this->get_volume() /
-                            this->get_boundary_temperature().minimal_temperature());
+                            this->get_boundary_temperature().maximal_temperature());
 
       std::ostringstream output;
       output.precision(4);
