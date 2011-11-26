@@ -12,7 +12,6 @@
 
 
 #include <aspect/adiabatic_conditions.h>
-#include <aspect/equation_data.h>
 #include <aspect/geometry_model/spherical_shell.h>
 
 #include <base/std_cxx1x/bind.h>

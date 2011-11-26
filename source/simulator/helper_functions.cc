@@ -11,7 +11,6 @@
 /*    further information on this license.                        */
 
 #include <aspect/simulator.h>
-#include <aspect/equation_data.h>
 #include <aspect/global.h>
 
 #include <deal.II/base/index_set.h>

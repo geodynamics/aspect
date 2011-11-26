@@ -6,7 +6,6 @@
 //-------------------------------------------------------------
 
 #include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/equation_data.h>
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria_boundary_lib.h>

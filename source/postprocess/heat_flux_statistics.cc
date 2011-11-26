@@ -7,7 +7,6 @@
 
 #include <aspect/postprocess/heat_flux_statistics.h>
 #include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/equation_data.h>
 #include <aspect/simulator.h>
 
 #include <deal.II/base/quadrature_lib.h>

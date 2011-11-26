@@ -6,7 +6,6 @@
 //-------------------------------------------------------------
 
 #include <aspect/postprocess/temperature_statistics.h>
-#include <aspect/equation_data.h>
 #include <aspect/simulator.h>
 
 #include <deal.II/base/quadrature_lib.h>

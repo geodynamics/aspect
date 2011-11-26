@@ -7,7 +7,6 @@
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator.h>
-#include <aspect/equation_data.h>
 #include <aspect/global.h>
 
 #include <deal.II/dofs/dof_tools.h>
