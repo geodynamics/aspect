@@ -77,9 +77,9 @@ namespace aspect
   namespace GravityModel
   {
     template class RadialConstant<deal_II_dimension>;
-    ASPECT_REGISTER_GRAVITY_MODEL("Radial constant", RadialConstant);
+    ASPECT_REGISTER_GRAVITY_MODEL("radial constant", RadialConstant);
 
     template class RadialEarthLike<deal_II_dimension>;
-    ASPECT_REGISTER_GRAVITY_MODEL("Radial earth-like", RadialEarthLike);
+    ASPECT_REGISTER_GRAVITY_MODEL("radial earth-like", RadialEarthLike);
   }
 }

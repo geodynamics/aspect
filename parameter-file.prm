@@ -39,7 +39,7 @@ subsection Mesh refinement
 end
 
 subsection Initial conditions
-  set Model name = Spherical hexagonal perturbation
+  set Model name = spherical hexagonal perturbation
 
   subsection Spherical gaussian perturbation
     set Angle = 4.71238898038468985769
@@ -101,7 +101,7 @@ subsection Material model
 end
 
 subsection Gravity model
-  set Model name              = Radial constant
+  set Model name              = radial constant
 
   subsection Radial constant
     set Magnitude             = 30

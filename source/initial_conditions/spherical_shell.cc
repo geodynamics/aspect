@@ -200,9 +200,9 @@ namespace aspect
   namespace InitialConditions
   {
     template class SphericalHexagonalPerturbation<deal_II_dimension>;
-    ASPECT_REGISTER_INITIAL_CONDITIONS("Spherical hexagonal perturbation", SphericalHexagonalPerturbation);
+    ASPECT_REGISTER_INITIAL_CONDITIONS("spherical hexagonal perturbation", SphericalHexagonalPerturbation);
 
     template class SphericalGaussianPerturbation<deal_II_dimension>;
-    ASPECT_REGISTER_INITIAL_CONDITIONS("Spherical gaussian perturbation", SphericalGaussianPerturbation);
+    ASPECT_REGISTER_INITIAL_CONDITIONS("spherical gaussian perturbation", SphericalGaussianPerturbation);
   }
 }
