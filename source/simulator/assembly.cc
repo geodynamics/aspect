@@ -11,7 +11,6 @@
 /*    further information on this license.                        */
 
 #include <aspect/simulator.h>
-#include <aspect/equation_data.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/work_stream.h>
@@ -512,11 +511,12 @@ namespace aspect
         const double u_grad_T = u * (old_temperature_grads[q] +
                                      old_old_temperature_grads[q]) / 2;
 
-        const double kappa_Delta_T = EquationData::kappa
+        const double density = material_model->density(T, p, evaluation_points[q]);
+        const double kappa = material_model->thermal_conductivity() /
+                             (density * material_model->specific_heat (T, p, evaluation_points[q]));
+        const double kappa_Delta_T = kappa
                                      * (old_temperature_laplacians[q] +
                                         old_old_temperature_laplacians[q]) / 2;
-
-        const double density = material_model->density(T, p, evaluation_points[q]);
 
         const double gamma
           = (parameters.radiogenic_heating_rate * density
@@ -1043,6 +1043,13 @@ namespace aspect
           = material_model->density(ext_T,
                                     ext_pressure,
                                     scratch.temperature_fe_values.quadrature_point(q));
+
+        const double kappa
+          = material_model->thermal_conductivity() /
+            (density * material_model->specific_heat (ext_T,
+                                                      ext_pressure,
+                                                      scratch.temperature_fe_values.quadrature_point(q)));
+
         const double gamma
           = (parameters.radiogenic_heating_rate * density
              +
@@ -1073,7 +1080,7 @@ namespace aspect
                                                           (time_step + old_time_step)) : 1.0;
                 data.local_matrix(i,j)
                 += (
-                     (time_step * (EquationData::kappa+nu) * scratch.grad_phi_T[i] * scratch.grad_phi_T[j])
+                     (time_step * (kappa+nu) * scratch.grad_phi_T[i] * scratch.grad_phi_T[j])
                      + (time_step * (extrapolated_u * scratch.grad_phi_T[j] * scratch.phi_T[i]))
                      + (factor * scratch.phi_T[i] * scratch.phi_T[j])
                    )

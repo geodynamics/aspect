@@ -12,7 +12,6 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
-#include <aspect/equation_data.h>
 
 #include <deal.II/base/parameter_handler.h>
 
@@ -69,9 +68,6 @@ namespace aspect
                          "physical viewpoint, shear heating should always be used but may "
                          "be undesirable when comparing results with known benchmarks that "
                          "do not include this term in the temperature equation.");
-      prm.declare_entry ("kappa", "4.548e-7",
-                         Patterns::Double (),
-                         "Thermal diffusivity k/(rho*cp)");
       prm.declare_entry ("Radiogenic heating rate", "0e0",
                          Patterns::Double (),
                          "H0");
@@ -202,7 +198,6 @@ namespace aspect
     prm.enter_subsection ("Model settings");
     {
       include_shear_heating = prm.get_bool ("Include shear heating");
-      EquationData::kappa = prm.get_double ("kappa");
       radiogenic_heating_rate = prm.get_double ("Radiogenic heating rate");
     }
     prm.leave_subsection ();

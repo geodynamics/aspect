@@ -67,7 +67,6 @@ end
 
 subsection Model settings
   set Include shear heating = false
-  set kappa = 4.548e-7
   set Radiogenic heating rate = 0e0
 end
 
