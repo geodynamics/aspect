@@ -60,6 +60,38 @@ namespace aspect
         get_temperature_dirichlet_boundary_indicators () const;
 
         /**
+         * Return a set of boundary indicators that correspond to parts of the
+         * boundary on which the velocity is zero.
+         *
+         * If the opening angle of the geometry described in the input file is
+         * less than the full 360 degrees (i.e., if the geometry is only a part
+         * of the shell), then all parts of the boundary are marked as
+         * tangential velocity. On the other hand, if the opening angle is
+         * 360 degrees, then the solid rotations are in the kernel of the
+         * Stokes operator and we only mark the outer boundary for tangential
+         * flow, whereas the inner boundary will have zero velocity.
+         */
+        virtual
+        std::set<unsigned char>
+        get_zero_velocity_boundary_indicators () const;
+
+        /**
+         * Return a set of boundary indicators that correspond to parts of the
+         * boundary on which the velocity is tangential but may not be zero.
+         *
+         * If the opening angle of the geometry described in the input file is
+         * less than the full 360 degrees (i.e., if the geometry is only a part
+         * of the shell), then all parts of the boundary are marked as
+         * tangential velocity. On the other hand, if the opening angle is
+         * 360 degrees, then the solid rotations are in the kernel of the
+         * Stokes operator and we only mark the outer boundary for tangential
+         * flow, whereas the inner boundary will have zero velocity.
+         */
+        virtual
+        std::set<unsigned char>
+        get_tangential_velocity_boundary_indicators () const;
+
+        /**
          * Declare the parameters this class takes through input files.
          * The default implementation of this function does not describe
          * any parameters. Consequently, derived classes do not have to

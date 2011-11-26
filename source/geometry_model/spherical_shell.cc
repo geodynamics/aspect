@@ -62,9 +62,57 @@ namespace aspect
     SphericalShell<dim>::
     get_temperature_dirichlet_boundary_indicators () const
     {
+      // see the documentation of the various GridGenerator::*hyper_shell
+      // functions for a description of which boundary indicators are
+      // set and how they correlate to what's used below
       const unsigned char s[] = { 0, 1 };
       return std::set<unsigned char>(&s[0],
                                      &s[sizeof(s)/sizeof(s[0])]);
+    }
+
+
+    template <int dim>
+    std::set<unsigned char>
+    SphericalShell<dim>::
+    get_zero_velocity_boundary_indicators () const
+    {
+      // follow what is described in the documentation of this class.
+      // see the documentation of the various GridGenerator::*hyper_shell
+      // functions for a description of which boundary indicators are
+      // set and how they correlate to what's used below
+      if (phi == 360)
+        {
+          const unsigned char s[] = { 1 };
+          return std::set<unsigned char>(&s[0],
+                                         &s[sizeof(s)/sizeof(s[0])]);
+        }
+      else
+        return std::set<unsigned char>();
+    }
+
+
+
+    template <int dim>
+    std::set<unsigned char>
+    SphericalShell<dim>::
+    get_tangential_velocity_boundary_indicators () const
+    {
+      // follow what is described in the documentation of this class.
+      // see the documentation of the various GridGenerator::*hyper_shell
+      // functions for a description of which boundary indicators are
+      // set and how they correlate to what's used below
+      if (phi == 360)
+        {
+          const unsigned char s[] = { 0 };
+          return std::set<unsigned char>(&s[0],
+                                         &s[sizeof(s)/sizeof(s[0])]);
+        }
+      else
+        {
+          const unsigned char s[] = { 0, 1, 2, 3 };
+          return std::set<unsigned char>(&s[0],
+                                         &s[sizeof(s)/sizeof(s[0])]);
+        }
     }
 
 

@@ -304,13 +304,29 @@ namespace aspect
       DoFTools::make_hanging_node_constraints (stokes_dof_handler,
                                                stokes_constraints);
 
-      std::set<unsigned char> no_normal_flux_boundaries;
-      no_normal_flux_boundaries.insert (0);
-      no_normal_flux_boundaries.insert (1);
-      no_normal_flux_boundaries.insert (2);
-      no_normal_flux_boundaries.insert (3);
-      VectorTools::compute_no_normal_flux_constraints (stokes_dof_handler, 0,
-                                                       no_normal_flux_boundaries,
+      // obtain the boundary indicators that belong to zero velocity
+      // type and compute the constraints that correspond to it
+      const std::set<unsigned char>
+      zero_boundary_indicators
+        = geometry_model->get_zero_velocity_boundary_indicators ();
+      std::vector<bool> velocity_mask (dim+1, true);
+      velocity_mask[dim] = false;
+      for (std::set<unsigned char>::const_iterator
+           p = zero_boundary_indicators.begin();
+           p != zero_boundary_indicators.end(); ++p)
+        VectorTools::interpolate_boundary_values (stokes_dof_handler,
+                                                  *p,
+                                                  ZeroFunction<dim>(dim+1),
+                                                  stokes_constraints,
+                                                  velocity_mask);
+
+      // do the same for no-normal-flux boundaries
+      const std::set<unsigned char>
+      no_normal_flux_boundary_indicators
+        = geometry_model->get_tangential_velocity_boundary_indicators ();
+      VectorTools::compute_no_normal_flux_constraints (stokes_dof_handler,
+                                                       /* first_vector_component= */ 0,
+                                                       no_normal_flux_boundary_indicators,
                                                        stokes_constraints,
                                                        mapping);
       stokes_constraints.close ();

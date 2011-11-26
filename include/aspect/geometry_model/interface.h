@@ -85,6 +85,32 @@ namespace aspect
         get_temperature_dirichlet_boundary_indicators () const = 0;
 
         /**
+         * Return a set of boundary indicators that correspond to parts of the
+         * boundary on which the velocity is zero.
+         *
+         * All boundary indicators used by the mesh created by this class that are
+         * not listed in either the sets returned by get_zero_velocity_boundary_indicators()
+         * or get_tangential_velocity_boundary_indicators() are supposed to
+         * represent open boundaries through which material can flow.
+         */
+        virtual
+        std::set<unsigned char>
+        get_zero_velocity_boundary_indicators () const = 0;
+
+        /**
+         * Return a set of boundary indicators that correspond to parts of the
+         * boundary on which the velocity is tangential but may not be zero.
+         *
+         * All boundary indicators used by the mesh created by this class that are
+         * not listed in either the sets returned by get_zero_velocity_boundary_indicators()
+         * or get_tangential_velocity_boundary_indicators() are supposed to
+         * represent open boundaries through which material can flow.
+         */
+        virtual
+        std::set<unsigned char>
+        get_tangential_velocity_boundary_indicators () const = 0;
+
+        /**
          * Declare the parameters this class takes through input files.
          * The default implementation of this function does not describe
          * any parameters. Consequently, derived classes do not have to
