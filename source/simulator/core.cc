@@ -44,17 +44,6 @@
 
 using namespace dealii;
 
-// In the following namespace, we define the
-// various pieces of equation data. All of
-// these are exhaustively discussed in the
-// description of the testcase in the
-// introduction:
-namespace EquationData
-{
-  double kappa                 = 1e-6;
-}
-
-
 
 namespace aspect
 {
