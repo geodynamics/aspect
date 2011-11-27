@@ -511,26 +511,26 @@ namespace aspect
         const double u_grad_T = u * (old_temperature_grads[q] +
                                      old_old_temperature_grads[q]) / 2;
 
-        const double density = material_model->density(T, p, evaluation_points[q]);
-        const double kappa = material_model->thermal_conductivity(T, p, evaluation_points[q]) /
-                             (density * material_model->specific_heat(T, p, evaluation_points[q]));
-        const double kappa_Delta_T = kappa
-                                     * (old_temperature_laplacians[q] +
-                                        old_old_temperature_laplacians[q]) / 2;
+        const double density              = material_model->density(T, p, evaluation_points[q]);
+        const double thermal_conductivity = material_model->thermal_conductivity(T, p, evaluation_points[q]);
+        const double c_P                  = material_model->specific_heat(T, p, evaluation_points[q]);
+        const double k_Delta_T = thermal_conductivity
+                                 * (old_temperature_laplacians[q] +
+                                    old_old_temperature_laplacians[q]) / 2;
 
+        // verify correctness of the heating term
         const double gamma
           = (parameters.radiogenic_heating_rate * density
              +
              (parameters.include_shear_heating
               ?
               2 * material_model->viscosity(T, p, evaluation_points[q]) *
-              strain_rate * strain_rate  /
-              (density * material_model->specific_heat(T, p, evaluation_points[q]))
+              strain_rate * strain_rate
               :
               0));
 
         double residual
-          = std::abs(dT_dt + u_grad_T - kappa_Delta_T - gamma);
+          = std::abs(density * c_P * (dT_dt + u_grad_T) - k_Delta_T - gamma);
         if (parameters.stabilization_alpha == 2)
           residual *= std::abs(T - average_temperature);
 
@@ -1039,19 +1039,17 @@ namespace aspect
               use_bdf2_scheme, old_time_step, time_step,
               scratch.old_old_pressure[q], scratch.old_pressure[q]);
 
-        const double density
-          = material_model->density(ext_T,
-                                    ext_pressure,
-                                    scratch.temperature_fe_values.quadrature_point(q));
+        const double density              = material_model->density(ext_T,
+                                                                    ext_pressure,
+                                                                    scratch.temperature_fe_values.quadrature_point(q));
+        const double thermal_conductivity = material_model->thermal_conductivity(ext_T,
+                                                                                 ext_pressure,
+                                                                                 scratch.temperature_fe_values.quadrature_point(q));
+        const double c_P                  = material_model->specific_heat (ext_T,
+                                                                           ext_pressure,
+                                                                           scratch.temperature_fe_values.quadrature_point(q));
 
-        const double kappa
-          = material_model->thermal_conductivity(ext_T,
-                                                 ext_pressure,
-                                                 scratch.temperature_fe_values.quadrature_point(q)) /
-            (density * material_model->specific_heat (ext_T,
-                                                      ext_pressure,
-                                                      scratch.temperature_fe_values.quadrature_point(q)));
-
+        //TODO: verify that this is the right formula
         const double gamma
           = (parameters.radiogenic_heating_rate * density
              +
@@ -1060,9 +1058,7 @@ namespace aspect
               2 * material_model->viscosity(ext_T,
                                             ext_pressure,
                                             scratch.temperature_fe_values.quadrature_point(q)) *
-              extrapolated_strain_rate * extrapolated_strain_rate /
-              (density * material_model->specific_heat(ext_T, ext_pressure,
-                                                       scratch.temperature_fe_values.quadrature_point(q)))
+              extrapolated_strain_rate * extrapolated_strain_rate
               :
               0)
             );
@@ -1082,17 +1078,15 @@ namespace aspect
                                                           (time_step + old_time_step)) : 1.0;
                 data.local_matrix(i,j)
                 += (
-                     (time_step * (kappa+nu) * scratch.grad_phi_T[i] * scratch.grad_phi_T[j])
-                     + (time_step * (extrapolated_u * scratch.grad_phi_T[j] * scratch.phi_T[i]))
-                     + (factor * scratch.phi_T[i] * scratch.phi_T[j])
+                     (time_step * (thermal_conductivity +
+                                   nu * density * c_P) * scratch.grad_phi_T[i] * scratch.grad_phi_T[j])
+                     + ((time_step * (extrapolated_u * scratch.grad_phi_T[j] * scratch.phi_T[i]))
+                        + (factor * scratch.phi_T[i] * scratch.phi_T[j])) * density * c_P
                    )
                    * scratch.temperature_fe_values.JxW(q);
-
               }
           }
       }
-
-
   }
 
 
