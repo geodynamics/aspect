@@ -59,6 +59,9 @@ namespace aspect
             this_mpi_process(MPI_COMM_WORLD)
             == 0)),
 
+    computing_timer (pcout, TimerOutput::summary,
+                     TimerOutput::wall_times),
+
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
     material_model (MaterialModel::create_material_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
@@ -67,6 +70,11 @@ namespace aspect
                                                                       *geometry_model,
                                                                       *boundary_temperature,
                                                                       *adiabatic_conditions)),
+
+    time (0),
+    time_step (0),
+    old_time_step (0),
+    timestep_number (0),
 
     triangulation (MPI_COMM_WORLD,
                    typename Triangulation<dim>::MeshSmoothing
@@ -92,15 +100,8 @@ namespace aspect
     temperature_fe (parameters.temperature_degree),
     temperature_dof_handler (triangulation),
 
-    time (0),
-    time_step (0),
-    old_time_step (0),
-    timestep_number (0),
     rebuild_stokes_matrix (true),
-    rebuild_stokes_preconditioner (true),
-
-    computing_timer (pcout, TimerOutput::summary,
-                     TimerOutput::wall_times)
+    rebuild_stokes_preconditioner (true)
   {
     // continue with initializing members that can't be initialized for one reason
     // or another in the member initializer list above
