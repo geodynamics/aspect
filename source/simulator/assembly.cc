@@ -911,7 +911,7 @@ namespace aspect
 
     stokes_matrix.compress();
     stokes_rhs.compress(Add);
-    
+
     if (material_model->is_compressible())
       pressure_shape_function_integrals.compress(Add);
 

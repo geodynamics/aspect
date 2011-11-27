@@ -236,11 +236,7 @@ namespace aspect
 
     {
       old_time_step = time_step;
-      const double cfl_number = get_cfl_number();
-
-      time_step = (parameters.CFL_number /
-                   (parameters.temperature_degree *
-                    cfl_number));
+      time_step = compute_time_step();
 
       statistics.add_value("Time step size (year)", time_step / year_in_seconds);
 

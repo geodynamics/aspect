@@ -297,9 +297,9 @@ namespace aspect
 
       void normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
       double get_maximal_velocity () const;
-      double get_cfl_number () const;
       double get_entropy_variation (const double average_temperature) const;
       std::pair<double,double> get_extrapolated_temperature_range () const;
+      double compute_time_step () const;
 
       double
       compute_viscosity(const std::vector<double>          &old_temperature,
@@ -398,7 +398,7 @@ namespace aspect
       TrilinosWrappers::MPI::BlockVector                        stokes_solution;
       TrilinosWrappers::MPI::BlockVector                        old_stokes_solution;
       TrilinosWrappers::MPI::BlockVector                        stokes_rhs;
-      
+
       // only used if is_compressible()
       TrilinosWrappers::MPI::BlockVector                        pressure_shape_function_integrals;
 

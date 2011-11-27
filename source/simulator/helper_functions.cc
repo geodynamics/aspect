@@ -97,7 +97,7 @@ namespace aspect
    * diameter.
    */
   template <int dim>
-  double Simulator<dim>::get_cfl_number () const
+  double Simulator<dim>::compute_time_step () const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
                                              parameters.stokes_velocity_degree);
@@ -108,7 +108,7 @@ namespace aspect
 
     const FEValuesExtractors::Vector velocities (0);
 
-    double max_local_cfl = 0;
+    double max_local_speed_over_meshsize = 0;
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = stokes_dof_handler.begin_active(),
@@ -124,13 +124,15 @@ namespace aspect
           for (unsigned int q=0; q<n_q_points; ++q)
             max_local_velocity = std::max (max_local_velocity,
                                            velocity_values[q].norm());
-          max_local_cfl = std::max(max_local_cfl,
-                                   max_local_velocity
-                                   /
-                                   cell->minimum_vertex_distance());
+          max_local_speed_over_meshsize = std::max(max_local_speed_over_meshsize,
+                                                   max_local_velocity
+                                                   /
+                                                   cell->minimum_vertex_distance());
         }
 
-    return Utilities::MPI::max (max_local_cfl, MPI_COMM_WORLD);
+    return (parameters.CFL_number /
+            (parameters.temperature_degree *
+             Utilities::MPI::max (max_local_speed_over_meshsize, MPI_COMM_WORLD)));
   }
 
 
