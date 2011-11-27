@@ -307,8 +307,7 @@ namespace aspect
           StokesSystem (const StokesSystem<dim> &data);
 
           Vector<double> local_rhs;
-          Vector<double> local_rhs_helper;
-
+          Vector<double> local_pressure_shape_function_integrals;
         };
 
 
@@ -318,7 +317,7 @@ namespace aspect
           :
           StokesPreconditioner<dim> (stokes_fe),
           local_rhs (stokes_fe.dofs_per_cell),
-          local_rhs_helper (stokes_fe.dofs_per_cell)
+          local_pressure_shape_function_integrals (stokes_fe.dofs_per_cell)
         {}
 
 
@@ -328,7 +327,7 @@ namespace aspect
           :
           StokesPreconditioner<dim> (data),
           local_rhs (data.local_rhs),
-          local_rhs_helper (data.local_rhs_helper)
+          local_pressure_shape_function_integrals (data.local_pressure_shape_function_integrals)
         {}
 
 
@@ -752,13 +751,14 @@ namespace aspect
     scratch.stokes_fe_values[velocities].get_function_values(old_stokes_solution,
                                                              scratch.old_velocity_values);
 
+    // cache whether the model is compressible or not
+    const bool is_compressible = material_model->is_compressible ();
+
     if (rebuild_stokes_matrix)
       data.local_matrix = 0;
     data.local_rhs = 0;
-    data.local_rhs_helper = 0;
-
-    // cache whether the model is compressible or not
-    const bool is_compressible = material_model->is_compressible ();
+    if (is_compressible)
+      data.local_pressure_shape_function_integrals = 0;
 
 
     for (unsigned int q=0; q<n_q_points; ++q)
@@ -827,10 +827,9 @@ namespace aspect
                                )
                                * scratch.stokes_fe_values.JxW(q);
 
-        for (unsigned int i=0; i<dofs_per_cell; ++i)
-          data.local_rhs_helper(i) += scratch.phi_p[i] * scratch.stokes_fe_values.JxW(q);
-
-
+        if (is_compressible)
+          for (unsigned int i=0; i<dofs_per_cell; ++i)
+            data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.stokes_fe_values.JxW(q);
       }
 
     cell->get_dof_indices (data.local_dof_indices);
@@ -854,9 +853,10 @@ namespace aspect
                                                      data.local_dof_indices,
                                                      stokes_rhs);
 
-    stokes_constraints.distribute_local_to_global (data.local_rhs_helper,
-                                                   data.local_dof_indices,
-                                                   stokes_rhs_helper);
+    if (material_model->is_compressible())
+      stokes_constraints.distribute_local_to_global (data.local_pressure_shape_function_integrals,
+                                                     data.local_dof_indices,
+                                                     pressure_shape_function_integrals);
   }
 
 
@@ -867,10 +867,11 @@ namespace aspect
     computing_timer.enter_section ("   Assemble Stokes system");
 
     if (rebuild_stokes_matrix == true)
-      stokes_matrix=0;
+      stokes_matrix = 0;
 
-    stokes_rhs=0;
-    stokes_rhs_helper=0;
+    stokes_rhs = 0;
+    if (material_model->is_compressible())
+      pressure_shape_function_integrals = 0;
 
     const QGauss<dim> quadrature_formula(parameters.stokes_velocity_degree+1);
 
@@ -910,7 +911,9 @@ namespace aspect
 
     stokes_matrix.compress();
     stokes_rhs.compress(Add);
-    stokes_rhs_helper.compress(Add);
+    
+    if (material_model->is_compressible())
+      pressure_shape_function_integrals.compress(Add);
 
     rebuild_stokes_matrix = false;
 

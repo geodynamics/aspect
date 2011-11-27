@@ -322,8 +322,7 @@ namespace aspect
   * and we adjust the right hand side g by h_i \int g / |\Omega|
   */
   template <int dim>
-  void Simulator<dim>::make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector,
-                                                    const TrilinosWrappers::MPI::BlockVector &helper)
+  void Simulator<dim>::make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector)
   {
     if (parameters.use_locally_conservative_discretization)
       throw ExcNotImplemented();
@@ -331,7 +330,7 @@ namespace aspect
     const double mean       = vector.block(1).mean_value();
     const double correction = -mean*vector.block(1).size()/global_volume;
 
-    vector.block(1).add(correction, helper.block(1));
+    vector.block(1).add(correction, pressure_shape_function_integrals.block(1));
   }
 
 }

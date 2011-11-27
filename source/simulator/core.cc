@@ -369,7 +369,6 @@ namespace aspect
     setup_temperature_matrix (temperature_partitioning);
 
     stokes_rhs.reinit (stokes_partitioning, MPI_COMM_WORLD);
-    stokes_rhs_helper.reinit (stokes_partitioning, MPI_COMM_WORLD);
     stokes_solution.reinit (stokes_relevant_partitioning, MPI_COMM_WORLD);
     old_stokes_solution.reinit (stokes_solution);
 
@@ -377,6 +376,9 @@ namespace aspect
     temperature_solution.reinit (temperature_relevant_partitioning, MPI_COMM_WORLD);
     old_temperature_solution.reinit (temperature_solution);
     old_old_temperature_solution.reinit (temperature_solution);
+
+    if (material_model->is_compressible())
+      pressure_shape_function_integrals.reinit (stokes_partitioning, MPI_COMM_WORLD);
 
     rebuild_stokes_matrix              = true;
     rebuild_stokes_preconditioner      = true;

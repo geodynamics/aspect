@@ -293,8 +293,7 @@ namespace aspect
        * @name Helper functions
        * @{
        */
-      void make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector,
-                                        const TrilinosWrappers::MPI::BlockVector &helper);
+      void make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector);
 
       void normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
       double get_maximal_velocity () const;
@@ -393,29 +392,31 @@ namespace aspect
        * @name Variables that describe the linear systems and solution vectors
        * @{
        */
-      TrilinosWrappers::BlockSparseMatrix stokes_matrix;
-      TrilinosWrappers::BlockSparseMatrix stokes_preconditioner_matrix;
+      TrilinosWrappers::BlockSparseMatrix                       stokes_matrix;
+      TrilinosWrappers::BlockSparseMatrix                       stokes_preconditioner_matrix;
 
-      TrilinosWrappers::MPI::BlockVector  stokes_solution;
-      TrilinosWrappers::MPI::BlockVector  old_stokes_solution;
-      TrilinosWrappers::MPI::BlockVector  stokes_rhs;
-      TrilinosWrappers::MPI::BlockVector  stokes_rhs_helper;
+      TrilinosWrappers::MPI::BlockVector                        stokes_solution;
+      TrilinosWrappers::MPI::BlockVector                        old_stokes_solution;
+      TrilinosWrappers::MPI::BlockVector                        stokes_rhs;
+      
+      // only used if is_compressible()
+      TrilinosWrappers::MPI::BlockVector                        pressure_shape_function_integrals;
 
-      TrilinosWrappers::SparseMatrix      temperature_matrix;
+      TrilinosWrappers::SparseMatrix                            temperature_matrix;
 
-      TrilinosWrappers::MPI::Vector       temperature_solution;
-      TrilinosWrappers::MPI::Vector       old_temperature_solution;
-      TrilinosWrappers::MPI::Vector       old_old_temperature_solution;
-      TrilinosWrappers::MPI::Vector       temperature_rhs;
+      TrilinosWrappers::MPI::Vector                             temperature_solution;
+      TrilinosWrappers::MPI::Vector                             old_temperature_solution;
+      TrilinosWrappers::MPI::Vector                             old_old_temperature_solution;
+      TrilinosWrappers::MPI::Vector                             temperature_rhs;
 
 
 
-      std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionAMG> Amg_preconditioner;
-      std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionILU> Mp_preconditioner;
-      std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionILU> T_preconditioner;
+      std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionAMG>  Amg_preconditioner;
+      std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionILU>  Mp_preconditioner;
+      std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionILU>  T_preconditioner;
 
-      bool rebuild_stokes_matrix;
-      bool rebuild_stokes_preconditioner;
+      bool                                                      rebuild_stokes_matrix;
+      bool                                                      rebuild_stokes_preconditioner;
       /**
        * @}
        */

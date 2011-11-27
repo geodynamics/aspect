@@ -165,7 +165,7 @@ namespace aspect
       // side of the equation to make it compatible with the matrix on the
       // left
       if (material_model->is_compressible ())
-        make_pressure_rhs_compatible(stokes_rhs, stokes_rhs_helper);
+        make_pressure_rhs_compatible(stokes_rhs);
 
       PrimitiveVectorMemory< TrilinosWrappers::MPI::BlockVector > mem;
 
