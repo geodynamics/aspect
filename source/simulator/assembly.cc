@@ -1065,7 +1065,7 @@ namespace aspect
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           {
-            data.local_rhs(i) += (T_term_for_rhs * scratch.phi_T[i]
+            data.local_rhs(i) += (T_term_for_rhs * density * c_P * scratch.phi_T[i]
                                   +
                                   time_step *
                                   gamma * scratch.phi_T[i])
