@@ -122,10 +122,10 @@ namespace aspect
          * @name Global parameters
          * @{
          */
-        bool        resume_computation;
-        double      end_time;
-        double      CFL_number;
-        std::string output_directory;
+        bool                resume_computation;
+        double              end_time;
+        double              CFL_number;
+        std::string         output_directory;
         /**
          * @}
          */
@@ -134,8 +134,8 @@ namespace aspect
          * @name Parameters that have to do with terms in the model
          * @{
          */
-        bool         include_shear_heating;
-        double       radiogenic_heating_rate;
+        bool                include_shear_heating;
+        double              radiogenic_heating_rate;
         /**
          * @}
          */
@@ -158,9 +158,9 @@ namespace aspect
          * @name Parameters that have to do with the stabilization of transport equations
          * @{
          */
-        double       stabilization_alpha;
-        double       stabilization_c_R;
-        double       stabilization_beta;
+        double              stabilization_alpha;
+        double              stabilization_c_R;
+        double              stabilization_beta;
         /**
          * @}
          */
@@ -169,9 +169,9 @@ namespace aspect
          * @name Parameters that have to do with spatial discretizations
          * @{
          */
-        unsigned int stokes_velocity_degree;
-        bool         use_locally_conservative_discretization;
-        unsigned int temperature_degree;
+        unsigned int        stokes_velocity_degree;
+        bool                use_locally_conservative_discretization;
+        unsigned int        temperature_degree;
         /**
          * @}
          */
