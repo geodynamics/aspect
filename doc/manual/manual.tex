@@ -56,10 +56,16 @@ three-dimensional domain $\Omega$:
   & \textrm{in $\Omega$},
   \\
   \label{eq:temperature}
-  \rho c_P \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
+  \rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
   - \nabla\cdot k\nabla T
   &=
-  \gamma ...
+  \rho\gamma
+  +
+  2\eta \varepsilon(\mathbf u) : \varepsilon(\mathbf u)
+  +
+  C_p T \frac{D\rho}{Dt}?
+  \ or \ \rho C_p \frac{\partial\rho}{\partial p} \mathbf u\cdot\mathbf g
+  ...
   & \qquad
   & \textrm{in $\Omega$},
 \end{align}
@@ -223,9 +229,51 @@ Concretely, we consider the following coefficients and dependencies:
   that changes as a function of time. Such a model is not currently
   implemented.
 
-\item $c_P$
-\item $k$
-\item $\gamma$
+\item \textit{The specific heat capacity $C_p=C_p(p,T,\mathbf x)$:} Units
+  $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
+  \frac{\textrm{m}^2}{\textrm{s}^2\cdot\textrm{K}}$.
+
+  The specific heat capacity denotes the amount of energy needed to increase
+  the temperature of one kilogram of material by one degree. Wikipedia lists a
+  value of 790 $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}}$ for granite%
+  \footnote{See \url{http://en.wikipedia.org/wiki/Specific_heat}.}
+  For the earth mantle, a value of 1250
+  $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}}$ is within the range
+  suggested by the literature.
+
+
+\item \textit{The thermal conductivity $k=k(p,T,\mathbf x)$:} Units
+  $\frac{\textrm{W}}{\textrm{m}\cdot\textrm{K}}=\frac{\textrm{kg}\cdot\textrm{m}}{\textrm{s}^3\cdot\textrm{K}}$.
+
+  The thermal conductivity denotes the amount of thermal energy flowing
+  through a unit area for a given temperature gradient. It depends on the
+  material and as such will from a physical perspective depend on pressure and
+  temperature due to phase changes of the material as well as through
+  different mechanisms for heat transport (see, for example, the partial
+  transparency of perovskite, the most abundant
+  material in the earth mantle, at pressures above around 120 GPa
+  \cite{BRVMFG04}).
+
+  As a rule of thumb for its
+  order of magnitude, wikipedia quotes values of
+  $1.83$--$2.90\frac{\textrm{W}}{\textrm{m}\cdot\textrm{K}}$ for sandstone and
+  $1.73$--$3.98\frac{\textrm{W}}{\textrm{m}\cdot\textrm{K}}$ for granite.%
+  \footnote{See \url{http://en.wikipedia.org/wiki/Thermal_conductivity} and
+    \url{http://en.wikipedia.org/wiki/List_of_thermal_conductivities}.} The
+  values in the mantle are almost certainly higher than this though probably
+  not by much. The exact exact value
+  is not really all that important: heat transport through convection is
+  several orders of magnitude more important than through thermal
+  conduction.
+
+\item \textit{The intrinsic specific heat production $\gamma=\gamma(\mathbf x)$:} Units
+  $\frac{\textrm{W}}{\textrm{kg}}=\frac{\textrm{m}^2}{\textrm{s}^3}$.
+
+  This term denotes the intrinsic heating of the material, for example due to
+  the decay of radioactive material. As such, it depends not on pressure or
+  temperature, but may depend on the location due to different chemical
+  composition of material in the earth mantle. The literature suggests a value
+  of $\gamma=7.4\cdot 10^{-12}\frac{\textrm{W}}{\textrm{kg}}$.
 \end{itemize}
 
 
@@ -256,5 +304,8 @@ dimension independent
 plugins
 existing plugins have header files so they show up in the documentation but
      this is not necessary
+
+\bibliographystyle{unsrt}
+\bibliography{manual}
 
 \end{document}
