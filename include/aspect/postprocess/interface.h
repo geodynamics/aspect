@@ -459,6 +459,8 @@ namespace aspect
     };
 
 
+    /* -------------------------- inline and template functions ---------------------- */
+
     template <int dim>
     template <class Archive>
     void Manager<dim>::save (Archive &ar,

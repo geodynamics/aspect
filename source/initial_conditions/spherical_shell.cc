@@ -10,6 +10,7 @@
 
 #include <deal.II/base/tensor.h>
 
+#include <typeinfo>
 namespace aspect
 {
   namespace InitialConditions
