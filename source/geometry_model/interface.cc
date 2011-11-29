@@ -37,20 +37,11 @@ namespace aspect
 
     namespace
     {
-      typedef
-      std_cxx1x::tuple<std::string,
-                std::string,
-                void ( *) (ParameterHandler &),
-                Interface<deal_II_dimension> * ( *) ()>
-                GeometryModelInfo;
+      internal::Plugins::PluginList<Interface<deal_II_dimension> > registered_plugins;
 
-      // A pointer to a list of all postprocessors. the three elements of the tuple
-      // correspond to the arguments given to the register_geometry_model
-      // function.
-      //
-      // The object is a pointer rather for the same reason as discussed in
-      // postprocess_base.cc for the corresponding variable there
-      std::list<GeometryModelInfo> *registered_geometry_models = 0;
+      template <>
+      std::list<internal::Plugins::PluginList<Interface<deal_II_dimension> >::PluginInfo> *
+      internal::Plugins::PluginList<Interface<deal_II_dimension> >::plugins = 0;
     }
 
 
@@ -64,11 +55,11 @@ namespace aspect
     {
       // see if this is the first time we get into this
       // function and if so initialize the variable above
-      if (registered_geometry_models == 0)
-        registered_geometry_models = new std::list<GeometryModelInfo>();
+      if (registered_plugins.plugins == 0)
+        registered_plugins.plugins = new std::list<internal::Plugins::PluginList<Interface<deal_II_dimension> >::PluginInfo>();
 
       // now add one record to the list
-      registered_geometry_models->push_back (GeometryModelInfo(name,
+      registered_plugins.plugins->push_back (internal::Plugins::PluginList<Interface<deal_II_dimension> >::PluginInfo(name,
                                                                description,
                                                                declare_parameters_function,
                                                                factory_function));
@@ -79,7 +70,7 @@ namespace aspect
     Interface<dim> *
     create_geometry_model (ParameterHandler &prm)
     {
-      Assert (registered_geometry_models != 0, ExcInternalError());
+      Assert (registered_plugins.plugins != 0, ExcInternalError());
 
       std::string model_name;
       prm.enter_subsection ("Geometry model");
@@ -88,8 +79,8 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      for (std::list<GeometryModelInfo>::const_iterator p = registered_geometry_models->begin();
-           p != registered_geometry_models->end(); ++p)
+      for (std::list<internal::Plugins::PluginList<Interface<deal_II_dimension> >::PluginInfo>::const_iterator p = registered_plugins.plugins->begin();
+           p != registered_plugins.plugins->end(); ++p)
         if (std_cxx1x::get<0>(*p) == model_name)
           {
             Interface<dim> *i = std_cxx1x::get<3>(*p)();
@@ -106,12 +97,12 @@ namespace aspect
     void
     declare_parameters (ParameterHandler &prm)
     {
-      Assert (registered_geometry_models != 0, ExcInternalError());
+      Assert (registered_plugins.plugins != 0, ExcInternalError());
 
       // first collect a list of all registered models
       std::string model_names;
-      for (std::list<GeometryModelInfo>::const_iterator p = registered_geometry_models->begin();
-           p != registered_geometry_models->end(); ++p)
+      for (std::list<internal::Plugins::PluginList<Interface<deal_II_dimension> >::PluginInfo>::const_iterator p = registered_plugins.plugins->begin();
+           p != registered_plugins.plugins->end(); ++p)
         {
           if (model_names.size() > 0)
             model_names += "|";
@@ -127,8 +118,8 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      for (std::list<GeometryModelInfo>::const_iterator p = registered_geometry_models->begin();
-           p != registered_geometry_models->end(); ++p)
+      for (std::list<internal::Plugins::PluginList<Interface<deal_II_dimension> >::PluginInfo>::const_iterator p = registered_plugins.plugins->begin();
+           p != registered_plugins.plugins->end(); ++p)
         std_cxx1x::get<2>(*p)(prm);
     }
 

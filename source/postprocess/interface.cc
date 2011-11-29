@@ -251,26 +251,11 @@ namespace aspect
 
     namespace
     {
-      typedef
-      std_cxx1x::tuple<std::string,
-                std::string,
-                void ( *) (ParameterHandler &),
-                Interface<deal_II_dimension> * ( *) ()>
-                PostprocessorInfo;
+      internal::Plugins::PluginList<Interface<deal_II_dimension> > registered_plugins;
 
-      // A pointer to a list of all postprocessors. the three elements of the tuple
-      // correspond to the arguments given to the Manager::register_postprocessor
-      // function.
-      //
-      // The object is a pointer rather than an object for the following reason:
-      // objects with static initializers (such as =0) are initialized
-      // before any objects for which one needs to run constructors.
-      // consequently, we can be sure that this pointer is set to zero
-      // before we ever try to register a postprocessor, and consequently
-      // whenever we run Manager::register_postprocessor, we need not
-      // worry whether we try to add something to this list before the lists's
-      // constructor has successfully run
-      std::list<PostprocessorInfo> *registered_postprocessors = 0;
+      template <>
+      std::list<internal::Plugins::PluginList<Interface<deal_II_dimension> >::PluginInfo> *
+      internal::Plugins::PluginList<Interface<deal_II_dimension> >::plugins = 0;
     }
 
 
@@ -279,7 +264,7 @@ namespace aspect
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
-      Assert (registered_postprocessors != 0,
+      Assert (registered_plugins.plugins != 0,
               ExcMessage ("No postprocessors registered!?"));
 
       // first declare the postprocessors we know about to
@@ -289,9 +274,9 @@ namespace aspect
         // construct a string for Patterns::MultipleSelection that
         // contains the names of all registered postprocessors
         std::string pattern_of_names;
-        for (typename std::list<PostprocessorInfo>::const_iterator
-             p = registered_postprocessors->begin();
-             p != registered_postprocessors->end(); ++p)
+        for (typename std::list<internal::Plugins::PluginList<Interface<deal_II_dimension> >::PluginInfo>::const_iterator
+             p = registered_plugins.plugins->begin();
+             p != registered_plugins.plugins->end(); ++p)
           {
             if (pattern_of_names.size() > 0)
               pattern_of_names += "|";
@@ -315,9 +300,9 @@ namespace aspect
 
       // now declare the parameters of each of the registered
       // postprocessors in turn
-      for (std::list<PostprocessorInfo>::const_iterator
-           p = registered_postprocessors->begin();
-           p != registered_postprocessors->end(); ++p)
+      for (std::list<internal::Plugins::PluginList<Interface<deal_II_dimension> >::PluginInfo>::const_iterator
+           p = registered_plugins.plugins->begin();
+           p != registered_plugins.plugins->end(); ++p)
         (std_cxx1x::get<2>(*p))(prm);
     }
 
@@ -327,7 +312,7 @@ namespace aspect
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (registered_postprocessors != 0,
+      Assert (registered_plugins.plugins != 0,
               ExcMessage ("No postprocessors registered!?"));
 
       // first find out which postprocessors are requested
@@ -346,9 +331,9 @@ namespace aspect
                      "all") != postprocessor_names.end())
         {
           postprocessor_names.clear();
-          for (std::list<PostprocessorInfo>::const_iterator
-               p = registered_postprocessors->begin();
-               p != registered_postprocessors->end(); ++p)
+          for (std::list<internal::Plugins::PluginList<Interface<deal_II_dimension> >::PluginInfo>::const_iterator
+               p = registered_plugins.plugins->begin();
+               p != registered_plugins.plugins->end(); ++p)
             postprocessor_names.push_back (std_cxx1x::get<0>(*p));
         }
 
@@ -358,9 +343,9 @@ namespace aspect
         {
           // find the entry in the registered postprocessors list
           // that corresponds to this name
-          for (std::list<PostprocessorInfo>::const_iterator
-               p = registered_postprocessors->begin();
-               p != registered_postprocessors->end(); ++p)
+          for (std::list<internal::Plugins::PluginList<Interface<deal_II_dimension> >::PluginInfo>::const_iterator
+               p = registered_plugins.plugins->begin();
+               p != registered_plugins.plugins->end(); ++p)
             if (std_cxx1x::get<0>(*p) == postprocessor_names[name])
               {
                 // create such a postprocessor object using the given
@@ -388,16 +373,10 @@ namespace aspect
                                           void (*declare_parameters_function) (ParameterHandler &),
                                           Interface<dim> * (*factory_function) ())
     {
-      // see if this is the first time we get into this
-      // function and if so initialize the variable above
-      if (registered_postprocessors == 0)
-        registered_postprocessors = new std::list<PostprocessorInfo>();
-
-      // now add one record to the list
-      registered_postprocessors->push_back (PostprocessorInfo(name,
-                                                              description,
-                                                              declare_parameters_function,
-                                                              factory_function));
+      registered_plugins.register_plugin (name,
+						 description,
+						 declare_parameters_function,
+						 factory_function);
     }
 
   }
