@@ -159,6 +159,14 @@ namespace aspect
         std::string get_pattern_of_names (const bool allow_all = false);
 
         /**
+	 * Return a string that describes all registered plugins
+	 * using the descriptions that have been provided at the
+	 * time of registration.
+	 */
+	  static
+	  std::string get_description_string ();
+
+        /**
          * Let all registered plugins define their parameters.
          */
         static
@@ -239,6 +247,42 @@ namespace aspect
 
         return pattern_of_names;
       }
+
+
+
+      template <typename InterfaceClass>
+      std::string
+      PluginList<InterfaceClass>::
+      get_description_string ()
+      {
+	std::string description;
+
+        typename std::list<PluginInfo>::const_iterator
+	  p = plugins->begin();
+	while (true)
+	  {
+					     // write the name and
+					     // description of the
+					     // parameter
+	    description += "'";
+	    description += std_cxx1x::get<0>(*p);
+	    description += "': ";
+	    description += std_cxx1x::get<1>(*p);
+
+					     // increment the pointer
+					     // by one. if we are not
+					     // at the end yet then
+					     // add an empty line
+	    ++p;
+	    if (p != plugins->end())
+	      description += "\n\n";
+	    else
+	      break;
+	  }
+
+	return description;
+      }
+
 
 
 

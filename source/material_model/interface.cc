@@ -89,7 +89,9 @@ namespace aspect
           = registered_plugins.get_pattern_of_names ();
         prm.declare_entry ("Model name", "",
                            Patterns::Selection (pattern_of_names),
-                           "Select one of the available material models");
+                           "Select one of the following models:\n\n"
+			   +
+			   registered_plugins.get_description_string());
       }
       prm.leave_subsection ();
 
