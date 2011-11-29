@@ -19,13 +19,13 @@ namespace aspect
     namespace Plugins
     {
       using namespace dealii;
-      
+
       /**
        * An internal class that is used in the definition of the
        * ASPECT_REGISTER_* macros. Given a registration function, a classname,
        * a description of what it does, and a name for the parameter file,
        * it registers the model with the proper authorities.
-       * 
+       *
        * The registration happens in the constructor. The typical use case of
        * this function is thus the creation of a dummy object in some
        * otherwise unused namespace.
