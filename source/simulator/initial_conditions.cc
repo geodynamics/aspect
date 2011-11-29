@@ -172,8 +172,9 @@ namespace aspect
             }
       }
 
-    // we may have hanging nodes, so apply constraints
-    stokes_constraints.distribute (old_stokes_solution);
+    // note: we may have hanging nodes, at least if the pressure is
+    // continuous, but the interpolation operation makes sure that the
+    // pressure field we get already satisfies the constraints.
 
 
     // normalize the pressure in such a way that the surface pressure
