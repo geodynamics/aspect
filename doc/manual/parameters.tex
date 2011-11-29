@@ -1,121 +1,293 @@
-\subsubsection*{Listing of parameters}
+\subsection{Global parameters}
 
 \begin{itemize}
-\item {\tt CFL number:} 1.0 (In computations, the time step $k$ is chosen according to $k = c \min_K \frac{h_K}{\|u\|_{\infty,K} p_T}$ where $h_K$ is the diameter of cell $K$, and the denominator is the maximal magnitude of the velocity on cell $K$ times the polynomial degree $p_T$ of the temperature discretization. The dimensionless constant $c$ is called the CFL number in this program. For time discretizations that have explicit components, $c$ must be less than a constant that depends on the details of the time discretization and that is no larger than one. On the other hand, for implicit discretizations such as the one chosen here, one can choose the time step as large as one wants (in particular, one can choose $c>1$) though a CFL number significantly larger than one will yield rather diffusive solutions. Units: None., {\it default:} 1.0)
-\item {\tt End time:} 2e2 (The end time of the simulation. Units: years., {\it default:} 1e8)
-\item {\tt Output directory:} output (The name of the directory into which all output files should be placed. This may be an absolute or a relative path., {\it default:} output)
-\item {\tt Resume computation:} false (A flag indicating whether the computation should be resumed from a previously saved state (if true) or start from scratch (if false)., {\it default:} false)
-
-
-
-\item {\tt Subsection Boundary temperature model}
-\begin{itemize}
-\item {\tt Model name:} spherical constant (Select one of the available boundary temperature models., {\it default:} )
-
-
-
-\item {\tt Subsection Spherical constant}
-\begin{itemize}
-\item {\tt Inner temperature:} 6300 (Temperature at the inner boundary (core mantle boundary). Units: Kelvin., {\it default:} 6000)
-\item {\tt Outer temperature:} 300 (Temperature at the outer boundary (lithosphere water/air). Units: Kelvin., {\it default:} 0)
-\end{itemize}
-\end{itemize}
-
-\item {\tt Subsection Discretization}
-\begin{itemize}
-\item {\tt Stokes velocity polynomial degree:} 2 (The polynomial degree to use for the velocity variables in the Stokes system. Units: None., {\it default:} 2)
-\item {\tt Temperature polynomial degree:} 2 (The polynomial degree to use for the temperature variable. Units: None., {\it default:} 2)
-\item {\tt Use locally conservative discretization:} false (Whether to use a Stokes discretization that is locally conservative at the expense of a larger number of degrees of freedom (true), or to go with a cheaper discretization that does not locally conserve mass, although it is globally conservative (false)., {\it default:} true)
+\item {\it Parameter name:} {\tt CFL number}\\
+{\it Value:} 1.0\\
+{\it Default:} 1.0\\
+{\it Description:} In computations, the time step $k$ is chosen according to $k = c \min_K \frac{h_K}{\|u\|_{\infty,K} p_T}$ where $h_K$ is the diameter of cell $K$, and the denominator is the maximal magnitude of the velocity on cell $K$ times the polynomial degree $p_T$ of the temperature discretization. The dimensionless constant $c$ is called the CFL number in this program. For time discretizations that have explicit components, $c$ must be less than a constant that depends on the details of the time discretization and that is no larger than one. On the other hand, for implicit discretizations such as the one chosen here, one can choose the time step as large as one wants (in particular, one can choose $c>1$) though a CFL number significantly larger than one will yield rather diffusive solutions. Units: None.\\
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt End time}\\
+{\it Value:} 1e10\\
+{\it Default:} 1e8\\
+{\it Description:} The end time of the simulation. Units: years.\\
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Output directory}\\
+{\it Value:} bin\\
+{\it Default:} output\\
+{\it Description:} The name of the directory into which all output files should be placed. This may be an absolute or a relative path.\\
+{\it Possible values:} [DirectoryName]
+\item {\it Parameter name:} {\tt Resume computation}\\
+{\it Value:} false\\
+{\it Default:} false\\
+{\it Description:} A flag indicating whether the computation should be resumed from a previously saved state (if true) or start from scratch (if false).\\
+{\it Possible values:} [Bool]
 \end{itemize}
 
-\item {\tt Subsection Geometry model}
+
+
+\subsection{Parameters in section \tt Boundary temperature model}
+
 \begin{itemize}
-\item {\tt Model name:} spherical shell (Select one of the available geometry models., {\it default:} )
-
-
-
-\item {\tt Subsection Spherical shell}
-\begin{itemize}
-\item {\tt Inner radius:} 5698e3 (Inner radius of the spherical shell in units [m]., {\it default:} 3481000)
-\item {\tt Opening angle:} 180 (Opening angle in degrees of the section of the shell that we want to build., {\it default:} 360)
-\item {\tt Outer radius:} 10415e3 (Outer radius of the spherical shell in units [m]., {\it default:} 6336000)
-\end{itemize}
+\item {\it Parameter name:} {\tt Model name}\\
+{\it Value:} spherical constant\\
+{\it Default:} \\
+{\it Description:} Select one of the available boundary temperature models.\\
+{\it Possible values:} [Selection spherical constant ]
 \end{itemize}
 
-\item {\tt Subsection Gravity model}
+
+
+\subsection{Parameters in section \tt Boundary temperature model/Spherical constant}
+
 \begin{itemize}
-\item {\tt Model name:} radial constant (Select one of the available gravity models., {\it default:} )
-
-
-
-\item {\tt Subsection Radial constant}
-\begin{itemize}
-\item {\tt Magnitude:} 30 (Magnitude of the gravity vector in $m/s^2$. The direction is always radially outward from the center of the earth., {\it default:} 30)
-\end{itemize}
-\end{itemize}
-
-\item {\tt Subsection Initial conditions}
-\begin{itemize}
-\item {\tt Model name:} spherical hexagonal perturbation (Select one of the available initial conditions., {\it default:} )
-
-
-
-\item {\tt Subsection Spherical gaussian perturbation}
-\begin{itemize}
-\item {\tt Amplitude:} 0.01 (The amplitude of the perturbation., {\it default:} 0.01)
-\item {\tt Angle:} 4.71238898038468985769 (The angle where the center of the perturbation is placed., {\it default:} 0e0)
-\item {\tt Non-dimensional depth:} 0.7 (The radial distance where the center of the perturbation is placed., {\it default:} 0.7)
-\item {\tt Sigma:} 0.2 (The standard deviation of the Gaussian perturbation., {\it default:} 0.2)
-\item {\tt Sign:} 1 (The sign of the perturbation., {\it default:} 1)
-\end{itemize}
+\item {\it Parameter name:} {\tt Inner temperature}\\
+{\it Value:} 6300\\
+{\it Default:} 6000\\
+{\it Description:} Temperature at the inner boundary (core mantle boundary). Units: Kelvin.\\
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Outer temperature}\\
+{\it Value:} 300\\
+{\it Default:} 0\\
+{\it Description:} Temperature at the outer boundary (lithosphere water/air). Units: Kelvin.\\
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
 \end{itemize}
 
-\item {\tt Subsection Material model}
+\subsection{Parameters in section \tt Discretization}
+
 \begin{itemize}
-\item {\tt Model name:} table (Select one of the available material models, {\it default:} )
-
-
-
-\item {\tt Subsection Simple model}
-\begin{itemize}
-\item {\tt reference\_density:} 3300 (rho0 in $kg / m^3$, {\it default:} 3300)
-\item {\tt reference\_eta:} 5e24 (eta0, {\it default:} 5e24)
-\item {\tt reference\_temperature:} 293 (T0 in K, {\it default:} 293)
-\end{itemize}
-\end{itemize}
-
-\item {\tt Subsection Mesh refinement}
-\begin{itemize}
-\item {\tt Additional refinement times:}  (A list of times so that if the end time of a time step is beyond this time, an additional round of mesh refinement is triggered. This is mostly useful to make sure we can get through the initial transient phase of a simulation on a relatively coarse mesh, and then refine again when we are in a time range that we are interested in and where we would like to use a finer mesh. Units: each element of the list has units years., {\it default:} )
-\item {\tt Coarsening fraction:} 0.05 (The fraction of cells with the smallest error that should be flagged for coarsening., {\it default:} 0.05)
-\item {\tt Initial adaptive refinement:} 0 (The number of adaptive refinement steps performed after initial global refinement but while still within the first time step., {\it default:} 2)
-\item {\tt Initial global refinement:} 4 (The number of global refinement steps performed on the initial coarse mesh, before the problem is first solved there., {\it default:} 2)
-\item {\tt Refinement fraction:} 0.3 (The fraction of cells with the largest error that should be flagged for refinement., {\it default:} 0.3)
-\item {\tt Time steps between mesh refinement:} 5 (The number of time steps after which the mesh is to be adapted again based on computed error indicators., {\it default:} 10)
+\item {\it Parameter name:} {\tt Stokes velocity polynomial degree}\\
+{\it Value:} 2\\
+{\it Default:} 2\\
+{\it Description:} The polynomial degree to use for the velocity variables in the Stokes system. Units: None.\\
+{\it Possible values:} [Integer range 1...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Temperature polynomial degree}\\
+{\it Value:} 2\\
+{\it Default:} 2\\
+{\it Description:} The polynomial degree to use for the temperature variable. Units: None.\\
+{\it Possible values:} [Integer range 1...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Use locally conservative discretization}\\
+{\it Value:} false\\
+{\it Default:} true\\
+{\it Description:} Whether to use a Stokes discretization that is locally conservative at the expense of a larger number of degrees of freedom (true), or to go with a cheaper discretization that does not locally conserve mass, although it is globally conservative (false).\\
+{\it Possible values:} [Bool]
 \end{itemize}
 
-\item {\tt Subsection Model settings}
+\subsection{Parameters in section \tt Geometry model}
+
 \begin{itemize}
-\item {\tt Include shear heating:} false (Whether to include shear heating into the model or not. From a physical viewpoint, shear heating should always be used but may be undesirable when comparing results with known benchmarks that do not include this term in the temperature equation., {\it default:} true)
-\item {\tt Radiogenic heating rate:} 0e0 (H0, {\it default:} 0e0)
+\item {\it Parameter name:} {\tt Model name}\\
+{\it Value:} spherical shell\\
+{\it Default:} \\
+{\it Description:} Select one of the available geometry models.\\
+{\it Possible values:} [Selection spherical shell ]
 \end{itemize}
 
-\item {\tt Subsection Postprocess}
+
+
+\subsection{Parameters in section \tt Geometry model/Spherical shell}
+
 \begin{itemize}
-\item {\tt List of postprocessors:} all (A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text 'all' indicates that all available postprocessors should be run after each time step., {\it default:} all)
+\item {\it Parameter name:} {\tt Inner radius}\\
+{\it Value:} 5698e3\\
+{\it Default:} 3481000\\
+{\it Description:} Inner radius of the spherical shell in units [m].\\
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Opening angle}\\
+{\it Value:} 180\\
+{\it Default:} 360\\
+{\it Description:} Opening angle in degrees of the section of the shell that we want to build.\\
+{\it Possible values:} [Double 0...360 (inclusive)]
+\item {\it Parameter name:} {\tt Outer radius}\\
+{\it Value:} 10415e3\\
+{\it Default:} 6336000\\
+{\it Description:} Outer radius of the spherical shell in units [m].\\
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
 
+\subsection{Parameters in section \tt Gravity model}
 
-
-\item {\tt Subsection Visualization}
 \begin{itemize}
-\item {\tt Time between graphical output:} 5e8 (The time interval (in years) between each generation of graphical output files., {\it default:} 50)
-\end{itemize}
+\item {\it Parameter name:} {\tt Model name}\\
+{\it Value:} radial constant\\
+{\it Default:} \\
+{\it Description:} Select one of the available gravity models.\\
+{\it Possible values:} [Selection radial constant|radial earth-like ]
 \end{itemize}
 
-\item {\tt Subsection Stabilization parameters}
+
+
+\subsection{Parameters in section \tt Gravity model/Radial constant}
+
 \begin{itemize}
-\item {\tt alpha:} 2 (The exponent in the entropy viscosity stabilization. Units: None., {\it default:} 2)
-\item {\tt beta:} 0.078 (The beta factor in the artificial viscosity stabilization. An appropriate value for 2d is 0.052 and 0.078 for 3d. Units: None., {\it default:} 0.078)
-\item {\tt c\_R:} 0.5 (The c\_R factor in the entropy viscosity stabilization. Units: None., {\it default:} 0.11)
+\item {\it Parameter name:} {\tt Magnitude}\\
+{\it Value:} 30\\
+{\it Default:} 30\\
+{\it Description:} Magnitude of the gravity vector in $m/s^2$. The direction is always radially outward from the center of the earth.\\
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
+
+\subsection{Parameters in section \tt Initial conditions}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Model name}\\
+{\it Value:} spherical hexagonal perturbation\\
+{\it Default:} \\
+{\it Description:} Select one of the available initial conditions.\\
+{\it Possible values:} [Selection spherical hexagonal perturbation|spherical gaussian perturbation ]
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Initial conditions/Spherical gaussian perturbation}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Amplitude}\\
+{\it Value:} 0.01\\
+{\it Default:} 0.01\\
+{\it Description:} The amplitude of the perturbation.\\
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Angle}\\
+{\it Value:} 4.71238898038468985769\\
+{\it Default:} 0e0\\
+{\it Description:} The angle where the center of the perturbation is placed.\\
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Non-dimensional depth}\\
+{\it Value:} 0.7\\
+{\it Default:} 0.7\\
+{\it Description:} The radial distance where the center of the perturbation is placed.\\
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Sigma}\\
+{\it Value:} 0.2\\
+{\it Default:} 0.2\\
+{\it Description:} The standard deviation of the Gaussian perturbation.\\
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Sign}\\
+{\it Value:} 1\\
+{\it Default:} 1\\
+{\it Description:} The sign of the perturbation.\\
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Material model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Model name}\\
+{\it Value:} table\\
+{\it Default:} \\
+{\it Description:} Select one of the available material models\\
+{\it Possible values:} [Selection table|simple ]
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Material model/Simple model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt reference_density}\\
+{\it Value:} 3300\\
+{\it Default:} 3300\\
+{\it Description:} rho0 in kg / m^3\\
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt reference_eta}\\
+{\it Value:} 5e24\\
+{\it Default:} 5e24\\
+{\it Description:} eta0\\
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt reference_temperature}\\
+{\it Value:} 293\\
+{\it Default:} 293\\
+{\it Description:} T0 in K\\
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Mesh refinement}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Additional refinement times}\\
+{\it Value:} \\
+{\it Default:} \\
+{\it Description:} A list of times so that if the end time of a time step is beyond this time, an additional round of mesh refinement is triggered. This is mostly useful to make sure we can get through the initial transient phase of a simulation on a relatively coarse mesh, and then refine again when we are in a time range that we are interested in and where we would like to use a finer mesh. Units: each element of the list has units years.\\
+{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+\item {\it Parameter name:} {\tt Coarsening fraction}\\
+{\it Value:} 0.05\\
+{\it Default:} 0.05\\
+{\it Description:} The fraction of cells with the smallest error that should be flagged for coarsening.\\
+{\it Possible values:} [Double 0...1 (inclusive)]
+\item {\it Parameter name:} {\tt Initial adaptive refinement}\\
+{\it Value:} 1\\
+{\it Default:} 2\\
+{\it Description:} The number of adaptive refinement steps performed after initial global refinement but while still within the first time step.\\
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Initial global refinement}\\
+{\it Value:} 4\\
+{\it Default:} 2\\
+{\it Description:} The number of global refinement steps performed on the initial coarse mesh, before the problem is first solved there.\\
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Refinement fraction}\\
+{\it Value:} 0.3\\
+{\it Default:} 0.3\\
+{\it Description:} The fraction of cells with the largest error that should be flagged for refinement.\\
+{\it Possible values:} [Double 0...1 (inclusive)]
+\item {\it Parameter name:} {\tt Time steps between mesh refinement}\\
+{\it Value:} 5\\
+{\it Default:} 10\\
+{\it Description:} The number of time steps after which the mesh is to be adapted again based on computed error indicators.\\
+{\it Possible values:} [Integer range 1...2147483647 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Model settings}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Include shear heating}\\
+{\it Value:} false\\
+{\it Default:} true\\
+{\it Description:} Whether to include shear heating into the model or not. From a physical viewpoint, shear heating should always be used but may be undesirable when comparing results with known benchmarks that do not include this term in the temperature equation.\\
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Radiogenic heating rate}\\
+{\it Value:} 0e0\\
+{\it Default:} 0e0\\
+{\it Description:} H0\\
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt List of postprocessors}\\
+{\it Value:} all\\
+{\it Default:} all\\
+{\it Description:} A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text 'all' indicates that all available postprocessors should be run after each time step.\\
+{\it Possible values:} [MultipleSelection visualization|velocity statistics|temperature statistics|heat flux statistics|all ]
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Postprocess/Visualization}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Time between graphical output}\\
+{\it Value:} 5e8\\
+{\it Default:} 50\\
+{\it Description:} The time interval (in years) between each generation of graphical output files.\\
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Stabilization parameters}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt alpha}\\
+{\it Value:} 2\\
+{\it Default:} 2\\
+{\it Description:} The exponent in the entropy viscosity stabilization. Units: None.\\
+{\it Possible values:} [Double 1...2 (inclusive)]
+\item {\it Parameter name:} {\tt beta}\\
+{\it Value:} 0.078\\
+{\it Default:} 0.078\\
+{\it Description:} The beta factor in the artificial viscosity stabilization. An appropriate value for 2d is 0.052 and 0.078 for 3d. Units: None.\\
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt c_R}\\
+{\it Value:} 0.5\\
+{\it Default:} 0.11\\
+{\it Description:} The c_R factor in the entropy viscosity stabilization. Units: None.\\
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
