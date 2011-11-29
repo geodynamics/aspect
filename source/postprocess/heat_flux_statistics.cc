@@ -140,6 +140,9 @@ namespace aspect
   {
     template class HeatFluxStatistics<deal_II_dimension>;
 
-    ASPECT_REGISTER_POSTPROCESSOR("heat flux statistics", HeatFluxStatistics)
+    ASPECT_REGISTER_POSTPROCESSOR(HeatFluxStatistics,
+                                  "heat flux statistics",
+                                  "A postprocessor that computes some statistics about "
+                                  "the heat flux across boundaries.")
   }
 }

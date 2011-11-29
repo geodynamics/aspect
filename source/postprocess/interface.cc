@@ -253,6 +253,7 @@ namespace aspect
     {
       typedef
       std_cxx1x::tuple<std::string,
+                std::string,
                 void ( *) (ParameterHandler &),
                 Interface<deal_II_dimension> * ( *) ()>
                 PostprocessorInfo;
@@ -317,7 +318,7 @@ namespace aspect
       for (std::list<PostprocessorInfo>::const_iterator
            p = registered_postprocessors->begin();
            p != registered_postprocessors->end(); ++p)
-        (std_cxx1x::get<1>(*p))(prm);
+        (std_cxx1x::get<2>(*p))(prm);
     }
 
 
@@ -365,7 +366,7 @@ namespace aspect
                 // create such a postprocessor object using the given
                 // factory function and let it parse its parameters.
                 // then append it to the list this object stores
-                Interface<dim> *object = (std_cxx1x::get<2>(*p))();
+                Interface<dim> *object = (std_cxx1x::get<3>(*p))();
                 object->parse_parameters (prm);
                 postprocessors.push_back (std_cxx1x::shared_ptr<Interface<dim> >(object));
 
@@ -383,6 +384,7 @@ namespace aspect
     template <int dim>
     void
     Manager<dim>::register_postprocessor (const std::string &name,
+                                          const std::string &description,
                                           void (*declare_parameters_function) (ParameterHandler &),
                                           Interface<dim> * (*factory_function) ())
     {
@@ -393,6 +395,7 @@ namespace aspect
 
       // now add one record to the list
       registered_postprocessors->push_back (PostprocessorInfo(name,
+                                                              description,
                                                               declare_parameters_function,
                                                               factory_function));
     }

@@ -7,6 +7,7 @@
 #ifndef __aspect__initial_conditions_interface_h
 #define __aspect__initial_conditions_interface_h
 
+#include <aspect/plugins.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/adiabatic_conditions.h>
@@ -102,6 +103,9 @@ namespace aspect
      * Register an initial conditions model so that it can be selected from the parameter file.
      *
      * @param name A string that identifies the initial conditions model
+     * @param description A text description of what this model
+     * does and that will be listed in the documentation of
+     * the parameter file.
      * @param declare_parameters_function A pointer to a function that can be used to
      *   declare the parameters that this initial conditions model wants to read from input files.
      * @param factory_function A pointer to a function that can create an object of
@@ -112,6 +116,7 @@ namespace aspect
     template <int dim>
     void
     register_initial_conditions_model (const std::string &name,
+                                       const std::string &description,
                                        void (*declare_parameters_function) (ParameterHandler &),
                                        Interface<dim> * (*factory_function) ());
 
@@ -143,44 +148,18 @@ namespace aspect
 
 
 
-    namespace internal
-    {
-      /**
-       * An internal class that is used in the definition of the
-       * ASPECT_REGISTER_INITIAL_CONDITIONS macro below. Given a name
-       * and a classname, it registers the initial conditions model.
-       */
-      template <const char **name, class InitialConditionsModelClass>
-      struct InitialConditionsModelHelper
-      {
-        InitialConditionsModelHelper ()
-        {
-          register_initial_conditions_model
-          (*name,
-           &InitialConditionsModelClass::declare_parameters,
-           &factory);
-        }
-
-        static
-        Interface<deal_II_dimension> * factory ()
-        {
-          return new InitialConditionsModelClass();
-        }
-      };
-    }
-
-
     /**
-     * Given a name and a classname for a initial conditions model, register it with
+     * Given a class name, a name, and a description for the parameter file for a initial conditions model, register it with
      * the functions that can declare their parameters and create these objects.
      *
      * @ingroup InitialConditionsModels
      */
-#define ASPECT_REGISTER_INITIAL_CONDITIONS(name,classname) \
+#define ASPECT_REGISTER_INITIAL_CONDITIONS(classname,name,description) \
   namespace ASPECT_REGISTER_INITIAL_CONDITIONS_ ## classname \
-  { const char *local_name = name; \
-    aspect::InitialConditions::internal::InitialConditionsModelHelper<&local_name,classname<deal_II_dimension> > \
-    dummy_ ## classname; }
+  { \
+    aspect::internal::Plugins::RegisterHelper<Interface<deal_II_dimension>,classname<deal_II_dimension> > \
+    dummy_ ## classname (&aspect::InitialConditions::register_initial_conditions_model<deal_II_dimension>, \
+                         name, description); }
   }
 }
 

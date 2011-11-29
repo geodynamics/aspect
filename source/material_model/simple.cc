@@ -147,6 +147,11 @@ namespace aspect
   {
     template class Simple<deal_II_dimension>;
 
-    ASPECT_REGISTER_MATERIAL_MODEL("simple", Simple)
+    ASPECT_REGISTER_MATERIAL_MODEL(Simple,
+                                   "simple",
+                                   "A simpler material model that has constant values "
+                                   "throughout the domain. Additional parameters are "
+                                   "read from the parameter file in subsection "
+                                   "'Simple model'.")
   }
 }

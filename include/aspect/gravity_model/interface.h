@@ -7,6 +7,7 @@
 #ifndef __aspect__gravity_model_interface_h
 #define __aspect__gravity_model_interface_h
 
+#include <aspect/plugins.h>
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
 
@@ -70,6 +71,9 @@ namespace aspect
      * Register a gravity model so that it can be selected from the parameter file.
      *
      * @param name A string that identifies the gravity model
+     * @param description A text description of what this model
+     * does and that will be listed in the documentation of
+     * the parameter file.
      * @param declare_parameters_function A pointer to a function that can be used to
      *   declare the parameters that this gravity model wants to read from input files.
      * @param factory_function A pointer to a function that can create an object of
@@ -80,6 +84,7 @@ namespace aspect
     template <int dim>
     void
     register_gravity_model (const std::string &name,
+                            const std::string &description,
                             void (*declare_parameters_function) (ParameterHandler &),
                             Interface<dim> * (*factory_function) ());
 
@@ -103,45 +108,18 @@ namespace aspect
     declare_parameters (ParameterHandler &prm);
 
 
-
-    namespace internal
-    {
-      /**
-       * An internal class that is used in the definition of the
-       * ASPECT_REGISTER_GRAVITY_MODEL macro below. Given a name
-       * and a classname, it registers the gravity model.
-       */
-      template <const char **name, class GravityModelClass>
-      struct GravityModelHelper
-      {
-        GravityModelHelper ()
-        {
-          register_gravity_model
-          (*name,
-           &GravityModelClass::declare_parameters,
-           &factory);
-        }
-
-        static
-        Interface<deal_II_dimension> * factory ()
-        {
-          return new GravityModelClass();
-        }
-      };
-    }
-
-
     /**
-     * Given a name and a classname for a gravity model, register it with
+     * Given a class name, a name, and a description for the parameter file for a gravity model, register it with
      * the functions that can declare their parameters and create these objects.
      *
      * @ingroup GravityModels
      */
-#define ASPECT_REGISTER_GRAVITY_MODEL(name,classname) \
+#define ASPECT_REGISTER_GRAVITY_MODEL(classname,name,description) \
   namespace ASPECT_REGISTER_GRAVITY_MODEL_ ## classname \
-  { const char *local_name = name; \
-    aspect::GravityModel::internal::GravityModelHelper<&local_name,classname<deal_II_dimension> > \
-    dummy_ ## classname; }
+  { \
+    aspect::internal::Plugins::RegisterHelper<Interface<deal_II_dimension>,classname<deal_II_dimension> > \
+    dummy_ ## classname (&aspect::GravityModel::register_gravity_model<deal_II_dimension>, \
+                         name, description); }
   }
 }
 

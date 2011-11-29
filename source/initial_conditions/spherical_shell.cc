@@ -199,9 +199,20 @@ namespace aspect
   namespace InitialConditions
   {
     template class SphericalHexagonalPerturbation<deal_II_dimension>;
-    ASPECT_REGISTER_INITIAL_CONDITIONS("spherical hexagonal perturbation", SphericalHexagonalPerturbation);
+    ASPECT_REGISTER_INITIAL_CONDITIONS(SphericalHexagonalPerturbation,
+                                       "spherical hexagonal perturbation",
+                                       "An initial temperature field in which the temperature "
+                                       "is perturbed following a six-fold pattern in angular "
+                                       "direction from an otherwise sphericall symmetric "
+                                       "state.");
 
     template class SphericalGaussianPerturbation<deal_II_dimension>;
-    ASPECT_REGISTER_INITIAL_CONDITIONS("spherical gaussian perturbation", SphericalGaussianPerturbation);
+    ASPECT_REGISTER_INITIAL_CONDITIONS(SphericalGaussianPerturbation,
+                                       "spherical gaussian perturbation",
+                                       "An initial temperature field in which the temperature "
+                                       "is perturbed by a single Gaussian added to an "
+                                       "otherwise spherically symmetric state. Additional "
+                                       "parameters are read from the parameter file in subsection "
+                                       "'Spherical gaussian perturbation'.");
   }
 }

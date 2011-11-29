@@ -285,6 +285,9 @@ namespace aspect
   {
     template class Table<deal_II_dimension>;
 
-    ASPECT_REGISTER_MATERIAL_MODEL("table", Table)
+    ASPECT_REGISTER_MATERIAL_MODEL(Table,
+                                   "table",
+                                   "A material model that reads tables of pressure and temperature "
+                                   "dependent material coefficients from files.")
   }
 }

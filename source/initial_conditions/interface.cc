@@ -54,6 +54,7 @@ namespace aspect
     {
       typedef
       std_cxx1x::tuple<std::string,
+                std::string,
                 void ( *) (ParameterHandler &),
                 Interface<deal_II_dimension> * ( *) ()>
                 InitialConditionsModelInfo;
@@ -72,6 +73,7 @@ namespace aspect
     template <int dim>
     void
     register_initial_conditions_model (const std::string &name,
+                                       const std::string &description,
                                        void (*declare_parameters_function) (ParameterHandler &),
                                        Interface<dim> * (*factory_function) ())
     {
@@ -82,6 +84,7 @@ namespace aspect
 
       // now add one record to the list
       registered_initial_conditions_models->push_back (InitialConditionsModelInfo(name,
+                                                                                  description,
                                                                                   declare_parameters_function,
                                                                                   factory_function));
     }
@@ -107,7 +110,7 @@ namespace aspect
            p != registered_initial_conditions_models->end(); ++p)
         if (std_cxx1x::get<0>(*p) == model_name)
           {
-            Interface<dim> *i = std_cxx1x::get<2>(*p)();
+            Interface<dim> *i = std_cxx1x::get<3>(*p)();
             i->parse_parameters (prm);
             i->initialize (geometry_model,
                            boundary_temperature,
@@ -147,7 +150,7 @@ namespace aspect
 
       for (std::list<InitialConditionsModelInfo>::const_iterator p = registered_initial_conditions_models->begin();
            p != registered_initial_conditions_models->end(); ++p)
-        std_cxx1x::get<1>(*p)(prm);
+        std_cxx1x::get<2>(*p)(prm);
     }
 
   }
@@ -163,6 +166,7 @@ namespace aspect
     template
     void
     register_initial_conditions_model<deal_II_dimension> (const std::string &,
+                                                          const std::string &,
                                                           void ( *) (ParameterHandler &),
                                                           Interface<deal_II_dimension> * ( *) ());
 

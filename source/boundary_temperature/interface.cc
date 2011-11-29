@@ -43,6 +43,7 @@ namespace aspect
     {
       typedef
       std_cxx1x::tuple<std::string,
+                std::string,
                 void ( *) (ParameterHandler &),
                 Interface<deal_II_dimension> * ( *) ()>
                 BoundaryTemperatureInfo;
@@ -72,6 +73,7 @@ namespace aspect
 
       // now add one record to the list
       registered_boundary_temperatures->push_back (BoundaryTemperatureInfo(name,
+                                                                           description,
                                                                            declare_parameters_function,
                                                                            factory_function));
     }
@@ -94,7 +96,7 @@ namespace aspect
            p != registered_boundary_temperatures->end(); ++p)
         if (std_cxx1x::get<0>(*p) == model_name)
           {
-            Interface<dim> *i = std_cxx1x::get<2>(*p)();
+            Interface<dim> *i = std_cxx1x::get<3>(*p)();
             i->parse_parameters (prm);
             return i;
           }
@@ -131,7 +133,7 @@ namespace aspect
 
       for (std::list<BoundaryTemperatureInfo>::const_iterator p = registered_boundary_temperatures->begin();
            p != registered_boundary_temperatures->end(); ++p)
-        std_cxx1x::get<1>(*p)(prm);
+        std_cxx1x::get<2>(*p)(prm);
     }
 
   }

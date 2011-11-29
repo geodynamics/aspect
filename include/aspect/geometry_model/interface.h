@@ -7,6 +7,7 @@
 #ifndef __aspect__geometry_model_interface_h
 #define __aspect__geometry_model_interface_h
 
+#include <aspect/plugins.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
 
@@ -136,6 +137,9 @@ namespace aspect
      * Register a geometry model so that it can be selected from the parameter file.
      *
      * @param name A string that identifies the geometry model
+     * @param description A text description of what this model
+     * does and that will be listed in the documentation of
+     * the parameter file.
      * @param declare_parameters_function A pointer to a function that can be used to
      *   declare the parameters that this geometry model wants to read from input files.
      * @param factory_function A pointer to a function that can create an object of
@@ -146,6 +150,7 @@ namespace aspect
     template <int dim>
     void
     register_geometry_model (const std::string &name,
+                             const std::string &description,
                              void (*declare_parameters_function) (ParameterHandler &),
                              Interface<dim> * (*factory_function) ());
 
@@ -169,45 +174,18 @@ namespace aspect
     declare_parameters (ParameterHandler &prm);
 
 
-
-    namespace internal
-    {
-      /**
-       * An internal class that is used in the definition of the
-       * ASPECT_REGISTER_GEOMETRY_MODEL macro below. Given a name
-       * and a classname, it registers the geometry model.
-       */
-      template <const char **name, class GeometryModelClass>
-      struct GeometryModelHelper
-      {
-        GeometryModelHelper ()
-        {
-          register_geometry_model
-          (*name,
-           &GeometryModelClass::declare_parameters,
-           &factory);
-        }
-
-        static
-        Interface<deal_II_dimension> * factory ()
-        {
-          return new GeometryModelClass();
-        }
-      };
-    }
-
-
     /**
-     * Given a name and a classname for a geometry model, register it with
+     * Given a class name, a name, and a description for the parameter file for a geometry model, register it with
      * the functions that can declare their parameters and create these objects.
      *
      * @ingroup GeometryModels
      */
-#define ASPECT_REGISTER_GEOMETRY_MODEL(name,classname) \
-  namespace ASPECT_REGISTER_MATERIAL_MODEL_ ## classname \
-  { const char *local_name = name; \
-    aspect::GeometryModel::internal::GeometryModelHelper<&local_name,classname<deal_II_dimension> > \
-    dummy_ ## classname; }
+#define ASPECT_REGISTER_GEOMETRY_MODEL(classname,name,description) \
+  namespace ASPECT_REGISTER_GEOMETRY_MODEL_ ## classname \
+  { \
+    aspect::internal::Plugins::RegisterHelper<Interface<deal_II_dimension>,classname<deal_II_dimension> > \
+    dummy_ ## classname (&aspect::GeometryModel::register_geometry_model<deal_II_dimension>, \
+                         name, description); }
   }
 }
 

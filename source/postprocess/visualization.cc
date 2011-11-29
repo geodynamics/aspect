@@ -457,6 +457,11 @@ namespace aspect
   {
     template class Visualization<deal_II_dimension>;
 
-    ASPECT_REGISTER_POSTPROCESSOR("visualization", Visualization)
+    ASPECT_REGISTER_POSTPROCESSOR(Visualization,
+                                  "visualization",
+                                  "A postprocessor that takes the solution and writes "
+                                  "it into files that can be read by a graphical "
+                                  "visualization program. Additional run time parameters "
+                                  "are read from the parameter subsection 'Visualization'.")
   }
 }

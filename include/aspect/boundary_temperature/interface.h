@@ -104,6 +104,9 @@ namespace aspect
      * Register a boundary temperature model so that it can be selected from the parameter file.
      *
      * @param name A string that identifies the boundary temperature model
+     * @param description A text description of what this model
+     * does and that will be listed in the documentation of
+     * the parameter file.
      * @param declare_parameters_function A pointer to a function that can be used to
      *   declare the parameters that this geometry model wants to read from input files.
      * @param factory_function A pointer to a function that can create an object of
@@ -139,7 +142,7 @@ namespace aspect
 
 
     /**
-     * Given a name and a classname for a boundary temperature model, register it with
+     * Given a class name, a name, and a description for the parameter file for a boundary temperature model, register it with
      * the functions that can declare their parameters and create these objects.
      *
      * @ingroup BoundaryTemperatures

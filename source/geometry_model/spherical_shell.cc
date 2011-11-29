@@ -198,6 +198,10 @@ namespace aspect
   {
     template class SphericalShell<deal_II_dimension>;
 
-    ASPECT_REGISTER_GEOMETRY_MODEL("spherical shell", SphericalShell)
+    ASPECT_REGISTER_GEOMETRY_MODEL(SphericalShell,
+                                   "spherical shell",
+                                   "A geometry representing a spherical shell or a pice of it. "
+                                   "Inner and outer radii are read from the parameter file "
+                                   "in subsection 'Spherical shell'.")
   }
 }

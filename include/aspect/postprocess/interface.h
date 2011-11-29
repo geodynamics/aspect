@@ -7,6 +7,7 @@
 #ifndef __aspect__postprocess_interface_h
 #define __aspect__postprocess_interface_h
 
+#include <aspect/plugins.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
@@ -426,6 +427,9 @@ namespace aspect
          *
          * @param name The name under which this postprocessor is to
          * be called in parameter files.
+        * @param description A text description of what this model
+        * does and that will be listed in the documentation of
+        * the parameter file.
          * @param declare_parameters_function A pointer to a function
          * that declares the parameters for this postprocessor.
          * @param factory_function A pointer to a function that creates
@@ -434,6 +438,7 @@ namespace aspect
         static
         void
         register_postprocessor (const std::string &name,
+                                const std::string &description,
                                 void (*declare_parameters_function) (ParameterHandler &),
                                 Interface<dim> * (*factory_function) ());
 
@@ -490,44 +495,18 @@ namespace aspect
     }
 
 
-    namespace internal
-    {
-      /**
-       * An internal class that is used in the definition of the
-       * ASPECT_REGISTER_POSTPROCESSOR macro below. Given a name
-       * and a classname, it registers the postprocessor with the
-       * Manager class.
-       */
-      template <const char **name, class PostprocessorClass>
-      struct PostprocessHelper
-      {
-        PostprocessHelper ()
-        {
-          aspect::Postprocess::Manager<deal_II_dimension>::register_postprocessor
-          (*name,
-           &PostprocessorClass::declare_parameters,
-           &factory);
-        }
-
-        static
-        Interface<deal_II_dimension> * factory ()
-        {
-          return new PostprocessorClass();
-        }
-      };
-    }
-
     /**
-     * Given a name and a classname for a postprocessor, register it with
+     * Given a class name, a name, and a description for the parameter file for a postprocessor, register it with
      * the aspect::Postprocess::Manager class.
      *
      * @ingroup Postprocessing
      */
-#define ASPECT_REGISTER_POSTPROCESSOR(name,classname) \
+#define ASPECT_REGISTER_POSTPROCESSOR(classname,name,description) \
   namespace ASPECT_REGISTER_POSTPROCESSOR_ ## classname \
-  { const char *local_name = name; \
-    aspect::Postprocess::internal::PostprocessHelper<&local_name,classname<deal_II_dimension> > \
-    dummy_ ## classname; }
+  { \
+    aspect::internal::Plugins::RegisterHelper<Interface<deal_II_dimension>,classname<deal_II_dimension> > \
+    dummy_ ## classname (&aspect::Postprocess::Manager<deal_II_dimension>::register_postprocessor, \
+                         name, description); }
   }
 }
 
