@@ -111,6 +111,10 @@ namespace aspect
   namespace BoundaryTemperature
   {
     template class SphericalConstant<deal_II_dimension>;
-    ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL("spherical constant", SphericalConstant);
+    ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(SphericalConstant,
+                                               "spherical constant",
+                                               "A model in which the temperature is chosen constant on "
+                                               "the inner and outer boundaries of a spherical shell. "
+                                               "Parameters are read from subsection 'Sherical constant'.");
   }
 }

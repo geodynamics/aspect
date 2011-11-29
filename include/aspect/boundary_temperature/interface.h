@@ -7,6 +7,7 @@
 #ifndef __aspect__boundary_temperature_interface_h
 #define __aspect__boundary_temperature_interface_h
 
+#include <aspect/plugins.h>
 #include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/parameter_handler.h>
@@ -113,6 +114,7 @@ namespace aspect
     template <int dim>
     void
     register_boundary_temperature (const std::string &name,
+                                   const std::string &description,
                                    void (*declare_parameters_function) (ParameterHandler &),
                                    Interface<dim> * (*factory_function) ());
 
@@ -136,45 +138,18 @@ namespace aspect
     declare_parameters (ParameterHandler &prm);
 
 
-
-    namespace internal
-    {
-      /**
-       * An internal class that is used in the definition of the
-       * ASPECT_REGISTER_MATERIAL_MODEL macro below. Given a name
-       * and a classname, it registers the geometry model.
-       */
-      template <const char **name, class BoundaryTemperatureClass>
-      struct BoundaryTemperatureHelper
-      {
-        BoundaryTemperatureHelper ()
-        {
-          register_boundary_temperature
-          (*name,
-           &BoundaryTemperatureClass::declare_parameters,
-           &factory);
-        }
-
-        static
-        Interface<deal_II_dimension> * factory ()
-        {
-          return new BoundaryTemperatureClass();
-        }
-      };
-    }
-
-
     /**
      * Given a name and a classname for a boundary temperature model, register it with
      * the functions that can declare their parameters and create these objects.
      *
      * @ingroup BoundaryTemperatures
      */
-#define ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(name,classname) \
+#define ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(classname, name, description) \
   namespace ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL_ ## classname \
-  { const char *local_name = name; \
-    aspect::BoundaryTemperature::internal::BoundaryTemperatureHelper<&local_name,classname<deal_II_dimension> > \
-    dummy_ ## classname; }
+  { \
+    aspect::internal::Plugins::RegisterHelper<Interface<deal_II_dimension>,classname<deal_II_dimension> > \
+    dummy_ ## classname (&aspect::BoundaryTemperature::register_boundary_temperature<deal_II_dimension>, \
+                         name, description); }
   }
 }
 

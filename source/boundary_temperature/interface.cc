@@ -61,6 +61,7 @@ namespace aspect
     template <int dim>
     void
     register_boundary_temperature (const std::string &name,
+                                   const std::string &description,
                                    void (*declare_parameters_function) (ParameterHandler &),
                                    Interface<dim> * (*factory_function) ())
     {
@@ -146,6 +147,7 @@ namespace aspect
     template
     void
     register_boundary_temperature<deal_II_dimension> (const std::string &,
+                                                      const std::string &,
                                                       void ( *) (ParameterHandler &),
                                                       Interface<deal_II_dimension> * ( *) ());
 
