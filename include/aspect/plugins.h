@@ -264,7 +264,7 @@ namespace aspect
 					     // write the name and
 					     // description of the
 					     // parameter
-	    description += "'";
+	    description += "`";
 	    description += std_cxx1x::get<0>(*p);
 	    description += "': ";
 	    description += std_cxx1x::get<1>(*p);
