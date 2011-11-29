@@ -111,24 +111,6 @@ namespace aspect
     }
     prm.leave_subsection();
 
-    prm.enter_subsection ("Stabilization parameters");
-    {
-      prm.declare_entry ("alpha", "2",
-                         Patterns::Double (1, 2),
-                         "The exponent in the entropy viscosity stabilization. Units: None.");
-      prm.declare_entry ("c_R", "0.11",
-                         Patterns::Double (0),
-                         "The c_R factor in the entropy viscosity "
-                         "stabilization. Units: None.");
-      prm.declare_entry ("beta", "0.078",
-                         Patterns::Double (0),
-                         "The beta factor in the artificial viscosity "
-                         "stabilization. An appropriate value for 2d is 0.052 "
-                         "and 0.078 for 3d. Units: None.");
-    }
-    prm.leave_subsection ();
-
-
     prm.enter_subsection ("Discretization");
     {
       prm.declare_entry ("Stokes velocity polynomial degree", "2",
@@ -146,6 +128,23 @@ namespace aspect
                          "of freedom (true), or to go with a cheaper discretization "
                          "that does not locally conserve mass, although it is "
                          "globally conservative (false).");
+
+      prm.enter_subsection ("Stabilization parameters");
+      {
+        prm.declare_entry ("alpha", "2",
+                           Patterns::Double (1, 2),
+                           "The exponent $\\alpha$ in the entropy viscosity stabilization. Units: None.");
+        prm.declare_entry ("cR", "0.11",
+                           Patterns::Double (0),
+                           "The $c_R$ factor in the entropy viscosity "
+                           "stabilization. Units: None.");
+        prm.declare_entry ("beta", "0.078",
+                           Patterns::Double (0),
+                           "The $\\beta$ factor in the artificial viscosity "
+                           "stabilization. An appropriate value for 2d is 0.052 "
+                           "and 0.078 for 3d. Units: None.");
+      }
+      prm.leave_subsection ();
     }
     prm.leave_subsection ();
   }
@@ -187,14 +186,6 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    prm.enter_subsection ("Stabilization parameters");
-    {
-      stabilization_alpha = prm.get_double ("alpha");
-      stabilization_c_R   = prm.get_double ("c_R");
-      stabilization_beta  = prm.get_double ("beta");
-    }
-    prm.leave_subsection ();
-
     prm.enter_subsection ("Model settings");
     {
       include_shear_heating = prm.get_bool ("Include shear heating");
@@ -208,6 +199,14 @@ namespace aspect
       temperature_degree     = prm.get_integer ("Temperature polynomial degree");
       use_locally_conservative_discretization
         = prm.get_bool ("Use locally conservative discretization");
+
+      prm.enter_subsection ("Stabilization parameters");
+      {
+        stabilization_alpha = prm.get_double ("alpha");
+        stabilization_c_R   = prm.get_double ("cR");
+        stabilization_beta  = prm.get_double ("beta");
+      }
+      prm.leave_subsection ();
     }
     prm.leave_subsection ();
   }

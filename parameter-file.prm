@@ -63,6 +63,18 @@ subsection Discretization
   # discretization that does not locally conserve mass (although it is
   # globally conservative.
   set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    # The exponent in the entropy viscosity stabilization.
+    set alpha = 2
+
+    # The c_R factor in the entropy viscosity stabilization.
+    set cR   = 0.5
+
+    # The beta factor in the artificial viscosity stabilization. An appropriate
+    # value for 2d is 0.052 and 0.078 for 3d.
+    set beta  = 0.078
+  end
 end
 
 subsection Model settings
@@ -105,19 +117,6 @@ subsection Gravity model
   subsection Radial constant
     set Magnitude             = 30
   end
-end
-
-
-subsection Stabilization parameters
-  # The exponent in the entropy viscosity stabilization.
-  set alpha = 2
-
-  # The c_R factor in the entropy viscosity stabilization.
-  set c_R   = 0.5
-
-  # The beta factor in the artificial viscosity stabilization. An appropriate
-  # value for 2d is 0.052 and 0.078 for 3d.
-  set beta  = 0.078
 end
 
 
