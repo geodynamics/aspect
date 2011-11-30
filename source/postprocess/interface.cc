@@ -281,9 +281,9 @@ namespace aspect
                           "they will actually do something only every so many time steps or "
                           "years. Alternatively, the text 'all' indicates that all available "
                           "postprocessors should be run after each time step.\n\n"
-			  "The following postprocessors are available:\n\n"
-			  +
-			  registered_plugins.get_description_string());
+                          "The following postprocessors are available:\n\n"
+                          +
+                          registered_plugins.get_description_string());
       }
       prm.leave_subsection();
 

@@ -90,7 +90,7 @@ namespace aspect
                                   stokes_tmp);
 
         // we may have hanging nodes, so apply constraints
-	stokes_constraints.distribute (stokes_tmp);
+        stokes_constraints.distribute (stokes_tmp);
 
         old_stokes_solution = stokes_tmp;
       }

@@ -164,7 +164,7 @@ namespace aspect
           prm.declare_entry ("Opening angle", "360",
                              Patterns::Double (0, 360),
                              "Opening angle in degrees of the section of the shell "
-			     "that we want to build. Units: degrees.");
+                             "that we want to build. Units: degrees.");
         }
         prm.leave_subsection();
       }

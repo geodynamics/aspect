@@ -157,7 +157,7 @@ namespace aspect
           prm.declare_entry ("Non-dimensional depth", "0.7",
                              Patterns::Double (0),
                              "The non-dimensional radial distance where the center of the "
-			     "perturbation is placed.");
+                             "perturbation is placed.");
           prm.declare_entry ("Amplitude", "0.01",
                              Patterns::Double (0),
                              "The amplitude of the perturbation.");

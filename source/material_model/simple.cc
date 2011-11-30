@@ -69,7 +69,7 @@ namespace aspect
     {
       return (reference_density *
               (1 - thermal_expansion_coefficient * (temperature -
-						    reference_temperature)));
+                                                    reference_temperature)));
     }
 
 
@@ -115,7 +115,7 @@ namespace aspect
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\beta$. "
-			     "Units: $1/K$.");
+                             "Units: $1/K$.");
         }
         prm.leave_subsection();
       }
@@ -135,8 +135,8 @@ namespace aspect
           reference_density     = prm.get_double ("Reference density");
           reference_temperature = prm.get_double ("Reference temperature");
           eta                   = prm.get_double ("Viscosity");
-	  k_value               = prm.get_double ("Thermal conductivity");
-	  thermal_expansion_coefficient = prm.get_double ("Thermal expansion coefficient");
+          k_value               = prm.get_double ("Thermal conductivity");
+          thermal_expansion_coefficient = prm.get_double ("Thermal expansion coefficient");
         }
         prm.leave_subsection();
       }
@@ -156,11 +156,11 @@ namespace aspect
                                    "simple",
                                    "A simple material model that has constant values "
                                    "for all coefficients but the density. This model uses "
-				   "the formulation that assumes an incompressible medium "
-				   "despite the fact that the density follows the law "
-				   "$\\rho(T)=\\rho_0(1-\\beta(T-T_{\\text{ref}})$. The value for "
-				   "the components of this formula and additional "
-				   "parameters are read from the parameter file in subsection "
+                                   "the formulation that assumes an incompressible medium "
+                                   "despite the fact that the density follows the law "
+                                   "$\\rho(T)=\\rho_0(1-\\beta(T-T_{\\text{ref}})$. The value for "
+                                   "the components of this formula and additional "
+                                   "parameters are read from the parameter file in subsection "
                                    "'Simple model'.")
   }
 }

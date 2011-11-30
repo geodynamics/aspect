@@ -72,12 +72,12 @@ namespace aspect
         double reference_density;
         double reference_temperature;
         double eta;
-	double thermal_expansion_coefficient;
+        double thermal_expansion_coefficient;
 
-					 /**
-					  * The thermal conductivity.
-					  */
-	double k_value;
+        /**
+         * The thermal conductivity.
+         */
+        double k_value;
     };
 
   }
