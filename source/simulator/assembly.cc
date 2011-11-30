@@ -1155,7 +1155,7 @@ namespace aspect
 
 	computing_timer.exit_section();
 
-	computing_timer.enter_section ("   Build temperature preconditioner")
+	computing_timer.enter_section ("   Build temperature preconditioner");
     T_preconditioner.reset (new TrilinosWrappers::PreconditionILU());
     T_preconditioner->initialize (temperature_matrix);
 
