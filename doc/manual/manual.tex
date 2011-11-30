@@ -1,7 +1,17 @@
 \documentclass{article}
 \usepackage[pdftex]{graphicx,color}
 \usepackage{amsmath}
-\usepackage[colorlinks,linkcolor=blue,urlcolor=blue]{hyperref}
+
+% use the listings package for code snippets
+\usepackage{listings}
+\lstset{language=C++,basicstyle=\footnotesize}
+
+% use the hyperref package; set the base for relative links to
+% the top-level aspect directory so that we can link to
+% files in the aspect tree without having to specify the
+% location relative to the directory where the pdf actually
+% resides
+\usepackage[colorlinks,linkcolor=blue,urlcolor=blue,baseurl=../]{hyperref}
 
 \newcommand{\dealii}{{\textsc{deal.II}}}
 \newcommand{\pfrst}{{\normalfont\textsc{p4est}}}
@@ -161,6 +171,7 @@ generated, and is not part of the solution process.
 
 
 \subsection{Coefficients}
+\label{sec:coefficients}
 
 The equations above contain a significant number of coefficients that we will
 discuss in the following. In the most general form, many of these coefficients
@@ -537,20 +548,119 @@ confident that your program actually does what it is intended to do --
 links \aspect{} with a version of the \dealii{} libraries that uses compiler
 optimizations and that does not contain the \texttt{assert} statements
 discussed above. This switch can be facilitated by editing the top of the
-\aspect{} \texttt{Makefile} and recompiling the program.
+\aspect{} \url{Makefile} and recompiling the program.
 
 In addition to these general comments, \aspect{} is itself extensively
 documented. You can find documentation on all classes, functions and
-namespaces starting from the \texttt{doc/doxygen/index.html} page.
+namespaces starting from the \url{doc/doxygen/index.html} page.
 
 
 \subsection{Materials, geometries, gravitation and other aspects of the model:
   plugins}
 \label{sec:plugins}
 
-plugins
-existing plugins have header files so they show up in the documentation but
-     this is not necessary
+The most common modification you will probably want to do to \aspect{} are to
+switch to a different material model (i.e., have different values of
+functional dependencies for the coefficients $\eta,\rho,C_p, \ldots$ discussed
+in Section~\ref{sec:coefficients}); change the geometry; change the direction
+and magnitude of the gravity vector $\mathbf g$; or change the initial and
+boundary conditions.
+
+To make this as simple as possible, all of these parts of the program have
+been separated into modules that can be replaced quickly and where it is
+simple to add a new implementation and make it available to the rest of the
+program and the input parameter file. The way this is achieved is through the
+following two steps:
+\begin{itemize}
+\item The rest of the program only communicates with material models,
+  geometry descriptions, etc., through a simple and very basic
+  interface. These interfaces are declared in the files
+  \url{include/aspect/material_model/interface.h},
+  \url{include/aspect/geometry_model/interface.h}, etc., header files. These
+  classes are always called \texttt{Interface}, are located in namespaces that
+  identify their purpose, and their documentation can be found from the
+  general class overview in \url{doc/doxygen/classes.html}.
+
+  To show an example of a rather minimal case, here is the declaration of the
+  \texttt{aspect::GravityModel::Interface} class (documentation comments have
+  been removed):
+  \begin{lstlisting}[frame=single]
+    class Interface
+    {
+      public:
+        virtual ~Interface();
+
+        virtual
+        Tensor<1,dim>
+        gravity_vector (const Point<dim> &position) const = 0;
+
+        static void declare_parameters (ParameterHandler &prm);
+
+        virtual void parse_parameters (ParameterHandler &prm);
+    };
+  \end{lstlisting}
+
+  If you want to implement a new model for gravity, you just need to write a
+  class that derives from this base class and implements the
+  \texttt{gravity\_vector} function. If your model wants to read parameters
+  from the input file, you also need to have functions called
+  \texttt{declare\_parameters} and \texttt{parse\_parameters} in your class
+  with the same signatures as the ones above.
+
+  Each of the categories above that allow plugins have several implementations
+  of their respective interfaces that you can use to get an idea how to
+  implement a new model.
+
+\item At the end of the file where you implement your new model, you need to
+  have a call to the macro \texttt{ASPECT\_REGISTER\_GRAVITY\_MODEL}. For
+  example, let us say that you had implemented a gravity model that takes
+  actual gravimetric readings from the GRACE satellites into account, and had
+  put everything that is necessary into a class
+  \texttt{aspect::GravityModel::GRACE}. Then you need a statement like this at
+  the bottom of the file:
+  \begin{lstlisting}[frame=single]
+    ASPECT_REGISTER_GRAVITY_MODEL
+    (GRACE,
+     "grace",
+     "A gravity model derived from GRACE "
+     "data. Run-time parameters are read from the parameter "
+     "file in subsection 'Radial constant'.");
+  \end{lstlisting}
+  Here, the first argument to the macro is the name of the class. The second
+  is the name by which this model can be selected in the parameter file. And
+  the third one is a documentation string that describes the purpose of the
+  class (see, for example, Section~\ref{parameters:Gravity_20model} for an
+  example of how existing models describe themselves).
+
+  This little piece of code ensures several things: (i) That the parameters
+  this class declares are known when reading the parameter file. (ii) That you
+  can select this model (by the name ``grace'') via the run-time parameter
+  \texttt{Gravity model/Model name}. (iii) That \aspect{} can create an object
+  of this kind when selected in the parameter file.
+
+  Note that you need not announce the existence of this class in any other
+  part of the code: Everything should just work automatically. Note also that
+  the existing implementations of models of the gravity and other interfaces
+  declare the class in a header file and define the member functions in a
+  \texttt{.cc} file. This is done so that these classes show up in our
+  doxygen-generated documentation, but it is not necessary: you can put your
+  entire class declaration and implementation into a single file as long as
+  you call the macro discussed above on it.
+\end{itemize}
+
+The procedure for the other areas where plugins are supported works
+essentially the same, with the obvious change in namespace for the interface
+class and macro name.
+
+In the following, we will discuss the requirements for individual plugins.
+
+
+\subsubsection{Material models}
+\subsubsection{Geometry models}
+\subsubsection{Gravity models}
+\subsubsection{Initial conditions}
+\subsubsection{Boundary conditions}
+\subsubsection{Postprocessors: Evaluating the solution after each time step}
 
 \subsection{Extending the basic solver}
 \label{sec:extending-solver}
