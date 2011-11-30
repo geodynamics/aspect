@@ -105,9 +105,9 @@ subsection Material model
   set Model name              = table
 
   subsection Simple model
-    set reference_density     = 3300
-    set reference_eta         = 5e24
-    set reference_temperature = 293
+    set Reference density     = 3300
+    set Reference temperature = 293
+    set Viscosity             = 5e24
   end
 end
 
