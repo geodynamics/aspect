@@ -22,7 +22,7 @@ namespace aspect
                const double,
                const Point<dim> &) const
     {
-      return reference_eta;
+      return eta;
     }
 
 
@@ -31,7 +31,7 @@ namespace aspect
     Simple<dim>::
     reference_viscosity () const
     {
-      return reference_eta;
+      return eta;
     }
 
 
@@ -55,7 +55,7 @@ namespace aspect
                           const double,
                           const Point<dim> &) const
     {
-      return 4.7;
+      return k_value;
     }
 
 
@@ -67,10 +67,9 @@ namespace aspect
              const double,
              const Point<dim> &) const
     {
-      const double thermal_expansion_coefficient_ = 2e-5;
       return (reference_density *
-              (1 - thermal_expansion_coefficient_ * (temperature -
-                                                     reference_temperature)));
+              (1 - thermal_expansion_coefficient * (temperature -
+						    reference_temperature)));
     }
 
 
@@ -104,15 +103,18 @@ namespace aspect
       {
         prm.enter_subsection("Simple model");
         {
-          prm.declare_entry ("reference_density", "3300",
-                             Patterns::Double (),
-                             "rho0 in kg / m^3");
-          prm.declare_entry ("reference_temperature", "293",
-                             Patterns::Double (),
-                             "T0 in K");
-          prm.declare_entry ("reference_eta", "5e24",
-                             Patterns::Double (),
-                             "eta0");
+          prm.declare_entry ("Reference density", "3300",
+                             Patterns::Double (0),
+                             "Reference density $\rho_0$. Units: $kg/m^3$.");
+          prm.declare_entry ("Reference temperature", "293",
+                             Patterns::Double (0),
+                             "The reference temperature $T_0$. Units: $K$.");
+          prm.declare_entry ("Viscosity", "5e24",
+                             Patterns::Double (0),
+                             "The value of the constant viscosity. Units: $kg/m/s$.");
+          prm.declare_entry ("Thermal expansion coefficient", "2e-5",
+                             Patterns::Double (0),
+                             "The value of the constant viscosity. Units: $W/m/K$.");
         }
         prm.leave_subsection();
       }
@@ -129,9 +131,11 @@ namespace aspect
       {
         prm.enter_subsection("Simple model");
         {
-          reference_density = prm.get_double ("reference_density");
-          reference_temperature = prm.get_double ("reference_temperature");
-          reference_eta = prm.get_double ("reference_eta");
+          reference_density     = prm.get_double ("Reference density");
+          reference_temperature = prm.get_double ("Reference temperature");
+          eta                   = prm.get_double ("Viscosity");
+	  k_value               = prm.get_double ("Thermal conductivity");
+	  thermal_expansion_coefficient = prm.get_double ("Thermal expansion coefficient");
         }
         prm.leave_subsection();
       }
@@ -150,8 +154,12 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(Simple,
                                    "simple",
                                    "A simple material model that has constant values "
-                                   "throughout the domain. Additional parameters are "
-                                   "read from the parameter file in subsection "
+                                   "for all coefficients but the density. This model uses "
+				   "the formulation that assumes an incompressible medium "
+				   "despite the fact that the density follows the law "
+				   "$\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$. The value for "
+				   "the components of this formula and additional "
+				   "parameters are read from the parameter file in subsection "
                                    "'Simple model'.")
   }
 }

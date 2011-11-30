@@ -372,8 +372,8 @@ namespace aspect
         {
           prm.declare_entry ("Time between graphical output", "50",
                              Patterns::Double (0),
-                             "The time interval (in years) between each generation of "
-                             "graphical output files.");
+                             "The time interval between each generation of "
+                             "graphical output files. Units: years.");
         }
         prm.leave_subsection();
       }

@@ -16,9 +16,13 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A material model that consists of globally constant values for all material
-     * parameters. The model is thus also incompressible. This is essentially the
-     * material model used in the step-32 tutorial program.
+     * A material model that consists of globally constant values for all
+     * material parameters except that the density decays linearly with the
+     * temperature.
+     *
+     * The model is considered incompressible, following the definition
+     * described in Interface::is_compressible. This is essentially
+     * the material model used in the step-32 tutorial program.
      *
      * @ingroup MaterialModels
      */
@@ -67,7 +71,13 @@ namespace aspect
       private:
         double reference_density;
         double reference_temperature;
-        double reference_eta;
+        double eta;
+	double thermal_expansion_coefficient;
+
+					 /**
+					  * The thermal conductivity.
+					  */
+	double k_value;
     };
 
   }

@@ -157,13 +157,14 @@ namespace aspect
         {
           prm.declare_entry ("Inner radius", "3481000",  // 6371-2890 in km
                              Patterns::Double (0),
-                             "Inner radius of the spherical shell in units [m].");
+                             "Inner radius of the spherical shell. Units: m.");
           prm.declare_entry ("Outer radius", "6336000",  // 6371-35 in km
                              Patterns::Double (0),
-                             "Outer radius of the spherical shell in units [m].");
+                             "Outer radius of the spherical shell. Units: m.");
           prm.declare_entry ("Opening angle", "360",
                              Patterns::Double (0, 360),
-                             "Opening angle in degrees of the section of the shell that we want to build.");
+                             "Opening angle in degrees of the section of the shell "
+			     "that we want to build. Units: degrees.");
         }
         prm.leave_subsection();
       }
