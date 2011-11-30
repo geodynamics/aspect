@@ -7,6 +7,8 @@ include $D/common/Make.global_options
 
 aspect-files    = $(shell echo ../include/aspect/*.h ../include/aspect/*/*h modules/*h)
 
+all: aspect.tag manual.pdf
+
 aspect.tag: $(aspect-files) options.dox
 	@echo "=====aspect=================== Generating documentation"
 	@echo '@INCLUDE = options.dox'                                > aspect.dox
@@ -16,6 +18,14 @@ aspect.tag: $(aspect-files) options.dox
 	@echo 'HTML_OUTPUT      = doxygen'                           >> aspect.dox
 	@echo 'GENERATE_TAGFILE = $@'                                >> aspect.dox
 	@doxygen aspect.dox
+
+manual.pdf: manual/manual.tex manual/manual.bib
+	@cd manual ; \
+		pdflatex manual.tex ; \
+		bibtex manual       ; \
+		pdflatex manual.tex ; \
+		pdflatex manual.tex
+	@mv manual/manual.pdf .
 
 clean:
 	-rm -f aspect.dox aspect.tag
