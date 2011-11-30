@@ -1153,6 +1153,9 @@ namespace aspect
     temperature_matrix.compress();
     temperature_rhs.compress(Add);
 
+	computing_timer.exit_section();
+
+	computing_timer.enter_section ("   Build temperature preconditioner")
     T_preconditioner.reset (new TrilinosWrappers::PreconditionILU());
     T_preconditioner->initialize (temperature_matrix);
 
