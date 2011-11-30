@@ -85,8 +85,9 @@ namespace aspect
                                 const Point<dim> &position) const = 0;
 
         /**
-         * Return the compressibility coefficient of the model as a function of temperature,
-         * pressure and position.
+         * Return the compressibility coefficient
+         * $\frac{\partial\rho}{\partial p}$ of the model as a
+         * function of temperature, pressure and position.
          */
         virtual double compressibility (const double temperature,
                                         const double pressure,
