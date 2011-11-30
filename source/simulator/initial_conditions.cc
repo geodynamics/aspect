@@ -88,6 +88,10 @@ namespace aspect
                                                                                dim,
                                                                                dim+1),
                                   stokes_tmp);
+
+        // we may have hanging nodes, so apply constraints
+	stokes_constraints.distribute (stokes_tmp);
+
         old_stokes_solution = stokes_tmp;
       }
     else
@@ -171,11 +175,6 @@ namespace aspect
               cell->set_dof_values (local_projection, old_stokes_solution);
             }
       }
-
-    // note: we may have hanging nodes, at least if the pressure is
-    // continuous, but the interpolation operation makes sure that the
-    // pressure field we get already satisfies the constraints.
-
 
     // normalize the pressure in such a way that the surface pressure
     // equals a known and desired value
