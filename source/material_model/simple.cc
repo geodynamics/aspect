@@ -105,7 +105,7 @@ namespace aspect
         {
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
-                             "Reference density $\rho_0$. Units: $kg/m^3$.");
+                             "Reference density $\\rho_0$. Units: $kg/m^3$.");
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. Units: $K$.");
@@ -114,7 +114,8 @@ namespace aspect
                              "The value of the constant viscosity. Units: $kg/m/s$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
-                             "The value of the constant viscosity. Units: $W/m/K$.");
+                             "The value of the thermal expansion coefficient $\\beta$. "
+			     "Units: $1/K$.");
         }
         prm.leave_subsection();
       }
@@ -157,7 +158,7 @@ namespace aspect
                                    "for all coefficients but the density. This model uses "
 				   "the formulation that assumes an incompressible medium "
 				   "despite the fact that the density follows the law "
-				   "$\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$. The value for "
+				   "$\\rho(T)=\\rho_0(1-\\beta(T-T_{\\text{ref}})$. The value for "
 				   "the components of this formula and additional "
 				   "parameters are read from the parameter file in subsection "
                                    "'Simple model'.")
