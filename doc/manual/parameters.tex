@@ -71,7 +71,7 @@
 
 {\it Description:} Select one of the following models:
 
-'spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Sherical constant'.
+`spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Sherical constant'.
 
 
 {\it Possible values:} [Selection spherical constant ]
@@ -91,7 +91,7 @@
 {\it Default:} 6000
 
 
-{\it Description:} Temperature at the inner boundary (core mantle boundary). Units: Kelvin.
+{\it Description:} Temperature at the inner boundary (core mantle boundary). Units: K.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
@@ -104,7 +104,7 @@
 {\it Default:} 0
 
 
-{\it Description:} Temperature at the outer boundary (lithosphere water/air). Units: Kelvin.
+{\it Description:} Temperature at the outer boundary (lithosphere water/air). Units: K.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
@@ -214,7 +214,7 @@
 
 {\it Description:} Select one of the following models:
 
-'spherical shell': A geometry representing a spherical shell or a pice of it. Inner and outer radii are read from the parameter file in subsection 'Spherical shell'.
+`spherical shell': A geometry representing a spherical shell or a pice of it. Inner and outer radii are read from the parameter file in subsection 'Spherical shell'.
 
 
 {\it Possible values:} [Selection spherical shell ]
@@ -234,7 +234,7 @@
 {\it Default:} 3481000
 
 
-{\it Description:} Inner radius of the spherical shell in units [m].
+{\it Description:} Inner radius of the spherical shell. Units: m.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -247,7 +247,7 @@
 {\it Default:} 360
 
 
-{\it Description:} Opening angle in degrees of the section of the shell that we want to build.
+{\it Description:} Opening angle in degrees of the section of the shell that we want to build. Units: degrees.
 
 
 {\it Possible values:} [Double 0...360 (inclusive)]
@@ -260,7 +260,7 @@
 {\it Default:} 6336000
 
 
-{\it Description:} Outer radius of the spherical shell in units [m].
+{\it Description:} Outer radius of the spherical shell. Units: m.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -280,9 +280,9 @@
 
 {\it Description:} Select one of the following models:
 
-'radial constant': A gravity model in which the gravity direction is radially inward and at constant magnitude. The magnitude is read from the parameter file in subsection 'Radial constant'.
+`radial constant': A gravity model in which the gravity direction is radially inward and at constant magnitude. The magnitude is read from the parameter file in subsection 'Radial constant'.
 
-'radial earth-like': A gravity model in which the gravity direction is radially inward and with a magnitude that matches that of the earth at the core-mantle boundary as well as at the surface and in between is physically correct under the assumption of a constant density.
+`radial earth-like': A gravity model in which the gravity direction is radially inward and with a magnitude that matches that of the earth at the core-mantle boundary as well as at the surface and in between is physically correct under the assumption of a constant density.
 
 
 {\it Possible values:} [Selection radial constant|radial earth-like ]
@@ -322,9 +322,9 @@
 
 {\it Description:} Select one of the following models:
 
-'spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following a six-fold pattern in angular direction from an otherwise sphericall symmetric state.
+`spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following a six-fold pattern in angular direction from an otherwise sphericall symmetric state.
 
-'spherical gaussian perturbation': An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection 'Spherical gaussian perturbation'.
+`spherical gaussian perturbation': An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection 'Spherical gaussian perturbation'.
 
 
 {\it Possible values:} [Selection spherical hexagonal perturbation|spherical gaussian perturbation ]
@@ -370,7 +370,7 @@
 {\it Default:} 0.7
 
 
-{\it Description:} The radial distance where the center of the perturbation is placed.
+{\it Description:} The non-dimensional radial distance where the center of the perturbation is placed.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -416,9 +416,9 @@
 
 {\it Description:} Select one of the following models:
 
-'table': A material model that reads tables of pressure and temperature dependent material coefficients from files.
+`table': A material model that reads tables of pressure and temperature dependent material coefficients from files.
 
-'simple': A simple material model that has constant values throughout the domain. Additional parameters are read from the parameter file in subsection 'Simple model'.
+`simple': A simple material model that has constant values for all coefficients but the density. This model uses the formulation that assumes an incompressible medium despite the fact that the density follows the law $ho(T)=ho_0(1-eta(T-T_{	ext{ref}})$. The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Simple model'.
 
 
 {\it Possible values:} [Selection table|simple ]
@@ -429,7 +429,7 @@
 \subsection{Parameters in section \tt Material model/Simple model}
 
 \begin{itemize}
-\item {\it Parameter name:} {\tt reference_density}
+\item {\it Parameter name:} {\tt Reference density}
 
 
 {\it Value:} 3300
@@ -438,24 +438,11 @@
 {\it Default:} 3300
 
 
-{\it Description:} rho0 in kg / m^3
+{\it Description:} Reference density $ho_0$. Units: $kg/m^3$.
 
 
-{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt reference_eta}
-
-
-{\it Value:} 5e24
-
-
-{\it Default:} 5e24
-
-
-{\it Description:} eta0
-
-
-{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt reference_temperature}
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference temperature}
 
 
 {\it Value:} 293
@@ -464,10 +451,36 @@
 {\it Default:} 293
 
 
-{\it Description:} T0 in K
+{\it Description:} The reference temperature $T_0$. Units: $K$.
 
 
-{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal expansion coefficient}
+
+
+{\it Value:} 2e-5
+
+
+{\it Default:} 2e-5
+
+
+{\it Description:} The value of the constant viscosity. Units: $W/m/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Viscosity}
+
+
+{\it Value:} 5e24
+
+
+{\it Default:} 5e24
+
+
+{\it Description:} The value of the constant viscosity. Units: $kg/m/s$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Mesh refinement}
@@ -600,13 +613,13 @@
 
 The following postprocessors are available:
 
-'visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
+`visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
-'velocity statistics': A postprocessor that computes some statistics about the velocity field.
+`velocity statistics': A postprocessor that computes some statistics about the velocity field.
 
-'temperature statistics': A postprocessor that computes some statistics about the temperature field.
+`temperature statistics': A postprocessor that computes some statistics about the temperature field.
 
-'heat flux statistics': A postprocessor that computes some statistics about the heat flux across boundaries.
+`heat flux statistics': A postprocessor that computes some statistics about the heat flux across boundaries.
 
 
 {\it Possible values:} [MultipleSelection visualization|velocity statistics|temperature statistics|heat flux statistics|all ]
@@ -626,7 +639,7 @@ The following postprocessors are available:
 {\it Default:} 50
 
 
-{\it Description:} The time interval (in years) between each generation of graphical output files.
+{\it Description:} The time interval between each generation of graphical output files. Units: years.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
