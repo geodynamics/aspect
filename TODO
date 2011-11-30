@@ -16,16 +16,11 @@ Topics for an ASPECT II paper:
 
 Topics for preview release:
 ---------------------------
-- Implicit time stepping
-- Clean-up
 - temperature equation must contain adiabatic terms in the compressible case
 - temperature equation also must contain phase-change heating terms (see the paper
   in doc/papers)
-- look at parameterization of geometry and initial temperature field
-- Documentation. talk about
-     . reference step-31, 32, paper
-     . physical units: MKS throughout, but output sometimes in cm/year, also some input parameters
-     . extensibility through plugin-concept in models
+- readme.html
+- front page of doxygen documentation
 - Refinement criterion in 3d?
 - Attach a proper license and adjust headers of all files
 
