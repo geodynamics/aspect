@@ -61,7 +61,7 @@ namespace aspect
         virtual double reference_viscosity () const = 0;
 
         /**
-         * Return the specific heat $c_P$ of the model as a function of temperature,
+         * Return the specific heat $C_p$ of the model as a function of temperature,
          * pressure and position.
          */
         virtual double specific_heat (const double      temperature,
