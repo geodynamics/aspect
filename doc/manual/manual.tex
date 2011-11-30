@@ -367,6 +367,7 @@ discussed in the following; \aspect{} has
 run-time parameters that allow both of these simpler models to be used.
 
 \subsubsection{The Boussinesq approximation: Incompressibility}
+\label{sec:boussinesq}
 
 The original Boussinesq approximation assumes that the density can be
 considered constant in all occurrences in the equations with the exception of
@@ -656,6 +657,67 @@ In the following, we will discuss the requirements for individual plugins.
 
 
 \subsubsection{Material models}
+
+SAY SOMETHING ABOUT NAMESPACE, MACRO, NAME OF BASECLASS. THE LAST TWO FUNCTIONS
+
+
+The material model is responsible for describing the various coefficients in
+the equations that \aspect{} solvers. Specifically, it needs to implement the
+following basic interface:
+\begin{lstlisting}[frame=single]
+    template <int dim>
+    class Interface
+    {
+      public:
+        virtual double viscosity (const double      temperature,
+                                  const double      pressure,
+                                  const Point<dim> &position) const = 0;
+
+        virtual double specific_heat (const double      temperature,
+                                      const double      pressure,
+                                      const Point<dim> &position) const = 0;
+
+        virtual double thermal_conductivity (const double temperature,
+                                             const double pressure,
+                                             const Point<dim> &position) const = 0;
+
+        virtual double density (const double      temperature,
+                                const double      pressure,
+                                const Point<dim> &position) const = 0;
+
+        virtual double compressibility (const double temperature,
+                                        const double pressure,
+                                        const Point<dim> &position) const = 0;
+
+        virtual bool is_compressible () const = 0;
+
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+    };
+\end{lstlisting}
+Here, the first four functions refer to the coefficients $\eta,C_p,k,\rho$ in
+equations \eqref{eq:stokes-1}--\eqref{eq:temperature}, each as a function of
+temperature, pressure and position. Implementations of these methods may of
+course choose to ignore dependencies on any of these arguments.
+The compressibility coefficient describes $\frac{\partial\rho}{\partial p}$.
+
+The function \texttt{is\_compressible} returns whether we should consider the
+material as compressible or not, see Section~\ref{sec:boussinesq} on the
+Boussinesq model. As discussed there, incompressibility as described by this function
+does not necessarily imply that the density is constant; rather, it
+may still depend on temperature or pressure. In the current
+context, compressibility simply means whether we should solve the contuity
+equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
+or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
+
+
+
+
 \subsubsection{Geometry models}
 \subsubsection{Gravity models}
 \subsubsection{Initial conditions}
