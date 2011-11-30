@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage[pdftex]{graphicx,color}
 \usepackage{amsmath}
-\usepackage{url}
+\usepackage[colorlinks,linkcolor=blue,urlcolor=blue]{hyperref}
 
 \newcommand{\dealii}{{\textsc{deal.II}}}
 \newcommand{\pfrst}{{\normalfont\textsc{p4est}}}
@@ -37,12 +37,15 @@
 
 \section{Introduction}
 
+\marginpar{To be written}
+
 \section{Equations, models, coefficients}
 
 \subsection{Basic equations}
 
 \aspect{} solves the following system of equations in a two- or
 three-dimensional domain $\Omega$:
+\marginpar{To be finished}
 \begin{align}
   \label{eq:stokes-1}
   -\nabla \cdot 2\eta \varepsilon(\mathbf u) + \nabla p &=
@@ -149,12 +152,12 @@ Consequently, it allows the direct use of this pressure when looking up
 pressure dependent material parameters.
 
 In the implementation of these equataions, \aspect{} uses the SI unit system
-throughout (i.e., it expresses all quantities in meters, kilograms and
-seconds). All material parameters, geometries, etc., must also be expressed in
-these units. For convenience, some rate-type output quantities are provided in
-units \textit{per year} instead of \textit{per second}; however, this
-conversion happens at the time output is generated, and is not part of the
-solution process.
+throughout (i.e., it expresses all quantities in meters, kilograms and seconds
+-- the MKS system --, as well as degrees Kelvin). All material parameters,
+geometries, etc., must also be expressed in these units. For convenience, some
+rate-type output quantities are provided in units \textit{per year} instead of
+\textit{per second}; however, this conversion happens at the time output is
+generated, and is not part of the solution process.
 
 
 \subsection{Coefficients}
@@ -341,11 +344,99 @@ gives a detailed description and rationale for the various building blocks.
 
 
 
-\subsection{Variations on the basic equations}
+\subsection{Simplifications of the basic equations}
 
-Boussinesq approximation. Incompressible Stokes.
+There are two common variations to equations
+\eqref{eq:stokes-1}--\eqref{eq:temperature} that are frequently used and that
+make the system much simpler to solve and analyze: assuming that the fluid is
+incompressible (the Boussinesq approximation) and a linear dependence of the
+density on the temperature with constants that are otherwise independent of
+the solution variables. These are
+discussed in the following; \aspect{} has
+run-time parameters that allow both of these simpler models to be used.
+
+\subsubsection{The Boussinesq approximation: Incompressibility}
+
+The original Boussinesq approximation assumes that the density can be
+considered constant in all occurrences in the equations with the exception of
+the buoyancy term on the right hand side of \eqref{eq:stokes-1}. The primary
+result of this assumption is that the continuity equation \eqref{eq:stokes-2}
+will now read
+\begin{gather*}
+  \nabla \cdot \mathbf u = 0.
+\end{gather*}
+This makes the equations \textit{much} simpler to solve: First, because the
+divergence operation in this equation is the transpose of the gradient of the
+pressure in the momentum equation \eqref{eq:stokes-1}, making the system of
+these two equations symmetric. And secondly, because the two equations are now
+linear in pressure and velocity (assuming that the viscosity $\eta$ and the
+density $\rho$ are considered fixed).
+
+From a physical perspective, the assumption that the density is constant in
+the continuity equation but variable in the momentum equation is of course
+inconsistent. However, it is justified if the variation is small since the
+momentum equation can be rewritten to read
+\begin{gather*}
+  -\nabla \cdot 2\eta \varepsilon(\mathbf u) + \nabla p_d =
+  (\rho-\rho_0) \mathbf g,
+\end{gather*}
+where $p_d$ is the \textit{dynamic} pressure and $\rho_0$ is the constant
+reference density. This makes it clear that the true driver of motion is in
+fact the \textit{deviation} of the density from its background value, however
+small this value is: the resulting velocities are simply proportional to the
+density variation, not to the absolute magnitude of the density.
+
+As such, the Boussinesq approximation can be justified. On the other hand,
+given the real pressures and temperatures at the bottom of the earth mantle,
+it is arguable whether the density can be considered to be almost
+constant. Most realistic models predict that the density of mantle rocks
+increases from somewhere around 3300 at the surface to over 5000 kilogram per
+cubic meters at the core mantle boundary, due to the increasing lithostatic
+pressure. While this appears to be a large variability, if the density changes
+slowly with depth, this is not in itself an indication that the Boussinesq
+approximation will be wrong. To this end, consider that the continuity
+equation can be rewritten as $\frac 1\rho \nabla \cdot (\rho \mathbf u)=0$,
+which we can multiply out to obtain
+\begin{gather*}
+  \nabla \cdot \mathbf u
+  +
+  \frac 1\rho \mathbf u \cdot \nabla \rho
+  = 0.
+\end{gather*}
+The question whether the Boussinesq approximation is valid is then whether the
+second term (the one omitted in the Boussinesq model) is small compared to the
+first. To this end, consider that the velocity can change completely over length
+scales of maybe 10 km, so that $\nabla \cdot\mathbf u \approx \|u\| /
+10\text{km}$. On the other hand, given a smooth dependence of density on pressure,
+the length scale for variation of the density is the entire earth mantle,
+i.e., $\frac 1\rho\nabla \mathbf u \cdot \rho \approx \|u\| 0.5 / 3000 \text{km}$
+(given a variation between minimal and maximal density of 0.5 times the
+density itself). In other words, for a smooth variation, the contribution of
+the compressibility to the continuity equation is very small. This may be
+different, however, for models in which the density changes rather abruptly,
+for example due to phase changes at mantle discontinuities.
+
+As we will see in Section~\ref{sec:extending}, it is easy to add new material
+models to \aspect. Each model can decide whether it wants to use the
+Boussinesq approximation or not. The description of the models in
+Section~\ref{parameters:Material_20model} also gives an answer which of the
+models already implemented uses the approximation or considers the material
+sufficiently compressible to go with the fully compressible continuity equation.
+
+
+\subsubsection{Almost linear models}
+
+\marginpar{To be written}
 
 \section{Installation}
+
+need deal.II, p4est, trilinos, mpi
+unix-like system
+
+see deal.II readme for instructions
+
+currently need development version of deal.II
+
 
 \section{Running \aspect}
 
@@ -360,15 +451,113 @@ Output in MKS, occasionally per year
 \section{Extending \aspect}
 \label{sec:extending}
 
-deal.II
-documentation
-dimension independent
+\aspect{} is designed to be an extensible code. In particular, the program
+uses a plugin architecture in which it is trivial to replace
+or extend certain components of the program:
+\begin{itemize}
+\item the material description,
+\item the geometry,
+\item the gravity description,
+\item the initial conditions,
+\item the boundary conditions,
+\item the functions that postprocess the solution.
+\end{itemize}
+We will discuss the way this is achieved in Section
+\ref{sec:plugins}. Changing the core functionality, i.e., the basic equations
+\eqref{eq:stokes-1}--\eqref{eq:temperature}, and how they are solved is
+arguably more involved. We will discuss this in Section
+\ref{sec:extending-solver}.
+
+In either of these two cases, you will need to extend the source code of the
+program. Since \aspect{} is written using the \dealii{} library, you will have
+to familiarize yourself with this library for which there is an extensive
+amount of documentation:
+\begin{itemize}
+\item The manual at
+  \url{http://www.dealii.org/developer/doxygen/deal.II/index.html} that
+  describes in detail what every class, function and variable in \dealii{}
+  does.
+\item A collection of modules at
+  \url{http://www.dealii.org/developer/doxygen/deal.II/modules.html} that give
+  an overview of whole groups of classes and functions and how they work
+  together to achieve their goal.
+\item The \dealii{} tutorial at
+  \url{http://www.dealii.org/developer/doxygen/tutorial/index.html} that
+  provides a step-by-step introduction to the library using a sequence of
+  several dozen programs that introduce gradually more complex topics. In
+  particular, you will learn \dealii's way of \textit{dimension independent
+  programming} that allows you to write the program once, test it in 2d, and
+  run the exact same code in 3d without having to debug it a second time.
+\item The step-31 and step-32 tutorial programs at
+  \url{http://www.dealii.org/developer/doxygen/deal.II/step_31.html} and
+  \url{http://www.dealii.org/developer/doxygen/deal.II/step_32.html} from
+  which \aspect{} directly descends.
+\item The \dealii{} Frequently Asked Questions at
+  \url{http://dealii.sourceforge.net/index.php/Deal.II_Questions_and_Answers}
+  that also have extensive sections on developing code with \dealii{} as well
+  as on debugging.
+\item Several other parts of the \dealii{} website at
+  \url{http://www.dealii.org/} also have information that may be relevant if
+  you dive deeper into developing code. If you have questions, the mailing
+  lists at \url{http://www.dealii.org/mail.html} are also of general help.
+\end{itemize}
+
+As a general note, \aspect{} utilizes a \dealii{} feature called \textit{debug
+  mode}. By default, \aspect{} uses debug mode, i.e., it calls a version of
+the \dealii{} library that contain lots of checks for the correctness of
+function arguments, the consistency of the internal state of data structure,
+etc. If you program with \dealii{}, for example to extend \aspect{}, it has
+been our experience over the years that, by number, most programming errors are of the
+kind where one forgets to initialize a vector, one accesses data that has not
+been updated, one tries to write into a vector that has ghost elements,
+etc. If not caught, the result of these bugs is that parts of the program use
+invalid data (data written into ghost elements is not communicated to other
+processors), that operations simply make no sense (adding vectors of different
+length), that memory is corrupted (writing past the end of an array) or, in
+rare and fortunate cases, that the program simply crashes.
+
+Debug mode is designed to catch most of these errors: It enables some 7,300
+assertions (as of late 2011) in \dealii{} where we check for errors like the
+above and, if the condition is violated, abort the program with a detailed
+message that shows the failed check, the location in the source code, and a
+stacktrace how the program got there. When you write new functionality and run
+the code for the first time, you will almost invariably first have to deal
+with a number of these assertions that point out problems in your code. While
+this may be annoying at first, remember that these are actual bugs in your
+code that have to be fixed anyway and that are much easier to find if the
+program aborts than if you have to go by their more indirect results such as
+wrong answers. The Frequently Asked Questions at
+\url{http://dealii.sourceforge.net/index.php/Deal.II_Questions_and_Answers}
+contain a section on how to debug \dealii{} programs.
+
+The downside of debug mode is that it makes the program much slower --
+depending on application by a factor of 4--10. Consequently, once you are
+confident that your program actually does what it is intended to do --
+\textbf{but no earlier!} --, you may want to switch to optimized mode that
+links \aspect{} with a version of the \dealii{} libraries that uses compiler
+optimizations and that does not contain the \texttt{assert} statements
+discussed above. This switch can be facilitated by editing the top of the
+\aspect{} \texttt{Makefile} and recompiling the program.
+
+In addition to these general comments, \aspect{} is itself extensively
+documented. You can find documentation on all classes, functions and
+namespaces starting from the \texttt{doc/doxygen/index.html} page.
+
+
+\subsection{Materials, geometries, gravitation and other aspects of the model:
+  plugins}
+\label{sec:plugins}
 
 plugins
 existing plugins have header files so they show up in the documentation but
      this is not necessary
 
-\bibliographystyle{unsrt}
+\subsection{Extending the basic solver}
+\label{sec:extending-solver}
+
+step-31/32
+
+\bibliographystyle{alpha}
 \bibliography{manual}
 
 \end{document}
