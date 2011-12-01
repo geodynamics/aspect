@@ -20,6 +20,8 @@ namespace aspect
     SphericalShell<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
+      AssertThrow (phi != 360 || dim!=3, ExcNotImplemented());
+
       if (phi == 360)
         {
           GridGenerator::hyper_shell (coarse_grid,
