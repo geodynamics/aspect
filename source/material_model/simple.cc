@@ -112,6 +112,10 @@ namespace aspect
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0),
                              "The value of the constant viscosity. Units: $kg/m/s$.");
+          prm.declare_entry ("Thermal conductivity", "2.0",
+                             Patterns::Double (0),
+                             "The value of the thermal conductivity $k$. "
+                             "Units: $W/m/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\beta$. "
