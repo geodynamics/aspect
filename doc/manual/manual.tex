@@ -448,15 +448,61 @@ sufficiently compressible to go with the fully compressible continuity equation.
 
 \section{Installation}
 
-need deal.II, p4est, trilinos, mpi
-unix-like system
+This is a brief explanation on how to install all the required software and \aspect{} itself.
 
-see deal.II readme for instructions
+\subsection{Requirements}
 
-currently need development version of deal.II
+\begin{enumerate}
+
+ \item \textit{Obtain Trilinos:} We recommend Trilinos Version 10.4.2, which can be downloaded from \href{http://trilinos.sandia.gov/download/trilinos-10.4.html}{http://trilinos.sandia.gov}. For installation instructions see \href{http://www.dealii.org/developer/readme-petsc-trilinos.html}{the deal.II README}. Note that you have to configure with MPI by using
+\begin{verbatim}
+ TPL_ENABLE_MPI:BOOL=ON                                                                                                                                                                                                                                                                                                                                                          
+\end{verbatim}
+in the call to cmake. After that, run {\tt{make install}}.
+
+ \item  \textit{Obtain deal.II:}
+We currently require the development version of \dealii, which can be obtained by running
+\begin{verbatim}
+ svn checkout http://www.dealii.org/svn/dealii/trunk/deal.II
+\end{verbatim}
+Do not configure and compile yet, as we first need to compile p4est in the next step. You may want to set the environment variable\footnote{for bash this would be adding the line {\tt{export DEAL\_DIR=/path/to/deal.ii/}} to the file {\tt{~/.bashrc}}} {\tt{DEAL\_DIR}} to the directory where you checked out \dealii.
+
+ \item \textit{p4est:} Download and install p4est as described in the \href{http://www.dealii.org/developer/external-libs/p4est.html}{deal.II README}. This is done using the {\tt{p4est-setup.sh}} you can find in
+\begin{verbatim}
+  $DEAL_DIR/doc/external-libs/p4est-setup.sh
+\end{verbatim}
+ (and not according to the p4est stand-alone installation instructions).
+
+ \item \textit{Configure and compile \dealii:}
+  Now it is time to configure \dealii. Remember to point the {\tt{./configure}} script to the paths where you installed p4est and Trilinos and make sure you use MPI compilers. Example line:
+\begin{verbatim}
+ ./configure CXX=mpicxx --enable-mpi --disable-threads \
+--with-trilinos=/w/trilinos-10.4.2 \
+--with-p4est=/w/p4est-0.3.3.8 
+\end{verbatim}
+Make sure the configuration succeeds and detects the MPI compilers correctly. For more information see the documentation of \dealii.
+
+Now you are ready to compile \dealii{} by running {\tt{make all}}.
+
+\item \textit{Test your installation:}
+To test that your installation works, by running the {\tt{step-32}} example that you can find in
+{\tt{\$DEAL\_DIR/examples/step-32}}. Compile by running {\tt{make}} and run with {\tt{mpirun -n 2 ./step-32}}.
+
+\end{enumerate}
+
+\subsection{Obtaining \aspect{} and initial configuration}
+
+The development version of \aspect{} can be downloaded by checking out
+\begin{verbatim}
+ svn checkout http://dealii.org/svn/aspect/trunk/aspect
+\end{verbatim}
+If {\tt{\$DEAL\_DIR}} points to your \dealii{} installation, there is no further configuration that needs to be done, otherwise you need to edit {\tt{Makefile}} accordingly.
+
 
 
 \section{Running \aspect}
+
+compile by running {\tt{make}}, optimized version: {\tt{make debug-mode=off}}.
 
 Output in MKS, occasionally per year
 
