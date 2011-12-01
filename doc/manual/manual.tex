@@ -606,7 +606,18 @@ following two steps:
   \texttt{gravity\_vector} function. If your model wants to read parameters
   from the input file, you also need to have functions called
   \texttt{declare\_parameters} and \texttt{parse\_parameters} in your class
-  with the same signatures as the ones above.
+  with the same signatures as the ones above. On the other hand, if the new
+  model does not need any run-time parameters, you do not need to overload
+  these functions.%
+  \footnote{At first glance one may think that only the
+    \texttt{parse\_parameters} function can be overloaded since
+    \texttt{declare\_parameters} is not virtual. However, while the latter is
+    called by the class that manages plugins through pointers to the interface
+    class, the former function is called essentially at the time of
+    registering a plugin, from code that knows the actual type and name of the
+    class you are implementing. Thus, it can call the function -- if it exists
+    in your class, or the default implementation in the base class if it doesn't
+    -- even without it being declared as virtual.}
 
   Each of the categories above that allow plugins have several implementations
   of their respective interfaces that you can use to get an idea how to
@@ -657,39 +668,49 @@ In the following, we will discuss the requirements for individual plugins.
 
 
 \subsubsection{Material models}
-
-SAY SOMETHING ABOUT NAMESPACE, MACRO, NAME OF BASECLASS. THE LAST TWO FUNCTIONS
-
+\label{sec:material-models}
 
 The material model is responsible for describing the various coefficients in
-the equations that \aspect{} solvers. Specifically, it needs to implement the
-following basic interface:
+the equations that \aspect{} solvers. To implement a new material model, you
+need to overload the \texttt{aspect::MaterialModel::Interface} class and use
+the \texttt{ASPECT\_REGISTER\_MATERIAL\_MODEL} macro to register your new
+class. The implementation of the new class should be in namespace
+\texttt{aspect::MaterialModel}.
+
+Specifically, your new class needs to implement the following basic interface:
 \begin{lstlisting}[frame=single]
     template <int dim>
-    class Interface
+    class aspect::MaterialModel::Interface
     {
       public:
-        virtual double viscosity (const double      temperature,
-                                  const double      pressure,
-                                  const Point<dim> &position) const = 0;
+        virtual
+        double viscosity (const double      temperature,
+                          const double      pressure,
+                          const Point<dim> &position) const = 0;
 
-        virtual double specific_heat (const double      temperature,
-                                      const double      pressure,
-                                      const Point<dim> &position) const = 0;
+        virtual
+        double specific_heat (const double      temperature,
+                              const double      pressure,
+                              const Point<dim> &position) const = 0;
 
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const Point<dim> &position) const = 0;
+        virtual
+        double
+        thermal_conductivity (const double temperature,
+                              const double pressure,
+                              const Point<dim> &position) const = 0;
 
-        virtual double density (const double      temperature,
-                                const double      pressure,
+        virtual
+        double density (const double      temperature,
+                        const double      pressure,
+                        const Point<dim> &position) const = 0;
+
+        virtual
+        double compressibility (const double temperature,
+                                const double pressure,
                                 const Point<dim> &position) const = 0;
 
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const Point<dim> &position) const = 0;
-
-        virtual bool is_compressible () const = 0;
+        virtual
+        bool is_compressible () const = 0;
 
         static
         void
@@ -715,13 +736,210 @@ context, compressibility simply means whether we should solve the contuity
 equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
 or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
 
+The purpose of the last two functions has been discussed in the general
+overview of plugins above.
 
 
 
 \subsubsection{Geometry models}
+\label{sec:geometry-models}
+
+The geometry model is responsible for describing the domain in which we want
+to solve the equations. A domain is described in \dealii{} by a coarse mesh
+and, if necessary, an object that characterizes the boundary. Together, these
+two suffice to reconstruct any domain by adaptively refining the coarse mesh
+and placing new nodes generated by refining cells onto the surface described
+by the boundary object. The geometry model is also responsible to describe to
+the rest of the code which parts of the boundary represent Dirichlet-type
+(fixed temperature) or Neumann-type (no heat flux) boundaries for the
+temperature, and where the velocity is considered zero or tangential to the
+boundary. This information is encoded in functions that return which boundary
+indicators represent these types of boundaries; in \dealii{}, a boundary
+indicator is a number attached to each piece of the boundary that can be used
+to represent the type of boundary a piece belongs to.
+
+To implement a new geometry model, you
+need to overload the \texttt{aspect::GeometryModel::Interface} class and use
+the \texttt{ASPECT\_REGISTER\_GEOMETRY\_MODEL} macro to register your new
+class. The implementation of the new class should be in namespace
+\texttt{aspect::GeometryModel}.
+
+Specifically, your new class needs to implement the following basic interface:
+\begin{lstlisting}[frame=single]
+    template <int dim>
+    class aspect::GeometryModel::Interface
+    {
+      public:
+        virtual
+        void
+        create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const = 0;
+
+        virtual
+        double
+        length_scale () const = 0;
+
+        virtual
+        std::set<unsigned char>
+        get_temperature_dirichlet_boundary_indicators () const = 0;
+
+        virtual
+        std::set<unsigned char>
+        get_zero_velocity_boundary_indicators () const = 0;
+
+        virtual
+        std::set<unsigned char>
+        get_tangential_velocity_boundary_indicators () const = 0;
+
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+    };
+\end{lstlisting}
+The kind of information these functions need to provide is extensively
+discussed in the documentation of this interface class at
+\url{doc/doxygen/classaspect_1_1GeometryModel_1_1Interface.html}.  The purpose
+of the last two functions has been discussed in the general overview of
+plugins above.
+
+
 \subsubsection{Gravity models}
+\label{sec:gravity-models}
+
+The gravity model is responsible for describing the magnitude and direction of
+the gravity vector at each point inside the domain. To implement a new gravity model, you
+need to overload the \texttt{aspect::GravityModel::Interface} class and use
+the \texttt{ASPECT\_REGISTER\_GRAVITY\_MODEL} macro to register your new
+class. The implementation of the new class should be in namespace
+\texttt{aspect::GravityModel}.
+
+Specifically, your new class needs to implement the following basic interface:
+\begin{lstlisting}[frame=single]
+    template <int dim>
+    class aspect::GravityModel::Interface
+    {
+      public:
+        virtual
+        Tensor<1,dim>
+        gravity_vector (const Point<dim> &position) const = 0;
+
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+    };
+\end{lstlisting}
+The kind of information these functions need to provide is
+discussed in the documentation of this interface class at
+\url{doc/doxygen/classaspect_1_1GravityModel_1_1Interface.html} but is likely
+already obvious. The purpose
+of the last two functions has been discussed in the general overview of
+plugins above.
+
+
 \subsubsection{Initial conditions}
-\subsubsection{Boundary conditions}
+\label{sec:initial-conditions}
+
+The initial conditions model is responsible for describing the initial
+temperature distribution throughout the domain. It essentially has to provide
+a function that for each point can return the initial temperature. Note that
+the model \eqref{eq:stokes-1}--\eqref{eq:temperature} does not require initial
+values for the pressure or velocity. However, if coefficients are nonlinear,
+one can significantly reduce the number of initial nonlinear iterations if a
+good guess for them is available; consequently, \aspect{} initializes the
+pressure with the adiabatically computed hydrostatic pressure, and a zero
+velocity. Neither of these two has to be provided by the objects considered in
+this section.
+
+To implement a new initial conditions model, you
+need to overload the \texttt{aspect::InitialConditions::Interface} class and use
+the \texttt{ASPECT\_REGISTER\_INITIAL\_CONDITIONS} macro to register your new
+class. The implementation of the new class should be in namespace
+\texttt{aspect::InitialConditions}.
+
+Specifically, your new class needs to implement the following basic interface:
+\begin{lstlisting}[frame=single]
+    template <int dim>
+    class aspect::InitialConditions::Interface
+    {
+      public:
+        virtual
+        double
+        initial_temperature (const Point<dim> &position) const = 0;
+
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+    };
+\end{lstlisting}
+The meaning of the first class should be clear. The purpose
+of the last two functions has been discussed in the general overview of
+plugins above.
+
+
+\subsubsection{Temperature boundary conditions}
+\label{sec:temperature-boundary-conditions}
+
+The boundary conditions are responsible for describing the temperature values
+at those parts of the boundary at which the temperature is fixed (see
+Section~\ref{sec:geometry-models} for how it is determined which parts of the
+boundary this applies to).
+
+To implement a new boundary conditions model, you
+need to overload the \texttt{aspect::BoundaryTemperature::Interface} class and use
+the \texttt{ASPECT\_REGISTER\_BOUNDARY\_TEMPERATURE\_MODEL} macro to register your new
+class. The implementation of the new class should be in namespace
+\texttt{aspect::BoundaryTemperature}.
+
+Specifically, your new class needs to implement the following basic interface:
+\begin{lstlisting}[frame=single]
+    template <int dim>
+    class aspect::BoundaryTemperature::Interface
+    {
+      public:
+        virtual
+        double
+        temperature (const GeometryModel::Interface<dim> &geometry_model,
+                     const unsigned int                   boundary_indicator,
+                     const Point<dim>                    &location) const = 0;
+
+        virtual
+        double minimal_temperature () const = 0;
+
+        virtual
+        double maximal_temperature () const = 0;
+
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+    };
+\end{lstlisting}
+The first of these functions needs to provide the fixed temperature at the
+given point. The geometry model and the boundary indicator of the particular
+piece of boundary on which the point is located is also given as a hint in
+determining where this point may be located; this may, for example, be used to
+determine if a point is on the inner or outer boundary of a spherical
+shell. The remaining functions are obvious, and are also
+discussed in the documentation of this interface class at
+\url{doc/doxygen/classaspect_1_1BoundaryTemperature_1_1Interface.html}. The purpose
+of the last two functions has been discussed in the general overview of
+plugins above.
+
+
 \subsubsection{Postprocessors: Evaluating the solution after each time step}
 
 \subsection{Extending the basic solver}
