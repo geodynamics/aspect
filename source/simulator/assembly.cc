@@ -1052,7 +1052,7 @@ namespace aspect
                                                                            ext_pressure,
                                                                            scratch.temperature_fe_values.quadrature_point(q));
 
-        //TODO: verify that this is the right formula
+        //TODO: this is the wrong formula for the compressible case
         const double gamma
           = (parameters.radiogenic_heating_rate * density
              +
