@@ -906,10 +906,13 @@ operations from the last saved state, you need to set the \texttt{Resume
   computation} flag in the input parameter file to \texttt{true}, see
 Section~\ref{parameters:global}.
 
+\note{It is currently not possible to change the number of processors involved
+in the computation.}
+
 \note{It is not imperative that the parameters selected in the input file are
   exactly the same when resuming a program from a saved state than what they
   were at the time when this state was saved. For example, one may want to
-  choose a different parameterization of the material law, or add or remove
+  choose a different parametrization of the material law, or add or remove
   postprocessors that should be run at the end of each time step. Likewise,
   the end time, the times at which some additional mesh refinement steps
   should happen, etc., can be different. Yet, it is
