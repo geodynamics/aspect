@@ -23,6 +23,7 @@ Topics for preview release:
 - front page of doxygen documentation
 - Refinement criterion in 3d?
 - Attach a proper license and adjust headers of all files
+- Go through the list of TODOs in the source code and see what can be done
 
 First release
 -------------
