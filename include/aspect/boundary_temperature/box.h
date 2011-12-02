@@ -4,8 +4,8 @@
 //    Copyright (C) 2011 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
-#ifndef __aspect__boundary_temperature_spherical_constant_h
-#define __aspect__boundary_temperature_spherical_constant_h
+#ifndef __aspect__boundary_temperature_box_h
+#define __aspect__boundary_temperature_box_h
 
 #include <aspect/boundary_temperature/interface.h>
 
@@ -15,21 +15,19 @@ namespace aspect
   namespace BoundaryTemperature
   {
     /**
-     * A class that implements a temperature boundary condition for a spherical
-     * shell geometry in which the temperature at the inner and outer surfaces
-     * (i.e. at the core-mantle and the mantle-lithosphere/atmosphere boundaries)
-     * are constant.
+     * A class that implements a temperature boundary condition for a box
+     * geometry.
      *
      * @ingroup BoundaryTemperatures
      */
     template <int dim>
-    class SphericalConstant : public Interface<dim>
+    class Box : public Interface<dim>
     {
       public:
         /**
          * Return the temperature that is to hold at a particular location on the
-         * boundary of the domain. This function returns the constant temperatures
-         * read from the parameter file for the inner and outer boundaries.
+         * boundary of the domain. This function returns constant temperatures
+         * at the left and right boundaries.
          *
          * @param geometry_model The geometry model that describes the domain. This may
          *   be used to determine whether the boundary temperature model is implemented
@@ -63,29 +61,6 @@ namespace aspect
          */
         virtual
         double maximal_temperature () const;
-
-        /**
-         * Declare the parameters this class takes through input files.
-         * This class declares the inner and outer boundary temperatures.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter
-         * file.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-
-      private:
-        /**
-         * Temperatures at the inner and outer boundaries.
-         */
-        double inner_temperature;
-        double outer_temperature;
     };
   }
 }

@@ -13,6 +13,8 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 
+#include <aspect/geometry_model/spherical_shell.h>
+
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -225,6 +227,12 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector)
   {
+    // TODO: somehow parameterize based on the geometry model
+    // on which parts of the boundary the pressure should be
+    // zero
+    if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&*geometry_model) == 0)
+      return;
+
     double my_pressure = 0.0;
     double my_area = 0.0;
     {

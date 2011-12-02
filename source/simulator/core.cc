@@ -123,9 +123,16 @@ namespace aspect
 
     // finally produce a record of the run-time parameters by writing
     // the currently used values into a file
-    std::ofstream prm_out ((parameters.output_directory + "parameters.prm").c_str());
-    AssertThrow (prm_out, ExcIO());
-    prm.print_parameters(prm_out, ParameterHandler::Text);
+    {
+      std::ofstream prm_out ((parameters.output_directory + "parameters.prm").c_str());
+      AssertThrow (prm_out, ExcIO());
+      prm.print_parameters(prm_out, ParameterHandler::Text);
+    }
+    {
+      std::ofstream prm_out ((parameters.output_directory + "parameters.tex").c_str());
+      AssertThrow (prm_out, ExcIO());
+      prm.print_parameters(prm_out, ParameterHandler::LaTeX);
+    }
   }
 
 

@@ -13,6 +13,7 @@
 
 #include <aspect/adiabatic_conditions.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/box.h>
 
 #include <base/std_cxx1x/bind.h>
 
@@ -32,12 +33,25 @@ namespace aspect
                             const double R0,
                             const double R1)
     {
-      // clamp the depth to be positive, can happen due to rounding errors on the mesh.
-      // also limit the depth to the maximally possible for this geometry so that
-      // we don't get into trouble when looking things up from tables
+      // clamp the depth to be positive, since slightly negative
+      // values can happen due to rounding errors on the mesh.  also
+      // limit the depth to the maximally possible value for this
+      // geometry so that we don't get into trouble when looking
+      // things up from tables
       return std::min(std::max(R1 - p.norm(),
                                0.0),
                       R1-R0);
+    }
+
+
+    template <int dim>
+    double box (const Point<dim> &p,
+                const double height)
+    {
+      // make sure we don't quite
+      // extend all the way to the
+      // last data point for table lookups
+      return std::min(height-p[dim-1], 1.-1e-12);
     }
   }
 
@@ -61,6 +75,14 @@ namespace aspect
         point_to_depth_converter = std_cxx1x::bind (&PointToDepthConversion::spherical_shell<dim>,
                                                     std_cxx1x::_1,
                                                     R0, R1);
+      }
+    else if (const GeometryModel::Box<dim> *
+             geometry = dynamic_cast<const GeometryModel::Box<dim>*>(&geometry_model))
+      {
+        delta_z = 1./(n_points-1);
+        point_to_depth_converter = std_cxx1x::bind (&PointToDepthConversion::box<dim>,
+                                                    std_cxx1x::_1,
+                                                    1.0);
       }
     else
       // the following pretty much assumes that we have a spherical shell, for example
@@ -88,9 +110,18 @@ namespace aspect
         Assert (i < temperatures.size(), ExcInternalError());
 
         //TODO: use the real gravity model here as a function of z
-        const Point<dim> representative_point
-          = Point<dim>::unit_vector(0) *
-            (dynamic_cast<const GeometryModel::SphericalShell<dim>&>(geometry_model).outer_radius()-z);
+        Point<dim> representative_point;
+
+        if (const GeometryModel::SphericalShell<dim> *
+            geometry = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&geometry_model))
+          representative_point
+            = Point<dim>::unit_vector(0) * (geometry->outer_radius()-z);
+        else if (const GeometryModel::Box<dim> *
+                 geometry = dynamic_cast<const GeometryModel::Box<dim>*>(&geometry_model))
+          representative_point
+            = Point<dim>::unit_vector(dim-1) * (1-z);
+        else
+          AssertThrow (false, ExcNotImplemented());
 
         const double density = material_model.density(temperatures[i-1], pressures[i-1], representative_point);
 

@@ -42,7 +42,7 @@ namespace aspect
         virtual ~Interface();
 
         /**
-         * Return the temperature that is to hold on at a particular location on the
+         * Return the temperature that is to hold at a particular location on the
          * boundary of the domain.
          *
          * @param geometry_model The geometry model that describes the domain. This may
