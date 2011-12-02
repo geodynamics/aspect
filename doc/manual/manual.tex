@@ -77,12 +77,20 @@
 \subsection{Basic equations}
 \label{sec:equations}
 
-\aspect{} solves the following system of equations in a two- or
-three-dimensional domain $\Omega$:
+\aspect{} solves the a system of equations in a $d=2$- or
+$d=3$-dimensional domain $\Omega$ that describes the motion of a highly
+viscous fluid driven by differences in the gravitational force due to a
+density that depends on the temperature. In the following, we largely follow
+the exposition of this material in Schubert, Turcotte and Olson \cite{STO01}.
+
+Specifically, we consider the following set of equations for velocity $\mathbf
+u$, pressure $p$ and temperature $T$:
 \marginpar{To be finished}
 \begin{align}
   \label{eq:stokes-1}
-  -\nabla \cdot 2\eta \varepsilon(\mathbf u) + \nabla p &=
+  -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u)
+                                  - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+                \right] + \nabla p &=
   \rho \mathbf g
   & \qquad
   & \textrm{in $\Omega$},
@@ -96,15 +104,22 @@ three-dimensional domain $\Omega$:
   \rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
   - \nabla\cdot k\nabla T
   &=
-  \rho\gamma
+  \rho H
+  \notag
+  \\
+  &\qquad
   +
-  2\eta \varepsilon(\mathbf u) : \varepsilon(\mathbf u)
-  +
-  C_p T \frac{D\rho}{Dt}?
-  \ or \ \rho C_p \frac{\partial\rho}{\partial p} \mathbf u\cdot\mathbf g
-  ...
-  & \qquad
+  2\eta
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  :
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  \\
+  &\quad
+  -
+  \frac 1\rho T \frac{\partial\rho}{\partial T}\frac{Dp}{Dt}
+  & \quad
   & \textrm{in $\Omega$},
+  \notag
 \end{align}
 where $\varepsilon(\mathbf u) = \frac{1}{2}(\nabla \mathbf u + \nabla\mathbf
 u^T)$ is the symmetric gradient of the velocity (often called the
@@ -312,7 +327,7 @@ Concretely, we consider the following coefficients and dependencies:
   several orders of magnitude more important than through thermal
   conduction.
 
-\item \textit{The intrinsic specific heat production $\gamma=\gamma(\mathbf x)$:} Units
+\item \textit{The intrinsic specific heat production $H=H(\mathbf x)$:} Units
   $\frac{\textrm{W}}{\textrm{kg}}=\frac{\textrm{m}^2}{\textrm{s}^3}$.
 
   This term denotes the intrinsic heating of the material, for example due to
@@ -414,7 +429,12 @@ divergence operation in this equation is the transpose of the gradient of the
 pressure in the momentum equation \eqref{eq:stokes-1}, making the system of
 these two equations symmetric. And secondly, because the two equations are now
 linear in pressure and velocity (assuming that the viscosity $\eta$ and the
-density $\rho$ are considered fixed).
+density $\rho$ are considered fixed). In addition, one can drop all terms
+involving $\nabla \cdot \mathbf u$ from the left hand side of the momentum
+equation \eqref{eq:stokes-1} as well as from the shear heating term on the
+right hand side of \eqref{eq:temperature}; while dropping these terms does not
+affect the solution of the equations, it makes assembly of linear systems
+faster.
 
 From a physical perspective, the assumption that the density is constant in
 the continuity equation but variable in the momentum equation is of course
@@ -460,12 +480,12 @@ the compressibility to the continuity equation is very small. This may be
 different, however, for models in which the density changes rather abruptly,
 for example due to phase changes at mantle discontinuities.
 
-As we will see in Section~\ref{sec:extending}, it is easy to add new material
+\note{As we will see in Section~\ref{sec:extending}, it is easy to add new material
 models to \aspect. Each model can decide whether it wants to use the
 Boussinesq approximation or not. The description of the models in
 Section~\ref{parameters:Material_20model} also gives an answer which of the
 models already implemented uses the approximation or considers the material
-sufficiently compressible to go with the fully compressible continuity equation.
+sufficiently compressible to go with the fully compressible continuity equation.}
 
 
 \subsubsection{Almost linear models}
@@ -569,6 +589,7 @@ point for exploring the documentation.
 \section{Running \aspect}
 
 \subsection{Overview}
+\label{sec:running-overview}
 
 After compiling \aspect{} as described above, you should have an executable
 file in the \texttt{lib/} subdirectory. It can be called as follows:
@@ -744,7 +765,7 @@ The purpose of these files is as follows:
   simply creates both kinds of files in each time step in which graphical data
   is produced.
 
-\item \texttt{A statistics file:} The \texttt{output/statistics} file contains
+\item \textit{A statistics file:} The \texttt{output/statistics} file contains
   statistics collected during each time step, both from within the simulator
   (e.g., the current time for a time step, the time step length, etc.) as well
   as from the postprocessors that run at the end of each time step. The file
@@ -857,6 +878,8 @@ application using the command {\tt{make debug-mode=off}}.
 
 \subsection{Visualizing results}
 
+\marginpar{To be written}
+
 \subsection{Checkpoint/restart support}
 
 If you do long runs, especially when using parallel computations, there are a
@@ -902,9 +925,29 @@ Section~\ref{parameters:global}.
 \section{Run-time input parameters}
 \label{sec:parameters}
 
+\subsection{Overview}
+\label{sec:parameters-overview}
+
+What \aspect{} computes is drive by two things:
+\begin{itemize}
+\item The models implemented in \aspect{}. This includes the geometries, the
+  material laws, or the initial conditions currently supported. Which of these
+  models are currently implemented is discussed below;
+  Section~\ref{sec:extending} discusses in great detail the process of
+  implementing additional models.
+
+\item Which of the implemented models is selected, and what their run-time
+  parameters are. For example, you could select a model that prescribes
+  constant coefficients throughout the domain from all the material models
+  currently implemented; you could then select appropriate values for all of
+  these constants. Both of these selections happen from a parameter file that
+  is read at run time and whose name is specified on the command line. (See
+  also Section~\ref{sec:running-overview}.)
+\end{itemize}
 
 \marginpar{Write something here. overview}
 
+% now include a file that describes all currently available run-time parameters
 \input{parameters}
 
 
@@ -1545,10 +1588,13 @@ member variables that contain a state need to overload these functions.
 \subsection{Extending the basic solver}
 \label{sec:extending-solver}
 
+\marginpar{Write}
 step-31/32
 
 
 \section{Future plans for \aspect}
+
+\marginpar{Write}
 
 nonlinear
 
