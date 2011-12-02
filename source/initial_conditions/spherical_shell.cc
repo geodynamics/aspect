@@ -8,9 +8,7 @@
 #include <aspect/initial_conditions/spherical_shell.h>
 #include <aspect/geometry_model/spherical_shell.h>
 
-#include <deal.II/base/tensor.h>
 
-#include <typeinfo>
 namespace aspect
 {
   namespace InitialConditions
@@ -205,7 +203,7 @@ namespace aspect
                                        "spherical hexagonal perturbation",
                                        "An initial temperature field in which the temperature "
                                        "is perturbed following a six-fold pattern in angular "
-                                       "direction from an otherwise sphericall symmetric "
+                                       "direction from an otherwise spherically symmetric "
                                        "state.");
 
     template class SphericalGaussianPerturbation<deal_II_dimension>;
