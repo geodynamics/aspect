@@ -171,6 +171,8 @@ namespace aspect
             Tensor<2,dim> grad_u;
             for (unsigned int d=0; d<dim; ++d)
               grad_u[d] = duh[q][d];
+
+            // TODO: this is the wrong formula for a compressible material
             const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
             computed_quantities[q](dim+2) = 2 * material_model.viscosity(temperature, pressure, evaluation_points[q]) *
                                             strain_rate * strain_rate;
