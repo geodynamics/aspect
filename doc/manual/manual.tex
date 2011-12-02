@@ -2,6 +2,23 @@
 \usepackage[pdftex]{graphicx,color}
 \usepackage{amsmath}
 
+% use a larger page size; otherwise, it is difficult to have complete
+% code listings and output on a single page
+\usepackage{fullpage}
+
+% be able to use \note environments with a box around the text
+\usepackage{fancybox}
+\newcommand{\note}[1]{
+{\parindent0pt
+  \begin{center}
+    \shadowbox{
+      \begin{minipage}[c]{0.9\linewidth}
+        \textbf{Note:} #1
+      \end{minipage}
+    }
+  \end{center}
+}}
+
 % use the listings package for code snippets
 \usepackage{listings}
 \lstset{language=C++,basicstyle=\footnotesize}
@@ -58,6 +75,7 @@
 \section{Equations, models, coefficients}
 
 \subsection{Basic equations}
+\label{sec:equations}
 
 \aspect{} solves the following system of equations in a two- or
 three-dimensional domain $\Omega$:
@@ -167,13 +185,21 @@ hydrostatic pressure and dynamic pressure.%
 Consequently, it allows the direct use of this pressure when looking up
 pressure dependent material parameters.
 
-In the implementation of these equataions, \aspect{} uses the SI unit system
-throughout (i.e., it expresses all quantities in meters, kilograms and seconds
--- the MKS system --, as well as degrees Kelvin). All material parameters,
-geometries, etc., must also be expressed in these units. For convenience, some
-rate-type output quantities are provided in units \textit{per year} instead of
-\textit{per second}; however, this conversion happens at the time output is
-generated, and is not part of the solution process.
+\note{In reality, \aspect{} has no preferred system of
+  units as long as every material constant, geometry, time, etc., is all
+  expressed in the same system. However, all existing implementations of
+  models uses the SI system, i.e., they express everything in meters, kilograms and seconds
+  -- the MKS system --, as well as degrees Kelvin. It is therefore convenient
+  to think that \aspect{} actually requires the use of these units throughout
+  and that all material parameters,
+  geometries, etc., must also be expressed in these units.
+
+  That said, for convenience, output quantities are sometimes provided in
+  units \textit{centimeters per year} instead of \textit{meters per second}
+  (velocities) or in \textit{years} instead of \textit{seconds} (the current
+  time, the time step size); however, this
+  conversion happens at the time output is generated, and is not part of the
+  solution process.}
 
 
 \subsection{Coefficients}
@@ -453,65 +479,324 @@ This is a brief explanation on how to install all the required software and \asp
 \subsection{Requirements}
 
 \begin{enumerate}
-
- \item \textit{Obtain Trilinos:} We recommend Trilinos Version 10.4.2, which can be downloaded from \href{http://trilinos.sandia.gov/download/trilinos-10.4.html}{http://trilinos.sandia.gov}. For installation instructions see \href{http://www.dealii.org/developer/readme-petsc-trilinos.html}{the deal.II README}. Note that you have to configure with MPI by using
+\item \textit{Obtain Trilinos:} We recommend Trilinos Version 10.4.2, which
+  can be downloaded from
+  \href{http://trilinos.sandia.gov/download/trilinos-10.4.html}{http://trilinos.sandia.gov}. For
+  installation instructions see
+  \href{http://www.dealii.org/developer/readme-petsc-trilinos.html}{the
+    deal.II README}. Note that you have to configure with MPI by using
 \begin{verbatim}
- TPL_ENABLE_MPI:BOOL=ON                                                                                                                                                                                                                                                                                                                                                          
+ TPL_ENABLE_MPI:BOOL=ON
 \end{verbatim}
-in the call to cmake. After that, run {\tt{make install}}.
+  in the call to cmake. After that, run {\tt{make install}}.
 
- \item  \textit{Obtain deal.II:}
-We currently require the development version of \dealii, which can be obtained by running
-\begin{verbatim}
- svn checkout http://www.dealii.org/svn/dealii/trunk/deal.II
-\end{verbatim}
-Do not configure and compile yet, as we first need to compile p4est in the next step. You may want to set the environment variable\footnote{for bash this would be adding the line {\tt{export DEAL\_DIR=/path/to/deal.ii/}} to the file {\tt{~/.bashrc}}} {\tt{DEAL\_DIR}} to the directory where you checked out \dealii.
-
- \item \textit{p4est:} Download and install p4est as described in the \href{http://www.dealii.org/developer/external-libs/p4est.html}{deal.II README}. This is done using the {\tt{p4est-setup.sh}} you can find in
+\item \textit{p4est:} Download and install p4est as described in the
+  \href{http://www.dealii.org/developer/external-libs/p4est.html}{deal.II
+    p4est installation instructions}. This is done using the {\tt{p4est-setup.sh}} you can find in
 \begin{verbatim}
   $DEAL_DIR/doc/external-libs/p4est-setup.sh
 \end{verbatim}
- (and not according to the p4est stand-alone installation instructions).
+  (and not according to the p4est stand-alone installation instructions).
 
- \item \textit{Configure and compile \dealii:}
-  Now it is time to configure \dealii. Remember to point the {\tt{./configure}} script to the paths where you installed p4est and Trilinos and make sure you use MPI compilers. Example line:
+\item  \textit{Obtain deal.II:}
+  We currently require the development version of \dealii, which can be obtained by running
+\begin{verbatim}
+ svn checkout http://www.dealii.org/svn/dealii/trunk/deal.II
+\end{verbatim}
+  You may want to set the environment variable\footnote{for bash
+    this would be adding the line {\tt{export DEAL\_DIR=/path/to/deal.ii/}} to
+    the file {\tt{\~{}/.bashrc}}} {\tt{DEAL\_DIR}} to the directory where you
+  checked out \dealii.
+
+\item \textit{Configure and compile \dealii:} Now it is time to configure
+  \dealii. Remember to point the {\tt{./configure}} script to the paths where
+  you installed p4est and Trilinos and make sure you use MPI
+  compilers. Example line:
 \begin{verbatim}
  ./configure CXX=mpicxx --enable-mpi --disable-threads \
 --with-trilinos=/w/trilinos-10.4.2 \
---with-p4est=/w/p4est-0.3.3.8 
+--with-p4est=/w/p4est-0.3.3.8
 \end{verbatim}
-Make sure the configuration succeeds and detects the MPI compilers correctly. For more information see the documentation of \dealii.
+  Make sure the configuration succeeds and detects the MPI compilers
+  correctly. For more information see the documentation of \dealii.
 
-Now you are ready to compile \dealii{} by running {\tt{make all}}.
+  Now you are ready to compile \dealii{} by running {\tt{make all}}.
 
-\item \textit{Test your installation:}
-To test that your installation works, by running the {\tt{step-32}} example that you can find in
-{\tt{\$DEAL\_DIR/examples/step-32}}. Compile by running {\tt{make}} and run with {\tt{mpirun -n 2 ./step-32}}.
-
+\item \textit{Test your installation:} Test that your installation works
+  by running the {\tt{step-32}} example that you can find in
+  {\tt{\$DEAL\_DIR/examples/step-32}}. Compile by running {\tt{make}} and run
+  with {\tt{mpirun -n 2 ./step-32}}.
 \end{enumerate}
+
 
 \subsection{Obtaining \aspect{} and initial configuration}
 
-The development version of \aspect{} can be downloaded by checking out
+The development version of \aspect{} can be downloaded by executing the command
 \begin{verbatim}
  svn checkout http://dealii.org/svn/aspect/trunk/aspect
 \end{verbatim}
-If {\tt{\$DEAL\_DIR}} points to your \dealii{} installation, there is no further configuration that needs to be done, otherwise you need to edit {\tt{Makefile}} accordingly.
+If {\tt{\$DEAL\_DIR}} points to your \dealii{} installation, there is no
+further configuration that needs to be done, otherwise you need to edit
+{\tt{Makefile}} accordingly.
 
+
+\subsection{Compiling \aspect{} and generating documentation}
+\label{sec:compiling}
+
+After downloading \aspect{} and having built the libraries it builds on, you
+can compile it by typing
+\begin{verbatim}
+  make
+\end{verbatim}
+on the command line. This builds the \aspect{} executable which will reside in
+the \texttt{lib/} subdirectory and will be named \texttt{lib/aspect-2d} or
+\texttt{lib/aspect-3d}, depending on the space dimension you compile for (see
+Section~\ref{sec:2d-vs-3d} for more information on this). If you intend to
+modify \aspect{} for your own experiments, you may want to also generate
+documentation about the source code. This can be done using the command
+\begin{verbatim}
+  make doc
+\end{verbatim}
+which assumes that you have the \texttt{doxygen} documentation generation tool
+installed. Most linux distributions have packages for \texttt{doxygen}. The
+result will be the file \url{doc/doxygen/index.html} that is the starting
+point for exploring the documentation.
 
 
 \section{Running \aspect}
 
+\subsection{Overview}
+
+After compiling \aspect{} as described above, you should have an executable
+file in the \texttt{lib/} subdirectory. It can be called as follows:
+\begin{verbatim}
+  ./lib/aspect-2d parameter-file.prm
+\end{verbatim}
+or, if you want to run the program in parallel, using something like
+\begin{verbatim}
+  mpirun -np 32 ./lib/aspect-2d parameter-file.prm
+\end{verbatim}
+to run with 32 processors. In either case, the argument denotes the (path and)
+name of a file that contains input parameters. When you download \aspect, you
+should already have a sample input file in the top-level directory that gives
+you an idea of the parameters that can be set. A full description of all
+parameters is given in Section~\ref{sec:parameters}.
+
+Running the program should produce output that will look something like this
+(numbers will all be different, of course):
+\begin{lstlisting}[frame=single,language=ksh]
+Number of active cells: 1,536 (on 5 levels)
+Number of degrees of freedom: 20,756 (12,738+1,649+6,369)
+
+*** Timestep 0:  t=0 years
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+3 iterations.
+   Solving temperature system... 8 iterations.
+
+Number of active cells: 2,379 (on 6 levels)
+Number of degrees of freedom: 33,859 (20,786+2,680+10,393)
+
+*** Timestep 0:  t=0 years
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+4 iterations.
+   Solving temperature system... 8 iterations.
+
+   Postprocessing:
+     Writing graphical output: output/solution-00000
+     RMS, max velocity:        0.0946 cm/year, 0.183 cm/year
+     Temperature min/avg/max:  300 K, 3007 K, 6300 K
+     Inner/outer heat fluxes:  1.076e+05 W, 1.967e+05 W
+
+*** Timestep 1:  t=1.99135e+07 years
+
+   Solving Stokes system... 30+3 iterations.
+   Solving temperature system... 8 iterations.
+
+   Postprocessing:
+     Writing graphical output: output/solution-00001
+     RMS, max velocity:        0.104 cm/year, 0.217 cm/year
+     Temperature min/avg/max:  300 K, 3008 K, 6300 K
+     Inner/outer heat fluxes:  1.079e+05 W, 1.988e+05 W
+
+*** Timestep 2:  t=3.98271e+07 years
+
+   Solving Stokes system... 30+3 iterations.
+   Solving temperature system... 8 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.111 cm/year, 0.231 cm/year
+     Temperature min/avg/max: 300 K, 3008 K, 6300 K
+     Inner/outer heat fluxes: 1.083e+05 W, 2.01e+05 W
+
+*** Timestep 3:  t=5.97406e+07 years
+
+...
+\end{lstlisting}
+
+This output was produced by a parameter file that, among other settings,
+contained the following values:
+\begin{lstlisting}[frame=single,language=ksh]
+set End time                      = 2e9
+set Output directory              = output
+
+subsection Geometry model
+  set Model name                  = spherical shell
+end
+
+subsection Mesh refinement
+  set Initial global refinement   = 4
+  set Initial adaptive refinement = 1
+end
+
+subsection Postprocess
+  set List of postprocessors      = all
+end
+\end{lstlisting}
+In other words, these run-time parameters specify that we should start with a
+geometry that represents a spherical shell (see
+Sections~\ref{parameters:Geometry_20model} and
+\ref{parameters:Geometry_20model/Spherical_20shell} for details). The coarsest
+mesh is refined 4 times globally, i.e., every cell is refined into four
+children (or eight, in 3d) 4 times. This yields the initial number of 1,536
+cells on a mesh hierarchy that is 5 levels deep. We then solve the problem
+there once and, based on the number of adaptive refinement steps at the
+initial time set in the parameter file, use the solution so computed to refine
+the mesh once adaptively (yielding 2,379 cells on 6 levels) on which we start
+the computation over at time $t=0$.
+
+Within each time step, the output indicates the number of iterations performed
+by the linear solvers, and we generate a number of lines of output by the
+postprocessors that were selected (see
+Section~\ref{parameters:Postprocess}). Here, we have selected to run all
+postprocessors that are currently implemented in \aspect{} which includes the
+ones that evaluate properties of the velocity, temperature, and heat flux as
+well as a postprocessor that generates graphical output for visualization.
+
+While the screen output is useful to monitor the progress of a simulation,
+it's lack of a structured output makes it not useful for later plotting things
+like the evolution of heat flux through the core-mantle boundary. To this end,
+\aspect{} creates additional files in the output directory selected in the
+input parameter file (here, the \texttt{output/} directory relative to the
+directory in which \aspect{} runs). In a simple case, this will look as
+follows:
+\begin{lstlisting}[frame=single,language=ksh]
+aspect> ls -l output/
+total 780
+-rw------- 1 b   9863 Dec  1 15:13 parameters.prm
+-rw------- 1 b 306562 Dec  1 15:13 solution-00000.0000.vtu
+-rw------- 1 b  97057 Nov 30 05:58 solution-00000.0001.vtu
+...
+-rw------- 1 b   1061 Dec  1 15:13 solution-00000.pvtu
+-rw------- 1 b     35 Dec  1 15:13 solution-00000.visit
+-rw------- 1 b 306530 Dec  1 15:13 solution-00001.0000.vtu
+-rw------- 1 b   1061 Dec  1 15:13 solution-00001.pvtu
+-rw------- 1 b     35 Dec  1 15:13 solution-00001.visit
+...
+-rw------- 1 b    924 Dec  1 15:13 statistics
+\end{lstlisting}
+The purpose of these files is as follows:
+\begin{itemize}
+\item \textit{A listing of all run-time parameters:} The
+  \texttt{output/parameters.prm} file contains a complete listing of all
+  run-time parameters. In particular, this includes the one that have been
+  specified in the input parameter file passed on the command line, but it
+  also includes those parameters for which defaults have been used. It is
+  often useful to save this file together with simulation data to allow for
+  the easy reproduction of computations later on.
+
+\item \textit{Graphical output files:} One of the postprocessors you select
+  when you say ``all'' in the parameter files is the one that generates output
+  files that represent the solution at certain time steps. The screen output
+  indicates that it has run at time step 0, producing output files of the form
+  \texttt{output/solution-00000}. At the current time, \aspect{} generates
+  this output in VTK format%
+  \footnote{The output is in fact in the VTU version of the VTK file
+    format. This is the XML-based version that compresses contents. Given that
+    typical file sizes for 3d simulation are substantial, the compression
+    saves a significant amount of disk space.}
+  as that is widely used by a number of excellent
+  visualization packages and also supports parallel visualization.%
+  \footnote{The underlying \dealii{} package actually supports output in
+    around a dozen different formats, but most of them are not very useful for
+    large-scale, 3d, parallel simulations. If you need a different format than
+    VTK, let the authors of \aspect{} know and we can add this feature.}
+  If the program has been run with multiple MPI processes, then the list of
+  output files will look as shown above, with the base \texttt{solution-x.y}
+  denoting that this the \texttt{x}th time we create output files and that the
+  file was generated by the \texttt{y}th processor.
+
+  VTK files can be visualized by many of the large visualization packages. In
+  particular, the
+  \href{http://www.llnl.gov/visit/}{Visit} and
+  \href{http://www.paraview.org/HTML/Index.html}{ParaView} programs, both
+  widely used, can read the files so created. However, while VTK has become a
+  de-facto standard for data visualization in scientific computing, there
+  doesn't appear to be an agreed upon way to describe which files jointly make
+  up for the simulation data of a single time step (i.e., all files with the
+  same \texttt{x} but different \texttt{y} in the example above). Visit and
+  Paraview both have their method of doing things, through \texttt{.pvtu} and
+  \texttt{.visit} files. To make it easy for you to view data, \aspect{}
+  simply creates both kinds of files in each time step in which graphical data
+  is produced.
+
+\item \texttt{A statistics file:} The \texttt{output/statistics} file contains
+  statistics collected during each time step, both from within the simulator
+  (e.g., the current time for a time step, the time step length, etc.) as well
+  as from the postprocessors that run at the end of each time step. The file
+  is essentially a table that allows for the simple production of time
+  trends. In the example above, it looks like this:
+  \begin{lstlisting}[frame=single,language=ksh]
+# 1: Time step number
+# 2: Time (years)
+# 3: Iterations for Stokes solver
+# 4: Time step size (year)
+# 5: Iterations for temperature solver
+# 6: Visualization file name
+# 7: RMS velocity (cm/year)
+# 8: Max. velocity (cm/year)
+# 9: Minimal temperature (K)
+# 10: Average temperature (K)
+# 11: Maximal temperature (K)
+# 12: Average nondimensional temperature (K)
+# 13: Core-mantle heat flux (W)
+# 14: Surface heat flux (W)
+0 0.0000e+00 33 2.9543e+07 8                    "" 0.0000 0.0000   0.0000    0.0000 ...
+0 0.0000e+00 34 1.9914e+07 8 output/solution-00000 0.0946 0.1829 300.0000 3007.2519 ...
+1 1.9914e+07 33 1.9914e+07 8 output/solution-00001 0.1040 0.2172 300.0000 3007.8406 ...
+2 3.9827e+07 33 1.9914e+07 8                    "" 0.1114 0.2306 300.0000 3008.3939 ...
+  \end{lstlisting}
+  The actual columns you have in your statistics file may differ from the ones above,
+  but the format of this file should be obvious. Since the hash mark is a comment
+  marker in many programs (for example, \texttt{gnuplot} ignores lines in text
+  files that start with a hash mark), it is simple to plot these columns as time
+  series. Alternatively, the data can be imported into a spreadsheet and
+  plotted there.
+\end{itemize}
+
+\note{As noted in Section~\ref{sec:equations}, \aspect{} can be thought to compute
+  in the meter-kilogram-second (MKS, or SI) system. Unless otherwise noted,
+  the quantities in the output file are therefore also in MKS units.}
+
+
+\subsection{Selecting between 2d and 3d runs}
+\label{sec:2d-vs-3d}
+
+\subsection{Debug or optimized mode}
+
 compile by running {\tt{make}}, optimized version: {\tt{make debug-mode=off}}.
 
-Output in MKS, occasionally per year
+\ref{sec:compiling}
 
+\subsection{Checkpoint/restart support}
 checkpoint restart
 
-2d/3d
-
-\section{Input parameters}
+\section{Run-time input parameters}
 \label{sec:parameters}
+
+
+\marginpar{Write something here. overview}
 
 \input{parameters}
 
