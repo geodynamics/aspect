@@ -103,6 +103,7 @@ namespace aspect
     //
     // note: p'(z) = rho(p,T) * g
     //       T'(z) = dT/dp|s dp/dz = dT/dp|S rho(p,T) * g
+    // TODO: check formulas!
     double z = delta_z;
     for (unsigned int i=1; i<n_points; ++i, z+=delta_z)
       {
@@ -124,16 +125,12 @@ namespace aspect
           AssertThrow (false, ExcNotImplemented());
 
         const double density = material_model.density(temperatures[i-1], pressures[i-1], representative_point);
+        const double gravity = gravity_model.gravity_vector(representative_point).norm();
 
-        pressures[i] = (pressures[i-1]
-                        + pressures[i-1] * 2/z
-                        - density *
-                        (gravity_model.gravity_vector(representative_point)*Point<dim>::unit_vector(0))
-                        * delta_z);
-        temperatures[i] = (temperatures[i-1] -
-                           dTdp * density *
-                           (gravity_model.gravity_vector(representative_point)*Point<dim>::unit_vector(0))
-                           * delta_z);
+        pressures[i] = pressures[i-1]
+                       - density * gravity * delta_z;
+        temperatures[i] = temperatures[i-1] -
+                          dTdp * density * gravity * delta_z;
       }
 
     Assert (*min_element (pressures.begin(), pressures.end()) >= 0, ExcInternalError());
