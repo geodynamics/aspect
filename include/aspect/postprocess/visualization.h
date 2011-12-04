@@ -17,7 +17,8 @@ namespace aspect
 
     /**
      * A postprocessor that generates graphical output in periodic intervals
-     * or every time step.
+     * or every time step. The time interval between generating graphical
+     * output is obtained from the parameter file.
      *
      * @ingroup Postprocessing
      */
