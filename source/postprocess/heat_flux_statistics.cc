@@ -155,7 +155,7 @@ namespace aspect
           // for the box geometry we can associate boundary indicators 0 and 1
           // to left and right boundaries
           statistics.add_value ("Left boundary heat flux (W)", global_boundary_fluxes[0]);
-          statistics.add_value ("Right boundary heat flux (W)",     global_boundary_fluxes[1]);
+          statistics.add_value ("Right boundary heat flux (W)", global_boundary_fluxes[1]);
 
           // finally have something for the screen
           std::ostringstream output;
