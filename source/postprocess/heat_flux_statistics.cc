@@ -7,6 +7,7 @@
 
 #include <aspect/postprocess/heat_flux_statistics.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/box.h>
 #include <aspect/simulator.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -21,9 +22,6 @@ namespace aspect
     std::pair<std::string,std::string>
     HeatFluxStatistics<dim>::execute (TableHandler &statistics)
     {
-      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model()) != 0,
-              ExcNotImplemented());
-
       const QGauss<dim-1> quadrature_formula (this->get_temperature_dof_handler().get_fe().degree+1);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
@@ -43,8 +41,13 @@ namespace aspect
       std::vector<double>         temperature_values (quadrature_formula.size());
       std::vector<double>         pressure_values (quadrature_formula.size());
 
-      double local_inner_boundary_flux = 0;
-      double local_outer_boundary_flux = 0;
+      // find out which boundary indicators are related to Dirichlet temperature boundaries.
+      // it only makes sense to compute heat fluxes on these boundaries.
+      const std::set<unsigned char>
+      temperature_dirichlet_indicators
+        =
+          this->get_geometry_model().get_temperature_dirichlet_boundary_indicators ();
+      std::map<unsigned char, double> local_boundary_fluxes;
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_temperature_dof_handler().begin_active(),
@@ -52,14 +55,15 @@ namespace aspect
       typename DoFHandler<dim>::active_cell_iterator
       stokes_cell = this->get_stokes_dof_handler().begin_active();
 
-      // for every core-mantle or surface face owned by this processor,
+      // for every surface face on which it makes sense to compute a
+      // heat flux and that is owned by this processor,
       // integrate the normal heat flux given by the formula
       //   j =  - k * n . grad T
       //
-      // note however that for the inner boundary, the normal vector
-      // points *into* the core, i.e. we compute the flux *out* of the
-      // mantle, not into it. we fix this when we add the local contribution
-      // to the global flux
+      // for the spherical shell geometry, note that for the inner boundary,
+      // the normal vector points *into* the core, i.e. we compute the flux
+      // *out* of the mantle, not into it. we fix this when we add the local
+      // contribution to the global flux
       for (; cell!=endc; ++cell, ++stokes_cell)
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
@@ -67,7 +71,8 @@ namespace aspect
             // zero (inner boundary) or one (outer boundary)
             if (cell->at_boundary(f)
                 &&
-                (cell->face(f)->boundary_indicator() < 2))
+                (temperature_dirichlet_indicators.find (cell->face(f)->boundary_indicator())
+                 != temperature_dirichlet_indicators.end()))
               {
                 fe_face_values.reinit (cell, f);
                 fe_face_values.get_function_gradients (this->get_temperature_solution(),
@@ -95,39 +100,77 @@ namespace aspect
                       fe_face_values.JxW(q);
                   }
 
-                if (cell->face(f)->boundary_indicator() == 0)
-                  local_inner_boundary_flux -= local_normal_flux;
-                else if (cell->face(f)->boundary_indicator() == 1)
-                  local_outer_boundary_flux += local_normal_flux;
-                else
-                  Assert (false, ExcInternalError());
+                local_boundary_fluxes[cell->face(f)->boundary_indicator()]
+                += local_normal_flux;
               }
 
       // now communicate to get the global values
-      double global_inner_boundary_flux = 0;
-      double global_outer_boundary_flux = 0;
+      std::map<unsigned char, double> global_boundary_fluxes;
       {
-        double local_values[2] = { local_inner_boundary_flux, local_outer_boundary_flux };
-        double global_values[2];
+        // first collect local values in the same order in which they are listed
+        // in the set of boundary indicators
+        std::vector<double> local_values;
+        for (std::set<unsigned char>::const_iterator
+             p = temperature_dirichlet_indicators.begin();
+             p != temperature_dirichlet_indicators.end(); ++p)
+          local_values.push_back (local_boundary_fluxes[*p]);
 
+        // then collect contributions from all processors
+        std::vector<double> global_values;
         Utilities::MPI::sum (local_values, MPI_COMM_WORLD, global_values);
 
-        global_inner_boundary_flux = global_values[0];
-        global_outer_boundary_flux = global_values[1];
+        // and now take them apart into the global map again
+        unsigned int index = 0;
+        for (std::set<unsigned char>::const_iterator
+             p = temperature_dirichlet_indicators.begin();
+             p != temperature_dirichlet_indicators.end(); ++p, ++index)
+          global_boundary_fluxes[*p] = local_values[index];
       }
 
-      // record results and have something for the output
-      statistics.add_value ("Core-mantle heat flux (W)", global_inner_boundary_flux);
-      statistics.add_value ("Surface heat flux (W)",     global_outer_boundary_flux);
+      // record results and have something for the output. this depends
+      // on the interpretation of what boundary is which, which we can
+      // only do knowing what the geometry is
+      if (dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model())
+          != 0)
+        {
+          // we have a spherical shell. note that in that case we want
+          // to invert the sign of the core-mantle flux because we
+          // have computed the flux with a normal pointing from
+          // the mantle into the core, and not the other way around
+          statistics.add_value ("Core-mantle heat flux (W)", -global_boundary_fluxes[0]);
+          statistics.add_value ("Surface heat flux (W)",     global_boundary_fluxes[1]);
 
-      // finally have something for the screen
-      std::ostringstream output;
-      output.precision(4);
-      output << global_inner_boundary_flux << " W, "
-             << global_outer_boundary_flux << " W";
+          // finally have something for the screen
+          std::ostringstream output;
+          output.precision(4);
+          output << -global_boundary_fluxes[0] << " W, "
+                 << global_boundary_fluxes[1] << " W";
 
-      return std::pair<std::string, std::string> ("Inner/outer heat fluxes:",
-                                                  output.str());
+          return std::pair<std::string, std::string> ("Inner/outer heat fluxes:",
+                                                      output.str());
+        }
+      else if (dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model())
+               != 0)
+        {
+          // for the box geometry we can associate boundary indicators 0 and 1
+          // to left and right boundaries
+          statistics.add_value ("Left boundary heat flux (W)", global_boundary_fluxes[0]);
+          statistics.add_value ("Right boundary heat flux (W)",     global_boundary_fluxes[1]);
+
+          // finally have something for the screen
+          std::ostringstream output;
+          output.precision(4);
+          output << global_boundary_fluxes[0] << " W, "
+                 << global_boundary_fluxes[1] << " W";
+
+          return std::pair<std::string, std::string> ("Left/right heat fluxes:",
+                                                      output.str());
+        }
+      else
+        AssertThrow (false, ExcNotImplemented());
+
+      return std::pair<std::string, std::string> ("",
+                                                  "");
     }
   }
 }
