@@ -22,6 +22,7 @@
 % use the listings package for code snippets
 \usepackage{listings}
 \lstset{language=C++,basicstyle=\footnotesize}
+\lstdefinelanguage{prmfile}{morekeywords={set,subsection,end},}
 
 % use the hyperref package; set the base for relative links to
 % the top-level aspect directory so that we can link to
@@ -71,6 +72,21 @@
 \section{Introduction}
 
 \marginpar{To be written}
+
+discuss deal.II, Trilinos, p4est briefly
+
+\note{\aspect{} is a community project. As such, we encourage contributions
+  from the community to improve this code over time. Obvious candidates for
+  such contributions are implementations of new plugins as discussed in
+  Section~\ref{sec:plugins} since they are typically self-contained and do not
+  require much knowledge of the details of the remaining code. Obviously,
+  however, we also encourage contributions to the core functionality in any
+  form!}
+
+\note{\aspect{} will only solve problems relevant to the community if we get
+  feedback from the community on things that are missing or necessary for what
+  you want to do. Let us know!}
+
 
 \section{Equations, models, coefficients}
 
@@ -496,7 +512,7 @@ sufficiently compressible to go with the fully compressible continuity equation.
 
 This is a brief explanation on how to install all the required software and \aspect{} itself.
 
-\subsection{Requirements}
+\subsection{Prerequisites}
 
 \begin{enumerate}
 \item \textit{Obtain Trilinos:} We recommend Trilinos Version 10.4.2, which
@@ -661,7 +677,7 @@ Number of degrees of freedom: 33,859 (20,786+2,680+10,393)
 
 This output was produced by a parameter file that, among other settings,
 contained the following values:
-\begin{lstlisting}[frame=single,language=ksh]
+\begin{lstlisting}[frame=single,language=prmfile]
 set End time                      = 2e9
 set Output directory              = output
 
@@ -906,19 +922,21 @@ operations from the last saved state, you need to set the \texttt{Resume
   computation} flag in the input parameter file to \texttt{true}, see
 Section~\ref{parameters:global}.
 
-\note{It is currently not possible to change the number of processors involved
-in the computation.}
-
 \note{It is not imperative that the parameters selected in the input file are
   exactly the same when resuming a program from a saved state than what they
   were at the time when this state was saved. For example, one may want to
   choose a different parametrization of the material law, or add or remove
   postprocessors that should be run at the end of each time step. Likewise,
   the end time, the times at which some additional mesh refinement steps
-  should happen, etc., can be different. Yet, it is
+  should happen, etc., can be different.
+
+  Yet, it is
   clear that some other things can't be changed: For example, the geometry
   model that was used to generate the coarse mesh and describe the boundary
-  must be the same before and after resuming a computation. Not all invalid
+  must be the same before and after resuming a computation. Likewise, you can
+  not currently restart a computation with a different number of processors
+  than initially used to checkpoint the simulation.
+  Not all invalid
   combinations are easy to detect, and \aspect{} may not always realize
   immediate what is going on if you change a setting that can't be
   changed. However, you will almost invariably get non-sensical results after
@@ -947,11 +965,131 @@ What \aspect{} computes is drive by two things:
   is read at run time and whose name is specified on the command line. (See
   also Section~\ref{sec:running-overview}.)
 \end{itemize}
+In this section, let us give an overview of what can be selected in the
+parameter file. Specific parameters, their default values, and allowed values
+for these parameters are documented in the following subsections.
 
-\marginpar{Write something here. overview}
+\subsubsection{The structure of parameter files}
+
+Most of the run-time behavior of \aspect{} is driven by a parameter file that
+looks in essence like this:
+\begin{lstlisting}[frame=single,language=prmfile]
+set Resume computation            = false
+set End time                      = 1e10
+set CFL number                    = 1.0
+set Output directory              = bin
+
+subsection Mesh refinement
+  set Initial adaptive refinement = 1
+  set Initial global refinement   = 4
+end
+
+subsection Material model
+  set Model name                  = simple
+
+  subsection Simple model
+    set Reference density         = 3300
+    set Reference temperature     = 293
+    set Viscosity                 = 5e24
+  end
+end
+
+...
+\end{lstlisting}
+
+Some parameters live at the top level, but most parameters are grouped into
+subsections. An input parameter file is therefore much like a file system: a
+few files live in the root directory; others are in a nested hierarchy of
+sub-directories. And just as with files, parameters have both a name (the
+thing to the left of the equals sign) and a content (what's to the right).
+
+All parameters you can list in this input file have been \textit{declared} in
+\aspect. What this means is that you can't just list anything in the input
+file with entries that are unknown simply being ignored. Rather, if your input
+file contains a line setting a parameter that is unknown to something, you
+will get an error message. Likewise, all declared parameters have a
+description of possible values associated with them -- for example, some
+parameters must be non-negative integers (the number of initial refinement
+steps), can either be true or false (whether the computation should be resumed
+from a saved state), or can only be a single element from a selection (the
+name of the material model). If an entry in your input file doesn't satisfy
+these constraints, it will be rejected at the time of reading the file (and
+not when a part of the program actually accesses the value and the programmer
+has taken the time to also implement some error checking at this location).
+Finally, because parameters have been declared, you do not \textit{need} to
+specify a parameter in the input file: if a parameter isn't listed, then the
+program will simply use the default provided when declaring the parameter.
+
+\subsubsection{Categories of parameters}
+
+The parameters that can be provided in the input file can roughly be
+categorized into the following groups:
+\begin{itemize}
+\item Global parameters (see Section~\ref{parameters:global}): These
+  parameters determine the overall behavior of the program. Primarily they
+  describe things like the output directory, the end time of the simulation,
+  or whether the computation should be resumed from a previously saved state.
+
+\item Parameters for certain aspects of the numerical algorithm: These
+  describe, for example, the specifics of the spatial discretization. In
+  particular, this is the case for parameters
+  the polynomial degree of the finite element approximation
+  (Section~\ref{parameters:Discretization}), some details about the
+  stabilization
+  (Section~\ref{parameters:Discretization/Stabilization_20parameters}), and
+  how adaptive mesh refinement is supposed to work
+  (Section~\ref{parameters:Mesh_20refinement}).
+
+\item Parameters that describe certain global aspects of the equations to be
+  solved: This includes, for example, a description if certain terms in the
+  model should be omitted or not. See
+  Section~\ref{parameters:Model_20settings} for the list of parameters in this
+  category.
+
+\item Parameters that characterize plugins: Certain behaviors of
+  \aspect{} are described by what we call \textit{plugins} -- self-contained
+  parts of the code that describe one particular aspect of the simulation. An
+  example would be which of the implemented material models to use, and the
+  specifics of this material model. The sample parameter file above gives an
+  indication of how this works: within a subsection of the file that pertains
+  to the material models, one can select one out of several plugins (or, in
+  the case of the postprocessors, any number, including none, of the available
+  plugins), and one can then specify the specifics of this model in a
+  sub-subsection dedicated to this particular model.
+
+  A number of components of \aspect{} are implemented via plugins. These are,
+  together with the sections in which their parameters are declared:
+  \begin{itemize}
+  \item The material model:
+    Sections~\ref{parameters:Material_20model}, \ref{parameters:Material_20model/Simple_20model}.
+  \item The geometry:
+    Sections~\ref{parameters:Geometry_20model}, \ref{parameters:Geometry_20model/Spherical_20shell}.
+  \item The gravity description:
+    Sections~\ref{parameters:Gravity_20model}, \ref{parameters:Gravity_20model/Radial_20constant}.
+  \item Initial conditions for the temperature:
+    Sections~\ref{parameters:Initial_20conditions},
+    \ref{parameters:Initial_20conditions/Spherical_20gaussian_20perturbation}.
+  \item Temperature boundary conditions:
+    Sections~\ref{parameters:Boundary_20temperature_20model},
+    \ref{parameters:Boundary_20temperature_20model/Spherical_20constant}.
+  \item Postprocessors:
+    Sections~\ref{parameters:Postprocess}, \ref{parameters:Postprocess/Visualization}.
+  \end{itemize}
+\end{itemize}
+
+The details of parameters in each of these categories can be found in the
+sections linked to above. Some of them will also be used in the cookbooks in
+Section~\ref{sec:cookbooks}.
+
 
 % now include a file that describes all currently available run-time parameters
 \input{parameters}
+
+
+\section{Cookbooks}
+
+\marginpar{To be written}
+
 
 
 \section{Extending \aspect}
@@ -1008,6 +1146,8 @@ amount of documentation:
   \url{http://www.dealii.org/} also have information that may be relevant if
   you dive deeper into developing code. If you have questions, the mailing
   lists at \url{http://www.dealii.org/mail.html} are also of general help.
+\item A general overview of \dealii{} is also provided in the paper
+  \cite{BHK07}.
 \end{itemize}
 
 As a general note, by default \aspect{} utilizes a \dealii{} feature called \textit{debug
@@ -1591,23 +1731,117 @@ member variables that contain a state need to overload these functions.
 \subsection{Extending the basic solver}
 \label{sec:extending-solver}
 
-\marginpar{Write}
-step-31/32
+The core functionality of the code, i.e., that part of the code that
+implements the time stepping, assembles matrices, solves linear and nonlinear
+systems, etc., is in the \texttt{aspect::Simulator} class (see the
+\href{doc/doxygen/classaspect_1_1Simulator.html}{doxygen documentation of this
+  class}). Since the implementation of this class has more than 3,000 lines of
+code, it is split into several files that are all located in the
+\texttt{source/simulator} directory.
+
+Obviously, if you want to extend this core functionality, it is useful to
+first understand the numerical methods this class implements. To this end,
+take a look at the paper that describes these methods, see
+\cite{KHB12}. Further, there are two predecessor programs whose extensive
+documentation is at a much higher level than the one typically found inside
+\aspect{} itself, since they are meant to teach the basic components of
+convection simulators as part of the \dealii{} tutorial:
+\begin{itemize}
+\item The step-31 program at
+  \url{http://www.dealii.org/developer/doxygen/deal.II/step_31.html}: This
+  program is the first version of a convection solver. It does not run in
+  parallel, but it introduces many of the concepts relating to the time
+  discretization, the linear solvers, etc.
+\item The step-32 program at
+  \url{http://www.dealii.org/developer/doxygen/deal.II/step_32.html}: This is
+  a parallel version of the step-31 program that already solves on a spherical
+  shell geometry. The focus of the documentation in this program is on the
+  techniques necessary to make the program run in parallel, as well as some of
+  the consequences of making things run with realistic geometries, material
+  models, etc.
+\end{itemize}
+Neither of these two programs is nearly as modular as \aspect{}, but that was
+also not the goal in creating them. They will, however, serve as good
+introductions to the general approach for solving thermal convection problems.
+
+\note{Neither this manual, nor the documentation in \aspect{} makes much of an
+attempt at teaching how to use the \dealii{} library upon which \aspect{} is
+built. Nevertheless, you will likely have to know at least the basics of
+\dealii{} to successfully work on the \aspect{} code. We refer to the
+resources listed at the beginning of this section as well as references
+\cite{BHK07,BK99m}.}
 
 
 \section{Future plans for \aspect}
 
-\marginpar{Write}
+We have a number of near-term plans for \aspect{} that we hope to implement
+soon:
+\begin{itemize}
+\item \textit{Iterating out the nonlinearity:} In the current version of
+  \aspect{}, we use the velocity, pressure and temperature of the previous
+  time step to evaluate the coefficients that appear in the flow equations
+  \eqref{eq:stokes-1}--\eqref{eq:stokes-2}; and the velocity and pressure of
+  the current time step as well as the previous time step's temperature to
+  evaluate the coefficients in the temperature equation
+  \eqref{eq:temperature}. This is an appropriate strategy if the model is not
+  too nonlinear; however, it introduces inaccuracies and limits the size of
+  the time step if coefficients strongly depend on the solution variables.
 
-nonlinear
+  To avoid this, one can iterate out the equations using either a fixed point
+  or Newton scheme. Both approaches ensure that at the end of a time step, the
+  values of coefficients and solution variables are consistent. On the other
+  hand, one may have to solve the linear systems that describe a time step
+  more than once, increasing the computational effort.
 
-better 3d
+  We have started implementing such methods using a testbase code, based on
+  earlier experiments by Jennifer Worthen \cite{Wor12}. We hope to implement
+  this feature in \aspect{} early in 2012.
 
-better solvers
+\item \textit{Faster 3d computations:} Whichever way you look at it, 3d
+  computations are expensive. In parallel computations, the Stokes solve
+  currently takes upward of 90\% of the overall wallclock time, suggesting an
+  obvious target for improvements based on better algorithms as well as from
+  profiling the code to find hot spots. In particular, playing with better
+  solver and/or preconditioner options would seem to be a useful goal.
 
-particles
+\item \textit{Particle-based methods:} It is often useful to employ particle
+  tracers to visualize where material is being transported. While conceptually
+  simple, their implementation is made difficult in parallel computations
+  if particles cross the boundary between parts of the regions owned by
+  individual processors, as well as during re-partitioning the mesh between
+  processors following mesh refinement. Eric Heien is
+  working on an implementation of such passive tracers.
 
-more realistic models
+\item \textit{More realistic material models:} The number of
+  material models available in \aspect{} is currently relatively
+  small. Obviously, how realistic a simulation is depends on how realistic a
+  material model is. We hope to obtain descriptions of more realistic material
+  descriptions over time, either given analytically or based on table-lookup
+  of material properties.
+
+\item \textit{Converting output into seismic velocities:} The predictions of
+  mantle convection codes are often difficult to verify experimentally. On the
+  other hand, simulations can be used to predict a seismic signature of the
+  earth mantle -- for example the location of transition zones that can be
+  observed using seismic imaging. To facilitate such comparisons, it is of
+  interest to output not only the primary solution variables but also convert
+  them into the primary quantity visible in seismic imaging: compressive and
+  shear wave velocities. Implementing this should be relatively
+  straightforward if given a formula that expresses velocities in terms of the
+  variables computed by \aspect.
+\end{itemize}
+
+To end this section, let us repeat something already stated in the
+introduction:
+
+\note{\aspect{} is a community project. As such, we encourage contributions
+  from the community to improve this code over time. Obvious candidates for
+  such contributions are implementations of new plugins as discussed in
+  Section~\ref{sec:plugins} since they are typically self-contained and do not
+  require much knowledge of the details of the remaining code. Obviously,
+  however, we also encourage contributions to the core functionality in any
+  form!}
+
 
 \bibliographystyle{alpha}
 \addcontentsline{toc}{section}{\numberline{}References}
