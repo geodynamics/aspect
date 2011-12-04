@@ -1087,6 +1087,7 @@ Section~\ref{sec:cookbooks}.
 
 
 \section{Cookbooks}
+\label{sec:cookbooks}
 
 \marginpar{To be written}
 
@@ -1737,7 +1738,29 @@ systems, etc., is in the \texttt{aspect::Simulator} class (see the
 \href{doc/doxygen/classaspect_1_1Simulator.html}{doxygen documentation of this
   class}). Since the implementation of this class has more than 3,000 lines of
 code, it is split into several files that are all located in the
-\texttt{source/simulator} directory.
+\texttt{source/simulator} directory. Specifically, functionality is split into
+the following files:
+\begin{itemize}
+\item \texttt{source/simulator/core.cc}: This file contains the functions that
+  drive the overall algorithm (in particular \texttt{Simulator::run}) through
+  the main time stepping loop and the functions immediately called by
+  \texttt{Simulator::run}.
+\item \texttt{source/simulator/assembly.cc}: This is where all the functions
+  are located that are related to assembling linear systems.
+\item \texttt{source/simulator/solver.cc}: This file provides everything that
+  has to do with solving and preconditioning the linear systems.
+\item \texttt{source/simulator/initial\_conditions.cc}: The functions in this
+  file deal with setting initial conditions for all variables.
+\item \texttt{source/simulator/checkpoint\_restart.cc}: The location of
+  functionality related to saving the current state of the program to a set of
+  files and restoring it from these files again.
+\item \texttt{source/simulator/helper\_functions.cc}: This file contains a set
+  of functions that do the odd thing in support of the rest of the simulator
+  class.
+\item \texttt{source/simulator/parameters.cc}: This is where we define and
+  read run-time parameters that pertain to the top-level functionality of the
+  program.
+\end{itemize}
 
 Obviously, if you want to extend this core functionality, it is useful to
 first understand the numerical methods this class implements. To this end,
