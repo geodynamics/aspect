@@ -615,6 +615,12 @@ namespace aspect
         // set global statistics about this time step
         statistics.add_value("Time step number", timestep_number);
         statistics.add_value("Time (years)", time / year_in_seconds);
+        statistics.add_value("Number of mesh cells",
+                             triangulation.n_global_active_cells());
+        statistics.add_value("Number of Stokes degrees of freedom",
+                             stokes_dof_handler.n_dofs());
+        statistics.add_value("Number of temperature degrees of freedom",
+                             temperature_dof_handler.n_dofs());
 
 
         // then do the core work: assemble systems and solve
