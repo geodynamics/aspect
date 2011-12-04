@@ -19,7 +19,7 @@
 \item {\it Parameter name:} {\tt End time}
 
 
-{\it Value:} 2e2
+{\it Value:} 2e8
 
 
 {\it Default:} 1e8
@@ -66,7 +66,7 @@
 \item {\it Parameter name:} {\tt Model name}
 
 
-{\it Value:} spherical constant
+{\it Value:} box
 
 
 {\it Default:} 
@@ -76,8 +76,10 @@
 
 `spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Sherical constant'.
 
+`box': A model in which the temperature is chosen constant on the left and right sides of a box.
 
-{\it Possible values:} [Selection spherical constant ]
+
+{\it Possible values:} [Selection spherical constant|box ]
 \end{itemize}
 
 
@@ -213,7 +215,7 @@
 \item {\it Parameter name:} {\tt Model name}
 
 
-{\it Value:} spherical shell
+{\it Value:} box
 
 
 {\it Default:} 
@@ -223,8 +225,10 @@
 
 `spherical shell': A geometry representing a spherical shell or a pice of it. Inner and outer radii are read from the parameter file in subsection 'Spherical shell'.
 
+`box': A box geometry with fixed length 1 in each coordinate direction.
 
-{\it Possible values:} [Selection spherical shell ]
+
+{\it Possible values:} [Selection spherical shell|box ]
 \end{itemize}
 
 
@@ -281,7 +285,7 @@
 \item {\it Parameter name:} {\tt Model name}
 
 
-{\it Value:} radial constant
+{\it Value:} vertical
 
 
 {\it Default:} 
@@ -289,12 +293,14 @@
 
 {\it Description:} Select one of the following models:
 
+`vertical': A gravity model in which the gravity direction is vertically downward and at constant magnitude.
+
 `radial constant': A gravity model in which the gravity direction is radially inward and at constant magnitude. The magnitude is read from the parameter file in subsection 'Radial constant'.
 
 `radial earth-like': A gravity model in which the gravity direction is radially inward and with a magnitude that matches that of the earth at the core-mantle boundary as well as at the surface and in between is physically correct under the assumption of a constant density.
 
 
-{\it Possible values:} [Selection radial constant|radial earth-like ]
+{\it Possible values:} [Selection vertical|radial constant|radial earth-like ]
 \end{itemize}
 
 
@@ -325,7 +331,7 @@
 \item {\it Parameter name:} {\tt Model name}
 
 
-{\it Value:} spherical hexagonal perturbation
+{\it Value:} perturbed box
 
 
 {\it Default:} 
@@ -333,12 +339,14 @@
 
 {\it Description:} Select one of the following models:
 
-`spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following a six-fold pattern in angular direction from an otherwise sphericall symmetric state.
+`spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following a six-fold pattern in angular direction from an otherwise spherically symmetric state.
 
 `spherical gaussian perturbation': An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection 'Spherical gaussian perturbation'.
 
+`perturbed box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is chosen in such a way that the initial temperature is constant to one along the entire boundary.
 
-{\it Possible values:} [Selection spherical hexagonal perturbation|spherical gaussian perturbation ]
+
+{\it Possible values:} [Selection spherical hexagonal perturbation|spherical gaussian perturbation|perturbed box ]
 \end{itemize}
 
 
@@ -421,7 +429,7 @@
 \item {\it Parameter name:} {\tt Model name}
 
 
-{\it Value:} table
+{\it Value:} simple
 
 
 {\it Default:} 
@@ -446,7 +454,7 @@
 \item {\it Parameter name:} {\tt Reference density}
 
 
-{\it Value:} 3300
+{\it Value:} 1
 
 
 {\it Default:} 3300
@@ -459,13 +467,26 @@
 \item {\it Parameter name:} {\tt Reference temperature}
 
 
-{\it Value:} 293
+{\it Value:} 1
 
 
 {\it Default:} 293
 
 
 {\it Description:} The reference temperature $T_0$. Units: $K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal conductivity}
+
+
+{\it Value:} 4.7
+
+
+{\it Default:} 4.7
+
+
+{\it Description:} The value of the thermal conductivity $k$. Units: $W/m/K$.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -485,7 +506,7 @@
 \item {\it Parameter name:} {\tt Viscosity}
 
 
-{\it Value:} 5e24
+{\it Value:} 1
 
 
 {\it Default:} 5e24
@@ -530,7 +551,7 @@
 \item {\it Parameter name:} {\tt Initial adaptive refinement}
 
 
-{\it Value:} 0
+{\it Value:} 1
 
 
 {\it Default:} 2
@@ -601,7 +622,7 @@
 \item {\it Parameter name:} {\tt Radiogenic heating rate}
 
 
-{\it Value:} 0e0
+{\it Value:} 1
 
 
 {\it Default:} 0e0
@@ -651,7 +672,7 @@ The following postprocessors are available:
 \item {\it Parameter name:} {\tt Time between graphical output}
 
 
-{\it Value:} 5e8
+{\it Value:} 1
 
 
 {\it Default:} 50
