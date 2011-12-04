@@ -157,7 +157,7 @@ namespace aspect
     // re-initialize the postprocessors with the current object
     postprocess_manager.initialize (*this);
 
-    pcout << "*** resuming from Snapshot!" << std::endl;
+    pcout << "*** Resuming from snapshot!" << std::endl;
   }
 
 }
