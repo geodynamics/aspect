@@ -54,16 +54,27 @@ namespace aspect
 
     if (myid == 0)
       {
-        // keep the last snapshot in case this one fails to save
-        move_file (parameters.output_directory + "mesh",
-                   parameters.output_directory + "mesh.old");
-        move_file (parameters.output_directory + "mesh.info",
-                   parameters.output_directory + "mesh.info.old");
-        move_file (parameters.output_directory + "resume.txt",
-                   parameters.output_directory + "resume.txt.old");
+        // if we have previously written a snapshot, then keep the last
+        // snapshot in case this one fails to save
+        static bool previous_snapshot_exists = (parameters.resume_computation == true);
+
+        if (previous_snapshot_exists == true)
+          {
+            move_file (parameters.output_directory + "mesh",
+                       parameters.output_directory + "mesh.old");
+            move_file (parameters.output_directory + "mesh.info",
+                       parameters.output_directory + "mesh.info.old");
+            move_file (parameters.output_directory + "resume.txt",
+                       parameters.output_directory + "resume.txt.old");
+
+            // from now on, we know that if we get into this
+            // function again that a snapshot has previously
+            // been written
+            previous_snapshot_exists = true;
+          }
       }
 
-    //save Triangulation and Solution vectors:
+    // save Triangulation and Solution vectors:
     {
       std::vector<const TrilinosWrappers::MPI::Vector *> x_temperature (3);
       x_temperature[0] = &temperature_solution;
@@ -84,7 +95,7 @@ namespace aspect
       triangulation.save ((parameters.output_directory + "mesh").c_str());
     }
 
-    //save general information
+    // save general information
     if (myid == 0)
       {
         std::ofstream ofs ((parameters.output_directory + "resume.txt").c_str());
