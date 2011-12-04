@@ -128,8 +128,8 @@ namespace aspect
         const double gravity = gravity_model.gravity_vector(representative_point).norm();
 
         pressures[i] = pressures[i-1]
-                       - density * gravity * delta_z;
-        temperatures[i] = temperatures[i-1] -
+                       + density * gravity * delta_z;
+        temperatures[i] = temperatures[i-1] +
                           dTdp * density * gravity * delta_z;
       }
 
