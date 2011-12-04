@@ -31,7 +31,18 @@ namespace aspect
                     const std::string &new_name)
     {
       const int error = system (("mv " + old_name + " " + new_name).c_str());
-      AssertThrow (error == 0, ExcMessage("Can't move files."));
+
+      if (error != 0)
+        {
+          // allocate a static string that
+          // holds the message for long enough
+          // so that it can be printed
+          static const std::string
+          error_message (std::string ("Can't move files: ")
+                         +
+                         old_name + " -> " + new_name);
+          AssertThrow (error == 0, ExcMessage(error_message.c_str()));
+        }
     }
   }
 
