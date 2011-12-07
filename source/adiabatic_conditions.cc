@@ -40,7 +40,7 @@ namespace aspect
       // things up from tables
       return std::min(std::max(R1 - p.norm(),
                                0.0),
-                      R1-R0);
+                      (R1-R0)*(1-1e-12));
     }
 
 
