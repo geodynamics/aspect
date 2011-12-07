@@ -25,8 +25,15 @@ Topics for preview release:
 - Attach a proper license and adjust headers of all files
 - Go through the list of TODOs in the source code and see what can be done
 
+- Create a task list for a release that includes:
+  . update doc/manual/parameters.tex
+  . update and check in doc/manual.pdf
+  . make sure the .prm and .xml files we ship match the default values
+    of parameters
+
+
 First release
 -------------
 - Nonlinearity
 - Real 3d
-- Better mesh?
+- Better 3d coarse mesh?
