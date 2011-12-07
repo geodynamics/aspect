@@ -24,6 +24,7 @@ Topics for preview release:
 - Refinement criterion in 3d?
 - Attach a proper license and adjust headers of all files
 - Go through the list of TODOs in the source code and see what can be done
+- Allow different output formats in the visualization plugin
 
 - Create a task list for a release that includes:
   . update doc/manual/parameters.tex
