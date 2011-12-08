@@ -295,7 +295,8 @@ namespace aspect
                                     "." +
                                     Utilities::int_to_string
                                     (this->get_triangulation().locally_owned_subdomain(), 4) +
-				    "." + output_format);
+                                    DataOutBase::default_suffix
+                                    (DataOutBase::parse_output_format(output_format)));
 
       // throttle output
       const unsigned int concurrent_writers = 10;
@@ -308,12 +309,9 @@ namespace aspect
               std::ofstream output (filename.c_str());
               if (!output)
                 std::cout << "ERROR: proc " << myid << " could not create " << filename << std::endl;
-	      if (output_format=="vtu")
-		data_out.write_vtu (output);
-	      else if (output_format=="d2")
-		data_out.write_deal_II_intermediate (output);
-	      else
-		AssertThrow(false, ExcNotImplemented());
+
+              data_out.write (output,
+                              DataOutBase::parse_output_format(output_format));
             }
           if (i%concurrent_writers == 0)
             {
@@ -333,7 +331,8 @@ namespace aspect
                                  Utilities::int_to_string (output_file_number, 5) +
                                  "." +
                                  Utilities::int_to_string(i, 4) +
-                                 "." + output_format);
+                                 DataOutBase::default_suffix
+                                 (DataOutBase::parse_output_format(output_format)));
           const std::string
           pvtu_master_filename = (this->get_output_directory() +
                                   "solution-" +
@@ -377,16 +376,17 @@ namespace aspect
       {
         prm.enter_subsection("Visualization");
         {
-	  //TODO: use DataOut parse ...
-	  prm.declare_entry ("Output format", "vtu",
-			     Patterns::Selection("vtu|d2"),
-			     "file format extension, currently supported: vtu|d2");
           prm.declare_entry ("Time between graphical output", "50",
                              Patterns::Double (0),
                              "The time interval between each generation of "
                              "graphical output files. A value of zero indicates "
-			     "that output should be generated in each time step. "
-			     "Units: years.");
+                             "that output should be generated in each time step. "
+                             "Units: years.");
+
+          // now also see about the file format we're supposed to write in
+          prm.declare_entry ("Output format", "vtu",
+                             Patterns::Selection (DataOutInterface<dim>::get_output_format_names ()),
+                             "The file format to be used for graphical output.");
         }
         prm.leave_subsection();
       }
@@ -404,7 +404,7 @@ namespace aspect
         {
           output_interval = prm.get_double ("Time between graphical output")
                             * year_in_seconds;
-	  output_format = prm.get("Output format");
+          output_format = prm.get ("Output format");
         }
         prm.leave_subsection();
       }
