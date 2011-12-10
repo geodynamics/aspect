@@ -101,8 +101,8 @@ namespace aspect
 
     // now integrate downward using the explicit Euler method for simplicity
     //
-    // note: p'(z) = rho(p,T) * g
-    //       T'(z) = dT/dp|s dp/dz = dT/dp|S rho(p,T) * g
+    // note: p'(z) = rho(p,T) * |g|
+    //       T'(z) = alpha rho |g| T with alpha=1/rho drho/dT
     // TODO: check formulas!
     double z = delta_z;
     for (unsigned int i=1; i<n_points; ++i, z+=delta_z)

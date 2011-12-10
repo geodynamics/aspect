@@ -91,11 +91,11 @@ namespace aspect
          * will create output the next time we get to it.
          */
         unsigned int output_file_number;
-	
-	/**
-	 * graphical output format
-	 */
-	string output_format;
+
+        /**
+         * graphical output format
+         */
+        string output_format;
 
         /**
          * Compute the next output time from the current one. In
