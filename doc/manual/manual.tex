@@ -123,7 +123,7 @@ u$, pressure $p$ and temperature $T$:
   \rho H
   \notag
   \\
-  &\qquad
+  &\quad
   +
   2\eta
   \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
@@ -131,8 +131,7 @@ u$, pressure $p$ and temperature $T$:
   \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
   \\
   &\quad
-  -
-  \frac 1\rho T \frac{\partial\rho}{\partial T}\frac{Dp}{Dt}
+  +\frac{\partial \rho}{\partial T} T \mathbf u \cdot \mathbf g
   & \quad
   & \textrm{in $\Omega$},
   \notag
@@ -150,8 +149,19 @@ both the density of the fluid and the strength of the gravitational pull.
 
 Coupled to this Stokes system is equation \eqref{eq:temperature} for the
 temperature field $T=T(\mathbf x,t)$ that contains heat conduction terms as
-well as advection with the flow velocity $\mathbf u$.
-.......talk about rhs
+well as advection with the flow velocity $\mathbf u$. The right hand side
+terms of this equation correspond to
+\begin{itemize}
+\item internal heat production for example due to radioactive
+  decay;
+\item friction heating;
+\item adiabatic compression of material; as written, this term assumes that
+  the the overall pressure is dominated by the hydrostatic pressure, in which
+  case the variation of the total pressure can be expressed by gravity and
+  density.
+\end{itemize}
+The equations we \aspect{} currently solves do not include phase change terms,
+see Section~\ref{sec:future}.
 
 These equations are
 augmented by boundary conditions that can either be of Dirichlet-, Neumann, or
@@ -242,7 +252,7 @@ and, in the case of the viscosity, on the strain rate $\varepsilon(\mathbf
 u)$. Alternatively, they may be parameterized as a function of the spatial
 variable $\mathbf x$. \aspect{} allows both kinds of parameterizations.
 
-\textbf{Note: The next version of \aspect{} will actually iterate out
+\note{The next version of \aspect{} will actually iterate out
   nonlinearities in the material description. However, in the current version,
   we simply evaluate all nonlinear dependence of coefficients at the solution
   variables from the previous time step or a solution suitably extrapolated from
@@ -449,7 +459,9 @@ involving $\nabla \cdot \mathbf u$ from the left hand side of the momentum
 equation \eqref{eq:stokes-1} as well as from the shear heating term on the
 right hand side of \eqref{eq:temperature}; while dropping these terms does not
 affect the solution of the equations, it makes assembly of linear systems
-faster.
+faster. In addition, in the incompressible case, one needs to neglect the
+adiabatic heating term $\frac{\partial \rho}{\partial T} T \mathbf u \cdot
+\mathbf g$ on the right hand side of \eqref{eq:temperature}.
 
 From a physical perspective, the assumption that the density is constant in
 the continuity equation but variable in the momentum equation is of course
@@ -1795,6 +1807,7 @@ resources listed at the beginning of this section as well as references
 
 
 \section{Future plans for \aspect}
+\label{sec:future}
 
 We have a number of near-term plans for \aspect{} that we hope to implement
 soon:
@@ -1841,6 +1854,15 @@ soon:
   descriptions over time, either given analytically or based on table-lookup
   of material properties.
 
+\item \textit{Incorporating latent heat effects:} Real materials undergo phase
+  transitions at certain pressures and temperatures, and these phase
+  transitions release or take up energy (i.e., heat). The terms that need to
+  be added to the temperature equation \eqref{eq:temperature} are not very
+  difficult but one needs a description of the latent heat based on the
+  Clapeyron slope as a function of temperature and pressure \cite{CY85,STO01},
+  which we currently don't have. If someone contributes such a description
+  we'll be happy to add the relevant terms into the model.
+
 \item \textit{Converting output into seismic velocities:} The predictions of
   mantle convection codes are often difficult to verify experimentally. On the
   other hand, simulations can be used to predict a seismic signature of the
@@ -1865,8 +1887,44 @@ introduction:
   form!}
 
 
+\section{Finding answers to more questions}
+
+If you have questions that go beyond this manual, there are a number of
+resouces:
+\begin{itemize}
+\item For questions on the source code of Aspect, portability, installation,
+  etc., use the \aspect development mailing list at
+  \url{aspect-devel@geodynamics.org}. Information about this mailing
+  list is provided at
+  \url{http://geodynamics.org/cgi-bin/mailman/listinfo/aspect-devel}. This
+  mailing list is where the Aspect developers all hang out.
+
+\item Aspect is primarily based on the deal.II library (the dependency
+  on Trilinos and p4est is primarily through deal.II, and not directly
+  visible in the Aspect source code). If you have particular questions
+  about deal.II, contact
+  the mailing lists described at \url{http://www.dealii.org/mail.html}.
+
+\item In case of more general questions about mantle convection, you can
+  contact the CIG mantle
+  convection mailing lists at \url{cig-mc@geodynamics.org}. Information
+  about this mailing list is
+  provided at \url{http://geodynamics.org/cgi-bin/mailman/listinfo/cig-MC}.
+
+\item If you have specific questions about Aspect that are not suitable
+  for public and archived mailing lists, you can contact the
+  primary developers:
+  \begin{itemize}
+  \item Wolfgang
+    Bangerth: \url{bangerth@math.tamu.edu}.
+  \item Timo
+    Heister: \url{heister@math.tamu.edu}.
+  \end{itemize}
+\end{itemize}
+
+
 \bibliographystyle{alpha}
 \addcontentsline{toc}{section}{\numberline{}References}
 \bibliography{manual}
 
-\end{document}
+        \end{document}

@@ -17,14 +17,18 @@ Topics for an ASPECT II paper:
 Topics for preview release:
 ---------------------------
 - temperature equation must contain adiabatic terms in the compressible case
-- temperature equation also must contain phase-change heating terms (see the paper
-  in doc/papers)
-- readme.html
 - front page of doxygen documentation
-- Refinement criterion in 3d?
+- Refinement criterion in 3d? rescale to the average, not to the max
 - Use extrapolated solution for grid refinement
 - Attach a proper license and adjust headers of all files
 - Go through the list of TODOs in the source code and see what can be done
+- unitless meters/seconds instead of cm/year
+- minimal mesh size (shortest edge divided by order)
+- make initial conditions class say whether it implements a temperature
+  or a temperature perturbation
+- name the material model better than "table" and put the input files into
+  a better directory
+
 
 - Create a task list for a release that includes:
   . update doc/manual/parameters.tex
