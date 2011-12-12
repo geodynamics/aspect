@@ -73,11 +73,37 @@ namespace aspect
                                 vrms * year_in_seconds);
           statistics.add_value ("Max. velocity (m/year)",
                                 global_max_velocity * year_in_seconds);
+
+          // also make sure that the other columns filled by the this object
+          // all show up with sufficient accuracy and in scientific notation
+          {
+            const char *columns[] = { "RMS velocity (m/year)",
+                                      "Max. velocity (m/year)"
+                                    };
+            for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+              {
+                statistics.set_precision (columns[i], 8);
+                statistics.set_scientific (columns[i], true);
+              }
+          }
         }
       else
         {
           statistics.add_value ("RMS velocity (m/s)", vrms);
           statistics.add_value ("Max. velocity (m/s)", global_max_velocity);
+
+          // also make sure that the other columns filled by the this object
+          // all show up with sufficient accuracy and in scientific notation
+          {
+            const char *columns[] = { "RMS velocity (m/s)",
+                                      "Max. velocity (m/s)"
+                                    };
+            for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+              {
+                statistics.set_precision (columns[i], 8);
+                statistics.set_scientific (columns[i], true);
+              }
+          }
         }
 
       std::ostringstream output;

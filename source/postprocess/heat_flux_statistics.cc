@@ -137,8 +137,16 @@ namespace aspect
           // to invert the sign of the core-mantle flux because we
           // have computed the flux with a normal pointing from
           // the mantle into the core, and not the other way around
+
           statistics.add_value ("Core-mantle heat flux (W)", -global_boundary_fluxes[0]);
           statistics.add_value ("Surface heat flux (W)",     global_boundary_fluxes[1]);
+
+          // also make sure that the other columns filled by the this object
+          // all show up with sufficient accuracy and in scientific notation
+          statistics.set_precision ("Core-mantle heat flux (W)", 8);
+          statistics.set_scientific ("Core-mantle heat flux (W)", true);
+          statistics.set_precision ("Surface heat flux (W)", 8);
+          statistics.set_scientific ("Surface heat flux (W)", true);
 
           // finally have something for the screen
           std::ostringstream output;
@@ -156,6 +164,13 @@ namespace aspect
           // to left and right boundaries
           statistics.add_value ("Left boundary heat flux (W)", global_boundary_fluxes[0]);
           statistics.add_value ("Right boundary heat flux (W)", global_boundary_fluxes[1]);
+
+          // also make sure that the other columns filled by the this object
+          // all show up with sufficient accuracy and in scientific notation
+          statistics.set_precision ("Left boundary heat flux (W)", 8);
+          statistics.set_scientific ("Left boundary heat flux (W)", true);
+          statistics.set_precision ("Right boundary heat flux (W)", 8);
+          statistics.set_scientific ("Right boundary heat flux (W)", true);
 
           // finally have something for the screen
           std::ostringstream output;

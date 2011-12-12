@@ -102,6 +102,21 @@ namespace aspect
                             global_temperature_integral / this->get_volume() /
                             this->get_boundary_temperature().maximal_temperature());
 
+      // also make sure that the other columns filled by the this object
+      // all show up with sufficient accuracy and in scientific notation
+      {
+        const char *columns[] = { "Minimal temperature (K)",
+                                  "Average temperature (K)",
+                                  "Maximal temperature (K)",
+                                  "Average nondimensional temperature (K)"
+                                };
+        for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+          {
+            statistics.set_precision (columns[i], 8);
+            statistics.set_scientific (columns[i], true);
+          }
+      }
+
       std::ostringstream output;
       output.precision(4);
       output << global_min_temperature << " K, "
