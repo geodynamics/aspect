@@ -509,6 +509,37 @@ the compressibility to the continuity equation is very small. This may be
 different, however, for models in which the density changes rather abruptly,
 for example due to phase changes at mantle discontinuities.
 
+In summary, models that use the approximation of incompressibility solve the
+following set of equations instead of \eqref{eq:stokes-1}--\eqref{eq:temperature}:
+\begin{align}
+  \label{eq:stokes-1-boussinesq}
+  -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
+                \right] + \nabla p &=
+  \rho \mathbf g
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \label{eq:stokes-2-boussinesq}
+  \nabla \cdot \mathbf u &= 0
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \label{eq:temperature-boussinesq}
+  \rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
+  - \nabla\cdot k\nabla T
+  &=
+  \rho H
+  +
+  2\eta
+  \varepsilon(\mathbf u)
+  :
+  \varepsilon(\mathbf u)
+  & \quad
+  & \textrm{in $\Omega$},
+\end{align}
+where the coefficients $\eta,\rho,\mathbf g,C_p$ may possible depend on the
+solution variables.
+
 \note{As we will see in Section~\ref{sec:extending}, it is easy to add new material
 models to \aspect. Each model can decide whether it wants to use the
 Boussinesq approximation or not. The description of the models in
@@ -525,17 +556,94 @@ are, in fact, constant. In such models, one typically assumes that the density
 satisfies a relationship of the form $\rho=\rho(T)=\rho_0(1-\beta(T-T_0))$
 with a small thermal expansion coefficient $\beta$ and a reference density
 $\rho_0$ that is attained at temperature $T_0$. Since the thermal expansion is
-considered small, this naturally leads to the Boussinesq
-model discussed above.
+considered small, this naturally leads to the following variant of the Boussinesq
+model discussed above:
+\begin{align*}
+  -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
+                \right] + \nabla p &=
+  \rho_0 (1-\beta (T-T_0)) \mathbf g
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \nabla \cdot \mathbf u &= 0
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
+  - \nabla\cdot k\nabla T
+  &=
+  \rho H
+  +
+  2\eta
+  \varepsilon(\mathbf u)
+  :
+  \varepsilon(\mathbf u)
+  & \quad
+  & \textrm{in $\Omega$},
+\end{align*}
+If the gravitational acceleration $\mathbf g$ results from a gravity potential
+$\varphi$ via $\mathbf g = -\nabla \varphi$, then one can rewrite the
+equations above in the following, commonly used form:%
+\footnote{Note, however, that \aspect{} does not solve the equations in the
+  form given in
+  \eqref{eq:stokes-1-boussinesq-linear}--\eqref{eq:temperature-boussinesq-linear}. Rather,
+  it takes the original form in which the real density, not the variation of
+  the density. That said, you can use the formulation
+  \eqref{eq:stokes-1-boussinesq-linear}--\eqref{eq:temperature-boussinesq-linear}
+  by implementing a material model (see Section~\ref{sec:material-models}) in
+  which the density in fact has the form $\rho(T)=\beta \rho_0 T$ even though
+  this is not physical.}
+\begin{align}
+  \label{eq:stokes-1-boussinesq-linear}
+  -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
+                \right] + \nabla p_d &=
+  -\beta\rho_0 T \mathbf g
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \label{eq:stokes-2-boussinesq-linear}
+  \nabla \cdot \mathbf u &= 0
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \label{eq:temperature-boussinesq-linear}
+  \rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
+  - \nabla\cdot k\nabla T
+  &=
+  \rho H
+  +
+  2\eta
+  \varepsilon(\mathbf u)
+  :
+  \varepsilon(\mathbf u)
+  & \quad
+  & \textrm{in $\Omega$},
+\end{align}
+where $p_d=p+\rho_0(1+\beta T_0)\varphi$ is the dynamic pressure, as opposed
+to the total pressure $p=p_d+p_s$ that also includes the hydrastatic pressure
+$p_s=-\rho_0(1+\beta T_0)\varphi$. Note that the right hand side forcing term
+in \eqref{eq:stokes-1-boussinesq-linear} is now only the deviation of the
+gravitational force from the force that would act if the material were at
+temperature $T_0$.
 
 Under the assumption that all other coefficients are constant, one then
 arrives at equations in which the only nonlinear terms are the advection term,
 $\mathbf u \cdot \nabla T$, and the shear friction, $2\eta\varepsilon(\mathbf
 u):\varepsilon(\mathbf u)$, in the temperature equation
-\eqref{eq:temperature}. This facilitates the use of a particular class of time
-stepping scheme in which....
+\eqref{eq:temperature-boussinesq-linear}. This facilitates the use of a
+particular class of time stepping scheme in which one does not solve the whole
+set of equations at once, iterating out nonlinearities as necessary, but
+instead in each time step solves first the Stokes system with the previous
+time step's temperature, and then uses the so-computed velocity to solve the
+temperature equation. These kind of time stepping schemes are often referred
+to as \textit{IMPES} methods (they originate in the porous media flow
+community, where the acronym stands for \textit{Im}plicit \textit{P}ressure,
+\textit{E}xplicit \textit{S}aturation). For details see \cite{KHB12}.
 
-\marginpar{To be finished}
+\note{In \aspect{} 0.8, using the IMPES scheme is the only available
+  option. However, in later versions we will implement a fully nonlinear
+  scheme that treats the equations as coupled, and one will be able to choose
+  between the two variants using a run-time parameter.}
 
 
 \section{Installation}
@@ -551,7 +659,7 @@ This is a brief explanation of how to install all the required software and
   and 10.8.x have bugs that make these versions unusable for our purpose.}
   which
   can be downloaded from
-  \href{http://trilinos.sandia.gov/download/trilinos-10.4.html}{http://trilinos.sandia.gov}. For
+  \href{http://trilinos.sandia.gov/download/trilinos-10.4.html}{http://trilinos.sandia.gov/}. For
   installation instructions see
   \href{http://www.dealii.org/developer/readme-petsc-trilinos.html}{the
     deal.II README}. Note that you have to configure with MPI by using
