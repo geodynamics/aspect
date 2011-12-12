@@ -77,11 +77,11 @@ namespace aspect
          * Interval between the generation of graphical output. This
          * parameter is read from the input file and consequently is not part
          * of the state that needs to be saved and restored.
-	 *
-	 * For technical reasons, this value is stored as given in the
-	 * input file and upon use is either interpreted as seconds or
-	 * years, depending on how the global flag in the input parameter
-	 * file is set.
+        *
+        * For technical reasons, this value is stored as given in the
+        * input file and upon use is either interpreted as seconds or
+        * years, depending on how the global flag in the input parameter
+        * file is set.
          */
         double output_interval;
 

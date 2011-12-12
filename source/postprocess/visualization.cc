@@ -468,14 +468,14 @@ namespace aspect
       // a positive multiple; we need to interpret output_interval either
       // as years or as seconds
       if (output_interval > 0)
-	{
-	  if (this->convert_output_to_years() == true)
-	    next_output_time = std::ceil(current_time / output_interval) *
-			       output_interval;
-	  else
-	    next_output_time = std::ceil(current_time / (output_interval * year_in_seconds)) *
-			       output_interval;
-	}
+        {
+          if (this->convert_output_to_years() == true)
+            next_output_time = std::ceil(current_time / output_interval) *
+                               output_interval;
+          else
+            next_output_time = std::ceil(current_time / (output_interval * year_in_seconds)) *
+                               output_interval;
+        }
     }
   }
 }

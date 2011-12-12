@@ -616,10 +616,16 @@ namespace aspect
     // start the principal loop over time steps:
     do
       {
-        pcout << "*** Timestep " << timestep_number
-              << ":  t=" << time/year_in_seconds
-              << " years"
-              << std::endl;
+        if (parameters.convert_to_years == true)
+          pcout << "*** Timestep " << timestep_number
+                << ":  t=" << time/year_in_seconds
+                << " years"
+                << std::endl;
+        else
+          pcout << "*** Timestep " << timestep_number
+                << ":  t=" << time
+                << " seconds"
+                << std::endl;
 
         // set global statistics about this time step
         statistics.add_value("Time step number", timestep_number);
