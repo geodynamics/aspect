@@ -227,6 +227,14 @@ namespace aspect
          */
         std::string
         get_output_directory () const;
+
+        /**
+        * Return whether things like velocities should be converted from
+        * the seconds in the MKS system to years. The value of this flag
+        * is set by the corresponding entry in the input parameter file.
+        */
+        bool
+        convert_output_to_years () const;
         /** @} */
 
 

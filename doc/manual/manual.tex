@@ -235,11 +235,13 @@ pressure dependent material parameters.
   geometries, etc., must also be expressed in these units.
 
   That said, for convenience, output quantities are sometimes provided in
-  units \textit{centimeters per year} instead of \textit{meters per second}
+  units meters per \textit{year} instead of meters per \textit{second}
   (velocities) or in \textit{years} instead of \textit{seconds} (the current
   time, the time step size); however, this
   conversion happens at the time output is generated, and is not part of the
-  solution process.}
+  solution process. Whether this conversion should happen is determined by the
+  flag ``\texttt{Use years in output instead of seconds}'' in the input file,
+  see Section~\ref{parameters:global}.}
 
 
 \subsection{Coefficients}
@@ -517,16 +519,37 @@ sufficiently compressible to go with the fully compressible continuity equation.
 
 \subsubsection{Almost linear models}
 
-\marginpar{To be written}
+A further simplification can be obtained if one assumes that all coefficients
+with the exception of the density do not depend on the solution variables but
+are, in fact, constant. In such models, one typically assumes that the density
+satisfies a relationship of the form $\rho=\rho(T)=\rho_0(1-\beta(T-T_0))$
+with a small thermal expansion coefficient $\beta$ and a reference density
+$\rho_0$ that is attained at temperature $T_0$. Since the thermal expansion is
+considered small, this naturally leads to the Boussinesq
+model discussed above.
+
+Under the assumption that all other coefficients are constant, one then
+arrives at equations in which the only nonlinear terms are the advection term,
+$\mathbf u \cdot \nabla T$, and the shear friction, $2\eta\varepsilon(\mathbf
+u):\varepsilon(\mathbf u)$, in the temperature equation
+\eqref{eq:temperature}. This facilitates the use of a particular class of time
+stepping scheme in which....
+
+\marginpar{To be finished}
+
 
 \section{Installation}
 
-This is a brief explanation on how to install all the required software and \aspect{} itself.
+This is a brief explanation of how to install all the required software and
+\aspect{} itself.
 
 \subsection{Prerequisites}
 
 \begin{enumerate}
-\item \textit{Obtain Trilinos:} We recommend Trilinos Version 10.4.2, which
+\item \textit{Obtain Trilinos:} We recommend Trilinos Version 10.4.2,%
+  \footnote{There are newer versions of Trilinos, but at least Trilinos 10.6.x
+  and 10.8.x have bugs that make these versions unusable for our purpose.}
+  which
   can be downloaded from
   \href{http://trilinos.sandia.gov/download/trilinos-10.4.html}{http://trilinos.sandia.gov}. For
   installation instructions see
@@ -550,7 +573,7 @@ This is a brief explanation on how to install all the required software and \asp
 \begin{verbatim}
  svn checkout http://www.dealii.org/svn/dealii/trunk/deal.II
 \end{verbatim}
-  You may want to set the environment variable\footnote{for bash
+  You may want to set the environment variable\footnote{For bash
     this would be adding the line {\tt{export DEAL\_DIR=/path/to/deal.ii/}} to
     the file {\tt{\~{}/.bashrc}}} {\tt{DEAL\_DIR}} to the directory where you
   checked out \dealii.
@@ -805,8 +828,8 @@ The purpose of these files is as follows:
 # 4: Time step size (year)
 # 5: Iterations for temperature solver
 # 6: Visualization file name
-# 7: RMS velocity (cm/year)
-# 8: Max. velocity (cm/year)
+# 7: RMS velocity (m/year)
+# 8: Max. velocity (m/year)
 # 9: Minimal temperature (K)
 # 10: Average temperature (K)
 # 11: Maximal temperature (K)

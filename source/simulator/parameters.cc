@@ -38,7 +38,21 @@ namespace aspect
 
     prm.declare_entry ("End time", "1e8",
                        Patterns::Double (0),
-                       "The end time of the simulation. Units: years.");
+                       "The end time of the simulation. Units: years if the "
+                       "'Use years in output instead of seconds' parameter is set; "
+                       "seconds otherwise.");
+
+    prm.declare_entry ("Use years in output instead of seconds", "true",
+                       Patterns::Bool (),
+                       "When computing results for mantle convection simulations, "
+                       "it is often difficult to judge the order of magnitude of results "
+                       "when they are stated in MKS units involving seconds. Rather, "
+                       "some kinds of results such as velocities are often stated in "
+                       "terms of meters per year (or, sometimes, centimeters per year). "
+                       "On the other hand, for non-dimensional computations, one wants "
+                       "results in their natural unit system as used inside the code. "
+                       "If this flag is set to 'true' conversion to years happens; if "
+                       "it is 'false', no such conversion happens.");
 
     prm.declare_entry ("CFL number", "1.0",
                        Patterns::Double (0),
@@ -107,7 +121,9 @@ namespace aspect
                          "on a relatively coarse mesh, and then refine again when we "
                          "are in a time range that we are interested in and where "
                          "we would like to use a finer mesh. Units: each element of the "
-                         "list has units years.");
+                         "list has units years if the "
+                         "'Use years in output instead of seconds' parameter is set; "
+                         "seconds otherwise.");
     }
     prm.leave_subsection();
 
@@ -157,8 +173,13 @@ namespace aspect
   parse_parameters (ParameterHandler &prm)
   {
     resume_computation      = prm.get_bool ("Resume computation");
-    end_time                = prm.get_double ("End time");
     CFL_number              = prm.get_double ("CFL number");
+    convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
+
+    end_time                = prm.get_double ("End time");
+    if (convert_to_years == true)
+      end_time *= year_in_seconds;
+
     output_directory        = prm.get ("Output directory");
     if (output_directory.size() == 0)
       output_directory = "./";
@@ -181,8 +202,9 @@ namespace aspect
           (Utilities::split_string_list(prm.get ("Additional refinement times")));
       std::sort (additional_refinement_times.begin(),
                  additional_refinement_times.end());
-      for (unsigned int i=0; i<additional_refinement_times.size(); ++i)
-        additional_refinement_times[i] *= year_in_seconds;
+      if (convert_to_years == true)
+        for (unsigned int i=0; i<additional_refinement_times.size(); ++i)
+          additional_refinement_times[i] *= year_in_seconds;
     }
     prm.leave_subsection ();
 

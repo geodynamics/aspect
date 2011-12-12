@@ -120,6 +120,15 @@ namespace aspect
 
 
     template <int dim>
+    bool
+    SimulatorAccess<dim>::convert_output_to_years () const
+    {
+      return simulator->parameters.convert_to_years;
+    }
+
+
+
+    template <int dim>
     const TrilinosWrappers::MPI::BlockVector &
     SimulatorAccess<dim>::get_stokes_solution () const
     {

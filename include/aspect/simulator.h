@@ -125,6 +125,7 @@ namespace aspect
         bool                resume_computation;
         double              end_time;
         double              CFL_number;
+        bool                convert_to_years;
         std::string         output_directory;
         /**
          * @}

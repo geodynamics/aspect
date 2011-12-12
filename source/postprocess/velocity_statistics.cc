@@ -64,16 +64,34 @@ namespace aspect
       const double global_max_velocity
         = Utilities::MPI::max (local_max_velocity, MPI_COMM_WORLD);
 
-      const double vrms = std::sqrt(global_velocity_square_integral) / std::sqrt(this->get_volume());
-      statistics.add_value ("RMS velocity (cm/year)", vrms * year_in_seconds * 100);
-      statistics.add_value ("Max. velocity (cm/year)", global_max_velocity * year_in_seconds * 100);
+      const double vrms = std::sqrt(global_velocity_square_integral) /
+                          std::sqrt(this->get_volume());
+
+      if (this->convert_output_to_years() == true)
+        {
+          statistics.add_value ("RMS velocity (m/year)",
+                                vrms * year_in_seconds);
+          statistics.add_value ("Max. velocity (m/year)",
+                                global_max_velocity * year_in_seconds);
+        }
+      else
+        {
+          statistics.add_value ("RMS velocity (m/s)", vrms);
+          statistics.add_value ("Max. velocity (m/s)", global_max_velocity);
+        }
 
       std::ostringstream output;
       output.precision(3);
-      output << vrms *year_in_seconds * 100
-             << " cm/year, "
-             << global_max_velocity *year_in_seconds * 100
-             << " cm/year";
+      if (this->convert_output_to_years() == true)
+        output << vrms *year_in_seconds
+               << " m/year, "
+               << global_max_velocity *year_in_seconds
+               << " m/year";
+      else
+        output << vrms
+               << " m/s, "
+               << global_max_velocity
+               << " m/s";
 
       return std::pair<std::string, std::string> ("RMS, max velocity:",
                                                   output.str());

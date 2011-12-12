@@ -407,8 +407,17 @@ namespace aspect
     output_list = postprocess_manager.execute (statistics);
 
     std::ofstream stat_file ((parameters.output_directory+"statistics").c_str());
-    statistics.set_scientific("Time (years)", true);
-    statistics.set_scientific("Time step size (year)", true);
+    if (parameters.convert_to_years == true)
+      {
+        statistics.set_scientific("Time (years)", true);
+        statistics.set_scientific("Time step size (years)", true);
+      }
+    else
+      {
+        statistics.set_scientific("Time (seconds)", true);
+        statistics.set_scientific("Time step size (seconds)", true);
+      }
+
     statistics.write_text (stat_file,
                            TableHandler::table_with_separate_column_description);
 
@@ -614,7 +623,10 @@ namespace aspect
 
         // set global statistics about this time step
         statistics.add_value("Time step number", timestep_number);
-        statistics.add_value("Time (years)", time / year_in_seconds);
+        if (parameters.convert_to_years == true)
+          statistics.add_value("Time (years)", time / year_in_seconds);
+        else
+          statistics.add_value("Time (seconds)", time);
         statistics.add_value("Number of mesh cells",
                              triangulation.n_global_active_cells());
         statistics.add_value("Number of Stokes degrees of freedom",
@@ -708,7 +720,7 @@ namespace aspect
               rebuild_stokes_preconditioner = true;
           }
       }
-    while (time < parameters.end_time * year_in_seconds);
+    while (time < parameters.end_time);
   }
 }
 

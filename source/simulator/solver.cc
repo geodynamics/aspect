@@ -238,7 +238,10 @@ namespace aspect
       old_time_step = time_step;
       time_step = compute_time_step();
 
-      statistics.add_value("Time step size (year)", time_step / year_in_seconds);
+      if (parameters.convert_to_years == true)
+        statistics.add_value("Time step size (years)", time_step / year_in_seconds);
+      else
+        statistics.add_value("Time step size (seconds)", time_step);
 
       temperature_solution = old_temperature_solution;
       assemble_temperature_system ();

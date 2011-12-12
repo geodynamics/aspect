@@ -35,6 +35,7 @@ namespace aspect
         public:
           Postprocessor (const unsigned int                   partition,
                          const double                         minimal_pressure,
+                         const double                         convert_output_to_years,
                          const MaterialModel::Interface<dim> &material_model,
                          const AdiabaticConditions<dim>      &adiabatic_conditions);
 
@@ -60,6 +61,7 @@ namespace aspect
         private:
           const unsigned int                   partition;
           const double                         minimal_pressure;
+          const double                         convert_output_to_years;
           const MaterialModel::Interface<dim> &material_model;
           const AdiabaticConditions<dim>      &adiabatic_conditions;
       };
@@ -69,11 +71,13 @@ namespace aspect
       Postprocessor<dim>::
       Postprocessor (const unsigned int                   partition,
                      const double                         minimal_pressure,
+                     const double                         convert_output_to_years,
                      const MaterialModel::Interface<dim> &material_model,
                      const AdiabaticConditions<dim>      &adiabatic_conditions)
         :
         partition (partition),
         minimal_pressure (minimal_pressure),
+        convert_output_to_years (convert_output_to_years),
         material_model(material_model),
         adiabatic_conditions (adiabatic_conditions)
       {}
@@ -153,10 +157,13 @@ namespace aspect
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            // velocity; rescale in cm/year
+            // velocity; rescale in m/year if so requested
             for (unsigned int d=0; d<dim; ++d)
               computed_quantities[q](d)
-                = (uh[q](d) *  year_in_seconds * 100);
+                = (uh[q](d) *
+                   (convert_output_to_years == true ?
+                    year_in_seconds :
+                    1));
 
             // pressure
             const double pressure_at_surface = 1e6;
@@ -281,6 +288,7 @@ namespace aspect
 
       internal::Postprocessor<dim> postprocessor (this->get_triangulation().locally_owned_subdomain(),
                                                   this->get_stokes_solution().block(1).minimal_value(),
+                                                  this->convert_output_to_years(),
                                                   this->get_material_model(),
                                                   this->get_adiabatic_conditions());
 
@@ -381,7 +389,9 @@ namespace aspect
                              "The time interval between each generation of "
                              "graphical output files. A value of zero indicates "
                              "that output should be generated in each time step. "
-                             "Units: years.");
+                             "Units: years if the "
+                             "'Use years in output instead of seconds' parameter is set; "
+                             "seconds otherwise.");
 
           // now also see about the file format we're supposed to write in
           prm.declare_entry ("Output format", "vtu",
@@ -403,7 +413,8 @@ namespace aspect
         prm.enter_subsection("Visualization");
         {
           output_interval = prm.get_double ("Time between graphical output")
-                            * year_in_seconds;
+                            * (this->convert_output_to_years() ?
+                               year_in_seconds : 1);
           output_format = prm.get ("Output format");
         }
         prm.leave_subsection();
