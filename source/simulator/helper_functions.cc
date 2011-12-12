@@ -122,7 +122,7 @@ namespace aspect
           fe_values[velocities].get_function_values (stokes_solution,
                                                      velocity_values);
 
-          double max_local_velocity = 1e-10;
+          double max_local_velocity = 0;
           for (unsigned int q=0; q<n_q_points; ++q)
             max_local_velocity = std::max (max_local_velocity,
                                            velocity_values[q].norm());
@@ -132,9 +132,17 @@ namespace aspect
                                                    cell->minimum_vertex_distance());
         }
 
-    return (parameters.CFL_number /
-            (parameters.temperature_degree *
-             Utilities::MPI::max (max_local_speed_over_meshsize, MPI_COMM_WORLD)));
+    const double max_global_speed_over_meshsize
+      = Utilities::MPI::max (max_local_speed_over_meshsize, MPI_COMM_WORLD);
+
+    // if the velocity is zero, then it is somewhat arbitrary what time step
+    // we should choose. in that case, do as if the velocity was one
+    if (max_global_speed_over_meshsize == 0)
+      return  (parameters.CFL_number / (parameters.temperature_degree *
+                                        1));
+    else
+      return (parameters.CFL_number / (parameters.temperature_degree *
+                                       max_global_speed_over_meshsize));
   }
 
 
