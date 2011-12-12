@@ -412,10 +412,8 @@ namespace aspect
       {
         prm.enter_subsection("Visualization");
         {
-          output_interval = prm.get_double ("Time between graphical output")
-                            * (this->convert_output_to_years() ?
-                               year_in_seconds : 1);
-          output_format = prm.get ("Output format");
+          output_interval = prm.get_double ("Time between graphical output");
+          output_format   = prm.get ("Output format");
         }
         prm.leave_subsection();
       }
@@ -467,9 +465,17 @@ namespace aspect
     Visualization<dim>::set_next_output_time (const double current_time)
     {
       // if output_interval is positive, then set the next output interval to
-      // a positive multiple
+      // a positive multiple; we need to interpret output_interval either
+      // as years or as seconds
       if (output_interval > 0)
-        next_output_time = std::ceil(current_time / output_interval) * output_interval;
+	{
+	  if (this->convert_output_to_years() == true)
+	    next_output_time = std::ceil(current_time / output_interval) *
+			       output_interval;
+	  else
+	    next_output_time = std::ceil(current_time / (output_interval * year_in_seconds)) *
+			       output_interval;
+	}
     }
   }
 }

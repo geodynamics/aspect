@@ -74,9 +74,14 @@ namespace aspect
 
       private:
         /**
-         * Interval in years between the generation of graphical output. This
+         * Interval between the generation of graphical output. This
          * parameter is read from the input file and consequently is not part
          * of the state that needs to be saved and restored.
+	 *
+	 * For technical reasons, this value is stored as given in the
+	 * input file and upon use is either interpreted as seconds or
+	 * years, depending on how the global flag in the input parameter
+	 * file is set.
          */
         double output_interval;
 
@@ -93,7 +98,7 @@ namespace aspect
         unsigned int output_file_number;
 
         /**
-         * graphical output format
+         * Graphical output format.
          */
         string output_format;
 
