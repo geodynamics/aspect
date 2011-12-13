@@ -1994,6 +1994,17 @@ soon:
   which we currently don't have. If someone contributes such a description
   we'll be happy to add the relevant terms into the model.
 
+\item \textit{Prescribing boundary velocities:} One might want to prescribe the
+  velocity at the outer boundary, for example using GPS-inferred plate
+  velocities.
+
+\item \textit{Melting:} An important part of mantle behavior is
+  melting. Melting not only affects the properties of the material such as
+  density or viscosity, but it also leads to chemical segregation and, in
+  fact, to the flow of two different fluids (the melt and the rock matrix)
+  relative to each other. Modeling this additional process would yield
+  significant insight.
+
 \item \textit{Converting output into seismic velocities:} The predictions of
   mantle convection codes are often difficult to verify experimentally. On the
   other hand, simulations can be used to predict a seismic signature of the
@@ -2002,7 +2013,7 @@ soon:
   interest to output not only the primary solution variables but also convert
   them into the primary quantity visible in seismic imaging: compressive and
   shear wave velocities. Implementing this should be relatively
-  straightforward if given a formula that expresses velocities in terms of the
+  straightforward if given a formula or table that expresses velocities in terms of the
   variables computed by \aspect.
 \end{itemize}
 
