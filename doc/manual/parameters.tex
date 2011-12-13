@@ -19,13 +19,13 @@
 \item {\it Parameter name:} {\tt End time}
 
 
-{\it Value:} 2e8
+{\it Value:} 1e6
 
 
 {\it Default:} 1e8
 
 
-{\it Description:} The end time of the simulation. Units: years.
+{\it Description:} The end time of the simulation. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -55,6 +55,19 @@
 
 
 {\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Use years in output instead of seconds}
+
+
+{\it Value:} false
+
+
+{\it Default:} true
+
+
+{\it Description:} When computing results for mantle convection simulations, it is often difficult to judge the order of magnitude of results when they are stated in MKS units involving seconds. Rather, some kinds of results such as velocities are often stated in terms of meters per year (or, sometimes, centimeters per year). On the other hand, for non-dimensional computations, one wants results in their natural unit system as used inside the code. If this flag is set to 'true' conversion to years happens; if it is 'false', no such conversion happens.
+
+
+{\it Possible values:} [Bool]
 \end{itemize}
 
 
@@ -74,9 +87,7 @@
 
 {\it Description:} Select one of the following models:
 
-`spherical constant': A model in which the temperature is chosen constant on the
-inner and outer boundaries of a spherical shell. Parameters are read from
-subsection 'Spherical constant'.
+`spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Sherical constant'.
 
 `box': A model in which the temperature is chosen constant on the left and right sides of a box.
 
@@ -225,9 +236,7 @@ subsection 'Spherical constant'.
 
 {\it Description:} Select one of the following models:
 
-`spherical shell': A geometry representing a spherical shell or a piece of it.
-Inner and outer radii are read from the parameter file in subsection 'Spherical
-shell'.
+`spherical shell': A geometry representing a spherical shell or a pice of it. Inner and outer radii are read from the parameter file in subsection 'Spherical shell'.
 
 `box': A box geometry with fixed length 1 in each coordinate direction.
 
@@ -535,7 +544,7 @@ shell'.
 {\it Default:}
 
 
-{\it Description:} A list of times so that if the end time of a time step is beyond this time, an additional round of mesh refinement is triggered. This is mostly useful to make sure we can get through the initial transient phase of a simulation on a relatively coarse mesh, and then refine again when we are in a time range that we are interested in and where we would like to use a finer mesh. Units: each element of the list has units years.
+{\it Description:} A list of times so that if the end time of a time step is beyond this time, an additional round of mesh refinement is triggered. This is mostly useful to make sure we can get through the initial transient phase of a simulation on a relatively coarse mesh, and then refine again when we are in a time range that we are interested in and where we would like to use a finer mesh. Units: each element of the list has units years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
 
 
 {\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
@@ -673,6 +682,19 @@ The following postprocessors are available:
 \label{parameters:Postprocess/Visualization}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Output format}
+
+
+{\it Value:} vtu
+
+
+{\it Default:} vtu
+
+
+{\it Description:} The file format to be used for graphical output.
+
+
+{\it Possible values:} [Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot\_binary|vtk|vtu|deal.II intermediate ]
 \item {\it Parameter name:} {\tt Time between graphical output}
 
 
@@ -682,7 +704,7 @@ The following postprocessors are available:
 {\it Default:} 50
 
 
-{\it Description:} The time interval between each generation of graphical output files. Units: years.
+{\it Description:} The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
