@@ -77,7 +77,10 @@ namespace aspect
           // read in definitions from data file
           std::string temp;
           std::ifstream in("DataDir/tabeldatastruct.txt", std::ios::in);
-          AssertThrow (in, ExcIO());
+          AssertThrow (in,
+                       ExcMessage (std::string("Couldn't open file <") +
+                                   "DataDir/tabeldatastruct.txt>."));
+
           in >> n_p >> n_T;
           getline(in, temp); // eat remainder of the line
 
@@ -106,7 +109,9 @@ namespace aspect
         }
 
         std::ifstream in (filename.c_str(), std::ios::binary);
-        AssertThrow (in, ExcIO());
+        AssertThrow (in,
+                     ExcMessage (std::string("Couldn't open file <") +
+                                 filename + ">."));
 
         // allocate the following on the heap so as not to bust
         // stack size limits

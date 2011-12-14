@@ -125,12 +125,16 @@ namespace aspect
     // the currently used values into a file
     {
       std::ofstream prm_out ((parameters.output_directory + "parameters.prm").c_str());
-      AssertThrow (prm_out, ExcIO());
+      AssertThrow (prm_out,
+                   ExcMessage (std::string("Couldn't open file <") +
+                               parameters.output_directory + "parameters.prm>."));
       prm.print_parameters(prm_out, ParameterHandler::Text);
     }
     {
       std::ofstream prm_out ((parameters.output_directory + "parameters.tex").c_str());
-      AssertThrow (prm_out, ExcIO());
+      AssertThrow (prm_out,
+                   ExcMessage (std::string("Couldn't open file <") +
+                               parameters.output_directory + "parameters.tex>."));
       prm.print_parameters(prm_out, ParameterHandler::LaTeX);
     }
   }
