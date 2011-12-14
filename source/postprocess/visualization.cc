@@ -50,8 +50,6 @@ namespace aspect
 
           virtual std::vector<std::string> get_names () const;
 
-          virtual unsigned int n_output_variables() const;
-
           virtual
           std::vector<DataComponentInterpretation::DataComponentInterpretation>
           get_data_component_interpretation () const;
@@ -101,15 +99,6 @@ namespace aspect
 
 
       template <int dim>
-      unsigned int
-      Postprocessor<dim>::n_output_variables() const
-      {
-        // make our lives a bit easier here
-        return get_names().size();
-      }
-
-
-      template <int dim>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
       Postprocessor<dim>::
       get_data_component_interpretation () const
@@ -153,7 +142,6 @@ namespace aspect
         Assert (duh.size() == n_quadrature_points,                  ExcInternalError());
         Assert (computed_quantities.size() == n_quadrature_points,  ExcInternalError());
         Assert (uh[0].size() == dim+2,                              ExcInternalError());
-        Assert (computed_quantities[0].size()==n_output_variables(),ExcInternalError());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
