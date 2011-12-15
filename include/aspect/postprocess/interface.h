@@ -186,7 +186,7 @@ namespace aspect
         /** @{ */
 
         /**
-         * Return the current simulation time.
+         * Return the current simulation time in seconds.
          */
         double get_time () const;
 
