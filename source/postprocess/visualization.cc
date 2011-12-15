@@ -372,7 +372,7 @@ namespace aspect
       {
         prm.enter_subsection("Visualization");
         {
-          prm.declare_entry ("Time between graphical output", "50",
+          prm.declare_entry ("Time between graphical output", "1e8",
                              Patterns::Double (0),
                              "The time interval between each generation of "
                              "graphical output files. A value of zero indicates "
