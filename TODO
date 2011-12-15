@@ -8,7 +8,11 @@ Topics for an ASPECT II paper:
 - Compressibility
 - Nonlinearity
 - Checkpoint/restart
-- Mesh refinement criteria
+- Mesh refinement criteria:
+  - for density, which is not continuous, Kelly does not make sense
+  - use gradient norm approximation in each cell
+  - right h scaling needed, because error does not converge, >1, but small as possible
+  - h^(1+d/2) okay?
 - How implicit to be?
 
 
