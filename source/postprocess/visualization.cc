@@ -458,11 +458,11 @@ namespace aspect
       if (output_interval > 0)
         {
           if (this->convert_output_to_years() == true)
-            next_output_time = std::ceil(current_time / output_interval) *
-                               output_interval;
-          else
             next_output_time = std::ceil(current_time / (output_interval * year_in_seconds)) *
-                               output_interval;
+                               (output_interval * year_in_seconds);
+          else
+            next_output_time = std::ceil(current_time / (output_interval )) *
+                               (output_interval * year_in_seconds);
         }
     }
   }
