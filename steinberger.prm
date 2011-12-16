@@ -78,8 +78,26 @@ subsection Discretization
 end
 
 subsection Model settings
+  # A comma separated list of integers denoting those boundaries on which the
+  # temperature is fixed and described by the boundary temperature object
+  # selected in its own section of this input file. All boundary indicators
+  # used by the geometry but not explicitly listed here will end up with
+  # no-flux (insulating) boundary conditions.
+  set Fixed temperature boundary indicators   = 0,1
+
   set Include shear heating = false
   set Radiogenic heating rate = 0e0
+
+  # A comma separated list of integers denoting those boundaries on which the
+  # velocity is tangential and unrestrained, i.e., where no external forces
+  # act to prescribe a particular tangential velocity (although there is a
+  # force that requires the flow to be tangential).
+  set Tangential velocity boundary indicators = 1,2,3
+
+  # A comma separated list of integers denoting those boundaries on which the
+  # velocity is zero.
+  set Zero velocity boundary indicators       = 0
+
 end
 
 subsection Boundary temperature model
