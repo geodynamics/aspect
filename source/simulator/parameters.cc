@@ -36,8 +36,13 @@ namespace aspect
                        "A flag indicating whether the computation should be resumed from "
                        "a previously saved state (if true) or start from scratch (if false).");
 
+    prm.declare_entry ("Start time", "0",
+                       Patterns::Double (),
+                       "The start time of the simulation. Units: years if the "
+                       "'Use years in output instead of seconds' parameter is set; "
+                       "seconds otherwise.");
     prm.declare_entry ("End time", "1e8",
-                       Patterns::Double (0),
+                       Patterns::Double (),
                        "The end time of the simulation. Units: years if the "
                        "'Use years in output instead of seconds' parameter is set; "
                        "seconds otherwise.");
@@ -202,9 +207,13 @@ namespace aspect
     CFL_number              = prm.get_double ("CFL number");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
 
+    start_time              = prm.get_double ("Start time");
     end_time                = prm.get_double ("End time");
     if (convert_to_years == true)
-      end_time *= year_in_seconds;
+      {
+        start_time *= year_in_seconds;
+        end_time *= year_in_seconds;
+      }
 
     output_directory        = prm.get ("Output directory");
     if (output_directory.size() == 0)

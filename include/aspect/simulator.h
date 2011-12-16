@@ -123,6 +123,7 @@ namespace aspect
          * @{
          */
         bool                resume_computation;
+        double              start_time;
         double              end_time;
         double              CFL_number;
         bool                convert_to_years;

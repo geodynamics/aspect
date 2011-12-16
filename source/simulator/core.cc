@@ -92,7 +92,7 @@ namespace aspect
                                                                       *boundary_temperature,
                                                                       *adiabatic_conditions)),
 
-    time (0),
+    time (std::numeric_limits<double>::quiet_NaN()),
     time_step (0),
     old_time_step (0),
     timestep_number (0),
@@ -761,7 +761,7 @@ namespace aspect
         set_initial_temperature_field ();
         compute_initial_pressure_field ();
 
-        time                      = 0;
+        time                      = parameters.start_time;
         timestep_number           = 0;
         time_step = old_time_step = 0;
       }

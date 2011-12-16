@@ -192,8 +192,11 @@ namespace aspect
     template <int dim>
     Visualization<dim>::Visualization ()
       :
+      // the following value is later read from the input file
       output_interval (0),
-      next_output_time (0),
+      // initialize this to a nonsensical value; set it to the actual time
+      // the first time around we get to check it
+      next_output_time (std::numeric_limits<double>::quiet_NaN()),
       output_file_number (0)
     {}
 
@@ -203,6 +206,12 @@ namespace aspect
     std::pair<std::string,std::string>
     Visualization<dim>::execute (TableHandler &statistics)
     {
+      // if this is the first time we get here, set the next output time
+      // to the current time. this makes sure we always produce data during
+      // the first time step
+      if (next_output_time == std::numeric_limits<double>::quiet_NaN())
+        next_output_time = this->get_time();
+
       // see if graphical output is requested at this time
       if (this->get_time() < next_output_time)
         return std::pair<std::string,std::string>();
