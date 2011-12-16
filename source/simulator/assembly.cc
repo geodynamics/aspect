@@ -633,9 +633,9 @@ namespace aspect
   Simulator<dim>::
   copy_local_to_global_stokes_preconditioner (const internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
   {
-    stokes_constraints.distribute_local_to_global (data.local_matrix,
-                                                   data.local_dof_indices,
-                                                   stokes_preconditioner_matrix);
+    current_stokes_constraints.distribute_local_to_global (data.local_matrix,
+                                                           data.local_dof_indices,
+                                                           stokes_preconditioner_matrix);
   }
 
 
@@ -843,20 +843,20 @@ namespace aspect
   copy_local_to_global_stokes_system (const internal::Assembly::CopyData::StokesSystem<dim> &data)
   {
     if (rebuild_stokes_matrix == true)
-      stokes_constraints.distribute_local_to_global (data.local_matrix,
-                                                     data.local_rhs,
-                                                     data.local_dof_indices,
-                                                     stokes_matrix,
-                                                     stokes_rhs);
+      current_stokes_constraints.distribute_local_to_global (data.local_matrix,
+                                                             data.local_rhs,
+                                                             data.local_dof_indices,
+                                                             stokes_matrix,
+                                                             stokes_rhs);
     else
-      stokes_constraints.distribute_local_to_global (data.local_rhs,
-                                                     data.local_dof_indices,
-                                                     stokes_rhs);
+      current_stokes_constraints.distribute_local_to_global (data.local_rhs,
+                                                             data.local_dof_indices,
+                                                             stokes_rhs);
 
     if (material_model->is_compressible())
-      stokes_constraints.distribute_local_to_global (data.local_pressure_shape_function_integrals,
-                                                     data.local_dof_indices,
-                                                     pressure_shape_function_integrals);
+      current_stokes_constraints.distribute_local_to_global (data.local_pressure_shape_function_integrals,
+                                                             data.local_dof_indices,
+                                                             pressure_shape_function_integrals);
   }
 
 

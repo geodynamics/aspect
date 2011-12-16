@@ -166,9 +166,70 @@ namespace aspect
   }
 
 
+  template <int dim>
+  void
+  Simulator<dim>::
+  start_timestep ()
+  {
+    // first produce some output for the screen to show where we are
+    if (parameters.convert_to_years == true)
+      pcout << "*** Timestep " << timestep_number
+            << ":  t=" << time/year_in_seconds
+            << " years"
+            << std::endl;
+    else
+      pcout << "*** Timestep " << timestep_number
+            << ":  t=" << time
+            << " seconds"
+            << std::endl;
+
+    // set global statistics about this time step
+    statistics.add_value("Time step number", timestep_number);
+    if (parameters.convert_to_years == true)
+      statistics.add_value("Time (years)", time / year_in_seconds);
+    else
+      statistics.add_value("Time (seconds)", time);
+    statistics.add_value("Number of mesh cells",
+                         triangulation.n_global_active_cells());
+    statistics.add_value("Number of Stokes degrees of freedom",
+                         stokes_dof_handler.n_dofs());
+    statistics.add_value("Number of temperature degrees of freedom",
+                         temperature_dof_handler.n_dofs());
+
+    // then interpolate the current boundary velocities. this adds to
+    // the stokes_constraints object we already have
+    {
+      IndexSet stokes_relevant_set;
+      DoFTools::extract_locally_relevant_dofs (stokes_dof_handler,
+                                               stokes_relevant_set);
+
+      current_stokes_constraints.clear ();
+      current_stokes_constraints.reinit (stokes_relevant_set);
+      current_stokes_constraints.merge (stokes_constraints);
+
+      typedef unsigned char boundary_indicator_t;
+      const std::set<boundary_indicator_t>
+      prescribed_velocity_boundary_indicators (parameters.prescribed_velocity_boundary_indicators.begin(),
+                                               parameters.prescribed_velocity_boundary_indicators.end());
+
+      // do the interpolation for the prescribed velocity field
+      std::vector<bool> velocity_mask (dim+1, true);
+      velocity_mask[dim] = false;
+      for (std::set<boundary_indicator_t>::const_iterator
+           p = prescribed_velocity_boundary_indicators.begin();
+           p != prescribed_velocity_boundary_indicators.end(); ++p)
+        VectorTools::interpolate_boundary_values (stokes_dof_handler,
+                                                  *p,
+                                                  ZeroFunction<dim>(dim+1),
+                                                  current_stokes_constraints,
+                                                  velocity_mask);
+      current_stokes_constraints.close();
+    }
+  }
 
   template <int dim>
-  void Simulator<dim>::
+  void
+  Simulator<dim>::
   setup_stokes_matrix (const std::vector<IndexSet> &stokes_partitioning)
   {
     stokes_matrix.clear ();
@@ -708,30 +769,7 @@ namespace aspect
     // start the principal loop over time steps:
     do
       {
-        if (parameters.convert_to_years == true)
-          pcout << "*** Timestep " << timestep_number
-                << ":  t=" << time/year_in_seconds
-                << " years"
-                << std::endl;
-        else
-          pcout << "*** Timestep " << timestep_number
-                << ":  t=" << time
-                << " seconds"
-                << std::endl;
-
-        // set global statistics about this time step
-        statistics.add_value("Time step number", timestep_number);
-        if (parameters.convert_to_years == true)
-          statistics.add_value("Time (years)", time / year_in_seconds);
-        else
-          statistics.add_value("Time (seconds)", time);
-        statistics.add_value("Number of mesh cells",
-                             triangulation.n_global_active_cells());
-        statistics.add_value("Number of Stokes degrees of freedom",
-                             stokes_dof_handler.n_dofs());
-        statistics.add_value("Number of temperature degrees of freedom",
-                             temperature_dof_handler.n_dofs());
-
+        start_timestep ();
 
         // then do the core work: assemble systems and solve
         assemble_stokes_system ();

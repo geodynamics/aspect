@@ -223,6 +223,7 @@ namespace aspect
       void setup_dofs ();
       void set_initial_temperature_field ();
       void compute_initial_pressure_field ();
+      void start_timestep ();
       void assemble_stokes_preconditioner ();
       void build_stokes_preconditioner ();
       void assemble_stokes_system ();
@@ -382,12 +383,14 @@ namespace aspect
 
       DoFHandler<dim>                                           stokes_dof_handler;
       ConstraintMatrix                                          stokes_constraints;
+      ConstraintMatrix                                          current_stokes_constraints;
 
       double                                                    pressure_scaling;
 
       FE_Q<dim>                                                 temperature_fe;
       DoFHandler<dim>                                           temperature_dof_handler;
       ConstraintMatrix                                          temperature_constraints;
+//TODO: Have a current_temperature_constraints object, just like we do for the Stokes system
       /**
        * @}
        */
