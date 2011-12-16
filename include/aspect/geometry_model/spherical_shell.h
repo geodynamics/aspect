@@ -47,49 +47,18 @@ namespace aspect
         double length_scale () const;
 
         /**
-         * Return a set of boundary indicators that correspond to parts of the
-         * boundary on which the temperature is fixed, i.e., on which Dirichlet
-         * boundary conditions are posed. These boundary conditions for the temperature
-         * are then described by classes derived from BoundaryTemperature::Interface.
+               * Return the set of boundary indicators that are used by this model. This
+         * information is used to determine what boundary indicators can be used in
+         * the input file.
          *
-         * For the geometry used by this class, the returned set is $\{0,1\}$,
-         * corresponding to the inner and outer parts of the boundary.
-         */
+         * The spherical shell model uses boundary indicators zero and one, with zero
+         * corresponding to the inner surface and one corresponding to the outer
+         * surface. In 2d, if the geomery is only a slice of the shell, boundary
+         * indicators 2 and 3 indicate the left and right radial bounding lines.
+               */
         virtual
         std::set<unsigned char>
-        get_temperature_dirichlet_boundary_indicators () const;
-
-        /**
-         * Return a set of boundary indicators that correspond to parts of the
-         * boundary on which the velocity is zero.
-         *
-         * If the opening angle of the geometry described in the input file is
-         * less than the full 360 degrees (i.e., if the geometry is only a part
-         * of the shell), then all parts of the boundary are marked as
-         * tangential velocity. On the other hand, if the opening angle is
-         * 360 degrees, then the solid rotations are in the kernel of the
-         * Stokes operator and we only mark the outer boundary for tangential
-         * flow, whereas the inner boundary will have zero velocity.
-         */
-        virtual
-        std::set<unsigned char>
-        get_zero_velocity_boundary_indicators () const;
-
-        /**
-         * Return a set of boundary indicators that correspond to parts of the
-         * boundary on which the velocity is tangential but may not be zero.
-         *
-         * If the opening angle of the geometry described in the input file is
-         * less than the full 360 degrees (i.e., if the geometry is only a part
-         * of the shell), then all parts of the boundary are marked as
-         * tangential velocity. On the other hand, if the opening angle is
-         * 360 degrees, then the solid rotations are in the kernel of the
-         * Stokes operator and we only mark the outer boundary for tangential
-         * flow, whereas the inner boundary will have zero velocity.
-         */
-        virtual
-        std::set<unsigned char>
-        get_tangential_velocity_boundary_indicators () const;
+        get_used_boundary_indicators () const;
 
         /**
          * Declare the parameters this class takes through input files.

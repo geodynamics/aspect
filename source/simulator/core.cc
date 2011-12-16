@@ -41,6 +41,7 @@
 #include <iomanip>
 #include <locale>
 #include <string>
+#include <../contrib/tbb/tbb30_104oss/include/tbb/tbb_exception.h>
 
 
 using namespace dealii;
@@ -48,6 +49,25 @@ using namespace dealii;
 
 namespace aspect
 {
+  namespace
+  {
+    /**
+     * Return whether t is an element of the given container object.
+     */
+    template <typename Container>
+    bool is_element (const typename Container::value_type &t,
+                     const Container                      &container)
+    {
+      for (typename Container::const_iterator p = container.begin();
+           p != container.end();
+           ++p)
+        if (*p == t)
+          return true;
+
+      return false;
+    }
+  }
+
   /**
    * Constructor. Initialize all member variables.
    **/
@@ -104,6 +124,11 @@ namespace aspect
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true)
   {
+    // first do some error checking for the parameters we got
+    {
+      //TODO. like making sure boundary indicators don't appear in multiple lists
+    }
+
     // continue with initializing members that can't be initialized for one reason
     // or another in the member initializer list above
     postprocess_manager.parse_parameters (prm);
@@ -309,25 +334,12 @@ namespace aspect
       // and no-normal-flux type
       typedef unsigned char boundary_indicator_t;
       const std::set<boundary_indicator_t>
-      zero_boundary_indicators
-        = geometry_model->get_zero_velocity_boundary_indicators ();
+      zero_boundary_indicators (parameters.zero_velocity_boundary_indicators.begin(),
+                                parameters.zero_velocity_boundary_indicators.end());
 
       const std::set<boundary_indicator_t>
-      no_normal_flux_boundary_indicators
-        = geometry_model->get_tangential_velocity_boundary_indicators ();
-
-      // also make sure that the same indicator isn't used for both
-      {
-        std::vector<boundary_indicator_t> intersection;
-        std::set_intersection (zero_boundary_indicators.begin(),
-                               zero_boundary_indicators.end(),
-                               no_normal_flux_boundary_indicators.begin(),
-                               no_normal_flux_boundary_indicators.end(),
-                               std::back_inserter(intersection));
-        Assert (intersection.size() == 0,
-                ExcMessage ("Some boundary indicators are declared to be both "
-                            "zero velocity and tangential velocity. That can't work!"));
-      }
+      no_normal_flux_boundary_indicators (parameters.tangential_velocity_boundary_indicators.begin(),
+                                          parameters.tangential_velocity_boundary_indicators.end());
 
       // do the interpolation for zero velocity
       std::vector<bool> velocity_mask (dim+1, true);
@@ -359,20 +371,21 @@ namespace aspect
       // obtain the boundary indicators that belong to Dirichlet-type
       // temperature boundary conditions and interpolate the temperature
       // there
-      const std::set<unsigned char>
-      temperature_dirichlet_boundary_indicators
-        = geometry_model->get_temperature_dirichlet_boundary_indicators ();
-      for (std::set<unsigned char>::const_iterator
-           p = temperature_dirichlet_boundary_indicators.begin();
-           p != temperature_dirichlet_boundary_indicators.end(); ++p)
-        VectorTools::interpolate_boundary_values (temperature_dof_handler,
-                                                  *p,
-                                                  ScalarFunctionFromFunctionObject<dim>(std_cxx1x::bind (&BoundaryTemperature::Interface<dim>::temperature,
-                                                                                        std_cxx1x::cref(*boundary_temperature),
-                                                                                        std_cxx1x::cref(*geometry_model),
-                                                                                        *p,
-                                                                                        std_cxx1x::_1)),
-                                                  temperature_constraints);
+      for (std::vector<int>::const_iterator
+           p = parameters.fixed_temperature_boundary_indicators.begin();
+           p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
+        {
+          Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
+                  ExcInternalError());
+          VectorTools::interpolate_boundary_values (temperature_dof_handler,
+                                                    *p,
+                                                    ScalarFunctionFromFunctionObject<dim>(std_cxx1x::bind (&BoundaryTemperature::Interface<dim>::temperature,
+                                                                                          std_cxx1x::cref(*boundary_temperature),
+                                                                                          std_cxx1x::cref(*geometry_model),
+                                                                                          *p,
+                                                                                          std_cxx1x::_1)),
+                                                    temperature_constraints);
+        }
       temperature_constraints.close ();
     }
 

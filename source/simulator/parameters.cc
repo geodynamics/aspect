@@ -85,6 +85,32 @@ namespace aspect
       prm.declare_entry ("Radiogenic heating rate", "0e0",
                          Patterns::Double (),
                          "H0");
+      prm.declare_entry ("Fixed temperature boundary indicators", "",
+                         Patterns::List (Patterns::Integer(0)),
+                         "A comma separated list of integers denoting those boundaries "
+                         "on which the temperature is fixed and described by the "
+                         "boundary temperature object selected in its own section "
+                         "of this input file. All boundary indicators used by the geometry "
+                         "but not explicitly listed here will end up with no-flux "
+                         "(insulating) boundary conditions.");
+      prm.declare_entry ("Zero velocity boundary indicators", "",
+                         Patterns::List (Patterns::Integer(0, std::numeric_limits<unsigned char>::max())),
+                         "A comma separated list of integers denoting those boundaries "
+                         "on which the velocity is zero.");
+      prm.declare_entry ("Tangential velocity boundary indicators", "",
+                         Patterns::List (Patterns::Integer(0, std::numeric_limits<unsigned char>::max())),
+                         "A comma separated list of integers denoting those boundaries "
+                         "on which the velocity is tangential and unrestrained, i.e., where "
+                         "no external forces act to prescribe a particular tangential "
+                         "velocity (although there is a force that requires the flow to "
+                         "be tangential).");
+      prm.declare_entry ("Prescribed velocity boundary indicators", "",
+                         Patterns::List (Patterns::Integer(0, std::numeric_limits<unsigned char>::max())),
+                         "A comma separated list of integers denoting those boundaries "
+                         "on which the velocity is tangential but prescribed, i.e., where "
+                         "external forces act to prescribe a particular velocity. This is "
+                         "often used to prescribe a velocity that equals that of "
+                         "overlying plates.");
     }
     prm.leave_subsection ();
 
@@ -212,6 +238,22 @@ namespace aspect
     {
       include_shear_heating = prm.get_bool ("Include shear heating");
       radiogenic_heating_rate = prm.get_double ("Radiogenic heating rate");
+      fixed_temperature_boundary_indicators
+        = Utilities::string_to_int
+          (Utilities::split_string_list
+           (prm.get ("Fixed temperature boundary indicators")));
+      zero_velocity_boundary_indicators
+        = Utilities::string_to_int
+          (Utilities::split_string_list
+           (prm.get ("Zero velocity boundary indicators")));
+      tangential_velocity_boundary_indicators
+        = Utilities::string_to_int
+          (Utilities::split_string_list
+           (prm.get ("Tangential velocity boundary indicators")));
+      prescribed_velocity_boundary_indicators
+        = Utilities::string_to_int
+          (Utilities::split_string_list
+           (prm.get ("Prescribed velocity boundary indicators")));
     }
     prm.leave_subsection ();
 

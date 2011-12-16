@@ -39,40 +39,17 @@ namespace aspect
         double length_scale () const;
 
         /**
-         * Return a set of boundary indicators that correspond to parts of the
-         * boundary on which the temperature is fixed, i.e., on which Dirichlet
-         * boundary conditions are posed. These boundary conditions for the temperature
-         * are then described by classes derived from BoundaryTemperature::Interface.
+               * Return the set of boundary indicators that are used by this model. This
+         * information is used to determine what boundary indicators can be used in
+         * the input file.
          *
-         * For the geometry used by this class, the returned set is $\{0,1\}$,
-         * corresponding to the left and right boundaries.
-         */
+         * The box model uses boundary indicators zero through 2*dim-1, with the first
+         * two being the faces perpendicular to the x-axis, the next two perpendicular
+         * to the y-axis, etc.
+               */
         virtual
         std::set<unsigned char>
-        get_temperature_dirichlet_boundary_indicators () const;
-
-        /**
-         * Return a set of boundary indicators that correspond to parts of the
-         * boundary on which the velocity is zero.
-         *
-         * For the geometry here, we prescribe zero velocity on all
-         * boundaries on which the temperature is not prescribed.
-         */
-        virtual
-        std::set<unsigned char>
-        get_zero_velocity_boundary_indicators () const;
-
-        /**
-         * Return a set of boundary indicators that correspond to parts of the
-         * boundary on which the velocity is tangential but may not be zero.
-         *
-         * For the present geometry, we prescribe tangential flow on
-        * all boundaries where the temperature is prescribed by the
-        * get_temperature_dirichlet_boundary_indicators() function.
-         */
-        virtual
-        std::set<unsigned char>
-        get_tangential_velocity_boundary_indicators () const;
+        get_used_boundary_indicators () const;
     };
   }
 }

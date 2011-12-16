@@ -44,9 +44,9 @@ namespace aspect
       // find out which boundary indicators are related to Dirichlet temperature boundaries.
       // it only makes sense to compute heat fluxes on these boundaries.
       const std::set<unsigned char>
-      temperature_dirichlet_indicators
+      boundary_indicators
         =
-          this->get_geometry_model().get_temperature_dirichlet_boundary_indicators ();
+          this->get_geometry_model().get_used_boundary_indicators ();
       std::map<unsigned char, double> local_boundary_fluxes;
 
       typename DoFHandler<dim>::active_cell_iterator
@@ -69,10 +69,7 @@ namespace aspect
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
             // check if the face is at the boundary and has either boundary indicator
             // zero (inner boundary) or one (outer boundary)
-            if (cell->at_boundary(f)
-                &&
-                (temperature_dirichlet_indicators.find (cell->face(f)->boundary_indicator())
-                 != temperature_dirichlet_indicators.end()))
+            if (cell->at_boundary(f))
               {
                 fe_face_values.reinit (cell, f);
                 fe_face_values.get_function_gradients (this->get_temperature_solution(),
@@ -111,8 +108,8 @@ namespace aspect
         // in the set of boundary indicators
         std::vector<double> local_values;
         for (std::set<unsigned char>::const_iterator
-             p = temperature_dirichlet_indicators.begin();
-             p != temperature_dirichlet_indicators.end(); ++p)
+             p = boundary_indicators.begin();
+             p != boundary_indicators.end(); ++p)
           local_values.push_back (local_boundary_fluxes[*p]);
 
         // then collect contributions from all processors
@@ -122,8 +119,8 @@ namespace aspect
         // and now take them apart into the global map again
         unsigned int index = 0;
         for (std::set<unsigned char>::const_iterator
-             p = temperature_dirichlet_indicators.begin();
-             p != temperature_dirichlet_indicators.end(); ++p, ++index)
+             p = boundary_indicators.begin();
+             p != boundary_indicators.end(); ++p, ++index)
           global_boundary_fluxes[*p] = local_values[index];
       }
 

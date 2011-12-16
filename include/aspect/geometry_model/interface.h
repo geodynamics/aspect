@@ -69,47 +69,13 @@ namespace aspect
         double length_scale () const = 0;
 
         /**
-         * Return a set of boundary indicators that correspond to parts of the
-         * boundary on which the temperature is fixed, i.e., on which Dirichlet
-         * boundary conditions are posed. These boundary conditions for the temperature
-         * are then described by classes derived from BoundaryTemperature::Interface.
-         *
-         * All boundary indicators used by the mesh created by this class that are
-         * not listed in the set returned here correspond to parts of the boundary
-         * at which no heat flux occurs (i.e., the normal derivative of the temperature
-         * times the heat conduction coefficient is zero). This is typically the case for
-         * symmetry boundary conditions, for example if only a part of the earth mantle
-         * shell is simulated.
+         * Return the set of boundary indicators that are used by this model. This
+        * information is used to determine what boundary indicators can be used in
+        * the input file.
          */
         virtual
         std::set<unsigned char>
-        get_temperature_dirichlet_boundary_indicators () const = 0;
-
-        /**
-         * Return a set of boundary indicators that correspond to parts of the
-         * boundary on which the velocity is zero.
-         *
-         * All boundary indicators used by the mesh created by this class that are
-         * not listed in either the sets returned by get_zero_velocity_boundary_indicators()
-         * or get_tangential_velocity_boundary_indicators() are supposed to
-         * represent open boundaries through which material can flow.
-         */
-        virtual
-        std::set<unsigned char>
-        get_zero_velocity_boundary_indicators () const = 0;
-
-        /**
-         * Return a set of boundary indicators that correspond to parts of the
-         * boundary on which the velocity is tangential but may not be zero.
-         *
-         * All boundary indicators used by the mesh created by this class that are
-         * not listed in either the sets returned by get_zero_velocity_boundary_indicators()
-         * or get_tangential_velocity_boundary_indicators() are supposed to
-         * represent open boundaries through which material can flow.
-         */
-        virtual
-        std::set<unsigned char>
-        get_tangential_velocity_boundary_indicators () const = 0;
+        get_used_boundary_indicators () const = 0;
 
         /**
          * Declare the parameters this class takes through input files.

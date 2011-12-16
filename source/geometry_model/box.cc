@@ -30,42 +30,15 @@ namespace aspect
     template <int dim>
     std::set<unsigned char>
     Box<dim>::
-    get_temperature_dirichlet_boundary_indicators () const
+    get_used_boundary_indicators () const
     {
-      // see the documentation of this class and how we set boundary
-      // indicators above to understand the following code
-      const unsigned char s[] = { 0, 1 };
-      return std::set<unsigned char>(&s[0],
-                                     &s[sizeof(s)/sizeof(s[0])]);
-    }
-
-
-    template <int dim>
-    std::set<unsigned char>
-    Box<dim>::
-    get_zero_velocity_boundary_indicators () const
-    {
-      // see the documentation of this class and how we set boundary
-      // indicators above to understand the following code
+      // boundary indicators are zero through 2*dim-1
       std::set<unsigned char> s;
-      for (unsigned int i=2; i<2*dim; ++i)
+      for (unsigned int i=0; i<2*dim; ++i)
         s.insert (i);
       return s;
     }
 
-
-
-    template <int dim>
-    std::set<unsigned char>
-    Box<dim>::
-    get_tangential_velocity_boundary_indicators () const
-    {
-      // see the documentation of this class and how we set boundary
-      // indicators above to understand the following code
-      const unsigned char s[] = { 0, 1 };
-      return std::set<unsigned char>(&s[0],
-                                     &s[sizeof(s)/sizeof(s[0])]);
-    }
 
 
     template <int dim>
