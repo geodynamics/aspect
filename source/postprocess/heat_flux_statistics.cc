@@ -124,6 +124,9 @@ namespace aspect
           global_boundary_fluxes[*p] = local_values[index];
       }
 
+
+//TODO: This doesn't scale to more geometry models. simply output the data as is,
+// i.e. with association from boundary id to heat flux.
       // record results and have something for the output. this depends
       // on the interpretation of what boundary is which, which we can
       // only do knowing what the geometry is
