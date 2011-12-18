@@ -76,10 +76,10 @@ namespace aspect
         {
           // read in definitions from data file
           std::string temp;
-          std::ifstream in("DataDir/tabeldatastruct.txt", std::ios::in);
+          std::ifstream in("data/material-model/table/tabledatastruct.txt", std::ios::in);
           AssertThrow (in,
                        ExcMessage (std::string("Couldn't open file <") +
-                                   "DataDir/tabeldatastruct.txt>."));
+                                   "data/material-model/table/tabledatastruct.txt>."));
 
           in >> n_p >> n_T;
           getline(in, temp); // eat remainder of the line
@@ -229,7 +229,7 @@ namespace aspect
     {
 //    const double reference_specific_heat = 1250;    /* J / K / kg */  //??
 //      if (!IsCompressible) return reference_specific_heat; TODO
-      static internal::P_T_LookupFunction cp("DataDir/cp_bin");
+      static internal::P_T_LookupFunction cp("data/material-model/table/cp_bin");
       return cp.value(temperature, pressure);
     }
 
@@ -255,7 +255,7 @@ namespace aspect
              const double pressure,
              const Point<dim> &position) const
     {
-      static internal::P_T_LookupFunction rho("DataDir/rho_bin");
+      static internal::P_T_LookupFunction rho("data/material-model/table/rho_bin");
       return rho.value(temperature, pressure);
     }
 
@@ -267,7 +267,7 @@ namespace aspect
                      const double pressure,
                      const Point<dim> &position) const
     {
-      static internal::P_T_LookupFunction rho("DataDir/rho_bin");
+      static internal::P_T_LookupFunction rho("data/material-model/table/rho_bin");
       return rho.d_by_dp(temperature, pressure) / rho.value(temperature,pressure);
     }
 
