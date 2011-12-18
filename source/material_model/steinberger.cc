@@ -143,7 +143,7 @@ namespace aspect
                const double pressure,
                const Point<dim> &position) const
     {
-      static internal::radial_viscosity_lookup table("data/steinberger/radial_visc.txt");
+      static internal::radial_viscosity_lookup table("data/material-model/steinberger/radial_visc.txt");
       const double vis_lateral = 1.0; // TODO
 
       const double R1=6371000.0; //TODO
@@ -198,7 +198,7 @@ namespace aspect
              const double pressure,
              const Point<dim> &position) const
     {
-      static internal::thermal_exp_lookup table("data/steinberger/thermal_expansivity.d");
+      static internal::thermal_exp_lookup table("data/material-model/steinberger/thermal_expansivity.d");
 
 
       const double R1=6371000.0; //TODO
