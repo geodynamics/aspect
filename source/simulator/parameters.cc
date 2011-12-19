@@ -303,6 +303,8 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  template
-  class Simulator<deal_II_dimension>;
+  template Simulator<deal_II_dimension>::Parameters::Parameters (ParameterHandler &prm);
+  template void Simulator<deal_II_dimension>::Parameters::declare_parameters (ParameterHandler &prm);
+  template void Simulator<deal_II_dimension>::Parameters::parse_parameters(ParameterHandler &prm);
+  template void Simulator<deal_II_dimension>::declare_parameters (ParameterHandler &prm);
 }

@@ -190,6 +190,6 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  template
-  class Simulator<deal_II_dimension>;
+  template void Simulator<deal_II_dimension>::set_initial_temperature_field();
+  template void Simulator<deal_II_dimension>::compute_initial_pressure_field();
 }
