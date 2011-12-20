@@ -282,5 +282,5 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-    template void Simulator<deal_II_dimension>::solve ();
+  template void Simulator<deal_II_dimension>::solve ();
 }

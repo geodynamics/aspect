@@ -18,7 +18,7 @@ namespace aspect
     /**
      * A variable viscosity material model that reads the essential values of coefficients from
      * tables in input files.
-     * 
+     *
      * This model is based on the paper Steinberger/Calderwood 2006:
      * "Models of large-scale viscous flow in the Earth's mantle with
      * contraints from mineral physics and surface observations"
