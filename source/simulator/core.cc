@@ -364,7 +364,8 @@ namespace aspect
     pcout.get_stream().imbue(s);
 
 
-
+    // now also compute the various partitionings between processors and blocks
+    // of vectors and matrices
     std::vector<IndexSet> stokes_partitioning, stokes_relevant_partitioning;
     IndexSet temperature_partitioning (n_T), temperature_relevant_partitioning (n_T);
     IndexSet stokes_relevant_set;
@@ -383,8 +384,12 @@ namespace aspect
                                                temperature_relevant_partitioning);
     }
 
+    // then compute constraints for the velocity. the constraints we compute
+    // here are the ones that are the same for all following time steps. in
+    // addition, we may be computing constraints from boundary values for the
+    // velocity that are different between time steps. these are then put
+    // into current_stokes_constraints in start_timestep().
     {
-
       stokes_constraints.clear ();
       stokes_constraints.reinit (stokes_relevant_set);
 
@@ -422,6 +427,8 @@ namespace aspect
                                                        mapping);
       stokes_constraints.close ();
     }
+
+    // now do the same for the temperature variable
     {
       temperature_constraints.clear ();
       temperature_constraints.reinit (temperature_relevant_partitioning);
@@ -450,6 +457,7 @@ namespace aspect
       temperature_constraints.close ();
     }
 
+    // finally initialize vectors, matrices, etc.
     setup_stokes_matrix (stokes_partitioning);
     setup_stokes_preconditioner (stokes_partitioning);
     setup_temperature_matrix (temperature_partitioning);
@@ -466,8 +474,8 @@ namespace aspect
     if (material_model->is_compressible())
       pressure_shape_function_integrals.reinit (stokes_partitioning, MPI_COMM_WORLD);
 
-    rebuild_stokes_matrix              = true;
-    rebuild_stokes_preconditioner      = true;
+    rebuild_stokes_matrix         = true;
+    rebuild_stokes_preconditioner = true;
 
     computing_timer.exit_section();
   }

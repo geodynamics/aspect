@@ -219,7 +219,9 @@ namespace aspect
        */
 
       /**
-       * The function that sets up the DoFHandler objects,
+       * The function that sets up the DoFHandler objects, It also sets up the
+       * various partitioners and computes those constraints on the Stokes
+       * variable and temperature that are the same between all time steps.
        **/
       void setup_dofs ();
       void set_initial_temperature_field ();
