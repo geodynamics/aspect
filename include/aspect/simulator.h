@@ -222,10 +222,52 @@ namespace aspect
        * The function that sets up the DoFHandler objects, It also sets up the
        * various partitioners and computes those constraints on the Stokes
        * variable and temperature that are the same between all time steps.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
        **/
       void setup_dofs ();
+
+      /**
+       * A function that is responsible for initializing the temperature field
+       * before the first time step. This temperature field then serves as the
+       * temperature from which the velocity is computed during the first time
+       * step, and is subsequently overwritten by the temperature field one gets
+       * by advancing by one time step.
+       *
+       * This function is implemented in
+       * <code>source/simulator/initial_conditions.cc</code>.
+       */
       void set_initial_temperature_field ();
+
+      /**
+       * A function that initializes the pressure variable before the first
+       * time step. It does so by either interpolating (for continuous pressure
+       * finite elements) or projecting (for discontinuous elements) the adiabatic
+       * pressure computed from the material model.
+       *
+       * Note that the pressure so set is overwritten by the pressure in fact
+       * computed during the first time step. We need this function, however, so
+       * that the evaluation of pressure-dependent coefficients (e.g. pressure
+       * dependent densities or thermal coefficients) during the first
+       * time step has some useful pressure to start with.
+       *
+       * This function is implemented in
+       * <code>source/simulator/initial_conditions.cc</code>.
+       */
       void compute_initial_pressure_field ();
+
+      /**
+       * Do some housekeeping at the beginning of each time step. This includes
+       * generating some screen output, adding some information to the statistics
+       * file, and interpolating time-dependent boundary conditions specific to
+       * this particular time step (the time independent boundary conditions, for
+       * example for hanging nodes or for tangential flow, are computed only
+       * once per mesh in setup_dofs()).
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
       void start_timestep ();
       void assemble_stokes_preconditioner ();
       void build_stokes_preconditioner ();
