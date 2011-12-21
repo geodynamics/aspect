@@ -188,6 +188,9 @@ namespace aspect
        *
        * @param prm The run-time parameter object from which this class
        * obtains its settings.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
        **/
       Simulator (ParameterHandler &prm);
 
@@ -200,6 +203,9 @@ namespace aspect
        *
        * @param prm The object in which the run-time parameters
        * are to be declared.
+       *
+       * This function is implemented in
+       * <code>source/simulator/parameters.cc</code>.
        **/
       static
       void declare_parameters (ParameterHandler &prm);
@@ -209,6 +215,9 @@ namespace aspect
        * contains the loop over all time steps as well as the logic
        * of what to do when before the loop starts and within the time
        * loop.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
        **/
       void run ();
 
