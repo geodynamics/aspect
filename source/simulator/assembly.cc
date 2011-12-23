@@ -694,8 +694,11 @@ namespace aspect
     computing_timer.enter_section ("   Build Stokes preconditioner");
     pcout << "   Rebuilding Stokes preconditioner..." << std::flush;
 
+    // first assemble the raw matrices necessary for the preconditioner
     assemble_stokes_preconditioner ();
 
+    // then extract the other information necessary to build the
+    // AMG preconditioners for the A and M blocks
     std::vector<std::vector<bool> > constant_modes;
     std::vector<bool>  velocity_components (dim+1,true);
     velocity_components[dim] = false;
@@ -1168,6 +1171,38 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  template
-  class Simulator<deal_II_dimension>;
+  template void Simulator<deal_II_dimension>::local_assemble_stokes_preconditioner (
+    const DoFHandler<deal_II_dimension>::active_cell_iterator &cell,
+    internal::Assembly::Scratch::StokesPreconditioner<deal_II_dimension> &scratch,
+    internal::Assembly::CopyData::StokesPreconditioner<deal_II_dimension> &data);
+
+  template void Simulator<deal_II_dimension>::copy_local_to_global_stokes_preconditioner (
+    const internal::Assembly::CopyData::StokesPreconditioner<deal_II_dimension> &data);
+
+  template void Simulator<deal_II_dimension>::assemble_stokes_preconditioner ();
+
+  template void Simulator<deal_II_dimension>::build_stokes_preconditioner ();
+
+  template void Simulator<deal_II_dimension>::local_assemble_stokes_system (
+    const DoFHandler<deal_II_dimension>::active_cell_iterator &cell,
+    internal::Assembly::Scratch::StokesSystem<deal_II_dimension>  &scratch,
+    internal::Assembly::CopyData::StokesSystem<deal_II_dimension> &data);
+
+  template void Simulator<deal_II_dimension>::copy_local_to_global_stokes_system (
+    const internal::Assembly::CopyData::StokesSystem<deal_II_dimension> &data);
+
+  template void Simulator<deal_II_dimension>::assemble_stokes_system ();
+
+  template void Simulator<deal_II_dimension>::copy_local_to_global_temperature_system (
+    const internal::Assembly::CopyData::TemperatureSystem<deal_II_dimension> &data);
+
+  template void Simulator<deal_II_dimension>::assemble_temperature_system ();
+
+  template void Simulator<deal_II_dimension>::local_assemble_temperature_system (
+    const std::pair<double,double> global_T_range,
+    const double                   global_max_velocity,
+    const double                   global_entropy_variation,
+    const DoFHandler<deal_II_dimension>::active_cell_iterator &cell,
+    internal::Assembly::Scratch::TemperatureSystem<deal_II_dimension>  &scratch,
+    internal::Assembly::CopyData::TemperatureSystem<deal_II_dimension> &data);
 }

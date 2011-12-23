@@ -357,6 +357,13 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  template
-  class Simulator<deal_II_dimension>;
+  template void Simulator<deal_II_dimension>::normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
+
+  template double Simulator<deal_II_dimension>::get_maximal_velocity () const;
+
+  template std::pair<double,double> Simulator<deal_II_dimension>::get_extrapolated_temperature_range () const;
+
+  template double Simulator<deal_II_dimension>::compute_time_step () const;
+
+  template void Simulator<deal_II_dimension>::make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector);
 }

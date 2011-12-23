@@ -188,6 +188,9 @@ namespace aspect
        *
        * @param prm The run-time parameter object from which this class
        * obtains its settings.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
        **/
       Simulator (ParameterHandler &prm);
 
@@ -200,6 +203,9 @@ namespace aspect
        *
        * @param prm The object in which the run-time parameters
        * are to be declared.
+       *
+       * This function is implemented in
+       * <code>source/simulator/parameters.cc</code>.
        **/
       static
       void declare_parameters (ParameterHandler &prm);
@@ -209,6 +215,9 @@ namespace aspect
        * contains the loop over all time steps as well as the logic
        * of what to do when before the loop starts and within the time
        * loop.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
        **/
       void run ();
 
@@ -219,18 +228,120 @@ namespace aspect
        */
 
       /**
-       * The function that sets up the DoFHandler objects,
+       * The function that sets up the DoFHandler objects, It also sets up the
+       * various partitioners and computes those constraints on the Stokes
+       * variable and temperature that are the same between all time steps.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
        **/
       void setup_dofs ();
+
+      /**
+       * A function that is responsible for initializing the temperature field
+       * before the first time step. This temperature field then serves as the
+       * temperature from which the velocity is computed during the first time
+       * step, and is subsequently overwritten by the temperature field one gets
+       * by advancing by one time step.
+       *
+       * This function is implemented in
+       * <code>source/simulator/initial_conditions.cc</code>.
+       */
       void set_initial_temperature_field ();
+
+      /**
+       * A function that initializes the pressure variable before the first
+       * time step. It does so by either interpolating (for continuous pressure
+       * finite elements) or projecting (for discontinuous elements) the adiabatic
+       * pressure computed from the material model.
+       *
+       * Note that the pressure so set is overwritten by the pressure in fact
+       * computed during the first time step. We need this function, however, so
+       * that the evaluation of pressure-dependent coefficients (e.g. pressure
+       * dependent densities or thermal coefficients) during the first
+       * time step has some useful pressure to start with.
+       *
+       * This function is implemented in
+       * <code>source/simulator/initial_conditions.cc</code>.
+       */
       void compute_initial_pressure_field ();
+
+      /**
+       * Do some housekeeping at the beginning of each time step. This includes
+       * generating some screen output, adding some information to the statistics
+       * file, and interpolating time-dependent boundary conditions specific to
+       * this particular time step (the time independent boundary conditions, for
+       * example for hanging nodes or for tangential flow, are computed only
+       * once per mesh in setup_dofs()).
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
       void start_timestep ();
-      void assemble_stokes_preconditioner ();
+
+      /**
+       * Initiate the assembly of the Stokes preconditioner matrix via
+       * assemble_stokes_preconditoner(), then set up the data structures
+       * to actually build a preconditioner from this matrix.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       void build_stokes_preconditioner ();
+
+      /**
+       * Initiate the assembly of the Stokes matrix and right hand side.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       void assemble_stokes_system ();
+
+      /**
+       * Initiate the assembly of the temperature matrix and right hand side
+       * and build a preconditioner for the matrix.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       void assemble_temperature_system ();
+
+      /**
+       * Perform the following steps:
+       * - Solve the Stokes system
+       * - Determine the size of the time step
+       * - Set up the temperature linear system
+       * - Solve the temperature linear system.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver.cc</code>.
+       */
       void solve ();
+
+      /**
+       * This function is called at the end of every time step. It
+       * runs all the postprocessors that have been listed in the input
+       * parameter file (see the manual) in turn. In particular, this
+       * usually includes generating graphical output every few time steps.
+       *
+       * The function also updates the statistics output file at the end of
+       * each time step.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
       void postprocess ();
+
+      /**
+       * Compute error indicators based on a variety of criteria and
+       * mark cells based on these indicators for either refinement,
+       * coarsening, or for leaving them as they currently are. Then
+       * refine the mesh, set up all necessary data structures on this
+       * new mesh, and interpolate the old solutions onto the new mesh.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
       void refine_mesh (const unsigned int max_grid_level);
       /**
        * @}
@@ -264,6 +375,13 @@ namespace aspect
        * @name Functions used in the assembly of linear systems
        * @{
        */
+      /**
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void assemble_stokes_preconditioner ();
+
       void
       local_assemble_stokes_preconditioner (const typename DoFHandler<dim>::active_cell_iterator &cell,
                                             internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,

@@ -122,9 +122,9 @@ namespace aspect
         std::vector<double> rhs_values(n_q_points);
 
         ScalarFunctionFromFunctionObject<dim>
-        ad_pressure (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
-                                      std_cxx1x::cref(*adiabatic_conditions),
-                                      std_cxx1x::_1));
+        adiabatic_pressure (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
+                                             std_cxx1x::cref(*adiabatic_conditions),
+                                             std_cxx1x::_1));
 
 
         typename DoFHandler<dim>::active_cell_iterator
@@ -137,8 +137,8 @@ namespace aspect
               cell->get_dof_indices (local_dof_indices);
               fe_values.reinit(cell);
 
-              ad_pressure.value_list (fe_values.get_quadrature_points(),
-                                      rhs_values);
+              adiabatic_pressure.value_list (fe_values.get_quadrature_points(),
+                                             rhs_values);
 
               cell_vector = 0;
               local_mass_matrix = 0;
@@ -190,6 +190,6 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  template
-  class Simulator<deal_II_dimension>;
+  template void Simulator<deal_II_dimension>::set_initial_temperature_field();
+  template void Simulator<deal_II_dimension>::compute_initial_pressure_field();
 }

@@ -2,7 +2,7 @@
 # $Id: Makefile 4165 2011-03-28 13:10:33Z bangerth $
 ############################################################
 
-DEAL_DIR?=../../../deal.II
+DEAL_DIR?=../../../../../deal.II
 D = $(DEAL_DIR)
 include $D/common/Make.global_options
 
@@ -10,7 +10,7 @@ aspect-files    = $(shell echo ../include/aspect/*.h ../include/aspect/*/*h modu
 
 all: aspect.tag manual.pdf
 
-aspect.tag: $(aspect-files) options.dox
+aspect.tag: $(aspect-files) options.dox Makefile
 	@if test ! -x "`which doxygen`" ; then \
 	  echo "-----------------------------------------" ; \
 	  echo "Can't find 'doxygen'." ; \
@@ -20,7 +20,9 @@ aspect.tag: $(aspect-files) options.dox
 	@echo "=====aspect=================== Generating documentation"
 	@echo '@INCLUDE = options.dox'                                > aspect.dox
 	@echo 'INCLUDE_PATH           = $D/include/deal.II'          >> aspect.dox
-	@echo 'PROJECT_NAME = "ASPECT mantle convection simulator"'  >> aspect.dox
+	@echo 'DOT_IMAGE_FORMAT = png'                               >> aspect.dox
+	@echo 'IMAGE_PATH = manual'                                  >> aspect.dox
+	@echo 'PROJECT_NAME = "ASPECT Mantle Convection Simulator"'  >> aspect.dox
 	@echo 'INPUT = $(aspect-files)'                              >> aspect.dox
 	@echo 'HTML_OUTPUT      = doxygen'                           >> aspect.dox
 	@echo 'GENERATE_TAGFILE = $@'                                >> aspect.dox
@@ -44,3 +46,4 @@ manual.pdf: manual/manual.tex manual/manual.bib
 clean:
 	-rm -f aspect.dox aspect.tag
 	-rm -rf doxygen
+	-rm -rf manual/*.{blg,toc,log,out,bbl}

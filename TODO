@@ -21,7 +21,6 @@ Topics for an ASPECT II paper:
 Topics for preview release:
 ---------------------------
 - temperature equation must contain adiabatic terms in the compressible case
-- front page of doxygen documentation
 - Refinement criterion in 3d? rescale to the average, not to the max
 - Use extrapolated solution for grid refinement
 - Attach a proper license and adjust headers of all files

@@ -227,6 +227,8 @@ namespace aspect
     }
   }
 
+
+
   template <int dim>
   void
   Simulator<dim>::
@@ -364,7 +366,8 @@ namespace aspect
     pcout.get_stream().imbue(s);
 
 
-
+    // now also compute the various partitionings between processors and blocks
+    // of vectors and matrices
     std::vector<IndexSet> stokes_partitioning, stokes_relevant_partitioning;
     IndexSet temperature_partitioning (n_T), temperature_relevant_partitioning (n_T);
     IndexSet stokes_relevant_set;
@@ -383,8 +386,12 @@ namespace aspect
                                                temperature_relevant_partitioning);
     }
 
+    // then compute constraints for the velocity. the constraints we compute
+    // here are the ones that are the same for all following time steps. in
+    // addition, we may be computing constraints from boundary values for the
+    // velocity that are different between time steps. these are then put
+    // into current_stokes_constraints in start_timestep().
     {
-
       stokes_constraints.clear ();
       stokes_constraints.reinit (stokes_relevant_set);
 
@@ -422,6 +429,8 @@ namespace aspect
                                                        mapping);
       stokes_constraints.close ();
     }
+
+    // now do the same for the temperature variable
     {
       temperature_constraints.clear ();
       temperature_constraints.reinit (temperature_relevant_partitioning);
@@ -450,6 +459,7 @@ namespace aspect
       temperature_constraints.close ();
     }
 
+    // finally initialize vectors, matrices, etc.
     setup_stokes_matrix (stokes_partitioning);
     setup_stokes_preconditioner (stokes_partitioning);
     setup_temperature_matrix (temperature_partitioning);
@@ -466,8 +476,8 @@ namespace aspect
     if (material_model->is_compressible())
       pressure_shape_function_integrals.reinit (stokes_partitioning, MPI_COMM_WORLD);
 
-    rebuild_stokes_matrix              = true;
-    rebuild_stokes_preconditioner      = true;
+    rebuild_stokes_matrix         = true;
+    rebuild_stokes_preconditioner = true;
 
     computing_timer.exit_section();
   }
@@ -529,10 +539,10 @@ namespace aspect
 
 // Contrary to step-32, we have found that just refining by the temperature
 // works well in 2d, but only leads to refinement in the boundary layer at the
-// core-mantle boundary in 3d. Consequently, we estimate the error based both
-// on the temperature and on the velocity; the vectors with the resulting
-// error indicators are then both normalized to a maximal value of one, and we
-// take the maximum of the indicators to decide whether we want to refine or
+// core-mantle boundary in 3d. Consequently, we estimate the error based
+// on the temperature, velocity and other criteria, see the second ASPECT paper;
+// the vectors with the resulting error indicators are then normalized, and we
+// take the maximum or sum of the indicators to decide whether we want to refine or
 // not. In case of more complicated materials with jumps in the density
 // profile, we also need to refine where the density jumps. This ensures that
 // we also refine into plumes where maybe the temperature gradients aren't as
@@ -641,7 +651,7 @@ namespace aspect
                                           triangulation.locally_owned_subdomain());
     }
 
-    //rescale errors
+    // rescale errors
     {
       estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
                                                          MPI_COMM_WORLD);

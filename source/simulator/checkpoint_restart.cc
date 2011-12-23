@@ -188,6 +188,6 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  template
-  class Simulator<deal_II_dimension>;
+  template void Simulator<deal_II_dimension>::create_snapshot();
+  template void Simulator<deal_II_dimension>::resume_from_snapshot();
 }
