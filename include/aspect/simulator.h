@@ -351,9 +351,40 @@ namespace aspect
        * @name Functions used in saving the state of the program and restarting from a saved state
        * @{
        */
+      /**
+       * Save the state of this program to a set of files in the output
+       * directory. In reality, however, only some variables are stored (in
+       * particular the mesh, the solution vectors, etc) whereas others can
+       * either be re-generated (matrices, DoFHandler objects, etc) or are
+       * read from the input parameter file. See the manual for more
+       * information.
+       *
+       * This function is implemented in
+       * <code>source/simulator/checkpoint_restart.cc</code>.
+       */
       void create_snapshot();
+
+      /**
+       * Restore the state of this program from a set of files in the output
+       * directory. In reality, however, only some variables are stored (in
+       * particular the mesh, the solution vectors, etc) whereas others can
+       * either be re-generated (matrices, DoFHandler objects, etc) or are
+       * read from the input parameter file. See the manual for more
+       * information. This function only restores those variables that can
+       * neither be re-generated from other information nor are read from
+       * the input parameter file.
+       *
+       * This function is implemented in
+       * <code>source/simulator/checkpoint_restart.cc</code>.
+       */
       void resume_from_snapshot();
 
+      /**
+       * Save a number of variables using BOOST serialization mechanism.
+       *
+       * This function is implemented in
+       * <code>source/simulator/checkpoint_restart.cc</code>.
+       */
       template <class Archive>
       void serialize (Archive &ar, const unsigned int version);
       /**
