@@ -694,8 +694,11 @@ namespace aspect
     computing_timer.enter_section ("   Build Stokes preconditioner");
     pcout << "   Rebuilding Stokes preconditioner..." << std::flush;
 
+    // first assemble the raw matrices necessary for the preconditioner
     assemble_stokes_preconditioner ();
 
+    // then extract the other information necessary to build the
+    // AMG preconditioners for the A and M blocks
     std::vector<std::vector<bool> > constant_modes;
     std::vector<bool>  velocity_components (dim+1,true);
     velocity_components[dim] = false;

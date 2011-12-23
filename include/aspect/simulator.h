@@ -278,12 +278,70 @@ namespace aspect
        * <code>source/simulator/core.cc</code>.
        */
       void start_timestep ();
-      void assemble_stokes_preconditioner ();
+
+      /**
+       * Initiate the assembly of the Stokes preconditioner matrix via
+       * assemble_stokes_preconditoner(), then set up the data structures
+       * to actually build a preconditioner from this matrix.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       void build_stokes_preconditioner ();
+
+      /**
+       * Initiate the assembly of the Stokes matrix and right hand side.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       void assemble_stokes_system ();
+
+      /**
+       * Initiate the assembly of the temperature matrix and right hand side
+       * and build a preconditioner for the matrix.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       void assemble_temperature_system ();
+
+      /**
+       * Perform the following steps:
+       * - Solve the Stokes system
+       * - Determine the size of the time step
+       * - Set up the temperature linear system
+       * - Solve the temperature linear system.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver.cc</code>.
+       */
       void solve ();
+
+      /**
+       * This function is called at the end of every time step. It
+       * runs all the postprocessors that have been listed in the input
+       * parameter file (see the manual) in turn. In particular, this
+       * usually includes generating graphical output every few time steps.
+       *
+       * The function also updates the statistics output file at the end of
+       * each time step.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
       void postprocess ();
+
+      /**
+       * Compute error indicators based on a variety of criteria and
+       * mark cells based on these indicators for either refinement,
+       * coarsening, or for leaving them as they currently are. Then
+       * refine the mesh, set up all necessary data structures on this
+       * new mesh, and interpolate the old solutions onto the new mesh.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
       void refine_mesh (const unsigned int max_grid_level);
       /**
        * @}
@@ -317,6 +375,13 @@ namespace aspect
        * @name Functions used in the assembly of linear systems
        * @{
        */
+      /**
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void assemble_stokes_preconditioner ();
+
       void
       local_assemble_stokes_preconditioner (const typename DoFHandler<dim>::active_cell_iterator &cell,
                                             internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,

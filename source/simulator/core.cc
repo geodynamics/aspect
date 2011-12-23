@@ -539,10 +539,10 @@ namespace aspect
 
 // Contrary to step-32, we have found that just refining by the temperature
 // works well in 2d, but only leads to refinement in the boundary layer at the
-// core-mantle boundary in 3d. Consequently, we estimate the error based both
-// on the temperature and on the velocity; the vectors with the resulting
-// error indicators are then both normalized to a maximal value of one, and we
-// take the maximum of the indicators to decide whether we want to refine or
+// core-mantle boundary in 3d. Consequently, we estimate the error based
+// on the temperature, velocity and other criteria, see the second ASPECT paper;
+// the vectors with the resulting error indicators are then normalized, and we
+// take the maximum or sum of the indicators to decide whether we want to refine or
 // not. In case of more complicated materials with jumps in the density
 // profile, we also need to refine where the density jumps. This ensures that
 // we also refine into plumes where maybe the temperature gradients aren't as
@@ -651,7 +651,7 @@ namespace aspect
                                           triangulation.locally_owned_subdomain());
     }
 
-    //rescale errors
+    // rescale errors
     {
       estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
                                                          MPI_COMM_WORLD);

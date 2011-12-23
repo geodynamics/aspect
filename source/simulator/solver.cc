@@ -142,6 +142,7 @@ namespace aspect
   {
     computing_timer.enter_section ("   Solve Stokes system");
 
+    // STEP 1: solve the Stokes system
     {
       pcout << "   Solving Stokes system... " << std::flush;
 
@@ -169,7 +170,7 @@ namespace aspect
 
       PrimitiveVectorMemory< TrilinosWrappers::MPI::BlockVector > mem;
 
-      // step 1: try if the simple and fast solver
+      // step 1a: try if the simple and fast solver
       // succeeds in 30 steps or less.
       const double solver_tolerance = 1e-7 * stokes_rhs.l2_norm();
       SolverControl solver_control_cheap (30, solver_tolerance);
@@ -191,7 +192,7 @@ namespace aspect
                        preconditioner);
         }
 
-      // step 2: take the stronger solver in case
+      // step 1b: take the stronger solver in case
       // the simple solver failed
       catch (SolverControl::NoConvergence)
         {
@@ -234,6 +235,7 @@ namespace aspect
     computing_timer.exit_section();
 
 
+    // STEP 2: Update the time step size
     {
       old_time_step = time_step;
       time_step = compute_time_step();
@@ -244,9 +246,12 @@ namespace aspect
         statistics.add_value("Time step size (seconds)", time_step);
 
       temperature_solution = old_temperature_solution;
-      assemble_temperature_system ();
     }
 
+    // STEP 3: Set up the temperature linear system
+    assemble_temperature_system ();
+
+    // STEP 4: Solve the temperature system
     computing_timer.enter_section ("   Solve temperature system");
     {
       pcout << "   Solving temperature system... " << std::flush;
