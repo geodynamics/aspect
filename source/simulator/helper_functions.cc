@@ -92,12 +92,6 @@ namespace aspect
 
 
 
-  /**
-   * Similar function to before, but we now
-   * compute the cfl number, i.e., maximal
-   * velocity on a cell divided by the cell
-   * diameter.
-   */
   template <int dim>
   double Simulator<dim>::compute_time_step () const
   {
@@ -244,7 +238,7 @@ namespace aspect
     double my_pressure = 0.0;
     double my_area = 0.0;
     {
-      QGauss < dim - 1 > quadrature (parameters.stokes_velocity_degree + 1);
+      QGauss <dim-1> quadrature (parameters.stokes_velocity_degree + 1);
 
       const unsigned int n_q_points = quadrature.size();
       FEFaceValues<dim> fe_face_values (mapping, stokes_fe,  quadrature,
@@ -333,12 +327,11 @@ namespace aspect
 
 
   /**
-  * This routine adjusts the second block of the right hand side of the
-  * system containing the compressibility, so that the system becomes
-  * compatible: 0=\int div u = \int g
-  * the helper vector h contains h_i=(q_i,1) with the pressure functions q_i
-  * and we adjust the right hand side g by h_i \int g / |\Omega|
-  */
+   * This routine adjusts the second block of the right hand side of the
+   * system containing the compressibility, so that the system becomes
+   * compatible. See the general documentation of this class for more
+   * information.
+   */
   template <int dim>
   void Simulator<dim>::make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector)
   {

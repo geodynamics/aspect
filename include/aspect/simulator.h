@@ -395,8 +395,32 @@ namespace aspect
        * @name Functions used in setting up linear systems
        * @{
        */
+      /**
+       * Set up the size and structure of the matrix used to store the
+       * elements of the Stokes system.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
       void setup_stokes_matrix (const std::vector<IndexSet> &stokes_partitioning);
+
+      /**
+       * Set up the size and structure of the matrix used to store the
+       * elements of the matrix that is used to build the preconditioner for
+       * the Stokes system.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
       void setup_stokes_preconditioner (const std::vector<IndexSet> &stokes_partitioning);
+
+      /**
+       * Set up the size and structure of the matrix used to store the
+       * elements of the temperature system.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
       void setup_temperature_matrix (const IndexSet &temperature_partitioning);
       /**
        * @}
@@ -407,30 +431,65 @@ namespace aspect
        * @{
        */
       /**
+       * Initiate the assembly of the preconditioner for the Stokes system.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
       void assemble_stokes_preconditioner ();
 
+      /**
+       * Compute the integrals for the preconditioner for the Stokes system
+       * on a single cell.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       void
       local_assemble_stokes_preconditioner (const typename DoFHandler<dim>::active_cell_iterator &cell,
                                             internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
                                             internal::Assembly::CopyData::StokesPreconditioner<dim> &data);
 
+      /**
+       * Copy the contribution to the preconditioner for the Stokes system
+       * from a single cell into the global matrix that stores these elements.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       void
       copy_local_to_global_stokes_preconditioner (const internal::Assembly::CopyData::StokesPreconditioner<dim> &data);
 
-
+      /**
+       * Compute the integrals for the Stokes matrix and right hand side
+       * on a single cell.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       void
       local_assemble_stokes_system (const typename DoFHandler<dim>::active_cell_iterator &cell,
                                     internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                     internal::Assembly::CopyData::StokesSystem<dim> &data);
 
+      /**
+       * Copy the contribution to the Stokes system
+       * from a single cell into the global matrix that stores these elements.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       void
       copy_local_to_global_stokes_system (const internal::Assembly::CopyData::StokesSystem<dim> &data);
 
 
+      /**
+       * Compute the integrals for the temperature matrix and right hand side
+       * on a single cell.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       void
       local_assemble_temperature_system (const std::pair<double,double> global_T_range,
                                          const double                   global_max_velocity,
@@ -439,6 +498,13 @@ namespace aspect
                                          internal::Assembly::Scratch::TemperatureSystem<dim>  &scratch,
                                          internal::Assembly::CopyData::TemperatureSystem<dim> &data);
 
+      /**
+       * Copy the contribution to the temperature system
+       * from a single cell into the global matrix that stores these elements.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       void
       copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data);
       /**
@@ -449,14 +515,87 @@ namespace aspect
        * @name Helper functions
        * @{
        */
+      /**
+       * This routine adjusts the second block of the right hand side of a
+       * Stokes system  (containing the term that comes from compressibility,
+       * so that the system becomes
+       * compatible: $0=\int div u = \int g$. The vector to adjust is given as the
+       * argument of this function. This function makes use of the
+       * helper vector pressure_shape_function_integrals that contains
+       * $h_i=(q_i,1)$ with the pressure functions $q_i$
+       * and we adjust the right hand side $g$ by $h_i \int g / |\Omega|$.
+       *
+       * The purpose of this function is described in the second paper on
+       * the numerical methods in Aspect.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
       void make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector);
 
+      /**
+       * If the geometry used is a spherical shell, adjust the pressure variable
+       * (which is only determined up to a constant) by adding a constant to it
+       * in such a way that the pressure on the surface has a known average value.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       **/
       void normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
+
+      /**
+       * Compute the maximal velocity througout the domain. This is needed
+       * to compute the size of the time step.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
       double get_maximal_velocity () const;
+
+      /**
+       * Compute the variation (i.e., the difference between maximal and
+       * minimal value) of the entropy $(T-\bar T)^2$ where $\bar T$ is the
+       * average temperature throughout the domain given as argument to
+       * this function.
+       *
+       * This function is used in computing the artificial diffusion
+       * stabilization term.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       double get_entropy_variation (const double average_temperature) const;
+
+      /**
+       * Compute the minimal and maximal temperature througout the domain from a
+       * solution vector extrapolated from the previous time steps. This is needed
+       * to compute the artificial diffusion stabilization terms.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
       std::pair<double,double> get_extrapolated_temperature_range () const;
+
+      /**
+       * Compute the size of the next time step from the mesh size and
+       * the velocity on each cell. The computed time step has to satisfy
+       * the CFL number chosen in the input parameter file on each cell
+       * of the mesh.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
       double compute_time_step () const;
 
+      /**
+       * Compute the artificial diffusion coefficient value on a cell
+       * given the values and gradients of the solution passed as
+       * arguments.
+       *
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       double
       compute_viscosity(const std::vector<double>          &old_temperature,
                         const std::vector<double>          &old_old_temperature,
@@ -488,7 +627,7 @@ namespace aspect
       ConditionalOStream                  pcout;
       TableHandler                        statistics;
       Postprocess::Manager<dim>           postprocess_manager;
-      TimerOutput computing_timer;
+      TimerOutput                         computing_timer;
       /**
        * @}
        */
