@@ -22,7 +22,8 @@ namespace aspect
     std::pair<std::string,std::string>
     HeatFluxStatistics<dim>::execute (TableHandler &statistics)
     {
-      const QGauss<dim-1> quadrature_formula (this->get_temperature_dof_handler().get_fe().degree+1);
+      printf("debug\n");
+    	const QGauss<dim-1> quadrature_formula (this->get_temperature_dof_handler().get_fe().degree+1);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_temperature_dof_handler().get_fe(),
@@ -153,6 +154,26 @@ namespace aspect
           output.precision(4);
           output << -global_boundary_fluxes[0] << " W, "
                  << global_boundary_fluxes[1] << " W";
+          /*-------------------------------------------------
+            output Inner/Outer Nu number to file per timestep*/
+
+          double dummy = 0e0;
+          Point<dim> dummyPoint;
+          const GeometryModel::SphericalShell<dim> *geometry = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
+          double thermal_conductivity = this->get_material_model().thermal_conductivity(dummy, dummy, dummyPoint);
+          double phi = (*geometry).opening_angle();
+          double R0 = (*geometry).inner_radius();
+          double R1 = (*geometry).outer_radius();
+          double dTdr = global_boundary_fluxes[0]/thermal_conductivity;
+          double BoundaryCurveLength = R0*phi;
+
+      	  if (this->NuInnerout == NULL) this->NuInnerout = fopen("bin/NuInner.dat", "w");
+          fprintf(NuInnerout,"%e %e\n", this->get_time(), dTdr / BoundaryCurveLength);
+
+          dTdr = global_boundary_fluxes[1]/thermal_conductivity;
+          BoundaryCurveLength = R1*phi;
+      	  if (this->NuOuterout == NULL) this->NuOuterout = fopen("bin/NuOuter.dat", "w");
+          fprintf(NuOuterout,"%e %e\n", this->get_time(), dTdr / BoundaryCurveLength);
 
           return std::pair<std::string, std::string> ("Inner/outer heat fluxes:",
                                                       output.str());
