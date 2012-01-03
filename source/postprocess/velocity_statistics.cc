@@ -119,6 +119,8 @@ namespace aspect
                << global_max_velocity
                << " m/s";
 
+      if (this->Vrmsout== NULL) this->Vrmsout = fopen("bin/Vrms.dat", "w");
+      fprintf(Vrmsout,"%e %e\n", this->get_time(), vrms);
       return std::pair<std::string, std::string> ("RMS, max velocity:",
                                                   output.str());
     }
