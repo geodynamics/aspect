@@ -21,7 +21,9 @@ namespace aspect
     Box<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-      GridGenerator::hyper_cube (coarse_grid, 0, 1);
+      GridGenerator::hyper_rectangle (coarse_grid,
+                                      Point<dim>(),
+                                      extents);
       for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
         coarse_grid.begin_active()->face(f)->set_boundary_indicator(f);
     }
@@ -40,13 +42,63 @@ namespace aspect
     }
 
 
-
     template <int dim>
     double
     Box<dim>::
     length_scale () const
     {
       return 0.01;
+    }
+
+
+
+
+    template <int dim>
+    void
+    Box<dim>::
+    declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Geometry model");
+      {
+        prm.enter_subsection("Box");
+        {
+          prm.declare_entry ("X extent", "1",
+                             Patterns::Double (0),
+                             "Extent of the box in x-direction. Units: m.");
+          prm.declare_entry ("Y extent", "1",
+                             Patterns::Double (0),
+                             "Extent of the box in y-direction. Units: m.");
+          prm.declare_entry ("Z extent", "1",
+                             Patterns::Double (0),
+                             "Extent of the box in z-direction. This value is ignored "
+                             "if the simulation is in 2d Units: m.");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+
+
+    template <int dim>
+    void
+    Box<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Geometry model");
+      {
+        prm.enter_subsection("Box");
+        {
+          extents[0] = prm.get_double ("X extent");
+
+          if (dim >= 2)
+            extents[1] = prm.get_double ("Y extent");
+
+          if (dim >= 3)
+            extents[2] = prm.get_double ("Z extent");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
     }
   }
 }
@@ -60,6 +112,8 @@ namespace aspect
 
     ASPECT_REGISTER_GEOMETRY_MODEL(Box,
                                    "box",
-                                   "A box geometry with fixed length 1 in each coordinate direction.")
+                                   "A box geometry parallel to the coordinate directions. "
+                                   "The extent of the box in each coordinate direction "
+                                   "is set in the parameter file.")
   }
 }
