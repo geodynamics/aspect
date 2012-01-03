@@ -24,6 +24,7 @@ namespace aspect
     class TemperatureStatistics : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+        FILE *Tavout;
         /**
          * Evaluate the solution for some temperature statistics.
          **/
