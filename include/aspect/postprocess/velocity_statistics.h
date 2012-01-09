@@ -24,7 +24,6 @@ namespace aspect
     class VelocityStatistics : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        FILE *Vrmsout;
         /**
          * Evaluate the solution for some velocity statistics.
          **/

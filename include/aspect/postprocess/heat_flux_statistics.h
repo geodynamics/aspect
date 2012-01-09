@@ -24,8 +24,6 @@ namespace aspect
     class HeatFluxStatistics : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        FILE *NuInnerout;
-        FILE *NuOuterout;
         /**
          * Evaluate the solution for some heat_flux statistics.
          **/
