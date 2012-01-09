@@ -6,6 +6,7 @@
 //-------------------------------------------------------------
 
 #include <aspect/postprocess/velocity_statistics.h>
+#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 
@@ -24,6 +25,7 @@ namespace aspect
     std::pair<std::string,std::string>
     VelocityStatistics<dim>::execute (TableHandler &statistics)
     {
+      const GeometryModel::SphericalShell<dim> *geometry = NULL;
       const QGauss<dim> quadrature_formula (this->get_stokes_dof_handler().get_fe()
                                             .base_element(0).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
@@ -119,10 +121,8 @@ namespace aspect
                << global_max_velocity
                << " m/s";
 
-      if (this->Vrmsout== NULL) this->Vrmsout = fopen("bin/Vrms.dat", "w");
-      fprintf(Vrmsout,"%e %e\n", this->get_time(), vrms);
-      return std::pair<std::string, std::string> ("RMS, max velocity:",
-                                                  output.str());
+       return std::pair<std::string, std::string> ("RMS, max velocity:",
+                                                    output.str());
     }
   }
 }
