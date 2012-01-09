@@ -123,8 +123,6 @@ namespace aspect
              << global_temperature_integral / this->get_volume() << " K, "
              << global_max_temperature << " K";
 
-      if (this->Tavout == NULL) this->Tavout = fopen("bin/Tav.dat", "w");
-      fprintf(Tavout,"%e %e\n", this->get_time(), global_temperature_integral / this->get_volume());
       return std::pair<std::string, std::string> ("Temperature min/avg/max:",
                                                   output.str());
     }
