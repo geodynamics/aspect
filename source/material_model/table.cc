@@ -203,7 +203,6 @@ namespace aspect
                const double pressure,
                const Point<dim> &position) const
     {
-      const double reference_eta    = 5e24;
       return reference_eta;
     }
 
@@ -214,11 +213,32 @@ namespace aspect
     Table<dim>::
     reference_viscosity () const
     {
-      const double reference_eta    = 5e24;
       return reference_eta;
     }
 
+    template <int dim>
+    double
+    Table<dim>::
+    reference_density () const
+    {
+      return reference_rho;
+    }
 
+    template <int dim>
+    double
+    Table<dim>::
+    reference_gravity () const
+    {
+      return reference_g;
+    }
+
+    template <int dim>
+    double
+    Table<dim>::
+    reference_thermal_alpha () const
+    {
+      return reference_alpha;
+    }
 
     template <int dim>
     double
@@ -232,8 +252,6 @@ namespace aspect
       static internal::P_T_LookupFunction cp("data/material-model/table/cp_bin");
       return cp.value(temperature, pressure);
     }
-
-
 
     template <int dim>
     double
@@ -252,7 +270,7 @@ namespace aspect
      thermal_diffusivity () const
      {
        // this model assumes that the thermal diffusivit is in fact constant
-       return 9.181e-08;
+       return reference_kappa;
      }
 
     template <int dim>
@@ -285,6 +303,64 @@ namespace aspect
     is_compressible () const
     {
       return true;
+    }
+
+    template <int dim>
+    void
+    Table<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Material model");
+      {
+        prm.enter_subsection("Table model");
+        {
+          prm.declare_entry ("Reference density", "3300",
+                             Patterns::Double (0),
+                             "Reference density $\\rho_0$. Units: $kg/m^3$.");
+          prm.declare_entry ("Reference temperature", "293",
+                             Patterns::Double (0),
+                             "The reference temperature $T_0$. Units: $K$.");
+          prm.declare_entry ("Viscosity", "5e24",
+                             Patterns::Double (0),
+                             "The value of the constant viscosity. Units: $kg/m/s$.");
+          prm.declare_entry ("Thermal conductivity", "4.7",
+                             Patterns::Double (0),
+                             "The value of the thermal conductivity $k$. "
+                             "Units: $W/m/K$.");
+          prm.declare_entry ("Thermal expansion coefficient", "2e-5",
+                             Patterns::Double (0),
+                             "The value of the thermal expansion coefficient $\\beta$. "
+                             "Units: $1/K$.");
+          prm.declare_entry ("Gravity", "30",
+                             Patterns::Double (0),
+                             "The value of the Gravity$. "
+                             "Units: $m/s^2$.");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+
+
+    template <int dim>
+    void
+    Table<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Material model");
+      {
+        prm.enter_subsection("Table model");
+        {
+          reference_rho     = prm.get_double ("Reference density");
+          reference_T = prm.get_double ("Reference temperature");
+          reference_eta         = prm.get_double ("Viscosity");
+          k_value               = prm.get_double ("Thermal conductivity");
+          reference_kappa = prm.get_double ("Thermal diffusivity");
+          reference_alpha = prm.get_double ("Thermal expansion coefficient");
+          reference_g = prm.get_double ("Gravity");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
     }
   }
 }
