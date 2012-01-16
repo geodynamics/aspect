@@ -34,6 +34,13 @@ namespace aspect
       return eta;
     }
 
+    template <int dim>
+    double
+    Simple<dim>::
+    reference_density () const
+    {
+      return reference_rho;
+    }
 
 
     template <int dim>
@@ -45,8 +52,6 @@ namespace aspect
     {
       return 1250.0;
     }
-
-
 
     template <int dim>
     double
@@ -74,9 +79,8 @@ namespace aspect
              const double,
              const Point<dim> &) const
     {
-      return (reference_density *
-              (1 - thermal_expansion_coefficient * (temperature -
-                                                    reference_temperature)));
+      return (reference_rho *
+              (1 - thermal_alpha * (temperature - reference_T)));
     }
 
 
@@ -143,11 +147,11 @@ namespace aspect
       {
         prm.enter_subsection("Simple model");
         {
-          reference_density     = prm.get_double ("Reference density");
-          reference_temperature = prm.get_double ("Reference temperature");
+          reference_rho     = prm.get_double ("Reference density");
+          reference_T = prm.get_double ("Reference temperature");
           eta                   = prm.get_double ("Viscosity");
           k_value               = prm.get_double ("Thermal conductivity");
-          thermal_expansion_coefficient = prm.get_double ("Thermal expansion coefficient");
+          thermal_alpha = prm.get_double ("Thermal expansion coefficient");
         }
         prm.leave_subsection();
       }
