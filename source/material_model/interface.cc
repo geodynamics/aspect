@@ -77,7 +77,20 @@ namespace aspect
       return registered_plugins.create_plugin (model_name, prm);
     }
 
-
+    template <int dim>
+    double
+    Interface<dim>::
+    reference_gravity () const
+    {
+      return 9.81;
+    }
+    template <int dim>
+    double
+    Interface<dim>::
+    reference_thermal_alpha () const
+    {
+      return 3e-5;
+    }
 
     void
     declare_parameters (ParameterHandler &prm)
