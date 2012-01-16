@@ -51,6 +51,39 @@ namespace aspect
                                         const Point<dim> &position) const;
 
         virtual bool is_compressible () const;
+
+        virtual double reference_density () const;
+
+       double reference_gravity () const;
+
+       double reference_thermal_alpha () const;
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter
+         * file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+      private:
+        double reference_rho;
+        double reference_T;
+        double reference_eta;
+        double reference_kappa;
+        double reference_alpha;
+        double reference_g;
+
+        /**
+         * The thermal conductivity.
+         */
+      double k_value;
     };
   }
 }
