@@ -21,6 +21,7 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/distributed/tria.h>
 #include <deal.II/fe/mapping.h>
+#include <deal.II/base/conditional_ostream.h>
 
 #include <boost/serialization/split_member.hpp>
 
@@ -189,6 +190,12 @@ namespace aspect
          * Return the current simulation time in seconds.
          */
         double get_time () const;
+
+
+        /**
+        * Return pcout.
+        */
+        ConditionalOStream get_pcout () const;
 
         /**
          * Return the size of the last time step.
