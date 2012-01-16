@@ -83,6 +83,21 @@ namespace aspect
 
 
         /**
+          * Return the reference density $\rho$.
+          */
+         virtual double reference_density () const = 0;
+
+         /**
+          * Return the reference gravity $g$ of the model.
+          */
+         double reference_gravity () const;
+
+         /**
+          * Return the reference gravity $g$ of the model.
+          */
+         double reference_thermal_alpha () const;
+
+        /**
          * Return the density $\rho$ of the model as a function of temperature,
          * pressure and position.
          */
