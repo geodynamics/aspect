@@ -36,6 +36,8 @@ namespace aspect
 
         virtual double reference_viscosity () const;
 
+        virtual double reference_density () const;
+
         virtual double specific_heat (const double temperature,
                                       const double pressure,
                                       const Point<dim> &position) const;
@@ -71,10 +73,10 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
       private:
-        double reference_density;
-        double reference_temperature;
+        double reference_rho;
+        double reference_T;
         double eta;
-        double thermal_expansion_coefficient;
+        double thermal_alpha;
 
         /**
          * The thermal conductivity.
