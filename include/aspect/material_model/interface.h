@@ -90,12 +90,7 @@ namespace aspect
          /**
           * Return the reference gravity $g$ of the model.
           */
-         double reference_gravity () const;
-
-         /**
-          * Return the reference gravity $g$ of the model.
-          */
-         double reference_thermal_alpha () const;
+         virtual double reference_thermal_alpha () const;
 
         /**
          * Return the density $\rho$ of the model as a function of temperature,
