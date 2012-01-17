@@ -76,10 +76,15 @@ namespace aspect
         {
           // read in definitions from data file
           std::string temp;
-          std::ifstream in("data/material-model/table/tabledatastruct.txt", std::ios::in);
+          std::string path = filename;
+          int ipos = filename.find("table");
+          ipos = filename.find("/", ipos+2);
+          ipos = filename.find("/", ipos+2);
+          path.replace(ipos+1,19,"tabledatastruct.txt"); // TODO remove this ugly hack with something more elegant!
+          std::ifstream in(path, std::ios::in);
           AssertThrow (in,
                        ExcMessage (std::string("Couldn't open file <") +
-                                   "data/material-model/table/tabledatastruct.txt>."));
+                                   path));
 
           in >> n_p >> n_T;
           getline(in, temp); // eat remainder of the line
