@@ -105,6 +105,14 @@ namespace aspect
          */
         virtual double Vp (const double      temperature,
                                 const double      pressure) const;
+
+        /**
+         * Return the seismic velocity Vs of the model as a function of temperature and
+         * pressure.
+         */
+        virtual double Vs (const double      temperature,
+                                const double      pressure) const;
+
         /**
          * Return the compressibility coefficient
          * $\frac{\partial\rho}{\partial p}$ of the model as a

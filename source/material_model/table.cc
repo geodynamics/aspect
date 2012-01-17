@@ -292,13 +292,26 @@ namespace aspect
              const double pressure) const
     {
       std::string path=	data_directory;
-      path +="vseis_s_bin";
+      path +="vseis_p_bin";
       std::ifstream in(path.c_str(), std::ios::in);
       if (!in) return 0e0;
       static internal::P_T_LookupFunction vp(path);
       return vp.value(temperature, pressure);
     }
 
+    template <int dim>
+    double
+    Table<dim>::
+    Vs (const double temperature,
+             const double pressure) const
+    {
+      std::string path=	data_directory;
+      path +="vseis_s_bin";
+      std::ifstream in(path.c_str(), std::ios::in);
+      if (!in) return 0e0;
+      static internal::P_T_LookupFunction vs(path);
+      return vs.value(temperature, pressure);
+    }
 
     template <int dim>
     double
