@@ -81,7 +81,7 @@ namespace aspect
           ipos = filename.find("/", ipos+2);
           ipos = filename.find("/", ipos+2);
           path.replace(ipos+1,19,"tabledatastruct.txt"); // TODO remove this ugly hack with something more elegant!
-          std::ifstream in(path, std::ios::in);
+          std::ifstream in(path.c_str(), std::ios::in);
           AssertThrow (in,
                        ExcMessage (std::string("Couldn't open file <") +
                                    path));
@@ -124,9 +124,9 @@ namespace aspect
         in.read (reinterpret_cast<char *>(&(array[0])),
                  n_p*n_T*sizeof(double));
 
-        for (unsigned int i=0; i<n_p; ++i)
-          for (unsigned int j=0; j<n_T; ++j)
-            values[i][j] = array[i*n_T+j];
+        for (unsigned int j=0; j<n_T; ++j)
+          for (unsigned int i=0; i<n_p; ++i)
+            values[i][j] = array[j*n_p+i];
 
         delete[] array;
       }
@@ -146,15 +146,15 @@ namespace aspect
 // TODO: clamping into the valid range in all cases okay?
         const double temperature = std::max(min_T, std::min(T, max_T-delta_T));
 
-        const unsigned int i = (temperature-min_T) / delta_T;
-        const unsigned int j = (pressure-min_p) / delta_p;
-        Assert (i < n_T-1, ExcInternalError());
-        Assert (j < n_p-1, ExcInternalError());
+        const unsigned int i = (pressure-min_p) / delta_p;
+        const unsigned int j = (temperature-min_T) / delta_T;
+        Assert (i < n_p-1, ExcInternalError());
+        Assert (j < n_T-1, ExcInternalError());
 
         // compute the coordinates of this point in the
         // reference cell between the data points
-        const double xi  = ((temperature-min_T) / delta_T - i);
-        const double eta = ((pressure-min_p) / delta_p - j);
+        const double xi  = ((temperature-min_T) / delta_T - j);
+        const double eta = ((pressure-min_p) / delta_p - i);
         Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
         Assert ((0 <= eta) && (eta <= 1), ExcInternalError());
 
@@ -179,10 +179,10 @@ namespace aspect
         Assert (T >= min_T, ExcMessage ("Not in range"));
         Assert (T <= max_T, ExcMessage ("Not in range"));
 
-        const unsigned int i = (T-min_T) / delta_T;
-        const unsigned int j = (pressure-min_p) / delta_p;
-        Assert (i < n_T-1, ExcInternalError());
-        Assert (j < n_p-1, ExcInternalError());
+        const unsigned int i = (pressure-min_p) / delta_p;
+        const unsigned int j = (T-min_T) / delta_T;
+        Assert (i < n_p-1, ExcInternalError());
+        Assert (j < n_T-1, ExcInternalError());
 
         // compute the coordinates of this point in the
         // reference cell between the data points
@@ -190,7 +190,7 @@ namespace aspect
         // since the derivative in p-direction (eta direction)
         // is constant for the bilinear interpolation, we really
         // only need xi here
-        const double xi  = ((T-min_T) / delta_T - i);
+        const double xi  = ((T-min_T) / delta_T - j);
         Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
 
         // use these co-ordinates for a bilinear interpolation
@@ -283,6 +283,18 @@ namespace aspect
       path +="rho_bin";
       static internal::P_T_LookupFunction rho(path);
       return rho.value(temperature, pressure);
+    }
+
+    template <int dim>
+    double
+    Table<dim>::
+    Vp (const double temperature,
+             const double pressure) const
+    {
+      std::string path=	data_directory;
+      path +="vseis_s_bin";
+      static internal::P_T_LookupFunction vp(path);
+      return vp.value(temperature, pressure);
     }
 
 
