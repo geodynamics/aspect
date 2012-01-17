@@ -211,6 +211,12 @@ namespace aspect
       return *simulator->geometry_model.get();
     }
 
+    template <int dim>
+    const GravityModel::Interface<dim> &
+    SimulatorAccess<dim>::get_gravity_model () const
+    {
+      return *simulator->gravity_model.get();
+    }
 
 
     template <int dim>
