@@ -116,15 +116,15 @@ namespace aspect
           }
         }
 
-      statistics.add_value ("Dimensionless RMS velocity",
-                                vrmsDimless);
-      statistics.set_precision ("Dimensionless RMS velocity", 6);
-      statistics.set_scientific ("Dimensionless RMS velocity", true);
-
       statistics.add_value ("Dimensionless time",
                                 timeDimless);
       statistics.set_precision ("Dimensionless time", 6);
       statistics.set_scientific ("Dimensionless time", true);
+
+      statistics.add_value ("Dimensionless RMS velocity",
+                                vrmsDimless);
+      statistics.set_precision ("Dimensionless RMS velocity", 6);
+      statistics.set_scientific ("Dimensionless RMS velocity", true);
 
       std::ostringstream output;
       output.precision(3);
