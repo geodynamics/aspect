@@ -227,14 +227,6 @@ namespace aspect
     template <int dim>
     double
     Table<dim>::
-    reference_gravity () const
-    {
-      return reference_g;
-    }
-
-    template <int dim>
-    double
-    Table<dim>::
     reference_thermal_alpha () const
     {
       return reference_alpha;
