@@ -95,6 +95,7 @@ namespace aspect
         solution_names.push_back ("non_adiabatic_temperature");
         solution_names.push_back ("density");
         solution_names.push_back ("Strainrate");
+        solution_names.push_back ("Vs");
         return solution_names;
       }
 
@@ -108,6 +109,7 @@ namespace aspect
         interpretation (dim,
                         DataComponentInterpretation::component_is_part_of_vector);
 
+        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
@@ -187,6 +189,7 @@ namespace aspect
 
             computed_quantities[q](dim+7) = material_model.density(temperature, pressure, evaluation_points[q]);
             computed_quantities[q](dim+8) = std::sqrt(strain_rate*strain_rate);
+            computed_quantities[q](dim+9) = material_model.Vp(temperature, pressure);
           }
       }
     }
