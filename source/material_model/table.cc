@@ -293,6 +293,8 @@ namespace aspect
     {
       std::string path=	data_directory;
       path +="vseis_s_bin";
+      std::ifstream in(path.c_str(), std::ios::in);
+      if (!in) return 0e0;
       static internal::P_T_LookupFunction vp(path);
       return vp.value(temperature, pressure);
     }
