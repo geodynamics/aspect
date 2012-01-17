@@ -79,6 +79,8 @@ namespace aspect
         double reference_kappa;
         double reference_alpha;
         double reference_g;
+        std::string composition;
+        std::string data_directory;
 
         /**
          * The thermal conductivity.

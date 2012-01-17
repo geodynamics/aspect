@@ -241,7 +241,9 @@ namespace aspect
     {
 //    const double reference_specific_heat = 1250;    /* J / K / kg */  //??
 //      if (!IsCompressible) return reference_specific_heat; TODO
-      static internal::P_T_LookupFunction cp("data/material-model/table/cp_bin");
+      std::string path=	data_directory;
+      path +="cp_bin";
+      static internal::P_T_LookupFunction cp(path);
       return cp.value(temperature, pressure);
     }
 
@@ -272,7 +274,9 @@ namespace aspect
              const double pressure,
              const Point<dim> &position) const
     {
-      static internal::P_T_LookupFunction rho("data/material-model/table/rho_bin");
+      std::string path=	data_directory;
+      path +="rho_bin";
+      static internal::P_T_LookupFunction rho(path);
       return rho.value(temperature, pressure);
     }
 
@@ -284,7 +288,9 @@ namespace aspect
                      const double pressure,
                      const Point<dim> &position) const
     {
-      static internal::P_T_LookupFunction rho("data/material-model/table/rho_bin");
+      std::string path=	data_directory;
+      path +="rho_bin";
+      static internal::P_T_LookupFunction rho(path);
       return rho.d_by_dp(temperature, pressure) / rho.value(temperature,pressure);
     }
 
@@ -330,6 +336,12 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the Gravity$. "
                              "Units: $m/s^2$.");
+          prm.declare_entry ("Composition", "olixene",
+                             Patterns::Anything (),
+                             "The Composition of the model. ");
+          prm.declare_entry ("Path to model data", "datadir",
+                             Patterns::DirectoryName (),
+                             "The path to the model data. ");
         }
         prm.leave_subsection();
       }
@@ -346,13 +358,18 @@ namespace aspect
       {
         prm.enter_subsection("Table model");
         {
-          reference_rho     = prm.get_double ("Reference density");
-          reference_T = prm.get_double ("Reference temperature");
+          reference_rho     	= prm.get_double ("Reference density");
+          reference_T 			= prm.get_double ("Reference temperature");
           reference_eta         = prm.get_double ("Viscosity");
           k_value               = prm.get_double ("Thermal conductivity");
-          reference_kappa = prm.get_double ("Thermal diffusivity");
-          reference_alpha = prm.get_double ("Thermal expansion coefficient");
-          reference_g = prm.get_double ("Gravity");
+          reference_kappa 		= prm.get_double ("Thermal diffusivity");
+          reference_alpha 		= prm.get_double ("Thermal expansion coefficient");
+          reference_g 			= prm.get_double ("Gravity");
+          composition			= prm.get ("Composition");
+          data_directory        = prm.get ("Path to model data");
+          data_directory +="/";
+          data_directory +=composition;
+          data_directory +="/";
         }
         prm.leave_subsection();
       }
