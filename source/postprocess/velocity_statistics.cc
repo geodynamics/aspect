@@ -25,7 +25,6 @@ namespace aspect
     std::pair<std::string,std::string>
     VelocityStatistics<dim>::execute (TableHandler &statistics)
     {
-      const GeometryModel::SphericalShell<dim> *geometry = NULL;
       const QGauss<dim> quadrature_formula (this->get_stokes_dof_handler().get_fe()
                                             .base_element(0).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
