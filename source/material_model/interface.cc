@@ -86,6 +86,15 @@ namespace aspect
     	return 0;
     }
 
+    template <int dim>
+    double
+    Interface<dim>::
+    Vp (double dummy1, double dummy2) const
+    {
+    	Assert (false, ExcNotImplemented());
+    	return 0;
+    }
+
     void
     declare_parameters (ParameterHandler &prm)
     {
