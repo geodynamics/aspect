@@ -158,10 +158,8 @@ namespace aspect
 
           double dT = this->get_boundary_temperature().maximal_temperature() - this->get_boundary_temperature().minimal_temperature();
           double ConductiveHeatflux = dT/h;
-          printf("ConductiveHeatflux %e %e\n", dT, h);
           double NusseltOuter = global_boundary_fluxes[0]/ConductiveHeatflux;
           double BoundaryCurveLengthOuter = R0*phi;
-          printf("BoundaryCurveLength %e %e\n", NusseltOuter,  BoundaryCurveLengthOuter);
 
           statistics.add_value ("Outer Nusselt number", NusseltOuter/BoundaryCurveLengthOuter);
           statistics.set_precision ("Outer Nusselt number", 4);
