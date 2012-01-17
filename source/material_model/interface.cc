@@ -80,16 +80,10 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::
-    reference_gravity () const
-    {
-      return 9.81;
-    }
-    template <int dim>
-    double
-    Interface<dim>::
     reference_thermal_alpha () const
     {
-      return 3e-5;
+    	Assert (false, ExcNotImplemented());
+    	return 0;
     }
 
     void
