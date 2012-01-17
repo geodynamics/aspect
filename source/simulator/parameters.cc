@@ -168,7 +168,7 @@ namespace aspect
                          Patterns::Integer (1),
                          "The polynomial degree to use for the temperature variable. "
                          "Units: None.");
-      prm.declare_entry ("Use locally conservative discretization", "true",
+      prm.declare_entry ("Use locally conservative discretization", "false",
                          Patterns::Bool (),
                          "Whether to use a Stokes discretization that is locally "
                          "conservative at the expense of a larger number of degrees "
