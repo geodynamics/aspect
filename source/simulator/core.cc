@@ -104,6 +104,19 @@ namespace aspect
                    parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning),
 
     mapping (4),
+    
+    system_fe(FE_Q<dim>(parameters.stokes_velocity_degree),
+               dim,
+              (parameters.use_locally_conservative_discretization
+                ?
+                static_cast<const FiniteElement<dim> &>
+                (FE_DGP<dim>(parameters.stokes_velocity_degree-1))
+                :
+                static_cast<const FiniteElement<dim> &>
+                (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
+               1, 
+               FE_Q<dim>(parameters.temperature_degree), 
+              1),
 
     stokes_fe (FE_Q<dim>(parameters.stokes_velocity_degree),
                dim,
@@ -115,6 +128,8 @@ namespace aspect
                 static_cast<const FiniteElement<dim> &>
                 (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
                1),
+    
+    system_dof_handler (triangulation),
 
     stokes_dof_handler (triangulation),
 
@@ -202,10 +217,18 @@ namespace aspect
       IndexSet stokes_relevant_set;
       DoFTools::extract_locally_relevant_dofs (stokes_dof_handler,
                                                stokes_relevant_set);
+      
+      IndexSet system_relevant_set;
+      DoFTools::extract_locally_relevant_dofs (system_dof_handler,
+                                               system_relevant_set);
 
       current_stokes_constraints.clear ();
       current_stokes_constraints.reinit (stokes_relevant_set);
       current_stokes_constraints.merge (stokes_constraints);
+      
+      current_system_constraints.clear ();
+      current_system_constraints.reinit (system_relevant_set);
+      current_system_constraints.merge (system_constraints);
 
       typedef unsigned char boundary_indicator_t;
       const std::set<boundary_indicator_t>
@@ -224,6 +247,20 @@ namespace aspect
                                                   current_stokes_constraints,
                                                   velocity_mask);
       current_stokes_constraints.close();
+      
+      
+      std::vector<bool> system_velocity_mask (dim+2, true);
+      system_velocity_mask[dim] = false;
+      system_velocity_mask[dim+1] = false;
+      for (std::set<boundary_indicator_t>::const_iterator
+           p = prescribed_velocity_boundary_indicators.begin();
+           p != prescribed_velocity_boundary_indicators.end(); ++p)
+        VectorTools::interpolate_boundary_values (system_dof_handler,
+                                                  *p,
+                                                  ZeroFunction<dim>(dim+2),
+                                                  current_system_constraints,
+                                                  system_velocity_mask);
+      current_system_constraints.close();
     }
   }
 
@@ -257,6 +294,36 @@ namespace aspect
 
     stokes_matrix.reinit (sp);
   }
+  
+  
+  
+  template <int dim>
+  void
+  Simulator<dim>::
+  setup_system_matrix (const std::vector<IndexSet> &system_partitioning)
+  {
+    system_matrix.clear ();
+
+    TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
+                                               MPI_COMM_WORLD);
+
+    Table<2,DoFTools::Coupling> coupling (dim+2, dim+2);
+
+    // TODO: determine actual non-zero blocks depending on which 
+    // dependencies are present in the material model
+    for (unsigned int c=0; c<dim+2; ++c)
+      for (unsigned int d=0; d<dim+2; ++d)
+         coupling[c][d] = DoFTools::always;
+
+    DoFTools::make_sparsity_pattern (system_dof_handler,
+                                     coupling, sp,
+                                     system_constraints, false,
+                                     Utilities::MPI::
+                                     this_mpi_process(MPI_COMM_WORLD));
+    sp.compress();
+
+    system_matrix.reinit (sp);
+  }
 
 
 
@@ -289,6 +356,40 @@ namespace aspect
 
     stokes_preconditioner_matrix.reinit (sp);
   }
+  
+  
+  
+  template <int dim>
+  void Simulator<dim>::
+  setup_system_preconditioner (const std::vector<IndexSet> &system_partitioning)
+  {
+    Amg_preconditioner.reset ();
+    Mp_preconditioner.reset ();
+    T_preconditioner.reset ();
+
+    system_preconditioner_matrix.clear ();
+
+    TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
+                                               MPI_COMM_WORLD);
+
+    Table<2,DoFTools::Coupling> coupling (dim+2, dim+2);
+    for (unsigned int c=0; c<dim+2; ++c)
+      for (unsigned int d=0; d<dim+2; ++d)
+        if (c == d)
+          coupling[c][d] = DoFTools::always;
+        else
+          coupling[c][d] = DoFTools::none;
+
+    DoFTools::make_sparsity_pattern (system_dof_handler,
+                                     coupling, sp,
+                                     system_constraints, false,
+                                     Utilities::MPI::
+                                     this_mpi_process(MPI_COMM_WORLD));
+    sp.compress();
+
+    system_preconditioner_matrix.reinit (sp);
+  }
+  
 
 
   template <int dim>
@@ -315,6 +416,8 @@ namespace aspect
   void Simulator<dim>::setup_dofs ()
   {
     computing_timer.enter_section("Setup dof systems");
+    
+    system_dof_handler.distribute_dofs(system_fe);
 
     stokes_dof_handler.distribute_dofs (stokes_fe);
 
@@ -322,6 +425,12 @@ namespace aspect
     // same numbering if we resume the computation. This
     // is because the numbering depends on the order the
     // cells are created.
+    DoFRenumbering::hierarchical (system_dof_handler);
+    std::vector<unsigned int> system_sub_blocks (dim+2,0);
+    system_sub_blocks[dim] = 1;
+    system_sub_blocks[dim+1] = 2;
+    DoFRenumbering::component_wise (system_dof_handler, system_sub_blocks);
+    
     DoFRenumbering::hierarchical (stokes_dof_handler);
     std::vector<unsigned int> stokes_sub_blocks (dim+1,0);
     stokes_sub_blocks[dim] = 1;
@@ -334,9 +443,17 @@ namespace aspect
     DoFTools::count_dofs_per_block (stokes_dof_handler, stokes_dofs_per_block,
                                     stokes_sub_blocks);
 
-    const unsigned int n_u = stokes_dofs_per_block[0],
-                       n_p = stokes_dofs_per_block[1],
-                       n_T = temperature_dof_handler.n_dofs();
+    //const unsigned int n_u = stokes_dofs_per_block[0],
+    //                   n_p = stokes_dofs_per_block[1],
+    //                   n_T = temperature_dof_handler.n_dofs();
+    
+    std::vector<unsigned int> system_dofs_per_block (3);
+    DoFTools::count_dofs_per_block (system_dof_handler, system_dofs_per_block,
+                                    system_sub_blocks);
+
+    const unsigned int n_u = system_dofs_per_block[0],
+                       n_p = system_dofs_per_block[1],
+                       n_T = system_dofs_per_block[2];
 
     // print dof numbers with 1000s
     // separator since they are frequently
@@ -368,6 +485,22 @@ namespace aspect
 
     // now also compute the various partitionings between processors and blocks
     // of vectors and matrices
+    
+    std::vector<IndexSet> system_partitioning, system_relevant_partitioning;
+    IndexSet system_relevant_set;
+    {
+      IndexSet system_index_set = system_dof_handler.locally_owned_dofs();
+      system_partitioning.push_back(system_index_set.get_view(0,n_u));
+      system_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
+      system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
+
+      DoFTools::extract_locally_relevant_dofs (system_dof_handler,
+                                               system_relevant_set);
+      system_relevant_partitioning.push_back(system_relevant_set.get_view(0,n_u));
+      system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u,n_u+n_p));
+      system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
+    }
+    
     std::vector<IndexSet> stokes_partitioning, stokes_relevant_partitioning;
     IndexSet temperature_partitioning (n_T), temperature_relevant_partitioning (n_T);
     IndexSet stokes_relevant_set;
@@ -392,6 +525,12 @@ namespace aspect
     // velocity that are different between time steps. these are then put
     // into current_stokes_constraints in start_timestep().
     {
+      system_constraints.clear();
+      system_constraints.reinit(system_relevant_set);
+      
+      DoFTools::make_hanging_node_constraints (system_dof_handler, 
+                                               system_constraints);
+      
       stokes_constraints.clear ();
       stokes_constraints.reinit (stokes_relevant_set);
 
@@ -410,6 +549,18 @@ namespace aspect
                                           parameters.tangential_velocity_boundary_indicators.end());
 
       // do the interpolation for zero velocity
+      std::vector<bool> velocity_system_mask (dim+2, true);
+      velocity_system_mask[dim] = false;
+      velocity_system_mask[dim+1] = false;
+      for (std::set<boundary_indicator_t>::const_iterator
+           p = zero_boundary_indicators.begin();
+           p != zero_boundary_indicators.end(); ++p)
+        VectorTools::interpolate_boundary_values (system_dof_handler,
+                                                  *p,
+                                                  ZeroFunction<dim>(dim+2),
+                                                  system_constraints,
+                                                  velocity_system_mask);
+      
       std::vector<bool> velocity_mask (dim+1, true);
       velocity_mask[dim] = false;
       for (std::set<boundary_indicator_t>::const_iterator
@@ -422,11 +573,18 @@ namespace aspect
                                                   velocity_mask);
 
       // do the same for no-normal-flux boundaries
+      VectorTools::compute_no_normal_flux_constraints (system_dof_handler,
+                                                       /* first_vector_component= */ 0,
+                                                       no_normal_flux_boundary_indicators,
+                                                       system_constraints,
+                                                       mapping);
+      
       VectorTools::compute_no_normal_flux_constraints (stokes_dof_handler,
                                                        /* first_vector_component= */ 0,
                                                        no_normal_flux_boundary_indicators,
                                                        stokes_constraints,
                                                        mapping);
+      //system_constraints.close();
       stokes_constraints.close ();
     }
 
@@ -441,6 +599,30 @@ namespace aspect
       // obtain the boundary indicators that belong to Dirichlet-type
       // temperature boundary conditions and interpolate the temperature
       // there
+      std::vector<bool> temperature_system_mask (dim+2, false);
+      temperature_system_mask[dim+1] = true;
+      
+      for (std::vector<int>::const_iterator
+           p = parameters.fixed_temperature_boundary_indicators.begin();
+           p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
+        {
+          Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
+                  ExcInternalError());
+          VectorTools::interpolate_boundary_values (system_dof_handler,
+                                                    *p,
+                                                    VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&BoundaryTemperature::Interface<dim>::temperature,
+                                                                                                std_cxx1x::cref(*boundary_temperature),
+                                                                                                std_cxx1x::cref(*geometry_model),
+                                                                                                *p,
+                                                                                                std_cxx1x::_1), 
+                                                                                                dim+1,
+                                                                                                dim+2),
+                                                    system_constraints, 
+                                                    temperature_system_mask);
+        }
+      system_constraints.close();
+      
+      
       for (std::vector<int>::const_iterator
            p = parameters.fixed_temperature_boundary_indicators.begin();
            p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
@@ -460,13 +642,23 @@ namespace aspect
     }
 
     // finally initialize vectors, matrices, etc.
+    
+    
     setup_stokes_matrix (stokes_partitioning);
     setup_stokes_preconditioner (stokes_partitioning);
     setup_temperature_matrix (temperature_partitioning);
+    
+    setup_system_matrix (system_partitioning);
+    setup_system_preconditioner (system_partitioning);
 
     stokes_rhs.reinit (stokes_partitioning, MPI_COMM_WORLD);
     stokes_solution.reinit (stokes_relevant_partitioning, MPI_COMM_WORLD);
     old_stokes_solution.reinit (stokes_solution);
+    
+    system_rhs.reinit(system_partitioning, MPI_COMM_WORLD);
+    system_solution.reinit(system_partitioning, MPI_COMM_WORLD);
+    old_system_solution.reinit(system_partitioning, MPI_COMM_WORLD);
+    old_old_system_solution.reinit(system_partitioning, MPI_COMM_WORLD);
 
     temperature_rhs.reinit (temperature_partitioning, MPI_COMM_WORLD);
     temperature_solution.reinit (temperature_relevant_partitioning, MPI_COMM_WORLD);
@@ -770,10 +962,27 @@ namespace aspect
       {
         set_initial_temperature_field ();
         compute_initial_pressure_field ();
+        
+        compute_initial_pressure();
 
         time                      = parameters.start_time;
         timestep_number           = 0;
         time_step = old_time_step = 0;
+//        
+//        std::ofstream output1 ("velocity.tmp");
+//        std::ofstream output2 ("pressure.tmp");
+//        std::ofstream output3 ("temp.tmp");
+//        std::ofstream output4 ("velocity_system.tmp");
+//        std::ofstream output5 ("pressure_system.tmp");
+//        std::ofstream output6 ("temp_system.tmp");
+//        
+//        stokes_solution.block(0).print(output1, 6, true, false);
+//        stokes_solution.block(1).print(output2, 6, true, false);
+//        temperature_solution.print(output3, 6, true, false);
+//        system_solution.block(0).print(output4, 6, true, false);
+//        system_solution.block(1).print(output5, 6, true, false);
+//        system_solution.block(2).print(output6, 6, true, false);
+//        
       }
 
     // start the principal loop over time steps:

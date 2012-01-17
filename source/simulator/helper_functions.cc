@@ -324,6 +324,112 @@ namespace aspect
             }
       }
   }
+  
+  
+  
+    /*
+   * normalize the pressure by calculating the surface integral of the pressure on the outer
+   * shell and subtracting this from all pressure nodes.
+   */
+  template <int dim>
+  void Simulator<dim>::normalize_system_pressure(TrilinosWrappers::MPI::BlockVector &vector)
+  {
+    // TODO: somehow parameterize based on the geometry model
+    // on which parts of the boundary the pressure should be
+    // zero
+    if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&*geometry_model) == 0)
+      return;
+
+    double my_pressure = 0.0;
+    double my_area = 0.0;
+    {
+      QGauss < dim - 1 > quadrature (parameters.stokes_velocity_degree + 1);
+
+      const unsigned int n_q_points = quadrature.size();
+      FEFaceValues<dim> fe_face_values (mapping, system_fe,  quadrature,
+                                        update_JxW_values | update_values);
+      const FEValuesExtractors::Scalar pressure (dim);
+
+      std::vector<double> pressure_values(n_q_points);
+
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = system_dof_handler.begin_active(),
+      endc = system_dof_handler.end();
+      for (; cell != endc; ++cell)
+        if (cell->is_locally_owned())
+          {
+            for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+              {
+                const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
+                if (face->at_boundary() && face->boundary_indicator() == 1) // outer shell boundary
+                  {
+                    fe_face_values.reinit (cell, face_no);
+                    fe_face_values[pressure].get_function_values(vector,
+                                                                 pressure_values);
+
+                    for (unsigned int q = 0; q < n_q_points; ++q)
+                      {
+                        my_pressure += pressure_values[q]
+                                       * fe_face_values.JxW (q);
+                        my_area += fe_face_values.JxW (q);
+                      }
+                  }
+              }
+          }
+    }
+
+    double surf_pressure = 0;
+    // sum up the surface integrals from each processor
+    {
+      const double my_temp[2] = {my_pressure, my_area};
+      double temp[2];
+      Utilities::MPI::sum (my_temp, MPI_COMM_WORLD, temp);
+      surf_pressure = temp[0]/temp[1];
+    }
+
+    const double adjust = -surf_pressure + 1e7;
+    if (parameters.use_locally_conservative_discretization == false)
+      vector.block(1).add(adjust);
+    else
+      {
+        // this case is a bit more complicated: if the condition above is false
+        // then we use the FE_DGP element for which the shape functions do not
+        // add up to one; consequently, adding a constant to all degrees of
+        // freedom does not alter the overall function by that constant, but
+        // by something different
+        //
+        // we can work around this by using the documented property of the
+        // FE_DGP element that the first shape function is constant.
+        // consequently, adding the adjustment to the global function is
+        // achieved by adding the adjustment to the first pressure degree
+        // of freedom on each cell.
+        Assert (dynamic_cast<const FE_DGP<dim>*>(&system_fe.base_element(1)) != 0,
+                ExcInternalError());
+        std::vector<unsigned int> local_dof_indices (system_fe.dofs_per_cell);
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = system_dof_handler.begin_active(),
+        endc = system_dof_handler.end();
+        for (; cell != endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              // identify the first pressure dof
+              cell->get_dof_indices (local_dof_indices);
+              const unsigned int first_pressure_dof
+                = system_fe.component_to_system_index (dim, 0);
+
+              // make sure that this DoF is really owned by the current processor
+              // and that it is in fact a pressure dof
+              Assert (system_dof_handler.locally_owned_dofs().is_element(first_pressure_dof),
+                      ExcInternalError());
+              Assert (local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
+                      ExcInternalError());
+
+              // then adjust its value
+              vector(local_dof_indices[first_pressure_dof]) += adjust;
+            }
+      }
+  }
+  
 
 
   /**
@@ -351,6 +457,8 @@ namespace aspect
 namespace aspect
 {
   template void Simulator<deal_II_dimension>::normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
+  
+  template void Simulator<deal_II_dimension>::normalize_system_pressure(TrilinosWrappers::MPI::BlockVector &vector);
 
   template double Simulator<deal_II_dimension>::get_maximal_velocity () const;
 

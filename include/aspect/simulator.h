@@ -265,6 +265,8 @@ namespace aspect
        * <code>source/simulator/initial_conditions.cc</code>.
        */
       void compute_initial_pressure_field ();
+      
+      void compute_initial_pressure ();
 
       /**
        * Do some housekeeping at the beginning of each time step. This includes
@@ -422,6 +424,9 @@ namespace aspect
        * <code>source/simulator/core.cc</code>.
        */
       void setup_temperature_matrix (const IndexSet &temperature_partitioning);
+      
+      void setup_system_matrix (const std::vector<IndexSet> &system_partitioning);
+      void setup_system_preconditioner (const std::vector<IndexSet> &system_partitioning);
       /**
        * @}
        */
@@ -542,6 +547,9 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        **/
       void normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
+
+      void normalize_system_pressure(TrilinosWrappers::MPI::BlockVector &vector);
+
 
       /**
        * Compute the maximal velocity througout the domain. This is needed
@@ -668,11 +676,18 @@ namespace aspect
 
       const MappingQ<dim>                                       mapping;
 
+      const FESystem<dim>                                       system_fe;
+      
       const FESystem<dim>                                       stokes_fe;
+      
+      DoFHandler<dim>                                           system_dof_handler;
 
       DoFHandler<dim>                                           stokes_dof_handler;
       ConstraintMatrix                                          stokes_constraints;
       ConstraintMatrix                                          current_stokes_constraints;
+      
+      ConstraintMatrix                                          system_constraints;
+      ConstraintMatrix                                          current_system_constraints;
 
       double                                                    pressure_scaling;
 
@@ -689,9 +704,17 @@ namespace aspect
        * @name Variables that describe the linear systems and solution vectors
        * @{
        */
+      TrilinosWrappers::BlockSparseMatrix                       system_matrix;
+      TrilinosWrappers::BlockSparseMatrix                       system_preconditioner_matrix;
+      
       TrilinosWrappers::BlockSparseMatrix                       stokes_matrix;
       TrilinosWrappers::BlockSparseMatrix                       stokes_preconditioner_matrix;
 
+      TrilinosWrappers::MPI::BlockVector                        system_solution;
+      TrilinosWrappers::MPI::BlockVector                        old_system_solution;
+      TrilinosWrappers::MPI::BlockVector                        old_old_system_solution;
+      TrilinosWrappers::MPI::BlockVector                        system_rhs;
+      
       TrilinosWrappers::MPI::BlockVector                        stokes_solution;
       TrilinosWrappers::MPI::BlockVector                        old_stokes_solution;
       TrilinosWrappers::MPI::BlockVector                        stokes_rhs;
