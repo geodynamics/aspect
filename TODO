@@ -1,7 +1,7 @@
 Rename artificial viscosity stability parameter from beta to alpha to match
 the paper.
 
-
+average temperature/... depending on depth (for use in material model and output)
 
 Topics for an ASPECT II paper:
 
