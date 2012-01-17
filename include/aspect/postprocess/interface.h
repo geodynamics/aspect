@@ -331,6 +331,12 @@ namespace aspect
 
 
         /**
+         * Return a pointer to the material model to access function like density()
+         */
+        const GravityModel::Interface<dim> &
+        get_gravity_model () const;
+
+        /**
          * Return a pointer to the geometry model.
          */
         const GeometryModel::Interface<dim> &
