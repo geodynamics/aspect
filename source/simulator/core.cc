@@ -495,43 +495,47 @@ namespace aspect
     std::list<std::pair<std::string,std::string> >
     output_list = postprocess_manager.execute (statistics);
 
-    std::ofstream stat_file ((parameters.output_directory+"statistics").c_str());
-    if (parameters.convert_to_years == true)
+    if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)==0)
       {
-        statistics.set_scientific("Time (years)", true);
-        statistics.set_scientific("Time step size (years)", true);
+        std::ofstream stat_file ((parameters.output_directory+"statistics").c_str());
+        if (parameters.convert_to_years == true)
+          {
+            statistics.set_scientific("Time (years)", true);
+            statistics.set_scientific("Time step size (years)", true);
+          }
+        else
+          {
+            statistics.set_scientific("Time (seconds)", true);
+            statistics.set_scientific("Time step size (seconds)", true);
+          }
+
+        statistics.write_text (stat_file,
+                               TableHandler::table_with_separate_column_description);
+
+        // determine the width of the first column of text so that
+        // everything gets nicely aligned; then output everything
+        {
+          unsigned int width = 0;
+          for (std::list<std::pair<std::string,std::string> >::const_iterator
+               p = output_list.begin();
+               p != output_list.end(); ++p)
+            width = std::max<unsigned int> (width, p->first.size());
+
+          for (std::list<std::pair<std::string,std::string> >::const_iterator
+               p = output_list.begin();
+               p != output_list.end(); ++p)
+            pcout << "     "
+                  << std::left
+                  << std::setw(width)
+                  << p->first
+                  << " "
+                  << p->second
+                  << std::endl;
+        }
+
+        pcout << std::endl;
       }
-    else
-      {
-        statistics.set_scientific("Time (seconds)", true);
-        statistics.set_scientific("Time step size (seconds)", true);
-      }
 
-    statistics.write_text (stat_file,
-                           TableHandler::table_with_separate_column_description);
-
-    // determine the width of the first column of text so that
-    // everything gets nicely aligned; then output everything
-    {
-      unsigned int width = 0;
-      for (std::list<std::pair<std::string,std::string> >::const_iterator
-           p = output_list.begin();
-           p != output_list.end(); ++p)
-        width = std::max<unsigned int> (width, p->first.size());
-
-      for (std::list<std::pair<std::string,std::string> >::const_iterator
-           p = output_list.begin();
-           p != output_list.end(); ++p)
-        pcout << "     "
-              << std::left
-              << std::setw(width)
-              << p->first
-              << " "
-              << p->second
-              << std::endl;
-    }
-
-    pcout << std::endl;
     computing_timer.exit_section ();
   }
 
