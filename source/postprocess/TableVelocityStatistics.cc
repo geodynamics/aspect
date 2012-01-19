@@ -70,7 +70,11 @@ namespace aspect
                           std::sqrt(this->get_volume());
       const GeometryModel::SphericalShell<dim> *geometry = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
       const double kappa = this->get_material_model().thermal_diffusivity();
-      double h = (*geometry).outer_radius() - (*geometry).inner_radius();
+	  double h;
+	  if (geometry)
+		h = geometry->outer_radius() - geometry->inner_radius();
+	  else
+		h = 1.0; //TODO: define something like geometrymodel::depth?
       double Scaling = h/kappa;
       const double vrmsDimless = Scaling*std::sqrt(global_velocity_square_integral) /
                           	     std::sqrt(this->get_volume());
@@ -141,9 +145,8 @@ namespace aspect
        if (this->get_time() == 0e0){
     	   double dT = this->get_boundary_temperature().maximal_temperature() - this->get_boundary_temperature().minimal_temperature();
 
-           const GravityModel::RadialConstant<dim> *gravity_model= dynamic_cast<const GravityModel::RadialConstant<dim> *>(&this->get_gravity_model());
            Point<dim> representative_point = Point<dim>::unit_vector(dim-1);
-    	   const double gravity = (*gravity_model).gravity_vector(representative_point).norm();
+    	   const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
     	   const double Ra = this->get_material_model().reference_density()*
     			   	   	     gravity*
     			   	   	     this->get_material_model().reference_thermal_alpha()*
