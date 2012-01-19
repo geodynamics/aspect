@@ -68,7 +68,7 @@ namespace aspect
      Simple<dim>::
      thermal_diffusivity () const
      {
-       // this model assumes that the thermal diffusivit is in fact constant
+       // this model assumes that the thermal diffusivity is in fact constant
        return 9.181e-08;
      }
 
