@@ -85,12 +85,12 @@ namespace aspect
         /**
           * Return the reference density $\rho$.
           */
-         virtual double reference_density () const = 0;
+        virtual double reference_density () const = 0;
 
-         /**
-          * Return the reference gravity $g$ of the model.
-          */
-         virtual double reference_thermal_alpha () const;
+        /**
+         * Return the reference gravity $g$ of the model.
+         */
+        virtual double reference_thermal_alpha () const;
 
         /**
          * Return the density $\rho$ of the model as a function of temperature,
@@ -104,14 +104,14 @@ namespace aspect
          * pressure.
          */
         virtual double Vp (const double      temperature,
-                                const double      pressure) const;
+                           const double      pressure) const;
 
         /**
          * Return the seismic velocity Vs of the model as a function of temperature and
          * pressure.
          */
         virtual double Vs (const double      temperature,
-                                const double      pressure) const;
+                           const double      pressure) const;
 
         /**
          * Return the compressibility coefficient

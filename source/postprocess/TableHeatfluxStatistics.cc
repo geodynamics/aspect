@@ -148,8 +148,8 @@ namespace aspect
           statistics.set_precision ("Surface heat flux (W)", 8);
           statistics.set_scientific ("Surface heat flux (W)", true);
 
-         /*-------------------------------------------------
-            output Inner/Outer Nu number to file per timestep*/
+          /*-------------------------------------------------
+             output Inner/Outer Nu number to file per timestep*/
           const GeometryModel::SphericalShell<dim> *geometry = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
           double phi = (*geometry).opening_angle();
           double R0 = (*geometry).inner_radius();
@@ -172,12 +172,12 @@ namespace aspect
           statistics.set_scientific ("Inner Nusselt number", true);
 
           // finally have something for the screen
-         std::ostringstream output;
-         output.precision(4);
-         output << -global_boundary_fluxes[0] << " W, "
-                << global_boundary_fluxes[1] << " W,"
-                << NusseltOuter/BoundaryCurveLengthOuter << " W,"
-                << NusseltInner/BoundaryCurveLengthInner << " W,";
+          std::ostringstream output;
+          output.precision(4);
+          output << -global_boundary_fluxes[0] << " W, "
+                 << global_boundary_fluxes[1] << " W,"
+                 << NusseltOuter/BoundaryCurveLengthOuter << " W,"
+                 << NusseltInner/BoundaryCurveLengthInner << " W,";
           return std::pair<std::string, std::string> ("Inner/outer heat fluxes Nusselt number:",
                                                       output.str());
         }

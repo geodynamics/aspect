@@ -120,8 +120,8 @@ namespace aspect
                << global_max_velocity
                << " m/s";
 
-       return std::pair<std::string, std::string> ("RMS, max velocity:",
-                                                    output.str());
+      return std::pair<std::string, std::string> ("RMS, max velocity:",
+                                                  output.str());
     }
   }
 }

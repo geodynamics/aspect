@@ -68,7 +68,7 @@ namespace aspect
     template <int dim>
     ConditionalOStream SimulatorAccess<dim>::get_pcout () const
     {
-       return simulator->pcout;
+      return simulator->pcout;
     }
 
     template <int dim>

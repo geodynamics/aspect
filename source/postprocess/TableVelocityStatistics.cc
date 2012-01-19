@@ -70,14 +70,14 @@ namespace aspect
                           std::sqrt(this->get_volume());
       const GeometryModel::SphericalShell<dim> *geometry = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
       const double kappa = this->get_material_model().thermal_diffusivity();
-	  double h;
-	  if (geometry)
-		h = geometry->outer_radius() - geometry->inner_radius();
-	  else
-		h = 1.0; //TODO: define something like geometrymodel::depth?
+      double h;
+      if (geometry)
+        h = geometry->outer_radius() - geometry->inner_radius();
+      else
+        h = 1.0; //TODO: define something like geometrymodel::depth?
       double Scaling = h/kappa;
       const double vrmsDimless = Scaling*std::sqrt(global_velocity_square_integral) /
-                          	     std::sqrt(this->get_volume());
+                                 std::sqrt(this->get_volume());
       Scaling = kappa/std::pow(h,2);
       const double timeDimless = Scaling*this->get_time();
 
@@ -121,12 +121,12 @@ namespace aspect
         }
 
       statistics.add_value ("Dimensionless time",
-                                timeDimless);
+                            timeDimless);
       statistics.set_precision ("Dimensionless time", 6);
       statistics.set_scientific ("Dimensionless time", true);
 
       statistics.add_value ("Dimensionless RMS velocity",
-                                vrmsDimless);
+                            vrmsDimless);
       statistics.set_precision ("Dimensionless RMS velocity", 6);
       statistics.set_scientific ("Dimensionless RMS velocity", true);
 
@@ -142,47 +142,48 @@ namespace aspect
                << " m/s, "
                << global_max_velocity
                << " m/s";
-       if (this->get_time() == 0e0){
-    	   double dT = this->get_boundary_temperature().maximal_temperature() - this->get_boundary_temperature().minimal_temperature();
+      if (this->get_time() == 0e0)
+        {
+          double dT = this->get_boundary_temperature().maximal_temperature() - this->get_boundary_temperature().minimal_temperature();
 
-           Point<dim> representative_point = Point<dim>::unit_vector(dim-1);
-    	   const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
-    	   const double Ra = this->get_material_model().reference_density()*
-    			   	   	     gravity*
-    			   	   	     this->get_material_model().reference_thermal_alpha()*
-    			   	   	     dT*std::pow(h,3)/
-    			   	   	     (this->get_material_model().thermal_diffusivity()*
-    			   	   	      this->get_material_model().reference_viscosity());
+          Point<dim> representative_point = Point<dim>::unit_vector(dim-1);
+          const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
+          const double Ra = this->get_material_model().reference_density()*
+                            gravity*
+                            this->get_material_model().reference_thermal_alpha()*
+                            dT*std::pow(h,3)/
+                            (this->get_material_model().thermal_diffusivity()*
+                             this->get_material_model().reference_viscosity());
 
-    	   this->get_pcout()<<  std::endl;
-    	   this->get_pcout()<< "     Reference density (kg/m^3):                    "
-    	   	   << this->get_material_model().reference_density()
-    	   	   << std::endl;
-    	   this->get_pcout()<< "     Reference gravity (m/s^2):                     "
-    	   	   << gravity
-    	   	   << std::endl;
-    	   this->get_pcout()<< "     Reference thermal expansion (1/K):             "
-    	   	   << this->get_material_model().reference_thermal_alpha()
-    	   	   << std::endl;
-    	   this->get_pcout()<< "     Temperature contrast accross model domain (K): "
-    	   	   << dT
-    	   	   << std::endl;
-    	   this->get_pcout()<< "     Model domain depth (m):                        "
-    	   	   << h
-    	   	   << std::endl;
-    	   this->get_pcout()<< "     Reference thermal diffusivity (m^2/s):         "
-    	   	   << this->get_material_model().thermal_diffusivity()
-    	   	   << std::endl;
-    	   this->get_pcout()<< "     Reference viscosity (Pas):                     "
-    	   	   << this->get_material_model().reference_viscosity()
-    	   	   << std::endl;
-    	   this->get_pcout()<< "     Ra number:                                     "
-    	   	   << Ra
-    	   	   << std::endl;
-    	   this->get_pcout()<<  std::endl;
-       }
-       return std::pair<std::string, std::string> ("RMS, max velocity:",
-                                                    output.str());
+          this->get_pcout()<<  std::endl;
+          this->get_pcout()<< "     Reference density (kg/m^3):                    "
+                           << this->get_material_model().reference_density()
+                           << std::endl;
+          this->get_pcout()<< "     Reference gravity (m/s^2):                     "
+                           << gravity
+                           << std::endl;
+          this->get_pcout()<< "     Reference thermal expansion (1/K):             "
+                           << this->get_material_model().reference_thermal_alpha()
+                           << std::endl;
+          this->get_pcout()<< "     Temperature contrast accross model domain (K): "
+                           << dT
+                           << std::endl;
+          this->get_pcout()<< "     Model domain depth (m):                        "
+                           << h
+                           << std::endl;
+          this->get_pcout()<< "     Reference thermal diffusivity (m^2/s):         "
+                           << this->get_material_model().thermal_diffusivity()
+                           << std::endl;
+          this->get_pcout()<< "     Reference viscosity (Pas):                     "
+                           << this->get_material_model().reference_viscosity()
+                           << std::endl;
+          this->get_pcout()<< "     Ra number:                                     "
+                           << Ra
+                           << std::endl;
+          this->get_pcout()<<  std::endl;
+        }
+      return std::pair<std::string, std::string> ("RMS, max velocity:",
+                                                  output.str());
     }
   }
 }

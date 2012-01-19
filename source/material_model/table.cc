@@ -246,7 +246,7 @@ namespace aspect
     {
 //    const double reference_specific_heat = 1250;    /* J / K / kg */  //??
 //      if (!IsCompressible) return reference_specific_heat; TODO
-      std::string path=	data_directory;
+      std::string path= data_directory;
       path +="cp_bin";
       static internal::P_T_LookupFunction cp(path);
       return cp.value(temperature, pressure);
@@ -264,13 +264,13 @@ namespace aspect
     }
 
     template <int dim>
-     double
-     Table<dim>::
-     thermal_diffusivity () const
-     {
-       // this model assumes that the thermal diffusivit is in fact constant
-       return reference_kappa;
-     }
+    double
+    Table<dim>::
+    thermal_diffusivity () const
+    {
+      // this model assumes that the thermal diffusivit is in fact constant
+      return reference_kappa;
+    }
 
     template <int dim>
     double
@@ -279,7 +279,7 @@ namespace aspect
              const double pressure,
              const Point<dim> &position) const
     {
-      std::string path=	data_directory;
+      std::string path= data_directory;
       path +="rho_bin";
       static internal::P_T_LookupFunction rho(path);
       return rho.value(temperature, pressure);
@@ -289,9 +289,9 @@ namespace aspect
     double
     Table<dim>::
     Vp (const double temperature,
-             const double pressure) const
+        const double pressure) const
     {
-      std::string path=	data_directory;
+      std::string path= data_directory;
       path +="vseis_p_bin";
       std::ifstream in(path.c_str(), std::ios::in);
       if (!in) return 0e0;
@@ -303,9 +303,9 @@ namespace aspect
     double
     Table<dim>::
     Vs (const double temperature,
-             const double pressure) const
+        const double pressure) const
     {
-      std::string path=	data_directory;
+      std::string path= data_directory;
       path +="vseis_s_bin";
       std::ifstream in(path.c_str(), std::ios::in);
       if (!in) return 0e0;
@@ -320,7 +320,7 @@ namespace aspect
                      const double pressure,
                      const Point<dim> &position) const
     {
-      std::string path=	data_directory;
+      std::string path= data_directory;
       path +="rho_bin";
       static internal::P_T_LookupFunction rho(path);
       return rho.d_by_dp(temperature, pressure) / rho.value(temperature,pressure);
@@ -390,14 +390,14 @@ namespace aspect
       {
         prm.enter_subsection("Table model");
         {
-          reference_rho     	= prm.get_double ("Reference density");
-          reference_T 			= prm.get_double ("Reference temperature");
+          reference_rho       = prm.get_double ("Reference density");
+          reference_T       = prm.get_double ("Reference temperature");
           reference_eta         = prm.get_double ("Viscosity");
           k_value               = prm.get_double ("Thermal conductivity");
-          reference_kappa 		= prm.get_double ("Thermal diffusivity");
-          reference_alpha 		= prm.get_double ("Thermal expansion coefficient");
-          reference_g 			= prm.get_double ("Gravity");
-          composition			= prm.get ("Composition");
+          reference_kappa     = prm.get_double ("Thermal diffusivity");
+          reference_alpha     = prm.get_double ("Thermal expansion coefficient");
+          reference_g       = prm.get_double ("Gravity");
+          composition     = prm.get ("Composition");
           data_directory        = prm.get ("Path to model data");
           data_directory +="/";
           data_directory +=composition;

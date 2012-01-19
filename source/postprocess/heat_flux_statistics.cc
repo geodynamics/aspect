@@ -22,7 +22,7 @@ namespace aspect
     std::pair<std::string,std::string>
     HeatFluxStatistics<dim>::execute (TableHandler &statistics)
     {
-    	const QGauss<dim-1> quadrature_formula (this->get_temperature_dof_handler().get_fe().degree+1);
+      const QGauss<dim-1> quadrature_formula (this->get_temperature_dof_handler().get_fe().degree+1);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_temperature_dof_handler().get_fe(),

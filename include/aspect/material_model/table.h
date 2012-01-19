@@ -60,9 +60,9 @@ namespace aspect
 
         virtual double reference_density () const;
 
-       double reference_gravity () const;
+        double reference_gravity () const;
 
-       double reference_thermal_alpha () const;
+        double reference_thermal_alpha () const;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -91,7 +91,7 @@ namespace aspect
         /**
          * The thermal conductivity.
          */
-      double k_value;
+        double k_value;
     };
   }
 }
