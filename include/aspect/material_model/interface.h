@@ -100,15 +100,15 @@ namespace aspect
                                 const double      pressure,
                                 const Point<dim> &position) const = 0;
         /**
-         * Return the seismic velocity Vp of the model as a function of temperature and
-         * pressure.
+         * Return the p-wave seismic velocity Vp of the model as a function of temperature and
+         * pressure. By default this function returns -1 to indicate no useful value is implemented.
          */
         virtual double Vp (const double      temperature,
                            const double      pressure) const;
 
         /**
-         * Return the seismic velocity Vs of the model as a function of temperature and
-         * pressure.
+         * Return the s-wave seismic velocity Vs of the model as a function of temperature and
+         * pressure. By default this function returns -1 to indicate no useful value is implemented.
          */
         virtual double Vs (const double      temperature,
                            const double      pressure) const;

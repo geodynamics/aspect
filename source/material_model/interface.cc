@@ -91,16 +91,15 @@ namespace aspect
     Interface<dim>::
     Vp (double dummy1, double dummy2) const
     {
-      Assert (false, ExcNotImplemented());
-      return 0;
+      return -1.0;
     }
-    template <int dim>
+
+	template <int dim>
     double
     Interface<dim>::
     Vs (double dummy1, double dummy2) const
     {
-      Assert (false, ExcNotImplemented());
-      return 0;
+      return -1.0;
     }
 
     void
