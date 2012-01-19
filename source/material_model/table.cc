@@ -279,9 +279,7 @@ namespace aspect
              const double pressure,
              const Point<dim> &position) const
     {
-      std::string path= data_directory;
-      path +="rho_bin";
-      static internal::P_T_LookupFunction rho(path);
+      static internal::P_T_LookupFunction rho(data_directory+"rho_bin");
       return rho.value(temperature, pressure);
     }
 
@@ -291,11 +289,7 @@ namespace aspect
     Vp (const double temperature,
         const double pressure) const
     {
-      std::string path= data_directory;
-      path +="vseis_p_bin";
-      std::ifstream in(path.c_str(), std::ios::in);
-      if (!in) return 0e0;
-      static internal::P_T_LookupFunction vp(path);
+      static internal::P_T_LookupFunction vp(data_directory+"vseis_p_bin");
       return vp.value(temperature, pressure);
     }
 
@@ -305,11 +299,7 @@ namespace aspect
     Vs (const double temperature,
         const double pressure) const
     {
-      std::string path= data_directory;
-      path +="vseis_s_bin";
-      std::ifstream in(path.c_str(), std::ios::in);
-      if (!in) return 0e0;
-      static internal::P_T_LookupFunction vs(path);
+      static internal::P_T_LookupFunction vs(data_directory+"vseis_s_bin");
       return vs.value(temperature, pressure);
     }
 
@@ -320,9 +310,7 @@ namespace aspect
                      const double pressure,
                      const Point<dim> &position) const
     {
-      std::string path= data_directory;
-      path +="rho_bin";
-      static internal::P_T_LookupFunction rho(path);
+      static internal::P_T_LookupFunction rho(data_directory+"rho_bin");
       return rho.d_by_dp(temperature, pressure) / rho.value(temperature,pressure);
     }
 
