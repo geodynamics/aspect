@@ -52,6 +52,9 @@ namespace aspect
         virtual double Vs (const double temperature,
                            const double pressure) const;
 
+        virtual int    Phase (const double temperature,
+                              const double pressure) const;
+
         virtual double compressibility (const double temperature,
                                         const double pressure,
                                         const Point<dim> &position) const;
@@ -87,6 +90,7 @@ namespace aspect
         double reference_g;
         std::string composition;
         std::string data_directory;
+        bool ComputePhases;
 
         /**
          * The thermal conductivity.

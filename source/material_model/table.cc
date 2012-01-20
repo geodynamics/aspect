@@ -21,6 +21,127 @@ namespace aspect
 
     namespace internal
     {
+        /**
+         * A class that is used to read and and evaluate the pressure and temperature
+         * dependent Phase.
+        **/
+        template <int dim>
+        class PhaseLookupFunction
+          {
+            public:
+              /**
+               * @brief Constructor
+               *
+               * @param filename The name of the file in which the values the variable
+               * represented by this object are stored.
+               **/
+
+              PhaseLookupFunction<dim>(const std::string &filename);
+
+              /**
+               * @brief Evaluate the table for a given value of pressure
+               * and temperature.
+               **/
+              int value (const double T,
+                            const double p) const;
+
+            private:
+
+             unsigned int  nPhaseFields;
+             unsigned int  nIsotherms;
+             unsigned int  nTransMax;
+
+             std::list<std::string> PhasefieldLabels;
+
+             dealii::Table<2,double> PressureTransitions;
+             dealii::Table<2,int>    Phase;
+             dealii::Table<1,double> IsothermValue;
+             dealii::Table<1,double> nTransIsotherm;
+
+             double IsothermMin;
+             double IsothermMax;
+             double IsothermdT;
+
+          };
+          template <int dim>
+          inline
+          PhaseLookupFunction<dim>::
+          PhaseLookupFunction (const std::string &filename)
+          {
+              // read in definitions from data file
+              std::string temp;
+              std::ifstream in(filename.c_str(), std::ios::in);
+              AssertThrow (in,
+                           ExcMessage (std::string("Couldn't open file <") +
+                                       filename));
+
+              /* skip the first four lines*/
+              getline(in, temp); // eat remainder of the line
+              getline(in, temp); // eat remainder of the line
+              getline(in, temp); // eat remainder of the line
+              getline(in, temp); // eat remainder of the line
+
+              in >> nPhaseFields;
+              getline(in, temp); // eat remainder of the line
+              in >> nIsotherms;
+              getline(in, temp); // eat remainder of the line
+
+              unsigned int i, j;
+
+              /* read phase labels */
+              for (i=0;i<nPhaseFields; i++){
+                 in >> j  >> temp; PhasefieldLabels.push_back(temp);
+                 getline(in, temp); // eat remainder of the line
+              }
+              /* skip line*/
+              getline(in, temp); // eat remainder of the line
+
+              nTransMax = 20;
+
+              PressureTransitions.reinit(nTransMax, nIsotherms);
+              Phase.reinit(nTransMax , nIsotherms);
+              IsothermValue.reinit(nIsotherms);
+              nTransIsotherm.reinit(nIsotherms);
+
+
+              /* read table of phase changes as function of pressure per isotherm */
+              for (i=0;i<nIsotherms; i++){
+                 in >>  IsothermValue[i] >> nTransIsotherm[i]; getline(in, temp); // eat remainder of the line
+                 Assert (nTransIsotherm[i] < nTransMax, ExcInternalError());
+
+                 for (j=0;j<nTransIsotherm[i]; j++){
+                    in >> PressureTransitions[j][i]  >> Phase[j][i];
+                 }
+              }
+             IsothermMin = IsothermValue[0];
+             IsothermMax = IsothermValue[nIsotherms-1];
+             IsothermdT  = (IsothermMax-IsothermMin)/(nIsotherms-1) ;
+
+       }
+
+       template <int dim>
+       inline
+       int
+       PhaseLookupFunction<dim>::value (const double T,
+                                        const double p) const
+       {
+    	   unsigned int Isotherm;
+    	   double P = p/1e9;
+
+    	   Isotherm = (int) ( (T - IsothermMin)/IsothermdT + 0.5);
+           Assert (Isotherm > 0, ExcInternalError());
+           Assert (Isotherm < nIsotherms, ExcInternalError());
+
+           for (int i=1;i<nTransIsotherm[Isotherm]; i++){
+        	   if (P > PressureTransitions[i-1][Isotherm] && P < PressureTransitions[i][Isotherm]){
+        		   printf("debug %e %e %e %d %d %d\n",P, PressureTransitions[i-1][Isotherm], PressureTransitions[i][Isotherm], Phase[i-1][Isotherm], i, Isotherm);
+        		   fflush(NULL);
+
+        		   return Phase[i-1][Isotherm];
+        	   }
+           }
+        return 0;
+       }
       /**
        * A class that is used to read and and evaluate the pressure and temperature
        * dependent density, thermal expansivity and c_p values.
@@ -304,6 +425,17 @@ namespace aspect
     }
 
     template <int dim>
+    int
+    Table<dim>::
+    Phase (const double temperature,
+           const double pressure) const
+    {
+      if (!ComputePhases) return 0e0;
+      static internal::PhaseLookupFunction<dim> phase(data_directory+"Phases.lab");
+      return phase.value(temperature, pressure);
+    }
+
+    template <int dim>
     double
     Table<dim>::
     compressibility (const double temperature,
@@ -362,6 +494,9 @@ namespace aspect
           prm.declare_entry ("Path to model data", "datadir",
                              Patterns::DirectoryName (),
                              "The path to the model data. ");
+          prm.declare_entry ("ComputePhases", "false",
+                             Patterns::Bool (),
+                             "whether to compute phases. ");
         }
         prm.leave_subsection();
       }
@@ -390,6 +525,7 @@ namespace aspect
           data_directory +="/";
           data_directory +=composition;
           data_directory +="/";
+          ComputePhases       = prm.get_bool ("ComputePhases");
         }
         prm.leave_subsection();
       }

@@ -112,7 +112,12 @@ namespace aspect
          */
         virtual double Vs (const double      temperature,
                            const double      pressure) const;
-
+        /**
+         * Return the Phase number of the model as a function of temperature and
+         * pressure. By default this function returns -1 to indicate no useful value is implemented.
+         */
+        virtual int Phase (const double      temperature,
+                           const double      pressure) const;
         /**
          * Return the compressibility coefficient
          * $\frac{\partial\rho}{\partial p}$ of the model as a
