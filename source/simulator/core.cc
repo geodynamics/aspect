@@ -563,7 +563,7 @@ namespace aspect
     Vector<float> estimated_error_per_cell_u (triangulation.n_active_cells());
 
     // compute density error
-    if (strcmp(parameters.DensityContribution.c_str(), "Gradient"))
+    if (!strcmp(parameters.DensityContribution.c_str(), "Gradient"))
     {
       TrilinosWrappers::MPI::Vector vec_distributed (this->temperature_rhs);
 
@@ -637,7 +637,7 @@ namespace aspect
 
     // compute the errors for
     // temperature solution
-    if (strcmp(parameters.TemperatureContribution.c_str(), "Kelly"))
+    if (!strcmp(parameters.TemperatureContribution.c_str(), "Kelly"))
     {
 
       KellyErrorEstimator<dim>::estimate (temperature_dof_handler,
@@ -659,7 +659,7 @@ namespace aspect
     }
     // compute the errors for
     // stokes solution
-    if (strcmp(parameters.VelocityContribution.c_str(), "Kelly"))
+    if (!strcmp(parameters.VelocityContribution.c_str(), "Kelly"))
     {
       std::vector<bool> velocity_mask (dim+1, true);
       velocity_mask[dim] = false;
