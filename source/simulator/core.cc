@@ -563,6 +563,7 @@ namespace aspect
     Vector<float> estimated_error_per_cell_u (triangulation.n_active_cells());
 
     // compute density error
+    if (strcmp(parameters.DensityContribution.c_str(), "Gradient"))
     {
       TrilinosWrappers::MPI::Vector vec_distributed (this->temperature_rhs);
 
@@ -626,10 +627,17 @@ namespace aspect
           if (cell->is_locally_owned())
             estimated_error_per_cell_rho(i) *= std::pow(cell->diameter(), 1+dim/2.0);
       }
+      estimated_error_per_cell_rho /= Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
+                                                           MPI_COMM_WORLD);
+    }
+    else
+    {
+      estimated_error_per_cell_rho = 0e0 ;
     }
 
     // compute the errors for
-    // temperature and stokes solution
+    // temperature solution
+    if (strcmp(parameters.TemperatureContribution.c_str(), "Kelly"))
     {
 
       KellyErrorEstimator<dim>::estimate (temperature_dof_handler,
@@ -642,6 +650,17 @@ namespace aspect
                                           0,
                                           triangulation.locally_owned_subdomain());
 
+      estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
+                                                         MPI_COMM_WORLD);
+    }
+    else
+    {
+      estimated_error_per_cell_T = 0e0 ;
+    }
+    // compute the errors for
+    // stokes solution
+    if (strcmp(parameters.VelocityContribution.c_str(), "Kelly"))
+    {
       std::vector<bool> velocity_mask (dim+1, true);
       velocity_mask[dim] = false;
       KellyErrorEstimator<dim>::estimate (stokes_dof_handler,
@@ -653,22 +672,22 @@ namespace aspect
                                           0,
                                           0,
                                           triangulation.locally_owned_subdomain());
+      estimated_error_per_cell_u /= Utilities::MPI::max (estimated_error_per_cell_u.linfty_norm(),
+                                                         MPI_COMM_WORLD);
+    }
+    else
+    {
+      estimated_error_per_cell_u = 0e0 ;
     }
 
     // rescale errors
     {
-      estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
-                                                         MPI_COMM_WORLD);
-      estimated_error_per_cell_u /= Utilities::MPI::max (estimated_error_per_cell_u.linfty_norm(),
-                                                         MPI_COMM_WORLD);
-      estimated_error_per_cell_rho /= Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
-                                                           MPI_COMM_WORLD);
 
       for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
         estimated_error_per_cell(i) = std::max(
                                         std::max (estimated_error_per_cell_T(i),
-                                                  0.0f*estimated_error_per_cell_u(i)),
-                                        estimated_error_per_cell_rho(i));
+                                                  estimated_error_per_cell_u(i)),
+                                                  estimated_error_per_cell_rho(i));
     }
 
     parallel::distributed::GridRefinement::
