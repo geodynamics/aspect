@@ -134,9 +134,6 @@ namespace aspect
 
            for (int i=1;i<nTransIsotherm[Isotherm]; i++){
         	   if (P > PressureTransitions[i-1][Isotherm] && P < PressureTransitions[i][Isotherm]){
-        		   printf("debug %e %e %e %d %d %d\n",P, PressureTransitions[i-1][Isotherm], PressureTransitions[i][Isotherm], Phase[i-1][Isotherm], i, Isotherm);
-        		   fflush(NULL);
-
         		   return Phase[i-1][Isotherm];
         	   }
            }
