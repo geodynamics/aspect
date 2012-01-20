@@ -10,6 +10,7 @@
 #include <deal.II/base/table.h>
 #include <fstream>
 #include <iostream>
+#include <cstring>
 
 using namespace dealii;
 
@@ -326,7 +327,22 @@ namespace aspect
                const double pressure,
                const Point<dim> &position) const
     {
-      return reference_eta;
+      double viscosity;
+      if (!strcmp(ViscosityModel.c_str(),"Exponential")){
+    	const double R0=  3591e3; //TODO
+    	const double R1=  6591e3; //TODO
+    	const double T1=  375; //TODO
+    	const double dT=  3498; //TODO
+    	const double depth = (1e0 - (position.norm()-R0)/(R1-R0));
+    	const double T = (temperature-T1/dT);
+    	viscosity = std::exp(- std::log(ExponentialT)*T +
+    			    std::log(ExponentialP)*depth);
+      }
+      else
+      {
+   		viscosity = reference_eta;
+      }
+      return viscosity;
     }
 
 
@@ -466,9 +482,6 @@ namespace aspect
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. Units: $K$.");
-          prm.declare_entry ("Viscosity", "5e24",
-                             Patterns::Double (0),
-                             "The value of the constant viscosity. Units: $kg/m/s$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
@@ -494,6 +507,22 @@ namespace aspect
           prm.declare_entry ("ComputePhases", "false",
                              Patterns::Bool (),
                              "whether to compute phases. ");
+          prm.enter_subsection ("Viscosity");
+          {
+            prm.declare_entry ("ViscosityModel", "Exponential",
+                               Patterns::Anything (),
+                               "Viscosity Model");
+            prm.declare_entry ("ReferenceViscosity", "5e24",
+                               Patterns::Double (0),
+                               "The value of the constant viscosity. Units: $kg/m/s$.");
+            prm.declare_entry ("ExponentialT", "1",
+                 	   	   	     Patterns::Double (0),
+                 	   	   	     "multiplication factor or Temperature exponent");
+            prm.declare_entry ("ExponentialP", "1",
+                 	   	         Patterns::Double (0),
+                 	   	         "multiplication factor or Pressure exponent");
+          }
+          prm.leave_subsection();
         }
         prm.leave_subsection();
       }
@@ -512,7 +541,6 @@ namespace aspect
         {
           reference_rho       = prm.get_double ("Reference density");
           reference_T       = prm.get_double ("Reference temperature");
-          reference_eta         = prm.get_double ("Viscosity");
           k_value               = prm.get_double ("Thermal conductivity");
           reference_kappa     = prm.get_double ("Thermal diffusivity");
           reference_alpha     = prm.get_double ("Thermal expansion coefficient");
@@ -523,6 +551,14 @@ namespace aspect
           data_directory +=composition;
           data_directory +="/";
           ComputePhases       = prm.get_bool ("ComputePhases");
+          prm.enter_subsection ("Viscosity");
+          {
+            ViscosityModel = prm.get ("ViscosityModel");
+            reference_eta  = prm.get_double ("ReferenceViscosity");
+            ExponentialT   = prm.get_double ("ExponentialT");
+            ExponentialP   = prm.get_double ("ExponentialP");
+          }
+          prm.leave_subsection();
         }
         prm.leave_subsection();
       }

@@ -84,7 +84,6 @@ namespace aspect
       private:
         double reference_rho;
         double reference_T;
-        double reference_eta;
         double reference_kappa;
         double reference_alpha;
         double reference_g;
@@ -92,6 +91,10 @@ namespace aspect
         std::string data_directory;
         bool ComputePhases;
 
+        std::string ViscosityModel;
+        double reference_eta;
+        double ExponentialT;
+        double ExponentialP;
         /**
          * The thermal conductivity.
          */
