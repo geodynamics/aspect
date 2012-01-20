@@ -143,11 +143,11 @@ namespace aspect
                          Patterns::Double(0,1),
                          "The fraction of cells with the smallest error that "
                          "should be flagged for coarsening.");
-      prm.declare_entry ("Method for Temperature", "none",
+      prm.declare_entry ("Method for Temperature", "Kelly",
                          Patterns::Anything (),
                          "The method used to incorporate the temperature field "
                          "in the mesh adaptation scheme");
-      prm.declare_entry ("Method for Density", "none",
+      prm.declare_entry ("Method for Density", "Gradient",
                          Patterns::Anything (),
                          "The method used to incorporate the density field "
                          "in the mesh adaptation scheme");
