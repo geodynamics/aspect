@@ -193,19 +193,24 @@ namespace aspect
 
 
         /**
-        * Return pcout.
-        */
-        ConditionalOStream get_pcout () const;
+         * Return a reference to the stream object that only outputs something on one
+        * processor in a parallel program and simply ignores output put into it on
+        * all other processors.
+         */
+        const ConditionalOStream &
+        get_pcout () const;
 
         /**
          * Return the size of the last time step.
          */
-        double get_timestep () const;
+        double
+        get_timestep () const;
 
         /**
          * Return the current number of a time step.
          */
-        unsigned int get_timestep_number () const;
+        unsigned int
+        get_timestep_number () const;
 
         /**
          * Return a reference to the triangulation in use by the simulator
