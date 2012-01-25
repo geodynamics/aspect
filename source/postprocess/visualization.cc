@@ -301,9 +301,14 @@ namespace aspect
                                                   this->get_material_model(),
                                                   this->get_adiabatic_conditions());
 
+      Vector<float> estimated_error_per_cell(this->get_triangulation().n_active_cells());
+      this->calculate_refinement_criterion(estimated_error_per_cell);
+
       DataOut<dim> data_out;
       data_out.attach_dof_handler (joint_dof_handler);
       data_out.add_data_vector (locally_relevant_joint_solution, postprocessor);
+      data_out.add_data_vector (estimated_error_per_cell, //DataOut_DoFData::type_cell_data,
+                                "error_indicator");
       data_out.build_patches ();
 
       const std::string filename = (this->get_output_directory() +
