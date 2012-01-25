@@ -540,31 +540,19 @@ namespace aspect
   }
 
 
+template <int dim>
+void Simulator<dim>::calculate_refinement_criterion (Vector<float> & estimated_error_per_cell) const
+{
+  Vector<float> estimated_error_per_cell_rho (triangulation.n_active_cells());
+  Vector<float> estimated_error_per_cell_T (triangulation.n_active_cells());
+  Vector<float> estimated_error_per_cell_u (triangulation.n_active_cells());
 
-// Contrary to step-32, we have found that just refining by the temperature
-// works well in 2d, but only leads to refinement in the boundary layer at the
-// core-mantle boundary in 3d. Consequently, we estimate the error based
-// on the temperature, velocity and other criteria, see the second ASPECT paper;
-// the vectors with the resulting error indicators are then normalized, and we
-// take the maximum or sum of the indicators to decide whether we want to refine or
-// not. In case of more complicated materials with jumps in the density
-// profile, we also need to refine where the density jumps. This ensures that
-// we also refine into plumes where maybe the temperature gradients aren't as
-// strong as in the boundary layer but where nevertheless the gradients in the
-// velocity are large.
-  template <int dim>
-  void Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
-  {
-    computing_timer.enter_section ("Refine mesh structure, part 1");
+  //Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature
 
-    Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
-    Vector<float> estimated_error_per_cell_rho (triangulation.n_active_cells());
-    Vector<float> estimated_error_per_cell_T (triangulation.n_active_cells());
-    Vector<float> estimated_error_per_cell_u (triangulation.n_active_cells());
-
-    // compute density error
-    if (!strcmp(parameters.DensityContribution.c_str(), "Gradient"))
+  // compute density error
+  if (parameters.refinement_strategy != "Temperature")
     {
+      bool lookup_rho_c_p_T = (parameters.refinement_strategy == "Density c_p temperature");
       TrilinosWrappers::MPI::Vector vec_distributed (this->temperature_rhs);
 
       Quadrature<dim> quadrature( temperature_fe.get_unit_support_points() );
@@ -602,7 +590,12 @@ namespace aspect
                 vec_distributed(local_dof_indices[i])
                   = material_model->density( temperature_solution(local_dof_indices[i]),
                                              pressure_values[i],
-                                             fe_values.quadrature_point(i));
+                                             fe_values.quadrature_point(i))
+                    * ((lookup_rho_c_p_T)? (
+                    temperature_solution(local_dof_indices[i])
+                    * material_model->specific_heat(temperature_solution(local_dof_indices[i]),
+                                                    pressure_values[i],
+                                                    fe_values.quadrature_point(i))): 1.0);
               }
           }
 
@@ -618,6 +611,15 @@ namespace aspect
       // jump. We need at least order 1 for
       // the error not to grow when refining,
       // so anything >1 should work.
+      double power = 0.0;
+      if (parameters.refinement_strategy == "Density c_p temperature")
+        power = 1.5;
+      else if (parameters.refinement_strategy == "Normalized density and temperature")
+        power = 1.0 + dim/2.0;
+      else if (parameters.refinement_strategy == "Weighted density and temperature")
+        power = 2.0 + dim/2.0;
+      else
+        AssertThrow(false, ExcNotImplemented());
       {
         typename DoFHandler<dim>::active_cell_iterator
         cell = temperature_dof_handler.begin_active(),
@@ -625,21 +627,17 @@ namespace aspect
         unsigned int i=0;
         for (; cell!=endc; ++cell, ++i)
           if (cell->is_locally_owned())
-            estimated_error_per_cell_rho(i) *= std::pow(cell->diameter(), 1+dim/2.0);
+            estimated_error_per_cell_rho(i) *= std::pow(cell->diameter(), power);
       }
-      estimated_error_per_cell_rho /= Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
-                                                           MPI_COMM_WORLD);
     }
-    else
+  else
     {
-      estimated_error_per_cell_rho = 0e0 ;
+      estimated_error_per_cell_rho = 0;
     }
 
-    // compute the errors for
-    // temperature solution
-    if (!strcmp(parameters.TemperatureContribution.c_str(), "Kelly"))
+  // compute the errors for temperature solution
+  if (parameters.refinement_strategy != "Density c_p temperature")
     {
-
       KellyErrorEstimator<dim>::estimate (temperature_dof_handler,
                                           QGauss<dim-1>(parameters.temperature_degree+1),
                                           typename FunctionMap<dim>::type(),
@@ -649,17 +647,14 @@ namespace aspect
                                           0,
                                           0,
                                           triangulation.locally_owned_subdomain());
-
-      estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
-                                                         MPI_COMM_WORLD);
     }
-    else
+  else
     {
-      estimated_error_per_cell_T = 0e0 ;
+      estimated_error_per_cell_T = 0;
     }
-    // compute the errors for
-    // stokes solution
-    if (!strcmp(parameters.VelocityContribution.c_str(), "Kelly"))
+
+  // compute the errors for the stokes solution
+  if (false)
     {
       std::vector<bool> velocity_mask (dim+1, true);
       velocity_mask[dim] = false;
@@ -672,23 +667,71 @@ namespace aspect
                                           0,
                                           0,
                                           triangulation.locally_owned_subdomain());
-      estimated_error_per_cell_u /= Utilities::MPI::max (estimated_error_per_cell_u.linfty_norm(),
-                                                         MPI_COMM_WORLD);
     }
+  else
+    {
+      estimated_error_per_cell_u = 0;
+    }
+
+  // rescale and combine errors
+  {
+    if (parameters.refinement_strategy == "Temperature")
+    {
+        for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+          estimated_error_per_cell(i) = estimated_error_per_cell_T(i);
+    }
+    else if (parameters.refinement_strategy == "Normalized density and temperature")
+      {
+        estimated_error_per_cell_rho /= Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
+                                                                         MPI_COMM_WORLD);
+        estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
+                                                                         MPI_COMM_WORLD);
+        for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+          estimated_error_per_cell(i) = std::max( estimated_error_per_cell_rho(i),
+                                                  estimated_error_per_cell_T(i));
+      }
+    else if (parameters.refinement_strategy == "Weighted density and temperature")
+      {
+        estimated_error_per_cell_rho *=  1e-4/global_Omega_diameter;
+        pcout << "T/rho error scaling: "
+              << Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
+                                      MPI_COMM_WORLD)
+              << " "
+              << Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
+                                      MPI_COMM_WORLD)
+              << std::endl;
+
+        for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+          estimated_error_per_cell(i) = estimated_error_per_cell_T(i)*(1.0+estimated_error_per_cell_rho(i));
+      }
+    else if (parameters.refinement_strategy == "Density c_p temperature")
+      {
+        for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+          estimated_error_per_cell(i) = estimated_error_per_cell_rho(i);
+      }
     else
-    {
-      estimated_error_per_cell_u = 0e0 ;
-    }
+      AssertThrow(false, ExcNotImplemented());
+  }
+}
 
-    // rescale errors
-    {
+// Contrary to step-32, we have found that just refining by the temperature
+// works well in 2d, but only leads to refinement in the boundary layer at the
+// core-mantle boundary in 3d. Consequently, we estimate the error based
+// on the temperature, velocity and other criteria, see the second ASPECT paper;
+// the vectors with the resulting error indicators are then normalized, and we
+// take the maximum or sum of the indicators to decide whether we want to refine or
+// not. In case of more complicated materials with jumps in the density
+// profile, we also need to refine where the density jumps. This ensures that
+// we also refine into plumes where maybe the temperature gradients aren't as
+// strong as in the boundary layer but where nevertheless the gradients in the
+// velocity are large.
+  template <int dim>
+  void Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
+  {
+    computing_timer.enter_section ("Refine mesh structure, part 1");
 
-      for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
-        estimated_error_per_cell(i) = std::max(
-                                        std::max (estimated_error_per_cell_T(i),
-                                                  estimated_error_per_cell_u(i)),
-                                                  estimated_error_per_cell_rho(i));
-    }
+    Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
+    calculate_refinement_criterion(estimated_error_per_cell);
 
     parallel::distributed::GridRefinement::
     refine_and_coarsen_fixed_fraction (triangulation,

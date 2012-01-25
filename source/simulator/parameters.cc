@@ -143,18 +143,9 @@ namespace aspect
                          Patterns::Double(0,1),
                          "The fraction of cells with the smallest error that "
                          "should be flagged for coarsening.");
-      prm.declare_entry ("Method for Temperature", "Kelly",
-                         Patterns::Anything (),
-                         "The method used to incorporate the temperature field "
-                         "in the mesh adaptation scheme");
-      prm.declare_entry ("Method for Density", "Gradient",
-                         Patterns::Anything (),
-                         "The method used to incorporate the density field "
-                         "in the mesh adaptation scheme");
-      prm.declare_entry ("Method for Velocity", "none",
-                         Patterns::Anything (),
-                         "The method used to incorporate the velocity field "
-                         "in the mesh adaptation scheme");
+      prm.declare_entry ("Strategy", "Density c_p temperature",
+                         Patterns::Selection ("Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature"),
+                         "The method used to determine which cells to refine: Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature");
       prm.declare_entry ("Additional refinement times", "",
                          Patterns::List (Patterns::Double(0)),
                          "A list of times so that if the end time of a time step "
@@ -241,9 +232,7 @@ namespace aspect
       adaptive_refinement_interval= prm.get_integer ("Time steps between mesh refinement");
       refinement_fraction         = prm.get_double ("Refinement fraction");
       coarsening_fraction         = prm.get_double ("Coarsening fraction");
-      TemperatureContribution     = prm.get ("Method for Temperature");
-      DensityContribution         = prm.get ("Method for Density");
-      VelocityContribution        = prm.get ("Method for Velocity");
+      refinement_strategy         = prm.get ("Strategy");
 
       // extract the list of times at which additional refinement is requested
       // then sort it and convert it to seconds

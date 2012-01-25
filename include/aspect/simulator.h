@@ -154,9 +154,7 @@ namespace aspect
         unsigned int        initial_adaptive_refinement;
         double              refinement_fraction;
         double              coarsening_fraction;
-        std::string		    TemperatureContribution;
-        std::string		    DensityContribution ;
-        std::string		    VelocityContribution;
+        std::string       refinement_strategy;
         std::vector<double> additional_refinement_times;
         unsigned int        adaptive_refinement_interval;
         /**
@@ -336,16 +334,24 @@ namespace aspect
       void postprocess ();
 
       /**
-       * Compute error indicators based on a variety of criteria and
-       * mark cells based on these indicators for either refinement,
-       * coarsening, or for leaving them as they currently are. Then
-       * refine the mesh, set up all necessary data structures on this
+       * Compute error indicators based on a variety of criteria to determine which
+       * cells to refine and coarsen, which is done in refine_mesh().
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
+      void calculate_refinement_criterion (Vector<float> & estimated_error_per_cell) const;
+
+      /**
+       * Refine the mesh according to error indicators calculated with
+       * calculate_refinement_criterion, set up all necessary data structures on this
        * new mesh, and interpolate the old solutions onto the new mesh.
        *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
        */
       void refine_mesh (const unsigned int max_grid_level);
+
       /**
        * @}
        */

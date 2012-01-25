@@ -134,6 +134,15 @@ namespace aspect
 
 
     template <int dim>
+    void
+    SimulatorAccess<dim>::calculate_refinement_criterion (Vector<float> & estimated_error_per_cell) const
+    {
+      simulator->calculate_refinement_criterion(estimated_error_per_cell);
+    }
+
+
+
+    template <int dim>
     const TrilinosWrappers::MPI::BlockVector &
     SimulatorAccess<dim>::get_stokes_solution () const
     {

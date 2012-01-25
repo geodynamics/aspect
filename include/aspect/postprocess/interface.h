@@ -247,6 +247,12 @@ namespace aspect
         */
         bool
         convert_output_to_years () const;
+
+        /**
+        * Compute the error indicators in the same way they are normally used for mesh refinement.
+        */
+        void
+        calculate_refinement_criterion(Vector<float> & estimated_error_per_cell) const;
         /** @} */
 
 
