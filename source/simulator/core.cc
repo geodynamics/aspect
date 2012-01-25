@@ -540,179 +540,179 @@ namespace aspect
   }
 
 
-template <int dim>
-void Simulator<dim>::calculate_refinement_criterion (Vector<float> & estimated_error_per_cell) const
-{
-  Vector<float> estimated_error_per_cell_rho (triangulation.n_active_cells());
-  Vector<float> estimated_error_per_cell_T (triangulation.n_active_cells());
-  Vector<float> estimated_error_per_cell_u (triangulation.n_active_cells());
+  template <int dim>
+  void Simulator<dim>::calculate_refinement_criterion (Vector<float> & estimated_error_per_cell) const
+  {
+    Vector<float> estimated_error_per_cell_rho (triangulation.n_active_cells());
+    Vector<float> estimated_error_per_cell_T (triangulation.n_active_cells());
+    Vector<float> estimated_error_per_cell_u (triangulation.n_active_cells());
 
-  //Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature
+    //Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature
 
-  // compute density error
-  if (parameters.refinement_strategy != "Temperature")
-    {
-      bool lookup_rho_c_p_T = (parameters.refinement_strategy == "Density c_p temperature");
-      TrilinosWrappers::MPI::Vector vec_distributed (this->temperature_rhs);
-
-      Quadrature<dim> quadrature( temperature_fe.get_unit_support_points() );
-      std::vector<unsigned int> local_dof_indices (temperature_fe.dofs_per_cell);
-      FEValues<dim> fe_values (mapping, temperature_fe, quadrature,
-                               update_quadrature_points);
-
-      FEValues<dim> stokes_fe_values (mapping, stokes_fe, quadrature,
-                                      update_quadrature_points|update_values);
-      const FEValuesExtractors::Scalar pressure (dim);
-      std::vector<double> pressure_values(quadrature.size());
-
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = temperature_dof_handler.begin_active(),
-      endc = temperature_dof_handler.end();
-      for (; cell!=endc; ++cell)
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit(cell);
-            typename DoFHandler<dim>::active_cell_iterator
-            stokes_cell (&triangulation,
-                         cell->level(),
-                         cell->index(),
-                         &stokes_dof_handler);
-
-            stokes_fe_values.reinit (stokes_cell);
-            stokes_fe_values[pressure].get_function_values (stokes_solution,
-                                                            pressure_values);
-
-            cell->get_dof_indices (local_dof_indices);
-
-            // look up density
-            for (unsigned int i=0; i<temperature_fe.dofs_per_cell; ++i)
-              {
-                vec_distributed(local_dof_indices[i])
-                  = material_model->density( temperature_solution(local_dof_indices[i]),
-                                             pressure_values[i],
-                                             fe_values.quadrature_point(i))
-                    * ((lookup_rho_c_p_T)? (
-                    temperature_solution(local_dof_indices[i])
-                    * material_model->specific_heat(temperature_solution(local_dof_indices[i]),
-                                                    pressure_values[i],
-                                                    fe_values.quadrature_point(i))): 1.0);
-              }
-          }
-
-      TrilinosWrappers::MPI::Vector vec (this->temperature_solution);
-      vec = vec_distributed;
-
-      DerivativeApproximation::approximate_gradient  (mapping, temperature_dof_handler, vec, estimated_error_per_cell_rho);
-
-      // Scale gradient in each cell with the
-      // correct power of h. Otherwise, error
-      // indicators do not reduce when
-      // refined if there is a density
-      // jump. We need at least order 1 for
-      // the error not to grow when refining,
-      // so anything >1 should work.
-      double power = 0.0;
-      if (parameters.refinement_strategy == "Density c_p temperature")
-        power = 1.5;
-      else if (parameters.refinement_strategy == "Normalized density and temperature")
-        power = 1.0 + dim/2.0;
-      else if (parameters.refinement_strategy == "Weighted density and temperature")
-        power = 2.0 + dim/2.0;
-      else
-        AssertThrow(false, ExcNotImplemented());
+    // compute density error
+    if (parameters.refinement_strategy != "Temperature")
       {
+        bool lookup_rho_c_p_T = (parameters.refinement_strategy == "Density c_p temperature");
+        TrilinosWrappers::MPI::Vector vec_distributed (this->temperature_rhs);
+
+        Quadrature<dim> quadrature( temperature_fe.get_unit_support_points() );
+        std::vector<unsigned int> local_dof_indices (temperature_fe.dofs_per_cell);
+        FEValues<dim> fe_values (mapping, temperature_fe, quadrature,
+                                 update_quadrature_points);
+
+        FEValues<dim> stokes_fe_values (mapping, stokes_fe, quadrature,
+                                        update_quadrature_points|update_values);
+        const FEValuesExtractors::Scalar pressure (dim);
+        std::vector<double> pressure_values(quadrature.size());
+
         typename DoFHandler<dim>::active_cell_iterator
         cell = temperature_dof_handler.begin_active(),
         endc = temperature_dof_handler.end();
-        unsigned int i=0;
-        for (; cell!=endc; ++cell, ++i)
+        for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
-            estimated_error_per_cell_rho(i) *= std::pow(cell->diameter(), power);
-      }
-    }
-  else
-    {
-      estimated_error_per_cell_rho = 0;
-    }
+            {
+              fe_values.reinit(cell);
+              typename DoFHandler<dim>::active_cell_iterator
+              stokes_cell (&triangulation,
+                           cell->level(),
+                           cell->index(),
+                           &stokes_dof_handler);
 
-  // compute the errors for temperature solution
-  if (parameters.refinement_strategy != "Density c_p temperature")
-    {
-      KellyErrorEstimator<dim>::estimate (temperature_dof_handler,
-                                          QGauss<dim-1>(parameters.temperature_degree+1),
-                                          typename FunctionMap<dim>::type(),
-                                          temperature_solution,
-                                          estimated_error_per_cell_T,
-                                          std::vector<bool>(),
-                                          0,
-                                          0,
-                                          triangulation.locally_owned_subdomain());
-    }
-  else
-    {
-      estimated_error_per_cell_T = 0;
-    }
+              stokes_fe_values.reinit (stokes_cell);
+              stokes_fe_values[pressure].get_function_values (stokes_solution,
+                                                              pressure_values);
 
-  // compute the errors for the stokes solution
-  if (false)
-    {
-      std::vector<bool> velocity_mask (dim+1, true);
-      velocity_mask[dim] = false;
-      KellyErrorEstimator<dim>::estimate (stokes_dof_handler,
-                                          QGauss<dim-1>(parameters.stokes_velocity_degree+1),
-                                          typename FunctionMap<dim>::type(),
-                                          stokes_solution,
-                                          estimated_error_per_cell_u,
-                                          velocity_mask,
-                                          0,
-                                          0,
-                                          triangulation.locally_owned_subdomain());
-    }
-  else
-    {
-      estimated_error_per_cell_u = 0;
-    }
+              cell->get_dof_indices (local_dof_indices);
 
-  // rescale and combine errors
-  {
-    if (parameters.refinement_strategy == "Temperature")
-    {
-        for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
-          estimated_error_per_cell(i) = estimated_error_per_cell_T(i);
-    }
-    else if (parameters.refinement_strategy == "Normalized density and temperature")
-      {
-        estimated_error_per_cell_rho /= Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
-                                                                         MPI_COMM_WORLD);
-        estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
-                                                                         MPI_COMM_WORLD);
-        for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
-          estimated_error_per_cell(i) = std::max( estimated_error_per_cell_rho(i),
-                                                  estimated_error_per_cell_T(i));
-      }
-    else if (parameters.refinement_strategy == "Weighted density and temperature")
-      {
-        estimated_error_per_cell_rho *=  1e-4/global_Omega_diameter;
-        pcout << "T/rho error scaling: "
-              << Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
-                                      MPI_COMM_WORLD)
-              << " "
-              << Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
-                                      MPI_COMM_WORLD)
-              << std::endl;
+              // look up density
+              for (unsigned int i=0; i<temperature_fe.dofs_per_cell; ++i)
+                {
+                  vec_distributed(local_dof_indices[i])
+                    = material_model->density( temperature_solution(local_dof_indices[i]),
+                                               pressure_values[i],
+                                               fe_values.quadrature_point(i))
+                      * ((lookup_rho_c_p_T)? (
+                           temperature_solution(local_dof_indices[i])
+                           * material_model->specific_heat(temperature_solution(local_dof_indices[i]),
+                                                           pressure_values[i],
+                                                           fe_values.quadrature_point(i))): 1.0);
+                }
+            }
 
-        for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
-          estimated_error_per_cell(i) = estimated_error_per_cell_T(i)*(1.0+estimated_error_per_cell_rho(i));
-      }
-    else if (parameters.refinement_strategy == "Density c_p temperature")
-      {
-        for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
-          estimated_error_per_cell(i) = estimated_error_per_cell_rho(i);
+        TrilinosWrappers::MPI::Vector vec (this->temperature_solution);
+        vec = vec_distributed;
+
+        DerivativeApproximation::approximate_gradient  (mapping, temperature_dof_handler, vec, estimated_error_per_cell_rho);
+
+        // Scale gradient in each cell with the
+        // correct power of h. Otherwise, error
+        // indicators do not reduce when
+        // refined if there is a density
+        // jump. We need at least order 1 for
+        // the error not to grow when refining,
+        // so anything >1 should work.
+        double power = 0.0;
+        if (parameters.refinement_strategy == "Density c_p temperature")
+          power = 1.5;
+        else if (parameters.refinement_strategy == "Normalized density and temperature")
+          power = 1.0 + dim/2.0;
+        else if (parameters.refinement_strategy == "Weighted density and temperature")
+          power = 2.0 + dim/2.0;
+        else
+          AssertThrow(false, ExcNotImplemented());
+        {
+          typename DoFHandler<dim>::active_cell_iterator
+          cell = temperature_dof_handler.begin_active(),
+          endc = temperature_dof_handler.end();
+          unsigned int i=0;
+          for (; cell!=endc; ++cell, ++i)
+            if (cell->is_locally_owned())
+              estimated_error_per_cell_rho(i) *= std::pow(cell->diameter(), power);
+        }
       }
     else
-      AssertThrow(false, ExcNotImplemented());
+      {
+        estimated_error_per_cell_rho = 0;
+      }
+
+    // compute the errors for temperature solution
+    if (parameters.refinement_strategy != "Density c_p temperature")
+      {
+        KellyErrorEstimator<dim>::estimate (temperature_dof_handler,
+                                            QGauss<dim-1>(parameters.temperature_degree+1),
+                                            typename FunctionMap<dim>::type(),
+                                            temperature_solution,
+                                            estimated_error_per_cell_T,
+                                            std::vector<bool>(),
+                                            0,
+                                            0,
+                                            triangulation.locally_owned_subdomain());
+      }
+    else
+      {
+        estimated_error_per_cell_T = 0;
+      }
+
+    // compute the errors for the stokes solution
+    if (false)
+      {
+        std::vector<bool> velocity_mask (dim+1, true);
+        velocity_mask[dim] = false;
+        KellyErrorEstimator<dim>::estimate (stokes_dof_handler,
+                                            QGauss<dim-1>(parameters.stokes_velocity_degree+1),
+                                            typename FunctionMap<dim>::type(),
+                                            stokes_solution,
+                                            estimated_error_per_cell_u,
+                                            velocity_mask,
+                                            0,
+                                            0,
+                                            triangulation.locally_owned_subdomain());
+      }
+    else
+      {
+        estimated_error_per_cell_u = 0;
+      }
+
+    // rescale and combine errors
+    {
+      if (parameters.refinement_strategy == "Temperature")
+        {
+          for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+            estimated_error_per_cell(i) = estimated_error_per_cell_T(i);
+        }
+      else if (parameters.refinement_strategy == "Normalized density and temperature")
+        {
+          estimated_error_per_cell_rho /= Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
+                                                               MPI_COMM_WORLD);
+          estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
+                                                             MPI_COMM_WORLD);
+          for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+            estimated_error_per_cell(i) = std::max( estimated_error_per_cell_rho(i),
+                                                    estimated_error_per_cell_T(i));
+        }
+      else if (parameters.refinement_strategy == "Weighted density and temperature")
+        {
+          estimated_error_per_cell_rho *=  1e-4/global_Omega_diameter;
+          pcout << "T/rho error scaling: "
+                << Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
+                                        MPI_COMM_WORLD)
+                << " "
+                << Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
+                                        MPI_COMM_WORLD)
+                << std::endl;
+
+          for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+            estimated_error_per_cell(i) = estimated_error_per_cell_T(i)*(1.0+estimated_error_per_cell_rho(i));
+        }
+      else if (parameters.refinement_strategy == "Density c_p temperature")
+        {
+          for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+            estimated_error_per_cell(i) = estimated_error_per_cell_rho(i);
+        }
+      else
+        AssertThrow(false, ExcNotImplemented());
+    }
   }
-}
 
 // Contrary to step-32, we have found that just refining by the temperature
 // works well in 2d, but only leads to refinement in the boundary layer at the
