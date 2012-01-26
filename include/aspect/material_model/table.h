@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 #ifndef __aspect__model_table_h
@@ -26,6 +26,7 @@ namespace aspect
     class Table: public MaterialModel::Interface<dim>
     {
       public:
+//TODO: Sort in the same order as in the base class
         virtual double viscosity (const double temperature,
                                   const double pressure,
                                   const Point<dim> &position) const;
@@ -46,14 +47,14 @@ namespace aspect
 
         virtual double reference_thermal_diffusivity () const;
 
-        virtual double Vp (const double temperature,
-                           const double pressure) const;
+        virtual double seismic_Vp (const double temperature,
+                                   const double pressure) const;
 
-        virtual double Vs (const double temperature,
-                           const double pressure) const;
+        virtual double seismic_Vs (const double temperature,
+                                   const double pressure) const;
 
-        virtual int    Phase (const double temperature,
-                              const double pressure) const;
+        virtual unsigned int thermodynamic_phase (const double temperature,
+                                                  const double pressure) const;
 
         virtual double compressibility (const double temperature,
                                         const double pressure,
@@ -63,6 +64,7 @@ namespace aspect
 
         virtual double reference_density () const;
 
+//TODO: This doesn't belong here.
         double reference_gravity () const;
 
         double reference_thermal_alpha () const;

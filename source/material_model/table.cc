@@ -433,33 +433,36 @@ namespace aspect
     template <int dim>
     double
     Table<dim>::
-    Vp (const double temperature,
-        const double pressure) const
+    seismic_Vp (const double temperature,
+                const double pressure) const
     {
       static internal::P_T_LookupFunction vp(data_directory+"vseis_p_bin");
       return vp.value(temperature, pressure);
     }
 
+
     template <int dim>
     double
     Table<dim>::
-    Vs (const double temperature,
-        const double pressure) const
+    seismic_Vs (const double temperature,
+                const double pressure) const
     {
       static internal::P_T_LookupFunction vs(data_directory+"vseis_s_bin");
       return vs.value(temperature, pressure);
     }
 
+
     template <int dim>
-    int
+    unsigned int
     Table<dim>::
-    Phase (const double temperature,
-           const double pressure) const
+    thermodynamic_phase (const double temperature,
+                         const double pressure) const
     {
       if (!ComputePhases) return 0e0;
       static internal::PhaseLookupFunction<dim> phase(data_directory+"Phases.lab");
       return phase.value(temperature, pressure);
     }
+
 
     template <int dim>
     double
@@ -480,6 +483,7 @@ namespace aspect
     {
       return true;
     }
+
 
     template <int dim>
     void
