@@ -31,7 +31,13 @@ namespace aspect
                                   const double pressure,
                                   const Point<dim> &position) const;
 
-        virtual double reference_viscosity () const;
+        virtual double density (const double temperature,
+                                const double pressure,
+                                const Point<dim> &position) const;
+
+        virtual double compressibility (const double temperature,
+                                        const double pressure,
+                                        const Point<dim> &position) const;
 
         virtual double specific_heat (const double temperature,
                                       const double pressure,
@@ -41,11 +47,31 @@ namespace aspect
                                              const double pressure,
                                              const Point<dim> &position) const;
 
-        virtual double density (const double temperature,
-                                const double pressure,
-                                const Point<dim> &position) const;
+        virtual bool is_compressible () const;
 
-        virtual double reference_thermal_diffusivity () const;
+
+        virtual double reference_viscosity () const;
+
+        virtual double reference_density () const;
+
+        /**
+         * A reference thermal diffusivity $\kappa$. $\kappa$ is related to the thermal
+         * conductivity $k$ as $\kappa = k/(rho c_p)$.
+         *
+         * The value here is not used in the computation of things but only in
+         * postprocessing the solution when we want dimension-less
+         * quantities.
+         */
+        double reference_thermal_diffusivity () const;
+
+        /**
+         * A reference thermal expansion coefficient $\alpha$.
+         *
+         * The value here is not used in the computation of things but only in
+         * postprocessing the solution when we want dimension-less
+         * quantities.
+         */
+        double reference_thermal_alpha () const;
 
         virtual double seismic_Vp (const double temperature,
                                    const double pressure) const;
@@ -56,15 +82,6 @@ namespace aspect
         virtual unsigned int thermodynamic_phase (const double temperature,
                                                   const double pressure) const;
 
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const Point<dim> &position) const;
-
-        virtual bool is_compressible () const;
-
-        virtual double reference_density () const;
-
-        double reference_thermal_alpha () const;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -80,6 +97,7 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+
       private:
         double reference_rho;
         double reference_T;
