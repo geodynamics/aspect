@@ -26,7 +26,10 @@ namespace aspect
     class Table: public MaterialModel::Interface<dim>
     {
       public:
-//TODO: Sort in the same order as in the base class
+        /**
+         * @name Physical parameters used in the basic equations
+         * @{
+         */
         virtual double viscosity (const double temperature,
                                   const double pressure,
                                   const Point<dim> &position) const;
@@ -46,10 +49,23 @@ namespace aspect
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
                                              const Point<dim> &position) const;
+        /**
+         * @}
+         */
 
+        /**
+         * @name Qualitative properties one can ask a material model
+         * @{
+         */
         virtual bool is_compressible () const;
+        /**
+         * @}
+         */
 
-
+        /**
+         * @name Reference quantities
+         * @{
+         */
         virtual double reference_viscosity () const;
 
         virtual double reference_density () const;
@@ -72,7 +88,14 @@ namespace aspect
          * quantities.
          */
         double reference_thermal_alpha () const;
+        /**
+         * @}
+         */
 
+        /**
+         * @name Auxiliary material properties used for postprocessing
+         * @{
+         */
         virtual double seismic_Vp (const double temperature,
                                    const double pressure) const;
 
@@ -83,6 +106,14 @@ namespace aspect
                                                   const double pressure) const;
 
 
+        /**
+         * @}
+         */
+
+        /**
+         * @name Functions used in dealing with run-time parameters
+         * @{
+         */
         /**
          * Declare the parameters this class takes through input files.
          */
@@ -97,6 +128,9 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+        /**
+         * @}
+         */
 
       private:
         double reference_rho;
