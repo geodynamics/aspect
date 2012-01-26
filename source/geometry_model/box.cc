@@ -50,7 +50,28 @@ namespace aspect
       return 0.01;
     }
 
+    template <int dim>
+    double
+    Box<dim>::depth(const Point<dim> & position) const
+    {
+      return maximal_depth()-position(dim-1);
+    }
 
+    template <int dim>
+    Point<dim>
+    Box<dim>::representative_point(const double depth) const
+    {
+      Point<dim> p;
+      p(dim-1) = maximal_depth() - depth;
+      return p;
+    }
+
+    template <int dim>
+    double
+    Box<dim>::maximal_depth() const
+    {
+      return extents[dim-1];
+    }
 
 
     template <int dim>

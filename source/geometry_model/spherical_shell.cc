@@ -90,6 +90,28 @@ namespace aspect
       return 1e4;
     }
 
+    template <int dim>
+    double
+    SphericalShell<dim>::depth(const Point<dim> & position) const
+    {
+      return R1-sqrt(position.square());
+    }
+
+    template <int dim>
+    Point<dim>
+    SphericalShell<dim>::representative_point(const double depth) const
+    {
+      Point<dim> p;
+      p(dim-1) = R1 - depth;
+      return p;
+    }
+
+    template <int dim>
+    double
+    SphericalShell<dim>::maximal_depth() const
+    {
+      return R1-R0;
+    }
 
     template <int dim>
     double SphericalShell<dim>::inner_radius () const

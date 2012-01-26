@@ -46,6 +46,14 @@ namespace aspect
         virtual
         double length_scale () const;
 
+        virtual
+        double depth(const Point<dim> & position) const;
+
+        virtual
+        Point<dim> representative_point(const double depth) const;
+
+        virtual
+        double maximal_depth() const;
         /**
                * Return the set of boundary indicators that are used by this model. This
          * information is used to determine what boundary indicators can be used in
