@@ -1,11 +1,11 @@
 //-------------------------------------------------------------
 //    $Id: heat_flux_statistics.cc 572 2012-01-03 08:24:22Z geenen $
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
-#include <aspect/postprocess/TableHeatfluxStatistics.h>
+#include <aspect/postprocess/table_heat_flux_statistics.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/simulator.h>
