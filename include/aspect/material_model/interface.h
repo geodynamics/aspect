@@ -149,28 +149,49 @@ namespace aspect
          */
         /**
          * Return the p-wave seismic velocity Vp of the model as a
-         * function of temperature and pressure. By default this
+         * function of temperature and pressure.
+        *
+        * This function is only called in postprocessing. Derived classes do
+         * not need to implement it if no useful information is known to
+         * compute this quantity, in which case graphical output will simply
+         * show an uninformative field of constant value. By default this
          * function returns -1 to indicate that no useful value is
          * implemented.
          */
-        virtual double Vp (const double      temperature,
-                           const double      pressure) const;
+        virtual
+        double
+        seismic_Vp (const double      temperature,
+                    const double      pressure) const;
 
         /**
          * Return the s-wave seismic velocity Vs of the model as a
-         * function of temperature and pressure. By default this
+         * function of temperature and pressure.
+        *
+        * This function is only called in postprocessing. Derived classes do
+         * not need to implement it if no useful information is known to
+         * compute this quantity, in which case graphical output will simply
+         * show an uninformative field of constant value. By default this
          * function returns -1 to indicate that no useful value is
          * implemented.
          */
-        virtual double Vs (const double      temperature,
-                           const double      pressure) const;
+        virtual
+        double
+        seismic_Vs (const double      temperature,
+                    const double      pressure) const;
         /**
          * Return the Phase number of the model as a function of
-         * temperature and pressure. By default this function returns
-         * -1 to indicate no useful value is implemented.
+         * temperature and pressure.
+        *
+        * This function is only called in postprocessing. Derived classes do
+         * not need to implement it if no useful information is known to
+         * compute this quantity, in which case graphical output will simply
+         * show an uninformative field of constant value. By default this
+         * function returns 0 to indicate everything is part of the same phase
          */
-        virtual int Phase (const double      temperature,
-                           const double      pressure) const;
+        virtual
+        unsigned int
+        thermodynamic_phase (const double      temperature,
+                             const double      pressure) const;
         /**
          * @}
          */

@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
@@ -193,9 +193,9 @@ namespace aspect
 
             computed_quantities[q](dim+7) = material_model.density(temperature, pressure, evaluation_points[q]);
             computed_quantities[q](dim+8) = std::sqrt(strain_rate*strain_rate);
-            computed_quantities[q](dim+9) = material_model.Vp(temperature, pressure);
-            computed_quantities[q](dim+10) = material_model.Vs(temperature, pressure);
-            computed_quantities[q](dim+11) = (float) material_model.Phase(temperature, pressure);
+            computed_quantities[q](dim+9) = material_model.seismic_Vp(temperature, pressure);
+            computed_quantities[q](dim+10) = material_model.seismic_Vs(temperature, pressure);
+            computed_quantities[q](dim+11) = material_model.thermodynamic_phase(temperature, pressure);
           }
       }
     }

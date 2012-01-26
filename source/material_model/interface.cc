@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
@@ -80,7 +80,7 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::
-    Vp (double dummy1, double dummy2) const
+    seismic_Vp (double dummy1, double dummy2) const
     {
       return -1.0;
     }
@@ -88,17 +88,17 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::
-    Vs (double dummy1, double dummy2) const
+    seismic_Vs (double dummy1, double dummy2) const
     {
       return -1.0;
     }
 
     template <int dim>
-    int
+    unsigned int
     Interface<dim>::
-    Phase (double dummy1, double dummy2) const
+    thermodynamic_phase (double dummy1, double dummy2) const
     {
-      return -1.0;
+      return 0;
     }
 
     void
