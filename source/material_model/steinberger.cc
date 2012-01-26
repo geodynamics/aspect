@@ -194,14 +194,6 @@ namespace aspect
       return 4.7;
     }
 
-    template <int dim>
-    double
-    Steinberger<dim>::
-    thermal_diffusivity () const
-    {
-      // this model assumes that the thermal diffusivit is in fact constant
-      return 9.181e-08;
-    }
 
     template <int dim>
     double

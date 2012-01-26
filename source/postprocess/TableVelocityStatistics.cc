@@ -1,12 +1,13 @@
 //-------------------------------------------------------------
 //    $Id: velocity_statistics.cc 571 2012-01-03 08:22:42Z geenen $
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
 #include <aspect/postprocess/TableVelocityStatistics.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/material_model/table.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/gravity_model/radial.h>
@@ -26,6 +27,15 @@ namespace aspect
     std::pair<std::string,std::string>
     TableVelocityStatistics<dim>::execute (TableHandler &statistics)
     {
+      Assert (dynamic_cast<const MaterialModel::Table<dim> *>(&this->get_material_model())
+              != 0,
+              ExcMessage ("This postprocessor can only be used when using "
+                          "the MaterialModel::Table implementation of the "
+                          "material model interface."));
+      const MaterialModel::Table<dim> &
+      material_model
+        = dynamic_cast<const MaterialModel::Table<dim> &>(this->get_material_model());
+
       const QGauss<dim> quadrature_formula (this->get_stokes_dof_handler().get_fe()
                                             .base_element(0).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
@@ -69,7 +79,7 @@ namespace aspect
       const double vrms = std::sqrt(global_velocity_square_integral) /
                           std::sqrt(this->get_volume());
       const GeometryModel::SphericalShell<dim> *geometry = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
-      const double kappa = this->get_material_model().thermal_diffusivity();
+      const double kappa = material_model.reference_thermal_diffusivity();
       double h;
       if (geometry)
         h = geometry->outer_radius() - geometry->inner_radius();
@@ -148,22 +158,22 @@ namespace aspect
 
           Point<dim> representative_point = Point<dim>::unit_vector(dim-1);
           const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
-          const double Ra = this->get_material_model().reference_density()*
+          const double Ra = material_model.reference_density()*
                             gravity*
-                            this->get_material_model().reference_thermal_alpha()*
+                            material_model.reference_thermal_alpha()*
                             dT*std::pow(h,3)/
-                            (this->get_material_model().thermal_diffusivity()*
-                             this->get_material_model().reference_viscosity());
+                            (material_model.reference_thermal_diffusivity()*
+                             material_model.reference_viscosity());
 
           this->get_pcout()<<  std::endl;
           this->get_pcout()<< "     Reference density (kg/m^3):                    "
-                           << this->get_material_model().reference_density()
+                           << material_model.reference_density()
                            << std::endl;
           this->get_pcout()<< "     Reference gravity (m/s^2):                     "
                            << gravity
                            << std::endl;
           this->get_pcout()<< "     Reference thermal expansion (1/K):             "
-                           << this->get_material_model().reference_thermal_alpha()
+                           << material_model.reference_thermal_alpha()
                            << std::endl;
           this->get_pcout()<< "     Temperature contrast accross model domain (K): "
                            << dT
@@ -172,10 +182,10 @@ namespace aspect
                            << h
                            << std::endl;
           this->get_pcout()<< "     Reference thermal diffusivity (m^2/s):         "
-                           << this->get_material_model().thermal_diffusivity()
+                           << material_model.reference_thermal_diffusivity()
                            << std::endl;
           this->get_pcout()<< "     Reference viscosity (Pas):                     "
-                           << this->get_material_model().reference_viscosity()
+                           << material_model.reference_viscosity()
                            << std::endl;
           this->get_pcout()<< "     Ra number:                                     "
                            << Ra

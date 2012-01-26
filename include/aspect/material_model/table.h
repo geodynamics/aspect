@@ -40,11 +40,11 @@ namespace aspect
                                              const double pressure,
                                              const Point<dim> &position) const;
 
-        virtual double thermal_diffusivity () const;
-
         virtual double density (const double temperature,
                                 const double pressure,
                                 const Point<dim> &position) const;
+
+        virtual double reference_thermal_diffusivity () const;
 
         virtual double Vp (const double temperature,
                            const double pressure) const;

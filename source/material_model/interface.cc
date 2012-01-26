@@ -80,15 +80,6 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::
-    reference_thermal_alpha () const
-    {
-      Assert (false, ExcNotImplemented());
-      return 0;
-    }
-
-    template <int dim>
-    double
-    Interface<dim>::
     Vp (double dummy1, double dummy2) const
     {
       return -1.0;

@@ -402,17 +402,19 @@ namespace aspect
                           const Point<dim> &) const
     {
       // this model assumes that the thermal conductivity is in fact constant
-      return 4.7;
+      return k_value;
     }
+
 
     template <int dim>
     double
     Table<dim>::
-    thermal_diffusivity () const
+    reference_thermal_diffusivity () const
     {
-      // this model assumes that the thermal diffusivit is in fact constant
+      // this model assumes that the thermal diffusivity is in fact constant
       return reference_kappa;
     }
+
 
     template <int dim>
     double
@@ -424,6 +426,7 @@ namespace aspect
       static internal::P_T_LookupFunction rho(data_directory+"rho_bin");
       return rho.value(temperature, pressure);
     }
+
 
     template <int dim>
     double
@@ -494,10 +497,6 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
-          prm.declare_entry ("Thermal diffusivity", "0.9181e-07",
-                             Patterns::Double (0),
-                             "The value of the thermal diffusivity $kappa& "
-                             "Units: $m^2/s$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\beta$. "
@@ -547,18 +546,14 @@ namespace aspect
       {
         prm.enter_subsection("Table model");
         {
-          reference_rho       = prm.get_double ("Reference density");
+          reference_rho     = prm.get_double ("Reference density");
           reference_T       = prm.get_double ("Reference temperature");
-          k_value               = prm.get_double ("Thermal conductivity");
-          reference_kappa     = prm.get_double ("Thermal diffusivity");
-          reference_alpha     = prm.get_double ("Thermal expansion coefficient");
+          k_value           = prm.get_double ("Thermal conductivity");
+          reference_alpha   = prm.get_double ("Thermal expansion coefficient");
           reference_g       = prm.get_double ("Gravity");
-          composition     = prm.get ("Composition");
-          data_directory        = prm.get ("Path to model data");
-          data_directory +="/";
-          data_directory +=composition;
-          data_directory +="/";
-          ComputePhases       = prm.get_bool ("ComputePhases");
+          composition       = prm.get ("Composition");
+          data_directory    = prm.get ("Path to model data") + "/" + composition +"/";
+          ComputePhases     = prm.get_bool ("ComputePhases");
           prm.enter_subsection ("Viscosity");
           {
             ViscosityModel = prm.get ("ViscosityModel");

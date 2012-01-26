@@ -2,7 +2,7 @@
 # ---------------------
 
 set Resume computation                     = false
-set Start time                             = -1e8
+set Start time                             = 0
 set End time                               = 1e10
 set Use years in output instead of seconds = false
 set CFL number                             = 1.0
@@ -101,7 +101,7 @@ subsection Postprocess
   # end of each time step. Some of these postprocessors will declare their own
   # parameters which may, for example, include that they will actually do
   # something only every so many time steps or years.
-  set List of postprocessors = all
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics
 
 
   subsection Visualization

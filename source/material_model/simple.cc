@@ -50,6 +50,7 @@ namespace aspect
                    const double,
                    const Point<dim> &) const
     {
+//TODO: make this a run-time parameter
       return 1250.0;
     }
 
@@ -61,15 +62,6 @@ namespace aspect
                           const Point<dim> &) const
     {
       return k_value;
-    }
-
-    template <int dim>
-    double
-    Simple<dim>::
-    thermal_diffusivity () const
-    {
-      // this model assumes that the thermal diffusivity is in fact constant
-      return 9.181e-08;
     }
 
     template <int dim>

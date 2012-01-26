@@ -70,27 +70,22 @@ namespace aspect
 
         /**
          * Return the thermal conductivity $k$ of the model as a function of temperature,
-         * pressure and position.
+         * pressure and position. The units of $k$ are $\textrm{W} / \textrm{m} / \textrm{K}$.
+        *
+        * Note that the thermal <i>conductivity</i> $k$ is related to the thermal
+        * <i>diffusivity</i> $\kappa$ as $k = \kappa \rho c_p$. In essence, the conductivity
+        * relates to the question of how thermal energy diffuses whereas the diffusivity
+        * relates to the question of how the temperature diffuses. $\kappa$ has units
+        * $\textrm{m}^2/\textrm{s}$.
          */
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
                                              const Point<dim> &position) const = 0;
-        /**
-         * Return the thermal diffusivity conductivity $k$ of the model as a function of temperature,
-         * pressure and position.
-         */
-        virtual double thermal_diffusivity () const = 0;
-
 
         /**
           * Return the reference density $\rho$.
           */
         virtual double reference_density () const = 0;
-
-        /**
-         * Return the reference gravity $g$ of the model.
-         */
-        virtual double reference_thermal_alpha () const;
 
         /**
          * Return the density $\rho$ of the model as a function of temperature,
@@ -101,14 +96,14 @@ namespace aspect
                                 const Point<dim> &position) const = 0;
         /**
          * Return the p-wave seismic velocity Vp of the model as a function of temperature and
-         * pressure. By default this function returns -1 to indicate no useful value is implemented.
+         * pressure. By default this function returns -1 to indicate that no useful value is implemented.
          */
         virtual double Vp (const double      temperature,
                            const double      pressure) const;
 
         /**
          * Return the s-wave seismic velocity Vs of the model as a function of temperature and
-         * pressure. By default this function returns -1 to indicate no useful value is implemented.
+         * pressure. By default this function returns -1 to indicate that no useful value is implemented.
          */
         virtual double Vs (const double      temperature,
                            const double      pressure) const;

@@ -154,7 +154,7 @@ namespace aspect
         unsigned int        initial_adaptive_refinement;
         double              refinement_fraction;
         double              coarsening_fraction;
-        std::string       refinement_strategy;
+        std::string         refinement_strategy;
         std::vector<double> additional_refinement_times;
         unsigned int        adaptive_refinement_interval;
         /**
