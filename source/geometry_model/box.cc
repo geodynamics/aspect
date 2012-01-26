@@ -50,21 +50,34 @@ namespace aspect
       return 0.01;
     }
 
+
     template <int dim>
     double
     Box<dim>::depth(const Point<dim> & position) const
     {
-      return maximal_depth()-position(dim-1);
+      const double d = maximal_depth()-position(dim-1);
+
+      Assert (d >= 0, ExcInternalError());
+      Assert (d <= maximal_depth(), ExcInternalError());
+
+      return d;
     }
+
 
     template <int dim>
     Point<dim>
     Box<dim>::representative_point(const double depth) const
     {
+      Assert (depth >= 0,
+              ExcMessage ("Given depth must be positive or zero."));
+      Assert (depth <= maximal_depth(),
+              ExcMessage ("Given depth must be less than or equal to the maximal depth of this geometry."));
+
       Point<dim> p;
       p(dim-1) = maximal_depth() - depth;
       return p;
     }
+
 
     template <int dim>
     double
