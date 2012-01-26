@@ -556,7 +556,6 @@ namespace aspect
           reference_T       = prm.get_double ("Reference temperature");
           k_value           = prm.get_double ("Thermal conductivity");
           reference_alpha   = prm.get_double ("Thermal expansion coefficient");
-          reference_g       = prm.get_double ("Gravity");
           composition       = prm.get ("Composition");
           data_directory    = prm.get ("Path to model data") + "/" + composition +"/";
           ComputePhases     = prm.get_bool ("ComputePhases");

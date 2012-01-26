@@ -64,9 +64,6 @@ namespace aspect
 
         virtual double reference_density () const;
 
-//TODO: This doesn't belong here.
-        double reference_gravity () const;
-
         double reference_thermal_alpha () const;
 
         /**
@@ -88,7 +85,6 @@ namespace aspect
         double reference_T;
         double reference_kappa;
         double reference_alpha;
-        double reference_g;
         std::string composition;
         std::string data_directory;
         bool ComputePhases;
