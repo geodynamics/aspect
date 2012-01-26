@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
@@ -411,7 +411,9 @@ namespace aspect
     Table<dim>::
     reference_thermal_diffusivity () const
     {
-      // this model assumes that the thermal diffusivity is in fact constant
+//TODO: the right thing to do would be to compute this value as
+// kappa=k/rho/c_P with reference values for the three quantities
+// on the right hand side.
       return reference_kappa;
     }
 
