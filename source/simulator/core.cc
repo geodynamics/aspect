@@ -3,7 +3,7 @@
            Wolfgang Bangerth, Texas A&M University,
      Timo Heister, University of Goettingen, 2008-2011 */
 /*                                                                */
-/*    Copyright (C) 2008, 2009, 2010, 2011 by the deal.II authors */
+/*    Copyright (C) 2008, 2009, 2010, 2011, 2012 by the deal.II authors */
 /*                                                                */
 /*    This file is subject to QPL and may not be  distributed     */
 /*    without copyright and license information. Please refer     */
@@ -541,7 +541,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::calculate_refinement_criterion (Vector<float> & estimated_error_per_cell) const
+  void Simulator<dim>::compute_refinement_criterion (Vector<float> & estimated_error_per_cell) const
   {
     Vector<float> estimated_error_per_cell_rho (triangulation.n_active_cells());
     Vector<float> estimated_error_per_cell_T (triangulation.n_active_cells());
@@ -731,7 +731,7 @@ namespace aspect
     computing_timer.enter_section ("Refine mesh structure, part 1");
 
     Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
-    calculate_refinement_criterion(estimated_error_per_cell);
+    compute_refinement_criterion(estimated_error_per_cell);
 
     parallel::distributed::GridRefinement::
     refine_and_coarsen_fixed_fraction (triangulation,

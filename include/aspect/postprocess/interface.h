@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 #ifndef __aspect__postprocess_interface_h
@@ -249,10 +249,13 @@ namespace aspect
         convert_output_to_years () const;
 
         /**
-        * Compute the error indicators in the same way they are normally used for mesh refinement.
+        * Compute the error indicators in the same way they are normally used
+        * for mesh refinement. The mesh is not refined when doing so, but the
+        * indicators can be used when generating graphical output to check
+        * why mesh refinement is proceeding as it is.
         */
         void
-        calculate_refinement_criterion(Vector<float> & estimated_error_per_cell) const;
+        compute_refinement_criterion(Vector<float> & estimated_error_per_cell) const;
         /** @} */
 
 

@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
@@ -135,9 +135,9 @@ namespace aspect
 
     template <int dim>
     void
-    SimulatorAccess<dim>::calculate_refinement_criterion (Vector<float> & estimated_error_per_cell) const
+    SimulatorAccess<dim>::compute_refinement_criterion (Vector<float> & estimated_error_per_cell) const
     {
-      simulator->calculate_refinement_criterion(estimated_error_per_cell);
+      simulator->compute_refinement_criterion(estimated_error_per_cell);
     }
 
 

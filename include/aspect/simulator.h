@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 #ifndef __aspect__simulator_h
@@ -340,12 +340,13 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
        */
-      void calculate_refinement_criterion (Vector<float> & estimated_error_per_cell) const;
+      void compute_refinement_criterion (Vector<float> & estimated_error_per_cell) const;
 
       /**
-       * Refine the mesh according to error indicators calculated with
-       * calculate_refinement_criterion, set up all necessary data structures on this
-       * new mesh, and interpolate the old solutions onto the new mesh.
+       * Refine the mesh according to error indicators calculated by
+       * compute_refinement_criterion(), set up all necessary data structures
+       * on this new mesh, and interpolate the old solutions onto the new
+       * mesh.
        *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.

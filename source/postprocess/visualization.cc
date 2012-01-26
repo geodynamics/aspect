@@ -302,7 +302,7 @@ namespace aspect
                                                   this->get_adiabatic_conditions());
 
       Vector<float> estimated_error_per_cell(this->get_triangulation().n_active_cells());
-      this->calculate_refinement_criterion(estimated_error_per_cell);
+      this->compute_refinement_criterion(estimated_error_per_cell);
 
       DataOut<dim> data_out;
       data_out.attach_dof_handler (joint_dof_handler);
