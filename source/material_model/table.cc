@@ -272,8 +272,8 @@ namespace aspect
 // TODO: clamping into the valid range in all cases okay?
         const double temperature = std::max(min_T, std::min(T, max_T-delta_T));
 
-        const unsigned int i = (pressure-min_p) / delta_p;
-        const unsigned int j = (temperature-min_T) / delta_T;
+        const unsigned int i = static_cast<unsigned int>((pressure-min_p) / delta_p);
+        const unsigned int j = static_cast<unsigned int>((temperature-min_T) / delta_T);
         Assert (i < n_p-1, ExcInternalError());
         Assert (j < n_T-1, ExcInternalError());
 
@@ -305,8 +305,8 @@ namespace aspect
         Assert (T >= min_T, ExcMessage ("Not in range"));
         Assert (T <= max_T, ExcMessage ("Not in range"));
 
-        const unsigned int i = (pressure-min_p) / delta_p;
-        const unsigned int j = (T-min_T) / delta_T;
+        const unsigned int i = static_cast<unsigned int>((pressure-min_p) / delta_p);
+        const unsigned int j = static_cast<unsigned int>((T-min_T) / delta_T);
         Assert (i < n_p-1, ExcInternalError());
         Assert (j < n_T-1, ExcInternalError());
 
@@ -458,7 +458,7 @@ namespace aspect
     thermodynamic_phase (const double temperature,
                          const double pressure) const
     {
-      if (!ComputePhases) return 0e0;
+      if (!ComputePhases) return 0;
       static internal::PhaseLookupFunction<dim> phase(data_directory+"Phases.lab");
       return phase.value(temperature, pressure);
     }
