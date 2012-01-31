@@ -427,7 +427,6 @@ namespace aspect
          * created; then let these objects read their parameters as
          * well.
          */
-        virtual
         void
         parse_parameters (ParameterHandler &prm);
 
