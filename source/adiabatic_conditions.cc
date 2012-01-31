@@ -144,7 +144,7 @@ namespace aspect
   {
     const double z = point_to_depth_converter(p);
 
-    const unsigned int i = static_cast<double>(z/delta_z);
+    const unsigned int i = static_cast<unsigned int>(z/delta_z);
     Assert (i >= 0, ExcInternalError());
     Assert (i+1 < pressures.size(), ExcInternalError());
 
@@ -162,7 +162,7 @@ namespace aspect
   {
     const double z = point_to_depth_converter(p);
 
-    const unsigned int i = z/delta_z;
+    const unsigned int i = static_cast<unsigned int>(z/delta_z);
     Assert (i >= 0, ExcInternalError());
     Assert (i+1 < temperatures.size(), ExcInternalError());
 
