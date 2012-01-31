@@ -44,7 +44,7 @@ namespace aspect
       const double scale = ((dim==3)
                             ?
                             std::max(0.0,
-                                     cos(3.14159 * abs(position(2)/R1)))
+                                     cos(3.14159 * fabs(position(2)/R1)))
                             :
                             1.0);
       const double phi   = std::atan2(position(0),position(1));
