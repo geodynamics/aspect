@@ -373,7 +373,7 @@ subsection Postprocess
   # 
   # `heat flux statistics': A postprocessor
   # that computes some statistics about the heat flux across boundaries.
-  set List of postprocessors = visualization,velocity statistics,temperature statistics,heat flux statistics
+  set List of postprocessors = visualization,velocity statistics,temperature statistics,heat flux statistics, depth average
 
 
   subsection Visualization
