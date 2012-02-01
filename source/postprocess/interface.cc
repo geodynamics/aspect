@@ -197,6 +197,15 @@ namespace aspect
 
 
     template <int dim>
+    void
+    SimulatorAccess<dim>::compute_depth_average_temperature(std::vector<double> & values) const
+    {
+      simulator->compute_depth_average_temperature(values);
+    }
+
+
+
+    template <int dim>
     const MaterialModel::Interface<dim> &
     SimulatorAccess<dim>::get_material_model () const
     {

@@ -344,6 +344,58 @@ namespace aspect
     vector.block(1).add(correction, pressure_shape_function_integrals.block(1));
   }
 
+
+  template <int dim>
+  void Simulator<dim>::compute_depth_average_temperature(std::vector<double> & values) const
+  {
+    const unsigned int num_slices = 100;
+    values.resize(num_slices);
+    std::vector<unsigned int> counts(num_slices);
+
+    // this yields 100 quadrature points evenly distributed in the interior of the cell.
+    // We avoid points on the faces, as they would be counted more than once.
+    const QIterated<dim> quadrature_formula (QMidpoint<1>(),
+                                             10);
+    const unsigned int n_q_points = quadrature_formula.size();
+
+    FEValues<dim> fe_values (mapping, temperature_fe, quadrature_formula, update_values|update_quadrature_points);
+
+    std::vector<double> temperature_values(n_q_points);
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = temperature_dof_handler.begin_active(),
+    endc = temperature_dof_handler.end();
+
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          fe_values.get_function_values (this->temperature_solution,
+                                         temperature_values);
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              const Point<dim> & p = fe_values.quadrature_point(q);
+              const double depth = geometry_model->depth(fe_values.quadrature_point(q));
+              const double max_depth = geometry_model->maximal_depth();
+              const unsigned int idx = (depth*num_slices)/max_depth;
+              Assert(idx<num_slices, ExcInternalError());
+
+              ++counts[idx];
+              values[idx]+= temperature_values[q];
+            }
+        }
+
+    std::vector<double> values_all(num_slices);
+    std::vector<unsigned int> counts_all(num_slices);
+    Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
+    Utilities::MPI::sum(values, MPI_COMM_WORLD, values_all);
+
+    for (unsigned int i=0; i<num_slices; ++i)
+      values[i] = values_all[i] / (static_cast<double>(counts_all[i])+1e-20);
+
+
+  }
+
 }
 
 
@@ -359,4 +411,6 @@ namespace aspect
   template double Simulator<deal_II_dimension>::compute_time_step () const;
 
   template void Simulator<deal_II_dimension>::make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector);
+
+  template void Simulator<deal_II_dimension>::compute_depth_average_temperature(std::vector<double> & values) const;
 }

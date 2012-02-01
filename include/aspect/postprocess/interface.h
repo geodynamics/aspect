@@ -330,6 +330,12 @@ namespace aspect
          */
         const DoFHandler<dim> &
         get_temperature_dof_handler () const;
+
+        /**
+         * Compute a depth average of the current temperature field
+         */
+        void
+        compute_depth_average_temperature(std::vector<double> & values) const;
         /** @} */
 
 

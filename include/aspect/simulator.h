@@ -544,6 +544,11 @@ namespace aspect
       void make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector);
 
       /**
+        * Compute a depth average of the current temperature.
+        */
+      void compute_depth_average_temperature(std::vector<double> & values) const;
+
+      /**
        * If the geometry used is a spherical shell, adjust the pressure variable
        * (which is only determined up to a constant) by adding a constant to it
        * in such a way that the pressure on the surface has a known average value.
