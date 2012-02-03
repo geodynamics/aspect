@@ -22,6 +22,94 @@ namespace aspect
 
     namespace internal
     {
+        /**
+         * A class that is used to read and and evaluate the pressure and temperature
+         * dependent Phase.
+        **/
+        template <int dim>
+        class PhaseLookupFunction
+          {
+            public:
+              /**
+               * @brief Constructor
+               *
+               * @param filename The name of the file in which the values the variable
+               * represented by this object are stored.
+               **/
+
+              PhaseLookupFunction<dim>(const std::string &filename);
+
+              /**
+               * @brief Evaluate the table for a given value of pressure
+               * and temperature.
+               **/
+              double value (const double T,
+                            const double p) const;
+
+            private:
+
+             int  nPhaseFields;
+             int  nIsotherms;
+
+             std::list<std::string> PhasefieldLabels;
+
+          };
+          template <int dim>
+          inline
+          PhaseLookupFunction<dim>::
+          PhaseLookupFunction (const std::string &filename)
+          {
+            {
+              // read in definitions from data file
+              std::string temp;
+              std::string path = filename;
+              int ipos = filename.find("table");
+              ipos = filename.find("/", ipos+2);
+              ipos = filename.find("/", ipos+2);
+              path.replace(ipos+1,19,".Phases.lab"); // TODO remove this ugly hack with something more elegant!
+              std::ifstream in(path.c_str(), std::ios::in);
+              AssertThrow (in,
+                           ExcMessage (std::string("Couldn't open file <") +
+                                       path));
+
+              /* skip the first four lines*/
+              getline(in, temp); // eat remainder of the line
+              getline(in, temp); // eat remainder of the line
+              getline(in, temp); // eat remainder of the line
+              getline(in, temp); // eat remainder of the line
+
+              in >> nPhaseFields >> nIsotherms;
+              getline(in, temp); // eat remainder of the line
+
+              int i, j;
+
+              /* read phase labels */
+              for (i=0;i<nPhaseFields; i++){
+                 in >> j  >> PhasefieldLabels.push_back;
+                 getline(in, temp); // eat remainder of the line
+              }
+              /* skip line*/
+              getline(in, temp); // eat remainder of the line
+
+            }
+
+            std::ifstream in (filename.c_str(), std::ios::binary);
+            AssertThrow (in,
+                         ExcMessage (std::string("Couldn't open file <") +
+                                     filename + ">."));
+
+            // allocate the following on the heap so as not to bust
+            // stack size limits
+            double *array = new double[n_p*n_T];
+            in.read (reinterpret_cast<char *>(&(array[0])),
+                     n_p*n_T*sizeof(double));
+
+            for (unsigned int j=0; j<n_T; ++j)
+              for (unsigned int i=0; i<n_p; ++i)
+                values[i][j] = array[j*n_p+i];
+
+            delete[] array;
+       }
       /**
        * A class that is used to read and and evaluate the pressure and temperature
        * dependent Phase.
@@ -343,7 +431,7 @@ namespace aspect
           const double dT=  3498; //TODO
           const double depth = (1e0 - (position.norm()-R0)/(R1-R0));
           const double T = (temperature-T1/dT);
-          viscosity = std::exp(- std::log(ExponentialT)*T +
+          viscosity = reference_eta*std::exp(- std::log(ExponentialT)*T +
                                std::log(ExponentialP)*depth);
         }
       else
