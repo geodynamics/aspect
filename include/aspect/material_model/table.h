@@ -102,6 +102,8 @@ namespace aspect
         virtual double seismic_Vs (const double temperature,
                                    const double pressure) const;
 
+        virtual std::string datadir () const;
+
         virtual unsigned int thermodynamic_phase (const double temperature,
                                                   const double pressure) const;
 
@@ -136,10 +138,12 @@ namespace aspect
         double reference_rho;
         double reference_T;
         double reference_kappa;
+        double reference_specific_heat;
         double reference_alpha;
         std::string composition;
         std::string data_directory;
         bool ComputePhases;
+        bool Compressible;
 
         std::string ViscosityModel;
         double reference_eta;

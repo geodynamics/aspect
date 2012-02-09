@@ -22,20 +22,20 @@ namespace aspect
 
     namespace internal
     {
-      /**
-       * A class that is used to read and and evaluate the pressure and temperature
-       * dependent Phase.
-      **/
-      template <int dim>
-      class PhaseLookupFunction
-      {
-        public:
-          /**
-           * @brief Constructor
-           *
-           * @param filename The name of the file in which the values the variable
-           * represented by this object are stored.
-           **/
+        /**
+         * A class that is used to read and and evaluate the pressure and temperature
+         * dependent Phase.
+        **/
+        template <int dim>
+        class PhaseLookupFunction
+          {
+            public:
+              /**
+               * @brief Constructor
+               *
+               * @param filename The name of the file in which the values the variable
+               * represented by this object are stored.
+               **/
 
           PhaseLookupFunction<dim>(const std::string &filename);
 
@@ -405,18 +405,13 @@ namespace aspect
       return k_value;
     }
 
-
     template <int dim>
     double
     Table<dim>::
     reference_thermal_diffusivity () const
     {
-//TODO: the right thing to do would be to compute this value as
-// kappa=k/rho/c_P with reference values for the three quantities
-// on the right hand side.
-      return reference_kappa;
+      return k_value/(reference_rho*reference_specific_heat);
     }
-
 
     template <int dim>
     double
@@ -428,7 +423,6 @@ namespace aspect
       static internal::P_T_LookupFunction rho(data_directory+"rho_bin");
       return rho.value(temperature, pressure);
     }
-
 
     template <int dim>
     double
@@ -481,9 +475,16 @@ namespace aspect
     Table<dim>::
     is_compressible () const
     {
-      return true;
+      return Compressible;
     }
 
+    template <int dim>
+    std::string
+    Table<dim>::
+    datadir () const
+    {
+      return data_directory;
+    }
 
     template <int dim>
     void
@@ -503,6 +504,10 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
+          prm.declare_entry ("Reference specific heat", "1250",
+                             Patterns::Double (0),
+                             "The value of the specific heat $cp$. "
+                             "Units: $JG/kgK$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\beta$. "
@@ -520,6 +525,9 @@ namespace aspect
           prm.declare_entry ("ComputePhases", "false",
                              Patterns::Bool (),
                              "whether to compute phases. ");
+          prm.declare_entry ("Compressible", "true",
+                             Patterns::Bool (),
+                             "whether the model is compressible. ");
           prm.enter_subsection ("Viscosity");
           {
             prm.declare_entry ("ViscosityModel", "Exponential",
@@ -529,11 +537,11 @@ namespace aspect
                                Patterns::Double (0),
                                "The value of the constant viscosity. Units: $kg/m/s$.");
             prm.declare_entry ("ExponentialT", "1",
-                               Patterns::Double (0),
-                               "multiplication factor or Temperature exponent");
+                 	   	   	     Patterns::Double (0),
+                 	   	   	     "multiplication factor or Temperature exponent");
             prm.declare_entry ("ExponentialP", "1",
-                               Patterns::Double (0),
-                               "multiplication factor or Pressure exponent");
+                 	   	         Patterns::Double (0),
+                 	   	         "multiplication factor or Pressure exponent");
           }
           prm.leave_subsection();
         }
@@ -552,13 +560,15 @@ namespace aspect
       {
         prm.enter_subsection("Table model");
         {
-          reference_rho     = prm.get_double ("Reference density");
+          reference_rho       = prm.get_double ("Reference density");
           reference_T       = prm.get_double ("Reference temperature");
-          k_value           = prm.get_double ("Thermal conductivity");
-          reference_alpha   = prm.get_double ("Thermal expansion coefficient");
-          composition       = prm.get ("Composition");
+          k_value               = prm.get_double ("Thermal conductivity");
+          reference_specific_heat  = prm.get_double ("Reference specific heat");
+          reference_alpha     = prm.get_double ("Thermal expansion coefficient");
+          composition     = prm.get ("Composition");
           data_directory    = prm.get ("Path to model data") + "/" + composition +"/";
-          ComputePhases     = prm.get_bool ("ComputePhases");
+          ComputePhases       = prm.get_bool ("ComputePhases");
+          Compressible       = prm.get_bool ("Compressible");
           prm.enter_subsection ("Viscosity");
           {
             ViscosityModel = prm.get ("ViscosityModel");
