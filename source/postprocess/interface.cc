@@ -203,6 +203,12 @@ namespace aspect
       simulator->compute_depth_average_temperature(values);
     }
 
+    template <int dim>
+    void
+    SimulatorAccess<dim>::compute_Vs_anomaly(Vector<float> & values) const
+    {
+      simulator->compute_Vs_anomaly(values);
+    }
 
 
     template <int dim>
