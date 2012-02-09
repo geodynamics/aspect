@@ -338,6 +338,12 @@ namespace aspect
         compute_depth_average_temperature(std::vector<double> & values) const;
         /** @} */
 
+        /**
+         * Compute a depth average of the current temperature field
+         */
+        void
+        compute_Vs_anomaly(Vector<float> & values) const;
+        /** @} */
 
         /** @name Accessing variables that identify aspects of the simulation */
         /** @{ */
