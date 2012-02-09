@@ -192,6 +192,18 @@ namespace aspect
         unsigned int
         thermodynamic_phase (const double      temperature,
                              const double      pressure) const;
+
+        /**
+         * Return the Phase number of the model as a function of
+         * temperature and pressure.
+        *
+        * This function is only called in postprocessing. Derived classes do
+         * not need to implement it if no useful information is known to
+         * compute this quantity, in which case graphical output will simply
+         * show an uninformative field of constant value. By default this
+         * function returns 0 to indicate everything is part of the same phase
+         */
+        virtual std::string datadir() const;
         /**
          * @}
          */
