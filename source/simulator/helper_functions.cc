@@ -396,8 +396,70 @@ namespace aspect
 
   }
 
-}
+  template <int dim>
+  void Simulator<dim>::compute_Vs_anomaly(Vector<float> & values) const
+  {
+    const unsigned int num_slices = 100;
+    double Vs, Vs_depth_average;
 
+    std::vector<double> average_temperature(num_slices);
+    compute_depth_average_temperature(average_temperature);
+    // this yields 100 quadrature points evenly distributed in the interior of the cell.
+    // We avoid points on the faces, as they would be counted more than once.
+
+
+    const QIterated<dim> quadrature_formula (QMidpoint<1>(), 1);
+    const unsigned int n_q_points = quadrature_formula.size();
+
+    FEValues<dim> fe_values (mapping,
+                                   stokes_fe,
+                                   quadrature_formula,
+                                   update_values   |
+                                   update_quadrature_points );
+
+    FEValues<dim> temperature_fe_values (mapping,
+                             temperature_fe,
+                             quadrature_formula,
+                             update_values   |
+                             update_quadrature_points );
+
+    const FEValuesExtractors::Vector velocities (0);
+    const FEValuesExtractors::Scalar pressure (dim);
+
+    std::vector<double> pressure_values(n_q_points);
+    std::vector<double> temperature_values(n_q_points);
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = stokes_dof_handler.begin_active(),
+    endc = stokes_dof_handler.end();
+
+    // compute the integral quantities by quadrature
+    unsigned int cell_index = 0;
+    for (; cell!=endc; ++cell,++cell_index)
+    	if (cell->is_locally_owned())
+    	{
+    		fe_values.reinit (cell);
+    		fe_values[pressure].get_function_values (this->stokes_solution,
+    				pressure_values);
+    		typename DoFHandler<dim>::active_cell_iterator
+    		temperature_cell (&triangulation,
+    				cell->level(),
+    				cell->index(),
+    				&temperature_dof_handler);
+    		temperature_fe_values.reinit (temperature_cell);
+    		temperature_fe_values.get_function_values (this->temperature_solution,
+    				temperature_values);
+
+    		Vs = material_model->seismic_Vs(temperature_values[0], pressure_values[0]);
+    		const Point<dim> & p = fe_values.quadrature_point(0);
+    		const double depth = geometry_model->depth(fe_values.quadrature_point(0));
+    		const double max_depth = geometry_model->maximal_depth();
+    		const unsigned int idx = (depth*num_slices)/max_depth;
+    		Vs_depth_average = material_model->seismic_Vs(average_temperature[idx], pressure_values[0]);
+    		values(cell_index) = (Vs - Vs_depth_average)/Vs_depth_average*1e2;
+    	}
+  }
+}
 
 // explicit instantiation of the functions we implement in this file
 namespace aspect
@@ -413,4 +475,6 @@ namespace aspect
   template void Simulator<deal_II_dimension>::make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector);
 
   template void Simulator<deal_II_dimension>::compute_depth_average_temperature(std::vector<double> & values) const;
+
+  template void Simulator<deal_II_dimension>::compute_Vs_anomaly(Vector<float> & values) const;
 }
