@@ -548,7 +548,13 @@ namespace aspect
         */
       void compute_depth_average_temperature(std::vector<double> & values) const;
 
+       /**
+        * Compute a depth average of the current temperature.
+	*/
+      void compute_Vs_anomaly(Vector<float> & values) const;
+
       /**
+
        * If the geometry used is a spherical shell, adjust the pressure variable
        * (which is only determined up to a constant) by adding a constant to it
        * in such a way that the pressure on the surface has a known average value.
