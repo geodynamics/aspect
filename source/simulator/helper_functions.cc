@@ -412,16 +412,16 @@ namespace aspect
     const unsigned int n_q_points = quadrature_formula.size();
 
     FEValues<dim> fe_values (mapping,
-                                   stokes_fe,
-                                   quadrature_formula,
-                                   update_values   |
-                                   update_quadrature_points );
-
-    FEValues<dim> temperature_fe_values (mapping,
-                             temperature_fe,
+                             stokes_fe,
                              quadrature_formula,
                              update_values   |
                              update_quadrature_points );
+
+    FEValues<dim> temperature_fe_values (mapping,
+                                         temperature_fe,
+                                         quadrature_formula,
+                                         update_values   |
+                                         update_quadrature_points );
 
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
@@ -436,28 +436,28 @@ namespace aspect
     // compute the integral quantities by quadrature
     unsigned int cell_index = 0;
     for (; cell!=endc; ++cell,++cell_index)
-    	if (cell->is_locally_owned())
-    	{
-    		fe_values.reinit (cell);
-    		fe_values[pressure].get_function_values (this->stokes_solution,
-    				pressure_values);
-    		typename DoFHandler<dim>::active_cell_iterator
-    		temperature_cell (&triangulation,
-    				cell->level(),
-    				cell->index(),
-    				&temperature_dof_handler);
-    		temperature_fe_values.reinit (temperature_cell);
-    		temperature_fe_values.get_function_values (this->temperature_solution,
-    				temperature_values);
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          fe_values[pressure].get_function_values (this->stokes_solution,
+                                                   pressure_values);
+          typename DoFHandler<dim>::active_cell_iterator
+          temperature_cell (&triangulation,
+                            cell->level(),
+                            cell->index(),
+                            &temperature_dof_handler);
+          temperature_fe_values.reinit (temperature_cell);
+          temperature_fe_values.get_function_values (this->temperature_solution,
+                                                     temperature_values);
 
-    		Vs = material_model->seismic_Vs(temperature_values[0], pressure_values[0]);
-    		const Point<dim> & p = fe_values.quadrature_point(0);
-    		const double depth = geometry_model->depth(fe_values.quadrature_point(0));
-    		const double max_depth = geometry_model->maximal_depth();
-    		const unsigned int idx = (depth*num_slices)/max_depth;
-    		Vs_depth_average = material_model->seismic_Vs(average_temperature[idx], pressure_values[0]);
-    		values(cell_index) = (Vs - Vs_depth_average)/Vs_depth_average*1e2;
-    	}
+          Vs = material_model->seismic_Vs(temperature_values[0], pressure_values[0]);
+          const Point<dim> & p = fe_values.quadrature_point(0);
+          const double depth = geometry_model->depth(fe_values.quadrature_point(0));
+          const double max_depth = geometry_model->maximal_depth();
+          const unsigned int idx = (depth*num_slices)/max_depth;
+          Vs_depth_average = material_model->seismic_Vs(average_temperature[idx], pressure_values[0]);
+          values(cell_index) = (Vs - Vs_depth_average)/Vs_depth_average*1e2;
+        }
   }
 }
 

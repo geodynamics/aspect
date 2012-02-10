@@ -22,20 +22,20 @@ namespace aspect
 
     namespace internal
     {
-        /**
-         * A class that is used to read and and evaluate the pressure and temperature
-         * dependent Phase.
-        **/
-        template <int dim>
-        class PhaseLookupFunction
-          {
-            public:
-              /**
-               * @brief Constructor
-               *
-               * @param filename The name of the file in which the values the variable
-               * represented by this object are stored.
-               **/
+      /**
+       * A class that is used to read and and evaluate the pressure and temperature
+       * dependent Phase.
+      **/
+      template <int dim>
+      class PhaseLookupFunction
+      {
+        public:
+          /**
+           * @brief Constructor
+           *
+           * @param filename The name of the file in which the values the variable
+           * represented by this object are stored.
+           **/
 
           PhaseLookupFunction<dim>(const std::string &filename);
 
@@ -344,7 +344,7 @@ namespace aspect
           const double depth = (1e0 - (position.norm()-R0)/(R1-R0));
           const double T = (temperature-T1)/dT;
           viscosity = reference_eta*std::exp(- std::log(ExponentialT)*T +
-                               std::log(ExponentialP)*depth);
+                                             std::log(ExponentialP)*depth);
         }
       else
         {
@@ -537,11 +537,11 @@ namespace aspect
                                Patterns::Double (0),
                                "The value of the constant viscosity. Units: $kg/m/s$.");
             prm.declare_entry ("ExponentialT", "1",
-                 	   	   	     Patterns::Double (0),
-                 	   	   	     "multiplication factor or Temperature exponent");
+                               Patterns::Double (0),
+                               "multiplication factor or Temperature exponent");
             prm.declare_entry ("ExponentialP", "1",
-                 	   	         Patterns::Double (0),
-                 	   	         "multiplication factor or Pressure exponent");
+                               Patterns::Double (0),
+                               "multiplication factor or Pressure exponent");
           }
           prm.leave_subsection();
         }

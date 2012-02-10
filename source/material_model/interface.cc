@@ -85,7 +85,7 @@ namespace aspect
       return -1.0;
     }
 
-	template <int dim>
+    template <int dim>
     double
     Interface<dim>::
     seismic_Vs (double dummy1, double dummy2) const
@@ -93,15 +93,15 @@ namespace aspect
       return -1.0;
     }
 
-	template <int dim>
-	std::string
-	Interface<dim>::
-	datadir () const
-	{
-	  return "-1e0";
-	}
+    template <int dim>
+    std::string
+    Interface<dim>::
+    datadir () const
+    {
+      return "-1e0";
+    }
 
-	template <int dim>
+    template <int dim>
     unsigned int
     Interface<dim>::
     thermodynamic_phase (double dummy1, double dummy2) const
