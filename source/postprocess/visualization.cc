@@ -98,6 +98,7 @@ namespace aspect
         solution_names.push_back ("Vp");
         solution_names.push_back ("Vs");
         solution_names.push_back ("Phase");
+        solution_names.push_back ("Cp");
         return solution_names;
       }
 
@@ -111,6 +112,7 @@ namespace aspect
         interpretation (dim,
                         DataComponentInterpretation::component_is_part_of_vector);
 
+        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
@@ -196,6 +198,7 @@ namespace aspect
             computed_quantities[q](dim+9) = material_model.seismic_Vp(temperature, pressure);
             computed_quantities[q](dim+10) = material_model.seismic_Vs(temperature, pressure);
             computed_quantities[q](dim+11) = material_model.thermodynamic_phase(temperature, pressure);
+            computed_quantities[q](dim+11) = material_model.specific_heat(temperature, pressure, evaluation_points[q]);
           }
       }
     }
