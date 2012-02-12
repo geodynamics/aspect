@@ -346,6 +346,22 @@ namespace aspect
           viscosity = reference_eta*std::exp(- std::log(ExponentialT)*T +
                                              std::log(ExponentialP)*depth);
         }
+      else if (!strcmp(ViscosityModel.c_str(),"Exponential Stiffer Lower Mantle"))
+      {
+        const double R0=  3591e3; //TODO
+        const double R1=  6591e3; //TODO
+        const double T1=  375; //TODO
+        const double dT=  3498; //TODO
+        const double depth = (1e0 - (position.norm()-R0)/(R1-R0));
+        const double T = (temperature-T1)/dT;
+        viscosity = reference_eta*std::exp(- std::log(ExponentialT)*T +
+                             std::log(ExponentialP)*depth);
+        /* this simulates an increase in the viscosity for the lower mantle
+         *
+         */
+        if (R1 - position.norm() > 660e3 ) viscosity *=4e0 ;// we are in the lower mantle
+
+      }
       else
         {
           viscosity = reference_eta;
