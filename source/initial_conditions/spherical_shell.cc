@@ -159,9 +159,9 @@ namespace aspect
                                                 std::pow((position(1)*scale/R1-y),2) ) / sigma));
 
       if (r > R1 - 1e-6*R1)
-        return geotherm[3]*dT;
+        return T1*dT;
       else if (r < R0 + 1e-6*R0)
-        return geotherm[0]*dT;
+        return T0*dT;
       else
         return (InterpolVal + Perturbation)*dT;
     }
