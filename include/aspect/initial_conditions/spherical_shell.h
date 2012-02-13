@@ -8,6 +8,7 @@
 #define __aspect__initial_conditions_spherical_shell_h
 
 #include <aspect/initial_conditions/interface.h>
+#include <deal.II/base/table.h>
 
 namespace aspect
 {
@@ -43,6 +44,8 @@ namespace aspect
     class SphericalGaussianPerturbation : public Interface<dim>
     {
       public:
+
+    	SphericalGaussianPerturbation<dim>();
         /**
          * Return the initial temperature as a function of position.
          */
@@ -70,6 +73,10 @@ namespace aspect
         double amplitude;
         double sigma;
         double sign;
+        unsigned int npoint;
+        dealii::Table<1,double> radial_position;
+        dealii::Table<1,double> geotherm;
+
     };
   }
 }
