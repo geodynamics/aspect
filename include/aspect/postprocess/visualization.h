@@ -1,13 +1,16 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 #ifndef __aspect__postprocess_visualization_h
 #define __aspect__postprocess_visualization_h
 
 #include <aspect/postprocess/interface.h>
+
+#include <deal.II/base/thread_management.h>
+#include <deal.II/numerics/data_out.h>
 
 
 namespace aspect
@@ -30,6 +33,13 @@ namespace aspect
          * Constructor.
          */
         Visualization ();
+
+        /**
+         * Destructor. Makes sure that any background thread that may still be
+         * running writing data to disk finishes before the current object
+         * is fully destroyed.
+         */
+        ~Visualization ();
 
         /**
          * Generate graphical output from the current solution.
@@ -111,6 +121,30 @@ namespace aspect
          * having to catch up once the time step becomes larger.
          */
         void set_next_output_time (const double current_time);
+
+        /**
+         * Handle to a thread that is used to write data in the
+         * background. The background_writer() function runs
+         * on this background thread.
+         */
+        Threads::Thread<void> background_thread;
+
+        /**
+         * A function that writes the text in the second argument
+         * to a file with the name given in the first argument. The function
+         * is run on a separate thread to allow computations to
+         * continue even though writing data is still continuing.
+         *
+         * The communicator is a copy of the one that is used for
+         * computations. However, it is not the same (but rather
+         * a duplicate) since accessing it both from this thread
+         * as well as from the main program has the potential to
+         * produce race conditions.
+         */
+        static
+        void background_writer (const std::string filename,
+                                const std::string file_contents,
+                                MPI_Comm          communicator);
     };
   }
 }
