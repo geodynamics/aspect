@@ -158,9 +158,9 @@ namespace aspect
                                                 +
                                                 std::pow((position(1)*scale/R1-y),2) ) / sigma));
 
-      if (r > R1 - 1e-6*R1)
+      if (r > R1 - 1e-6*R1 || InterpolVal + Perturbation < T1)
         return T1*dT;
-      else if (r < R0 + 1e-6*R0)
+      else if (r < R0 + 1e-6*R0 || InterpolVal + Perturbation > T0 )
         return T0*dT;
       else
         return (InterpolVal + Perturbation)*dT;
