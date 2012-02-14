@@ -88,6 +88,15 @@ namespace aspect
          * quantities.
          */
         double reference_thermal_alpha () const;
+
+        /**
+        * A reference thermal expansion coefficient $\alpha$.
+        *
+        * The value here is not used in the computation of things but only in
+        * postprocessing the solution when we want dimension-less
+        * quantities.
+        */
+        double reference_cp () const;
         /**
          * @}
          */

@@ -413,6 +413,14 @@ namespace aspect
     template <int dim>
     double
     Table<dim>::
+    reference_cp () const
+    {
+      return reference_specific_heat;
+    }
+
+    template <int dim>
+    double
+    Table<dim>::
     thermal_conductivity (const double,
                           const double,
                           const Point<dim> &) const
