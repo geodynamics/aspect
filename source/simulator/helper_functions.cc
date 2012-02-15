@@ -89,6 +89,52 @@ namespace aspect
     // return the largest value over all processors
     return Utilities::MPI::max (max_local_velocity, MPI_COMM_WORLD);
   }
+  
+  
+  
+    /**
+   * Find the largest velocity throughout the domain.
+   **/
+  template <int dim>
+  double Simulator<dim>::sys_get_maximal_velocity (
+                       const TrilinosWrappers::MPI::BlockVector &solution) const
+  {
+    // use a quadrature formula that has one point at
+    // the location of each degree of freedom in the
+    // velocity element
+    const QIterated<dim> quadrature_formula (QTrapez<1>(),
+                                             parameters.stokes_velocity_degree);
+    const unsigned int n_q_points = quadrature_formula.size();
+
+
+    FEValues<dim> fe_values (mapping, system_fe, quadrature_formula, update_values);
+    std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+
+    const FEValuesExtractors::Vector velocities (0);
+
+    double max_local_velocity = 0;
+
+    // loop over all locally owned cells and evaluate the velocities at each
+    // quadrature point (i.e. each node). keep a running tally of the largest
+    // such velocity
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = system_dof_handler.begin_active(),
+    endc = system_dof_handler.end();
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          fe_values[velocities].get_function_values (solution,
+                                                     velocity_values);
+
+          for (unsigned int q=0; q<n_q_points; ++q)
+            max_local_velocity = std::max (max_local_velocity,
+                                           velocity_values[q].norm());
+        }
+
+    // return the largest value over all processors
+    return Utilities::MPI::max (max_local_velocity, MPI_COMM_WORLD);
+  }
 
 
 
@@ -219,6 +265,89 @@ namespace aspect
                           Utilities::MPI::max (max_local_temperature,
                                                MPI_COMM_WORLD));
   }
+  
+  
+  
+  template <int dim>
+  std::pair<double,double>
+  Simulator<dim>::sys_get_extrapolated_temperature_range () const
+  {
+    const QIterated<dim> quadrature_formula (QTrapez<1>(),
+                                             parameters.temperature_degree);
+    const unsigned int n_q_points = quadrature_formula.size();
+    
+    const FEValuesExtractors::Scalar temperature (dim+1);
+
+    FEValues<dim> fe_values (mapping, system_fe, quadrature_formula,
+                             update_values);
+    std::vector<double> old_temperature_values(n_q_points);
+    std::vector<double> old_old_temperature_values(n_q_points);
+
+    // This presets the minimum with a bigger
+    // and the maximum with a smaller number
+    // than one that is going to appear. Will
+    // be overwritten in the cell loop or in
+    // the communication step at the
+    // latest.
+    double min_local_temperature = std::numeric_limits<double>::max(),
+           max_local_temperature = -std::numeric_limits<double>::max();
+
+    if (timestep_number != 0)
+      {
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = system_dof_handler.begin_active(),
+        endc = system_dof_handler.end();
+        for (; cell!=endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit (cell);
+              fe_values[temperature].get_function_values (old_system_solution,
+                                             old_temperature_values);
+              fe_values[temperature].get_function_values (old_old_system_solution,
+                                             old_old_temperature_values);
+
+              for (unsigned int q=0; q<n_q_points; ++q)
+                {
+                  const double extrapolated_temperature =
+                    (1. + time_step/old_time_step) * old_temperature_values[q]-
+                    time_step/old_time_step * old_old_temperature_values[q];
+
+                  min_local_temperature = std::min (min_local_temperature,
+                                                    extrapolated_temperature);
+                  max_local_temperature = std::max (max_local_temperature,
+                                                    extrapolated_temperature);
+                }
+            }
+      }
+    else
+      {
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = system_dof_handler.begin_active(),
+        endc = system_dof_handler.end();
+        for (; cell!=endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit (cell);
+              fe_values[temperature].get_function_values (old_system_solution,
+                                             old_temperature_values);
+
+              for (unsigned int q=0; q<n_q_points; ++q)
+                {
+                  const double extrapolated_temperature = old_temperature_values[q];
+
+                  min_local_temperature = std::min (min_local_temperature,
+                                                    extrapolated_temperature);
+                  max_local_temperature = std::max (max_local_temperature,
+                                                    extrapolated_temperature);
+                }
+            }
+      }
+
+    return std::make_pair(-Utilities::MPI::max (-min_local_temperature,
+                                                MPI_COMM_WORLD),
+                          Utilities::MPI::max (max_local_temperature,
+                                               MPI_COMM_WORLD));
+  }
 
 
 
@@ -332,7 +461,7 @@ namespace aspect
    * shell and subtracting this from all pressure nodes.
    */
   template <int dim>
-  void Simulator<dim>::normalize_system_pressure(TrilinosWrappers::MPI::BlockVector &vector)
+  void Simulator<dim>::sys_normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector)
   {
     // TODO: somehow parameterize based on the geometry model
     // on which parts of the boundary the pressure should be
@@ -458,11 +587,15 @@ namespace aspect
 {
   template void Simulator<deal_II_dimension>::normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
   
-  template void Simulator<deal_II_dimension>::normalize_system_pressure(TrilinosWrappers::MPI::BlockVector &vector);
+  template void Simulator<deal_II_dimension>::sys_normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
 
   template double Simulator<deal_II_dimension>::get_maximal_velocity () const;
+  
+  template double Simulator<deal_II_dimension>::sys_get_maximal_velocity (const TrilinosWrappers::MPI::BlockVector &) const;
 
   template std::pair<double,double> Simulator<deal_II_dimension>::get_extrapolated_temperature_range () const;
+  
+  template std::pair<double,double> Simulator<deal_II_dimension>::sys_get_extrapolated_temperature_range () const;
 
   template double Simulator<deal_II_dimension>::compute_time_step () const;
 

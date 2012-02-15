@@ -447,6 +447,7 @@ namespace aspect
     //                   n_p = stokes_dofs_per_block[1],
     //                   n_T = temperature_dof_handler.n_dofs();
     
+    // TODO: variable number of components (if e.g. reaction rates are added)
     std::vector<unsigned int> system_dofs_per_block (3);
     DoFTools::count_dofs_per_block (system_dof_handler, system_dofs_per_block,
                                     system_sub_blocks);
@@ -584,7 +585,7 @@ namespace aspect
                                                        no_normal_flux_boundary_indicators,
                                                        stokes_constraints,
                                                        mapping);
-      //system_constraints.close();
+      
       stokes_constraints.close ();
     }
 
@@ -619,9 +620,9 @@ namespace aspect
                                                                                                 dim+2),
                                                     system_constraints, 
                                                     temperature_system_mask);
+        
         }
       system_constraints.close();
-      
       
       for (std::vector<int>::const_iterator
            p = parameters.fixed_temperature_boundary_indicators.begin();
@@ -927,6 +928,225 @@ namespace aspect
 
     computing_timer.exit_section();
   }
+  
+  
+  
+  // Contrary to step-32, we have found that just refining by the temperature
+// works well in 2d, but only leads to refinement in the boundary layer at the
+// core-mantle boundary in 3d. Consequently, we estimate the error based
+// on the temperature, velocity and other criteria, see the second ASPECT paper;
+// the vectors with the resulting error indicators are then normalized, and we
+// take the maximum or sum of the indicators to decide whether we want to refine or
+// not. In case of more complicated materials with jumps in the density
+// profile, we also need to refine where the density jumps. This ensures that
+// we also refine into plumes where maybe the temperature gradients aren't as
+// strong as in the boundary layer but where nevertheless the gradients in the
+// velocity are large.
+  template <int dim>
+  void Simulator<dim>::sys_refine_mesh (const unsigned int max_grid_level)
+  {
+    computing_timer.enter_section ("Refine mesh structure, part 1");
+
+    Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
+    Vector<float> estimated_error_per_cell_rho (triangulation.n_active_cells());
+    Vector<float> estimated_error_per_cell_T (triangulation.n_active_cells());
+    Vector<float> estimated_error_per_cell_u (triangulation.n_active_cells());
+
+    // compute density error
+    {
+      TrilinosWrappers::MPI::BlockVector vec_distributed (this->system_rhs);
+
+      Quadrature<dim> quadrature( system_fe.get_unit_support_points() );
+      std::vector<unsigned int> local_dof_indices (system_fe.dofs_per_cell);
+      FEValues<dim> fe_values (mapping, system_fe, quadrature,
+                               update_quadrature_points|update_values);
+
+      const FEValuesExtractors::Scalar pressure (dim);
+      std::vector<double> pressure_values(quadrature.size());
+
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = system_dof_handler.begin_active(),
+      endc = system_dof_handler.end();
+      for (; cell!=endc; ++cell)
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit(cell);
+
+            fe_values[pressure].get_function_values (system_solution,
+                                                     pressure_values);
+
+            cell->get_dof_indices (local_dof_indices);
+
+            // look up density
+            for (unsigned int i=0; i<system_fe.dofs_per_cell; ++i)
+              {
+              if (system_fe.system_to_component_index(i).first == dim+1)
+              
+                vec_distributed(local_dof_indices[i])
+                  = material_model->density( system_solution(local_dof_indices[i]),
+                                             pressure_values[i],
+                                             fe_values.quadrature_point(i));
+              }
+          }
+
+      TrilinosWrappers::MPI::BlockVector vec (this->system_solution);
+      vec = vec_distributed;
+
+      DerivativeApproximation::approximate_gradient  (mapping, system_dof_handler, vec, estimated_error_per_cell_rho, dim+1);
+
+      // Scale gradient in each cell with the
+      // correct power of h. Otherwise, error
+      // indicators do not reduce when
+      // refined if there is a density
+      // jump. We need at least order 1 for
+      // the error not to grow when refining,
+      // so anything >1 should work.
+      {
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = system_dof_handler.begin_active(),
+        endc = system_dof_handler.end();
+        unsigned int i=0;
+        for (; cell!=endc; ++cell, ++i)
+          if (cell->is_locally_owned())
+            estimated_error_per_cell_rho(i) *= std::pow(cell->diameter(), 1+dim/2.0);
+      }
+    }
+
+    // compute the errors for
+    // temperature and stokes solution
+    {
+
+      std::vector<bool> temperature_mask (dim+2, false);
+      temperature_mask[dim+1] = true;
+      
+      KellyErrorEstimator<dim>::estimate (system_dof_handler,
+                                          QGauss<dim-1>(parameters.temperature_degree+1),
+                                          typename FunctionMap<dim>::type(),
+                                          system_solution,
+                                          estimated_error_per_cell_T,
+                                          temperature_mask,
+                                          0,
+                                          0,
+                                          triangulation.locally_owned_subdomain());
+
+      std::vector<bool> velocity_mask (dim+2, true);
+      velocity_mask[dim] = false;
+      velocity_mask[dim+1] = false;
+      KellyErrorEstimator<dim>::estimate (system_dof_handler,
+                                          QGauss<dim-1>(parameters.stokes_velocity_degree+1),
+                                          typename FunctionMap<dim>::type(),
+                                          system_solution,
+                                          estimated_error_per_cell_u,
+                                          velocity_mask,
+                                          0,
+                                          0,
+                                          triangulation.locally_owned_subdomain());
+    }
+
+    // rescale errors
+    {
+      estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
+                                                         MPI_COMM_WORLD);
+      estimated_error_per_cell_u /= Utilities::MPI::max (estimated_error_per_cell_u.linfty_norm(),
+                                                         MPI_COMM_WORLD);
+      estimated_error_per_cell_rho /= Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
+                                                           MPI_COMM_WORLD);
+
+      for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+        estimated_error_per_cell(i) = std::max(
+                                        std::max (estimated_error_per_cell_T(i),
+                                                  0.0f*estimated_error_per_cell_u(i)),
+                                        estimated_error_per_cell_rho(i));
+    }
+
+    parallel::distributed::GridRefinement::
+    refine_and_coarsen_fixed_fraction (triangulation,
+                                       estimated_error_per_cell,
+                                       parameters.refinement_fraction,
+                                       parameters.coarsening_fraction);
+
+    // limit maximum refinement level
+    if (triangulation.n_levels() > max_grid_level)
+      for (typename Triangulation<dim>::active_cell_iterator
+           cell = triangulation.begin_active(max_grid_level);
+           cell != triangulation.end(); ++cell)
+        cell->clear_refine_flag ();
+
+    std::vector<const TrilinosWrappers::MPI::Vector *> x_temperature (2);
+    x_temperature[0] = &temperature_solution;
+    x_temperature[1] = &old_temperature_solution;
+    std::vector<const TrilinosWrappers::MPI::BlockVector *> x_stokes (2);
+    x_stokes[0] = &stokes_solution;
+    x_stokes[1] = &old_stokes_solution;
+    std::vector<const TrilinosWrappers::MPI::BlockVector *> x_system (2);
+    x_system[0] = &system_solution;
+    x_system[1] = &old_system_solution;
+
+    parallel::distributed::SolutionTransfer<dim,TrilinosWrappers::MPI::Vector>
+    temperature_trans(temperature_dof_handler);
+    parallel::distributed::SolutionTransfer<dim,TrilinosWrappers::MPI::BlockVector>
+    stokes_trans(stokes_dof_handler);
+    parallel::distributed::SolutionTransfer<dim,TrilinosWrappers::MPI::BlockVector>
+    system_trans(system_dof_handler);
+
+    triangulation.prepare_coarsening_and_refinement();
+    temperature_trans.prepare_for_coarsening_and_refinement(x_temperature);
+    stokes_trans.prepare_for_coarsening_and_refinement(x_stokes);
+    system_trans.prepare_for_coarsening_and_refinement(x_system);
+
+    triangulation.execute_coarsening_and_refinement ();
+    global_volume = GridTools::volume (triangulation, mapping);
+    computing_timer.exit_section();
+
+    setup_dofs ();
+
+    computing_timer.enter_section ("Refine mesh structure, part 2");
+
+    {
+      TrilinosWrappers::MPI::Vector
+      distributed_temp1 (temperature_rhs);
+      TrilinosWrappers::MPI::Vector
+      distributed_temp2 (temperature_rhs);
+
+      std::vector<TrilinosWrappers::MPI::Vector *> tmp (2);
+      tmp[0] = &(distributed_temp1);
+      tmp[1] = &(distributed_temp2);
+      temperature_trans.interpolate(tmp);
+
+      temperature_solution     = distributed_temp1;
+      old_temperature_solution = distributed_temp2;
+    }
+
+    {
+      TrilinosWrappers::MPI::BlockVector
+      distributed_stokes (stokes_rhs);
+      TrilinosWrappers::MPI::BlockVector
+      old_distributed_stokes (stokes_rhs);
+      std::vector<TrilinosWrappers::MPI::BlockVector *> stokes_tmp (2);
+      stokes_tmp[0] = &(distributed_stokes);
+      stokes_tmp[1] = &(old_distributed_stokes);
+
+      stokes_trans.interpolate (stokes_tmp);
+      stokes_solution     = distributed_stokes;
+      old_stokes_solution = old_distributed_stokes;
+    }
+    
+    {
+      TrilinosWrappers::MPI::BlockVector
+      distributed_system (system_rhs);
+      TrilinosWrappers::MPI::BlockVector
+      old_distributed_system (system_rhs);
+      std::vector<TrilinosWrappers::MPI::BlockVector *> system_tmp (2);
+      system_tmp[0] = &(distributed_system);
+      system_tmp[1] = &(old_distributed_system);
+
+      system_trans.interpolate (system_tmp);
+      system_solution     = distributed_system;
+      old_system_solution = old_distributed_system;
+    }
+
+    computing_timer.exit_section();
+  }
 
 
 
@@ -963,38 +1183,37 @@ namespace aspect
         set_initial_temperature_field ();
         compute_initial_pressure_field ();
         
-        compute_initial_pressure();
+        sys_compute_initial_pressure_field();
 
         time                      = parameters.start_time;
         timestep_number           = 0;
-        time_step = old_time_step = 0;
-//        
-//        std::ofstream output1 ("velocity.tmp");
-//        std::ofstream output2 ("pressure.tmp");
-//        std::ofstream output3 ("temp.tmp");
-//        std::ofstream output4 ("velocity_system.tmp");
-//        std::ofstream output5 ("pressure_system.tmp");
-//        std::ofstream output6 ("temp_system.tmp");
-//        
-//        stokes_solution.block(0).print(output1, 6, true, false);
-//        stokes_solution.block(1).print(output2, 6, true, false);
-//        temperature_solution.print(output3, 6, true, false);
-//        system_solution.block(0).print(output4, 6, true, false);
-//        system_solution.block(1).print(output5, 6, true, false);
-//        system_solution.block(2).print(output6, 6, true, false);
-//        
+        time_step = old_time_step = 0;       
       }
 
     // start the principal loop over time steps:
     do
       {
         start_timestep ();
-
+        
         // then do the core work: assemble systems and solve
         assemble_stokes_system ();
         build_stokes_preconditioner ();
         solve ();
+        
+        pcout << std::endl;
+        
+        sys_assemble_temperature_system ();
+        sys_solve_temperature();
 
+        rebuild_stokes_matrix = true;
+        
+        sys_assemble_stokes_system();
+
+        rebuild_stokes_preconditioner = true;
+        sys_build_stokes_preconditioner();
+        //system_preconditioner_matrix.block(0,0).print(output3);
+        sys_solve_stokes();
+        
         pcout << std::endl;
 
         // see if we have to start over with a new refinement cycle
@@ -1002,7 +1221,7 @@ namespace aspect
         if ((timestep_number == 0) &&
             (pre_refinement_step < parameters.initial_adaptive_refinement))
           {
-            refine_mesh (max_refinement_level);
+            sys_refine_mesh (max_refinement_level);
             ++pre_refinement_step;
             goto start_time_iteration;
           }
@@ -1020,7 +1239,7 @@ namespace aspect
                    (parameters.additional_refinement_times.front () < time+time_step))
               {
                 ++max_refinement_level;
-                refine_mesh (max_refinement_level);
+                sys_refine_mesh (max_refinement_level);
 
                 parameters.additional_refinement_times
                 .erase (parameters.additional_refinement_times.begin());
@@ -1032,7 +1251,7 @@ namespace aspect
           if ((timestep_number > 0)
               &&
               (timestep_number % parameters.adaptive_refinement_interval == 0))
-            refine_mesh (max_refinement_level);
+            sys_refine_mesh (max_refinement_level);
 
 
         // every 100 time steps output a summary of the current
@@ -1052,6 +1271,8 @@ namespace aspect
           old_stokes_solution          = stokes_solution;
           old_old_temperature_solution = old_temperature_solution;
           old_temperature_solution     = temperature_solution;
+          old_old_system_solution      = old_system_solution;
+          old_system_solution          = system_solution;
           if (old_time_step > 0)
             {
               stokes_solution.sadd (1.+time_step/old_time_step, -time_step/old_time_step,
@@ -1059,6 +1280,8 @@ namespace aspect
               temperature_solution.sadd (1.+time_step/old_time_step,
                                          -time_step/old_time_step,
                                          old_old_temperature_solution);
+              system_solution.sadd (1.+time_step/old_time_step, -time_step/old_time_step,
+                                    old_old_system_solution);
             }
         }
 

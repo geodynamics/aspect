@@ -179,6 +179,33 @@ namespace aspect
     {
       return simulator->temperature_dof_handler;
     }
+    
+    
+    
+    template <int dim>
+    const TrilinosWrappers::MPI::BlockVector &
+    SimulatorAccess<dim>::get_system_solution () const
+    {
+      return simulator->system_solution;
+    }
+
+
+
+    template <int dim>
+    const TrilinosWrappers::MPI::BlockVector &
+    SimulatorAccess<dim>::get_old_system_solution () const
+    {
+      return simulator->old_system_solution;
+    }
+
+
+
+    template <int dim>
+    const DoFHandler<dim> &
+    SimulatorAccess<dim>::get_system_dof_handler () const
+    {
+      return simulator->system_dof_handler;
+    }
 
 
 

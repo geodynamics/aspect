@@ -66,7 +66,6 @@ namespace aspect
     old_old_temperature_solution = solution;
 
     system_constraints.distribute(initial_solution);
-    
     // copy temperature block only
     system_solution.block(2) = initial_solution.block(2);
     old_system_solution.block(2) = initial_solution.block(2);
@@ -206,7 +205,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_initial_pressure ()
+  void Simulator<dim>::sys_compute_initial_pressure_field ()
   {
     // we'd like to interpolate the initial pressure onto the pressure
     // variable but that's a bit involved because the pressure may either
@@ -333,7 +332,7 @@ namespace aspect
     
     // normalize the pressure in such a way that the surface pressure
     // equals a known and desired value
-    normalize_system_pressure(old_system_solution);
+    sys_normalize_pressure(old_system_solution);
 
     // set the current solution to the same value as the previous solution
     system_solution = old_system_solution;
@@ -347,5 +346,5 @@ namespace aspect
 {
   template void Simulator<deal_II_dimension>::set_initial_temperature_field();
   template void Simulator<deal_II_dimension>::compute_initial_pressure_field();
-  template void Simulator<deal_II_dimension>::compute_initial_pressure();
+  template void Simulator<deal_II_dimension>::sys_compute_initial_pressure_field();
 }

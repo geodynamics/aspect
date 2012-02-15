@@ -310,6 +310,39 @@ namespace aspect
         const DoFHandler<dim> &
         get_temperature_dof_handler () const;
         /** @} */
+        
+        /**
+         * Return a reference to the vector that has the current solution
+         * of the equation system.
+         * This vector is associated with the DoFHandler object returned by
+         * get_system_dof_handler().
+         *
+         * @note In general the vector is a distributed vector; however, it
+         * contains ghost elements for all locally relevant degrees of freedom.
+         */
+        const TrilinosWrappers::MPI::BlockVector &
+        get_system_solution () const;
+        
+        /**
+         * Return a reference to the vector that has the solution
+         * of the system at the previous time step.
+         * This vector is associated with the DoFHandler object returned by
+         * get_system_dof_handler().
+         *
+         * @note In general the vector is a distributed vector; however, it
+         * contains ghost elements for all locally relevant degrees of freedom.
+         */
+        const TrilinosWrappers::MPI::BlockVector &
+        get_old_system_solution () const;
+        
+        /**
+         * Return a reference to the DoFHandler that is used to discretize
+         * the system equation.
+         */
+        const DoFHandler<dim> &
+        get_system_dof_handler () const;
+        
+        
 
 
         /** @name Accessing variables that identify aspects of the simulation */
