@@ -560,10 +560,10 @@ namespace aspect
             prm.declare_entry ("ReferenceViscosity", "5e24",
                                Patterns::Double (0),
                                "The value of the constant viscosity. Units: $kg/m/s$.");
-            prm.declare_entry ("ExponentialT", "1",
+            prm.declare_entry ("exponential_T", "1",
                                Patterns::Double (0),
                                "multiplication factor or Temperature exponent");
-            prm.declare_entry ("ExponentialP", "1",
+            prm.declare_entry ("exponential_P", "1",
                                Patterns::Double (0),
                                "multiplication factor or Pressure exponent");
             prm.declare_entry ("Viscosity increase lower mantle", "4e0",
