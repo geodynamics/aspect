@@ -156,8 +156,9 @@ namespace aspect
 
         std::string ViscosityModel;
         double reference_eta;
-        double ExponentialT;
-        double ExponentialP;
+        double exponential_T;
+        double exponential_P;
+        double increase_lower_mantle;
         /**
          * The thermal conductivity.
          */

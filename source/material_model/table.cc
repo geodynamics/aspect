@@ -343,8 +343,8 @@ namespace aspect
           const double dT=  3498; //TODO
           const double depth = (1e0 - (position.norm()-R0)/(R1-R0));
           const double T = (temperature-T1)/dT;
-          viscosity = reference_eta*std::exp(- std::log(ExponentialT)*T +
-                                             std::log(ExponentialP)*depth);
+          viscosity = reference_eta*std::exp(- std::log(exponential_T)*T +
+                                             std::log(exponential_P)*depth);
         }
       else if (!strcmp(ViscosityModel.c_str(),"Exponential Stiffer Lower Mantle"))
       {
@@ -354,12 +354,12 @@ namespace aspect
         const double dT=  3498; //TODO
         const double depth = (1e0 - (position.norm()-R0)/(R1-R0));
         const double T = (temperature-T1)/dT;
-        viscosity = reference_eta*std::exp(- std::log(ExponentialT)*T +
-                             std::log(ExponentialP)*depth);
+        viscosity = reference_eta*std::exp(- std::log(exponential_T)*T +
+                             std::log(exponential_P)*depth);
         /* this simulates an increase in the viscosity for the lower mantle
          *
          */
-        if (R1 - position.norm() > 660e3 ) viscosity *=4e0 ;// we are in the lower mantle
+        if (R1 - position.norm() > 660e3 ) viscosity *= increase_lower_mantle ;// we are in the lower mantle
 
       }
       else
@@ -566,6 +566,10 @@ namespace aspect
             prm.declare_entry ("ExponentialP", "1",
                                Patterns::Double (0),
                                "multiplication factor or Pressure exponent");
+            prm.declare_entry ("Viscosity increase lower mantle", "4e0",
+            		Patterns::Double (0),
+            		"The Viscosity increase (jump) in the lower mantle. "
+            );
           }
           prm.leave_subsection();
         }
@@ -584,23 +588,24 @@ namespace aspect
       {
         prm.enter_subsection("Table model");
         {
-          reference_rho       = prm.get_double ("Reference density");
-          reference_T       = prm.get_double ("Reference temperature");
-          k_value               = prm.get_double ("Thermal conductivity");
-          reference_specific_heat  = prm.get_double ("Reference specific heat");
-          reference_alpha     = prm.get_double ("Thermal expansion coefficient");
-          composition     = prm.get ("Composition");
-          data_directory    = prm.get ("Path to model data") + "/" + composition +"/";
-          ComputePhases       = prm.get_bool ("ComputePhases");
-          Compressible       = prm.get_bool ("Compressible");
-          prm.enter_subsection ("Viscosity");
-          {
-            ViscosityModel = prm.get ("ViscosityModel");
-            reference_eta  = prm.get_double ("ReferenceViscosity");
-            ExponentialT   = prm.get_double ("ExponentialT");
-            ExponentialP   = prm.get_double ("ExponentialP");
-          }
-          prm.leave_subsection();
+        	reference_rho       	= prm.get_double ("Reference density");
+        	reference_T       		= prm.get_double ("Reference temperature");
+        	k_value               	= prm.get_double ("Thermal conductivity");
+        	reference_specific_heat = prm.get_double ("Reference specific heat");
+        	reference_alpha     	= prm.get_double ("Thermal expansion coefficient");
+        	composition     		= prm.get ("Composition");
+        	data_directory    		= prm.get ("Path to model data") + "/" + composition +"/";
+        	ComputePhases       	= prm.get_bool ("ComputePhases");
+        	Compressible       		= prm.get_bool ("Compressible");
+        	prm.enter_subsection ("Viscosity");
+        	{
+        		ViscosityModel 			= prm.get ("ViscosityModel");
+        		reference_eta  			= prm.get_double ("ReferenceViscosity");
+        		exponential_T   			= prm.get_double ("exponential_T");
+        		exponential_P   			= prm.get_double ("exponential_P");
+        		increase_lower_mantle   = prm.get_double ("Viscosity increase lower mantle");
+        	}
+        	prm.leave_subsection();
         }
         prm.leave_subsection();
       }
