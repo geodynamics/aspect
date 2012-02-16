@@ -3,7 +3,7 @@
            Wolfgang Bangerth, Texas A&M University,
      Timo Heister, University of Goettingen, 2008-2011 */
 /*                                                                */
-/*    Copyright (C) 2008, 2009, 2010, 2011 by the deal.II authors */
+/*    Copyright (C) 2008, 2009, 2010, 2011, 2012 by the deal.II authors */
 /*                                                                */
 /*    This file is subject to QPL and may not be  distributed     */
 /*    without copyright and license information. Please refer     */
@@ -24,7 +24,7 @@ namespace aspect
   namespace internal
   {
     using namespace dealii;
-    
+
     /**
      * Implement multiplication with Stokes part of system matrix
      */
@@ -44,71 +44,71 @@ namespace aspect
          */
         void vmult (TrilinosWrappers::MPI::BlockVector       &dst,
                     const TrilinosWrappers::MPI::BlockVector &src) const;
-        
+
         void Tvmult (TrilinosWrappers::MPI::BlockVector       &dst,
                     const TrilinosWrappers::MPI::BlockVector &src) const;
-        
+
         void vmult_add (TrilinosWrappers::MPI::BlockVector       &dst,
                         const TrilinosWrappers::MPI::BlockVector &src) const;
-                
+
         void Tvmult_add (TrilinosWrappers::MPI::BlockVector       &dst,
                          const TrilinosWrappers::MPI::BlockVector &src) const;
-        
+
         void clear(){};
 
       private:
-        
+
         const void* get () const {return &system_matrix;};
-        
+
         /**
          * References to the system matrix object.
          */
         const TrilinosWrappers::BlockSparseMatrix &system_matrix;
     };
-    
-    
-    
+
+
+
     void StokesBlock::vmult (TrilinosWrappers::MPI::BlockVector       &dst,
                              const TrilinosWrappers::MPI::BlockVector &src) const
     {
       system_matrix.block(0,0).vmult(dst.block(0), src.block(0));
       system_matrix.block(0,1).vmult_add(dst.block(0), src.block(1));
-      
+
       system_matrix.block(1,0).vmult(dst.block(1), src.block(0));
-      system_matrix.block(1,1).vmult_add(dst.block(1), src.block(1));    
+      system_matrix.block(1,1).vmult_add(dst.block(1), src.block(1));
     }
-    
+
     void StokesBlock::Tvmult (TrilinosWrappers::MPI::BlockVector       &dst,
                               const TrilinosWrappers::MPI::BlockVector &src) const
     {
       system_matrix.block(0,0).Tvmult(dst.block(0), src.block(0));
       system_matrix.block(1,0).Tvmult_add(dst.block(0), src.block(1));
-      
+
       system_matrix.block(0,1).Tvmult(dst.block(1), src.block(0));
-      system_matrix.block(1,1).Tvmult_add(dst.block(1), src.block(1));    
+      system_matrix.block(1,1).Tvmult_add(dst.block(1), src.block(1));
     }
-    
+
     void StokesBlock::vmult_add (TrilinosWrappers::MPI::BlockVector       &dst,
                                  const TrilinosWrappers::MPI::BlockVector &src) const
     {
       system_matrix.block(0,0).vmult_add(dst.block(0), src.block(0));
       system_matrix.block(0,1).vmult_add(dst.block(0), src.block(1));
-      
+
       system_matrix.block(1,0).vmult_add(dst.block(1), src.block(0));
-      system_matrix.block(1,1).vmult_add(dst.block(1), src.block(1));    
+      system_matrix.block(1,1).vmult_add(dst.block(1), src.block(1));
     }
-    
+
     void StokesBlock::Tvmult_add (TrilinosWrappers::MPI::BlockVector       &dst,
                                   const TrilinosWrappers::MPI::BlockVector &src) const
     {
       system_matrix.block(0,0).Tvmult_add(dst.block(0), src.block(0));
       system_matrix.block(1,0).Tvmult_add(dst.block(0), src.block(1));
-      
+
       system_matrix.block(0,1).Tvmult_add(dst.block(1), src.block(0));
-      system_matrix.block(1,1).Tvmult_add(dst.block(1), src.block(1));    
+      system_matrix.block(1,1).Tvmult_add(dst.block(1), src.block(1));
     }
 
-    
+
 
     /**
      * Implement the block Schur preconditioner for the Stokes system.
@@ -367,9 +367,9 @@ namespace aspect
     }
     computing_timer.exit_section();
   }
-  
-  
-  
+
+
+
   template <int dim>
   void Simulator<dim>::sys_solve_temperature ()
   {
@@ -397,27 +397,27 @@ namespace aspect
       pcout << solver_control.last_step()
             << " iterations." << std::endl;
 
-      statistics.add_value("Iterations for temperature solver",
+      statistics.add_value("Iterations for sys temperature solver",
                            solver_control.last_step());
     }
     computing_timer.exit_section();
   }
-  
-  
-  
+
+
+
   template <int dim>
   void Simulator<dim>::sys_solve_stokes ()
   {
     computing_timer.enter_section ("   Solve Stokes system");
 
     pcout << "   Solving Stokes system... " << std::flush;
-    
+
     // extract Stokes parts of solution vector
     TrilinosWrappers::MPI::BlockVector distributed_stokes_solution;
     distributed_stokes_solution.reinit(system_solution);
     distributed_stokes_solution.block(0) = system_solution.block(0);
     distributed_stokes_solution.block(1) = system_solution.block(1);
-    
+
     // before solving we scale the initial solution to the right dimensions
     distributed_stokes_solution.block(1) /= pressure_scaling;
 
@@ -435,7 +435,7 @@ namespace aspect
       // left
       if (material_model->is_compressible ())
         make_pressure_rhs_compatible(system_rhs);
-      
+
     // extract Stokes parts of rhs vector
     TrilinosWrappers::MPI::BlockVector distributed_stokes_rhs;
     distributed_stokes_rhs.reinit(system_rhs);
@@ -443,14 +443,14 @@ namespace aspect
     distributed_stokes_rhs.block(1) = system_rhs.block(1);
 
       PrimitiveVectorMemory< TrilinosWrappers::MPI::BlockVector > mem;
-      
+
       const internal::StokesBlock stokes_block(system_matrix);
 
       // step 1a: try if the simple and fast solver
       // succeeds in 30 steps or less.
       const double solver_tolerance = 1e-7 * distributed_stokes_rhs.l2_norm();
       SolverControl solver_control_cheap (30, solver_tolerance);
-      SolverControl solver_control_expensive (system_matrix.block(0,1).m() + 
+      SolverControl solver_control_expensive (system_matrix.block(0,1).m() +
          system_matrix.block(1,0).m(), solver_tolerance);
 
       try
@@ -465,7 +465,7 @@ namespace aspect
           solver(solver_control_cheap, mem,
                  SolverFGMRES<TrilinosWrappers::MPI::BlockVector>::
                  AdditionalData(30, true));
-          solver.solve(stokes_block, distributed_stokes_solution, 
+          solver.solve(stokes_block, distributed_stokes_solution,
                        distributed_stokes_rhs, preconditioner);
         }
 
@@ -483,7 +483,7 @@ namespace aspect
           solver(solver_control_expensive, mem,
                  SolverFGMRES<TrilinosWrappers::MPI::BlockVector>::
                  AdditionalData(50, true));
-          solver.solve(stokes_block, distributed_stokes_solution, 
+          solver.solve(stokes_block, distributed_stokes_solution,
                        distributed_stokes_rhs, preconditioner);
         }
 
@@ -506,13 +506,13 @@ namespace aspect
               << solver_control_expensive.last_step() << " iterations.";
       pcout << std::endl;
 
-      statistics.add_value("Iterations for Stokes solver",
+      statistics.add_value("Iterations for sys Stokes solver",
                            solver_control_cheap.last_step() + solver_control_expensive.last_step());
 
     computing_timer.exit_section();
 
   }
-  
+
 }
 
 
