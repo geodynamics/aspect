@@ -1,6 +1,6 @@
 
 /*                                                                */
-/*    Copyright (C) 2008, 2009, 2010, 2011 by the deal.II authors */
+/*    Copyright (C) 2008, 2009, 2010, 2011, 2012 by the deal.II authors */
 /*                                                                */
 /*    This file is subject to QPL and may not be  distributed     */
 /*    without copyright and license information. Please refer     */
@@ -228,9 +228,9 @@ namespace aspect
           old_temperature_laplacians (scratch.old_temperature_laplacians),
           old_old_temperature_laplacians (scratch.old_old_temperature_laplacians)
         {}
-        
-        
-        
+
+
+
 //        template <int dim>
 //        struct sys_PreconditionerScratch
 //        {
@@ -241,7 +241,7 @@ namespace aspect
 //          sys_PreconditionerScratch (const sys_PreconditionerScratch &data);
 //
 //          FEValues<dim>               system_fe_values;
-//          
+//
 //          std::vector<SymmetricTensor<2,dim> > grads_phi_u;
 //          std::vector<double>                  phi_p;
 //
@@ -249,8 +249,8 @@ namespace aspect
 //          std::vector<double>                  old_pressure_values;
 //        };
 //
-//        
-//        
+//
+//
 //        template <int dim>
 //        sys_PreconditionerScratch<dim>::
 //        sys_PreconditionerScratch (const FiniteElement<dim> &system_fe,
@@ -262,7 +262,7 @@ namespace aspect
 //                            system_update_flags),
 //          grads_phi_u (system_fe.dofs_per_cell),
 //          phi_p (system_fe.dofs_per_cell),
-//          old_temperature_values (system_quadrature.size()), 
+//          old_temperature_values (system_quadrature.size()),
 //          old_pressure_values (system_quadrature.size())
 //        {}
 //
@@ -278,11 +278,11 @@ namespace aspect
 //                            scratch.system_fe_values.get_update_flags()),
 //          grads_phi_u (scratch.grads_phi_u),
 //          phi_p (scratch.phi_p),
-//          old_temperature_values (scratch.old_temperature_values), 
+//          old_temperature_values (scratch.old_temperature_values),
 //          old_pressure_values (scratch.old_pressure_values)
 //        {}
-        
-        
+
+
         // Observe that we derive the
         // StokesSystem scratch array from the
         // StokesPreconditioner array. We do this
@@ -307,13 +307,13 @@ namespace aspect
 //                         const UpdateFlags         system_update_flags);
 //
 //          sys_SystemScratch (const sys_SystemScratch<dim> &data);
-//          
+//
 //          std::vector<Tensor<1,dim> >          phi_u;
 //          std::vector<double>                  div_phi_u;
-//          
+//
 //          std::vector<double>         phi_T;
 //          std::vector<Tensor<1,dim> > grad_phi_T;
-//          
+//
 //          std::vector<Tensor<1,dim> > old_velocity_values;
 //          std::vector<Tensor<1,dim> > old_old_velocity_values;
 //
@@ -342,9 +342,9 @@ namespace aspect
 //                                     system_update_flags),
 //          phi_u (system_fe.dofs_per_cell),
 //          div_phi_u (system_fe.dofs_per_cell),
-//          phi_T(system_fe.dofs_per_cell), 
+//          phi_T(system_fe.dofs_per_cell),
 //          grad_phi_T(system_fe.dofs_per_cell),
-//          
+//
 //          old_velocity_values(system_quadrature.size()),
 //          old_old_velocity_values(system_quadrature.size()),
 //          old_old_pressure(system_quadrature.size()),
@@ -364,10 +364,10 @@ namespace aspect
 //          :
 //          sys_SystemPreconditioner<dim> (scratch),
 //          phi_u (scratch.phi_u),
-//          div_phi_u (scratch.div_phi_u), 
-//          phi_T(scratch.phi_T), 
+//          div_phi_u (scratch.div_phi_u),
+//          phi_T(scratch.phi_T),
 //          grad_phi_T(scratch.grad_phi_T),
-//          
+//
 //          old_velocity_values(scratch.old_velocity_values),
 //          old_old_velocity_values(scratch.old_old_velocity_values),
 //          old_old_pressure(scratch.old_old_pressure),
@@ -483,8 +483,8 @@ namespace aspect
           local_rhs (data.local_rhs),
           local_dof_indices (data.local_dof_indices)
         {}
-        
-        
+
+
 //        template <int dim>
 //        struct sys_PreconditionerCopy
 //        {
@@ -585,7 +585,7 @@ namespace aspect
     // points
     const QGauss<dim> quadrature_formula (parameters.temperature_degree+1);
     const unsigned int n_q_points = quadrature_formula.size();
-    
+
     const FEValuesExtractors::Scalar temperature (dim+1);
 
     FEValues<dim> fe_values (system_fe, quadrature_formula,
@@ -1107,7 +1107,7 @@ namespace aspect
                                          internal::Assembly::Scratch::sys_TemperatureSystem<dim> &scratch,
                                          internal::Assembly::CopyData::sys_TemperatureSystem<dim> &data)
   {
-    const bool use_bdf2_scheme = (timestep_number != 0);
+    const bool use_bdf2_scheme = (timestep_number > 1);
 
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
@@ -1292,7 +1292,7 @@ namespace aspect
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
     CellFilter;
-    
+
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
                      system_dof_handler.begin_active()),
