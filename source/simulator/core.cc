@@ -1211,7 +1211,6 @@ namespace aspect
 
         rebuild_stokes_preconditioner = true;
         sys_build_stokes_preconditioner();
-        //system_preconditioner_matrix.block(0,0).print(output3);
         sys_solve_stokes();
 
         pcout << std::endl;
