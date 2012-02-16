@@ -744,6 +744,9 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
   {
+    Assert (false,
+	    ExcMessage("Doesn't work any more: doesn't transfer sys solution."));
+
     computing_timer.enter_section ("Refine mesh structure, part 1");
 
     Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
