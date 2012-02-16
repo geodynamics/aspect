@@ -37,7 +37,7 @@ namespace aspect
     // write into vectors with ghost elements
     TrilinosWrappers::MPI::Vector
     solution (temperature_matrix.row_partitioner());
-    
+
     TrilinosWrappers::MPI::BlockVector initial_solution;
     initial_solution.reinit(system_rhs);
 
@@ -48,13 +48,13 @@ namespace aspect
                                                                     std_cxx1x::cref(*initial_conditions),
                                                                     std_cxx1x::_1)),
                               solution);
-    
+
     VectorTools::interpolate (mapping,
                               system_dof_handler,
                               VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
                                                                           std_cxx1x::cref(*initial_conditions),
-                                                                          std_cxx1x::_1), 
-                                                                          dim+1, 
+                                                                          std_cxx1x::_1),
+                                                                          dim+1,
                                                                           dim+2),
                               initial_solution);
 
@@ -106,7 +106,7 @@ namespace aspect
                                                                                dim,
                                                                                dim+1),
                                   stokes_tmp);
-        
+
         // we may have hanging nodes, so apply constraints
         stokes_constraints.distribute (stokes_tmp);
 
@@ -127,7 +127,7 @@ namespace aspect
                                                update_JxW_values);
         FEValues<dim> fe_values (mapping, stokes_fe, quadrature, update_flags);
         const FEValuesExtractors::Scalar pressure (dim);
-        
+
         const unsigned int
         dofs_per_cell = fe_values.dofs_per_cell,
         n_q_points    = fe_values.n_quadrature_points;
@@ -250,7 +250,7 @@ namespace aspect
         const FiniteElement<dim> &system_pressure_fe = system_fe.base_element(1);
         Assert (system_pressure_fe.dofs_per_face == 0,
                 ExcNotImplemented());
-        
+
         TrilinosWrappers::MPI::BlockVector system_tmp;
         system_tmp.reinit (system_rhs);
 
@@ -326,10 +326,10 @@ namespace aspect
               // then set the global solution vector to the values just computed
               cell->set_dof_values (local_projection, system_tmp);
             }
-        
+
         old_system_solution.block(1) = system_tmp.block(1);
       }
-    
+
     // normalize the pressure in such a way that the surface pressure
     // equals a known and desired value
     sys_normalize_pressure(old_system_solution);

@@ -86,11 +86,11 @@ namespace aspect
       stokes_trans (stokes_dof_handler);
       parallel::distributed::SolutionTransfer<dim, TrilinosWrappers::MPI::BlockVector>
       system_trans (system_dof_handler);
-      
+
       temperature_trans.prepare_serialization (x_temperature);
       stokes_trans.prepare_serialization (x_stokes);
       system_trans.prepare_serialization (x_system);
-      
+
 
       triangulation.save ((parameters.output_directory + "mesh").c_str());
     }
@@ -133,7 +133,7 @@ namespace aspect
     std::vector<TrilinosWrappers::MPI::BlockVector *> x_stokes (2);
     x_stokes[0] = & (distributed_stokes);
     x_stokes[1] = & (old_distributed_stokes);
-    
+
     TrilinosWrappers::MPI::BlockVector
     distributed_system (system_rhs);
     TrilinosWrappers::MPI::BlockVector
@@ -162,7 +162,7 @@ namespace aspect
 
     stokes_solution = distributed_stokes;
     old_stokes_solution = old_distributed_stokes;
-    
+
     system_solution = distributed_system;
     old_system_solution = old_distributed_system;
     old_old_system_solution = old_old_distributed_system;

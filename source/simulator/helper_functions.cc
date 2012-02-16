@@ -89,15 +89,15 @@ namespace aspect
     // return the largest value over all processors
     return Utilities::MPI::max (max_local_velocity, MPI_COMM_WORLD);
   }
-  
-  
-  
-    /**
-   * Find the largest velocity throughout the domain.
-   **/
+
+
+
+  /**
+  * Find the largest velocity throughout the domain.
+  **/
   template <int dim>
   double Simulator<dim>::sys_get_maximal_velocity (
-                       const TrilinosWrappers::MPI::BlockVector &solution) const
+    const TrilinosWrappers::MPI::BlockVector &solution) const
   {
     // use a quadrature formula that has one point at
     // the location of each degree of freedom in the
@@ -265,9 +265,9 @@ namespace aspect
                           Utilities::MPI::max (max_local_temperature,
                                                MPI_COMM_WORLD));
   }
-  
-  
-  
+
+
+
   template <int dim>
   std::pair<double,double>
   Simulator<dim>::sys_get_extrapolated_temperature_range () const
@@ -275,7 +275,7 @@ namespace aspect
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
                                              parameters.temperature_degree);
     const unsigned int n_q_points = quadrature_formula.size();
-    
+
     const FEValuesExtractors::Scalar temperature (dim+1);
 
     FEValues<dim> fe_values (mapping, system_fe, quadrature_formula,
@@ -302,9 +302,9 @@ namespace aspect
             {
               fe_values.reinit (cell);
               fe_values[temperature].get_function_values (old_system_solution,
-                                             old_temperature_values);
+                                                          old_temperature_values);
               fe_values[temperature].get_function_values (old_old_system_solution,
-                                             old_old_temperature_values);
+                                                          old_old_temperature_values);
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
@@ -329,7 +329,7 @@ namespace aspect
             {
               fe_values.reinit (cell);
               fe_values[temperature].get_function_values (old_system_solution,
-                                             old_temperature_values);
+                                                          old_temperature_values);
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
@@ -453,13 +453,13 @@ namespace aspect
             }
       }
   }
-  
-  
-  
-    /*
-   * normalize the pressure by calculating the surface integral of the pressure on the outer
-   * shell and subtracting this from all pressure nodes.
-   */
+
+
+
+  /*
+  * normalize the pressure by calculating the surface integral of the pressure on the outer
+  * shell and subtracting this from all pressure nodes.
+  */
   template <int dim>
   void Simulator<dim>::sys_normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector)
   {
@@ -558,7 +558,7 @@ namespace aspect
             }
       }
   }
-  
+
 
 
   /**
@@ -586,15 +586,15 @@ namespace aspect
 namespace aspect
 {
   template void Simulator<deal_II_dimension>::normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
-  
+
   template void Simulator<deal_II_dimension>::sys_normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
 
   template double Simulator<deal_II_dimension>::get_maximal_velocity () const;
-  
+
   template double Simulator<deal_II_dimension>::sys_get_maximal_velocity (const TrilinosWrappers::MPI::BlockVector &) const;
 
   template std::pair<double,double> Simulator<deal_II_dimension>::get_extrapolated_temperature_range () const;
-  
+
   template std::pair<double,double> Simulator<deal_II_dimension>::sys_get_extrapolated_temperature_range () const;
 
   template double Simulator<deal_II_dimension>::compute_time_step () const;

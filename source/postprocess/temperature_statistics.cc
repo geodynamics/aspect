@@ -49,7 +49,7 @@ namespace aspect
           {
             fe_values.reinit (cell);
             fe_values[temperature].get_function_values (this->get_solution(),
-							temperature_values);
+                                                        temperature_values);
             for (unsigned int q=0; q<n_q_points; ++q)
               local_temperature_integral += temperature_values[q]*fe_values.JxW(q);
           }

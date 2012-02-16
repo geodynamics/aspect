@@ -69,11 +69,11 @@ namespace aspect
               {
                 fe_face_values.reinit (cell, f);
                 fe_face_values[temperature].get_function_gradients (this->get_solution(),
-                                                       temperature_gradients);
+                                                                    temperature_gradients);
                 fe_face_values[temperature].get_function_values (this->get_solution(),
-                                                    temperature_values);
+                                                                 temperature_values);
                 fe_face_values[pressure].get_function_values (this->get_solution(),
-							      pressure_values);
+                                                              pressure_values);
 
                 double local_normal_flux = 0;
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)

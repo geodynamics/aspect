@@ -46,7 +46,7 @@ namespace aspect
                     const TrilinosWrappers::MPI::BlockVector &src) const;
 
         void Tvmult (TrilinosWrappers::MPI::BlockVector       &dst,
-                    const TrilinosWrappers::MPI::BlockVector &src) const;
+                     const TrilinosWrappers::MPI::BlockVector &src) const;
 
         void vmult_add (TrilinosWrappers::MPI::BlockVector       &dst,
                         const TrilinosWrappers::MPI::BlockVector &src) const;
@@ -54,11 +54,14 @@ namespace aspect
         void Tvmult_add (TrilinosWrappers::MPI::BlockVector       &dst,
                          const TrilinosWrappers::MPI::BlockVector &src) const;
 
-        void clear(){};
+        void clear() {};
 
       private:
 
-        const void* get () const {return &system_matrix;};
+        const void *get () const
+        {
+          return &system_matrix;
+        };
 
         /**
          * References to the system matrix object.
@@ -422,19 +425,19 @@ namespace aspect
     distributed_stokes_solution.block(1) /= pressure_scaling;
 
     const unsigned int
-      start = (distributed_stokes_solution.block(0).size() +
-               distributed_stokes_solution.block(1).local_range().first),
-              end   = (distributed_stokes_solution.block(0).size() +
-                       distributed_stokes_solution.block(1).local_range().second);
-      for (unsigned int i=start; i<end; ++i)
-        if (system_constraints.is_constrained (i))
-          distributed_stokes_solution(i) = 0;
+    start = (distributed_stokes_solution.block(0).size() +
+             distributed_stokes_solution.block(1).local_range().first),
+            end   = (distributed_stokes_solution.block(0).size() +
+                     distributed_stokes_solution.block(1).local_range().second);
+    for (unsigned int i=start; i<end; ++i)
+      if (system_constraints.is_constrained (i))
+        distributed_stokes_solution(i) = 0;
 
-      // if the model is compressible then we need to adjust the right hand
-      // side of the equation to make it compatible with the matrix on the
-      // left
-      if (material_model->is_compressible ())
-        make_pressure_rhs_compatible(system_rhs);
+    // if the model is compressible then we need to adjust the right hand
+    // side of the equation to make it compatible with the matrix on the
+    // left
+    if (material_model->is_compressible ())
+      make_pressure_rhs_compatible(system_rhs);
 
     // extract Stokes parts of rhs vector
     TrilinosWrappers::MPI::BlockVector distributed_stokes_rhs;
@@ -442,72 +445,72 @@ namespace aspect
     distributed_stokes_rhs.block(0) = system_rhs.block(0);
     distributed_stokes_rhs.block(1) = system_rhs.block(1);
 
-      PrimitiveVectorMemory< TrilinosWrappers::MPI::BlockVector > mem;
+    PrimitiveVectorMemory< TrilinosWrappers::MPI::BlockVector > mem;
 
-      const internal::StokesBlock stokes_block(system_matrix);
+    const internal::StokesBlock stokes_block(system_matrix);
 
-      // step 1a: try if the simple and fast solver
-      // succeeds in 30 steps or less.
-      const double solver_tolerance = 1e-7 * distributed_stokes_rhs.l2_norm();
-      SolverControl solver_control_cheap (30, solver_tolerance);
-      SolverControl solver_control_expensive (system_matrix.block(0,1).m() +
-         system_matrix.block(1,0).m(), solver_tolerance);
+    // step 1a: try if the simple and fast solver
+    // succeeds in 30 steps or less.
+    const double solver_tolerance = 1e-7 * distributed_stokes_rhs.l2_norm();
+    SolverControl solver_control_cheap (30, solver_tolerance);
+    SolverControl solver_control_expensive (system_matrix.block(0,1).m() +
+                                            system_matrix.block(1,0).m(), solver_tolerance);
 
-      try
-        {
-          const internal::BlockSchurPreconditioner<TrilinosWrappers::PreconditionAMG,
-                TrilinosWrappers::PreconditionILU>
-                preconditioner (system_matrix, system_preconditioner_matrix,
-                                *Mp_preconditioner, *Amg_preconditioner,
-                                false);
+    try
+      {
+        const internal::BlockSchurPreconditioner<TrilinosWrappers::PreconditionAMG,
+              TrilinosWrappers::PreconditionILU>
+              preconditioner (system_matrix, system_preconditioner_matrix,
+                              *Mp_preconditioner, *Amg_preconditioner,
+                              false);
 
-          SolverFGMRES<TrilinosWrappers::MPI::BlockVector>
-          solver(solver_control_cheap, mem,
-                 SolverFGMRES<TrilinosWrappers::MPI::BlockVector>::
-                 AdditionalData(30, true));
-          solver.solve(stokes_block, distributed_stokes_solution,
-                       distributed_stokes_rhs, preconditioner);
-        }
+        SolverFGMRES<TrilinosWrappers::MPI::BlockVector>
+        solver(solver_control_cheap, mem,
+               SolverFGMRES<TrilinosWrappers::MPI::BlockVector>::
+               AdditionalData(30, true));
+        solver.solve(stokes_block, distributed_stokes_solution,
+                     distributed_stokes_rhs, preconditioner);
+      }
 
-      // step 1b: take the stronger solver in case
-      // the simple solver failed
-      catch (SolverControl::NoConvergence)
-        {
-          const internal::BlockSchurPreconditioner<TrilinosWrappers::PreconditionAMG,
-                TrilinosWrappers::PreconditionILU>
-                preconditioner (system_matrix, system_preconditioner_matrix,
-                                *Mp_preconditioner, *Amg_preconditioner,
-                                true);
+    // step 1b: take the stronger solver in case
+    // the simple solver failed
+    catch (SolverControl::NoConvergence)
+      {
+        const internal::BlockSchurPreconditioner<TrilinosWrappers::PreconditionAMG,
+              TrilinosWrappers::PreconditionILU>
+              preconditioner (system_matrix, system_preconditioner_matrix,
+                              *Mp_preconditioner, *Amg_preconditioner,
+                              true);
 
-          SolverFGMRES<TrilinosWrappers::MPI::BlockVector>
-          solver(solver_control_expensive, mem,
-                 SolverFGMRES<TrilinosWrappers::MPI::BlockVector>::
-                 AdditionalData(50, true));
-          solver.solve(stokes_block, distributed_stokes_solution,
-                       distributed_stokes_rhs, preconditioner);
-        }
+        SolverFGMRES<TrilinosWrappers::MPI::BlockVector>
+        solver(solver_control_expensive, mem,
+               SolverFGMRES<TrilinosWrappers::MPI::BlockVector>::
+               AdditionalData(50, true));
+        solver.solve(stokes_block, distributed_stokes_solution,
+                     distributed_stokes_rhs, preconditioner);
+      }
 
-      system_solution.block(0) = distributed_stokes_solution.block(0);
-      system_solution.block(1) = distributed_stokes_solution.block(1);
+    system_solution.block(0) = distributed_stokes_solution.block(0);
+    system_solution.block(1) = distributed_stokes_solution.block(1);
 
-      system_constraints.distribute (system_solution);
+    system_constraints.distribute (system_solution);
 
-      // now rescale the pressure back to real physical units
-      system_solution.block(1) *= pressure_scaling;
+    // now rescale the pressure back to real physical units
+    system_solution.block(1) *= pressure_scaling;
 
-      sys_normalize_pressure(system_solution);
+    sys_normalize_pressure(system_solution);
 
-      // print the number of iterations to screen and record it in the
-      // statistics file
-      if (solver_control_expensive.last_step() == 0)
-        pcout << solver_control_cheap.last_step()  << " iterations.";
-      else
-        pcout << solver_control_cheap.last_step() << '+'
-              << solver_control_expensive.last_step() << " iterations.";
-      pcout << std::endl;
+    // print the number of iterations to screen and record it in the
+    // statistics file
+    if (solver_control_expensive.last_step() == 0)
+      pcout << solver_control_cheap.last_step()  << " iterations.";
+    else
+      pcout << solver_control_cheap.last_step() << '+'
+            << solver_control_expensive.last_step() << " iterations.";
+    pcout << std::endl;
 
-      statistics.add_value("Iterations for sys Stokes solver",
-                           solver_control_cheap.last_step() + solver_control_expensive.last_step());
+    statistics.add_value("Iterations for sys Stokes solver",
+                         solver_control_cheap.last_step() + solver_control_expensive.last_step());
 
     computing_timer.exit_section();
 

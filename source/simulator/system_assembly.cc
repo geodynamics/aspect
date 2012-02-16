@@ -34,9 +34,9 @@ namespace aspect
         struct sys_StokesPreconditioner
         {
           sys_StokesPreconditioner (const FiniteElement<dim> &system_fe,
-                                const Quadrature<dim>    &quadrature,
-                                const Mapping<dim>       &mapping,
-                                const UpdateFlags         update_flags);
+                                    const Quadrature<dim>    &quadrature,
+                                    const Mapping<dim>       &mapping,
+                                    const UpdateFlags         update_flags);
           sys_StokesPreconditioner (const sys_StokesPreconditioner &data);
 
           FEValues<dim>               system_fe_values;
@@ -51,9 +51,9 @@ namespace aspect
         template <int dim>
         sys_StokesPreconditioner<dim>::
         sys_StokesPreconditioner (const FiniteElement<dim> &system_fe,
-                              const Quadrature<dim>    &quadrature,
-                              const Mapping<dim>       &mapping,
-                              const UpdateFlags         update_flags)
+                                  const Quadrature<dim>    &quadrature,
+                                  const Mapping<dim>       &mapping,
+                                  const UpdateFlags         update_flags)
           :
           system_fe_values (mapping, system_fe, quadrature,
                             update_flags),
@@ -100,9 +100,9 @@ namespace aspect
         struct sys_StokesSystem : public sys_StokesPreconditioner<dim>
         {
           sys_StokesSystem (const FiniteElement<dim> &system_fe,
-                        const Mapping<dim>       &mapping,
-                        const Quadrature<dim>    &quadrature,
-                        const UpdateFlags         update_flags);
+                            const Mapping<dim>       &mapping,
+                            const Quadrature<dim>    &quadrature,
+                            const UpdateFlags         update_flags);
 
           sys_StokesSystem (const sys_StokesSystem<dim> &data);
 
@@ -116,13 +116,13 @@ namespace aspect
         template <int dim>
         sys_StokesSystem<dim>::
         sys_StokesSystem (const FiniteElement<dim> &system_fe,
-                      const Mapping<dim>       &mapping,
-                      const Quadrature<dim>    &quadrature,
-                      const UpdateFlags         update_flags)
+                          const Mapping<dim>       &mapping,
+                          const Quadrature<dim>    &quadrature,
+                          const UpdateFlags         update_flags)
           :
           sys_StokesPreconditioner<dim> (system_fe, quadrature,
-                                     mapping,
-                                     update_flags),
+                                         mapping,
+                                         update_flags),
           phi_u (system_fe.dofs_per_cell),
           grads_phi_u (system_fe.dofs_per_cell),
           div_phi_u (system_fe.dofs_per_cell),
@@ -147,8 +147,8 @@ namespace aspect
         struct sys_TemperatureSystem
         {
           sys_TemperatureSystem (const FiniteElement<dim> &system_fe,
-                             const Mapping<dim>       &mapping,
-                             const Quadrature<dim>    &quadrature);
+                                 const Mapping<dim>       &mapping,
+                                 const Quadrature<dim>    &quadrature);
           sys_TemperatureSystem (const sys_TemperatureSystem &data);
 
           FEValues<dim>               system_fe_values;
@@ -176,8 +176,8 @@ namespace aspect
         template <int dim>
         sys_TemperatureSystem<dim>::
         sys_TemperatureSystem (const FiniteElement<dim> &system_fe,
-                           const Mapping<dim>       &mapping,
-                           const Quadrature<dim>    &quadrature)
+                               const Mapping<dim>       &mapping,
+                               const Quadrature<dim>    &quadrature)
           :
           system_fe_values (mapping,
                             system_fe, quadrature,
@@ -554,10 +554,10 @@ namespace aspect
     inline
     T
     sys_bdf2_extrapolate (const bool use_bdf_scheme,
-                      const double old_time_step,
-                      const double time_step,
-                      const T &old_data,
-                      const T &new_data)
+                          const double old_time_step,
+                          const double time_step,
+                          const T &old_data,
+                          const T &new_data)
     {
       return (use_bdf_scheme) ?
              (new_data * (1 + time_step/old_time_step)
@@ -610,9 +610,9 @@ namespace aspect
         {
           fe_values.reinit (cell);
           fe_values[temperature].get_function_values (old_system_solution,
-                                         old_temperature_values);
+                                                      old_temperature_values);
           fe_values[temperature].get_function_values (old_old_system_solution,
-                                         old_old_temperature_values);
+                                                      old_old_temperature_values);
           for (unsigned int q=0; q<n_q_points; ++q)
             {
               const double T = (old_temperature_values[q] +
@@ -655,23 +655,23 @@ namespace aspect
   double
   Simulator<dim>::
   sys_compute_viscosity (const std::vector<double>          &old_temperature,
-                     const std::vector<double>          &old_old_temperature,
-                     const std::vector<Tensor<1,dim> >  &old_temperature_grads,
-                     const std::vector<Tensor<1,dim> >  &old_old_temperature_grads,
-                     const std::vector<double>          &old_temperature_laplacians,
-                     const std::vector<double>          &old_old_temperature_laplacians,
-                     const std::vector<Tensor<1,dim> >  &old_velocity_values,
-                     const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
-                     const std::vector<SymmetricTensor<2,dim> >  &old_strain_rates,
-                     const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
-                     const std::vector<double>          &old_pressure,
-                     const std::vector<double>          &old_old_pressure,
-                     const double                        global_u_infty,
-                     const double                        global_T_variation,
-                     const double                        average_temperature,
-                     const double                        global_entropy_variation,
-                     const std::vector<Point<dim> >     &evaluation_points,
-                     const double                        cell_diameter) const
+                         const std::vector<double>          &old_old_temperature,
+                         const std::vector<Tensor<1,dim> >  &old_temperature_grads,
+                         const std::vector<Tensor<1,dim> >  &old_old_temperature_grads,
+                         const std::vector<double>          &old_temperature_laplacians,
+                         const std::vector<double>          &old_old_temperature_laplacians,
+                         const std::vector<Tensor<1,dim> >  &old_velocity_values,
+                         const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
+                         const std::vector<SymmetricTensor<2,dim> >  &old_strain_rates,
+                         const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
+                         const std::vector<double>          &old_pressure,
+                         const std::vector<double>          &old_old_pressure,
+                         const double                        global_u_infty,
+                         const double                        global_T_variation,
+                         const double                        average_temperature,
+                         const double                        global_entropy_variation,
+                         const std::vector<Point<dim> >     &evaluation_points,
+                         const double                        cell_diameter) const
   {
     if (global_u_infty == 0)
       return 5e-3 * cell_diameter;
@@ -753,8 +753,8 @@ namespace aspect
   void
   Simulator<dim>::
   sys_local_assemble_stokes_preconditioner (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                        internal::Assembly::Scratch::sys_StokesPreconditioner<dim> &scratch,
-                                        internal::Assembly::CopyData::sys_StokesPreconditioner<dim> &data)
+                                            internal::Assembly::Scratch::sys_StokesPreconditioner<dim> &scratch,
+                                            internal::Assembly::CopyData::sys_StokesPreconditioner<dim> &data)
   {
     const unsigned int   dofs_per_cell   = system_fe.dofs_per_cell;
     const unsigned int   n_q_points      = scratch.system_fe_values.n_quadrature_points;
@@ -766,7 +766,7 @@ namespace aspect
     scratch.system_fe_values.reinit (cell);
 
     scratch.system_fe_values[temperature].get_function_values (system_solution,
-                                                       scratch.temperature_values);
+                                                               scratch.temperature_values);
     scratch.system_fe_values[pressure].get_function_values(old_system_solution,
                                                            scratch.old_pressure_values);
 
@@ -850,11 +850,11 @@ namespace aspect
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
          sys_StokesPreconditioner<dim> (system_fe, quadrature_formula,
-                                    mapping,
-                                    update_JxW_values |
-                                    update_values |
-                                    update_gradients |
-                                    update_quadrature_points),
+                                        mapping,
+                                        update_JxW_values |
+                                        update_values |
+                                        update_gradients |
+                                        update_quadrature_points),
          internal::Assembly::CopyData::
          sys_StokesPreconditioner<dim> (system_fe));
 
@@ -910,8 +910,8 @@ namespace aspect
   void
   Simulator<dim>::
   sys_local_assemble_stokes_system (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                         internal::Assembly::Scratch::sys_StokesSystem<dim> &scratch,
-                         internal::Assembly::CopyData::sys_StokesSystem<dim> &data)
+                                    internal::Assembly::Scratch::sys_StokesSystem<dim> &scratch,
+                                    internal::Assembly::CopyData::sys_StokesSystem<dim> &data)
   {
     const unsigned int dofs_per_cell = scratch.system_fe_values.get_fe().dofs_per_cell;
     const unsigned int n_q_points    = scratch.system_fe_values.n_quadrature_points;
@@ -925,7 +925,7 @@ namespace aspect
     //                                              scratch.old_temperature_values);
     // Assuming we already have the temperature for the current time step:
     scratch.system_fe_values[temperature].get_function_values (system_solution,
-                                                  scratch.temperature_values);
+                                                               scratch.temperature_values);
     scratch.system_fe_values[pressure].get_function_values(old_system_solution,
                                                            scratch.old_pressure_values);
     scratch.system_fe_values[velocities].get_function_values(old_system_solution,
@@ -1075,14 +1075,14 @@ namespace aspect
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
          sys_StokesSystem<dim> (system_fe, mapping, quadrature_formula,
-                            (update_values    |
-                             update_quadrature_points  |
-                             update_JxW_values |
-                             (rebuild_stokes_matrix == true
-                              ?
-                              update_gradients
-                              :
-                              UpdateFlags(0)))),
+                                (update_values    |
+                                 update_quadrature_points  |
+                                 update_JxW_values |
+                                 (rebuild_stokes_matrix == true
+                                  ?
+                                  update_gradients
+                                  :
+                                  UpdateFlags(0)))),
          internal::Assembly::CopyData::
          sys_StokesSystem<dim> (system_fe));
 
@@ -1125,7 +1125,7 @@ namespace aspect
     scratch.system_fe_values[temperature].get_function_values (old_system_solution,
                                                                scratch.old_temperature_values);
     scratch.system_fe_values[temperature].get_function_values (old_old_system_solution,
-                                                              scratch.old_old_temperature_values);
+                                                               scratch.old_old_temperature_values);
 
     scratch.system_fe_values[temperature].get_function_gradients (old_system_solution,
                                                                   scratch.old_temperature_grads);
@@ -1272,7 +1272,7 @@ namespace aspect
                                                    data.local_dof_indices,
                                                    system_matrix,
                                                    system_rhs
-                                                   );
+                                                  );
 
   }
 
@@ -1307,7 +1307,7 @@ namespace aspect
                           // integral mean. results are not very
                           // sensitive to this and this is far simpler
                           sys_get_entropy_variation ((global_T_range.first +
-                                                  global_T_range.second) / 2),
+                                                      global_T_range.second) / 2),
                           std_cxx1x::_1,
                           std_cxx1x::_2,
                           std_cxx1x::_3),

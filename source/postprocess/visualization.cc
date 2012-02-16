@@ -218,10 +218,10 @@ namespace aspect
 
 
       internal::Postprocessor<dim> sys_postprocessor (this->get_triangulation().locally_owned_subdomain(),
-                                                  this->get_solution().block(1).minimal_value(),
-                                                  this->convert_output_to_years(),
-                                                  this->get_material_model(),
-                                                  this->get_adiabatic_conditions());
+                                                      this->get_solution().block(1).minimal_value(),
+                                                      this->convert_output_to_years(),
+                                                      this->get_material_model(),
+                                                      this->get_adiabatic_conditions());
 
       DataOut<dim> sys_data_out;
       sys_data_out.attach_dof_handler (this->get_dof_handler());
@@ -229,13 +229,13 @@ namespace aspect
       sys_data_out.build_patches ();
 
       const std::string sys_filename = (this->get_output_directory() +
-                                    "sys_solution-" +
-                                    Utilities::int_to_string (output_file_number, 5) +
-                                    "." +
-                                    Utilities::int_to_string
-                                    (this->get_triangulation().locally_owned_subdomain(), 4) +
-                                    DataOutBase::default_suffix
-                                    (DataOutBase::parse_output_format(output_format)));
+                                        "sys_solution-" +
+                                        Utilities::int_to_string (output_file_number, 5) +
+                                        "." +
+                                        Utilities::int_to_string
+                                        (this->get_triangulation().locally_owned_subdomain(), 4) +
+                                        DataOutBase::default_suffix
+                                        (DataOutBase::parse_output_format(output_format)));
 
       // throttle output
       const unsigned int concurrent_writers = 10;
@@ -251,7 +251,7 @@ namespace aspect
                 std::cout << "ERROR: proc " << myid << " could not create " << sys_filename << std::endl;
 
               sys_data_out.write (sys_output,
-                              DataOutBase::parse_output_format(output_format));
+                                  DataOutBase::parse_output_format(output_format));
             }
           if (i%concurrent_writers == 0)
             {
@@ -268,24 +268,24 @@ namespace aspect
           std::vector<std::string> sys_filenames;
           for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD); ++i)
             sys_filenames.push_back (std::string("sys_solution-") +
-                                 Utilities::int_to_string (output_file_number, 5) +
-                                 "." +
-                                 Utilities::int_to_string(i, 4) +
-                                 DataOutBase::default_suffix
-                                 (DataOutBase::parse_output_format(output_format)));
+                                     Utilities::int_to_string (output_file_number, 5) +
+                                     "." +
+                                     Utilities::int_to_string(i, 4) +
+                                     DataOutBase::default_suffix
+                                     (DataOutBase::parse_output_format(output_format)));
           const std::string
           sys_pvtu_master_filename = (this->get_output_directory() +
-                                  "sys_solution-" +
-                                  Utilities::int_to_string (output_file_number, 5) +
-                                  ".pvtu");
+                                      "sys_solution-" +
+                                      Utilities::int_to_string (output_file_number, 5) +
+                                      ".pvtu");
           std::ofstream sys_pvtu_master (sys_pvtu_master_filename.c_str());
           sys_data_out.write_pvtu_record (sys_pvtu_master, sys_filenames);
 
           const std::string
           sys_visit_master_filename = (this->get_output_directory() +
-                                   "sys_solution-" +
-                                   Utilities::int_to_string (output_file_number, 5) +
-                                   ".visit");
+                                       "sys_solution-" +
+                                       Utilities::int_to_string (output_file_number, 5) +
+                                       ".visit");
           std::ofstream sys_visit_master (sys_visit_master_filename.c_str());
           sys_data_out.write_visit_record (sys_visit_master, sys_filenames);
         }

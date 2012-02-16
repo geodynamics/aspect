@@ -106,16 +106,16 @@ namespace aspect
     mapping (4),
 
     system_fe(FE_Q<dim>(parameters.stokes_velocity_degree),
-               dim,
+              dim,
               (parameters.use_locally_conservative_discretization
-                ?
-                static_cast<const FiniteElement<dim> &>
-                (FE_DGP<dim>(parameters.stokes_velocity_degree-1))
-                :
-                static_cast<const FiniteElement<dim> &>
-                (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
-               1,
-               FE_Q<dim>(parameters.temperature_degree),
+               ?
+               static_cast<const FiniteElement<dim> &>
+               (FE_DGP<dim>(parameters.stokes_velocity_degree-1))
+               :
+               static_cast<const FiniteElement<dim> &>
+               (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
+              1,
+              FE_Q<dim>(parameters.temperature_degree),
               1),
 
     stokes_fe (FE_Q<dim>(parameters.stokes_velocity_degree),
@@ -313,7 +313,7 @@ namespace aspect
     // dependencies are present in the material model
     for (unsigned int c=0; c<dim+2; ++c)
       for (unsigned int d=0; d<dim+2; ++d)
-         coupling[c][d] = DoFTools::always;
+        coupling[c][d] = DoFTools::always;
 
     DoFTools::make_sparsity_pattern (system_dof_handler,
                                      coupling, sp,
@@ -612,12 +612,12 @@ namespace aspect
           VectorTools::interpolate_boundary_values (system_dof_handler,
                                                     *p,
                                                     VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&BoundaryTemperature::Interface<dim>::temperature,
-                                                                                                std_cxx1x::cref(*boundary_temperature),
-                                                                                                std_cxx1x::cref(*geometry_model),
-                                                                                                *p,
-                                                                                                std_cxx1x::_1),
-                                                                                                dim+1,
-                                                                                                dim+2),
+                                                        std_cxx1x::cref(*boundary_temperature),
+                                                        std_cxx1x::cref(*geometry_model),
+                                                        *p,
+                                                        std_cxx1x::_1),
+                                                        dim+1,
+                                                        dim+2),
                                                     system_constraints,
                                                     temperature_system_mask);
 
@@ -745,7 +745,7 @@ namespace aspect
   void Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
   {
     Assert (false,
-	    ExcMessage("Doesn't work any more: doesn't transfer sys solution."));
+            ExcMessage("Doesn't work any more: doesn't transfer sys solution."));
 
     computing_timer.enter_section ("Refine mesh structure, part 1");
 
@@ -983,12 +983,12 @@ namespace aspect
             // look up density
             for (unsigned int i=0; i<system_fe.dofs_per_cell; ++i)
               {
-              if (system_fe.system_to_component_index(i).first == dim+1)
+                if (system_fe.system_to_component_index(i).first == dim+1)
 
-                vec_distributed(local_dof_indices[i])
-                  = material_model->density( system_solution(local_dof_indices[i]),
-                                             pressure_values[i],
-                                             fe_values.quadrature_point(i));
+                  vec_distributed(local_dof_indices[i])
+                    = material_model->density( system_solution(local_dof_indices[i]),
+                                               pressure_values[i],
+                                               fe_values.quadrature_point(i));
               }
           }
 
