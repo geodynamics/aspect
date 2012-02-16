@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
@@ -217,103 +217,17 @@ namespace aspect
         return std::pair<std::string,std::string>();
 
 
-      // build a representation of the entire solution. this process is
-      // described in the documentation of step-32
-      const FESystem<dim> joint_fe (this->get_stokes_dof_handler().get_fe(), 1,
-                                    this->get_temperature_dof_handler().get_fe(), 1);
-
-      DoFHandler<dim> joint_dof_handler (this->get_triangulation());
-      joint_dof_handler.distribute_dofs (joint_fe);
-      Assert (joint_dof_handler.n_dofs() ==
-              this->get_stokes_dof_handler().n_dofs() + this->get_temperature_dof_handler().n_dofs(),
-              ExcInternalError());
-
-      TrilinosWrappers::MPI::Vector joint_solution;
-      joint_solution.reinit (joint_dof_handler.locally_owned_dofs(), MPI_COMM_WORLD);
-
-      {
-        std::vector<unsigned int> local_joint_dof_indices (joint_fe.dofs_per_cell);
-        std::vector<unsigned int> local_stokes_dof_indices (this->get_stokes_dof_handler().get_fe().dofs_per_cell);
-        std::vector<unsigned int> local_temperature_dof_indices (this->get_temperature_dof_handler().get_fe().dofs_per_cell);
-
-        typename DoFHandler<dim>::active_cell_iterator
-        joint_cell       = joint_dof_handler.begin_active(),
-        joint_endc       = joint_dof_handler.end(),
-        stokes_cell      = this->get_stokes_dof_handler().begin_active(),
-        temperature_cell = this->get_temperature_dof_handler().begin_active();
-        for (; joint_cell!=joint_endc;
-             ++joint_cell, ++stokes_cell, ++temperature_cell)
-          if (joint_cell->is_locally_owned())
-            {
-              joint_cell->get_dof_indices (local_joint_dof_indices);
-              stokes_cell->get_dof_indices (local_stokes_dof_indices);
-              temperature_cell->get_dof_indices (local_temperature_dof_indices);
-
-              for (unsigned int i=0; i<joint_fe.dofs_per_cell; ++i)
-                if (joint_fe.system_to_base_index(i).first.first == 0)
-                  {
-                    Assert (joint_fe.system_to_base_index(i).second
-                            <
-                            local_stokes_dof_indices.size(),
-                            ExcInternalError());
-
-                    joint_solution(local_joint_dof_indices[i])
-                      = this->get_stokes_solution()(local_stokes_dof_indices
-                                                    [joint_fe.system_to_base_index(i).second]);
-                  }
-                else
-                  {
-                    Assert (joint_fe.system_to_base_index(i).first.first == 1,
-                            ExcInternalError());
-                    Assert (joint_fe.system_to_base_index(i).second
-                            <
-                            local_temperature_dof_indices.size(),
-                            ExcInternalError());
-                    joint_solution(local_joint_dof_indices[i])
-                      = this->get_temperature_solution()(local_temperature_dof_indices
-                                                         [joint_fe.system_to_base_index(i).second]);
-                  }
-            }
-      }
-
-
-      IndexSet locally_relevant_joint_dofs(joint_dof_handler.n_dofs());
-      DoFTools::extract_locally_relevant_dofs (joint_dof_handler, locally_relevant_joint_dofs);
-      TrilinosWrappers::MPI::Vector locally_relevant_joint_solution;
-      locally_relevant_joint_solution.reinit (locally_relevant_joint_dofs, MPI_COMM_WORLD);
-      locally_relevant_joint_solution = joint_solution;
-
-      internal::Postprocessor<dim> postprocessor (this->get_triangulation().locally_owned_subdomain(),
-                                                  this->get_stokes_solution().block(1).minimal_value(),
-                                                  this->convert_output_to_years(),
-                                                  this->get_material_model(),
-                                                  this->get_adiabatic_conditions());
-
-      DataOut<dim> data_out;
-      data_out.attach_dof_handler (joint_dof_handler);
-      data_out.add_data_vector (locally_relevant_joint_solution, postprocessor);
-      data_out.build_patches ();
-
-      const std::string filename = (this->get_output_directory() +
-                                    "solution-" +
-                                    Utilities::int_to_string (output_file_number, 5) +
-                                    "." +
-                                    Utilities::int_to_string
-                                    (this->get_triangulation().locally_owned_subdomain(), 4) +
-                                    DataOutBase::default_suffix
-                                    (DataOutBase::parse_output_format(output_format)));
-      
       internal::Postprocessor<dim> sys_postprocessor (this->get_triangulation().locally_owned_subdomain(),
-                                                  this->get_system_solution().block(1).minimal_value(),
+                                                  this->get_solution().block(1).minimal_value(),
                                                   this->convert_output_to_years(),
                                                   this->get_material_model(),
                                                   this->get_adiabatic_conditions());
-      
+
       DataOut<dim> sys_data_out;
-      sys_data_out.attach_dof_handler (this->get_system_dof_handler());
-      sys_data_out.add_data_vector (this->get_system_solution(), sys_postprocessor);
+      sys_data_out.attach_dof_handler (this->get_dof_handler());
+      sys_data_out.add_data_vector (this->get_solution(), sys_postprocessor);
       sys_data_out.build_patches ();
-      
+
       const std::string sys_filename = (this->get_output_directory() +
                                     "sys_solution-" +
                                     Utilities::int_to_string (output_file_number, 5) +
@@ -331,15 +245,11 @@ namespace aspect
         {
           if (i == myid)
             {
-              std::ofstream output (filename.c_str());
               std::ofstream sys_output (sys_filename.c_str());
-              
-              if (!output)
-                std::cout << "ERROR: proc " << myid << " could not create " << filename << std::endl;
 
-              data_out.write (output,
-                              DataOutBase::parse_output_format(output_format));
-              
+              if (!sys_output)
+                std::cout << "ERROR: proc " << myid << " could not create " << sys_filename << std::endl;
+
               sys_data_out.write (sys_output,
                               DataOutBase::parse_output_format(output_format));
             }
@@ -355,31 +265,6 @@ namespace aspect
       // files
       if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
         {
-          std::vector<std::string> filenames;
-          for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD); ++i)
-            filenames.push_back (std::string("solution-") +
-                                 Utilities::int_to_string (output_file_number, 5) +
-                                 "." +
-                                 Utilities::int_to_string(i, 4) +
-                                 DataOutBase::default_suffix
-                                 (DataOutBase::parse_output_format(output_format)));
-          const std::string
-          pvtu_master_filename = (this->get_output_directory() +
-                                  "solution-" +
-                                  Utilities::int_to_string (output_file_number, 5) +
-                                  ".pvtu");
-          std::ofstream pvtu_master (pvtu_master_filename.c_str());
-          data_out.write_pvtu_record (pvtu_master, filenames);
-
-          const std::string
-          visit_master_filename = (this->get_output_directory() +
-                                   "solution-" +
-                                   Utilities::int_to_string (output_file_number, 5) +
-                                   ".visit");
-          std::ofstream visit_master (visit_master_filename.c_str());
-          data_out.write_visit_record (visit_master, filenames);
-          
-          
           std::vector<std::string> sys_filenames;
           for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD); ++i)
             sys_filenames.push_back (std::string("sys_solution-") +

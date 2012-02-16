@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
@@ -130,61 +130,7 @@ namespace aspect
 
     template <int dim>
     const TrilinosWrappers::MPI::BlockVector &
-    SimulatorAccess<dim>::get_stokes_solution () const
-    {
-      return simulator->stokes_solution;
-    }
-
-
-
-    template <int dim>
-    const TrilinosWrappers::MPI::BlockVector &
-    SimulatorAccess<dim>::get_old_stokes_solution () const
-    {
-      return simulator->old_stokes_solution;
-    }
-
-
-
-    template <int dim>
-    const DoFHandler<dim> &
-    SimulatorAccess<dim>::get_stokes_dof_handler () const
-    {
-      return simulator->stokes_dof_handler;
-    }
-
-
-
-    template <int dim>
-    const TrilinosWrappers::MPI::Vector &
-    SimulatorAccess<dim>::get_temperature_solution () const
-    {
-      return simulator->temperature_solution;
-    }
-
-
-
-    template <int dim>
-    const TrilinosWrappers::MPI::Vector &
-    SimulatorAccess<dim>::get_old_temperature_solution () const
-    {
-      return simulator->old_temperature_solution;
-    }
-
-
-
-    template <int dim>
-    const DoFHandler<dim> &
-    SimulatorAccess<dim>::get_temperature_dof_handler () const
-    {
-      return simulator->temperature_dof_handler;
-    }
-    
-    
-    
-    template <int dim>
-    const TrilinosWrappers::MPI::BlockVector &
-    SimulatorAccess<dim>::get_system_solution () const
+    SimulatorAccess<dim>::get_solution () const
     {
       return simulator->system_solution;
     }
@@ -193,7 +139,7 @@ namespace aspect
 
     template <int dim>
     const TrilinosWrappers::MPI::BlockVector &
-    SimulatorAccess<dim>::get_old_system_solution () const
+    SimulatorAccess<dim>::get_old_solution () const
     {
       return simulator->old_system_solution;
     }
@@ -202,7 +148,7 @@ namespace aspect
 
     template <int dim>
     const DoFHandler<dim> &
-    SimulatorAccess<dim>::get_system_dof_handler () const
+    SimulatorAccess<dim>::get_dof_handler () const
     {
       return simulator->system_dof_handler;
     }
