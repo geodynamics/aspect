@@ -217,25 +217,25 @@ namespace aspect
         return std::pair<std::string,std::string>();
 
 
-      internal::Postprocessor<dim> sys_postprocessor (this->get_triangulation().locally_owned_subdomain(),
-                                                      this->get_solution().block(1).minimal_value(),
-                                                      this->convert_output_to_years(),
-                                                      this->get_material_model(),
-                                                      this->get_adiabatic_conditions());
+      internal::Postprocessor<dim> postprocessor (this->get_triangulation().locally_owned_subdomain(),
+                                                  this->get_solution().block(1).minimal_value(),
+                                                  this->convert_output_to_years(),
+                                                  this->get_material_model(),
+                                                  this->get_adiabatic_conditions());
 
-      DataOut<dim> sys_data_out;
-      sys_data_out.attach_dof_handler (this->get_dof_handler());
-      sys_data_out.add_data_vector (this->get_solution(), sys_postprocessor);
-      sys_data_out.build_patches ();
+      DataOut<dim> data_out;
+      data_out.attach_dof_handler (this->get_dof_handler());
+      data_out.add_data_vector (this->get_solution(), postprocessor);
+      data_out.build_patches ();
 
-      const std::string sys_filename = (this->get_output_directory() +
-                                        "sys_solution-" +
-                                        Utilities::int_to_string (output_file_number, 5) +
-                                        "." +
-                                        Utilities::int_to_string
-                                        (this->get_triangulation().locally_owned_subdomain(), 4) +
-                                        DataOutBase::default_suffix
-                                        (DataOutBase::parse_output_format(output_format)));
+      const std::string filename = (this->get_output_directory() +
+                                    "solution-" +
+                                    Utilities::int_to_string (output_file_number, 5) +
+                                    "." +
+                                    Utilities::int_to_string
+                                    (this->get_triangulation().locally_owned_subdomain(), 4) +
+                                    DataOutBase::default_suffix
+                                    (DataOutBase::parse_output_format(output_format)));
 
       // throttle output
       const unsigned int concurrent_writers = 10;
@@ -245,13 +245,13 @@ namespace aspect
         {
           if (i == myid)
             {
-              std::ofstream sys_output (sys_filename.c_str());
+              std::ofstream output (filename.c_str());
 
-              if (!sys_output)
-                std::cout << "ERROR: proc " << myid << " could not create " << sys_filename << std::endl;
+              if (!output)
+                std::cout << "ERROR: proc " << myid << " could not create " << filename << std::endl;
 
-              sys_data_out.write (sys_output,
-                                  DataOutBase::parse_output_format(output_format));
+              data_out.write (output,
+                              DataOutBase::parse_output_format(output_format));
             }
           if (i%concurrent_writers == 0)
             {
@@ -265,29 +265,29 @@ namespace aspect
       // files
       if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
         {
-          std::vector<std::string> sys_filenames;
+          std::vector<std::string> filenames;
           for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD); ++i)
-            sys_filenames.push_back (std::string("sys_solution-") +
-                                     Utilities::int_to_string (output_file_number, 5) +
-                                     "." +
-                                     Utilities::int_to_string(i, 4) +
-                                     DataOutBase::default_suffix
-                                     (DataOutBase::parse_output_format(output_format)));
+            filenames.push_back (std::string("solution-") +
+                                 Utilities::int_to_string (output_file_number, 5) +
+                                 "." +
+                                 Utilities::int_to_string(i, 4) +
+                                 DataOutBase::default_suffix
+                                 (DataOutBase::parse_output_format(output_format)));
           const std::string
-          sys_pvtu_master_filename = (this->get_output_directory() +
-                                      "sys_solution-" +
-                                      Utilities::int_to_string (output_file_number, 5) +
-                                      ".pvtu");
-          std::ofstream sys_pvtu_master (sys_pvtu_master_filename.c_str());
-          sys_data_out.write_pvtu_record (sys_pvtu_master, sys_filenames);
+          pvtu_master_filename = (this->get_output_directory() +
+                                  "solution-" +
+                                  Utilities::int_to_string (output_file_number, 5) +
+                                  ".pvtu");
+          std::ofstream pvtu_master (pvtu_master_filename.c_str());
+          data_out.write_pvtu_record (pvtu_master, filenames);
 
           const std::string
-          sys_visit_master_filename = (this->get_output_directory() +
-                                       "sys_solution-" +
-                                       Utilities::int_to_string (output_file_number, 5) +
-                                       ".visit");
-          std::ofstream sys_visit_master (sys_visit_master_filename.c_str());
-          sys_data_out.write_visit_record (sys_visit_master, sys_filenames);
+          visit_master_filename = (this->get_output_directory() +
+                                   "solution-" +
+                                   Utilities::int_to_string (output_file_number, 5) +
+                                   ".visit");
+          std::ofstream visit_master (visit_master_filename.c_str());
+          data_out.write_visit_record (visit_master, filenames);
         }
 
       // record the file base file name in the output file
