@@ -54,9 +54,9 @@ namespace aspect
                            +
                            0.2 * s * (1-s) * std::sin(6*phi) * scale;
 
-      return (this->boundary_temperature->maximal_temperature()*(1.0-s_mod)
+      return (this->boundary_temperature->maximal_temperature()*(s_mod)
               +
-              this->boundary_temperature->minimal_temperature()*s_mod);
+              this->boundary_temperature->minimal_temperature()*(1e0-s_mod));
     }
 
 
