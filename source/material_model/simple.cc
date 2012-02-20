@@ -42,6 +42,13 @@ namespace aspect
       return reference_rho;
     }
 
+    template <int dim>
+    double
+    Simple<dim>::
+    reference_thermal_alpha () const
+    {
+    	return thermal_alpha;
+    }
 
     template <int dim>
     double
@@ -57,11 +64,27 @@ namespace aspect
     template <int dim>
     double
     Simple<dim>::
+    reference_cp () const
+    {
+      return 1250e0;
+    }
+
+    template <int dim>
+    double
+    Simple<dim>::
     thermal_conductivity (const double,
                           const double,
                           const Point<dim> &) const
     {
       return k_value;
+    }
+
+    template <int dim>
+    double
+    Simple<dim>::
+    reference_thermal_diffusivity () const
+    {
+    	return k_value/(reference_rho*reference_specific_heat);
     }
 
     template <int dim>
@@ -119,6 +142,10 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
+          prm.declare_entry ("Reference specific heat", "1250",
+                             Patterns::Double (0),
+                             "The value of the specific heat $cp$. "
+                             "Units: $JG/kgK$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\beta$. "
@@ -143,6 +170,7 @@ namespace aspect
           reference_T = prm.get_double ("Reference temperature");
           eta                   = prm.get_double ("Viscosity");
           k_value               = prm.get_double ("Thermal conductivity");
+          reference_specific_heat = prm.get_double ("Reference specific heat");
           thermal_alpha = prm.get_double ("Thermal expansion coefficient");
         }
         prm.leave_subsection();

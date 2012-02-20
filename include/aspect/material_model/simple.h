@@ -42,6 +42,12 @@ namespace aspect
                                       const double pressure,
                                       const Point<dim> &position) const;
 
+        double reference_thermal_diffusivity () const;
+
+        double reference_thermal_alpha () const;
+
+        double reference_cp () const;
+
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
                                              const Point<dim> &position) const;
@@ -75,6 +81,7 @@ namespace aspect
         double reference_T;
         double eta;
         double thermal_alpha;
+        double reference_specific_heat;
 
         /**
          * The thermal conductivity.
