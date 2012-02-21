@@ -118,23 +118,7 @@ namespace aspect
               FE_Q<dim>(parameters.temperature_degree),
               1),
 
-    stokes_fe (FE_Q<dim>(parameters.stokes_velocity_degree),
-               dim,
-               (parameters.use_locally_conservative_discretization
-                ?
-                static_cast<const FiniteElement<dim> &>
-                (FE_DGP<dim>(parameters.stokes_velocity_degree-1))
-                :
-                static_cast<const FiniteElement<dim> &>
-                (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
-               1),
-
     system_dof_handler (triangulation),
-
-    stokes_dof_handler (triangulation),
-
-    temperature_fe (parameters.temperature_degree),
-    temperature_dof_handler (triangulation),
 
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true)
@@ -206,25 +190,25 @@ namespace aspect
       statistics.add_value("Time (seconds)", time);
     statistics.add_value("Number of mesh cells",
                          triangulation.n_global_active_cells());
+    
+    std::vector<unsigned int> system_sub_blocks (dim+2,0);
+    system_sub_blocks[dim] = 1;
+    system_sub_blocks[dim+1] = 2;
+    std::vector<unsigned int> system_dofs_per_block (3);
+    DoFTools::count_dofs_per_block (system_dof_handler, system_dofs_per_block, 
+                                    system_sub_blocks);
+    
     statistics.add_value("Number of Stokes degrees of freedom",
-                         stokes_dof_handler.n_dofs());
+                         system_dofs_per_block[0]+system_dofs_per_block[1]);
     statistics.add_value("Number of temperature degrees of freedom",
-                         temperature_dof_handler.n_dofs());
+                         system_dofs_per_block[2]);
 
     // then interpolate the current boundary velocities. this adds to
     // the stokes_constraints object we already have
     {
-      IndexSet stokes_relevant_set;
-      DoFTools::extract_locally_relevant_dofs (stokes_dof_handler,
-                                               stokes_relevant_set);
-
       IndexSet system_relevant_set;
       DoFTools::extract_locally_relevant_dofs (system_dof_handler,
                                                system_relevant_set);
-
-      current_stokes_constraints.clear ();
-      current_stokes_constraints.reinit (stokes_relevant_set);
-      current_stokes_constraints.merge (stokes_constraints);
 
       current_system_constraints.clear ();
       current_system_constraints.reinit (system_relevant_set);
@@ -236,22 +220,9 @@ namespace aspect
                                                parameters.prescribed_velocity_boundary_indicators.end());
 
       // do the interpolation for the prescribed velocity field
-      std::vector<bool> velocity_mask (dim+1, true);
+      std::vector<bool> velocity_mask (dim+2, true);
       velocity_mask[dim] = false;
-      for (std::set<boundary_indicator_t>::const_iterator
-           p = prescribed_velocity_boundary_indicators.begin();
-           p != prescribed_velocity_boundary_indicators.end(); ++p)
-        VectorTools::interpolate_boundary_values (stokes_dof_handler,
-                                                  *p,
-                                                  ZeroFunction<dim>(dim+1),
-                                                  current_stokes_constraints,
-                                                  velocity_mask);
-      current_stokes_constraints.close();
-
-
-      std::vector<bool> system_velocity_mask (dim+2, true);
-      system_velocity_mask[dim] = false;
-      system_velocity_mask[dim+1] = false;
+      velocity_mask[dim+1] = false;
       for (std::set<boundary_indicator_t>::const_iterator
            p = prescribed_velocity_boundary_indicators.begin();
            p != prescribed_velocity_boundary_indicators.end(); ++p)
@@ -259,40 +230,9 @@ namespace aspect
                                                   *p,
                                                   ZeroFunction<dim>(dim+2),
                                                   current_system_constraints,
-                                                  system_velocity_mask);
+                                                  velocity_mask);
       current_system_constraints.close();
     }
-  }
-
-
-
-  template <int dim>
-  void
-  Simulator<dim>::
-  setup_stokes_matrix (const std::vector<IndexSet> &stokes_partitioning)
-  {
-    stokes_matrix.clear ();
-
-    TrilinosWrappers::BlockSparsityPattern sp (stokes_partitioning,
-                                               MPI_COMM_WORLD);
-
-    Table<2,DoFTools::Coupling> coupling (dim+1, dim+1);
-
-    for (unsigned int c=0; c<dim+1; ++c)
-      for (unsigned int d=0; d<dim+1; ++d)
-        if (! ((c==dim) && (d==dim)))
-          coupling[c][d] = DoFTools::always;
-        else
-          coupling[c][d] = DoFTools::none;
-
-    DoFTools::make_sparsity_pattern (stokes_dof_handler,
-                                     coupling, sp,
-                                     stokes_constraints, false,
-                                     Utilities::MPI::
-                                     this_mpi_process(MPI_COMM_WORLD));
-    sp.compress();
-
-    stokes_matrix.reinit (sp);
   }
 
 
@@ -326,39 +266,7 @@ namespace aspect
   }
 
 
-
-  template <int dim>
-  void Simulator<dim>::
-  setup_stokes_preconditioner (const std::vector<IndexSet> &stokes_partitioning)
-  {
-    Amg_preconditioner.reset ();
-    Mp_preconditioner.reset ();
-
-    stokes_preconditioner_matrix.clear ();
-
-    TrilinosWrappers::BlockSparsityPattern sp (stokes_partitioning,
-                                               MPI_COMM_WORLD);
-
-    Table<2,DoFTools::Coupling> coupling (dim+1, dim+1);
-    for (unsigned int c=0; c<dim+1; ++c)
-      for (unsigned int d=0; d<dim+1; ++d)
-        if (c == d)
-          coupling[c][d] = DoFTools::always;
-        else
-          coupling[c][d] = DoFTools::none;
-
-    DoFTools::make_sparsity_pattern (stokes_dof_handler,
-                                     coupling, sp,
-                                     stokes_constraints, false,
-                                     Utilities::MPI::
-                                     this_mpi_process(MPI_COMM_WORLD));
-    sp.compress();
-
-    stokes_preconditioner_matrix.reinit (sp);
-  }
-
-
-
+  
   template <int dim>
   void Simulator<dim>::
   setup_system_preconditioner (const std::vector<IndexSet> &system_partitioning)
@@ -393,33 +301,11 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::
-  setup_temperature_matrix (const IndexSet &temperature_partitioner)
-  {
-    T_preconditioner.reset ();
-    temperature_matrix.clear ();
-
-    TrilinosWrappers::SparsityPattern sp (temperature_partitioner,
-                                          MPI_COMM_WORLD);
-    DoFTools::make_sparsity_pattern (temperature_dof_handler, sp,
-                                     temperature_constraints, false,
-                                     Utilities::MPI::
-                                     this_mpi_process(MPI_COMM_WORLD));
-    sp.compress();
-
-    temperature_matrix.reinit (sp);
-  }
-
-
-
-  template <int dim>
   void Simulator<dim>::setup_dofs ()
   {
     computing_timer.enter_section("Setup dof systems");
 
     system_dof_handler.distribute_dofs(system_fe);
-
-    stokes_dof_handler.distribute_dofs (stokes_fe);
 
     // Renumber the DoFs hierarchical so that we get the
     // same numbering if we resume the computation. This
@@ -431,23 +317,6 @@ namespace aspect
     system_sub_blocks[dim+1] = 2;
     DoFRenumbering::component_wise (system_dof_handler, system_sub_blocks);
 
-    DoFRenumbering::hierarchical (stokes_dof_handler);
-    std::vector<unsigned int> stokes_sub_blocks (dim+1,0);
-    stokes_sub_blocks[dim] = 1;
-    DoFRenumbering::component_wise (stokes_dof_handler, stokes_sub_blocks);
-
-    temperature_dof_handler.distribute_dofs (temperature_fe);
-
-    DoFRenumbering::hierarchical (temperature_dof_handler);
-    std::vector<unsigned int> stokes_dofs_per_block (2);
-    DoFTools::count_dofs_per_block (stokes_dof_handler, stokes_dofs_per_block,
-                                    stokes_sub_blocks);
-
-    //const unsigned int n_u = stokes_dofs_per_block[0],
-    //                   n_p = stokes_dofs_per_block[1],
-    //                   n_T = temperature_dof_handler.n_dofs();
-
-    // TODO: variable number of components (if e.g. reaction rates are added)
     std::vector<unsigned int> system_dofs_per_block (3);
     DoFTools::count_dofs_per_block (system_dof_handler, system_dofs_per_block,
                                     system_sub_blocks);
@@ -502,24 +371,6 @@ namespace aspect
       system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
     }
 
-    std::vector<IndexSet> stokes_partitioning, stokes_relevant_partitioning;
-    IndexSet temperature_partitioning (n_T), temperature_relevant_partitioning (n_T);
-    IndexSet stokes_relevant_set;
-    {
-      IndexSet stokes_index_set = stokes_dof_handler.locally_owned_dofs();
-      stokes_partitioning.push_back(stokes_index_set.get_view(0,n_u));
-      stokes_partitioning.push_back(stokes_index_set.get_view(n_u,n_u+n_p));
-
-      DoFTools::extract_locally_relevant_dofs (stokes_dof_handler,
-                                               stokes_relevant_set);
-      stokes_relevant_partitioning.push_back(stokes_relevant_set.get_view(0,n_u));
-      stokes_relevant_partitioning.push_back(stokes_relevant_set.get_view(n_u,n_u+n_p));
-
-      temperature_partitioning = temperature_dof_handler.locally_owned_dofs();
-      DoFTools::extract_locally_relevant_dofs (temperature_dof_handler,
-                                               temperature_relevant_partitioning);
-    }
-
     // then compute constraints for the velocity. the constraints we compute
     // here are the ones that are the same for all following time steps. in
     // addition, we may be computing constraints from boundary values for the
@@ -531,12 +382,6 @@ namespace aspect
 
       DoFTools::make_hanging_node_constraints (system_dof_handler,
                                                system_constraints);
-
-      stokes_constraints.clear ();
-      stokes_constraints.reinit (stokes_relevant_set);
-
-      DoFTools::make_hanging_node_constraints (stokes_dof_handler,
-                                               stokes_constraints);
 
       // obtain the boundary indicators that belong to zero velocity
       // and no-normal-flux type
@@ -550,9 +395,9 @@ namespace aspect
                                           parameters.tangential_velocity_boundary_indicators.end());
 
       // do the interpolation for zero velocity
-      std::vector<bool> velocity_system_mask (dim+2, true);
-      velocity_system_mask[dim] = false;
-      velocity_system_mask[dim+1] = false;
+      std::vector<bool> velocity_mask (dim+2, true);
+      velocity_mask[dim] = false;
+      velocity_mask[dim+1] = false;
       for (std::set<boundary_indicator_t>::const_iterator
            p = zero_boundary_indicators.begin();
            p != zero_boundary_indicators.end(); ++p)
@@ -560,18 +405,8 @@ namespace aspect
                                                   *p,
                                                   ZeroFunction<dim>(dim+2),
                                                   system_constraints,
-                                                  velocity_system_mask);
-
-      std::vector<bool> velocity_mask (dim+1, true);
-      velocity_mask[dim] = false;
-      for (std::set<boundary_indicator_t>::const_iterator
-           p = zero_boundary_indicators.begin();
-           p != zero_boundary_indicators.end(); ++p)
-        VectorTools::interpolate_boundary_values (stokes_dof_handler,
-                                                  *p,
-                                                  ZeroFunction<dim>(dim+1),
-                                                  stokes_constraints,
                                                   velocity_mask);
+
 
       // do the same for no-normal-flux boundaries
       VectorTools::compute_no_normal_flux_constraints (system_dof_handler,
@@ -579,29 +414,16 @@ namespace aspect
                                                        no_normal_flux_boundary_indicators,
                                                        system_constraints,
                                                        mapping);
-
-      VectorTools::compute_no_normal_flux_constraints (stokes_dof_handler,
-                                                       /* first_vector_component= */ 0,
-                                                       no_normal_flux_boundary_indicators,
-                                                       stokes_constraints,
-                                                       mapping);
-
-      stokes_constraints.close ();
     }
 
     // now do the same for the temperature variable
     {
-      temperature_constraints.clear ();
-      temperature_constraints.reinit (temperature_relevant_partitioning);
-
-      DoFTools::make_hanging_node_constraints (temperature_dof_handler,
-                                               temperature_constraints);
 
       // obtain the boundary indicators that belong to Dirichlet-type
       // temperature boundary conditions and interpolate the temperature
       // there
-      std::vector<bool> temperature_system_mask (dim+2, false);
-      temperature_system_mask[dim+1] = true;
+      std::vector<bool> temperature_mask (dim+2, false);
+      temperature_mask[dim+1] = true;
 
       for (std::vector<int>::const_iterator
            p = parameters.fixed_temperature_boundary_indicators.begin();
@@ -619,55 +441,24 @@ namespace aspect
                                                         dim+1,
                                                         dim+2),
                                                     system_constraints,
-                                                    temperature_system_mask);
+                                                    temperature_mask);
 
         }
       system_constraints.close();
-
-      for (std::vector<int>::const_iterator
-           p = parameters.fixed_temperature_boundary_indicators.begin();
-           p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
-        {
-          Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
-                  ExcInternalError());
-          VectorTools::interpolate_boundary_values (temperature_dof_handler,
-                                                    *p,
-                                                    ScalarFunctionFromFunctionObject<dim>(std_cxx1x::bind (&BoundaryTemperature::Interface<dim>::temperature,
-                                                                                          std_cxx1x::cref(*boundary_temperature),
-                                                                                          std_cxx1x::cref(*geometry_model),
-                                                                                          *p,
-                                                                                          std_cxx1x::_1)),
-                                                    temperature_constraints);
-        }
-      temperature_constraints.close ();
     }
 
     // finally initialize vectors, matrices, etc.
 
-
-    setup_stokes_matrix (stokes_partitioning);
-    setup_stokes_preconditioner (stokes_partitioning);
-    setup_temperature_matrix (temperature_partitioning);
-
     setup_system_matrix (system_partitioning);
     setup_system_preconditioner (system_partitioning);
-
-    stokes_rhs.reinit (stokes_partitioning, MPI_COMM_WORLD);
-    stokes_solution.reinit (stokes_relevant_partitioning, MPI_COMM_WORLD);
-    old_stokes_solution.reinit (stokes_solution);
 
     system_rhs.reinit(system_partitioning, MPI_COMM_WORLD);
     system_solution.reinit(system_partitioning, MPI_COMM_WORLD);
     old_system_solution.reinit(system_partitioning, MPI_COMM_WORLD);
     old_old_system_solution.reinit(system_partitioning, MPI_COMM_WORLD);
 
-    temperature_rhs.reinit (temperature_partitioning, MPI_COMM_WORLD);
-    temperature_solution.reinit (temperature_relevant_partitioning, MPI_COMM_WORLD);
-    old_temperature_solution.reinit (temperature_solution);
-    old_old_temperature_solution.reinit (temperature_solution);
-
     if (material_model->is_compressible())
-      pressure_shape_function_integrals.reinit (stokes_partitioning, MPI_COMM_WORLD);
+      pressure_shape_function_integrals.reinit (system_partitioning, MPI_COMM_WORLD);
 
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
@@ -743,210 +534,6 @@ namespace aspect
 // velocity are large.
   template <int dim>
   void Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
-  {
-    Assert (false,
-            ExcMessage("Doesn't work any more: doesn't transfer sys solution."));
-
-    computing_timer.enter_section ("Refine mesh structure, part 1");
-
-    Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
-    Vector<float> estimated_error_per_cell_rho (triangulation.n_active_cells());
-    Vector<float> estimated_error_per_cell_T (triangulation.n_active_cells());
-    Vector<float> estimated_error_per_cell_u (triangulation.n_active_cells());
-
-    // compute density error
-    {
-      TrilinosWrappers::MPI::Vector vec_distributed (this->temperature_rhs);
-
-      Quadrature<dim> quadrature( temperature_fe.get_unit_support_points() );
-      std::vector<unsigned int> local_dof_indices (temperature_fe.dofs_per_cell);
-      FEValues<dim> fe_values (mapping, temperature_fe, quadrature,
-                               update_quadrature_points);
-
-      FEValues<dim> stokes_fe_values (mapping, stokes_fe, quadrature,
-                                      update_quadrature_points|update_values);
-      const FEValuesExtractors::Scalar pressure (dim);
-      std::vector<double> pressure_values(quadrature.size());
-
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = temperature_dof_handler.begin_active(),
-      endc = temperature_dof_handler.end();
-      for (; cell!=endc; ++cell)
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit(cell);
-            typename DoFHandler<dim>::active_cell_iterator
-            stokes_cell (&triangulation,
-                         cell->level(),
-                         cell->index(),
-                         &stokes_dof_handler);
-
-            stokes_fe_values.reinit (stokes_cell);
-            stokes_fe_values[pressure].get_function_values (stokes_solution,
-                                                            pressure_values);
-
-            cell->get_dof_indices (local_dof_indices);
-
-            // look up density
-            for (unsigned int i=0; i<temperature_fe.dofs_per_cell; ++i)
-              {
-                vec_distributed(local_dof_indices[i])
-                  = material_model->density( temperature_solution(local_dof_indices[i]),
-                                             pressure_values[i],
-                                             fe_values.quadrature_point(i));
-              }
-          }
-
-      TrilinosWrappers::MPI::Vector vec (this->temperature_solution);
-      vec = vec_distributed;
-
-      DerivativeApproximation::approximate_gradient  (mapping, temperature_dof_handler, vec, estimated_error_per_cell_rho);
-
-      // Scale gradient in each cell with the
-      // correct power of h. Otherwise, error
-      // indicators do not reduce when
-      // refined if there is a density
-      // jump. We need at least order 1 for
-      // the error not to grow when refining,
-      // so anything >1 should work.
-      {
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = temperature_dof_handler.begin_active(),
-        endc = temperature_dof_handler.end();
-        unsigned int i=0;
-        for (; cell!=endc; ++cell, ++i)
-          if (cell->is_locally_owned())
-            estimated_error_per_cell_rho(i) *= std::pow(cell->diameter(), 1+dim/2.0);
-      }
-    }
-
-    // compute the errors for
-    // temperature and stokes solution
-    {
-
-      KellyErrorEstimator<dim>::estimate (temperature_dof_handler,
-                                          QGauss<dim-1>(parameters.temperature_degree+1),
-                                          typename FunctionMap<dim>::type(),
-                                          temperature_solution,
-                                          estimated_error_per_cell_T,
-                                          std::vector<bool>(),
-                                          0,
-                                          0,
-                                          triangulation.locally_owned_subdomain());
-
-      std::vector<bool> velocity_mask (dim+1, true);
-      velocity_mask[dim] = false;
-      KellyErrorEstimator<dim>::estimate (stokes_dof_handler,
-                                          QGauss<dim-1>(parameters.stokes_velocity_degree+1),
-                                          typename FunctionMap<dim>::type(),
-                                          stokes_solution,
-                                          estimated_error_per_cell_u,
-                                          velocity_mask,
-                                          0,
-                                          0,
-                                          triangulation.locally_owned_subdomain());
-    }
-
-    // rescale errors
-    {
-      estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
-                                                         MPI_COMM_WORLD);
-      estimated_error_per_cell_u /= Utilities::MPI::max (estimated_error_per_cell_u.linfty_norm(),
-                                                         MPI_COMM_WORLD);
-      estimated_error_per_cell_rho /= Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
-                                                           MPI_COMM_WORLD);
-
-      for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
-        estimated_error_per_cell(i) = std::max(
-                                        std::max (estimated_error_per_cell_T(i),
-                                                  0.0f*estimated_error_per_cell_u(i)),
-                                        estimated_error_per_cell_rho(i));
-    }
-
-    parallel::distributed::GridRefinement::
-    refine_and_coarsen_fixed_fraction (triangulation,
-                                       estimated_error_per_cell,
-                                       parameters.refinement_fraction,
-                                       parameters.coarsening_fraction);
-
-    // limit maximum refinement level
-    if (triangulation.n_levels() > max_grid_level)
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = triangulation.begin_active(max_grid_level);
-           cell != triangulation.end(); ++cell)
-        cell->clear_refine_flag ();
-
-    std::vector<const TrilinosWrappers::MPI::Vector *> x_temperature (2);
-    x_temperature[0] = &temperature_solution;
-    x_temperature[1] = &old_temperature_solution;
-    std::vector<const TrilinosWrappers::MPI::BlockVector *> x_stokes (2);
-    x_stokes[0] = &stokes_solution;
-    x_stokes[1] = &old_stokes_solution;
-
-    parallel::distributed::SolutionTransfer<dim,TrilinosWrappers::MPI::Vector>
-    temperature_trans(temperature_dof_handler);
-    parallel::distributed::SolutionTransfer<dim,TrilinosWrappers::MPI::BlockVector>
-    stokes_trans(stokes_dof_handler);
-
-    triangulation.prepare_coarsening_and_refinement();
-    temperature_trans.prepare_for_coarsening_and_refinement(x_temperature);
-    stokes_trans.prepare_for_coarsening_and_refinement(x_stokes);
-
-    triangulation.execute_coarsening_and_refinement ();
-    global_volume = GridTools::volume (triangulation, mapping);
-    computing_timer.exit_section();
-
-    setup_dofs ();
-
-    computing_timer.enter_section ("Refine mesh structure, part 2");
-
-    {
-      TrilinosWrappers::MPI::Vector
-      distributed_temp1 (temperature_rhs);
-      TrilinosWrappers::MPI::Vector
-      distributed_temp2 (temperature_rhs);
-
-      std::vector<TrilinosWrappers::MPI::Vector *> tmp (2);
-      tmp[0] = &(distributed_temp1);
-      tmp[1] = &(distributed_temp2);
-      temperature_trans.interpolate(tmp);
-
-      temperature_solution     = distributed_temp1;
-      old_temperature_solution = distributed_temp2;
-    }
-
-    {
-      TrilinosWrappers::MPI::BlockVector
-      distributed_stokes (stokes_rhs);
-      TrilinosWrappers::MPI::BlockVector
-      old_distributed_stokes (stokes_rhs);
-      std::vector<TrilinosWrappers::MPI::BlockVector *> stokes_tmp (2);
-      stokes_tmp[0] = &(distributed_stokes);
-      stokes_tmp[1] = &(old_distributed_stokes);
-
-      stokes_trans.interpolate (stokes_tmp);
-      stokes_solution     = distributed_stokes;
-      old_stokes_solution = old_distributed_stokes;
-    }
-
-    computing_timer.exit_section();
-  }
-
-
-
-  // Contrary to step-32, we have found that just refining by the temperature
-// works well in 2d, but only leads to refinement in the boundary layer at the
-// core-mantle boundary in 3d. Consequently, we estimate the error based
-// on the temperature, velocity and other criteria, see the second ASPECT paper;
-// the vectors with the resulting error indicators are then normalized, and we
-// take the maximum or sum of the indicators to decide whether we want to refine or
-// not. In case of more complicated materials with jumps in the density
-// profile, we also need to refine where the density jumps. This ensures that
-// we also refine into plumes where maybe the temperature gradients aren't as
-// strong as in the boundary layer but where nevertheless the gradients in the
-// velocity are large.
-  template <int dim>
-  void Simulator<dim>::sys_refine_mesh (const unsigned int max_grid_level)
   {
     computing_timer.enter_section ("Refine mesh structure, part 1");
 
@@ -1075,26 +662,14 @@ namespace aspect
            cell != triangulation.end(); ++cell)
         cell->clear_refine_flag ();
 
-    std::vector<const TrilinosWrappers::MPI::Vector *> x_temperature (2);
-    x_temperature[0] = &temperature_solution;
-    x_temperature[1] = &old_temperature_solution;
-    std::vector<const TrilinosWrappers::MPI::BlockVector *> x_stokes (2);
-    x_stokes[0] = &stokes_solution;
-    x_stokes[1] = &old_stokes_solution;
     std::vector<const TrilinosWrappers::MPI::BlockVector *> x_system (2);
     x_system[0] = &system_solution;
     x_system[1] = &old_system_solution;
 
-    parallel::distributed::SolutionTransfer<dim,TrilinosWrappers::MPI::Vector>
-    temperature_trans(temperature_dof_handler);
-    parallel::distributed::SolutionTransfer<dim,TrilinosWrappers::MPI::BlockVector>
-    stokes_trans(stokes_dof_handler);
     parallel::distributed::SolutionTransfer<dim,TrilinosWrappers::MPI::BlockVector>
     system_trans(system_dof_handler);
 
     triangulation.prepare_coarsening_and_refinement();
-    temperature_trans.prepare_for_coarsening_and_refinement(x_temperature);
-    stokes_trans.prepare_for_coarsening_and_refinement(x_stokes);
     system_trans.prepare_for_coarsening_and_refinement(x_system);
 
     triangulation.execute_coarsening_and_refinement ();
@@ -1104,35 +679,6 @@ namespace aspect
     setup_dofs ();
 
     computing_timer.enter_section ("Refine mesh structure, part 2");
-
-    {
-      TrilinosWrappers::MPI::Vector
-      distributed_temp1 (temperature_rhs);
-      TrilinosWrappers::MPI::Vector
-      distributed_temp2 (temperature_rhs);
-
-      std::vector<TrilinosWrappers::MPI::Vector *> tmp (2);
-      tmp[0] = &(distributed_temp1);
-      tmp[1] = &(distributed_temp2);
-      temperature_trans.interpolate(tmp);
-
-      temperature_solution     = distributed_temp1;
-      old_temperature_solution = distributed_temp2;
-    }
-
-    {
-      TrilinosWrappers::MPI::BlockVector
-      distributed_stokes (stokes_rhs);
-      TrilinosWrappers::MPI::BlockVector
-      old_distributed_stokes (stokes_rhs);
-      std::vector<TrilinosWrappers::MPI::BlockVector *> stokes_tmp (2);
-      stokes_tmp[0] = &(distributed_stokes);
-      stokes_tmp[1] = &(old_distributed_stokes);
-
-      stokes_trans.interpolate (stokes_tmp);
-      stokes_solution     = distributed_stokes;
-      old_stokes_solution = old_distributed_stokes;
-    }
 
     {
       TrilinosWrappers::MPI::BlockVector
@@ -1186,8 +732,6 @@ namespace aspect
         set_initial_temperature_field ();
         compute_initial_pressure_field ();
 
-        sys_compute_initial_pressure_field();
-
         time                      = parameters.start_time;
         timestep_number           = 0;
         time_step = old_time_step = 0;
@@ -1199,31 +743,31 @@ namespace aspect
         start_timestep ();
 
         // then do the core work: assemble systems and solve
-        assemble_stokes_system ();
-        sys_assemble_temperature_system ();
-        build_stokes_preconditioner ();
-        solve ();
+        assemble_temperature_system ();
+        solve_temperature();
+
+        assemble_stokes_system();
+        build_stokes_preconditioner();
+        solve_stokes();
 
         pcout << std::endl;
+        
+        // update the time step size
+        old_time_step = time_step;
+        time_step = compute_time_step();
 
-        sys_solve_temperature();
+        if (parameters.convert_to_years == true)
+          statistics.add_value("Time step size (years)", time_step / year_in_seconds);
+        else
+          statistics.add_value("Time step size (seconds)", time_step);
 
-        rebuild_stokes_matrix = true;
-
-        sys_assemble_stokes_system();
-
-        rebuild_stokes_preconditioner = true;
-        sys_build_stokes_preconditioner();
-        sys_solve_stokes();
-
-        pcout << std::endl;
-
+        
         // see if we have to start over with a new refinement cycle
         // at the beginning of the simulation
         if ((timestep_number == 0) &&
             (pre_refinement_step < parameters.initial_adaptive_refinement))
           {
-            sys_refine_mesh (max_refinement_level);
+            refine_mesh (max_refinement_level);
             ++pre_refinement_step;
             goto start_time_iteration;
           }
@@ -1241,7 +785,7 @@ namespace aspect
                    (parameters.additional_refinement_times.front () < time+time_step))
               {
                 ++max_refinement_level;
-                sys_refine_mesh (max_refinement_level);
+                refine_mesh (max_refinement_level);
 
                 parameters.additional_refinement_times
                 .erase (parameters.additional_refinement_times.begin());
@@ -1253,7 +797,7 @@ namespace aspect
           if ((timestep_number > 0)
               &&
               (timestep_number % parameters.adaptive_refinement_interval == 0))
-            sys_refine_mesh (max_refinement_level);
+              refine_mesh (max_refinement_level);
 
 
         // every 100 time steps output a summary of the current
@@ -1268,23 +812,11 @@ namespace aspect
         time += time_step;
         ++timestep_number;
         {
-          TrilinosWrappers::MPI::BlockVector old_old_stokes_solution;
-          old_old_stokes_solution      = old_stokes_solution;
-          old_stokes_solution          = stokes_solution;
-          old_old_temperature_solution = old_temperature_solution;
-          old_temperature_solution     = temperature_solution;
           old_old_system_solution      = old_system_solution;
           old_system_solution          = system_solution;
           if (old_time_step > 0)
-            {
-              stokes_solution.sadd (1.+time_step/old_time_step, -time_step/old_time_step,
-                                    old_old_stokes_solution);
-              temperature_solution.sadd (1.+time_step/old_time_step,
-                                         -time_step/old_time_step,
-                                         old_old_temperature_solution);
               system_solution.sadd (1.+time_step/old_time_step, -time_step/old_time_step,
                                     old_old_system_solution);
-            }
         }
 
         // periodically generate snapshots so that we can resume here

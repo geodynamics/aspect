@@ -227,154 +227,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve ()
-  {
-    computing_timer.enter_section ("   Solve Stokes system");
-
-    // STEP 1: solve the Stokes system
-    {
-      pcout << "   Solving Stokes system... " << std::flush;
-
-      TrilinosWrappers::MPI::BlockVector
-      distributed_stokes_solution (stokes_rhs);
-      distributed_stokes_solution = stokes_solution;
-
-      // before solving we scale the initial solution to the right dimensions
-      distributed_stokes_solution.block(1) /= pressure_scaling;
-
-      const unsigned int
-      start = (distributed_stokes_solution.block(0).size() +
-               distributed_stokes_solution.block(1).local_range().first),
-              end   = (distributed_stokes_solution.block(0).size() +
-                       distributed_stokes_solution.block(1).local_range().second);
-      for (unsigned int i=start; i<end; ++i)
-        if (stokes_constraints.is_constrained (i))
-          distributed_stokes_solution(i) = 0;
-
-      // if the model is compressible then we need to adjust the right hand
-      // side of the equation to make it compatible with the matrix on the
-      // left
-      if (material_model->is_compressible ())
-        make_pressure_rhs_compatible(stokes_rhs);
-
-      PrimitiveVectorMemory< TrilinosWrappers::MPI::BlockVector > mem;
-
-      // step 1a: try if the simple and fast solver
-      // succeeds in 30 steps or less.
-      const double solver_tolerance = 1e-7 * stokes_rhs.l2_norm();
-      SolverControl solver_control_cheap (30, solver_tolerance);
-      SolverControl solver_control_expensive (stokes_matrix.m(), solver_tolerance);
-
-      try
-        {
-          const internal::BlockSchurPreconditioner<TrilinosWrappers::PreconditionAMG,
-                TrilinosWrappers::PreconditionILU>
-                preconditioner (stokes_matrix, stokes_preconditioner_matrix,
-                                *Mp_preconditioner, *Amg_preconditioner,
-                                false);
-
-          SolverFGMRES<TrilinosWrappers::MPI::BlockVector>
-          solver(solver_control_cheap, mem,
-                 SolverFGMRES<TrilinosWrappers::MPI::BlockVector>::
-                 AdditionalData(30, true));
-          solver.solve(stokes_matrix, distributed_stokes_solution, stokes_rhs,
-                       preconditioner);
-        }
-
-      // step 1b: take the stronger solver in case
-      // the simple solver failed
-      catch (SolverControl::NoConvergence)
-        {
-          const internal::BlockSchurPreconditioner<TrilinosWrappers::PreconditionAMG,
-                TrilinosWrappers::PreconditionILU>
-                preconditioner (stokes_matrix, stokes_preconditioner_matrix,
-                                *Mp_preconditioner, *Amg_preconditioner,
-                                true);
-
-          SolverFGMRES<TrilinosWrappers::MPI::BlockVector>
-          solver(solver_control_expensive, mem,
-                 SolverFGMRES<TrilinosWrappers::MPI::BlockVector>::
-                 AdditionalData(50, true));
-          solver.solve(stokes_matrix, distributed_stokes_solution, stokes_rhs,
-                       preconditioner);
-        }
-
-
-      stokes_constraints.distribute (distributed_stokes_solution);
-
-      // now rescale the pressure back to real physical units
-      distributed_stokes_solution.block(1) *= pressure_scaling;
-
-      stokes_solution = distributed_stokes_solution;
-
-      normalize_pressure(stokes_solution);
-
-      // print the number of iterations to screen and record it in the
-      // statistics file
-      if (solver_control_expensive.last_step() == 0)
-        pcout << solver_control_cheap.last_step()  << " iterations.";
-      else
-        pcout << solver_control_cheap.last_step() << '+'
-              << solver_control_expensive.last_step() << " iterations.";
-      pcout << std::endl;
-
-      statistics.add_value("Iterations for Stokes solver",
-                           solver_control_cheap.last_step() + solver_control_expensive.last_step());
-    }
-    computing_timer.exit_section();
-
-
-    // STEP 2: Update the time step size
-    {
-      old_time_step = time_step;
-      time_step = compute_time_step();
-
-      if (parameters.convert_to_years == true)
-        statistics.add_value("Time step size (years)", time_step / year_in_seconds);
-      else
-        statistics.add_value("Time step size (seconds)", time_step);
-
-      temperature_solution = old_temperature_solution;
-    }
-
-    // STEP 3: Set up the temperature linear system
-    assemble_temperature_system ();
-
-    // STEP 4: Solve the temperature system
-    computing_timer.enter_section ("   Solve temperature system");
-    {
-      pcout << "   Solving temperature system... " << std::flush;
-
-      SolverControl solver_control (temperature_matrix.m(),
-                                    1e-12*temperature_rhs.l2_norm());
-      SolverGMRES<TrilinosWrappers::MPI::Vector>   solver (solver_control,
-                                                           SolverGMRES<TrilinosWrappers::MPI::Vector>::AdditionalData(30,true));
-
-      TrilinosWrappers::MPI::Vector
-      distributed_temperature_solution (temperature_rhs);
-      distributed_temperature_solution = temperature_solution;
-
-      solver.solve (temperature_matrix, distributed_temperature_solution,
-                    temperature_rhs, *T_preconditioner);
-
-      temperature_constraints.distribute (distributed_temperature_solution);
-      temperature_solution = distributed_temperature_solution;
-
-      // print number of iterations and also record it in the
-      // statistics file
-      pcout << solver_control.last_step()
-            << " iterations." << std::endl;
-
-      statistics.add_value("Iterations for temperature solver",
-                           solver_control.last_step());
-    }
-    computing_timer.exit_section();
-  }
-
-
-
-  template <int dim>
-  void Simulator<dim>::sys_solve_temperature ()
+  void Simulator<dim>::solve_temperature ()
   {
     computing_timer.enter_section ("   Solve temperature system");
     {
@@ -400,7 +253,7 @@ namespace aspect
       pcout << solver_control.last_step()
             << " iterations." << std::endl;
 
-      statistics.add_value("Iterations for sys temperature solver",
+      statistics.add_value("Iterations for temperature solver",
                            solver_control.last_step());
     }
     computing_timer.exit_section();
@@ -409,7 +262,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::sys_solve_stokes ()
+  void Simulator<dim>::solve_stokes ()
   {
     computing_timer.enter_section ("   Solve Stokes system");
 
@@ -498,7 +351,7 @@ namespace aspect
     // now rescale the pressure back to real physical units
     system_solution.block(1) *= pressure_scaling;
 
-    sys_normalize_pressure(system_solution);
+    normalize_pressure(system_solution);
 
     // print the number of iterations to screen and record it in the
     // statistics file
@@ -509,7 +362,7 @@ namespace aspect
             << solver_control_expensive.last_step() << " iterations.";
     pcout << std::endl;
 
-    statistics.add_value("Iterations for sys Stokes solver",
+    statistics.add_value("Iterations for Stokes solver",
                          solver_control_cheap.last_step() + solver_control_expensive.last_step());
 
     computing_timer.exit_section();
@@ -525,7 +378,6 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  template void Simulator<deal_II_dimension>::solve ();
-  template void Simulator<deal_II_dimension>::sys_solve_temperature ();
-  template void Simulator<deal_II_dimension>::sys_solve_stokes ();
+  template void Simulator<deal_II_dimension>::solve_temperature ();
+  template void Simulator<deal_II_dimension>::solve_stokes ();
 }

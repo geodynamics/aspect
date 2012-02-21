@@ -48,55 +48,10 @@ namespace aspect
 {
 
   /**
-   * Find the largest velocity throughout the domain.
-   **/
-  template <int dim>
-  double Simulator<dim>::get_maximal_velocity () const
-  {
-    // use a quadrature formula that has one point at
-    // the location of each degree of freedom in the
-    // velocity element
-    const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                             parameters.stokes_velocity_degree);
-    const unsigned int n_q_points = quadrature_formula.size();
-
-
-    FEValues<dim> fe_values (mapping, stokes_fe, quadrature_formula, update_values);
-    std::vector<Tensor<1,dim> > velocity_values(n_q_points);
-
-    const FEValuesExtractors::Vector velocities (0);
-
-    double max_local_velocity = 0;
-
-    // loop over all locally owned cells and evaluate the velocities at each
-    // quadrature point (i.e. each node). keep a running tally of the largest
-    // such velocity
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = stokes_dof_handler.begin_active(),
-    endc = stokes_dof_handler.end();
-    for (; cell!=endc; ++cell)
-      if (cell->is_locally_owned())
-        {
-          fe_values.reinit (cell);
-          fe_values[velocities].get_function_values (stokes_solution,
-                                                     velocity_values);
-
-          for (unsigned int q=0; q<n_q_points; ++q)
-            max_local_velocity = std::max (max_local_velocity,
-                                           velocity_values[q].norm());
-        }
-
-    // return the largest value over all processors
-    return Utilities::MPI::max (max_local_velocity, MPI_COMM_WORLD);
-  }
-
-
-
-  /**
   * Find the largest velocity throughout the domain.
   **/
   template <int dim>
-  double Simulator<dim>::sys_get_maximal_velocity (
+  double Simulator<dim>::get_maximal_velocity (
     const TrilinosWrappers::MPI::BlockVector &solution) const
   {
     // use a quadrature formula that has one point at
@@ -145,7 +100,7 @@ namespace aspect
                                              parameters.stokes_velocity_degree);
     const unsigned int n_q_points = quadrature_formula.size();
 
-    FEValues<dim> fe_values (mapping, stokes_fe, quadrature_formula, update_values);
+    FEValues<dim> fe_values (mapping, system_fe, quadrature_formula, update_values);
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
 
     const FEValuesExtractors::Vector velocities (0);
@@ -153,13 +108,13 @@ namespace aspect
     double max_local_speed_over_meshsize = 0;
 
     typename DoFHandler<dim>::active_cell_iterator
-    cell = stokes_dof_handler.begin_active(),
-    endc = stokes_dof_handler.end();
+    cell = system_dof_handler.begin_active(),
+    endc = system_dof_handler.end();
     for (; cell!=endc; ++cell)
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[velocities].get_function_values (stokes_solution,
+          fe_values[velocities].get_function_values (system_solution,
                                                      velocity_values);
 
           double max_local_velocity = 0;
@@ -190,87 +145,6 @@ namespace aspect
   template <int dim>
   std::pair<double,double>
   Simulator<dim>::get_extrapolated_temperature_range () const
-  {
-    const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                             parameters.temperature_degree);
-    const unsigned int n_q_points = quadrature_formula.size();
-
-    FEValues<dim> fe_values (mapping, temperature_fe, quadrature_formula,
-                             update_values);
-    std::vector<double> old_temperature_values(n_q_points);
-    std::vector<double> old_old_temperature_values(n_q_points);
-
-    // This presets the minimum with a bigger
-    // and the maximum with a smaller number
-    // than one that is going to appear. Will
-    // be overwritten in the cell loop or in
-    // the communication step at the
-    // latest.
-    double min_local_temperature = std::numeric_limits<double>::max(),
-           max_local_temperature = -std::numeric_limits<double>::max();
-
-    if (timestep_number != 0)
-      {
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = temperature_dof_handler.begin_active(),
-        endc = temperature_dof_handler.end();
-        for (; cell!=endc; ++cell)
-          if (cell->is_locally_owned())
-            {
-              fe_values.reinit (cell);
-              fe_values.get_function_values (old_temperature_solution,
-                                             old_temperature_values);
-              fe_values.get_function_values (old_old_temperature_solution,
-                                             old_old_temperature_values);
-
-              for (unsigned int q=0; q<n_q_points; ++q)
-                {
-                  const double temperature =
-                    (1. + time_step/old_time_step) * old_temperature_values[q]-
-                    time_step/old_time_step * old_old_temperature_values[q];
-
-                  min_local_temperature = std::min (min_local_temperature,
-                                                    temperature);
-                  max_local_temperature = std::max (max_local_temperature,
-                                                    temperature);
-                }
-            }
-      }
-    else
-      {
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = temperature_dof_handler.begin_active(),
-        endc = temperature_dof_handler.end();
-        for (; cell!=endc; ++cell)
-          if (cell->is_locally_owned())
-            {
-              fe_values.reinit (cell);
-              fe_values.get_function_values (old_temperature_solution,
-                                             old_temperature_values);
-
-              for (unsigned int q=0; q<n_q_points; ++q)
-                {
-                  const double temperature = old_temperature_values[q];
-
-                  min_local_temperature = std::min (min_local_temperature,
-                                                    temperature);
-                  max_local_temperature = std::max (max_local_temperature,
-                                                    temperature);
-                }
-            }
-      }
-
-    return std::make_pair(-Utilities::MPI::max (-min_local_temperature,
-                                                MPI_COMM_WORLD),
-                          Utilities::MPI::max (max_local_temperature,
-                                               MPI_COMM_WORLD));
-  }
-
-
-
-  template <int dim>
-  std::pair<double,double>
-  Simulator<dim>::sys_get_extrapolated_temperature_range () const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
                                              parameters.temperature_degree);
@@ -357,111 +231,6 @@ namespace aspect
    */
   template <int dim>
   void Simulator<dim>::normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector)
-  {
-    // TODO: somehow parameterize based on the geometry model
-    // on which parts of the boundary the pressure should be
-    // zero
-    if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&*geometry_model) == 0)
-      return;
-
-    double my_pressure = 0.0;
-    double my_area = 0.0;
-    {
-      QGauss <dim-1> quadrature (parameters.stokes_velocity_degree + 1);
-
-      const unsigned int n_q_points = quadrature.size();
-      FEFaceValues<dim> fe_face_values (mapping, stokes_fe,  quadrature,
-                                        update_JxW_values | update_values);
-      const FEValuesExtractors::Scalar pressure (dim);
-
-      std::vector<double> pressure_values(n_q_points);
-
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = stokes_dof_handler.begin_active(),
-      endc = stokes_dof_handler.end();
-      for (; cell != endc; ++cell)
-        if (cell->is_locally_owned())
-          {
-            for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
-              {
-                const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
-                if (face->at_boundary() && face->boundary_indicator() == 1) // outer shell boundary
-                  {
-                    fe_face_values.reinit (cell, face_no);
-                    fe_face_values[pressure].get_function_values(vector,
-                                                                 pressure_values);
-
-                    for (unsigned int q = 0; q < n_q_points; ++q)
-                      {
-                        my_pressure += pressure_values[q]
-                                       * fe_face_values.JxW (q);
-                        my_area += fe_face_values.JxW (q);
-                      }
-                  }
-              }
-          }
-    }
-
-    double surf_pressure = 0;
-    // sum up the surface integrals from each processor
-    {
-      const double my_temp[2] = {my_pressure, my_area};
-      double temp[2];
-      Utilities::MPI::sum (my_temp, MPI_COMM_WORLD, temp);
-      surf_pressure = temp[0]/temp[1];
-    }
-
-    const double adjust = -surf_pressure + 1e7;
-    if (parameters.use_locally_conservative_discretization == false)
-      vector.block(1).add(adjust);
-    else
-      {
-        // this case is a bit more complicated: if the condition above is false
-        // then we use the FE_DGP element for which the shape functions do not
-        // add up to one; consequently, adding a constant to all degrees of
-        // freedom does not alter the overall function by that constant, but
-        // by something different
-        //
-        // we can work around this by using the documented property of the
-        // FE_DGP element that the first shape function is constant.
-        // consequently, adding the adjustment to the global function is
-        // achieved by adding the adjustment to the first pressure degree
-        // of freedom on each cell.
-        Assert (dynamic_cast<const FE_DGP<dim>*>(&stokes_fe.base_element(1)) != 0,
-                ExcInternalError());
-        std::vector<unsigned int> local_dof_indices (stokes_fe.dofs_per_cell);
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = stokes_dof_handler.begin_active(),
-        endc = stokes_dof_handler.end();
-        for (; cell != endc; ++cell)
-          if (cell->is_locally_owned())
-            {
-              // identify the first pressure dof
-              cell->get_dof_indices (local_dof_indices);
-              const unsigned int first_pressure_dof
-                = stokes_fe.component_to_system_index (dim, 0);
-
-              // make sure that this DoF is really owned by the current processor
-              // and that it is in fact a pressure dof
-              Assert (stokes_dof_handler.locally_owned_dofs().is_element(first_pressure_dof),
-                      ExcInternalError());
-              Assert (local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
-                      ExcInternalError());
-
-              // then adjust its value
-              vector(local_dof_indices[first_pressure_dof]) += adjust;
-            }
-      }
-  }
-
-
-
-  /*
-  * normalize the pressure by calculating the surface integral of the pressure on the outer
-  * shell and subtracting this from all pressure nodes.
-  */
-  template <int dim>
-  void Simulator<dim>::sys_normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector)
   {
     // TODO: somehow parameterize based on the geometry model
     // on which parts of the boundary the pressure should be
@@ -587,15 +356,9 @@ namespace aspect
 {
   template void Simulator<deal_II_dimension>::normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
 
-  template void Simulator<deal_II_dimension>::sys_normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
-
-  template double Simulator<deal_II_dimension>::get_maximal_velocity () const;
-
-  template double Simulator<deal_II_dimension>::sys_get_maximal_velocity (const TrilinosWrappers::MPI::BlockVector &) const;
+  template double Simulator<deal_II_dimension>::get_maximal_velocity (const TrilinosWrappers::MPI::BlockVector &solution) const;
 
   template std::pair<double,double> Simulator<deal_II_dimension>::get_extrapolated_temperature_range () const;
-
-  template std::pair<double,double> Simulator<deal_II_dimension>::sys_get_extrapolated_temperature_range () const;
 
   template double Simulator<deal_II_dimension>::compute_time_step () const;
 

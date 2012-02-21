@@ -29,7 +29,7 @@ int main (int argc, char *argv[])
       if (argc>=2)
         parameter_filename = argv[1];
       else
-        parameter_filename = "aspect.prm";
+        parameter_filename = "box.prm";
 
       // declare parameters so that we can create a default file
       // if there is no parameter file
