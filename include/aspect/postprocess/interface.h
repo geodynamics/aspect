@@ -333,7 +333,10 @@ namespace aspect
 
         /**
          * Fill the argument with a set of depth averages of the current
-         * temperature field.
+         * temperature field. The function fills a vector that contains
+         * average temperatures over slices of the domain of same depth. The
+         * function resizes the output vector to match the number of depth
+         * slices.
          */
         void
         get_depth_average_temperature(std::vector<double> & values) const;

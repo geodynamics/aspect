@@ -544,7 +544,10 @@ namespace aspect
       void make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector);
 
       /**
-       * Compute a depth average of the current temperature.
+       * Compute a depth average of the current temperature. The function
+       * fills a vector that contains average temperatures over slices of the
+       * domain of same depth. The function resizes the output vector to match
+       * the number of depth slices.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
