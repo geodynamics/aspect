@@ -635,12 +635,15 @@ namespace aspect
 
     // rescale errors
     {
-      estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
-                                                         MPI_COMM_WORLD);
-      estimated_error_per_cell_u /= Utilities::MPI::max (estimated_error_per_cell_u.linfty_norm(),
-                                                         MPI_COMM_WORLD);
-      estimated_error_per_cell_rho /= Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
-                                                           MPI_COMM_WORLD);
+      if (estimated_error_per_cell_T.linfty_norm() != 0)
+	estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
+							   MPI_COMM_WORLD);
+      if (estimated_error_per_cell_u.linfty_norm() != 0)
+	estimated_error_per_cell_u /= Utilities::MPI::max (estimated_error_per_cell_u.linfty_norm(),
+							   MPI_COMM_WORLD);
+      if (estimated_error_per_cell_rho.linfty_norm() != 0)
+	estimated_error_per_cell_rho /= Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
+							     MPI_COMM_WORLD);
 
       for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
         estimated_error_per_cell(i) = std::max(
