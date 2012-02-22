@@ -10,7 +10,6 @@
 #include <aspect/postprocess/interface.h>
 
 #include <deal.II/base/thread_management.h>
-#include <deal.II/numerics/data_out.h>
 
 
 namespace aspect
