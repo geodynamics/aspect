@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
@@ -67,7 +67,7 @@ namespace aspect
       std::string temp;
       int dummy, npoint;
 
-
+//TODO: This filename needs to become a run-time parameter
       std::ifstream in("initial_geotherm_table", std::ios::in);
       if (!in)
         {
