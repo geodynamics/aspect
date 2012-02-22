@@ -268,9 +268,9 @@ namespace aspect
 
     pcout << "   Solving Stokes system... " << std::flush;
 
-    // extract Stokes parts of solution vector
+    // extract Stokes parts of solution vector, without any ghost elements
     TrilinosWrappers::MPI::BlockVector distributed_stokes_solution;
-    distributed_stokes_solution.reinit(system_solution);
+    distributed_stokes_solution.reinit(system_rhs);
     distributed_stokes_solution.block(0) = system_solution.block(0);
     distributed_stokes_solution.block(1) = system_solution.block(1);
 
