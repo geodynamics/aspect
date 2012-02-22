@@ -34,9 +34,9 @@ namespace aspect
         struct StokesPreconditioner
         {
           StokesPreconditioner (const FiniteElement<dim> &system_fe,
-                                    const Quadrature<dim>    &quadrature,
-                                    const Mapping<dim>       &mapping,
-                                    const UpdateFlags         update_flags);
+                                const Quadrature<dim>    &quadrature,
+                                const Mapping<dim>       &mapping,
+                                const UpdateFlags         update_flags);
           StokesPreconditioner (const StokesPreconditioner &data);
 
           FEValues<dim>               system_fe_values;
@@ -47,15 +47,15 @@ namespace aspect
           std::vector<double>                  temperature_values;
           std::vector<double>                  old_pressure_values;
         };
-        
-        
+
+
 
         template <int dim>
         StokesPreconditioner<dim>::
         StokesPreconditioner (const FiniteElement<dim> &system_fe,
-                                  const Quadrature<dim>    &quadrature,
-                                  const Mapping<dim>       &mapping,
-                                  const UpdateFlags         update_flags)
+                              const Quadrature<dim>    &quadrature,
+                              const Mapping<dim>       &mapping,
+                              const UpdateFlags         update_flags)
           :
           system_fe_values (mapping, system_fe, quadrature,
                             update_flags),
@@ -102,9 +102,9 @@ namespace aspect
         struct StokesSystem : public StokesPreconditioner<dim>
         {
           StokesSystem (const FiniteElement<dim> &system_fe,
-                            const Mapping<dim>       &mapping,
-                            const Quadrature<dim>    &quadrature,
-                            const UpdateFlags         update_flags);
+                        const Mapping<dim>       &mapping,
+                        const Quadrature<dim>    &quadrature,
+                        const UpdateFlags         update_flags);
 
           StokesSystem (const StokesSystem<dim> &data);
 
@@ -114,25 +114,25 @@ namespace aspect
           std::vector<Tensor<1,dim> > old_velocity_values;
         };
 
-        
+
 
         template <int dim>
         StokesSystem<dim>::
         StokesSystem (const FiniteElement<dim> &system_fe,
-                          const Mapping<dim>       &mapping,
-                          const Quadrature<dim>    &quadrature,
-                          const UpdateFlags         update_flags)
+                      const Mapping<dim>       &mapping,
+                      const Quadrature<dim>    &quadrature,
+                      const UpdateFlags         update_flags)
           :
           StokesPreconditioner<dim> (system_fe, quadrature,
-                                         mapping,
-                                         update_flags),
+                                     mapping,
+                                     update_flags),
           phi_u (system_fe.dofs_per_cell),
           grads_phi_u (system_fe.dofs_per_cell),
           div_phi_u (system_fe.dofs_per_cell),
           old_velocity_values (quadrature.size())
         {}
 
-        
+
 
         template <int dim>
         StokesSystem<dim>::
@@ -151,8 +151,8 @@ namespace aspect
         struct TemperatureSystem
         {
           TemperatureSystem (const FiniteElement<dim> &system_fe,
-                                 const Mapping<dim>       &mapping,
-                                 const Quadrature<dim>    &quadrature);
+                             const Mapping<dim>       &mapping,
+                             const Quadrature<dim>    &quadrature);
           TemperatureSystem (const TemperatureSystem &data);
 
           FEValues<dim>               system_fe_values;
@@ -177,13 +177,13 @@ namespace aspect
           std::vector<double>         old_old_temperature_laplacians;
         };
 
-        
-        
+
+
         template <int dim>
         TemperatureSystem<dim>::
         TemperatureSystem (const FiniteElement<dim> &system_fe,
-                               const Mapping<dim>       &mapping,
-                               const Quadrature<dim>    &quadrature)
+                           const Mapping<dim>       &mapping,
+                           const Quadrature<dim>    &quadrature)
           :
           system_fe_values (mapping,
                             system_fe, quadrature,
@@ -210,7 +210,7 @@ namespace aspect
         {}
 
 
-        
+
         template <int dim>
         TemperatureSystem<dim>::
         TemperatureSystem (const TemperatureSystem &scratch)
@@ -256,8 +256,8 @@ namespace aspect
           FullMatrix<double>          local_matrix;
           std::vector<unsigned int>   local_dof_indices;
         };
-        
-        
+
+
 
         template <int dim>
         StokesPreconditioner<dim>::
@@ -289,7 +289,7 @@ namespace aspect
           Vector<double> local_rhs;
           Vector<double> local_pressure_shape_function_integrals;
         };
-        
+
 
 
         template <int dim>
@@ -301,7 +301,7 @@ namespace aspect
           local_pressure_shape_function_integrals (system_fe.dofs_per_cell)
         {}
 
-        
+
 
         template <int dim>
         StokesSystem<dim>::
@@ -312,7 +312,7 @@ namespace aspect
           local_pressure_shape_function_integrals (data.local_pressure_shape_function_integrals)
         {}
 
-        
+
 
         template <int dim>
         struct TemperatureSystem
@@ -325,8 +325,8 @@ namespace aspect
           std::vector<unsigned int>   local_dof_indices;
         };
 
-        
-        
+
+
         template <int dim>
         TemperatureSystem<dim>::
         TemperatureSystem (const FiniteElement<dim> &system_fe)
@@ -337,7 +337,7 @@ namespace aspect
           local_dof_indices (system_fe.dofs_per_cell)
         {}
 
-        
+
 
         template <int dim>
         TemperatureSystem<dim>::
@@ -356,10 +356,10 @@ namespace aspect
     inline
     T
     bdf2_extrapolate (const bool use_bdf_scheme,
-                          const double old_time_step,
-                          const double time_step,
-                          const T &old_data,
-                          const T &new_data)
+                      const double old_time_step,
+                      const double time_step,
+                      const T &old_data,
+                      const T &new_data)
     {
       return (use_bdf_scheme) ?
              (new_data * (1 + time_step/old_time_step)
@@ -556,8 +556,8 @@ namespace aspect
   void
   Simulator<dim>::
   local_assemble_stokes_preconditioner (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                            internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
-                                            internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
+                                        internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
+                                        internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
   {
     const unsigned int   dofs_per_cell   = system_fe.dofs_per_cell;
     const unsigned int   n_q_points      = scratch.system_fe_values.n_quadrature_points;
@@ -653,11 +653,11 @@ namespace aspect
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
          StokesPreconditioner<dim> (system_fe, quadrature_formula,
-                                        mapping,
-                                        update_JxW_values |
-                                        update_values |
-                                        update_gradients |
-                                        update_quadrature_points),
+                                    mapping,
+                                    update_JxW_values |
+                                    update_values |
+                                    update_gradients |
+                                    update_quadrature_points),
          internal::Assembly::CopyData::
          StokesPreconditioner<dim> (system_fe));
 
@@ -713,8 +713,8 @@ namespace aspect
   void
   Simulator<dim>::
   local_assemble_stokes_system (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                    internal::Assembly::Scratch::StokesSystem<dim> &scratch,
-                                    internal::Assembly::CopyData::StokesSystem<dim> &data)
+                                internal::Assembly::Scratch::StokesSystem<dim> &scratch,
+                                internal::Assembly::CopyData::StokesSystem<dim> &data)
   {
     const unsigned int dofs_per_cell = scratch.system_fe_values.get_fe().dofs_per_cell;
     const unsigned int n_q_points    = scratch.system_fe_values.n_quadrature_points;
@@ -878,14 +878,14 @@ namespace aspect
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
          StokesSystem<dim> (system_fe, mapping, quadrature_formula,
-                                (update_values    |
-                                 update_quadrature_points  |
-                                 update_JxW_values |
-                                 (rebuild_stokes_matrix == true
-                                  ?
-                                  update_gradients
-                                  :
-                                  UpdateFlags(0)))),
+                            (update_values    |
+                             update_quadrature_points  |
+                             update_JxW_values |
+                             (rebuild_stokes_matrix == true
+                              ?
+                              update_gradients
+                              :
+                              UpdateFlags(0)))),
          internal::Assembly::CopyData::
          StokesSystem<dim> (system_fe));
 
@@ -904,11 +904,11 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::
   local_assemble_temperature_system (const std::pair<double,double> global_T_range,
-                                         const double                   global_max_velocity,
-                                         const double                   global_entropy_variation,
-                                         const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                         internal::Assembly::Scratch::TemperatureSystem<dim> &scratch,
-                                         internal::Assembly::CopyData::TemperatureSystem<dim> &data)
+                                     const double                   global_max_velocity,
+                                     const double                   global_entropy_variation,
+                                     const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                     internal::Assembly::Scratch::TemperatureSystem<dim> &scratch,
+                                     internal::Assembly::CopyData::TemperatureSystem<dim> &data)
   {
     const bool use_bdf2_scheme = (timestep_number > 1);
 
@@ -1110,7 +1110,7 @@ namespace aspect
                           // integral mean. results are not very
                           // sensitive to this and this is far simpler
                           get_entropy_variation ((global_T_range.first +
-                                                      global_T_range.second) / 2),
+                                                  global_T_range.second) / 2),
                           std_cxx1x::_1,
                           std_cxx1x::_2,
                           std_cxx1x::_3),

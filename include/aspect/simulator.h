@@ -296,7 +296,7 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void assemble_stokes_system ();
-      
+
       /**
        * Initiate the assembly of the temperature matrix and right hand side
        * and build a preconditioner for the matrix.

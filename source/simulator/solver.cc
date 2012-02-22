@@ -343,12 +343,12 @@ namespace aspect
                      distributed_stokes_rhs, preconditioner);
       }
 
-				     // distribute hanging node and
-				     // other constraints
+    // distribute hanging node and
+    // other constraints
     system_constraints.distribute (distributed_stokes_solution);
 
-				     // then copy back the solution from the temporary (non-ghosted) vector
-				     // into the ghosted one with all solution components
+    // then copy back the solution from the temporary (non-ghosted) vector
+    // into the ghosted one with all solution components
     system_solution.block(0) = distributed_stokes_solution.block(0);
     system_solution.block(1) = distributed_stokes_solution.block(1);
 

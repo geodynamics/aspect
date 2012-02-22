@@ -636,14 +636,14 @@ namespace aspect
     // rescale errors
     {
       if (estimated_error_per_cell_T.linfty_norm() != 0)
-	estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
-							   MPI_COMM_WORLD);
+        estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
+                                                           MPI_COMM_WORLD);
       if (estimated_error_per_cell_u.linfty_norm() != 0)
-	estimated_error_per_cell_u /= Utilities::MPI::max (estimated_error_per_cell_u.linfty_norm(),
-							   MPI_COMM_WORLD);
+        estimated_error_per_cell_u /= Utilities::MPI::max (estimated_error_per_cell_u.linfty_norm(),
+                                                           MPI_COMM_WORLD);
       if (estimated_error_per_cell_rho.linfty_norm() != 0)
-	estimated_error_per_cell_rho /= Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
-							     MPI_COMM_WORLD);
+        estimated_error_per_cell_rho /= Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
+                                                             MPI_COMM_WORLD);
 
       for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
         estimated_error_per_cell(i) = std::max(
@@ -800,7 +800,7 @@ namespace aspect
           if ((timestep_number > 0)
               &&
               (timestep_number % parameters.adaptive_refinement_interval == 0))
-              refine_mesh (max_refinement_level);
+            refine_mesh (max_refinement_level);
 
 
         // every 100 time steps output a summary of the current
@@ -818,8 +818,8 @@ namespace aspect
           old_old_system_solution      = old_system_solution;
           old_system_solution          = system_solution;
           if (old_time_step > 0)
-              system_solution.sadd (1.+time_step/old_time_step, -time_step/old_time_step,
-                                    old_old_system_solution);
+            system_solution.sadd (1.+time_step/old_time_step, -time_step/old_time_step,
+                                  old_old_system_solution);
         }
 
         // periodically generate snapshots so that we can resume here

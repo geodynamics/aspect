@@ -51,7 +51,7 @@ namespace aspect
     // then apply constraints and copy the
     // result into vectors with ghost elements
     system_constraints.distribute(initial_solution);
-    
+
     // copy temperature block only
     system_solution.block(2) = initial_solution.block(2);
     old_system_solution.block(2) = initial_solution.block(2);
