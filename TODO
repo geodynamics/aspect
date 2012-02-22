@@ -30,6 +30,9 @@ Topics for preview release:
   or a temperature perturbation
 - name the material model better than "table" and put the input files into
   a better directory
+- the heat flux computation is very sensitive to the number of processors.
+  values may change by a factor of 5 between 1 and 2 processors. what's going
+  on?
 - add an easter egg
 
 
