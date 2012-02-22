@@ -64,39 +64,40 @@ namespace aspect
     SphericalGaussianPerturbation<dim>::
     SphericalGaussianPerturbation()
     {
-    	std::string temp;
-    	int dummy, npoint;
+      std::string temp;
+      int dummy, npoint;
 
 
-    	std::ifstream in("initial_geotherm_table", std::ios::in);
-    	if (!in)
-    	{
-    		geotherm.reinit(4);
-    		radial_position.reinit(4);
-      	    geotherm[0] = 1e0;
-      	    geotherm[1] = 0.75057142857142856;
-      	    geotherm[2] = 0.32199999999999995;
-      	    geotherm[3] = 0.0;
-      	    radial_position[0] =  0e0-1e-3;
-      	    radial_position[1] =  0.16666666666666666;
-      	    radial_position[2] =  0.83333333333333337;
-      	    radial_position[3] =  1e0+1e-3;
-    	}
-    	else
-    	{
-    		in >> dummy >> npoint;
-    		getline(in, temp); // eat remainder of the line
-    		geotherm.reinit(npoint);
-    		radial_position.reinit(npoint);
+      std::ifstream in("initial_geotherm_table", std::ios::in);
+      if (!in)
+        {
+          geotherm.reinit(4);
+          radial_position.reinit(4);
+          geotherm[0] = 1e0;
+          geotherm[1] = 0.75057142857142856;
+          geotherm[2] = 0.32199999999999995;
+          geotherm[3] = 0.0;
+          radial_position[0] =  0e0-1e-3;
+          radial_position[1] =  0.16666666666666666;
+          radial_position[2] =  0.83333333333333337;
+          radial_position[3] =  1e0+1e-3;
+        }
+      else
+        {
+          in >> dummy >> npoint;
+          getline(in, temp); // eat remainder of the line
+          geotherm.reinit(npoint);
+          radial_position.reinit(npoint);
 
-    		// read geotherm depth pairs
-    		for (int i=0;i<npoint; i++){
-    			in >> geotherm[npoint-i-1] >> radial_position[i];
-    			getline(in, temp); // eat remainder of the line
-    		}
-    		radial_position[0] -= 1e-3;
-    		radial_position[3] += 1e-3;
-    	}
+          // read geotherm depth pairs
+          for (int i=0; i<npoint; i++)
+            {
+              in >> geotherm[npoint-i-1] >> radial_position[i];
+              getline(in, temp); // eat remainder of the line
+            }
+          radial_position[0] -= 1e-3;
+          radial_position[3] += 1e-3;
+        }
     }
 
     template <int dim>
@@ -130,13 +131,13 @@ namespace aspect
 
       int indx = -1;
       for (unsigned int i=0; i<3; ++i)
-      {
-    	  if ((radial_position[i] - s) < eps && (radial_position[i+1] - s) > eps)
-    	  {
-    		  indx = i;
-    		  break;
-    	  }
-      }
+        {
+          if ((radial_position[i] - s) < eps && (radial_position[i+1] - s) > eps)
+            {
+              indx = i;
+              break;
+            }
+        }
       Assert (indx >= 0, ExcInternalError());
       Assert (indx < 3,  ExcInternalError());
       int indx1 = indx + 1;

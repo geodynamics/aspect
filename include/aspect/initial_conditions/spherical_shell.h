@@ -45,7 +45,7 @@ namespace aspect
     {
       public:
 
-    	SphericalGaussianPerturbation<dim>();
+        SphericalGaussianPerturbation<dim>();
         /**
          * Return the initial temperature as a function of position.
          */

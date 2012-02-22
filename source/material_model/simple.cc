@@ -47,7 +47,7 @@ namespace aspect
     Simple<dim>::
     reference_thermal_alpha () const
     {
-    	return thermal_alpha;
+      return thermal_alpha;
     }
 
     template <int dim>
@@ -84,7 +84,7 @@ namespace aspect
     Simple<dim>::
     reference_thermal_diffusivity () const
     {
-    	return k_value/(reference_rho*reference_specific_heat);
+      return k_value/(reference_rho*reference_specific_heat);
     }
 
     template <int dim>

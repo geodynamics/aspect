@@ -122,67 +122,68 @@ namespace aspect
                << " m/s";
 
       if (this->get_time() == 0e0)
-      {
-    	  if (dynamic_cast<const MaterialModel::Simple<dim> *>(&this->get_material_model()) != 0){
+        {
+          if (dynamic_cast<const MaterialModel::Simple<dim> *>(&this->get_material_model()) != 0)
+            {
 
-    		  const MaterialModel::Simple<dim> & material_model
-    		  	  	  = dynamic_cast<const MaterialModel::Simple<dim> &>(this->get_material_model());
+              const MaterialModel::Simple<dim> & material_model
+                = dynamic_cast<const MaterialModel::Simple<dim> &>(this->get_material_model());
 
-    		  const GeometryModel::SphericalShell<dim> *geometry = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
-    		  double h;
-    		  if (geometry)
-    			  h = geometry->outer_radius() - geometry->inner_radius();
-    		  else
-    			  h = 1.0; //TODO: define something like geometrymodel::depth?
+              const GeometryModel::SphericalShell<dim> *geometry = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
+              double h;
+              if (geometry)
+                h = geometry->outer_radius() - geometry->inner_radius();
+              else
+                h = 1.0; //TODO: define something like geometrymodel::depth?
 
-    		  double dT = this->get_boundary_temperature().maximal_temperature() - this->get_boundary_temperature().minimal_temperature();
+              double dT = this->get_boundary_temperature().maximal_temperature() - this->get_boundary_temperature().minimal_temperature();
 
-    		  Point<dim> representative_point = Point<dim>::unit_vector(dim-1);
-    		  const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
-    		  const double Ra = material_model.reference_density()*
-    				  gravity*
-    				  material_model.reference_thermal_alpha()*
-    				  dT*std::pow(h,3)/
-    				  (material_model.reference_thermal_diffusivity()*
-    						  material_model.reference_viscosity());
+              Point<dim> representative_point = Point<dim>::unit_vector(dim-1);
+              const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
+              const double Ra = material_model.reference_density()*
+                                gravity*
+                                material_model.reference_thermal_alpha()*
+                                dT*std::pow(h,3)/
+                                (material_model.reference_thermal_diffusivity()*
+                                 material_model.reference_viscosity());
 
-    		  this->get_pcout()<<  std::endl;
-    		  this->get_pcout()<< "     Reference density (kg/m^3):                    "
-    				  << material_model.reference_density()
-    				  << std::endl;
-    		  this->get_pcout()<< "     Reference gravity (m/s^2):                     "
-    				  << gravity
-    				  << std::endl;
-    		  this->get_pcout()<< "     Reference thermal expansion (1/K):             "
-    				  << material_model.reference_thermal_alpha()
-    				  << std::endl;
-    		  this->get_pcout()<< "     Temperature contrast accross model domain (K): "
-    				  << dT
-    				  << std::endl;
-    		  this->get_pcout()<< "     Model domain depth (m):                        "
-    				  << h
-    				  << std::endl;
-    		  this->get_pcout()<< "     Reference thermal diffusivity (m^2/s):         "
-    				  << material_model.reference_thermal_diffusivity()
-    				  << std::endl;
-    		  this->get_pcout()<< "     Reference viscosity (Pas):                     "
-    				  << material_model.reference_viscosity()
-    				  << std::endl;
-    		  this->get_pcout()<< "     Ra number:                                     "
-    				  << Ra
-    				  << std::endl;
-    		  this->get_pcout()<< "      k_value:                                     "
-    				  << material_model.thermal_conductivity(dT, dT, representative_point)
-    				  << std::endl;
-    		  this->get_pcout()<< "      reference_cp:                                     "
-    				  << material_model.reference_cp()
-    				  << std::endl;
-    		  this->get_pcout()<< "      reference_thermal_diffusivity:                                     "
-    				  << material_model.thermal_conductivity(dT, dT, representative_point)/(material_model.reference_density()*material_model.reference_cp())
-    				  << std::endl;
-    		  this->get_pcout()<<  std::endl;
-    	  }
-      }
+              this->get_pcout()<<  std::endl;
+              this->get_pcout()<< "     Reference density (kg/m^3):                    "
+                               << material_model.reference_density()
+                               << std::endl;
+              this->get_pcout()<< "     Reference gravity (m/s^2):                     "
+                               << gravity
+                               << std::endl;
+              this->get_pcout()<< "     Reference thermal expansion (1/K):             "
+                               << material_model.reference_thermal_alpha()
+                               << std::endl;
+              this->get_pcout()<< "     Temperature contrast accross model domain (K): "
+                               << dT
+                               << std::endl;
+              this->get_pcout()<< "     Model domain depth (m):                        "
+                               << h
+                               << std::endl;
+              this->get_pcout()<< "     Reference thermal diffusivity (m^2/s):         "
+                               << material_model.reference_thermal_diffusivity()
+                               << std::endl;
+              this->get_pcout()<< "     Reference viscosity (Pas):                     "
+                               << material_model.reference_viscosity()
+                               << std::endl;
+              this->get_pcout()<< "     Ra number:                                     "
+                               << Ra
+                               << std::endl;
+              this->get_pcout()<< "      k_value:                                     "
+                               << material_model.thermal_conductivity(dT, dT, representative_point)
+                               << std::endl;
+              this->get_pcout()<< "      reference_cp:                                     "
+                               << material_model.reference_cp()
+                               << std::endl;
+              this->get_pcout()<< "      reference_thermal_diffusivity:                                     "
+                               << material_model.thermal_conductivity(dT, dT, representative_point)/(material_model.reference_density()*material_model.reference_cp())
+                               << std::endl;
+              this->get_pcout()<<  std::endl;
+            }
+        }
       return std::pair<std::string, std::string> ("RMS, max velocity:",
                                                   output.str());
     }
