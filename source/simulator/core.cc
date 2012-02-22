@@ -190,14 +190,14 @@ namespace aspect
       statistics.add_value("Time (seconds)", time);
     statistics.add_value("Number of mesh cells",
                          triangulation.n_global_active_cells());
-    
+
     std::vector<unsigned int> system_sub_blocks (dim+2,0);
     system_sub_blocks[dim] = 1;
     system_sub_blocks[dim+1] = 2;
     std::vector<unsigned int> system_dofs_per_block (3);
-    DoFTools::count_dofs_per_block (system_dof_handler, system_dofs_per_block, 
+    DoFTools::count_dofs_per_block (system_dof_handler, system_dofs_per_block,
                                     system_sub_blocks);
-    
+
     statistics.add_value("Number of Stokes degrees of freedom",
                          system_dofs_per_block[0]+system_dofs_per_block[1]);
     statistics.add_value("Number of temperature degrees of freedom",
@@ -266,7 +266,7 @@ namespace aspect
   }
 
 
-  
+
   template <int dim>
   void Simulator<dim>::
   setup_system_preconditioner (const std::vector<IndexSet> &system_partitioning)
@@ -453,9 +453,9 @@ namespace aspect
     setup_system_preconditioner (system_partitioning);
 
     system_rhs.reinit(system_partitioning, MPI_COMM_WORLD);
-    system_solution.reinit(system_partitioning, MPI_COMM_WORLD);
-    old_system_solution.reinit(system_partitioning, MPI_COMM_WORLD);
-    old_old_system_solution.reinit(system_partitioning, MPI_COMM_WORLD);
+    system_solution.reinit(system_relevant_partitioning, MPI_COMM_WORLD);
+    old_system_solution.reinit(system_relevant_partitioning, MPI_COMM_WORLD);
+    old_old_system_solution.reinit(system_relevant_partitioning, MPI_COMM_WORLD);
 
     if (material_model->is_compressible())
       pressure_shape_function_integrals.reinit (system_partitioning, MPI_COMM_WORLD);
@@ -751,7 +751,7 @@ namespace aspect
         solve_stokes();
 
         pcout << std::endl;
-        
+
         // update the time step size
         old_time_step = time_step;
         time_step = compute_time_step();
@@ -761,7 +761,7 @@ namespace aspect
         else
           statistics.add_value("Time step size (seconds)", time_step);
 
-        
+
         // see if we have to start over with a new refinement cycle
         // at the beginning of the simulation
         if ((timestep_number == 0) &&
