@@ -22,7 +22,7 @@ namespace aspect
   {
     template <int dim>
     template <class Archive>
-    void DepthAverage<dim>::entry::serialize (Archive &ar, const unsigned int version)
+    void DepthAverage<dim>::DataPoint::serialize (Archive &ar, const unsigned int version)
     {
       ar &time &depth &value;
     }
@@ -59,27 +59,32 @@ namespace aspect
 
       const double max_depth = this->get_geometry_model().maximal_depth();
 
+//TODO: Use the correct MPI communicator
       if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
         {
-          // store data from the current step
+          // store all data from the current step
           for (unsigned int i=0; i<temp.size(); ++i)
             {
-              entry e;
-              e.time=this->get_time();
-              e.depth=max_depth*i;
-              e.value=temp[i];
-              entries.push_back(e);
+              DataPoint data_point;
+              data_point.time  = this->get_time();
+              data_point.depth = max_depth*i;
+              data_point.value = temp[i];
+              entries.push_back(data_point);
             }
-          entry e;
-          e.time=std::numeric_limits<double>::quiet_NaN();
-          entries.push_back(e);
+
+          // leave a marker for the end of this time step. we'll later
+          // use this to leave a blank line in the output file at this
+          // position
+          DataPoint data_point;
+          data_point.time = std::numeric_limits<double>::quiet_NaN();
+          entries.push_back(data_point);
 
           // write out the file
-          const std::string filename = this->get_output_directory() + "depthaverage.plt";
+          const std::string filename = this->get_output_directory() + "depth_average.plt";
           std::ofstream f(filename.c_str());
           for (unsigned int i=0; i<entries.size(); ++i)
             {
-              if (isnan(entries[i].time))
+              if (entries[i].time == std::numeric_limits<double>::quiet_NaN())
                 f << std::endl;
               else
                 f << entries[i].time << " "
@@ -93,7 +98,7 @@ namespace aspect
       // return what should be printed to the screen. note that we had
       // just incremented the number, so use the previous value
       return std::make_pair (std::string ("Writing depth average"),
-                             this->get_output_directory() + "depthaverage.plt");
+                             this->get_output_directory() + "depth_average.plt");
     }
 
 
@@ -103,7 +108,7 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("DepthAverage");
+        prm.enter_subsection("Depth average");
         {
           prm.declare_entry ("Time between graphical output", "1e8",
                              Patterns::Double (0),
@@ -126,7 +131,7 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("DepthAverage");
+        prm.enter_subsection("Depth average");
         {
           output_interval = prm.get_double ("Time between graphical output");
         }

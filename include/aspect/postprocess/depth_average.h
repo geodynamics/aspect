@@ -2,7 +2,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 #ifndef __aspect__postprocess_visualization_h
@@ -33,7 +33,7 @@ namespace aspect
 
         /**
          * Generate graphical output from the current solution.
-         **/
+         */
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
@@ -96,17 +96,21 @@ namespace aspect
          */
         string output_format;
 
-        struct entry
+        /**
+        * A structure for a single time/depth/value record.
+        */
+        struct DataPoint
         {
           double time, depth, value;
+
           template <class Archive>
           void serialize (Archive &ar, const unsigned int version);
         };
 
         /**
-         * save all the past values
+         * An array of all the past values
          */
-        std::vector<entry> entries;
+        std::vector<DataPoint> entries;
 
         /**
          * Compute the next output time from the current one. In
