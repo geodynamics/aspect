@@ -255,7 +255,7 @@ namespace aspect
         * why mesh refinement is proceeding as it is.
         */
         void
-        compute_refinement_criterion(Vector<float> & estimated_error_per_cell) const;
+        get_refinement_criteria(Vector<float> & estimated_error_per_cell) const;
         /** @} */
 
 
@@ -332,32 +332,31 @@ namespace aspect
         get_temperature_dof_handler () const;
 
         /**
-         * Compute a depth average of the current temperature field
+         * Fill the argument with a set of depth averages of the current
+         * temperature field.
          */
         void
-        compute_depth_average_temperature(std::vector<double> & values) const;
-        /** @} */
+        get_depth_average_temperature(std::vector<double> & values) const;
 
         /**
          * Compute a depth average of the current temperature field
          */
         void
-        compute_Vs_anomaly(Vector<float> & values) const;
+        get_Vs_anomaly(Vector<float> & values) const;
         /** @} */
+
 
         /** @name Accessing variables that identify aspects of the simulation */
         /** @{ */
 
-
         /**
-         * Return a pointer to the material model to access function like density()
+         * Return a pointer to the material model to access function like density().
          */
         const MaterialModel::Interface<dim> &
         get_material_model () const;
 
-
         /**
-         * Return a pointer to the material model to access function like density()
+         * Return a pointer to the gravity model description.
          */
         const GravityModel::Interface<dim> &
         get_gravity_model () const;

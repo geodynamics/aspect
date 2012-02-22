@@ -135,7 +135,7 @@ namespace aspect
 
     template <int dim>
     void
-    SimulatorAccess<dim>::compute_refinement_criterion (Vector<float> & estimated_error_per_cell) const
+    SimulatorAccess<dim>::get_refinement_criteria (Vector<float> & estimated_error_per_cell) const
     {
       simulator->compute_refinement_criterion(estimated_error_per_cell);
     }
@@ -198,14 +198,15 @@ namespace aspect
 
     template <int dim>
     void
-    SimulatorAccess<dim>::compute_depth_average_temperature(std::vector<double> & values) const
+    SimulatorAccess<dim>::get_depth_average_temperature(std::vector<double> & values) const
     {
       simulator->compute_depth_average_temperature(values);
     }
 
+
     template <int dim>
     void
-    SimulatorAccess<dim>::compute_Vs_anomaly(Vector<float> & values) const
+    SimulatorAccess<dim>::get_Vs_anomaly(Vector<float> & values) const
     {
       simulator->compute_Vs_anomaly(values);
     }

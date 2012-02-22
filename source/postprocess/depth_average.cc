@@ -55,7 +55,7 @@ namespace aspect
         return std::pair<std::string,std::string>();
 
       std::vector<double> temp;
-      this->compute_depth_average_temperature(temp);
+      this->get_depth_average_temperature(temp);
 
       const double max_depth = this->get_geometry_model().maximal_depth();
 

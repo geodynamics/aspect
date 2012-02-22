@@ -315,10 +315,10 @@ namespace aspect
                                                   this->get_adiabatic_conditions());
 
       Vector<float> estimated_error_per_cell(this->get_triangulation().n_active_cells());
-      this->compute_refinement_criterion(estimated_error_per_cell);
+      this->get_refinement_criteria(estimated_error_per_cell);
 
       Vector<float> Vs_anomaly(this->get_triangulation().n_active_cells());
-      this->compute_Vs_anomaly(Vs_anomaly);
+      this->get_Vs_anomaly(Vs_anomaly);
 
       // create a DataOut object on the heap; ownership of this
       // object will later be transferred to a different thread
