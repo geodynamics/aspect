@@ -343,10 +343,14 @@ namespace aspect
                      distributed_stokes_rhs, preconditioner);
       }
 
+				     // distribute hanging node and
+				     // other constraints
+    system_constraints.distribute (distributed_stokes_solution);
+
+				     // then copy back the solution from the temporary (non-ghosted) vector
+				     // into the ghosted one with all solution components
     system_solution.block(0) = distributed_stokes_solution.block(0);
     system_solution.block(1) = distributed_stokes_solution.block(1);
-
-    system_constraints.distribute (system_solution);
 
     // now rescale the pressure back to real physical units
     system_solution.block(1) *= pressure_scaling;
@@ -366,7 +370,6 @@ namespace aspect
                          solver_control_cheap.last_step() + solver_control_expensive.last_step());
 
     computing_timer.exit_section();
-
   }
 
 }
