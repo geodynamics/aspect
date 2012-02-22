@@ -55,13 +55,13 @@ namespace aspect
 
         /**
          * Save the state of this object.
-         **/
+         */
         virtual
         void save (std::map<std::string, std::string> &status_strings) const;
 
         /**
          * Restore the state of the object.
-         **/
+         */
         virtual
         void load (const std::map<std::string, std::string> &status_strings);
 
@@ -90,11 +90,6 @@ namespace aspect
          * graphical output again.
          */
         double next_output_time;
-
-        /**
-         * Graphical output format.
-         */
-        string output_format;
 
         /**
         * A structure for a single time/depth/value record.
