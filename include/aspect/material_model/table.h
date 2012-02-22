@@ -149,8 +149,8 @@ namespace aspect
         double reference_alpha;
         std::string composition;
         std::string data_directory;
-        bool ComputePhases;
-        bool Compressible;
+        bool compute_phases;
+        bool model_is_compressible;
 
         std::string ViscosityModel;
         double reference_eta;

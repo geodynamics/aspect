@@ -476,7 +476,9 @@ namespace aspect
     thermodynamic_phase (const double temperature,
                          const double pressure) const
     {
-      if (!ComputePhases) return 0;
+      if (!compute_phases)
+        return 0;
+
       static internal::PhaseLookupFunction<dim> phase(data_directory+"Phases.lab");
       return phase.value(temperature, pressure);
     }
@@ -499,7 +501,7 @@ namespace aspect
     Table<dim>::
     is_compressible () const
     {
-      return Compressible;
+      return model_is_compressible;
     }
 
 
@@ -586,10 +588,10 @@ namespace aspect
           k_value                 = prm.get_double ("Thermal conductivity");
           reference_specific_heat = prm.get_double ("Reference specific heat");
           reference_alpha       = prm.get_double ("Thermal expansion coefficient");
-          composition         = prm.get ("Composition");
+          composition           = prm.get ("Composition");
           data_directory        = prm.get ("Path to model data") + "/" + composition +"/";
-          ComputePhases         = prm.get_bool ("ComputePhases");
-          Compressible          = prm.get_bool ("Compressible");
+          compute_phases        = prm.get_bool ("ComputePhases");
+          model_is_compressible = prm.get_bool ("Compressible");
           prm.enter_subsection ("Viscosity");
           {
             ViscosityModel      = prm.get ("ViscosityModel");
