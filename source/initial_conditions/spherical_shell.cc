@@ -69,10 +69,11 @@ namespace aspect
 
 //TODO: This filename needs to become a run-time parameter
       std::ifstream in("initial_geotherm_table", std::ios::in);
+//TODO: Let's not do this: check if a file exists and if it doesn't silently do something else
       if (!in)
         {
-          geotherm.reinit(4);
-          radial_position.reinit(4);
+          geotherm.resize(4);
+          radial_position.resize(4);
           geotherm[0] = 1e0;
           geotherm[1] = 0.75057142857142856;
           geotherm[2] = 0.32199999999999995;
@@ -86,8 +87,8 @@ namespace aspect
         {
           in >> dummy >> npoint;
           getline(in, temp); // eat remainder of the line
-          geotherm.reinit(npoint);
-          radial_position.reinit(npoint);
+          geotherm.resize(npoint);
+          radial_position.resize(npoint);
 
           // read geotherm depth pairs
           for (int i=0; i<npoint; i++)

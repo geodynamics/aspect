@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 #ifndef __aspect__initial_conditions_spherical_shell_h
@@ -45,7 +45,11 @@ namespace aspect
     {
       public:
 
+        /**
+        * Constructor.
+        */
         SphericalGaussianPerturbation<dim>();
+
         /**
          * Return the initial temperature as a function of position.
          */
@@ -74,9 +78,9 @@ namespace aspect
         double sigma;
         double sign;
         unsigned int npoint;
-        dealii::Table<1,double> radial_position;
-        dealii::Table<1,double> geotherm;
 
+        std::vector<double> radial_position;
+        std::vector<double> geotherm;
     };
   }
 }
