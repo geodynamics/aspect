@@ -77,6 +77,7 @@ namespace aspect
       return registered_plugins.create_plugin (model_name, prm);
     }
 
+
     template <int dim>
     double
     Interface<dim>::
@@ -84,6 +85,7 @@ namespace aspect
     {
       return -1.0;
     }
+
 
     template <int dim>
     double
@@ -93,13 +95,6 @@ namespace aspect
       return -1.0;
     }
 
-    template <int dim>
-    std::string
-    Interface<dim>::
-    datadir () const
-    {
-      return "-1e0";
-    }
 
     template <int dim>
     unsigned int
@@ -108,6 +103,7 @@ namespace aspect
     {
       return 0;
     }
+
 
     void
     declare_parameters (ParameterHandler &prm)

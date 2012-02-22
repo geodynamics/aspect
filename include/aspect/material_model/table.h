@@ -90,12 +90,12 @@ namespace aspect
         double reference_thermal_alpha () const;
 
         /**
-	 * A reference thermal specific heat $c_p$.
-	 *
-	 * The value here is not used in the computation of things but only in
-	 * postprocessing the solution when we want dimension-less
-	 * quantities.
-	 */
+        * A reference thermal specific heat $c_p$.
+        *
+        * The value here is not used in the computation of things but only in
+        * postprocessing the solution when we want dimension-less
+        * quantities.
+        */
         double reference_cp () const;
         /**
          * @}
@@ -110,8 +110,6 @@ namespace aspect
 
         virtual double seismic_Vs (const double temperature,
                                    const double pressure) const;
-
-        virtual std::string datadir () const;
 
         virtual unsigned int thermodynamic_phase (const double temperature,
                                                   const double pressure) const;
