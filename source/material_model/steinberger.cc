@@ -64,7 +64,7 @@ namespace aspect
 
             Assert(depth>=min_depth, ExcMessage("not in range"));
             Assert(depth<=max_depth, ExcMessage("not in range"));
-            const unsigned int idx = (depth-min_depth)/delta_depth;
+            const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
             Assert(idx<values.size(), ExcMessage("not in range"));
             return values[idx];
           }
@@ -116,7 +116,7 @@ namespace aspect
 
             Assert(depth>=min_depth, ExcMessage("not in range"));
             Assert(depth<=max_depth, ExcMessage("not in range"));
-            const unsigned int idx = (depth-min_depth)/delta_depth;
+            const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
             Assert(idx<values.size(), ExcMessage("not in range"));
             return values[idx];
           }
@@ -153,8 +153,6 @@ namespace aspect
       return std::max(1e10,vis_lateral * vis_radial);
     }
 
-
-
     template <int dim>
     double
     Steinberger<dim>::
@@ -164,7 +162,14 @@ namespace aspect
       return reference_eta;
     }
 
-
+    template <int dim>
+    double
+    Steinberger<dim>::
+    reference_density () const
+    {
+      const double reference_density    = 3300e0;
+      return reference_density;
+    }
 
     template <int dim>
     double
@@ -188,7 +193,6 @@ namespace aspect
     {
       return 4.7;
     }
-
 
 
     template <int dim>

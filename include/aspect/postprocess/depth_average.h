@@ -1,3 +1,4 @@
+
 //-------------------------------------------------------------
 //    $Id$
 //
@@ -9,8 +10,6 @@
 
 #include <aspect/postprocess/interface.h>
 
-#include <deal.II/base/thread_management.h>
-
 
 namespace aspect
 {
@@ -18,31 +17,23 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that generates graphical output in periodic intervals
-     * or every time step. The time interval between generating graphical
-     * output is obtained from the parameter file.
+     * A postprocessor that generates depth average output in periodic intervals
+     * or every time step.
      *
      * @ingroup Postprocessing
      */
     template <int dim>
-    class Visualization : public Interface<dim>, public SimulatorAccess<dim>
+    class DepthAverage : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
          * Constructor.
          */
-        Visualization ();
-
-        /**
-         * Destructor. Makes sure that any background thread that may still be
-         * running writing data to disk finishes before the current object
-         * is fully destroyed.
-         */
-        ~Visualization ();
+        DepthAverage ();
 
         /**
          * Generate graphical output from the current solution.
-         **/
+         */
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
@@ -64,13 +55,13 @@ namespace aspect
 
         /**
          * Save the state of this object.
-         **/
+         */
         virtual
         void save (std::map<std::string, std::string> &status_strings) const;
 
         /**
          * Restore the state of the object.
-         **/
+         */
         virtual
         void load (const std::map<std::string, std::string> &status_strings);
 
@@ -83,7 +74,7 @@ namespace aspect
 
       private:
         /**
-         * Interval between the generation of graphical output. This
+         * Interval between the generation of output. This
          * parameter is read from the input file and consequently is not part
          * of the state that needs to be saved and restored.
         *
@@ -101,15 +92,20 @@ namespace aspect
         double next_output_time;
 
         /**
-         * Consecutively counted number indicating the how-manyth time we
-         * will create output the next time we get to it.
-         */
-        unsigned int output_file_number;
+        * A structure for a single time/depth/value record.
+        */
+        struct DataPoint
+        {
+          double time, depth, value;
+
+          template <class Archive>
+          void serialize (Archive &ar, const unsigned int version);
+        };
 
         /**
-         * Graphical output format.
+         * An array of all the past values
          */
-        string output_format;
+        std::vector<DataPoint> entries;
 
         /**
          * Compute the next output time from the current one. In
@@ -120,30 +116,6 @@ namespace aspect
          * having to catch up once the time step becomes larger.
          */
         void set_next_output_time (const double current_time);
-
-        /**
-         * Handle to a thread that is used to write data in the
-         * background. The background_writer() function runs
-         * on this background thread.
-         */
-        Threads::Thread<void> background_thread;
-
-        /**
-         * A function that writes the text in the second argument
-         * to a file with the name given in the first argument. The function
-         * is run on a separate thread to allow computations to
-         * continue even though writing data is still continuing.
-         *
-         * The communicator is a copy of the one that is used for
-         * computations. However, it is not the same (but rather
-         * a duplicate) since accessing it both from this thread
-         * as well as from the main program has the potential to
-         * produce race conditions.
-         */
-        static
-        void background_writer (const std::string filename,
-                                const std::string file_contents,
-                                MPI_Comm          communicator);
     };
   }
 }

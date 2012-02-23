@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
@@ -77,6 +77,32 @@ namespace aspect
       return registered_plugins.create_plugin (model_name, prm);
     }
 
+
+    template <int dim>
+    double
+    Interface<dim>::
+    seismic_Vp (double dummy1, double dummy2) const
+    {
+      return -1.0;
+    }
+
+
+    template <int dim>
+    double
+    Interface<dim>::
+    seismic_Vs (double dummy1, double dummy2) const
+    {
+      return -1.0;
+    }
+
+
+    template <int dim>
+    unsigned int
+    Interface<dim>::
+    thermodynamic_phase (double dummy1, double dummy2) const
+    {
+      return 0;
+    }
 
 
     void

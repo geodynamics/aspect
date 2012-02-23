@@ -94,6 +94,11 @@ namespace aspect
         solution_names.push_back ("non_adiabatic_pressure");
         solution_names.push_back ("non_adiabatic_temperature");
         solution_names.push_back ("density");
+        solution_names.push_back ("Strainrate");
+        solution_names.push_back ("Vp");
+        solution_names.push_back ("Vs");
+        solution_names.push_back ("Phase");
+        solution_names.push_back ("Cp");
         return solution_names;
       }
 
@@ -107,6 +112,11 @@ namespace aspect
         interpretation (dim,
                         DataComponentInterpretation::component_is_part_of_vector);
 
+        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
@@ -184,6 +194,11 @@ namespace aspect
                                             adiabatic_conditions.temperature (evaluation_points[q]);
 
             computed_quantities[q](dim+7) = material_model.density(temperature, pressure, evaluation_points[q]);
+            computed_quantities[q](dim+8) = std::sqrt(strain_rate*strain_rate);
+            computed_quantities[q](dim+9) = material_model.seismic_Vp(temperature, pressure);
+            computed_quantities[q](dim+10) = material_model.seismic_Vs(temperature, pressure);
+            computed_quantities[q](dim+11) = material_model.thermodynamic_phase(temperature, pressure);
+            computed_quantities[q](dim+11) = material_model.specific_heat(temperature, pressure, evaluation_points[q]);
           }
       }
     }
@@ -199,6 +214,16 @@ namespace aspect
       next_output_time (std::numeric_limits<double>::quiet_NaN()),
       output_file_number (0)
     {}
+
+
+
+    template <int dim>
+    Visualization<dim>::~Visualization ()
+    {
+      // make sure a thread that may still be running in the background,
+      // writing data, finishes
+      background_thread.join ();
+    }
 
 
 
@@ -223,43 +248,32 @@ namespace aspect
                                                   this->get_material_model(),
                                                   this->get_adiabatic_conditions());
 
+      Vector<float> estimated_error_per_cell(this->get_triangulation().n_active_cells());
+      this->get_refinement_criteria(estimated_error_per_cell);
+
+      Vector<float> Vs_anomaly(this->get_triangulation().n_active_cells());
+      this->get_Vs_anomaly(Vs_anomaly);
+
+      // create a DataOut object on the heap; ownership of this
+      // object will later be transferred to a different thread
+      // that will write data in the background. the other thread
+      // will then also destroy the object
       DataOut<dim> data_out;
       data_out.attach_dof_handler (this->get_dof_handler());
       data_out.add_data_vector (this->get_solution(), postprocessor);
+      data_out.add_data_vector (estimated_error_per_cell, "error_indicator");
+      data_out.add_data_vector (Vs_anomaly, "Vs_anomaly");
       data_out.build_patches ();
 
-      const std::string filename = (this->get_output_directory() +
-                                    "solution-" +
-                                    Utilities::int_to_string (output_file_number, 5) +
-                                    "." +
-                                    Utilities::int_to_string
-                                    (this->get_triangulation().locally_owned_subdomain(), 4) +
-                                    DataOutBase::default_suffix
-                                    (DataOutBase::parse_output_format(output_format)));
+      // put the stuff we want to write into a string object that
+      // we can then write in the background
+      std::string file_contents;
+      {
+        std::ostringstream tmp;
+        data_out.write (tmp, DataOutBase::parse_output_format(output_format));
 
-      // throttle output
-      const unsigned int concurrent_writers = 10;
-      unsigned int myid = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
-      unsigned int nproc = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
-      for (unsigned int i=0; i<nproc; ++i)
-        {
-          if (i == myid)
-            {
-              std::ofstream output (filename.c_str());
-
-              if (!output)
-                std::cout << "ERROR: proc " << myid << " could not create " << filename << std::endl;
-
-              data_out.write (output,
-                              DataOutBase::parse_output_format(output_format));
-            }
-          if (i%concurrent_writers == 0)
-            {
-              sleep(1);
-              MPI_Barrier(MPI_COMM_WORLD);
-            }
-        }
-
+        file_contents = tmp.str();
+      }
 
       // let the master processor write the master record for all the distributed
       // files
@@ -290,6 +304,27 @@ namespace aspect
           data_out.write_visit_record (visit_master, filenames);
         }
 
+      const std::string filename = (this->get_output_directory() +
+                                    "solution-" +
+                                    Utilities::int_to_string (output_file_number, 5) +
+                                    "." +
+                                    Utilities::int_to_string
+                                    (this->get_triangulation().locally_owned_subdomain(), 4) +
+                                    DataOutBase::default_suffix
+                                    (DataOutBase::parse_output_format(output_format)));
+
+      // wait for all previous write operations to finish, should
+      // any be still active
+      background_thread.join ();
+
+      // then continue with writing our own stuff
+      background_thread = Threads::new_thread (&background_writer,
+                                               filename,
+                                               file_contents,
+//TODO: Duplicate the communicator we really use, not MPI_COMM_WORLD here
+                                               Utilities::MPI::duplicate_communicator(MPI_COMM_WORLD));
+
+
       // record the file base file name in the output file
       statistics.add_value ("Visualization file name",
                             this->get_output_directory() + "solution-" +
@@ -305,6 +340,38 @@ namespace aspect
       return std::make_pair (std::string ("Writing graphical output:"),
                              this->get_output_directory() +"solution-" +
                              Utilities::int_to_string (output_file_number-1, 5));
+    }
+
+
+    template <int dim>
+    void Visualization<dim>::background_writer (const std::string filename,
+                                                const std::string file_contents,
+                                                MPI_Comm          communicator)
+    {
+      // throttle output
+      const unsigned int concurrent_writers = 10;
+      unsigned int myid = Utilities::MPI::this_mpi_process(communicator);
+      unsigned int nproc = Utilities::MPI::n_mpi_processes(communicator);
+      for (unsigned int i=0; i<nproc; ++i)
+        {
+          if (i == myid)
+            {
+              std::ofstream output (filename.c_str());
+              if (!output)
+                std::cout << "***** ERROR: proc " << myid
+                          << " could not create " << filename
+                          << " *****"
+                          << std::endl;
+
+              output << file_contents;
+            }
+          if (i % concurrent_writers == 0)
+            {
+              sleep(1);
+              MPI_Barrier(communicator);
+            }
+        }
+//TODO: delete the communicator we have been using
     }
 
 

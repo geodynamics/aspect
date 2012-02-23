@@ -143,6 +143,9 @@ namespace aspect
                          Patterns::Double(0,1),
                          "The fraction of cells with the smallest error that "
                          "should be flagged for coarsening.");
+      prm.declare_entry ("Strategy", "Density c_p temperature",
+                         Patterns::Selection ("Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature"),
+                         "The method used to determine which cells to refine: Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature");
       prm.declare_entry ("Additional refinement times", "",
                          Patterns::List (Patterns::Double(0)),
                          "A list of times so that if the end time of a time step "
@@ -168,7 +171,7 @@ namespace aspect
                          Patterns::Integer (1),
                          "The polynomial degree to use for the temperature variable. "
                          "Units: None.");
-      prm.declare_entry ("Use locally conservative discretization", "true",
+      prm.declare_entry ("Use locally conservative discretization", "false",
                          Patterns::Bool (),
                          "Whether to use a Stokes discretization that is locally "
                          "conservative at the expense of a larger number of degrees "
@@ -229,6 +232,7 @@ namespace aspect
       adaptive_refinement_interval= prm.get_integer ("Time steps between mesh refinement");
       refinement_fraction         = prm.get_double ("Refinement fraction");
       coarsening_fraction         = prm.get_double ("Coarsening fraction");
+      refinement_strategy         = prm.get ("Strategy");
 
       // extract the list of times at which additional refinement is requested
       // then sort it and convert it to seconds

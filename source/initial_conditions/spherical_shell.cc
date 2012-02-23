@@ -1,13 +1,15 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
 #include <aspect/initial_conditions/spherical_shell.h>
 #include <aspect/geometry_model/spherical_shell.h>
-
+#include <fstream>
+#include <iostream>
+#include <cstring>
 
 namespace aspect
 {
@@ -26,16 +28,12 @@ namespace aspect
               ExcMessage ("This initial condition can only be used if the geometry "
                           "is a spherical shell."));
 
-      const double
-      R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).inner_radius(),
-      R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).outer_radius();
-      const double h = R1-R0;
+      const double R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).outer_radius();
 
       // s = fraction of the way from
       // the inner to the outer
       // boundary; 0<=s<=1
-      const double r = position.norm();
-      const double s = (r-R0)/h;
+      const double s = this->geometry_model->depth(position) / this->geometry_model->maximal_depth();
 
       /* now compute an angular variation of the linear temperature field by
          stretching the variable s appropriately. note that the following
@@ -48,7 +46,7 @@ namespace aspect
       const double scale = ((dim==3)
                             ?
                             std::max(0.0,
-                                     cos(3.14159 * abs(position(2)/R1)))
+                                     cos(3.14159 * fabs(position(2)/R1)))
                             :
                             1.0);
       const double phi   = std::atan2(position(0),position(1));
@@ -56,12 +54,52 @@ namespace aspect
                            +
                            0.2 * s * (1-s) * std::sin(6*phi) * scale;
 
-      return (this->boundary_temperature->maximal_temperature()*(1.0-s_mod)
+      return (this->boundary_temperature->maximal_temperature()*(s_mod)
               +
-              this->boundary_temperature->minimal_temperature()*s_mod);
+              this->boundary_temperature->minimal_temperature()*(1e0-s_mod));
     }
 
 
+    template <int dim>
+    SphericalGaussianPerturbation<dim>::
+    SphericalGaussianPerturbation()
+    {
+      std::string temp;
+      int dummy, npoint;
+
+//TODO: This filename needs to become a run-time parameter
+      std::ifstream in("initial_geotherm_table", std::ios::in);
+//TODO: Let's not do this: check if a file exists and if it doesn't silently do something else
+      if (!in)
+        {
+          geotherm.resize(4);
+          radial_position.resize(4);
+          geotherm[0] = 1e0;
+          geotherm[1] = 0.75057142857142856;
+          geotherm[2] = 0.32199999999999995;
+          geotherm[3] = 0.0;
+          radial_position[0] =  0e0-1e-3;
+          radial_position[1] =  0.16666666666666666;
+          radial_position[2] =  0.83333333333333337;
+          radial_position[3] =  1e0+1e-3;
+        }
+      else
+        {
+          in >> dummy >> npoint;
+          getline(in, temp); // eat remainder of the line
+          geotherm.resize(npoint);
+          radial_position.resize(npoint);
+
+          // read geotherm depth pairs
+          for (int i=0; i<npoint; i++)
+            {
+              in >> geotherm[npoint-i-1] >> radial_position[i];
+              getline(in, temp); // eat remainder of the line
+            }
+          radial_position[0] -= 1e-3;
+          radial_position[3] += 1e-3;
+        }
+    }
 
     template <int dim>
     double
@@ -75,10 +113,12 @@ namespace aspect
               != 0,
               ExcMessage ("This initial condition can only be used if the geometry "
                           "is a spherical shell."));
-
       const double
       R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).inner_radius(),
       R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).outer_radius();
+      const double dT = this->boundary_temperature->maximal_temperature() - this->boundary_temperature->minimal_temperature();
+      const double T0 = this->boundary_temperature->maximal_temperature()/dT;
+      const double T1 = this->boundary_temperature->minimal_temperature()/dT;
       const double h = R1-R0;
 
       // s = fraction of the way from
@@ -90,22 +130,10 @@ namespace aspect
       const double scale=R1/(R1 - R0);
       const float eps = 1e-4;
 
-      const double geotherm[4] = { this->boundary_temperature->maximal_temperature(),
-                                   this->boundary_temperature->maximal_temperature() - 1300,
-                                   this->boundary_temperature->minimal_temperature() + 1200,
-                                   this->boundary_temperature->minimal_temperature()
-                                 };
-
-      const double depth[4] = { R0-1e-2*R0,
-                                R0+500e3,
-                                R1-500e3,
-                                R1+1e-2*R1
-                              };
-
       int indx = -1;
       for (unsigned int i=0; i<3; ++i)
         {
-          if ((depth[i] - r) < eps && (depth[i+1] - r) > eps)
+          if ((radial_position[i] - s) < eps && (radial_position[i+1] - s) > eps)
             {
               indx = i;
               break;
@@ -114,30 +142,30 @@ namespace aspect
       Assert (indx >= 0, ExcInternalError());
       Assert (indx < 3,  ExcInternalError());
       int indx1 = indx + 1;
-      const float dx = depth[indx1] - depth[indx];
+      const float dx = radial_position[indx1] - radial_position[indx];
       const float dy = geotherm[indx1] - geotherm[indx];
 
       const double InterpolVal = (( dx > 0.5*eps)
                                   ?
                                   // linear interpolation
-                                  std::max(geotherm[3],geotherm[indx] + (r-depth[indx]) * (dy/dx))
+                                  std::max(geotherm[3],geotherm[indx] + (s-radial_position[indx]) * (dy/dx))
                                   :
                                   // evaluate the point in the discontinuity
                                   0.5*( geotherm[indx] + geotherm[indx1] ));
 
       const double x = (scale - this->depth)*std::cos(angle);
       const double y = (scale - this->depth)*std::sin(angle);
-      const double Perturbation = (sign * amplitude * this->boundary_temperature->maximal_temperature() *
+      const double Perturbation = (sign * amplitude *
                                    std::exp( -( std::pow((position(0)*scale/R1-x),2)
                                                 +
                                                 std::pow((position(1)*scale/R1-y),2) ) / sigma));
 
-      if (r > R1 - 1e-2*R1)
-        return geotherm[3];
-      else if (r < R0 + 1e-2*R0)
-        return geotherm[0];
+      if (r > R1 - 1e-6*R1 || InterpolVal + Perturbation < T1)
+        return T1*dT;
+      else if (r < R0 + 1e-6*R0 || InterpolVal + Perturbation > T0 )
+        return T0*dT;
       else
-        return InterpolVal + Perturbation;
+        return (InterpolVal + Perturbation)*dT;
     }
 
 

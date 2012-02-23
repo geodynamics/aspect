@@ -775,7 +775,7 @@ namespace aspect
                                              scratch.system_fe_values
                                              .quadrature_point(q))
              :
-             1./0.);
+             std::numeric_limits<double>::quiet_NaN() );
         const double density = material_model->density(current_temperature,
                                                        old_pressure,
                                                        scratch.system_fe_values

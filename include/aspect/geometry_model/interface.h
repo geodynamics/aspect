@@ -69,6 +69,26 @@ namespace aspect
         double length_scale () const = 0;
 
         /**
+         * Returns the depth that corresponds to the given position. The returned value
+         * is between 0 and maximal_depth(), where 0 denotes the surface.
+         */
+        virtual
+        double depth(const Point<dim> & position) const = 0;
+
+        /**
+         * Returns a representative point for a given depth.
+         */
+        virtual
+        Point<dim> representative_point(const double depth) const = 0;
+
+        /**
+         * Returns the maximal depth of this geometry.
+         */
+        virtual
+        double maximal_depth() const = 0;
+
+
+        /**
          * Return the set of boundary indicators that are used by this model. This
         * information is used to determine what boundary indicators can be used in
         * the input file.

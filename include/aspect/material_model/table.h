@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 #ifndef __aspect__model_table_h
@@ -26,19 +26,13 @@ namespace aspect
     class Table: public MaterialModel::Interface<dim>
     {
       public:
+        /**
+         * @name Physical parameters used in the basic equations
+         * @{
+         */
         virtual double viscosity (const double temperature,
                                   const double pressure,
                                   const Point<dim> &position) const;
-
-        virtual double reference_viscosity () const;
-
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const Point<dim> &position) const;
-
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const Point<dim> &position) const;
 
         virtual double density (const double temperature,
                                 const double pressure,
@@ -48,7 +42,125 @@ namespace aspect
                                         const double pressure,
                                         const Point<dim> &position) const;
 
+        virtual double specific_heat (const double temperature,
+                                      const double pressure,
+                                      const Point<dim> &position) const;
+
+        virtual double thermal_conductivity (const double temperature,
+                                             const double pressure,
+                                             const Point<dim> &position) const;
+        /**
+         * @}
+         */
+
+        /**
+         * @name Qualitative properties one can ask a material model
+         * @{
+         */
         virtual bool is_compressible () const;
+        /**
+         * @}
+         */
+
+        /**
+         * @name Reference quantities
+         * @{
+         */
+        virtual double reference_viscosity () const;
+
+        virtual double reference_density () const;
+
+        /**
+         * A reference thermal diffusivity $\kappa$. $\kappa$ is related to the thermal
+         * conductivity $k$ as $\kappa = k/(rho c_p)$.
+         *
+         * The value here is not used in the computation of things but only in
+         * postprocessing the solution when we want dimension-less
+         * quantities.
+         */
+        double reference_thermal_diffusivity () const;
+
+        /**
+         * A reference thermal expansion coefficient $\alpha$.
+         *
+         * The value here is not used in the computation of things but only in
+         * postprocessing the solution when we want dimension-less
+         * quantities.
+         */
+        double reference_thermal_alpha () const;
+
+        /**
+        * A reference thermal specific heat $c_p$.
+        *
+        * The value here is not used in the computation of things but only in
+        * postprocessing the solution when we want dimension-less
+        * quantities.
+        */
+        double reference_cp () const;
+        /**
+         * @}
+         */
+
+        /**
+         * @name Auxiliary material properties used for postprocessing
+         * @{
+         */
+        virtual double seismic_Vp (const double temperature,
+                                   const double pressure) const;
+
+        virtual double seismic_Vs (const double temperature,
+                                   const double pressure) const;
+
+        virtual unsigned int thermodynamic_phase (const double temperature,
+                                                  const double pressure) const;
+
+
+        /**
+         * @}
+         */
+
+        /**
+         * @name Functions used in dealing with run-time parameters
+         * @{
+         */
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter
+         * file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+        /**
+         * @}
+         */
+
+      private:
+        double reference_rho;
+        double reference_T;
+        double reference_kappa;
+        double reference_specific_heat;
+        double reference_alpha;
+        std::string composition;
+        std::string data_directory;
+        bool compute_phases;
+        bool model_is_compressible;
+
+        std::string ViscosityModel;
+        double reference_eta;
+        double exponential_T;
+        double exponential_P;
+        double increase_lower_mantle;
+        /**
+         * The thermal conductivity.
+         */
+        double k_value;
     };
   }
 }

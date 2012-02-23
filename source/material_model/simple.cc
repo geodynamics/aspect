@@ -34,7 +34,21 @@ namespace aspect
       return eta;
     }
 
+    template <int dim>
+    double
+    Simple<dim>::
+    reference_density () const
+    {
+      return reference_rho;
+    }
 
+    template <int dim>
+    double
+    Simple<dim>::
+    reference_thermal_alpha () const
+    {
+      return thermal_alpha;
+    }
 
     template <int dim>
     double
@@ -43,10 +57,17 @@ namespace aspect
                    const double,
                    const Point<dim> &) const
     {
+//TODO: make this a run-time parameter
       return 1250.0;
     }
 
-
+    template <int dim>
+    double
+    Simple<dim>::
+    reference_cp () const
+    {
+      return 1250e0;
+    }
 
     template <int dim>
     double
@@ -58,7 +79,13 @@ namespace aspect
       return k_value;
     }
 
-
+    template <int dim>
+    double
+    Simple<dim>::
+    reference_thermal_diffusivity () const
+    {
+      return k_value/(reference_rho*reference_specific_heat);
+    }
 
     template <int dim>
     double
@@ -67,9 +94,8 @@ namespace aspect
              const double,
              const Point<dim> &) const
     {
-      return (reference_density *
-              (1 - thermal_expansion_coefficient * (temperature -
-                                                    reference_temperature)));
+      return (reference_rho *
+              (1 - thermal_alpha * (temperature - reference_T)));
     }
 
 
@@ -116,6 +142,10 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
+          prm.declare_entry ("Reference specific heat", "1250",
+                             Patterns::Double (0),
+                             "The value of the specific heat $cp$. "
+                             "Units: $JG/kgK$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\beta$. "
@@ -136,11 +166,12 @@ namespace aspect
       {
         prm.enter_subsection("Simple model");
         {
-          reference_density     = prm.get_double ("Reference density");
-          reference_temperature = prm.get_double ("Reference temperature");
+          reference_rho     = prm.get_double ("Reference density");
+          reference_T = prm.get_double ("Reference temperature");
           eta                   = prm.get_double ("Viscosity");
           k_value               = prm.get_double ("Thermal conductivity");
-          thermal_expansion_coefficient = prm.get_double ("Thermal expansion coefficient");
+          reference_specific_heat = prm.get_double ("Reference specific heat");
+          thermal_alpha = prm.get_double ("Thermal expansion coefficient");
         }
         prm.leave_subsection();
       }

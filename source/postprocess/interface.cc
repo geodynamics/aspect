@@ -65,7 +65,12 @@ namespace aspect
       return simulator->time;
     }
 
-
+    template <int dim>
+    const ConditionalOStream &
+    SimulatorAccess<dim>::get_pcout () const
+    {
+      return simulator->pcout;
+    }
 
     template <int dim>
     double SimulatorAccess<dim>::get_timestep () const
@@ -129,6 +134,15 @@ namespace aspect
 
 
     template <int dim>
+    void
+    SimulatorAccess<dim>::get_refinement_criteria (Vector<float> & estimated_error_per_cell) const
+    {
+      simulator->compute_refinement_criterion(estimated_error_per_cell);
+    }
+
+
+
+    template <int dim>
     const TrilinosWrappers::MPI::BlockVector &
     SimulatorAccess<dim>::get_solution () const
     {
@@ -156,6 +170,22 @@ namespace aspect
 
 
     template <int dim>
+    void
+    SimulatorAccess<dim>::get_depth_average_temperature(std::vector<double> & values) const
+    {
+      simulator->compute_depth_average_temperature(values);
+    }
+
+
+    template <int dim>
+    void
+    SimulatorAccess<dim>::get_Vs_anomaly(Vector<float> & values) const
+    {
+      simulator->compute_Vs_anomaly(values);
+    }
+
+
+    template <int dim>
     const MaterialModel::Interface<dim> &
     SimulatorAccess<dim>::get_material_model () const
     {
@@ -180,6 +210,12 @@ namespace aspect
       return *simulator->geometry_model.get();
     }
 
+    template <int dim>
+    const GravityModel::Interface<dim> &
+    SimulatorAccess<dim>::get_gravity_model () const
+    {
+      return *simulator->gravity_model.get();
+    }
 
 
     template <int dim>

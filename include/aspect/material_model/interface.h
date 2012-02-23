@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 #ifndef __aspect__material_model_interface_h
@@ -43,38 +43,16 @@ namespace aspect
         virtual ~Interface();
 
         /**
+         * @name Physical parameters used in the basic equations
+         * @{
+         */
+        /**
          * Return the viscosity $\eta$ of the model as a function of temperature,
          * pressure and position.
          */
         virtual double viscosity (const double      temperature,
                                   const double      pressure,
                                   const Point<dim> &position) const = 0;
-
-        /**
-         * Return a reference value typical of the viscosities that
-         * appear in this model. This value is not actually used in the
-         * material description itself, but is used in scaling variables
-         * to the same numerical order of magnitude when solving linear
-         * systems. Specifically, the reference viscosity appears in
-         * the factor scaling the pressure against the velocity.
-         */
-        virtual double reference_viscosity () const = 0;
-
-        /**
-         * Return the specific heat $C_p$ of the model as a function of temperature,
-         * pressure and position.
-         */
-        virtual double specific_heat (const double      temperature,
-                                      const double      pressure,
-                                      const Point<dim> &position) const = 0;
-
-        /**
-         * Return the thermal conductivity $k$ of the model as a function of temperature,
-         * pressure and position.
-         */
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const Point<dim> &position) const = 0;
 
         /**
          * Return the density $\rho$ of the model as a function of temperature,
@@ -88,15 +66,44 @@ namespace aspect
          * Return the compressibility coefficient
          * $\frac{\partial\rho}{\partial p}$ of the model as a
          * function of temperature, pressure and position.
-        *
-        * A more intuitive way would be to say that this function is
-        * in fact the negative compressibility, since it will return
-        * a negative value for realistic materials.
+         *
+         * A more intuitive way would be to say that this function is
+         * in fact the negative compressibility, since it will return
+         * a negative value for realistic materials.
          */
         virtual double compressibility (const double temperature,
                                         const double pressure,
                                         const Point<dim> &position) const = 0;
 
+        /**
+         * Return the specific heat $C_p$ of the model as a function of temperature,
+         * pressure and position.
+         */
+        virtual double specific_heat (const double      temperature,
+                                      const double      pressure,
+                                      const Point<dim> &position) const = 0;
+
+        /**
+         * Return the thermal conductivity $k$ of the model as a function of temperature,
+         * pressure and position. The units of $k$ are $\textrm{W} / \textrm{m} / \textrm{K}$.
+        *
+        * Note that the thermal <i>conductivity</i> $k$ is related to the thermal
+        * <i>diffusivity</i> $\kappa$ as $k = \kappa \rho c_p$. In essence, the conductivity
+        * relates to the question of how thermal energy diffuses whereas the diffusivity
+        * relates to the question of how the temperature diffuses. $\kappa$ has units
+        * $\textrm{m}^2/\textrm{s}$.
+         */
+        virtual double thermal_conductivity (const double temperature,
+                                             const double pressure,
+                                             const Point<dim> &position) const = 0;
+        /**
+         * @}
+         */
+
+        /**
+         * @name Qualitative properties one can ask a material model
+         * @{
+         */
         /**
          * Return whether the model is compressible or not.  Incompressibility
          * does not necessarily imply that the density is constant; rather, it
@@ -106,7 +113,93 @@ namespace aspect
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
         virtual bool is_compressible () const = 0;
+        /**
+         * @}
+         */
 
+        /**
+         * @name Reference quantities
+         * @{
+         */
+        /**
+         * Return a reference value typical of the viscosities that
+         * appear in this model. This value is not actually used in the
+         * material description itself, but is used in scaling variables
+         * to the same numerical order of magnitude when solving linear
+         * systems. Specifically, the reference viscosity appears in
+         * the factor scaling the pressure against the velocity. It is
+        * also used in computing dimension-less quantities.
+         */
+        virtual double reference_viscosity () const = 0;
+
+        /**
+        * Return the reference density $\rho$. Like the value returned
+        * by reference_viscosity(), this value is not actually used in
+        * computations but only in postprocessing such as when computing
+        * dimension-less quantities.
+        */
+        virtual double reference_density () const = 0;
+        /**
+         * @}
+         */
+
+        /**
+         * @name Auxiliary material properties used for postprocessing
+         * @{
+         */
+        /**
+         * Return the p-wave seismic velocity Vp of the model as a
+         * function of temperature and pressure.
+        *
+        * This function is only called in postprocessing. Derived classes do
+         * not need to implement it if no useful information is known to
+         * compute this quantity, in which case graphical output will simply
+         * show an uninformative field of constant value. By default this
+         * function returns -1 to indicate that no useful value is
+         * implemented.
+         */
+        virtual
+        double
+        seismic_Vp (const double      temperature,
+                    const double      pressure) const;
+
+        /**
+         * Return the s-wave seismic velocity Vs of the model as a
+         * function of temperature and pressure.
+        *
+        * This function is only called in postprocessing. Derived classes do
+         * not need to implement it if no useful information is known to
+         * compute this quantity, in which case graphical output will simply
+         * show an uninformative field of constant value. By default this
+         * function returns -1 to indicate that no useful value is
+         * implemented.
+         */
+        virtual
+        double
+        seismic_Vs (const double      temperature,
+                    const double      pressure) const;
+        /**
+         * Return the Phase number of the model as a function of
+         * temperature and pressure.
+        *
+        * This function is only called in postprocessing. Derived classes do
+         * not need to implement it if no useful information is known to
+         * compute this quantity, in which case graphical output will simply
+         * show an uninformative field of constant value. By default this
+         * function returns 0 to indicate everything is part of the same phase
+         */
+        virtual
+        unsigned int
+        thermodynamic_phase (const double      temperature,
+                             const double      pressure) const;
+        /**
+         * @}
+         */
+
+        /**
+         * @name Functions used in dealing with run-time parameters
+         * @{
+         */
         /**
          * Declare the parameters this class takes through input files.
          * The default implementation of this function does not describe
@@ -126,6 +219,9 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+        /**
+         * @}
+         */
     };
 
 

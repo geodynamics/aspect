@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 #ifndef __aspect__simulator_h
@@ -154,6 +154,7 @@ namespace aspect
         unsigned int        initial_adaptive_refinement;
         double              refinement_fraction;
         double              coarsening_fraction;
+        std::string         refinement_strategy;
         std::vector<double> additional_refinement_times;
         unsigned int        adaptive_refinement_interval;
         /**
@@ -337,11 +338,19 @@ namespace aspect
       void postprocess ();
 
       /**
-       * Compute error indicators based on a variety of criteria and
-       * mark cells based on these indicators for either refinement,
-       * coarsening, or for leaving them as they currently are. Then
-       * refine the mesh, set up all necessary data structures on this
-       * new mesh, and interpolate the old solutions onto the new mesh.
+       * Compute error indicators based on a variety of criteria to determine which
+       * cells to refine and coarsen, which is done in refine_mesh().
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
+      void compute_refinement_criterion (Vector<float> & estimated_error_per_cell) const;
+
+      /**
+       * Refine the mesh according to error indicators calculated by
+       * compute_refinement_criterion(), set up all necessary data structures
+       * on this new mesh, and interpolate the old solutions onto the new
+       * mesh.
        *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
@@ -531,13 +540,32 @@ namespace aspect
       void make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector);
 
       /**
+       * Compute a depth average of the current temperature. The function
+       * fills a vector that contains average temperatures over slices of the
+       * domain of same depth. The function resizes the output vector to match
+       * the number of depth slices.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void compute_depth_average_temperature(std::vector<double> & values) const;
+
+      /**
+       * Compute a depth average of the current temperature.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void compute_Vs_anomaly(Vector<float> & values) const;
+
+      /**
        * If the geometry used is a spherical shell, adjust the pressure variable
        * (which is only determined up to a constant) by adding a constant to it
        * in such a way that the pressure on the surface has a known average value.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
-       **/
+       */
       void normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
 
       /**

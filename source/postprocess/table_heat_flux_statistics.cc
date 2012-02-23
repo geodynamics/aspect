@@ -1,11 +1,11 @@
 //-------------------------------------------------------------
-//    $Id$
+//    $Id: heat_flux_statistics.cc 572 2012-01-03 08:24:22Z geenen $
 //
 //    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
-#include <aspect/postprocess/heat_flux_statistics.h>
+#include <aspect/postprocess/table_heat_flux_statistics.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/simulator.h>
@@ -20,7 +20,7 @@ namespace aspect
   {
     template <int dim>
     std::pair<std::string,std::string>
-    HeatFluxStatistics<dim>::execute (TableHandler &statistics)
+    TableHeatfluxStatistics<dim>::execute (TableHandler &statistics)
     {
 //TODO: think about whether it would be useful to only get the degree of the temperature component of the FESystem
       const QGauss<dim-1> quadrature_formula (this->get_dof_handler().get_fe().degree+1);
@@ -31,7 +31,6 @@ namespace aspect
                                         update_gradients      | update_values |
                                         update_normal_vectors |
                                         update_q_points       | update_JxW_values);
-
       const FEValuesExtractors::Scalar pressure (dim);
       const FEValuesExtractors::Scalar temperature (dim+1);
 
@@ -43,8 +42,7 @@ namespace aspect
       // it only makes sense to compute heat fluxes on these boundaries.
       const std::set<unsigned char>
       boundary_indicators
-        =
-          this->get_geometry_model().get_used_boundary_indicators ();
+        = this->get_geometry_model().get_used_boundary_indicators ();
       std::map<unsigned char, double> local_boundary_fluxes;
 
       typename DoFHandler<dim>::active_cell_iterator
@@ -67,11 +65,11 @@ namespace aspect
               {
                 fe_face_values.reinit (cell, f);
                 fe_face_values[temperature].get_function_gradients (this->get_solution(),
-                                                                    temperature_gradients);
+								    temperature_gradients);
                 fe_face_values[temperature].get_function_values (this->get_solution(),
-                                                                 temperature_values);
+								 temperature_values);
                 fe_face_values[pressure].get_function_values (this->get_solution(),
-                                                              pressure_values);
+							      pressure_values);
 
                 double local_normal_flux = 0;
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
@@ -140,13 +138,37 @@ namespace aspect
           statistics.set_precision ("Surface heat flux (W)", 8);
           statistics.set_scientific ("Surface heat flux (W)", true);
 
+          /*-------------------------------------------------
+             output Inner/Outer Nu number to file per timestep*/
+          const GeometryModel::SphericalShell<dim> *geometry = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
+          double phi = (*geometry).opening_angle();
+          double R0 = (*geometry).inner_radius();
+          double R1 = (*geometry).outer_radius();
+          double h = R1-R0;
+
+          double dT = this->get_boundary_temperature().maximal_temperature() - this->get_boundary_temperature().minimal_temperature();
+          double ConductiveHeatflux = dT/h;
+          double NusseltOuter = global_boundary_fluxes[0]/ConductiveHeatflux;
+          double BoundaryCurveLengthOuter = R0*phi;
+
+          statistics.add_value ("Outer Nusselt number", NusseltOuter/BoundaryCurveLengthOuter);
+          statistics.set_precision ("Outer Nusselt number", 4);
+          statistics.set_scientific ("Outer Nusselt number", true);
+
+          double NusseltInner= global_boundary_fluxes[1]/ConductiveHeatflux;
+          double BoundaryCurveLengthInner = R1*phi;
+          statistics.add_value ("Inner Nusselt number", NusseltInner/BoundaryCurveLengthInner);
+          statistics.set_precision ("Inner Nusselt number", 4);
+          statistics.set_scientific ("Inner Nusselt number", true);
+
           // finally have something for the screen
           std::ostringstream output;
           output.precision(4);
           output << -global_boundary_fluxes[0] << " W, "
-                 << global_boundary_fluxes[1] << " W";
-
-          return std::pair<std::string, std::string> ("Inner/outer heat fluxes:",
+                 << global_boundary_fluxes[1] << " W,"
+                 << NusseltOuter/BoundaryCurveLengthOuter << " W,"
+                 << NusseltInner/BoundaryCurveLengthInner << " W,";
+          return std::pair<std::string, std::string> ("Inner/outer heat fluxes Nusselt number:",
                                                       output.str());
         }
       else if (dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model())
@@ -188,10 +210,10 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template class HeatFluxStatistics<deal_II_dimension>;
+    template class TableHeatfluxStatistics<deal_II_dimension>;
 
-    ASPECT_REGISTER_POSTPROCESSOR(HeatFluxStatistics,
-                                  "heat flux statistics",
+    ASPECT_REGISTER_POSTPROCESSOR(TableHeatfluxStatistics,
+                                  "heat flux statistics for the table model",
                                   "A postprocessor that computes some statistics about "
                                   "the heat flux across boundaries.")
   }

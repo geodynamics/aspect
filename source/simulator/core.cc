@@ -479,47 +479,240 @@ namespace aspect
     std::list<std::pair<std::string,std::string> >
     output_list = postprocess_manager.execute (statistics);
 
-    std::ofstream stat_file ((parameters.output_directory+"statistics").c_str());
-    if (parameters.convert_to_years == true)
+    if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)==0)
       {
-        statistics.set_scientific("Time (years)", true);
-        statistics.set_scientific("Time step size (years)", true);
+        std::ofstream stat_file ((parameters.output_directory+"statistics").c_str());
+        if (parameters.convert_to_years == true)
+          {
+            statistics.set_scientific("Time (years)", true);
+            statistics.set_scientific("Time step size (years)", true);
+          }
+        else
+          {
+            statistics.set_scientific("Time (seconds)", true);
+            statistics.set_scientific("Time step size (seconds)", true);
+          }
+
+        statistics.write_text (stat_file,
+                               TableHandler::table_with_separate_column_description);
+
+        // determine the width of the first column of text so that
+        // everything gets nicely aligned; then output everything
+        {
+          unsigned int width = 0;
+          for (std::list<std::pair<std::string,std::string> >::const_iterator
+               p = output_list.begin();
+               p != output_list.end(); ++p)
+            width = std::max<unsigned int> (width, p->first.size());
+
+          for (std::list<std::pair<std::string,std::string> >::const_iterator
+               p = output_list.begin();
+               p != output_list.end(); ++p)
+            pcout << "     "
+                  << std::left
+                  << std::setw(width)
+                  << p->first
+                  << " "
+                  << p->second
+                  << std::endl;
+        }
+
+        pcout << std::endl;
       }
-    else
-      {
-        statistics.set_scientific("Time (seconds)", true);
-        statistics.set_scientific("Time step size (seconds)", true);
-      }
 
-    statistics.write_text (stat_file,
-                           TableHandler::table_with_separate_column_description);
-
-    // determine the width of the first column of text so that
-    // everything gets nicely aligned; then output everything
-    {
-      unsigned int width = 0;
-      for (std::list<std::pair<std::string,std::string> >::const_iterator
-           p = output_list.begin();
-           p != output_list.end(); ++p)
-        width = std::max<unsigned int> (width, p->first.size());
-
-      for (std::list<std::pair<std::string,std::string> >::const_iterator
-           p = output_list.begin();
-           p != output_list.end(); ++p)
-        pcout << "     "
-              << std::left
-              << std::setw(width)
-              << p->first
-              << " "
-              << p->second
-              << std::endl;
-    }
-
-    pcout << std::endl;
     computing_timer.exit_section ();
   }
 
 
+  template <int dim>
+  void Simulator<dim>::compute_refinement_criterion (Vector<float> & estimated_error_per_cell) const
+  {
+    Vector<float> estimated_error_per_cell_rho (triangulation.n_active_cells());
+    Vector<float> estimated_error_per_cell_T (triangulation.n_active_cells());
+    Vector<float> estimated_error_per_cell_u (triangulation.n_active_cells());
+
+    const FEValuesExtractors::Scalar pressure (dim);
+    const FEValuesExtractors::Scalar temperature (dim+1);
+
+    //Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature
+
+    // compute density error
+    if (parameters.refinement_strategy != "Temperature")
+      {
+        bool lookup_rho_c_p_T = (parameters.refinement_strategy == "Density c_p temperature");
+        TrilinosWrappers::MPI::BlockVector vec_distributed (system_rhs);
+
+        const Quadrature<dim> quadrature(system_fe.get_unit_support_points());
+        std::vector<unsigned int> local_dof_indices (system_fe.dofs_per_cell);
+        FEValues<dim> fe_values (mapping,
+				 system_fe,
+				 quadrature,
+                                 update_quadrature_points | update_values);
+        std::vector<double> pressure_values(quadrature.size());
+	std::vector<double> temperature_values(quadrature.size());
+
+
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = system_dof_handler.begin_active(),
+        endc = system_dof_handler.end();
+        for (; cell!=endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit(cell);
+              fe_values[pressure].get_function_values (system_solution,
+						       pressure_values);
+              fe_values[temperature].get_function_values (system_solution,
+							  temperature_values);
+
+              cell->get_dof_indices (local_dof_indices);
+
+              // for each temperature dof, write into the output
+              // vector the density. note that quadrature points and
+              // dofs are enumerated in the same order
+              for (unsigned int i=0; i<system_fe.dofs_per_cell; ++i)
+		if (system_fe.system_to_component_index(i).first == dim+1)
+                {
+                  vec_distributed(local_dof_indices[i])
+                    = material_model->density( temperature_values[i],
+                                               pressure_values[i],
+                                               fe_values.quadrature_point(i))
+                      * ((lookup_rho_c_p_T)
+			 ?
+			 (temperature_values[i]
+			  * material_model->specific_heat(temperature_values[i],
+							  pressure_values[i],
+							  fe_values.quadrature_point(i)))
+			 :
+			 1.0);
+                }
+            }
+
+        TrilinosWrappers::MPI::BlockVector vec (system_solution);
+        vec = vec_distributed;
+
+        DerivativeApproximation::approximate_gradient  (mapping,
+							system_dof_handler,
+							vec,
+							estimated_error_per_cell_rho,
+							dim+1);
+
+        // Scale gradient in each cell with the
+        // correct power of h. Otherwise, error
+        // indicators do not reduce when
+        // refined if there is a density
+        // jump. We need at least order 1 for
+        // the error not to grow when refining,
+        // so anything >1 should work.
+        double power = 0.0;
+        if (parameters.refinement_strategy == "Density c_p temperature")
+          power = 1.5;
+        else if (parameters.refinement_strategy == "Normalized density and temperature")
+          power = 1.0 + dim/2.0;
+        else if (parameters.refinement_strategy == "Weighted density and temperature")
+          power = 2.0 + dim/2.0;
+        else
+          AssertThrow(false, ExcNotImplemented());
+        {
+          typename DoFHandler<dim>::active_cell_iterator
+          cell = system_dof_handler.begin_active(),
+          endc = system_dof_handler.end();
+          unsigned int i=0;
+          for (; cell!=endc; ++cell, ++i)
+            if (cell->is_locally_owned())
+              estimated_error_per_cell_rho(i) *= std::pow(cell->diameter(), power);
+        }
+      }
+    else
+      {
+        estimated_error_per_cell_rho = 0;
+      }
+
+    // compute the errors for temperature solution
+    if (parameters.refinement_strategy != "Density c_p temperature")
+      {
+	std::vector<bool> temperature_component (dim+2, false);
+	temperature_component[dim+1] = true;
+        KellyErrorEstimator<dim>::estimate (system_dof_handler,
+                                            QGauss<dim-1>(parameters.temperature_degree+1),
+                                            typename FunctionMap<dim>::type(),
+                                            system_solution,
+                                            estimated_error_per_cell_T,
+                                            temperature_component,
+                                            0,
+                                            0,
+                                            triangulation.locally_owned_subdomain());
+      }
+    else
+      {
+        estimated_error_per_cell_T = 0;
+      }
+
+    // compute the errors for the stokes solution
+    if (false)
+      {
+        std::vector<bool> velocity_mask (dim+2, true);
+        velocity_mask[dim] = velocity_mask[dim+1] = false;
+        KellyErrorEstimator<dim>::estimate (system_dof_handler,
+                                            QGauss<dim-1>(parameters.stokes_velocity_degree+1),
+                                            typename FunctionMap<dim>::type(),
+                                            system_solution,
+                                            estimated_error_per_cell_u,
+                                            velocity_mask,
+                                            0,
+                                            0,
+                                            triangulation.locally_owned_subdomain());
+      }
+    else
+      {
+        estimated_error_per_cell_u = 0;
+      }
+
+    // rescale and combine errors
+    {
+      if (parameters.refinement_strategy == "Temperature")
+        {
+          for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+            estimated_error_per_cell(i) = estimated_error_per_cell_T(i);
+        }
+      else if (parameters.refinement_strategy == "Normalized density and temperature")
+        {
+	  const double rho_scaling = Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
+							  MPI_COMM_WORLD);
+	  if (rho_scaling != 0)
+	    estimated_error_per_cell_rho /= rho_scaling;
+
+	  const double T_scaling = Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
+							MPI_COMM_WORLD);
+	  if (T_scaling != 0)
+	    estimated_error_per_cell_T /= T_scaling;
+
+          for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+            estimated_error_per_cell(i) = std::max( estimated_error_per_cell_rho(i),
+                                                    estimated_error_per_cell_T(i));
+        }
+      else if (parameters.refinement_strategy == "Weighted density and temperature")
+        {
+          estimated_error_per_cell_rho *=  1e-4/global_Omega_diameter;
+          pcout << "T/rho error scaling: "
+                << Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
+                                        MPI_COMM_WORLD)
+                << " "
+                << Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
+                                        MPI_COMM_WORLD)
+                << std::endl;
+
+          for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+            estimated_error_per_cell(i) = estimated_error_per_cell_T(i)*(1.0+estimated_error_per_cell_rho(i));
+        }
+      else if (parameters.refinement_strategy == "Density c_p temperature")
+        {
+          for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+            estimated_error_per_cell(i) = estimated_error_per_cell_rho(i);
+        }
+      else
+        AssertThrow(false, ExcNotImplemented());
+    }
+  }
 
 // Contrary to step-32, we have found that just refining by the temperature
 // works well in 2d, but only leads to refinement in the boundary layer at the
@@ -538,119 +731,7 @@ namespace aspect
     computing_timer.enter_section ("Refine mesh structure, part 1");
 
     Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
-    Vector<float> estimated_error_per_cell_rho (triangulation.n_active_cells());
-    Vector<float> estimated_error_per_cell_T (triangulation.n_active_cells());
-    Vector<float> estimated_error_per_cell_u (triangulation.n_active_cells());
-
-    // compute density error
-    {
-      TrilinosWrappers::MPI::BlockVector vec_distributed (this->system_rhs);
-
-      Quadrature<dim> quadrature( system_fe.get_unit_support_points() );
-      std::vector<unsigned int> local_dof_indices (system_fe.dofs_per_cell);
-      FEValues<dim> fe_values (mapping, system_fe, quadrature,
-                               update_quadrature_points|update_values);
-
-      const FEValuesExtractors::Scalar pressure (dim);
-      std::vector<double> pressure_values(quadrature.size());
-
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = system_dof_handler.begin_active(),
-      endc = system_dof_handler.end();
-      for (; cell!=endc; ++cell)
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit(cell);
-
-            fe_values[pressure].get_function_values (system_solution,
-                                                     pressure_values);
-
-            cell->get_dof_indices (local_dof_indices);
-
-            // look up density
-            for (unsigned int i=0; i<system_fe.dofs_per_cell; ++i)
-              {
-                if (system_fe.system_to_component_index(i).first == dim+1)
-
-                  vec_distributed(local_dof_indices[i])
-                    = material_model->density( system_solution(local_dof_indices[i]),
-                                               pressure_values[i],
-                                               fe_values.quadrature_point(i));
-              }
-          }
-
-      TrilinosWrappers::MPI::BlockVector vec (this->system_solution);
-      vec = vec_distributed;
-
-      DerivativeApproximation::approximate_gradient  (mapping, system_dof_handler, vec, estimated_error_per_cell_rho, dim+1);
-
-      // Scale gradient in each cell with the
-      // correct power of h. Otherwise, error
-      // indicators do not reduce when
-      // refined if there is a density
-      // jump. We need at least order 1 for
-      // the error not to grow when refining,
-      // so anything >1 should work.
-      {
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = system_dof_handler.begin_active(),
-        endc = system_dof_handler.end();
-        unsigned int i=0;
-        for (; cell!=endc; ++cell, ++i)
-          if (cell->is_locally_owned())
-            estimated_error_per_cell_rho(i) *= std::pow(cell->diameter(), 1+dim/2.0);
-      }
-    }
-
-    // compute the errors for
-    // temperature and stokes solution
-    {
-
-      std::vector<bool> temperature_mask (dim+2, false);
-      temperature_mask[dim+1] = true;
-
-      KellyErrorEstimator<dim>::estimate (system_dof_handler,
-                                          QGauss<dim-1>(parameters.temperature_degree+1),
-                                          typename FunctionMap<dim>::type(),
-                                          system_solution,
-                                          estimated_error_per_cell_T,
-                                          temperature_mask,
-                                          0,
-                                          0,
-                                          triangulation.locally_owned_subdomain());
-
-      std::vector<bool> velocity_mask (dim+2, true);
-      velocity_mask[dim] = false;
-      velocity_mask[dim+1] = false;
-      KellyErrorEstimator<dim>::estimate (system_dof_handler,
-                                          QGauss<dim-1>(parameters.stokes_velocity_degree+1),
-                                          typename FunctionMap<dim>::type(),
-                                          system_solution,
-                                          estimated_error_per_cell_u,
-                                          velocity_mask,
-                                          0,
-                                          0,
-                                          triangulation.locally_owned_subdomain());
-    }
-
-    // rescale errors
-    {
-      if (estimated_error_per_cell_T.linfty_norm() != 0)
-        estimated_error_per_cell_T /= Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
-                                                           MPI_COMM_WORLD);
-      if (estimated_error_per_cell_u.linfty_norm() != 0)
-        estimated_error_per_cell_u /= Utilities::MPI::max (estimated_error_per_cell_u.linfty_norm(),
-                                                           MPI_COMM_WORLD);
-      if (estimated_error_per_cell_rho.linfty_norm() != 0)
-        estimated_error_per_cell_rho /= Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
-                                                             MPI_COMM_WORLD);
-
-      for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
-        estimated_error_per_cell(i) = std::max(
-                                        std::max (estimated_error_per_cell_T(i),
-                                                  0.0f*estimated_error_per_cell_u(i)),
-                                        estimated_error_per_cell_rho(i));
-    }
+    compute_refinement_criterion(estimated_error_per_cell);
 
     parallel::distributed::GridRefinement::
     refine_and_coarsen_fixed_fraction (triangulation,

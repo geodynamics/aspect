@@ -87,9 +87,38 @@ namespace aspect
     SphericalShell<dim>::
     length_scale () const
     {
+//TODO: base this on R0, R1
       return 1e4;
     }
 
+
+
+    template <int dim>
+    double
+    SphericalShell<dim>::depth(const Point<dim> & position) const
+    {
+      return std::min (std::max (R1-position.norm(), 0.), maximal_depth());
+    }
+
+
+
+    template <int dim>
+    Point<dim>
+    SphericalShell<dim>::representative_point(const double depth) const
+    {
+      Point<dim> p;
+      p(dim-1) = std::min (std::max(R1 - depth, 0.), maximal_depth());
+      return p;
+    }
+
+
+
+    template <int dim>
+    double
+    SphericalShell<dim>::maximal_depth() const
+    {
+      return R1-R0;
+    }
 
     template <int dim>
     double SphericalShell<dim>::inner_radius () const

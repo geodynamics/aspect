@@ -21,6 +21,7 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/distributed/tria.h>
 #include <deal.II/fe/mapping.h>
+#include <deal.II/base/conditional_ostream.h>
 
 #include <boost/serialization/split_member.hpp>
 
@@ -190,15 +191,26 @@ namespace aspect
          */
         double get_time () const;
 
+
+        /**
+         * Return a reference to the stream object that only outputs something on one
+	 * processor in a parallel program and simply ignores output put into it on
+	 * all other processors.
+         */
+        const ConditionalOStream &
+        get_pcout () const;
+
         /**
          * Return the size of the last time step.
          */
-        double get_timestep () const;
+        double
+        get_timestep () const;
 
         /**
          * Return the current number of a time step.
          */
-        unsigned int get_timestep_number () const;
+        unsigned int
+        get_timestep_number () const;
 
         /**
          * Return a reference to the triangulation in use by the simulator
@@ -235,6 +247,15 @@ namespace aspect
         */
         bool
         convert_output_to_years () const;
+
+        /**
+        * Compute the error indicators in the same way they are normally used
+        * for mesh refinement. The mesh is not refined when doing so, but the
+        * indicators can be used when generating graphical output to check
+        * why mesh refinement is proceeding as it is.
+        */
+        void
+        get_refinement_criteria(Vector<float> & estimated_error_per_cell) const;
         /** @} */
 
 
@@ -273,20 +294,39 @@ namespace aspect
          */
         const DoFHandler<dim> &
         get_dof_handler () const;
-        /** @} */
 
+        /**
+         * Fill the argument with a set of depth averages of the current
+         * temperature field. The function fills a vector that contains
+         * average temperatures over slices of the domain of same depth. The
+         * function resizes the output vector to match the number of depth
+         * slices.
+         */
+        void
+        get_depth_average_temperature(std::vector<double> & values) const;
+
+        /**
+         * Compute a depth average of the current temperature field
+         */
+        void
+        get_Vs_anomaly(Vector<float> & values) const;
+        /** @} */
 
 
         /** @name Accessing variables that identify aspects of the simulation */
         /** @{ */
 
-
         /**
-         * Return a pointer to the material model to access function like density()
+         * Return a pointer to the material model to access functions like density().
          */
         const MaterialModel::Interface<dim> &
         get_material_model () const;
 
+        /**
+         * Return a pointer to the gravity model description.
+         */
+        const GravityModel::Interface<dim> &
+        get_gravity_model () const;
 
         /**
          * Return a pointer to the geometry model.
@@ -365,7 +405,6 @@ namespace aspect
          * created; then let these objects read their parameters as
          * well.
          */
-        virtual
         void
         parse_parameters (ParameterHandler &prm);
 

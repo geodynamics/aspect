@@ -3,7 +3,7 @@
            Wolfgang Bangerth, Texas A&M University,
      Timo Heister, University of Goettingen, 2008-2011 */
 /*                                                                */
-/*    Copyright (C) 2008, 2009, 2010, 2011 by the deal.II authors */
+/*    Copyright (C) 2008, 2009, 2010, 2011, 2012 by the deal.II authors */
 /*                                                                */
 /*    This file is subject to QPL and may not be  distributed     */
 /*    without copyright and license information. Please refer     */
@@ -348,8 +348,113 @@ namespace aspect
     vector.block(1).add(correction, pressure_shape_function_integrals.block(1));
   }
 
-}
 
+  template <int dim>
+  void Simulator<dim>::compute_depth_average_temperature(std::vector<double> & values) const
+  {
+    const unsigned int num_slices = 100;
+    values.resize(num_slices);
+    std::vector<unsigned int> counts(num_slices);
+
+    // this yields 10^dim quadrature points evenly distributed in the interior of the cell.
+    // We avoid points on the faces, as they would be counted more than once.
+    const QIterated<dim> quadrature_formula (QMidpoint<1>(),
+                                             10);
+    const unsigned int n_q_points = quadrature_formula.size();
+
+    FEValues<dim> fe_values (mapping,
+                             system_fe,
+                             quadrature_formula,
+                             update_values | update_quadrature_points);
+    const FEValuesExtractors::Scalar temperature (dim+1);
+    std::vector<double> temperature_values(n_q_points);
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = system_dof_handler.begin_active(),
+    endc = system_dof_handler.end();
+
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          fe_values[temperature].get_function_values (this->system_solution,
+						      temperature_values);
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              const Point<dim> & p = fe_values.quadrature_point(q);
+              const double depth = geometry_model->depth(fe_values.quadrature_point(q));
+              const double max_depth = geometry_model->maximal_depth();
+              const unsigned int idx = (depth*num_slices)/max_depth;
+              Assert(idx<num_slices, ExcInternalError());
+
+              ++counts[idx];
+              values[idx]+= temperature_values[q];
+            }
+        }
+
+    std::vector<double> values_all(num_slices);
+    std::vector<unsigned int> counts_all(num_slices);
+    Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
+    Utilities::MPI::sum(values, MPI_COMM_WORLD, values_all);
+
+    for (unsigned int i=0; i<num_slices; ++i)
+      values[i] = values_all[i] / (static_cast<double>(counts_all[i])+1e-20);
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::compute_Vs_anomaly(Vector<float> & values) const
+  {
+    std::vector<double> average_temperature;
+    compute_depth_average_temperature(average_temperature);
+
+    const unsigned int num_slices = average_temperature.size();
+    const double max_depth = geometry_model->maximal_depth();
+
+    // evaluate a single point per cell
+    const QMidpoint<dim> quadrature_formula;
+    const unsigned int n_q_points = quadrature_formula.size();
+
+    FEValues<dim> fe_values (mapping,
+                             system_fe,
+                             quadrature_formula,
+                             update_values   |
+                             update_quadrature_points );
+
+    const FEValuesExtractors::Vector velocities (0);
+    const FEValuesExtractors::Scalar pressure (dim);
+    const FEValuesExtractors::Scalar temperature (dim+1);
+
+    std::vector<double> pressure_values(n_q_points);
+    std::vector<double> temperature_values(n_q_points);
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = system_dof_handler.begin_active(),
+    endc = system_dof_handler.end();
+
+    unsigned int cell_index = 0;
+    for (; cell!=endc; ++cell,++cell_index)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          fe_values[pressure].get_function_values (this->system_solution,
+                                                   pressure_values);
+          fe_values[temperature].get_function_values (this->system_solution,
+						      temperature_values);
+
+          const double Vs = material_model->seismic_Vs(temperature_values[0], pressure_values[0]);
+
+          const Point<dim> & p = fe_values.quadrature_point(0);
+          const double depth = geometry_model->depth(fe_values.quadrature_point(0));
+          const unsigned int idx = (depth*num_slices)/max_depth;
+          const double Vs_depth_average = material_model->seismic_Vs(average_temperature[idx],
+                                                                     pressure_values[0]);
+
+          values(cell_index) = (Vs - Vs_depth_average)/Vs_depth_average*1e2;
+        }
+  }
+}
 
 // explicit instantiation of the functions we implement in this file
 namespace aspect
@@ -363,4 +468,8 @@ namespace aspect
   template double Simulator<deal_II_dimension>::compute_time_step () const;
 
   template void Simulator<deal_II_dimension>::make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector);
+
+  template void Simulator<deal_II_dimension>::compute_depth_average_temperature(std::vector<double> & values) const;
+
+  template void Simulator<deal_II_dimension>::compute_Vs_anomaly(Vector<float> & values) const;
 }

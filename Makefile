@@ -14,7 +14,7 @@ deal_II_dimension = 2
 target   = lib/$(application-name)-$(deal_II_dimension)d
 
 # The `debug-mode' variable works as in the small projects Makefile:
-debug-mode = on
+debug-mode = off
 
 # And so does the following variable. You will have to set it to
 # something reasonable that, for example, includes the location where you
