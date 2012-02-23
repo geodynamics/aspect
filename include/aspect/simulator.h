@@ -694,12 +694,12 @@ namespace aspect
 
       const MappingQ<dim>                                       mapping;
 
-      const FESystem<dim>                                       system_fe;
+      const FESystem<dim>                                       finite_element;
 
-      DoFHandler<dim>                                           system_dof_handler;
+      DoFHandler<dim>                                           dof_handler;
 
-      ConstraintMatrix                                          system_constraints;
-      ConstraintMatrix                                          current_system_constraints;
+      ConstraintMatrix                                          constraints;
+      ConstraintMatrix                                          current_constraints;
 
       double                                                    pressure_scaling;
 
@@ -715,9 +715,9 @@ namespace aspect
       TrilinosWrappers::BlockSparseMatrix                       system_matrix;
       TrilinosWrappers::BlockSparseMatrix                       system_preconditioner_matrix;
 
-      TrilinosWrappers::MPI::BlockVector                        system_solution;
-      TrilinosWrappers::MPI::BlockVector                        old_system_solution;
-      TrilinosWrappers::MPI::BlockVector                        old_old_system_solution;
+      TrilinosWrappers::MPI::BlockVector                        solution;
+      TrilinosWrappers::MPI::BlockVector                        old_solution;
+      TrilinosWrappers::MPI::BlockVector                        old_old_solution;
       TrilinosWrappers::MPI::BlockVector                        system_rhs;
 
       // only used if is_compressible()

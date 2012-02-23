@@ -40,7 +40,7 @@ namespace aspect
 
     // interpolate the initial values
     VectorTools::interpolate (mapping,
-                              system_dof_handler,
+                              dof_handler,
                               VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
                                                                           std_cxx1x::cref(*initial_conditions),
                                                                           std_cxx1x::_1),
@@ -50,12 +50,12 @@ namespace aspect
 
     // then apply constraints and copy the
     // result into vectors with ghost elements
-    system_constraints.distribute(initial_solution);
+    constraints.distribute(initial_solution);
 
     // copy temperature block only
-    system_solution.block(2) = initial_solution.block(2);
-    old_system_solution.block(2) = initial_solution.block(2);
-    old_old_system_solution.block(2) = initial_solution.block(2);
+    solution.block(2) = initial_solution.block(2);
+    old_solution.block(2) = initial_solution.block(2);
+    old_old_solution.block(2) = initial_solution.block(2);
   }
 
 
@@ -85,7 +85,7 @@ namespace aspect
         // wants a function that represents all components of the
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
-        VectorTools::interpolate (mapping, system_dof_handler,
+        VectorTools::interpolate (mapping, dof_handler,
                                   VectorFunctionFromScalarFunctionObject<dim> (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
                                                                                std_cxx1x::cref (*adiabatic_conditions),
                                                                                std_cxx1x::_1),
@@ -94,16 +94,16 @@ namespace aspect
                                   system_tmp);
 
         // we may have hanging nodes, so apply constraints
-        system_constraints.distribute (system_tmp);
+        constraints.distribute (system_tmp);
 
-        old_system_solution.block(1) = system_tmp.block(1);
+        old_solution.block(1) = system_tmp.block(1);
       }
     else
       {
         // implement the local projection for the discontinuous pressure
         // element. this is only going to work if, indeed, the element
         // is discontinuous
-        const FiniteElement<dim> &system_pressure_fe = system_fe.base_element(1);
+        const FiniteElement<dim> &system_pressure_fe = finite_element.base_element(1);
         Assert (system_pressure_fe.dofs_per_face == 0,
                 ExcNotImplemented());
 
@@ -115,7 +115,7 @@ namespace aspect
                                                update_quadrature_points |
                                                update_JxW_values);
 
-        FEValues<dim> fe_values (mapping, system_fe, quadrature, update_flags);
+        FEValues<dim> fe_values (mapping, finite_element, quadrature, update_flags);
         const FEValuesExtractors::Scalar pressure (dim);
 
         const unsigned int
@@ -136,8 +136,8 @@ namespace aspect
 
 
         typename DoFHandler<dim>::active_cell_iterator
-        cell = system_dof_handler.begin_active(),
-        endc = system_dof_handler.end();
+        cell = dof_handler.begin_active(),
+        endc = dof_handler.end();
 
         for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
@@ -153,7 +153,7 @@ namespace aspect
               for (unsigned int point=0; point<n_q_points; ++point)
                 for (unsigned int i=0; i<dofs_per_cell; ++i)
                   {
-                    if (system_fe.system_to_component_index(i).first == dim)
+                    if (finite_element.system_to_component_index(i).first == dim)
                       cell_vector(i)
                       +=
                         rhs_values[point] *
@@ -165,9 +165,9 @@ namespace aspect
                     // for all other variables so that the whole thing remains
                     // invertible
                     for (unsigned int j=0; j<dofs_per_cell; ++j)
-                      if ((system_fe.system_to_component_index(i).first == dim)
+                      if ((finite_element.system_to_component_index(i).first == dim)
                           &&
-                          (system_fe.system_to_component_index(j).first == dim))
+                          (finite_element.system_to_component_index(j).first == dim))
                         local_mass_matrix(j,i) += (fe_values[pressure].value(i,point) *
                                                    fe_values[pressure].value(j,point) *
                                                    fe_values.JxW(point));
@@ -183,15 +183,15 @@ namespace aspect
               cell->set_dof_values (local_projection, system_tmp);
             }
 
-        old_system_solution.block(1) = system_tmp.block(1);
+        old_solution.block(1) = system_tmp.block(1);
       }
 
     // normalize the pressure in such a way that the surface pressure
     // equals a known and desired value
-    normalize_pressure(old_system_solution);
+    normalize_pressure(old_solution);
 
     // set the current solution to the same value as the previous solution
-    system_solution = old_system_solution;
+    solution = old_solution;
   }
 }
 

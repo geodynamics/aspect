@@ -62,7 +62,7 @@ namespace aspect
     const unsigned int n_q_points = quadrature_formula.size();
 
 
-    FEValues<dim> fe_values (mapping, system_fe, quadrature_formula, update_values);
+    FEValues<dim> fe_values (mapping, finite_element, quadrature_formula, update_values);
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
 
     const FEValuesExtractors::Vector velocities (0);
@@ -73,8 +73,8 @@ namespace aspect
     // quadrature point (i.e. each node). keep a running tally of the largest
     // such velocity
     typename DoFHandler<dim>::active_cell_iterator
-    cell = system_dof_handler.begin_active(),
-    endc = system_dof_handler.end();
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
     for (; cell!=endc; ++cell)
       if (cell->is_locally_owned())
         {
@@ -100,7 +100,7 @@ namespace aspect
                                              parameters.stokes_velocity_degree);
     const unsigned int n_q_points = quadrature_formula.size();
 
-    FEValues<dim> fe_values (mapping, system_fe, quadrature_formula, update_values);
+    FEValues<dim> fe_values (mapping, finite_element, quadrature_formula, update_values);
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
 
     const FEValuesExtractors::Vector velocities (0);
@@ -108,13 +108,13 @@ namespace aspect
     double max_local_speed_over_meshsize = 0;
 
     typename DoFHandler<dim>::active_cell_iterator
-    cell = system_dof_handler.begin_active(),
-    endc = system_dof_handler.end();
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
     for (; cell!=endc; ++cell)
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[velocities].get_function_values (system_solution,
+          fe_values[velocities].get_function_values (solution,
                                                      velocity_values);
 
           double max_local_velocity = 0;
@@ -152,7 +152,7 @@ namespace aspect
 
     const FEValuesExtractors::Scalar temperature (dim+1);
 
-    FEValues<dim> fe_values (mapping, system_fe, quadrature_formula,
+    FEValues<dim> fe_values (mapping, finite_element, quadrature_formula,
                              update_values);
     std::vector<double> old_temperature_values(n_q_points);
     std::vector<double> old_old_temperature_values(n_q_points);
@@ -169,15 +169,15 @@ namespace aspect
     if (timestep_number != 0)
       {
         typename DoFHandler<dim>::active_cell_iterator
-        cell = system_dof_handler.begin_active(),
-        endc = system_dof_handler.end();
+        cell = dof_handler.begin_active(),
+        endc = dof_handler.end();
         for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
-              fe_values[temperature].get_function_values (old_system_solution,
+              fe_values[temperature].get_function_values (old_solution,
                                                           old_temperature_values);
-              fe_values[temperature].get_function_values (old_old_system_solution,
+              fe_values[temperature].get_function_values (old_old_solution,
                                                           old_old_temperature_values);
 
               for (unsigned int q=0; q<n_q_points; ++q)
@@ -196,13 +196,13 @@ namespace aspect
     else
       {
         typename DoFHandler<dim>::active_cell_iterator
-        cell = system_dof_handler.begin_active(),
-        endc = system_dof_handler.end();
+        cell = dof_handler.begin_active(),
+        endc = dof_handler.end();
         for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
-              fe_values[temperature].get_function_values (old_system_solution,
+              fe_values[temperature].get_function_values (old_solution,
                                                           old_temperature_values);
 
               for (unsigned int q=0; q<n_q_points; ++q)
@@ -244,15 +244,15 @@ namespace aspect
       QGauss < dim - 1 > quadrature (parameters.stokes_velocity_degree + 1);
 
       const unsigned int n_q_points = quadrature.size();
-      FEFaceValues<dim> fe_face_values (mapping, system_fe,  quadrature,
+      FEFaceValues<dim> fe_face_values (mapping, finite_element,  quadrature,
                                         update_JxW_values | update_values);
       const FEValuesExtractors::Scalar pressure (dim);
 
       std::vector<double> pressure_values(n_q_points);
 
       typename DoFHandler<dim>::active_cell_iterator
-      cell = system_dof_handler.begin_active(),
-      endc = system_dof_handler.end();
+      cell = dof_handler.begin_active(),
+      endc = dof_handler.end();
       for (; cell != endc; ++cell)
         if (cell->is_locally_owned())
           {
@@ -301,23 +301,23 @@ namespace aspect
         // consequently, adding the adjustment to the global function is
         // achieved by adding the adjustment to the first pressure degree
         // of freedom on each cell.
-        Assert (dynamic_cast<const FE_DGP<dim>*>(&system_fe.base_element(1)) != 0,
+        Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(1)) != 0,
                 ExcInternalError());
-        std::vector<unsigned int> local_dof_indices (system_fe.dofs_per_cell);
+        std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
         typename DoFHandler<dim>::active_cell_iterator
-        cell = system_dof_handler.begin_active(),
-        endc = system_dof_handler.end();
+        cell = dof_handler.begin_active(),
+        endc = dof_handler.end();
         for (; cell != endc; ++cell)
           if (cell->is_locally_owned())
             {
               // identify the first pressure dof
               cell->get_dof_indices (local_dof_indices);
               const unsigned int first_pressure_dof
-                = system_fe.component_to_system_index (dim, 0);
+                = finite_element.component_to_system_index (dim, 0);
 
               // make sure that this DoF is really owned by the current processor
               // and that it is in fact a pressure dof
-              Assert (system_dof_handler.locally_owned_dofs().is_element(first_pressure_dof),
+              Assert (dof_handler.locally_owned_dofs().is_element(first_pressure_dof),
                       ExcInternalError());
               Assert (local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
                       ExcInternalError());
@@ -363,21 +363,21 @@ namespace aspect
     const unsigned int n_q_points = quadrature_formula.size();
 
     FEValues<dim> fe_values (mapping,
-                             system_fe,
+                             finite_element,
                              quadrature_formula,
                              update_values | update_quadrature_points);
     const FEValuesExtractors::Scalar temperature (dim+1);
     std::vector<double> temperature_values(n_q_points);
 
     typename DoFHandler<dim>::active_cell_iterator
-    cell = system_dof_handler.begin_active(),
-    endc = system_dof_handler.end();
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
 
     for (; cell!=endc; ++cell)
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[temperature].get_function_values (this->system_solution,
+          fe_values[temperature].get_function_values (this->solution,
 						      temperature_values);
           for (unsigned int q=0; q<n_q_points; ++q)
             {
@@ -417,7 +417,7 @@ namespace aspect
     const unsigned int n_q_points = quadrature_formula.size();
 
     FEValues<dim> fe_values (mapping,
-                             system_fe,
+                             finite_element,
                              quadrature_formula,
                              update_values   |
                              update_quadrature_points );
@@ -430,17 +430,17 @@ namespace aspect
     std::vector<double> temperature_values(n_q_points);
 
     typename DoFHandler<dim>::active_cell_iterator
-    cell = system_dof_handler.begin_active(),
-    endc = system_dof_handler.end();
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
 
     unsigned int cell_index = 0;
     for (; cell!=endc; ++cell,++cell_index)
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[pressure].get_function_values (this->system_solution,
+          fe_values[pressure].get_function_values (this->solution,
                                                    pressure_values);
-          fe_values[temperature].get_function_values (this->system_solution,
+          fe_values[temperature].get_function_values (this->solution,
 						      temperature_values);
 
           const double Vs = material_model->seismic_Vs(temperature_values[0], pressure_values[0]);

@@ -240,13 +240,13 @@ namespace aspect
 
       TrilinosWrappers::MPI::BlockVector
       distributed_solution (system_rhs);
-      distributed_solution = system_solution;
+      distributed_solution = solution;
 
       solver.solve (system_matrix.block(2,2), distributed_solution.block(2),
                     system_rhs.block(2), *T_preconditioner);
 
-      system_constraints.distribute (distributed_solution);
-      system_solution.block(2) = distributed_solution.block(2);
+      constraints.distribute (distributed_solution);
+      solution.block(2) = distributed_solution.block(2);
 
       // print number of iterations and also record it in the
       // statistics file
@@ -271,8 +271,8 @@ namespace aspect
     // extract Stokes parts of solution vector, without any ghost elements
     TrilinosWrappers::MPI::BlockVector distributed_stokes_solution;
     distributed_stokes_solution.reinit(system_rhs);
-    distributed_stokes_solution.block(0) = system_solution.block(0);
-    distributed_stokes_solution.block(1) = system_solution.block(1);
+    distributed_stokes_solution.block(0) = solution.block(0);
+    distributed_stokes_solution.block(1) = solution.block(1);
 
     // before solving we scale the initial solution to the right dimensions
     distributed_stokes_solution.block(1) /= pressure_scaling;
@@ -283,7 +283,7 @@ namespace aspect
             end   = (distributed_stokes_solution.block(0).size() +
                      distributed_stokes_solution.block(1).local_range().second);
     for (unsigned int i=start; i<end; ++i)
-      if (system_constraints.is_constrained (i))
+      if (constraints.is_constrained (i))
         distributed_stokes_solution(i) = 0;
 
     // if the model is compressible then we need to adjust the right hand
@@ -345,17 +345,17 @@ namespace aspect
 
     // distribute hanging node and
     // other constraints
-    system_constraints.distribute (distributed_stokes_solution);
+    constraints.distribute (distributed_stokes_solution);
 
     // then copy back the solution from the temporary (non-ghosted) vector
     // into the ghosted one with all solution components
-    system_solution.block(0) = distributed_stokes_solution.block(0);
-    system_solution.block(1) = distributed_stokes_solution.block(1);
+    solution.block(0) = distributed_stokes_solution.block(0);
+    solution.block(1) = distributed_stokes_solution.block(1);
 
     // now rescale the pressure back to real physical units
-    system_solution.block(1) *= pressure_scaling;
+    solution.block(1) *= pressure_scaling;
 
-    normalize_pressure(system_solution);
+    normalize_pressure(solution);
 
     // print the number of iterations to screen and record it in the
     // statistics file

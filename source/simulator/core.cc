@@ -105,7 +105,7 @@ namespace aspect
 
     mapping (4),
 
-    system_fe(FE_Q<dim>(parameters.stokes_velocity_degree),
+    finite_element(FE_Q<dim>(parameters.stokes_velocity_degree),
               dim,
               (parameters.use_locally_conservative_discretization
                ?
@@ -118,7 +118,7 @@ namespace aspect
               FE_Q<dim>(parameters.temperature_degree),
               1),
 
-    system_dof_handler (triangulation),
+    dof_handler (triangulation),
 
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true)
@@ -195,7 +195,7 @@ namespace aspect
     system_sub_blocks[dim] = 1;
     system_sub_blocks[dim+1] = 2;
     std::vector<unsigned int> system_dofs_per_block (3);
-    DoFTools::count_dofs_per_block (system_dof_handler, system_dofs_per_block,
+    DoFTools::count_dofs_per_block (dof_handler, system_dofs_per_block,
                                     system_sub_blocks);
 
     statistics.add_value("Number of Stokes degrees of freedom",
@@ -207,12 +207,12 @@ namespace aspect
     // the stokes_constraints object we already have
     {
       IndexSet system_relevant_set;
-      DoFTools::extract_locally_relevant_dofs (system_dof_handler,
+      DoFTools::extract_locally_relevant_dofs (dof_handler,
                                                system_relevant_set);
 
-      current_system_constraints.clear ();
-      current_system_constraints.reinit (system_relevant_set);
-      current_system_constraints.merge (system_constraints);
+      current_constraints.clear ();
+      current_constraints.reinit (system_relevant_set);
+      current_constraints.merge (constraints);
 
       typedef unsigned char boundary_indicator_t;
       const std::set<boundary_indicator_t>
@@ -226,12 +226,12 @@ namespace aspect
       for (std::set<boundary_indicator_t>::const_iterator
            p = prescribed_velocity_boundary_indicators.begin();
            p != prescribed_velocity_boundary_indicators.end(); ++p)
-        VectorTools::interpolate_boundary_values (system_dof_handler,
+        VectorTools::interpolate_boundary_values (dof_handler,
                                                   *p,
                                                   ZeroFunction<dim>(dim+2),
-                                                  current_system_constraints,
+                                                  current_constraints,
                                                   velocity_mask);
-      current_system_constraints.close();
+      current_constraints.close();
     }
   }
 
@@ -255,9 +255,9 @@ namespace aspect
       for (unsigned int d=0; d<dim+2; ++d)
         coupling[c][d] = DoFTools::always;
 
-    DoFTools::make_sparsity_pattern (system_dof_handler,
+    DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
-                                     system_constraints, false,
+                                     constraints, false,
                                      Utilities::MPI::
                                      this_mpi_process(MPI_COMM_WORLD));
     sp.compress();
@@ -288,9 +288,9 @@ namespace aspect
         else
           coupling[c][d] = DoFTools::none;
 
-    DoFTools::make_sparsity_pattern (system_dof_handler,
+    DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
-                                     system_constraints, false,
+                                     constraints, false,
                                      Utilities::MPI::
                                      this_mpi_process(MPI_COMM_WORLD));
     sp.compress();
@@ -305,20 +305,20 @@ namespace aspect
   {
     computing_timer.enter_section("Setup dof systems");
 
-    system_dof_handler.distribute_dofs(system_fe);
+    dof_handler.distribute_dofs(finite_element);
 
     // Renumber the DoFs hierarchical so that we get the
     // same numbering if we resume the computation. This
     // is because the numbering depends on the order the
     // cells are created.
-    DoFRenumbering::hierarchical (system_dof_handler);
+    DoFRenumbering::hierarchical (dof_handler);
     std::vector<unsigned int> system_sub_blocks (dim+2,0);
     system_sub_blocks[dim] = 1;
     system_sub_blocks[dim+1] = 2;
-    DoFRenumbering::component_wise (system_dof_handler, system_sub_blocks);
+    DoFRenumbering::component_wise (dof_handler, system_sub_blocks);
 
     std::vector<unsigned int> system_dofs_per_block (3);
-    DoFTools::count_dofs_per_block (system_dof_handler, system_dofs_per_block,
+    DoFTools::count_dofs_per_block (dof_handler, system_dofs_per_block,
                                     system_sub_blocks);
 
     const unsigned int n_u = system_dofs_per_block[0],
@@ -359,12 +359,12 @@ namespace aspect
     std::vector<IndexSet> system_partitioning, system_relevant_partitioning;
     IndexSet system_relevant_set;
     {
-      IndexSet system_index_set = system_dof_handler.locally_owned_dofs();
+      IndexSet system_index_set = dof_handler.locally_owned_dofs();
       system_partitioning.push_back(system_index_set.get_view(0,n_u));
       system_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
       system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
 
-      DoFTools::extract_locally_relevant_dofs (system_dof_handler,
+      DoFTools::extract_locally_relevant_dofs (dof_handler,
                                                system_relevant_set);
       system_relevant_partitioning.push_back(system_relevant_set.get_view(0,n_u));
       system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u,n_u+n_p));
@@ -377,11 +377,11 @@ namespace aspect
     // velocity that are different between time steps. these are then put
     // into current_stokes_constraints in start_timestep().
     {
-      system_constraints.clear();
-      system_constraints.reinit(system_relevant_set);
+      constraints.clear();
+      constraints.reinit(system_relevant_set);
 
-      DoFTools::make_hanging_node_constraints (system_dof_handler,
-                                               system_constraints);
+      DoFTools::make_hanging_node_constraints (dof_handler,
+                                               constraints);
 
       // obtain the boundary indicators that belong to zero velocity
       // and no-normal-flux type
@@ -401,18 +401,18 @@ namespace aspect
       for (std::set<boundary_indicator_t>::const_iterator
            p = zero_boundary_indicators.begin();
            p != zero_boundary_indicators.end(); ++p)
-        VectorTools::interpolate_boundary_values (system_dof_handler,
+        VectorTools::interpolate_boundary_values (dof_handler,
                                                   *p,
                                                   ZeroFunction<dim>(dim+2),
-                                                  system_constraints,
+                                                  constraints,
                                                   velocity_mask);
 
 
       // do the same for no-normal-flux boundaries
-      VectorTools::compute_no_normal_flux_constraints (system_dof_handler,
+      VectorTools::compute_no_normal_flux_constraints (dof_handler,
                                                        /* first_vector_component= */ 0,
                                                        no_normal_flux_boundary_indicators,
-                                                       system_constraints,
+                                                       constraints,
                                                        mapping);
     }
 
@@ -431,7 +431,7 @@ namespace aspect
         {
           Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
                   ExcInternalError());
-          VectorTools::interpolate_boundary_values (system_dof_handler,
+          VectorTools::interpolate_boundary_values (dof_handler,
                                                     *p,
                                                     VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&BoundaryTemperature::Interface<dim>::temperature,
                                                         std_cxx1x::cref(*boundary_temperature),
@@ -440,11 +440,11 @@ namespace aspect
                                                         std_cxx1x::_1),
                                                         dim+1,
                                                         dim+2),
-                                                    system_constraints,
+                                                    constraints,
                                                     temperature_mask);
 
         }
-      system_constraints.close();
+      constraints.close();
     }
 
     // finally initialize vectors, matrices, etc.
@@ -453,9 +453,9 @@ namespace aspect
     setup_system_preconditioner (system_partitioning);
 
     system_rhs.reinit(system_partitioning, MPI_COMM_WORLD);
-    system_solution.reinit(system_relevant_partitioning, MPI_COMM_WORLD);
-    old_system_solution.reinit(system_relevant_partitioning, MPI_COMM_WORLD);
-    old_old_system_solution.reinit(system_relevant_partitioning, MPI_COMM_WORLD);
+    solution.reinit(system_relevant_partitioning, MPI_COMM_WORLD);
+    old_solution.reinit(system_relevant_partitioning, MPI_COMM_WORLD);
+    old_old_solution.reinit(system_relevant_partitioning, MPI_COMM_WORLD);
 
     if (material_model->is_compressible())
       pressure_shape_function_integrals.reinit (system_partitioning, MPI_COMM_WORLD);
@@ -542,10 +542,10 @@ namespace aspect
         bool lookup_rho_c_p_T = (parameters.refinement_strategy == "Density c_p temperature");
         TrilinosWrappers::MPI::BlockVector vec_distributed (system_rhs);
 
-        const Quadrature<dim> quadrature(system_fe.get_unit_support_points());
-        std::vector<unsigned int> local_dof_indices (system_fe.dofs_per_cell);
+        const Quadrature<dim> quadrature(finite_element.get_unit_support_points());
+        std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
         FEValues<dim> fe_values (mapping,
-				 system_fe,
+				 finite_element,
 				 quadrature,
                                  update_quadrature_points | update_values);
         std::vector<double> pressure_values(quadrature.size());
@@ -553,15 +553,15 @@ namespace aspect
 
 
         typename DoFHandler<dim>::active_cell_iterator
-        cell = system_dof_handler.begin_active(),
-        endc = system_dof_handler.end();
+        cell = dof_handler.begin_active(),
+        endc = dof_handler.end();
         for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
             {
               fe_values.reinit(cell);
-              fe_values[pressure].get_function_values (system_solution,
+              fe_values[pressure].get_function_values (solution,
 						       pressure_values);
-              fe_values[temperature].get_function_values (system_solution,
+              fe_values[temperature].get_function_values (solution,
 							  temperature_values);
 
               cell->get_dof_indices (local_dof_indices);
@@ -569,8 +569,8 @@ namespace aspect
               // for each temperature dof, write into the output
               // vector the density. note that quadrature points and
               // dofs are enumerated in the same order
-              for (unsigned int i=0; i<system_fe.dofs_per_cell; ++i)
-		if (system_fe.system_to_component_index(i).first == dim+1)
+              for (unsigned int i=0; i<finite_element.dofs_per_cell; ++i)
+		if (finite_element.system_to_component_index(i).first == dim+1)
                 {
                   vec_distributed(local_dof_indices[i])
                     = material_model->density( temperature_values[i],
@@ -587,11 +587,11 @@ namespace aspect
                 }
             }
 
-        TrilinosWrappers::MPI::BlockVector vec (system_solution);
+        TrilinosWrappers::MPI::BlockVector vec (solution);
         vec = vec_distributed;
 
         DerivativeApproximation::approximate_gradient  (mapping,
-							system_dof_handler,
+							dof_handler,
 							vec,
 							estimated_error_per_cell_rho,
 							dim+1);
@@ -614,8 +614,8 @@ namespace aspect
           AssertThrow(false, ExcNotImplemented());
         {
           typename DoFHandler<dim>::active_cell_iterator
-          cell = system_dof_handler.begin_active(),
-          endc = system_dof_handler.end();
+          cell = dof_handler.begin_active(),
+          endc = dof_handler.end();
           unsigned int i=0;
           for (; cell!=endc; ++cell, ++i)
             if (cell->is_locally_owned())
@@ -632,10 +632,10 @@ namespace aspect
       {
 	std::vector<bool> temperature_component (dim+2, false);
 	temperature_component[dim+1] = true;
-        KellyErrorEstimator<dim>::estimate (system_dof_handler,
+        KellyErrorEstimator<dim>::estimate (dof_handler,
                                             QGauss<dim-1>(parameters.temperature_degree+1),
                                             typename FunctionMap<dim>::type(),
-                                            system_solution,
+                                            solution,
                                             estimated_error_per_cell_T,
                                             temperature_component,
                                             0,
@@ -652,10 +652,10 @@ namespace aspect
       {
         std::vector<bool> velocity_mask (dim+2, true);
         velocity_mask[dim] = velocity_mask[dim+1] = false;
-        KellyErrorEstimator<dim>::estimate (system_dof_handler,
+        KellyErrorEstimator<dim>::estimate (dof_handler,
                                             QGauss<dim-1>(parameters.stokes_velocity_degree+1),
                                             typename FunctionMap<dim>::type(),
-                                            system_solution,
+                                            solution,
                                             estimated_error_per_cell_u,
                                             velocity_mask,
                                             0,
@@ -747,11 +747,11 @@ namespace aspect
         cell->clear_refine_flag ();
 
     std::vector<const TrilinosWrappers::MPI::BlockVector *> x_system (2);
-    x_system[0] = &system_solution;
-    x_system[1] = &old_system_solution;
+    x_system[0] = &solution;
+    x_system[1] = &old_solution;
 
     parallel::distributed::SolutionTransfer<dim,TrilinosWrappers::MPI::BlockVector>
-    system_trans(system_dof_handler);
+    system_trans(dof_handler);
 
     triangulation.prepare_coarsening_and_refinement();
     system_trans.prepare_for_coarsening_and_refinement(x_system);
@@ -774,8 +774,8 @@ namespace aspect
       system_tmp[1] = &(old_distributed_system);
 
       system_trans.interpolate (system_tmp);
-      system_solution     = distributed_system;
-      old_system_solution = old_distributed_system;
+      solution     = distributed_system;
+      old_solution = old_distributed_system;
     }
 
     computing_timer.exit_section();
@@ -896,11 +896,11 @@ namespace aspect
         time += time_step;
         ++timestep_number;
         {
-          old_old_system_solution      = old_system_solution;
-          old_system_solution          = system_solution;
+          old_old_solution      = old_solution;
+          old_solution          = solution;
           if (old_time_step > 0)
-            system_solution.sadd (1.+time_step/old_time_step, -time_step/old_time_step,
-                                  old_old_system_solution);
+            solution.sadd (1.+time_step/old_time_step, -time_step/old_time_step,
+                                  old_old_solution);
         }
 
         // periodically generate snapshots so that we can resume here

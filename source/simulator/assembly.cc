@@ -33,13 +33,13 @@ namespace aspect
         template <int dim>
         struct StokesPreconditioner
         {
-          StokesPreconditioner (const FiniteElement<dim> &system_fe,
+          StokesPreconditioner (const FiniteElement<dim> &finite_element,
                                 const Quadrature<dim>    &quadrature,
                                 const Mapping<dim>       &mapping,
                                 const UpdateFlags         update_flags);
           StokesPreconditioner (const StokesPreconditioner &data);
 
-          FEValues<dim>               system_fe_values;
+          FEValues<dim>               finite_element_values;
 
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  phi_p;
@@ -52,15 +52,15 @@ namespace aspect
 
         template <int dim>
         StokesPreconditioner<dim>::
-        StokesPreconditioner (const FiniteElement<dim> &system_fe,
+        StokesPreconditioner (const FiniteElement<dim> &finite_element,
                               const Quadrature<dim>    &quadrature,
                               const Mapping<dim>       &mapping,
                               const UpdateFlags         update_flags)
           :
-          system_fe_values (mapping, system_fe, quadrature,
+          finite_element_values (mapping, finite_element, quadrature,
                             update_flags),
-          grads_phi_u (system_fe.dofs_per_cell),
-          phi_p (system_fe.dofs_per_cell),
+          grads_phi_u (finite_element.dofs_per_cell),
+          phi_p (finite_element.dofs_per_cell),
           temperature_values (quadrature.size()),
           old_pressure_values (quadrature.size())
         {}
@@ -71,10 +71,10 @@ namespace aspect
         StokesPreconditioner<dim>::
         StokesPreconditioner (const StokesPreconditioner &scratch)
           :
-          system_fe_values (scratch.system_fe_values.get_mapping(),
-                            scratch.system_fe_values.get_fe(),
-                            scratch.system_fe_values.get_quadrature(),
-                            scratch.system_fe_values.get_update_flags()),
+          finite_element_values (scratch.finite_element_values.get_mapping(),
+                            scratch.finite_element_values.get_fe(),
+                            scratch.finite_element_values.get_quadrature(),
+                            scratch.finite_element_values.get_update_flags()),
           grads_phi_u (scratch.grads_phi_u),
           phi_p (scratch.phi_p),
           temperature_values (scratch.temperature_values),
@@ -101,7 +101,7 @@ namespace aspect
         template <int dim>
         struct StokesSystem : public StokesPreconditioner<dim>
         {
-          StokesSystem (const FiniteElement<dim> &system_fe,
+          StokesSystem (const FiniteElement<dim> &finite_element,
                         const Mapping<dim>       &mapping,
                         const Quadrature<dim>    &quadrature,
                         const UpdateFlags         update_flags);
@@ -118,17 +118,17 @@ namespace aspect
 
         template <int dim>
         StokesSystem<dim>::
-        StokesSystem (const FiniteElement<dim> &system_fe,
+        StokesSystem (const FiniteElement<dim> &finite_element,
                       const Mapping<dim>       &mapping,
                       const Quadrature<dim>    &quadrature,
                       const UpdateFlags         update_flags)
           :
-          StokesPreconditioner<dim> (system_fe, quadrature,
+          StokesPreconditioner<dim> (finite_element, quadrature,
                                      mapping,
                                      update_flags),
-          phi_u (system_fe.dofs_per_cell),
-          grads_phi_u (system_fe.dofs_per_cell),
-          div_phi_u (system_fe.dofs_per_cell),
+          phi_u (finite_element.dofs_per_cell),
+          grads_phi_u (finite_element.dofs_per_cell),
+          div_phi_u (finite_element.dofs_per_cell),
           old_velocity_values (quadrature.size())
         {}
 
@@ -150,12 +150,12 @@ namespace aspect
         template <int dim>
         struct TemperatureSystem
         {
-          TemperatureSystem (const FiniteElement<dim> &system_fe,
+          TemperatureSystem (const FiniteElement<dim> &finite_element,
                              const Mapping<dim>       &mapping,
                              const Quadrature<dim>    &quadrature);
           TemperatureSystem (const TemperatureSystem &data);
 
-          FEValues<dim>               system_fe_values;
+          FEValues<dim>               finite_element_values;
 
           std::vector<double>         phi_T;
           std::vector<Tensor<1,dim> > grad_phi_T;
@@ -181,20 +181,20 @@ namespace aspect
 
         template <int dim>
         TemperatureSystem<dim>::
-        TemperatureSystem (const FiniteElement<dim> &system_fe,
+        TemperatureSystem (const FiniteElement<dim> &finite_element,
                            const Mapping<dim>       &mapping,
                            const Quadrature<dim>    &quadrature)
           :
-          system_fe_values (mapping,
-                            system_fe, quadrature,
+          finite_element_values (mapping,
+                            finite_element, quadrature,
                             update_values    |
                             update_gradients |
                             update_hessians  |
                             update_quadrature_points |
                             update_JxW_values),
 
-          phi_T (system_fe.dofs_per_cell),
-          grad_phi_T (system_fe.dofs_per_cell),
+          phi_T (finite_element.dofs_per_cell),
+          grad_phi_T (finite_element.dofs_per_cell),
           old_velocity_values (quadrature.size()),
           old_old_velocity_values (quadrature.size()),
           old_pressure (quadrature.size()),
@@ -215,10 +215,10 @@ namespace aspect
         TemperatureSystem<dim>::
         TemperatureSystem (const TemperatureSystem &scratch)
           :
-          system_fe_values (scratch.system_fe_values.get_mapping(),
-                            scratch.system_fe_values.get_fe(),
-                            scratch.system_fe_values.get_quadrature(),
-                            scratch.system_fe_values.get_update_flags()),
+          finite_element_values (scratch.finite_element_values.get_mapping(),
+                            scratch.finite_element_values.get_fe(),
+                            scratch.finite_element_values.get_quadrature(),
+                            scratch.finite_element_values.get_update_flags()),
 
           phi_T (scratch.phi_T),
           grad_phi_T (scratch.grad_phi_T),
@@ -250,7 +250,7 @@ namespace aspect
         template <int dim>
         struct StokesPreconditioner
         {
-          StokesPreconditioner (const FiniteElement<dim> &system_fe);
+          StokesPreconditioner (const FiniteElement<dim> &finite_element);
           StokesPreconditioner (const StokesPreconditioner &data);
 
           FullMatrix<double>          local_matrix;
@@ -261,11 +261,11 @@ namespace aspect
 
         template <int dim>
         StokesPreconditioner<dim>::
-        StokesPreconditioner (const FiniteElement<dim> &system_fe)
+        StokesPreconditioner (const FiniteElement<dim> &finite_element)
           :
-          local_matrix (system_fe.dofs_per_cell,
-                        system_fe.dofs_per_cell),
-          local_dof_indices (system_fe.dofs_per_cell)
+          local_matrix (finite_element.dofs_per_cell,
+                        finite_element.dofs_per_cell),
+          local_dof_indices (finite_element.dofs_per_cell)
         {}
 
 
@@ -283,7 +283,7 @@ namespace aspect
         template <int dim>
         struct StokesSystem : public StokesPreconditioner<dim>
         {
-          StokesSystem (const FiniteElement<dim> &system_fe);
+          StokesSystem (const FiniteElement<dim> &finite_element);
           StokesSystem (const StokesSystem<dim> &data);
 
           Vector<double> local_rhs;
@@ -294,11 +294,11 @@ namespace aspect
 
         template <int dim>
         StokesSystem<dim>::
-        StokesSystem (const FiniteElement<dim> &system_fe)
+        StokesSystem (const FiniteElement<dim> &finite_element)
           :
-          StokesPreconditioner<dim> (system_fe),
-          local_rhs (system_fe.dofs_per_cell),
-          local_pressure_shape_function_integrals (system_fe.dofs_per_cell)
+          StokesPreconditioner<dim> (finite_element),
+          local_rhs (finite_element.dofs_per_cell),
+          local_pressure_shape_function_integrals (finite_element.dofs_per_cell)
         {}
 
 
@@ -317,7 +317,7 @@ namespace aspect
         template <int dim>
         struct TemperatureSystem
         {
-          TemperatureSystem (const FiniteElement<dim> &system_fe);
+          TemperatureSystem (const FiniteElement<dim> &finite_element);
           TemperatureSystem (const TemperatureSystem &data);
 
           FullMatrix<double>          local_matrix;
@@ -329,12 +329,12 @@ namespace aspect
 
         template <int dim>
         TemperatureSystem<dim>::
-        TemperatureSystem (const FiniteElement<dim> &system_fe)
+        TemperatureSystem (const FiniteElement<dim> &finite_element)
           :
-          local_matrix (system_fe.dofs_per_cell,
-                        system_fe.dofs_per_cell),
-          local_rhs (system_fe.dofs_per_cell),
-          local_dof_indices (system_fe.dofs_per_cell)
+          local_matrix (finite_element.dofs_per_cell,
+                        finite_element.dofs_per_cell),
+          local_rhs (finite_element.dofs_per_cell),
+          local_dof_indices (finite_element.dofs_per_cell)
         {}
 
 
@@ -390,7 +390,7 @@ namespace aspect
 
     const FEValuesExtractors::Scalar temperature (dim+1);
 
-    FEValues<dim> fe_values (system_fe, quadrature_formula,
+    FEValues<dim> fe_values (finite_element, quadrature_formula,
                              update_values | update_JxW_values);
     std::vector<double> old_temperature_values(n_q_points);
     std::vector<double> old_old_temperature_values(n_q_points);
@@ -405,15 +405,15 @@ namespace aspect
     // integral over the entropy as well as the area and the
     // maximal and minimal entropy
     typename DoFHandler<dim>::active_cell_iterator
-    cell = system_dof_handler.begin_active(),
-    endc = system_dof_handler.end();
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
     for (; cell!=endc; ++cell)
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[temperature].get_function_values (old_system_solution,
+          fe_values[temperature].get_function_values (old_solution,
                                                       old_temperature_values);
-          fe_values[temperature].get_function_values (old_old_system_solution,
+          fe_values[temperature].get_function_values (old_old_solution,
                                                       old_old_temperature_values);
           for (unsigned int q=0; q<n_q_points; ++q)
             {
@@ -559,18 +559,18 @@ namespace aspect
                                         internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
                                         internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
   {
-    const unsigned int   dofs_per_cell   = system_fe.dofs_per_cell;
-    const unsigned int   n_q_points      = scratch.system_fe_values.n_quadrature_points;
+    const unsigned int   dofs_per_cell   = finite_element.dofs_per_cell;
+    const unsigned int   n_q_points      = scratch.finite_element_values.n_quadrature_points;
 
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
 
-    scratch.system_fe_values.reinit (cell);
+    scratch.finite_element_values.reinit (cell);
 
-    scratch.system_fe_values[temperature].get_function_values (system_solution,
+    scratch.finite_element_values[temperature].get_function_values (solution,
                                                                scratch.temperature_values);
-    scratch.system_fe_values[pressure].get_function_values(old_system_solution,
+    scratch.finite_element_values[pressure].get_function_values(old_solution,
                                                            scratch.old_pressure_values);
 
     data.local_matrix = 0;
@@ -583,19 +583,19 @@ namespace aspect
 
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
-            scratch.grads_phi_u[k] = scratch.system_fe_values[velocities].symmetric_gradient(k,q);
-            scratch.phi_p[k]       = scratch.system_fe_values[pressure].value (k, q);
+            scratch.grads_phi_u[k] = scratch.finite_element_values[velocities].symmetric_gradient(k,q);
+            scratch.phi_p[k]       = scratch.finite_element_values[pressure].value (k, q);
           }
 
         double eta = material_model->viscosity(current_temperature,
                                                old_pressure,
-                                               scratch.system_fe_values.quadrature_point(q) );
+                                               scratch.finite_element_values.quadrature_point(q) );
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           for (unsigned int j=0; j<dofs_per_cell; ++j)
-            if (system_fe.system_to_component_index(i).first
+            if (finite_element.system_to_component_index(i).first
                 ==
-                system_fe.system_to_component_index(j).first)
+                finite_element.system_to_component_index(j).first)
               data.local_matrix(i,j) += (eta *
                                          (scratch.grads_phi_u[i] *
                                           scratch.grads_phi_u[j])
@@ -604,7 +604,7 @@ namespace aspect
                                          pressure_scaling *
                                          pressure_scaling *
                                          (scratch.phi_p[i] * scratch.phi_p[j]))
-                                        * scratch.system_fe_values.JxW(q);
+                                        * scratch.finite_element_values.JxW(q);
       }
 
     cell->get_dof_indices (data.local_dof_indices);
@@ -617,7 +617,7 @@ namespace aspect
   Simulator<dim>::
   copy_local_to_global_stokes_preconditioner (const internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
   {
-    current_system_constraints.distribute_local_to_global (data.local_matrix,
+    current_constraints.distribute_local_to_global (data.local_matrix,
                                                            data.local_dof_indices,
                                                            system_preconditioner_matrix);
   }
@@ -638,9 +638,9 @@ namespace aspect
 
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
-                     system_dof_handler.begin_active()),
+                     dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
-                     system_dof_handler.end()),
+                     dof_handler.end()),
          std_cxx1x::bind (&Simulator<dim>::
                           local_assemble_stokes_preconditioner,
                           this,
@@ -652,14 +652,14 @@ namespace aspect
                           this,
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
-         StokesPreconditioner<dim> (system_fe, quadrature_formula,
+         StokesPreconditioner<dim> (finite_element, quadrature_formula,
                                     mapping,
                                     update_JxW_values |
                                     update_values |
                                     update_gradients |
                                     update_quadrature_points),
          internal::Assembly::CopyData::
-         StokesPreconditioner<dim> (system_fe));
+         StokesPreconditioner<dim> (finite_element));
 
     system_preconditioner_matrix.compress();
   }
@@ -685,7 +685,7 @@ namespace aspect
     std::vector<bool>  velocity_components (dim+2,true);
     velocity_components[dim] = false;
     velocity_components[dim+1] = false;
-    DoFTools::extract_constant_modes (system_dof_handler, velocity_components,
+    DoFTools::extract_constant_modes (dof_handler, velocity_components,
                                       constant_modes);
 
     Mp_preconditioner.reset (new TrilinosWrappers::PreconditionILU());
@@ -716,22 +716,22 @@ namespace aspect
                                 internal::Assembly::Scratch::StokesSystem<dim> &scratch,
                                 internal::Assembly::CopyData::StokesSystem<dim> &data)
   {
-    const unsigned int dofs_per_cell = scratch.system_fe_values.get_fe().dofs_per_cell;
-    const unsigned int n_q_points    = scratch.system_fe_values.n_quadrature_points;
+    const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+    const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
 
-    scratch.system_fe_values.reinit (cell);
-    //scratch.system_fe_values[temperature].get_function_values (old_system_solution,
+    scratch.finite_element_values.reinit (cell);
+    //scratch.finite_element_values[temperature].get_function_values (old_solution,
     //                                              scratch.old_temperature_values);
     // Assuming we already have the temperature for the current time step:
-    scratch.system_fe_values[temperature].get_function_values (system_solution,
+    scratch.finite_element_values[temperature].get_function_values (solution,
                                                                scratch.temperature_values);
-    scratch.system_fe_values[pressure].get_function_values(old_system_solution,
+    scratch.finite_element_values[pressure].get_function_values(old_solution,
                                                            scratch.old_pressure_values);
-    scratch.system_fe_values[velocities].get_function_values(old_system_solution,
+    scratch.finite_element_values[velocities].get_function_values(old_solution,
                                                              scratch.old_velocity_values);
 
     // cache whether the model is compressible or not
@@ -751,34 +751,34 @@ namespace aspect
 
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
-            scratch.phi_u[k] = scratch.system_fe_values[velocities].value (k,q);
-            scratch.phi_p[k] = scratch.system_fe_values[pressure].value (k, q);
+            scratch.phi_u[k] = scratch.finite_element_values[velocities].value (k,q);
+            scratch.phi_p[k] = scratch.finite_element_values[pressure].value (k, q);
             if (rebuild_stokes_matrix)
               {
-                scratch.grads_phi_u[k] = scratch.system_fe_values[velocities].symmetric_gradient(k,q);
-                scratch.div_phi_u[k]   = scratch.system_fe_values[velocities].divergence (k, q);
+                scratch.grads_phi_u[k] = scratch.finite_element_values[velocities].symmetric_gradient(k,q);
+                scratch.div_phi_u[k]   = scratch.finite_element_values[velocities].divergence (k, q);
               }
           }
 
         const double eta = material_model->viscosity(current_temperature,
                                                      old_pressure,
-                                                     scratch.system_fe_values.quadrature_point(q));
+                                                     scratch.finite_element_values.quadrature_point(q));
 
         const Tensor<1,dim>
-        gravity = gravity_model->gravity_vector (scratch.system_fe_values.quadrature_point(q));
+        gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
         const double compressibility
           = (is_compressible
              ?
              material_model->compressibility(current_temperature,
                                              old_pressure,
-                                             scratch.system_fe_values
+                                             scratch.finite_element_values
                                              .quadrature_point(q))
              :
              std::numeric_limits<double>::quiet_NaN() );
         const double density = material_model->density(current_temperature,
                                                        old_pressure,
-                                                       scratch.system_fe_values
+                                                       scratch.finite_element_values
                                                        .quadrature_point(q));
 
         if (rebuild_stokes_matrix)
@@ -794,7 +794,7 @@ namespace aspect
                                              scratch.div_phi_u[i] * scratch.phi_p[j])
                                           - (pressure_scaling *
                                              scratch.phi_p[i] * scratch.div_phi_u[j]))
-                                        * scratch.system_fe_values.JxW(q);
+                                        * scratch.finite_element_values.JxW(q);
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           data.local_rhs(i) += (  // TODO: extrapolation of old_velocity
@@ -808,10 +808,10 @@ namespace aspect
                                     :
                                     0)
                                )
-                               * scratch.system_fe_values.JxW(q);
+                               * scratch.finite_element_values.JxW(q);
         if (is_compressible)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
-            data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.system_fe_values.JxW(q);
+            data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
 
     cell->get_dof_indices (data.local_dof_indices);
@@ -825,18 +825,18 @@ namespace aspect
   copy_local_to_global_stokes_system (const internal::Assembly::CopyData::StokesSystem<dim> &data)
   {
     if (rebuild_stokes_matrix == true)
-      current_system_constraints.distribute_local_to_global (data.local_matrix,
+      current_constraints.distribute_local_to_global (data.local_matrix,
                                                              data.local_rhs,
                                                              data.local_dof_indices,
                                                              system_matrix,
                                                              system_rhs);
     else
-      current_system_constraints.distribute_local_to_global (data.local_rhs,
+      current_constraints.distribute_local_to_global (data.local_rhs,
                                                              data.local_dof_indices,
                                                              system_rhs);
 
     if (material_model->is_compressible())
-      current_system_constraints.distribute_local_to_global (data.local_pressure_shape_function_integrals,
+      current_constraints.distribute_local_to_global (data.local_pressure_shape_function_integrals,
                                                              data.local_dof_indices,
                                                              pressure_shape_function_integrals);
   }
@@ -863,9 +863,9 @@ namespace aspect
 
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
-                     system_dof_handler.begin_active()),
+                     dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
-                     system_dof_handler.end()),
+                     dof_handler.end()),
          std_cxx1x::bind (&Simulator<dim>::
                           local_assemble_stokes_system,
                           this,
@@ -877,7 +877,7 @@ namespace aspect
                           this,
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
-         StokesSystem<dim> (system_fe, mapping, quadrature_formula,
+         StokesSystem<dim> (finite_element, mapping, quadrature_formula,
                             (update_values    |
                              update_quadrature_points  |
                              update_JxW_values |
@@ -887,7 +887,7 @@ namespace aspect
                               :
                               UpdateFlags(0)))),
          internal::Assembly::CopyData::
-         StokesSystem<dim> (system_fe));
+         StokesSystem<dim> (finite_element));
 
     system_matrix.compress();
     system_rhs.compress(Add);
@@ -916,42 +916,42 @@ namespace aspect
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
 
-    const unsigned int dofs_per_cell = scratch.system_fe_values.get_fe().dofs_per_cell;
-    const unsigned int n_q_points    = scratch.system_fe_values.n_quadrature_points;
+    const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+    const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
-    scratch.system_fe_values.reinit (cell);
+    scratch.finite_element_values.reinit (cell);
     cell->get_dof_indices (data.local_dof_indices);
 
     data.local_matrix = 0;
     data.local_rhs = 0;
 
-    scratch.system_fe_values[temperature].get_function_values (old_system_solution,
+    scratch.finite_element_values[temperature].get_function_values (old_solution,
                                                                scratch.old_temperature_values);
-    scratch.system_fe_values[temperature].get_function_values (old_old_system_solution,
+    scratch.finite_element_values[temperature].get_function_values (old_old_solution,
                                                                scratch.old_old_temperature_values);
 
-    scratch.system_fe_values[temperature].get_function_gradients (old_system_solution,
+    scratch.finite_element_values[temperature].get_function_gradients (old_solution,
                                                                   scratch.old_temperature_grads);
-    scratch.system_fe_values[temperature].get_function_gradients (old_old_system_solution,
+    scratch.finite_element_values[temperature].get_function_gradients (old_old_solution,
                                                                   scratch.old_old_temperature_grads);
 
-    scratch.system_fe_values[temperature].get_function_laplacians (old_system_solution,
+    scratch.finite_element_values[temperature].get_function_laplacians (old_solution,
                                                                    scratch.old_temperature_laplacians);
-    scratch.system_fe_values[temperature].get_function_laplacians (old_old_system_solution,
+    scratch.finite_element_values[temperature].get_function_laplacians (old_old_solution,
                                                                    scratch.old_old_temperature_laplacians);
 
-    scratch.system_fe_values[velocities].get_function_values (old_system_solution,
+    scratch.finite_element_values[velocities].get_function_values (old_solution,
                                                               scratch.old_velocity_values);
-    scratch.system_fe_values[velocities].get_function_values (old_old_system_solution,
+    scratch.finite_element_values[velocities].get_function_values (old_old_solution,
                                                               scratch.old_old_velocity_values);
-    scratch.system_fe_values[velocities].get_function_symmetric_gradients (old_system_solution,
+    scratch.finite_element_values[velocities].get_function_symmetric_gradients (old_solution,
                                                                            scratch.old_strain_rates);
-    scratch.system_fe_values[velocities].get_function_symmetric_gradients (old_old_system_solution,
+    scratch.finite_element_values[velocities].get_function_symmetric_gradients (old_old_solution,
                                                                            scratch.old_old_strain_rates);
 
-    scratch.system_fe_values[pressure].get_function_values (old_system_solution,
+    scratch.finite_element_values[pressure].get_function_values (old_solution,
                                                             scratch.old_pressure);
-    scratch.system_fe_values[pressure].get_function_values (old_old_system_solution,
+    scratch.finite_element_values[pressure].get_function_values (old_old_solution,
                                                             scratch.old_old_pressure);
 
     const double nu
@@ -971,15 +971,15 @@ namespace aspect
                            global_T_range.second - global_T_range.first,
                            0.5 * (global_T_range.second + global_T_range.first),
                            global_entropy_variation,
-                           scratch.system_fe_values.get_quadrature_points(),
+                           scratch.finite_element_values.get_quadrature_points(),
                            cell->diameter());
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
-            scratch.grad_phi_T[k] = scratch.system_fe_values[temperature].gradient (k,q);
-            scratch.phi_T[k]      = scratch.system_fe_values[temperature].value (k, q);
+            scratch.grad_phi_T[k] = scratch.finite_element_values[temperature].gradient (k,q);
+            scratch.phi_T[k]      = scratch.finite_element_values[temperature].value (k, q);
           }
 
         const double T_term_for_rhs
@@ -1015,13 +1015,13 @@ namespace aspect
 
         const double density              = material_model->density(ext_T,
                                                                     ext_pressure,
-                                                                    scratch.system_fe_values.quadrature_point(q));
+                                                                    scratch.finite_element_values.quadrature_point(q));
         const double thermal_conductivity = material_model->thermal_conductivity(ext_T,
                                                                                  ext_pressure,
-                                                                                 scratch.system_fe_values.quadrature_point(q));
+                                                                                 scratch.finite_element_values.quadrature_point(q));
         const double c_P                  = material_model->specific_heat (ext_T,
                                                                            ext_pressure,
-                                                                           scratch.system_fe_values.quadrature_point(q));
+                                                                           scratch.finite_element_values.quadrature_point(q));
 
         //TODO: this is the wrong formula for the compressible case
         const double gamma
@@ -1031,7 +1031,7 @@ namespace aspect
               ?
               2 * material_model->viscosity(ext_T,
                                             ext_pressure,
-                                            scratch.system_fe_values.quadrature_point(q)) *
+                                            scratch.finite_element_values.quadrature_point(q)) *
               extrapolated_strain_rate * extrapolated_strain_rate
               :
               0)
@@ -1044,7 +1044,7 @@ namespace aspect
                                   time_step *
                                   gamma * scratch.phi_T[i])
                                  *
-                                 scratch.system_fe_values.JxW(q);
+                                 scratch.finite_element_values.JxW(q);
 
             for (unsigned int j=0; j<dofs_per_cell; ++j)
               {
@@ -1057,7 +1057,7 @@ namespace aspect
                      + ((time_step * (extrapolated_u * scratch.grad_phi_T[j] * scratch.phi_T[i]))
                         + (factor * scratch.phi_T[i] * scratch.phi_T[j])) * density * c_P
                    )
-                   * scratch.system_fe_values.JxW(q);
+                   * scratch.finite_element_values.JxW(q);
               }
           }
       }
@@ -1070,7 +1070,7 @@ namespace aspect
   Simulator<dim>::
   copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data)
   {
-    system_constraints.distribute_local_to_global (data.local_matrix,
+    constraints.distribute_local_to_global (data.local_matrix,
                                                    data.local_rhs,
                                                    data.local_dof_indices,
                                                    system_matrix,
@@ -1098,14 +1098,14 @@ namespace aspect
 
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
-                     system_dof_handler.begin_active()),
+                     dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
-                     system_dof_handler.end()),
+                     dof_handler.end()),
          std_cxx1x::bind (&Simulator<dim>::
                           local_assemble_temperature_system,
                           this,
                           global_T_range,
-                          get_maximal_velocity(old_system_solution),
+                          get_maximal_velocity(old_solution),
                           // use the mid temperature instead of the
                           // integral mean. results are not very
                           // sensitive to this and this is far simpler
@@ -1119,9 +1119,9 @@ namespace aspect
                           this,
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
-         TemperatureSystem<dim> (system_fe, mapping, QGauss<dim>(parameters.temperature_degree+2)),
+         TemperatureSystem<dim> (finite_element, mapping, QGauss<dim>(parameters.temperature_degree+2)),
          internal::Assembly::CopyData::
-         TemperatureSystem<dim> (system_fe));
+         TemperatureSystem<dim> (finite_element));
 
     system_matrix.compress();
     system_rhs.compress(Add);

@@ -69,12 +69,12 @@ namespace aspect
     // save Triangulation and Solution vectors:
     {
       std::vector<const TrilinosWrappers::MPI::BlockVector *> x_system (3);
-      x_system[0] = &system_solution;
-      x_system[1] = &old_system_solution;
-      x_system[2] = &old_old_system_solution;
+      x_system[0] = &solution;
+      x_system[1] = &old_solution;
+      x_system[2] = &old_old_solution;
 
       parallel::distributed::SolutionTransfer<dim, TrilinosWrappers::MPI::BlockVector>
-      system_trans (system_dof_handler);
+      system_trans (dof_handler);
 
       system_trans.prepare_serialization (x_system);
 
@@ -112,13 +112,13 @@ namespace aspect
     x_system[2] = & (old_old_distributed_system);
 
     parallel::distributed::SolutionTransfer<dim, TrilinosWrappers::MPI::BlockVector>
-    system_trans (system_dof_handler);
+    system_trans (dof_handler);
 
     system_trans.deserialize (x_system);
 
-    system_solution = distributed_system;
-    old_system_solution = old_distributed_system;
-    old_old_system_solution = old_old_distributed_system;
+    solution = distributed_system;
+    old_solution = old_distributed_system;
+    old_old_solution = old_old_distributed_system;
 
     std::ifstream ifs ((parameters.output_directory + "resume.txt").c_str());
     boost::archive::text_iarchive ia (ifs);

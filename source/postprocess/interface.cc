@@ -146,7 +146,7 @@ namespace aspect
     const TrilinosWrappers::MPI::BlockVector &
     SimulatorAccess<dim>::get_solution () const
     {
-      return simulator->system_solution;
+      return simulator->solution;
     }
 
 
@@ -155,7 +155,7 @@ namespace aspect
     const TrilinosWrappers::MPI::BlockVector &
     SimulatorAccess<dim>::get_old_solution () const
     {
-      return simulator->old_system_solution;
+      return simulator->old_solution;
     }
 
 
@@ -164,7 +164,7 @@ namespace aspect
     const DoFHandler<dim> &
     SimulatorAccess<dim>::get_dof_handler () const
     {
-      return simulator->system_dof_handler;
+      return simulator->dof_handler;
     }
 
 
