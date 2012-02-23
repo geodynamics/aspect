@@ -67,7 +67,7 @@ namespace aspect
             {
               DataPoint data_point;
               data_point.time  = this->get_time();
-              data_point.depth = max_depth*i;
+              data_point.depth = max_depth*i/temp.size();
               data_point.value = temp[i];
               entries.push_back(data_point);
             }
@@ -95,8 +95,7 @@ namespace aspect
 
       set_next_output_time (this->get_time());
 
-      // return what should be printed to the screen. note that we had
-      // just incremented the number, so use the previous value
+      // return what should be printed to the screen.
       return std::make_pair (std::string ("Writing depth average"),
                              this->get_output_directory() + "depth_average.plt");
     }
