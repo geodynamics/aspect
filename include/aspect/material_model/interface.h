@@ -86,12 +86,12 @@ namespace aspect
         /**
          * Return the thermal conductivity $k$ of the model as a function of temperature,
          * pressure and position. The units of $k$ are $\textrm{W} / \textrm{m} / \textrm{K}$.
-        *
-        * Note that the thermal <i>conductivity</i> $k$ is related to the thermal
-        * <i>diffusivity</i> $\kappa$ as $k = \kappa \rho c_p$. In essence, the conductivity
-        * relates to the question of how thermal energy diffuses whereas the diffusivity
-        * relates to the question of how the temperature diffuses. $\kappa$ has units
-        * $\textrm{m}^2/\textrm{s}$.
+	 *
+	 * Note that the thermal <i>conductivity</i> $k$ is related to the thermal
+	 * <i>diffusivity</i> $\kappa$ as $k = \kappa \rho c_p$. In essence, the conductivity
+	 * relates to the question of how thermal energy diffuses whereas the diffusivity
+	 * relates to the question of how the temperature diffuses. $\kappa$ has units
+	 * $\textrm{m}^2/\textrm{s}$.
          */
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
