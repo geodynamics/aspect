@@ -3,7 +3,7 @@
            Wolfgang Bangerth, Texas A&M University,
      Timo Heister, University of Goettingen, 2008-2011 */
 /*                                                                */
-/*    Copyright (C) 2008, 2009, 2010, 2011 by the deal.II authors */
+/*    Copyright (C) 2008, 2009, 2010, 2011, 2012 by the deal.II authors */
 /*                                                                */
 /*    This file is subject to QPL and may not be  distributed     */
 /*    without copyright and license information. Please refer     */
@@ -144,8 +144,12 @@ namespace aspect
                          "The fraction of cells with the smallest error that "
                          "should be flagged for coarsening.");
       prm.declare_entry ("Strategy", "Density c_p temperature",
-                         Patterns::Selection ("Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature"),
-                         "The method used to determine which cells to refine: Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature");
+                         Patterns::Selection ("Temperature|"
+					      "Normalized density and temperature|"
+					      "Weighted density and temperature|"
+					      "Density c_p temperature"),
+                         "The method used to determine which cells to refine and which "
+			 "to coarsen.");
       prm.declare_entry ("Additional refinement times", "",
                          Patterns::List (Patterns::Double(0)),
                          "A list of times so that if the end time of a time step "
