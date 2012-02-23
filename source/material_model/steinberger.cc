@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
@@ -139,8 +139,8 @@ namespace aspect
     template <int dim>
     double
     Steinberger<dim>::
-    viscosity (const double temperature,
-               const double pressure,
+    viscosity (const double,
+               const double,
                const Point<dim> &position) const
     {
       static internal::radial_viscosity_lookup table("data/material-model/steinberger/radial_visc.txt");
@@ -226,6 +226,53 @@ namespace aspect
                      const Point<dim> &position) const
     {
       return 0.0;
+    }
+
+
+    template <int dim>
+    bool
+    Steinberger<dim>::
+    viscosity_depends_on (const NonlinearDependence::Dependence) const
+    {
+      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      return false;
+    }
+
+
+    template <int dim>
+    bool
+    Steinberger<dim>::
+    density_depends_on (const NonlinearDependence::Dependence) const
+    {
+      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      return false;
+    }
+
+    template <int dim>
+    bool
+    Steinberger<dim>::
+    compressibility_depends_on (const NonlinearDependence::Dependence) const
+    {
+      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      return false;
+    }
+
+    template <int dim>
+    bool
+    Steinberger<dim>::
+    specific_heat_depends_on (const NonlinearDependence::Dependence) const
+    {
+      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      return false;
+    }
+
+    template <int dim>
+    bool
+    Steinberger<dim>::
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    {
+      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      return false;
     }
 
 

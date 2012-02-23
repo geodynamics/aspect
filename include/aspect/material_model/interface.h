@@ -24,6 +24,21 @@ namespace aspect
   {
     using namespace dealii;
 
+   /**
+    * An namespace whose enum members are used in querying the
+    * nonlinear dependence of physical parameters on other quantities.
+    */
+    namespace NonlinearDependence
+    {
+	enum Dependence
+	{
+	      temperature,
+	      pressure,
+	      strain_rate
+	};
+    };
+
+
     /**
      * A base class for parameterizations of material models. Classes derived from
      * this class will need to implement functions that provide material parameters
@@ -104,6 +119,45 @@ namespace aspect
          * @name Qualitative properties one can ask a material model
          * @{
          */
+
+        /**
+	 * Return true if the viscosity() function returns something that
+	 * may depend on the variable identifies by the argument.
+	 */
+	virtual bool
+	viscosity_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
+
+        /**
+	 * Return true if the density() function returns something that
+	 * may depend on the variable identifies by the argument.
+	 */
+	virtual bool
+	density_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
+
+        /**
+	 * Return true if the compressibility() function returns something that
+	 * may depend on the variable identifies by the argument.
+	 *
+	 * This function must return false for all possible arguments if the
+	 * is_compressible() function returns false.
+	 */
+	virtual bool
+	compressibility_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
+
+        /**
+	 * Return true if the specific_heat() function returns something that
+	 * may depend on the variable identifies by the argument.
+	 */
+	virtual bool
+	specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
+
+        /**
+	 * Return true if the thermal_conductivity() function returns something that
+	 * may depend on the variable identifies by the argument.
+	 */
+	virtual bool
+	thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
+
         /**
          * Return whether the model is compressible or not.  Incompressibility
          * does not necessarily imply that the density is constant; rather, it
@@ -116,6 +170,86 @@ namespace aspect
         /**
          * @}
          */
+
+
+        /**
+         * @name Partial derivatives of physical parameters
+         * @{
+         */
+
+        /**
+	 * Return the partial derivative of the viscosity function on the
+	 * variable indicates as last argument.
+	 *
+	 * The default implementation of this function returns zero
+	 * provided viscosity_depends_on() returns false for the given
+	 * dependence and throws an exception otherwise.
+	 */
+	virtual double
+	viscosity_derivative (const double              temperature,
+			      const double              pressure,
+			      const Point<dim>         &position,
+			      const NonlinearDependence::Dependence dependence) const;
+
+        /**
+	 * Return the partial derivative of the density function on the
+	 * variable indicates as last argument.
+	 *
+	 * The default implementation of this function returns zero
+	 * provided density_depends_on() returns false for the given
+	 * dependence and throws an exception otherwise.
+	 */
+	virtual double
+	density_derivative (const double              temperature,
+			    const double              pressure,
+			    const Point<dim>         &position,
+			    const NonlinearDependence::Dependence dependence) const;
+
+        /**
+	 * Return the partial derivative of the compressibility function on the
+	 * variable indicates as last argument.
+	 *
+	 * The default implementation of this function returns zero
+	 * provided compressibility_depends_on() returns false for the given
+	 * dependence and throws an exception otherwise.
+	 */
+	virtual double
+	compressibility_derivative (const double              temperature,
+				    const double              pressure,
+				    const Point<dim>         &position,
+				    const NonlinearDependence::Dependence dependence) const;
+
+        /**
+	 * Return the partial derivative of the specific heat function on the
+	 * variable indicates as last argument.
+	 *
+	 * The default implementation of this function returns zero
+	 * provided specific_heat_depends_on() returns false for the given
+	 * dependence and throws an exception otherwise.
+	 */
+	virtual double
+	specific_heat_derivative (const double              temperature,
+				  const double              pressure,
+				  const Point<dim>         &position,
+				  const NonlinearDependence::Dependence dependence) const;
+
+        /**
+	 * Return the partial derivative of the thermal conductivity
+	 * function on the variable indicates as last argument.
+	 *
+	 * The default implementation of this function returns zero
+	 * provided thermal_conductivity_depends_on() returns false
+	 * for the given dependence and throws an exception otherwise.
+	 */
+	virtual double
+	thermal_conductivity_derivative (const double              temperature,
+					 const double              pressure,
+					 const Point<dim>         &position,
+					 const NonlinearDependence::Dependence dependence) const;
+        /**
+         * @}
+         */
+
 
         /**
          * @name Reference quantities

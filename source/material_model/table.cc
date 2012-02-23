@@ -499,6 +499,52 @@ namespace aspect
     template <int dim>
     bool
     Table<dim>::
+    viscosity_depends_on (const NonlinearDependence::Dependence) const
+    {
+      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      return false;
+    }
+
+
+    template <int dim>
+    bool
+    Table<dim>::
+    density_depends_on (const NonlinearDependence::Dependence) const
+    {
+      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      return false;
+    }
+
+    template <int dim>
+    bool
+    Table<dim>::
+    compressibility_depends_on (const NonlinearDependence::Dependence) const
+    {
+      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      return false;
+    }
+
+    template <int dim>
+    bool
+    Table<dim>::
+    specific_heat_depends_on (const NonlinearDependence::Dependence) const
+    {
+      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      return false;
+    }
+
+    template <int dim>
+    bool
+    Table<dim>::
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    {
+      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      return false;
+    }
+
+    template <int dim>
+    bool
+    Table<dim>::
     is_compressible () const
     {
       return model_is_compressible;

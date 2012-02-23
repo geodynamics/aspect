@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
@@ -109,6 +109,48 @@ namespace aspect
       return 0.0;
     }
 
+
+
+    template <int dim>
+    bool
+    Simple<dim>::
+    viscosity_depends_on (const NonlinearDependence::Dependence) const
+    {
+      return false;
+    }
+
+
+    template <int dim>
+    bool
+    Simple<dim>::
+    density_depends_on (const NonlinearDependence::Dependence) const
+    {
+      return false;
+    }
+
+    template <int dim>
+    bool
+    Simple<dim>::
+    compressibility_depends_on (const NonlinearDependence::Dependence) const
+    {
+      return false;
+    }
+
+    template <int dim>
+    bool
+    Simple<dim>::
+    specific_heat_depends_on (const NonlinearDependence::Dependence) const
+    {
+      return false;
+    }
+
+    template <int dim>
+    bool
+    Simple<dim>::
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    {
+      return false;
+    }
 
 
     template <int dim>
