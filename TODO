@@ -16,6 +16,12 @@ Topics for an ASPECT II paper:
 - How implicit to be?
 
 
+Immediate TODOs:
+----------------
+- in Parameters, rename TemperatureContribution etc to refinement_temperature_method
+  or similar. make run-time parameters lower-case in the .prm file
+-
+
 
 
 Topics for preview release:
@@ -31,6 +37,12 @@ Topics for preview release:
   or a temperature perturbation
 - name the material model better than "table" and put the input files into
   a better directory
+- re-write the geometry section since information on the boundary components
+  is no longer there
+- describe in the manual how to set boundary conditions
+- allow for arbitrary tangential boundary conditions (via Eh Tan, e.g. from
+  gplates)
+- describe in geometry model descriptions what boundary indicators they have
 - the heat flux computation is very sensitive to the number of processors.
   values may change by a factor of 5 between 1 and 2 processors. what's going
   on?
