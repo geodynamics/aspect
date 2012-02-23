@@ -194,8 +194,8 @@ namespace aspect
 
         /**
          * Return a reference to the stream object that only outputs something on one
-	 * processor in a parallel program and simply ignores output put into it on
-	 * all other processors.
+        * processor in a parallel program and simply ignores output put into it on
+        * all other processors.
          */
         const ConditionalOStream &
         get_pcout () const;

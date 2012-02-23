@@ -106,17 +106,17 @@ namespace aspect
     mapping (4),
 
     finite_element(FE_Q<dim>(parameters.stokes_velocity_degree),
-              dim,
-              (parameters.use_locally_conservative_discretization
-               ?
-               static_cast<const FiniteElement<dim> &>
-               (FE_DGP<dim>(parameters.stokes_velocity_degree-1))
-               :
-               static_cast<const FiniteElement<dim> &>
-               (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
-              1,
-              FE_Q<dim>(parameters.temperature_degree),
-              1),
+                   dim,
+                   (parameters.use_locally_conservative_discretization
+                    ?
+                    static_cast<const FiniteElement<dim> &>
+                    (FE_DGP<dim>(parameters.stokes_velocity_degree-1))
+                    :
+                    static_cast<const FiniteElement<dim> &>
+                    (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
+                   1,
+                   FE_Q<dim>(parameters.temperature_degree),
+                   1),
 
     dof_handler (triangulation),
 
@@ -545,11 +545,11 @@ namespace aspect
         const Quadrature<dim> quadrature(finite_element.get_unit_support_points());
         std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
         FEValues<dim> fe_values (mapping,
-				 finite_element,
-				 quadrature,
+                                 finite_element,
+                                 quadrature,
                                  update_quadrature_points | update_values);
         std::vector<double> pressure_values(quadrature.size());
-	std::vector<double> temperature_values(quadrature.size());
+        std::vector<double> temperature_values(quadrature.size());
 
 
         typename DoFHandler<dim>::active_cell_iterator
@@ -560,9 +560,9 @@ namespace aspect
             {
               fe_values.reinit(cell);
               fe_values[pressure].get_function_values (solution,
-						       pressure_values);
+                                                       pressure_values);
               fe_values[temperature].get_function_values (solution,
-							  temperature_values);
+                                                          temperature_values);
 
               cell->get_dof_indices (local_dof_indices);
 
@@ -570,31 +570,31 @@ namespace aspect
               // vector the density. note that quadrature points and
               // dofs are enumerated in the same order
               for (unsigned int i=0; i<finite_element.dofs_per_cell; ++i)
-		if (finite_element.system_to_component_index(i).first == dim+1)
-                {
-                  vec_distributed(local_dof_indices[i])
-                    = material_model->density( temperature_values[i],
-                                               pressure_values[i],
-                                               fe_values.quadrature_point(i))
-                      * ((lookup_rho_c_p_T)
-			 ?
-			 (temperature_values[i]
-			  * material_model->specific_heat(temperature_values[i],
-							  pressure_values[i],
-							  fe_values.quadrature_point(i)))
-			 :
-			 1.0);
-                }
+                if (finite_element.system_to_component_index(i).first == dim+1)
+                  {
+                    vec_distributed(local_dof_indices[i])
+                      = material_model->density( temperature_values[i],
+                                                 pressure_values[i],
+                                                 fe_values.quadrature_point(i))
+                        * ((lookup_rho_c_p_T)
+                           ?
+                           (temperature_values[i]
+                            * material_model->specific_heat(temperature_values[i],
+                                                            pressure_values[i],
+                                                            fe_values.quadrature_point(i)))
+                           :
+                           1.0);
+                  }
             }
 
         TrilinosWrappers::MPI::BlockVector vec (solution);
         vec = vec_distributed;
 
         DerivativeApproximation::approximate_gradient  (mapping,
-							dof_handler,
-							vec,
-							estimated_error_per_cell_rho,
-							dim+1);
+                                                        dof_handler,
+                                                        vec,
+                                                        estimated_error_per_cell_rho,
+                                                        dim+1);
 
         // Scale gradient in each cell with the
         // correct power of h. Otherwise, error
@@ -630,8 +630,8 @@ namespace aspect
     // compute the errors for temperature solution
     if (parameters.refinement_strategy != "Density c_p temperature")
       {
-	std::vector<bool> temperature_component (dim+2, false);
-	temperature_component[dim+1] = true;
+        std::vector<bool> temperature_component (dim+2, false);
+        temperature_component[dim+1] = true;
         KellyErrorEstimator<dim>::estimate (dof_handler,
                                             QGauss<dim-1>(parameters.temperature_degree+1),
                                             typename FunctionMap<dim>::type(),
@@ -676,15 +676,15 @@ namespace aspect
         }
       else if (parameters.refinement_strategy == "Normalized density and temperature")
         {
-	  const double rho_scaling = Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
-							  MPI_COMM_WORLD);
-	  if (rho_scaling != 0)
-	    estimated_error_per_cell_rho /= rho_scaling;
+          const double rho_scaling = Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
+                                                          MPI_COMM_WORLD);
+          if (rho_scaling != 0)
+            estimated_error_per_cell_rho /= rho_scaling;
 
-	  const double T_scaling = Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
-							MPI_COMM_WORLD);
-	  if (T_scaling != 0)
-	    estimated_error_per_cell_T /= T_scaling;
+          const double T_scaling = Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
+                                                        MPI_COMM_WORLD);
+          if (T_scaling != 0)
+            estimated_error_per_cell_T /= T_scaling;
 
           for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
             estimated_error_per_cell(i) = std::max( estimated_error_per_cell_rho(i),
@@ -900,7 +900,7 @@ namespace aspect
           old_solution          = solution;
           if (old_time_step > 0)
             solution.sadd (1.+time_step/old_time_step, -time_step/old_time_step,
-                                  old_old_solution);
+                           old_old_solution);
         }
 
         // periodically generate snapshots so that we can resume here

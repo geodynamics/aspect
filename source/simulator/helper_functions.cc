@@ -378,7 +378,7 @@ namespace aspect
         {
           fe_values.reinit (cell);
           fe_values[temperature].get_function_values (this->solution,
-						      temperature_values);
+                                                      temperature_values);
           for (unsigned int q=0; q<n_q_points; ++q)
             {
               const Point<dim> & p = fe_values.quadrature_point(q);
@@ -441,7 +441,7 @@ namespace aspect
           fe_values[pressure].get_function_values (this->solution,
                                                    pressure_values);
           fe_values[temperature].get_function_values (this->solution,
-						      temperature_values);
+                                                      temperature_values);
 
           const double Vs = material_model->seismic_Vs(temperature_values[0], pressure_values[0]);
 

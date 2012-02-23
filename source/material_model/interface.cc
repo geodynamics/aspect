@@ -24,13 +24,13 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::viscosity_derivative (const double,
-					  const double,
-					  const Point<dim> &,
-					  const NonlinearDependence::Dependence dependence) const
+                                          const double,
+                                          const Point<dim> &,
+                                          const NonlinearDependence::Dependence dependence) const
     {
       Assert (viscosity_depends_on(dependence) == false,
-	      ExcMessage ("For a model declaring a certain dependence, "
-			  "the partial derivatives have to be implemented."));
+              ExcMessage ("For a model declaring a certain dependence, "
+                          "the partial derivatives have to be implemented."));
       return 0;
     }
 
@@ -38,52 +38,52 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::density_derivative (const double,
-					const double,
-					const Point<dim> &,
-					const NonlinearDependence::Dependence dependence) const
+                                        const double,
+                                        const Point<dim> &,
+                                        const NonlinearDependence::Dependence dependence) const
     {
       Assert (density_depends_on(dependence) == false,
-	      ExcMessage ("For a model declaring a certain dependence, "
-			  "the partial derivatives have to be implemented."));
+              ExcMessage ("For a model declaring a certain dependence, "
+                          "the partial derivatives have to be implemented."));
       return 0;
     }
 
     template <int dim>
     double
     Interface<dim>::compressibility_derivative (const double,
-						const double,
-						const Point<dim> &,
-						const NonlinearDependence::Dependence dependence) const
+                                                const double,
+                                                const Point<dim> &,
+                                                const NonlinearDependence::Dependence dependence) const
     {
       Assert (compressibility_depends_on(dependence) == false,
-	      ExcMessage ("For a model declaring a certain dependence, "
-			  "the partial derivatives have to be implemented."));
+              ExcMessage ("For a model declaring a certain dependence, "
+                          "the partial derivatives have to be implemented."));
       return 0;
     }
 
     template <int dim>
     double
     Interface<dim>::specific_heat_derivative (const double,
-					      const double,
-					      const Point<dim> &,
-					      const NonlinearDependence::Dependence dependence) const
+                                              const double,
+                                              const Point<dim> &,
+                                              const NonlinearDependence::Dependence dependence) const
     {
       Assert (specific_heat_depends_on(dependence) == false,
-	      ExcMessage ("For a model declaring a certain dependence, "
-			  "the partial derivatives have to be implemented."));
+              ExcMessage ("For a model declaring a certain dependence, "
+                          "the partial derivatives have to be implemented."));
       return 0;
     }
 
     template <int dim>
     double
     Interface<dim>::thermal_conductivity_derivative (const double,
-						     const double,
-						     const Point<dim> &,
-						     const NonlinearDependence::Dependence dependence) const
+                                                     const double,
+                                                     const Point<dim> &,
+                                                     const NonlinearDependence::Dependence dependence) const
     {
       Assert (thermal_conductivity_depends_on(dependence) == false,
-	      ExcMessage ("For a model declaring a certain dependence, "
-			  "the partial derivatives have to be implemented."));
+              ExcMessage ("For a model declaring a certain dependence, "
+                          "the partial derivatives have to be implemented."));
       return 0;
     }
 

@@ -145,11 +145,11 @@ namespace aspect
                          "should be flagged for coarsening.");
       prm.declare_entry ("Strategy", "Density c_p temperature",
                          Patterns::Selection ("Temperature|"
-					      "Normalized density and temperature|"
-					      "Weighted density and temperature|"
-					      "Density c_p temperature"),
+                                              "Normalized density and temperature|"
+                                              "Weighted density and temperature|"
+                                              "Density c_p temperature"),
                          "The method used to determine which cells to refine and which "
-			 "to coarsen.");
+                         "to coarsen.");
       prm.declare_entry ("Additional refinement times", "",
                          Patterns::List (Patterns::Double(0)),
                          "A list of times so that if the end time of a time step "

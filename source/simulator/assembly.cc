@@ -58,7 +58,7 @@ namespace aspect
                               const UpdateFlags         update_flags)
           :
           finite_element_values (mapping, finite_element, quadrature,
-                            update_flags),
+                                 update_flags),
           grads_phi_u (finite_element.dofs_per_cell),
           phi_p (finite_element.dofs_per_cell),
           temperature_values (quadrature.size()),
@@ -72,9 +72,9 @@ namespace aspect
         StokesPreconditioner (const StokesPreconditioner &scratch)
           :
           finite_element_values (scratch.finite_element_values.get_mapping(),
-                            scratch.finite_element_values.get_fe(),
-                            scratch.finite_element_values.get_quadrature(),
-                            scratch.finite_element_values.get_update_flags()),
+                                 scratch.finite_element_values.get_fe(),
+                                 scratch.finite_element_values.get_quadrature(),
+                                 scratch.finite_element_values.get_update_flags()),
           grads_phi_u (scratch.grads_phi_u),
           phi_p (scratch.phi_p),
           temperature_values (scratch.temperature_values),
@@ -186,12 +186,12 @@ namespace aspect
                            const Quadrature<dim>    &quadrature)
           :
           finite_element_values (mapping,
-                            finite_element, quadrature,
-                            update_values    |
-                            update_gradients |
-                            update_hessians  |
-                            update_quadrature_points |
-                            update_JxW_values),
+                                 finite_element, quadrature,
+                                 update_values    |
+                                 update_gradients |
+                                 update_hessians  |
+                                 update_quadrature_points |
+                                 update_JxW_values),
 
           phi_T (finite_element.dofs_per_cell),
           grad_phi_T (finite_element.dofs_per_cell),
@@ -216,9 +216,9 @@ namespace aspect
         TemperatureSystem (const TemperatureSystem &scratch)
           :
           finite_element_values (scratch.finite_element_values.get_mapping(),
-                            scratch.finite_element_values.get_fe(),
-                            scratch.finite_element_values.get_quadrature(),
-                            scratch.finite_element_values.get_update_flags()),
+                                 scratch.finite_element_values.get_fe(),
+                                 scratch.finite_element_values.get_quadrature(),
+                                 scratch.finite_element_values.get_update_flags()),
 
           phi_T (scratch.phi_T),
           grad_phi_T (scratch.grad_phi_T),
@@ -569,9 +569,9 @@ namespace aspect
     scratch.finite_element_values.reinit (cell);
 
     scratch.finite_element_values[temperature].get_function_values (solution,
-                                                               scratch.temperature_values);
+                                                                    scratch.temperature_values);
     scratch.finite_element_values[pressure].get_function_values(old_solution,
-                                                           scratch.old_pressure_values);
+                                                                scratch.old_pressure_values);
 
     data.local_matrix = 0;
 
@@ -618,8 +618,8 @@ namespace aspect
   copy_local_to_global_stokes_preconditioner (const internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
   {
     current_constraints.distribute_local_to_global (data.local_matrix,
-                                                           data.local_dof_indices,
-                                                           system_preconditioner_matrix);
+                                                    data.local_dof_indices,
+                                                    system_preconditioner_matrix);
   }
 
 
@@ -728,11 +728,11 @@ namespace aspect
     //                                              scratch.old_temperature_values);
     // Assuming we already have the temperature for the current time step:
     scratch.finite_element_values[temperature].get_function_values (solution,
-                                                               scratch.temperature_values);
+                                                                    scratch.temperature_values);
     scratch.finite_element_values[pressure].get_function_values(old_solution,
-                                                           scratch.old_pressure_values);
+                                                                scratch.old_pressure_values);
     scratch.finite_element_values[velocities].get_function_values(old_solution,
-                                                             scratch.old_velocity_values);
+                                                                  scratch.old_velocity_values);
 
     // cache whether the model is compressible or not
     const bool is_compressible = material_model->is_compressible ();
@@ -826,19 +826,19 @@ namespace aspect
   {
     if (rebuild_stokes_matrix == true)
       current_constraints.distribute_local_to_global (data.local_matrix,
-                                                             data.local_rhs,
-                                                             data.local_dof_indices,
-                                                             system_matrix,
-                                                             system_rhs);
+                                                      data.local_rhs,
+                                                      data.local_dof_indices,
+                                                      system_matrix,
+                                                      system_rhs);
     else
       current_constraints.distribute_local_to_global (data.local_rhs,
-                                                             data.local_dof_indices,
-                                                             system_rhs);
+                                                      data.local_dof_indices,
+                                                      system_rhs);
 
     if (material_model->is_compressible())
       current_constraints.distribute_local_to_global (data.local_pressure_shape_function_integrals,
-                                                             data.local_dof_indices,
-                                                             pressure_shape_function_integrals);
+                                                      data.local_dof_indices,
+                                                      pressure_shape_function_integrals);
   }
 
 
@@ -926,33 +926,33 @@ namespace aspect
     data.local_rhs = 0;
 
     scratch.finite_element_values[temperature].get_function_values (old_solution,
-                                                               scratch.old_temperature_values);
+                                                                    scratch.old_temperature_values);
     scratch.finite_element_values[temperature].get_function_values (old_old_solution,
-                                                               scratch.old_old_temperature_values);
+                                                                    scratch.old_old_temperature_values);
 
     scratch.finite_element_values[temperature].get_function_gradients (old_solution,
-                                                                  scratch.old_temperature_grads);
+                                                                       scratch.old_temperature_grads);
     scratch.finite_element_values[temperature].get_function_gradients (old_old_solution,
-                                                                  scratch.old_old_temperature_grads);
+                                                                       scratch.old_old_temperature_grads);
 
     scratch.finite_element_values[temperature].get_function_laplacians (old_solution,
-                                                                   scratch.old_temperature_laplacians);
+                                                                        scratch.old_temperature_laplacians);
     scratch.finite_element_values[temperature].get_function_laplacians (old_old_solution,
-                                                                   scratch.old_old_temperature_laplacians);
+                                                                        scratch.old_old_temperature_laplacians);
 
     scratch.finite_element_values[velocities].get_function_values (old_solution,
-                                                              scratch.old_velocity_values);
+                                                                   scratch.old_velocity_values);
     scratch.finite_element_values[velocities].get_function_values (old_old_solution,
-                                                              scratch.old_old_velocity_values);
+                                                                   scratch.old_old_velocity_values);
     scratch.finite_element_values[velocities].get_function_symmetric_gradients (old_solution,
-                                                                           scratch.old_strain_rates);
+                                                                                scratch.old_strain_rates);
     scratch.finite_element_values[velocities].get_function_symmetric_gradients (old_old_solution,
-                                                                           scratch.old_old_strain_rates);
+                                                                                scratch.old_old_strain_rates);
 
     scratch.finite_element_values[pressure].get_function_values (old_solution,
-                                                            scratch.old_pressure);
+                                                                 scratch.old_pressure);
     scratch.finite_element_values[pressure].get_function_values (old_old_solution,
-                                                            scratch.old_old_pressure);
+                                                                 scratch.old_old_pressure);
 
     const double nu
       = compute_viscosity (scratch.old_temperature_values,
@@ -1071,11 +1071,11 @@ namespace aspect
   copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data)
   {
     constraints.distribute_local_to_global (data.local_matrix,
-                                                   data.local_rhs,
-                                                   data.local_dof_indices,
-                                                   system_matrix,
-                                                   system_rhs
-                                                  );
+                                            data.local_rhs,
+                                            data.local_dof_indices,
+                                            system_matrix,
+                                            system_rhs
+                                           );
 
   }
 
