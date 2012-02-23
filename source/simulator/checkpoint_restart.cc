@@ -68,21 +68,15 @@ namespace aspect
 
     // save Triangulation and Solution vectors:
     {
-      std::vector<const TrilinosWrappers::MPI::Vector *> x_temperature (3);
-      x_temperature[0] = &temperature_solution;
-      x_temperature[1] = &old_temperature_solution;
-      x_temperature[2] = &old_old_temperature_solution;
-      std::vector<const TrilinosWrappers::MPI::BlockVector *> x_stokes (2);
-      x_stokes[0] = &stokes_solution;
-      x_stokes[1] = &old_stokes_solution;
+      std::vector<const TrilinosWrappers::MPI::BlockVector *> x_system (3);
+      x_system[0] = &solution;
+      x_system[1] = &old_solution;
+      x_system[2] = &old_old_solution;
 
-      parallel::distributed::SolutionTransfer<dim, TrilinosWrappers::MPI::Vector>
-      temperature_trans (temperature_dof_handler);
       parallel::distributed::SolutionTransfer<dim, TrilinosWrappers::MPI::BlockVector>
-      stokes_trans (stokes_dof_handler);
+      system_trans (dof_handler);
 
-      temperature_trans.prepare_serialization (x_temperature);
-      stokes_trans.prepare_serialization (x_stokes);
+      system_trans.prepare_serialization (x_system);
 
       triangulation.save ((parameters.output_directory + "mesh").c_str());
     }
@@ -106,41 +100,25 @@ namespace aspect
     global_volume = GridTools::volume (triangulation, mapping);
     setup_dofs();
 
-    TrilinosWrappers::MPI::Vector
-    distributed_temp1 (temperature_rhs);
-    TrilinosWrappers::MPI::Vector
-    distributed_temp2 (temperature_rhs);
-    TrilinosWrappers::MPI::Vector
-    distributed_temp3 (temperature_rhs);
-
-    std::vector<TrilinosWrappers::MPI::Vector *> x_temperature (3);
-    x_temperature[0] = & (distributed_temp1);
-    x_temperature[1] = & (distributed_temp2);
-    x_temperature[2] = & (distributed_temp3);
-
     TrilinosWrappers::MPI::BlockVector
-    distributed_stokes (stokes_rhs);
+    distributed_system (system_rhs);
     TrilinosWrappers::MPI::BlockVector
-    old_distributed_stokes (stokes_rhs);
-    std::vector<TrilinosWrappers::MPI::BlockVector *> x_stokes (2);
-    x_stokes[0] = & (distributed_stokes);
-    x_stokes[1] = & (old_distributed_stokes);
+    old_distributed_system (system_rhs);
+    TrilinosWrappers::MPI::BlockVector
+    old_old_distributed_system (system_rhs);
+    std::vector<TrilinosWrappers::MPI::BlockVector *> x_system (3);
+    x_system[0] = & (distributed_system);
+    x_system[1] = & (old_distributed_system);
+    x_system[2] = & (old_old_distributed_system);
 
-    parallel::distributed::SolutionTransfer<dim, TrilinosWrappers::MPI::Vector>
-    temperature_trans (temperature_dof_handler);
     parallel::distributed::SolutionTransfer<dim, TrilinosWrappers::MPI::BlockVector>
-    stokes_trans (stokes_dof_handler);
+    system_trans (dof_handler);
 
-    temperature_trans.deserialize (x_temperature);
-    stokes_trans.deserialize (x_stokes);
+    system_trans.deserialize (x_system);
 
-
-    temperature_solution = distributed_temp1;
-    old_temperature_solution = distributed_temp2;
-    old_old_temperature_solution = distributed_temp3;
-
-    stokes_solution = distributed_stokes;
-    old_stokes_solution = old_distributed_stokes;
+    solution = distributed_system;
+    old_solution = old_distributed_system;
+    old_old_solution = old_old_distributed_system;
 
     std::ifstream ifs ((parameters.output_directory + "resume.txt").c_str());
     boost::archive::text_iarchive ia (ifs);

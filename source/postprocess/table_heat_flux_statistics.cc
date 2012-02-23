@@ -22,20 +22,17 @@ namespace aspect
     std::pair<std::string,std::string>
     TableHeatfluxStatistics<dim>::execute (TableHandler &statistics)
     {
-      const QGauss<dim-1> quadrature_formula (this->get_temperature_dof_handler().get_fe().degree+1);
+//TODO: think about whether it would be useful to only get the degree of the temperature component of the FESystem
+      const QGauss<dim-1> quadrature_formula (this->get_dof_handler().get_fe().degree+1);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
-                                        this->get_temperature_dof_handler().get_fe(),
+                                        this->get_dof_handler().get_fe(),
                                         quadrature_formula,
                                         update_gradients      | update_values |
                                         update_normal_vectors |
                                         update_q_points       | update_JxW_values);
-
-      FEFaceValues<dim> stokes_fe_face_values (this->get_mapping(),
-                                               this->get_stokes_dof_handler().get_fe(),
-                                               quadrature_formula,
-                                               update_values);
       const FEValuesExtractors::Scalar pressure (dim);
+      const FEValuesExtractors::Scalar temperature (dim+1);
 
       std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
       std::vector<double>         temperature_values (quadrature_formula.size());
@@ -45,15 +42,12 @@ namespace aspect
       // it only makes sense to compute heat fluxes on these boundaries.
       const std::set<unsigned char>
       boundary_indicators
-        =
-          this->get_geometry_model().get_used_boundary_indicators ();
+        = this->get_geometry_model().get_used_boundary_indicators ();
       std::map<unsigned char, double> local_boundary_fluxes;
 
       typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_temperature_dof_handler().begin_active(),
-      endc = this->get_temperature_dof_handler().end();
-      typename DoFHandler<dim>::active_cell_iterator
-      stokes_cell = this->get_stokes_dof_handler().begin_active();
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
 
       // for every surface face on which it makes sense to compute a
       // heat flux and that is owned by this processor,
@@ -64,22 +58,18 @@ namespace aspect
       // the normal vector points *into* the core, i.e. we compute the flux
       // *out* of the mantle, not into it. we fix this when we add the local
       // contribution to the global flux
-      for (; cell!=endc; ++cell, ++stokes_cell)
+      for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-            // check if the face is at the boundary and has either boundary indicator
-            // zero (inner boundary) or one (outer boundary)
             if (cell->at_boundary(f))
               {
                 fe_face_values.reinit (cell, f);
-                fe_face_values.get_function_gradients (this->get_temperature_solution(),
-                                                       temperature_gradients);
-                fe_face_values.get_function_values (this->get_temperature_solution(),
-                                                    temperature_values);
-
-                stokes_fe_face_values.reinit (stokes_cell, f);
-                stokes_fe_face_values[pressure].get_function_values (this->get_stokes_solution(),
-                                                                     pressure_values);
+                fe_face_values[temperature].get_function_gradients (this->get_solution(),
+								    temperature_gradients);
+                fe_face_values[temperature].get_function_values (this->get_solution(),
+								 temperature_values);
+                fe_face_values[pressure].get_function_values (this->get_solution(),
+							      pressure_values);
 
                 double local_normal_flux = 0;
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)

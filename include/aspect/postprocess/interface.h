@@ -194,8 +194,8 @@ namespace aspect
 
         /**
          * Return a reference to the stream object that only outputs something on one
-        * processor in a parallel program and simply ignores output put into it on
-        * all other processors.
+	 * processor in a parallel program and simply ignores output put into it on
+	 * all other processors.
          */
         const ConditionalOStream &
         get_pcout () const;
@@ -259,13 +259,26 @@ namespace aspect
         /** @} */
 
 
-        /** @name Accessing variables that identify the solution of the Stokes problem */
+        /** @name Accessing variables that identify the solution of the problem */
         /** @{ */
 
 
         /**
-         * Return a reference to the vector that has the current solution
-         * of the Stokes system, i.e. the velocity and pressure variables.
+         * Return a reference to the vector that has the current
+         * solution of the entire system, i.e. the velocity and
+         * pressure variables as well as the temperature.  This vector
+         * is associated with the DoFHandler object returned by
+         * get_dof_handler().
+         *
+         * @note In general the vector is a distributed vector; however, it
+         * contains ghost elements for all locally relevant degrees of freedom.
+         */
+        const TrilinosWrappers::MPI::BlockVector &
+        get_solution () const;
+
+        /**
+         * Return a reference to the vector that has the solution
+         * of the entire system at the previous time step.
          * This vector is associated with the DoFHandler object returned by
          * get_stokes_dof_handler().
          *
@@ -273,63 +286,14 @@ namespace aspect
          * contains ghost elements for all locally relevant degrees of freedom.
          */
         const TrilinosWrappers::MPI::BlockVector &
-        get_stokes_solution () const;
-
-        /**
-         * Return a reference to the vector that has the solution
-         * of the Stokes system at the previous time step.
-         * This vector is associated with the DoFHandler object returned by
-         * get_stokes_dof_handler().
-         *
-         * @note In general the vector is a distributed vector; however, it
-         * contains ghost elements for all locally relevant degrees of freedom.
-         */
-        const TrilinosWrappers::MPI::BlockVector &
-        get_old_stokes_solution () const;
+        get_old_solution () const;
 
         /**
          * Return a reference to the DoFHandler that is used to discretize
-         * the Stokes system of velocity and pressure.
+         * the variables at the current time step.
          */
         const DoFHandler<dim> &
-        get_stokes_dof_handler () const;
-        /** @} */
-
-
-        /** @name Accessing variables that identify the solution of the temperature problem */
-        /** @{ */
-
-
-        /**
-         * Return a reference to the vector that has the current solution
-         * of the temperature system.
-         * This vector is associated with the DoFHandler object returned by
-         * get_temperature_dof_handler().
-         *
-         * @note In general the vector is a distributed vector; however, it
-         * contains ghost elements for all locally relevant degrees of freedom.
-         */
-        const TrilinosWrappers::MPI::Vector &
-        get_temperature_solution () const;
-
-        /**
-         * Return a reference to the vector that has the solution
-         * of the temperature system at the previous time step.
-         * This vector is associated with the DoFHandler object returned by
-         * get_temperature_dof_handler().
-         *
-         * @note In general the vector is a distributed vector; however, it
-         * contains ghost elements for all locally relevant degrees of freedom.
-         */
-        const TrilinosWrappers::MPI::Vector &
-        get_old_temperature_solution () const;
-
-        /**
-         * Return a reference to the DoFHandler that is used to discretize
-         * the temperature equation.
-         */
-        const DoFHandler<dim> &
-        get_temperature_dof_handler () const;
+        get_dof_handler () const;
 
         /**
          * Fill the argument with a set of depth averages of the current
@@ -353,7 +317,7 @@ namespace aspect
         /** @{ */
 
         /**
-         * Return a pointer to the material model to access function like density().
+         * Return a pointer to the material model to access functions like density().
          */
         const MaterialModel::Interface<dim> &
         get_material_model () const;

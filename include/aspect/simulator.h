@@ -308,16 +308,20 @@ namespace aspect
       void assemble_temperature_system ();
 
       /**
-       * Perform the following steps:
-       * - Solve the Stokes system
-       * - Determine the size of the time step
-       * - Set up the temperature linear system
-       * - Solve the temperature linear system.
+       * Solve the temperature linear system.
        *
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
        */
-      void solve ();
+      void solve_temperature ();
+
+      /**
+       * Solve the Stokes linear system.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver.cc</code>.
+       */
+      void solve_stokes ();
 
       /**
        * This function is called at the end of every time step. It
@@ -407,31 +411,23 @@ namespace aspect
        */
       /**
        * Set up the size and structure of the matrix used to store the
-       * elements of the Stokes system.
+       * elements of the linear system.
        *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
        */
-      void setup_stokes_matrix (const std::vector<IndexSet> &stokes_partitioning);
+      void setup_system_matrix (const std::vector<IndexSet> &system_partitioning);
 
       /**
        * Set up the size and structure of the matrix used to store the
        * elements of the matrix that is used to build the preconditioner for
-       * the Stokes system.
+       * the system.
        *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
        */
-      void setup_stokes_preconditioner (const std::vector<IndexSet> &stokes_partitioning);
+      void setup_system_preconditioner (const std::vector<IndexSet> &system_partitioning);
 
-      /**
-       * Set up the size and structure of the matrix used to store the
-       * elements of the temperature system.
-       *
-       * This function is implemented in
-       * <code>source/simulator/core.cc</code>.
-       */
-      void setup_temperature_matrix (const IndexSet &temperature_partitioning);
       /**
        * @}
        */
@@ -492,7 +488,6 @@ namespace aspect
       void
       copy_local_to_global_stokes_system (const internal::Assembly::CopyData::StokesSystem<dim> &data);
 
-
       /**
        * Compute the integrals for the temperature matrix and right hand side
        * on a single cell.
@@ -517,6 +512,7 @@ namespace aspect
        */
       void
       copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data);
+
       /**
        * @}
        */
@@ -573,13 +569,13 @@ namespace aspect
       void normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
 
       /**
-       * Compute the maximal velocity througout the domain. This is needed
+       * Compute the maximal velocity throughout the domain. This is needed
        * to compute the size of the time step.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      double get_maximal_velocity () const;
+      double get_maximal_velocity (const TrilinosWrappers::MPI::BlockVector &solution) const;
 
       /**
        * Compute the variation (i.e., the difference between maximal and
@@ -644,6 +640,7 @@ namespace aspect
                         const double                        global_entropy_variation,
                         const std::vector<Point<dim> >     &evaluation_points,
                         const double                        cell_diameter) const;
+
       /**
        * @}
        */
@@ -697,18 +694,15 @@ namespace aspect
 
       const MappingQ<dim>                                       mapping;
 
-      const FESystem<dim>                                       stokes_fe;
+      const FESystem<dim>                                       finite_element;
 
-      DoFHandler<dim>                                           stokes_dof_handler;
-      ConstraintMatrix                                          stokes_constraints;
-      ConstraintMatrix                                          current_stokes_constraints;
+      DoFHandler<dim>                                           dof_handler;
+
+      ConstraintMatrix                                          constraints;
+      ConstraintMatrix                                          current_constraints;
 
       double                                                    pressure_scaling;
 
-      FE_Q<dim>                                                 temperature_fe;
-      DoFHandler<dim>                                           temperature_dof_handler;
-      ConstraintMatrix                                          temperature_constraints;
-//TODO: Have a current_temperature_constraints object, just like we do for the Stokes system
       /**
        * @}
        */
@@ -718,22 +712,16 @@ namespace aspect
        * @name Variables that describe the linear systems and solution vectors
        * @{
        */
-      TrilinosWrappers::BlockSparseMatrix                       stokes_matrix;
-      TrilinosWrappers::BlockSparseMatrix                       stokes_preconditioner_matrix;
+      TrilinosWrappers::BlockSparseMatrix                       system_matrix;
+      TrilinosWrappers::BlockSparseMatrix                       system_preconditioner_matrix;
 
-      TrilinosWrappers::MPI::BlockVector                        stokes_solution;
-      TrilinosWrappers::MPI::BlockVector                        old_stokes_solution;
-      TrilinosWrappers::MPI::BlockVector                        stokes_rhs;
+      TrilinosWrappers::MPI::BlockVector                        solution;
+      TrilinosWrappers::MPI::BlockVector                        old_solution;
+      TrilinosWrappers::MPI::BlockVector                        old_old_solution;
+      TrilinosWrappers::MPI::BlockVector                        system_rhs;
 
       // only used if is_compressible()
       TrilinosWrappers::MPI::BlockVector                        pressure_shape_function_integrals;
-
-      TrilinosWrappers::SparseMatrix                            temperature_matrix;
-
-      TrilinosWrappers::MPI::Vector                             temperature_solution;
-      TrilinosWrappers::MPI::Vector                             old_temperature_solution;
-      TrilinosWrappers::MPI::Vector                             old_old_temperature_solution;
-      TrilinosWrappers::MPI::Vector                             temperature_rhs;
 
 
 

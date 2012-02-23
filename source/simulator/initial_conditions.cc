@@ -35,23 +35,27 @@ namespace aspect
     // the VectorTools::interpolate function
     // needs to write into it and we can not
     // write into vectors with ghost elements
-    TrilinosWrappers::MPI::Vector
-    solution (temperature_matrix.row_partitioner());
+    TrilinosWrappers::MPI::BlockVector initial_solution;
+    initial_solution.reinit(system_rhs);
 
     // interpolate the initial values
     VectorTools::interpolate (mapping,
-                              temperature_dof_handler,
-                              ScalarFunctionFromFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
-                                                                    std_cxx1x::cref(*initial_conditions),
-                                                                    std_cxx1x::_1)),
-                              solution);
+                              dof_handler,
+                              VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
+                                                                          std_cxx1x::cref(*initial_conditions),
+                                                                          std_cxx1x::_1),
+                                                                          dim+1,
+                                                                          dim+2),
+                              initial_solution);
 
     // then apply constraints and copy the
     // result into vectors with ghost elements
-    temperature_constraints.distribute (solution);
-    temperature_solution = solution;
-    old_temperature_solution = solution;
-    old_old_temperature_solution = solution;
+    constraints.distribute(initial_solution);
+
+    // copy temperature block only
+    solution.block(2) = initial_solution.block(2);
+    old_solution.block(2) = initial_solution.block(2);
+    old_old_solution.block(2) = initial_solution.block(2);
   }
 
 
@@ -73,41 +77,45 @@ namespace aspect
         // writable); the stokes_rhs vector is a valid template for
         // this kind of thing. interpolate into it and later copy it into the
         // solution vector that does have the necessary ghost elements
-        TrilinosWrappers::MPI::BlockVector stokes_tmp;
-        stokes_tmp.reinit (stokes_rhs);
+        TrilinosWrappers::MPI::BlockVector system_tmp;
+        system_tmp.reinit (system_rhs);
 
         // interpolate the pressure given by the adiabatic conditions
         // object onto the solution space. note that interpolate
         // wants a function that represents all components of the
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
-        VectorTools::interpolate (mapping, stokes_dof_handler,
+        VectorTools::interpolate (mapping, dof_handler,
                                   VectorFunctionFromScalarFunctionObject<dim> (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
                                                                                std_cxx1x::cref (*adiabatic_conditions),
                                                                                std_cxx1x::_1),
                                                                                dim,
-                                                                               dim+1),
-                                  stokes_tmp);
+                                                                               dim+2),
+                                  system_tmp);
 
         // we may have hanging nodes, so apply constraints
-        stokes_constraints.distribute (stokes_tmp);
+        constraints.distribute (system_tmp);
 
-        old_stokes_solution = stokes_tmp;
+        old_solution.block(1) = system_tmp.block(1);
       }
     else
       {
         // implement the local projection for the discontinuous pressure
         // element. this is only going to work if, indeed, the element
         // is discontinuous
-        const FiniteElement<dim> &pressure_fe = stokes_fe.base_element(1);
-        Assert (pressure_fe.dofs_per_face == 0,
+        const FiniteElement<dim> &system_pressure_fe = finite_element.base_element(1);
+        Assert (system_pressure_fe.dofs_per_face == 0,
                 ExcNotImplemented());
+
+        TrilinosWrappers::MPI::BlockVector system_tmp;
+        system_tmp.reinit (system_rhs);
 
         QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
         UpdateFlags update_flags = UpdateFlags(update_values   |
                                                update_quadrature_points |
                                                update_JxW_values);
-        FEValues<dim> fe_values (mapping, stokes_fe, quadrature, update_flags);
+
+        FEValues<dim> fe_values (mapping, finite_element, quadrature, update_flags);
         const FEValuesExtractors::Scalar pressure (dim);
 
         const unsigned int
@@ -128,8 +136,8 @@ namespace aspect
 
 
         typename DoFHandler<dim>::active_cell_iterator
-        cell = stokes_dof_handler.begin_active(),
-        endc = stokes_dof_handler.end();
+        cell = dof_handler.begin_active(),
+        endc = dof_handler.end();
 
         for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
@@ -145,7 +153,7 @@ namespace aspect
               for (unsigned int point=0; point<n_q_points; ++point)
                 for (unsigned int i=0; i<dofs_per_cell; ++i)
                   {
-                    if (stokes_fe.system_to_component_index(i).first == dim)
+                    if (finite_element.system_to_component_index(i).first == dim)
                       cell_vector(i)
                       +=
                         rhs_values[point] *
@@ -157,9 +165,9 @@ namespace aspect
                     // for all other variables so that the whole thing remains
                     // invertible
                     for (unsigned int j=0; j<dofs_per_cell; ++j)
-                      if ((stokes_fe.system_to_component_index(i).first == dim)
+                      if ((finite_element.system_to_component_index(i).first == dim)
                           &&
-                          (stokes_fe.system_to_component_index(j).first == dim))
+                          (finite_element.system_to_component_index(j).first == dim))
                         local_mass_matrix(j,i) += (fe_values[pressure].value(i,point) *
                                                    fe_values[pressure].value(j,point) *
                                                    fe_values.JxW(point));
@@ -172,16 +180,18 @@ namespace aspect
               local_mass_matrix.vmult (local_projection, cell_vector);
 
               // then set the global solution vector to the values just computed
-              cell->set_dof_values (local_projection, old_stokes_solution);
+              cell->set_dof_values (local_projection, system_tmp);
             }
+
+        old_solution.block(1) = system_tmp.block(1);
       }
 
     // normalize the pressure in such a way that the surface pressure
     // equals a known and desired value
-    normalize_pressure(old_stokes_solution);
+    normalize_pressure(old_solution);
 
     // set the current solution to the same value as the previous solution
-    stokes_solution = old_stokes_solution;
+    solution = old_solution;
   }
 }
 

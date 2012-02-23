@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
@@ -23,21 +23,23 @@ namespace aspect
     std::pair<std::string,std::string>
     TemperatureStatistics<dim>::execute (TableHandler &statistics)
     {
-      const QGauss<dim> quadrature_formula (this->get_temperature_dof_handler().get_fe().degree+1);
+//TODO: think about whether it would be useful to only get the degree of the temperature component of the FESystem
+      const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe().degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_temperature_dof_handler().get_fe(),
+                               this->get_dof_handler().get_fe(),
                                quadrature_formula,
                                update_values   |
                                update_quadrature_points |
                                update_JxW_values);
 
+      const FEValuesExtractors::Scalar temperature (dim+1);
       std::vector<double> temperature_values(n_q_points);
 
       typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_temperature_dof_handler().begin_active(),
-      endc = this->get_temperature_dof_handler().end();
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
 
       double local_temperature_integral = 0;
 
@@ -46,8 +48,8 @@ namespace aspect
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
-            fe_values.get_function_values (this->get_temperature_solution(),
-                                           temperature_values);
+            fe_values[temperature].get_function_values (this->get_solution(),
+                                                        temperature_values);
             for (unsigned int q=0; q<n_q_points; ++q)
               local_temperature_integral += temperature_values[q]*fe_values.JxW(q);
           }
@@ -63,14 +65,14 @@ namespace aspect
       // picture of their true values
       double local_min_temperature = std::numeric_limits<double>::max();
       double local_max_temperature = std::numeric_limits<double>::min();
-      for (unsigned int i=0; i<this->get_temperature_solution().local_size(); ++i)
+      for (unsigned int i=0; i<this->get_solution().block(2).local_size(); ++i)
         {
           local_min_temperature
             = std::min<double> (local_min_temperature,
-                                this->get_temperature_solution().trilinos_vector()[0][i]);
+                                this->get_solution().block(2).trilinos_vector()[0][i]);
           local_max_temperature
             = std::max<double> (local_max_temperature,
-                                this->get_temperature_solution().trilinos_vector()[0][i]);
+                                this->get_solution().block(2).trilinos_vector()[0][i]);
         }
 
       const double global_temperature_integral

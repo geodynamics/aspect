@@ -242,74 +242,8 @@ namespace aspect
         return std::pair<std::string,std::string>();
 
 
-      // build a representation of the entire solution. this process is
-      // described in the documentation of step-32
-      const FESystem<dim> joint_fe (this->get_stokes_dof_handler().get_fe(), 1,
-                                    this->get_temperature_dof_handler().get_fe(), 1);
-
-      DoFHandler<dim> joint_dof_handler (this->get_triangulation());
-      joint_dof_handler.distribute_dofs (joint_fe);
-      Assert (joint_dof_handler.n_dofs() ==
-              this->get_stokes_dof_handler().n_dofs() + this->get_temperature_dof_handler().n_dofs(),
-              ExcInternalError());
-
-      TrilinosWrappers::MPI::Vector joint_solution;
-      joint_solution.reinit (joint_dof_handler.locally_owned_dofs(), MPI_COMM_WORLD);
-
-      {
-        std::vector<unsigned int> local_joint_dof_indices (joint_fe.dofs_per_cell);
-        std::vector<unsigned int> local_stokes_dof_indices (this->get_stokes_dof_handler().get_fe().dofs_per_cell);
-        std::vector<unsigned int> local_temperature_dof_indices (this->get_temperature_dof_handler().get_fe().dofs_per_cell);
-
-        typename DoFHandler<dim>::active_cell_iterator
-        joint_cell       = joint_dof_handler.begin_active(),
-        joint_endc       = joint_dof_handler.end(),
-        stokes_cell      = this->get_stokes_dof_handler().begin_active(),
-        temperature_cell = this->get_temperature_dof_handler().begin_active();
-        for (; joint_cell!=joint_endc;
-             ++joint_cell, ++stokes_cell, ++temperature_cell)
-          if (joint_cell->is_locally_owned())
-            {
-              joint_cell->get_dof_indices (local_joint_dof_indices);
-              stokes_cell->get_dof_indices (local_stokes_dof_indices);
-              temperature_cell->get_dof_indices (local_temperature_dof_indices);
-
-              for (unsigned int i=0; i<joint_fe.dofs_per_cell; ++i)
-                if (joint_fe.system_to_base_index(i).first.first == 0)
-                  {
-                    Assert (joint_fe.system_to_base_index(i).second
-                            <
-                            local_stokes_dof_indices.size(),
-                            ExcInternalError());
-
-                    joint_solution(local_joint_dof_indices[i])
-                      = this->get_stokes_solution()(local_stokes_dof_indices
-                                                    [joint_fe.system_to_base_index(i).second]);
-                  }
-                else
-                  {
-                    Assert (joint_fe.system_to_base_index(i).first.first == 1,
-                            ExcInternalError());
-                    Assert (joint_fe.system_to_base_index(i).second
-                            <
-                            local_temperature_dof_indices.size(),
-                            ExcInternalError());
-                    joint_solution(local_joint_dof_indices[i])
-                      = this->get_temperature_solution()(local_temperature_dof_indices
-                                                         [joint_fe.system_to_base_index(i).second]);
-                  }
-            }
-      }
-
-
-      IndexSet locally_relevant_joint_dofs(joint_dof_handler.n_dofs());
-      DoFTools::extract_locally_relevant_dofs (joint_dof_handler, locally_relevant_joint_dofs);
-      TrilinosWrappers::MPI::Vector locally_relevant_joint_solution;
-      locally_relevant_joint_solution.reinit (locally_relevant_joint_dofs, MPI_COMM_WORLD);
-      locally_relevant_joint_solution = joint_solution;
-
       internal::Postprocessor<dim> postprocessor (this->get_triangulation().locally_owned_subdomain(),
-                                                  this->get_stokes_solution().block(1).minimal_value(),
+                                                  this->get_solution().block(1).minimal_value(),
                                                   this->convert_output_to_years(),
                                                   this->get_material_model(),
                                                   this->get_adiabatic_conditions());
@@ -325,8 +259,8 @@ namespace aspect
       // that will write data in the background. the other thread
       // will then also destroy the object
       DataOut<dim> data_out;
-      data_out.attach_dof_handler (joint_dof_handler);
-      data_out.add_data_vector (locally_relevant_joint_solution, postprocessor);
+      data_out.attach_dof_handler (this->get_dof_handler());
+      data_out.add_data_vector (this->get_solution(), postprocessor);
       data_out.add_data_vector (estimated_error_per_cell, "error_indicator");
       data_out.add_data_vector (Vs_anomaly, "Vs_anomaly");
       data_out.build_patches ();

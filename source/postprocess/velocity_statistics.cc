@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 
@@ -26,12 +26,12 @@ namespace aspect
     std::pair<std::string,std::string>
     VelocityStatistics<dim>::execute (TableHandler &statistics)
     {
-      const QGauss<dim> quadrature_formula (this->get_stokes_dof_handler().get_fe()
+      const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe()
                                             .base_element(0).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_stokes_dof_handler().get_fe(),
+                               this->get_dof_handler().get_fe(),
                                quadrature_formula,
                                update_values   |
                                update_quadrature_points |
@@ -44,13 +44,13 @@ namespace aspect
       double local_max_velocity = 0;
 
       typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_stokes_dof_handler().begin_active(),
-      endc = this->get_stokes_dof_handler().end();
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
-            fe_values[velocities].get_function_values (this->get_stokes_solution(),
+            fe_values[velocities].get_function_values (this->get_solution(),
                                                        velocity_values);
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
