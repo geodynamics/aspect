@@ -15,6 +15,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 
+#include <math.h>
 
 namespace aspect
 {
@@ -234,7 +235,7 @@ namespace aspect
       // if this is the first time we get here, set the next output time
       // to the current time. this makes sure we always produce data during
       // the first time step
-      if (next_output_time == std::numeric_limits<double>::quiet_NaN())
+      if (isnan(next_output_time))
         next_output_time = this->get_time();
 
       // see if graphical output is requested at this time
