@@ -455,7 +455,6 @@ namespace aspect
         }
 
       // set next output time to something useful
-      next_output_time = 0;
       set_next_output_time (this->get_time());
     }
 
