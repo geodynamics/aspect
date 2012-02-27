@@ -371,7 +371,10 @@ namespace aspect
               MPI_Barrier(communicator);
             }
         }
-//TODO: delete the communicator we have been using
+
+      // destroy the communicator that has been created for the express
+      // purpose of this function
+      MPI_Comm_free (&communicator);
     }
 
 
