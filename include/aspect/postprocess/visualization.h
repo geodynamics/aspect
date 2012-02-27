@@ -141,8 +141,8 @@ namespace aspect
          * produce race conditions.
          */
         static
-        void background_writer (const std::string filename,
-                                const std::string file_contents,
+        void background_writer (const std::string *filename,
+                                const std::string *file_contents,
                                 MPI_Comm          communicator);
     };
   }

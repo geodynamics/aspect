@@ -268,12 +268,12 @@ namespace aspect
 
       // put the stuff we want to write into a string object that
       // we can then write in the background
-      std::string file_contents;
+      const std::string *file_contents;
       {
         std::ostringstream tmp;
         data_out.write (tmp, DataOutBase::parse_output_format(output_format));
 
-        file_contents = tmp.str();
+        file_contents = new std::string (tmp.str());
       }
 
       // let the master processor write the master record for all the distributed
@@ -305,24 +305,30 @@ namespace aspect
           data_out.write_visit_record (visit_master, filenames);
         }
 
-      const std::string filename = (this->get_output_directory() +
-                                    "solution-" +
-                                    Utilities::int_to_string (output_file_number, 5) +
-                                    "." +
-                                    Utilities::int_to_string
-                                    (this->get_triangulation().locally_owned_subdomain(), 4) +
-                                    DataOutBase::default_suffix
-                                    (DataOutBase::parse_output_format(output_format)));
+      const std::string *filename
+        = new std::string (this->get_output_directory() +
+                           "solution-" +
+                           Utilities::int_to_string (output_file_number, 5) +
+                           "." +
+                           Utilities::int_to_string
+                           (this->get_triangulation().locally_owned_subdomain(), 4) +
+                           DataOutBase::default_suffix
+                           (DataOutBase::parse_output_format(output_format)));
 
       // wait for all previous write operations to finish, should
       // any be still active
       background_thread.join ();
 
       // then continue with writing our own stuff
-      background_thread = Threads::new_thread (&background_writer,
-                                               filename,
-                                               file_contents,
-                                               Utilities::MPI::duplicate_communicator(this->get_mpi_communicator()));
+//TODO: The following background job doesn't work because we do MPI
+// communication on the thread and MPI appears to crash if that is so.
+// find a way to do the throttling without the MPI communication
+      // background_thread = Threads::new_thread (&background_writer,
+      //                                          filename,
+      //                                          file_contents,
+      //                                          Utilities::MPI::duplicate_communicator(this->get_mpi_communicator()));
+      background_writer (filename, file_contents,
+                         Utilities::MPI::duplicate_communicator(this->get_mpi_communicator()));
 
 
       // record the file base file name in the output file
@@ -344,8 +350,8 @@ namespace aspect
 
 
     template <int dim>
-    void Visualization<dim>::background_writer (const std::string filename,
-                                                const std::string file_contents,
+    void Visualization<dim>::background_writer (const std::string *filename,
+                                                const std::string *file_contents,
                                                 MPI_Comm          communicator)
     {
       // throttle output
@@ -356,16 +362,25 @@ namespace aspect
         {
           if (i == myid)
             {
-              std::ofstream output (filename.c_str());
+              std::ofstream output (filename->c_str());
               if (!output)
                 std::cout << "***** ERROR: proc " << myid
-                          << " could not create " << filename
+                          << " could not create " << *filename
                           << " *****"
                           << std::endl;
 
-              output << file_contents;
+              output << *file_contents;
             }
-          if (i % concurrent_writers == 0)
+
+          // after every block of concurrent_writers writes
+          // stop the process for a synchronisation. this makes
+          // sure that those processes that didn't yet get to
+          // write wait for those that may still be writing and
+          // thereby that at most concurrent_writers are writing
+          // at the same time
+          if ((i % concurrent_writers == 0)
+              &&
+              (i != 0))
             {
               sleep(1);
               MPI_Barrier(communicator);
@@ -373,7 +388,10 @@ namespace aspect
         }
 
       // destroy the communicator that has been created for the express
-      // purpose of this function
+      // purpose of this function, along with the pointers to the data
+      // we needed to write
+      delete file_contents;
+      delete filename;
       MPI_Comm_free (&communicator);
     }
 
