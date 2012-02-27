@@ -126,7 +126,7 @@ namespace aspect
           if (dynamic_cast<const MaterialModel::Simple<dim> *>(&this->get_material_model()) != 0)
             {
 
-              const MaterialModel::Simple<dim> & material_model
+              const MaterialModel::Simple<dim> &material_model
                 = dynamic_cast<const MaterialModel::Simple<dim> &>(this->get_material_model());
 
               const GeometryModel::SphericalShell<dim> *geometry = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());

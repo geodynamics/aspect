@@ -47,7 +47,7 @@ namespace aspect
         double length_scale () const;
 
         virtual
-        double depth(const Point<dim> & position) const;
+        double depth(const Point<dim> &position) const;
 
         virtual
         Point<dim> representative_point(const double depth) const;

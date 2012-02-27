@@ -344,7 +344,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
        */
-      void compute_refinement_criterion (Vector<float> & estimated_error_per_cell) const;
+      void compute_refinement_criterion (Vector<float> &estimated_error_per_cell) const;
 
       /**
        * Refine the mesh according to error indicators calculated by
@@ -548,7 +548,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void compute_depth_average_temperature(std::vector<double> & values) const;
+      void compute_depth_average_temperature(std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the current temperature.
@@ -556,7 +556,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void compute_Vs_anomaly(Vector<float> & values) const;
+      void compute_Vs_anomaly(Vector<float> &values) const;
 
       /**
        * If the geometry used is a spherical shell, adjust the pressure variable

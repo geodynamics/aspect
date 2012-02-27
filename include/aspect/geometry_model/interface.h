@@ -73,7 +73,7 @@ namespace aspect
          * is between 0 and maximal_depth(), where 0 denotes the surface.
          */
         virtual
-        double depth(const Point<dim> & position) const = 0;
+        double depth(const Point<dim> &position) const = 0;
 
         /**
          * Returns a representative point for a given depth.
@@ -138,7 +138,7 @@ namespace aspect
     register_geometry_model (const std::string &name,
                              const std::string &description,
                              void (*declare_parameters_function) (ParameterHandler &),
-                             Interface<dim> * (*factory_function) ());
+                             Interface<dim> *(*factory_function) ());
 
     /**
      * A function that given the name of a model returns a pointer to an object

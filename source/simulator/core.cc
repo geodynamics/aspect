@@ -525,7 +525,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_refinement_criterion (Vector<float> & estimated_error_per_cell) const
+  void Simulator<dim>::compute_refinement_criterion (Vector<float> &estimated_error_per_cell) const
   {
     Vector<float> estimated_error_per_cell_rho (triangulation.n_active_cells());
     Vector<float> estimated_error_per_cell_T (triangulation.n_active_cells());

@@ -53,7 +53,7 @@ namespace aspect
 
     template <int dim>
     double
-    Box<dim>::depth(const Point<dim> & position) const
+    Box<dim>::depth(const Point<dim> &position) const
     {
       const double d = maximal_depth()-position(dim-1);
 

@@ -95,7 +95,7 @@ namespace aspect
 
     template <int dim>
     double
-    SphericalShell<dim>::depth(const Point<dim> & position) const
+    SphericalShell<dim>::depth(const Point<dim> &position) const
     {
       return std::min (std::max (R1-position.norm(), 0.), maximal_depth());
     }

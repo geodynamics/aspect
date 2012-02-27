@@ -120,7 +120,7 @@ namespace aspect
     register_material_model (const std::string &name,
                              const std::string &description,
                              void (*declare_parameters_function) (ParameterHandler &),
-                             Interface<dim> * (*factory_function) ())
+                             Interface<dim> *(*factory_function) ())
     {
       registered_plugins.register_plugin (name,
                                           description,
@@ -205,7 +205,7 @@ namespace aspect
     register_material_model<deal_II_dimension> (const std::string &,
                                                 const std::string &,
                                                 void ( *) (ParameterHandler &),
-                                                Interface<deal_II_dimension> * ( *) ());
+                                                Interface<deal_II_dimension> *( *) ());
 
     template
     Interface<deal_II_dimension> *

@@ -135,7 +135,7 @@ namespace aspect
 
     template <int dim>
     void
-    SimulatorAccess<dim>::get_refinement_criteria (Vector<float> & estimated_error_per_cell) const
+    SimulatorAccess<dim>::get_refinement_criteria (Vector<float> &estimated_error_per_cell) const
     {
       simulator->compute_refinement_criterion(estimated_error_per_cell);
     }
@@ -171,7 +171,7 @@ namespace aspect
 
     template <int dim>
     void
-    SimulatorAccess<dim>::get_depth_average_temperature(std::vector<double> & values) const
+    SimulatorAccess<dim>::get_depth_average_temperature(std::vector<double> &values) const
     {
       simulator->compute_depth_average_temperature(values);
     }
@@ -179,7 +179,7 @@ namespace aspect
 
     template <int dim>
     void
-    SimulatorAccess<dim>::get_Vs_anomaly(Vector<float> & values) const
+    SimulatorAccess<dim>::get_Vs_anomaly(Vector<float> &values) const
     {
       simulator->compute_Vs_anomaly(values);
     }
@@ -355,7 +355,7 @@ namespace aspect
     Manager<dim>::register_postprocessor (const std::string &name,
                                           const std::string &description,
                                           void (*declare_parameters_function) (ParameterHandler &),
-                                          Interface<dim> * (*factory_function) ())
+                                          Interface<dim> *(*factory_function) ())
     {
       registered_plugins.register_plugin (name,
                                           description,

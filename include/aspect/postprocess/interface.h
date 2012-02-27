@@ -255,7 +255,7 @@ namespace aspect
         * why mesh refinement is proceeding as it is.
         */
         void
-        get_refinement_criteria(Vector<float> & estimated_error_per_cell) const;
+        get_refinement_criteria(Vector<float> &estimated_error_per_cell) const;
         /** @} */
 
 
@@ -303,13 +303,13 @@ namespace aspect
          * slices.
          */
         void
-        get_depth_average_temperature(std::vector<double> & values) const;
+        get_depth_average_temperature(std::vector<double> &values) const;
 
         /**
          * Compute a depth average of the current temperature field
          */
         void
-        get_Vs_anomaly(Vector<float> & values) const;
+        get_Vs_anomaly(Vector<float> &values) const;
         /** @} */
 
 
@@ -452,7 +452,7 @@ namespace aspect
         register_postprocessor (const std::string &name,
                                 const std::string &description,
                                 void (*declare_parameters_function) (ParameterHandler &),
-                                Interface<dim> * (*factory_function) ());
+                                Interface<dim> *(*factory_function) ());
 
         /**
          * Exception.

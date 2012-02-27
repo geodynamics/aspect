@@ -350,7 +350,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_depth_average_temperature(std::vector<double> & values) const
+  void Simulator<dim>::compute_depth_average_temperature(std::vector<double> &values) const
   {
     const unsigned int num_slices = 100;
     values.resize(num_slices);
@@ -381,7 +381,7 @@ namespace aspect
                                                       temperature_values);
           for (unsigned int q=0; q<n_q_points; ++q)
             {
-              const Point<dim> & p = fe_values.quadrature_point(q);
+              const Point<dim> &p = fe_values.quadrature_point(q);
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
               const double max_depth = geometry_model->maximal_depth();
               const unsigned int idx = (depth*num_slices)/max_depth;
@@ -404,7 +404,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_Vs_anomaly(Vector<float> & values) const
+  void Simulator<dim>::compute_Vs_anomaly(Vector<float> &values) const
   {
     std::vector<double> average_temperature;
     compute_depth_average_temperature(average_temperature);
@@ -445,7 +445,7 @@ namespace aspect
 
           const double Vs = material_model->seismic_Vs(temperature_values[0], pressure_values[0]);
 
-          const Point<dim> & p = fe_values.quadrature_point(0);
+          const Point<dim> &p = fe_values.quadrature_point(0);
           const double depth = geometry_model->depth(fe_values.quadrature_point(0));
           const unsigned int idx = (depth*num_slices)/max_depth;
           const double Vs_depth_average = material_model->seismic_Vs(average_temperature[idx],
@@ -469,7 +469,7 @@ namespace aspect
 
   template void Simulator<deal_II_dimension>::make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector);
 
-  template void Simulator<deal_II_dimension>::compute_depth_average_temperature(std::vector<double> & values) const;
+  template void Simulator<deal_II_dimension>::compute_depth_average_temperature(std::vector<double> &values) const;
 
-  template void Simulator<deal_II_dimension>::compute_Vs_anomaly(Vector<float> & values) const;
+  template void Simulator<deal_II_dimension>::compute_Vs_anomaly(Vector<float> &values) const;
 }
