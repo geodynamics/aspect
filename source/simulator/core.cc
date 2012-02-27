@@ -72,12 +72,14 @@ namespace aspect
    * Constructor. Initialize all member variables.
    **/
   template <int dim>
-  Simulator<dim>::Simulator (ParameterHandler &prm)
+  Simulator<dim>::Simulator (const MPI_Comm mpi_communicator_,
+                             ParameterHandler &prm)
     :
     parameters (prm),
+    mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     pcout (std::cout,
            (Utilities::MPI::
-            this_mpi_process(MPI_COMM_WORLD)
+            this_mpi_process(mpi_communicator)
             == 0)),
 
     computing_timer (pcout, TimerOutput::summary,
@@ -97,7 +99,7 @@ namespace aspect
     old_time_step (0),
     timestep_number (0),
 
-    triangulation (MPI_COMM_WORLD,
+    triangulation (mpi_communicator,
                    typename Triangulation<dim>::MeshSmoothing
                    (Triangulation<dim>::smoothing_on_refinement |
                     Triangulation<dim>::smoothing_on_coarsening),
@@ -245,7 +247,7 @@ namespace aspect
     system_matrix.clear ();
 
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
-                                               MPI_COMM_WORLD);
+                                               mpi_communicator);
 
     Table<2,DoFTools::Coupling> coupling (dim+2, dim+2);
 
@@ -259,7 +261,7 @@ namespace aspect
                                      coupling, sp,
                                      constraints, false,
                                      Utilities::MPI::
-                                     this_mpi_process(MPI_COMM_WORLD));
+                                     this_mpi_process(mpi_communicator));
     sp.compress();
 
     system_matrix.reinit (sp);
@@ -278,7 +280,7 @@ namespace aspect
     system_preconditioner_matrix.clear ();
 
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
-                                               MPI_COMM_WORLD);
+                                               mpi_communicator);
 
     Table<2,DoFTools::Coupling> coupling (dim+2, dim+2);
     for (unsigned int c=0; c<dim+2; ++c)
@@ -292,7 +294,7 @@ namespace aspect
                                      coupling, sp,
                                      constraints, false,
                                      Utilities::MPI::
-                                     this_mpi_process(MPI_COMM_WORLD));
+                                     this_mpi_process(mpi_communicator));
     sp.compress();
 
     system_preconditioner_matrix.reinit (sp);
@@ -452,13 +454,13 @@ namespace aspect
     setup_system_matrix (system_partitioning);
     setup_system_preconditioner (system_partitioning);
 
-    system_rhs.reinit(system_partitioning, MPI_COMM_WORLD);
-    solution.reinit(system_relevant_partitioning, MPI_COMM_WORLD);
-    old_solution.reinit(system_relevant_partitioning, MPI_COMM_WORLD);
-    old_old_solution.reinit(system_relevant_partitioning, MPI_COMM_WORLD);
+    system_rhs.reinit(system_partitioning, mpi_communicator);
+    solution.reinit(system_relevant_partitioning, mpi_communicator);
+    old_solution.reinit(system_relevant_partitioning, mpi_communicator);
+    old_old_solution.reinit(system_relevant_partitioning, mpi_communicator);
 
     if (material_model->is_compressible())
-      pressure_shape_function_integrals.reinit (system_partitioning, MPI_COMM_WORLD);
+      pressure_shape_function_integrals.reinit (system_partitioning, mpi_communicator);
 
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
@@ -479,7 +481,7 @@ namespace aspect
     std::list<std::pair<std::string,std::string> >
     output_list = postprocess_manager.execute (statistics);
 
-    if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)==0)
+    if (Utilities::MPI::this_mpi_process(mpi_communicator)==0)
       {
         std::ofstream stat_file ((parameters.output_directory+"statistics").c_str());
         if (parameters.convert_to_years == true)
@@ -677,12 +679,12 @@ namespace aspect
       else if (parameters.refinement_strategy == "Normalized density and temperature")
         {
           const double rho_scaling = Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
-                                                          MPI_COMM_WORLD);
+                                                          mpi_communicator);
           if (rho_scaling != 0)
             estimated_error_per_cell_rho /= rho_scaling;
 
           const double T_scaling = Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
-                                                        MPI_COMM_WORLD);
+                                                        mpi_communicator);
           if (T_scaling != 0)
             estimated_error_per_cell_T /= T_scaling;
 
@@ -695,10 +697,10 @@ namespace aspect
           estimated_error_per_cell_rho *=  1e-4/global_Omega_diameter;
           pcout << "T/rho error scaling: "
                 << Utilities::MPI::max (estimated_error_per_cell_T.linfty_norm(),
-                                        MPI_COMM_WORLD)
+                                        mpi_communicator)
                 << " "
                 << Utilities::MPI::max (estimated_error_per_cell_rho.linfty_norm(),
-                                        MPI_COMM_WORLD)
+                                        mpi_communicator)
                 << std::endl;
 
           for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)

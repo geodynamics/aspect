@@ -440,8 +440,8 @@ namespace aspect
                                     local_for_max[2] = { -min_entropy, max_entropy };
     double global_for_sum[2], global_for_max[2];
 
-    Utilities::MPI::sum (local_for_sum, MPI_COMM_WORLD, global_for_sum);
-    Utilities::MPI::max (local_for_max, MPI_COMM_WORLD, global_for_max);
+    Utilities::MPI::sum (local_for_sum, mpi_communicator, global_for_sum);
+    Utilities::MPI::max (local_for_max, mpi_communicator, global_for_max);
 
     const double average_entropy = global_for_sum[0] / global_for_sum[1];
 

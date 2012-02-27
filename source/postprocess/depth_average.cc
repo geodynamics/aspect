@@ -60,8 +60,7 @@ namespace aspect
 
       const double max_depth = this->get_geometry_model().maximal_depth();
 
-//TODO: Use the correct MPI communicator
-      if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           // store all data from the current step
           for (unsigned int i=0; i<temp.size(); ++i)

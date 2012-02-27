@@ -60,9 +60,9 @@ namespace aspect
 
 
     template <int dim>
-    double SimulatorAccess<dim>::get_time () const
+    MPI_Comm SimulatorAccess<dim>::get_mpi_communicator () const
     {
-      return simulator->time;
+      return simulator->mpi_communicator;
     }
 
     template <int dim>
@@ -70,6 +70,12 @@ namespace aspect
     SimulatorAccess<dim>::get_pcout () const
     {
       return simulator->pcout;
+    }
+
+    template <int dim>
+    double SimulatorAccess<dim>::get_time () const
+    {
+      return simulator->time;
     }
 
     template <int dim>

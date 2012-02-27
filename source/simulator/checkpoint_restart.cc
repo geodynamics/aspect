@@ -3,7 +3,7 @@
            Wolfgang Bangerth, Texas A&M University,
      Timo Heister, University of Goettingen, 2008-2011 */
 /*                                                                */
-/*    Copyright (C) 2008, 2009, 2010, 2011 by the deal.II authors */
+/*    Copyright (C) 2008, 2009, 2010, 2011, 2012 by the deal.II authors */
 /*                                                                */
 /*    This file is subject to QPL and may not be  distributed     */
 /*    without copyright and license information. Please refer     */
@@ -42,9 +42,9 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::create_snapshot()
   {
-    unsigned int myid = Utilities::System::get_this_mpi_process (MPI_COMM_WORLD);
+    unsigned int my_id = Utilities::System::get_this_mpi_process (mpi_communicator);
 
-    if (myid == 0)
+    if (my_id == 0)
       {
         // if we have previously written a snapshot, then keep the last
         // snapshot in case this one fails to save
@@ -82,7 +82,7 @@ namespace aspect
     }
 
     // save general information
-    if (myid == 0)
+    if (my_id == 0)
       {
         std::ofstream ofs ((parameters.output_directory + "resume.txt").c_str());
         boost::archive::text_oarchive oa (ofs);

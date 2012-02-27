@@ -185,15 +185,21 @@ namespace aspect
       };
 
       /**
-       * Constructor
+       * Constructor.
+       *
+       * @param mpi_communicator The MPI communicator on which this
+       * class is to work. The class creates a clone of the actual
+       * communicator to make its communications private from the
+       * rest of the world.
        *
        * @param prm The run-time parameter object from which this class
        * obtains its settings.
        *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
-       **/
-      Simulator (ParameterHandler &prm);
+       */
+      Simulator (const MPI_Comm mpi_communicator,
+                 ParameterHandler &prm);
 
 
       /**
@@ -207,7 +213,7 @@ namespace aspect
        *
        * This function is implemented in
        * <code>source/simulator/parameters.cc</code>.
-       **/
+       */
       static
       void declare_parameters (ParameterHandler &prm);
 
@@ -219,7 +225,7 @@ namespace aspect
        *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
-       **/
+       */
       void run ();
 
     private:
@@ -235,7 +241,7 @@ namespace aspect
        *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
-       **/
+       */
       void setup_dofs ();
 
       /**
@@ -646,10 +652,13 @@ namespace aspect
        */
 
       /**
-       * @name Variables that have to do with input and output
+       * @name Variables that have to do with input, output and parallel communication
        * @{
        */
       Parameters                          parameters;
+
+      MPI_Comm                            mpi_communicator;
+
       ConditionalOStream                  pcout;
       TableHandler                        statistics;
       Postprocess::Manager<dim>           postprocess_manager;

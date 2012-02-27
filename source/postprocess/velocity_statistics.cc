@@ -62,9 +62,9 @@ namespace aspect
           }
 
       const double global_velocity_square_integral
-        = Utilities::MPI::sum (local_velocity_square_integral, MPI_COMM_WORLD);
+        = Utilities::MPI::sum (local_velocity_square_integral, this->get_mpi_communicator());
       const double global_max_velocity
-        = Utilities::MPI::max (local_max_velocity, MPI_COMM_WORLD);
+        = Utilities::MPI::max (local_max_velocity, this->get_mpi_communicator());
 
       const double vrms = std::sqrt(global_velocity_square_integral) /
                           std::sqrt(this->get_volume());

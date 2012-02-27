@@ -278,10 +278,10 @@ namespace aspect
 
       // let the master processor write the master record for all the distributed
       // files
-      if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           std::vector<std::string> filenames;
-          for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD); ++i)
+          for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
             filenames.push_back (std::string("solution-") +
                                  Utilities::int_to_string (output_file_number, 5) +
                                  "." +
@@ -322,8 +322,7 @@ namespace aspect
       background_thread = Threads::new_thread (&background_writer,
                                                filename,
                                                file_contents,
-//TODO: Duplicate the communicator we really use, not MPI_COMM_WORLD here
-                                               Utilities::MPI::duplicate_communicator(MPI_COMM_WORLD));
+                                               Utilities::MPI::duplicate_communicator(this->get_mpi_communicator()));
 
 
       // record the file base file name in the output file

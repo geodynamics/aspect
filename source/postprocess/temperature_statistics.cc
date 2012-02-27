@@ -76,7 +76,7 @@ namespace aspect
         }
 
       const double global_temperature_integral
-        = Utilities::MPI::sum (local_temperature_integral, MPI_COMM_WORLD);
+        = Utilities::MPI::sum (local_temperature_integral, this->get_mpi_communicator());
       double global_min_temperature = 0;
       double global_max_temperature = 0;
 
@@ -88,7 +88,7 @@ namespace aspect
         double local_values[2] = { -local_min_temperature, local_max_temperature };
         double global_values[2];
 
-        Utilities::MPI::max (local_values, MPI_COMM_WORLD, global_values);
+        Utilities::MPI::max (local_values, this->get_mpi_communicator(), global_values);
 
         global_min_temperature = -global_values[0];
         global_max_temperature = global_values[1];

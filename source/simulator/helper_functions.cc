@@ -88,7 +88,7 @@ namespace aspect
         }
 
     // return the largest value over all processors
-    return Utilities::MPI::max (max_local_velocity, MPI_COMM_WORLD);
+    return Utilities::MPI::max (max_local_velocity, mpi_communicator);
   }
 
 
@@ -128,7 +128,7 @@ namespace aspect
         }
 
     const double max_global_speed_over_meshsize
-      = Utilities::MPI::max (max_local_speed_over_meshsize, MPI_COMM_WORLD);
+      = Utilities::MPI::max (max_local_speed_over_meshsize, mpi_communicator);
 
     // if the velocity is zero, then it is somewhat arbitrary what time step
     // we should choose. in that case, do as if the velocity was one
@@ -218,9 +218,9 @@ namespace aspect
       }
 
     return std::make_pair(-Utilities::MPI::max (-min_local_temperature,
-                                                MPI_COMM_WORLD),
+                                                mpi_communicator),
                           Utilities::MPI::max (max_local_temperature,
-                                               MPI_COMM_WORLD));
+                                               mpi_communicator));
   }
 
 
@@ -281,7 +281,7 @@ namespace aspect
     {
       const double my_temp[2] = {my_pressure, my_area};
       double temp[2];
-      Utilities::MPI::sum (my_temp, MPI_COMM_WORLD, temp);
+      Utilities::MPI::sum (my_temp, mpi_communicator, temp);
       surf_pressure = temp[0]/temp[1];
     }
 
@@ -394,8 +394,8 @@ namespace aspect
 
     std::vector<double> values_all(num_slices);
     std::vector<unsigned int> counts_all(num_slices);
-    Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
-    Utilities::MPI::sum(values, MPI_COMM_WORLD, values_all);
+    Utilities::MPI::sum(counts, mpi_communicator, counts_all);
+    Utilities::MPI::sum(values, mpi_communicator, values_all);
 
     for (unsigned int i=0; i<num_slices; ++i)
       values[i] = values_all[i] / (static_cast<double>(counts_all[i])+1e-20);

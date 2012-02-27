@@ -187,10 +187,10 @@ namespace aspect
         /** @{ */
 
         /**
-         * Return the current simulation time in seconds.
+         * Return the communicator on which the simulator sends messages.
          */
-        double get_time () const;
-
+        MPI_Comm
+        get_mpi_communicator () const;
 
         /**
          * Return a reference to the stream object that only outputs something on one
@@ -199,6 +199,11 @@ namespace aspect
          */
         const ConditionalOStream &
         get_pcout () const;
+
+        /**
+         * Return the current simulation time in seconds.
+         */
+        double get_time () const;
 
         /**
          * Return the size of the last time step.
