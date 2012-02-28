@@ -99,8 +99,9 @@ namespace aspect
         /**
          * Return whether the model is compressible or not.  Incompressibility
          * does not necessarily imply that the density is constant; rather, it
-         * may still depend on temperature or pressure. In the current
-         * context, compressibility means whether we should solve the contuity
+         * may still depend on temperature or pressure but is only interpreted as such in the rhs of the Stokes equation.
+         * This is consistent with the so called Bousinesq formulation.
+         * In the current context, compressibility means whether we should solve the contuity
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
@@ -113,8 +114,23 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
+
+        /**
+        * A reference viscosity
+        *
+        * The value here is not used in the computation of things but only in
+        * postprocessing the solution when we want dimension-less
+        * quantities.
+        */
         virtual double reference_viscosity () const;
 
+        /**
+         * A reference density
+         *
+         * The value here is not used in the computation of things but only in
+         * postprocessing the solution when we want dimension-less
+         * quantities.
+         */
         virtual double reference_density () const;
 
         /**
@@ -152,12 +168,36 @@ namespace aspect
          * @name Auxiliary material properties used for postprocessing
          * @{
          */
+
+        /**
+         * the seismic pressure wave speed
+         *
+         * The value here is not used in the computation of things but only in
+         * postprocessing the solution when we want dimension-less
+         * quantities.
+         */
         virtual double seismic_Vp (const double temperature,
                                    const double pressure) const;
 
+        /**
+         * the seismic shear wave speed
+         *
+         * The value here is not used in the computation of things but only in
+         * postprocessing the solution when we want dimension-less
+         * quantities.
+         */
         virtual double seismic_Vs (const double temperature,
                                    const double pressure) const;
 
+        /**
+         * the phase of the composition at given pressure and temperature
+         * this returns an integer value that is associated with a specific phase
+         * for instance Majorite of PostPerovskite
+         *
+         * The value here is not used in the computation of things but only in
+         * postprocessing the solution when we want dimension-less
+         * quantities.
+         */
         virtual unsigned int thermodynamic_phase (const double temperature,
                                                   const double pressure) const;
 
@@ -199,14 +239,11 @@ namespace aspect
         bool compute_phases;
         bool model_is_compressible;
 
-        std::string ViscosityModel;
+        std::string viscosity_model;
         double reference_eta;
         double exponential_T;
         double exponential_P;
         double increase_lower_mantle;
-        /**
-         * The thermal conductivity.
-         */
         double k_value;
     };
   }
