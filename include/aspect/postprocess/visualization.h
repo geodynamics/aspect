@@ -134,7 +134,7 @@ namespace aspect
          * is run on a separate thread to allow computations to
          * continue even though writing data is still continuing.
          * The function takes over ownership of the arguments and deletes
-	 * them at the end of its work.
+        * them at the end of its work.
          */
         static
         void background_writer (const std::string *filename,

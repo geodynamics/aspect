@@ -347,23 +347,41 @@ namespace aspect
     void Visualization<dim>::background_writer (const std::string *filename,
                                                 const std::string *file_contents)
     {
-      // write stuff into a (local) tmp directory first
-      char tmp_filename[L_tmpnam];
-      char *p = tmpnam(tmp_filename);
-      AssertThrow (p == tmp_filename, ExcMessage("Can't create temporary file."));
+      // write stuff into a (hopefully local) tmp file first. to do so first
+      // find out whether $TMPDIR is set and if so put the file in there
+      char tmp_filename[1025];
+
       {
-	std::ofstream output (tmp_filename);
-	if (!output)
-	  std::cout << "***** ERROR: could not create " << tmp_filename
-		    << " *****"
-		    << std::endl;
-	output << *file_contents;
+        FILE *fp = popen("mktemp ${TMPDIR:-/tmp}/tmp.XXXXXXXXXX", "r");
+        AssertThrow (fp, ExcMessage("Couldn't call mktemp!"));
+
+        char *s = fgets (tmp_filename, sizeof(tmp_filename)-1, fp);
+        AssertThrow (s!=0, ExcMessage("Couldn't create temporary file!"));
+
+        pclose (fp);
+
+        // tmp_filename also contains the \n from running mktemp
+        // strip it
+        tmp_filename[strlen(tmp_filename)-1] = '\0';
+      }
+
+      // write the data into the file
+      {
+        std::ofstream output (tmp_filename);
+        if (!output)
+          std::cout << "***** ERROR: could not create " << tmp_filename
+                    << " *****"
+                    << std::endl;
+        output << *file_contents;
       }
 
       // now move the file to its final destination on the global file system
-      int error = system((std::string("mv ") + tmp_filename + " " + *filename).c_str());
+      std::string command = std::string("mv ") + tmp_filename + " " + *filename;
+      int error = system(command.c_str());
       AssertThrow (error == 0,
-		   ExcMessage ("Could not move temporary file to its final location!"));
+                   ExcMessage ("Could not move temporary file to its final location: "
+                               +
+                               command));
 
       // destroy the pointers to the data we needed to write
       delete file_contents;
