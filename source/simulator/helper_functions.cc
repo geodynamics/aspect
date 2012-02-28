@@ -350,6 +350,21 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::compute_running_average(std::vector<double> &values, const int ncells) const
+  {
+
+    for (unsigned int idx=0; idx<values.size(); idx++)
+      {
+        double sum = 0;
+        for (int isum=-ncells/2; isum<ncells/2; isum++)
+          sum += values[std::max(0,std::min((int) values.size(),(int) idx+isum))];
+        values[idx] = sum/((double) ncells);
+      }
+
+  }
+
+
+  template <int dim>
   void Simulator<dim>::compute_depth_average_temperature(std::vector<double> &values) const
   {
     const unsigned int num_slices = 100;
@@ -361,6 +376,7 @@ namespace aspect
     const QIterated<dim> quadrature_formula (QMidpoint<1>(),
                                              10);
     const unsigned int n_q_points = quadrature_formula.size();
+    const double max_depth = geometry_model->maximal_depth();
 
     FEValues<dim> fe_values (mapping,
                              finite_element,
@@ -383,7 +399,6 @@ namespace aspect
             {
               const Point<dim> &p = fe_values.quadrature_point(q);
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
-              const double max_depth = geometry_model->maximal_depth();
               const unsigned int idx = (depth*num_slices)/max_depth;
               Assert(idx<num_slices, ExcInternalError());
 
@@ -402,12 +417,247 @@ namespace aspect
   }
 
 
+  template <int dim>
+  void Simulator<dim>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const
+  {
+    const unsigned int num_slices = 100;
+    values.resize(num_slices);
+    std::vector<unsigned int> counts(num_slices);
+
+    // this yields 100 quadrature points evenly distributed in the interior of the cell.
+    // We avoid points on the faces, as they would be counted more than once.
+    const QIterated<dim> quadrature_formula (QMidpoint<1>(),
+                                             10);
+    const unsigned int n_q_points = quadrature_formula.size();
+    const double max_depth = geometry_model->maximal_depth();
+
+    FEValues<dim> fe_values (mapping,
+                             finite_element,
+                             quadrature_formula,
+                             update_values | update_quadrature_points | update_JxW_values);
+    std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+
+    const FEValuesExtractors::Vector velocities (0);
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          fe_values[velocities].get_function_values (this->solution,
+                                                     velocity_values);
+          for (unsigned int q = 0; q < n_q_points; ++q)
+            {
+              const Point<dim> &p = fe_values.quadrature_point(q);
+              const double depth = geometry_model->depth(fe_values.quadrature_point(q));
+              const unsigned int idx = (depth*num_slices)/max_depth;
+              Assert(idx<num_slices, ExcInternalError());
+
+              ++counts[idx];
+              values[idx]+= ((velocity_values[q] * velocity_values[q]) *
+                             fe_values.JxW(q));
+            }
+        }
+    std::vector<double> values_all(num_slices);
+    std::vector<unsigned int> counts_all(num_slices);
+    Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
+    Utilities::MPI::sum(values, MPI_COMM_WORLD, values_all);
+
+    for (unsigned int i=0; i<num_slices; ++i)
+      values[i] = values_all[i] / (static_cast<double>(counts_all[i])+1e-20)*year_in_seconds;
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const
+  {
+    const unsigned int num_slices = 100;
+    values.resize(num_slices);
+    std::vector<unsigned int> counts(num_slices);
+
+    // this yields 100 quadrature points evenly distributed in the interior of the cell.
+    // We avoid points on the faces, as they would be counted more than once.
+    const QIterated<dim> quadrature_formula (QMidpoint<1>(),
+                                             10);
+    const unsigned int n_q_points = quadrature_formula.size();
+    const double max_depth = geometry_model->maximal_depth();
+
+    FEValues<dim> fe_values (mapping,
+                             finite_element,
+                             quadrature_formula,
+                             update_values   |
+                             update_quadrature_points |
+                             update_JxW_values);
+
+    std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+
+    const FEValuesExtractors::Vector velocities (0);
+
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          fe_values[velocities].get_function_values (this->solution,
+                                                     velocity_values);
+          for (unsigned int q = 0; q < n_q_points; ++q)
+            {
+              const Point<dim> p = fe_values.quadrature_point(q);
+              const double depth = geometry_model->depth(fe_values.quadrature_point(q));
+              const unsigned int idx = (depth*num_slices)/max_depth;
+              Assert(idx<num_slices, ExcInternalError());
+
+              ++counts[idx];
+              values[idx]+= std::fabs(std::min(-1e-16,p*velocity_values[q]/p.norm()))*year_in_seconds;
+            }
+        }
+    std::vector<double> values_all(num_slices);
+    std::vector<unsigned int> counts_all(num_slices);
+    Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
+    Utilities::MPI::sum(values, MPI_COMM_WORLD, values_all);
+
+    for (unsigned int i=0; i<num_slices; ++i)
+      values[i] = values_all[i] / (static_cast<double>(counts_all[i])+1e-20);
+  }
+  template <int dim>
+  void Simulator<dim>::compute_depth_average_Vs(std::vector<double> &values) const
+  {
+
+    std::vector<double> average_temperature;
+    compute_depth_average_temperature(average_temperature);
+
+    values.resize(average_temperature.size());
+    std::vector<unsigned int> counts(average_temperature.size());
+
+    const unsigned int num_slices = average_temperature.size();
+    const double max_depth = geometry_model->maximal_depth();
+
+    // this yields 100 quadrature points evenly distributed in the interior of the cell.
+    // We avoid points on the faces, as they would be counted more than once.
+    const QIterated<dim> quadrature_formula (QMidpoint<1>(),
+                                             10);
+    const unsigned int n_q_points = quadrature_formula.size();
+
+    FEValues<dim> fe_values (mapping,
+                             finite_element,
+                             quadrature_formula,
+                             update_values | update_quadrature_points);
+
+    const FEValuesExtractors::Scalar pressure (dim);
+
+    std::vector<double> pressure_values(n_q_points);
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
+
+    // compute the integral quantities by quadrature
+    unsigned int cell_index = 0;
+    for (; cell!=endc; ++cell,++cell_index)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          fe_values[pressure].get_function_values (this->solution,
+                                                   pressure_values);
+          for (unsigned int q = 0; q < n_q_points; ++q)
+            {
+              const double depth = geometry_model->depth(fe_values.quadrature_point(q));
+              const unsigned int idx = (depth*num_slices)/max_depth;
+              Assert(idx<num_slices, ExcInternalError());
+
+              const double Vs_depth_average = material_model->seismic_Vs(average_temperature[idx], pressure_values[q]);
+              ++counts[idx];
+              values[idx] += Vs_depth_average;
+            }
+        }
+    std::vector<double> values_all(num_slices);
+    std::vector<unsigned int> counts_all(num_slices);
+    Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
+    Utilities::MPI::sum(values, MPI_COMM_WORLD, values_all);
+
+    for (unsigned int i=0; i<num_slices; ++i)
+      values[i] = values_all[i] / (static_cast<double>(counts_all[i])+1e-20);
+    for (unsigned int i=0; i<num_slices; ++i)
+      if (values[i] <=0e0) printf("what the fuck %d %e %d\n", i, values[i], counts_all[i]);
+  }
+  template <int dim>
+  void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const
+  {
+
+    std::vector<double> average_temperature;
+
+    compute_depth_average_temperature(average_temperature);
+
+    values.resize(average_temperature.size());
+    std::vector<unsigned int> counts(average_temperature.size());
+
+    const unsigned int num_slices = average_temperature.size();
+    const double max_depth = geometry_model->maximal_depth();
+
+    // this yields 100 quadrature points evenly distributed in the interior of the cell.
+    // We avoid points on the faces, as they would be counted more than once.
+    const QIterated<dim> quadrature_formula (QMidpoint<1>(),
+                                             10);
+    const unsigned int n_q_points = quadrature_formula.size();
+
+    FEValues<dim> fe_values (mapping,
+                             finite_element,
+                             quadrature_formula,
+                             update_values   |
+                             update_quadrature_points );
+
+    const FEValuesExtractors::Scalar pressure (dim);
+
+    std::vector<double> pressure_values(n_q_points);
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
+
+    // compute the integral quantities by quadrature
+    unsigned int cell_index = 0;
+    for (; cell!=endc; ++cell,++cell_index)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          fe_values[pressure].get_function_values (this->solution,
+                                                   pressure_values);
+          for (unsigned int q = 0; q < n_q_points; ++q)
+            {
+              const double depth = geometry_model->depth(fe_values.quadrature_point(q));
+              const unsigned int idx = (depth*num_slices)/max_depth;
+              Assert(idx<num_slices, ExcInternalError());
+
+              const double Vp_depth_average = material_model->seismic_Vp(average_temperature[idx], pressure_values[q]);
+              ++counts[idx];
+              values[idx] += Vp_depth_average;
+            }
+        }
+    std::vector<double> values_all(num_slices);
+    std::vector<unsigned int> counts_all(num_slices);
+    Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
+    Utilities::MPI::sum(values, MPI_COMM_WORLD, values_all);
+
+    for (unsigned int i=0; i<num_slices; ++i)
+      values[i] = values_all[i] / (static_cast<double>(counts_all[i])+1e-20);
+  }
+
+
 
   template <int dim>
   void Simulator<dim>::compute_Vs_anomaly(Vector<float> &values) const
   {
+    const int npoints = 5;
     std::vector<double> average_temperature;
+
     compute_depth_average_temperature(average_temperature);
+    compute_running_average(average_temperature, npoints);
 
     const unsigned int num_slices = average_temperature.size();
     const double max_depth = geometry_model->maximal_depth();
@@ -444,14 +694,69 @@ namespace aspect
                                                       temperature_values);
 
           const double Vs = material_model->seismic_Vs(temperature_values[0], pressure_values[0]);
-
-          const Point<dim> &p = fe_values.quadrature_point(0);
           const double depth = geometry_model->depth(fe_values.quadrature_point(0));
           const unsigned int idx = (depth*num_slices)/max_depth;
+          Assert(idx<num_slices, ExcInternalError());
           const double Vs_depth_average = material_model->seismic_Vs(average_temperature[idx],
                                                                      pressure_values[0]);
 
           values(cell_index) = (Vs - Vs_depth_average)/Vs_depth_average*1e2;
+        }
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::compute_Vp_anomaly(Vector<float> &values) const
+  {
+
+    const int npoints = 5;
+    std::vector<double> average_temperature;
+
+    compute_depth_average_temperature(average_temperature);
+    compute_running_average(average_temperature, npoints);
+
+    const unsigned int num_slices = average_temperature.size();
+    const double max_depth = geometry_model->maximal_depth();
+
+    const QMidpoint<dim> quadrature_formula;
+    const unsigned int n_q_points = quadrature_formula.size();
+
+    FEValues<dim> fe_values (mapping,
+                             finite_element,
+                             quadrature_formula,
+                             update_values   |
+                             update_quadrature_points );
+
+
+    const FEValuesExtractors::Vector velocities (0);
+    const FEValuesExtractors::Scalar pressure (dim);
+    const FEValuesExtractors::Scalar temperature (dim+1);
+
+    std::vector<double> pressure_values(n_q_points);
+    std::vector<double> temperature_values(n_q_points);
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
+
+    // compute the integral quantities by quadrature
+    unsigned int cell_index = 0;
+    for (; cell!=endc; ++cell,++cell_index)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          fe_values[pressure].get_function_values (this->solution,
+                                                   pressure_values);
+          fe_values[temperature].get_function_values (this->solution,
+                                                      temperature_values);
+
+          const double Vp = material_model->seismic_Vp(temperature_values[0], pressure_values[0]);
+          const double depth = geometry_model->depth(fe_values.quadrature_point(0));
+          const unsigned int idx = (depth*num_slices)/max_depth;
+          Assert(idx<num_slices, ExcInternalError());
+          const double Vp_depth_average = material_model->seismic_Vp(average_temperature[idx], pressure_values[0]);
+          values(cell_index) = (Vp - Vp_depth_average)/Vp_depth_average*1e2;
         }
   }
 }
@@ -471,5 +776,16 @@ namespace aspect
 
   template void Simulator<deal_II_dimension>::compute_depth_average_temperature(std::vector<double> &values) const;
 
+  template void Simulator<deal_II_dimension>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const;
+
+  template void Simulator<deal_II_dimension>::compute_depth_average_sinking_velocity(std::vector<double> &values) const;
+
+  template void Simulator<deal_II_dimension>::compute_depth_average_Vs(std::vector<double> &values) const;
+
+  template void Simulator<deal_II_dimension>::compute_depth_average_Vp(std::vector<double> &values) const;
+
   template void Simulator<deal_II_dimension>::compute_Vs_anomaly(Vector<float> &values) const;
+
+  template void Simulator<deal_II_dimension>::compute_Vp_anomaly(Vector<float> &values) const;
+
 }
