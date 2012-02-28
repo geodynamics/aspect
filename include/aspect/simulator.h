@@ -546,6 +546,15 @@ namespace aspect
       void make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector);
 
       /**
+       * Computes a running average of a vector.
+       * http://en.wikipedia.org/wiki/Moving_average
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void compute_running_average(std::vector<double> &values, const int npoints) const;
+
+      /**
        * Compute a depth average of the current temperature. The function
        * fills a vector that contains average temperatures over slices of the
        * domain of same depth. The function resizes the output vector to match
@@ -557,14 +566,57 @@ namespace aspect
       void compute_depth_average_temperature(std::vector<double> &values) const;
 
       /**
-       * Compute a depth average of the current temperature.
+       * Compute a depth average of the current velocity magnitude.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
+      void compute_depth_average_velocity_magnitude(std::vector<double> &values) const;
+
+      /**
+       * Compute a depth average of the current sinking velocity.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void compute_depth_average_sinking_velocity(std::vector<double> &values) const;
+
+      /**
+       * Compute a depth average of the seismic shear wave speed, Vs
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void compute_depth_average_Vs(std::vector<double> &values) const;
+
+      /**
+       * Compute a depth average of the seismic pressure wave speed, Vp
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void compute_depth_average_Vp(std::vector<double> &values) const;
+
+      /**
+       * Compute the seismic shear wave speed, Vs anomaly per element.
+       * we compute the anomaly by computing a smoothed (over 200 km or so) laterally averaged
+       * temperature profile and associated seismic velocity that is then subtracted from the
+       * seismic velocity at the current pressure temperature conditions
+      */
       void compute_Vs_anomaly(Vector<float> &values) const;
 
       /**
+       * Compute the seismic pressure wave speed, Vp anomaly per element.
+       * we compute the anomaly by computing a smoothed (over 200 km or so) laterally averaged
+       * temperature profile and associated seismic velocity that is then subtracted from the
+       * seismic velocity at the current pressure temperature conditions
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void compute_Vp_anomaly(Vector<float> &values) const;
+      /**
+
        * If the geometry used is a spherical shell, adjust the pressure variable
        * (which is only determined up to a constant) by adding a constant to it
        * in such a way that the pressure on the surface has a known average value.
