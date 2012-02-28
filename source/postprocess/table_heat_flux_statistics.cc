@@ -151,7 +151,7 @@ namespace aspect
           const double nusselt_outer = global_boundary_fluxes[0]/conductive_heatflux;
           const double boundary_curveLength_outer = R0*phi;
 
-          statistics.add_value ("Outer Nusselt number", nusselt_outer/BoundaryCurveLengthOuter);
+          statistics.add_value ("Outer Nusselt number", nusselt_outer/boundary_curveLength_outer);
           statistics.set_precision ("Outer Nusselt number", 4);
           statistics.set_scientific ("Outer Nusselt number", true);
 
