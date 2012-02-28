@@ -172,13 +172,13 @@ namespace aspect
               this->get_pcout()<< "     Ra number:                                     "
                                << Ra
                                << std::endl;
-              this->get_pcout()<< "      k_value:                                     "
+              this->get_pcout()<< "     k_value:                                       "
                                << material_model.thermal_conductivity(dT, dT, representative_point)
                                << std::endl;
-              this->get_pcout()<< "      reference_cp:                                     "
+              this->get_pcout()<< "     reference_cp:                                  "
                                << material_model.reference_cp()
                                << std::endl;
-              this->get_pcout()<< "      reference_thermal_diffusivity:                                     "
+              this->get_pcout()<< "     reference_thermal_diffusivity:                 "
                                << material_model.thermal_conductivity(dT, dT, representative_point)/(material_model.reference_density()*material_model.reference_cp())
                                << std::endl;
               this->get_pcout()<<  std::endl;
