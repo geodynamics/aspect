@@ -187,7 +187,7 @@ namespace aspect
         /** @{ */
 
         /**
-         * Return the communicator on which the simulator sends messages.
+         * Return the current simulation time in seconds.
          */
         MPI_Comm
         get_mpi_communicator () const;
@@ -311,10 +311,41 @@ namespace aspect
         get_depth_average_temperature(std::vector<double> &values) const;
 
         /**
-         * Compute a depth average of the current temperature field
+         * Compute a depth average of the current velocity magnitude
+         */
+        void
+        get_depth_average_velocity_magnitude(std::vector<double> &values) const;
+
+        /**
+         * Compute a depth average of the current sinking velocity
+         */
+        void
+        get_depth_average_sinking_velocity(std::vector<double> &values) const;
+
+        /**
+         * Compute the seismic shear wave speed, Vs anomaly per element
          */
         void
         get_Vs_anomaly(Vector<float> &values) const;
+
+        /**
+         * Compute the seismic pressure wave speed, Vp anomaly per element
+         */
+        void
+        get_Vp_anomaly(Vector<float> &values) const;
+
+        /**
+         * Compute a depth average of the seismic shear wave speed: Vs
+         */
+        void
+        get_depth_average_Vs(std::vector<double> &values) const;
+        /** @} */
+
+        /**
+         * Compute a depth average of the seismic pressure wave speed: Vp
+         */
+        void
+        get_depth_average_Vp(std::vector<double> &values) const;
         /** @} */
 
 
