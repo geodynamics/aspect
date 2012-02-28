@@ -133,17 +133,12 @@ namespace aspect
          * to a file with the name given in the first argument. The function
          * is run on a separate thread to allow computations to
          * continue even though writing data is still continuing.
-         *
-         * The communicator is a copy of the one that is used for
-         * computations. However, it is not the same (but rather
-         * a duplicate) since accessing it both from this thread
-         * as well as from the main program has the potential to
-         * produce race conditions.
+         * The function takes over ownership of the arguments and deletes
+	 * them at the end of its work.
          */
         static
         void background_writer (const std::string *filename,
-                                const std::string *file_contents,
-                                MPI_Comm          communicator);
+                                const std::string *file_contents);
     };
   }
 }

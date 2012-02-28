@@ -16,6 +16,7 @@
 #include <boost/archive/text_iarchive.hpp>
 
 #include <math.h>
+#include <stdio.h>
 
 namespace aspect
 {
@@ -320,16 +321,9 @@ namespace aspect
       background_thread.join ();
 
       // then continue with writing our own stuff
-//TODO: The following background job doesn't work because we do MPI
-// communication on the thread and MPI appears to crash if that is so.
-// find a way to do the throttling without the MPI communication
-      // background_thread = Threads::new_thread (&background_writer,
-      //                                          filename,
-      //                                          file_contents,
-      //                                          Utilities::MPI::duplicate_communicator(this->get_mpi_communicator()));
-      background_writer (filename, file_contents,
-                         Utilities::MPI::duplicate_communicator(this->get_mpi_communicator()));
-
+      background_thread = Threads::new_thread (&background_writer,
+                                               filename,
+                                               file_contents);
 
       // record the file base file name in the output file
       statistics.add_value ("Visualization file name",
@@ -351,48 +345,29 @@ namespace aspect
 
     template <int dim>
     void Visualization<dim>::background_writer (const std::string *filename,
-                                                const std::string *file_contents,
-                                                MPI_Comm          communicator)
+                                                const std::string *file_contents)
     {
-      // throttle output
-      const unsigned int concurrent_writers = 10;
-      unsigned int myid = Utilities::MPI::this_mpi_process(communicator);
-      unsigned int nproc = Utilities::MPI::n_mpi_processes(communicator);
-      for (unsigned int i=0; i<nproc; ++i)
-        {
-          if (i == myid)
-            {
-              std::ofstream output (filename->c_str());
-              if (!output)
-                std::cout << "***** ERROR: proc " << myid
-                          << " could not create " << *filename
-                          << " *****"
-                          << std::endl;
+      // write stuff into a (local) tmp directory first
+      char tmp_filename[L_tmpnam];
+      char *p = tmpnam(tmp_filename);
+      AssertThrow (p == tmp_filename, ExcMessage("Can't create temporary file."));
+      {
+	std::ofstream output (tmp_filename);
+	if (!output)
+	  std::cout << "***** ERROR: could not create " << tmp_filename
+		    << " *****"
+		    << std::endl;
+	output << *file_contents;
+      }
 
-              output << *file_contents;
-            }
+      // now move the file to its final destination on the global file system
+      int error = rename(tmp_filename, filename->c_str());
+      Assert (error == 0,
+	      ExcMessage ("Could not move temporary file to its final location!"));
 
-          // after every block of concurrent_writers writes
-          // stop the process for a synchronisation. this makes
-          // sure that those processes that didn't yet get to
-          // write wait for those that may still be writing and
-          // thereby that at most concurrent_writers are writing
-          // at the same time
-          if ((i % concurrent_writers == 0)
-              &&
-              (i != 0))
-            {
-              sleep(1);
-              MPI_Barrier(communicator);
-            }
-        }
-
-      // destroy the communicator that has been created for the express
-      // purpose of this function, along with the pointers to the data
-      // we needed to write
+      // destroy the pointers to the data we needed to write
       delete file_contents;
       delete filename;
-      MPI_Comm_free (&communicator);
     }
 
 
