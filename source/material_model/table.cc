@@ -335,7 +335,7 @@ namespace aspect
                const Point<dim> &position) const
     {
       double viscosity;
-      if (!strcmp(ViscosityModel.c_str(),"Exponential"))
+      if (!strcmp(viscosity_model.c_str(),"Exponential"))
         {
           const double R0=  3591e3; //TODO
           const double R1=  6591e3; //TODO
@@ -346,7 +346,7 @@ namespace aspect
           viscosity = reference_eta*std::exp(- std::log(exponential_T)*T +
                                              std::log(exponential_P)*depth);
         }
-      else if (!strcmp(ViscosityModel.c_str(),"Exponential Stiffer Lower Mantle"))
+      else if (!strcmp(viscosity_model.c_str(),"Exponential Stiffer Lower Mantle"))
         {
           const double R0=  3591e3; //TODO
           const double R1=  6591e3; //TODO
@@ -640,7 +640,7 @@ namespace aspect
           model_is_compressible = prm.get_bool ("Compressible");
           prm.enter_subsection ("Viscosity");
           {
-            ViscosityModel      = prm.get ("ViscosityModel");
+            viscosity_model      = prm.get ("ViscosityModel");
             reference_eta       = prm.get_double ("ReferenceViscosity");
             exponential_T         = prm.get_double ("exponential_T");
             exponential_P         = prm.get_double ("exponential_P");
