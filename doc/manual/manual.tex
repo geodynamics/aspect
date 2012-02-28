@@ -1079,7 +1079,9 @@ advantages beyond being widely distributed:
   none of the numerous formats currently implemented in \dealii{} other than
   the VTK/VTU formats allows for splitting up data over multiple files in case
   of parallel computations, thus making subsequent visualization of the entire
-  volume impossible.}
+  volume impossible. Furthermore, given the amount of data \aspect{} can
+  produce, the compression that is part of the VTU format is an important part
+  of keeping data manageable.}
 
 \subsubsection{Visualization using \textit{Visit}}
 In the following, let us discuss the process of visualizing a 2d computation
@@ -1090,6 +1092,49 @@ To this end, let us consider a simple
 
 
 \marginpar{To be written}
+
+
+\subsubsection{Large data issues for parallel computations}
+\label{sec:viz-data}
+
+Among the challenges in visualizing the results of parallel computations is
+dealing with the large amount of data. The first bottleneck this presents is
+during run-time when \aspect{} wants to write the visualization data of a time
+step to disk. Using the compressed VTU format, \aspect{} generates on the
+order of 10 bytes of output for each degree of freedom in 2d and more in 3d;
+thus, output of a single time step can run into the range of gigabytes that
+somehow have to get from compute nodes to disk. This stresses both the cluster
+interconnect as well as the data storage array.
+
+There are essentially two strategies supported by \aspect{} for this scenario:
+\begin{itemize}
+\item If your cluster has a fast interconnect, for example Infiniband, and if
+  your cluster has a fast, distributed file system, then \aspect{} can produce
+  output files that are already located in the correct output directory (see
+  the options in Section~\ref{parameters:global}) on the global file
+  system. \aspect{} uses MPI I/O calls to this end, ensuring that the local
+  machines do not have to access these files using slow NFS-mounted global
+  file systems.
+
+\item If your cluster has a slow interconnect, e.g., if it is simply a
+  collection of machines connected via ethernet, then writing data to a
+  central file server may block the rest of the program for a while. On the
+  other hand, if your machines have fast local storage for temporary file
+  systems, then \aspect{} can write data first into such a file and then move
+  it in the background to its final destination while already continuing
+  computations. To select this mode, set the appropriate variables discussed
+  in Section~\ref{parameters:Postprocess/Visualization}. Note, however, that
+  this scheme only makes sense if every machine on which MPI processes run has
+  fast local disk space for temporary storage.
+\end{itemize}
+
+\note{An alternative would be if every processor directly writes its own files
+  into the global output directory (possibly in the background), without the
+  intermediate step of the temporary file. In our experience, file servers are
+  quickly overwhelmed when encountering a few hundred machines wanting to
+  open, fill, flush and close their own file via NFS mounted file system
+  calls, sometimes completely blocking the entire cluster environment for
+  extended periods of time.}
 
 \subsection{Checkpoint/restart support}
 
