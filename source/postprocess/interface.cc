@@ -182,6 +182,34 @@ namespace aspect
       simulator->compute_depth_average_temperature(values);
     }
 
+    template <int dim>
+    void
+    SimulatorAccess<dim>::get_depth_average_velocity_magnitude(std::vector<double> &values) const
+    {
+      simulator->compute_depth_average_velocity_magnitude(values);
+    }
+
+    template <int dim>
+    void
+    SimulatorAccess<dim>::get_depth_average_sinking_velocity(std::vector<double> &values) const
+    {
+      simulator->compute_depth_average_sinking_velocity(values);
+    }
+
+    template <int dim>
+    void
+    SimulatorAccess<dim>::get_depth_average_Vs(std::vector<double> &values) const
+    {
+      simulator->compute_depth_average_Vs(values);
+    }
+
+    template <int dim>
+    void
+    SimulatorAccess<dim>::get_depth_average_Vp(std::vector<double> &values) const
+    {
+      simulator->compute_depth_average_Vp(values);
+    }
+
 
     template <int dim>
     void
@@ -190,6 +218,12 @@ namespace aspect
       simulator->compute_Vs_anomaly(values);
     }
 
+    template <int dim>
+    void
+    SimulatorAccess<dim>::get_Vp_anomaly(Vector<float> &values) const
+    {
+      simulator->compute_Vp_anomaly(values);
+    }
 
     template <int dim>
     const MaterialModel::Interface<dim> &
