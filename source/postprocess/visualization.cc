@@ -361,9 +361,9 @@ namespace aspect
       }
 
       // now move the file to its final destination on the global file system
-      int error = rename(tmp_filename, filename->c_str());
-      Assert (error == 0,
-	      ExcMessage ("Could not move temporary file to its final location!"));
+      int error = system((std::string("mv ") + tmp_filename + " " + *filename).c_str());
+      AssertThrow (error == 0,
+		   ExcMessage ("Could not move temporary file to its final location!"));
 
       // destroy the pointers to the data we needed to write
       delete file_contents;
