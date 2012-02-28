@@ -85,11 +85,11 @@ namespace aspect
         h = geometry->outer_radius() - geometry->inner_radius();
       else
         h = 1.0; //TODO: define something like geometrymodel::depth?
-      double Scaling = h/kappa;
-      const double vrmsDimless = Scaling*std::sqrt(global_velocity_square_integral) /
+      double scaling = h/kappa;
+      const double vrmsDimless = scaling*std::sqrt(global_velocity_square_integral) /
                                  std::sqrt(this->get_volume());
-      Scaling = kappa/std::pow(h,2);
-      const double timeDimless = Scaling*this->get_time();
+      scaling = kappa/std::pow(h,2);
+      const double timeDimless = scaling*this->get_time();
 
       if (this->convert_output_to_years() == true)
         {
