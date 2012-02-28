@@ -58,7 +58,130 @@ namespace aspect
       std::vector<double> temp;
       this->get_depth_average_temperature(temp);
 
-      const double max_depth = this->get_geometry_model().maximal_depth();
+      const double max_depth = this->get_geometry_model().maximal_depth()/1e2;
+
+      if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+        {
+          // store data from the current step
+          for (unsigned int i=0; i<temp.size(); ++i)
+            {
+              DataPoint data_point;
+              data_point.time  = this->get_time();
+              data_point.depth = max_depth*i/temp.size();
+              data_point.value = temp[i];
+              entries.push_back(data_point);
+            }
+
+          // leave a marker for the end of this time step. we'll later
+          // use this to leave a blank line in the output file at this
+          // position
+          DataPoint data_point;
+          data_point.time = std::numeric_limits<double>::quiet_NaN();
+          entries.push_back(data_point);
+
+          // write out the file
+          const std::string filename = this->get_output_directory() + "depthaverageT.plt";
+          std::ofstream f1;
+          if (this->get_time() < 1e-12)
+            f1.open (filename.c_str());
+          else
+            f1.open(filename.c_str(), std::fstream::app);
+          for (unsigned int i=0; i<entries.size(); ++i)
+            {
+              if (isnan(entries[i].time))
+                f1 << std::endl;
+              else
+                f1 << entries[i].time << " "
+                   << entries[i].depth << " "
+                   << entries[i].value << std::endl;
+            }
+          entries.clear();
+        }
+
+      temp.clear();
+      this->get_depth_average_velocity_magnitude(temp);
+
+      if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+        {
+          // store data from the current step
+          for (unsigned int i=0; i<temp.size(); ++i)
+            {
+              DataPoint data_point;
+              data_point.time  = this->get_time();
+              data_point.depth = max_depth*i/temp.size();
+              data_point.value = temp[i];
+              entries.push_back(data_point);
+            }
+
+          // leave a marker for the end of this time step. we'll later
+          // use this to leave a blank line in the output file at this
+          // position
+          DataPoint data_point;
+          data_point.time = std::numeric_limits<double>::quiet_NaN();
+          entries.push_back(data_point);
+
+          // write out the file
+          const std::string filename = this->get_output_directory() + "depthaveragevelocitymagnitude.plt";
+          std::ofstream f2;
+          if (this->get_time() < 1e-12)
+            f2.open (filename.c_str());
+          else
+            f2.open(filename.c_str(), std::fstream::app);
+          for (unsigned int i=0; i<entries.size(); ++i)
+            {
+              if (isnan(entries[i].time))
+                f2 << std::endl;
+              else
+                f2 << entries[i].time << " "
+                   << entries[i].depth << " "
+                   << entries[i].value << std::endl;
+            }
+          entries.clear();
+        }
+
+      temp.clear();
+      this->get_depth_average_sinking_velocity(temp);
+
+      if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+        {
+          // store data from the current step
+          for (unsigned int i=0; i<temp.size(); ++i)
+            {
+              DataPoint data_point;
+              data_point.time  = this->get_time();
+              data_point.depth = max_depth*i/temp.size();
+              data_point.value = temp[i];
+              entries.push_back(data_point);
+            }
+
+          // leave a marker for the end of this time step. we'll later
+          // use this to leave a blank line in the output file at this
+          // position
+          DataPoint data_point;
+          data_point.time = std::numeric_limits<double>::quiet_NaN();
+          entries.push_back(data_point);
+
+          // write out the file
+          const std::string filename = this->get_output_directory() + "depthaveragesinkingvelocity.plt";
+          std::ofstream f3;
+          if (this->get_time() < 1e-12)
+            f3.open (filename.c_str());
+          else
+            f3.open(filename.c_str(), std::fstream::app);
+          for (unsigned int i=0; i<entries.size(); ++i)
+            {
+              if (isnan(entries[i].time))
+                f3 << std::endl;
+              else
+                f3 << entries[i].time << " "
+                   << entries[i].depth << " "
+                   << entries[i].value << std::endl;
+            }
+          entries.clear();
+        }
+
+      temp.clear();
+      this->get_depth_average_Vs(temp);
 
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
@@ -80,24 +203,71 @@ namespace aspect
           entries.push_back(data_point);
 
           // write out the file
-          const std::string filename = this->get_output_directory() + "depth_average.plt";
-          std::ofstream f(filename.c_str());
+          const std::string filename = this->get_output_directory() + "depthaverageVs.plt";
+          std::ofstream f4;
+          if (this->get_time() < 1e-12)
+            f4.open (filename.c_str());
+          else
+            f4.open(filename.c_str(), std::fstream::app);
           for (unsigned int i=0; i<entries.size(); ++i)
             {
               if (isnan(entries[i].time))
-                f << std::endl;
+                f4 << std::endl;
               else
-                f << entries[i].time << " "
-                  << entries[i].depth << " "
-                  << entries[i].value << std::endl;
+                f4 << entries[i].time << " "
+                   << entries[i].depth << " "
+                   << entries[i].value << std::endl;
+            }
+          entries.clear();
+        }
+
+      temp.clear();
+      this->get_depth_average_Vp(temp);
+
+      if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+        {
+          // store data from the current step
+          for (unsigned int i=0; i<temp.size(); ++i)
+            {
+              DataPoint data_point;
+              data_point.time  = this->get_time();
+              data_point.depth = max_depth*i/temp.size();
+              data_point.value = temp[i];
+              entries.push_back(data_point);
+            }
+
+          // leave a marker for the end of this time step. we'll later
+          // use this to leave a blank line in the output file at this
+          // position
+          DataPoint data_point;
+          data_point.time = std::numeric_limits<double>::quiet_NaN();
+          entries.push_back(data_point);
+
+
+          // write out the file
+          const std::string filename = this->get_output_directory() + "depthaverageVp.plt";
+          std::ofstream f5;
+          if (this->get_time() < 1e-12)
+            f5.open (filename.c_str());
+          else
+            f5.open(filename.c_str(), std::fstream::app);
+          for (unsigned int i=0; i<entries.size(); ++i)
+            {
+              if (isnan(entries[i].time))
+                f5 << std::endl;
+              else
+                f5 << entries[i].time << " "
+                   << entries[i].depth << " "
+                   << entries[i].value << std::endl;
             }
         }
 
       set_next_output_time (this->get_time());
 
-      // return what should be printed to the screen.
+      // return what should be printed to the screen. note that we had
+      // just incremented the number, so use the previous value
       return std::make_pair (std::string ("Writing depth average"),
-                             this->get_output_directory() + "depth_average.plt");
+                             this->get_output_directory() + "depthaverageT.plt");
     }
 
 
