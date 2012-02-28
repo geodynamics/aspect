@@ -141,23 +141,23 @@ namespace aspect
           /*-------------------------------------------------
              output Inner/Outer Nu number to file per timestep*/
           const GeometryModel::SphericalShell<dim> *geometry = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
-          double phi = (*geometry).opening_angle();
-          double R0 = (*geometry).inner_radius();
-          double R1 = (*geometry).outer_radius();
-          double h = R1-R0;
+          const double phi = (*geometry).opening_angle();
+          const double R0 = (*geometry).inner_radius();
+          const double R1 = (*geometry).outer_radius();
+          const double h = R1-R0;
 
-          double dT = this->get_boundary_temperature().maximal_temperature() - this->get_boundary_temperature().minimal_temperature();
-          double ConductiveHeatflux = dT/h;
-          double NusseltOuter = global_boundary_fluxes[0]/ConductiveHeatflux;
-          double BoundaryCurveLengthOuter = R0*phi;
+          const double dT = this->get_boundary_temperature().maximal_temperature() - this->get_boundary_temperature().minimal_temperature();
+          const double conductive_heatflux = dT/h;
+          const double nusselt_outer = global_boundary_fluxes[0]/conductive_heatflux;
+          const double boundary_curveLength_outer = R0*phi;
 
-          statistics.add_value ("Outer Nusselt number", NusseltOuter/BoundaryCurveLengthOuter);
+          statistics.add_value ("Outer Nusselt number", nusselt_outer/BoundaryCurveLengthOuter);
           statistics.set_precision ("Outer Nusselt number", 4);
           statistics.set_scientific ("Outer Nusselt number", true);
 
-          double NusseltInner= global_boundary_fluxes[1]/ConductiveHeatflux;
-          double BoundaryCurveLengthInner = R1*phi;
-          statistics.add_value ("Inner Nusselt number", NusseltInner/BoundaryCurveLengthInner);
+          const double nusselt_inner= global_boundary_fluxes[1]/conductive_heatflux;
+          const double boundary_curveLength_inner = R1*phi;
+          statistics.add_value ("Inner Nusselt number", nusselt_inner/boundary_curveLength_inner);
           statistics.set_precision ("Inner Nusselt number", 4);
           statistics.set_scientific ("Inner Nusselt number", true);
 
@@ -166,8 +166,8 @@ namespace aspect
           output.precision(4);
           output << -global_boundary_fluxes[0] << " W, "
                  << global_boundary_fluxes[1] << " W,"
-                 << NusseltOuter/BoundaryCurveLengthOuter << " W,"
-                 << NusseltInner/BoundaryCurveLengthInner << " W,";
+                 << nusselt_outer/boundary_curveLength_outer << " W,"
+                 << nusselt_inner/boundary_curveLength_inner << " W,";
           return std::pair<std::string, std::string> ("Inner/outer heat fluxes Nusselt number:",
                                                       output.str());
         }
