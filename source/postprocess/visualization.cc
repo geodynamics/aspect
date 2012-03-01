@@ -267,63 +267,98 @@ namespace aspect
       data_out.add_data_vector (Vs_anomaly, "Vs_anomaly");
       data_out.build_patches ();
 
-      // put the stuff we want to write into a string object that
-      // we can then write in the background
-      const std::string *file_contents;
-      {
-        std::ostringstream tmp;
-        data_out.write (tmp, DataOutBase::parse_output_format(output_format));
-
-        file_contents = new std::string (tmp.str());
-      }
-
-      // let the master processor write the master record for all the distributed
-      // files
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+      if (output_format=="vtu" && group_files!=0)
         {
-          std::vector<std::string> filenames;
-          for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
-            filenames.push_back (std::string("solution-") +
-                                 Utilities::int_to_string (output_file_number, 5) +
-                                 "." +
-                                 Utilities::int_to_string(i, 4) +
-                                 DataOutBase::default_suffix
-                                 (DataOutBase::parse_output_format(output_format)));
-          const std::string
-          pvtu_master_filename = (this->get_output_directory() +
-                                  "solution-" +
-                                  Utilities::int_to_string (output_file_number, 5) +
-                                  ".pvtu");
-          std::ofstream pvtu_master (pvtu_master_filename.c_str());
-          data_out.write_pvtu_record (pvtu_master, filenames);
+          AssertThrow(group_files==1, ExcNotImplemented());
+          data_out.write_vtu_in_parallel((this->get_output_directory() + std::string("solution-") +
+                                          Utilities::int_to_string (output_file_number, 5) +
+                                          ".vtu").c_str(), MPI_COMM_WORLD);
 
-          const std::string
-          visit_master_filename = (this->get_output_directory() +
-                                   "solution-" +
-                                   Utilities::int_to_string (output_file_number, 5) +
-                                   ".visit");
-          std::ofstream visit_master (visit_master_filename.c_str());
-          data_out.write_visit_record (visit_master, filenames);
+          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+            {
+              std::vector<std::string> filenames;
+              for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
+                filenames.push_back (std::string("solution-") +
+                                     Utilities::int_to_string (output_file_number, 5) +
+                                     ".vtu");
+              const std::string
+              pvtu_master_filename = (this->get_output_directory() +
+                                      "solution-" +
+                                      Utilities::int_to_string (output_file_number, 5) +
+                                      ".pvtu");
+              std::ofstream pvtu_master (pvtu_master_filename.c_str());
+              data_out.write_pvtu_record (pvtu_master, filenames);
+
+              const std::string
+              visit_master_filename = (this->get_output_directory() +
+                                       "solution-" +
+                                       Utilities::int_to_string (output_file_number, 5) +
+                                       ".visit");
+              std::ofstream visit_master (visit_master_filename.c_str());
+              data_out.write_visit_record (visit_master, filenames);
+            }
         }
+      else
+        {
 
-      const std::string *filename
-        = new std::string (this->get_output_directory() +
-                           "solution-" +
-                           Utilities::int_to_string (output_file_number, 5) +
-                           "." +
-                           Utilities::int_to_string
-                           (this->get_triangulation().locally_owned_subdomain(), 4) +
-                           DataOutBase::default_suffix
-                           (DataOutBase::parse_output_format(output_format)));
+          // put the stuff we want to write into a string object that
+          // we can then write in the background
+          const std::string *file_contents;
+          {
+            std::ostringstream tmp;
+            data_out.write (tmp, DataOutBase::parse_output_format(output_format));
 
-      // wait for all previous write operations to finish, should
-      // any be still active
-      background_thread.join ();
+            file_contents = new std::string (tmp.str());
+          }
 
-      // then continue with writing our own stuff
-      background_thread = Threads::new_thread (&background_writer,
-                                               filename,
-                                               file_contents);
+          // let the master processor write the master record for all the distributed
+          // files
+          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+            {
+              std::vector<std::string> filenames;
+              for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
+                filenames.push_back (std::string("solution-") +
+                                     Utilities::int_to_string (output_file_number, 5) +
+                                     "." +
+                                     Utilities::int_to_string(i, 4) +
+                                     DataOutBase::default_suffix
+                                     (DataOutBase::parse_output_format(output_format)));
+              const std::string
+              pvtu_master_filename = (this->get_output_directory() +
+                                      "solution-" +
+                                      Utilities::int_to_string (output_file_number, 5) +
+                                      ".pvtu");
+              std::ofstream pvtu_master (pvtu_master_filename.c_str());
+              data_out.write_pvtu_record (pvtu_master, filenames);
+
+              const std::string
+              visit_master_filename = (this->get_output_directory() +
+                                       "solution-" +
+                                       Utilities::int_to_string (output_file_number, 5) +
+                                       ".visit");
+              std::ofstream visit_master (visit_master_filename.c_str());
+              data_out.write_visit_record (visit_master, filenames);
+            }
+
+          const std::string *filename
+            = new std::string (this->get_output_directory() +
+                               "solution-" +
+                               Utilities::int_to_string (output_file_number, 5) +
+                               "." +
+                               Utilities::int_to_string
+                               (this->get_triangulation().locally_owned_subdomain(), 4) +
+                               DataOutBase::default_suffix
+                               (DataOutBase::parse_output_format(output_format)));
+
+          // wait for all previous write operations to finish, should
+          // any be still active
+          background_thread.join ();
+
+          // then continue with writing our own stuff
+          background_thread = Threads::new_thread (&background_writer,
+                                                   filename,
+                                                   file_contents);
+        }
 
       // record the file base file name in the output file
       statistics.add_value ("Visualization file name",
@@ -410,6 +445,15 @@ namespace aspect
           prm.declare_entry ("Output format", "vtu",
                              Patterns::Selection (DataOutInterface<dim>::get_output_format_names ()),
                              "The file format to be used for graphical output.");
+
+          prm.declare_entry ("Number of grouped files", "0",
+                             Patterns::Integer(0),
+                             "VTU file output supports grouping files from several CPUs "
+                             "into one file using MPI I/O when writing on a parallel "
+                             "filesystem. Select 0 for no grouping. This will disable "
+                             "parallel file output and use standard posix in a background thread."
+                             "A value of 1 will generate one big file containing the whole "
+                             "solution.");
         }
         prm.leave_subsection();
       }
@@ -427,6 +471,7 @@ namespace aspect
         {
           output_interval = prm.get_double ("Time between graphical output");
           output_format   = prm.get ("Output format");
+          group_files     = prm.get_integer("Number of grouped files");
         }
         prm.leave_subsection();
       }

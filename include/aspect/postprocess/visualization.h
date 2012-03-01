@@ -112,6 +112,14 @@ namespace aspect
         string output_format;
 
         /**
+         * VTU file output supports grouping files from several CPUs
+         * into one file using MPI I/O when writing on a parallel
+         * filesystem. 0 means no grouping (and no parallel I/O).
+         * 1 will generate one big file containing the whole solution.
+         */
+        unsigned int group_files;
+
+        /**
          * Compute the next output time from the current one. In
          * the simplest case, this is simply the previous
          * next output time plus the interval, but in general
