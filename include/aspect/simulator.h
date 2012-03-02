@@ -700,6 +700,11 @@ namespace aspect
                         const double                        cell_diameter) const;
 
       /**
+        * generate and output some statistics like timing information and memory consumption.
+        */
+      void output_statistics();
+
+      /**
        * @}
        */
 
