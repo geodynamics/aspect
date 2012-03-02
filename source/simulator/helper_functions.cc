@@ -399,7 +399,7 @@ namespace aspect
             {
               const Point<dim> &p = fe_values.quadrature_point(q);
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
-              const unsigned int idx = (depth*num_slices)/max_depth;
+              const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());
 
               ++counts[idx];
@@ -452,7 +452,7 @@ namespace aspect
             {
               const Point<dim> &p = fe_values.quadrature_point(q);
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
-              const unsigned int idx = (depth*num_slices)/max_depth;
+              const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());
 
               ++counts[idx];
@@ -510,7 +510,7 @@ namespace aspect
             {
               const Point<dim> p = fe_values.quadrature_point(q);
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
-              const unsigned int idx = (depth*num_slices)/max_depth;
+              const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());
 
               ++counts[idx];
@@ -568,7 +568,7 @@ namespace aspect
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
-              const unsigned int idx = (depth*num_slices)/max_depth;
+              const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());
 
               const double Vs_depth_average = material_model->seismic_Vs(average_temperature[idx], pressure_values[q]);
@@ -631,7 +631,7 @@ namespace aspect
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
-              const unsigned int idx = (depth*num_slices)/max_depth;
+              const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());
 
               const double Vp_depth_average = material_model->seismic_Vp(average_temperature[idx], pressure_values[q]);
@@ -695,7 +695,7 @@ namespace aspect
 
           const double Vs = material_model->seismic_Vs(temperature_values[0], pressure_values[0]);
           const double depth = geometry_model->depth(fe_values.quadrature_point(0));
-          const unsigned int idx = (depth*num_slices)/max_depth;
+          const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
           Assert(idx<num_slices, ExcInternalError());
           const double Vs_depth_average = material_model->seismic_Vs(average_temperature[idx],
                                                                      pressure_values[0]);
@@ -753,7 +753,7 @@ namespace aspect
 
           const double Vp = material_model->seismic_Vp(temperature_values[0], pressure_values[0]);
           const double depth = geometry_model->depth(fe_values.quadrature_point(0));
-          const unsigned int idx = (depth*num_slices)/max_depth;
+          const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
           Assert(idx<num_slices, ExcInternalError());
           const double Vp_depth_average = material_model->seismic_Vp(average_temperature[idx], pressure_values[0]);
           values(cell_index) = (Vp - Vp_depth_average)/Vp_depth_average*1e2;
