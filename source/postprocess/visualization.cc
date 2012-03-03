@@ -451,7 +451,8 @@ namespace aspect
                              "VTU file output supports grouping files from several CPUs "
                              "into one file using MPI I/O when writing on a parallel "
                              "filesystem. Select 0 for no grouping. This will disable "
-                             "parallel file output and use standard posix in a background thread."
+                             "parallel file output and instead write one file per processor "
+			     "in a background thread. "
                              "A value of 1 will generate one big file containing the whole "
                              "solution.");
         }
