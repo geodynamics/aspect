@@ -579,7 +579,7 @@ namespace aspect
                              "Units: $1/K$.");
           prm.declare_entry ("Gravity", "30",
                              Patterns::Double (0),
-                             "The value of the Gravity$. "
+                             "The value of the gravity constant."
                              "Units: $m/s^2$.");
           prm.declare_entry ("Composition", "olixene",
                              Patterns::Anything (),
