@@ -71,14 +71,12 @@ namespace aspect
       double delta_z;
 
       /**
-       * Function object that can be used to convert from a given point to
-       * the (positive) depth with which we can look up in the table what the
-       * corresponding conditions would be.
-       *
-       * This object is set in the constructor where we have knowledge of the
-       * geometry object in use.
+       * A reference to the geometry model which we need when converting
+       * between arbitrary points at which temperature and pressure
+       * are interpolated and the depth coordinate we use to pre-compute
+       * values.
        */
-      std_cxx1x::function<double (const Point<dim>&)> point_to_depth_converter;
+      const GeometryModel::Interface<dim> &geometry_model;
   };
 
 }

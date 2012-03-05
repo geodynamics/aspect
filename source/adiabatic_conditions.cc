@@ -20,42 +20,6 @@
 
 namespace aspect
 {
-  /**
-   * A namespace for functions that can convert between an arbitrary point and
-   * the depth coordinate. These functions are used in the constructor of the
-   * AdiabaticConditions class to store an object that can do this conversion
-   * later on without having to remember what exactly the geometry was.
-   */
-  namespace PointToDepthConversion
-  {
-    template <int dim>
-    double spherical_shell (const Point<dim> &p,
-                            const double R0,
-                            const double R1)
-    {
-      // clamp the depth to be positive, since slightly negative
-      // values can happen due to rounding errors on the mesh.  also
-      // limit the depth to the maximally possible value for this
-      // geometry so that we don't get into trouble when looking
-      // things up from tables
-      return std::min(std::max(R1 - p.norm(),
-                               0.0),
-                      (R1-R0)*(1-1e-12));
-    }
-
-
-    template <int dim>
-    double box (const Point<dim> &p,
-                const double height)
-    {
-      // make sure we don't quite
-      // extend all the way to the
-      // last data point for table lookups
-      return std::min(height-p[dim-1], 1.-1e-12);
-    }
-  }
-
-
   template <int dim>
   AdiabaticConditions<dim>::AdiabaticConditions(const GeometryModel::Interface<dim> &geometry_model,
                                                 const GravityModel::Interface<dim>  &gravity_model,
@@ -64,34 +28,10 @@ namespace aspect
     :
     n_points(1000),
     temperatures(n_points, -1),
-    pressures(n_points, -1)
+    pressures(n_points, -1),
+    delta_z (geometry_model.maximal_depth() / (n_points-1)),
+    geometry_model (geometry_model)
   {
-    // first figure out some global properties of the geometry model
-    if (const GeometryModel::SphericalShell<dim> *
-        geometry = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&geometry_model))
-      {
-        const double R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>(geometry_model).inner_radius();
-        const double R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>(geometry_model).outer_radius();
-        delta_z = (R1-R0)/(n_points-1);
-        point_to_depth_converter = std_cxx1x::bind (&PointToDepthConversion::spherical_shell<dim>,
-                                                    std_cxx1x::_1,
-                                                    R0, R1);
-      }
-    else if (const GeometryModel::Box<dim> *
-             geometry = dynamic_cast<const GeometryModel::Box<dim>*>(&geometry_model))
-      {
-        delta_z = 1./(n_points-1);
-        point_to_depth_converter = std_cxx1x::bind (&PointToDepthConversion::box<dim>,
-                                                    std_cxx1x::_1,
-                                                    1.0);
-      }
-    else
-      // the following pretty much assumes that we have a spherical shell, for example
-      // when we pick a representative point. the code needs to be audited if we
-      // have other geometries
-      Assert (false, ExcNotImplemented());
-
-
     //TODO: look up real value!
     const double dTdp = 2.5e-8;
 
@@ -111,21 +51,14 @@ namespace aspect
         Assert (i < pressures.size(), ExcInternalError());
         Assert (i < temperatures.size(), ExcInternalError());
 
-        //TODO: use the real gravity model here as a function of z
-        Point<dim> representative_point;
+        const Point<dim> representative_point = geometry_model.representative_point (z);
 
-        if (const GeometryModel::SphericalShell<dim> *
-            geometry = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&geometry_model))
-          representative_point
-            = Point<dim>::unit_vector(0) * (geometry->outer_radius()-z);
-        else if (const GeometryModel::Box<dim> *
-                 geometry = dynamic_cast<const GeometryModel::Box<dim>*>(&geometry_model))
-          representative_point
-            = Point<dim>::unit_vector(dim-1) * (1-z);
-        else
-          AssertThrow (false, ExcNotImplemented());
-
-        const double density = material_model.density(temperatures[i-1], pressures[i-1], representative_point);
+        // get material parameters and the magnitude of gravity. we assume
+        // that gravity always points along the depth direction. this
+        // may not strictly be true always but is likely a good enough
+        // approximation here.
+        const double density = material_model.density(temperatures[i-1], pressures[i-1],
+                                                      representative_point);
         const double gravity = gravity_model.gravity_vector(representative_point).norm();
 
         pressures[i] = pressures[i-1]
@@ -143,7 +76,14 @@ namespace aspect
   template <int dim>
   double AdiabaticConditions<dim>::pressure (const Point<dim> &p) const
   {
-    const double z = point_to_depth_converter(p);
+    const double z = geometry_model.depth(p);
+
+    if (z >= geometry_model.maximal_depth())
+      {
+        Assert (z <= geometry_model.maximal_depth() + delta_z,
+                ExcInternalError());
+        return pressures.back();
+      }
 
     const unsigned int i = static_cast<unsigned int>(z/delta_z);
     Assert (i >= 0, ExcInternalError());
@@ -161,7 +101,14 @@ namespace aspect
   template <int dim>
   double AdiabaticConditions<dim>::temperature (const Point<dim> &p) const
   {
-    const double z = point_to_depth_converter(p);
+    const double z = geometry_model.depth(p);
+
+    if (z >= geometry_model.maximal_depth())
+      {
+        Assert (z <= geometry_model.maximal_depth() + delta_z,
+                ExcInternalError());
+        return temperatures.back();
+      }
 
     const unsigned int i = static_cast<unsigned int>(z/delta_z);
     Assert (i >= 0, ExcInternalError());
