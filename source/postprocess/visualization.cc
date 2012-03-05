@@ -36,7 +36,6 @@ namespace aspect
       {
         public:
           Postprocessor (const unsigned int                   partition,
-                         const double                         minimal_pressure,
                          const double                         convert_output_to_years,
                          const MaterialModel::Interface<dim> &material_model,
                          const AdiabaticConditions<dim>      &adiabatic_conditions);
@@ -60,7 +59,6 @@ namespace aspect
 
         private:
           const unsigned int                   partition;
-          const double                         minimal_pressure;
           const double                         convert_output_to_years;
           const MaterialModel::Interface<dim> &material_model;
           const AdiabaticConditions<dim>      &adiabatic_conditions;
@@ -70,13 +68,11 @@ namespace aspect
       template <int dim>
       Postprocessor<dim>::
       Postprocessor (const unsigned int                   partition,
-                     const double                         minimal_pressure,
                      const double                         convert_output_to_years,
                      const MaterialModel::Interface<dim> &material_model,
                      const AdiabaticConditions<dim>      &adiabatic_conditions)
         :
         partition (partition),
-        minimal_pressure (minimal_pressure),
         convert_output_to_years (convert_output_to_years),
         material_model(material_model),
         adiabatic_conditions (adiabatic_conditions)
@@ -166,8 +162,7 @@ namespace aspect
                     1));
 
             // pressure
-            const double pressure_at_surface = 1e6;
-            const double pressure = (uh[q](dim)-minimal_pressure) + pressure_at_surface;
+            const double pressure = uh[q](dim);
             computed_quantities[q](dim) = pressure;
 
             // temperature
@@ -245,7 +240,6 @@ namespace aspect
 
 
       internal::Postprocessor<dim> postprocessor (this->get_triangulation().locally_owned_subdomain(),
-                                                  this->get_solution().block(1).minimal_value(),
                                                   this->convert_output_to_years(),
                                                   this->get_material_model(),
                                                   this->get_adiabatic_conditions());
@@ -452,7 +446,7 @@ namespace aspect
                              "into one file using MPI I/O when writing on a parallel "
                              "filesystem. Select 0 for no grouping. This will disable "
                              "parallel file output and instead write one file per processor "
-			     "in a background thread. "
+                             "in a background thread. "
                              "A value of 1 will generate one big file containing the whole "
                              "solution.");
         }

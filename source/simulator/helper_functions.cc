@@ -269,12 +269,6 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector)
   {
-    // TODO: somehow parameterize based on the geometry model
-    // on which parts of the boundary the pressure should be
-    // zero
-    if (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&*geometry_model) == 0)
-      return;
-
     double my_pressure = 0.0;
     double my_area = 0.0;
     {
@@ -296,7 +290,10 @@ namespace aspect
             for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
               {
                 const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
-                if (face->at_boundary() && face->boundary_indicator() == 1) // outer shell boundary
+                if (face->at_boundary()
+                    &&
+                    (geometry_model->depth (face->center()) <
+                     (face->diameter() / std::sqrt(1.*dim-1) / 3)))
                   {
                     fe_face_values.reinit (cell, face_no);
                     fe_face_values[pressure].get_function_values(vector,
@@ -322,7 +319,8 @@ namespace aspect
       surf_pressure = temp[0]/temp[1];
     }
 
-    const double adjust = -surf_pressure + 1e7;
+    const double adjust = -surf_pressure + parameters.surface_pressure;
+
     if (parameters.use_locally_conservative_discretization == false)
       vector.block(1).add(adjust);
     else

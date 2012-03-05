@@ -38,7 +38,8 @@ namespace aspect
        */
       AdiabaticConditions (const GeometryModel::Interface<dim> &geometry_model,
                            const GravityModel::Interface<dim>  &gravity_model,
-                           const MaterialModel::Interface<dim> &material_model);
+                           const MaterialModel::Interface<dim> &material_model,
+                           const double                         surface_pressure);
 
       /**
        * Return the adiabatic temperature at a given point of the domain.

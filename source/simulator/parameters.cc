@@ -74,6 +74,22 @@ namespace aspect
                        "one can choose $c>1$) though a CFL number significantly larger than "
                        "one will yield rather diffusive solutions. Units: None.");
 
+    prm.declare_entry ("Surface pressure", "0",
+                       Patterns::Double(),
+                       "The mathematical equations that describe thermal convection "
+                       "only determine the pressure up to an arbitrary constant. On "
+                       "the other hand, for comparison and for looking up material "
+                       "parameters it is important that the pressure be normalized "
+                       "somehow. We do this by enforcing a particular average pressure "
+                       "value at the surface of the domain, where the geometry model "
+                       "determines where the surface is. This parameter describes what "
+                       "this average surface pressure value is supposed to be. By "
+                       "default, it is set to zero, but one may want to choose a "
+                       "different value for example for simulating only the volume "
+                       "of the mantle below the lithosphere, in which case the surface "
+                       "pressure should be the lithostatic pressure at the bottom "
+                       "of the lithosphere.");
+
     prm.declare_entry ("Output directory", "output",
                        Patterns::DirectoryName(),
                        "The name of the directory into which all output files should be "
@@ -227,6 +243,8 @@ namespace aspect
       output_directory = "./";
     else if (output_directory[output_directory.size()-1] != '/')
       output_directory += "/";
+
+    surface_pressure        = prm.get_double ("Surface pressure");
 
     prm.enter_subsection ("Mesh refinement");
     {

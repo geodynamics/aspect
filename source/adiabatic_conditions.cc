@@ -59,7 +59,8 @@ namespace aspect
   template <int dim>
   AdiabaticConditions<dim>::AdiabaticConditions(const GeometryModel::Interface<dim> &geometry_model,
                                                 const GravityModel::Interface<dim>  &gravity_model,
-                                                const aspect::MaterialModel::Interface<dim> &material_model)
+                                                const MaterialModel::Interface<dim> &material_model,
+                                                const double                         surface_pressure)
     :
     n_points(1000),
     temperatures(n_points, -1),
@@ -94,10 +95,10 @@ namespace aspect
     //TODO: look up real value!
     const double dTdp = 2.5e-8;
 
-    // start with these values: 1200K, 1MPa
+    // start with these values: 1200K
     //TODO: use something real
     temperatures[0] = 1200;
-    pressures[0] = 1e6;
+    pressures[0] = surface_pressure;
 
     // now integrate downward using the explicit Euler method for simplicity
     //

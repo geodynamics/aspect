@@ -128,6 +128,7 @@ namespace aspect
         double              CFL_number;
         bool                convert_to_years;
         std::string         output_directory;
+        double              surface_pressure;
         /**
          * @}
          */
@@ -615,11 +616,17 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void compute_Vp_anomaly(Vector<float> &values) const;
-      /**
 
-       * If the geometry used is a spherical shell, adjust the pressure variable
+      /**
+       * Adjust the pressure variable
        * (which is only determined up to a constant) by adding a constant to it
        * in such a way that the pressure on the surface has a known average value.
+       * Whether a face is part of the surface is determined by asking whether its
+       * depth of its midpoint (as determined by the geometry model) is less than
+       * 1/3*1/sqrt(dim-1)*diameter of the face. For reasonably curved boundaries,
+       * this rules out side faces that are perpendicular ot the surface boundary
+       * but includes those faces that are along the boundary even if the real
+       * boundary is curved.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
