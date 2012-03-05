@@ -73,8 +73,9 @@ namespace aspect
       Assert (depth <= maximal_depth(),
               ExcMessage ("Given depth must be less than or equal to the maximal depth of this geometry."));
 
-      Point<dim> p;
-      p(dim-1) = maximal_depth() - depth;
+      // choose a point on the center axis of the domain
+      Point<dim> p = extents/2;
+      p[dim-1] = maximal_depth() - depth;
       return p;
     }
 
