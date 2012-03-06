@@ -88,7 +88,25 @@ namespace aspect
                        "different value for example for simulating only the volume "
                        "of the mantle below the lithosphere, in which case the surface "
                        "pressure should be the lithostatic pressure at the bottom "
-                       "of the lithosphere.");
+                       "of the lithosphere."
+                       "\n"
+                       "For more information, see the section in the manual that discusses "
+                       "the general mathematical model.");
+
+    prm.declare_entry ("Adiabatic surface temperature", "0",
+                       Patterns::Double(),
+                       "In order to make the problem in the first time step easier to "
+                       "solve, we need a reasonable guess for the temperature and pressure. "
+                       "To obtain it, we use an adiabatic pressure and temperature field. "
+                       "This parameter describes what the `adiabatic' temperature would "
+                       "be at the surface of the domain (i.e. at depth zero). Note "
+                       "that this value need not coincide with the boundary condition "
+                       "posed at this point. Rather, the boundary condition may differ "
+                       "significantly from the adiabatic value, and then typically "
+                       "induce a thermal boundary layer."
+                       "\n"
+                       "For more information, see the section in the manual that discusses "
+                       "the general mathematical model.");
 
     prm.declare_entry ("Output directory", "output",
                        Patterns::DirectoryName(),
@@ -250,7 +268,8 @@ namespace aspect
     else if (output_directory[output_directory.size()-1] != '/')
       output_directory += "/";
 
-    surface_pressure        = prm.get_double ("Surface pressure");
+    surface_pressure              = prm.get_double ("Surface pressure");
+    adiabatic_surface_temperature = prm.get_double ("Adiabatic surface temperature");
 
     prm.enter_subsection ("Mesh refinement");
     {

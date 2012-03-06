@@ -508,8 +508,8 @@ namespace aspect
 
         // verify correctness of the heating term
         const double viscosity =  material_model->viscosity(T,
-        						    p,
-        						    evaluation_points[q]);
+                                                            p,
+                                                            evaluation_points[q]);
         const bool is_compressible = material_model->is_compressible ();
         const double compressibility
           = (is_compressible

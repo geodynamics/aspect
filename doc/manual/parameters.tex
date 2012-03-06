@@ -3,6 +3,20 @@
 
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Adiabatic surface temperature}
+
+
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} In order to make the problem in the first time step easier to solve, we need a reasonable guess for the temperature and pressure. To obtain it, we use an adiabatic pressure and temperature field. This parameter describes what the `adiabatic' temperature would be at the surface of the domain (i.e. at depth zero). Note that this value need not coincide with the boundary condition posed at this point. Rather, the boundary condition may differ significantly from the adiabatic value, and then typically induce a thermal boundary layer.
+For more information, see the section in the manual that discusses the general mathematical model.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
 \item {\it Parameter name:} {\tt CFL number}
 
 
@@ -19,7 +33,7 @@
 \item {\it Parameter name:} {\tt End time}
 
 
-{\it Value:} 1e6
+{\it Value:} 1e10
 
 
 {\it Default:} 1e8
@@ -28,7 +42,7 @@
 {\it Description:} The end time of the simulation. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
 
 
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
 \item {\it Parameter name:} {\tt Output directory}
 
 
@@ -55,6 +69,33 @@
 
 
 {\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Start time}
+
+
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The start time of the simulation. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Surface pressure}
+
+
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The mathematical equations that describe thermal convection only determine the pressure up to an arbitrary constant. On the other hand, for comparison and for looking up material parameters it is important that the pressure be normalized somehow. We do this by enforcing a particular average pressure value at the surface of the domain, where the geometry model determines where the surface is. This parameter describes what this average surface pressure value is supposed to be. By default, it is set to zero, but one may want to choose a different value for example for simulating only the volume of the mantle below the lithosphere, in which case the surface pressure should be the lithostatic pressure at the bottom of the lithosphere.
+For more information, see the section in the manual that discusses the general mathematical model.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
 \item {\it Parameter name:} {\tt Use years in output instead of seconds}
 
 
@@ -165,7 +206,7 @@
 {\it Value:} false
 
 
-{\it Default:} true
+{\it Default:} false
 
 
 {\it Description:} Whether to use a Stokes discretization that is locally conservative at the expense of a larger number of degrees of freedom (true), or to go with a cheaper discretization that does not locally conserve mass, although it is globally conservative (false).
@@ -238,13 +279,58 @@
 
 `spherical shell': A geometry representing a spherical shell or a pice of it. Inner and outer radii are read from the parameter file in subsection 'Spherical shell'.
 
-`box': A box geometry with fixed length 1 in each coordinate direction.
+`box': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file.
 
 
 {\it Possible values:} [Selection spherical shell|box ]
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Geometry model/Box}
+\label{parameters:Geometry_20model/Box}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt X extent}
+
+
+{\it Value:} 1.2
+
+
+{\it Default:} 1
+
+
+{\it Description:} Extent of the box in x-direction. Units: m.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Y extent}
+
+
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Extent of the box in y-direction. Units: m.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Z extent}
+
+
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Extent of the box in z-direction. This value is ignored if the simulation is in 2d Units: m.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
 
 \subsection{Parameters in section \tt Geometry model/Spherical shell}
 \label{parameters:Geometry_20model/Spherical_20shell}
@@ -452,10 +538,12 @@
 
 `table': A material model that reads tables of pressure and temperature dependent material coefficients from files.
 
+`Steinberger': lookup from the paper of Steinberger/Calderwood
+
 `simple': A simple material model that has constant values for all coefficients but the density. This model uses the formulation that assumes an incompressible medium despite the fact that the density follows the law $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$. The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Simple model'.
 
 
-{\it Possible values:} [Selection table|simple ]
+{\it Possible values:} [Selection table|Steinberger|simple ]
 \end{itemize}
 
 
@@ -477,10 +565,172 @@
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference specific heat}
+
+
+{\it Value:} 1250
+
+
+{\it Default:} 1250
+
+
+{\it Description:} The value of the specific heat $cp$. Units: $JG/kgK$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \item {\it Parameter name:} {\tt Reference temperature}
 
 
 {\it Value:} 1
+
+
+{\it Default:} 293
+
+
+{\it Description:} The reference temperature $T_0$. Units: $K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal conductivity}
+
+
+{\it Value:} 1e-6
+
+
+{\it Default:} 4.7
+
+
+{\it Description:} The value of the thermal conductivity $k$. Units: $W/m/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal expansion coefficient}
+
+
+{\it Value:} 2e-5
+
+
+{\it Default:} 2e-5
+
+
+{\it Description:} The value of the thermal expansion coefficient $\beta$. Units: $1/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Viscosity}
+
+
+{\it Value:} 1
+
+
+{\it Default:} 5e24
+
+
+{\it Description:} The value of the constant viscosity. Units: $kg/m/s$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Material model/Table model}
+\label{parameters:Material_20model/Table_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Composition}
+
+
+{\it Value:} olixene
+
+
+{\it Default:} olixene
+
+
+{\it Description:} The Composition of the model.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Compressible}
+
+
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} whether the model is compressible.
+
+
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt ComputePhases}
+
+
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} whether to compute phases.
+
+
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Gravity}
+
+
+{\it Value:} 30
+
+
+{\it Default:} 30
+
+
+{\it Description:} The value of the gravity constant.Units: $m/s^2$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Path to model data}
+
+
+{\it Value:} datadir
+
+
+{\it Default:} datadir
+
+
+{\it Description:} The path to the model data.
+
+
+{\it Possible values:} [DirectoryName]
+\item {\it Parameter name:} {\tt Reference density}
+
+
+{\it Value:} 3300
+
+
+{\it Default:} 3300
+
+
+{\it Description:} Reference density $\rho_0$. Units: $kg/m^3$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference specific heat}
+
+
+{\it Value:} 1250
+
+
+{\it Default:} 1250
+
+
+{\it Description:} The value of the specific heat $cp$. Units: $JG/kgK$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference temperature}
+
+
+{\it Value:} 293
 
 
 {\it Default:} 293
@@ -516,16 +766,76 @@
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Viscosity}
+\end{itemize}
 
 
-{\it Value:} 1
+
+\subsection{Parameters in section \tt Material model/Table model/Viscosity}
+\label{parameters:Material_20model/Table_20model/Viscosity}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt ReferenceViscosity}
+
+
+{\it Value:} 5e24
 
 
 {\it Default:} 5e24
 
 
 {\it Description:} The value of the constant viscosity. Units: $kg/m/s$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt ViscosityModel}
+
+
+{\it Value:} Exponential
+
+
+{\it Default:} Exponential
+
+
+{\it Description:} Viscosity Model
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Viscosity increase lower mantle}
+
+
+{\it Value:} 4e0
+
+
+{\it Default:} 4e0
+
+
+{\it Description:} The Viscosity increase (jump) in the lower mantle.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt exponential P}
+
+
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} multiplication factor or Pressure exponent
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt exponential T}
+
+
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} multiplication factor or Temperature exponent
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -600,6 +910,19 @@
 
 
 {\it Possible values:} [Double 0...1 (inclusive)]
+\item {\it Parameter name:} {\tt Strategy}
+
+
+{\it Value:} Density c\_p temperature
+
+
+{\it Default:} Density c\_p temperature
+
+
+{\it Description:} The method used to determine which cells to refine and which to coarsen.
+
+
+{\it Possible values:} [Selection Temperature|Normalized density and temperature|Weighted density and temperature|Density c\_p temperature ]
 \item {\it Parameter name:} {\tt Time steps between mesh refinement}
 
 
@@ -619,6 +942,19 @@
 \label{parameters:Model_20settings}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Fixed temperature boundary indicators}
+
+
+{\it Value:} 0, 1
+
+
+{\it Default:}
+
+
+{\it Description:} A comma separated list of integers denoting those boundaries on which the temperature is fixed and described by the boundary temperature object selected in its own section of this input file. All boundary indicators used by the geometry but not explicitly listed here will end up with no-flux (insulating) boundary conditions.
+
+
+{\it Possible values:} [List list of <[Integer range 0...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Include shear heating}
 
 
@@ -632,10 +968,23 @@
 
 
 {\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Prescribed velocity boundary indicators}
+
+
+{\it Value:} 0
+
+
+{\it Default:}
+
+
+{\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is tangential but prescribed, i.e., where external forces act to prescribe a particular velocity. This is often used to prescribe a velocity that equals that of overlying plates.
+
+
+{\it Possible values:} [List list of <[Integer range 0...255 (inclusive)]> of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Radiogenic heating rate}
 
 
-{\it Value:} 1
+{\it Value:} 0
 
 
 {\it Default:} 0e0
@@ -645,6 +994,32 @@
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Tangential velocity boundary indicators}
+
+
+{\it Value:} 1
+
+
+{\it Default:}
+
+
+{\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is tangential and unrestrained, i.e., where no external forces act to prescribe a particular tangential velocity (although there is a force that requires the flow to be tangential).
+
+
+{\it Possible values:} [List list of <[Integer range 0...255 (inclusive)]> of length 0...4294967295 (inclusive)]
+\item {\it Parameter name:} {\tt Zero velocity boundary indicators}
+
+
+{\it Value:} 2, 3
+
+
+{\it Default:}
+
+
+{\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is zero.
+
+
+{\it Possible values:} [List list of <[Integer range 0...255 (inclusive)]> of length 0...4294967295 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess}
@@ -654,7 +1029,7 @@
 \item {\it Parameter name:} {\tt List of postprocessors}
 
 
-{\it Value:} all
+{\it Value:} visualization, velocity statistics, temperature statistics, heat flux statistics
 
 
 {\it Default:} all
@@ -670,18 +1045,56 @@ The following postprocessors are available:
 
 `temperature statistics': A postprocessor that computes some statistics about the temperature field.
 
+`velocity statistics for the table model': A postprocessor that computes some statistics about the velocity field.
+
+`heat flux statistics for the table model': A postprocessor that computes some statistics about the heat flux across boundaries.
+
 `heat flux statistics': A postprocessor that computes some statistics about the heat flux across boundaries.
 
+`depth average': A postprocessor that computes depth averaged quantities and writes them out.
 
-{\it Possible values:} [MultipleSelection visualization|velocity statistics|temperature statistics|heat flux statistics|all ]
+
+{\it Possible values:} [MultipleSelection visualization|velocity statistics|temperature statistics|velocity statistics for the table model|heat flux statistics for the table model|heat flux statistics|depth average|all ]
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Postprocess/Depth average}
+\label{parameters:Postprocess/Depth_20average}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Time between graphical output}
+
+
+{\it Value:} 1e8
+
+
+{\it Default:} 1e8
+
+
+{\it Description:} The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Visualization}
 \label{parameters:Postprocess/Visualization}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Number of grouped files}
+
+
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} VTU file output supports grouping files from several CPUs into one file using MPI I/O when writing on a parallel filesystem. Select 0 for no grouping. This will disable parallel file output and instead write one file per processor in a background thread. A value of 1 will generate one big file containing the whole solution.
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
 \item {\it Parameter name:} {\tt Output format}
 
 
@@ -698,10 +1111,10 @@ The following postprocessors are available:
 \item {\it Parameter name:} {\tt Time between graphical output}
 
 
-{\it Value:} 1
+{\it Value:} 0
 
 
-{\it Default:} 50
+{\it Default:} 1e8
 
 
 {\it Description:} The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.

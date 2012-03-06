@@ -34,12 +34,14 @@ namespace aspect
     public:
       /**
        * Constructor. Compute the adiabatic conditions along a vertical
-       * transect of the geometry based on the given material model.
+       * transect of the geometry based on the given material model
+       * and other quantities.
        */
       AdiabaticConditions (const GeometryModel::Interface<dim> &geometry_model,
                            const GravityModel::Interface<dim>  &gravity_model,
                            const MaterialModel::Interface<dim> &material_model,
-                           const double                         surface_pressure);
+                           const double                         surface_pressure,
+                           const double                         surface_temperature);
 
       /**
        * Return the adiabatic temperature at a given point of the domain.

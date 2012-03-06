@@ -141,7 +141,8 @@ namespace aspect
     adiabatic_conditions.reset (new AdiabaticConditions<dim>(*geometry_model,
                                                              *gravity_model,
                                                              *material_model,
-                                                             parameters.surface_pressure));
+                                                             parameters.surface_pressure,
+                                                             parameters.adiabatic_surface_temperature));
 
     pressure_scaling = material_model->reference_viscosity() / geometry_model->length_scale();
 

@@ -1,4 +1,4 @@
-//-------------------------------------------------------------
+//-------------------------------------------------------------expon
 //    $Id$
 //
 //    Copyright (C) 2011, 2012 by the authors of the ASPECT code
@@ -398,17 +398,6 @@ namespace aspect
     template <int dim>
     double
     Table<dim>::
-    thermal_expansion_coefficient (const double temperature,
-                                   const double pressure,
-                                   const Point<dim> &p) const
-    {
-      static internal::P_T_LookupFunction alpha(data_directory+"alpha_bin");
-      return alpha.value(temperature, pressure);
-    }
-
-    template <int dim>
-    double
-    Table<dim>::
     specific_heat (const double temperature,
                    const double pressure,
                    const Point<dim> &) const
@@ -620,8 +609,7 @@ namespace aspect
                                "multiplication factor or Pressure exponent");
             prm.declare_entry ("Viscosity increase lower mantle", "4e0",
                                Patterns::Double (0),
-                               "The Viscosity increase (jump) in the lower mantle. "
-                              );
+                               "The Viscosity increase (jump) in the lower mantle.");
           }
           prm.leave_subsection();
         }

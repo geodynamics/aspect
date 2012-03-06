@@ -129,6 +129,7 @@ namespace aspect
         bool                convert_to_years;
         std::string         output_directory;
         double              surface_pressure;
+        double              adiabatic_surface_temperature;
         /**
          * @}
          */
