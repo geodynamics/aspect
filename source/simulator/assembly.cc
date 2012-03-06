@@ -1050,7 +1050,6 @@ namespace aspect
                                                                            ext_pressure,
                                                                            scratch.finite_element_values.quadrature_point(q));
 
-        //TODO: this is the wrong formula for the compressible case
         const double viscosity =  material_model->viscosity(ext_T, ext_pressure,
                                                             scratch.finite_element_values.quadrature_point(q));
         const bool is_compressible = material_model->is_compressible ();
@@ -1062,8 +1061,10 @@ namespace aspect
                                              scratch.finite_element_values.quadrature_point(q))
              :
              std::numeric_limits<double>::quiet_NaN() );
+
         const Tensor<1,dim>
         gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
+
         const double gamma
           = (parameters.radiogenic_heating_rate * density
              +
@@ -1073,8 +1074,8 @@ namespace aspect
               extrapolated_strain_rate * extrapolated_strain_rate
               - (is_compressible
                  ?
-                 2e0/3e0*viscosity*std::pow(compressibility * density *
-                                            (scratch.old_velocity_values[q] * gravity),2)
+                 2./3.*viscosity*std::pow(compressibility * density *
+                                          (scratch.old_velocity_values[q] * gravity),2)
                  :
                  0)
                 :
