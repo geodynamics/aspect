@@ -122,14 +122,14 @@ namespace aspect
          * @name Global parameters
          * @{
          */
-        bool                resume_computation;
-        double              start_time;
-        double              end_time;
-        double              CFL_number;
-        bool                convert_to_years;
-        std::string         output_directory;
-        double              surface_pressure;
-        double              adiabatic_surface_temperature;
+        bool                           resume_computation;
+        double                         start_time;
+        double                         end_time;
+        double                         CFL_number;
+        bool                           convert_to_years;
+        std::string                    output_directory;
+        double                         surface_pressure;
+        double                         adiabatic_surface_temperature;
         /**
          * @}
          */
@@ -138,13 +138,13 @@ namespace aspect
          * @name Parameters that have to do with terms in the model
          * @{
          */
-        bool                include_shear_heating;
-        bool                include_adiabatic_heating;
-        double              radiogenic_heating_rate;
-        std::vector<int>    fixed_temperature_boundary_indicators;
-        std::vector<int>    zero_velocity_boundary_indicators;
-        std::vector<int>    tangential_velocity_boundary_indicators;
-        std::vector<int>    prescribed_velocity_boundary_indicators;
+        bool                           include_shear_heating;
+        bool                           include_adiabatic_heating;
+        double                         radiogenic_heating_rate;
+        std::set<types::boundary_id_t> fixed_temperature_boundary_indicators;
+        std::set<types::boundary_id_t> zero_velocity_boundary_indicators;
+        std::set<types::boundary_id_t> tangential_velocity_boundary_indicators;
+        std::set<types::boundary_id_t> prescribed_velocity_boundary_indicators;
         /**
          * @}
          */
@@ -153,13 +153,13 @@ namespace aspect
          * @name Parameters that have to do with mesh refinement
          * @{
          */
-        unsigned int        initial_global_refinement;
-        unsigned int        initial_adaptive_refinement;
-        double              refinement_fraction;
-        double              coarsening_fraction;
-        std::string         refinement_strategy;
-        std::vector<double> additional_refinement_times;
-        unsigned int        adaptive_refinement_interval;
+        unsigned int                   initial_global_refinement;
+        unsigned int                   initial_adaptive_refinement;
+        double                         refinement_fraction;
+        double                         coarsening_fraction;
+        std::string                    refinement_strategy;
+        std::vector<double>            additional_refinement_times;
+        unsigned int                   adaptive_refinement_interval;
         /**
          * @}
          */
@@ -168,9 +168,9 @@ namespace aspect
          * @name Parameters that have to do with the stabilization of transport equations
          * @{
          */
-        double              stabilization_alpha;
-        double              stabilization_c_R;
-        double              stabilization_beta;
+        double                         stabilization_alpha;
+        double                         stabilization_c_R;
+        double                         stabilization_beta;
         /**
          * @}
          */
@@ -179,9 +179,9 @@ namespace aspect
          * @name Parameters that have to do with spatial discretizations
          * @{
          */
-        unsigned int        stokes_velocity_degree;
-        bool                use_locally_conservative_discretization;
-        unsigned int        temperature_degree;
+        unsigned int                   stokes_velocity_degree;
+        bool                           use_locally_conservative_discretization;
+        unsigned int                   temperature_degree;
         /**
          * @}
          */

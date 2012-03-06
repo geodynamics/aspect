@@ -299,22 +299,38 @@ namespace aspect
       include_shear_heating = prm.get_bool ("Include shear heating");
       include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
       radiogenic_heating_rate = prm.get_double ("Radiogenic heating rate");
-      fixed_temperature_boundary_indicators
+
+      const std::vector<int> x_fixed_temperature_boundary_indicators
         = Utilities::string_to_int
           (Utilities::split_string_list
            (prm.get ("Fixed temperature boundary indicators")));
-      zero_velocity_boundary_indicators
+      fixed_temperature_boundary_indicators
+        = std::set<types::boundary_id_t> (x_fixed_temperature_boundary_indicators.begin(),
+                                          x_fixed_temperature_boundary_indicators.end());
+
+      const std::vector<int> x_zero_velocity_boundary_indicators
         = Utilities::string_to_int
           (Utilities::split_string_list
            (prm.get ("Zero velocity boundary indicators")));
-      tangential_velocity_boundary_indicators
+      zero_velocity_boundary_indicators
+        = std::set<types::boundary_id_t> (x_zero_velocity_boundary_indicators.begin(),
+                                          x_zero_velocity_boundary_indicators.end());
+
+      const std::vector<int> x_tangential_velocity_boundary_indicators
         = Utilities::string_to_int
           (Utilities::split_string_list
            (prm.get ("Tangential velocity boundary indicators")));
-      prescribed_velocity_boundary_indicators
+      tangential_velocity_boundary_indicators
+        = std::set<types::boundary_id_t> (x_tangential_velocity_boundary_indicators.begin(),
+                                          x_tangential_velocity_boundary_indicators.end());
+
+      const std::vector<int> x_prescribed_velocity_boundary_indicators
         = Utilities::string_to_int
           (Utilities::split_string_list
            (prm.get ("Prescribed velocity boundary indicators")));
+      prescribed_velocity_boundary_indicators
+        = std::set<types::boundary_id_t> (x_prescribed_velocity_boundary_indicators.begin(),
+                                          x_prescribed_velocity_boundary_indicators.end());
     }
     prm.leave_subsection ();
 

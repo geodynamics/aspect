@@ -218,18 +218,13 @@ namespace aspect
       current_constraints.reinit (system_relevant_set);
       current_constraints.merge (constraints);
 
-      typedef unsigned char boundary_indicator_t;
-      const std::set<boundary_indicator_t>
-      prescribed_velocity_boundary_indicators (parameters.prescribed_velocity_boundary_indicators.begin(),
-                                               parameters.prescribed_velocity_boundary_indicators.end());
-
       // do the interpolation for the prescribed velocity field
       std::vector<bool> velocity_mask (dim+2, true);
       velocity_mask[dim] = false;
       velocity_mask[dim+1] = false;
-      for (std::set<boundary_indicator_t>::const_iterator
-           p = prescribed_velocity_boundary_indicators.begin();
-           p != prescribed_velocity_boundary_indicators.end(); ++p)
+      for (std::set<types::boundary_id_t>::const_iterator
+           p = parameters.prescribed_velocity_boundary_indicators.begin();
+           p != parameters.prescribed_velocity_boundary_indicators.end(); ++p)
         VectorTools::interpolate_boundary_values (dof_handler,
                                                   *p,
                                                   ZeroFunction<dim>(dim+2),
@@ -387,24 +382,13 @@ namespace aspect
       DoFTools::make_hanging_node_constraints (dof_handler,
                                                constraints);
 
-      // obtain the boundary indicators that belong to zero velocity
-      // and no-normal-flux type
-      typedef unsigned char boundary_indicator_t;
-      const std::set<boundary_indicator_t>
-      zero_boundary_indicators (parameters.zero_velocity_boundary_indicators.begin(),
-                                parameters.zero_velocity_boundary_indicators.end());
-
-      const std::set<boundary_indicator_t>
-      no_normal_flux_boundary_indicators (parameters.tangential_velocity_boundary_indicators.begin(),
-                                          parameters.tangential_velocity_boundary_indicators.end());
-
       // do the interpolation for zero velocity
       std::vector<bool> velocity_mask (dim+2, true);
       velocity_mask[dim] = false;
       velocity_mask[dim+1] = false;
-      for (std::set<boundary_indicator_t>::const_iterator
-           p = zero_boundary_indicators.begin();
-           p != zero_boundary_indicators.end(); ++p)
+      for (std::set<types::boundary_id_t>::const_iterator
+           p = parameters.zero_velocity_boundary_indicators.begin();
+           p != parameters.zero_velocity_boundary_indicators.end(); ++p)
         VectorTools::interpolate_boundary_values (dof_handler,
                                                   *p,
                                                   ZeroFunction<dim>(dim+2),
@@ -415,7 +399,7 @@ namespace aspect
       // do the same for no-normal-flux boundaries
       VectorTools::compute_no_normal_flux_constraints (dof_handler,
                                                        /* first_vector_component= */ 0,
-                                                       no_normal_flux_boundary_indicators,
+                                                       parameters.tangential_velocity_boundary_indicators,
                                                        constraints,
                                                        mapping);
     }
@@ -429,7 +413,7 @@ namespace aspect
       std::vector<bool> temperature_mask (dim+2, false);
       temperature_mask[dim+1] = true;
 
-      for (std::vector<int>::const_iterator
+      for (std::set<types::boundary_id_t>::const_iterator
            p = parameters.fixed_temperature_boundary_indicators.begin();
            p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
         {
