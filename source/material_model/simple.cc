@@ -57,8 +57,7 @@ namespace aspect
                    const double,
                    const Point<dim> &) const
     {
-//TODO: make this a run-time parameter
-      return 1250.0;
+      return reference_specific_heat;
     }
 
     template <int dim>
@@ -66,7 +65,7 @@ namespace aspect
     Simple<dim>::
     reference_cp () const
     {
-      return 1250e0;
+      return reference_specific_heat;
     }
 
     template <int dim>
