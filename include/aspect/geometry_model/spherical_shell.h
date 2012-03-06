@@ -65,7 +65,7 @@ namespace aspect
          * indicators 2 and 3 indicate the left and right radial bounding lines.
                */
         virtual
-        std::set<unsigned char>
+        std::set<types::boundary_id_t>
         get_used_boundary_indicators () const;
 
         /**

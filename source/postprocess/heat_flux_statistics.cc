@@ -39,13 +39,7 @@ namespace aspect
       std::vector<double>         temperature_values (quadrature_formula.size());
       std::vector<double>         pressure_values (quadrature_formula.size());
 
-      // find out which boundary indicators are related to Dirichlet temperature boundaries.
-      // it only makes sense to compute heat fluxes on these boundaries.
-      const std::set<unsigned char>
-      boundary_indicators
-        =
-          this->get_geometry_model().get_used_boundary_indicators ();
-      std::map<unsigned char, double> local_boundary_fluxes;
+      std::map<types::boundary_id_t, double> local_boundary_fluxes;
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -94,12 +88,16 @@ namespace aspect
               }
 
       // now communicate to get the global values
-      std::map<unsigned char, double> global_boundary_fluxes;
+      std::map<types::boundary_id_t, double> global_boundary_fluxes;
       {
         // first collect local values in the same order in which they are listed
         // in the set of boundary indicators
+        const std::set<types::boundary_id_t>
+        boundary_indicators
+          =
+            this->get_geometry_model().get_used_boundary_indicators ();
         std::vector<double> local_values;
-        for (std::set<unsigned char>::const_iterator
+        for (std::set<types::boundary_id_t>::const_iterator
              p = boundary_indicators.begin();
              p != boundary_indicators.end(); ++p)
           local_values.push_back (local_boundary_fluxes[*p]);
@@ -110,7 +108,7 @@ namespace aspect
 
         // and now take them apart into the global map again
         unsigned int index = 0;
-        for (std::set<unsigned char>::const_iterator
+        for (std::set<types::boundary_id_t>::const_iterator
              p = boundary_indicators.begin();
              p != boundary_indicators.end(); ++p, ++index)
           global_boundary_fluxes[*p] = local_values[index];

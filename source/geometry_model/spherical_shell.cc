@@ -59,7 +59,7 @@ namespace aspect
 
 
     template <int dim>
-    std::set<unsigned char>
+    std::set<types::boundary_id_t>
     SphericalShell<dim>::
     get_used_boundary_indicators () const
     {
@@ -69,15 +69,15 @@ namespace aspect
       // set and how they correlate to what's used below
       if (phi == 360)
         {
-          const unsigned char s[] = { 0, 1 };
-          return std::set<unsigned char>(&s[0],
-                                         &s[sizeof(s)/sizeof(s[0])]);
+          const types::boundary_id_t s[] = { 0, 1 };
+          return std::set<types::boundary_id_t>(&s[0],
+                                                &s[sizeof(s)/sizeof(s[0])]);
         }
       else
         {
-          const unsigned char s[] = { 0, 1, 2, 3 };
-          return std::set<unsigned char>(&s[0],
-                                         &s[sizeof(s)/sizeof(s[0])]);
+          const types::boundary_id_t s[] = { 0, 1, 2, 3 };
+          return std::set<types::boundary_id_t>(&s[0],
+                                                &s[sizeof(s)/sizeof(s[0])]);
         }
     }
 

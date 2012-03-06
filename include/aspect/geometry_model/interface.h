@@ -94,7 +94,7 @@ namespace aspect
         * the input file.
          */
         virtual
-        std::set<unsigned char>
+        std::set<types::boundary_id_t>
         get_used_boundary_indicators () const = 0;
 
         /**

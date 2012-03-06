@@ -139,18 +139,18 @@ namespace aspect
                          "but not explicitly listed here will end up with no-flux "
                          "(insulating) boundary conditions.");
       prm.declare_entry ("Zero velocity boundary indicators", "",
-                         Patterns::List (Patterns::Integer(0, std::numeric_limits<unsigned char>::max())),
+                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id_t>::max())),
                          "A comma separated list of integers denoting those boundaries "
                          "on which the velocity is zero.");
       prm.declare_entry ("Tangential velocity boundary indicators", "",
-                         Patterns::List (Patterns::Integer(0, std::numeric_limits<unsigned char>::max())),
+                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id_t>::max())),
                          "A comma separated list of integers denoting those boundaries "
                          "on which the velocity is tangential and unrestrained, i.e., where "
                          "no external forces act to prescribe a particular tangential "
                          "velocity (although there is a force that requires the flow to "
                          "be tangential).");
       prm.declare_entry ("Prescribed velocity boundary indicators", "",
-                         Patterns::List (Patterns::Integer(0, std::numeric_limits<unsigned char>::max())),
+                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id_t>::max())),
                          "A comma separated list of integers denoting those boundaries "
                          "on which the velocity is tangential but prescribed, i.e., where "
                          "external forces act to prescribe a particular velocity. This is "
