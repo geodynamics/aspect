@@ -64,41 +64,42 @@ namespace aspect
     SphericalGaussianPerturbation<dim>::
     SphericalGaussianPerturbation()
     {
+      /*
+       Note that the values we read in here have reasonable default values equation to
+       the following:
+                geotherm.resize(4);
+                radial_position.resize(4);
+                geotherm[0] = 1e0;
+                geotherm[1] = 0.75057142857142856;
+                geotherm[2] = 0.32199999999999995;
+                geotherm[3] = 0.0;
+                radial_position[0] =  0e0-1e-3;
+                radial_position[1] =  0.16666666666666666;
+                radial_position[2] =  0.83333333333333337;
+                radial_position[3] =  1e0+1e-3;
+       */
+
+      std::ifstream in(initial_geotherm_table.c_str());
+      AssertThrow (in,
+                   ExcMessage ("Could not open file <" + initial_geotherm_table + ">"));
+
       std::string temp;
       int dummy, npoint;
 
-//TODO: This filename needs to become a run-time parameter
-      std::ifstream in("initial_geotherm_table", std::ios::in);
-//TODO: Let's not do this: check if a file exists and if it doesn't silently do something else
-      if (!in)
-        {
-          geotherm.resize(4);
-          radial_position.resize(4);
-          geotherm[0] = 1e0;
-          geotherm[1] = 0.75057142857142856;
-          geotherm[2] = 0.32199999999999995;
-          geotherm[3] = 0.0;
-          radial_position[0] =  0e0-1e-3;
-          radial_position[1] =  0.16666666666666666;
-          radial_position[2] =  0.83333333333333337;
-          radial_position[3] =  1e0+1e-3;
-        }
-      else
-        {
-          in >> dummy >> npoint;
-          getline(in, temp); // eat remainder of the line
-          geotherm.resize(npoint);
-          radial_position.resize(npoint);
+      in >> dummy >> npoint;
+      getline(in, temp); // eat remainder of the line
+      geotherm.resize(npoint);
+      radial_position.resize(npoint);
 
-          // read geotherm depth pairs
-          for (int i=0; i<npoint; i++)
-            {
-              in >> geotherm[npoint-i-1] >> radial_position[i];
-              getline(in, temp); // eat remainder of the line
-            }
-          radial_position[0] -= 1e-3;
-          radial_position[3] += 1e-3;
+      // read geotherm depth pairs
+      for (int i=0; i<npoint; i++)
+        {
+          in >> geotherm[npoint-i-1] >> radial_position[i];
+          getline(in, temp); // eat remainder of the line
         }
+      radial_position[0] -= 1e-3;
+      radial_position[3] += 1e-3;
+
     }
 
     template <int dim>
@@ -193,6 +194,11 @@ namespace aspect
           prm.declare_entry ("Sign", "1",
                              Patterns::Double (),
                              "The sign of the perturbation.");
+          prm.declare_entry ("Filename for initial geotherm table", "initial_geotherm_table",
+                             Patterns::FileName(),
+                             "The file from which the initial geotherm table is to be read. "
+                             "The format of the file is defined by what is read in "
+                             "source/initial_conditions/spherical_shell.cc.");
         }
         prm.leave_subsection ();
       }
@@ -213,6 +219,7 @@ namespace aspect
           amplitude  = prm.get_double ("Amplitude");
           sigma  = prm.get_double ("Sigma");
           sign  = prm.get_double ("Sign");
+          initial_geotherm_table = prm.get ("Filename for initial geotherm table");
         }
         prm.leave_subsection ();
       }
