@@ -176,11 +176,13 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::
-    thermal_expansion_coefficient (const double,
-                                   const double,
-                                   const Point<dim> &dummy1) const
+    thermal_expansion_coefficient (const double temperature,
+                                   const double pressure,
+                                   const Point<dim> &position) const
     {
-      return 0;
+      return (-1./density(temperature, pressure, position)
+              *
+              density_derivative(temperature, pressure, position, NonlinearDependence::temperature));
     }
 
     void

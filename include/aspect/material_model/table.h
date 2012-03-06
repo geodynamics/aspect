@@ -150,7 +150,7 @@ namespace aspect
          * postprocessing the solution when we want dimension-less
          * quantities.
          */
-        double reference_thermal_alpha () const;
+        double reference_thermal_expansion_coefficient () const;
 
         /**
          * Return the thermal expansion coefficient $\alpha$ of the model,

@@ -100,7 +100,15 @@ namespace aspect
 
         /**
          * Return the thermal expansion coefficient $\alpha$ of the model,
-         * possibly as a function of depth.
+         * possibly as a function of temperature, pressure and position.
+        * The thermal expansion coefficient is defined as
+        * $\alpha=-\frac{1}{\rho} \frac{d\rho}{dT}$. Since the density
+        * <i>decreases</i> with temperature for almost all models,
+        * $\alpha$ is usually positive.
+        *
+        * This function has a default implementation that computes $\alpha$
+        * through its definition above, using the density() and density_derivative()
+        * functions.
          */
         virtual double thermal_expansion_coefficient (const double      temperature,
                                                       const double      pressure,
@@ -281,6 +289,14 @@ namespace aspect
         * dimension-less quantities.
         */
         virtual double reference_density () const = 0;
+
+        /**
+         * Return a reference value for the thermal expansion
+         * coefficient $\alpha$. See the thermal_expansion_coefficient()
+         * function for a definition of $\alpha$.
+         */
+        virtual double reference_thermal_expansion_coefficient () const = 0;
+
         /**
          * @}
          */

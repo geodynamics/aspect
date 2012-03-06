@@ -44,9 +44,9 @@ namespace aspect
 
         double reference_thermal_diffusivity () const;
 
-        double reference_thermal_alpha () const;
-
         double reference_cp () const;
+
+        virtual double reference_thermal_expansion_coefficient () const;
 
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
@@ -60,6 +60,9 @@ namespace aspect
                                         const double pressure,
                                         const Point<dim> &position) const;
 
+        virtual double thermal_expansion_coefficient (const double      temperature,
+                                                      const double      pressure,
+                                                      const Point<dim> &position) const;
 
         /**
          * @name Qualitative properties one can ask a material model

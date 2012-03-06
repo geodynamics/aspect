@@ -45,7 +45,7 @@ namespace aspect
     template <int dim>
     double
     Simple<dim>::
-    reference_thermal_alpha () const
+    reference_thermal_expansion_coefficient () const
     {
       return thermal_alpha;
     }
@@ -95,6 +95,17 @@ namespace aspect
     {
       return (reference_rho *
               (1 - thermal_alpha * (temperature - reference_T)));
+    }
+
+
+    template <int dim>
+    double
+    Simple<dim>::
+    thermal_expansion_coefficient (const double temperature,
+                                   const double,
+                                   const Point<dim> &) const
+    {
+      return thermal_alpha / reference_rho;
     }
 
 

@@ -155,7 +155,7 @@ namespace aspect
           const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
           const double Ra = material_model.reference_density()*
                             gravity*
-                            material_model.reference_thermal_alpha()*
+                            material_model.reference_thermal_expansion_coefficient()*
                             dT*std::pow(h,3)/
                             (material_model.reference_thermal_diffusivity()*
                              material_model.reference_viscosity());
@@ -168,7 +168,7 @@ namespace aspect
                            << gravity
                            << std::endl;
           this->get_pcout()<< "     Reference thermal expansion (1/K):             "
-                           << material_model.reference_thermal_alpha()
+                           << material_model.reference_thermal_expansion_coefficient()
                            << std::endl;
           this->get_pcout()<< "     Temperature contrast accross model domain (K): "
                            << dT

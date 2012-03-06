@@ -1072,18 +1072,19 @@ namespace aspect
               ?
               2 * viscosity*
               extrapolated_strain_rate * extrapolated_strain_rate
-              - (is_compressible
-                 ?
-                 2./3.*viscosity*std::pow(compressibility * density *
-                                          (scratch.old_velocity_values[q] * gravity),2)
-                 :
-                 0)
+              -
+              (is_compressible
+               ?
+               2./3.*viscosity*std::pow(compressibility * density *
+                                        (scratch.old_velocity_values[q] * gravity),2)
+               :
+               0)
                 :
                 0)
                +
                (parameters.include_adiabatic_heating
                 ?
-                alpha*density*extrapolated_u*gravity*ext_T
+                alpha * density * (extrapolated_u*gravity) * ext_T
                 :
                 0)
               );

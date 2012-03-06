@@ -390,7 +390,7 @@ namespace aspect
     template <int dim>
     double
     Table<dim>::
-    reference_thermal_alpha () const
+    reference_thermal_expansion_coefficient () const
     {
       return reference_alpha;
     }

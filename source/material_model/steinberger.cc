@@ -171,6 +171,17 @@ namespace aspect
       return reference_density;
     }
 
+
+    template <int dim>
+    double
+    Steinberger<dim>::
+    reference_thermal_expansion_coefficient () const
+    {
+      Assert (false, ExcNotImplemented());
+      return 0;
+    }
+
+
     template <int dim>
     double
     Steinberger<dim>::
