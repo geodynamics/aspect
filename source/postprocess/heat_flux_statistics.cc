@@ -22,8 +22,12 @@ namespace aspect
     std::pair<std::string,std::string>
     HeatFluxStatistics<dim>::execute (TableHandler &statistics)
     {
-//TODO: think about whether it would be useful to only get the degree of the temperature component of the FESystem
-      const QGauss<dim-1> quadrature_formula (this->get_dof_handler().get_fe().degree+1);
+      // create a quadrature formula based on the temperature element alone.
+      // be defensive about determining that what we think is the temperature
+      // element is it in fact
+      Assert (this->get_dof_handler().get_fe().n_base_elements() == 3,
+              ExcNotImplemented());
+      const QGauss<dim-1> quadrature_formula (this->get_dof_handler().get_fe().base_element(2).degree+1);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_dof_handler().get_fe(),

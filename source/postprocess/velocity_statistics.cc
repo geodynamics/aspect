@@ -121,7 +121,7 @@ namespace aspect
                << global_max_velocity
                << " m/s";
 
-// TODO: This really doesn't belong here       
+// TODO: This really doesn't belong here
       if (this->get_time() == 0e0)
         {
           if (dynamic_cast<const MaterialModel::Simple<dim> *>(&this->get_material_model()) != 0)

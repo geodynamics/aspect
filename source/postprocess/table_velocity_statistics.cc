@@ -78,13 +78,8 @@ namespace aspect
 
       const double vrms = std::sqrt(global_velocity_square_integral) /
                           std::sqrt(this->get_volume());
-      const GeometryModel::SphericalShell<dim> *geometry = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
       const double kappa = material_model.reference_thermal_diffusivity();
-      double h;
-      if (geometry)
-        h = geometry->outer_radius() - geometry->inner_radius();
-      else
-        h = 1.0; //TODO: define something like geometrymodel::depth?
+      const double h = this->get_geometry_model().maximal_depth();
       double scaling = h/kappa;
       const double vrmsDimless = scaling*std::sqrt(global_velocity_square_integral) /
                                  std::sqrt(this->get_volume());
