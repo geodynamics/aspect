@@ -521,22 +521,41 @@ namespace aspect
         const double gamma
           = (parameters.radiogenic_heating_rate * density
              +
+             // add the term 2*eta*(eps - 1/3*(tr eps)1):(eps - 1/3*(tr eps)1)
+             //
+             // we can multiply this out to obtain
+             //   2*eta*(eps:eps - 1/3*(tr eps)^2)
+             // and can then use that in the compressible case we have
+             //   tr eps = div u
+             //          = -1/rho u . grad rho
+             // and by the usual approximation we make,
+             //   tr eps = -1/rho drho/dp u . grad p
+             //          = -1/rho drho/dp rho (u . g)
+             //          = - drho/dp (u . g)
+             //          = - compressibility rho (u . g)
+             // to yield the final form of the term:
+             //   2*eta [eps:eps - 1/3 (compressibility * rho * (u.g))^2]
              (parameters.include_shear_heating
               ?
-              2 * viscosity*
+              2 * viscosity *
               strain_rate * strain_rate
-              - (is_compressible
-                 ?
-                 2e0/3e0*viscosity*std::pow(compressibility * density *
-                                            (u * gravity),2)
-                 :
-                 0)
+              -
+              (is_compressible
+               ?
+               2./3.*viscosity*std::pow(compressibility * density * (u * gravity),
+                                        2)
+               :
+               0)
                 :
                 0)
                +
+               // finally add the term from adiabatic compression heating
+               //   - drho/dT T (u . g)
+               // where we use the definition of
+               //   alpha = - 1/rho drho/dT
                (parameters.include_adiabatic_heating
                 ?
-                alpha*density*u*gravity*T
+                alpha * density * (u*gravity) * T
                 :
                 0)
               );
