@@ -49,7 +49,9 @@ Topics for preview release:
 - add an easter egg
 - sort the member functions in the various material model classes in the
   same way. mark them as virtual if that's what they actually are
-- make the default for parameters.include_shear_heating true
+- make the default for parameters.include_shear_heating true after
+  testing that the model works correctly
+- provide an option to store not only the last snapshot but many
 
 
 - Create a task list for a release that includes:
