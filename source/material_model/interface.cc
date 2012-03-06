@@ -147,7 +147,8 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::
-    seismic_Vp (double dummy1, double dummy2) const
+    seismic_Vp (double dummy1,
+                double dummy2) const
     {
       return -1.0;
     }
@@ -156,7 +157,8 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::
-    seismic_Vs (double dummy1, double dummy2) const
+    seismic_Vs (double dummy1,
+                double dummy2) const
     {
       return -1.0;
     }
@@ -165,11 +167,21 @@ namespace aspect
     template <int dim>
     unsigned int
     Interface<dim>::
-    thermodynamic_phase (double dummy1, double dummy2) const
+    thermodynamic_phase (double dummy1,
+                         double dummy2) const
     {
       return 0;
     }
 
+    template <int dim>
+    double
+    Interface<dim>::
+    thermal_expansion_coefficient (const double,
+                                   const double,
+                                   const Point<dim> &dummy1) const
+    {
+      return 0;
+    }
 
     void
     declare_parameters (ParameterHandler &prm)

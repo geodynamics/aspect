@@ -99,6 +99,14 @@ namespace aspect
                                       const Point<dim> &position) const = 0;
 
         /**
+         * Return the thermal expansion coefficient $\alpha$ of the model,
+         * possibly as a function of depth.
+         */
+        virtual double thermal_expansion_coefficient (const double      temperature,
+                                                      const double      pressure,
+                                                      const Point<dim> &position) const;
+
+        /**
          * Return the thermal conductivity $k$ of the model as a function of temperature,
          * pressure and position. The units of $k$ are $\textrm{W} / \textrm{m} / \textrm{K}$.
         *

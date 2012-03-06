@@ -103,6 +103,12 @@ namespace aspect
                          "physical viewpoint, shear heating should always be used but may "
                          "be undesirable when comparing results with known benchmarks that "
                          "do not include this term in the temperature equation.");
+      prm.declare_entry ("Include adiabatic heating", "false",
+                         Patterns::Bool (),
+                         "Whether to include adiabatic heating into the model or not. From a "
+                         "physical viewpoint, adiabatic heating should always be used but may "
+                         "be undesirable when comparing results with known benchmarks that "
+                         "do not include this term in the temperature equation.");
       prm.declare_entry ("Radiogenic heating rate", "0e0",
                          Patterns::Double (),
                          "H0");
@@ -272,6 +278,7 @@ namespace aspect
     prm.enter_subsection ("Model settings");
     {
       include_shear_heating = prm.get_bool ("Include shear heating");
+      include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
       radiogenic_heating_rate = prm.get_double ("Radiogenic heating rate");
       fixed_temperature_boundary_indicators
         = Utilities::string_to_int

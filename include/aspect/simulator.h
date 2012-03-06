@@ -138,6 +138,7 @@ namespace aspect
          * @{
          */
         bool                include_shear_heating;
+        bool                include_adiabatic_heating;
         double              radiogenic_heating_rate;
         std::vector<int>    fixed_temperature_boundary_indicators;
         std::vector<int>    zero_velocity_boundary_indicators;

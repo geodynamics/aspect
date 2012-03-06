@@ -498,6 +498,7 @@ namespace aspect
         const double u_grad_T = u * (old_temperature_grads[q] +
                                      old_old_temperature_grads[q]) / 2;
 
+        const double alpha                = material_model->thermal_expansion_coefficient(T, p, evaluation_points[q]);
         const double density              = material_model->density(T, p, evaluation_points[q]);
         const double thermal_conductivity = material_model->thermal_conductivity(T, p, evaluation_points[q]);
         const double c_P                  = material_model->specific_heat(T, p, evaluation_points[q]);
@@ -506,16 +507,39 @@ namespace aspect
                                     old_old_temperature_laplacians[q]) / 2;
 
         // verify correctness of the heating term
+        const double viscosity =  material_model->viscosity(T,
+        						    p,
+        						    evaluation_points[q]);
+        const bool is_compressible = material_model->is_compressible ();
+        const double compressibility
+          = (is_compressible
+             ?
+             material_model->compressibility(T, p, evaluation_points[q] )
+             :
+             std::numeric_limits<double>::quiet_NaN() );
+        const Tensor<1,dim> gravity = gravity_model->gravity_vector (evaluation_points[q] );
         const double gamma
           = (parameters.radiogenic_heating_rate * density
              +
              (parameters.include_shear_heating
               ?
-              2 * material_model->viscosity(T, p, evaluation_points[q]) *
+              2 * viscosity*
               strain_rate * strain_rate
-              :
-              0));
-
+              - (is_compressible
+                 ?
+                 2e0/3e0*viscosity*std::pow(compressibility * density *
+                                            (u * gravity),2)
+                 :
+                 0)
+                :
+                0)
+               +
+               (parameters.include_adiabatic_heating
+                ?
+                alpha*density*u*gravity*T
+                :
+                0)
+              );
         double residual
           = std::abs(density * c_P * (dT_dt + u_grad_T) - k_Delta_T - gamma);
         if (parameters.stabilization_alpha == 2)
@@ -531,7 +555,7 @@ namespace aspect
       // we don't have sensible timesteps during the first two iterations
       return max_viscosity;
     else
-      {
+    {
         Assert (old_time_step > 0, ExcInternalError());
 
         double entropy_viscosity;
@@ -1013,6 +1037,9 @@ namespace aspect
               use_bdf2_scheme, old_time_step, time_step,
               scratch.old_old_pressure[q], scratch.old_pressure[q]);
 
+        const double alpha                = material_model->thermal_expansion_coefficient(ext_T,
+                                            ext_pressure,
+                                            scratch.finite_element_values.quadrature_point(q));
         const double density              = material_model->density(ext_T,
                                                                     ext_pressure,
                                                                     scratch.finite_element_values.quadrature_point(q));
@@ -1024,21 +1051,44 @@ namespace aspect
                                                                            scratch.finite_element_values.quadrature_point(q));
 
         //TODO: this is the wrong formula for the compressible case
+        const double viscosity =  material_model->viscosity(ext_T, ext_pressure,
+                                                            scratch.finite_element_values.quadrature_point(q));
+        const bool is_compressible = material_model->is_compressible ();
+        const double compressibility
+          = (is_compressible
+             ?
+             material_model->compressibility(scratch.old_temperature_values[q],
+                                             scratch.old_pressure[q],
+                                             scratch.finite_element_values.quadrature_point(q))
+             :
+             std::numeric_limits<double>::quiet_NaN() );
+        const Tensor<1,dim>
+        gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
         const double gamma
           = (parameters.radiogenic_heating_rate * density
              +
              (parameters.include_shear_heating
               ?
-              2 * material_model->viscosity(ext_T,
-                                            ext_pressure,
-                                            scratch.finite_element_values.quadrature_point(q)) *
+              2 * viscosity*
               extrapolated_strain_rate * extrapolated_strain_rate
-              :
-              0)
-            );
+              - (is_compressible
+                 ?
+                 2e0/3e0*viscosity*std::pow(compressibility * density *
+                                            (scratch.old_velocity_values[q] * gravity),2)
+                 :
+                 0)
+                :
+                0)
+               +
+               (parameters.include_adiabatic_heating
+                ?
+                alpha*density*extrapolated_u*gravity*ext_T
+                :
+                0)
+              );
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
-          {
+        {
             data.local_rhs(i) += (T_term_for_rhs * density * c_P * scratch.phi_T[i]
                                   +
                                   time_step *

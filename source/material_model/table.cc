@@ -398,6 +398,17 @@ namespace aspect
     template <int dim>
     double
     Table<dim>::
+    thermal_expansion_coefficient (const double temperature,
+                                   const double pressure,
+                                   const Point<dim> &p) const
+    {
+      static internal::P_T_LookupFunction alpha(data_directory+"alpha_bin");
+      return alpha.value(temperature, pressure);
+    }
+
+    template <int dim>
+    double
+    Table<dim>::
     specific_heat (const double temperature,
                    const double pressure,
                    const Point<dim> &) const

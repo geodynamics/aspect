@@ -153,6 +153,14 @@ namespace aspect
         double reference_thermal_alpha () const;
 
         /**
+         * Return the thermal expansion coefficient $\alpha$ of the model,
+         * possibly as a function of depth.
+         */
+        virtual double thermal_expansion_coefficient (const double temperature,
+                                                      const double pressure,
+                                                      const Point<dim> &position) const;
+
+        /**
         * A reference thermal specific heat $c_p$.
         *
         * The value here is not used in the computation of things but only in
