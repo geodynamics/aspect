@@ -55,6 +55,7 @@ Topics for preview release:
   . make sure the .prm and .xml files we ship match the default values
     of parameters
   . remove the various table_* postprocessors
+  . update the version number on the front page of doc/manual.pdf
 
 
 First release
