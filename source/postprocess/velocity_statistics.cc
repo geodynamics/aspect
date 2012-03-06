@@ -121,6 +121,7 @@ namespace aspect
                << global_max_velocity
                << " m/s";
 
+// TODO: This really doesn't belong here       
       if (this->get_time() == 0e0)
         {
           if (dynamic_cast<const MaterialModel::Simple<dim> *>(&this->get_material_model()) != 0)
@@ -129,12 +130,7 @@ namespace aspect
               const MaterialModel::Simple<dim> &material_model
                 = dynamic_cast<const MaterialModel::Simple<dim> &>(this->get_material_model());
 
-              const GeometryModel::SphericalShell<dim> *geometry = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
-              double h;
-              if (geometry)
-                h = geometry->outer_radius() - geometry->inner_radius();
-              else
-                h = 1.0; //TODO: define something like geometrymodel::depth?
+              const double h = this->get_geometry_model().maximal_depth();
 
               double dT = this->get_boundary_temperature().maximal_temperature() - this->get_boundary_temperature().minimal_temperature();
 
