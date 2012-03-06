@@ -290,11 +290,19 @@ namespace aspect
 
     Table<2,DoFTools::Coupling> coupling (dim+2, dim+2);
 
-    // TODO: determine actual non-zero blocks depending on which
-    // dependencies are present in the material model
-    for (unsigned int c=0; c<dim+2; ++c)
-      for (unsigned int d=0; d<dim+2; ++d)
+    // determine which blocks should be fillable in the matrix.
+    // note:
+    // - all velocities couple with all velocities
+    // - pressure couples with all velocities and the other way
+    //   around
+    // - temperature only couples with itself when using the impes
+    //   scheme
+    for (unsigned int c=0; c<dim; ++c)
+      for (unsigned int d=0; d<dim; ++d)
         coupling[c][d] = DoFTools::always;
+    for (unsigned int c=0; c<dim; ++c)
+      coupling[c][dim] = coupling[dim][c] = DoFTools::always;
+    coupling[dim+1][dim+1] = DoFTools::always;
 
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
