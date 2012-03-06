@@ -87,8 +87,12 @@ namespace aspect
     SphericalShell<dim>::
     length_scale () const
     {
-//TODO: base this on R0, R1
-      return 1e4;
+      // as described in the first ASPECT paper, a length scale of
+      // 10km = 1e4m works well for the pressure scaling for earth
+      // sized spherical shells. use a length scale that
+      // yields this value for the R0,R1 corresponding to earth
+      // but otherwise scales like (R1-R0)
+      return 1e4 * maximal_depth() / (6336000.-3481000.);
     }
 
 
