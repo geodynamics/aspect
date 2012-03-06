@@ -92,10 +92,10 @@ namespace aspect
         solution_names.push_back ("non_adiabatic_pressure");
         solution_names.push_back ("non_adiabatic_temperature");
         solution_names.push_back ("density");
-        solution_names.push_back ("Strainrate");
+        solution_names.push_back ("strain_rate");
         solution_names.push_back ("Vp");
         solution_names.push_back ("Vs");
-        solution_names.push_back ("Phase");
+        solution_names.push_back ("thermodynamic_phase");
         solution_names.push_back ("Cp");
         return solution_names;
       }
