@@ -20,7 +20,8 @@ namespace aspect
     SphericalShell<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-      AssertThrow ((phi == 360 || phi == 90) || dim!=3, ExcNotImplemented());
+      AssertThrow (phi == 360 || phi == 90 || dim!=3, ExcNotImplemented());
+
       if (phi == 360)
         {
           GridGenerator::hyper_shell (coarse_grid,
@@ -36,7 +37,7 @@ namespace aspect
                                               Point<dim>(),
                                               R0,
                                               R1,
-                                              (dim==3) ? 3 : 0,
+                                              0,
                                               true);
         }
       else if (phi == 180)
@@ -53,12 +54,8 @@ namespace aspect
         }
 
       static const HyperShellBoundary<dim> boundary_shell;
-      static const StraightBoundary<dim> boundary_straight;
       coarse_grid.set_boundary (0, boundary_shell);
       coarse_grid.set_boundary (1, boundary_shell);
-      coarse_grid.set_boundary (2, boundary_straight);
-      coarse_grid.set_boundary (3, boundary_straight);
-      coarse_grid.set_boundary (4, boundary_straight);
     }
 
 
