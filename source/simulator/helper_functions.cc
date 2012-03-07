@@ -619,9 +619,8 @@ namespace aspect
 
     for (unsigned int i=0; i<num_slices; ++i)
       values[i] = values_all[i] / (static_cast<double>(counts_all[i])+1e-20);
-    for (unsigned int i=0; i<num_slices; ++i)
-      if (values[i] <=0e0) printf("what the fuck %d %e %d\n", i, values[i], counts_all[i]);
   }
+
   template <int dim>
   void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const
   {
