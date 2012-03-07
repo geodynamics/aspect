@@ -277,6 +277,9 @@ namespace aspect
     // before solving we scale the initial solution to the right dimensions
     distributed_stokes_solution.block(1) /= pressure_scaling;
 
+    // TODO: why do we only set the constraints for the pressure? It should not hurt
+    // do that also for the velocity. Note that we should implement constraint_matrix.set_zero()
+    // in deal.II and call it instead of this manual code. (TH)
     const unsigned int
     start = (distributed_stokes_solution.block(0).size() +
              distributed_stokes_solution.block(1).local_range().first),
