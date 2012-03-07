@@ -52,6 +52,8 @@ Topics for preview release:
 - make the default for parameters.include_shear_heating true after
   testing that the model works correctly
 - provide an option to store not only the last snapshot but many
+- move the adiabatic heating term (the last one in the temperature equation)
+  to the left hand side and make it implicit
 
 
 - Create a task list for a release that includes:
