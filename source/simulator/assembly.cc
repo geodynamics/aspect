@@ -623,7 +623,6 @@ namespace aspect
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
-//TODO: make the temperature be something useful here
         const double current_temperature = scratch.temperature_values[q];
         const double old_pressure = scratch.old_pressure_values[q];
 
