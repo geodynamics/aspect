@@ -20,8 +20,7 @@ namespace aspect
     SphericalShell<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-      AssertThrow (phi == 360 || dim!=3, ExcNotImplemented());
-
+      AssertThrow ((phi == 360 || phi == 90) || dim!=3, ExcNotImplemented());
       if (phi == 360)
         {
           GridGenerator::hyper_shell (coarse_grid,
@@ -36,7 +35,8 @@ namespace aspect
           GridGenerator::quarter_hyper_shell (coarse_grid,
                                               Point<dim>(),
                                               R0,
-                                              R1,0,
+                                              R1,
+                                              (dim==3) ? 3 : 0,
                                               true);
         }
       else if (phi == 180)
@@ -52,9 +52,13 @@ namespace aspect
           Assert (false, ExcInternalError());
         }
 
-      static const HyperShellBoundary<dim> boundary;
-      coarse_grid.set_boundary (0, boundary);
-      coarse_grid.set_boundary (1, boundary);
+      static const HyperShellBoundary<dim> boundary_shell;
+      static const StraightBoundary<dim> boundary_straight;
+      coarse_grid.set_boundary (0, boundary_shell);
+      coarse_grid.set_boundary (1, boundary_shell);
+      coarse_grid.set_boundary (2, boundary_straight);
+      coarse_grid.set_boundary (3, boundary_straight);
+      coarse_grid.set_boundary (4, boundary_straight);
     }
 
 
@@ -72,6 +76,12 @@ namespace aspect
           const types::boundary_id_t s[] = { 0, 1 };
           return std::set<types::boundary_id_t>(&s[0],
                                                 &s[sizeof(s)/sizeof(s[0])]);
+        }
+      else if (phi == 90 && dim == 3)
+        {
+          const unsigned char s[] = { 0, 1, 2, 3, 4};
+          return std::set<unsigned char>(&s[0],
+                                         &s[sizeof(s)/sizeof(s[0])]);
         }
       else
         {
