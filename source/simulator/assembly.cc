@@ -112,6 +112,7 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<Tensor<1,dim> > old_velocity_values;
+          std::vector<Tensor<1,dim> > old_old_velocity_values;
         };
 
 
@@ -129,7 +130,8 @@ namespace aspect
           phi_u (finite_element.dofs_per_cell),
           grads_phi_u (finite_element.dofs_per_cell),
           div_phi_u (finite_element.dofs_per_cell),
-          old_velocity_values (quadrature.size())
+          old_velocity_values (quadrature.size()),
+          old_old_velocity_values (quadrature.size())
         {}
 
 
@@ -142,7 +144,8 @@ namespace aspect
           phi_u (scratch.phi_u),
           grads_phi_u (scratch.grads_phi_u),
           div_phi_u (scratch.div_phi_u),
-          old_velocity_values (scratch.old_velocity_values)
+          old_velocity_values (scratch.old_velocity_values),
+          old_old_velocity_values (scratch.old_old_velocity_values)
         {}
 
 
@@ -761,6 +764,7 @@ namespace aspect
   {
     const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
     const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+    const bool use_bdf2_scheme       = (timestep_number > 1);
 
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
@@ -776,6 +780,10 @@ namespace aspect
                                                                 scratch.old_pressure_values);
     scratch.finite_element_values[velocities].get_function_values(old_solution,
                                                                   scratch.old_velocity_values);
+    scratch.finite_element_values[velocities].get_function_values(old_old_solution,
+                                                                  scratch.old_old_velocity_values);
+
+
 
     // cache whether the model is compressible or not
     const bool is_compressible = material_model->is_compressible ();
@@ -791,6 +799,10 @@ namespace aspect
       {
         const double current_temperature = scratch.temperature_values[q];
         const double old_pressure = scratch.old_pressure_values[q];
+        const Tensor<1,dim> extrapolated_u
+          = aspect::internal::bdf2_extrapolate(
+              use_bdf2_scheme, old_time_step, time_step,
+              scratch.old_old_velocity_values[q], scratch.old_velocity_values[q]);
 
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
@@ -840,13 +852,13 @@ namespace aspect
                                         * scratch.finite_element_values.JxW(q);
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
-          data.local_rhs(i) += (  // TODO: extrapolation of old_velocity
+          data.local_rhs(i) += (
                                  (density * gravity * scratch.phi_u[i])
                                  + (is_compressible
                                     ?
                                     (pressure_scaling *
                                      compressibility * density *
-                                     (scratch.old_velocity_values[q] * gravity) *
+                                     (extrapolated_u * gravity) *
                                      scratch.phi_p[i])
                                     :
                                     0)
