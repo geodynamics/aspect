@@ -76,9 +76,9 @@ namespace aspect
         }
       else if (phi == 90 && dim == 3)
         {
-          const unsigned char s[] = { 0, 1, 2, 3, 4};
-          return std::set<unsigned char>(&s[0],
-                                         &s[sizeof(s)/sizeof(s[0])]);
+          const types::boundary_id_t s[] = { 0, 1, 2, 3, 4};
+          return std::set<types::boundary_id_t>(&s[0],
+                                                &s[sizeof(s)/sizeof(s[0])]);
         }
       else
         {
