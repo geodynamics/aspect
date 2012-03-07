@@ -399,6 +399,7 @@ namespace aspect
   }
 
 
+//TODO: unify the following functions
   template <int dim>
   void Simulator<dim>::compute_depth_average_temperature(std::vector<double> &values) const
   {
