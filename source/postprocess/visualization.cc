@@ -276,10 +276,9 @@ namespace aspect
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
               std::vector<std::string> filenames;
-              for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
-                filenames.push_back (std::string("solution-") +
-                                     Utilities::int_to_string (output_file_number, 5) +
-                                     ".vtu");
+              filenames.push_back (std::string("solution-") +
+                                   Utilities::int_to_string (output_file_number, 5) +
+                                   ".vtu");
               const std::string
               pvtu_master_filename = (this->get_output_directory() +
                                       "solution-" +
