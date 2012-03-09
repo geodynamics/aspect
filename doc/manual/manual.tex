@@ -1288,7 +1288,7 @@ advantages beyond being widely distributed:
   produce, the compression that is part of the VTU format is an important part
   of keeping data manageable.}
 
-\subsubsection{Visualization using \textit{Visit}}
+\subsubsection{Visualization the graphical output using \textit{Visit}}
 In the following, let us discuss the process of visualizing a 2d computation
 using Visit. The steps necessary for other visualization programs will
 obviously differ but are, in principle, similar.
@@ -1330,6 +1330,25 @@ In order to visualize one time step, follow these steps:%
   \caption{\it Main window of Visit, illustrating the different steps of
     adding content to a visualization.}
   \label{fig:visit-1}
+\end{figure}
+
+\begin{figure}[tbp]
+  \phantom{.}
+  \hfill
+  \subfigure[]{
+    \includegraphics[width=0.48\textwidth]{visit-4}
+    \label{fig:visit-2:a}
+  }
+  \hfill
+  \subfigure[]{
+    \includegraphics[width=0.48\textwidth]{visit-5}
+    \label{fig:visit-2:b}
+  }
+  \hfill
+  \phantom{.}
+  \caption{\it Display window of Visit, showing a single plot and one where
+    different data is overlaid.}
+  \label{fig:visit-2}
 \end{figure}
 
 \begin{itemize}
@@ -1375,6 +1394,11 @@ In order to visualize one time step, follow these steps:%
   the main window looks as in Fig.~\ref{fig:visit-1:c} and the main view as in
   Fig.~\ref{fig:visit-2:b}.
 
+\item \textit{Adjusting how data is displayed:} Without going into too much
+  detail, if you double click onto the name of a plot in the ``Plots'' window,
+  you get a dialog in which many of the properties of this plot can be
+  adjusted. Further details can be changed by using ``Operators'' on a plot.
+
 \item \textit{Making the output prettier:} As can be seen in
   Fig.~\ref{fig:visit-2}, Visit by default puts a lot of clutter around the
   figure -- the name of the user, the name of the input file, color bars, axes
@@ -1393,6 +1417,10 @@ In order to visualize one time step, follow these steps:%
   looking pictures by selecting the ``Screenshot'' method in this dialog.
 \end{itemize}
 
+More information on all of these topis can be found in the Visit
+documentation, see \url{http://www.llnl.gov/visit/}.
+
+\subsubsection{Visualizing statistical data}
 
 \marginpar{To be written}
 
