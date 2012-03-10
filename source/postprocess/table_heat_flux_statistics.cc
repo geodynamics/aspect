@@ -115,7 +115,7 @@ namespace aspect
         for (std::set<types::boundary_id_t>::const_iterator
              p = boundary_indicators.begin();
              p != boundary_indicators.end(); ++p, ++index)
-          global_boundary_fluxes[*p] = local_values[index];
+          global_boundary_fluxes[*p] = global_values[index];
       }
 
 

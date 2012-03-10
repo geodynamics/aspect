@@ -115,9 +115,8 @@ namespace aspect
         for (std::set<types::boundary_id_t>::const_iterator
              p = boundary_indicators.begin();
              p != boundary_indicators.end(); ++p, ++index)
-          global_boundary_fluxes[*p] = local_values[index];
+          global_boundary_fluxes[*p] = global_values[index];
       }
-
 
 //TODO: This doesn't scale to more geometry models. simply output the data as is,
 // i.e. with association from boundary id to heat flux.
