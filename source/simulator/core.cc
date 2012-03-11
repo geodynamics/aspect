@@ -305,7 +305,7 @@ namespace aspect
 
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
-                                     current_constraints, false,
+                                     constraints, false,
                                      Utilities::MPI::
                                      this_mpi_process(mpi_communicator));
     sp.compress();
@@ -338,7 +338,7 @@ namespace aspect
 
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
-                                     current_constraints, false,
+                                     constraints, false,
                                      Utilities::MPI::
                                      this_mpi_process(mpi_communicator));
     sp.compress();
