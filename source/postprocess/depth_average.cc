@@ -76,19 +76,15 @@ namespace aspect
           // use this to leave a blank line in the output file at this
           // position
           DataPoint data_point;
-          data_point.time = std::numeric_limits<double>::quiet_NaN();
+          data_point.depth = -1.0;
           entries.push_back(data_point);
 
           // write out the file
           const std::string filename = this->get_output_directory() + "depthaverageT.plt";
-          std::ofstream f1;
-          if (this->get_time() < 1e-12)
-            f1.open (filename.c_str());
-          else
-            f1.open(filename.c_str(), std::fstream::app);
+          std::ofstream f1 (filename.c_str());
           for (unsigned int i=0; i<entries.size(); ++i)
             {
-              if (isnan(entries[i].time))
+              if (entries[i].depth==-1.0)
                 f1 << std::endl;
               else
                 f1 << entries[i].time << " "
@@ -117,19 +113,15 @@ namespace aspect
           // use this to leave a blank line in the output file at this
           // position
           DataPoint data_point;
-          data_point.time = std::numeric_limits<double>::quiet_NaN();
+          data_point.depth = -1.0;
           entries.push_back(data_point);
 
           // write out the file
           const std::string filename = this->get_output_directory() + "depthaveragevelocitymagnitude.plt";
-          std::ofstream f2;
-          if (this->get_time() < 1e-12)
-            f2.open (filename.c_str());
-          else
-            f2.open(filename.c_str(), std::fstream::app);
+          std::ofstream f2 (filename.c_str());
           for (unsigned int i=0; i<entries.size(); ++i)
             {
-              if (isnan(entries[i].time))
+              if (entries[i].depth==-1)
                 f2 << std::endl;
               else
                 f2 << entries[i].time << " "
@@ -158,19 +150,15 @@ namespace aspect
           // use this to leave a blank line in the output file at this
           // position
           DataPoint data_point;
-          data_point.time = std::numeric_limits<double>::quiet_NaN();
+          data_point.depth = -1.0;
           entries.push_back(data_point);
 
           // write out the file
           const std::string filename = this->get_output_directory() + "depthaveragesinkingvelocity.plt";
-          std::ofstream f3;
-          if (this->get_time() < 1e-12)
-            f3.open (filename.c_str());
-          else
-            f3.open(filename.c_str(), std::fstream::app);
+          std::ofstream f3 (filename.c_str());
           for (unsigned int i=0; i<entries.size(); ++i)
             {
-              if (isnan(entries[i].time))
+              if (entries[i].depth == -1.0)
                 f3 << std::endl;
               else
                 f3 << entries[i].time << " "
@@ -199,19 +187,15 @@ namespace aspect
           // use this to leave a blank line in the output file at this
           // position
           DataPoint data_point;
-          data_point.time = std::numeric_limits<double>::quiet_NaN();
+          data_point.depth = -1.0;
           entries.push_back(data_point);
 
           // write out the file
           const std::string filename = this->get_output_directory() + "depthaverageVs.plt";
-          std::ofstream f4;
-          if (this->get_time() < 1e-12)
-            f4.open (filename.c_str());
-          else
-            f4.open(filename.c_str(), std::fstream::app);
+          std::ofstream f4 (filename.c_str());
           for (unsigned int i=0; i<entries.size(); ++i)
             {
-              if (isnan(entries[i].time))
+              if (entries[i].depth == -1.0)
                 f4 << std::endl;
               else
                 f4 << entries[i].time << " "
@@ -240,20 +224,15 @@ namespace aspect
           // use this to leave a blank line in the output file at this
           // position
           DataPoint data_point;
-          data_point.time = std::numeric_limits<double>::quiet_NaN();
+          data_point.depth = -1.0;
           entries.push_back(data_point);
-
 
           // write out the file
           const std::string filename = this->get_output_directory() + "depthaverageVp.plt";
-          std::ofstream f5;
-          if (this->get_time() < 1e-12)
-            f5.open (filename.c_str());
-          else
-            f5.open(filename.c_str(), std::fstream::app);
+          std::ofstream f5 (filename.c_str());
           for (unsigned int i=0; i<entries.size(); ++i)
             {
-              if (isnan(entries[i].time))
+              if (entries[i].depth == -1.0)
                 f5 << std::endl;
               else
                 f5 << entries[i].time << " "
@@ -338,6 +317,7 @@ namespace aspect
       // see if something was saved
       if (status_strings.find("DepthAverage") != status_strings.end())
         {
+            std::cout << "loading depthaverage with " << status_strings.find("DepthAverage")->second << std::endl;
           std::istringstream is (status_strings.find("DepthAverage")->second);
           boost::archive::text_iarchive ia (is);
           ia >> (*this);
