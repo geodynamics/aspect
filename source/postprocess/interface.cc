@@ -149,7 +149,7 @@ namespace aspect
 
 
     template <int dim>
-    const TrilinosWrappers::MPI::BlockVector &
+    const LinearAlgebra::BlockVector &
     SimulatorAccess<dim>::get_solution () const
     {
       return simulator->solution;
@@ -158,7 +158,7 @@ namespace aspect
 
 
     template <int dim>
-    const TrilinosWrappers::MPI::BlockVector &
+    const LinearAlgebra::BlockVector &
     SimulatorAccess<dim>::get_old_solution () const
     {
       return simulator->old_solution;

@@ -23,6 +23,7 @@
 #include <deal.II/fe/fe_system.h>
 #include <deal.II/fe/mapping_q.h>
 
+#include <aspect/global.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
@@ -546,7 +547,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector);
+      void make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector);
 
       /**
        * Computes a running average of a vector.
@@ -633,7 +634,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
+      void normalize_pressure(LinearAlgebra::BlockVector &vector);
 
       /**
        * Compute the maximal velocity throughout the domain. This is needed
@@ -642,7 +643,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      double get_maximal_velocity (const TrilinosWrappers::MPI::BlockVector &solution) const;
+      double get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const;
 
       /**
        * Compute the variation (i.e., the difference between maximal and
@@ -787,22 +788,22 @@ namespace aspect
        * @name Variables that describe the linear systems and solution vectors
        * @{
        */
-      TrilinosWrappers::BlockSparseMatrix                       system_matrix;
-      TrilinosWrappers::BlockSparseMatrix                       system_preconditioner_matrix;
+      LinearAlgebra::BlockSparseMatrix                          system_matrix;
+      LinearAlgebra::BlockSparseMatrix                          system_preconditioner_matrix;
 
-      TrilinosWrappers::MPI::BlockVector                        solution;
-      TrilinosWrappers::MPI::BlockVector                        old_solution;
-      TrilinosWrappers::MPI::BlockVector                        old_old_solution;
-      TrilinosWrappers::MPI::BlockVector                        system_rhs;
+      LinearAlgebra::BlockVector                                solution;
+      LinearAlgebra::BlockVector                                old_solution;
+      LinearAlgebra::BlockVector                                old_old_solution;
+      LinearAlgebra::BlockVector                                system_rhs;
 
       // only used if is_compressible()
-      TrilinosWrappers::MPI::BlockVector                        pressure_shape_function_integrals;
+      LinearAlgebra::BlockVector                                pressure_shape_function_integrals;
 
 
 
-      std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionAMG>  Amg_preconditioner;
-      std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionILU>  Mp_preconditioner;
-      std_cxx1x::shared_ptr<TrilinosWrappers::PreconditionILU>  T_preconditioner;
+      std_cxx1x::shared_ptr<LinearAlgebra::PreconditionAMG>     Amg_preconditioner;
+      std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     Mp_preconditioner;
+      std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     T_preconditioner;
 
       bool                                                      rebuild_stokes_matrix;
       bool                                                      rebuild_stokes_preconditioner;

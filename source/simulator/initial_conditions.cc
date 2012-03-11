@@ -35,7 +35,7 @@ namespace aspect
     // the VectorTools::interpolate function
     // needs to write into it and we can not
     // write into vectors with ghost elements
-    TrilinosWrappers::MPI::BlockVector initial_solution;
+    LinearAlgebra::BlockVector initial_solution;
     initial_solution.reinit(system_rhs);
 
     // interpolate the initial values
@@ -77,7 +77,7 @@ namespace aspect
         // writable); the stokes_rhs vector is a valid template for
         // this kind of thing. interpolate into it and later copy it into the
         // solution vector that does have the necessary ghost elements
-        TrilinosWrappers::MPI::BlockVector system_tmp;
+        LinearAlgebra::BlockVector system_tmp;
         system_tmp.reinit (system_rhs);
 
         // interpolate the pressure given by the adiabatic conditions
@@ -107,7 +107,7 @@ namespace aspect
         Assert (system_pressure_fe.dofs_per_face == 0,
                 ExcNotImplemented());
 
-        TrilinosWrappers::MPI::BlockVector system_tmp;
+        LinearAlgebra::BlockVector system_tmp;
         system_tmp.reinit (system_rhs);
 
         QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);

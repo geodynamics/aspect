@@ -28,7 +28,7 @@ namespace aspect
     /**
      * Implement multiplication with Stokes part of system matrix
      */
-    class StokesBlock : public PointerMatrixBase<TrilinosWrappers::MPI::BlockVector>
+    class StokesBlock : public PointerMatrixBase<LinearAlgebra::BlockVector>
     {
       public:
         /**
@@ -36,23 +36,23 @@ namespace aspect
          *
          * @param S The entire system matrix
          */
-        StokesBlock (const TrilinosWrappers::BlockSparseMatrix  &S)
+        StokesBlock (const LinearAlgebra::BlockSparseMatrix  &S)
           : system_matrix(S) {};
 
         /**
          * Matrix vector product with Stokes block.
          */
-        void vmult (TrilinosWrappers::MPI::BlockVector       &dst,
-                    const TrilinosWrappers::MPI::BlockVector &src) const;
+        void vmult (LinearAlgebra::BlockVector       &dst,
+                    const LinearAlgebra::BlockVector &src) const;
 
-        void Tvmult (TrilinosWrappers::MPI::BlockVector       &dst,
-                     const TrilinosWrappers::MPI::BlockVector &src) const;
+        void Tvmult (LinearAlgebra::BlockVector       &dst,
+                     const LinearAlgebra::BlockVector &src) const;
 
-        void vmult_add (TrilinosWrappers::MPI::BlockVector       &dst,
-                        const TrilinosWrappers::MPI::BlockVector &src) const;
+        void vmult_add (LinearAlgebra::BlockVector       &dst,
+                        const LinearAlgebra::BlockVector &src) const;
 
-        void Tvmult_add (TrilinosWrappers::MPI::BlockVector       &dst,
-                         const TrilinosWrappers::MPI::BlockVector &src) const;
+        void Tvmult_add (LinearAlgebra::BlockVector       &dst,
+                         const LinearAlgebra::BlockVector &src) const;
 
         void clear() {};
 
@@ -66,13 +66,13 @@ namespace aspect
         /**
          * References to the system matrix object.
          */
-        const TrilinosWrappers::BlockSparseMatrix &system_matrix;
+        const LinearAlgebra::BlockSparseMatrix &system_matrix;
     };
 
 
 
-    void StokesBlock::vmult (TrilinosWrappers::MPI::BlockVector       &dst,
-                             const TrilinosWrappers::MPI::BlockVector &src) const
+    void StokesBlock::vmult (LinearAlgebra::BlockVector       &dst,
+                             const LinearAlgebra::BlockVector &src) const
     {
       system_matrix.block(0,0).vmult(dst.block(0), src.block(0));
       system_matrix.block(0,1).vmult_add(dst.block(0), src.block(1));
@@ -81,8 +81,8 @@ namespace aspect
       system_matrix.block(1,1).vmult_add(dst.block(1), src.block(1));
     }
 
-    void StokesBlock::Tvmult (TrilinosWrappers::MPI::BlockVector       &dst,
-                              const TrilinosWrappers::MPI::BlockVector &src) const
+    void StokesBlock::Tvmult (LinearAlgebra::BlockVector       &dst,
+                              const LinearAlgebra::BlockVector &src) const
     {
       system_matrix.block(0,0).Tvmult(dst.block(0), src.block(0));
       system_matrix.block(1,0).Tvmult_add(dst.block(0), src.block(1));
@@ -91,8 +91,8 @@ namespace aspect
       system_matrix.block(1,1).Tvmult_add(dst.block(1), src.block(1));
     }
 
-    void StokesBlock::vmult_add (TrilinosWrappers::MPI::BlockVector       &dst,
-                                 const TrilinosWrappers::MPI::BlockVector &src) const
+    void StokesBlock::vmult_add (LinearAlgebra::BlockVector       &dst,
+                                 const LinearAlgebra::BlockVector &src) const
     {
       system_matrix.block(0,0).vmult_add(dst.block(0), src.block(0));
       system_matrix.block(0,1).vmult_add(dst.block(0), src.block(1));
@@ -101,8 +101,8 @@ namespace aspect
       system_matrix.block(1,1).vmult_add(dst.block(1), src.block(1));
     }
 
-    void StokesBlock::Tvmult_add (TrilinosWrappers::MPI::BlockVector       &dst,
-                                  const TrilinosWrappers::MPI::BlockVector &src) const
+    void StokesBlock::Tvmult_add (LinearAlgebra::BlockVector       &dst,
+                                  const LinearAlgebra::BlockVector &src) const
     {
       system_matrix.block(0,0).Tvmult_add(dst.block(0), src.block(0));
       system_matrix.block(1,0).Tvmult_add(dst.block(0), src.block(1));
@@ -133,8 +133,8 @@ namespace aspect
          * @param do_solve_A A flag indicating whether we should actually solve with
          *     the matrix $A$, or only apply one preconditioner step with it.
          **/
-        BlockSchurPreconditioner (const TrilinosWrappers::BlockSparseMatrix  &S,
-                                  const TrilinosWrappers::BlockSparseMatrix  &Spre,
+        BlockSchurPreconditioner (const LinearAlgebra::BlockSparseMatrix  &S,
+                                  const LinearAlgebra::BlockSparseMatrix  &Spre,
                                   const PreconditionerMp                     &Mppreconditioner,
                                   const PreconditionerA                      &Apreconditioner,
                                   const bool                                  do_solve_A);
@@ -142,15 +142,15 @@ namespace aspect
         /**
          * Matrix vector product with this preconditioner object.
          */
-        void vmult (TrilinosWrappers::MPI::BlockVector       &dst,
-                    const TrilinosWrappers::MPI::BlockVector &src) const;
+        void vmult (LinearAlgebra::BlockVector       &dst,
+                    const LinearAlgebra::BlockVector &src) const;
 
       private:
         /**
          * References to the various matrix object this preconditioner works on.
          */
-        const TrilinosWrappers::BlockSparseMatrix &stokes_matrix;
-        const TrilinosWrappers::BlockSparseMatrix &stokes_preconditioner_matrix;
+        const LinearAlgebra::BlockSparseMatrix &stokes_matrix;
+        const LinearAlgebra::BlockSparseMatrix &stokes_preconditioner_matrix;
         const PreconditionerMp                    &mp_preconditioner;
         const PreconditionerA                     &a_preconditioner;
 
@@ -164,8 +164,8 @@ namespace aspect
 
     template <class PreconditionerA, class PreconditionerMp>
     BlockSchurPreconditioner<PreconditionerA, PreconditionerMp>::
-    BlockSchurPreconditioner (const TrilinosWrappers::BlockSparseMatrix  &S,
-                              const TrilinosWrappers::BlockSparseMatrix  &Spre,
+    BlockSchurPreconditioner (const LinearAlgebra::BlockSparseMatrix  &S,
+                              const LinearAlgebra::BlockSparseMatrix  &Spre,
                               const PreconditionerMp                     &Mppreconditioner,
                               const PreconditionerA                      &Apreconditioner,
                               const bool                                  do_solve_A)
@@ -181,10 +181,10 @@ namespace aspect
     template <class PreconditionerA, class PreconditionerMp>
     void
     BlockSchurPreconditioner<PreconditionerA, PreconditionerMp>::
-    vmult (TrilinosWrappers::MPI::BlockVector       &dst,
-           const TrilinosWrappers::MPI::BlockVector &src) const
+    vmult (LinearAlgebra::BlockVector       &dst,
+           const LinearAlgebra::BlockVector &src) const
     {
-      TrilinosWrappers::MPI::Vector utmp(src.block(0));
+      LinearAlgebra::Vector utmp(src.block(0));
 
       {
         SolverControl solver_control(5000, 1e-6 * src.block(1).l2_norm());
@@ -235,10 +235,11 @@ namespace aspect
 
       SolverControl solver_control (system_matrix.block(2,2).m(),
                                     1e-12*system_rhs.block(2).l2_norm());
-      SolverGMRES<TrilinosWrappers::MPI::Vector>   solver (solver_control,
-                                                           SolverGMRES<TrilinosWrappers::MPI::Vector>::AdditionalData(30,true));
 
-      TrilinosWrappers::MPI::BlockVector
+      SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
+                                                   SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
+
+      LinearAlgebra::BlockVector
       distributed_solution (system_rhs);
       distributed_solution = solution;
 
@@ -269,7 +270,7 @@ namespace aspect
     pcout << "   Solving Stokes system... " << std::flush;
 
     // extract Stokes parts of solution vector, without any ghost elements
-    TrilinosWrappers::MPI::BlockVector distributed_stokes_solution;
+    LinearAlgebra::BlockVector distributed_stokes_solution;
     distributed_stokes_solution.reinit(system_rhs);
     distributed_stokes_solution.block(0) = solution.block(0);
     distributed_stokes_solution.block(1) = solution.block(1);
@@ -296,12 +297,12 @@ namespace aspect
       make_pressure_rhs_compatible(system_rhs);
 
     // extract Stokes parts of rhs vector
-    TrilinosWrappers::MPI::BlockVector distributed_stokes_rhs;
+    LinearAlgebra::BlockVector distributed_stokes_rhs;
     distributed_stokes_rhs.reinit(system_rhs);
     distributed_stokes_rhs.block(0) = system_rhs.block(0);
     distributed_stokes_rhs.block(1) = system_rhs.block(1);
 
-    PrimitiveVectorMemory< TrilinosWrappers::MPI::BlockVector > mem;
+    PrimitiveVectorMemory< LinearAlgebra::BlockVector > mem;
 
     const internal::StokesBlock stokes_block(system_matrix);
 
@@ -314,15 +315,15 @@ namespace aspect
 
     try
       {
-        const internal::BlockSchurPreconditioner<TrilinosWrappers::PreconditionAMG,
-              TrilinosWrappers::PreconditionILU>
+        const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
+              LinearAlgebra::PreconditionILU>
               preconditioner (system_matrix, system_preconditioner_matrix,
                               *Mp_preconditioner, *Amg_preconditioner,
                               false);
 
-        SolverFGMRES<TrilinosWrappers::MPI::BlockVector>
+        SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_cheap, mem,
-               SolverFGMRES<TrilinosWrappers::MPI::BlockVector>::
+               SolverFGMRES<LinearAlgebra::BlockVector>::
                AdditionalData(30, true));
         solver.solve(stokes_block, distributed_stokes_solution,
                      distributed_stokes_rhs, preconditioner);
@@ -332,15 +333,15 @@ namespace aspect
     // the simple solver failed
     catch (SolverControl::NoConvergence)
       {
-        const internal::BlockSchurPreconditioner<TrilinosWrappers::PreconditionAMG,
-              TrilinosWrappers::PreconditionILU>
+        const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
+              LinearAlgebra::PreconditionILU>
               preconditioner (system_matrix, system_preconditioner_matrix,
                               *Mp_preconditioner, *Amg_preconditioner,
                               true);
 
-        SolverFGMRES<TrilinosWrappers::MPI::BlockVector>
+        SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_expensive, mem,
-               SolverFGMRES<TrilinosWrappers::MPI::BlockVector>::
+               SolverFGMRES<LinearAlgebra::BlockVector>::
                AdditionalData(50, true));
         solver.solve(stokes_block, distributed_stokes_solution,
                      distributed_stokes_rhs, preconditioner);

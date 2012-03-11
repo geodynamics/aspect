@@ -68,12 +68,12 @@ namespace aspect
 
     // save Triangulation and Solution vectors:
     {
-      std::vector<const TrilinosWrappers::MPI::BlockVector *> x_system (3);
+      std::vector<const LinearAlgebra::BlockVector *> x_system (3);
       x_system[0] = &solution;
       x_system[1] = &old_solution;
       x_system[2] = &old_old_solution;
 
-      parallel::distributed::SolutionTransfer<dim, TrilinosWrappers::MPI::BlockVector>
+      parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector>
       system_trans (dof_handler);
 
       system_trans.prepare_serialization (x_system);
@@ -100,18 +100,18 @@ namespace aspect
     global_volume = GridTools::volume (triangulation, mapping);
     setup_dofs();
 
-    TrilinosWrappers::MPI::BlockVector
+    LinearAlgebra::BlockVector
     distributed_system (system_rhs);
-    TrilinosWrappers::MPI::BlockVector
+    LinearAlgebra::BlockVector
     old_distributed_system (system_rhs);
-    TrilinosWrappers::MPI::BlockVector
+    LinearAlgebra::BlockVector
     old_old_distributed_system (system_rhs);
-    std::vector<TrilinosWrappers::MPI::BlockVector *> x_system (3);
+    std::vector<LinearAlgebra::BlockVector *> x_system (3);
     x_system[0] = & (distributed_system);
     x_system[1] = & (old_distributed_system);
     x_system[2] = & (old_old_distributed_system);
 
-    parallel::distributed::SolutionTransfer<dim, TrilinosWrappers::MPI::BlockVector>
+    parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector>
     system_trans (dof_handler);
 
     system_trans.deserialize (x_system);

@@ -733,10 +733,10 @@ namespace aspect
     DoFTools::extract_constant_modes (dof_handler, velocity_components,
                                       constant_modes);
 
-    Mp_preconditioner.reset (new TrilinosWrappers::PreconditionILU());
-    Amg_preconditioner.reset (new TrilinosWrappers::PreconditionAMG());
+    Mp_preconditioner.reset (new LinearAlgebra::PreconditionILU());
+    Amg_preconditioner.reset (new LinearAlgebra::PreconditionAMG());
 
-    TrilinosWrappers::PreconditionAMG::AdditionalData Amg_data;
+    LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
     Amg_data.constant_modes = constant_modes;
     Amg_data.elliptic = true;
     Amg_data.higher_order_elements = true;
@@ -1171,11 +1171,11 @@ namespace aspect
   copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data)
   {
     current_constraints.distribute_local_to_global (data.local_matrix,
-                                            data.local_rhs,
-                                            data.local_dof_indices,
-                                            system_matrix,
-                                            system_rhs
-                                           );
+                                                    data.local_rhs,
+                                                    data.local_dof_indices,
+                                                    system_matrix,
+                                                    system_rhs
+                                                   );
 
   }
 
@@ -1229,7 +1229,7 @@ namespace aspect
     computing_timer.exit_section();
 
     computing_timer.enter_section ("   Build temperature preconditioner");
-    T_preconditioner.reset (new TrilinosWrappers::PreconditionILU());
+    T_preconditioner.reset (new LinearAlgebra::PreconditionILU());
     T_preconditioner->initialize (system_matrix.block(2,2));
 
     computing_timer.exit_section();

@@ -89,7 +89,7 @@ namespace aspect
   **/
   template <int dim>
   double Simulator<dim>::get_maximal_velocity (
-    const TrilinosWrappers::MPI::BlockVector &solution) const
+    const LinearAlgebra::BlockVector &solution) const
   {
     // use a quadrature formula that has one point at
     // the location of each degree of freedom in the
@@ -267,7 +267,7 @@ namespace aspect
    * shell and subtracting this from all pressure nodes.
    */
   template <int dim>
-  void Simulator<dim>::normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector)
+  void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector)
   {
     double my_pressure = 0.0;
     double my_area = 0.0;
@@ -372,7 +372,7 @@ namespace aspect
    * information.
    */
   template <int dim>
-  void Simulator<dim>::make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector)
+  void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector)
   {
     if (parameters.use_locally_conservative_discretization)
       throw ExcNotImplemented();
@@ -799,15 +799,15 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  template void Simulator<deal_II_dimension>::normalize_pressure(TrilinosWrappers::MPI::BlockVector &vector);
+  template void Simulator<deal_II_dimension>::normalize_pressure(LinearAlgebra::BlockVector &vector);
 
-  template double Simulator<deal_II_dimension>::get_maximal_velocity (const TrilinosWrappers::MPI::BlockVector &solution) const;
+  template double Simulator<deal_II_dimension>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const;
 
   template std::pair<double,double> Simulator<deal_II_dimension>::get_extrapolated_temperature_range () const;
 
   template double Simulator<deal_II_dimension>::compute_time_step () const;
 
-  template void Simulator<deal_II_dimension>::make_pressure_rhs_compatible(TrilinosWrappers::MPI::BlockVector &vector);
+  template void Simulator<deal_II_dimension>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector);
 
   template void Simulator<deal_II_dimension>::compute_depth_average_temperature(std::vector<double> &values) const;
 

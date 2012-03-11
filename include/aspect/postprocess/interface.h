@@ -7,6 +7,7 @@
 #ifndef __aspect__postprocess_interface_h
 #define __aspect__postprocess_interface_h
 
+#include <aspect/global.h>
 #include <aspect/plugins.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/geometry_model/interface.h>
@@ -278,7 +279,7 @@ namespace aspect
          * @note In general the vector is a distributed vector; however, it
          * contains ghost elements for all locally relevant degrees of freedom.
          */
-        const TrilinosWrappers::MPI::BlockVector &
+        const LinearAlgebra::BlockVector &
         get_solution () const;
 
         /**
@@ -290,7 +291,7 @@ namespace aspect
          * @note In general the vector is a distributed vector; however, it
          * contains ghost elements for all locally relevant degrees of freedom.
          */
-        const TrilinosWrappers::MPI::BlockVector &
+        const LinearAlgebra::BlockVector &
         get_old_solution () const;
 
         /**

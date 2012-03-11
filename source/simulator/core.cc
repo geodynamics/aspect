@@ -577,7 +577,7 @@ namespace aspect
     if (parameters.refinement_strategy != "Temperature")
       {
         bool lookup_rho_c_p_T = (parameters.refinement_strategy == "Density c_p temperature");
-        TrilinosWrappers::MPI::BlockVector vec_distributed (system_rhs);
+        LinearAlgebra::BlockVector vec_distributed (system_rhs);
 
         const Quadrature<dim> quadrature(finite_element.get_unit_support_points());
         std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
@@ -624,7 +624,7 @@ namespace aspect
                   }
             }
 
-        TrilinosWrappers::MPI::BlockVector vec (solution);
+        LinearAlgebra::BlockVector vec (solution);
         vec = vec_distributed;
 
         DerivativeApproximation::approximate_gradient  (mapping,
@@ -783,11 +783,11 @@ namespace aspect
            cell != triangulation.end(); ++cell)
         cell->clear_refine_flag ();
 
-    std::vector<const TrilinosWrappers::MPI::BlockVector *> x_system (2);
+    std::vector<const LinearAlgebra::BlockVector *> x_system (2);
     x_system[0] = &solution;
     x_system[1] = &old_solution;
 
-    parallel::distributed::SolutionTransfer<dim,TrilinosWrappers::MPI::BlockVector>
+    parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
     triangulation.prepare_coarsening_and_refinement();
@@ -802,11 +802,11 @@ namespace aspect
     computing_timer.enter_section ("Refine mesh structure, part 2");
 
     {
-      TrilinosWrappers::MPI::BlockVector
+      LinearAlgebra::BlockVector
       distributed_system (system_rhs);
-      TrilinosWrappers::MPI::BlockVector
+      LinearAlgebra::BlockVector
       old_distributed_system (system_rhs);
-      std::vector<TrilinosWrappers::MPI::BlockVector *> system_tmp (2);
+      std::vector<LinearAlgebra::BlockVector *> system_tmp (2);
       system_tmp[0] = &(distributed_system);
       system_tmp[1] = &(old_distributed_system);
 
