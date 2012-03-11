@@ -1170,7 +1170,7 @@ namespace aspect
   Simulator<dim>::
   copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data)
   {
-    constraints.distribute_local_to_global (data.local_matrix,
+    current_constraints.distribute_local_to_global (data.local_matrix,
                                             data.local_rhs,
                                             data.local_dof_indices,
                                             system_matrix,

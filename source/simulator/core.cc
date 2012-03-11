@@ -249,7 +249,7 @@ namespace aspect
                          system_dofs_per_block[2]);
 
     // then interpolate the current boundary velocities. this adds to
-    // the stokes_constraints object we already have
+    // the current_constraints object we already have
     {
       IndexSet system_relevant_set;
       DoFTools::extract_locally_relevant_dofs (dof_handler,
@@ -305,7 +305,7 @@ namespace aspect
 
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
-                                     constraints, false,
+                                     current_constraints, false,
                                      Utilities::MPI::
                                      this_mpi_process(mpi_communicator));
     sp.compress();
@@ -338,7 +338,7 @@ namespace aspect
 
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
-                                     constraints, false,
+                                     current_constraints, false,
                                      Utilities::MPI::
                                      this_mpi_process(mpi_communicator));
     sp.compress();
@@ -423,7 +423,7 @@ namespace aspect
     // here are the ones that are the same for all following time steps. in
     // addition, we may be computing constraints from boundary values for the
     // velocity that are different between time steps. these are then put
-    // into current_stokes_constraints in start_timestep().
+    // into current_constraints in start_timestep().
     {
       constraints.clear();
       constraints.reinit(system_relevant_set);

@@ -245,7 +245,7 @@ namespace aspect
       solver.solve (system_matrix.block(2,2), distributed_solution.block(2),
                     system_rhs.block(2), *T_preconditioner);
 
-      constraints.distribute (distributed_solution);
+      current_constraints.distribute (distributed_solution);
       solution.block(2) = distributed_solution.block(2);
 
       // print number of iterations and also record it in the
@@ -286,7 +286,7 @@ namespace aspect
             end   = (distributed_stokes_solution.block(0).size() +
                      distributed_stokes_solution.block(1).local_range().second);
     for (unsigned int i=start; i<end; ++i)
-      if (constraints.is_constrained (i))
+      if (current_constraints.is_constrained (i))
         distributed_stokes_solution(i) = 0;
 
     // if the model is compressible then we need to adjust the right hand
@@ -348,7 +348,7 @@ namespace aspect
 
     // distribute hanging node and
     // other constraints
-    constraints.distribute (distributed_stokes_solution);
+    current_constraints.distribute (distributed_stokes_solution);
 
     // then copy back the solution from the temporary (non-ghosted) vector
     // into the ghosted one with all solution components
