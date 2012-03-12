@@ -317,7 +317,6 @@ namespace aspect
       // see if something was saved
       if (status_strings.find("DepthAverage") != status_strings.end())
         {
-            std::cout << "loading depthaverage with " << status_strings.find("DepthAverage")->second << std::endl;
           std::istringstream is (status_strings.find("DepthAverage")->second);
           boost::archive::text_iarchive ia (is);
           ia >> (*this);
