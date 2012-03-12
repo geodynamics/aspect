@@ -20,15 +20,15 @@ namespace aspect
     {
       // this initial condition only makes sense if the geometry is a
       // spherical shell. verify that it is indeed
-      Assert (dynamic_cast<const GeometryModel::Box<dim>*>
-              (this->geometry_model)
-              != 0,
+      const GeometryModel::Box<dim> *geometry
+        = dynamic_cast<const GeometryModel::Box<dim>*> (this->geometry_model);
+      Assert (geometry != 0,
               ExcMessage ("This initial condition can only be used if the geometry "
                           "is a box."));
 
       double perturbation = 1;
       for (unsigned int d=0; d<dim; ++d)
-        perturbation *= std::sin(numbers::PI*position[d]);
+        perturbation *= std::sin(numbers::PI*position[d]/geometry->get_extents()[d]);
       return 1 + perturbation/10;
     }
   }
