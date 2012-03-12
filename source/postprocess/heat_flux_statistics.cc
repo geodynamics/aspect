@@ -118,67 +118,31 @@ namespace aspect
           global_boundary_fluxes[*p] = global_values[index];
       }
 
-//TODO: This doesn't scale to more geometry models. simply output the data as is,
-// i.e. with association from boundary id to heat flux.
-      // record results and have something for the output. this depends
-      // on the interpretation of what boundary is which, which we can
-      // only do knowing what the geometry is
-      if (dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model())
-          != 0)
+      // now add all of the computed heat fluxes to the statistics object
+      // and create a single string that can be output to the screen
+      std::ostringstream screen_text;
+      unsigned int index = 0;
+      for (std::map<types::boundary_id_t, double>::const_iterator
+           p = global_boundary_fluxes.begin();
+           p != global_boundary_fluxes.end(); ++p, ++index)
         {
-          // we have a spherical shell. note that in that case we want
-          // to invert the sign of the core-mantle flux because we
-          // have computed the flux with a normal pointing from
-          // the mantle into the core, and not the other way around
-
-          statistics.add_value ("Core-mantle heat flux (W)", -global_boundary_fluxes[0]);
-          statistics.add_value ("Surface heat flux (W)",     global_boundary_fluxes[1]);
+          const std::string name = "Outward heat flux through boundary with indicator "
+                                   + Utilities::int_to_string(p->first);
+          statistics.add_value (name, p->second);
 
           // also make sure that the other columns filled by the this object
           // all show up with sufficient accuracy and in scientific notation
-          statistics.set_precision ("Core-mantle heat flux (W)", 8);
-          statistics.set_scientific ("Core-mantle heat flux (W)", true);
-          statistics.set_precision ("Surface heat flux (W)", 8);
-          statistics.set_scientific ("Surface heat flux (W)", true);
+          statistics.set_precision (name, 8);
+          statistics.set_scientific (name, true);
 
           // finally have something for the screen
-          std::ostringstream output;
-          output.precision(4);
-          output << -global_boundary_fluxes[0] << " W, "
-                 << global_boundary_fluxes[1] << " W";
-
-          return std::pair<std::string, std::string> ("Inner/outer heat fluxes:",
-                                                      output.str());
+          screen_text.precision(4);
+          screen_text << p->second << " W"
+                      << (index == global_boundary_fluxes.size()-1 ? "" : ", ");
         }
-      else if (dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model())
-               != 0)
-        {
-          // for the box geometry we can associate boundary indicators 0 and 1
-          // to left and right boundaries
-          statistics.add_value ("Left boundary heat flux (W)", global_boundary_fluxes[0]);
-          statistics.add_value ("Right boundary heat flux (W)", global_boundary_fluxes[1]);
 
-          // also make sure that the other columns filled by the this object
-          // all show up with sufficient accuracy and in scientific notation
-          statistics.set_precision ("Left boundary heat flux (W)", 8);
-          statistics.set_scientific ("Left boundary heat flux (W)", true);
-          statistics.set_precision ("Right boundary heat flux (W)", 8);
-          statistics.set_scientific ("Right boundary heat flux (W)", true);
-
-          // finally have something for the screen
-          std::ostringstream output;
-          output.precision(4);
-          output << global_boundary_fluxes[0] << " W, "
-                 << global_boundary_fluxes[1] << " W";
-
-          return std::pair<std::string, std::string> ("Left/right heat fluxes:",
-                                                      output.str());
-        }
-      else
-        AssertThrow (false, ExcNotImplemented());
-
-      return std::pair<std::string, std::string> ("",
-                                                  "");
+      return std::pair<std::string, std::string> ("Heat fluxes through boundary parts:",
+                                                  screen_text.str());
     }
   }
 }
