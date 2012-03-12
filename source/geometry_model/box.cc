@@ -43,6 +43,14 @@ namespace aspect
 
 
     template <int dim>
+    Point<dim>
+    Box<dim>::get_extents () const
+    {
+      return extents;
+    }
+
+
+    template <int dim>
     double
     Box<dim>::
     length_scale () const
