@@ -108,17 +108,6 @@ subsection Geometry model
   set Model name = spherical shell
 
 
-  subsection Box
-    # Extent of the box in x-direction. Units: m.
-    set X extent = 1
-
-    # Extent of the box in y-direction. Units: m.
-    set Y extent = 1
-
-    # Extent of the box in z-direction. This value is ignored if the
-    # simulation is in 2d Units: m.
-    set Z extent = 1
-  end
 
   subsection Spherical shell
     # Inner radius of the spherical shell. Units: m.
@@ -126,7 +115,7 @@ subsection Geometry model
 
     # Opening angle in degrees of the section of the shell that we want to
     # build. Units: degrees.
-    set Opening angle = 360
+    set Opening angle = 90
 
     # Outer radius of the spherical shell. Units: m.
     set Outer radius  = 6336000
@@ -232,43 +221,15 @@ subsection Material model
     set Reference temperature         = 293
 
     # The value of the thermal conductivity $k$. Units: $W/m/K$.
-    set Thermal conductivity          = 1e-6
+    set Thermal conductivity          = 4.7#1e-6
 
     # The value of the thermal expansion coefficient $\beta$. Units: $1/K$.
-    set Thermal expansion coefficient = 2e-5
+    set Thermal expansion coefficient = 4e-5
 
     # The value of the constant viscosity. Units: $kg/m/s$.
-    set Viscosity                     = 5e24
+    set Viscosity                     = 1e22
   end
 
-  subsection Table model
-    # The Composition of the model.
-    set Composition                   = olixene
-
-    # The value of the Gravity$. Units: $m/s^2$.
-    set Gravity                       = 30
-
-    # The path to the model data.
-    set Path to model data            = datadir
-
-    # Reference density $\rho_0$. Units: $kg/m^3$.
-    set Reference density             = 3300
-
-    # The reference temperature $T_0$. Units: $K$.
-    set Reference temperature         = 293
-
-    # The value of the thermal conductivity $k$. Units: $W/m/K$.
-    set Thermal conductivity          = 4.7
-
-    # The value of the thermal diffusivity $kappa& Units: $m^2/s$.
-    set Thermal diffusivity           = 0.9181e-07
-
-    # The value of the thermal expansion coefficient $\beta$. Units: $1/K$.
-    set Thermal expansion coefficient = 2e-5
-
-    # The value of the constant viscosity. Units: $kg/m/s$.
-    set Viscosity                     = 5e24
-  end
 
 end
 
@@ -286,11 +247,11 @@ subsection Mesh refinement
 
   # The number of adaptive refinement steps performed after initial global
   # refinement but while still within the first time step.
-  set Initial adaptive refinement        = 2
+  set Initial adaptive refinement        = 3
 
   # The number of global refinement steps performed on the initial coarse
   # mesh, before the problem is first solved there.
-  set Initial global refinement          = 2
+  set Initial global refinement          = 3
 
   # The fraction of cells with the largest error that should be flagged for
   # refinement.
@@ -333,7 +294,7 @@ subsection Model settings
   # velocity is tangential and unrestrained, i.e., where no external forces
   # act to prescribe a particular tangential velocity (although there is a
   # force that requires the flow to be tangential).
-  set Tangential velocity boundary indicators = 1
+  set Tangential velocity boundary indicators = 1,2,3
 
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is zero.
@@ -377,6 +338,9 @@ subsection Postprocess
 
 
   subsection Visualization
+
+    set Number of grouped files       = 0
+
     # The file format to be used for graphical output.
     set Output format                 = vtu
 
@@ -384,7 +348,11 @@ subsection Postprocess
     # value of zero indicates that output should be generated in each time
     # step. Units: years if the 'Use years in output instead of seconds'
     # parameter is set; seconds otherwise.
-    set Time between graphical output = 1e8
+    set Time between graphical output = 1e6
+  end
+
+  subsection Depth average
+    set Time between graphical output = 1e6
   end
 
 end
