@@ -312,6 +312,12 @@ namespace aspect
         get_depth_average_temperature(std::vector<double> &values) const;
 
         /**
+         * Compute a depth average of the current viscosity
+         */
+        void
+        get_depth_average_viscosity(std::vector<double> &values) const;
+
+        /**
          * Compute a depth average of the current velocity magnitude
          */
         void

@@ -240,6 +240,41 @@ namespace aspect
                    << entries[i].value << std::endl;
             }
         }
+      temp.clear();
+      this->get_depth_average_viscosity(temp);
+
+      if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+        {
+          // store data from the current step
+          for (unsigned int i=0; i<temp.size(); ++i)
+            {
+              DataPoint data_point;
+              data_point.time  = this->get_time();
+              data_point.depth = max_depth*i/temp.size();
+              data_point.value = temp[i];
+              entries.push_back(data_point);
+            }
+
+          // leave a marker for the end of this time step. we'll later
+          // use this to leave a blank line in the output file at this
+          // position
+          DataPoint data_point;
+          data_point.depth = -1.0;
+          entries.push_back(data_point);
+
+          // write out the file
+          const std::string filename = this->get_output_directory() + "depthaverageViscosity.plt";
+          std::ofstream f6 (filename.c_str());
+          for (unsigned int i=0; i<entries.size(); ++i)
+            {
+              if (entries[i].depth == -1.0)
+                f6 << std::endl;
+              else
+                f6 << entries[i].time << " "
+                << entries[i].depth << " "
+                << entries[i].value << std::endl;
+            }
+        }
 
       set_next_output_time (this->get_time());
 

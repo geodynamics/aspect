@@ -570,6 +570,17 @@ namespace aspect
       void compute_depth_average_temperature(std::vector<double> &values) const;
 
       /**
+       * Compute a depth average of the current temperature. The function
+       * fills a vector that contains average temperatures over slices of the
+       * domain of same depth. The function resizes the output vector to match
+       * the number of depth slices.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void compute_depth_average_viscosity(std::vector<double> &values) const;
+
+      /**
        * Compute a depth average of the current velocity magnitude.
        *
        * This function is implemented in

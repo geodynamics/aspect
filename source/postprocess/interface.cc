@@ -184,6 +184,13 @@ namespace aspect
 
     template <int dim>
     void
+    SimulatorAccess<dim>::get_depth_average_viscosity(std::vector<double> &values) const
+    {
+      simulator->compute_depth_average_viscosity(values);
+    }
+
+    template <int dim>
+    void
     SimulatorAccess<dim>::get_depth_average_velocity_magnitude(std::vector<double> &values) const
     {
       simulator->compute_depth_average_velocity_magnitude(values);
