@@ -1163,11 +1163,28 @@ The purpose of these files is as follows:
   files that start with a hash mark), it is simple to plot these columns as time
   series. Alternatively, the data can be imported into a spreadsheet and
   plotted there.
-\end{itemize}
-
 \note{As noted in Section~\ref{sec:equations}, \aspect{} can be thought to compute
   in the meter-kilogram-second (MKS, or SI) system. Unless otherwise noted,
   the quantities in the output file are therefore also in MKS units.}
+
+\item \textit{Depth average statistics:} Similar to the
+  \texttt{output/statistics} file, Aspect can generate depth-average
+  statistics into \texttt{output/depthaverage.plt}. This is done by the
+  ``depth average'' postprocessor and the user can control how often this
+  file is updated.
+
+  The data is written in text format that can be easily displayed by
+  e.g. gnuplot. For an example, see Figure \ref{fig:depthaverage}.
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=0.6\textwidth]{depthaverage2}
+  \caption{\it Example output for depth average statistics. On the left axis are 13 time steps, on the right is the depth (from the top at 0 to the bottom of the mantle on the far right), and the upwards pointing axis is the average temperature. This plot is created by calling \emph{splot "depthaverage.plt" using 1:2:3 with lines} in gnuplot.}
+  \label{fig:depthaverage}
+\end{figure}
+
+\end{itemize}
+
 
 
 \subsection{Selecting between 2d and 3d runs}
