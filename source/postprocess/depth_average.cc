@@ -58,7 +58,7 @@ namespace aspect
       std::vector<double> temp;
       this->get_depth_average_temperature(temp);
 
-      const double max_depth = this->get_geometry_model().maximal_depth()/1e2;
+      const double max_depth = this->get_geometry_model().maximal_depth();
 
       if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
         {
