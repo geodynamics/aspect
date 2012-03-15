@@ -15,7 +15,7 @@
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/box.h>
 
-#include <base/std_cxx1x/bind.h>
+#include <deal.II/base/std_cxx1x/bind.h>
 
 
 namespace aspect
@@ -66,8 +66,8 @@ namespace aspect
                           dTdp * density * gravity * delta_z;
       }
 
-    Assert (*min_element (pressures.begin(), pressures.end()) >= 0, ExcInternalError());
-    Assert (*min_element (temperatures.begin(), temperatures.end()) >= 0, ExcInternalError());
+    Assert (*std::min_element (pressures.begin(), pressures.end()) >= 0, ExcInternalError());
+    Assert (*std::min_element (temperatures.begin(), temperatures.end()) >= 0, ExcInternalError());
   }
 
 
