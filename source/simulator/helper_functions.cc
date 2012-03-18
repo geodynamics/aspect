@@ -388,13 +388,18 @@ namespace aspect
   void Simulator<dim>::compute_running_average(std::vector<double> &values, const int ncells) const
   {
 
+    std::vector<double> temp(values.size());
+
     for (unsigned int idx=0; idx<values.size(); idx++)
       {
         double sum = 0;
-        for (int isum=-ncells/2; isum<ncells/2; isum++)
-          sum += values[std::max(0,std::min((int) values.size(),(int) idx+isum))];
-        values[idx] = sum/((double) ncells);
+        for (int isum=-ncells; isum<=ncells; isum++)
+          {
+            sum += values[std::max(0,std::min((int) values.size()-1,(int) idx+isum))];
+          }
+        temp[idx] = sum/((double) (ncells*2+1));
       }
+    values = temp;
 
   }
 
@@ -464,14 +469,14 @@ namespace aspect
     // this yields 100 quadrature points evenly distributed in the interior of the cell.
     // We avoid points on the faces, as they would be counted more than once.
     const QIterated<dim> quadrature_formula (QMidpoint<1>(),
-        10);
+                                             10);
     const unsigned int n_q_points = quadrature_formula.size();
     const double max_depth = geometry_model->maximal_depth();
 
     FEValues<dim> fe_values (mapping,
-        finite_element,
-        quadrature_formula,
-        update_values | update_quadrature_points);
+                             finite_element,
+                             quadrature_formula,
+                             update_values | update_quadrature_points);
 
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
@@ -490,7 +495,7 @@ namespace aspect
         {
           fe_values.reinit (cell);
           fe_values[pressure].get_function_values (this->solution,
-              pressure_values);
+                                                   pressure_values);
           fe_values[temperature].get_function_values (this->solution,
                                                       temperature_values);
           for (unsigned int q = 0; q < n_q_points; ++q)
@@ -755,7 +760,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::compute_Vs_anomaly(Vector<float> &values) const
   {
-    const int npoints = 5;
+    const int npoints = 2; // npoint in running average half-width of window
     std::vector<double> Vs_depth_average;
 
     compute_depth_average_Vs(Vs_depth_average);
@@ -810,7 +815,7 @@ namespace aspect
   void Simulator<dim>::compute_Vp_anomaly(Vector<float> &values) const
   {
 
-    const int npoints = 5;
+    const int npoints = 2; // npoint in running average half-width of window
     std::vector<double> Vp_depth_average;
 
     compute_depth_average_Vp(Vp_depth_average);
