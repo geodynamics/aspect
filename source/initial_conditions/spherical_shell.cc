@@ -64,9 +64,9 @@ namespace aspect
     SphericalGaussianPerturbation<dim>::
     SphericalGaussianPerturbation()
     {
-      /*
-       Note that the values we read in here have reasonable default values equation to
-       the following:
+
+/*       Note that the values we read in here have reasonable default values equation to
+       the following:*/
                 geotherm.resize(4);
                 radial_position.resize(4);
                 geotherm[0] = 1e0;
@@ -77,28 +77,7 @@ namespace aspect
                 radial_position[1] =  0.16666666666666666;
                 radial_position[2] =  0.83333333333333337;
                 radial_position[3] =  1e0+1e-3;
-       */
 
-      std::ifstream in(initial_geotherm_table.c_str());
-      AssertThrow (in,
-                   ExcMessage ("Could not open file <" + initial_geotherm_table + ">"));
-
-      std::string temp;
-      int dummy, npoint;
-
-      in >> dummy >> npoint;
-      getline(in, temp); // eat remainder of the line
-      geotherm.resize(npoint);
-      radial_position.resize(npoint);
-
-      // read geotherm depth pairs
-      for (int i=0; i<npoint; i++)
-        {
-          in >> geotherm[npoint-i-1] >> radial_position[i];
-          getline(in, temp); // eat remainder of the line
-        }
-      radial_position[0] -= 1e-3;
-      radial_position[3] += 1e-3;
 
     }
 
