@@ -79,7 +79,7 @@ namespace aspect
               data_point.time  = this->get_time();
               data_point.depth = max_depth*i/temp[0].size();
               data_point.values.resize(n_statistics);
-              for (unsigned int j=0;j<n_statistics;++j)
+              for (unsigned int j=0; j<n_statistics; ++j)
                 data_point.values[j]=temp[j][i];
               entries.push_back(data_point);
             }
@@ -99,13 +99,13 @@ namespace aspect
           for (unsigned int i=0; i<entries.size(); ++i)
             {
               if (entries[i].values.empty())
-               {
+                {
                   f << std::endl;
                   continue;
                 }
               f << entries[i].time << " "
                 << entries[i].depth;
-              for (unsigned int j=0;j<n_statistics;++j)
+              for (unsigned int j=0; j<n_statistics; ++j)
                 f << " " << entries[i].values[j];
               f << std::endl;
             }
