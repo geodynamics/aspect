@@ -105,7 +105,7 @@ namespace aspect
                                    const double,
                                    const Point<dim> &) const
     {
-      return thermal_alpha / reference_rho;
+      return thermal_alpha;
     }
 
 
