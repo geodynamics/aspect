@@ -254,6 +254,8 @@ namespace aspect
 
       Vector<float> Vs_anomaly(this->get_triangulation().n_active_cells());
       this->get_Vs_anomaly(Vs_anomaly);
+      Vector<float> Vp_anomaly(this->get_triangulation().n_active_cells());
+      this->get_Vp_anomaly(Vp_anomaly);
 
       // create a DataOut object on the heap; ownership of this
       // object will later be transferred to a different thread
@@ -264,6 +266,7 @@ namespace aspect
       data_out.add_data_vector (this->get_solution(), postprocessor);
       data_out.add_data_vector (estimated_error_per_cell, "error_indicator");
       data_out.add_data_vector (Vs_anomaly, "Vs_anomaly");
+      data_out.add_data_vector (Vp_anomaly, "Vp_anomaly");
       data_out.build_patches ();
 
       if (output_format=="vtu" && group_files!=0)
