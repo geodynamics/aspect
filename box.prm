@@ -109,6 +109,8 @@ subsection Postprocess
     # The time interval (in years) between each generation of graphical output
     # files.
     set Time between graphical output = 0
+    set Output format = vtu
+    set Number of grouped files = 0
   end
 
 end
