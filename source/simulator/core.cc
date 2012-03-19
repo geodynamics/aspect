@@ -273,6 +273,10 @@ namespace aspect
                                                   velocity_mask);
       current_constraints.close();
     }
+
+    //TODO: do this in a more efficient way (TH)?
+    if (!parameters.prescribed_velocity_boundary_indicators.empty())
+      rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
   }
 
 
@@ -861,10 +865,6 @@ namespace aspect
     // start the principal loop over time steps:
     do
       {
-        //TODO: do this in a more efficient way (TH)
-        if (!parameters.prescribed_velocity_boundary_indicators.empty())
-          rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
-
         start_timestep ();
 
         // then do the core work: assemble systems and solve
