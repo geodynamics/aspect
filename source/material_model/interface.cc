@@ -107,10 +107,6 @@ namespace aspect
     namespace
     {
       internal::Plugins::PluginList<Interface<deal_II_dimension> > registered_plugins;
-
-      template <>
-      std::list<internal::Plugins::PluginList<Interface<deal_II_dimension> >::PluginInfo> *
-      internal::Plugins::PluginList<Interface<deal_II_dimension> >::plugins = 0;
     }
 
 
@@ -210,6 +206,14 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
+  namespace internal {
+    namespace Plugins {
+      template <>
+      std::list<internal::Plugins::PluginList<MaterialModel::Interface<deal_II_dimension> >::PluginInfo> *
+      internal::Plugins::PluginList<MaterialModel::Interface<deal_II_dimension> >::plugins = 0;
+    }
+  }
+
   namespace MaterialModel
   {
     template class Interface<deal_II_dimension>;
