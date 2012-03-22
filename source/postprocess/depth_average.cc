@@ -212,7 +212,7 @@ namespace aspect
                                (output_interval * year_in_seconds);
           else
             next_output_time = std::ceil(current_time / (output_interval )) *
-                               (output_interval * year_in_seconds);
+                               output_interval;
         }
     }
   }
