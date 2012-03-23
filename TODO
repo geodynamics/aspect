@@ -51,6 +51,7 @@ Topics for preview release:
 - provide an option to store not only the last snapshot but many
 - move the adiabatic heating term (the last one in the temperature equation)
   to the left hand side and make it implicit
+- create an index for the manual, especially for the many parameters
 
 
 - Create a task list for a release that includes:
