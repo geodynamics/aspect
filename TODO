@@ -54,12 +54,21 @@ Topics for preview release:
 
 
 - Create a task list for a release that includes:
+  . create a branch
+  . update the version number on the front page of doc/manual.pdf
+  . remove the various table_* postprocessors
   . update doc/manual/parameters.tex
   . update and check in doc/manual.pdf
   . make sure the .prm and .xml files we ship match the default values
     of parameters
-  . remove the various table_* postprocessors
-  . update the version number on the front page of doc/manual.pdf
+  . create a tar file
+  . upload tar file
+  . link in on download.html
+  . announce on
+       cig@geodynamics.org
+       aspect-devel@geodynamics.org
+       mc@geodynamics.org   (??)
+       cse@geodynamics.org  (??)
 
 
 First release
