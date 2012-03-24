@@ -461,7 +461,6 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const
   {
-
     const unsigned int num_slices = 100;
     values.resize(num_slices);
     std::vector<unsigned int> counts(num_slices);
@@ -478,9 +477,11 @@ namespace aspect
                              quadrature_formula,
                              update_values | update_quadrature_points);
 
+    const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
 
+    std::vector<SymmetricTensor<2,dim> > strain_rates(n_q_points);
     std::vector<double> pressure_values(n_q_points);
     std::vector<double> temperature_values(n_q_points);
 
@@ -498,6 +499,9 @@ namespace aspect
                                                    pressure_values);
           fe_values[temperature].get_function_values (this->solution,
                                                       temperature_values);
+          fe_values[velocities].get_function_symmetric_gradients (this->solution,
+                                                                  strain_rates);
+
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
@@ -506,6 +510,7 @@ namespace aspect
 
               const double viscosity = material_model->viscosity(temperature_values[q],
                                                                  pressure_values[q],
+                                                                 strain_rates[q],
                                                                  fe_values.quadrature_point(q));
               ++counts[idx];
               values[idx] += viscosity;

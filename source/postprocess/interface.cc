@@ -413,8 +413,10 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace internal {
-    namespace Plugins {
+  namespace internal
+  {
+    namespace Plugins
+    {
       template <>
       std::list<internal::Plugins::PluginList<Postprocess::Interface<deal_II_dimension> >::PluginInfo> *
       internal::Plugins::PluginList<Postprocess::Interface<deal_II_dimension> >::plugins = 0;

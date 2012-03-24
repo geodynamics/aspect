@@ -20,6 +20,7 @@ namespace aspect
     Simple<dim>::
     viscosity (const double,
                const double,
+               const SymmetricTensor<2,dim> &,
                const Point<dim> &) const
     {
       return eta;

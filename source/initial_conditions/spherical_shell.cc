@@ -65,18 +65,18 @@ namespace aspect
     SphericalGaussianPerturbation()
     {
 
-/*       Note that the values we read in here have reasonable default values equation to
-       the following:*/
-                geotherm.resize(4);
-                radial_position.resize(4);
-                geotherm[0] = 1e0;
-                geotherm[1] = 0.75057142857142856;
-                geotherm[2] = 0.32199999999999995;
-                geotherm[3] = 0.0;
-                radial_position[0] =  0e0-1e-3;
-                radial_position[1] =  0.16666666666666666;
-                radial_position[2] =  0.83333333333333337;
-                radial_position[3] =  1e0+1e-3;
+      /*       Note that the values we read in here have reasonable default values equation to
+             the following:*/
+      geotherm.resize(4);
+      radial_position.resize(4);
+      geotherm[0] = 1e0;
+      geotherm[1] = 0.75057142857142856;
+      geotherm[2] = 0.32199999999999995;
+      geotherm[3] = 0.0;
+      radial_position[0] =  0e0-1e-3;
+      radial_position[1] =  0.16666666666666666;
+      radial_position[2] =  0.83333333333333337;
+      radial_position[3] =  1e0+1e-3;
 
 
     }

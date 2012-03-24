@@ -141,6 +141,7 @@ namespace aspect
     Steinberger<dim>::
     viscosity (const double,
                const double,
+               const SymmetricTensor<2,dim> &,
                const Point<dim> &position) const
     {
       static internal::radial_viscosity_lookup table("data/material-model/steinberger/radial_visc.txt");

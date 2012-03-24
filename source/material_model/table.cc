@@ -332,6 +332,7 @@ namespace aspect
     Table<dim>::
     viscosity (const double temperature,
                const double pressure,
+               const SymmetricTensor<2,dim> &,
                const Point<dim> &position) const
     {
       double viscosity;

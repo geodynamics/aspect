@@ -29,9 +29,10 @@ namespace aspect
     class Steinberger: public MaterialModel::Interface<dim>
     {
       public:
-        virtual double viscosity (const double temperature,
-                                  const double pressure,
-                                  const Point<dim> &position) const;
+        virtual double viscosity (const double                  temperature,
+                                  const double                  pressure,
+                                  const SymmetricTensor<2,dim> &strain_rate,
+                                  const Point<dim>             &position) const;
 
         virtual double reference_viscosity () const;
 

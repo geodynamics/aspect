@@ -46,6 +46,7 @@ namespace aspect
 
           std::vector<double>                  temperature_values;
           std::vector<double>                  old_pressure_values;
+          std::vector<SymmetricTensor<2,dim> > old_strain_rates;
         };
 
 
@@ -62,7 +63,8 @@ namespace aspect
           grads_phi_u (finite_element.dofs_per_cell),
           phi_p (finite_element.dofs_per_cell),
           temperature_values (quadrature.size()),
-          old_pressure_values (quadrature.size())
+          old_pressure_values (quadrature.size()),
+          old_strain_rates (quadrature.size())
         {}
 
 
@@ -78,7 +80,8 @@ namespace aspect
           grads_phi_u (scratch.grads_phi_u),
           phi_p (scratch.phi_p),
           temperature_values (scratch.temperature_values),
-          old_pressure_values (scratch.old_pressure_values)
+          old_pressure_values (scratch.old_pressure_values),
+          old_strain_rates (scratch.old_strain_rates)
         {}
 
 
@@ -512,6 +515,7 @@ namespace aspect
         // verify correctness of the heating term
         const double viscosity =  material_model->viscosity(T,
                                                             p,
+                                                            strain_rate,
                                                             evaluation_points[q]);
         const bool is_compressible = material_model->is_compressible ();
         const double compressibility
@@ -618,6 +622,8 @@ namespace aspect
                                                                     scratch.temperature_values);
     scratch.finite_element_values[pressure].get_function_values(old_solution,
                                                                 scratch.old_pressure_values);
+    scratch.finite_element_values[velocities].get_function_symmetric_gradients(old_solution,
+                                                                               scratch.old_strain_rates);
 
     data.local_matrix = 0;
 
@@ -632,9 +638,10 @@ namespace aspect
             scratch.phi_p[k]       = scratch.finite_element_values[pressure].value (k, q);
           }
 
-        double eta = material_model->viscosity(current_temperature,
-                                               old_pressure,
-                                               scratch.finite_element_values.quadrature_point(q) );
+        const double eta = material_model->viscosity(current_temperature,
+                                                     old_pressure,
+                                                     scratch.old_strain_rates[q],
+                                                     scratch.finite_element_values.quadrature_point(q) );
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           for (unsigned int j=0; j<dofs_per_cell; ++j)
@@ -781,6 +788,8 @@ namespace aspect
                                                                   scratch.old_velocity_values);
     scratch.finite_element_values[velocities].get_function_values(old_old_solution,
                                                                   scratch.old_old_velocity_values);
+    scratch.finite_element_values[velocities].get_function_symmetric_gradients(old_solution,
+                                                                               scratch.old_strain_rates);
 
 
 
@@ -816,6 +825,7 @@ namespace aspect
 
         const double eta = material_model->viscosity(current_temperature,
                                                      old_pressure,
+                                                     scratch.old_strain_rates[q],
                                                      scratch.finite_element_values.quadrature_point(q));
 
         const Tensor<1,dim>
@@ -1080,7 +1090,9 @@ namespace aspect
                                                                            ext_pressure,
                                                                            scratch.finite_element_values.quadrature_point(q));
 
-        const double viscosity =  material_model->viscosity(ext_T, ext_pressure,
+        const double viscosity =  material_model->viscosity(ext_T,
+                                                            ext_pressure,
+                                                            extrapolated_strain_rate,
                                                             scratch.finite_element_values.quadrature_point(q));
         const bool is_compressible = material_model->is_compressible ();
         const double compressibility

@@ -30,9 +30,10 @@ namespace aspect
          * @name Physical parameters used in the basic equations
          * @{
          */
-        virtual double viscosity (const double temperature,
-                                  const double pressure,
-                                  const Point<dim> &position) const;
+        virtual double viscosity (const double                  temperature,
+                                  const double                  pressure,
+                                  const SymmetricTensor<2,dim> &strain_rate,
+                                  const Point<dim>             &position) const;
 
         virtual double density (const double temperature,
                                 const double pressure,

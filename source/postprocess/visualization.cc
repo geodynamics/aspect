@@ -181,13 +181,17 @@ namespace aspect
                  strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
                  :
                  strain_rate);
-            computed_quantities[q](dim+2) = 2 * material_model.viscosity(temperature, pressure, evaluation_points[q]) *
+            computed_quantities[q](dim+2) = 2 * material_model.viscosity(temperature,
+                                                                         pressure,
+                                                                         strain_rate,
+                                                                         evaluation_points[q]) *
                                             compressible_strain_rate * compressible_strain_rate;
 
             computed_quantities[q](dim+3) = partition;
 
             computed_quantities[q](dim+4) = material_model.viscosity(temperature,
                                                                      pressure,
+								     strain_rate,
                                                                      evaluation_points[q]);
 
             computed_quantities[q](dim+5) = pressure - adiabatic_conditions.pressure (evaluation_points[q]);

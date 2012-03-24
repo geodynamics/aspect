@@ -9,6 +9,7 @@
 
 #include <aspect/plugins.h>
 #include <deal.II/base/point.h>
+#include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/base/parameter_handler.h>
 
 namespace aspect
@@ -63,11 +64,20 @@ namespace aspect
          */
         /**
          * Return the viscosity $\eta$ of the model as a function of temperature,
-         * pressure and position.
+         * pressure, strain rate, and position.
+	 *
+	 * @note The strain rate given as the third argument of this function
+	 * is computed as $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u +
+	 * \nabla \mathbf u^T)$, regardless of whether the model is
+	 * compressible or not. This is relevant since in some other contexts,
+	 * the strain rate in the compressible case is computed as
+	 * $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u +
+	 * \nabla \mathbf u^T) - \frac 13 \nabla \cdot \mathbf u \mathbf 1$.
          */
-        virtual double viscosity (const double      temperature,
-                                  const double      pressure,
-                                  const Point<dim> &position) const = 0;
+        virtual double viscosity (const double                  temperature,
+                                  const double                  pressure,
+                                  const SymmetricTensor<2,dim> &strain_rate,
+                                  const Point<dim>             &position) const = 0;
 
         /**
          * Return the density $\rho$ of the model as a function of temperature,
