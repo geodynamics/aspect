@@ -68,8 +68,9 @@ Topics for preview release:
   . announce on
        cig@geodynamics.org
        aspect-devel@geodynamics.org
-       mc@geodynamics.org   (??)
-       cse@geodynamics.org  (??)
+       cig-mc@geodynamics.org
+       cig-cs@geodynamics.org
+       dealii@dealii.org
 
 
 First release
