@@ -1903,41 +1903,111 @@ the \texttt{ASPECT\_REGISTER\_MATERIAL\_MODEL} macro to register your new
 class. The implementation of the new class should be in namespace
 \texttt{aspect::MaterialModel}.
 
-Specifically, your new class needs to implement the following basic interface:
+Specifically, your new class needs to implement the basic interface:
 \begin{lstlisting}[frame=single]
     template <int dim>
     class aspect::MaterialModel::Interface
     {
       public:
-        virtual
-        double viscosity (const double      temperature,
-                          const double      pressure,
-                          const Point<dim> &position) const = 0;
+        // Physical parameters used in the basic equations
+        virtual double viscosity (const double                  temperature,
+                                  const double                  pressure,
+                                  const SymmetricTensor<2,dim> &strain_rate,
+                                  const Point<dim>             &position) const = 0;
 
+        virtual double density (const double      temperature,
+                                const double      pressure,
+                                const Point<dim> &position) const = 0;
+
+        virtual double compressibility (const double temperature,
+                                        const double pressure,
+                                        const Point<dim> &position) const = 0;
+
+        virtual double specific_heat (const double      temperature,
+                                      const double      pressure,
+                                      const Point<dim> &position) const = 0;
+
+        virtual double thermal_expansion_coefficient (const double      temperature,
+                                                      const double      pressure,
+                                                      const Point<dim> &position) const;
+
+        virtual double thermal_conductivity (const double temperature,
+                                             const double pressure,
+                                             const Point<dim> &position) const
+                                             = 0;
+
+        // Qualitative properties one can ask a material model
+        virtual bool
+        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
+
+        virtual bool
+        density_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
+
+        virtual bool
+        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
+
+        virtual bool
+        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
+
+        virtual bool
+        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
+
+        virtual bool is_compressible () const = 0;
+
+        // Partial derivatives of physical parameters
+        virtual double
+        viscosity_derivative (const double              temperature,
+                              const double              pressure,
+                              const Point<dim>         &position,
+                              const NonlinearDependence::Dependence dependence) const;
+
+        virtual double
+        density_derivative (const double              temperature,
+                            const double              pressure,
+                            const Point<dim>         &position,
+                            const NonlinearDependence::Dependence dependence) const;
+
+        virtual double
+        compressibility_derivative (const double              temperature,
+                                    const double              pressure,
+                                    const Point<dim>         &position,
+                                    const NonlinearDependence::Dependence dependence) const;
+
+        virtual double
+        specific_heat_derivative (const double              temperature,
+                                  const double              pressure,
+                                  const Point<dim>         &position,
+                                  const NonlinearDependence::Dependence dependence) const;
+
+        virtual double
+        thermal_conductivity_derivative (const double              temperature,
+                                         const double              pressure,
+                                         const Point<dim>         &position,
+                                         const NonlinearDependence::Dependence dependence) const;
+
+        // Reference quantities
+        virtual double reference_viscosity () const = 0;
+
+        virtual double reference_density () const = 0;
+
+        virtual double reference_thermal_expansion_coefficient () const = 0;
+
+        // Auxiliary material properties used for postprocessing
         virtual
-        double specific_heat (const double      temperature,
-                              const double      pressure,
-                              const Point<dim> &position) const = 0;
+        double
+        seismic_Vp (const double      temperature,
+                    const double      pressure) const;
 
         virtual
         double
-        thermal_conductivity (const double temperature,
-                              const double pressure,
-                              const Point<dim> &position) const = 0;
-
+        seismic_Vs (const double      temperature,
+                    const double      pressure) const;
         virtual
-        double density (const double      temperature,
-                        const double      pressure,
-                        const Point<dim> &position) const = 0;
+        unsigned int
+        thermodynamic_phase (const double      temperature,
+                             const double      pressure) const;
 
-        virtual
-        double compressibility (const double temperature,
-                                const double pressure,
-                                const Point<dim> &position) const = 0;
-
-        virtual
-        bool is_compressible () const = 0;
-
+        // Functions used in dealing with run-time parameters
         static
         void
         declare_parameters (ParameterHandler &prm);
@@ -1947,11 +2017,22 @@ Specifically, your new class needs to implement the following basic interface:
         parse_parameters (ParameterHandler &prm);
     };
 \end{lstlisting}
-Here, the first four functions refer to the coefficients $\eta,C_p,k,\rho$ in
+Here, the first set of functions refer to the coefficients $\eta,C_p,k,\rho$ in
 equations \eqref{eq:stokes-1}--\eqref{eq:temperature}, each as a function of
-temperature, pressure and position. Implementations of these methods may of
-course choose to ignore dependencies on any of these arguments.
-The compressibility coefficient describes $\frac{\partial\rho}{\partial p}$.
+temperature, pressure, position and, in the case of the viscosity, the strain
+rate. Implementations of these methods may of course choose to ignore
+dependencies on any of these arguments. The second set of functions describes
+the nonlinear dependence of the various coefficients on pressure, temperature,
+or strain rate, and the next block then provides the numerical values of these
+dependencies. This information will be used in future versions of \aspect{} to
+implement a fully nonlinear solution scheme based on, for example, a Newton
+iteration. The remaining functions are used in postprocessing as well as
+handling run-time parameters. The exact meaning of these member functions is
+documented in the
+\href{doc/doxygen/classaspect_1_1MaterialModel_1_1Interface.html}{aspect::MaterialModel::Interface
+class documentation}. Note that some of the functions listed above have a
+default implementation, as discussed on the documentation page just
+mentioned.
 
 The function \texttt{is\_compressible} returns whether we should consider the
 material as compressible or not, see Section~\ref{sec:boussinesq} on the
@@ -2005,16 +2086,17 @@ Specifically, your new class needs to implement the following basic interface:
         length_scale () const = 0;
 
         virtual
-        std::set<unsigned char>
-        get_temperature_dirichlet_boundary_indicators () const = 0;
+        double depth(const Point<dim> &position) const = 0;
 
         virtual
-        std::set<unsigned char>
-        get_zero_velocity_boundary_indicators () const = 0;
+        Point<dim> representative_point(const double depth) const = 0;
 
         virtual
-        std::set<unsigned char>
-        get_tangential_velocity_boundary_indicators () const = 0;
+        double maximal_depth() const = 0;
+
+        virtual
+        std::set<types::boundary_id_t>
+        get_used_boundary_indicators () const = 0;
 
         static
         void
