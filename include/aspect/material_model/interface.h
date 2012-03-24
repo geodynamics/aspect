@@ -65,14 +65,14 @@ namespace aspect
         /**
          * Return the viscosity $\eta$ of the model as a function of temperature,
          * pressure, strain rate, and position.
-	 *
-	 * @note The strain rate given as the third argument of this function
-	 * is computed as $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u +
-	 * \nabla \mathbf u^T)$, regardless of whether the model is
-	 * compressible or not. This is relevant since in some other contexts,
-	 * the strain rate in the compressible case is computed as
-	 * $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u +
-	 * \nabla \mathbf u^T) - \frac 13 \nabla \cdot \mathbf u \mathbf 1$.
+        *
+        * @note The strain rate given as the third argument of this function
+        * is computed as $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u +
+        * \nabla \mathbf u^T)$, regardless of whether the model is
+        * compressible or not. This is relevant since in some other contexts,
+        * the strain rate in the compressible case is computed as
+        * $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u +
+        * \nabla \mathbf u^T) - \frac 13 \nabla \cdot \mathbf u \mathbf 1$.
          */
         virtual double viscosity (const double                  temperature,
                                   const double                  pressure,
@@ -306,7 +306,6 @@ namespace aspect
          * function for a definition of $\alpha$.
          */
         virtual double reference_thermal_expansion_coefficient () const = 0;
-
         /**
          * @}
          */

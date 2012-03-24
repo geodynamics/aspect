@@ -30,28 +30,14 @@ namespace aspect
     class Simple : public MaterialModel::Interface<dim>
     {
       public:
+        /**
+         * @name Physical parameters used in the basic equations
+         * @{
+         */
         virtual double viscosity (const double                  temperature,
                                   const double                  pressure,
                                   const SymmetricTensor<2,dim> &strain_rate,
                                   const Point<dim>             &position) const;
-
-        virtual double reference_viscosity () const;
-
-        virtual double reference_density () const;
-
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const Point<dim> &position) const;
-
-        double reference_thermal_diffusivity () const;
-
-        double reference_cp () const;
-
-        virtual double reference_thermal_expansion_coefficient () const;
-
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const Point<dim> &position) const;
 
         virtual double density (const double temperature,
                                 const double pressure,
@@ -61,9 +47,20 @@ namespace aspect
                                         const double pressure,
                                         const Point<dim> &position) const;
 
+        virtual double specific_heat (const double temperature,
+                                      const double pressure,
+                                      const Point<dim> &position) const;
+
         virtual double thermal_expansion_coefficient (const double      temperature,
                                                       const double      pressure,
                                                       const Point<dim> &position) const;
+
+        virtual double thermal_conductivity (const double temperature,
+                                             const double pressure,
+                                             const Point<dim> &position) const;
+        /**
+         * @}
+         */
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -122,6 +119,24 @@ namespace aspect
          */
 
         /**
+         * @name Reference quantities
+         * @{
+         */
+        virtual double reference_viscosity () const;
+
+        virtual double reference_density () const;
+
+        virtual double reference_thermal_expansion_coefficient () const;
+
+//TODO: should we make this a virtual function as well? where is it used?
+        double reference_thermal_diffusivity () const;
+
+        double reference_cp () const;
+        /**
+         * @}
+         */
+
+        /**
          * Declare the parameters this class takes through input files.
          */
         static
@@ -135,6 +150,10 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+        /**
+         * @}
+         */
+
       private:
         double reference_rho;
         double reference_T;

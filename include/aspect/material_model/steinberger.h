@@ -29,24 +29,14 @@ namespace aspect
     class Steinberger: public MaterialModel::Interface<dim>
     {
       public:
+        /**
+         * @name Physical parameters used in the basic equations
+         * @{
+         */
         virtual double viscosity (const double                  temperature,
                                   const double                  pressure,
                                   const SymmetricTensor<2,dim> &strain_rate,
                                   const Point<dim>             &position) const;
-
-        virtual double reference_viscosity () const;
-
-        virtual double reference_density () const;
-
-        virtual double reference_thermal_expansion_coefficient () const;
-
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const Point<dim> &position) const;
-
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const Point<dim> &position) const;
 
         virtual double density (const double temperature,
                                 const double pressure,
@@ -55,6 +45,17 @@ namespace aspect
         virtual double compressibility (const double temperature,
                                         const double pressure,
                                         const Point<dim> &position) const;
+
+        virtual double specific_heat (const double temperature,
+                                      const double pressure,
+                                      const Point<dim> &position) const;
+
+        virtual double thermal_conductivity (const double temperature,
+                                             const double pressure,
+                                             const Point<dim> &position) const;
+        /**
+         * @}
+         */
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -108,6 +109,19 @@ namespace aspect
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
         virtual bool is_compressible () const;
+        /**
+         * @}
+         */
+
+        /**
+         * @name Reference quantities
+         * @{
+         */
+        virtual double reference_viscosity () const;
+
+        virtual double reference_density () const;
+
+        virtual double reference_thermal_expansion_coefficient () const;
         /**
          * @}
          */
