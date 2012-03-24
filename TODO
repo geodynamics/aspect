@@ -4,7 +4,6 @@ the paper.
 average temperature/... depending on depth (for use in material model and output)
 
 Topics for an ASPECT II paper:
-
 - Compressibility
 - Nonlinearity
 - Checkpoint/restart
@@ -16,34 +15,23 @@ Topics for an ASPECT II paper:
 - How implicit to be?
 
 
-Immediate TODOs:
-----------------
-- in Parameters, rename TemperatureContribution etc to refinement_temperature_method
-  or similar. make run-time parameters lower-case in the .prm file
--
-
-
 
 Topics for preview release:
 ---------------------------
+- make run-time parameters lower-case in the .prm file
 - temperature equation must contain adiabatic terms in the compressible case
 - Refinement criterion in 3d? rescale to the average, not to the max
 - Use extrapolated solution for grid refinement
-- Attach a proper license and adjust headers of all files
-- Go through the list of TODOs in the source code and see what can be done
 - minimal mesh size (shortest edge divided by order)
 - make initial conditions class say whether it implements a temperature
   or a temperature perturbation
-- name the material model better than "table" and put the input files into
-  a better directory
+- name the material model better than "table"
 - re-write the geometry section since information on the boundary components
   is no longer there
 - describe in the manual how to set boundary conditions
 - allow for arbitrary tangential boundary conditions (via Eh Tan, e.g. from
   gplates)
 - add an easter egg
-- sort the member functions in the various material model classes in the
-  same way. mark them as virtual if that's what they actually are
 - make the default for parameters.include_shear_heating true after
   testing that the model works correctly
 - provide an option to store not only the last snapshot but many
@@ -52,6 +40,7 @@ Topics for preview release:
 
 
 - Create a task list for a release that includes:
+  . go through the list of TODOs in the source code and see what can be done
   . create a branch
   . update the version number on the front page of doc/manual.pdf
   . remove the various table_* postprocessors
