@@ -1,9 +1,3 @@
-//-------------------------------------------------------------
-//    $Id$
-//
-//    Copyright (C) 2011 by the authors of the ASPECT code
-//
-//-------------------------------------------------------------
 #ifndef __aspect__geometry_model_box_h
 #define __aspect__geometry_model_box_h
 

@@ -1,10 +1,3 @@
-//-------------------------------------------------------------
-//    $Id$
-//
-//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
-//
-//-------------------------------------------------------------
-
 #include <aspect/material_model/interface.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx1x/tuple.h>

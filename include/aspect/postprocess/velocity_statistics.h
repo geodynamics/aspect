@@ -1,9 +1,3 @@
-//-------------------------------------------------------------
-//    $Id$
-//
-//    Copyright (C) 2011 by the authors of the ASPECT code
-//
-//-------------------------------------------------------------
 #ifndef __aspect__postprocess_velocity_statistics_h
 #define __aspect__postprocess_velocity_statistics_h
 

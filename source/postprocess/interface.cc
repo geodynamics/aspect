@@ -1,10 +1,3 @@
-//-------------------------------------------------------------
-//    $Id$
-//
-//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
-//
-//-------------------------------------------------------------
-
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator.h>
 

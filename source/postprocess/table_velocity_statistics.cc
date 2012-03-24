@@ -1,10 +1,3 @@
-//-------------------------------------------------------------
-//    $Id: velocity_statistics.cc 571 2012-01-03 08:22:42Z geenen $
-//
-//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
-//
-//-------------------------------------------------------------
-
 #include <aspect/postprocess/table_velocity_statistics.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/material_model/table.h>

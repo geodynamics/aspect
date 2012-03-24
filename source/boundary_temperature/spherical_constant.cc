@@ -1,10 +1,3 @@
-//-------------------------------------------------------------
-//    $Id$
-//
-//    Copyright (C) 2011 by the authors of the ASPECT code
-//
-//-------------------------------------------------------------
-
 #include <aspect/boundary_temperature/spherical_constant.h>
 #include <aspect/geometry_model/spherical_shell.h>
 

@@ -1,10 +1,3 @@
-//-------------------------------------------------------------
-//    $Id$
-//
-//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
-//
-//-------------------------------------------------------------
-
 #include <aspect/initial_conditions/spherical_shell.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <fstream>

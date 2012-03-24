@@ -1,10 +1,3 @@
-
-//-------------------------------------------------------------
-//    $Id$
-//
-//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
-//
-//-------------------------------------------------------------
 #ifndef __aspect__postprocess_visualization_h
 #define __aspect__postprocess_visualization_h
 

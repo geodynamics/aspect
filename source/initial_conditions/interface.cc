@@ -1,10 +1,3 @@
-//-------------------------------------------------------------
-//    $Id$
-//
-//    Copyright (C) 2011 by the authors of the ASPECT code
-//
-//-------------------------------------------------------------
-
 #include <aspect/initial_conditions/interface.h>
 
 #include <deal.II/base/exceptions.h>

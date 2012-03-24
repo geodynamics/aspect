@@ -1,10 +1,3 @@
-//-------------------------------------------------------------
-//    $Id$
-//
-//    Copyright (C) 2011 by the authors of the ASPECT code
-//
-//-------------------------------------------------------------
-
 #include <aspect/gravity_model/vertical.h>
 
 #include <deal.II/base/tensor.h>

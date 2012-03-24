@@ -1,9 +1,3 @@
-//-------------------------------------------------------------
-//    $Id: heat_flux_statistics.h 573 2012-01-03 08:25:46Z geenen $
-//
-//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
-//
-//-------------------------------------------------------------
 #ifndef __aspect__postprocess_table_velocity_statistics_h
 #define __aspect__postprocess_table_velocity_statistics_h
 

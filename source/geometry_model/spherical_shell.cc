@@ -1,10 +1,3 @@
-//-------------------------------------------------------------
-//    $Id$
-//
-//    Copyright (C) 2011 by the authors of the ASPECT code
-//
-//-------------------------------------------------------------
-
 #include <aspect/geometry_model/spherical_shell.h>
 
 #include <deal.II/grid/grid_generator.h>
