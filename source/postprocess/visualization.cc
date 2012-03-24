@@ -191,7 +191,7 @@ namespace aspect
 
             computed_quantities[q](dim+4) = material_model.viscosity(temperature,
                                                                      pressure,
-								     strain_rate,
+                                                                     strain_rate,
                                                                      evaluation_points[q]);
 
             computed_quantities[q](dim+5) = pressure - adiabatic_conditions.pressure (evaluation_points[q]);
