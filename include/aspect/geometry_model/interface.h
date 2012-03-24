@@ -90,8 +90,8 @@ namespace aspect
 
         /**
          * Return the set of boundary indicators that are used by this model. This
-	 * information is used to determine what boundary indicators can be used in
-	 * the input file.
+        * information is used to determine what boundary indicators can be used in
+        * the input file.
          */
         virtual
         std::set<types::boundary_id_t>
