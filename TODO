@@ -1,3 +1,7 @@
+This file is our internal working list of things to do in the near future
+=========================================================================
+
+
 Rename artificial viscosity stability parameter from beta to alpha to match
 the paper.
 
@@ -42,6 +46,7 @@ Topics for preview release:
 - Create a task list for a release that includes:
   . go through the list of TODOs in the source code and see what can be done
   . create a branch
+  . remove TODO on the branch
   . update the version number on the front page of doc/manual.pdf
   . remove the various table_* postprocessors
   . update doc/manual/parameters.tex by running aspect-2d with an empty .prm
