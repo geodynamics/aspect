@@ -165,7 +165,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Inner temperature}
 \index[prmindexfull]{Boundary temperature model!Spherical constant!Inner temperature}
-{\it Value:} 6300
+{\it Value:} 6000
 
 
 {\it Default:} 6000
@@ -180,7 +180,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Outer temperature}
 \index[prmindexfull]{Boundary temperature model!Spherical constant!Outer temperature}
-{\it Value:} 300
+{\it Value:} 0
 
 
 {\it Default:} 0
@@ -383,7 +383,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Inner radius}
 \index[prmindexfull]{Geometry model!Spherical shell!Inner radius}
-{\it Value:} 5698e3
+{\it Value:} 3481000
 
 
 {\it Default:} 3481000
@@ -398,7 +398,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Opening angle}
 \index[prmindexfull]{Geometry model!Spherical shell!Opening angle}
-{\it Value:} 180
+{\it Value:} 360
 
 
 {\it Default:} 360
@@ -413,7 +413,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Outer radius}
 \index[prmindexfull]{Geometry model!Spherical shell!Outer radius}
-{\it Value:} 10415e3
+{\it Value:} 6336000
 
 
 {\it Default:} 6336000
@@ -528,7 +528,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Angle}
 \index[prmindexfull]{Initial conditions!Spherical gaussian perturbation!Angle}
-{\it Value:} 4.71238898038468985769
+{\it Value:} 0e0
 
 
 {\it Default:} 0e0
@@ -936,7 +936,7 @@ For more information, see the section in the manual that discusses the general m
 
 
 \index[prmindex]{exponential\_P}
-\index[prmindexfull]{Material model!Table model!Viscosity!exponential_P}
+\index[prmindexfull]{Material model!Table model!Viscosity!exponential\_P}
 {\it Value:} 1
 
 
@@ -1018,7 +1018,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Initial global refinement}
 \index[prmindexfull]{Mesh refinement!Initial global refinement}
-{\it Value:} 3
+{\it Value:} 4
 
 
 {\it Default:} 2
@@ -1063,7 +1063,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Time steps between mesh refinement}
 \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement}
-{\it Value:} 10
+{\it Value:} 5
 
 
 {\it Default:} 10
@@ -1211,16 +1211,12 @@ The following postprocessors are available:
 
 `temperature statistics': A postprocessor that computes some statistics about the temperature field.
 
-`velocity statistics for the table model': A postprocessor that computes some statistics about the velocity field.
-
-`heat flux statistics for the table model': A postprocessor that computes some statistics about the heat flux across boundaries.
-
 `heat flux statistics': A postprocessor that computes some statistics about the heat flux across boundaries.
 
 `depth average': A postprocessor that computes depth averaged quantities and writes them out.
 
 
-{\it Possible values:} [MultipleSelection visualization|velocity statistics|temperature statistics|velocity statistics for the table model|heat flux statistics for the table model|heat flux statistics|depth average|all ]
+{\it Possible values:} [MultipleSelection visualization|velocity statistics|temperature statistics|heat flux statistics|depth average|all ]
 \end{itemize}
 
 
@@ -1285,7 +1281,7 @@ The following postprocessors are available:
 
 \index[prmindex]{Time between graphical output}
 \index[prmindexfull]{Postprocess!Visualization!Time between graphical output}
-{\it Value:} 1e5
+{\it Value:} 0
 
 
 {\it Default:} 1e8
