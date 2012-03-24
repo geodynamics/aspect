@@ -17,6 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
+/*  $Id$  */
 
 
 #include <aspect/geometry_model/spherical_shell.h>
