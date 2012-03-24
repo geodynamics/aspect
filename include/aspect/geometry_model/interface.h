@@ -1,7 +1,7 @@
 //-------------------------------------------------------------
 //    $Id$
 //
-//    Copyright (C) 2011 by the authors of the ASPECT code
+//    Copyright (C) 2011, 2012 by the authors of the ASPECT code
 //
 //-------------------------------------------------------------
 #ifndef __aspect__geometry_model_interface_h
@@ -90,8 +90,8 @@ namespace aspect
 
         /**
          * Return the set of boundary indicators that are used by this model. This
-        * information is used to determine what boundary indicators can be used in
-        * the input file.
+	 * information is used to determine what boundary indicators can be used in
+	 * the input file.
          */
         virtual
         std::set<types::boundary_id_t>

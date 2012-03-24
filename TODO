@@ -41,7 +41,6 @@ Topics for preview release:
 - describe in the manual how to set boundary conditions
 - allow for arbitrary tangential boundary conditions (via Eh Tan, e.g. from
   gplates)
-- describe in geometry model descriptions what boundary indicators they have
 - add an easter egg
 - sort the member functions in the various material model classes in the
   same way. mark them as virtual if that's what they actually are
