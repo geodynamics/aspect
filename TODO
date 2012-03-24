@@ -22,6 +22,7 @@ Topics for an ASPECT II paper:
 
 Topics for preview release:
 ---------------------------
+- unify readme.html in aspect/ and from the webpage again
 - make run-time parameters lower-case in the .prm file
 - temperature equation must contain adiabatic terms in the compressible case
 - Refinement criterion in 3d? rescale to the average, not to the max
@@ -45,6 +46,8 @@ Topics for preview release:
 
 - Create a task list for a release that includes:
   . go through the list of TODOs in the source code and see what can be done
+  . make sure the description of the interfaces that need to be updated
+    are up to date in the manual
   . create a branch
   . remove TODO on the branch
   . update the version number on the front page of doc/manual.pdf
