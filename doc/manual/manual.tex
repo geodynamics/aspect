@@ -7,6 +7,13 @@
 % code listings and output on a single page
 \usepackage{fullpage}
 
+% have an index. we use the imakeidx' replacement of the 'multind' package so
+% that we can have an index of all run-time parameters separate from other
+% items (if we ever wanted one)
+\usepackage{imakeidx}
+\makeindex[name=prmindex, title=Index of run-time parameter entries]
+\makeindex[name=prmindexfull, title=Index of run-time parameters with section names]
+
 % be able to use \note environments with a box around the text
 \usepackage{fancybox}
 \newcommand{\note}[1]{
@@ -1558,7 +1565,9 @@ What \aspect{} computes is driven by two things:
 \end{itemize}
 In this section, let us give an overview of what can be selected in the
 parameter file. Specific parameters, their default values, and allowed values
-for these parameters are documented in the following subsections.
+for these parameters are documented in the following subsections. An index
+with page numbers for all run-time parameters can be found on
+page~\pageref{sec:runtime-parameter-index}.
 
 \subsubsection{The structure of parameter files}
 
@@ -2515,8 +2524,46 @@ resouces:
 \end{itemize}
 
 
+\pagebreak
+
+% print the list of references. make sure the page number in the index is
+% correct by putting the \addcontentsline inside the command that prints the
+% title of the page, see http://www.dfki.de/~loeckelt/latexbib.html
+\let\myRefname\refname
+\renewcommand\refname{%
+  \addcontentsline{toc}{section}{\numberline{}References}
+  \myRefname
+}
 \bibliographystyle{alpha}
-\addcontentsline{toc}{section}{\numberline{}References}
 \bibliography{manual}
 
-        \end{document}
+
+\pagebreak
+
+% print the index. note that we put the \label and \addcontentsline into the
+% text printed at the top to make sure they get processed when latex is
+% already on the page where this shows up (otherwise we end up with wrong page
+% labels)
+\indexprologue{The following is a listing of all run-time parameters that can
+  be set in the input parameter file. They are all described in
+  Section~\ref{sec:parameters} and the listed page numbers are where their
+  detailed documentation can be found. A listing of all parameters sorted by
+  the section name in which they are declared is given in the index on
+  page~\pageref{sec:runtime-parameter-index-full} below.
+  \addcontentsline{toc}{section}{\numberline{}Index of run-time parameter
+    entries}
+  \label{sec:runtime-parameter-index}
+}
+\printindex[prmindex]
+
+\indexprologue{The following is a listing of all run-time parameters, sorted
+  by the section in which they appear. To find entries sorted by their name,
+  rather than their section, see the index on
+  page~\pageref{sec:runtime-parameter-index} above.
+  \addcontentsline{toc}{section}{\numberline{}Index of run-time parameters with
+    section names}
+  \label{sec:runtime-parameter-index-full}
+}
+\printindex[prmindexfull]
+
+\end{document}

@@ -51,15 +51,19 @@ Topics for preview release:
 - provide an option to store not only the last snapshot but many
 - move the adiabatic heating term (the last one in the temperature equation)
   to the left hand side and make it implicit
-- create an index for the manual, especially for the many parameters
 
 
 - Create a task list for a release that includes:
   . create a branch
   . update the version number on the front page of doc/manual.pdf
   . remove the various table_* postprocessors
-  . update doc/manual/parameters.tex
-  . update and check in doc/manual.pdf
+  . update doc/manual/parameters.tex by running aspect-2d with an empty .prm
+    file and copying output/parameters.tex to doc/manual/parameters.tex
+  . run
+      cd doc ; make manual.pdf
+    unfortunately, this will yield a number of errors related to underscores
+    in parameters.tex that have to be resolved manually at this time
+  . check in doc/manual.pdf
   . make sure the .prm and .xml files we ship match the default values
     of parameters
   . create a tar file

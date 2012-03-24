@@ -28,11 +28,12 @@ aspect.tag: $(aspect-files) options.dox Makefile
 	@echo 'GENERATE_TAGFILE = $@'                                >> aspect.dox
 	@doxygen aspect.dox || echo "Running doxygen to generate documentation failed."
 
-manual.pdf: manual/manual.tex manual/manual.bib
+manual.pdf: manual/manual.tex manual/manual.bib manual/parameters.tex
 	@if test -x "`which pdflatex`" -a -x "`which bibtex`" ; then \
 	   (cd manual ; \
 		pdflatex manual.tex ; \
 		bibtex manual       ; \
+		makeindex prmindex  ; \
 		pdflatex manual.tex ; \
 		pdflatex manual.tex) ; \
 	   mv manual/manual.pdf . ; \
