@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: parameter_handler.h 24618 2011-10-17 20:18:03Z bangerth $  */
+/*  $Id$  */
 
 
 #ifndef __aspect__model_table_h
