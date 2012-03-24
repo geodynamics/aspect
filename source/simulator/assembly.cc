@@ -801,8 +801,13 @@ namespace aspect
                                                                   scratch.old_velocity_values);
     scratch.finite_element_values[velocities].get_function_values(old_old_solution,
                                                                   scratch.old_old_velocity_values);
-    scratch.finite_element_values[velocities].get_function_symmetric_gradients(old_solution,
-                                                                               scratch.old_strain_rates);
+
+    // we only need the strain rates for the viscosity,
+    // which we only need when rebuilding the matrix
+    if (rebuild_stokes_matrix)
+      scratch.finite_element_values[velocities]
+	.get_function_symmetric_gradients(old_solution,
+					  scratch.old_strain_rates);
 
 
 
@@ -836,10 +841,14 @@ namespace aspect
               }
           }
 
-        const double eta = material_model->viscosity(current_temperature,
-                                                     old_pressure,
-                                                     scratch.old_strain_rates[q],
-                                                     scratch.finite_element_values.quadrature_point(q));
+        const double eta = (rebuild_stokes_matrix
+			    ?
+			    material_model->viscosity(current_temperature,
+						      old_pressure,
+						      scratch.old_strain_rates[q],
+						      scratch.finite_element_values.quadrature_point(q))
+			    :
+			    std::numeric_limits<double>::quiet_NaN());
 
         const Tensor<1,dim>
         gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
