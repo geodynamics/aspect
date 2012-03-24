@@ -2,7 +2,7 @@
 # $Id: Makefile 4165 2011-03-28 13:10:33Z bangerth $
 ############################################################
 
-DEAL_DIR?=../../../../../deal.II
+DEAL_DIR?=../../../deal.II
 D = $(DEAL_DIR)
 include $D/common/Make.global_options
 
