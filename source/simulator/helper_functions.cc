@@ -485,7 +485,7 @@ namespace aspect
     FEValues<dim> fe_values (mapping,
                              finite_element,
                              quadrature_formula,
-                             update_values | update_quadrature_points);
+                             update_values | update_gradients | update_quadrature_points);
 
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
