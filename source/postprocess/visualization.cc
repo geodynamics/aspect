@@ -255,7 +255,7 @@ namespace aspect
       // if this is the first time we get here, set the next output time
       // to the current time. this makes sure we always produce data during
       // the first time step
-      if (isnan(next_output_time))
+      if (std::isnan(next_output_time))
         next_output_time = this->get_time();
 
       // see if graphical output is requested at this time
