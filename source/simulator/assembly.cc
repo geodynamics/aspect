@@ -806,8 +806,8 @@ namespace aspect
     // which we only need when rebuilding the matrix
     if (rebuild_stokes_matrix)
       scratch.finite_element_values[velocities]
-	.get_function_symmetric_gradients(old_solution,
-					  scratch.old_strain_rates);
+      .get_function_symmetric_gradients(old_solution,
+                                        scratch.old_strain_rates);
 
 
 
@@ -842,13 +842,13 @@ namespace aspect
           }
 
         const double eta = (rebuild_stokes_matrix
-			    ?
-			    material_model->viscosity(current_temperature,
-						      old_pressure,
-						      scratch.old_strain_rates[q],
-						      scratch.finite_element_values.quadrature_point(q))
-			    :
-			    std::numeric_limits<double>::quiet_NaN());
+                            ?
+                            material_model->viscosity(current_temperature,
+                                                      old_pressure,
+                                                      scratch.old_strain_rates[q],
+                                                      scratch.finite_element_values.quadrature_point(q))
+                            :
+                            std::numeric_limits<double>::quiet_NaN());
 
         const Tensor<1,dim>
         gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
