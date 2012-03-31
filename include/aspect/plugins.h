@@ -153,6 +153,11 @@ namespace aspect
         static std::list<PluginInfo> *plugins;
 
         /**
+         * Destructor.
+         */
+        ~PluginList ();
+
+        /**
          * Register a plugin by name, description, parameter
          * declaration function, and factory function. See the
          * discussion for the PluginInfo type above for more
@@ -213,6 +218,17 @@ namespace aspect
 
 
       /* ------------------------ template and inline functions --------------------- */
+
+      template <typename InterfaceClass>
+      PluginList<InterfaceClass>::
+      ~PluginList ()
+      {
+        // if any plugins have been registered, then delete
+        // the list
+        if (plugins != 0)
+          delete plugins;
+        plugins = 0;
+      }
 
       template <typename InterfaceClass>
       void
