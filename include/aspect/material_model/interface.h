@@ -96,6 +96,15 @@ namespace aspect
                                   const Point<dim>             &position) const = 0;
 
         /**
+         * Return the viscosity ratio between disclocation creep and diffusion creep
+         * in the case of composite rheology
+         */
+        virtual double viscosity_ratio (const double      temperature,
+                                  const double      pressure,
+                                  const SymmetricTensor<2,dim> &strainrate,
+                                  const Point<dim> &position) const;
+
+        /**
          * Return the density $\rho$ of the model as a function of temperature,
          * pressure and position.
          */

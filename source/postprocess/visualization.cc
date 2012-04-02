@@ -219,7 +219,11 @@ namespace aspect
             computed_quantities[q](dim+9) = material_model.seismic_Vp(temperature, pressure);
             computed_quantities[q](dim+10) = material_model.seismic_Vs(temperature, pressure);
             computed_quantities[q](dim+11) = material_model.thermodynamic_phase(temperature, pressure);
-            computed_quantities[q](dim+11) = material_model.specific_heat(temperature, pressure, evaluation_points[q]);
+            computed_quantities[q](dim+12) = material_model.specific_heat(temperature, pressure, evaluation_points[q]);
+            computed_quantities[q](dim+13) = material_model.viscosity_ratio(temperature,
+                                                                            pressure,
+                                                                            strain_rate,
+                                                                            evaluation_points[q]);
           }
       }
     }

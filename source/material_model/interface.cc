@@ -158,6 +158,18 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::
+    viscosity_ratio (const double temperature,
+               const double pressure,
+               const SymmetricTensor<2,dim> &strain_rate,
+               const Point<dim> &position) const
+    {
+      return 1.0;
+    }
+
+
+    template <int dim>
+    double
+    Interface<dim>::
     seismic_Vp (double dummy1,
                 double dummy2) const
     {

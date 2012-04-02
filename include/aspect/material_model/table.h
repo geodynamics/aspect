@@ -51,6 +51,11 @@ namespace aspect
                                   const SymmetricTensor<2,dim> &strain_rate,
                                   const Point<dim>             &position) const;
 
+        virtual double viscosity_ratio (const double temperature,
+                                                const double pressure,
+                                                const SymmetricTensor<2,dim> &strain_rate,
+                                                const Point<dim> &position) const;
+
         virtual double density (const double temperature,
                                 const double pressure,
                                 const Point<dim> &position) const;
@@ -269,6 +274,14 @@ namespace aspect
         double exponential_T;
         double exponential_P;
         double increase_lower_mantle;
+        double activation_energy_diffusion;
+        double activation_volume_diffusion;
+        double prefactor_diffusion;
+        double activation_energy_dislocation;
+        double activation_volume_dislocation;
+        double prefactor_dislocation;
+        double stress_exponent;
+
         double k_value;
     };
   }
