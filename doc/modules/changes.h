@@ -1,0 +1,22 @@
+/**
+ * @page changes_after_0_1 Changes after Version 0.1
+
+<p>
+This is the list of changes made after the release of
+Aspect version 0.1.
+All entries are signed with the names of the author.
+</p>
+
+
+
+<ol>
+<li>
+New: The number of space dimensions in which a simulation happens is now
+a parameter that is set in the input parameter filer, rather than
+statically at compile time as before.
+<br>
+(Wolfgang Bangerth, 2012/04/03)
+</ol>
+
+
+*/
