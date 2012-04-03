@@ -41,6 +41,10 @@ namespace aspect
   Simulator<dim>::Parameters::
   declare_parameters (ParameterHandler &prm)
   {
+    prm.declare_entry ("Dimension", "2",
+                       Patterns::Integer (2,4),
+                       "The number of space dimensions you want to run this program in.");
+
     prm.declare_entry ("Resume computation", "false",
                        Patterns::Bool (),
                        "A flag indicating whether the computation should be resumed from "
@@ -260,6 +264,12 @@ namespace aspect
   Simulator<dim>::Parameters::
   parse_parameters (ParameterHandler &prm)
   {
+    // first, make sure that the ParameterHandler parser agrees
+    // with the code in main() about the meaning of the "Dimension"
+    // parameter
+    AssertThrow (prm.get_integer("Dimension") == dim,
+                 ExcInternalError());
+
     resume_computation      = prm.get_bool ("Resume computation");
     CFL_number              = prm.get_double ("CFL number");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
