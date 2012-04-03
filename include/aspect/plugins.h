@@ -258,7 +258,7 @@ namespace aspect
       get_pattern_of_names (const bool allow_all)
       {
         Assert (plugins != 0,
-                ExcMessage ("No postprocessors registered!?"));
+                ExcMessage ("No plugins registered!?"));
 
         std::string pattern_of_names;
         for (typename std::list<PluginInfo>::const_iterator
