@@ -965,11 +965,11 @@ point for exploring the documentation.
 After compiling \aspect{} as described above, you should have an executable
 file in the \texttt{lib/} subdirectory. It can be called as follows:
 \begin{verbatim}
-  ./lib/aspect-2d parameter-file.prm
+  ./lib/aspect parameter-file.prm
 \end{verbatim}
 or, if you want to run the program in parallel, using something like
 \begin{verbatim}
-  mpirun -np 32 ./lib/aspect-2d parameter-file.prm
+  mpirun -np 32 ./lib/aspect parameter-file.prm
 \end{verbatim}
 to run with 32 processors. In either case, the argument denotes the (path and)
 name of a file that contains input parameters. When you download \aspect, you
@@ -1033,6 +1033,7 @@ Number of degrees of freedom: 33,859 (20,786+2,680+10,393)
 This output was produced by a parameter file that, among other settings,
 contained the following values:
 \begin{lstlisting}[frame=single,language=prmfile]
+set Dimension                     = 2
 set End time                      = 2e9
 set Output directory              = output
 
@@ -1200,7 +1201,15 @@ The purpose of these files is as follows:
 \subsection{Selecting between 2d and 3d runs}
 \label{sec:2d-vs-3d}
 
-\dealii{}, upon which \aspect{} is based, has a feature that is called
+\aspect{} can solve both two- and three-dimensional problems. You
+select which one you want by putting a line like the following into
+the parameter file (see Section~\ref{sec:parameters}):
+\begin{lstlisting}[frame=single,language=prmfile]
+set Dimension                     = 2
+\end{lstlisting}
+
+Internally, dealing with the dimension builds on a feature in
+\dealii{}, upon which \aspect{} is based, that is called
 \textit{dimension-independent programming}. In essence, what this does is that
 you write your code only once in a way so that the space dimension is a
 variable (or, in fact, a template parameter) and you can compile the code for
@@ -1213,21 +1222,14 @@ testing them in 2d first, before running them in 3d. This feature is discussed
 in detail in the
 \href{http://www.dealii.org/developer/doxygen/deal.II/step_4.html}{\dealii{}
   tutorial program step-4}.
-
-By default, \aspect{} is compiled for 2d. However, it is simple to change
-this: at the top of the \url{Makefile}, find the definition of the
-\texttt{deal\_II\_dimension} variable, set it to three, and issue the
-following commands
-\begin{verbatim}
-  make clean
-  make
-\end{verbatim}
-(or do {\tt{make -jN}} where \texttt{N} is the number of processors in your
-machine) to obtain an executable \texttt{lib/aspect-3d}.
-
-This executable can then be run in exactly the same way as before and, in most
-cases, with the same input file. Be prepared to wait much longer for
-computations to finish, however.
+Like there, all the functions and classes in
+\aspect{} are compiled for both 2d and 3d. Which dimension is actually
+called internally depends on what you have set in the input file, but
+in either case, the machine code generated for 2d and 3d results from
+the same source code and should, thus, contain the same set of
+features and bugs. Running in 2d and 3d should therefore yield
+comparable results. Be prepared to wait much longer for
+computations to finish in the latter case, however.
 
 
 \subsection{Debug or optimized mode}
@@ -1408,7 +1410,7 @@ In order to visualize one time step, follow these steps:%
 \marginpar{Screenshot would be nice}
 
   Let us choose the ``Pseudocolor'' item and select the temperature field as
-  the quantity to plot. Your main window should not look as shown in
+  the quantity to plot. Your main window should now look as shown in
   Fig.~\ref{fig:visit-1:b}. Then hit the ``Draw'' button to make Visit generate
   data for the selected plots. This will yield a picture such as shown in
   Fig.~\ref{fig:visit-2:a} in the display window of Visit.
@@ -1574,6 +1576,7 @@ page~\pageref{sec:runtime-parameter-index}.
 Most of the run-time behavior of \aspect{} is driven by a parameter file that
 looks in essence like this:
 \begin{lstlisting}[frame=single,language=prmfile]
+set Dimension                     = 2
 set Resume computation            = false
 set End time                      = 1e10
 set CFL number                    = 1.0
