@@ -136,9 +136,13 @@ namespace aspect
     template class classname<3>; \
   namespace ASPECT_REGISTER_GRAVITY_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<Interface<deal_II_dimension>,classname<deal_II_dimension> > \
-    dummy_ ## classname (&aspect::GravityModel::register_gravity_model<deal_II_dimension>, \
-                         name, description); }
+    aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
+    dummy_ ## classname ## _2d (&aspect::GravityModel::register_gravity_model<2>, \
+                                 name, description); \
+    aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
+    dummy_ ## classname ## _3d (&aspect::GravityModel::register_gravity_model<3>, \
+                                 name, description); \
+  }
   }
 }
 
