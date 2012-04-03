@@ -171,10 +171,10 @@ namespace aspect
   { \
     aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
     dummy_ ## classname ## _2d (&aspect::BoundaryTemperature::register_boundary_temperature<2>, \
-                         name, description); \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
     dummy_ ## classname ## _3d (&aspect::BoundaryTemperature::register_boundary_temperature<3>, \
-                         name, description); \
+                                name, description); \
   }
   }
 }

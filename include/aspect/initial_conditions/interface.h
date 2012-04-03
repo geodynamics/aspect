@@ -172,16 +172,16 @@ namespace aspect
      * @ingroup InitialConditionsModels
      */
 #define ASPECT_REGISTER_INITIAL_CONDITIONS(classname,name,description) \
-    template class classname<2>; \
-    template class classname<3>; \
+  template class classname<2>; \
+  template class classname<3>; \
   namespace ASPECT_REGISTER_INITIAL_CONDITIONS_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
     dummy_ ## classname ## _2d (&aspect::InitialConditions::register_initial_conditions_model<2>, \
-                         name, description); \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
     dummy_ ## classname ## _3d (&aspect::InitialConditions::register_initial_conditions_model<3>, \
-                         name, description); \
+                                name, description); \
   }
   }
 }

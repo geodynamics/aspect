@@ -100,9 +100,9 @@ namespace aspect
          * in the case of composite rheology
          */
         virtual double viscosity_ratio (const double      temperature,
-                                  const double      pressure,
-                                  const SymmetricTensor<2,dim> &strainrate,
-                                  const Point<dim> &position) const;
+                                        const double      pressure,
+                                        const SymmetricTensor<2,dim> &strainrate,
+                                        const Point<dim> &position) const;
 
         /**
          * Return the density $\rho$ of the model as a function of temperature,
@@ -469,16 +469,16 @@ namespace aspect
      * @ingroup MaterialModels
      */
 #define ASPECT_REGISTER_MATERIAL_MODEL(classname,name,description) \
-    template class classname<2>; \
-    template class classname<3>; \
+  template class classname<2>; \
+  template class classname<3>; \
   namespace ASPECT_REGISTER_MATERIAL_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
     dummy_ ## classname ## _2d (&aspect::MaterialModel::register_material_model<2>, \
-                                 name, description); \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
     dummy_ ## classname ## _3d (&aspect::MaterialModel::register_material_model<3>, \
-                                 name, description); \
+                                name, description); \
   }
   }
 }

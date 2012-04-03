@@ -123,10 +123,10 @@ namespace aspect
     namespace
     {
       std_cxx1x::tuple
-      <void*,
-       void*,
-       internal::Plugins::PluginList<Interface<2> >,
-       internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      <void *,
+      void *,
+      internal::Plugins::PluginList<Interface<2> >,
+      internal::Plugins::PluginList<Interface<3> > > registered_plugins;
     }
 
 
@@ -139,9 +139,9 @@ namespace aspect
                              Interface<dim> *(*factory_function) ())
     {
       std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
-                                          description,
-                                          declare_parameters_function,
-                                          factory_function);
+                                                               description,
+                                                               declare_parameters_function,
+                                                               factory_function);
     }
 
 
@@ -164,9 +164,9 @@ namespace aspect
     double
     Interface<dim>::
     viscosity_ratio (const double temperature,
-               const double pressure,
-               const SymmetricTensor<2,dim> &strain_rate,
-               const Point<dim> &position) const
+                     const double pressure,
+                     const SymmetricTensor<2,dim> &strain_rate,
+                     const Point<dim> &position) const
     {
       return 1.0;
     }
@@ -256,22 +256,22 @@ namespace aspect
   namespace MaterialModel
   {
 #define INSTANTIATE(dim) \
-    template class Interface<dim>; \
-    \
-    template \
-    void \
-    register_material_model<dim> (const std::string &, \
-                                                const std::string &, \
-                                                void ( *) (ParameterHandler &), \
-                                                Interface<dim> *( *) ()); \
-    \
-    template  \
-    void \
-    declare_parameters<dim> (ParameterHandler &); \
-    \
-    template \
-    Interface<dim> * \
-    create_material_model<dim> (ParameterHandler &prm);
+  template class Interface<dim>; \
+  \
+  template \
+  void \
+  register_material_model<dim> (const std::string &, \
+                                const std::string &, \
+                                void ( *) (ParameterHandler &), \
+                                Interface<dim> *( *) ()); \
+  \
+  template  \
+  void \
+  declare_parameters<dim> (ParameterHandler &); \
+  \
+  template \
+  Interface<dim> * \
+  create_material_model<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

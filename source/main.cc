@@ -48,7 +48,7 @@ int main (int argc, char *argv[])
           parameter_file.close();
 
           const std::string message = (std::string("Input parameter file <")
-              + parameter_filename + "> not found.");
+                                       + parameter_filename + "> not found.");
           AssertThrow(false, ExcMessage (message));
         }
 
@@ -57,52 +57,52 @@ int main (int argc, char *argv[])
       // is 2, but if we find a line of the kind "set Dimension = ..."
       // then the last such line wins
       unsigned int dim = 2;
-        {
-          std::ifstream x_file(parameter_filename.c_str());
-          while (x_file)
-            {
-              // get one line and strip spaces at the front and back
-              std::string line;
-              std::getline(x_file, line);
-              while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
-                line.erase(0, 1);
-              while ((line.size() > 0)
-                  && (line[line.size() - 1] == ' '
-                      || line[line.size() - 1] == '\t'))
-                line.erase(line.size() - 1, std::string::npos);
-
-              // now see whether the line starts with 'set' followed by multiple spaces
-              // if now, try next line
-              if (line.size() < 4)
-                continue;
-              if ((line[0] != 's') || (line[1] != 'e') || (line[2] != 't')
-                  || !(line[3] == ' ' || line[3] == '\t'))
-                continue;
-
-              line.erase(0, 4);
-              while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
-                line.erase(0, 1);
-
-              // now see whether the next word is "Dimension"
-              if (line.size() < 4)
-                continue;
-              if (line.find("Dimension") != 0)
-                continue;
-              line.erase(0, 9);
-              while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
-                line.erase(0, 1);
-
-              // we'd expect an equals size here
-              if ((line.size() < 1) || (line[0] != '='))
-                continue;
+      {
+        std::ifstream x_file(parameter_filename.c_str());
+        while (x_file)
+          {
+            // get one line and strip spaces at the front and back
+            std::string line;
+            std::getline(x_file, line);
+            while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
               line.erase(0, 1);
-              while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
-                line.erase(0, 1);
+            while ((line.size() > 0)
+                   && (line[line.size() - 1] == ' '
+                       || line[line.size() - 1] == '\t'))
+              line.erase(line.size() - 1, std::string::npos);
 
-              // the rest should now be an integer
-              dim = Utilities::string_to_int(line);
-            }
-        }
+            // now see whether the line starts with 'set' followed by multiple spaces
+            // if now, try next line
+            if (line.size() < 4)
+              continue;
+            if ((line[0] != 's') || (line[1] != 'e') || (line[2] != 't')
+                || !(line[3] == ' ' || line[3] == '\t'))
+              continue;
+
+            line.erase(0, 4);
+            while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
+              line.erase(0, 1);
+
+            // now see whether the next word is "Dimension"
+            if (line.size() < 4)
+              continue;
+            if (line.find("Dimension") != 0)
+              continue;
+            line.erase(0, 9);
+            while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
+              line.erase(0, 1);
+
+            // we'd expect an equals size here
+            if ((line.size() < 1) || (line[0] != '='))
+              continue;
+            line.erase(0, 1);
+            while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
+              line.erase(0, 1);
+
+            // the rest should now be an integer
+            dim = Utilities::string_to_int(line);
+          }
+      }
 
       // now switch between the templates that code for 2d or 3d. it
       // would be nicer if we didn't have to duplicate code, but the
@@ -112,36 +112,36 @@ int main (int argc, char *argv[])
 
       switch (dim)
         {
-      case 2:
-        {
-          aspect::Simulator<2>::declare_parameters(prm);
+          case 2:
+          {
+            aspect::Simulator<2>::declare_parameters(prm);
 
-          const bool success = prm.read_input(parameter_file);
-          AssertThrow(success, ExcMessage ("Invalid input parameter file."));
+            const bool success = prm.read_input(parameter_file);
+            AssertThrow(success, ExcMessage ("Invalid input parameter file."));
 
-          aspect::Simulator<2> flow_problem(MPI_COMM_WORLD, prm);
-          flow_problem.run();
+            aspect::Simulator<2> flow_problem(MPI_COMM_WORLD, prm);
+            flow_problem.run();
 
-          break;
-        }
+            break;
+          }
 
-      case 3:
-        {
-          aspect::Simulator<3>::declare_parameters(prm);
+          case 3:
+          {
+            aspect::Simulator<3>::declare_parameters(prm);
 
-          const bool success = prm.read_input(parameter_file);
-          AssertThrow(success, ExcMessage ("Invalid input parameter file."));
+            const bool success = prm.read_input(parameter_file);
+            AssertThrow(success, ExcMessage ("Invalid input parameter file."));
 
-          aspect::Simulator<3> flow_problem(MPI_COMM_WORLD, prm);
-          flow_problem.run();
+            aspect::Simulator<3> flow_problem(MPI_COMM_WORLD, prm);
+            flow_problem.run();
 
-          break;
-        }
+            break;
+          }
 
-      default:
-        AssertThrow((dim >= 2) && (dim <= 3),
-                    ExcMessage ("ASPECT can only be run in 2d and 3d but a "
-                                "different space dimension is given in the parameter file."));
+          default:
+            AssertThrow((dim >= 2) && (dim <= 3),
+                        ExcMessage ("ASPECT can only be run in 2d and 3d but a "
+                                    "different space dimension is given in the parameter file."));
         }
     }
   catch (std::exception &exc)

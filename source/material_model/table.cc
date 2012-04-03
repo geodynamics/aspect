@@ -371,18 +371,18 @@ namespace aspect
           viscosity = std::max(1e21, viscosity);
         }
       else if (!strcmp(viscosity_model.c_str(),"Dislocation"))
-          {
-            viscosity = std::min(1e24,std::pow(prefactor_dislocation,-1e0/stress_exponent)*
-                                 std::pow(std::max(strain_rate.norm(),1e-17),(1e0-stress_exponent)/stress_exponent)*
-                                 exp((activation_energy_dislocation+activation_volume_dislocation*pressure)/(stress_exponent*R*temperature)));
-          }
+        {
+          viscosity = std::min(1e24,std::pow(prefactor_dislocation,-1e0/stress_exponent)*
+                               std::pow(std::max(strain_rate.norm(),1e-17),(1e0-stress_exponent)/stress_exponent)*
+                               exp((activation_energy_dislocation+activation_volume_dislocation*pressure)/(stress_exponent*R*temperature)));
+        }
       else if (!strcmp(viscosity_model.c_str(),"Composite"))
         {
           const double viscosity_diffusion_inverse = prefactor_diffusion*
-                                     exp(-(activation_energy_diffusion+activation_volume_diffusion*pressure)/(R*temperature));
+                                                     exp(-(activation_energy_diffusion+activation_volume_diffusion*pressure)/(R*temperature));
           const double viscosity_dislocation_inverse = std::pow(prefactor_dislocation,1e0/stress_exponent)*
-                               std::pow(strain_rate.norm(),(stress_exponent-1e0)/stress_exponent)*
-                               exp(-(activation_energy_dislocation+activation_volume_dislocation*pressure)/(stress_exponent*R*temperature));
+                                                       std::pow(strain_rate.norm(),(stress_exponent-1e0)/stress_exponent)*
+                                                       exp(-(activation_energy_dislocation+activation_volume_dislocation*pressure)/(stress_exponent*R*temperature));
           const double viscosity_inverse = viscosity_diffusion_inverse + viscosity_dislocation_inverse + 1e-22;
           viscosity = 1e0/viscosity_inverse + 5e19;
         }
@@ -391,16 +391,18 @@ namespace aspect
           viscosity = reference_eta;
         }
       const double depth = R1 - position.norm();
-      if (depth > 660e3 ) {
-	const double pi = 3.14159;
-        const double taper = 1e0 + 5e-1*std::cos(pi*std::max(0e0,760e3-depth)/1e5);// half-cosine taper to make the transition smooth
-	viscosity *= increase_lower_mantle*taper ;// we are in the lower mantle
-	}
-      if (depth < 20e3 ) {
-	const double pi = 3.14159;
-        const double taper = 1e0 + 5e-1*std::cos(pi*depth/2e4);
-	viscosity /= increase_lower_mantle*taper ;// we are in the lower mantle
-	}
+      if (depth > 660e3 )
+        {
+          const double pi = 3.14159;
+          const double taper = 1e0 + 5e-1*std::cos(pi*std::max(0e0,760e3-depth)/1e5);// half-cosine taper to make the transition smooth
+          viscosity *= increase_lower_mantle*taper ;// we are in the lower mantle
+        }
+      if (depth < 20e3 )
+        {
+          const double pi = 3.14159;
+          const double taper = 1e0 + 5e-1*std::cos(pi*depth/2e4);
+          viscosity /= increase_lower_mantle*taper ;// we are in the lower mantle
+        }
       return viscosity;
     }
 
@@ -410,25 +412,25 @@ namespace aspect
     double
     Table<dim>::
     viscosity_ratio (const double temperature,
-               const double pressure,
-               const SymmetricTensor<2,dim> &strain_rate,
-               const Point<dim> &position) const
+                     const double pressure,
+                     const SymmetricTensor<2,dim> &strain_rate,
+                     const Point<dim> &position) const
     {
       const double R0=  3591e3; //TODO
       const double R1=  6591e3; //TODO
       const double R=  8.3143; //TODO gasconstant (well its constant....)
       const double depth = R1 - position.norm();
-      
-      
+
+
       if (strcmp(viscosity_model.c_str(),"Composite")) return 1;
       const double viscosity_diffusion = std::min(1e22,(1e0/prefactor_diffusion)*
-                               		 exp((activation_energy_diffusion+
-					      activation_volume_diffusion*pressure)/(R*temperature)));
+                                                  exp((activation_energy_diffusion+
+                                                       activation_volume_diffusion*pressure)/(R*temperature)));
       const double viscosity_dislocation = std::min(1e22,std::pow(prefactor_dislocation,-1e0/stress_exponent)*
-                                 	   std::pow(strain_rate.norm(),(1e0-stress_exponent)/
-					   stress_exponent)*
-	                                   exp((activation_energy_dislocation+
-						activation_volume_dislocation*pressure)/(stress_exponent*R*temperature)));
+                                                    std::pow(strain_rate.norm(),(1e0-stress_exponent)/
+                                                             stress_exponent)*
+                                                    exp((activation_energy_dislocation+
+                                                         activation_volume_dislocation*pressure)/(stress_exponent*R*temperature)));
 
       return std::max(1e17,viscosity_dislocation)/std::max(1e17,viscosity_diffusion);
     }
@@ -671,80 +673,80 @@ namespace aspect
           prm.enter_subsection ("Viscosity");
           {
             prm.declare_entry ("ViscosityModel", "Exponential",
-                Patterns::Anything (),
-                "Viscosity Model");
+                               Patterns::Anything (),
+                               "Viscosity Model");
             prm.declare_entry ("ReferenceViscosity", "5e24",
-                Patterns::Double (0),
-                "The value of the constant viscosity. Units: $kg/m/s$.");
+                               Patterns::Double (0),
+                               "The value of the constant viscosity. Units: $kg/m/s$.");
             prm.declare_entry ("Viscosity increase lower mantle", "1e0",
-                Patterns::Double (0),
-                "The Viscosity increase (jump) in the lower mantle.");
+                               Patterns::Double (0),
+                               "The Viscosity increase (jump) in the lower mantle.");
             prm.enter_subsection ("Exponential");
             {
               prm.declare_entry ("exponential_T", "1",
-                  Patterns::Double (0),
-                  "multiplication factor or Temperature exponent");
+                                 Patterns::Double (0),
+                                 "multiplication factor or Temperature exponent");
               prm.declare_entry ("exponential_P", "1",
-                  Patterns::Double (0),
-                  "multiplication factor or Pressure exponent");
+                                 Patterns::Double (0),
+                                 "multiplication factor or Pressure exponent");
             }
             prm.leave_subsection();
             prm.enter_subsection ("Diffusion");
             {
               prm.declare_entry ("activation_energy_diffusion", "335e3",
-                  Patterns::Double (0),
-                  "activation energy for diffusion creep");
+                                 Patterns::Double (0),
+                                 "activation energy for diffusion creep");
               prm.declare_entry ("activation_volume_diffusion", "4.0e-6",
-                  Patterns::Double (0),
-                  "activation volume for diffusion creep");
+                                 Patterns::Double (0),
+                                 "activation volume for diffusion creep");
               prm.declare_entry ("prefactor_diffusion", "1.92e-11",
-                  Patterns::Double (0),
-                  "prefactor for diffusion creep "
-                  "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
+                                 Patterns::Double (0),
+                                 "prefactor for diffusion creep "
+                                 "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
             }
             prm.leave_subsection();
             prm.enter_subsection ("Dislocation");
             {
               prm.declare_entry ("activation_energy_dislocation", "335e3",
-                  Patterns::Double (0),
-                  "activation energy for dislocation creep");
+                                 Patterns::Double (0),
+                                 "activation energy for dislocation creep");
               prm.declare_entry ("activation_volume_dislocation", "4.0e-6",
-                  Patterns::Double (0),
-                  "activation volume for dislocation creep");
+                                 Patterns::Double (0),
+                                 "activation volume for dislocation creep");
               prm.declare_entry ("prefactor_dislocation", "1.92e-11",
-                  Patterns::Double (0),
-                  "prefactor for dislocation creep "
-                  "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
+                                 Patterns::Double (0),
+                                 "prefactor for dislocation creep "
+                                 "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
               prm.declare_entry ("stress_exponent", "3.5",
-                               Patterns::Double (0),
-                               "stress exponent for dislocation creep");
+                                 Patterns::Double (0),
+                                 "stress exponent for dislocation creep");
             }
             prm.leave_subsection();
             prm.enter_subsection ("Composite");
             {
               prm.declare_entry ("activation_energy_diffusion", "335e3",
-                  Patterns::Double (0),
-                  "activation energy for diffusion creep");
+                                 Patterns::Double (0),
+                                 "activation energy for diffusion creep");
               prm.declare_entry ("activation_volume_diffusion", "4.0e-6",
-                  Patterns::Double (0),
-                  "activation volume for diffusion creep");
+                                 Patterns::Double (0),
+                                 "activation volume for diffusion creep");
               prm.declare_entry ("prefactor_diffusion", "1.92e-11",
-                  Patterns::Double (0),
-                  "prefactor for diffusion creep "
-                  "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
+                                 Patterns::Double (0),
+                                 "prefactor for diffusion creep "
+                                 "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
               prm.declare_entry ("activation_energy_dislocation", "540e3",
-                  Patterns::Double (0),
-                  "activation energy for dislocation creep");
+                                 Patterns::Double (0),
+                                 "activation energy for dislocation creep");
               prm.declare_entry ("activation_volume_dislocation", "14.0e-6",
-                  Patterns::Double (0),
-                  "activation volume for dislocation creep");
+                                 Patterns::Double (0),
+                                 "activation volume for dislocation creep");
               prm.declare_entry ("prefactor_dislocation", "2.42e-10",
-                  Patterns::Double (0),
-                  "prefactor for dislocation creep "
-                  "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
+                                 Patterns::Double (0),
+                                 "prefactor for dislocation creep "
+                                 "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
               prm.declare_entry ("stress_exponent", "3.5",
-                  Patterns::Double (0),
-                  "stress exponent for dislocation creep");
+                                 Patterns::Double (0),
+                                 "stress exponent for dislocation creep");
             }
             prm.leave_subsection();
           }
@@ -779,15 +781,17 @@ namespace aspect
             viscosity_model      = prm.get ("ViscosityModel");
             reference_eta       = prm.get_double ("ReferenceViscosity");
             increase_lower_mantle   = prm.get_double ("Viscosity increase lower mantle");
-            if (viscosity_model == "Exponential"){
+            if (viscosity_model == "Exponential")
+              {
                 prm.enter_subsection ("Exponential");
                 {
                   exponential_T         = prm.get_double ("exponential_T");
                   exponential_P         = prm.get_double ("exponential_P");
                 }
                 prm.leave_subsection();
-            }
-            if (viscosity_model == "Diffusion"){
+              }
+            if (viscosity_model == "Diffusion")
+              {
                 prm.enter_subsection ("Diffusion");
                 {
                   activation_energy_diffusion   = prm.get_double ("activation_energy_diffusion");
@@ -795,8 +799,9 @@ namespace aspect
                   prefactor_diffusion           = prm.get_double ("prefactor_diffusion");
                 }
                 prm.leave_subsection();
-            }
-            if (viscosity_model == "Dislocation"){
+              }
+            if (viscosity_model == "Dislocation")
+              {
                 prm.enter_subsection ("Dislocation");
                 {
                   activation_energy_dislocation = prm.get_double ("activation_energy_dislocation");
@@ -805,8 +810,9 @@ namespace aspect
                   stress_exponent                = prm.get_double ("stress_exponent");
                 }
                 prm.leave_subsection();
-            }
-            if (viscosity_model == "Composite"){
+              }
+            if (viscosity_model == "Composite")
+              {
                 prm.enter_subsection ("Composite");
                 {
                   activation_energy_diffusion   = prm.get_double ("activation_energy_diffusion");
@@ -818,7 +824,7 @@ namespace aspect
                   stress_exponent               = prm.get_double ("stress_exponent");
                 }
                 prm.leave_subsection();
-            }
+              }
           }
           prm.leave_subsection();
         }

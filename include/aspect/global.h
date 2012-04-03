@@ -96,7 +96,7 @@ namespace aspect
  * classes in the given space dimension.
  */
 #define ASPECT_INSTANTIATE(INSTANTIATIONS) \
-    INSTANTIATIONS(2) \
-    INSTANTIATIONS(3)
+  INSTANTIATIONS(2) \
+  INSTANTIATIONS(3)
 
 #endif

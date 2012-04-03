@@ -190,10 +190,10 @@ namespace aspect
   { \
     aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
     dummy_ ## classname ## _2d (&aspect::GeometryModel::register_geometry_model<2>, \
-                                 name, description); \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
     dummy_ ## classname ## _3d (&aspect::GeometryModel::register_geometry_model<3>, \
-                                 name, description); \
+                                name, description); \
   }
   }
 }

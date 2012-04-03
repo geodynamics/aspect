@@ -52,9 +52,9 @@ namespace aspect
                                   const Point<dim>             &position) const;
 
         virtual double viscosity_ratio (const double temperature,
-                                                const double pressure,
-                                                const SymmetricTensor<2,dim> &strain_rate,
-                                                const Point<dim> &position) const;
+                                        const double pressure,
+                                        const SymmetricTensor<2,dim> &strain_rate,
+                                        const Point<dim> &position) const;
 
         virtual double density (const double temperature,
                                 const double pressure,

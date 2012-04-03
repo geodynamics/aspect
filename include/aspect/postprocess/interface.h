@@ -575,8 +575,8 @@ namespace aspect
      * @ingroup Postprocessing
      */
 #define ASPECT_REGISTER_POSTPROCESSOR(classname,name,description) \
-    template class classname<2>; \
-    template class classname<3>; \
+  template class classname<2>; \
+  template class classname<3>; \
   namespace ASPECT_REGISTER_POSTPROCESSOR_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
@@ -584,7 +584,7 @@ namespace aspect
                                 name, description); \
     aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
     dummy_ ## classname ## _3d (&aspect::Postprocess::Manager<3>::register_postprocessor, \
-                                 name, description); \
+                                name, description); \
   }
   }
 }

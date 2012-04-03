@@ -332,10 +332,10 @@ namespace aspect
     namespace
     {
       std_cxx1x::tuple
-      <void*,
-       void*,
-       internal::Plugins::PluginList<Interface<2> >,
-       internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      <void *,
+      void *,
+      internal::Plugins::PluginList<Interface<2> >,
+      internal::Plugins::PluginList<Interface<3> > > registered_plugins;
     }
 
 
@@ -408,7 +408,7 @@ namespace aspect
       for (unsigned int name=0; name<postprocessor_names.size(); ++name)
         postprocessors.push_back (std_cxx1x::shared_ptr<Interface<dim> >
                                   (std_cxx1x::get<dim>(registered_plugins).create_plugin (postprocessor_names[name],
-                                                                     prm)));
+                                      prm)));
     }
 
 
@@ -420,9 +420,9 @@ namespace aspect
                                           Interface<dim> *(*factory_function) ())
     {
       std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
-                                          description,
-                                          declare_parameters_function,
-                                          factory_function);
+                                                               description,
+                                                               declare_parameters_function,
+                                                               factory_function);
     }
 
   }
@@ -448,9 +448,9 @@ namespace aspect
   namespace Postprocess
   {
 #define INSTANTIATE(dim) \
-    template class Interface<dim>; \
-    template class SimulatorAccess<dim>; \
-    template class Manager<dim>;
+  template class Interface<dim>; \
+  template class SimulatorAccess<dim>; \
+  template class Manager<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
