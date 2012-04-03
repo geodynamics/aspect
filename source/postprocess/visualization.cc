@@ -112,6 +112,7 @@ namespace aspect
         solution_names.push_back ("Vs");
         solution_names.push_back ("thermodynamic_phase");
         solution_names.push_back ("Cp");
+        solution_names.push_back ("viscosity_ratio");
         return solution_names;
       }
 
@@ -125,6 +126,7 @@ namespace aspect
         interpretation (dim,
                         DataComponentInterpretation::component_is_part_of_vector);
 
+        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
