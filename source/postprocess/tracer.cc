@@ -726,8 +726,6 @@ namespace aspect
 {
     namespace Postprocess
     {
-        template class ParticleSet<deal_II_dimension>;
-        
         ASPECT_REGISTER_POSTPROCESSOR(ParticleSet,
                                       "tracers",
                                       "Postprocessor that propagates tracer particles based on the "

@@ -331,7 +331,11 @@ namespace aspect
 
     namespace
     {
-      internal::Plugins::PluginList<Interface<deal_II_dimension> > registered_plugins;
+      std_cxx1x::tuple
+      <void*,
+       void*,
+       internal::Plugins::PluginList<Interface<2> >,
+       internal::Plugins::PluginList<Interface<3> > > registered_plugins;
     }
 
 
@@ -347,7 +351,7 @@ namespace aspect
         // construct a string for Patterns::MultipleSelection that
         // contains the names of all registered postprocessors
         const std::string pattern_of_names
-          = registered_plugins.get_pattern_of_names (true);
+          = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names (true);
         prm.declare_entry("List of postprocessors",
                           "all",
                           Patterns::MultipleSelection(pattern_of_names),
@@ -359,13 +363,13 @@ namespace aspect
                           "postprocessors should be run after each time step.\n\n"
                           "The following postprocessors are available:\n\n"
                           +
-                          registered_plugins.get_description_string());
+                          std_cxx1x::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection();
 
       // now declare the parameters of each of the registered
       // postprocessors in turn
-      registered_plugins.declare_parameters (prm);
+      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -374,7 +378,7 @@ namespace aspect
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (registered_plugins.plugins != 0,
+      Assert (std_cxx1x::get<dim>(registered_plugins).plugins != 0,
               ExcMessage ("No postprocessors registered!?"));
 
       // first find out which postprocessors are requested
@@ -393,9 +397,9 @@ namespace aspect
                      "all") != postprocessor_names.end())
         {
           postprocessor_names.clear();
-          for (std::list<internal::Plugins::PluginList<Interface<deal_II_dimension> >::PluginInfo>::const_iterator
-               p = registered_plugins.plugins->begin();
-               p != registered_plugins.plugins->end(); ++p)
+          for (typename std::list<typename internal::Plugins::PluginList<Interface<dim> >::PluginInfo>::const_iterator
+               p = std_cxx1x::get<dim>(registered_plugins).plugins->begin();
+               p != std_cxx1x::get<dim>(registered_plugins).plugins->end(); ++p)
             postprocessor_names.push_back (std_cxx1x::get<0>(*p));
         }
 
@@ -403,7 +407,7 @@ namespace aspect
       // their own parameters
       for (unsigned int name=0; name<postprocessor_names.size(); ++name)
         postprocessors.push_back (std_cxx1x::shared_ptr<Interface<dim> >
-                                  (registered_plugins.create_plugin (postprocessor_names[name],
+                                  (std_cxx1x::get<dim>(registered_plugins).create_plugin (postprocessor_names[name],
                                                                      prm)));
     }
 
@@ -415,7 +419,7 @@ namespace aspect
                                           void (*declare_parameters_function) (ParameterHandler &),
                                           Interface<dim> *(*factory_function) ())
     {
-      registered_plugins.register_plugin (name,
+      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
                                           description,
                                           declare_parameters_function,
                                           factory_function);
@@ -433,17 +437,21 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<Postprocess::Interface<deal_II_dimension> >::PluginInfo> *
-      internal::Plugins::PluginList<Postprocess::Interface<deal_II_dimension> >::plugins = 0;
+      std::list<internal::Plugins::PluginList<Postprocess::Interface<2> >::PluginInfo> *
+      internal::Plugins::PluginList<Postprocess::Interface<2> >::plugins = 0;
+      template <>
+      std::list<internal::Plugins::PluginList<Postprocess::Interface<3> >::PluginInfo> *
+      internal::Plugins::PluginList<Postprocess::Interface<3> >::plugins = 0;
     }
   }
 
   namespace Postprocess
   {
-    template class Interface<deal_II_dimension>;
-    template class SimulatorAccess<deal_II_dimension>;
-    template class Manager<deal_II_dimension>;
+#define INSTANTIATE(dim) \
+    template class Interface<dim>; \
+    template class SimulatorAccess<dim>; \
+    template class Manager<dim>;
 
-    Manager<deal_II_dimension> m;
+    ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }

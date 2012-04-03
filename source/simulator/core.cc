@@ -979,6 +979,8 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  template
-  class Simulator<deal_II_dimension>;
+#define INSTANTIATE(dim) \
+  template class Simulator<dim>;
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
 }

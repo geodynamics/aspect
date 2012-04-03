@@ -219,8 +219,6 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    template class SphericalShell<deal_II_dimension>;
-
     ASPECT_REGISTER_GEOMETRY_MODEL(SphericalShell,
                                    "spherical shell",
                                    "A geometry representing a spherical shell or a pice of it. "

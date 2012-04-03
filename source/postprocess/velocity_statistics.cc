@@ -207,8 +207,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template class VelocityStatistics<deal_II_dimension>;
-
     ASPECT_REGISTER_POSTPROCESSOR(VelocityStatistics,
                                   "velocity statistics",
                                   "A postprocessor that computes some statistics about the "

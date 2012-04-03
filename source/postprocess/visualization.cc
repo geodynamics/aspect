@@ -570,8 +570,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template class Visualization<deal_II_dimension>;
-
     ASPECT_REGISTER_POSTPROCESSOR(Visualization,
                                   "visualization",
                                   "A postprocessor that takes the solution and writes "

@@ -120,6 +120,7 @@ namespace aspect
      *
      * @ingroup GravityModels
      */
+    template <int dim>
     void
     declare_parameters (ParameterHandler &prm);
 
@@ -131,6 +132,8 @@ namespace aspect
      * @ingroup GravityModels
      */
 #define ASPECT_REGISTER_GRAVITY_MODEL(classname,name,description) \
+    template class classname<2>; \
+    template class classname<3>; \
   namespace ASPECT_REGISTER_GRAVITY_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<Interface<deal_II_dimension>,classname<deal_II_dimension> > \

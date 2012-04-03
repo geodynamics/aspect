@@ -153,6 +153,7 @@ namespace aspect
      *
      * @ingroup BoundaryTemperatures
      */
+    template <int dim>
     void
     declare_parameters (ParameterHandler &prm);
 
@@ -164,6 +165,8 @@ namespace aspect
      * @ingroup BoundaryTemperatures
      */
 #define ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(classname, name, description) \
+  template class classname<2>; \
+  template class classname<3>; \
   namespace ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<Interface<deal_II_dimension>,classname<deal_II_dimension> > \

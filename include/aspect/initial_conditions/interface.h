@@ -159,6 +159,7 @@ namespace aspect
      *
      * @ingroup InitialConditionsModels
      */
+    template <int dim>
     void
     declare_parameters (ParameterHandler &prm);
 
@@ -171,6 +172,8 @@ namespace aspect
      * @ingroup InitialConditionsModels
      */
 #define ASPECT_REGISTER_INITIAL_CONDITIONS(classname,name,description) \
+    template class classname<2>; \
+    template class classname<3>; \
   namespace ASPECT_REGISTER_INITIAL_CONDITIONS_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<Interface<deal_II_dimension>,classname<deal_II_dimension> > \

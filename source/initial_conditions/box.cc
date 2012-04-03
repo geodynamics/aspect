@@ -54,7 +54,6 @@ namespace aspect
 {
   namespace InitialConditions
   {
-    template class PerturbedBox<deal_II_dimension>;
     ASPECT_REGISTER_INITIAL_CONDITIONS(PerturbedBox,
                                        "perturbed box",
                                        "An initial temperature field in which the temperature "

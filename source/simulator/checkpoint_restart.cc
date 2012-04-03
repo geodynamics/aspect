@@ -168,6 +168,9 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  template void Simulator<deal_II_dimension>::create_snapshot();
-  template void Simulator<deal_II_dimension>::resume_from_snapshot();
+#define INSTANTIATE(dim) \
+  template void Simulator<dim>::create_snapshot(); \
+  template void Simulator<dim>::resume_from_snapshot();
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
 }

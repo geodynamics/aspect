@@ -20,6 +20,7 @@
 /*  $Id$  */
 
 
+#include <aspect/global.h>
 #include <aspect/material_model/interface.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx1x/tuple.h>
@@ -121,7 +122,11 @@ namespace aspect
 
     namespace
     {
-      internal::Plugins::PluginList<Interface<deal_II_dimension> > registered_plugins;
+      std_cxx1x::tuple
+      <void*,
+       void*,
+       internal::Plugins::PluginList<Interface<2> >,
+       internal::Plugins::PluginList<Interface<3> > > registered_plugins;
     }
 
 
@@ -133,7 +138,7 @@ namespace aspect
                              void (*declare_parameters_function) (ParameterHandler &),
                              Interface<dim> *(*factory_function) ())
     {
-      registered_plugins.register_plugin (name,
+      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
                                           description,
                                           declare_parameters_function,
                                           factory_function);
@@ -151,7 +156,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      return registered_plugins.create_plugin (model_name, prm);
+      return std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
     }
 
 
@@ -208,6 +213,7 @@ namespace aspect
               density_derivative(temperature, pressure, position, NonlinearDependence::temperature));
     }
 
+    template <int dim>
     void
     declare_parameters (ParameterHandler &prm)
     {
@@ -215,16 +221,16 @@ namespace aspect
       prm.enter_subsection ("Material model");
       {
         const std::string pattern_of_names
-          = registered_plugins.get_pattern_of_names ();
+          = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
         prm.declare_entry ("Model name", "",
                            Patterns::Selection (pattern_of_names),
                            "Select one of the following models:\n\n"
                            +
-                           registered_plugins.get_description_string());
+                           std_cxx1x::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 
-      registered_plugins.declare_parameters (prm);
+      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
   }
@@ -238,24 +244,35 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<MaterialModel::Interface<deal_II_dimension> >::PluginInfo> *
-      internal::Plugins::PluginList<MaterialModel::Interface<deal_II_dimension> >::plugins = 0;
+      std::list<internal::Plugins::PluginList<MaterialModel::Interface<2> >::PluginInfo> *
+      internal::Plugins::PluginList<MaterialModel::Interface<2> >::plugins = 0;
+
+      template <>
+      std::list<internal::Plugins::PluginList<MaterialModel::Interface<3> >::PluginInfo> *
+      internal::Plugins::PluginList<MaterialModel::Interface<3> >::plugins = 0;
     }
   }
 
   namespace MaterialModel
   {
-    template class Interface<deal_II_dimension>;
+#define INSTANTIATE(dim) \
+    template class Interface<dim>; \
+    \
+    template \
+    void \
+    register_material_model<dim> (const std::string &, \
+                                                const std::string &, \
+                                                void ( *) (ParameterHandler &), \
+                                                Interface<dim> *( *) ()); \
+    \
+    template  \
+    void \
+    declare_parameters<dim> (ParameterHandler &); \
+    \
+    template \
+    Interface<dim> * \
+    create_material_model<dim> (ParameterHandler &prm);
 
-    template
-    void
-    register_material_model<deal_II_dimension> (const std::string &,
-                                                const std::string &,
-                                                void ( *) (ParameterHandler &),
-                                                Interface<deal_II_dimension> *( *) ());
-
-    template
-    Interface<deal_II_dimension> *
-    create_material_model<deal_II_dimension> (ParameterHandler &prm);
+    ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }

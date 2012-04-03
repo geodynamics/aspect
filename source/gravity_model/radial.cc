@@ -91,14 +91,12 @@ namespace aspect
 {
   namespace GravityModel
   {
-    template class RadialConstant<deal_II_dimension>;
     ASPECT_REGISTER_GRAVITY_MODEL(RadialConstant,
                                   "radial constant",
                                   "A gravity model in which the gravity direction is radially inward "
                                   "and at constant magnitude. The magnitude is read from the parameter "
                                   "file in subsection 'Radial constant'.");
 
-    template class RadialEarthLike<deal_II_dimension>;
     ASPECT_REGISTER_GRAVITY_MODEL(RadialEarthLike,
                                   "radial earth-like",
                                   "A gravity model in which the gravity direction is radially inward "

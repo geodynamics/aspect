@@ -44,7 +44,6 @@ namespace aspect
 {
   namespace GravityModel
   {
-    template class Vertical<deal_II_dimension>;
     ASPECT_REGISTER_GRAVITY_MODEL(Vertical,
                                   "vertical",
                                   "A gravity model in which the gravity direction is vertically downward "

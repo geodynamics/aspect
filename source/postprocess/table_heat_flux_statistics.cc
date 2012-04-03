@@ -229,8 +229,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template class TableHeatfluxStatistics<deal_II_dimension>;
-
     ASPECT_REGISTER_POSTPROCESSOR(TableHeatfluxStatistics,
                                   "heat flux statistics for the table model",
                                   "A postprocessor that computes some statistics about "

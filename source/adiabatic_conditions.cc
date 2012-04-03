@@ -20,6 +20,7 @@
 /*  $Id$  */
 
 
+#include <aspect/global.h>
 #include <aspect/adiabatic_conditions.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/box.h>
@@ -134,5 +135,8 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  template class AdiabaticConditions<deal_II_dimension>;
+#define INSTANTIATE(dim) \
+  template class AdiabaticConditions<dim>;
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
 }

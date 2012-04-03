@@ -315,8 +315,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template class Steinberger<deal_II_dimension>;
-
     ASPECT_REGISTER_MATERIAL_MODEL(Steinberger,
                                    "Steinberger",
                                    "lookup from the paper of Steinberger/Calderwood")

@@ -166,8 +166,6 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    template class Box<deal_II_dimension>;
-
     ASPECT_REGISTER_GEOMETRY_MODEL(Box,
                                    "box",
                                    "A box geometry parallel to the coordinate directions. "

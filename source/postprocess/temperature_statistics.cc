@@ -156,8 +156,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template class TemperatureStatistics<deal_II_dimension>;
-
     ASPECT_REGISTER_POSTPROCESSOR(TemperatureStatistics,
                                   "temperature statistics",
                                   "A postprocessor that computes some statistics about "

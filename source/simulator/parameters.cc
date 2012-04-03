@@ -369,11 +369,11 @@ namespace aspect
   {
     Parameters::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
-    MaterialModel::declare_parameters (prm);
-    GeometryModel::declare_parameters (prm);
-    GravityModel::declare_parameters (prm);
-    InitialConditions::declare_parameters (prm);
-    BoundaryTemperature::declare_parameters (prm);
+    MaterialModel::declare_parameters<dim> (prm);
+    GeometryModel::declare_parameters <dim>(prm);
+    GravityModel::declare_parameters<dim> (prm);
+    InitialConditions::declare_parameters<dim> (prm);
+    BoundaryTemperature::declare_parameters<dim> (prm);
   }
 }
 
@@ -381,8 +381,11 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  template Simulator<deal_II_dimension>::Parameters::Parameters (ParameterHandler &prm);
-  template void Simulator<deal_II_dimension>::Parameters::declare_parameters (ParameterHandler &prm);
-  template void Simulator<deal_II_dimension>::Parameters::parse_parameters(ParameterHandler &prm);
-  template void Simulator<deal_II_dimension>::declare_parameters (ParameterHandler &prm);
+#define INSTANTIATE(dim) \
+  template Simulator<dim>::Parameters::Parameters (ParameterHandler &prm); \
+  template void Simulator<dim>::Parameters::declare_parameters (ParameterHandler &prm); \
+  template void Simulator<dim>::Parameters::parse_parameters(ParameterHandler &prm); \
+  template void Simulator<dim>::declare_parameters (ParameterHandler &prm);
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
 }

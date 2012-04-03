@@ -86,7 +86,6 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
-    template class Box<deal_II_dimension>;
     ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(Box,
                                                "box",
                                                "A model in which the temperature is chosen constant on "

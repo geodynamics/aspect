@@ -883,31 +883,21 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  template void Simulator<deal_II_dimension>::normalize_pressure(LinearAlgebra::BlockVector &vector);
+#define INSTANTIATE(dim) \
+  template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
+  template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
+  template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_range () const; \
+  template double Simulator<dim>::compute_time_step () const; \
+  template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
+  template void Simulator<dim>::compute_depth_average_temperature(std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_depth_average_Vs(std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_Vs_anomaly(Vector<float> &values) const; \
+  template void Simulator<dim>::compute_Vp_anomaly(Vector<float> &values) const; \
+  template void Simulator<dim>::output_statistics();
 
-  template double Simulator<deal_II_dimension>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const;
-
-  template std::pair<double,double> Simulator<deal_II_dimension>::get_extrapolated_temperature_range () const;
-
-  template double Simulator<deal_II_dimension>::compute_time_step () const;
-
-  template void Simulator<deal_II_dimension>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector);
-
-  template void Simulator<deal_II_dimension>::compute_depth_average_temperature(std::vector<double> &values) const;
-
-  template void Simulator<deal_II_dimension>::compute_depth_average_viscosity(std::vector<double> &values) const;
-
-  template void Simulator<deal_II_dimension>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const;
-
-  template void Simulator<deal_II_dimension>::compute_depth_average_sinking_velocity(std::vector<double> &values) const;
-
-  template void Simulator<deal_II_dimension>::compute_depth_average_Vs(std::vector<double> &values) const;
-
-  template void Simulator<deal_II_dimension>::compute_depth_average_Vp(std::vector<double> &values) const;
-
-  template void Simulator<deal_II_dimension>::compute_Vs_anomaly(Vector<float> &values) const;
-
-  template void Simulator<deal_II_dimension>::compute_Vp_anomaly(Vector<float> &values) const;
-
-  template void Simulator<deal_II_dimension>::output_statistics();
+  ASPECT_INSTANTIATE(INSTANTIATE)
 }

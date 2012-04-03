@@ -253,8 +253,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template class Simple<deal_II_dimension>;
-
     ASPECT_REGISTER_MATERIAL_MODEL(Simple,
                                    "simple",
                                    "A simple material model that has constant values "

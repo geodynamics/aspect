@@ -20,6 +20,7 @@
 /*  $Id$  */
 
 
+#include <aspect/global.h>
 #include <aspect/initial_conditions/interface.h>
 
 #include <deal.II/base/exceptions.h>
@@ -67,7 +68,11 @@ namespace aspect
 
     namespace
     {
-      internal::Plugins::PluginList<Interface<deal_II_dimension> > registered_plugins;
+      std_cxx1x::tuple
+      <void*,
+       void*,
+       internal::Plugins::PluginList<Interface<2> >,
+       internal::Plugins::PluginList<Interface<3> > > registered_plugins;
     }
 
 
@@ -79,7 +84,7 @@ namespace aspect
                                        void (*declare_parameters_function) (ParameterHandler &),
                                        Interface<dim> *(*factory_function) ())
     {
-      registered_plugins.register_plugin (name,
+      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
                                           description,
                                           declare_parameters_function,
                                           factory_function);
@@ -100,7 +105,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      Interface<dim> *plugin = registered_plugins.create_plugin (model_name, prm);
+      Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
       plugin->initialize (geometry_model,
                           boundary_temperature,
                           adiabatic_conditions);
@@ -109,6 +114,7 @@ namespace aspect
 
 
 
+    template <int dim>
     void
     declare_parameters (ParameterHandler &prm)
     {
@@ -116,16 +122,16 @@ namespace aspect
       prm.enter_subsection ("Initial conditions");
       {
         const std::string pattern_of_names
-          = registered_plugins.get_pattern_of_names ();
+          = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
         prm.declare_entry ("Model name", "",
                            Patterns::Selection (pattern_of_names),
                            "Select one of the following models:\n\n"
                            +
-                           registered_plugins.get_description_string());
+                           std_cxx1x::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 
-      registered_plugins.declare_parameters (prm);
+      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
     }
   }
 }
@@ -138,27 +144,37 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<InitialConditions::Interface<deal_II_dimension> >::PluginInfo> *
-      internal::Plugins::PluginList<InitialConditions::Interface<deal_II_dimension> >::plugins = 0;
+      std::list<internal::Plugins::PluginList<InitialConditions::Interface<2> >::PluginInfo> *
+      internal::Plugins::PluginList<InitialConditions::Interface<2> >::plugins = 0;
+      template <>
+      std::list<internal::Plugins::PluginList<InitialConditions::Interface<3> >::PluginInfo> *
+      internal::Plugins::PluginList<InitialConditions::Interface<3> >::plugins = 0;
     }
   }
 
   namespace InitialConditions
   {
-    template class Interface<deal_II_dimension>;
+#define INSTANTIATE(dim) \
+    template class Interface<dim>; \
+    \
+    template \
+    void \
+    register_initial_conditions_model<dim> (const std::string &, \
+                                                          const std::string &, \
+                                                          void ( *) (ParameterHandler &), \
+                                                          Interface<dim> *( *) ()); \
+                                                          \
+    template  \
+    void \
+    declare_parameters<dim> (ParameterHandler &); \
+    \
+    template \
+    Interface<dim> * \
+    create_initial_conditions<dim> (ParameterHandler &prm, \
+                                                  const GeometryModel::Interface<dim> &geometry_model, \
+                                                  const BoundaryTemperature::Interface<dim> &boundary_temperature, \
+                                                  const AdiabaticConditions<dim>      &adiabatic_conditions);
 
-    template
-    void
-    register_initial_conditions_model<deal_II_dimension> (const std::string &,
-                                                          const std::string &,
-                                                          void ( *) (ParameterHandler &),
-                                                          Interface<deal_II_dimension> *( *) ());
-
-    template
-    Interface<deal_II_dimension> *
-    create_initial_conditions<deal_II_dimension> (ParameterHandler &prm,
-                                                  const GeometryModel::Interface<deal_II_dimension> &geometry_model,
-                                                  const BoundaryTemperature::Interface<deal_II_dimension> &boundary_temperature,
-                                                  const AdiabaticConditions<deal_II_dimension>      &adiabatic_conditions);
+    ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }

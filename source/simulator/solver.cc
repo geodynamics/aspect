@@ -395,6 +395,9 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  template void Simulator<deal_II_dimension>::solve_temperature ();
-  template void Simulator<deal_II_dimension>::solve_stokes ();
+#define INSTANTIATE(dim) \
+  template void Simulator<dim>::solve_temperature (); \
+  template void Simulator<dim>::solve_stokes ();
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
 }

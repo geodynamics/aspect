@@ -239,8 +239,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template class DepthAverage<deal_II_dimension>;
-
     ASPECT_REGISTER_POSTPROCESSOR(DepthAverage,
                                   "depth average",
                                   "A postprocessor that computes depth averaged quantities and writes them out.")

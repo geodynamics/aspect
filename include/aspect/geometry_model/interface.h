@@ -172,6 +172,7 @@ namespace aspect
      *
      * @ingroup GeometryModels
      */
+    template <int dim>
     void
     declare_parameters (ParameterHandler &prm);
 
@@ -183,11 +184,17 @@ namespace aspect
      * @ingroup GeometryModels
      */
 #define ASPECT_REGISTER_GEOMETRY_MODEL(classname,name,description) \
+  template class classname<2>; \
+  template class classname<3>; \
   namespace ASPECT_REGISTER_GEOMETRY_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<Interface<deal_II_dimension>,classname<deal_II_dimension> > \
-    dummy_ ## classname (&aspect::GeometryModel::register_geometry_model<deal_II_dimension>, \
-                         name, description); }
+    aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
+    dummy_ ## classname ## _2d (&aspect::GeometryModel::register_geometry_model<2>, \
+                                 name, description); \
+    aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
+    dummy_ ## classname ## _3d (&aspect::GeometryModel::register_geometry_model<3>, \
+                                 name, description); \
+  }
   }
 }
 
