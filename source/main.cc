@@ -140,7 +140,8 @@ int main (int argc, char *argv[])
 
       default:
         AssertThrow((dim >= 2) && (dim <= 3),
-                    ExcMessage ("ASPECT can only be run in 2d and 3d."));
+                    ExcMessage ("ASPECT can only be run in 2d and 3d but a "
+                                "different space dimension is given in the parameter file."));
         }
     }
   catch (std::exception &exc)
