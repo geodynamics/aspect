@@ -5,13 +5,12 @@
 # set by you:
 
 application-name  = aspect
-deal_II_dimension = 2
 
 # The next variable tells us the name of the executable. It is prefixed by
 # `lib/' to designate its destination directory. Note that the program
 # name depends on the dimension, so you can keep copies for the
 # different dimensions around:
-target   = lib/$(application-name)-$(deal_II_dimension)d
+target   = lib/$(application-name)
 
 # The `debug-mode' variable works as in the small projects Makefile:
 debug-mode = on
@@ -55,8 +54,8 @@ all-dirs := source \
 cc-files := $(shell for i in $(all-dirs) ; do echo $$i/*.cc ; done)
 
 tmp1     := $(shell echo $(cc-files) | $(PERL) -pi -e 's,source/,,g; s,/,_,g;')
-o-files  := $(addprefix lib/$(deal_II_dimension)d/, $(tmp1:.cc=.$(OBJEXT)) )
-go-files := $(addprefix lib/$(deal_II_dimension)d/, $(tmp1:.cc=.g.$(OBJEXT)))
+o-files  := $(addprefix lib/obj/, $(tmp1:.cc=.$(OBJEXT)) )
+go-files := $(addprefix lib/obj/, $(tmp1:.cc=.g.$(OBJEXT)))
 
 h-files     := $(wildcard include/aspect/*.h include/aspect/*/*h)
 lib-h-files := $(shell echo $D/include/deal.II/*/*.h)
@@ -80,18 +79,13 @@ else
 endif
 
 
-# Then augment the compiler flags by a specification of the dimension
-# for which the program shall be compiled:
-flags += -Ddeal_II_dimension=$(deal_II_dimension)
-
-
 # The following two rules define how to compile C++ files into object
 # files:
-lib/$(deal_II_dimension)d/%.g.$(OBJEXT) :
-	@echo =====$(application-name)=======$(deal_II_dimension)d====debug=====$(MT)== $<
+lib/obj/%.g.$(OBJEXT) :
+	@echo =====$(application-name)=============debug=====$(MT)== $<
 	@$(CXX) $(flags) -c $< -o $@
-lib/$(deal_II_dimension)d/%.$(OBJEXT) :
-	@echo =====$(application-name)=======$(deal_II_dimension)d====optimized=$(MT)== $<
+lib/obj/%.$(OBJEXT) :
+	@echo =====$(application-name)=============optimized=$(MT)== $<
 	@$(CXX) $(flags) -c $< -o $@
 
 
@@ -99,7 +93,7 @@ lib/$(deal_II_dimension)d/%.$(OBJEXT) :
 # Next define how to link the executable
 build : $(target)$(EXEEXT)
 $(target)$(EXEEXT) : $(libraries) Makefile
-	@echo =====$(application-name)=======$(deal_II_dimension)d==============$(MT)== Linking $@
+	@echo =====$(application-name)=======================$(MT)== Linking $@
 	@$(CXX) -o $@ $(libraries) $(LIBS) $(LDFLAGS)
 
 
@@ -146,7 +140,7 @@ clean-data:
 		$(lib-h-files) \
 		Makefile
 	@echo "====================================== Remaking $@"
-	@(($D/common/scripts/make_dependencies -n $(INCLUDE) "-Blib/$(deal_II_dimension)d" \
+	@(($D/common/scripts/make_dependencies -n $(INCLUDE) "-Blib/obj" \
 			$(filter $(dir $@)%, $(cc-files)) \
 		| $(PERL) -pe 's!debug/(.*)\.o:!$(subst source_,,$(subst /,_,$(dir $@)))\1.g.o:!g;' \
 		| $(PERL) -pe 's!optimized/(.*)\.o:!$(subst source_,,$(subst /,_,$(dir $@)))\1.o:!g;' \
