@@ -119,7 +119,7 @@ clean: clean-lib clean-data
 	-cd doc ; make clean
 
 clean-lib:
-	-rm -f lib/?d/*.$(OBJEXT) lib/?d/*.g.$(OBJEXT) $(target)$(EXEEXT) lib/$(application-name)-?d$(EXEEXT) lib/TAGS
+	-rm -f lib/obj/*.$(OBJEXT) $(target)$(EXEEXT) lib/TAGS
 
 clean-data:
 	-rm -f $(clean-up-files)
