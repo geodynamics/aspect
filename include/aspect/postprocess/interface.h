@@ -204,7 +204,7 @@ namespace aspect
         /** @{ */
 
         /**
-         * Return the current simulation time in seconds.
+         * Return the MPI communicator for this simulation.
          */
         MPI_Comm
         get_mpi_communicator () const;
