@@ -33,8 +33,7 @@ namespace aspect
 
     // Initialize a particle using the data in an MPI_Particle struct
     template <int dim>
-    Particle<dim>::Particle(const MPI_Particle<dim> &particle_data) : _pos0(), _cell_level(-1), _cell_index(-1),
-      _is_local(true), _is_outside_mesh(false)
+    Particle<dim>::Particle(const MPI_Particle<dim> &particle_data) : _cell_level(-1), _cell_index(-1), _is_local(false)
     {
       for (unsigned int d=0; d<dim; ++d)
         {
@@ -130,9 +129,11 @@ namespace aspect
       if (!initialized)
         {
           next_output_time = this->get_time();
-          setup_mpi(MPI_COMM_WORLD);
+          setup_mpi(this->get_mpi_communicator());
           initialized = true;
           generate_particles(this->get_triangulation(), num_initial_tracers);
+          this->get_triangulation().signals.post_refinement.connect(std_cxx1x::bind(&ParticleSet<dim>::mesh_changed,
+                                                                                    std_cxx1x::ref(*this)));
         }
 
       advect_particles(this->get_triangulation(),
@@ -148,6 +149,8 @@ namespace aspect
           result_string += " Writing particle output: " + file_name;
         }
 
+      triangulation_changed = false;
+        
       return std::make_pair("Advecting particles...", result_string);
     }
 
@@ -297,22 +300,21 @@ namespace aspect
       int cur_level, cur_index;
 
       // First check the last recorded cell since particles will generally stay in the same area
-      particle.getCell(cur_level, cur_index);
-      found_cell = typename parallel::distributed::Triangulation<dim>::cell_iterator(&triangulation, cur_level, cur_index);
-      if (found_cell != triangulation.end() && found_cell->point_inside(particle.getPosition()))
-        {
-          // If the cell is active, we're at the finest level of refinement and can finish
-          if (found_cell->active())
-            {
-              particle.setLocal(found_cell->is_locally_owned());
-              return;
-            }
-        }
+      if (!triangulation_changed) {
+        particle.getCell(cur_level, cur_index);
+        found_cell = typename parallel::distributed::Triangulation<dim>::cell_iterator(&triangulation, cur_level, cur_index);
+        if (found_cell != triangulation.end() && found_cell->point_inside(particle.getPosition()) && found_cell->active())
+          {
+            // If the cell is active, we're at the finest level of refinement and can finish
+            particle.setLocal(found_cell->is_locally_owned());
+            return;
+          }
+      }
 
       // Check all the cells on level 0 and recurse down
       for (it=triangulation.begin(0); it!=triangulation.end(0); ++it)
         {
-          if (recursive_find_cell(triangulation, particle, 0, it->index()))
+          if (recursive_find_cell(triangulation, particle, it->level(), it->index()))
             {
               return;
             }
@@ -383,11 +385,11 @@ namespace aspect
                                                    const Mapping<dim> &mapping,
                                                    std::vector<Point<dim> > &velocities)
     {
-      Vector<double>          result(dim+2);
+      Vector<double>        result(dim+2);
       Point<dim>            velocity;
       unsigned int          i;
+      int                   cur_level, cur_index;
       typename std::vector<Particle<dim> >::iterator  it;
-      int               cur_level, cur_index;
       typename DoFHandler<dim>::active_cell_iterator  found_cell;
 
       // Prepare the field function
@@ -399,6 +401,7 @@ namespace aspect
           // Get the cell the particle is in
           it->getCell(cur_level, cur_index);
           found_cell = typename DoFHandler<dim>::active_cell_iterator(&triangulation, cur_level, cur_index, &dh);
+            if (found_cell->is_artificial()) std::cerr << "ARTIFICIAL: " << cur_level << " " << cur_index << std::endl;
 
           // And interpolate the particle velocities
           fe_value.set_active_cell(found_cell);
@@ -539,6 +542,12 @@ namespace aspect
           find_cell(mapping, triangulation, *it);
         }
 
+      // If the triangulation changed, we may need to move particles between processors
+      if (triangulation_changed)
+        {
+          send_recv_particles(mapping, triangulation);
+        }
+        
       // If particles fell out of the mesh, put them back in at the closest point in the mesh
       move_particles_back_in_mesh(mapping, triangulation);
 

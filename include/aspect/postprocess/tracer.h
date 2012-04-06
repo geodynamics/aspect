@@ -35,7 +35,7 @@ namespace aspect
       double          pos[dim];
       double          pos0[dim];
       double          velocity[dim];
-      unsigned int  id;
+      unsigned int    id;
     };
 
     template <int dim>
@@ -55,11 +55,11 @@ namespace aspect
         // Refinement level and index of last known active cell containing this particle
         int       _cell_level, _cell_index;
 
-        // Flags indicating if this particle has moved outside the mesh or off the local subdomain
-        bool      _is_local, _is_outside_mesh;
+        // Flags indicating if this particle has moved off the local subdomain
+        bool      _is_local;
 
       public:
-        Particle(const Point<dim> &new_pos, const int &new_id) : _pos(new_pos), _pos0(), _velocity(), _id(new_id), _cell_level(-1), _cell_index(-1), _is_local(true), _is_outside_mesh(false) {};
+        Particle(const Point<dim> &new_pos, const int &new_id) : _pos(new_pos), _pos0(), _velocity(), _id(new_id), _cell_level(-1), _cell_index(-1), _is_local(true) {};
 
         Particle(const MPI_Particle<dim> &particle_data);
 
@@ -127,7 +127,11 @@ namespace aspect
       private:
         // Whether this set has been initialized yet or not
         bool                            initialized;
-
+        
+        // If the triangulation was changed (e.g. through refinement), in which
+        // case we treat all recorded particle level/index values as invalid
+        bool                            triangulation_changed;
+        
         // Number of initial particles to create
         // Use a double rather than int since doubles can represent up to 2^52
         double                          num_initial_tracers;
@@ -140,27 +144,27 @@ namespace aspect
         double                          next_output_time;
 
         // Set of particles currently in the local domain
-        std::vector<Particle<dim> >   particles;
+        std::vector<Particle<dim> >     particles;
 
         // Index of output file
-        unsigned int          out_index;
+        unsigned int                    out_index;
 
         // Total number of particles in simulation
         double                          global_sum_particles;
 
         // MPI related variables
         // MPI registered datatype encapsulating the MPI_Particle struct
-        MPI_Datatype          particle_type;
+        MPI_Datatype                    particle_type;
 
         // Size and rank in the MPI communication world
-        int               world_size;
+        int                             world_size;
         int                             self_rank;
 
         // Buffers count, offset, request data for sending and receiving particles
-        int               *num_send, *num_recv;
-        int               total_send, total_recv;
-        int               *send_offset, *recv_offset;
-        MPI_Request           *send_reqs, *recv_reqs;
+        int                             *num_send, *num_recv;
+        int                             total_send, total_recv;
+        int                             *send_offset, *recv_offset;
+        MPI_Request                     *send_reqs, *recv_reqs;
 
         void generate_particles_in_subdomain(const parallel::distributed::Triangulation<dim> &triangulation,
                                              unsigned int num_particles,
@@ -171,8 +175,10 @@ namespace aspect
                                  int cur_level,
                                  int cur_index);
 
+        void mesh_changed(void) { triangulation_changed = true; };
+        
       public:
-        ParticleSet(void) : initialized(false), next_output_time(std::numeric_limits<double>::quiet_NaN()), out_index(0), world_size(0), self_rank(0), num_send(NULL), num_recv(NULL), send_offset(NULL), recv_offset(NULL), send_reqs(NULL), recv_reqs(NULL) {};
+        ParticleSet(void) : initialized(false), triangulation_changed(true), next_output_time(std::numeric_limits<double>::quiet_NaN()), out_index(0), world_size(0), self_rank(0), num_send(NULL), num_recv(NULL), send_offset(NULL), recv_offset(NULL), send_reqs(NULL), recv_reqs(NULL) {};
         ~ParticleSet(void);
 
         virtual std::pair<std::string,std::string> execute (TableHandler &statistics);
