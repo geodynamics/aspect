@@ -25,10 +25,7 @@
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/distributed/solution_transfer.h>
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-
-
+#include <zlib.h>
 
 namespace aspect
 {
@@ -66,8 +63,8 @@ namespace aspect
                        parameters.output_directory + "mesh.old");
             move_file (parameters.output_directory + "mesh.info",
                        parameters.output_directory + "mesh.info.old");
-            move_file (parameters.output_directory + "resume.txt",
-                       parameters.output_directory + "resume.txt.old");
+            move_file (parameters.output_directory + "resume.z",
+                       parameters.output_directory + "resume.z.old");
 
             // from now on, we know that if we get into this
             // function again that a snapshot has previously
@@ -94,9 +91,37 @@ namespace aspect
     // save general information
     if (my_id == 0)
       {
-        std::ofstream ofs ((parameters.output_directory + "resume.txt").c_str());
-        boost::archive::text_oarchive oa (ofs);
-        oa << (*this);
+        std::ostringstream oss;
+        // serialize into a stringstream
+        {
+
+          aspect::oarchive oa (oss);
+          oa << (*this);
+        }
+        //compress with zlib and write to file
+        {
+          uLongf compressed_data_length = compressBound (oss.str().length());
+          std::vector<char *> compressed_data (compressed_data_length);
+          int err = compress2 ((Bytef *) &compressed_data[0],
+                               &compressed_data_length,
+                               (const Bytef *) oss.str().data(),
+                               oss.str().length(),
+                               Z_BEST_COMPRESSION);
+          Assert (err == Z_OK, ExcInternalError());
+
+          // build compression header
+          const uint32_t compression_header[4]
+            = { 1,                                   /* number of blocks */
+                (uint32_t)oss.str().length(), /* size of block */
+                (uint32_t)oss.str().length(), /* size of last block */
+                (uint32_t)compressed_data_length
+              }; /* list of compressed sizes of blocks */
+
+          std::ofstream f ((parameters.output_directory + "resume.z").c_str());
+          f.write((const char *)compression_header, 4 * sizeof(compression_header[0]));
+          f.write((char *)&compressed_data[0], compressed_data_length);
+        }
+
       }
     pcout << "*** Snapshot created!" << std::endl;
   }
@@ -130,9 +155,27 @@ namespace aspect
     old_solution = old_distributed_system;
     old_old_solution = old_old_distributed_system;
 
-    std::ifstream ifs ((parameters.output_directory + "resume.txt").c_str());
-    boost::archive::text_iarchive ia (ifs);
-    ia >> (*this);
+    //read zlib compressed resume.z
+    {
+      std::ifstream ifs ((parameters.output_directory + "resume.z").c_str());
+      uint32_t compression_header[4];
+      ifs.read((char *)compression_header, 4 * sizeof(compression_header[0]));
+      Assert(compression_header[0]==1, ExcInternalError());
+
+      std::vector<char> compressed(compression_header[3]);
+      std::vector<char> uncompressed(compression_header[1]);
+      ifs.read(&compressed[0],compression_header[3]);
+      uLongf uncompressed_size = compression_header[1];
+      uncompress((Bytef *)&uncompressed[0], &uncompressed_size, (Bytef *)&compressed[0], compression_header[3]);
+
+      {
+        std::stringstream ifs;
+        // this puts the data of uncompressed into the stringstream
+        ifs.rdbuf()->pubsetbuf(&uncompressed[0], uncompressed_size);
+        aspect::iarchive ia (ifs);
+        ia >> (*this);
+      }
+    }
 
     // re-initialize the postprocessors with the current object
     postprocess_manager.initialize (*this);

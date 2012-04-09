@@ -520,7 +520,7 @@ namespace aspect
     Visualization<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
       std::ostringstream os;
-      boost::archive::text_oarchive oa (os);
+      aspect::oarchive oa (os);
       oa << (*this);
 
       status_strings["Visualization"] = os.str();
@@ -535,7 +535,7 @@ namespace aspect
       if (status_strings.find("Visualization") != status_strings.end())
         {
           std::istringstream is (status_strings.find("Visualization")->second);
-          boost::archive::text_iarchive ia (is);
+          aspect::iarchive ia (is);
           ia >> (*this);
         }
 

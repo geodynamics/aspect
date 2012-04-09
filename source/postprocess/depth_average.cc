@@ -27,8 +27,6 @@
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 
 #include <math.h>
 
@@ -189,7 +187,7 @@ namespace aspect
     DepthAverage<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
       std::ostringstream os;
-      boost::archive::text_oarchive oa (os);
+      aspect::oarchive oa (os);
       oa << (*this);
 
       status_strings["DepthAverage"] = os.str();
@@ -204,7 +202,7 @@ namespace aspect
       if (status_strings.find("DepthAverage") != status_strings.end())
         {
           std::istringstream is (status_strings.find("DepthAverage")->second);
-          boost::archive::text_iarchive ia (is);
+          aspect::iarchive ia (is);
           ia >> (*this);
         }
 

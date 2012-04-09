@@ -28,6 +28,10 @@
 #include <deal.II/lac/trilinos_block_sparse_matrix.h>
 #include <deal.II/lac/trilinos_precondition.h>
 
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 namespace aspect
 {
   /**
@@ -36,6 +40,10 @@ namespace aspect
   extern const double year_in_seconds;
 
   extern const bool output_parallel_statistics;
+
+
+  typedef boost::archive::binary_iarchive iarchive;
+  typedef boost::archive::binary_oarchive oarchive;
 
   /**
    * A namespace that contains typedefs for classes used in
