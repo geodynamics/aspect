@@ -58,13 +58,9 @@ namespace aspect
                                      Vector< double > & 	values) const
         {
           double pos[2]={p(0),p(1)};
-          double result[3];//, vel[2], pressure,
           double total_stress[3], strain_rate[3];
           double eta_A=1.0;
           double eta_B=1e6;
-
-//          printf("t_xx, t_xz fucked !! \n");
-//          printf("pos_x, pos_y, vel_x, vel_y, pressure, total_stress[0], total_stress[1], total_stress[2], strain_rate[0], strain_rate[1], strain_rate[2]\n");
 
               _Velic_solCx(
                 pos,
@@ -87,6 +83,7 @@ namespace aspect
     std::pair<std::string,std::string>
     ErrorCheck<dim>::execute (TableHandler &statistics)
     {
+      AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,ExcNotImplemented());
       FunctionSolCx<dim> ref_func;
 
       const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe().base_element(0).degree+2);
@@ -115,51 +112,50 @@ namespace aspect
 
 
 
-              AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,ExcNotImplemented());
 
-              std::ofstream f ((this->get_output_directory() + "output.csv").c_str());
-              f.precision (16);
-              f << std::scientific;
+//              std::ofstream f ((this->get_output_directory() + "output.csv").c_str());
+//              f.precision (16);
+//              f << std::scientific;
 
-            //const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe().base_element(0).degree+2);
+//            //const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe().base_element(0).degree+2);
 
-            const unsigned int n_q_points =  quadrature_formula.size();
-            FEValues<dim> fe_values (this->get_mapping(), this->get_dof_handler().get_fe(),  quadrature_formula,
-                                     update_JxW_values | update_values | update_quadrature_points);
+//            const unsigned int n_q_points =  quadrature_formula.size();
+//            FEValues<dim> fe_values (this->get_mapping(), this->get_dof_handler().get_fe(),  quadrature_formula,
+//                                     update_JxW_values | update_values | update_quadrature_points);
 
-            const unsigned int dofs_per_cell = fe_values.get_fe().dofs_per_cell;
-            const FEValuesExtractors::Vector velocities (0);
-            const FEValuesExtractors::Scalar pressure (dim);
-            const FEValuesExtractors::Scalar temperature (dim+1);
+//            const unsigned int dofs_per_cell = fe_values.get_fe().dofs_per_cell;
+//            const FEValuesExtractors::Vector velocities (0);
+//            const FEValuesExtractors::Scalar pressure (dim);
+//            const FEValuesExtractors::Scalar temperature (dim+1);
 
-            std::vector<Tensor<1, dim> > velocity_values (quadrature_formula.size());
-            std::vector<double>         temperature_values (quadrature_formula.size());
-            std::vector<double>         pressure_values (quadrature_formula.size());
+//            std::vector<Tensor<1, dim> > velocity_values (quadrature_formula.size());
+//            std::vector<double>         temperature_values (quadrature_formula.size());
+//            std::vector<double>         pressure_values (quadrature_formula.size());
 
-            typename DoFHandler<dim>::active_cell_iterator
-            cell = this->get_dof_handler().begin_active(),
-            endc = this->get_dof_handler().end();
-            for (; cell != endc; ++cell)
-              {
-                fe_values.reinit (cell);
-                fe_values[velocities].get_function_values (this->get_solution(), velocity_values);
-                fe_values[pressure].get_function_values (this->get_solution(), pressure_values);
-                fe_values[temperature].get_function_values (this->get_solution(), temperature_values);
+//            typename DoFHandler<dim>::active_cell_iterator
+//            cell = this->get_dof_handler().begin_active(),
+//            endc = this->get_dof_handler().end();
+//            for (; cell != endc; ++cell)
+//              {
+//                fe_values.reinit (cell);
+//                fe_values[velocities].get_function_values (this->get_solution(), velocity_values);
+//                fe_values[pressure].get_function_values (this->get_solution(), pressure_values);
+//                fe_values[temperature].get_function_values (this->get_solution(), temperature_values);
 
-                for (unsigned int q = 0; q < n_q_points; ++q)
-                  {
-                    f
-                            <<  fe_values.quadrature_point (q) (0)
-                            << ' ' << fe_values.quadrature_point (q) (1)
-                            << ' ' << fe_values.JxW (q)
-                            << ' ' << velocity_values[q][0]
-                            << ' ' << velocity_values[q][1]
-                            << ' ' << pressure_values[q]
-                            << ' ' << temperature_values[q]
-                            << std::endl;
-                  }
-              }
-            return std::make_pair (std::string ("Error Check"), "");
+//                for (unsigned int q = 0; q < n_q_points; ++q)
+//                  {
+//                    f
+//                            <<  fe_values.quadrature_point (q) (0)
+//                            << ' ' << fe_values.quadrature_point (q) (1)
+//                            << ' ' << fe_values.JxW (q)
+//                            << ' ' << velocity_values[q][0]
+//                            << ' ' << velocity_values[q][1]
+//                            << ' ' << pressure_values[q]
+//                            << ' ' << temperature_values[q]
+//                            << std::endl;
+//                  }
+//              }
+//            return std::make_pair (std::string ("Error Check"), "");
     }
 
 
@@ -192,7 +188,7 @@ namespace aspect
     {
 //      prm.enter_subsection("Postprocess");
 //      {
-//        prm.enter_subsection("Depth average");
+//        prm.enter_subsection("Error check");
 //        {
 //          output_interval = prm.get_double ("Time between graphical output");
 //        }
@@ -209,11 +205,6 @@ namespace aspect
     void
     ErrorCheck<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
-//      std::ostringstream os;
-//      aspect::oarchive oa (os);
-//      oa << (*this);
-
-//      status_strings["DepthAverage"] = os.str();
     }
 
 
@@ -221,12 +212,6 @@ namespace aspect
     void
     ErrorCheck<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
-      // see if something was saved
-      if (status_strings.find("ErrorCheck") != status_strings.end())
-        {
-
-        }
-
     }
 
 
