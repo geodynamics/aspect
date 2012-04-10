@@ -76,8 +76,12 @@ namespace aspect
                           dTdp * density * gravity * delta_z;
       }
 
-    Assert (*std::min_element (pressures.begin(), pressures.end()) >= 0, ExcInternalError());
-    Assert (*std::min_element (temperatures.begin(), temperatures.end()) >= 0, ExcInternalError());
+    Assert (*std::min_element (pressures.begin(), pressures.end()) >=
+            -std::numeric_limits<double>::epsilon() * pressures.size(),
+            ExcInternalError());
+    Assert (*std::min_element (temperatures.begin(), temperatures.end()) >=
+            -std::numeric_limits<double>::epsilon() * temperatures.size(),
+            ExcInternalError());
   }
 
 
