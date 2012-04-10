@@ -31,6 +31,170 @@ namespace aspect
   {
     namespace DuretzEtAl
     {
+      // ------------------ implementation of the SolCx benchmark ----------------------------
+
+      template <int dim>
+      double
+      SolCx<dim>::
+      viscosity (const double,
+                 const double,
+                 const SymmetricTensor<2,dim> &,
+                 const Point<dim> &p) const
+      {
+        // defined as given in the Duretz et al. paper
+        return (p[0] < 0.5 ? 1 : 1e6);
+      }
+
+
+      template <int dim>
+      double
+      SolCx<dim>::
+      reference_viscosity () const
+      {
+        return 1;
+      }
+
+      template <int dim>
+      double
+      SolCx<dim>::
+      reference_density () const
+      {
+        return 1;
+      }
+
+      template <int dim>
+      double
+      SolCx<dim>::
+      reference_thermal_expansion_coefficient () const
+      {
+        return 0;
+      }
+
+      template <int dim>
+      double
+      SolCx<dim>::
+      specific_heat (const double,
+                     const double,
+                     const Point<dim> &) const
+      {
+        return 0;
+      }
+
+      template <int dim>
+      double
+      SolCx<dim>::
+      reference_cp () const
+      {
+        return 0;
+      }
+
+      template <int dim>
+      double
+      SolCx<dim>::
+      thermal_conductivity (const double,
+                            const double,
+                            const Point<dim> &) const
+      {
+        return 0;
+      }
+
+      template <int dim>
+      double
+      SolCx<dim>::
+      reference_thermal_diffusivity () const
+      {
+        return 0;
+      }
+
+      template <int dim>
+      double
+      SolCx<dim>::
+      density (const double,
+               const double,
+               const Point<dim> &p) const
+      {
+        // defined as given in the paper
+        return std::sin(numbers::PI*p[1])*std::cos(numbers::PI*p[0]);
+      }
+
+
+      template <int dim>
+      double
+      SolCx<dim>::
+      thermal_expansion_coefficient (const double temperature,
+                                     const double,
+                                     const Point<dim> &) const
+      {
+        return 0;
+      }
+
+
+      template <int dim>
+      double
+      SolCx<dim>::
+      compressibility (const double,
+                       const double,
+                       const Point<dim> &) const
+      {
+        return 0.0;
+      }
+
+
+
+      template <int dim>
+      bool
+      SolCx<dim>::
+      viscosity_depends_on (const NonlinearDependence::Dependence) const
+      {
+        return false;
+      }
+
+
+      template <int dim>
+      bool
+      SolCx<dim>::
+      density_depends_on (const NonlinearDependence::Dependence) const
+      {
+        return false;
+      }
+
+      template <int dim>
+      bool
+      SolCx<dim>::
+      compressibility_depends_on (const NonlinearDependence::Dependence) const
+      {
+        return false;
+      }
+
+      template <int dim>
+      bool
+      SolCx<dim>::
+      specific_heat_depends_on (const NonlinearDependence::Dependence) const
+      {
+        return false;
+      }
+
+      template <int dim>
+      bool
+      SolCx<dim>::
+      thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+      {
+        return false;
+      }
+
+
+      template <int dim>
+      bool
+      SolCx<dim>::
+      is_compressible () const
+      {
+        return false;
+      }
+
+
+// ------------------ implementation of the SolKz benchmark ----------------------------
+
+
       template <int dim>
       double
       SolKz<dim>::
@@ -200,6 +364,10 @@ namespace aspect
   {
     namespace DuretzEtAl
     {
+      ASPECT_REGISTER_MATERIAL_MODEL(SolCx,
+                                     "SolCx",
+                                     "A material model that corresponds to the 'SolCx' benchmark "
+                                     "defined in Duretz et al., G-Cubed, 2011.")
       ASPECT_REGISTER_MATERIAL_MODEL(SolKz,
                                      "SolKz",
                                      "A material model that corresponds to the 'SolKz' benchmark "

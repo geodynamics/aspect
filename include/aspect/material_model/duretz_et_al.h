@@ -52,7 +52,129 @@ namespace aspect
     namespace DuretzEtAl
     {
       /**
-       * A material model that models the <i>SolKz</i> benchmark of the paper
+       * A material model that describes the <i>SolCx</i> benchmark of the paper
+       * cited in the documentation of the DuretzEtAl namespace.
+       *
+       * @note The SolCx benchmark only talks about the flow field, not about
+       * a temperature field. All quantities related to the temperature are
+       * therefore set to zero in the implementation of this class.
+       *
+       * @ingroup MaterialModels
+       */
+      template <int dim>
+      class SolCx : public MaterialModel::Interface<dim>
+      {
+        public:
+          /**
+           * @name Physical parameters used in the basic equations
+           * @{
+           */
+          virtual double viscosity (const double                  temperature,
+                                    const double                  pressure,
+                                    const SymmetricTensor<2,dim> &strain_rate,
+                                    const Point<dim>             &position) const;
+
+          virtual double density (const double temperature,
+                                  const double pressure,
+                                  const Point<dim> &position) const;
+
+          virtual double compressibility (const double temperature,
+                                          const double pressure,
+                                          const Point<dim> &position) const;
+
+          virtual double specific_heat (const double temperature,
+                                        const double pressure,
+                                        const Point<dim> &position) const;
+
+          virtual double thermal_expansion_coefficient (const double      temperature,
+                                                        const double      pressure,
+                                                        const Point<dim> &position) const;
+
+          virtual double thermal_conductivity (const double temperature,
+                                               const double pressure,
+                                               const Point<dim> &position) const;
+          /**
+           * @}
+           */
+
+          /**
+           * @name Qualitative properties one can ask a material model
+           * @{
+           */
+
+          /**
+          * Return true if the viscosity() function returns something that
+          * may depend on the variable identifies by the argument.
+          */
+          virtual bool
+          viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+          /**
+          * Return true if the density() function returns something that
+          * may depend on the variable identifies by the argument.
+          */
+          virtual bool
+          density_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+          /**
+          * Return true if the compressibility() function returns something that
+          * may depend on the variable identifies by the argument.
+          *
+          * This function must return false for all possible arguments if the
+          * is_compressible() function returns false.
+          */
+          virtual bool
+          compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+          /**
+          * Return true if the specific_heat() function returns something that
+          * may depend on the variable identifies by the argument.
+          */
+          virtual bool
+          specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+          /**
+          * Return true if the thermal_conductivity() function returns something that
+          * may depend on the variable identifies by the argument.
+          */
+          virtual bool
+          thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+          /**
+           * Return whether the model is compressible or not.  Incompressibility
+           * does not necessarily imply that the density is constant; rather, it
+           * may still depend on temperature or pressure. In the current
+           * context, compressibility means whether we should solve the contuity
+           * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
+           * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
+           */
+          virtual bool is_compressible () const;
+          /**
+           * @}
+           */
+
+          /**
+           * @name Reference quantities
+           * @{
+           */
+          virtual double reference_viscosity () const;
+
+          virtual double reference_density () const;
+
+          virtual double reference_thermal_expansion_coefficient () const;
+
+//TODO: should we make this a virtual function as well? where is it used?
+          double reference_thermal_diffusivity () const;
+
+          double reference_cp () const;
+          /**
+           * @}
+           */
+      };
+
+
+      /**
+       * A material model that describes the <i>SolKz</i> benchmark of the paper
        * cited in the documentation of the DuretzEtAl namespace.
        *
        * @note The SolKz benchmark only talks about the flow field, not about
