@@ -902,8 +902,7 @@ namespace aspect
         if ((timestep_number == 0) &&
             (pre_refinement_step < parameters.initial_adaptive_refinement))
           {
-            if (aspect::output_parallel_statistics)
-              output_statistics();
+            output_statistics();
 
             refine_mesh (max_refinement_level);
             ++pre_refinement_step;
@@ -941,7 +940,10 @@ namespace aspect
         // every 100 time steps output a summary of the current
         // timing information
         if ((timestep_number > 0) && (timestep_number % 100 == 0))
-          output_statistics();
+          {
+            computing_timer.print_summary ();
+            output_statistics();
+          }
 
         // increment time step by one. then prepare
         // for the next time step by shifting solution vectors

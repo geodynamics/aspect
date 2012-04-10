@@ -60,8 +60,6 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::output_statistics()
   {
-    computing_timer.print_summary ();
-
     if (!aspect::output_parallel_statistics)
       return;
 
@@ -80,7 +78,7 @@ namespace aspect
           << "* Matrix " << system_matrix.memory_consumption()/mb << std::endl
           << "* 5 Vectors " << 5*solution.memory_consumption()/mb << std::endl
           << "* preconditioner " << (system_preconditioner_matrix.memory_consumption()
-                                     +Amg_preconditioner->memory_consumption()
+                                     + Amg_preconditioner->memory_consumption()
                                      /*+Mp_preconditioner->memory_consumption()
                                                                       +T_preconditioner->memory_consumption()*/)/mb
           << std::endl
@@ -89,14 +87,13 @@ namespace aspect
           << "  - prec mass " << 0/*Mp_preconditioner->memory_consumption()/mb*/ << std::endl
           << "  - prec T " << 0/*T_preconditioner->memory_consumption()/mb*/ << std::endl
           << std::endl;
-
   }
 
 
 
   /**
-  * Find the largest velocity throughout the domain.
-  **/
+   * Find the largest velocity throughout the domain.
+   **/
   template <int dim>
   double Simulator<dim>::get_maximal_velocity (
     const LinearAlgebra::BlockVector &solution) const
