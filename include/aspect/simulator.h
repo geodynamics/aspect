@@ -712,7 +712,6 @@ namespace aspect
        * given the values and gradients of the solution passed as
        * arguments.
        *
-       *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
@@ -737,10 +736,14 @@ namespace aspect
                         const double                        cell_diameter) const;
 
       /**
-        * generate and output some statistics like timing information and memory consumption.
-        */
+       * Generate and output some statistics like timing information and memory consumption.
+       * Whether this function does anything or not is controlled through the
+       * variable aspect::output_parallel_statistics.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
       void output_statistics();
-
       /**
        * @}
        */
