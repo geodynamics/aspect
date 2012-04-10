@@ -150,7 +150,7 @@ namespace aspect
         }
 
       triangulation_changed = false;
-        
+
       return std::make_pair("Advecting particles...", result_string);
     }
 
@@ -300,16 +300,17 @@ namespace aspect
       int cur_level, cur_index;
 
       // First check the last recorded cell since particles will generally stay in the same area
-      if (!triangulation_changed) {
-        particle.getCell(cur_level, cur_index);
-        found_cell = typename parallel::distributed::Triangulation<dim>::cell_iterator(&triangulation, cur_level, cur_index);
-        if (found_cell != triangulation.end() && found_cell->point_inside(particle.getPosition()) && found_cell->active())
-          {
-            // If the cell is active, we're at the finest level of refinement and can finish
-            particle.setLocal(found_cell->is_locally_owned());
-            return;
-          }
-      }
+      if (!triangulation_changed)
+        {
+          particle.getCell(cur_level, cur_index);
+          found_cell = typename parallel::distributed::Triangulation<dim>::cell_iterator(&triangulation, cur_level, cur_index);
+          if (found_cell != triangulation.end() && found_cell->point_inside(particle.getPosition()) && found_cell->active())
+            {
+              // If the cell is active, we're at the finest level of refinement and can finish
+              particle.setLocal(found_cell->is_locally_owned());
+              return;
+            }
+        }
 
       // Check all the cells on level 0 and recurse down
       for (it=triangulation.begin(0); it!=triangulation.end(0); ++it)
@@ -401,7 +402,7 @@ namespace aspect
           // Get the cell the particle is in
           it->getCell(cur_level, cur_index);
           found_cell = typename DoFHandler<dim>::active_cell_iterator(&triangulation, cur_level, cur_index, &dh);
-            if (found_cell->is_artificial()) std::cerr << "ARTIFICIAL: " << cur_level << " " << cur_index << std::endl;
+          if (found_cell->is_artificial()) std::cerr << "ARTIFICIAL: " << cur_level << " " << cur_index << std::endl;
 
           // And interpolate the particle velocities
           fe_value.set_active_cell(found_cell);
@@ -547,7 +548,7 @@ namespace aspect
         {
           send_recv_particles(mapping, triangulation);
         }
-        
+
       // If particles fell out of the mesh, put them back in at the closest point in the mesh
       move_particles_back_in_mesh(mapping, triangulation);
 
