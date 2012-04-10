@@ -36,13 +36,30 @@ namespace aspect
 {
   /**
    * A variable whose value denotes the number of seconds in one year.
-   **/
+   */
   extern const double year_in_seconds;
 
+  /**
+   * A variable that denotes whether we should periodically
+   * output statistics about memory consumption, run times, etc
+   * via the Simulator::output_statistics() function or other
+   * means.
+   */
   extern const bool output_parallel_statistics;
 
 
+  /**
+   * A typedef that denotes the BOOST stream type for reading data
+   * during serialization. The type chosen here is a binary archive
+   * which we subsequently will have to un-compress.
+   */
   typedef boost::archive::binary_iarchive iarchive;
+
+  /**
+   * A typedef that denotes the BOOST stream type for writing data
+   * during serialization. The type chosen here is a binary archive
+   * which we compress before writing it into a file.
+   */
   typedef boost::archive::binary_oarchive oarchive;
 
   /**
