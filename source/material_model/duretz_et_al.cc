@@ -191,6 +191,46 @@ namespace aspect
         return false;
       }
 
+      template <int dim>
+      void
+      SolCx<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Material model");
+        {
+          prm.enter_subsection("SolCx");
+          {
+            prm.declare_entry ("Viscosity jump", "1e6",
+                               Patterns::Double (0),
+                               "Viscosity in the right half of the domain.");
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+      }
+
+
+
+      template <int dim>
+      void
+      SolCx<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Material model");
+        {
+          prm.enter_subsection("SolCx");
+          {
+            eta_B = prm.get_double ("Viscosity jump");
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+      }
+
+      template <int dim>
+      double
+      SolCx<dim>::get_eta_B() const
+      {
+        return eta_B;
+      }
 
 // ------------------ implementation of the SolKz benchmark ----------------------------
 

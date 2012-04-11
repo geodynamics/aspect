@@ -157,6 +157,23 @@ namespace aspect
            * @}
            */
 
+
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter
+           * file.
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
+
+
           /**
            * @name Reference quantities
            * @{
@@ -174,6 +191,17 @@ namespace aspect
           /**
            * @}
            */
+
+          /**
+            * Returns the viscosity value on the right half of the domain, typically 1 or 1e6
+            */
+          double get_eta_B() const;
+
+        private:
+          /**
+            * Viscosity value on the right half of the domain, typically 1 or 1e6
+            */
+          double eta_B;
       };
 
 
