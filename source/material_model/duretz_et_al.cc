@@ -42,7 +42,7 @@ namespace aspect
                  const Point<dim> &p) const
       {
         // defined as given in the Duretz et al. paper
-        return (p[0] < 0.5 ? 1 : 1e6);
+        return (p[0] < 0.5 ? 1 : eta_B);
       }
 
 
