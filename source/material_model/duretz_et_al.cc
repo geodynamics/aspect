@@ -114,7 +114,7 @@ namespace aspect
                const Point<dim> &p) const
       {
         // defined as given in the paper
-        return std::sin(numbers::PI*p[1])*std::cos(numbers::PI*p[0]);
+        return -std::sin(numbers::PI*p[1])*std::cos(numbers::PI*p[0]);
       }
 
 
