@@ -30,60 +30,26 @@ namespace aspect
 {
   namespace Postprocess
   {
-
-    /**
-     * A postprocessor that generates depth average output in periodic intervals
-     * or every time step.
-     *
-     * @ingroup Postprocessing
-     */
-    template <int dim>
-    class ErrorCheck : public Interface<dim>, public SimulatorAccess<dim>
+    namespace DuretzEtAl
     {
-      public:
-        /**
-         * Constructor.
-         */
-        ErrorCheck ();
-
-        /**
-         * Generate graphical output from the current solution.
-         */
-        virtual
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
-
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter
-         * file.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-
-        /**
-         * Save the state of this object.
-         */
-        virtual
-        void save (std::map<std::string, std::string> &status_strings) const;
-
-        /**
-         * Restore the state of the object.
-         */
-        virtual
-        void load (const std::map<std::string, std::string> &status_strings);
-
-
-      private:
-
-    };
+      /**
+       * A postprocessor that generates depth average output in periodic intervals
+       * or every time step.
+       *
+       * @ingroup Postprocessing
+       */
+      template <int dim>
+      class ErrorCheck : public Interface<dim>, public SimulatorAccess<dim>
+      {
+        public:
+          /**
+           * Generate graphical output from the current solution.
+           */
+          virtual
+          std::pair<std::string,std::string>
+          execute (TableHandler &statistics);
+      };
+    }
   }
 }
 
