@@ -2880,11 +2880,11 @@ namespace aspect
           {
             double pos[2]= {p(0),p(1)};
             double total_stress[3], strain_rate[3];
-
+            static const double B = 0.5 * std::log(1e6);
             _Velic_solKz(
               pos,
-              1.0, 3 * PI, 2,
-              3.0,
+              1.0, 2, 3,
+              B,
               &values[0], &values[2], total_stress, strain_rate );
 
           }
