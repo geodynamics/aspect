@@ -2920,7 +2920,7 @@ namespace aspect
       else
         {
           AssertThrow(false,
-                      ExcMessage("Postprocessor SolCx only works with the material model SolCx."));
+                      ExcMessage("Postprocessor DuretzEtAl only works with the material model SolCx and SolKz."));
         }
 
       const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe().base_element(0).degree+2);
