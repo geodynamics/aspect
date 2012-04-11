@@ -2387,6 +2387,8 @@ namespace aspect
 
         Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
         Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
+        Vector<float> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
+        Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
 
         ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
                                             dim+2);
@@ -2406,11 +2408,28 @@ namespace aspect
                                            quadrature_formula,
                                            VectorTools::L1_norm,
                                            &comp_p);
+        VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                           this->get_solution(),
+                                           ref_func,
+                                           cellwise_errors_ul2,
+                                           quadrature_formula,
+                                           VectorTools::L2_norm,
+                                           &comp_u);
+        VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                           this->get_solution(),
+                                           ref_func,
+                                           cellwise_errors_pl2,
+                                           quadrature_formula,
+                                           VectorTools::L2_norm,
+                                           &comp_p);
 
         std::ostringstream os;
-        os << cellwise_errors_u.l1_norm() << ", " << cellwise_errors_p.l1_norm();
+        os << std::scientific << cellwise_errors_u.l1_norm()
+           << ", " << cellwise_errors_p.l1_norm()
+           << ", " << cellwise_errors_ul2.l2_norm()
+           << ", " << cellwise_errors_pl2.l2_norm();
 
-        return std::make_pair("L1 errors in u, p:", os.str());
+        return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
       }
     }
   }
