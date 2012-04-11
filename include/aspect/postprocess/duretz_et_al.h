@@ -31,7 +31,10 @@ namespace aspect
   namespace Postprocess
   {
     /**
-     * A namespace for the implementation of error evaluators that correspond
+     * A postprocessor that evaluates the accuracy of the solution of
+     * the aspect::MaterialModel::DuretzEtAl::* material models.
+     *
+     * The implementation of error evaluators that correspond
      * to the benchmarks defined in the following paper:
      * @Article{DMGT11,
     author =       {T. Duretz and D. A. May and T. V. Gerya and P. J. Tackley},
@@ -47,27 +50,19 @@ namespace aspect
      * @note While this paper summarizes the benchmarks used here, some
      * of the benchmarks actually originate in earlier papers. For the original
      * references, see the bibliography of the paper above.
+     * @ingroup Postprocessing
      */
-    namespace DuretzEtAl
+    template <int dim>
+    class DuretzEtAl : public Interface<dim>, public SimulatorAccess<dim>
     {
-      /**
-       * A postprocessor that evaluates the accuracy of the solution of
-       * the aspect::MaterialModel::DuretzEtAl::SolCx material model.
-       *
-       * @ingroup Postprocessing
-       */
-      template <int dim>
-      class SolCx : public Interface<dim>, public SimulatorAccess<dim>
-      {
-        public:
-          /**
-           * Generate graphical output from the current solution.
-           */
-          virtual
-          std::pair<std::string,std::string>
-          execute (TableHandler &statistics);
-      };
-    }
+      public:
+        /**
+         * Generate graphical output from the current solution.
+         */
+        virtual
+        std::pair<std::string,std::string>
+        execute (TableHandler &statistics);
+    };
   }
 }
 
