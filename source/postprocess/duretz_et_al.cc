@@ -19,7 +19,7 @@
 */
 /*  $Id$  */
 
-
+#include <aspect/material_model/duretz_et_al.h>
 #include <aspect/postprocess/duretz_et_al.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>
@@ -2354,7 +2354,7 @@ namespace aspect
       class FunctionSolCx : public Function<dim>
       {
         public:
-          FunctionSolCx () : Function<dim>() {}
+          FunctionSolCx (double eta_B) : Function<dim>(), eta_B_(eta_B) {}
 
           virtual void vector_value (const Point< dim >   &p,
                                      Vector< double >   &values) const
@@ -2362,7 +2362,7 @@ namespace aspect
             double pos[2]= {p(0),p(1)};
             double total_stress[3], strain_rate[3];
             double eta_A=1.0;
-            double eta_B=1e6;
+            double eta_B=eta_B_;
 
             _Velic_solCx(
               pos,
@@ -2371,6 +2371,8 @@ namespace aspect
               &values[0], &values[2], total_stress, strain_rate );
 
           }
+        private:
+          double eta_B_;
       };
 
 
@@ -2381,7 +2383,13 @@ namespace aspect
         AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
                     ExcNotImplemented());
 
-        FunctionSolCx<dim> ref_func;
+        const MaterialModel::DuretzEtAl::SolCx<dim> *
+        material_model
+          = dynamic_cast<const MaterialModel::DuretzEtAl::SolCx<dim> *>(&this->get_material_model());
+        AssertThrow(material_model!=NULL,
+                    ExcMessage("Postprocessor SolCx only works with the material model SolCx."));
+
+        FunctionSolCx<dim> ref_func(material_model->get_eta_B());
 
         const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe().base_element(0).degree+2);
 
