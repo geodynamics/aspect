@@ -30,16 +30,34 @@ namespace aspect
 {
   namespace Postprocess
   {
+    /**
+     * A namespace for the implementation of error evaluators that correspond
+     * to the benchmarks defined in the following paper:
+     * @Article{DMGT11,
+    author =       {T. Duretz and D. A. May and T. V. Gerya and P. J. Tackley},
+    title =        {Discretization errors and free surface stabilization in the
+                  finite difference and marker-in-cell method for applied
+                  geodynamics: {A} numerical study},
+    journal =      {Geochemistry Geophysics Geosystems},
+    year =         2011,
+    volume =       12,
+    pages =        {Q07004/1--26}}
+     * @endcode
+     *
+     * @note While this paper summarizes the benchmarks used here, some
+     * of the benchmarks actually originate in earlier papers. For the original
+     * references, see the bibliography of the paper above.
+     */
     namespace DuretzEtAl
     {
       /**
-       * A postprocessor that generates depth average output in periodic intervals
-       * or every time step.
+       * A postprocessor that evaluates the accuracy of the solution of
+       * the aspect::MaterialModel::DuretzEtAl::SolCx material model.
        *
        * @ingroup Postprocessing
        */
       template <int dim>
-      class ErrorCheck : public Interface<dim>, public SimulatorAccess<dim>
+      class SolCx : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           /**

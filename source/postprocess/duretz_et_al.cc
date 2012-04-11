@@ -2376,7 +2376,7 @@ namespace aspect
 
       template <int dim>
       std::pair<std::string,std::string>
-      ErrorCheck<dim>::execute (TableHandler &statistics)
+      SolCx<dim>::execute (TableHandler &statistics)
       {
         AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
                     ExcNotImplemented());
@@ -2424,7 +2424,7 @@ namespace aspect
   {
     namespace DuretzEtAl
     {
-      ASPECT_REGISTER_POSTPROCESSOR(ErrorCheck,
+      ASPECT_REGISTER_POSTPROCESSOR(SolCx,
                                     "SolCx error",
                                     "A postprocessor that compares the solution of the SolCx benchmark from "
                                     "the Duretz et al., G-Cubed, 2011, paper with the one computed by ASPECT "

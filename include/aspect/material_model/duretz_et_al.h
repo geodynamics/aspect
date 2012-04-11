@@ -59,6 +59,10 @@ namespace aspect
        * a temperature field. All quantities related to the temperature are
        * therefore set to zero in the implementation of this class.
        *
+       * @note The analytic solution of this benchmark is implemented in the
+       * "SolCx error" postprocessor in aspect::Postprocessor::DuretzEtAl::SolCx
+       * class and can be used to assess the accuracy of the computed solution.
+       *
        * @ingroup MaterialModels
        */
       template <int dim>
