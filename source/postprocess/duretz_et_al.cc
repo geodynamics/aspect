@@ -20,7 +20,7 @@
 /*  $Id$  */
 
 
-#include <aspect/postprocess/error_check.h>
+#include <aspect/postprocess/duretz_et_al.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 
