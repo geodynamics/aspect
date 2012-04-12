@@ -33,7 +33,7 @@ namespace aspect
 
     // Initialize a particle using the data in an MPI_Particle struct
     template <int dim>
-    Particle<dim>::Particle(const MPI_Particle<dim> &particle_data) : _cell_level(-1), _cell_index(-1), _is_local(false)
+    Particle<dim>::Particle(const MPI_Particle<dim> &particle_data) : _is_local(false)
     {
       for (unsigned int d=0; d<dim; ++d)
         {
@@ -204,7 +204,6 @@ namespace aspect
       start_id = floor(start_fraction*total_particles);
       end_id = floor(end_fraction*total_particles);
       subdomain_particles = end_id - start_id;
-      //std::cerr << start_fraction << " " << end_fraction << std::endl;
 
       generate_particles_in_subdomain(triangulation, subdomain_particles, start_id);
     }
@@ -218,15 +217,14 @@ namespace aspect
                                                            unsigned int num_particles,
                                                            unsigned int start_id)
     {
-      unsigned int            i, d, v, num_tries, cur_id;
-      int                 select_index, select_level;
+      unsigned int          i, d, v, num_tries, cur_id;
       double                total_volume, roulette_spin;
       typename parallel::distributed::Triangulation<dim>::active_cell_iterator  it;
-      std::map<double, std::pair<int, int> >        roulette_wheel;
+      std::map<double, LevelInd>        roulette_wheel;
       const unsigned int n_vertices_per_cell = GeometryInfo<dim>::vertices_per_cell;
-      Point<dim>              pt, max_bounds, min_bounds;
+      Point<dim>            pt, max_bounds, min_bounds;
+      LevelInd              select_cell;
 
-      //std::cerr << "generating " << num_particles << " starting with ID " << start_id << std::endl;
       // Create the roulette wheel based on volumes of local cells
       total_volume = 0;
       for (it=triangulation.begin_active(); it!=triangulation.end(); ++it)
@@ -246,9 +244,8 @@ namespace aspect
         {
           // Select a cell based on relative volume
           roulette_spin = total_volume*drand48();
-          select_level = roulette_wheel.lower_bound(roulette_spin)->second.first;
-          select_index = roulette_wheel.lower_bound(roulette_spin)->second.second;
-          it = typename parallel::distributed::Triangulation<dim>::active_cell_iterator(&triangulation, select_level, select_index);
+          select_cell = roulette_wheel.lower_bound(roulette_spin)->second;
+          it = typename parallel::distributed::Triangulation<dim>::active_cell_iterator(&triangulation, select_cell.first, select_cell.second);
 
           // Get the bounds of the cell defined by the vertices
           for (d=0; d<dim; ++d)
@@ -281,44 +278,40 @@ namespace aspect
 
           // Add the generated particle to the set
           Particle<dim> new_particle(pt, cur_id);
-          new_particle.setCell(select_level, select_index);
-          particles.push_back(new_particle);
+          particles.insert(std::make_pair(select_cell, new_particle));
 
           cur_id++;
         }
     }
 
-    // Finds the cell the particle is contained in and sets the appropriate value
-    // If the particle is outside the local mesh, returns false
+    // Finds the cell the particle is contained in and returns the corresponding level/index
     template <int dim>
-    void ParticleSet<dim>::find_cell(const Mapping<dim> &mapping,
-                                     const parallel::distributed::Triangulation<dim> &triangulation,
-                                     Particle<dim> &particle)
+    LevelInd ParticleSet<dim>::find_cell(const Mapping<dim> &mapping,
+                                         const parallel::distributed::Triangulation<dim> &triangulation,
+                                         Particle<dim> &particle,
+                                         LevelInd cur_cell)
     {
-      typename parallel::distributed::Triangulation<dim>::cell_iterator     it, found_cell;
+      typename parallel::distributed::Triangulation<dim>::cell_iterator         it, found_cell;
       typename parallel::distributed::Triangulation<dim>::active_cell_iterator  ait;
-      int cur_level, cur_index;
+      LevelInd    res;
 
       // First check the last recorded cell since particles will generally stay in the same area
       if (!triangulation_changed)
         {
-          particle.getCell(cur_level, cur_index);
-          found_cell = typename parallel::distributed::Triangulation<dim>::cell_iterator(&triangulation, cur_level, cur_index);
+          found_cell = typename parallel::distributed::Triangulation<dim>::cell_iterator(&triangulation, cur_cell.first, cur_cell.second);
           if (found_cell != triangulation.end() && found_cell->point_inside(particle.getPosition()) && found_cell->active())
             {
               // If the cell is active, we're at the finest level of refinement and can finish
               particle.setLocal(found_cell->is_locally_owned());
-              return;
+              return cur_cell;
             }
         }
 
       // Check all the cells on level 0 and recurse down
       for (it=triangulation.begin(0); it!=triangulation.end(0); ++it)
         {
-          if (recursive_find_cell(triangulation, particle, it->level(), it->index()))
-            {
-              return;
-            }
+          res = recursive_find_cell(triangulation, particle, std::make_pair(it->level(), it->index()));
+          if (res.first != -1 && res.second != -1) return res;
         }
 
       // If we couldn't find it there, we need to check the active cells
@@ -328,38 +321,37 @@ namespace aspect
         {
           if (ait->point_inside(particle.getPosition()))
             {
-              particle.setCell(ait->level(), ait->index());
               particle.setLocal(ait->is_locally_owned());
-              return;
+              return std::make_pair(ait->level(), ait->index());
             }
         }
 
       // If it failed all these tests, the particle is outside the mesh
       particle.setLocal(false);
+      return std::make_pair(-1, -1);
     }
 
     // Recursively determines which cell the given particle belongs to
     // Returns true if the particle is in the specified cell and sets the particle
     // cell information appropriately, false otherwise
     template <int dim>
-    bool ParticleSet<dim>::recursive_find_cell(const parallel::distributed::Triangulation<dim> &triangulation,
-                                               Particle<dim> &particle,
-                                               int cur_level,
-                                               int cur_index)
+    LevelInd ParticleSet<dim>::recursive_find_cell(const parallel::distributed::Triangulation<dim> &triangulation,
+                                                   Particle<dim> &particle,
+                                                   LevelInd cur_cell)
     {
       typename parallel::distributed::Triangulation<dim>::cell_iterator it, found_cell, child_cell;
       unsigned int    child_num;
+      LevelInd        res, child_li;
 
       // If the particle is in the specified cell
-      found_cell = typename parallel::distributed::Triangulation<dim>::cell_iterator(&triangulation, cur_level, cur_index);
+      found_cell = typename parallel::distributed::Triangulation<dim>::cell_iterator(&triangulation, cur_cell.first, cur_cell.second);
       if (found_cell != triangulation.end() && found_cell->point_inside(particle.getPosition()))
         {
           // If the cell is active, we're at the finest level of refinement and can finish
           if (found_cell->active())
             {
-              particle.setCell(cur_level, cur_index);
               particle.setLocal(found_cell->is_locally_owned());
-              return true;
+              return cur_cell;
             }
           else
             {
@@ -367,16 +359,15 @@ namespace aspect
               for (child_num=0; child_num<found_cell->n_children(); ++child_num)
                 {
                   child_cell = found_cell->child(child_num);
-                  if (recursive_find_cell(triangulation,
-                                          particle,
-                                          child_cell->level(),
-                                          child_cell->index())) return true;
+                  child_li = LevelInd(child_cell->level(), child_cell->index());
+                  res = recursive_find_cell(triangulation, particle, child_li);
+                  if (res.first != -1 && res.second != -1) return res;
                 }
             }
         }
 
       // If we still can't find it, return false
-      return false;
+      return LevelInd(-1, -1);
     }
 
     template <int dim>
@@ -386,29 +377,50 @@ namespace aspect
                                                    const Mapping<dim> &mapping,
                                                    std::vector<Point<dim> > &velocities)
     {
-      Vector<double>        result(dim+2);
-      Point<dim>            velocity;
-      unsigned int          i;
-      int                   cur_level, cur_index;
-      typename std::vector<Particle<dim> >::iterator  it;
+      Vector<double>                single_res(dim+2);
+      std::vector<Vector<double> >  result;
+      Point<dim>                    velocity;
+      unsigned int                  i, num_particles;
+      LevelInd                      cur_cell;
+      typename ParticleMap::iterator  it;
       typename DoFHandler<dim>::active_cell_iterator  found_cell;
+      std::vector<Point<dim> >      particle_points;
 
       // Prepare the field function
-      Functions::FEFieldFunction<dim, DoFHandler<dim>, TrilinosWrappers::MPI::BlockVector> fe_value(dh, solution);
+      Functions::FEFieldFunction<dim, DoFHandler<dim>, TrilinosWrappers::MPI::BlockVector> fe_value(dh, solution, mapping);
 
-      // Get the velocity for each particle at a time so we can take advantage of knowing the active cell
-      for (it=particles.begin(); it!=particles.end(); ++it)
+      // Get the velocity for each cell at a time so we can take advantage of knowing the active cell
+      for (it=particles.begin(); it!=particles.end();)
         {
-          // Get the cell the particle is in
-          it->getCell(cur_level, cur_index);
-          found_cell = typename DoFHandler<dim>::active_cell_iterator(&triangulation, cur_level, cur_index, &dh);
-          if (found_cell->is_artificial()) std::cerr << "ARTIFICIAL: " << cur_level << " " << cur_index << std::endl;
+          // Get the current cell
+          cur_cell = it->first;
 
-          // And interpolate the particle velocities
+          // Resize the vectors to the number of particles in this cell
+          num_particles = particles.count(cur_cell);
+          particle_points.resize(num_particles);
+          result.resize(num_particles, single_res);
+
+          // Get a vector of the point positions in this cell
+          i=0;
+          while (it != particles.end() && it->first == cur_cell)
+            {
+              particle_points[i++] = it->second.getPosition();
+              it++;
+            }
+
+          // Get the cell the particle is in
+          found_cell = typename DoFHandler<dim>::active_cell_iterator(&triangulation, cur_cell.first, cur_cell.second, &dh);
+
+          // Interpolate the velocity field for each of the particles
           fe_value.set_active_cell(found_cell);
-          fe_value.vector_value(it->getPosition(), result);
-          for (int d=0; d<dim; ++d) velocity(d) = result(d);
-          velocities.push_back(velocity);
+          fe_value.vector_value_list(particle_points, result);
+
+          // Copy the resulting velocities to the appropriate vector
+          for (i=0; i<num_particles; ++i)
+            {
+              for (int d=0; d<dim; ++d) velocity(d) = result[i](d);
+              velocities.push_back(velocity);
+            }
         }
     }
 
@@ -448,23 +460,20 @@ namespace aspect
     void ParticleSet<dim>::send_recv_particles(const Mapping<dim> &mapping,
                                                const parallel::distributed::Triangulation<dim> &triangulation)
     {
-      typename std::vector<Particle<dim> >::iterator  it;
+      typename ParticleMap::iterator  it;
       typename parallel::distributed::Triangulation<dim>::cell_iterator found_cell;
       int                 i, rank;
       std::vector<Particle<dim> >     send_particles;
+      typename std::vector<Particle<dim> >::iterator     sit;
       MPI_Particle<dim>         *send_data, *recv_data;
 
       // Go through the particles and take out those which need to be moved to another processor
       for (it=particles.begin(); it!=particles.end();)
         {
-          if (!it->isLocal())
+          if (!it->second.isLocal())
             {
-              send_particles.push_back(*it);
-
-              // Move the end of the particle list to the current position
-              // to avoid an expensive erase() in the middle of the vector
-              *it = particles.back();
-              particles.pop_back();
+              send_particles.push_back(it->second);
+              particles.erase(it++);
             }
           else
             {
@@ -496,9 +505,9 @@ namespace aspect
       recv_data = new MPI_Particle<dim>[total_recv];
 
       // Copy the particle data into the send array
-      for (i=0,it=send_particles.begin(); it!=send_particles.end(); ++it,++i)
+      for (i=0,sit=send_particles.begin(); sit!=send_particles.end(); ++sit,++i)
         {
-          send_data[i] = it->mpi_data();
+          send_data[i] = sit->mpi_data();
         }
 
       // Exchange the particle data between domains
@@ -511,11 +520,12 @@ namespace aspect
       for (i=0; i<total_recv; ++i)
         {
           Particle<dim>       recv_particle(recv_data[i]);
-          find_cell(mapping, triangulation, recv_particle);
+          LevelInd            found_cell;
+          found_cell = find_cell(mapping, triangulation, recv_particle, std::make_pair(-1,-1));
           if (recv_particle.isLocal())
             {
               put_in_domain++;
-              particles.push_back(recv_particle);
+              particles.insert(std::make_pair(found_cell, recv_particle));
             }
         }
 
@@ -532,16 +542,26 @@ namespace aspect
                                             const DoFHandler<dim> &dh,
                                             const Mapping<dim> &mapping)
     {
-      typename std::vector<Particle<dim> >::iterator  it;
-      std::vector<Point<dim> >            velocities;
-      Point<dim>                    cur_pos, orig_pos, new_pos, old_vel, new_vel;
-      unsigned int                  i;
+      typename ParticleMap::iterator  it;
+      std::vector<Point<dim> >        velocities;
+      Point<dim>                      cur_pos, orig_pos, new_pos, old_vel, new_vel;
+      unsigned int                    i;
+      LevelInd                        found_cell;
+      ParticleMap                     tmp_map;
 
       // Find the cells that the particles moved to
-      for (it=particles.begin(); it!=particles.end(); ++it)
+      tmp_map.clear();
+      for (it=particles.begin(); it!=particles.end();)
         {
-          find_cell(mapping, triangulation, *it);
+          found_cell = find_cell(mapping, triangulation, it->second, it->first);
+          if (found_cell != it->first)
+            {
+              tmp_map.insert(std::make_pair(found_cell, it->second));
+              particles.erase(it++);
+            }
+          else ++it;
         }
+      particles.insert(tmp_map.begin(),tmp_map.end());
 
       // If the triangulation changed, we may need to move particles between processors
       if (triangulation_changed)
@@ -560,20 +580,28 @@ namespace aspect
       for (it=particles.begin(),i=0; it!=particles.end(); ++it,++i)
         {
           // Save current position and velocity
-          cur_pos = it->getPosition();
-          it->setVelocity(velocities[i]);
-          it->setOriginalPos(cur_pos);
+          cur_pos = it->second.getPosition();
+          it->second.setVelocity(velocities[i]);
+          it->second.setOriginalPos(cur_pos);
 
           // Move the particle
           cur_pos += timestep*velocities[i];
-          it->setPosition(cur_pos);
+          it->second.setPosition(cur_pos);
         }
 
       // Find the cells that the particles moved to
-      for (it=particles.begin(); it!=particles.end(); ++it)
+      tmp_map.clear();
+      for (it=particles.begin(); it!=particles.end();)
         {
-          find_cell(mapping, triangulation, *it);
+          found_cell = find_cell(mapping, triangulation, it->second, it->first);
+          if (found_cell != it->first)
+            {
+              tmp_map.insert(std::make_pair(found_cell, it->second));
+              particles.erase(it++);
+            }
+          else ++it;
         }
+      particles.insert(tmp_map.begin(),tmp_map.end());
 
       // If particles fell out of the mesh, put them back in at the closest point in the mesh
       move_particles_back_in_mesh(mapping, triangulation);
@@ -588,19 +616,27 @@ namespace aspect
       // Estimate actual position based on old velocity/position and new velocity/position
       for (it=particles.begin(),i=0; it!=particles.end(); ++it,++i)
         {
-          orig_pos = it->getOriginalPos();
-          cur_pos = it->getPosition();
-          old_vel = it->getVelocity();
+          orig_pos = it->second.getOriginalPos();
+          cur_pos = it->second.getPosition();
+          old_vel = it->second.getVelocity();
           new_vel = velocities[i];
           new_pos = orig_pos + timestep * 0.5 * (old_vel + new_vel);
-          it->setPosition(new_pos);
+          it->second.setPosition(new_pos);
         }
 
       // Find the cells that the particles moved to
-      for (it=particles.begin(); it!=particles.end(); ++it)
+      tmp_map.clear();
+      for (it=particles.begin(); it!=particles.end();)
         {
-          find_cell(mapping, triangulation, *it);
+          found_cell = find_cell(mapping, triangulation, it->second, it->first);
+          if (found_cell != it->first)
+            {
+              tmp_map.insert(std::make_pair(found_cell, it->second));
+              particles.erase(it++);
+            }
+          else ++it;
         }
+      particles.insert(tmp_map.begin(),tmp_map.end());
 
       // If particles fell out of the mesh, put them back in at the closest point in the mesh
       move_particles_back_in_mesh(mapping, triangulation);
@@ -616,7 +652,7 @@ namespace aspect
     template <int dim>
     std::string ParticleSet<dim>::output_particles(const std::string &output_dir, const parallel::distributed::Triangulation<dim> &triangulation)
     {
-      typename std::vector<Particle<dim> >::iterator  it;
+      typename ParticleMap::iterator  it;
       unsigned int                  d, i;
       std::string                                     output_file_prefix, output_path_prefix;
 
@@ -649,7 +685,7 @@ namespace aspect
           output << "          ";
           for (d=0; d<3; ++d)
             {
-              if (d < dim) output << it->getPosition()[d] << " ";
+              if (d < dim) output << it->second.getPosition()[d] << " ";
               else output << "0.0 ";
             }
           output << "\n";
@@ -679,7 +715,7 @@ namespace aspect
           output << "          ";
           for (d=0; d<3; ++d)
             {
-              if (d < dim) output << it->getVelocity()[d] << " ";
+              if (d < dim) output << it->second.getVelocity()[d] << " ";
               else output << "0.0 ";
             }
           output << "\n";
@@ -688,7 +724,7 @@ namespace aspect
       output << "        <DataArray type=\"Float64\" Name=\"id\" Format=\"ascii\">\n";
       for (it=particles.begin(); it!=particles.end(); ++it)
         {
-          output << "          " << it->getID() << "\n";
+          output << "          " << it->second.getID() << "\n";
         }
       output << "        </DataArray>\n";
       output << "      </PointData>\n";

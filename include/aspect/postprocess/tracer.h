@@ -38,6 +38,9 @@ namespace aspect
       unsigned int    id;
     };
 
+    // Typedef of cell level/index pair
+    typedef std::pair<int, int> LevelInd;
+
     template <int dim>
     class Particle
     {
@@ -52,14 +55,11 @@ namespace aspect
         // Globally unique ID of particle
         unsigned int  _id;
 
-        // Refinement level and index of last known active cell containing this particle
-        int       _cell_level, _cell_index;
-
-        // Flags indicating if this particle has moved off the local subdomain
-        bool      _is_local;
+        // Flag indicating if this particle has moved off the local subdomain
+        bool          _is_local;
 
       public:
-        Particle(const Point<dim> &new_pos, const int &new_id) : _pos(new_pos), _pos0(), _velocity(), _id(new_id), _cell_level(-1), _cell_index(-1), _is_local(true) {};
+        Particle(const Point<dim> &new_pos, const int &new_id) : _pos(new_pos), _pos0(), _velocity(), _id(new_id), _is_local(true) {};
 
         Particle(const MPI_Particle<dim> &particle_data);
 
@@ -95,17 +95,6 @@ namespace aspect
           return _id;
         };
 
-        void getCell(int &level, int &index) const
-        {
-          level = _cell_level;
-          index = _cell_index;
-        };
-        void setCell(int new_level, int new_index)
-        {
-          _cell_level = new_level;
-          _cell_index = new_index;
-        };
-
         void setLocal(bool new_local)
         {
           _is_local = new_local;
@@ -125,6 +114,8 @@ namespace aspect
     class ParticleSet : public Interface<dim>, public SimulatorAccess<dim>
     {
       private:
+        typedef std::multimap<LevelInd, Particle<dim> > ParticleMap;
+
         // Whether this set has been initialized yet or not
         bool                            initialized;
 
@@ -143,8 +134,9 @@ namespace aspect
         // Records time for next output to occur
         double                          next_output_time;
 
-        // Set of particles currently in the local domain
-        std::vector<Particle<dim> >     particles;
+        // Set of particles currently in the local domain, organized by
+        // the level/index of the cell they are in
+        ParticleMap                     particles;
 
         // Index of output file
         unsigned int                    out_index;
@@ -170,10 +162,9 @@ namespace aspect
                                              unsigned int num_particles,
                                              unsigned int start_id);
 
-        bool recursive_find_cell(const parallel::distributed::Triangulation<dim> &triangulation,
-                                 Particle<dim> &particle,
-                                 int cur_level,
-                                 int cur_index);
+        LevelInd recursive_find_cell(const parallel::distributed::Triangulation<dim> &triangulation,
+                                     Particle<dim> &particle,
+                                     LevelInd cur_cell);
 
         void mesh_changed(void)
         {
@@ -200,9 +191,10 @@ namespace aspect
                               const Mapping<dim> &mapping);
         void move_particles_back_in_mesh(const Mapping<dim> &mapping,
                                          const parallel::distributed::Triangulation<dim> &triangulation);
-        void find_cell(const Mapping<dim> &mapping,
-                       const parallel::distributed::Triangulation<dim> &triangulation,
-                       Particle<dim> &particle);
+        LevelInd find_cell(const Mapping<dim> &mapping,
+                           const parallel::distributed::Triangulation<dim> &triangulation,
+                           Particle<dim> &particle,
+                           LevelInd cur_cell);
         void send_recv_particles(const Mapping<dim> &mapping,
                                  const parallel::distributed::Triangulation<dim> &triangulation);
         void get_particle_velocities(const parallel::distributed::Triangulation<dim> &triangulation,
