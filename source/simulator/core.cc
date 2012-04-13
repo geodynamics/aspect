@@ -591,9 +591,19 @@ namespace aspect
     if (parameters.refinement_strategy != "Temperature")
       {
         bool lookup_rho_c_p_T = (parameters.refinement_strategy == "Density c_p temperature");
+
+        // create a vector in which we set the temperature block to
+        // be a finite element interpolation of the density or rho*c_p*T.
+        // we do so by setting up a quadrature formula with the
+        // temperature unit support points, then looping over these
+        // points, compute the output quantity at them, and writing
+        // the result into the output vector in the same order
+        // (because quadrature points and temperature dofs are,
+        // by design of the quadrature formula, numbered in the
+        // same way)
         LinearAlgebra::BlockVector vec_distributed (system_rhs);
 
-        const Quadrature<dim> quadrature(finite_element.get_unit_support_points());
+        const Quadrature<dim> quadrature(finite_element.base_element(2).get_unit_support_points());
         std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
         FEValues<dim> fe_values (mapping,
                                  finite_element,
@@ -620,22 +630,25 @@ namespace aspect
               // for each temperature dof, write into the output
               // vector the density. note that quadrature points and
               // dofs are enumerated in the same order
-              for (unsigned int i=0; i<finite_element.dofs_per_cell; ++i)
-                if (finite_element.system_to_component_index(i).first == dim+1)
-                  {
-                    vec_distributed(local_dof_indices[i])
-                      = material_model->density( temperature_values[i],
-                                                 pressure_values[i],
-                                                 fe_values.quadrature_point(i))
-                        * ((lookup_rho_c_p_T)
-                           ?
-                           (temperature_values[i]
-                            * material_model->specific_heat(temperature_values[i],
-                                                            pressure_values[i],
-                                                            fe_values.quadrature_point(i)))
-                           :
-                           1.0);
-                  }
+              for (unsigned int i=0; i<finite_element.base_element(2).dofs_per_cell; ++i)
+                {
+                  const unsigned int system_local_dof
+                    = finite_element.component_to_system_index(/*temperature component=*/dim+1,
+                                                                                         /*dof index within component=*/i);
+
+                  vec_distributed(local_dof_indices[system_local_dof])
+                    = material_model->density( temperature_values[i],
+                                               pressure_values[i],
+                                               fe_values.quadrature_point(i))
+                      * ((lookup_rho_c_p_T)
+                         ?
+                         (temperature_values[i]
+                          * material_model->specific_heat(temperature_values[i],
+                                                          pressure_values[i],
+                                                          fe_values.quadrature_point(i)))
+                         :
+                         1.0);
+                }
             }
 
         LinearAlgebra::BlockVector vec (solution);
