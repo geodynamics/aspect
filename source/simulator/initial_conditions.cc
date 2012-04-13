@@ -41,22 +41,67 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::set_initial_temperature_field ()
   {
-    // create a fully distributed vector since
-    // the VectorTools::interpolate function
-    // needs to write into it and we can not
+    // below, we would want to call VectorTools::interpolate on the
+    // entire FESystem. there currently is no way to restrict the
+    // interpolation operations to only a subset of vector
+    // components (oversight in deal.II?), specifically to the
+    // temperature component. this causes more work than necessary
+    // but worse yet, it doesn't work for the DGP(q) pressure element
+    // if we use a locally conservative formulation since there the
+    // pressure element is non-interpolating (we get an exception
+    // even though we are, strictly speaking, not interested in
+    // interpolating the pressure; but, as mentioned, there is no way
+    // to tell VectorTools::interpolate that)
+    //
+    // to work around this problem, the following code is essentially
+    // a (simplified) copy of the code in VectorTools::interpolate
+    // that only works on the temperature component
+
+    // create a fully distributed vector since we
+    // need to write into it and we can not
     // write into vectors with ghost elements
     LinearAlgebra::BlockVector initial_solution;
     initial_solution.reinit(system_rhs);
 
-    // interpolate the initial values
-    VectorTools::interpolate (mapping,
-                              dof_handler,
-                              VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&InitialConditions::Interface<dim>::initial_temperature,
-                                                                          std_cxx1x::cref(*initial_conditions),
-                                                                          std_cxx1x::_1),
-                                                                          dim+1,
-                                                                          dim+2),
-                              initial_solution);
+    // get the temperature support points
+    const std::vector<Point<dim> > temperature_support_points
+      = finite_element.base_element(2).get_unit_support_points();
+    Assert (temperature_support_points.size() != 0,
+            ExcInternalError());
+
+    // create an FEValues object with just the temperature element
+    FEValues<dim> fe_values (mapping, finite_element,
+                             temperature_support_points,
+                             update_quadrature_points);
+
+    std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
+
+    for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
+         cell != dof_handler.end(); ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+
+          // go through the temperature dofs and set their global values
+          // to the temperature field interpolated at these points
+          cell->get_dof_indices (local_dof_indices);
+          for (unsigned int i=0; i<finite_element.base_element(2).dofs_per_cell; ++i)
+            {
+              const unsigned int system_local_dof
+                = finite_element.component_to_system_index(/*temperature component=*/dim+1,
+                                                                                     /*dof index within component=*/i);
+
+              initial_solution(local_dof_indices[system_local_dof])
+                = initial_conditions->initial_temperature(fe_values.quadrature_point(i));
+            }
+        }
+
+    // we should not have written at all into any of the blocks with
+    // the exception of the temperature block
+    for (unsigned int b=0; b<initial_solution.n_blocks(); ++b)
+      if (b != 2)
+        Assert (initial_solution.block(b).l2_norm() == 0,
+                ExcInternalError());
 
     // then apply constraints and copy the
     // result into vectors with ghost elements
