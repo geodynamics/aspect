@@ -1,0 +1,28 @@
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+7 iterations.
+
+   Postprocessing:
+     Errors u_L1, p_L1, u_L2, p_L2: 9.024083e-08, 6.588221e-04, 2.330059e-07, 1.068891e-03
+
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |         1s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |    0.0562s |       5.6% |
+| Assemble temperature system     |         1 |     0.196s |        20% |
+| Build Stokes preconditioner     |         1 |      0.07s |         7% |
+| Build temperature preconditioner|         1 |   0.00658s |      0.66% |
+| Solve Stokes system             |         1 |     0.107s |        11% |
+| Solve temperature system        |         1 |    0.0016s |      0.16% |
+| Postprocessing                  |         1 |     0.181s |        18% |
+| Setup dof systems               |         1 |     0.215s |        21% |
++---------------------------------+-----------+------------+------------+
+
