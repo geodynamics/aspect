@@ -4,7 +4,7 @@ include $D/common/Make.global_options
 
 tests = $(shell echo *.prm | sed s/.prm//g)
 
-SUBDIR = aspect
+SUBDIR = x-aspect
 
 
 all: $(tests) Makefile.dep
