@@ -406,8 +406,7 @@ namespace aspect
                        const SymmetricTensor<2,dim> &,
                        const Point<dim> &p) const
             {
-              // defined as given in the Duretz et al. paper
-              static const double r2 = (p(0)-1.0)*(p(0)-1.0) + (p(1)-1.0)*(p(1)-1.0);
+              const double r2 = (p(0)-1.0)*(p(0)-1.0) + (p(1)-1.0)*(p(1)-1.0);
               return (r2<0.2*0.2)? eta_B : 1.0;
             }
 
