@@ -52,6 +52,7 @@
 #include <locale>
 #include <string>
 
+#include <aspect/postprocess/duretz_et_al.h>
 
 using namespace dealii;
 
@@ -270,6 +271,8 @@ namespace aspect
       current_constraints.merge (constraints);
 
       // do the interpolation for the prescribed velocity field
+      // TODO: make the function selection configurable:
+      Postprocess::FunctionInclusion<dim> func(1e3);
       std::vector<bool> velocity_mask (dim+2, true);
       velocity_mask[dim] = false;
       velocity_mask[dim+1] = false;
@@ -278,7 +281,7 @@ namespace aspect
            p != parameters.prescribed_velocity_boundary_indicators.end(); ++p)
         VectorTools::interpolate_boundary_values (dof_handler,
                                                   *p,
-                                                  ZeroFunction<dim>(dim+2),
+                                                  func,//ZeroFunction<dim>(dim+2),
                                                   current_constraints,
                                                   velocity_mask);
       current_constraints.close();
