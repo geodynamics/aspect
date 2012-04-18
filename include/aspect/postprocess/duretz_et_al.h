@@ -63,6 +63,19 @@ namespace aspect
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
     };
+
+
+
+    template <int dim>
+    class FunctionInclusion : public Function<dim>
+    {
+      public:
+        FunctionInclusion (double eta_B) : Function<dim>(dim+2), eta_B_(eta_B) {}
+        virtual void vector_value (const Point< dim >   &p,
+                                   Vector< double >   &values) const;
+      private:
+        double eta_B_;
+    };
   }
 }
 

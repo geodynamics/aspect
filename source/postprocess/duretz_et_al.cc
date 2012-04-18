@@ -2845,125 +2845,36 @@ namespace
   {
     const double min_eta = 1.0;
     const double max_eta = eta;
-    const double epsilon = 1;
+    const double epsilon = 1; //strain rate
     const double A(min_eta*(max_eta-min_eta)/(max_eta+min_eta));
-    std::complex<double> phi, psi, dphi, v;
-    const double pi(std::atan(1.0)*4);
-    double middle=0.4;
-    const double kx0(pi*middle), kx1(pi*(middle-1));
-    const double cosh0(std::cosh(kx0)), sinh0(std::sinh(kx0)),
-      cos0(std::cos(kx0)), sin0(std::sin(kx0)),
-      cosh1(std::cosh(kx1)), sinh1(std::sinh(kx1)),
-      cos1(std::cos(kx1)), sin1(std::sin(kx1));
-
-    const double eta0(min_eta), eta1(max_eta), rho(0.5);
-
-    double m[]={
-      -kx0*cosh0, sinh0-kx0*cosh0, kx1*cosh1, -(sinh1-kx1*cosh1),
-      cosh0+kx0*sinh0, kx0*sinh0, -(cosh1+kx1*sinh1), -kx1*sinh1,
-      -kx0*sinh0*eta0, (cosh0-kx0*sinh0)*eta0,
-      kx1*sinh1*eta1, -(cosh1-kx1*sinh1)*eta1,
-      (-sinh0-kx0*cosh0)*eta0, -kx0*cosh0*eta0,
-      (sinh1+kx1*cosh1)*eta1, kx1*cosh1*eta1};
-
-    dealii::FullMatrix<double> mat(4,4,m);
-    mat.invert(mat);
-    dealii::Vector<double> rhs(4);
-    rhs(0) = ((kx0*cosh0 - sin0)/eta0 + (kx1*cosh1 - sin1)/eta1)*rho/2;
-      rhs(1) = ((cos0 - cosh0 - kx0*sinh0)/eta0 + (cos1 - cosh1 - kx1*sinh1)/eta1)*rho/2;
-      rhs(2) = (kx0*sinh0 + kx1*sinh1)*rho/2;
-      rhs(3) = ((sinh0 + kx0*cosh0) + (sinh1 + kx1*cosh1))*rho/2;
-    dealii::Vector<double> sol(4);
-    mat.vmult(sol, rhs);
-
-    double v0=sol(0), tau_eta_0=sol(1), v1 = sol(2), tau_eta_1 = sol(3);
-
-    const double theta(0);//-0.5);
-    // const double theta(pi);
-    // const double theta(0);
-    const double rot[]={std::cos(theta),-std::sin(theta),std::sin(theta),std::cos(theta)};
-    //const double offset[2]={0.5,0.5};
+    std::complex<double> phi, psi, dphi;
     const double offset[2]={1.0, 1.0};
+    double r2_inclusion = r_inclusion * r_inclusion;
 
-    double x=pos[0],y=pos[1];
+    double x = pos[0]-offset[0];
+    double y = pos[1]-offset[1];
+    double r2 = x*x+y*y;
 
-//    for(int i=0;i<Nx+1;++i)
-//      for(int j=0;j<Ny+1;++j)
-        {
-//          {
-//            FTensor::Tensor1<double,2> coord(i*h,j*h), xy;
-//            xy(a)=rot(a,b)*(coord(b)-offset(b)) + offset(a);
-//            // double x(xy(0)), y(xy(1)), r2(x*x+y*y);
-//            double x(xy(0));
-
-//          }
-
-//          if(i<Nx && j<Ny)
-            {
-              double x = rot[0]*(pos[0]-offset[0]) + rot[1]*(pos[1]-offset[1]);// + offset[0];
-              double y = rot[2]*(pos[0]-offset[0]) + rot[3]*(pos[1]-offset[1]);// + offset[1];
-              double r2 = x*x+y*y;
-
-              if(r2>=r_inclusion)
-                *p=-2*A*(r_inclusion/r2)*2*epsilon*(2*x*x/r2 -1);
-              else
-                *p=0;
-
-            }
-//          if(j<Ny)
-//            {
-//              FTensor::Tensor1<double,2> coord(i*h,(j+0.5)*h), xy;
-//              xy(a)=rot(a,b)*(coord(b)-offset(b)) + offset(a);
-//              double x(xy(0)), y(xy(1)), r2(x*x+y*y);
-//              zx[i][j]=0;
-//              fx[i][j]=0;
-//                  std::complex<double> z(x,y);
-//                  if(r2<r2_inclusion)
-//                    {
-//                      log_etax[i][j]=log_max_eta;
-//                      phi=0;
-//                      dphi=0;
-//                      psi=-4*epsilon*(max_eta*min_eta/(min_eta+max_eta))*z;
-//                    }
-//                  else
-//                    {
-//                      log_etax[i][j]=log_min_eta;
-//                      phi=-2*epsilon*A*r2_inclusion/z;
-//                      dphi=-phi/z;
-//                      psi=-2*epsilon*(min_eta*z+A*r2_inclusion*r2_inclusion/(z*z*z));
-//                    }
-//                  v=(phi - z*conj(dphi) - conj(psi))/2.0;
-//                  zx[i][j]=v.real();
-//            }
-
-//          if(i<Nx)
-//            {
-//              FTensor::Tensor1<double,2> coord((i+0.5)*h, j*h), xy;
-//              xy(a)=rot(a,b)*(coord(b)-offset(b)) + offset(a);
-//              double x(xy(0)), y(xy(1)), r2(x*x+y*y);
-//              zy[i][j]=0;
-
-//                  std::complex<double> z(x,y);
-//                  if(r2<r2_inclusion)
-//                    {
-//                      log_etay[i][j]=log_max_eta;
-//                      phi=0;
-//                      dphi=0;
-//                      psi=-4*epsilon*(max_eta*min_eta/(min_eta+max_eta))*z;
-//                    }
-//                  else
-//                    {
-//                      log_etay[i][j]=log_min_eta;
-//                      phi=-2*epsilon*A*r2_inclusion/z;
-//                      dphi=-phi/z;
-//                      psi=-2*epsilon
-//                        * (min_eta*z + A*r2_inclusion*r2_inclusion/(z*z*z));
-//                    }
-//                  v=(phi - z*conj(dphi) - conj(psi))/2.0;
-//                  zy[i][j]=v.imag();
-//            }
-        }
-
+    std::complex<double> z(x,y);
+    if(r2<r2_inclusion)
+      {
+        //inside the inclusion
+        phi=0;
+        dphi=0;
+        psi=-4*epsilon*(max_eta*min_eta/(min_eta+max_eta))*z;
+      }
+    else
+      {
+        //outside the inclusion
+        phi=-2*epsilon*A*r2_inclusion/z;
+        dphi=-phi/z;
+        psi=-2*epsilon*(min_eta*z+A*r2_inclusion*r2_inclusion/(z*z*z));
+      }
+    double visc = (r2<r2_inclusion)? max_eta : 1.0;
+    std::complex<double> v = (phi - z*conj(dphi) - conj(psi))/(2.0*visc);
+    *vx=v.real();
+    *vy=v.imag();
+    *p=-2*epsilon*dphi.real();
   }
 }
 
@@ -3020,24 +2931,18 @@ namespace aspect
 
           }
       };
-
-      template <int dim>
-      class FunctionInclusion : public Function<dim>
-      {
-        public:
-          FunctionInclusion (double eta_B) : Function<dim>(), eta_B_(eta_B) {}
-          virtual void vector_value (const Point< dim >   &p,
-                                     Vector< double >   &values) const
-          {
-            double pos[2]= {p(0),p(1)};
-            _Inclusion(
-              pos,0.2,eta_B_, &values[0], &values[0], &values[2]);
-
-          }
-        private:
-          double eta_B_;
-      };
     }
+
+    template <int dim>
+    void
+    FunctionInclusion<dim>::vector_value (const Point< dim >   &p,
+                                   Vector< double >   &values) const
+        {
+          double pos[2]= {p(0),p(1)};
+          _Inclusion(
+            pos,0.2,eta_B_, &values[0], &values[1], &values[2]);
+
+        }
 
     template <int dim>
     std::pair<std::string,std::string>
@@ -3066,12 +2971,12 @@ namespace aspect
           material_model
             = dynamic_cast<const MaterialModel::DuretzEtAl::Inclusion<dim> *>(&this->get_material_model());
 
-          ref_func.reset (new internal_DuretzEtAl::FunctionInclusion<dim>(material_model->get_eta_B()));
+          ref_func.reset (new FunctionInclusion<dim>(material_model->get_eta_B()));
         }
       else
         {
           AssertThrow(false,
-                      ExcMessage("Postprocessor DuretzEtAl only works with the material model SolCx and SolKz."));
+                      ExcMessage("Postprocessor DuretzEtAl only works with the material model SolCx, SolKz, and Inclusion."));
         }
 
       const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe().base_element(0).degree+2);
