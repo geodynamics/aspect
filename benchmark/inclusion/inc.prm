@@ -226,13 +226,13 @@ subsection Model settings
   # velocity is tangential but prescribed, i.e., where external forces act to
   # prescribe a particular velocity. This is often used to prescribe a
   # velocity that equals that of overlying plates.
-  set Prescribed velocity boundary indicators = 
+  set Prescribed velocity boundary indicators = 0,1,2,3
 
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is tangential and unrestrained, i.e., where no external forces
   # act to prescribe a particular tangential velocity (although there is a
   # force that requires the flow to be tangential).
-  set Tangential velocity boundary indicators = 0,1,2,3
+  set Tangential velocity boundary indicators = 
 
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is zero.
