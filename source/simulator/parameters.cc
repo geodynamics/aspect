@@ -199,6 +199,7 @@ namespace aspect
                          "should be flagged for coarsening.");
       prm.declare_entry ("Strategy", "Density c_p temperature",
                          Patterns::Selection ("Temperature|"
+                                              "Velocity|"
                                               "Normalized density and temperature|"
                                               "Weighted density and temperature|"
                                               "Density c_p temperature"),

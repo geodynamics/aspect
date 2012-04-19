@@ -588,10 +588,10 @@ namespace aspect
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
 
-    //Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature
+    //Velocity|Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature
 
     // compute density error
-    if (parameters.refinement_strategy != "Temperature")
+    if (parameters.refinement_strategy != "Temperature" && parameters.refinement_strategy != "Velocity")
       {
         bool lookup_rho_c_p_T = (parameters.refinement_strategy == "Density c_p temperature");
 
@@ -715,7 +715,7 @@ namespace aspect
       }
 
     // compute the errors for the stokes solution
-    if (false)
+    if (parameters.refinement_strategy == "Velocity")
       {
         std::vector<bool> velocity_mask (dim+2, true);
         velocity_mask[dim] = velocity_mask[dim+1] = false;
@@ -736,7 +736,12 @@ namespace aspect
 
     // rescale and combine errors
     {
-      if (parameters.refinement_strategy == "Temperature")
+      if (parameters.refinement_strategy == "Velocity")
+        {
+          for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+            estimated_error_per_cell(i) = estimated_error_per_cell_u(i);
+        }
+      else if (parameters.refinement_strategy == "Temperature")
         {
           for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
             estimated_error_per_cell(i) = estimated_error_per_cell_T(i);
