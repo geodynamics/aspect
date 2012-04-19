@@ -1,6 +1,13 @@
 #!/bin/bash
 cd ../..
 
+
+file=benchmark/inclusion/output_adapt.txt
+rm -f $file
+
+./lib/aspect benchmark/inclusion/inc_adaptive.prm | egrep "cells|Errors" --line-buffered |tee $file
+
+
 file=benchmark/inclusion/output.txt
 
 rm -f $file

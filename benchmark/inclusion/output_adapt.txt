@@ -1,0 +1,26 @@
+Number of active cells: 64 (on 4 levels)
+     Errors u_L1, p_L1, u_L2, p_L2: 1.728441e-01, 1.486559e+00, 8.838171e-02, 1.109955e+00
+Number of active cells: 94 (on 5 levels)
+     Errors u_L1, p_L1, u_L2, p_L2: 1.197106e-01, 1.286040e+00, 6.230476e-02, 1.287985e+00
+Number of active cells: 148 (on 6 levels)
+     Errors u_L1, p_L1, u_L2, p_L2: 6.243732e-02, 6.581966e-01, 3.272050e-02, 7.599117e-01
+Number of active cells: 229 (on 7 levels)
+     Errors u_L1, p_L1, u_L2, p_L2: 2.996881e-02, 5.410807e-01, 1.591665e-02, 1.177301e+00
+Number of active cells: 340 (on 8 levels)
+     Errors u_L1, p_L1, u_L2, p_L2: 1.926539e-02, 4.014865e-01, 1.030092e-02, 9.626832e-01
+Number of active cells: 502 (on 8 levels)
+     Errors u_L1, p_L1, u_L2, p_L2: 1.233480e-02, 2.860685e-01, 6.633396e-03, 8.115277e-01
+Number of active cells: 832 (on 9 levels)
+     Errors u_L1, p_L1, u_L2, p_L2: 7.616736e-03, 2.196068e-01, 4.105505e-03, 6.944339e-01
+Number of active cells: 1,360 (on 10 levels)
+     Errors u_L1, p_L1, u_L2, p_L2: 5.002143e-03, 1.102355e-01, 2.702403e-03, 3.684461e-01
+Number of active cells: 1,825 (on 10 levels)
+     Errors u_L1, p_L1, u_L2, p_L2: 3.301715e-03, 7.749885e-02, 1.757974e-03, 3.098921e-01
+Number of active cells: 2,707 (on 11 levels)
+     Errors u_L1, p_L1, u_L2, p_L2: 2.225646e-03, 6.232686e-02, 1.163343e-03, 2.720750e-01
+Number of active cells: 3,862 (on 12 levels)
+     Errors u_L1, p_L1, u_L2, p_L2: 1.632920e-03, 4.238869e-02, 8.360466e-04, 2.072524e-01
+Number of active cells: 6,025 (on 12 levels)
+     Errors u_L1, p_L1, u_L2, p_L2: 1.041610e-03, 2.780976e-02, 5.680114e-04, 1.552265e-01
+Number of active cells: 8,188 (on 13 levels)
+     Errors u_L1, p_L1, u_L2, p_L2: 7.082993e-04, 2.055813e-02, 3.847876e-04, 1.319878e-01
