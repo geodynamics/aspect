@@ -204,7 +204,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 12                       # default: 2
+  set Initial adaptive refinement        = 13                       # default: 2
   set Initial global refinement          = 3                       # default: 2
 
   set Run postprocessor on initial refinement = true
