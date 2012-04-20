@@ -276,8 +276,12 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector)
   {
+    if (parameters.pressure_normalization=="No")
+      return;
+
     double my_pressure = 0.0;
     double my_area = 0.0;
+    if (parameters.pressure_normalization=="Surface")
     {
       QGauss < dim - 1 > quadrature (parameters.stokes_velocity_degree + 1);
 
@@ -316,17 +320,57 @@ namespace aspect
               }
           }
     }
+    else if (parameters.pressure_normalization=="Volume")
+      {
+        QGauss<dim> quadrature (parameters.stokes_velocity_degree + 1);
 
-    double surf_pressure = 0;
-    // sum up the surface integrals from each processor
+        const unsigned int n_q_points = quadrature.size();
+        FEValues<dim> fe_values (mapping, finite_element,  quadrature,
+                                 update_JxW_values | update_values);
+        const FEValuesExtractors::Scalar pressure (dim);
+
+        std::vector<double> pressure_values(n_q_points);
+
+        typename DoFHandler<dim>::active_cell_iterator
+            cell = dof_handler.begin_active(),
+            endc = dof_handler.end();
+        for (; cell != endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit (cell);
+              fe_values[pressure].get_function_values(vector,
+                                                      pressure_values);
+
+              for (unsigned int q = 0; q < n_q_points; ++q)
+                {
+                  my_pressure += pressure_values[q]
+                      * fe_values.JxW (q);
+                  my_area += fe_values.JxW (q);
+                }
+            }
+
+      }
+    else
+      AssertThrow(false, ExcNotImplemented());
+
+    double adjust = 0;
+    // sum up the integrals from each processor
     {
       const double my_temp[2] = {my_pressure, my_area};
       double temp[2];
       Utilities::MPI::sum (my_temp, mpi_communicator, temp);
-      surf_pressure = temp[0]/temp[1];
-    }
+      if (parameters.pressure_normalization=="Surface")
+        {
 
-    const double adjust = -surf_pressure + parameters.surface_pressure;
+          adjust = -temp[0]/temp[1] + parameters.surface_pressure;
+        }
+      else if (parameters.pressure_normalization=="Volume")
+        {
+          adjust = -temp[0];
+        }
+      else
+        AssertThrow(false, ExcNotImplemented());
+    }
 
     if (parameters.use_locally_conservative_discretization == false)
       vector.block(1).add(adjust);

@@ -241,7 +241,14 @@ namespace aspect
                          "of freedom (true), or to go with a cheaper discretization "
                          "that does not locally conserve mass, although it is "
                          "globally conservative (false).");
-
+      prm.declare_entry ("Pressure normalization", "Surface",
+                         Patterns::Selection ("Surface|"
+                                              "Volume|"
+                                              "No"
+                                              ),
+                         "normalize the pressure after the solution step. This is necessary to"
+                         " in case lookups are done in for example the material model"
+                         " or for comparing solutions.");
       prm.enter_subsection ("Stabilization parameters");
       {
         prm.declare_entry ("alpha", "2",
@@ -367,6 +374,7 @@ namespace aspect
       temperature_degree     = prm.get_integer ("Temperature polynomial degree");
       use_locally_conservative_discretization
         = prm.get_bool ("Use locally conservative discretization");
+      pressure_normalization = prm.get("Pressure normalization");
 
       prm.enter_subsection ("Stabilization parameters");
       {
