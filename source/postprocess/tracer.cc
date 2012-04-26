@@ -176,7 +176,6 @@ namespace aspect
     void ParticleSet<dim>::generate_particles(const parallel::distributed::Triangulation<dim> &triangulation,
                                               double total_particles)
     {
-      unsigned int  subdomain_particles, start_id, end_id;
       double      total_volume, local_volume, subdomain_fraction, start_fraction, end_fraction;
       typename parallel::distributed::Triangulation<dim>::active_cell_iterator  it;
 
@@ -201,9 +200,9 @@ namespace aspect
       start_fraction = end_fraction-subdomain_fraction;
 
       // Calculate start and end IDs so there are no gaps
-      start_id = floor(start_fraction*total_particles);
-      end_id = floor(end_fraction*total_particles);
-      subdomain_particles = end_id - start_id;
+      const unsigned int  start_id = static_cast<unsigned int>(std::floor(start_fraction*total_particles));
+      const unsigned int  end_id   = static_cast<unsigned int>(std::floor(end_fraction*total_particles));
+      const unsigned int  subdomain_particles = end_id - start_id;
 
       generate_particles_in_subdomain(triangulation, subdomain_particles, start_id);
     }
