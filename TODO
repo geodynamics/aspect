@@ -17,6 +17,7 @@ Topics for an ASPECT II paper:
   - right h scaling needed, because error does not converge, >1, but small as possible
   - h^(1+d/2) okay?
 - How implicit to be?
+- time stepping / definition of h, etc
 
 
 
