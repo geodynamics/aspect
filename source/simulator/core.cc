@@ -984,7 +984,7 @@ namespace aspect
           {
             output_statistics();
 
-            if (parameters.run_postprocessor_on_initial_refinement)
+            if (parameters.run_postprocessors_on_initial_refinement)
               postprocess ();
 
             refine_mesh (max_refinement_level);

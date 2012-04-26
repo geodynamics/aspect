@@ -177,7 +177,7 @@ namespace aspect
         std::string                    refinement_strategy;
         std::vector<double>            additional_refinement_times;
         unsigned int                   adaptive_refinement_interval;
-        bool                           run_postprocessor_on_initial_refinement;
+        bool                           run_postprocessors_on_initial_refinement;
         /**
          * @}
          */

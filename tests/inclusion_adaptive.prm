@@ -209,7 +209,7 @@ subsection Mesh refinement
   set Initial adaptive refinement        = 5                       # default: 2
   set Initial global refinement          = 3                       # default: 2
 
-  set Run postprocessor on initial refinement = true
+  set Run postprocessors on initial refinement = true
 
   set Refinement fraction                = 0.5#33333
   set Coarsening fraction                = 0.0

@@ -217,10 +217,11 @@ namespace aspect
                          "list has units years if the "
                          "'Use years in output instead of seconds' parameter is set; "
                          "seconds otherwise.");
-      prm.declare_entry ("Run postprocessor on initial refinement", "false",
+      prm.declare_entry ("Run postprocessors on initial refinement", "false",
                          Patterns::Bool (),
-                         "Whether the postproccessor should be run during the"
-                         "initial adaptive refinement cycles at the start.");
+                         "Whether or not the postproccessors should be run at the end "
+                         "of each of ths initial adaptive refinement cycles at the "
+                         "of the simulation start.");
     }
     prm.leave_subsection();
 
@@ -324,7 +325,7 @@ namespace aspect
         for (unsigned int i=0; i<additional_refinement_times.size(); ++i)
           additional_refinement_times[i] *= year_in_seconds;
 
-      run_postprocessor_on_initial_refinement = prm.get_bool("Run postprocessor on initial refinement");
+      run_postprocessors_on_initial_refinement = prm.get_bool("Run postprocessors on initial refinement");
     }
     prm.leave_subsection ();
 
