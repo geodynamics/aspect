@@ -52,7 +52,6 @@
 #include <locale>
 #include <string>
 
-#include <aspect/postprocess/duretz_et_al.h>
 
 using namespace dealii;
 
