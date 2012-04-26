@@ -327,10 +327,10 @@ namespace aspect
       };
 
       /**
-       * A material model that describes the <i>SolKz</i> benchmark of the paper
+       * A material model that describes the "Pure shear/Inclusion" benchmark of the paper
        * cited in the documentation of the DuretzEtAl namespace.
        *
-       * @note The SolKz benchmark only talks about the flow field, not about
+       * @note This benchmark only talks about the flow field, not about
        * a temperature field. All quantities related to the temperature are
        * therefore set to zero in the implementation of this class.
        *
