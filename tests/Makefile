@@ -4,7 +4,8 @@ include $D/common/Make.global_options
 
 tests = $(shell echo *.prm | sed s/.prm//g)
 
-SUBDIR = x-aspect
+SUBDIR = x-app-aspect
+ID     = `id -un`"@"`hostname`
 
 
 all: $(tests) Makefile.dep
@@ -59,6 +60,9 @@ output-%:
 # test, and then re-doing the check
 report:
 	@-$(MAKE) -k $(tests)
+	@-svn info $D | grep '^Revision'
+	@echo 'Date: ' `date -u +"%Y %j  %F  %U-%w"`
+	@echo 'Id: ' $(ID)-aspect@`svn info . | grep '^Revision' | perl -pi -e 's/Revision: //g;'`
 	@for i in $(tests) ; do \
 	    if (($(MAKE) $$i 2>&1) > /dev/null) ; then \
 	      echo `date -u +"%Y-%m-%d %H:%M"` "  +  $(SUBDIR)/$$i" ; \
