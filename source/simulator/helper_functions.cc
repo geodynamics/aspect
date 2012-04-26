@@ -276,12 +276,12 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector)
   {
-    if (parameters.pressure_normalization=="No")
+    if (parameters.pressure_normalization == "no")
       return;
 
     double my_pressure = 0.0;
     double my_area = 0.0;
-    if (parameters.pressure_normalization=="Surface")
+    if (parameters.pressure_normalization == "surface")
       {
         QGauss < dim - 1 > quadrature (parameters.stokes_velocity_degree + 1);
 
@@ -320,7 +320,7 @@ namespace aspect
                 }
             }
       }
-    else if (parameters.pressure_normalization=="Volume")
+    else if (parameters.pressure_normalization=="volume")
       {
         QGauss<dim> quadrature (parameters.stokes_velocity_degree + 1);
 
@@ -348,10 +348,10 @@ namespace aspect
                   my_area += fe_values.JxW (q);
                 }
             }
-
       }
     else
-      AssertThrow(false, ExcNotImplemented());
+      AssertThrow (false, ExcMessage("Invalid pressure normalization method: " +
+                                     parameters.pressure_normalization));
 
     double adjust = 0;
     // sum up the integrals from each processor
@@ -359,12 +359,12 @@ namespace aspect
       const double my_temp[2] = {my_pressure, my_area};
       double temp[2];
       Utilities::MPI::sum (my_temp, mpi_communicator, temp);
-      if (parameters.pressure_normalization=="Surface")
+      if (parameters.pressure_normalization == "surface")
         {
 
           adjust = -temp[0]/temp[1] + parameters.surface_pressure;
         }
-      else if (parameters.pressure_normalization=="Volume")
+      else if (parameters.pressure_normalization == "volume")
         {
           adjust = -temp[0];
         }

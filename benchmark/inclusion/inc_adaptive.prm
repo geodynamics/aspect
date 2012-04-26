@@ -100,7 +100,7 @@ subsection Discretization
   # globally conservative (false).
   set Use locally conservative discretization = false
 
-  set Pressure normalization = Volume
+  set Pressure normalization = volume
 
   subsection Stabilization parameters
     # The exponent $\alpha$ in the entropy viscosity stabilization. Units:
