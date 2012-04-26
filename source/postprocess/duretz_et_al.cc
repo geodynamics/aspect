@@ -30,7 +30,6 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vectors.h>
-#include <deal.II/lac/full_matrix.h>
 
 
 namespace
