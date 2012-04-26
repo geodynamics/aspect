@@ -233,7 +233,7 @@ namespace aspect
       const double epsilon = 1; //strain rate
       const double A(min_eta*(max_eta-min_eta)/(max_eta+min_eta));
       std::complex<double> phi, psi, dphi;
-      const double offset[2]={1.0, 1.0};
+      const double offset[2]= {1.0, 1.0};
       double r2_inclusion = r_inclusion * r_inclusion;
 
       double x = pos[0]-offset[0];
@@ -241,7 +241,7 @@ namespace aspect
       double r2 = x*x+y*y;
 
       std::complex<double> z(x,y);
-      if(r2<r2_inclusion)
+      if (r2<r2_inclusion)
         {
           //inside the inclusion
           phi=0;

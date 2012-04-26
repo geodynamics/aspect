@@ -398,202 +398,202 @@ namespace aspect
       // ------------------ implementation of the inclusion benchmark ----------------------------
 
 
-            template <int dim>
-            double
-            Inclusion<dim>::
-            viscosity (const double,
-                       const double,
-                       const SymmetricTensor<2,dim> &,
-                       const Point<dim> &p) const
-            {
-              const double r2 = (p(0)-1.0)*(p(0)-1.0) + (p(1)-1.0)*(p(1)-1.0);
-              return (r2<0.2*0.2)? eta_B : 1.0;
-            }
+      template <int dim>
+      double
+      Inclusion<dim>::
+      viscosity (const double,
+                 const double,
+                 const SymmetricTensor<2,dim> &,
+                 const Point<dim> &p) const
+      {
+        const double r2 = (p(0)-1.0)*(p(0)-1.0) + (p(1)-1.0)*(p(1)-1.0);
+        return (r2<0.2*0.2)? eta_B : 1.0;
+      }
 
 
-            template <int dim>
-            double
-            Inclusion<dim>::
-            reference_viscosity () const
-            {
-              return 1;
-            }
+      template <int dim>
+      double
+      Inclusion<dim>::
+      reference_viscosity () const
+      {
+        return 1;
+      }
 
-            template <int dim>
-            double
-            Inclusion<dim>::
-            reference_density () const
-            {
-              return 1;
-            }
+      template <int dim>
+      double
+      Inclusion<dim>::
+      reference_density () const
+      {
+        return 1;
+      }
 
-            template <int dim>
-            double
-            Inclusion<dim>::
-            reference_thermal_expansion_coefficient () const
-            {
-              return 0;
-            }
+      template <int dim>
+      double
+      Inclusion<dim>::
+      reference_thermal_expansion_coefficient () const
+      {
+        return 0;
+      }
 
-            template <int dim>
-            double
-            Inclusion<dim>::
-            specific_heat (const double,
-                           const double,
-                           const Point<dim> &) const
-            {
-              return 0;
-            }
-
-            template <int dim>
-            double
-            Inclusion<dim>::
-            reference_cp () const
-            {
-              return 0;
-            }
-
-            template <int dim>
-            double
-            Inclusion<dim>::
-            thermal_conductivity (const double,
-                                  const double,
-                                  const Point<dim> &) const
-            {
-              return 0;
-            }
-
-            template <int dim>
-            double
-            Inclusion<dim>::
-            reference_thermal_diffusivity () const
-            {
-              return 0;
-            }
-
-            template <int dim>
-            double
-            Inclusion<dim>::
-            density (const double,
+      template <int dim>
+      double
+      Inclusion<dim>::
+      specific_heat (const double,
                      const double,
-                     const Point<dim> &p) const
-            {
-              return 0;
-            }
+                     const Point<dim> &) const
+      {
+        return 0;
+      }
+
+      template <int dim>
+      double
+      Inclusion<dim>::
+      reference_cp () const
+      {
+        return 0;
+      }
+
+      template <int dim>
+      double
+      Inclusion<dim>::
+      thermal_conductivity (const double,
+                            const double,
+                            const Point<dim> &) const
+      {
+        return 0;
+      }
+
+      template <int dim>
+      double
+      Inclusion<dim>::
+      reference_thermal_diffusivity () const
+      {
+        return 0;
+      }
+
+      template <int dim>
+      double
+      Inclusion<dim>::
+      density (const double,
+               const double,
+               const Point<dim> &p) const
+      {
+        return 0;
+      }
 
 
-            template <int dim>
-            double
-            Inclusion<dim>::
-            thermal_expansion_coefficient (const double temperature,
-                                           const double,
-                                           const Point<dim> &) const
-            {
-              return 0;
-            }
+      template <int dim>
+      double
+      Inclusion<dim>::
+      thermal_expansion_coefficient (const double temperature,
+                                     const double,
+                                     const Point<dim> &) const
+      {
+        return 0;
+      }
 
 
-            template <int dim>
-            double
-            Inclusion<dim>::
-            compressibility (const double,
-                             const double,
-                             const Point<dim> &) const
-            {
-              return 0.0;
-            }
-
-
-
-            template <int dim>
-            bool
-            Inclusion<dim>::
-            viscosity_depends_on (const NonlinearDependence::Dependence) const
-            {
-              return false;
-            }
-
-
-            template <int dim>
-            bool
-            Inclusion<dim>::
-            density_depends_on (const NonlinearDependence::Dependence) const
-            {
-              return false;
-            }
-
-            template <int dim>
-            bool
-            Inclusion<dim>::
-            compressibility_depends_on (const NonlinearDependence::Dependence) const
-            {
-              return false;
-            }
-
-            template <int dim>
-            bool
-            Inclusion<dim>::
-            specific_heat_depends_on (const NonlinearDependence::Dependence) const
-            {
-              return false;
-            }
-
-            template <int dim>
-            bool
-            Inclusion<dim>::
-            thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-            {
-              return false;
-            }
-
-            template <int dim>
-            bool
-            Inclusion<dim>::
-            is_compressible () const
-            {
-              return false;
-            }
-
-            template <int dim>
-            void
-            Inclusion<dim>::declare_parameters (ParameterHandler &prm)
-            {
-              prm.enter_subsection("Material model");
-              {
-                prm.enter_subsection("Inclusion");
-                {
-                  prm.declare_entry ("Viscosity jump", "1e3",
-                                     Patterns::Double (0),
-                                     "Viscosity in the Inclusion.");
-                }
-                prm.leave_subsection();
-              }
-              prm.leave_subsection();
-            }
+      template <int dim>
+      double
+      Inclusion<dim>::
+      compressibility (const double,
+                       const double,
+                       const Point<dim> &) const
+      {
+        return 0.0;
+      }
 
 
 
-            template <int dim>
-            void
-            Inclusion<dim>::parse_parameters (ParameterHandler &prm)
-            {
-              prm.enter_subsection("Material model");
-              {
-                prm.enter_subsection("Inclusion");
-                {
-                  eta_B = prm.get_double ("Viscosity jump");
-                }
-                prm.leave_subsection();
-              }
-              prm.leave_subsection();
-            }
+      template <int dim>
+      bool
+      Inclusion<dim>::
+      viscosity_depends_on (const NonlinearDependence::Dependence) const
+      {
+        return false;
+      }
 
-            template <int dim>
-            double
-            Inclusion<dim>::get_eta_B() const
-            {
-              return eta_B;
-            }
+
+      template <int dim>
+      bool
+      Inclusion<dim>::
+      density_depends_on (const NonlinearDependence::Dependence) const
+      {
+        return false;
+      }
+
+      template <int dim>
+      bool
+      Inclusion<dim>::
+      compressibility_depends_on (const NonlinearDependence::Dependence) const
+      {
+        return false;
+      }
+
+      template <int dim>
+      bool
+      Inclusion<dim>::
+      specific_heat_depends_on (const NonlinearDependence::Dependence) const
+      {
+        return false;
+      }
+
+      template <int dim>
+      bool
+      Inclusion<dim>::
+      thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+      {
+        return false;
+      }
+
+      template <int dim>
+      bool
+      Inclusion<dim>::
+      is_compressible () const
+      {
+        return false;
+      }
+
+      template <int dim>
+      void
+      Inclusion<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Material model");
+        {
+          prm.enter_subsection("Inclusion");
+          {
+            prm.declare_entry ("Viscosity jump", "1e3",
+                               Patterns::Double (0),
+                               "Viscosity in the Inclusion.");
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+      }
+
+
+
+      template <int dim>
+      void
+      Inclusion<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Material model");
+        {
+          prm.enter_subsection("Inclusion");
+          {
+            eta_B = prm.get_double ("Viscosity jump");
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+      }
+
+      template <int dim>
+      double
+      Inclusion<dim>::get_eta_B() const
+      {
+        return eta_B;
+      }
     }
   }
 }

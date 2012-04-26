@@ -282,44 +282,44 @@ namespace aspect
     double my_pressure = 0.0;
     double my_area = 0.0;
     if (parameters.pressure_normalization=="Surface")
-    {
-      QGauss < dim - 1 > quadrature (parameters.stokes_velocity_degree + 1);
+      {
+        QGauss < dim - 1 > quadrature (parameters.stokes_velocity_degree + 1);
 
-      const unsigned int n_q_points = quadrature.size();
-      FEFaceValues<dim> fe_face_values (mapping, finite_element,  quadrature,
-                                        update_JxW_values | update_values);
-      const FEValuesExtractors::Scalar pressure (dim);
+        const unsigned int n_q_points = quadrature.size();
+        FEFaceValues<dim> fe_face_values (mapping, finite_element,  quadrature,
+                                          update_JxW_values | update_values);
+        const FEValuesExtractors::Scalar pressure (dim);
 
-      std::vector<double> pressure_values(n_q_points);
+        std::vector<double> pressure_values(n_q_points);
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = dof_handler.begin_active(),
-      endc = dof_handler.end();
-      for (; cell != endc; ++cell)
-        if (cell->is_locally_owned())
-          {
-            for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
-              {
-                const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
-                if (face->at_boundary()
-                    &&
-                    (geometry_model->depth (face->center()) <
-                     (face->diameter() / std::sqrt(1.*dim-1) / 3)))
-                  {
-                    fe_face_values.reinit (cell, face_no);
-                    fe_face_values[pressure].get_function_values(vector,
-                                                                 pressure_values);
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = dof_handler.begin_active(),
+        endc = dof_handler.end();
+        for (; cell != endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+                {
+                  const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
+                  if (face->at_boundary()
+                      &&
+                      (geometry_model->depth (face->center()) <
+                       (face->diameter() / std::sqrt(1.*dim-1) / 3)))
+                    {
+                      fe_face_values.reinit (cell, face_no);
+                      fe_face_values[pressure].get_function_values(vector,
+                                                                   pressure_values);
 
-                    for (unsigned int q = 0; q < n_q_points; ++q)
-                      {
-                        my_pressure += pressure_values[q]
-                                       * fe_face_values.JxW (q);
-                        my_area += fe_face_values.JxW (q);
-                      }
-                  }
-              }
-          }
-    }
+                      for (unsigned int q = 0; q < n_q_points; ++q)
+                        {
+                          my_pressure += pressure_values[q]
+                                         * fe_face_values.JxW (q);
+                          my_area += fe_face_values.JxW (q);
+                        }
+                    }
+                }
+            }
+      }
     else if (parameters.pressure_normalization=="Volume")
       {
         QGauss<dim> quadrature (parameters.stokes_velocity_degree + 1);
@@ -332,8 +332,8 @@ namespace aspect
         std::vector<double> pressure_values(n_q_points);
 
         typename DoFHandler<dim>::active_cell_iterator
-            cell = dof_handler.begin_active(),
-            endc = dof_handler.end();
+        cell = dof_handler.begin_active(),
+        endc = dof_handler.end();
         for (; cell != endc; ++cell)
           if (cell->is_locally_owned())
             {
@@ -344,7 +344,7 @@ namespace aspect
               for (unsigned int q = 0; q < n_q_points; ++q)
                 {
                   my_pressure += pressure_values[q]
-                      * fe_values.JxW (q);
+                                 * fe_values.JxW (q);
                   my_area += fe_values.JxW (q);
                 }
             }

@@ -245,7 +245,7 @@ namespace aspect
                          Patterns::Selection ("Surface|"
                                               "Volume|"
                                               "No"
-                                              ),
+                                             ),
                          "normalize the pressure after the solution step. This is necessary to"
                          " in case lookups are done in for example the material model"
                          " or for comparing solutions.");
