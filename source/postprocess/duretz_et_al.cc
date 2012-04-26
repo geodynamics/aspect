@@ -2887,11 +2887,19 @@ namespace aspect
     {
       using namespace dealii;
 
+      /**
+       * The exact solution for the SolCx benchmark, given the value
+       * of the jump in viscosity $\eta_B$.
+       */
       template <int dim>
       class FunctionSolCx : public Function<dim>
       {
         public:
-          FunctionSolCx (double eta_B) : Function<dim>(), eta_B_(eta_B) {}
+          FunctionSolCx (const double eta_B)
+          :
+            Function<dim>(),
+            eta_B_(eta_B)
+            {}
 
           virtual void vector_value (const Point< dim >   &p,
                                      Vector< double >   &values) const
@@ -2911,6 +2919,11 @@ namespace aspect
         private:
           double eta_B_;
       };
+
+
+      /**
+       * The exact solution for the SolKz benchmark.
+       */
       template <int dim>
       class FunctionSolKz : public Function<dim>
       {
@@ -2923,26 +2936,33 @@ namespace aspect
             double pos[2]= {p(0),p(1)};
             double total_stress[3], strain_rate[3];
             static const double B = 0.5 * std::log(1e6);
-            _Velic_solKz(
-              pos,
-              1.0, 2, 3,
-              B,
-              &values[0], &values[2], total_stress, strain_rate );
-
+            _Velic_solKz(pos,
+                         1.0, 2, 3,
+                         B,
+                         &values[0], &values[2], total_stress, strain_rate );
           }
       };
+
+
+      /**
+       * The exact solution for the Inclusion benchmark.
+       */
+      template <int dim>
+      class FunctionInclusion : public Function<dim>
+      {
+        public:
+          FunctionInclusion (double eta_B) : Function<dim>(dim+2), eta_B_(eta_B) {}
+          virtual void vector_value (const Point< dim >   &p,
+                                     Vector< double >   &values) const
+          {
+            double pos[2]= {p(0),p(1)};
+            _Inclusion(pos,0.2,eta_B_, &values[0], &values[1], &values[2]);
+          }
+
+        private:
+          double eta_B_;
+      };
     }
-
-    template <int dim>
-    void
-    FunctionInclusion<dim>::vector_value (const Point< dim >   &p,
-                                   Vector< double >   &values) const
-        {
-          double pos[2]= {p(0),p(1)};
-          _Inclusion(
-            pos,0.2,eta_B_, &values[0], &values[1], &values[2]);
-
-        }
 
     template <int dim>
     std::pair<std::string,std::string>
@@ -2971,7 +2991,7 @@ namespace aspect
           material_model
             = dynamic_cast<const MaterialModel::DuretzEtAl::Inclusion<dim> *>(&this->get_material_model());
 
-          ref_func.reset (new FunctionInclusion<dim>(material_model->get_eta_B()));
+          ref_func.reset (new internal_DuretzEtAl::FunctionInclusion<dim>(material_model->get_eta_B()));
         }
       else
         {
