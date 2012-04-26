@@ -117,6 +117,7 @@ indent:
 clean: clean-lib clean-data
 	-rm -f *~ */*~ */*/*~ source/Makefile.dep source/*/Makefile.dep
 	-cd doc ; make clean
+	-cd tests ; make clean
 
 clean-lib:
 	-rm -f lib/obj/*.$(OBJEXT) $(target)$(EXEEXT) lib/TAGS
