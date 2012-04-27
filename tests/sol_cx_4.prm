@@ -77,7 +77,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0                       # default: 2
-  set Initial global refinement          = 2                       # default: 2
+  set Initial global refinement          = 4                       # default: 2
 
   set Strategy                           = Normalized density and temperature
 end
