@@ -1,7 +1,7 @@
 # Listing of Parameters
 # ---------------------
 
-# At the top, state that the program should be run for a two-dimensional 
+# At the top, state that the program should be run for a two-dimensional
 # simulation
 set Dimension = 2
 
@@ -61,6 +61,9 @@ set Adiabatic surface temperature          = 0
 # general mathematical model.
 set Surface pressure                       = 0
 
+set Pressure normalization = volume
+
+
 # When computing results for mantle convection simulations, it is often
 # difficult to judge the order of magnitude of results when they are stated in
 # MKS units involving seconds. Rather, some kinds of results such as
@@ -99,8 +102,6 @@ subsection Discretization
   # cheaper discretization that does not locally conserve mass, although it is
   # globally conservative (false).
   set Use locally conservative discretization = false
-
-  set Pressure normalization = volume
 
   subsection Stabilization parameters
     # The exponent $\alpha$ in the entropy viscosity stabilization. Units:
@@ -234,11 +235,11 @@ subsection Model settings
   # velocity is tangential and unrestrained, i.e., where no external forces
   # act to prescribe a particular tangential velocity (although there is a
   # force that requires the flow to be tangential).
-  set Tangential velocity boundary indicators = 
+  set Tangential velocity boundary indicators =
 
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is zero.
-  set Zero velocity boundary indicators       = 
+  set Zero velocity boundary indicators       =
 end
 
 

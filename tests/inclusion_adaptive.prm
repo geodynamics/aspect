@@ -61,6 +61,9 @@ set Adiabatic surface temperature          = 0
 # general mathematical model.
 set Surface pressure                       = 0
 
+set Pressure normalization = volume
+
+
 # When computing results for mantle convection simulations, it is often
 # difficult to judge the order of magnitude of results when they are stated in
 # MKS units involving seconds. Rather, some kinds of results such as
@@ -99,8 +102,6 @@ subsection Discretization
   # cheaper discretization that does not locally conserve mass, although it is
   # globally conservative (false).
   set Use locally conservative discretization = false
-
-  set Pressure normalization = volume
 
   subsection Stabilization parameters
     # The exponent $\alpha$ in the entropy viscosity stabilization. Units:

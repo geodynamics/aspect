@@ -88,6 +88,25 @@ namespace aspect
                        "one can choose $c>1$) though a CFL number significantly larger than "
                        "one will yield rather diffusive solutions. Units: None.");
 
+    prm.declare_entry ("Pressure normalization", "surface",
+                       Patterns::Selection ("surface|"
+                                            "volume|"
+                                            "no"),
+                       "If and how to normalize the pressure after the solution step. "
+                       "This is necessary because depending on boundary conditions, "
+                       "in many cases the pressure is only determined by the model "
+                       "up to a constant. On the other hand, we often would like to "
+                       "have a well-determined pressure, for example for "
+                       "table lookups of material properties in models "
+                       "or for comparing solutions. If the given value is `surface', then "
+                       "normalization at the end of each time steps adds a constant value "
+                       "to the pressure in such a way that the average pressure at the surface "
+                       "of the domain is zero; the surface of the domain is determined by asking "
+                       "the geometry model whether a particular face of the geometry has a zero "
+                       "or small `depth'. If the value of this parameter is `volume' then the "
+                       "pressure is normalized so that the domain average is zero. If `no' is "
+                       "given, the no pressure normalization is performed.");
+
     prm.declare_entry ("Surface pressure", "0",
                        Patterns::Double(),
                        "The mathematical equations that describe thermal convection "
@@ -242,24 +261,6 @@ namespace aspect
                          "of freedom (true), or to go with a cheaper discretization "
                          "that does not locally conserve mass, although it is "
                          "globally conservative (false).");
-      prm.declare_entry ("Pressure normalization", "surface",
-                         Patterns::Selection ("surface|"
-                                              "volume|"
-                                              "no"),
-                         "If and how to normalize the pressure after the solution step. "
-                         "This is necessary because depending on boundary conditions, "
-                         "in many cases the pressure is only determined by the model "
-                         "up to a constant. On the other hand, we often would like to "
-                         "have a well-determined pressure, for example for "
-                         "table lookups of material properties in models "
-                         "or for comparing solutions. If the given value is `surface', then "
-                         "normalization at the end of each time steps adds a constant value "
-                         "to the pressure in such a way that the average pressure at the surface "
-                         "of the domain is zero; the surface of the domain is determined by asking "
-                         "the geometry model whether a particular face of the geometry has a zero "
-                         "or small `depth'. If the value of this parameter is `volume' then the "
-                         "pressure is normalized so that the domain average is zero. If `no' is "
-                         "given, the no pressure normalization is performed.");
 
       prm.enter_subsection ("Stabilization parameters");
       {
@@ -314,6 +315,7 @@ namespace aspect
 
     surface_pressure              = prm.get_double ("Surface pressure");
     adiabatic_surface_temperature = prm.get_double ("Adiabatic surface temperature");
+    pressure_normalization        = prm.get("Pressure normalization");
 
     prm.enter_subsection ("Mesh refinement");
     {
@@ -386,7 +388,6 @@ namespace aspect
       temperature_degree     = prm.get_integer ("Temperature polynomial degree");
       use_locally_conservative_discretization
         = prm.get_bool ("Use locally conservative discretization");
-      pressure_normalization = prm.get("Pressure normalization");
 
       prm.enter_subsection ("Stabilization parameters");
       {
