@@ -21,8 +21,8 @@ all: $(tests) Makefile.dep
 $(tests):
 	@if test -d $@ ; then \
 	   for i in `cd $@; echo *` ; do \
-             cat $@/$$i | egrep -v '^|' > $@/$$i.notime ; \
-             cat output-$@/$$i | egrep -v '^|' > output-$@/$$i.notime ; \
+             cat $@/$$i | egrep -v '^\|' > $@/$$i.notime ; \
+             cat output-$@/$$i | egrep -v '^\|' > output-$@/$$i.notime ; \
 	     if (diff -q $@/$$i.notime output-$@/$$i.notime 2>&1) ; then \
 		  : ; \
 	     else \
