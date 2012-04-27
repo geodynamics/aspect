@@ -354,6 +354,8 @@ pressure dependent material parameters.
   conversion happens at the time output is generated, and is not part of the
   solution process. Whether this conversion should happen is determined by the
   flag ``\texttt{Use years in output instead of seconds}'' in the input file,
+\index[prmindex]{Use years in output instead of seconds}
+\index[prmindexfull]{Use years in output instead of seconds}
   see Section~\ref{parameters:global}.}
 
 
@@ -367,7 +369,7 @@ and, in the case of the viscosity, on the strain rate $\varepsilon(\mathbf
 u)$. Alternatively, they may be parameterized as a function of the spatial
 variable $\mathbf x$. \aspect{} allows both kinds of parameterizations.
 
-\note{The next version of \aspect{} will actually iterate out
+\note{One of the next versions of \aspect{} will actually iterate out
   nonlinearities in the material description. However, in the current version,
   we simply evaluate all nonlinear dependence of coefficients at the solution
   variables from the previous time step or a solution suitably extrapolated from
@@ -492,13 +494,26 @@ determine which part of the boundary of the domain is the ``surface'' (we call
 a part of the boundary the ``surface'' if its depth is ``close to zero'').
 
 Typically, one will choose this average pressure to be zero, but there is a
-parameter in the input file (see Section~\ref{parameters:global}) to set it to
+parameter ``\texttt{Surface pressure}''
+\index[prmindex]{Surface pressure}
+\index[prmindexfull]{Surface pressure}
+in the input file (see Section~\ref{parameters:global}) to set it to
 a different value. One may want to do that, for example, if one wants to
 simulate the earth mantle without the overlying lithosphere. In that case, the
 ``surface'' would be the interface between mantle and lithosphere, and the
 average pressure at the surface to which the solution of the equations will be
 normalized should in this case be the hydrostatic pressure at the bottom of
 the lithosphere.
+
+An alternative is to normalize the pressure in such a way that the
+\textit{average} pressure throughout the domain is zero or some constant
+value. This is not a useful approach for most geodynamics applications but is
+common in benchmarks for which analytic solutions are available. Which kind of
+normalization is chosen is determined by the ``\texttt{Pressure
+  normalization}'' flag in the input file,
+\index[prmindex]{Pressure normalization}
+\index[prmindexfull]{Pressure normalization}
+see Section~\ref{parameters:global}.
 
 
 \subsection{Initial conditions and the adiabatic pressure/temperature}
@@ -538,6 +553,8 @@ $\rho=\rho(p,T,z), C_p=C_p(p,T,z)$. As starting conditions at $z=0$ we
 choose a pressure $p_{\textrm{ad}}(0)$ equal to the average surface
 pressure (often chosen to be zero, see Section~\ref{sec:pressure}),
 and an adiabatic surface temperature $T_{\textrm{ad}}(0)$ that is
+\index[prmindex]{Adiabatic surface temperature}
+\index[prmindexfull]{Adiabatic surface temperature}
 also selected in the input parameter file.
 
 \note{The adiabatic surface temperature is often chosen significantly
@@ -832,7 +849,7 @@ to as \textit{IMPES} methods (they originate in the porous media flow
 community, where the acronym stands for \textit{Im}plicit \textit{P}ressure,
 \textit{E}xplicit \textit{S}aturation). For details see \cite{KHB12}.
 
-\note{In \aspect{} 0.8, using the IMPES scheme is the only available
+\note{In \aspect{} 0.1, using the IMPES scheme is the only available
   option. However, in later versions we will implement a fully nonlinear
   scheme that treats the equations as coupled, and one will be able to choose
   between the two variants using a run-time parameter.}
@@ -1065,6 +1082,8 @@ the computation over at time $t=0$.
 Within each time step, the output indicates the number of iterations performed
 by the linear solvers, and we generate a number of lines of output by the
 postprocessors that were selected (see
+\index[prmindex]{List of postprocessors}
+\index[prmindexfull]{Postprocess!List of postprocessors}
 Section~\ref{parameters:Postprocess}). Here, we have selected to run all
 postprocessors that are currently implemented in \aspect{} which includes the
 ones that evaluate properties of the velocity, temperature, and heat flux as
@@ -1074,7 +1093,10 @@ While the screen output is useful to monitor the progress of a simulation,
 it's lack of a structured output makes it not useful for later plotting things
 like the evolution of heat flux through the core-mantle boundary. To this end,
 \aspect{} creates additional files in the output directory selected in the
-input parameter file (here, the \texttt{output/} directory relative to the
+input parameter file
+\index[prmindex]{Output directory}
+\index[prmindexfull]{Output directory}
+(here, the \texttt{output/} directory relative to the
 directory in which \aspect{} runs). In a simple case, this will look as
 follows:
 \begin{lstlisting}[frame=single,language=ksh]
@@ -1203,6 +1225,8 @@ The purpose of these files is as follows:
 
 \aspect{} can solve both two- and three-dimensional problems. You
 select which one you want by putting a line like the following into
+\index[prmindex]{Dimension}
+\index[prmindexfull]{Dimension}
 the parameter file (see Section~\ref{sec:parameters}):
 \begin{lstlisting}[frame=single,language=prmfile]
 set Dimension                     = 2
@@ -1315,7 +1339,10 @@ advantages beyond being widely distributed:
   of parallel computations, thus making subsequent visualization of the entire
   volume impossible. Furthermore, given the amount of data \aspect{} can
   produce, the compression that is part of the VTU format is an important part
-  of keeping data manageable.}
+  of keeping data manageable.
+\index[prmindex]{Output format}
+\index[prmindexfull]{Postprocess!Visualization!Output format}
+}
 
 \subsubsection{Visualization the graphical output using \textit{Visit}}
 In the following, let us discuss the process of visualizing a 2d computation
@@ -1465,6 +1492,9 @@ order of 10 bytes of output for each degree of freedom in 2d and more in 3d;
 thus, output of a single time step can run into the range of gigabytes that
 somehow have to get from compute nodes to disk. This stresses both the cluster
 interconnect as well as the data storage array.
+\index[prmindex]{Number of grouped files}
+\index[prmindexfull]{Postprocess!Visualization!Number of grouped files}
+
 
 There are essentially two strategies supported by \aspect{} for this scenario:
 \begin{itemize}
@@ -1515,11 +1545,15 @@ number of reasons to periodically save the state of the program:
 \end{itemize}
 
 To this end, \aspect{} creates a set of files in the output directory
+\index[prmindex]{Output directory}
+\index[prmindexfull]{Output directory}
 (selected in the parameter file) every 50 time steps in which the entire state
 of the program is saved so that a simulation can later be continued at this
 point. The previous checkpoint files will then be deleted. To resume
 operations from the last saved state, you need to set the \texttt{Resume
   computation} flag in the input parameter file to \texttt{true}, see
+\index[prmindex]{Resume computation}
+\index[prmindexfull]{Resume computation}
 Section~\ref{parameters:global}.
 
 \note{It is not imperative that the parameters selected in the input file are
@@ -1899,6 +1933,8 @@ In the following, we will discuss the requirements for individual plugins.
 \subsubsection{Material models}
 \label{sec:material-models}
 
+\index[prmindex]{Model name}
+\index[prmindexfull]{Material model!Model name}
 The material model is responsible for describing the various coefficients in
 the equations that \aspect{} solvers. To implement a new material model, you
 need to overload the \texttt{aspect::MaterialModel::Interface} class and use
@@ -2054,6 +2090,8 @@ overview of plugins above.
 \subsubsection{Geometry models}
 \label{sec:geometry-models}
 
+\index[prmindex]{Model name}
+\index[prmindexfull]{Geometry model!Model name}
 The geometry model is responsible for describing the domain in which we want
 to solve the equations. A domain is described in \dealii{} by a coarse mesh
 and, if necessary, an object that characterizes the boundary. Together, these
@@ -2120,6 +2158,8 @@ overview of plugins above.
 \subsubsection{Gravity models}
 \label{sec:gravity-models}
 
+\index[prmindex]{Model name}
+\index[prmindexfull]{Gravity model!Model name}
 The gravity model is responsible for describing the magnitude and direction of
 the gravity vector at each point inside the domain. To implement a new gravity model, you
 need to overload the \texttt{aspect::GravityModel::Interface} class and use
@@ -2156,6 +2196,8 @@ discussed in the general overview of plugins above.
 \subsubsection{Initial conditions}
 \label{sec:initial-conditions}
 
+\index[prmindex]{Model name}
+\index[prmindexfull]{Initial conditions!Model name}
 The initial conditions model is responsible for describing the initial
 temperature distribution throughout the domain. It essentially has to provide
 a function that for each point can return the initial temperature. Note that
@@ -2200,6 +2242,8 @@ plugins above.
 \subsubsection{Temperature boundary conditions}
 \label{sec:temperature-boundary-conditions}
 
+\index[prmindex]{Fixed temperature boundary indicators}
+\index[prmindexfull]{Model settings!Fixed temperature boundary indicators}
 The boundary conditions are responsible for describing the temperature values
 at those parts of the boundary at which the temperature is fixed (see
 Section~\ref{sec:geometry-models} for how it is determined which parts of the
@@ -2253,6 +2297,8 @@ plugins above.
 
 \subsubsection{Postprocessors: Evaluating the solution after each time step}
 
+\index[prmindex]{List of postprocessors}
+\index[prmindexfull]{Postprocess!List of postprocessors}
 Postprocessors are arguably the most complex and powerful of the plugins
 available in \aspect. They are executed once at the end of each time step and,
 unlike all the other plugins discussed above, there can be an arbitrary number
@@ -2299,7 +2345,8 @@ following ideas would fit nicely into the postprocessor framework:
   information that feeds into material properties; in other words, they are
   \textit{passive}), their location could well
   be stored in a postprocessor object and then be output in periodic intervals
-  for visualization.
+  for visualization. In fact, such a passive tracer postprocessor is already
+  available.
 
 \item \textit{Surface or crustal processes:} Another possibility would be to keep track
   of surface or crustal processes induced by mantle flow. An example would be
