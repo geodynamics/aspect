@@ -6,7 +6,8 @@ DEAL_DIR?=../../../deal.II
 D = $(DEAL_DIR)
 include $D/common/Make.global_options
 
-aspect-files    = $(shell echo ../include/aspect/*.h ../include/aspect/*/*h modules/*h)
+aspect-files      = $(shell echo ../include/aspect/*.h ../include/aspect/*/*h modules/*h)
+aspect-manual-pix = $(shell echo manual/cookbooks/*/*png)
 
 all: aspect.tag manual.pdf
 
@@ -28,7 +29,8 @@ aspect.tag: $(aspect-files) options.dox Makefile
 	@echo 'GENERATE_TAGFILE = $@'                                >> aspect.dox
 	@doxygen aspect.dox || echo "Running doxygen to generate documentation failed."
 
-manual.pdf: manual/manual.tex manual/manual.bib manual/parameters.tex
+manual.pdf: manual/manual.tex manual/manual.bib manual/parameters.tex \
+            $(aspect-manual-pix)
 	@if test -x "`which pdflatex`" -a -x "`which bibtex`" ; then \
 	   (cd manual ; \
 		pdflatex manual.tex ; \
