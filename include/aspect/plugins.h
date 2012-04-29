@@ -342,6 +342,8 @@ namespace aspect
       {
         Assert (plugins != 0,
                 ExcMessage ("No postprocessors registered!?"));
+        Assert (name != "",
+                ExcMessage("A plugin must have a name!"));
 
         for (typename std::list<PluginInfo>::const_iterator p = plugins->begin();
              p != plugins->end(); ++p)
