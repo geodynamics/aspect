@@ -170,6 +170,11 @@ namespace aspect
                                    "box",
                                    "A box geometry parallel to the coordinate directions. "
                                    "The extent of the box in each coordinate direction "
-                                   "is set in the parameter file.")
+                                   "is set in the parameter file. The box geometry labels its "
+                                   "2*dim sides as follows: in 2d, boundary indicators 0 through 3 "
+                                   "denote the left, right, bottom and top boundaries; in 3d, boundary "
+                                   "indicators 0 through 5 indicate left, right, front, back, bottom "
+                                   "and top boundaries. See also the documentation of the deal.II class "
+                                   "``GeometryInfo''.")
   }
 }

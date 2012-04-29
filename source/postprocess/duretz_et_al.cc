@@ -3060,8 +3060,8 @@ namespace aspect
                                   "A postprocessor that compares the solution of the benchmarks from "
                                   "the Duretz et al., G-Cubed, 2011, paper with the one computed by ASPECT "
                                   "and reports the error. Specifically, it can compute the errors for "
-                                  "the SolCx and SolKz benchmarks. The postprocessor enquires from the "
-                                  "used material model which benchmark is currently being used and adjusts "
+                                  "the SolCx, SolKz and inclusion benchmarks. The postprocessor inquires "
+                                  "which material model is currently being used and adjusts "
                                   "which exact solution to use accordingly.");
   }
 }

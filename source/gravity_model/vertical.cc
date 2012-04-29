@@ -47,6 +47,6 @@ namespace aspect
     ASPECT_REGISTER_GRAVITY_MODEL(Vertical,
                                   "vertical",
                                   "A gravity model in which the gravity direction is vertically downward "
-                                  "and at constant magnitude.");
+                                  "and at a constant magnitude equal to one.");
   }
 }
