@@ -11,6 +11,20 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: The compressibility that functions implementing the interface
+aspect::MaterialModel::Interface::compressibility() need to return was
+previously defined incorrectly as $\frac{\partial\rho}{\partial p}$.
+This is not what is commonly referred to as compressibility, and
+the function is now supposed to return
+$\frac 1\rho \frac{\partial\rho}{\partial p}$ instead, following the
+common definition of the word.
+<br>
+Note that all currently implemented compressible models already did
+that.
+<br>
+(Wolfgang Bangerth, Timo Heister, 2012/05/03)
+
+<li>
 New: The number of space dimensions in which a simulation happens is now
 a parameter that is set in the input parameter filer, rather than
 statically at compile time as before.

@@ -114,7 +114,7 @@ namespace aspect
 
         /**
          * Return the compressibility coefficient
-         * $\frac{\partial\rho}{\partial p}$ of the model as a
+         * $\frac 1\rho \frac{\partial\rho}{\partial p}$ of the model as a
          * function of temperature, pressure and position.
          *
          * A more intuitive way would be to say that this function is
