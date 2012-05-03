@@ -49,6 +49,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::create_snapshot()
   {
+    computing_timer.enter_section ("create snapshot");
     unsigned int my_id = Utilities::System::get_this_mpi_process (mpi_communicator);
 
     if (my_id == 0)
@@ -124,6 +125,7 @@ namespace aspect
 
       }
     pcout << "*** Snapshot created!" << std::endl;
+    computing_timer.exit_section();
   }
 
 
