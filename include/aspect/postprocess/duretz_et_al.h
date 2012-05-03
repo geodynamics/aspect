@@ -20,8 +20,8 @@
 /*  $Id$  */
 
 
-#ifndef __aspect__postprocess_error_check_h
-#define __aspect__postprocess_error_check_h
+#ifndef __aspect__postprocess_duretz_et_al_h
+#define __aspect__postprocess_duretz_et_al_h
 
 #include <aspect/postprocess/interface.h>
 

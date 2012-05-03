@@ -20,8 +20,8 @@
 /*  $Id$  */
 
 
-#ifndef __aspect__postprocess_visualization_h
-#define __aspect__postprocess_visualization_h
+#ifndef __aspect__postprocess_depth_average_h
+#define __aspect__postprocess_depth_average_h
 
 #include <aspect/postprocess/interface.h>
 
