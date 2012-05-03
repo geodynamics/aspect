@@ -11,6 +11,13 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+Modified: Background writing of visualization data now uses the
+mkstemp function rather than forking mktemp, and will continue as
+normal (at lower efficiency) if temporary files cannot be created.
+<br>
+(Eric Heien, 2012/05/03)
+
+<li>
 New: The compressibility that functions implementing the interface
 aspect::MaterialModel::Interface::compressibility() need to return was
 previously defined incorrectly as $\frac{\partial\rho}{\partial p}$.
