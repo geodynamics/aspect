@@ -425,44 +425,52 @@ namespace aspect
         tmp_file_desc = mkstemp(tmp_filename);
 
         // If we failed to create the temp file, just write directly to the target file
-        if (tmp_file_desc == -1) {
-          if (!wrote_warning)
-            std::cerr << "***** WARNING: could not create temporary file, will "
-                         "output directly to final location. This may negatively "
-                         "affect performance." << std::endl;
-          wrote_warning = true;
+        if (tmp_file_desc == -1)
+          {
+            if (!wrote_warning)
+              std::cerr << "***** WARNING: could not create temporary file, will "
+                        "output directly to final location. This may negatively "
+                        "affect performance." << std::endl;
+            wrote_warning = true;
 
-          // Set the filename to be the specified input name
-          sprintf(tmp_filename, "%s", filename->c_str());
-          out_fp = fopen(tmp_filename, "w");
-          using_bg_tmp = false;
-        } else {
-          out_fp = fdopen(tmp_file_desc, "w");
-        }
+            // Set the filename to be the specified input name
+            sprintf(tmp_filename, "%s", filename->c_str());
+            out_fp = fopen(tmp_filename, "w");
+            using_bg_tmp = false;
+          }
+        else
+          {
+            out_fp = fdopen(tmp_file_desc, "w");
+          }
       }
 
       // write the data into the file
       {
-        if (!out_fp) {
-          std::cerr << "***** ERROR: could not create " << tmp_filename
-                    << " *****"
-                    << std::endl;
-        } else {
-          fprintf(out_fp, "%s", file_contents->c_str());
-          fclose(out_fp);
-        }
+        if (!out_fp)
+          {
+            std::cerr << "***** ERROR: could not create " << tmp_filename
+                      << " *****"
+                      << std::endl;
+          }
+        else
+          {
+            fprintf(out_fp, "%s", file_contents->c_str());
+            fclose(out_fp);
+          }
       }
 
-      if (using_bg_tmp) {
-        // now move the file to its final destination on the global file system
-        std::string command = std::string("mv ") + tmp_filename + " " + *filename;
-        int error = system(command.c_str());
-        if (error != 0) {
-          std::cerr << "***** ERROR: could not move " << tmp_filename
-                    << " to " << *filename << " *****"
-                    << std::endl;
+      if (using_bg_tmp)
+        {
+          // now move the file to its final destination on the global file system
+          std::string command = std::string("mv ") + tmp_filename + " " + *filename;
+          int error = system(command.c_str());
+          if (error != 0)
+            {
+              std::cerr << "***** ERROR: could not move " << tmp_filename
+                        << " to " << *filename << " *****"
+                        << std::endl;
+            }
         }
-      }
 
       // destroy the pointers to the data we needed to write
       delete file_contents;
