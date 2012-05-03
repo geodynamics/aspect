@@ -410,39 +410,59 @@ namespace aspect
     {
       // write stuff into a (hopefully local) tmp file first. to do so first
       // find out whether $TMPDIR is set and if so put the file in there
-      char tmp_filename[1025];
+      char tmp_filename[1025], *tmp_filedir;
+      int tmp_file_desc;
+      FILE *out_fp;
+      static bool wrote_warning = false;
+      bool using_bg_tmp = true;
 
       {
-        FILE *fp = popen("mktemp ${TMPDIR:-/tmp}/tmp.XXXXXXXXXX", "r");
-        AssertThrow (fp, ExcMessage("Couldn't call mktemp!"));
+        // Try getting the environment variable for the temporary directory
+        tmp_filedir = getenv("TMPDIR");
+        // If we can't, default to /tmp
+        sprintf(tmp_filename, "%s/tmp.XXXXXX", (tmp_filedir?tmp_filedir:"/tmp"));
+        // Create the temporary file
+        tmp_file_desc = mkstemp(tmp_filename);
 
-        char *s = fgets (tmp_filename, sizeof(tmp_filename)-1, fp);
-        AssertThrow (s!=0, ExcMessage("Couldn't create temporary file!"));
+        // If we failed to create the temp file, just write directly to the target file
+        if (tmp_file_desc == -1) {
+          if (!wrote_warning)
+            std::cerr << "***** WARNING: could not create temporary file, will "
+                         "output directly to final location. This may negatively "
+                         "affect performance." << std::endl;
+          wrote_warning = true;
 
-        pclose (fp);
-
-        // tmp_filename also contains the \n from running mktemp
-        // strip it
-        tmp_filename[strlen(tmp_filename)-1] = '\0';
+          // Set the filename to be the specified input name
+          sprintf(tmp_filename, "%s", filename->c_str());
+          out_fp = fopen(tmp_filename, "w");
+          using_bg_tmp = false;
+        } else {
+          out_fp = fdopen(tmp_file_desc, "w");
+        }
       }
 
       // write the data into the file
       {
-        std::ofstream output (tmp_filename);
-        if (!output)
-          std::cout << "***** ERROR: could not create " << tmp_filename
+        if (!out_fp) {
+          std::cerr << "***** ERROR: could not create " << tmp_filename
                     << " *****"
                     << std::endl;
-        output << *file_contents;
+        } else {
+          fprintf(out_fp, "%s", file_contents->c_str());
+          fclose(out_fp);
+        }
       }
 
-      // now move the file to its final destination on the global file system
-      std::string command = std::string("mv ") + tmp_filename + " " + *filename;
-      int error = system(command.c_str());
-      AssertThrow (error == 0,
-                   ExcMessage ("Could not move temporary file to its final location: "
-                               +
-                               command));
+      if (using_bg_tmp) {
+        // now move the file to its final destination on the global file system
+        std::string command = std::string("mv ") + tmp_filename + " " + *filename;
+        int error = system(command.c_str());
+        if (error != 0) {
+          std::cerr << "***** ERROR: could not move " << tmp_filename
+                    << " to " << *filename << " *****"
+                    << std::endl;
+        }
+      }
 
       // destroy the pointers to the data we needed to write
       delete file_contents;
