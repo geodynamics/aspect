@@ -244,6 +244,22 @@ namespace aspect
     }
     prm.leave_subsection();
 
+    prm.enter_subsection ("Checkpointing");
+    {
+      prm.declare_entry ("Time between checkpoint", "0",
+                         Patterns::Integer (0),
+                         "The wall time between performing checkpoints. "
+                         "If 0, will use the checkpoint step frequency instead. "
+                         "Units: Seconds.");
+      prm.declare_entry ("Steps between checkpoint", "0",
+                         Patterns::Integer (0),
+                         "The number of timesteps between performing checkpoints. "
+                         "If 0 and time between checkpoint is not specified, "
+                         "checkpointing will not be performed. "
+                         "Units: None.");
+    }
+    prm.leave_subsection ();
+
     prm.enter_subsection ("Discretization");
     {
       prm.declare_entry ("Stokes velocity polynomial degree", "2",
@@ -379,6 +395,13 @@ namespace aspect
       prescribed_velocity_boundary_indicators
         = std::set<types::boundary_id_t> (x_prescribed_velocity_boundary_indicators.begin(),
                                           x_prescribed_velocity_boundary_indicators.end());
+    }
+    prm.leave_subsection ();
+
+    prm.enter_subsection ("Checkpointing");
+    {
+      checkpoint_time_secs = prm.get_integer ("Time between checkpoint");
+      checkpoint_steps     = prm.get_integer ("Steps between checkpoint");
     }
     prm.leave_subsection ();
 

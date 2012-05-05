@@ -11,6 +11,12 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+Modified: Checkpoint frequency is now a user specified parameter.
+Frequency may be specified as either wall time or number of time steps.
+<br>
+(Eric Heien, 2012/05/04)
+
+<li>
 Modified: Background writing of visualization data now uses the
 mkstemp function rather than forking mktemp, and will continue as
 normal (at lower efficiency) if temporary files cannot be created.

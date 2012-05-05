@@ -295,6 +295,14 @@ subsection Model settings
   set Zero velocity boundary indicators       = 0, 2, 3
 end
 
+subsection Checkpointing
+   # The wall time between performing checkpoints. If 0, will use the
+   # checkpoint step frequency instead.
+   set Time between checkpoint                = 0
+   # The number of timesteps between performing checkpoints. If 0 and time
+   # between checkpoint is not specified, checkpointing will not be performed.
+   set Steps between checkpoint               = 50
+end
 
 subsection Postprocess
   # A comma separated list of postprocessor objects that should be run at the

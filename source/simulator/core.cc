@@ -935,6 +935,7 @@ namespace aspect
         setup_dofs();
       }
 
+    last_checkpoint_time = std::time(NULL);
     unsigned int max_refinement_level = parameters.initial_global_refinement +
                                         parameters.initial_adaptive_refinement;
     unsigned int pre_refinement_step = 0;
@@ -1043,7 +1044,24 @@ namespace aspect
 
         // periodically generate snapshots so that we can resume here
         // if the program aborts or is terminated
-        if (timestep_number % 50 == 0)
+        bool do_checkpoint = false;
+
+        // If we base checkpoint frequency on timing, measure the time at process 0
+        // This prevents race conditions where some processes will checkpoint and others won't
+        if (parameters.checkpoint_time_secs > 0)
+          {
+            int global_do_checkpoint = ((std::time(NULL)-last_checkpoint_time) >= parameters.checkpoint_time_secs);
+
+            MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+            do_checkpoint = (global_do_checkpoint == 1);
+          }
+        // If we base checkpoint frequency on steps, see if it's time for another checkpoint
+        if ((parameters.checkpoint_time_secs == 0) &&
+            (parameters.checkpoint_steps > 0) &&
+            (timestep_number % parameters.checkpoint_steps == 0))
+          do_checkpoint = true;
+        if (do_checkpoint)
           {
             create_snapshot();
             // matrices will be regenerated after a resume, so do that here too
@@ -1052,6 +1070,7 @@ namespace aspect
             // through
             rebuild_stokes_matrix =
               rebuild_stokes_preconditioner = true;
+            last_checkpoint_time = std::time(NULL);
           }
       }
     while (time < parameters.end_time);

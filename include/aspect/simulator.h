@@ -194,6 +194,16 @@ namespace aspect
          */
 
         /**
+         * @name Parameters that have to do with checkpointing
+         * @{
+         */
+        int                            checkpoint_time_secs;
+        int                            checkpoint_steps;
+        /**
+         * @}
+         */
+
+        /**
          * @name Parameters that have to do with spatial discretizations
          * @{
          */
@@ -788,6 +798,15 @@ namespace aspect
       double                                                    time_step;
       double                                                    old_time_step;
       unsigned int                                              timestep_number;
+      /**
+       * @}
+       */
+
+      /**
+       * @name Variables related to checkpointing
+       * @{
+       */
+      time_t                                                    last_checkpoint_time;
       /**
        * @}
        */
