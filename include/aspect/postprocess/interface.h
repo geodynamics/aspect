@@ -192,12 +192,16 @@ namespace aspect
     {
       public:
         /**
-         * Initialize this class for a given simulator.
+         * Initialize this class for a given simulator. This function
+         * is marked as virtual so that derived classes can do something
+         * upon initialization as well, for example look up and cache
+         * data; derived classes should call this function from the base
+         * class as well, however.
          *
          * @param simulator A reference to the main simulator object to which the
          * postprocessor implemented in the derived class should be applied.
          **/
-        void initialize (const Simulator<dim> &simulator);
+        virtual void initialize (const Simulator<dim> &simulator);
 
       protected:
         /** @name Accessing variables that identify overall properties of the simulator */
