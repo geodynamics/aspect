@@ -293,7 +293,6 @@ namespace aspect
     void
     Manager<dim>::initialize (const Simulator<dim> &simulator)
     {
-      std::list<std::pair<std::string,std::string> > output_list;
       for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
@@ -407,8 +406,8 @@ namespace aspect
       // their own parameters
       for (unsigned int name=0; name<postprocessor_names.size(); ++name)
         postprocessors.push_back (std_cxx1x::shared_ptr<Interface<dim> >
-                                  (std_cxx1x::get<dim>(registered_plugins).create_plugin (postprocessor_names[name],
-                                      prm)));
+                                  (std_cxx1x::get<dim>(registered_plugins)
+                                   .create_plugin (postprocessor_names[name])));
     }
 
 
