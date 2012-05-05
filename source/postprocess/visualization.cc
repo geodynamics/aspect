@@ -478,6 +478,16 @@ namespace aspect
     }
 
 
+    namespace
+    {
+      std_cxx1x::tuple
+      <void *,
+      void *,
+      aspect::internal::Plugins::PluginList<DataPostprocessor<2> >,
+      aspect::internal::Plugins::PluginList<DataPostprocessor<3> > > registered_plugins;
+    }
+
+
     template <int dim>
     void
     Visualization<dim>::declare_parameters (ParameterHandler &prm)
@@ -509,6 +519,28 @@ namespace aspect
                              "in a background thread. "
                              "A value of 1 will generate one big file containing the whole "
                              "solution.");
+
+          // finally also construct a string for Patterns::MultipleSelection that
+          // contains the names of all registered visualization postprocessors
+          const std::string pattern_of_names
+            = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names (true);
+          prm.declare_entry("List of output variables",
+                            "all",
+                            Patterns::MultipleSelection(pattern_of_names),
+                            "A comma separated list of visualization objects that should be run "
+                            "whenever writing graphical output. By default, the graphical "
+                            "output files will always contain the primary variables velocity, "
+                            "pressure, and temperature. However, one frequently wants to also "
+                            "visualize derived quantities, such as the thermodynamic phase "
+                            "that corresponds to a given temperature-pressure value, or the "
+                            "corresponding seismic wave speeds. The visualization objects do "
+                            "exactly this: they compute such derived quantities and place them "
+                            "into the output file. The current parameter is the place where "
+                            "you decide which of these additional output variables you want "
+                            "to have in your output file.\n\n"
+                            "The following postprocessors are available:\n\n"
+                            +
+                            std_cxx1x::get<dim>(registered_plugins).get_description_string());
         }
         prm.leave_subsection();
       }
@@ -520,6 +552,9 @@ namespace aspect
     void
     Visualization<dim>::parse_parameters (ParameterHandler &prm)
     {
+      Assert (std_cxx1x::get<dim>(registered_plugins).plugins != 0,
+              ExcMessage ("No postprocessors registered!?"));
+
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Visualization");
@@ -527,6 +562,29 @@ namespace aspect
           output_interval = prm.get_double ("Time between graphical output");
           output_format   = prm.get ("Output format");
           group_files     = prm.get_integer("Number of grouped files");
+
+          // now also see which derived quantities we are to compute
+          std::vector<std::string> viz_names
+            = Utilities::split_string_list(prm.get("List of output variables"));
+          // see if 'all' was selected (or is part of the list). if so
+          // simply replace the list with one that contains all names
+          if (std::find (viz_names.begin(),
+                         viz_names.end(),
+                         "all") != viz_names.end())
+            {
+              viz_names.clear();
+              for (typename std::list<typename aspect::internal::Plugins::PluginList<dealii::DataPostprocessor<dim> >::PluginInfo>::const_iterator
+                   p = std_cxx1x::get<dim>(registered_plugins).plugins->begin();
+                   p != std_cxx1x::get<dim>(registered_plugins).plugins->end(); ++p)
+                viz_names.push_back (std_cxx1x::get<0>(*p));
+            }
+
+          // then go through the list, create objects and let them parse
+          // their own parameters
+          for (unsigned int name=0; name<viz_names.size(); ++name)
+            postprocessors.push_back (std_cxx1x::shared_ptr<dealii::DataPostprocessor<dim> >
+                                      (std_cxx1x::get<dim>(registered_plugins)
+                                       .create_plugin (viz_names[name])));
         }
         prm.leave_subsection();
       }
@@ -589,6 +647,41 @@ namespace aspect
                                output_interval;
         }
     }
+
+
+    template <int dim>
+    void
+    Visualization<dim>::initialize (const Simulator<dim> &simulator)
+    {
+      // first call the respective function in the base class
+      SimulatorAccess<dim>::initialize (simulator);
+
+      // pass initialization through to the various visualization
+      // objects if they so desire
+      for (typename std::list<std_cxx1x::shared_ptr<DataPostprocessor<dim> > >::iterator
+           p = postprocessors.begin();
+           p != postprocessors.end(); ++p)
+        // see if a given visualization plugin is in fact derived
+        // from the SimulatorAccess class, and if so initialize it
+        if (SimulatorAccess<dim> * x = dynamic_cast<SimulatorAccess<dim>*>(& **p))
+          x->initialize (simulator);
+    }
+
+
+    template <int dim>
+    void
+    Visualization<dim>::
+    register_visualization_postprocessor (const std::string &name,
+                                          const std::string &description,
+                                          void (*declare_parameters_function) (ParameterHandler &),
+                                          DataPostprocessor<dim> *(*factory_function) ())
+    {
+      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
+                                                               description,
+                                                               declare_parameters_function,
+                                                               factory_function);
+    }
+
   }
 }
 
@@ -596,6 +689,20 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
+  namespace internal
+  {
+    namespace Plugins
+    {
+      template <>
+      std::list<internal::Plugins::PluginList<DataPostprocessor<2> >::PluginInfo> *
+      internal::Plugins::PluginList<DataPostprocessor<2> >::plugins = 0;
+      template <>
+      std::list<internal::Plugins::PluginList<DataPostprocessor<3> >::PluginInfo> *
+      internal::Plugins::PluginList<DataPostprocessor<3> >::plugins = 0;
+    }
+  }
+
+
   namespace Postprocess
   {
     ASPECT_REGISTER_POSTPROCESSOR(Visualization,

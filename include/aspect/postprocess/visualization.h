@@ -24,19 +24,33 @@
 #define __aspect__postprocess_visualization_h
 
 #include <aspect/postprocess/interface.h>
+#include <aspect/plugins.h>
 
 #include <deal.II/base/thread_management.h>
-
+#include <deal.II/numerics/data_postprocessor.h>
 
 namespace aspect
 {
   namespace Postprocess
   {
+    namespace VisualizationPostprocessors
+    {
+
+    }
+
 
     /**
      * A postprocessor that generates graphical output in periodic intervals
      * or every time step. The time interval between generating graphical
      * output is obtained from the parameter file.
+     *
+     * While this class acts as a plugin, i.e. as a postprocessor that can
+     * be registered with the postprocessing manager class
+     * aspect::Postprocess::Manager, this class at the same time also acts
+     * as a manager for plugins itself, namely for classes derived from the
+     * dealii::DataPostprocessor class that are used to output different
+     * aspects of the solution, such as for example a computed seismic wave
+     * speed from temperature, velocity and pressure.
      *
      * @ingroup Postprocessing
      */
@@ -62,6 +76,43 @@ namespace aspect
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
+
+        /**
+         * Initialize this class for a given simulator. In addition to
+         * calling the respective function from the base class, this
+         * function also initializes all the visualization postprocessor
+         * plugins.
+         *
+         * @param simulator A reference to the main simulator object to which the
+         * postprocessor implemented in the derived class should be applied.
+         **/
+        virtual void initialize (const Simulator<dim> &simulator);
+
+
+        /**
+         * A function that is used to register visualization postprocessor objects
+         * in such a way that the Manager can deal with all of them
+         * without having to know them by name. This allows the files
+         * in which individual postprocessors are implement to register
+         * these postprocessors, rather than also having to modify the
+         * Manage class by adding the new postprocessor class.
+         *
+         * @param name The name under which this visualization postprocessor is to
+         * be called in parameter files.
+         * @param description A text description of what this visualization plugin
+         * does and that will be listed in the documentation of
+         * the parameter file.
+         * @param declare_parameters_function A pointer to a function
+         * that declares the parameters for this postprocessor.
+         * @param factory_function A pointer to a function that creates
+         * such a postprocessor object and returns a pointer to it.
+         **/
+        static
+        void
+        register_visualization_postprocessor (const std::string &name,
+                                              const std::string &description,
+                                              void (*declare_parameters_function) (ParameterHandler &),
+                                              DataPostprocessor<dim> *(*factory_function) ());
 
         /**
          * Declare the parameters this class takes through input files.
@@ -96,6 +147,15 @@ namespace aspect
          */
         template <class Archive>
         void serialize (Archive &ar, const unsigned int version);
+
+        /**
+         * Exception.
+         */
+        DeclException1 (ExcPostprocessorNameNotFound,
+                        std::string,
+                        << "Could not find entry <"
+                        << arg1
+                        << "> among the names of registered postprocessors.");
 
       private:
         /**
@@ -163,7 +223,34 @@ namespace aspect
         static
         void background_writer (const std::string *filename,
                                 const std::string *file_contents);
+
+        /**
+         * A list of postprocessor objects that have been requested
+         * in the parameter file.
+         */
+        std::list<std_cxx1x::shared_ptr<DataPostprocessor<dim> > > postprocessors;
+
     };
+  }
+
+
+  /**
+   * Given a class name, a name, and a description for the parameter file for a postprocessor, register it with
+   * the aspect::Postprocess::Manager class.
+   *
+   * @ingroup Postprocessing
+   */
+#define ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(classname,name,description) \
+  template class classname<2>; \
+  template class classname<3>; \
+  namespace ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR_ ## classname \
+  { \
+    aspect::internal::Plugins::RegisterHelper<dealii::DataPostprocessor<2>,classname<2> > \
+    dummy_ ## classname ## _2d (&aspect::Postprocess::Manager<2>::register_visualization_postprocessor, \
+                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<dealii::DataPostprocessor<3>,classname<3> > \
+    dummy_ ## classname ## _3d (&aspect::Postprocess::Manager<3>::register_visualization_postprocessor, \
+                                name, description); \
   }
 }
 
