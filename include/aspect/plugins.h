@@ -195,6 +195,17 @@ namespace aspect
 
         /**
          * Given the name of one plugin, create a corresponding object
+         * and return a pointer to it.
+         *
+         * Ownership of the object is handed over to the caller of
+         * this function.
+         */
+        static
+        InterfaceClass *
+        create_plugin (const std::string  &name);
+
+        /**
+         * Given the name of one plugin, create a corresponding object
          * and return a pointer to it. Before returning, let the newly
          * created object read its run-time parameters from the
          * parameter object.
@@ -337,8 +348,7 @@ namespace aspect
       template <typename InterfaceClass>
       InterfaceClass *
       PluginList<InterfaceClass>::
-      create_plugin (const std::string  &name,
-                     ParameterHandler &prm)
+      create_plugin (const std::string  &name)
       {
         Assert (plugins != 0,
                 ExcMessage ("No postprocessors registered!?"));
@@ -350,12 +360,24 @@ namespace aspect
           if (std_cxx1x::get<0>(*p) == name)
             {
               InterfaceClass *i = std_cxx1x::get<3>(*p)();
-              i->parse_parameters (prm);
               return i;
             }
 
         AssertThrow (false, ExcUnknownPlugin(name));
         return 0;
+      }
+
+
+
+      template <typename InterfaceClass>
+      InterfaceClass *
+      PluginList<InterfaceClass>::
+      create_plugin (const std::string  &name,
+                     ParameterHandler &prm)
+      {
+        InterfaceClass *i = create_plugin(name);
+        i->parse_parameters (prm);
+        return i;
       }
 
     }
