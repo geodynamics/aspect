@@ -553,8 +553,8 @@ namespace aspect
     void
     Visualization<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (std_cxx1x::get<dim>(registered_plugins).plugins != 0,
-              ExcMessage ("No postprocessors registered!?"));
+//      Assert (std_cxx1x::get<dim>(registered_plugins).plugins != 0,
+//              ExcMessage ("No postprocessors registered!?"));
 
       prm.enter_subsection("Postprocess");
       {
