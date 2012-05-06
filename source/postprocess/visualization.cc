@@ -519,7 +519,7 @@ namespace aspect
                              "in a background thread. "
                              "A value of 1 will generate one big file containing the whole "
                              "solution.");
-
+/*
           // finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors
           const std::string pattern_of_names
@@ -541,6 +541,7 @@ namespace aspect
                             "The following postprocessors are available:\n\n"
                             +
                             std_cxx1x::get<dim>(registered_plugins).get_description_string());
+*/
         }
         prm.leave_subsection();
       }
@@ -562,7 +563,7 @@ namespace aspect
           output_interval = prm.get_double ("Time between graphical output");
           output_format   = prm.get ("Output format");
           group_files     = prm.get_integer("Number of grouped files");
-
+/*
           // now also see which derived quantities we are to compute
           std::vector<std::string> viz_names
             = Utilities::split_string_list(prm.get("List of output variables"));
@@ -585,6 +586,7 @@ namespace aspect
             postprocessors.push_back (std_cxx1x::shared_ptr<dealii::DataPostprocessor<dim> >
                                       (std_cxx1x::get<dim>(registered_plugins)
                                        .create_plugin (viz_names[name])));
+*/
         }
         prm.leave_subsection();
       }
