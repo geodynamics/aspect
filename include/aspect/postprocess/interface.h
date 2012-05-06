@@ -192,6 +192,13 @@ namespace aspect
     {
       public:
         /**
+         * Destructor. Does nothing but is virtual so that derived classes
+         * destructors are also virtual.
+         **/
+        virtual
+        ~SimulatorAccess ();
+
+        /**
          * Initialize this class for a given simulator. This function
          * is marked as virtual so that derived classes can do something
          * upon initialization as well, for example look up and cache
