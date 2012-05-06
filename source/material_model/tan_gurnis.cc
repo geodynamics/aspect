@@ -32,7 +32,7 @@ namespace aspect
     template <int dim>
     TanGurnis<dim>::TanGurnis()
     {
-       a=0;// or 2
+       a=2; // 0 or 2
 
        //BA:
        //Di=0;gamma=10000; //=inf
@@ -62,7 +62,7 @@ namespace aspect
     TanGurnis<dim>::
     reference_viscosity () const
     {
-      return eta;
+      return 1.0;
     }
 
     template <int dim>
@@ -70,7 +70,7 @@ namespace aspect
     TanGurnis<dim>::
     reference_density () const
     {
-      return reference_rho;
+      return 1.0;
     }
 
     template <int dim>
@@ -78,7 +78,7 @@ namespace aspect
     TanGurnis<dim>::
     reference_thermal_expansion_coefficient () const
     {
-      return thermal_alpha;
+      return 1.0;
     }
 
     template <int dim>
@@ -96,7 +96,7 @@ namespace aspect
     TanGurnis<dim>::
     reference_cp () const
     {
-      return reference_specific_heat;
+      return 1250;
     }
 
     template <int dim>
@@ -106,7 +106,7 @@ namespace aspect
                           const double,
                           const Point<dim> &) const
     {
-      return k_value;
+      return 2e-5;
     }
 
     template <int dim>

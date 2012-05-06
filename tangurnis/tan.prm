@@ -21,7 +21,7 @@ set CFL number                             = 1.0
 
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
-set End time                               = 1e4
+set End time                               = 20
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
@@ -205,6 +205,8 @@ subsection Mesh refinement
 
   # The method used to determine which cells to refine and which to coarsen.
   set Strategy                           = Density c_p temperature
+
+   set Time steps between mesh refinement = 100
 end
 
 
