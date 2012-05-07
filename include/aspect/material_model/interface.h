@@ -116,10 +116,6 @@ namespace aspect
          * Return the compressibility coefficient
          * $\frac 1\rho \frac{\partial\rho}{\partial p}$ of the model as a
          * function of temperature, pressure and position.
-         *
-         * A more intuitive way would be to say that this function is
-         * in fact the negative compressibility, since it will return
-         * a negative value for realistic materials.
          */
         virtual double compressibility (const double temperature,
                                         const double pressure,
