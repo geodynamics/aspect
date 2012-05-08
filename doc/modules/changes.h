@@ -11,6 +11,16 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: The variables we output in graphical format files are now
+user selectable from the input parameter file. Functions that
+compute something from velocity, pressure and temperature (e.g.,
+the viscosity, strain rate, etc) are now implemented as plugins
+like many of the other parts of Aspect.
+now implemented
+<br>
+(Wolfgang Bangerth, 2012/05/08)
+
+<li>
 Modified: Checkpoint frequency is now a user specified parameter.
 Frequency may be specified as either wall time or number of time steps.
 <br>

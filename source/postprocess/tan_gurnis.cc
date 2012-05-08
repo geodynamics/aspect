@@ -45,55 +45,55 @@ namespace aspect
                   ExcNotImplemented());
 
       std::ofstream f ((this->get_output_directory() + "output.csv").c_str());
-                    f.precision (16);
-                    f << "0 0 0 0"
+      f.precision (16);
+      f << "0 0 0 0"
 //                         EquationData::MaterialModel::Di << ' '
 //                       << EquationData::MaterialModel::gamma << ' '
 //                       << EquationData::MaterialModel::wavenumber << ' '
 //                       << EquationData::MaterialModel::a
-                       << " -1 -1 -1" << std::endl; //pad to 7 values, so matlab is happy
+        << " -1 -1 -1" << std::endl; //pad to 7 values, so matlab is happy
 
-                    f << std::scientific;
+      f << std::scientific;
 
 
-                  const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe().base_element(0).degree+2);
+      const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe().base_element(0).degree+2);
 
-                  const unsigned int n_q_points =  quadrature_formula.size();
-                  FEValues<dim> fe_values (this->get_mapping(), this->get_dof_handler().get_fe(),  quadrature_formula,
-                                           update_JxW_values | update_values | update_quadrature_points);
+      const unsigned int n_q_points =  quadrature_formula.size();
+      FEValues<dim> fe_values (this->get_mapping(), this->get_dof_handler().get_fe(),  quadrature_formula,
+                               update_JxW_values | update_values | update_quadrature_points);
 
-                  const unsigned int dofs_per_cell = fe_values.get_fe().dofs_per_cell;
-                  const FEValuesExtractors::Vector velocities (0);
-                  const FEValuesExtractors::Scalar pressure (dim);
-                  const FEValuesExtractors::Scalar temperature (dim+1);
+      const unsigned int dofs_per_cell = fe_values.get_fe().dofs_per_cell;
+      const FEValuesExtractors::Vector velocities (0);
+      const FEValuesExtractors::Scalar pressure (dim);
+      const FEValuesExtractors::Scalar temperature (dim+1);
 
-                  std::vector<Tensor<1, dim> > velocity_values (quadrature_formula.size());
-                  std::vector<double>         temperature_values (quadrature_formula.size());
-                  std::vector<double>         pressure_values (quadrature_formula.size());
+      std::vector<Tensor<1, dim> > velocity_values (quadrature_formula.size());
+      std::vector<double>         temperature_values (quadrature_formula.size());
+      std::vector<double>         pressure_values (quadrature_formula.size());
 
-                  typename DoFHandler<dim>::active_cell_iterator
-                  cell = this->get_dof_handler().begin_active(),
-                  endc = this->get_dof_handler().end();
-                  for (; cell != endc; ++cell)
-                    {
-                      fe_values.reinit (cell);
-                      fe_values[velocities].get_function_values (this->get_solution(), velocity_values);
-                      fe_values[pressure].get_function_values (this->get_solution(), pressure_values);
-                      fe_values[temperature].get_function_values (this->get_solution(), temperature_values);
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+      for (; cell != endc; ++cell)
+        {
+          fe_values.reinit (cell);
+          fe_values[velocities].get_function_values (this->get_solution(), velocity_values);
+          fe_values[pressure].get_function_values (this->get_solution(), pressure_values);
+          fe_values[temperature].get_function_values (this->get_solution(), temperature_values);
 
-                      for (unsigned int q = 0; q < n_q_points; ++q)
-                        {
-                          f
-                                  <<  fe_values.quadrature_point (q) (0)
-                                  << ' ' << fe_values.quadrature_point (q) (1)
-                                  << ' ' << velocity_values[q][0]
-                                  << ' ' << velocity_values[q][1]
-                                  << ' ' << fe_values.JxW (q)
-                                  << ' ' << pressure_values[q]
-                                  << ' ' << temperature_values[q]
-                                  << std::endl;
-                        }
-                    }
+          for (unsigned int q = 0; q < n_q_points; ++q)
+            {
+              f
+                  <<  fe_values.quadrature_point (q) (0)
+                  << ' ' << fe_values.quadrature_point (q) (1)
+                  << ' ' << velocity_values[q][0]
+                  << ' ' << velocity_values[q][1]
+                  << ' ' << fe_values.JxW (q)
+                  << ' ' << pressure_values[q]
+                  << ' ' << temperature_values[q]
+                  << std::endl;
+            }
+        }
 
       return std::make_pair("writing:", "output.csv");
     }

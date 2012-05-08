@@ -414,7 +414,7 @@ namespace aspect
         postprocessors.push_back (std_cxx1x::shared_ptr<Interface<dim> >
                                   (std_cxx1x::get<dim>(registered_plugins)
                                    .create_plugin (postprocessor_names[name],
-				   prm)));
+                                                   prm)));
     }
 
 

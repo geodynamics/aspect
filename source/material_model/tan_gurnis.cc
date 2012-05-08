@@ -32,16 +32,17 @@ namespace aspect
     template <int dim>
     TanGurnis<dim>::TanGurnis()
     {
-       a=2; // 0 or 2
+      a=2; // 0 or 2
 
-       //BA:
-       //Di=0;gamma=10000; //=inf
-       //EBA:
-       //Di=0.5;gamma=inf;
-       //TALA:
-       Di=0.5;gamma=1.0;
+      //BA:
+      //Di=0;gamma=10000; //=inf
+      //EBA:
+      //Di=0.5;gamma=inf;
+      //TALA:
+      Di=0.5;
+      gamma=1.0;
 
-       wavenumber=1;
+      wavenumber=1;
     }
 
     template <int dim>

@@ -254,6 +254,16 @@ namespace aspect
         if (plugins == 0)
           plugins = new std::list<PluginInfo>();
 
+        // verify that the same name has not previously been
+        // used to register a plugin, since we would then no
+        // longer be able to identify the plugin
+        for (typename std::list<PluginInfo>::const_iterator
+             p = plugins->begin();
+             p != plugins->end(); ++p)
+          Assert (std_cxx1x::get<0>(*p) != name,
+                  ExcMessage ("A plugin with name <" + name + "> has "
+                              "already been registered!"));
+
         // now add one record to the list
         plugins->push_back (PluginInfo(name,
                                        description,

@@ -35,7 +35,110 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
+      /**
+       * This class declares the public interface of visualization postprocessors.
+       * Visualization postprocessors are used to compute derived data, e.g.
+       * wave speeds, friction heating terms, etc, to be put into graphical
+       * output files. They are plugins for the aspect::Postprocess::Visualization
+       * class.
+       *
+       * Classes derived from this type must implement the functions that save the state
+       * of the object and restore it (for checkpoint/restart capabilities) as well as
+       * functions that declare and read parameters. However, this class also already
+       * provides default implementations of these functions that simply do nothing.
+       * This is appropriate for objects that are stateless, as is commonly the case
+       * for visualization postprocessors.
+       *
+       * Access to the data of the simulator is granted by the @p protected member functions
+       * of the SimulatorAccessor class, i.e., classes implementing this interface will
+       * in general want to derive from both this Interface class as well as from the
+       * SimulatorAccess class. Furthermore, in order to do what they are intended to,
+       * derived classes need to also derive from dealii::DataPostprocessor or any of
+       * the classes like dealii::DataPostprocessorScalar or dealii::DataPostprocessorVector.
+       * A typical class derived from the current class would then have the following
+       * base classes:
+       * - aspect::Postprocess::VisualizationPostprocessors::Interface
+       * - aspect::Postprocess::SimulatorAccess
+       * - deal::DataPostprocessor or any of the other ones listed above
+       *
+       * @ingroup Postprocessing
+       * @ingroup Visualization
+       */
+      template <int dim>
+      class Interface
+      {
+        public:
+          /**
+           * Destructor. Does nothing but is virtual so that derived classes
+           * destructors are also virtual.
+           **/
+          virtual
+          ~Interface ();
 
+          /**
+           * Declare the parameters this class takes through input files.
+           * Derived classes should overload this function if they actually
+           * do take parameters; this class declares a fall-back function
+           * that does nothing, so that postprocessor classes that do not
+           * take any parameters do not have to do anything at all.
+           *
+           * This function is static (and needs to be static in derived
+           * classes) so that it can be called without creating actual
+           * objects (because declaring parameters happens before we read
+           * the input file and thus at a time when we don't even know yet
+           * which postprocessor objects we need).
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter
+           * file. The default implementation in this class does nothing,
+           * so that derived classes that do not need any parameters do
+           * not need to implement it.
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
+
+
+          /**
+           * Save the state of this object to the argument given to this function.
+           * This function is in support of checkpoint/restart functionality.
+           *
+           * Derived classes can implement this function and should store their
+           * state in a string that is deposited under a key in the map through
+           * which the respective class can later find the status again when the
+           * program is restarted. A legitimate key to store data under is
+           * <code>typeid(*this).name()</code>. It is up to derived classes to
+           * decide how they want to encode their state.
+           *
+           * The default implementation of this function does nothing, i.e., it
+           * represents a stateless object for which nothing needs to be stored
+           * at checkpoint time and nothing needs to be restored at restart time.
+           *
+           * @param[in,out] status_strings The object into which implementations
+           * in derived classes can place their status under a key that they can
+           * use to retrieve the data.
+           **/
+          virtual
+          void save (std::map<std::string, std::string> &status_strings) const;
+
+          /**
+           * Restore the state of the object by looking up a description of the
+           * state in the passed argument under the same key under which it
+           * was previously stored.
+           *
+           * The default implementation does nothing.
+           *
+           * @param[in] status_strings The object from which the status will
+           * be restored by looking up the value for a key specific to this
+           * derived class.
+           **/
+          virtual
+          void load (const std::map<std::string, std::string> &status_strings);
+      };
     }
 
 
@@ -48,7 +151,7 @@ namespace aspect
      * be registered with the postprocessing manager class
      * aspect::Postprocess::Manager, this class at the same time also acts
      * as a manager for plugins itself, namely for classes derived from the
-     * dealii::DataPostprocessor class that are used to output different
+     * VisualizationPostprocessors::Interface class that are used to output different
      * aspects of the solution, such as for example a computed seismic wave
      * speed from temperature, velocity and pressure.
      *
@@ -112,7 +215,7 @@ namespace aspect
         register_visualization_postprocessor (const std::string &name,
                                               const std::string &description,
                                               void (*declare_parameters_function) (ParameterHandler &),
-                                              DataPostprocessor<dim> *(*factory_function) ());
+                                              VisualizationPostprocessors::Interface<dim> *(*factory_function) ());
 
         /**
          * Declare the parameters this class takes through input files.
@@ -228,7 +331,7 @@ namespace aspect
          * A list of postprocessor objects that have been requested
          * in the parameter file.
          */
-        std::list<std_cxx1x::shared_ptr<DataPostprocessor<dim> > > postprocessors;
+        std::list<std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> > > postprocessors;
 
     };
   }
@@ -245,11 +348,11 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<dealii::DataPostprocessor<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::Postprocess::Manager<2>::register_visualization_postprocessor, \
+    aspect::internal::Plugins::RegisterHelper<VisualizationPostprocessors::Interface<2>,classname<2> > \
+    dummy_ ## classname ## _2d (&aspect::Postprocess::Visualization<2>::register_visualization_postprocessor, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<dealii::DataPostprocessor<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::Postprocess::Manager<3>::register_visualization_postprocessor, \
+    aspect::internal::Plugins::RegisterHelper<VisualizationPostprocessors::Interface<3>,classname<3> > \
+    dummy_ ## classname ## _3d (&aspect::Postprocess::Visualization<3>::register_visualization_postprocessor, \
                                 name, description); \
   }
 }

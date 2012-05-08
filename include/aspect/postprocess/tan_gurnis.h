@@ -37,15 +37,15 @@ namespace aspect
      * The implementation writes out the solution to be read in by a matlab script.
      * The benchmark is from the article
      * @article{tan2007compressible,
-  title={Compressible thermochemical convection and application to lower mantle structures},
-  author={Tan, E. and Gurnis, M.},
-  journal={JOURNAL OF GEOPHYSICAL RESEARCH-ALL SERIES-},
-  volume={112},
-  number={B6},
-  pages={6304},
-  year={2007},
-  publisher={AGU AMERICAN GEOPHYSICAL UNION}
-}
+    title={Compressible thermochemical convection and application to lower mantle structures},
+    author={Tan, E. and Gurnis, M.},
+    journal={JOURNAL OF GEOPHYSICAL RESEARCH-ALL SERIES-},
+    volume={112},
+    number={B6},
+    pages={6304},
+    year={2007},
+    publisher={AGU AMERICAN GEOPHYSICAL UNION}
+    }
      * @endcode
      *
      * @ingroup Postprocessing

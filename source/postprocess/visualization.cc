@@ -37,197 +37,37 @@ namespace aspect
 {
   namespace Postprocess
   {
-    namespace internal
+    namespace VisualizationPostprocessors
     {
-      /**
-       * A class derived from DataPostprocessor that takes an output vector and
-       * computes a number of derived statistics from that.
-       *
-       * The member functions are all implementations of those declared in the base
-       * class. See there for their meaning.
-       */
       template <int dim>
-      class Postprocessor : public DataPostprocessor<dim>
-      {
-        public:
-          Postprocessor (const unsigned int                   partition,
-                         const double                         convert_output_to_years,
-                         const MaterialModel::Interface<dim> &material_model,
-                         const AdiabaticConditions<dim>      &adiabatic_conditions);
-
-          virtual
-          void
-          compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                             const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                                             const std::vector<std::vector<Tensor<2,dim> > > &dduh,
-                                             const std::vector<Point<dim> >                  &normals,
-                                             const std::vector<Point<dim> >                  &evaluation_points,
-                                             std::vector<Vector<double> >                    &computed_quantities) const;
-
-          virtual std::vector<std::string> get_names () const;
-
-          virtual
-          std::vector<DataComponentInterpretation::DataComponentInterpretation>
-          get_data_component_interpretation () const;
-
-          virtual UpdateFlags get_needed_update_flags () const;
-
-        private:
-          const unsigned int                   partition;
-          const double                         convert_output_to_years;
-          const MaterialModel::Interface<dim> &material_model;
-          const AdiabaticConditions<dim>      &adiabatic_conditions;
-      };
-
-
-      template <int dim>
-      Postprocessor<dim>::
-      Postprocessor (const unsigned int                   partition,
-                     const double                         convert_output_to_years,
-                     const MaterialModel::Interface<dim> &material_model,
-                     const AdiabaticConditions<dim>      &adiabatic_conditions)
-        :
-        partition (partition),
-        convert_output_to_years (convert_output_to_years),
-        material_model(material_model),
-        adiabatic_conditions (adiabatic_conditions)
+      Interface<dim>::~Interface ()
       {}
 
 
       template <int dim>
-      std::vector<std::string>
-      Postprocessor<dim>::get_names() const
-      {
-        std::vector<std::string> solution_names (dim, "velocity");
-        solution_names.push_back ("p");
-        solution_names.push_back ("T");
-        solution_names.push_back ("friction_heating");
-        solution_names.push_back ("partition");
-        solution_names.push_back ("viscosity");
-        solution_names.push_back ("non_adiabatic_pressure");
-        solution_names.push_back ("non_adiabatic_temperature");
-        solution_names.push_back ("density");
-        solution_names.push_back ("strain_rate");
-        solution_names.push_back ("Vp");
-        solution_names.push_back ("Vs");
-        solution_names.push_back ("thermodynamic_phase");
-        solution_names.push_back ("Cp");
-        solution_names.push_back ("viscosity_ratio");
-        return solution_names;
-      }
+      void
+      Interface<dim>::declare_parameters (ParameterHandler &)
+      {}
 
-
-      template <int dim>
-      std::vector<DataComponentInterpretation::DataComponentInterpretation>
-      Postprocessor<dim>::
-      get_data_component_interpretation () const
-      {
-        std::vector<DataComponentInterpretation::DataComponentInterpretation>
-        interpretation (dim,
-                        DataComponentInterpretation::component_is_part_of_vector);
-
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-
-        return interpretation;
-      }
-
-
-      template <int dim>
-      UpdateFlags
-      Postprocessor<dim>::get_needed_update_flags() const
-      {
-        return update_values | update_gradients | update_q_points;
-      }
 
 
       template <int dim>
       void
-      Postprocessor<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                                         const std::vector<std::vector<Tensor<2,dim> > > &/*dduh*/,
-                                         const std::vector<Point<dim> >                  &/*normals*/,
-                                         const std::vector<Point<dim> >                  &evaluation_points,
-                                         std::vector<Vector<double> >                    &computed_quantities) const
-      {
-        const unsigned int n_quadrature_points = uh.size();
-        Assert (duh.size() == n_quadrature_points,                  ExcInternalError());
-        Assert (computed_quantities.size() == n_quadrature_points,  ExcInternalError());
-        Assert (uh[0].size() == dim+2,                              ExcInternalError());
+      Interface<dim>::parse_parameters (ParameterHandler &)
+      {}
 
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
-          {
-            // velocity; rescale in m/year if so requested
-            for (unsigned int d=0; d<dim; ++d)
-              computed_quantities[q](d)
-                = (uh[q](d) *
-                   (convert_output_to_years == true ?
-                    year_in_seconds :
-                    1));
 
-            // pressure
-            const double pressure = uh[q](dim);
-            computed_quantities[q](dim) = pressure;
 
-            // temperature
-            const double temperature = uh[q](dim+1);
-            computed_quantities[q](dim+1) = temperature;
+      template <int dim>
+      void
+      Interface<dim>::save (std::map<std::string,std::string> &) const
+      {}
 
-            // friction heating
-            Tensor<2,dim> grad_u;
-            for (unsigned int d=0; d<dim; ++d)
-              grad_u[d] = duh[q][d];
 
-            const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
-            const SymmetricTensor<2,dim> compressible_strain_rate
-              = (material_model.is_compressible()
-                 ?
-                 strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
-                 :
-                 strain_rate);
-            computed_quantities[q](dim+2) = 2 * material_model.viscosity(temperature,
-                                                                         pressure,
-                                                                         strain_rate,
-                                                                         evaluation_points[q]) *
-                                            compressible_strain_rate * compressible_strain_rate;
-
-            computed_quantities[q](dim+3) = partition;
-
-            computed_quantities[q](dim+4) = material_model.viscosity(temperature,
-                                                                     pressure,
-                                                                     strain_rate,
-                                                                     evaluation_points[q]);
-
-            computed_quantities[q](dim+5) = pressure - adiabatic_conditions.pressure (evaluation_points[q]);
-
-            computed_quantities[q](dim+6) = temperature -
-                                            adiabatic_conditions.temperature (evaluation_points[q]);
-
-            computed_quantities[q](dim+7) = material_model.density(temperature, pressure, evaluation_points[q]);
-            computed_quantities[q](dim+8) = std::sqrt(strain_rate*strain_rate);
-            computed_quantities[q](dim+9) = material_model.seismic_Vp(temperature, pressure);
-            computed_quantities[q](dim+10) = material_model.seismic_Vs(temperature, pressure);
-            computed_quantities[q](dim+11) = material_model.thermodynamic_phase(temperature, pressure);
-            computed_quantities[q](dim+12) = material_model.specific_heat(temperature, pressure, evaluation_points[q]);
-            computed_quantities[q](dim+13) = material_model.viscosity_ratio(temperature,
-                                                                            pressure,
-                                                                            strain_rate,
-                                                                            evaluation_points[q]);
-          }
-      }
+      template <int dim>
+      void
+      Interface<dim>::load (const std::map<std::string,std::string> &)
+      {}
     }
 
 
@@ -268,12 +108,6 @@ namespace aspect
       if (this->get_time() < next_output_time)
         return std::pair<std::string,std::string>();
 
-
-      internal::Postprocessor<dim> postprocessor (this->get_triangulation().locally_owned_subdomain(),
-                                                  this->convert_output_to_years(),
-                                                  this->get_material_model(),
-                                                  this->get_adiabatic_conditions());
-
       Vector<float> estimated_error_per_cell(this->get_triangulation().n_active_cells());
       this->get_refinement_criteria(estimated_error_per_cell);
 
@@ -288,7 +122,33 @@ namespace aspect
       // will then also destroy the object
       DataOut<dim> data_out;
       data_out.attach_dof_handler (this->get_dof_handler());
-      data_out.add_data_vector (this->get_solution(), postprocessor);
+
+      // add the primary variables
+      std::vector<std::string> solution_names (dim, "velocity");
+      solution_names.push_back ("p");
+      solution_names.push_back ("T");
+
+      std::vector<DataComponentInterpretation::DataComponentInterpretation>
+      interpretation (dim,
+                      DataComponentInterpretation::component_is_part_of_vector);
+      interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+      interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+
+      data_out.add_data_vector (this->get_solution(),
+                                solution_names,
+                                DataOut<dim>::type_dof_data,
+                                interpretation);
+
+      // then for each additional selected output variable
+      // add the computed quantity as well
+      for (typename std::list<std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
+           p = postprocessors.begin(); p!=postprocessors.end(); ++p)
+        {
+          DataPostprocessor<dim> *viz_postprocessor
+            = dynamic_cast<DataPostprocessor<dim>*>(& **p);
+          data_out.add_data_vector (this->get_solution(), *viz_postprocessor);
+        }
+
       data_out.add_data_vector (estimated_error_per_cell, "error_indicator");
       data_out.add_data_vector (Vs_anomaly, "Vs_anomaly");
       data_out.add_data_vector (Vp_anomaly, "Vp_anomaly");
@@ -326,7 +186,6 @@ namespace aspect
         }
       else
         {
-
           // put the stuff we want to write into a string object that
           // we can then write in the background
           const std::string *file_contents;
@@ -483,8 +342,8 @@ namespace aspect
       std_cxx1x::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<DataPostprocessor<2> >,
-      aspect::internal::Plugins::PluginList<DataPostprocessor<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<2> >,
+      aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<3> > > registered_plugins;
     }
 
 
@@ -519,13 +378,13 @@ namespace aspect
                              "in a background thread. "
                              "A value of 1 will generate one big file containing the whole "
                              "solution.");
-/*
+
           // finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors
           const std::string pattern_of_names
             = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names (true);
           prm.declare_entry("List of output variables",
-                            "all",
+                            "",
                             Patterns::MultipleSelection(pattern_of_names),
                             "A comma separated list of visualization objects that should be run "
                             "whenever writing graphical output. By default, the graphical "
@@ -541,7 +400,6 @@ namespace aspect
                             "The following postprocessors are available:\n\n"
                             +
                             std_cxx1x::get<dim>(registered_plugins).get_description_string());
-*/
         }
         prm.leave_subsection();
       }
@@ -553,8 +411,8 @@ namespace aspect
     void
     Visualization<dim>::parse_parameters (ParameterHandler &prm)
     {
-//      Assert (std_cxx1x::get<dim>(registered_plugins).plugins != 0,
-//              ExcMessage ("No postprocessors registered!?"));
+      Assert (std_cxx1x::get<dim>(registered_plugins).plugins != 0,
+              ExcMessage ("No postprocessors registered!?"));
 
       prm.enter_subsection("Postprocess");
       {
@@ -563,10 +421,11 @@ namespace aspect
           output_interval = prm.get_double ("Time between graphical output");
           output_format   = prm.get ("Output format");
           group_files     = prm.get_integer("Number of grouped files");
-/*
+
           // now also see which derived quantities we are to compute
           std::vector<std::string> viz_names
             = Utilities::split_string_list(prm.get("List of output variables"));
+
           // see if 'all' was selected (or is part of the list). if so
           // simply replace the list with one that contains all names
           if (std::find (viz_names.begin(),
@@ -574,7 +433,7 @@ namespace aspect
                          "all") != viz_names.end())
             {
               viz_names.clear();
-              for (typename std::list<typename aspect::internal::Plugins::PluginList<dealii::DataPostprocessor<dim> >::PluginInfo>::const_iterator
+              for (typename std::list<typename aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<dim> >::PluginInfo>::const_iterator
                    p = std_cxx1x::get<dim>(registered_plugins).plugins->begin();
                    p != std_cxx1x::get<dim>(registered_plugins).plugins->end(); ++p)
                 viz_names.push_back (std_cxx1x::get<0>(*p));
@@ -583,10 +442,21 @@ namespace aspect
           // then go through the list, create objects and let them parse
           // their own parameters
           for (unsigned int name=0; name<viz_names.size(); ++name)
-            postprocessors.push_back (std_cxx1x::shared_ptr<dealii::DataPostprocessor<dim> >
-                                      (std_cxx1x::get<dim>(registered_plugins)
-                                       .create_plugin (viz_names[name])));
-*/
+            {
+              VisualizationPostprocessors::Interface<dim> *
+              viz_postprocessor = std_cxx1x::get<dim>(registered_plugins)
+                                  .create_plugin (viz_names[name], prm);
+
+              // make sure that the postprocessor is indeed of type
+              // dealii::DataPostprocessor
+              Assert (dynamic_cast<DataPostprocessor<dim>*>(viz_postprocessor)
+                      != 0,
+                      ExcMessage ("Can't convert visualization postprocessor to type "
+                                  "dealii::DataPostprocessor!?"));
+
+              postprocessors.push_back (std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> >
+                                        (viz_postprocessor));
+            }
         }
         prm.leave_subsection();
       }
@@ -612,6 +482,8 @@ namespace aspect
       oa << (*this);
 
       status_strings["Visualization"] = os.str();
+
+//TODO: do something about the visualization postprocessor plugins
     }
 
 
@@ -626,6 +498,8 @@ namespace aspect
           aspect::iarchive ia (is);
           ia >> (*this);
         }
+
+//TODO: do something about the visualization postprocessor plugins
 
       // set next output time to something useful
       set_next_output_time (this->get_time());
@@ -660,7 +534,7 @@ namespace aspect
 
       // pass initialization through to the various visualization
       // objects if they so desire
-      for (typename std::list<std_cxx1x::shared_ptr<DataPostprocessor<dim> > >::iterator
+      for (typename std::list<std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         // see if a given visualization plugin is in fact derived
@@ -676,7 +550,7 @@ namespace aspect
     register_visualization_postprocessor (const std::string &name,
                                           const std::string &description,
                                           void (*declare_parameters_function) (ParameterHandler &),
-                                          DataPostprocessor<dim> *(*factory_function) ())
+                                          VisualizationPostprocessors::Interface<dim> *(*factory_function) ())
     {
       std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
@@ -691,16 +565,27 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
+  namespace Postprocess
+  {
+    namespace VisualizationPostprocessors
+    {
+#define INSTANTIATE(dim) \
+  template class Interface<dim>;
+
+      ASPECT_INSTANTIATE(INSTANTIATE)
+    }
+  }
+
   namespace internal
   {
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<DataPostprocessor<2> >::PluginInfo> *
-      internal::Plugins::PluginList<DataPostprocessor<2> >::plugins = 0;
+      std::list<internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<2> >::PluginInfo> *
+      internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<2> >::plugins = 0;
       template <>
-      std::list<internal::Plugins::PluginList<DataPostprocessor<3> >::PluginInfo> *
-      internal::Plugins::PluginList<DataPostprocessor<3> >::plugins = 0;
+      std::list<internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<3> >::PluginInfo> *
+      internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<3> >::plugins = 0;
     }
   }
 
