@@ -111,6 +111,7 @@ namespace aspect
       Vector<float> estimated_error_per_cell(this->get_triangulation().n_active_cells());
       this->get_refinement_criteria(estimated_error_per_cell);
 
+// try to somehow get these variables into the viz plugins as well...
       Vector<float> Vs_anomaly(this->get_triangulation().n_active_cells());
       this->get_Vs_anomaly(Vs_anomaly);
       Vector<float> Vp_anomaly(this->get_triangulation().n_active_cells());
