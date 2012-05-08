@@ -27,7 +27,7 @@ run-parameters  = parameter-file.prm
 
 # Now, this is the last variable you need to set, namely the path to
 # the deal.II toplevel directory:
-DEAL_DIR?=../../deal.II
+DEAL_DIR?=../../../../deal.II
 D = $(DEAL_DIR)
 
 
@@ -49,7 +49,8 @@ all-dirs := source \
             source/boundary_temperature \
             source/initial_conditions \
             source/material_model \
-            source/postprocess
+            source/postprocess \
+            source/postprocess/visualization
 
 cc-files := $(shell for i in $(all-dirs) ; do echo $$i/*.cc ; done)
 
