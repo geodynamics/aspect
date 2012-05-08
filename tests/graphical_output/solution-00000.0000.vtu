@@ -1,0 +1,46 @@
+<?xml version="1.0" ?> 
+<!-- 
+# vtk DataFile Version 3.0
+#This file was generated 
+-->
+<VTKFile type="UnstructuredGrid" version="0.1" compressor="vtkZLibDataCompressor" byte_order="LittleEndian">
+<UnstructuredGrid>
+<Piece NumberOfPoints="64" NumberOfCells="16" >
+  <Points>
+    <DataArray type="Float64" NumberOfComponents="3" format="binary">
+AQAAAAAGAAAABgAAiQAAAA==eNqlkrENRDEIQ7MZ+3c3gktKj3BVGr6MiaCL4zwswjld/eI83d+z0mshem59h+h50zyq//UhdnkUB0avlSZ37ZtGr0XTt3L4OIc0fgg/YpdHcRj9vKf7oOZ6/bncB8VB9P85zaP+//q5zKM4MPp0H1TfNPp0HxSHj3NI46fwc5lHcfjR/1N2fZE=
+    </DataArray>
+  </Points>
+
+  <Cells>
+    <DataArray type="Int32" Name="connectivity" format="binary">
+AQAAAAABAAAAAQAAaQAAAA==eNoNwwVSAkAAAMADpaQ7pEGluyT//yt2ZzaEECJ+GPXTmAnjJk2Z9suMWfPmLFi0bMmKVevWbNj025ZtO/bs2nfgyKFjf/zz14lT585cuHTtyo1b9+48ePTsyYv/3rx69+HLp2+r3gfh
+    </DataArray>
+    <DataArray type="Int32" Name="offsets" format="binary">
+AQAAAEAAAABAAAAAMQAAAA==eNpjYWBg4ABiHiAWAGIRIJYAYhkgVgBiFSDWAGIdIDYAYhMgtgBiGyB2AGIAM0ACIQ==
+    </DataArray>
+    <DataArray type="UInt8" Name="types" format="binary">
+AQAAABAAAAAQAAAACwAAAA==eNrj5EQFAATYAJE=
+    </DataArray>
+  </Cells>
+  <PointData Scalars="scalars">
+    <DataArray type="Float64" Name="velocity" NumberOfComponents="3" format="binary">
+AQAAAAAGAAAABgAAAQEAAA==eNpjYMAJDpQGROzHLc2QYCuXao/Eb4g2DASpVxA1s9xPhDkK2ouz92ERx2VOwrOuZJD6BVVXfPdR4B64uybfzUVWz/B/y8W9IHN2XnbcT4l7cJjzYKPrkT0g8XPiofuICIcH5vxJWP2Jw94D5l2RIH5Drl3MPiLMwRnvOMyBmxczMWEfJe7BEQ4Pzt1YAhJ3WP8jeR8F7sFlDgw4GOal76MgPcDTBVp6WwBMJyD+AxG09EZiesBlDiic7UD24kj/RLsHB1gAzKf22MRJdA8uc0Dp3A5b/JGYHnDZC0ondtjSG4npAZc5+NI/Ke7BGQ7AfGqHIz+S4h5c5mAFALRo7h0=    </DataArray>
+    <DataArray type="Float64" Name="p" format="binary">
+AQAAAAACAAAAAgAAsAAAAA==eNpjYGBgMHx7Yz+QarhZdh1EH2C6chlM+5++hCyesEHkOrL4gWetl7CpT5AW2QeiHaA0unqYuAKUhpm7IHVhP7K6B9xmy1HE+1tKkMUTHuUtxqYebi6URleP7j50/oIr6pvtQXwBrnX2WNwLEz9w4t5qeyzqD7gdOwwWn37zgD029VDxBldRMI3uXpg6hxluJ7C5DyZ+IMniJDb1cHNZpc5gUw8TP/At/+x+ABEJpb8=    </DataArray>
+    <DataArray type="Float64" Name="T" format="binary">
+AQAAAAACAAAAAgAAVgAAAA==eNpjYACBD/YMmPSBM2fwijcsVPyITz1MHl09jF4wc+ZHbOaj60OSBwMkcTBAVw8zF4s5KOqRAF7/oLuXWP8TCi8Yje5eXOFGrP/xxCOKf8EAANv3g0U=    </DataArray>
+    <DataArray type="Float64" Name="viscosity" format="binary">
+AQAAAAACAAAAAgAAHgAAAA==eNpjYACBD/YMRNANLXqO+Pjk6h9oeiT7HwAkPFZh    </DataArray>
+    <DataArray type="Float64" Name="nonadiabatic_pressure" format="binary">
+AQAAAAACAAAAAgAAsAAAAA==eNpjYGBgMHx7Yz+QarhZdh1EH2C6chlM+5++hCyesEHkOrL4gWetl7CpT5AW2QeiHaA0unqYuAKUhpm7IHVhP7K6B9xmy1HE+1tKkMUTHuUtxqYebi6URleP7j50/oIr6pvtQXwBrnX2WNwLEz9w4t5qeyzqD7gdOwwWn37zgD029VDxBldRMI3uXpg6hxluJ7C5DyZ+IMniJDb1cHNZpc5gUw8TP/At/+x+ABEJpb8=    </DataArray>
+    <DataArray type="Float64" Name="error_indicator" format="binary">
+AQAAAAACAAAAAgAAQgAAAA==eNpjYGBguO7+xp4BN93w4tsDfDSDrdlbvDQDwwd89IP//9/joxX+4qcJmc/w4sd7vDSF7qc4/Ch0P0XhBwCXj6E5    </DataArray>
+    <DataArray type="Float64" Name="Vs_anomaly" format="binary">
+AQAAAAACAAAAAgAAEwAAAA==eNpjYACCA0kODKP0iKQB9hlYgQ==    </DataArray>
+    <DataArray type="Float64" Name="Vp_anomaly" format="binary">
+AQAAAAACAAAAAgAAEwAAAA==eNpjYACCA0kODKP0iKQB9hlYgQ==    </DataArray>
+  </PointData>
+ </Piece>
+ </UnstructuredGrid>
+</VTKFile>
