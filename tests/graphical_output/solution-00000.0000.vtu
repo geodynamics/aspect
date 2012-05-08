@@ -25,15 +25,15 @@ AQAAABAAAAAQAAAACwAAAA==eNrj5EQFAATYAJE=
   </Cells>
   <PointData Scalars="scalars">
     <DataArray type="Float64" Name="velocity" NumberOfComponents="3" format="binary">
-AQAAAAAGAAAABgAAAQEAAA==eNpjYMAJDpQGROzHLc2QYCuXao/Eb4g2DASpVxA1s9xPhDkK2ouz92ERx2VOwrOuZJD6BVVXfPdR4B64uybfzUVWz/B/y8W9IHN2XnbcT4l7cJjzYKPrkT0g8XPiofuICIcH5vxJWP2Jw94D5l2RIH5Drl3MPiLMwRnvOMyBmxczMWEfJe7BEQ4Pzt1YAhJ3WP8jeR8F7sFlDgw4GOal76MgPcDTBVp6WwBMJyD+AxG09EZiesBlDiic7UD24kj/RLsHB1gAzKf22MRJdA8uc0Dp3A5b/JGYHnDZC0ondtjSG4npAZc5+NI/Ke7BGQ7AfGqHIz+S4h5c5mAFALRo7h0=    </DataArray>
+AQAAAAAGAAAABgAA+wAAAA==eNpjYMAJFpQGROzHLc2QYCuXao/Eb4g2DASpVxA1s9xPhDkO2ouz92ERx2VOwrOuZJD6hKorvvsocA8MHJh8NxdZvcLjJVv2gszZedlxPwXuwWnO74gTe0D+Piceuo+IcHhgzp+E1Z847D1g3hUJ4jfk2sXsI8IcXACXOXDzYiYm7KPAPbjC4cAfq2UgcYX1P5L3UeAeXObAw9swL30fBekBV3pbAEwnIL4DWjohNT3gMgcUznYgcSLTPy5z8OV3e2ziJLoHlzmgdG6HLb+TmB5w2QtKJyDxBLR0Qmp6wGUOvvRPintwhQMon9rhyI+kuAeXOVgBAB0C5Uk=    </DataArray>
     <DataArray type="Float64" Name="p" format="binary">
-AQAAAAACAAAAAgAAsAAAAA==eNpjYGBgMHx7Yz+QarhZdh1EH2C6chlM+5++hCyesEHkOrL4gWetl7CpT5AW2QeiHaA0unqYuAKUhpm7IHVhP7K6B9xmy1HE+1tKkMUTHuUtxqYebi6URleP7j50/oIr6pvtQXwBrnX2WNwLEz9w4t5qeyzqD7gdOwwWn37zgD029VDxBldRMI3uXpg6hxluJ7C5DyZ+IMniJDb1cHNZpc5gUw8TP/At/+x+ABEJpb8=    </DataArray>
+AQAAAAACAAAAAgAAsAAAAA==eNpjYGBgMHx7Yz+QarhZdh1EH2C6chlEL/A/fQlZPGGDyHVk8QPPWi9hU+8gLbIPmUZXDxNXgNIwcw8kL+xHVpfAbbYcWfxBT0sJsjjDo7zF2NQroNmPrh7dfRjuvaK+2R6kT4BrnT0290LFGU7eW22PRf0Bt2OHweLTbx6wx6YeKr7AVRRMo7sXpi5hhtsJbO6DiR9IsjiJTT3MXAdWqTPY1MPED3zLP7sfAK5zoJw=    </DataArray>
     <DataArray type="Float64" Name="T" format="binary">
 AQAAAAACAAAAAgAAVgAAAA==eNpjYACBD/YMmPSBM2fwijcsVPyITz1MHl09jF4wc+ZHbOaj60OSBwMkcTBAVw8zF4s5KOqRAF7/oLuXWP8TCi8Yje5eXOFGrP/xxCOKf8EAANv3g0U=    </DataArray>
     <DataArray type="Float64" Name="viscosity" format="binary">
 AQAAAAACAAAAAgAAHgAAAA==eNpjYACBD/YMRNANLXqO+Pjk6h9oeiT7HwAkPFZh    </DataArray>
     <DataArray type="Float64" Name="nonadiabatic_pressure" format="binary">
-AQAAAAACAAAAAgAAsAAAAA==eNpjYGBgMHx7Yz+QarhZdh1EH2C6chlM+5++hCyesEHkOrL4gWetl7CpT5AW2QeiHaA0unqYuAKUhpm7IHVhP7K6B9xmy1HE+1tKkMUTHuUtxqYebi6URleP7j50/oIr6pvtQXwBrnX2WNwLEz9w4t5qeyzqD7gdOwwWn37zgD029VDxBldRMI3uXpg6hxluJ7C5DyZ+IMniJDb1cHNZpc5gUw8TP/At/+x+ABEJpb8=    </DataArray>
+AQAAAAACAAAAAgAAsAAAAA==eNpjYGBgMHx7Yz+QarhZdh1EH2C6chlEL/A/fQlZPGGDyHVk8QPPWi9hU+8gLbIPmUZXDxNXgNIwcw8kL+xHVpfAbbYcWfxBT0sJsjjDo7zF2NQroNmPrh7dfRjuvaK+2R6kT4BrnT0290LFGU7eW22PRf0Bt2OHweLTbx6wx6YeKr7AVRRMo7sXpi5hhtsJbO6DiR9IsjiJTT3MXAdWqTPY1MPED3zLP7sfAK5zoJw=    </DataArray>
     <DataArray type="Float64" Name="error_indicator" format="binary">
 AQAAAAACAAAAAgAAQgAAAA==eNpjYGBguO7+xp4BN93w4tsDfDSDrdlbvDQDwwd89IP//9/joxX+4qcJmc/w4sd7vDSF7qc4/Ch0P0XhBwCXj6E5    </DataArray>
     <DataArray type="Float64" Name="Vs_anomaly" format="binary">
