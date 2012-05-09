@@ -539,7 +539,10 @@ namespace aspect
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         // see if a given visualization plugin is in fact derived
-        // from the SimulatorAccess class, and if so initialize it
+        // from the SimulatorAccess class, and if so initialize it.
+        // note that viz plugins need not necessarily derive from
+        // SimulatorAccess if they don't need anything beyond the
+        // solution variables to compute what they compute
         if (SimulatorAccess<dim> * x = dynamic_cast<SimulatorAccess<dim>*>(& **p))
           x->initialize (simulator);
     }
