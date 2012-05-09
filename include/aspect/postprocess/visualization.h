@@ -53,8 +53,8 @@ namespace aspect
        * of the SimulatorAccessor class, i.e., classes implementing this interface will
        * in general want to derive from both this Interface class as well as from the
        * SimulatorAccess class. Furthermore, in order to do what they are intended to,
-       * derived classes need to also derive from dealii::DataPostprocessor or any of
-       * the classes like dealii::DataPostprocessorScalar or dealii::DataPostprocessorVector.
+       * derived classes need to also derive from the deal.II DataPostprocessor or any of
+       * the classes like DataPostprocessorScalar or DataPostprocessorVector.
        * A typical class derived from the current class would then have the following
        * base classes:
        * - aspect::Postprocess::VisualizationPostprocessors::Interface
