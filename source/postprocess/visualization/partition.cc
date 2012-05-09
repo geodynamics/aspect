@@ -20,7 +20,7 @@
 /*  $Id$  */
 
 
-#include <aspect/postprocess/visualization.h>
+#include <aspect/postprocess/visualization/partition.h>
 #include <aspect/simulator.h>
 
 #include <deal.II/numerics/data_out.h>
@@ -32,34 +32,6 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      /**
-       * A class derived from DataPostprocessor that takes puts the
-       * number of the parallel process (i.e., the partition number) for
-       * each cell into the output file.
-       *
-       * The member functions are all implementations of those declared in the base
-       * class. See there for their meaning.
-       */
-      template <int dim>
-      class Partition
-        : public DataPostprocessorScalar<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
-      {
-        public:
-          Partition ();
-
-          virtual
-          void
-          compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                             const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                                             const std::vector<std::vector<Tensor<2,dim> > > &dduh,
-                                             const std::vector<Point<dim> >                  &normals,
-                                             const std::vector<Point<dim> >                  &evaluation_points,
-                                             std::vector<Vector<double> >                    &computed_quantities) const;
-      };
-
-
       template <int dim>
       Partition<dim>::
       Partition ()

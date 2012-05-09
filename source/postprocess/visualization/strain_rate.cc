@@ -20,7 +20,7 @@
 /*  $Id$  */
 
 
-#include <aspect/postprocess/visualization.h>
+#include <aspect/postprocess/visualization/strain_rate.h>
 #include <aspect/simulator.h>
 
 #include <deal.II/numerics/data_out.h>
@@ -32,36 +32,6 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      /**
-       * A class derived from DataPostprocessor that takes an output vector and
-       * computes a variable that represents the strain rate at every point. The
-       * scalar strain rate is defined as $\\sqrt{
-       *    (\\varepsilon - \\tfrac 13 \\textrm{trace}\\ \\varepsilon \\mathbf 1)
-       *  : \\varepsilon - \\tfrac 13 \\textrm{trace}\\ \\varepsilon \\mathbf 1}$.
-       *
-       * The member functions are all implementations of those declared in the base
-       * class. See there for their meaning.
-       */
-      template <int dim>
-      class StrainRate
-        : public DataPostprocessorScalar<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
-      {
-        public:
-          StrainRate ();
-
-          virtual
-          void
-          compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                             const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                                             const std::vector<std::vector<Tensor<2,dim> > > &dduh,
-                                             const std::vector<Point<dim> >                  &normals,
-                                             const std::vector<Point<dim> >                  &evaluation_points,
-                                             std::vector<Vector<double> >                    &computed_quantities) const;
-      };
-
-
       template <int dim>
       StrainRate<dim>::
       StrainRate ()

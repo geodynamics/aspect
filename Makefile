@@ -58,7 +58,7 @@ tmp1     := $(shell echo $(cc-files) | $(PERL) -pi -e 's,source/,,g; s,/,_,g;')
 o-files  := $(addprefix lib/obj/, $(tmp1:.cc=.$(OBJEXT)) )
 go-files := $(addprefix lib/obj/, $(tmp1:.cc=.g.$(OBJEXT)))
 
-h-files     := $(wildcard include/aspect/*.h include/aspect/*/*h)
+h-files     := $(wildcard include/aspect/*.h include/aspect/*/*h include/aspect/*/*/*h)
 lib-h-files := $(shell echo $D/include/deal.II/*/*.h)
 
 # As before, define two variables that denote the debug and optimized
