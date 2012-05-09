@@ -125,7 +125,16 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(FrictionHeating,
                                                   "friction heating",
                                                   "A visualization output object that generates output "
-                                                  "for the amount of friction heating tau:eps.")
+                                                  "for the amount of friction heating often referred "
+                                                  "to as $\\tau:\\epsilon$. More concisely, in the "
+                                                  "incompressible case, the quantity that is output "
+                                                  "is defined as "
+                                                  "$\\eta \\varepsilon(\\mathbf u):\\varepsilon(\\mathbf u)$ "
+                                                  "where $\\eta$ is itself a function of temperature, "
+                                                  "pressure and strain rate. In the compressible case, "
+                                                  "the quantity that's computed is "
+                                                  "$\\eta [\\varepsilon(\\mathbf u)-\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u)\\mathbf I]:"
+                                                  "[\\varepsilon(\\mathbf u)-\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u)\\mathbf I]$.")
     }
   }
 }

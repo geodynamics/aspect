@@ -35,9 +35,9 @@ namespace aspect
       /**
        * A class derived from DataPostprocessor that takes an output vector and
        * computes a variable that represents the strain rate at every point. The
-       * scalar strain rate is defined as $\sqrt{
-       *    (\varepsilon - \tfrac 13 \textrm{trace}\ \varepsilon \mathbf 1)
-       *  : \varepsilon - \tfrac 13 \textrm{trace}\ \varepsilon \mathbf 1}$.
+       * scalar strain rate is defined as $\\sqrt{
+       *    (\\varepsilon - \\tfrac 13 \\textrm{trace}\\ \\varepsilon \\mathbf 1)
+       *  : \\varepsilon - \\tfrac 13 \\textrm{trace}\\ \\varepsilon \\mathbf 1}$.
        *
        * The member functions are all implementations of those declared in the base
        * class. See there for their meaning.
@@ -121,7 +121,12 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(StrainRate,
                                                   "strain rate",
                                                   "A visualization output object that generates output "
-                                                  "for the strain rate.")
+                                                  "for the norm of the strain rate, i.e., for the quantity "
+                                                  "$\\sqrt{\\varepsilon(\\mathbf u):\\varepsilon(\\mathbf u)}$ "
+                                                  "in the incompressible case and "
+                                                  "$\\sqrt{[\\varepsilon(\\mathbf u)-\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u)\\mathbf I]:"
+                                                  "[\\varepsilon(\\mathbf u)-\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u)\\mathbf I]}$ "
+                                                  "in the compressible case.")
     }
   }
 }
