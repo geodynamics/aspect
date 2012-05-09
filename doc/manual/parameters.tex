@@ -34,12 +34,27 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Dimension}
+
+
+\index[prmindex]{Dimension}
+\index[prmindexfull]{Dimension}
+{\it Value:} 2
+
+
+{\it Default:} 2
+
+
+{\it Description:} The number of space dimensions you want to run this program in.
+
+
+{\it Possible values:} [Integer range 2...4 (inclusive)]
 \item {\it Parameter name:} {\tt End time}
 
 
 \index[prmindex]{End time}
 \index[prmindexfull]{End time}
-{\it Value:} 1e10
+{\it Value:} 5e6
 
 
 {\it Default:} 1e8
@@ -64,6 +79,21 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Possible values:} [DirectoryName]
+\item {\it Parameter name:} {\tt Pressure normalization}
+
+
+\index[prmindex]{Pressure normalization}
+\index[prmindexfull]{Pressure normalization}
+{\it Value:} surface
+
+
+{\it Default:} surface
+
+
+{\it Description:} If and how to normalize the pressure after the solution step. This is necessary because depending on boundary conditions, in many cases the pressure is only determined by the model up to a constant. On the other hand, we often would like to have a well-determined pressure, for example for table lookups of material properties in models or for comparing solutions. If the given value is `surface', then normalization at the end of each time steps adds a constant value to the pressure in such a way that the average pressure at the surface of the domain is zero; the surface of the domain is determined by asking the geometry model whether a particular face of the geometry has a zero or small `depth'. If the value of this parameter is `volume' then the pressure is normalized so that the domain average is zero. If `no' is given, the no pressure normalization is performed.
+
+
+{\it Possible values:} [Selection surface|volume|no ]
 \item {\it Parameter name:} {\tt Resume computation}
 
 
@@ -165,7 +195,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Inner temperature}
 \index[prmindexfull]{Boundary temperature model!Spherical constant!Inner temperature}
-{\it Value:} 6300
+{\it Value:} 6000
 
 
 {\it Default:} 6000
@@ -180,7 +210,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Outer temperature}
 \index[prmindexfull]{Boundary temperature model!Spherical constant!Outer temperature}
-{\it Value:} 300
+{\it Value:} 0
 
 
 {\it Default:} 0
@@ -190,6 +220,42 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Checkpointing}
+\label{parameters:Checkpointing}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Steps between checkpoint}
+
+
+\index[prmindex]{Steps between checkpoint}
+\index[prmindexfull]{Checkpointing!Steps between checkpoint}
+{\it Value:} 50
+
+
+{\it Default:} 0
+
+
+{\it Description:} The number of timesteps between performing checkpoints. If 0 and time between checkpoint is not specified, checkpointing will not be performed. Units: None.
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Time between checkpoint}
+
+
+\index[prmindex]{Time between checkpoint}
+\index[prmindexfull]{Checkpointing!Time between checkpoint}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The wall time between performing checkpoints. If 0, will use the checkpoint step frequency instead. Units: Seconds.
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Discretization}
@@ -315,7 +381,7 @@ For more information, see the section in the manual that discusses the general m
 
 `spherical shell': A geometry representing a spherical shell or a pice of it. Inner and outer radii are read from the parameter file in subsection 'Spherical shell'.
 
-`box': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file.
+`box': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. The box geometry labels its 2*dim sides as follows: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries; in 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries. See also the documentation of the deal.II class ``GeometryInfo''.
 
 
 {\it Possible values:} [Selection spherical shell|box ]
@@ -383,7 +449,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Inner radius}
 \index[prmindexfull]{Geometry model!Spherical shell!Inner radius}
-{\it Value:} 5698e3
+{\it Value:} 3481000
 
 
 {\it Default:} 3481000
@@ -398,7 +464,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Opening angle}
 \index[prmindexfull]{Geometry model!Spherical shell!Opening angle}
-{\it Value:} 180
+{\it Value:} 360
 
 
 {\it Default:} 360
@@ -413,7 +479,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Outer radius}
 \index[prmindexfull]{Geometry model!Spherical shell!Outer radius}
-{\it Value:} 10415e3
+{\it Value:} 6336000
 
 
 {\it Default:} 6336000
@@ -442,7 +508,7 @@ For more information, see the section in the manual that discusses the general m
 
 {\it Description:} Select one of the following models:
 
-`vertical': A gravity model in which the gravity direction is vertically downward and at constant magnitude.
+`vertical': A gravity model in which the gravity direction is vertically downward and at a constant magnitude equal to one.
 
 `radial constant': A gravity model in which the gravity direction is radially inward and at constant magnitude. The magnitude is read from the parameter file in subsection 'Radial constant'.
 
@@ -528,7 +594,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Angle}
 \index[prmindexfull]{Initial conditions!Spherical gaussian perturbation!Angle}
-{\it Value:} 4.71238898038468985769
+{\it Value:} 0e0
 
 
 {\it Default:} 0e0
@@ -617,17 +683,46 @@ For more information, see the section in the manual that discusses the general m
 
 {\it Description:} Select one of the following models:
 
+`Tan Gurnis': A simple compressible material model based on a benchmark from the paper of Tan/Gurnis (2007). This does not use the temperature equation, but has a hardcoded temperature.
+
 `table': A material model that reads tables of pressure and temperature dependent material coefficients from files.
 
 `Steinberger': lookup from the paper of Steinberger/Calderwood
 
 `simple': A simple material model that has constant values for all coefficients but the density. This model uses the formulation that assumes an incompressible medium despite the fact that the density follows the law $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$. The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Simple model'.
 
+`SolCx': A material model that corresponds to the 'SolCx' benchmark defined in Duretz et al., G-Cubed, 2011.
 
-{\it Possible values:} [Selection table|Steinberger|simple ]
+`SolKz': A material model that corresponds to the 'SolKz' benchmark defined in Duretz et al., G-Cubed, 2011.
+
+`Inclusion': A material model that corresponds to the 'Inclusion' benchmark defined in Duretz et al., G-Cubed, 2011.
+
+
+{\it Possible values:} [Selection Tan Gurnis|table|Steinberger|simple|SolCx|SolKz|Inclusion ]
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Material model/Inclusion}
+\label{parameters:Material_20model/Inclusion}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Viscosity jump}
+
+
+\index[prmindex]{Viscosity jump}
+\index[prmindexfull]{Material model!Inclusion!Viscosity jump}
+{\it Value:} 1e3
+
+
+{\it Default:} 1e3
+
+
+{\it Description:} Viscosity in the Inclusion.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
 
 \subsection{Parameters in section \tt Material model/Simple model}
 \label{parameters:Material_20model/Simple_20model}
@@ -720,6 +815,27 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Description:} The value of the constant viscosity. Units: $kg/m/s$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Material model/SolCx}
+\label{parameters:Material_20model/SolCx}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Viscosity jump}
+
+
+\index[prmindex]{Viscosity jump}
+\index[prmindexfull]{Material model!SolCx!Viscosity jump}
+{\it Value:} 1e6
+
+
+{\it Default:} 1e6
+
+
+{\it Description:} Viscosity in the right half of the domain.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -922,21 +1038,257 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Viscosity increase lower mantle}
 \index[prmindexfull]{Material model!Table model!Viscosity!Viscosity increase lower mantle}
-{\it Value:} 4e0
+{\it Value:} 1e0
 
 
-{\it Default:} 4e0
+{\it Default:} 1e0
 
 
 {\it Description:} The Viscosity increase (jump) in the lower mantle.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Material model/Table model/Viscosity/Composite}
+\label{parameters:Material_20model/Table_20model/Viscosity/Composite}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt activation\_energy\_diffusion}
+
+
+\index[prmindex]{activation\_energy\_diffusion}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!activation\_energy\_diffusion}
+{\it Value:} 335e3
+
+
+{\it Default:} 335e3
+
+
+{\it Description:} activation energy for diffusion creep
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt activation\_energy\_dislocation}
+
+
+\index[prmindex]{activation\_energy\_dislocation}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!activation\_energy\_dislocation}
+{\it Value:} 540e3
+
+
+{\it Default:} 540e3
+
+
+{\it Description:} activation energy for dislocation creep
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt activation\_volume\_diffusion}
+
+
+\index[prmindex]{activation\_volume\_diffusion}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!activation\_volume\_diffusion}
+{\it Value:} 4.0e-6
+
+
+{\it Default:} 4.0e-6
+
+
+{\it Description:} activation volume for diffusion creep
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt activation\_volume\_dislocation}
+
+
+\index[prmindex]{activation\_volume\_dislocation}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!activation\_volume\_dislocation}
+{\it Value:} 14.0e-6
+
+
+{\it Default:} 14.0e-6
+
+
+{\it Description:} activation volume for dislocation creep
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt prefactor\_diffusion}
+
+
+\index[prmindex]{prefactor\_diffusion}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!prefactor\_diffusion}
+{\it Value:} 1.92e-11
+
+
+{\it Default:} 1.92e-11
+
+
+{\it Description:} prefactor for diffusion creep (1e0/prefactor)*exp((activation\_energy+activation\_volume*pressure)/(R*temperature))
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt prefactor\_dislocation}
+
+
+\index[prmindex]{prefactor\_dislocation}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!prefactor\_dislocation}
+{\it Value:} 2.42e-10
+
+
+{\it Default:} 2.42e-10
+
+
+{\it Description:} prefactor for dislocation creep (1e0/prefactor)*exp((activation\_energy+activation\_volume*pressure)/(R*temperature))
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt stress\_exponent}
+
+
+\index[prmindex]{stress\_exponent}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!stress\_exponent}
+{\it Value:} 3.5
+
+
+{\it Default:} 3.5
+
+
+{\it Description:} stress exponent for dislocation creep
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Material model/Table model/Viscosity/Diffusion}
+\label{parameters:Material_20model/Table_20model/Viscosity/Diffusion}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt activation\_energy\_diffusion}
+
+
+\index[prmindex]{activation\_energy\_diffusion}
+\index[prmindexfull]{Material model!Table model!Viscosity!Diffusion!activation\_energy\_diffusion}
+{\it Value:} 335e3
+
+
+{\it Default:} 335e3
+
+
+{\it Description:} activation energy for diffusion creep
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt activation\_volume\_diffusion}
+
+
+\index[prmindex]{activation\_volume\_diffusion}
+\index[prmindexfull]{Material model!Table model!Viscosity!Diffusion!activation\_volume\_diffusion}
+{\it Value:} 4.0e-6
+
+
+{\it Default:} 4.0e-6
+
+
+{\it Description:} activation volume for diffusion creep
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt prefactor\_diffusion}
+
+
+\index[prmindex]{prefactor\_diffusion}
+\index[prmindexfull]{Material model!Table model!Viscosity!Diffusion!prefactor\_diffusion}
+{\it Value:} 1.92e-11
+
+
+{\it Default:} 1.92e-11
+
+
+{\it Description:} prefactor for diffusion creep (1e0/prefactor)*exp((activation\_energy+activation\_volume*pressure)/(R*temperature))
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Material model/Table model/Viscosity/Dislocation}
+\label{parameters:Material_20model/Table_20model/Viscosity/Dislocation}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt activation\_energy\_dislocation}
+
+
+\index[prmindex]{activation\_energy\_dislocation}
+\index[prmindexfull]{Material model!Table model!Viscosity!Dislocation!activation\_energy\_dislocation}
+{\it Value:} 335e3
+
+
+{\it Default:} 335e3
+
+
+{\it Description:} activation energy for dislocation creep
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt activation\_volume\_dislocation}
+
+
+\index[prmindex]{activation\_volume\_dislocation}
+\index[prmindexfull]{Material model!Table model!Viscosity!Dislocation!activation\_volume\_dislocation}
+{\it Value:} 4.0e-6
+
+
+{\it Default:} 4.0e-6
+
+
+{\it Description:} activation volume for dislocation creep
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt prefactor\_dislocation}
+
+
+\index[prmindex]{prefactor\_dislocation}
+\index[prmindexfull]{Material model!Table model!Viscosity!Dislocation!prefactor\_dislocation}
+{\it Value:} 1.92e-11
+
+
+{\it Default:} 1.92e-11
+
+
+{\it Description:} prefactor for dislocation creep (1e0/prefactor)*exp((activation\_energy+activation\_volume*pressure)/(R*temperature))
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt stress\_exponent}
+
+
+\index[prmindex]{stress\_exponent}
+\index[prmindexfull]{Material model!Table model!Viscosity!Dislocation!stress\_exponent}
+{\it Value:} 3.5
+
+
+{\it Default:} 3.5
+
+
+{\it Description:} stress exponent for dislocation creep
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Material model/Table model/Viscosity/Exponential}
+\label{parameters:Material_20model/Table_20model/Viscosity/Exponential}
+
+\begin{itemize}
 \item {\it Parameter name:} {\tt exponential\_P}
 
 
 \index[prmindex]{exponential\_P}
-\index[prmindexfull]{Material model!Table model!Viscosity!exponential_P}
+\index[prmindexfull]{Material model!Table model!Viscosity!Exponential!exponential\_P}
 {\it Value:} 1
 
 
@@ -951,7 +1303,7 @@ For more information, see the section in the manual that discusses the general m
 
 
 \index[prmindex]{exponential\_T}
-\index[prmindexfull]{Material model!Table model!Viscosity!exponential\_T}
+\index[prmindexfull]{Material model!Table model!Viscosity!Exponential!exponential\_T}
 {\it Value:} 1
 
 
@@ -959,6 +1311,102 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Description:} multiplication factor or Temperature exponent
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Material model/Tan Gurnis model}
+\label{parameters:Material_20model/Tan_20Gurnis_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Reference density}
+
+
+\index[prmindex]{Reference density}
+\index[prmindexfull]{Material model!Tan Gurnis model!Reference density}
+{\it Value:} 3300
+
+
+{\it Default:} 3300
+
+
+{\it Description:} Reference density $\rho_0$. Units: $kg/m^3$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference specific heat}
+
+
+\index[prmindex]{Reference specific heat}
+\index[prmindexfull]{Material model!Tan Gurnis model!Reference specific heat}
+{\it Value:} 1250
+
+
+{\it Default:} 1250
+
+
+{\it Description:} The value of the specific heat $cp$. Units: $JG/kgK$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference temperature}
+
+
+\index[prmindex]{Reference temperature}
+\index[prmindexfull]{Material model!Tan Gurnis model!Reference temperature}
+{\it Value:} 293
+
+
+{\it Default:} 293
+
+
+{\it Description:} The reference temperature $T_0$. Units: $K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal conductivity}
+
+
+\index[prmindex]{Thermal conductivity}
+\index[prmindexfull]{Material model!Tan Gurnis model!Thermal conductivity}
+{\it Value:} 4.7
+
+
+{\it Default:} 4.7
+
+
+{\it Description:} The value of the thermal conductivity $k$. Units: $W/m/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal expansion coefficient}
+
+
+\index[prmindex]{Thermal expansion coefficient}
+\index[prmindexfull]{Material model!Tan Gurnis model!Thermal expansion coefficient}
+{\it Value:} 2e-5
+
+
+{\it Default:} 2e-5
+
+
+{\it Description:} The value of the thermal expansion coefficient $\beta$. Units: $1/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Viscosity}
+
+
+\index[prmindex]{Viscosity}
+\index[prmindexfull]{Material model!Tan Gurnis model!Viscosity}
+{\it Value:} 5e24
+
+
+{\it Default:} 5e24
+
+
+{\it Description:} The value of the constant viscosity. Units: $kg/m/s$.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -1018,7 +1466,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Initial global refinement}
 \index[prmindexfull]{Mesh refinement!Initial global refinement}
-{\it Value:} 3
+{\it Value:} 2
 
 
 {\it Default:} 2
@@ -1043,6 +1491,21 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Possible values:} [Double 0...1 (inclusive)]
+\item {\it Parameter name:} {\tt Run postprocessors on initial refinement}
+
+
+\index[prmindex]{Run postprocessors on initial refinement}
+\index[prmindexfull]{Mesh refinement!Run postprocessors on initial refinement}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether or not the postproccessors should be run at the end of each of ths initial adaptive refinement cycles at the of the simulation start.
+
+
+{\it Possible values:} [Bool]
 \item {\it Parameter name:} {\tt Strategy}
 
 
@@ -1057,13 +1520,13 @@ For more information, see the section in the manual that discusses the general m
 {\it Description:} The method used to determine which cells to refine and which to coarsen.
 
 
-{\it Possible values:} [Selection Temperature|Normalized density and temperature|Weighted density and temperature|Density c\_p temperature ]
+{\it Possible values:} [Selection Temperature|Velocity|Normalized density and temperature|Weighted density and temperature|Density c\_p temperature ]
 \item {\it Parameter name:} {\tt Time steps between mesh refinement}
 
 
 \index[prmindex]{Time steps between mesh refinement}
 \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement}
-{\it Value:} 10
+{\it Value:} 5
 
 
 {\it Default:} 10
@@ -1129,7 +1592,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Prescribed velocity boundary indicators}
 \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators}
-{\it Value:} 0
+{\it Value:}
 
 
 {\it Default:}
@@ -1174,7 +1637,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Zero velocity boundary indicators}
 \index[prmindexfull]{Model settings!Zero velocity boundary indicators}
-{\it Value:} 2, 3
+{\it Value:} 0, 2, 3
 
 
 {\it Default:}
@@ -1195,7 +1658,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{List of postprocessors}
 \index[prmindexfull]{Postprocess!List of postprocessors}
-{\it Value:} visualization, velocity statistics, temperature statistics, heat flux statistics
+{\it Value:} visualization, velocity statistics, temperature statistics, heat flux statistics, tracers
 
 
 {\it Default:} all
@@ -1209,7 +1672,11 @@ The following postprocessors are available:
 
 `velocity statistics': A postprocessor that computes some statistics about the velocity field.
 
+`tracers': Postprocessor that propagates tracer particles based on the velocity field.
+
 `temperature statistics': A postprocessor that computes some statistics about the temperature field.
+
+`Tan Gurnis error': A postprocessor that compares the solution of the benchmarks from the Tan/Gurnis (2007) paper with the one computed by ASPECT by outputing data that is compared using a matlab script.
 
 `velocity statistics for the table model': A postprocessor that computes some statistics about the velocity field.
 
@@ -1217,10 +1684,12 @@ The following postprocessors are available:
 
 `heat flux statistics': A postprocessor that computes some statistics about the heat flux across boundaries.
 
+`DuretzEtAl error': A postprocessor that compares the solution of the benchmarks from the Duretz et al., G-Cubed, 2011, paper with the one computed by ASPECT and reports the error. Specifically, it can compute the errors for the SolCx, SolKz and inclusion benchmarks. The postprocessor inquires which material model is currently being used and adjusts which exact solution to use accordingly.
+
 `depth average': A postprocessor that computes depth averaged quantities and writes them out.
 
 
-{\it Possible values:} [MultipleSelection visualization|velocity statistics|temperature statistics|velocity statistics for the table model|heat flux statistics for the table model|heat flux statistics|depth average|all ]
+{\it Possible values:} [MultipleSelection visualization|velocity statistics|tracers|temperature statistics|Tan Gurnis error|velocity statistics for the table model|heat flux statistics for the table model|heat flux statistics|DuretzEtAl error|depth average|all ]
 \end{itemize}
 
 
@@ -1246,10 +1715,87 @@ The following postprocessors are available:
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
 
+\subsection{Parameters in section \tt Postprocess/Tracers}
+\label{parameters:Postprocess/Tracers}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Number of tracers}
+
+
+\index[prmindex]{Number of tracers}
+\index[prmindexfull]{Postprocess!Tracers!Number of tracers}
+{\it Value:} 1e3
+
+
+{\it Default:} 1e3
+
+
+{\it Description:} Total number of tracers to create (not per processor or per element).
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Time between graphical output}
+
+
+\index[prmindex]{Time between graphical output}
+\index[prmindexfull]{Postprocess!Tracers!Time between graphical output}
+{\it Value:} 1e8
+
+
+{\it Default:} 1e8
+
+
+{\it Description:} The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
+
 \subsection{Parameters in section \tt Postprocess/Visualization}
 \label{parameters:Postprocess/Visualization}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt List of output variables}
+
+
+\index[prmindex]{List of output variables}
+\index[prmindexfull]{Postprocess!Visualization!List of output variables}
+{\it Value:} strain rate
+
+
+{\it Default:}
+
+
+{\it Description:} A comma separated list of visualization objects that should be run whenever writing graphical output. By default, the graphical output files will always contain the primary variables velocity, pressure, and temperature. However, one frequently wants to also visualize derived quantities, such as the thermodynamic phase that corresponds to a given temperature-pressure value, or the corresponding seismic wave speeds. The visualization objects do exactly this: they compute such derived quantities and place them into the output file. The current parameter is the place where you decide which of these additional output variables you want to have in your output file.
+
+The following postprocessors are available:
+
+`viscosity ratio': A visualization output object that generates output for the ratio between dislocation viscosity and diffusion viscosity.
+
+`viscosity': A visualization output object that generates output for the viscosity.
+
+`thermodynamic phase': A visualization output object that generates output for the integer number of the phase that is thermodynamically stable at the temperature and pressure of the current point.
+
+`strain rate': A visualization output object that generates output for the norm of the strain rate, i.e., for the quantity $\sqrt{\varepsilon(\mathbf u):\varepsilon(\mathbf u)}$ in the incompressible case and $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u)\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u)\mathbf I]}$ in the compressible case.
+
+`specific heat': A visualization output object that generates output for the specific heat $C_p$.
+
+`seismic vs': A visualization output object that generates output for the seismic S-wave speed.
+
+`seismic vp': A visualization output object that generates output for the seismic P-wave speed.
+
+`partition': A visualization output object that generates output for the parallel partition that every cell of the mesh is associated with.
+
+`nonadiabatic temperature': A visualization output object that generates output for the non-adiabatic component of the pressure.
+
+`nonadiabatic pressure': A visualization output object that generates output for the non-adiabatic component of the pressure.
+
+`friction heating': A visualization output object that generates output for the amount of friction heating often referred to as $\tau:\epsilon$. More concisely, in the incompressible case, the quantity that is output is defined as $\eta \varepsilon(\mathbf u):\varepsilon(\mathbf u)$ where $\eta$ is itself a function of temperature, pressure and strain rate. In the compressible case, the quantity that's computed is $\eta [\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u)\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u)\mathbf I]$.
+
+`density': A visualization output object that generates output for the density.
+
+
+{\it Possible values:} [MultipleSelection viscosity ratio|viscosity|thermodynamic phase|strain rate|specific heat|seismic vs|seismic vp|partition|nonadiabatic temperature|nonadiabatic pressure|friction heating|density|all ]
 \item {\it Parameter name:} {\tt Number of grouped files}
 
 
@@ -1285,7 +1831,7 @@ The following postprocessors are available:
 
 \index[prmindex]{Time between graphical output}
 \index[prmindexfull]{Postprocess!Visualization!Time between graphical output}
-{\it Value:} 1e5
+{\it Value:} 0
 
 
 {\it Default:} 1e8
