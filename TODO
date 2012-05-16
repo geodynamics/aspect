@@ -7,17 +7,6 @@ the paper.
 
 average temperature/... depending on depth (for use in material model and output)
 
-Topics for an ASPECT II paper:
-- Compressibility
-- Nonlinearity
-- Checkpoint/restart
-- Mesh refinement criteria:
-  - for density, which is not continuous, Kelly does not make sense
-  - use gradient norm approximation in each cell
-  - right h scaling needed, because error does not converge, >1, but small as possible
-  - h^(1+d/2) okay?
-- How implicit to be?
-- time stepping / definition of h, etc
 
 Create list of publications. Include
 - papers
@@ -26,6 +15,7 @@ Create list of publications. Include
      Investigating Mixing and Flow in the Earth's Mantle using Adaptive Mesh
      Finite Element Simulations
   Heien, Bangerth, Heister, Kellogg
+
 
 
 Topics for preview release:
