@@ -134,6 +134,7 @@ namespace aspect
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true)
   {
+    computing_timer.enter_section("Initialization");
     // first do some error checking for the parameters we got
     {
       // make sure velocity boundary indicators don't appear in multiple lists
@@ -217,6 +218,7 @@ namespace aspect
                                parameters.output_directory + "parameters.tex>."));
       prm.print_parameters(prm_out, ParameterHandler::LaTeX);
     }
+    computing_timer.exit_section();
   }
 
 
@@ -944,12 +946,14 @@ namespace aspect
 
     if (parameters.resume_computation == false)
       {
+        computing_timer.enter_section ("Initialization");
         set_initial_temperature_field ();
         compute_initial_pressure_field ();
 
         time                      = parameters.start_time;
         timestep_number           = 0;
         time_step = old_time_step = 0;
+        computing_timer.exit_section();
       }
 
     // start the principal loop over time steps:
