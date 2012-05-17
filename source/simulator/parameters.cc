@@ -61,6 +61,11 @@ namespace aspect
                        "'Use years in output instead of seconds' parameter is set; "
                        "seconds otherwise.");
 
+    prm.declare_entry ("Timing output frequency", "100",
+                       Patterns::Integer(0),
+                       "How frequently in timesteps to output timing information. This is "
+                       "generally adjusted only for debugging and timing purposes.");
+
     prm.declare_entry ("Use years in output instead of seconds", "true",
                        Patterns::Bool (),
                        "When computing results for mantle convection simulations, "
@@ -314,6 +319,7 @@ namespace aspect
     resume_computation      = prm.get_bool ("Resume computation");
     CFL_number              = prm.get_double ("CFL number");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
+    timing_output_frequency = prm.get_integer ("Timing output frequency");
 
     start_time              = prm.get_double ("Start time");
     end_time                = prm.get_double ("End time");

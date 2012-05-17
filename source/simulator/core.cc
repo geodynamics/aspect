@@ -1026,7 +1026,8 @@ namespace aspect
 
         // every 100 time steps output a summary of the current
         // timing information
-        if ((timestep_number > 0) && (timestep_number % 100 == 0))
+        if ((timestep_number > 0) && (parameters.timing_output_frequency != 0) &&
+            (timestep_number % parameters.timing_output_frequency == 0))
           {
             computing_timer.print_summary ();
             output_statistics();

@@ -147,6 +147,7 @@ namespace aspect
         std::string                    output_directory;
         double                         surface_pressure;
         double                         adiabatic_surface_temperature;
+        int                            timing_output_frequency;
         /**
          * @}
          */
