@@ -302,33 +302,8 @@ $\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$.
 \aspect{} solves these equations in essentially the form stated. In
 particular, the form given in \eqref{eq:stokes-1} implies that the pressure
 $p$ we compute is in fact the \textit{total pressure}, i.e., the sum of
-hydrostatic pressure and dynamic pressure.%
-\footnote{Other codes often replace this equation by $-\nabla \cdot 2\eta
-  \nabla \mathbf u + \nabla p_d =
-  (\rho-\rho_0) \mathbf g$ where $p_d=(p+\rho_0 \varphi)$, and $\phi$ is the
-  gravitational potential so that
-  $\mathbf g=-\nabla\varphi$ and chosen in such a way that $\varphi=0$ at that
-  part of the boundary where we want the pressure to be zero (e.g., on the
-  earth surface). Furthermore, $\rho_0$ is a reference density. In this
-  formulation, it is clear that the quantity that drives the fluid flow is in
-  fact the \textit{buoyancy} caused by the \textit{variation} of densities,
-  not the density itself. $p_d=p+\rho_0 \varphi$ is then the \textit{dynamic}
-  pressure, i.e., the difference between total pressure and hydrostatic
-  pressure $p_s=-\rho_0\varphi$.
-
-  While this formulation has a number of numerical advantages, it also has
-  significant disadvantages: (i) The pressure we compute is not immediately
-  comparable to quantities that we need to look up pressure-dependent
-  quantities such as the density. (ii) The definition of a reference density
-  is only simple if we have incompressible models for which the density only
-  depends on the temperature; for more complicated models, it is not a priori
-  clear which density $\rho_0$ to chose so that $p+\rho_0 \varphi$ really only
-  contains the dynamic part of the pressure. (iii) To compute the total
-  pressure $p$ from $p_d$ one needs to know a gravitational potential
-  $\varphi$ that is consistent with the gravity vector $\mathbf g$. This is
-  not always trivial because many simple models just prescribe a $\mathbf g$
-  for which no such potential needs to exist; for example, this is the case
-  when using a radially inward gravitational vector of constant magnitude.}
+hydrostatic pressure and dynamic pressure (see
+Section~\ref{sec:pressure-static-dyn} for more information on this).
 Consequently, it allows the direct use of this pressure when looking up
 pressure dependent material parameters.
 
@@ -478,6 +453,43 @@ Concretely, we consider the following coefficients and dependencies:
   composition of material in the earth mantle. The literature suggests a value
   of $\gamma=7.4\cdot 10^{-12}\frac{\textrm{W}}{\textrm{kg}}$.
 \end{itemize}
+
+
+\subsection{Static or dynamic pressure?}
+\label{sec:pressure-static-dyn}
+
+One can reformulate equation \eqref{eq:stokes-1} somewhat. To this end, let us
+say that we would want to represent the pressure $p$ as the sum of two parts
+that we will call static and dynamic, $p=p_s+p_d$. If we assume that $p_s$ is
+already given, then we can replace \eqref{eq:stokes-1} by
+$$-\nabla \cdot 2\eta
+  \nabla \mathbf u + \nabla p_d =
+  \rho\mathbf g - \nabla p_s$$
+
+ where $p_d=(p+\rho_0 \varphi)$, and $\phi$ is the
+  gravitational potential so that
+  $\mathbf g=-\nabla\varphi$ and chosen in such a way that $\varphi=0$ at that
+  part of the boundary where we want the pressure to be zero (e.g., on the
+  earth surface). Furthermore, $\rho_0$ is a reference density. In this
+  formulation, it is clear that the quantity that drives the fluid flow is in
+  fact the \textit{buoyancy} caused by the \textit{variation} of densities,
+  not the density itself. $p_d=p+\rho_0 \varphi$ is then the \textit{dynamic}
+  pressure, i.e., the difference between total pressure and hydrostatic
+  pressure $p_s=-\rho_0\varphi$.
+
+  While this formulation has a number of numerical advantages, it also has
+  significant disadvantages: (i) The pressure we compute is not immediately
+  comparable to quantities that we need to look up pressure-dependent
+  quantities such as the density. (ii) The definition of a reference density
+  is only simple if we have incompressible models for which the density only
+  depends on the temperature; for more complicated models, it is not a priori
+  clear which density $\rho_0$ to chose so that $p+\rho_0 \varphi$ really only
+  contains the dynamic part of the pressure. (iii) To compute the total
+  pressure $p$ from $p_d$ one needs to know a gravitational potential
+  $\varphi$ that is consistent with the gravity vector $\mathbf g$. This is
+  not always trivial because many simple models just prescribe a $\mathbf g$
+  for which no such potential needs to exist; for example, this is the case
+  when using a radially inward gravitational vector of constant magnitude.
 
 
 \subsection{Pressure normalization}
