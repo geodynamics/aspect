@@ -318,16 +318,61 @@ namespace aspect
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         {
-          // call the execute() function. if it produces any output
-          // then add it to the list
-          std::pair<std::string,std::string> output
-            = (*p)->execute (statistics);
+          try
+            {
+              // call the execute() function. if it produces any output
+              // then add it to the list
+              std::pair<std::string,std::string> output
+                = (*p)->execute (statistics);
 
-          if (output.first.size() + output.second.size() > 0)
-            output_list.push_back (output);
+              if (output.first.size() + output.second.size() > 0)
+                output_list.push_back (output);
+            }
+          // postprocessors that throw exception usually do not result in
+          // anything good because they result in an unwinding of the stack
+          // and, if only one processor triggers an exception, the
+          // destruction of objects often causes a deadlock. thus, if
+          // an exception is generated, catch it, print an error message,
+          // and abort the program
+          catch (std::exception &exc)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running postprocessor <"
+                        << typeid(**p).name()
+                        << ">: " << std::endl
+                        << exc.what() << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              // terminate the program!
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
+          catch (...)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running postprocessor <"
+                        << typeid(**p).name()
+                        << ">: " << std::endl;
+              std::cerr << "Unknown exception!" << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              // terminate the program!
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
         }
 
-      return output_list;
+      return  output_list;
     }
 
 

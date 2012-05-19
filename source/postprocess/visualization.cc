@@ -111,7 +111,7 @@ namespace aspect
       Vector<float> estimated_error_per_cell(this->get_triangulation().n_active_cells());
       this->get_refinement_criteria(estimated_error_per_cell);
 
-// try to somehow get these variables into the viz plugins as well...
+//TODO: try to somehow get these variables into the viz plugins as well...
       Vector<float> Vs_anomaly(this->get_triangulation().n_active_cells());
       this->get_Vs_anomaly(Vs_anomaly);
       Vector<float> Vp_anomaly(this->get_triangulation().n_active_cells());
@@ -145,9 +145,57 @@ namespace aspect
       for (typename std::list<std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
            p = postprocessors.begin(); p!=postprocessors.end(); ++p)
         {
-          DataPostprocessor<dim> *viz_postprocessor
-            = dynamic_cast<DataPostprocessor<dim>*>(& **p);
-          data_out.add_data_vector (this->get_solution(), *viz_postprocessor);
+          try
+            {
+              DataPostprocessor<dim> *viz_postprocessor
+                = dynamic_cast<DataPostprocessor<dim>*>(& **p);
+              Assert (viz_postprocessor != 0,
+                      ExcInternalError());
+              data_out.add_data_vector (this->get_solution(), *viz_postprocessor);
+            }
+          // viz postprocessors that throw exception usually do not result in
+          // anything good because they result in an unwinding of the stack
+          // and, if only one processor triggers an exception, the
+          // destruction of objects often causes a deadlock. thus, if
+          // an exception is generated, catch it, print an error message,
+          // and abort the program
+          catch (std::exception &exc)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running visualization postprocessor <"
+                        << typeid(**p).name()
+                        << ">: " << std::endl
+                        << exc.what() << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              // terminate the program!
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
+          catch (...)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running visualization postprocessor <"
+                        << typeid(**p).name()
+                        << ">: " << std::endl;
+              std::cerr << "Unknown exception!" << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              // terminate the program!
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
+
         }
 
       data_out.add_data_vector (estimated_error_per_cell, "error_indicator");
