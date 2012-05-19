@@ -328,7 +328,7 @@ namespace aspect
               if (output.first.size() + output.second.size() > 0)
                 output_list.push_back (output);
             }
-          // postprocessors that throw exception usually do not result in
+          // postprocessors that throw exceptions usually do not result in
           // anything good because they result in an unwinding of the stack
           // and, if only one processor triggers an exception, the
           // destruction of objects often causes a deadlock. thus, if

@@ -153,7 +153,7 @@ namespace aspect
                       ExcInternalError());
               data_out.add_data_vector (this->get_solution(), *viz_postprocessor);
             }
-          // viz postprocessors that throw exception usually do not result in
+          // viz postprocessors that throw exceptions usually do not result in
           // anything good because they result in an unwinding of the stack
           // and, if only one processor triggers an exception, the
           // destruction of objects often causes a deadlock. thus, if
