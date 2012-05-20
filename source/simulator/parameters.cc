@@ -270,7 +270,12 @@ namespace aspect
       prm.declare_entry ("Stokes velocity polynomial degree", "2",
                          Patterns::Integer (1),
                          "The polynomial degree to use for the velocity variables "
-                         "in the Stokes system. Units: None.");
+                         "in the Stokes system. The polynomial degree for the pressure "
+                         "variable will then be one less in order to make the velocity/pressure "
+                         "pair conform with the usual LBB (Babuska-Brezzi) condition. In "
+                         "other words, we are using a Taylor-Hood element for the Stoeks "
+                         "equations and this parameter indicates the polynomial degree of it. "
+                         "Units: None.");
       prm.declare_entry ("Temperature polynomial degree", "2",
                          Patterns::Integer (1),
                          "The polynomial degree to use for the temperature variable. "
@@ -281,7 +286,28 @@ namespace aspect
                          "conservative at the expense of a larger number of degrees "
                          "of freedom (true), or to go with a cheaper discretization "
                          "that does not locally conserve mass, although it is "
-                         "globally conservative (false).");
+                         "globally conservative (false).\n\n"
+                         "When using a locally "
+                         "conservative discretization, the finite element space for "
+                         "the pressure is discontinuous between cells and is the "
+                         "polynomial space $P_{-q}$ of polynomials of degree $q$ in "
+                         "each variable separately. Here, $q$ is one less than the value "
+                         "given in the parameter ``Stokes velocity polynomial degree''. "
+                         "As a consequence of choosing this "
+                         "element, it can be shown if the medium is considered incompressible "
+                         "that the computed discrete velocity "
+                         "field $\\mathbf u_h$ satisfies the property $\\int_{\\partial K} \\mathbf u_h "
+                         "\\cdot \\mathbf n = 0$ for every cell $K$, i.e., for each cell inflow and "
+                         "outflow exactly balance each other as one would expect for an "
+                         "incompressible medium. In other words, the velocity field is locally "
+                         "conservative.\n\n"
+                         "On the other hand, if this parameter is "
+                         "set to ``false'', then the finite element space is chosen as $Q_q$. "
+                         "This choice does not yield the local conservation property but "
+                         "has the advantage of requiring fewer degrees of freedom. Furthermore, "
+                         "the error is generally smaller with this choice.\n\n"
+                         "For an in-depth discussion of these issues and a quantitative evaluation "
+                         "of the different choices, see \\cite{KHB12}.");
 
       prm.enter_subsection ("Stabilization parameters");
       {

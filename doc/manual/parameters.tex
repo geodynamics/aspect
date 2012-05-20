@@ -305,6 +305,12 @@ For more information, see the section in the manual that discusses the general m
 
 {\it Description:} Whether to use a Stokes discretization that is locally conservative at the expense of a larger number of degrees of freedom (true), or to go with a cheaper discretization that does not locally conserve mass, although it is globally conservative (false).
 
+When using a locally conservative discretization, the finite element space for the pressure is discontinuous between cells and is the polynomial space $P_{-q}$ of polynomials of degree $q$ in each variable separately. Here, $q$ is one less than the value given in the parameter ``Stokes velocity polynomial degree''. As a consequence of choosing this element, it can be shown if the medium is considered incompressible that the computed discrete velocity field $\mathbf u_h$ satisfies the property $\int_{\partial K} \mathbf u_h \cdot \mathbf n = 0$ for every cell $K$, i.e., for each cell inflow and outflow exactly balance each other as one would expect for an incompressible medium. In other words, the velocity field is locally conservative.
+
+On the other hand, if this parameter is set to ``false'', then the finite element space is chosen as $Q_q$. This choice does not yield the local conservation property but has the advantage of requiring fewer degrees of freedom. Furthermore, the error is generally smaller with this choice.
+
+For an in-depth discussion of these issues and a quantitative evaluation of the different choices, see \cite{KHB12}.
+
 
 {\it Possible values:} [Bool]
 \end{itemize}
