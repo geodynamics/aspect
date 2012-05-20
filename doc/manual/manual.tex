@@ -458,38 +458,108 @@ Concretely, we consider the following coefficients and dependencies:
 \subsection{Static or dynamic pressure?}
 \label{sec:pressure-static-dyn}
 
-One can reformulate equation \eqref{eq:stokes-1} somewhat. To this end, let us
+One could reformulate equation \eqref{eq:stokes-1} somewhat. To this end, let us
 say that we would want to represent the pressure $p$ as the sum of two parts
 that we will call static and dynamic, $p=p_s+p_d$. If we assume that $p_s$ is
 already given, then we can replace \eqref{eq:stokes-1} by
-$$-\nabla \cdot 2\eta
+\begin{gather*}
+  -\nabla \cdot 2\eta
   \nabla \mathbf u + \nabla p_d =
-  \rho\mathbf g - \nabla p_s$$
+  \rho\mathbf g - \nabla p_s.
+\end{gather*}
+One typically chooses $p_s$ as the pressure one would get if the whole medium
+were at rest -- i.e., as the hydrostatic pressure. This pressure can be
+computed noting that \eqref{eq:stokes-1} reduces to
+\begin{gather*}
+  \nabla p_s = \rho(p_s,T_s,\mathbf x)\mathbf g
+\end{gather*}
+in the absence of any motion where $T_s$ is some static temperature field (see
+also Section~\ref{sec:adiabatic}). This, our rewritten version of
+\eqref{eq:stokes-1} would look like this:
+\begin{gather*}
+  -\nabla \cdot 2\eta
+  \nabla \mathbf u + \nabla p_d =
+  \left[\rho(p,T,\mathbf x)-\rho(p_s,T_s,\mathbf x)\right]\mathbf g.
+\end{gather*}
+In this
+formulation, it is clear that the quantity that drives the fluid flow is in
+fact the \textit{buoyancy} caused by the \textit{variation} of densities,
+not the density itself.
 
- where $p_d=(p+\rho_0 \varphi)$, and $\phi$ is the
-  gravitational potential so that
-  $\mathbf g=-\nabla\varphi$ and chosen in such a way that $\varphi=0$ at that
-  part of the boundary where we want the pressure to be zero (e.g., on the
-  earth surface). Furthermore, $\rho_0$ is a reference density. In this
-  formulation, it is clear that the quantity that drives the fluid flow is in
-  fact the \textit{buoyancy} caused by the \textit{variation} of densities,
-  not the density itself. $p_d=p+\rho_0 \varphi$ is then the \textit{dynamic}
-  pressure, i.e., the difference between total pressure and hydrostatic
-  pressure $p_s=-\rho_0\varphi$.
+This reformulation has a number of advantages and disadvantages:
+\begin{itemize}
+\item One can notice that in many realistic cases, the dynamic component $p_d$
+  of the pressure is orders of magnitude smaller than the static component
+  $p_s$. For example, in the earth, the two are separated by around 6 orders
+  of magnitude at the bottom of the earth mantle. Consequently, if one wants
+  to solve the linear system that arises from discretization of the original
+  equations, one has to solve it a significant degree of accuracy (6--7
+  digits) to get the dynamic part of the pressure correct to even one
+  digit. This entails a very significant numerical effort, and one that is not
+  necessary if we can split the pressure in a way so that the pre-computed
+  static pressure $p_s$ (or, rather, the density using the static pressure and
+  temperature from which $p_s$ results) absorbs the dominant part and one only
+  has to compute the remaining, dynamic pressure to 2 or 3 digits of accuracy,
+  rather than the corresponding 7--8 for the total pressure.
 
-  While this formulation has a number of numerical advantages, it also has
-  significant disadvantages: (i) The pressure we compute is not immediately
-  comparable to quantities that we need to look up pressure-dependent
-  quantities such as the density. (ii) The definition of a reference density
-  is only simple if we have incompressible models for which the density only
-  depends on the temperature; for more complicated models, it is not a priori
-  clear which density $\rho_0$ to chose so that $p+\rho_0 \varphi$ really only
-  contains the dynamic part of the pressure. (iii) To compute the total
-  pressure $p$ from $p_d$ one needs to know a gravitational potential
-  $\varphi$ that is consistent with the gravity vector $\mathbf g$. This is
-  not always trivial because many simple models just prescribe a $\mathbf g$
-  for which no such potential needs to exist; for example, this is the case
-  when using a radially inward gravitational vector of constant magnitude.
+\item On the other hand, the pressure $p_d$ one computes this way is not immediately
+  comparable to quantities that we use to look up pressure-dependent
+  quantities such as the density. Rather, one needs to first find the static
+  pressure as well (see Section~\ref{sec:adiabatic}) and add the two together
+  before they can be used to look up material properties or to compare them with
+  experimental results. Consequently, if the pressure a program outputs
+  (either for visualization, or in the internal interfaces to parts of the
+  code where users can implement pressure- and temperature-dependent material
+  properties) is only the dynamic component, then all of the consumers of this
+  information need to convert it into the total pressure when comparing with
+  physical experiments. Since any code implementing realistic material models
+  has a great many of these places, there is a large potential for inadvertant
+  errors and bugs.
+
+\item Finally, the definition of a reference density $\rho(p_s,T_s,\mathbf x)$
+  derived from static pressures and temperatures
+  is only simple if we have incompressible models and under the assumption
+  that the temperature-induced density variations are small compared to the
+  overall density. In this case, we can choose $\rho(p_s,T_s,\mathbf
+  x)=\rho_0$ with a constant reference density $\rho_0$. On the other hand,
+  for more complicated models, it is not a priori
+  clear which density to choose since we first need to compute static
+  pressures and temperatures -- quantities that satisfy equations that
+  introduce boundary layers, may include phase changes releasing latent heat,
+  and where the density may have discontinuities at certain depths, see
+  Section~\ref{sec:adiabatic}.
+
+  Thus, if we compute adiabatic pressures and
+  temperatures $\bar p_s,\bar T_s$ under the assumption of a thermal boundary layer
+  worth 900 Kelvin at the top, and we get a corresponding density profile
+  $\bar\rho=\rho(\bar p_s,\bar T_s, \mathbf x)$, but after running for a few
+  million years the temperature turns out to be so that the top boundary layer
+  has a jump of only 800 Kelvin with corresponding adiabatic pressures and
+  temperatures $\hat p_s,\hat T_s$, then a more appropriate density profile
+  would be $\hat\rho=\rho(\hat p_s,\hat T_s, \mathbf x)$.
+
+  The problem is that it may well be that the erroneously computed density
+  profile $\hat \rho$ does \textit{not} lead to a separation where
+  $|p_d|\ll|p_s|$ because, especially if the material undergoes phase changes,
+  there will be entire areas of the computational domain in which $|\rho-\hat
+  \rho_s|\ll |\rho|$ but $|\rho-\bar
+  \rho_s|\not\ll |\rho|$. Consequently the benefits of lesser requirements on the
+  iterative linear solver would not be realized.
+\end{itemize}
+
+We do note that most of the codes available today and that we are aware of
+split the pressure into static and dynamic parts nevertheless, either
+internally or require the user to specify the density profile as the
+difference between the true and the hydrostatic density. This may, in part, be
+due to the fact that historically most codes where written to solve problems
+in which the medium was considered incompressible, i.e., where the definition
+of a static density was simple.
+
+On the other hand, we intend \aspect{} to be a code that can solve more
+general models for which this definition is not as simple.
+
+\textbf{Rest to be written; we have a scheme in mind but haven't implemented
+  it yet.}
 
 
 \subsection{Pressure normalization}
