@@ -920,7 +920,21 @@ namespace aspect
   {
     if (parameters.nonlinear_iteration)
     {
-        AssertThrow(false, ExcNotImplemented());
+        assemble_temperature_system ();
+        solve_temperature();
+
+        for (int i=0;i<10;++i)
+        {
+            rebuild_stokes_matrix =
+              rebuild_stokes_preconditioner = true;
+
+        assemble_stokes_system();
+        build_stokes_preconditioner();
+        solve_stokes();
+        old_solution = solution;
+
+        pcout << std::endl;
+        }
     }
     else
     {
