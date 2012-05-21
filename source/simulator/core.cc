@@ -921,7 +921,10 @@ namespace aspect
     if (parameters.nonlinear_iteration)
     {
         assemble_temperature_system ();
-        solve_temperature();
+        //TODO: this does not converge for the Tan/Gurnis benchmark on fine meshes,
+        // even if we set the correct initial conditions. Why?
+        //solve_temperature();
+        std::cout << "Warning: we are not solving for temperature!" << std::endl;
 
         for (int i=0;i<10;++i)
         {
