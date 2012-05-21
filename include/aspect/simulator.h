@@ -144,6 +144,7 @@ namespace aspect
         double                         end_time;
         double                         CFL_number;
         bool                           convert_to_years;
+        bool                           nonlinear_iteration;
         std::string                    output_directory;
         double                         surface_pressure;
         double                         adiabatic_surface_temperature;
@@ -361,6 +362,13 @@ namespace aspect
        * <code>source/simulator/solver.cc</code>.
        */
       void solve_stokes ();
+
+      /**
+       * Handles assembly and solving of the temperature
+       * and Stokes system, handling the nonlinear system
+       * in different ways.
+       */
+      void solve_system ();
 
       /**
        * This function is called at the end of every time step. It

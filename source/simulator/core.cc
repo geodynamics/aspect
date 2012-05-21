@@ -915,6 +915,30 @@ namespace aspect
 
 
 
+  template <int dim>
+  void Simulator<dim>::solve_system ()
+  {
+    if (parameters.nonlinear_iteration)
+    {
+        AssertThrow(false, ExcNotImplemented());
+    }
+    else
+    {
+        //solve for temperature first, and then for Stokes (once each)
+
+        assemble_temperature_system ();
+        solve_temperature();
+
+        assemble_stokes_system();
+        build_stokes_preconditioner();
+        solve_stokes();
+
+        pcout << std::endl;
+      }
+  }
+
+
+
   /**
    * This is the main function of the program, containing the overall
    * logic which function is called when.
@@ -962,14 +986,7 @@ namespace aspect
         start_timestep ();
 
         // then do the core work: assemble systems and solve
-        assemble_temperature_system ();
-        solve_temperature();
-
-        assemble_stokes_system();
-        build_stokes_preconditioner();
-        solve_stokes();
-
-        pcout << std::endl;
+        solve_system();
 
         // update the time step size
         old_time_step = time_step;

@@ -50,6 +50,11 @@ namespace aspect
                        "A flag indicating whether the computation should be resumed from "
                        "a previously saved state (if true) or start from scratch (if false).");
 
+    prm.declare_entry ("Nonlinear iteration", "false",
+                       Patterns::Bool (),
+                       "A flag indicating whether the Stokes+Advection equation should be solved "
+                       "once per time step (false) or resolved using a fixed-point iteration (true).");
+
     prm.declare_entry ("Start time", "0",
                        Patterns::Double (),
                        "The start time of the simulation. Units: years if the "
@@ -346,6 +351,7 @@ namespace aspect
     CFL_number              = prm.get_double ("CFL number");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
     timing_output_frequency = prm.get_integer ("Timing output frequency");
+    nonlinear_iteration     = prm.get_bool ("Nonlinear iteration");
 
     start_time              = prm.get_double ("Start time");
     end_time                = prm.get_double ("End time");
