@@ -32,7 +32,7 @@ namespace aspect
     template <int dim>
     TanGurnis<dim>::TanGurnis()
     {
-      a=2; // 0 or 2
+      a=0; // 0 or 2
 
       //BA:
       //Di=0;gamma=10000; //=inf
@@ -126,7 +126,6 @@ namespace aspect
              const Point<dim> & pos) const
     {
       const double depth = 1.0-pos(dim-1);
-      double wavenumber=1;
       const double temperature = sin(numbers::PI*pos(dim-1))*cos(numbers::PI*wavenumber*pos(0));
       return -1.0*temperature*exp(Di/gamma*(depth));
     }
@@ -205,6 +204,38 @@ namespace aspect
       return true;
     }
 
+    template <int dim>
+    double
+    TanGurnis<dim>::
+    parameter_a() const
+    {
+      return a;
+    }
+
+    template <int dim>
+    double
+    TanGurnis<dim>::
+    parameter_wavenumber() const
+    {
+      return wavenumber;
+    }
+
+    template <int dim>
+    double
+    TanGurnis<dim>::
+    parameter_Di() const
+    {
+      return Di;
+    }
+
+    template <int dim>
+    double
+    TanGurnis<dim>::
+    parameter_gamma() const
+    {
+      return gamma;
+    }
+
 
 
     template <int dim>
@@ -236,6 +267,19 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\beta$. "
                              "Units: $1/K$.");
+          prm.declare_entry ("a", "0",
+                             Patterns::Double (0),
+                             "");
+          prm.declare_entry ("Di", "0.5",
+                             Patterns::Double (0),
+                             "");
+          prm.declare_entry ("gamma", "1",
+                             Patterns::Double (0),
+                             "");
+          prm.declare_entry ("wavenumber", "1",
+                             Patterns::Double (0),
+                             "");
+
         }
         prm.leave_subsection();
       }
@@ -258,6 +302,10 @@ namespace aspect
           k_value               = prm.get_double ("Thermal conductivity");
           reference_specific_heat = prm.get_double ("Reference specific heat");
           thermal_alpha = prm.get_double ("Thermal expansion coefficient");
+          a = prm.get_double("a");
+          Di = prm.get_double("Di");
+          gamma = prm.get_double("gamma");
+          wavenumber = prm.get_double("wavenumber");
         }
         prm.leave_subsection();
       }

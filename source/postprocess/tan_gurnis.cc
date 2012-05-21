@@ -19,7 +19,7 @@
 */
 /*  $Id$  */
 
-//#include <aspect/material_model/duretz_et_al.h>
+#include <aspect/material_model/tan_gurnis.h>
 #include <aspect/postprocess/tan_gurnis.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>
@@ -44,13 +44,17 @@ namespace aspect
       AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
                   ExcNotImplemented());
 
+      const MaterialModel::TanGurnis<dim> *
+          material_model = dynamic_cast<const MaterialModel::TanGurnis<dim> *>(&this->get_material_model());
+
+      AssertThrow(material_model!=NULL, ExcMessage("tan gurnis postprocessor only works with tan gurnis material model"));
+
       std::ofstream f ((this->get_output_directory() + "output.csv").c_str());
       f.precision (16);
-      f << "0 0 0 0"
-//                         EquationData::MaterialModel::Di << ' '
-//                       << EquationData::MaterialModel::gamma << ' '
-//                       << EquationData::MaterialModel::wavenumber << ' '
-//                       << EquationData::MaterialModel::a
+      f << material_model->parameter_Di() << ' '
+        << material_model->parameter_gamma() << ' '
+        << material_model->parameter_wavenumber() << ' '
+        << material_model->parameter_a() << ' '
         << " -1 -1 -1" << std::endl; //pad to 7 values, so matlab is happy
 
       f << std::scientific;

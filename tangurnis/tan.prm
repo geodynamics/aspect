@@ -21,7 +21,9 @@ set CFL number                             = 1.0
 
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
-set End time                               = 20
+set End time                               = 0.0001
+
+set Nonlinear iteration = true
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
@@ -81,7 +83,7 @@ subsection Boundary temperature model
   # `spherical constant': A model in which the temperature is chosen constant
   # on the inner and outer boundaries of a spherical shell. Parameters are
   # read from subsection 'Sherical constant'.
-  set Model name = box
+  set Model name = Tan Gurnis
 
 end
 
@@ -196,6 +198,14 @@ subsection Material model
   # `table': A material model that reads tables of pressure and temperature
   # dependent material coefficients from files.
   set Model name = Tan Gurnis
+
+  subsection Tan Gurnis model
+    set Di                            = 0.5
+    set a                             = 2
+    set gamma                         = 1
+    set wavenumber                    = 1
+  end
+
 end
 
 
@@ -274,7 +284,7 @@ subsection Postprocess
   # into files that can be read by a graphical visualization program.
   # Additional run time parameters are read from the parameter subsection
   # 'Visualization'.
-  set List of postprocessors = visualization, Tan Gurnis error
+  set List of postprocessors = Tan Gurnis error
 
   subsection Depth average
     # The time interval between each generation of graphical output files. A

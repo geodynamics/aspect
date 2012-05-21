@@ -147,6 +147,12 @@ namespace aspect
         double reference_thermal_diffusivity () const;
 
         double reference_cp () const;
+
+        double parameter_a() const;
+        double parameter_wavenumber() const;
+        double parameter_Di() const;
+        double parameter_gamma() const;
+
         /**
          * @}
          */

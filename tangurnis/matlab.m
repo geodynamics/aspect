@@ -1,35 +1,37 @@
 function matlab
 
-%etastar = exp(a*depth);
-%omega = exp(beta*depth)*Pi*depth; %rho*t;
+format LONGG
+
 global a;
 global Ra;
 global k;
 global beta_;
 
-Di = 0.5;
-gamm = 1;
-
-beta_ = Di/gamm;
-k = 1*pi;
 Ra =-1;
-
-a=0;
-
-%variables: u_z u_x eta_zz eta_xz
-%initial values: 0 ? ? 0
-
-tic
-solinit = bvpinit(linspace(0,1,5000),[0 0 0 0],[]);
-SOL = bvp4c(@myode,@bcfun,solinit, bvpset('RelTol', 1e-12,'AbsTol',1e-12));
-
-toc
 
 convx=[];
 convy=[];
+first=1;
 for j=[8 16 32 64 128]
     
     vv=load(sprintf('vel_%d.dat',j));
+    if (first==1)
+        first = 0;
+        
+        Di = vv(1,1); % 0.5
+        gamm = vv(1,2); % 1
+        beta_ = Di/gamm;
+
+        k = vv(1,3)*pi; %1*pi
+        a=vv(1,4); % 0 or 2
+
+        tic
+        %variables: u_z u_x eta_zz eta_xz
+        %initial values: 0 ? ? 0
+        solinit = bvpinit(linspace(0,1,5000),[0 0 0 0],[]);
+        SOL = bvp4c(@myode,@bcfun,solinit, bvpset('RelTol', 1e-12,'AbsTol',1e-12));
+        toc
+    end
     vv=vv(2:size(vv,1),:);
     
     dat_calc = vv(:,3);
@@ -55,9 +57,9 @@ ylim([5e-10 5e-5]);
 convorder=polyfit(log(convx),log(convy),1);
 convorder=convorder(1);
 
-[convx convy]
+display([convx convy]);
 
-convorder
+fprintf('convergence order: %f\n',-convorder);
 
 %  figure(2);clf;
 %  plot(dat_calc);hold on;
