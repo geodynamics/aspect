@@ -734,31 +734,32 @@ namespace aspect
 
       output.close();
 
-      // Write the parallel pvtu file
-      // TODO: only write this on the root process
-      const std::string pvtu_filename = (output_path_prefix + ".pvtu");
-
-      std::ofstream pvtu_output (pvtu_filename.c_str());
-      if (!pvtu_output) std::cout << "ERROR: Could not create " << filename << std::endl;
-
-      pvtu_output << "<?xml version=\"1.0\"?>\n";
-      pvtu_output << "<VTKFile type=\"PUnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
-      pvtu_output << "  <PUnstructuredGrid GhostLevel=\"0\">\n";
-      pvtu_output << "    <PPoints>\n";
-      pvtu_output << "      <PDataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"ascii\"/>\n";
-      pvtu_output << "    </PPoints>\n";
-      pvtu_output << "    <PPointData Scalars=\"scalars\">\n";
-      pvtu_output << "      <PDataArray type=\"Float64\" Name=\"velocity\" NumberOfComponents=\"3\" format=\"ascii\"/>\n";
-      pvtu_output << "      <PDataArray type=\"Float64\" Name=\"id\" format=\"ascii\"/>\n";
-      pvtu_output << "    </PPointData>\n";
-      for (i=0; i<nproc; ++i)
+      // Write the parallel pvtu file on the root process
+      if (myid == 0)
         {
-          pvtu_output << "    <Piece Source=\"" << output_file_prefix << "." << Utilities::int_to_string(i, 4) << ".vtu\"/>\n";
-        }
-      pvtu_output << "  </PUnstructuredGrid>\n";
-      pvtu_output << "</VTKFile>\n";
-      pvtu_output.close();
+          const std::string pvtu_filename = (output_path_prefix + ".pvtu");
 
+          std::ofstream pvtu_output (pvtu_filename.c_str());
+          if (!pvtu_output) std::cout << "ERROR: Could not create " << filename << std::endl;
+
+          pvtu_output << "<?xml version=\"1.0\"?>\n";
+          pvtu_output << "<VTKFile type=\"PUnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
+          pvtu_output << "  <PUnstructuredGrid GhostLevel=\"0\">\n";
+          pvtu_output << "    <PPoints>\n";
+          pvtu_output << "      <PDataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"ascii\"/>\n";
+          pvtu_output << "    </PPoints>\n";
+          pvtu_output << "    <PPointData Scalars=\"scalars\">\n";
+          pvtu_output << "      <PDataArray type=\"Float64\" Name=\"velocity\" NumberOfComponents=\"3\" format=\"ascii\"/>\n";
+          pvtu_output << "      <PDataArray type=\"Float64\" Name=\"id\" format=\"ascii\"/>\n";
+          pvtu_output << "    </PPointData>\n";
+          for (i=0; i<nproc; ++i)
+            {
+              pvtu_output << "    <Piece Source=\"" << output_file_prefix << "." << Utilities::int_to_string(i, 4) << ".vtu\"/>\n";
+            }
+          pvtu_output << "  </PUnstructuredGrid>\n";
+          pvtu_output << "</VTKFile>\n";
+          pvtu_output.close();
+        }
       out_index++;
 
       return output_path_prefix;
