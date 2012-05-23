@@ -40,6 +40,7 @@ Topics for preview release:
 - provide an option to store not only the last snapshot but many
 - move the adiabatic heating term (the last one in the temperature equation)
   to the left hand side and make it implicit
+- methods to compute dynamic topography from the dynamic part of the pressure
 
 
 - Create a task list for a release that includes:
