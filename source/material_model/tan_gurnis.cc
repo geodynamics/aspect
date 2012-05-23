@@ -262,7 +262,7 @@ namespace aspect
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
                              "The value of the specific heat $cp$. "
-                             "Units: $JG/kgK$.");
+                             "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\beta$. "
