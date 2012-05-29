@@ -252,6 +252,7 @@ namespace aspect
       LinearAlgebra::BlockVector
       distributed_solution (system_rhs);
       distributed_solution = solution;
+      current_constraints.set_zero(distributed_solution);
 
       solver.solve (system_matrix.block(2,2), distributed_solution.block(2),
                     system_rhs.block(2), *T_preconditioner);
