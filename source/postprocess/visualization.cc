@@ -219,11 +219,11 @@ namespace aspect
                                    Utilities::int_to_string (output_file_number, 5) +
                                    ".vtu");
               const std::string
-              pvtu_master_filename = (this->get_output_directory() +
-                                      "solution-" +
+              pvtu_master_filename = ("solution-" +
                                       Utilities::int_to_string (output_file_number, 5) +
                                       ".pvtu");
-              std::ofstream pvtu_master (pvtu_master_filename.c_str());
+              std::ofstream pvtu_master ((this->get_output_directory() +
+                                          pvtu_master_filename).c_str());
               data_out.write_pvtu_record (pvtu_master, filenames);
 
               // now also generate a .pvd file that matches simulation
@@ -270,11 +270,11 @@ namespace aspect
                                      DataOutBase::default_suffix
                                      (DataOutBase::parse_output_format(output_format)));
               const std::string
-              pvtu_master_filename = (this->get_output_directory() +
-                                      "solution-" +
+              pvtu_master_filename = ("solution-" +
                                       Utilities::int_to_string (output_file_number, 5) +
                                       ".pvtu");
-              std::ofstream pvtu_master (pvtu_master_filename.c_str());
+              std::ofstream pvtu_master ((this->get_output_directory() +
+                                          pvtu_master_filename).c_str());
               data_out.write_pvtu_record (pvtu_master, filenames);
 
               // now also generate a .pvd file that matches simulation
@@ -614,7 +614,7 @@ namespace aspect
         // note that viz plugins need not necessarily derive from
         // SimulatorAccess if they don't need anything beyond the
         // solution variables to compute what they compute
-        if (SimulatorAccess<dim> * x = dynamic_cast<SimulatorAccess<dim>*>(& **p))
+        if (SimulatorAccess<dim> *x = dynamic_cast<SimulatorAccess<dim>*>(& **p))
           x->initialize (simulator);
     }
 
