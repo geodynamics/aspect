@@ -1300,6 +1300,7 @@ total 780
 -rw------- 1 b   1061 Dec  1 15:13 solution-00001.pvtu
 -rw------- 1 b     35 Dec  1 15:13 solution-00001.visit
 ...
+-rw-r--r-- 1 b    997 Dec  1 15:13 solution.pvd
 -rw------- 1 b    924 Dec  1 15:13 statistics
 \end{lstlisting}
 The purpose of these files is as follows:
@@ -1347,6 +1348,13 @@ The purpose of these files is as follows:
   \texttt{.visit} files. To make it easy for you to view data, \aspect{}
   simply creates both kinds of files in each time step in which graphical data
   is produced.
+  
+  The final file of this kind, \texttt{solution.pvd} is a file that
+  describes to Paraview which \texttt{solution-xxxx.pvtu} jointly form
+  a complete simulation by listing the \texttt{.pvtu} files of all
+  timesteps together with the simulation time to which they correspond.
+  To visualize an entire simulation, not just a single time step, it is
+  therefore simplest to just load this \texttt{solution.pvd} file.
 
   For more on visualization, see Section~\ref{sec:viz}.
 

@@ -203,6 +203,8 @@ namespace aspect
       data_out.add_data_vector (Vp_anomaly, "Vp_anomaly");
       data_out.build_patches ();
 
+//TODO: There is some code duplication between the following two
+//code blocks. unify!
       if (output_format=="vtu" && group_files!=0)
         {
           AssertThrow(group_files==1, ExcNotImplemented());
@@ -224,6 +226,16 @@ namespace aspect
               std::ofstream pvtu_master (pvtu_master_filename.c_str());
               data_out.write_pvtu_record (pvtu_master, filenames);
 
+              // now also generate a .pvd file that matches simulation
+              // time and corresponding .pvtu record
+              times_and_pvtu_names.push_back(std::pair<double,std::string>
+                                             (this->get_time(), pvtu_master_filename));
+              const std::string
+              pvd_master_filename = (this->get_output_directory() + "solution.pvd");
+              std::ofstream pvd_master (pvd_master_filename.c_str());
+              data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
+
+              // finally, do the same for Visit via the .visit file
               const std::string
               visit_master_filename = (this->get_output_directory() +
                                        "solution-" +
@@ -265,6 +277,16 @@ namespace aspect
               std::ofstream pvtu_master (pvtu_master_filename.c_str());
               data_out.write_pvtu_record (pvtu_master, filenames);
 
+              // now also generate a .pvd file that matches simulation
+              // time and corresponding .pvtu record
+              times_and_pvtu_names.push_back(std::pair<double,std::string>
+                                             (this->get_time(), pvtu_master_filename));
+              const std::string
+              pvd_master_filename = (this->get_output_directory() + "solution.pvd");
+              std::ofstream pvd_master (pvd_master_filename.c_str());
+              data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
+
+              // finally, do the same for Visit via the .visit file
               const std::string
               visit_master_filename = (this->get_output_directory() +
                                        "solution-" +
@@ -518,7 +540,8 @@ namespace aspect
     void Visualization<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &next_output_time
-      & output_file_number;
+      & output_file_number
+      & times_and_pvtu_names;
     }
 
 

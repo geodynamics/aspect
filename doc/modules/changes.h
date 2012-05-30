@@ -11,6 +11,15 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: Aspect now writes a <code>solution.pvd</code> for Paraview
+that contains a list of the files that jointly make up the entire
+simulation (and not just a single time step) together with the
+simulation time each of the files that describe a time step correspond
+to.
+<br>
+(Wolfgang Bangerth, 2012/05/30)
+
+<li>
 New: The variables we output in graphical format files are now
 user selectable from the input parameter file. Functions that
 compute something from velocity, pressure and temperature (e.g.,
