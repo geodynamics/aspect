@@ -158,6 +158,16 @@ namespace aspect
         int                             *send_offset, *recv_offset;
         MPI_Request                     *send_reqs, *recv_reqs;
 
+        /**
+         * A list of pairs (time, pvtu_filename) that have so far been written
+         * and that we will pass to DataOutInterface::write_pvd_record
+         * to create a master file that can make the association
+         * between simulation time and corresponding file name (this
+         * is done because there is no way to store the simulation
+         * time inside the .pvtu or .vtu files).
+         */
+        std::vector<std::pair<double,std::string> > times_and_pvtu_names;
+
         void generate_particles_in_subdomain(const parallel::distributed::Triangulation<dim> &triangulation,
                                              unsigned int num_particles,
                                              unsigned int start_id);

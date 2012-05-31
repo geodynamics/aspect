@@ -22,6 +22,7 @@
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/numerics/fe_field_function.h>
 #include <deal.II/lac/block_vector.h>
+#include <deal.II/numerics/data_out.h>
 #include <aspect/global.h>
 #include <aspect/postprocess/tracer.h>
 #include <aspect/simulator.h>
@@ -135,7 +136,6 @@ namespace aspect
           this->get_triangulation().signals.post_refinement.connect(std_cxx1x::bind(&ParticleSet<dim>::mesh_changed,
                                                                                     std_cxx1x::ref(*this)));
         }
-
       advect_particles(this->get_triangulation(),
                        this->get_timestep(),
                        this->get_solution(),
@@ -270,7 +270,18 @@ namespace aspect
                 {
                   pt[d] = drand48()*(max_bounds[d]-min_bounds[d]) + min_bounds[d];
                 }
-              if (it->point_inside(pt)) break;
+              try
+                {
+                  if (it->point_inside(pt)) break;
+                }
+              catch (...)
+                {
+                  // Debugging output, remove when Q4 mapping 3D sphere problem is resolved
+                  //std::cerr << "ooo eee ooo aaa aaa " << pt << " " << select_cell.first << " " << select_cell.second << std::endl;
+                  //for (int z=0;z<8;++z) std::cerr << "V" << z <<": " << it->vertex(z) << ", ";
+                  //std::cerr << std::endl;
+                  MPI_Abort(MPI_COMM_WORLD, 1);
+                }
               num_tries++;
             }
           AssertThrow (num_tries < 100, ExcMessage ("Couldn't generate particle (unusual cell shape?)."));
@@ -654,6 +665,7 @@ namespace aspect
       typename ParticleMap::iterator  it;
       unsigned int                  d, i;
       std::string                                     output_file_prefix, output_path_prefix;
+      DataOut<dim>            data_out;
 
       output_file_prefix = "particle-" + Utilities::int_to_string (out_index, 5);
       output_path_prefix = output_dir + output_file_prefix;
@@ -734,7 +746,7 @@ namespace aspect
 
       output.close();
 
-      // Write the parallel pvtu file on the root process
+      // Write the parallel pvtu and pvd files on the root process
       if (myid == 0)
         {
           const std::string pvtu_filename = (output_path_prefix + ".pvtu");
@@ -759,6 +771,11 @@ namespace aspect
           pvtu_output << "  </PUnstructuredGrid>\n";
           pvtu_output << "</VTKFile>\n";
           pvtu_output.close();
+
+          times_and_pvtu_names.push_back(std::pair<double,std::string>(this->get_time(), output_file_prefix+".pvtu"));
+          const std::string pvd_master_filename = (this->get_output_directory() + "particle.pvd");
+          std::ofstream pvd_master (pvd_master_filename.c_str());
+          data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
         }
       out_index++;
 
