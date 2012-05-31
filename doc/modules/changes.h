@@ -11,6 +11,12 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: Tracer particle postprocessor also outputs
+<code>particle.pvd</code> for ParaView.
+<br>
+(Eric Heien, 2012/05/31)
+
+<li>
 New: Aspect now writes a <code>solution.pvd</code> for Paraview
 that contains a list of the files that jointly make up the entire
 simulation (and not just a single time step) together with the
