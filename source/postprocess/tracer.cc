@@ -31,7 +31,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-
     // Initialize a particle using the data in an MPI_Particle struct
     template <int dim>
     Particle<dim>::Particle(const MPI_Particle<dim> &particle_data) : _is_local(false)
@@ -71,8 +70,6 @@ namespace aspect
       MPI_Aint    indices[4];
       MPI_Datatype  old_types[4];
       int       res;
-
-      out_index = 0;
 
       block_lens[0] = dim;    // Position
       block_lens[1] = dim;    // Original position
@@ -125,11 +122,13 @@ namespace aspect
     template <int dim>
     std::pair<std::string,std::string> ParticleSet<dim>::execute (TableHandler &statistics)
     {
-      std::string     result_string = "done.", file_name;
+      std::string     result_string = "done.", gfx_file_name, data_file_name;
+      bool            output_gfx, output_data;
 
+      output_gfx = output_data = false;
       if (!initialized)
         {
-          next_output_time = this->get_time();
+          next_gfx_output_time = next_data_output_time = this->get_time();
           setup_mpi(this->get_mpi_communicator());
           initialized = true;
           generate_particles(this->get_triangulation(), num_initial_tracers);
@@ -142,12 +141,21 @@ namespace aspect
                        this->get_dof_handler(),
                        this->get_mapping());
 
-      if (this->get_time() >= next_output_time)
+      if (this->get_time() >= next_gfx_output_time)
         {
-          set_next_output_time (this->get_time());
-          file_name = output_particles(this->get_output_directory(), this->get_triangulation());
-          result_string += " Writing particle output: " + file_name;
+          set_next_gfx_output_time (this->get_time());
+          gfx_file_name = output_particle_gfx(this->get_output_directory(), this->get_triangulation());
+          output_gfx = true;
         }
+
+      if (data_out_format != "none" && this->get_time() >= next_data_output_time)
+        {
+          set_next_data_output_time (this->get_time());
+          data_file_name = output_particle_data(this->get_output_directory(), this->get_triangulation());
+          output_data = true;
+        }
+      if (output_gfx) result_string += " Wrote particle graphics: " + gfx_file_name + ".";
+      if (output_data) result_string += " Wrote particle data: " + data_file_name + ".";
 
       triangulation_changed = false;
 
@@ -660,14 +668,14 @@ namespace aspect
 
     // Output the particle locations to parallel VTK files
     template <int dim>
-    std::string ParticleSet<dim>::output_particles(const std::string &output_dir, const parallel::distributed::Triangulation<dim> &triangulation)
+    std::string ParticleSet<dim>::output_particle_gfx(const std::string &output_dir, const parallel::distributed::Triangulation<dim> &triangulation)
     {
       typename ParticleMap::iterator  it;
       unsigned int                  d, i;
       std::string                                     output_file_prefix, output_path_prefix;
       DataOut<dim>            data_out;
 
-      output_file_prefix = "particle-" + Utilities::int_to_string (out_index, 5);
+      output_file_prefix = "particle-" + Utilities::int_to_string (gfx_out_index, 5);
       output_path_prefix = output_dir + output_file_prefix;
 
       const std::string filename = (output_file_prefix +
@@ -777,26 +785,81 @@ namespace aspect
           std::ofstream pvd_master (pvd_master_filename.c_str());
           data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
         }
-      out_index++;
+      gfx_out_index++;
+
+      return output_path_prefix;
+    }
+
+
+    // Output the particle locations to parallel VTK files
+    template <int dim>
+    std::string ParticleSet<dim>::output_particle_data(const std::string &output_dir, const parallel::distributed::Triangulation<dim> &triangulation)
+    {
+      typename ParticleMap::iterator  it;
+      MPI_Particle<dim>       particle_data;
+      int                     d;
+      std::string             output_path_prefix, full_filename;
+
+      output_path_prefix = output_dir + "data_particle-" + Utilities::int_to_string (data_out_index, 5);
+      if (data_out_format == "ascii")
+        {
+          full_filename = output_path_prefix + "." + Utilities::int_to_string(triangulation.locally_owned_subdomain(), 4) + ".txt";
+          std::ofstream output (full_filename.c_str());
+          if (!output) std::cout << "ERROR: proc " << triangulation.locally_owned_subdomain() << " could not create " << full_filename << std::endl;
+          output << "# ";
+          for (d=0; d<dim; ++d) output << "pos[" << d << "] ";
+          for (d=0; d<dim; ++d) output << "vel[" << d << "] ";
+          output << "id\n";
+          for (it=particles.begin(); it!=particles.end(); ++it)
+            {
+              particle_data = it->second.mpi_data();
+              for (d=0; d<dim; ++d) output << particle_data.pos[d] << " ";
+              for (d=0; d<dim; ++d) output << particle_data.velocity[d] << " ";
+              output << particle_data.id;
+              output << "\n";
+            }
+
+          output.close();
+
+          data_out_index++;
+        }
 
       return output_path_prefix;
     }
 
     template <int dim>
     void
-    ParticleSet<dim>::set_next_output_time (const double current_time)
+    ParticleSet<dim>::set_next_gfx_output_time (const double current_time)
     {
       // if output_interval is positive, then set the next output interval to
       // a positive multiple; we need to interpret output_interval either
       // as years or as seconds
-      if (output_interval > 0)
+      if (gfx_output_interval > 0)
         {
           if (this->convert_output_to_years() == true)
-            next_output_time = std::ceil(current_time / (output_interval * year_in_seconds)) *
-                               (output_interval * year_in_seconds);
+            next_gfx_output_time = std::ceil(current_time / (gfx_output_interval * year_in_seconds)) *
+                                   (gfx_output_interval * year_in_seconds);
           else
-            next_output_time = std::ceil(current_time / (output_interval)) *
-                               (output_interval);
+            next_gfx_output_time = std::ceil(current_time / (gfx_output_interval)) *
+                                   (gfx_output_interval);
+        }
+    }
+
+    template <int dim>
+    void
+    ParticleSet<dim>::set_next_data_output_time (const double current_time)
+    {
+      // if output_interval is positive, then set the next output interval to
+      // a positive multiple; we need to interpret output_interval either
+      // as years or as seconds
+      if (data_output_interval > 0)
+        {
+          if (this->convert_output_to_years() == true)
+            next_data_output_time = std::ceil(current_time / (data_output_interval * year_in_seconds)) *
+                                    (data_output_interval * year_in_seconds);
+          else
+            next_data_output_time = std::ceil(current_time / (data_output_interval)) *
+                                    (data_output_interval);
         }
     }
 
@@ -819,6 +882,18 @@ namespace aspect
                              "Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
+          prm.declare_entry ("Time between data output", "1e8",
+                             Patterns::Double (0),
+                             "The time interval between each generation of "
+                             "graphical output files. A value of zero indicates "
+                             "that output should be generated in each time step. "
+                             "Units: years if the "
+                             "'Use years in output instead of seconds' parameter is set; "
+                             "seconds otherwise.");
+          prm.declare_entry("Data output format", "none",
+                            Patterns::Selection("none|"
+                                                "ascii"),
+                            "File format to output raw particle data in.");
         }
         prm.leave_subsection ();
       }
@@ -835,7 +910,9 @@ namespace aspect
         prm.enter_subsection("Tracers");
         {
           num_initial_tracers = prm.get_double ("Number of tracers");
-          output_interval = prm.get_double ("Time between graphical output");
+          gfx_output_interval = prm.get_double ("Time between graphical output");
+          data_output_interval = prm.get_double ("Time between data output");
+          data_out_format = prm.get("Data output format");
         }
         prm.leave_subsection ();
       }

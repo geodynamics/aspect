@@ -12,9 +12,10 @@ All entries are signed with the names of the author.
 <ol>
 <li>
 New: Tracer particle postprocessor also outputs
-<code>particle.pvd</code> for ParaView.
+<code>particle.pvd</code> for ParaView. Tracer particle data may
+also be output to ASCII files for easy parsing and analysis.
 <br>
-(Eric Heien, 2012/05/31)
+(Eric Heien, 2012/06/01)
 
 <li>
 New: Aspect now writes a <code>solution.pvd</code> for Paraview
