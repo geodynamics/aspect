@@ -54,11 +54,13 @@ namespace aspect
     // note: p'(z) = rho(p,T) * |g|
     //       T'(z) = alpha rho |g| T with alpha=1/rho drho/dT
     // TODO: check formulas!
-    double z = delta_z;
-    for (unsigned int i=1; i<n_points; ++i, z+=delta_z)
+    double z;
+    for (unsigned int i=1; i<n_points; ++i)
       {
         Assert (i < pressures.size(), ExcInternalError());
         Assert (i < temperatures.size(), ExcInternalError());
+
+        z = double(i)/double(n_points-1)*geometry_model.maximal_depth();
 
         const Point<dim> representative_point = geometry_model.representative_point (z);
 
