@@ -844,6 +844,13 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(Table,
                                    "table",
                                    "A material model that reads tables of pressure and temperature "
-                                   "dependent material coefficients from files.")
+                                   "dependent material coefficients from files. The default values for "
+                                   "this model's runtime parameters use a material description taken "
+                                   "from the paper \\textit{Complex phase distribution and seismic velocity "
+                                   "structure of the transition zone: Convection model predictions "
+                                   "for a magnesium-endmember olivine–pyroxene mantle} by Michael H.G. "
+                                   "Jacobs and Arie P. van den Berg, Physics of the Earth and Planetary "
+                                   "Interiors, Volume 186, Issues 1–2, May 2011, Pages 36–48. See "
+                                   "\\url{http://www.sciencedirect.com/science/article/pii/S0031920111000422}.")
   }
 }
