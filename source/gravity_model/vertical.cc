@@ -33,8 +33,41 @@ namespace aspect
     Vertical<dim>::gravity_vector (const Point<dim> &) const
     {
       Tensor<1,dim> g;
-      g[dim-1] = -1;
+      g[dim-1] = -gravity_magnitude;
       return g;
+    }
+    template <int dim>
+    void
+    Vertical<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Gravity model");
+      {
+        prm.enter_subsection("Vertical");
+        {
+          prm.declare_entry ("Magnitude", "1",
+                             Patterns::Double (0),
+                             "Value of the gravity vector in $m/s^2$ directed "
+                             "along negative y (2D) or z (3D) axis.");
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+
+
+    template <int dim>
+    void
+    Vertical<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Gravity model");
+      {
+        prm.enter_subsection("Vertical");
+        {
+          gravity_magnitude = prm.get_double ("Magnitude");
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
     }
   }
 }
@@ -47,6 +80,6 @@ namespace aspect
     ASPECT_REGISTER_GRAVITY_MODEL(Vertical,
                                   "vertical",
                                   "A gravity model in which the gravity direction is vertically downward "
-                                  "and at a constant magnitude equal to one.");
+                                  "and at a constant magnitude by default equal to one.");
   }
 }

@@ -45,6 +45,28 @@ namespace aspect
          * Return the gravity vector as a function of position.
          */
         virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const;
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter
+         * file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+      private:
+        /**
+         * Magnitude of the gravity vector.
+         */
+        double gravity_magnitude;
+
     };
   }
 }
