@@ -28,12 +28,22 @@ namespace aspect
 {
   namespace Postprocess
   {
+
     // Structure used to transfer data over MPI
     template <int dim>
     struct MPI_Particle
     {
       double          pos[dim];
       double          pos0[dim];
+      double          velocity[dim];
+      unsigned int    id;
+    };
+
+    // Structure used to store data in HDF5
+    template <int dim>
+    struct HDF5_Particle
+    {
+      double          pos[dim];
       double          velocity[dim];
       unsigned int    id;
     };
@@ -105,6 +115,7 @@ namespace aspect
         };
 
         MPI_Particle<dim> mpi_data(void) const;
+        HDF5_Particle<dim> hdf5_data(void) const;
     };
 
     // MPI tag for particle transfers
@@ -217,6 +228,7 @@ namespace aspect
                                      const DoFHandler<dim> &dh,
                                      const Mapping<dim> &mapping,
                                      std::vector<Point<dim> > &velocities);
+        unsigned int get_global_particle_count(void);
         void check_particle_count(void);
 
         void set_next_gfx_output_time (const double current_time);

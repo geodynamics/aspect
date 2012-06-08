@@ -27,6 +27,11 @@
 #include <aspect/postprocess/tracer.h>
 #include <aspect/simulator.h>
 
+//#define HAVE_HDF5
+#ifdef HAVE_HDF5
+#include <hdf5.h>
+#endif
+
 namespace aspect
 {
   namespace Postprocess
@@ -55,6 +60,22 @@ namespace aspect
         {
           new_data.pos[d] = _pos(d);
           new_data.pos0[d] = _pos0(d);
+          new_data.velocity[d] = _velocity(d);
+        }
+      new_data.id = _id;
+
+      return new_data;
+    }
+
+    // Write the data for this particle into an HDF5 structure
+    template <int dim>
+    HDF5_Particle<dim> Particle<dim>::hdf5_data(void) const
+    {
+      HDF5_Particle<dim> new_data;
+
+      for (unsigned int d=0; d<dim; ++d)
+        {
+          new_data.pos[d] = _pos(d);
           new_data.velocity[d] = _velocity(d);
         }
       new_data.id = _id;
@@ -442,9 +463,8 @@ namespace aspect
         }
     }
 
-    // Ensures that particles are not lost in the simulation
     template <int dim>
-    void ParticleSet<dim>::check_particle_count(void)
+    unsigned int ParticleSet<dim>::get_global_particle_count(void)
     {
       unsigned int    local_particles = particles.size();
       unsigned int    global_particles;
@@ -452,6 +472,14 @@ namespace aspect
 
       res = MPI_Allreduce(&local_particles, &global_particles, 1, MPI_UNSIGNED, MPI_SUM, MPI_COMM_WORLD);
       if (res != MPI_SUCCESS) exit(-1);
+      return global_particles;
+    }
+
+    // Ensures that particles are not lost in the simulation
+    template <int dim>
+    void ParticleSet<dim>::check_particle_count(void)
+    {
+      unsigned int    global_particles = get_global_particle_count();
 
       AssertThrow (global_particles==global_sum_particles, ExcMessage ("Particle count changed."));
     }
@@ -790,7 +818,6 @@ namespace aspect
       return output_path_prefix;
     }
 
-
     // Output the particle locations to parallel VTK files
     template <int dim>
     std::string ParticleSet<dim>::output_particle_data(const std::string &output_dir, const parallel::distributed::Triangulation<dim> &triangulation)
@@ -823,6 +850,98 @@ namespace aspect
 
           data_out_index++;
         }
+#ifdef H5_HAVE_PARALLEL
+      else if (data_out_format == "hdf5")
+        {
+          hid_t   h5_file_id;
+          hid_t   plist_id, xfer_plist_id, particle_dataset_id, particle_type_id;
+          hid_t   file_dataspace_id, mem_dataspace_id, pattr_id;
+          herr_t  status;
+          int     i;
+          hsize_t global_particle_count, offset, count;
+
+          HDF5_Particle<dim>  *particle_data;
+          std::string h5_filename = output_path_prefix+".h5";
+
+          // Create parallel file access
+          plist_id = H5Pcreate(H5P_FILE_ACCESS);
+          H5Pset_fapl_mpio(plist_id, MPI_COMM_WORLD, MPI_INFO_NULL);
+
+          h5_file_id = H5Fcreate(h5_filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, plist_id);
+
+          // Create the particle data type
+          particle_type_id = H5Tcreate(H5T_COMPOUND, sizeof(HDF5_Particle<dim>));
+          offset = 0;
+          for (d=0; d<dim; ++d)
+            {
+              std::stringstream entry_name;
+              entry_name << "POSITION_" << d;
+              H5Tinsert(particle_type_id, entry_name.str().c_str(), offset, H5T_NATIVE_DOUBLE);
+              offset += sizeof(double);
+            }
+          for (d=0; d<dim; ++d)
+            {
+              std::stringstream entry_name;
+              entry_name << "VELOCITY_" << d;
+              H5Tinsert(particle_type_id, entry_name.str().c_str(), offset, H5T_NATIVE_DOUBLE);
+              offset += sizeof(double);
+            }
+          H5Tinsert(particle_type_id, "ID", offset, H5T_NATIVE_UINT);
+          H5Tcommit(h5_file_id, "PARTICLE_STRUCT", particle_type_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+          // Create the file dataspace description
+          global_particle_count = get_global_particle_count();
+          file_dataspace_id = H5Screate_simple(1, &global_particle_count, NULL);
+
+          // Create the dataset
+          particle_dataset_id = H5Dcreate(h5_file_id, "PARTICLES", particle_type_id, file_dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+          // Close the file dataspace
+          H5Sclose(file_dataspace_id);
+
+          // Just in case we forget what they are
+          count = 1;
+          file_dataspace_id = H5Screate_simple (1, &count, NULL);
+          pattr_id = H5Acreate(h5_file_id, "Ermahgerd! Pertecrs!", H5T_NATIVE_INT, file_dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
+          H5Aclose(pattr_id);
+          H5Sclose(file_dataspace_id);
+
+          // Count the number of particles on this process and get the offset among all processes
+          count = particles.size();
+          MPI_Scan(&count, &offset, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+          offset -= count;
+
+          mem_dataspace_id = H5Screate_simple(1, &count, NULL);
+          file_dataspace_id = H5Dget_space(particle_dataset_id);
+          H5Sselect_hyperslab(file_dataspace_id, H5S_SELECT_SET, &offset, NULL, &count, NULL);
+
+          // Create property list for collective dataset write
+          xfer_plist_id = H5Pcreate(H5P_DATASET_XFER);
+          H5Pset_dxpl_mpio(xfer_plist_id, H5FD_MPIO_COLLECTIVE);
+
+          // Read the local particle data
+          particle_data = new HDF5_Particle<dim>[particles.size()];
+          for (i=0,it=particles.begin(); it!=particles.end(); ++i,++it)
+            {
+              particle_data[i] = it->second.hdf5_data();
+            }
+
+          // Write particle data to the HDF5 file
+          H5Dwrite(particle_dataset_id, particle_type_id, mem_dataspace_id, file_dataspace_id, xfer_plist_id, particle_data);
+
+          // Clear allocated resources
+          delete particle_data;
+          status = H5Pclose(xfer_plist_id);
+          status = H5Sclose(mem_dataspace_id);
+          status = H5Sclose(file_dataspace_id);
+          status = H5Dclose(particle_dataset_id);
+          status = H5Tclose(particle_type_id);
+          status = H5Pclose(plist_id);
+          status = H5Fclose(h5_file_id);
+
+          data_out_index++;
+        }
+#endif
 
       return output_path_prefix;
     }
@@ -892,7 +1011,11 @@ namespace aspect
                              "seconds otherwise.");
           prm.declare_entry("Data output format", "none",
                             Patterns::Selection("none|"
-                                                "ascii"),
+                                                "ascii"
+#ifdef HAVE_HDF5
+                                                "|hdf5"
+#endif
+                                               ),
                             "File format to output raw particle data in.");
         }
         prm.leave_subsection ();

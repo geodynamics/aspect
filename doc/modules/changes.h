@@ -11,6 +11,11 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: Tracer particle postprocesser can write in parallel to HDF5.
+<br>
+(Eric Heien, 2012/06/08)
+
+<li>
 New: Tracer particle postprocessor also outputs
 <code>particle.pvd</code> for ParaView. Tracer particle data may
 also be output to ASCII files for easy parsing and analysis.
