@@ -109,7 +109,7 @@ subsection Postprocess
   subsection Visualization
     set Number of grouped files       = 0
 
-    set Output format                 = vtu
+    set Output format                 = gnuplot
 
     set Time between graphical output = 0   # default: 1e8
 
