@@ -8,6 +8,6 @@
       <PDataArray type="Float64" Name="velocity" NumberOfComponents="3" format="ascii"/>
       <PDataArray type="Float64" Name="id" format="ascii"/>
     </PPointData>
-    <Piece Source="particle-00000.0000.gnuplot"/>
+    <Piece Source="particle-00000.0000.vtu"/>
   </PUnstructuredGrid>
 </VTKFile>
