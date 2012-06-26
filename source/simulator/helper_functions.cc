@@ -426,7 +426,7 @@ namespace aspect
   void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector)
   {
     if (parameters.use_locally_conservative_discretization)
-      throw ExcNotImplemented();
+      AssertThrow(false, ExcNotImplemented());
 
     const double mean       = vector.block(1).mean_value();
     const double correction = -mean*vector.block(1).size()/global_volume;
