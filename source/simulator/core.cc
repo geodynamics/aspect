@@ -595,7 +595,9 @@ namespace aspect
 
     if (Utilities::MPI::this_mpi_process(mpi_communicator)==0)
       {
-        std::ofstream stat_file ((parameters.output_directory+"statistics").c_str());
+        std::string tmp_file_name = parameters.output_directory+"statistics_tmp";
+        std::string stat_file_name = parameters.output_directory+"statistics";
+        std::ofstream stat_file (tmp_file_name.c_str());
         if (parameters.convert_to_years == true)
           {
             statistics.set_scientific("Time (years)", true);
@@ -609,6 +611,8 @@ namespace aspect
 
         statistics.write_text (stat_file,
                                TableHandler::table_with_separate_column_description);
+        stat_file.close();
+        rename(tmp_file_name.c_str(), stat_file_name.c_str());
 
         // determine the width of the first column of text so that
         // everything gets nicely aligned; then output everything
