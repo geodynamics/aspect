@@ -59,7 +59,7 @@ namespace aspect
       SolCx<dim>::
       reference_density () const
       {
-        return 1;
+        return 0;
       }
 
       template <int dim>
@@ -262,7 +262,7 @@ namespace aspect
       SolKz<dim>::
       reference_density () const
       {
-        return 1;
+        return 0;
       }
 
       template <int dim>
@@ -424,7 +424,7 @@ namespace aspect
       Inclusion<dim>::
       reference_density () const
       {
-        return 1;
+        return 0;
       }
 
       template <int dim>
