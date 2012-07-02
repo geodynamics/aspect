@@ -59,7 +59,7 @@ namespace aspect
       SolCx<dim>::
       reference_density () const
       {
-        return 0;
+        return background_density;
       }
 
       template <int dim>
@@ -113,8 +113,9 @@ namespace aspect
                const double,
                const Point<dim> &p) const
       {
-        // defined as given in the paper
-        return -std::sin(numbers::PI*p[1])*std::cos(numbers::PI*p[0]);
+        // defined as given in the paper, plus the constant
+        // background density
+        return background_density-std::sin(numbers::PI*p[1])*std::cos(numbers::PI*p[0]);
       }
 
 
@@ -202,6 +203,13 @@ namespace aspect
             prm.declare_entry ("Viscosity jump", "1e6",
                                Patterns::Double (0),
                                "Viscosity in the right half of the domain.");
+            prm.declare_entry ("Background density", "0",
+                               Patterns::Double (0),
+                               "Density value upon which the variation of this testcase "
+                               "is overlaid. Since this background density is constant "
+                               "it does not affect the flow pattern but it adds to the "
+                               "total pressure since it produces a nonzero adiabatic "
+                               "pressure if set to a nonzero value.");
           }
           prm.leave_subsection();
         }
@@ -219,6 +227,7 @@ namespace aspect
           prm.enter_subsection("SolCx");
           {
             eta_B = prm.get_double ("Viscosity jump");
+            background_density = prm.get_double("Background density");
           }
           prm.leave_subsection();
         }
@@ -230,6 +239,14 @@ namespace aspect
       SolCx<dim>::get_eta_B() const
       {
         return eta_B;
+      }
+
+
+      template <int dim>
+      double
+      SolCx<dim>::get_background_density() const
+      {
+        return background_density;
       }
 
 // ------------------ implementation of the SolKz benchmark ----------------------------

@@ -198,11 +198,29 @@ namespace aspect
             */
           double get_eta_B() const;
 
+          /**
+            * Returns the background density of this model. See the corresponding
+            * member variable of this class for more information.
+            */
+          double get_background_density() const;
+
         private:
           /**
             * Viscosity value on the right half of the domain, typically 1 or 1e6
             */
           double eta_B;
+
+          /**
+           * A constant background density over which the density
+           * variations are overlaid. This constant density has no
+           * effect on the dynamic pressure and consequently on
+           * the flow field, but it contributes to the total pressure
+           * via the adiabatic pressure. We use this field to support
+           * our claim in the first ASPECT paper that the accuracy
+           * of the solutions is guaranteed even if we don't
+           * subtract the adiabatic pressure in our computations.
+           */
+          double background_density;
       };
 
 

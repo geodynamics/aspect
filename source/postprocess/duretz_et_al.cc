@@ -2894,29 +2894,37 @@ namespace aspect
       class FunctionSolCx : public Function<dim>
       {
         public:
-          FunctionSolCx (const double eta_B)
+          FunctionSolCx (const double eta_B,
+                         const double background_density)
             :
             Function<dim>(),
-            eta_B_(eta_B)
+            eta_B_(eta_B),
+            background_density (background_density)
           {}
 
           virtual void vector_value (const Point< dim >   &p,
                                      Vector< double >   &values) const
           {
+            AssertDimension(values.size(), 4);
+
             double pos[2]= {p(0),p(1)};
             double total_stress[3], strain_rate[3];
             double eta_A=1.0;
             double eta_B=eta_B_;
 
+            // call the analytic function for the solution with a zero
+            // background density
             _Velic_solCx(
               pos,
               eta_A, eta_B,
               0.5, 1,
               &values[0], &values[2], total_stress, strain_rate );
 
+            // then add the background pressure to the value we just got
+            values[2] += (0.5-p[1])*background_density;
           }
         private:
-          double eta_B_;
+          double eta_B_, background_density;
       };
 
 
@@ -2977,7 +2985,8 @@ namespace aspect
           material_model
             = dynamic_cast<const MaterialModel::DuretzEtAl::SolCx<dim> *>(&this->get_material_model());
 
-          ref_func.reset (new internal_DuretzEtAl::FunctionSolCx<dim>(material_model->get_eta_B()));
+          ref_func.reset (new internal_DuretzEtAl::FunctionSolCx<dim>(material_model->get_eta_B(),
+                                                                      material_model->get_background_density()));
 
         }
       else if (dynamic_cast<const MaterialModel::DuretzEtAl::SolKz<dim> *>(&this->get_material_model()) != NULL)
