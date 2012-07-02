@@ -11,6 +11,13 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: It is now possible to select the tolerance for linear
+solvers from the parameter file via the global parameter
+"Linear solver tolerance".
+<br>
+(Wolfgang Bangerth, 2012/06/30)
+
+<li>
 New: Tracer particle postprocesser can write in parallel to HDF5.
 <br>
 (Eric Heien, 2012/06/08)
@@ -30,6 +37,15 @@ simulation time each of the files that describe a time step correspond
 to.
 <br>
 (Wolfgang Bangerth, 2012/05/30)
+
+<li>
+New: It is now selectable how the pressure should be normalized
+(and if it should be normalized at all). If it should be normalized
+at the end of each time step, one can select if the average
+pressure at the top surface, or the average pressure throughout the
+entire domain should be set to a given value (for example to zero).
+<br>
+(Wolfgang Bangerth, 2012/05/15)
 
 <li>
 New: The variables we output in graphical format files are now

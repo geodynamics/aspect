@@ -156,6 +156,27 @@ namespace aspect
                        "The name of the directory into which all output files should be "
                        "placed. This may be an absolute or a relative path.");
 
+    prm.declare_entry ("Linear solver tolerance", "1e-7",
+                       Patterns::Double(0,1),
+                       "A relative tolerance up to which linear systems in each "
+                       "time or nonlinear step should be solved. The absolute tolerance will "
+                       "then be the norm of the right hand side of the equation "
+                       "times this tolerance. A given tolerance value of 1 would "
+                       "mean that a zero solution vector is an acceptable solution "
+                       "since in that case the norm of the residual of the linear "
+                       "system equals the norm of the right hand side. A given "
+                       "tolerance of 0 would mean that the linear system has to be "
+                       "solved exactly, since this is the only way to obtain "
+                       "a zero residual."
+                       "\n\n"
+                       "In practice, you should choose the value of this parameter "
+                       "to be so that if you make it smaller the results of your "
+                       "simulation do not change any more (qualitatively) whereas "
+                       "if you make it larger, they do. For most cases, the default "
+                       "value should be sufficient. However, for cases where the "
+                       "static pressure is much larger than the dynamic one, it may "
+                       "be necessary to choose a smaller value.");
+
     prm.enter_subsection ("Model settings");
     {
       prm.declare_entry ("Include shear heating", "true",
@@ -370,6 +391,8 @@ namespace aspect
     surface_pressure              = prm.get_double ("Surface pressure");
     adiabatic_surface_temperature = prm.get_double ("Adiabatic surface temperature");
     pressure_normalization        = prm.get("Pressure normalization");
+
+    linear_solver_tolerance       = prm.get_double ("Linear solver tolerance");
 
     prm.enter_subsection ("Mesh refinement");
     {

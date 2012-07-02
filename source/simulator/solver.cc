@@ -309,7 +309,8 @@ namespace aspect
 
     // step 1a: try if the simple and fast solver
     // succeeds in 30 steps or less.
-    const double solver_tolerance = 1e-7 * distributed_stokes_rhs.l2_norm();
+    const double solver_tolerance = parameters.linear_solver_tolerance *
+                                    distributed_stokes_rhs.l2_norm();
     SolverControl solver_control_cheap (30, solver_tolerance);
     SolverControl solver_control_expensive (system_matrix.block(0,1).m() +
                                             system_matrix.block(1,0).m(), solver_tolerance);

@@ -149,6 +149,7 @@ namespace aspect
         double                         surface_pressure;
         double                         adiabatic_surface_temperature;
         unsigned int                   timing_output_frequency;
+        double                         linear_solver_tolerance;
         /**
          * @}
          */
