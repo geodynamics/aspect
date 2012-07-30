@@ -236,7 +236,7 @@ namespace aspect
                          "initial global refinement but while still within the first "
                          "time step.");
       prm.declare_entry ("Time steps between mesh refinement", "10",
-                         Patterns::Integer (1),
+                         Patterns::Integer (0),
                          "The number of time steps after which the mesh is to be "
                          "adapted again based on computed error indicators. If 0 "
                          "then the mesh will not be refined.");
