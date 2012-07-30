@@ -238,7 +238,8 @@ namespace aspect
       prm.declare_entry ("Time steps between mesh refinement", "10",
                          Patterns::Integer (1),
                          "The number of time steps after which the mesh is to be "
-                         "adapted again based on computed error indicators.");
+                         "adapted again based on computed error indicators. If 0 "
+                         "then the mesh will not be refined.");
       prm.declare_entry ("Refinement fraction", "0.3",
                          Patterns::Double(0,1),
                          "The fraction of cells with the largest error that "
