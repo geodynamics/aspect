@@ -45,6 +45,7 @@
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/initial_conditions/interface.h>
+#include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/adiabatic_conditions.h>
 
