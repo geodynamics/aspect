@@ -154,7 +154,8 @@ geodynamics community and beyond!
   Section~\ref{sec:plugins} since they are typically self-contained and do not
   require much knowledge of the details of the remaining code. Obviously,
   however, we also encourage contributions to the core functionality in any
-  form!}
+  form! If you have something that might be of general interest, please
+  contact us.}
 
 \marginpar{Find web addresses to mailing lists}
 \note{\aspect{} will only solve problems relevant to the community if we get
@@ -496,7 +497,7 @@ physical units. On the other hand, there are also downsides:
   see that the result of this variations in coefficients will be exactly the
   same as before. Using non-dimensional variables therefore reduces the space of
   independent parameters one may have to consider when doing parameter studies.
-  
+
   \item From a practical perspective, equations
   \eqref{eq:stokes-1}--\eqref{eq:temperature} are often ill-conditioned in
   their original form: the two sides of each equation have physical units
@@ -521,7 +522,7 @@ physical units. On the other hand, there are also downsides:
   is lost due to round-off errors. On the other hand, non-dimensionalization
   typically avoids this since it normalizes all quantities so that values that
   appear in computations are typically on the order of one.
-  
+
   \item On the downside, the numbers non-dimensionalized equations produce are
   not immediately comparable to ones we know from physical experiments. This is
   of little concern if all we have to do is convert every output number of our
@@ -535,7 +536,7 @@ physical units. On the other hand, there are also downsides:
   hundreds of places inside a program, using the correct (but distinct)
   conversion factors for each of these quantities, is a challenge and a source
   of errors.
-  
+
   \item From a mathematical viewpoint, it is typically clear how an equation
   needs to be non-dimensionalized if all coefficients are constant. However, how
   is one to normalize the equations if, as is the case in the earth mantle, the
@@ -1348,7 +1349,7 @@ The purpose of these files is as follows:
   \texttt{.visit} files. To make it easy for you to view data, \aspect{}
   simply creates both kinds of files in each time step in which graphical data
   is produced.
-  
+
   The final file of this kind, \texttt{solution.pvd} is a file that
   describes to Paraview which \texttt{solution-xxxx.pvtu} jointly form
   a complete simulation by listing the \texttt{.pvtu} files of all
