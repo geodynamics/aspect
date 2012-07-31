@@ -45,7 +45,7 @@ namespace aspect
                   ExcNotImplemented());
 
       const MaterialModel::TanGurnis<dim> *
-          material_model = dynamic_cast<const MaterialModel::TanGurnis<dim> *>(&this->get_material_model());
+      material_model = dynamic_cast<const MaterialModel::TanGurnis<dim> *>(&this->get_material_model());
 
       AssertThrow(material_model!=NULL, ExcMessage("tan gurnis postprocessor only works with tan gurnis material model"));
 

@@ -923,25 +923,25 @@ namespace aspect
   void Simulator<dim>::solve_system ()
   {
     if (parameters.nonlinear_iteration)
-    {
+      {
         assemble_temperature_system ();
         solve_temperature();
 
-        for (int i=0;i<10;++i)
-        {
+        for (int i=0; i<10; ++i)
+          {
             rebuild_stokes_matrix =
               rebuild_stokes_preconditioner = true;
 
-        assemble_stokes_system();
-        build_stokes_preconditioner();
-        solve_stokes();
-        old_solution = solution;
+            assemble_stokes_system();
+            build_stokes_preconditioner();
+            solve_stokes();
+            old_solution = solution;
 
-        pcout << std::endl;
-        }
-    }
+            pcout << std::endl;
+          }
+      }
     else
-    {
+      {
         //solve for temperature first, and then for Stokes (once each)
 
         assemble_temperature_system ();

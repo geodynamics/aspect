@@ -148,16 +148,16 @@ namespace aspect
         /**
          * Return the thermal conductivity $k$ of the model as a function of temperature,
          * pressure and position. The units of $k$ are $\textrm{W} / \textrm{m} / \textrm{K}$
-	 * in 3d, and $\textrm{W} / \textrm{K}$ in 2d. This is easily see by considering that
-	 * $k$ is the heat flux density (i.e., Watts per unit area perpendicular to the heat
-	 * flux direction) per unit temperature gradient (i.e., Kelvin per meter). The unit
-	 * area has units $m^2$ in 3d, but only $m$ in 2d, yielding the stated units for $k$.
-        *
-        * Note that the thermal <i>conductivity</i> $k$ is related to the thermal
-        * <i>diffusivity</i> $\kappa$ as $k = \kappa \rho c_p$. In essence, the conductivity
-        * relates to the question of how thermal energy diffuses whereas the diffusivity
-        * relates to the question of how the temperature diffuses. $\kappa$ has units
-        * $\textrm{m}^2/\textrm{s}$.
+         * in 3d, and $\textrm{W} / \textrm{K}$ in 2d. This is easily see by considering that
+         * $k$ is the heat flux density (i.e., Watts per unit area perpendicular to the heat
+         * flux direction) per unit temperature gradient (i.e., Kelvin per meter). The unit
+         * area has units $m^2$ in 3d, but only $m$ in 2d, yielding the stated units for $k$.
+         *
+         * Note that the thermal <i>conductivity</i> $k$ is related to the thermal
+         * <i>diffusivity</i> $\kappa$ as $k = \kappa \rho c_p$. In essence, the conductivity
+         * relates to the question of how thermal energy diffuses whereas the diffusivity
+         * relates to the question of how the temperature diffuses. $\kappa$ has units
+         * $\textrm{m}^2/\textrm{s}$.
          */
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
