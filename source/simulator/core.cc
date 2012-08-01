@@ -138,11 +138,17 @@ namespace aspect
     // first do some error checking for the parameters we got
     {
       // make sure velocity boundary indicators don't appear in multiple lists
-      const std::set<types::boundary_id_t> boundary_indicator_lists[3]
+      std::set<types::boundary_id_t> boundary_indicator_lists[3]
         = { parameters.zero_velocity_boundary_indicators,
             parameters.tangential_velocity_boundary_indicators,
-            parameters.prescribed_velocity_boundary_indicators
+            std::set<types::boundary_id_t>()
           };
+      for (std::map<types::boundary_id_t,std::string>::const_iterator
+           p = parameters.prescribed_velocity_boundary_indicators.begin();
+           p != parameters.prescribed_velocity_boundary_indicators.end();
+           ++p)
+        boundary_indicator_lists[2].insert (p->first);
+
       // for each combination of boundary indicator lists, make sure that the
       // intersection is empty
       for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
@@ -336,12 +342,12 @@ namespace aspect
       std::vector<bool> velocity_mask (dim+2, true);
       velocity_mask[dim] = false;
       velocity_mask[dim+1] = false;
-      for (std::set<types::boundary_id_t>::const_iterator
+      for (std::map<types::boundary_id_t,std::string>::const_iterator
            p = parameters.prescribed_velocity_boundary_indicators.begin();
            p != parameters.prescribed_velocity_boundary_indicators.end(); ++p)
         VectorTools::interpolate_boundary_values (dof_handler,
-                                                  *p,
-                                                  func,//ZeroFunction<dim>(dim+2),
+                                                  p->first,
+                                                  func,//ZeroFunction<dim>(dim+2), //TODO!
                                                   current_constraints,
                                                   velocity_mask);
       current_constraints.close();

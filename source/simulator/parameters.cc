@@ -450,13 +450,21 @@ namespace aspect
         = std::set<types::boundary_id_t> (x_tangential_velocity_boundary_indicators.begin(),
                                           x_tangential_velocity_boundary_indicators.end());
 
+//TODO: Split something more useful here
       const std::vector<int> x_prescribed_velocity_boundary_indicators
         = Utilities::string_to_int
           (Utilities::split_string_list
            (prm.get ("Prescribed velocity boundary indicators")));
-      prescribed_velocity_boundary_indicators
-        = std::set<types::boundary_id_t> (x_prescribed_velocity_boundary_indicators.begin(),
-                                          x_prescribed_velocity_boundary_indicators.end());
+      for (std::vector<int>::const_iterator p = x_prescribed_velocity_boundary_indicators.begin();
+           p != x_prescribed_velocity_boundary_indicators.end(); ++p)
+        {
+          Assert (prescribed_velocity_boundary_indicators.find(*p)
+                  == prescribed_velocity_boundary_indicators.end(),
+                  ExcMessage ("Boundary indicator <" + Utilities::int_to_string(*p) +
+                              "> appears more than once in the list of indicators "
+                              "for nonzero velocity boundaries."));
+          prescribed_velocity_boundary_indicators[*p] = "";
+        }
     }
     prm.leave_subsection ();
 

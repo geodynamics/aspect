@@ -165,7 +165,7 @@ namespace aspect
         std::set<types::boundary_id_t> fixed_temperature_boundary_indicators;
         std::set<types::boundary_id_t> zero_velocity_boundary_indicators;
         std::set<types::boundary_id_t> tangential_velocity_boundary_indicators;
-        std::set<types::boundary_id_t> prescribed_velocity_boundary_indicators;
+        std::map<types::boundary_id_t,std::string> prescribed_velocity_boundary_indicators;
         /**
          * @}
          */
