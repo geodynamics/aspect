@@ -44,9 +44,9 @@ namespace aspect
       class Inclusion : public Interface<dim>
       {
         public:
-        /**
-         * Constructor.
-         */
+          /**
+           * Constructor.
+           */
           Inclusion();
 
           /**
