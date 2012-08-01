@@ -86,9 +86,9 @@ namespace aspect
     template <int dim>
     void
     register_velocity_boundary_conditions_model (const std::string &name,
-                                       const std::string &description,
-                                       void (*declare_parameters_function) (ParameterHandler &),
-                                       Interface<dim> *(*factory_function) ())
+                                                 const std::string &description,
+                                                 void (*declare_parameters_function) (ParameterHandler &),
+                                                 Interface<dim> *(*factory_function) ())
     {
       std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
@@ -100,7 +100,7 @@ namespace aspect
     template <int dim>
     Interface<dim> *
     create_velocity_boundary_conditions (ParameterHandler &prm,
-					 const GeometryModel::Interface<dim> &geometry_model)
+                                         const GeometryModel::Interface<dim> &geometry_model)
     {
       std::string model_name;
       prm.enter_subsection ("Velocity boundary conditions");
@@ -162,9 +162,9 @@ namespace aspect
   template \
   void \
   register_velocity_boundary_conditions_model<dim> (const std::string &, \
-                                          const std::string &, \
-                                          void ( *) (ParameterHandler &), \
-                                          Interface<dim> *( *) ()); \
+                                                    const std::string &, \
+                                                    void ( *) (ParameterHandler &), \
+                                                    Interface<dim> *( *) ()); \
   \
   template  \
   void \
@@ -173,9 +173,7 @@ namespace aspect
   template \
   Interface<dim> * \
   create_velocity_boundary_conditions<dim> (ParameterHandler &prm, \
-                                  const GeometryModel::Interface<dim> &geometry_model, \
-                                  const BoundaryTemperature::Interface<dim> &boundary_temperature, \
-                                  const AdiabaticConditions<dim>      &adiabatic_conditions);
+                                            const GeometryModel::Interface<dim> &geometry_model);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

@@ -20,8 +20,7 @@
 /*  $Id$  */
 
 
-#include <aspect/velocity_boundary_conditions/box.h>
-#include <aspect/geometry_model/box.h>
+#include <aspect/velocity_boundary_conditions/zero_velocity.h>
 
 
 namespace aspect
@@ -45,11 +44,11 @@ namespace aspect
   namespace VelocityBoundaryConditions
   {
     ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(ZeroVelocity,
-						 "zero velocity",
-						 "Implementation of a model in which the boundary "
-						 "velocity is zero. This is commonly referred to as "
-						 "a ``stick boundary condition'', indicating that "
-						 "the material ``sticks'' to the material on the "
-						 "other side of the boundary.");
+                                                 "zero velocity",
+                                                 "Implementation of a model in which the boundary "
+                                                 "velocity is zero. This is commonly referred to as "
+                                                 "a ``stick boundary condition'', indicating that "
+                                                 "the material ``sticks'' to the material on the "
+                                                 "other side of the boundary.");
   }
 }

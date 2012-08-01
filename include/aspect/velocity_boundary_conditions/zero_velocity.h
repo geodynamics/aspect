@@ -37,7 +37,7 @@ namespace aspect
      * @ingroup VelocityBoundaryConditionsModels
      */
     template <int dim>
-    class ZeroVelocity : Interface<dim>
+    class ZeroVelocity : public Interface<dim>
     {
       public:
         /**
