@@ -25,58 +25,24 @@
 
 namespace aspect
 {
+  namespace DuretzEtAl
+  {
+    namespace AnalyticSolutions
+    {
+      // this function is defined in source/postprocessor/duretz_et_al.cc
+      void _Inclusion(double pos[2], double r_inclusion, double eta, double *vx, double *vy, double *p);
+    }
+  }
+
+
   namespace VelocityBoundaryConditions
   {
     namespace DuretzEtAl
     {
-      namespace
-      {
-        //TODO: This is a copy of the code in duretz_et_al.cc. Unify it in
-        // some way!
-        // based on http://geodynamics.org/hg/cs/AMR/Discontinuous_Stokes with permission
-        void _Inclusion(double pos[2], double r_inclusion, double eta, double *vx, double *vy, double *p)
-        {
-          const double min_eta = 1.0;
-          const double max_eta = eta;
-          const double epsilon = 1; //strain rate
-          const double A(min_eta*(max_eta-min_eta)/(max_eta+min_eta));
-          std::complex<double> phi, psi, dphi;
-          const double offset[2]= {1.0, 1.0};
-          double r2_inclusion = r_inclusion * r_inclusion;
-
-          double x = pos[0]-offset[0];
-          double y = pos[1]-offset[1];
-          double r2 = x*x+y*y;
-
-          std::complex<double> z(x,y);
-          if (r2<r2_inclusion)
-            {
-              //inside the inclusion
-              phi=0;
-              dphi=0;
-              psi=-4*epsilon*(max_eta*min_eta/(min_eta+max_eta))*z;
-            }
-          else
-            {
-              //outside the inclusion
-              phi=-2*epsilon*A*r2_inclusion/z;
-              dphi=-phi/z;
-              psi=-2*epsilon*(min_eta*z+A*r2_inclusion*r2_inclusion/(z*z*z));
-            }
-          double visc = (r2<r2_inclusion)? max_eta : 1.0;
-          std::complex<double> v = (phi - z*conj(dphi) - conj(psi))/(2.0*visc);
-          *vx=v.real();
-          *vy=v.imag();
-          *p=-2*epsilon*dphi.real();
-        }
-      }
-
-
-
       template <int dim>
       Inclusion<dim>::Inclusion ()
-      :
-      eta_B (1e3)
+        :
+        eta_B (1e3)
       {}
 
 
@@ -92,7 +58,8 @@ namespace aspect
 
         Tensor<1,dim> velocity;
         double pressure;
-        _Inclusion(pos,0.2,eta_B, &velocity[0], &velocity[1], &pressure);
+        aspect::DuretzEtAl::AnalyticSolutions::_Inclusion
+        (pos,0.2,eta_B, &velocity[0], &velocity[1], &pressure);
 
         return velocity;
       }
