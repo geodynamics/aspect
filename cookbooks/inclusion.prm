@@ -23,7 +23,7 @@ end
 
 
 subsection Model settings
-  set Prescribed velocity boundary indicators = 0:x,1:a,2:b,3:
+  set Prescribed velocity boundary indicators = 0:inclusion, 1:inclusion, 2:inclusion, 3:inclusion
   set Tangential velocity boundary indicators =
   set Zero velocity boundary indicators       =
 end

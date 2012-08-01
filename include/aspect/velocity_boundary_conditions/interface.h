@@ -156,6 +156,14 @@ namespace aspect
     create_velocity_boundary_conditions (ParameterHandler &prm,
                                          const GeometryModel::Interface<dim> &geometry_model);
 
+    /**
+     * Return a list of names of all implemented boundary velocity models,
+     * separated by '|' so that it can be used in an object of type
+     * Patterns::Selection.
+     */
+    template <int dim>
+    std::string
+    get_names ();
 
     /**
      * Declare the runtime parameters of the registered velocity boundary

@@ -215,7 +215,7 @@ namespace aspect
                          "be tangential).");
       prm.declare_entry ("Prescribed velocity boundary indicators", "",
                          Patterns::Map (Patterns::Integer(0, std::numeric_limits<types::boundary_id_t>::max()),
-                                        Patterns::Anything()),
+                                        Patterns::Selection(VelocityBoundaryConditions::get_names<dim>())),
                          "A comma separated list denoting those boundaries "
                          "on which the velocity is tangential but prescribed, i.e., where "
                          "external forces act to prescribe a particular velocity. This is "
