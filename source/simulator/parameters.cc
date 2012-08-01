@@ -214,12 +214,18 @@ namespace aspect
                          "velocity (although there is a force that requires the flow to "
                          "be tangential).");
       prm.declare_entry ("Prescribed velocity boundary indicators", "",
-                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id_t>::max())),
-                         "A comma separated list of integers denoting those boundaries "
+                         Patterns::Map (Patterns::Integer(0, std::numeric_limits<types::boundary_id_t>::max()),
+                                        Patterns::Anything()),
+                         "A comma separated list denoting those boundaries "
                          "on which the velocity is tangential but prescribed, i.e., where "
                          "external forces act to prescribe a particular velocity. This is "
                          "often used to prescribe a velocity that equals that of "
-                         "overlying plates.");
+                         "overlying plates."
+                         "\n\n"
+                         "The format of valid entries for this parameter is that of a map "
+                         "given as ``key1: value1, key2: value2, key3: value3, ...'' where "
+                         "each key must be a valid boundary indicator and each value must "
+                         "be one of the currently implemented boundary velocity models.");
     }
     prm.leave_subsection ();
 
@@ -450,20 +456,34 @@ namespace aspect
         = std::set<types::boundary_id_t> (x_tangential_velocity_boundary_indicators.begin(),
                                           x_tangential_velocity_boundary_indicators.end());
 
-//TODO: Split something more useful here
-      const std::vector<int> x_prescribed_velocity_boundary_indicators
-        = Utilities::string_to_int
-          (Utilities::split_string_list
-           (prm.get ("Prescribed velocity boundary indicators")));
-      for (std::vector<int>::const_iterator p = x_prescribed_velocity_boundary_indicators.begin();
+      const std::vector<std::string> x_prescribed_velocity_boundary_indicators
+        = Utilities::split_string_list
+          (prm.get ("Prescribed velocity boundary indicators"));
+      for (std::vector<std::string>::const_iterator p = x_prescribed_velocity_boundary_indicators.begin();
            p != x_prescribed_velocity_boundary_indicators.end(); ++p)
         {
-          Assert (prescribed_velocity_boundary_indicators.find(*p)
+          // split the pair "key:value"
+          Assert (p->find(":") != std::string::npos,
+                  ExcInternalError());
+
+          std::string key = *p;
+          key.erase (key.find(":"), std::string::npos);
+          while ((key.length() > 0) && (std::isspace (key[key.length()-1])))
+            key.erase (key.length()-1, 1);
+          const types::boundary_id_t boundary_id = Utilities::string_to_int(key);
+
+          std::string value = *p;
+          value.erase (0, value.find(":")+1);
+          while ((value.length() > 0) && (std::isspace (value[0])))
+            value.erase (0, 1);
+
+
+          Assert (prescribed_velocity_boundary_indicators.find(boundary_id)
                   == prescribed_velocity_boundary_indicators.end(),
-                  ExcMessage ("Boundary indicator <" + Utilities::int_to_string(*p) +
+                  ExcMessage ("Boundary indicator <" + key +
                               "> appears more than once in the list of indicators "
                               "for nonzero velocity boundaries."));
-          prescribed_velocity_boundary_indicators[*p] = "";
+          prescribed_velocity_boundary_indicators[boundary_id] = "value";
         }
     }
     prm.leave_subsection ();
