@@ -201,7 +201,14 @@ namespace aspect
                          "boundary temperature object selected in its own section "
                          "of this input file. All boundary indicators used by the geometry "
                          "but not explicitly listed here will end up with no-flux "
-                         "(insulating) boundary conditions.");
+                         "(insulating) boundary conditions."
+                         "\n\n"
+                         "This parameter only describes which boundaries have a fixed "
+                         "temperature, but not what temperature should hold on these "
+                         "boundaries. The latter piece of information needs to be "
+                         "implemented in a plugin in the BoundaryTemperature "
+                         "group, unless an existing implementation in this group "
+                         "already provides what you want.");
       prm.declare_entry ("Zero velocity boundary indicators", "",
                          Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id_t>::max())),
                          "A comma separated list of integers denoting those boundaries "
@@ -209,7 +216,7 @@ namespace aspect
       prm.declare_entry ("Tangential velocity boundary indicators", "",
                          Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id_t>::max())),
                          "A comma separated list of integers denoting those boundaries "
-                         "on which the velocity is tangential and unrestrained, i.e., where "
+                         "on which the velocity is tangential and unrestrained, i.e., free-slip where "
                          "no external forces act to prescribe a particular tangential "
                          "velocity (although there is a force that requires the flow to "
                          "be tangential).");
@@ -225,7 +232,17 @@ namespace aspect
                          "The format of valid entries for this parameter is that of a map "
                          "given as ``key1: value1, key2: value2, key3: value3, ...'' where "
                          "each key must be a valid boundary indicator and each value must "
-                         "be one of the currently implemented boundary velocity models.");
+                         "be one of the currently implemented boundary velocity models."
+                         "\n\n"
+                         "Note that the no-slip boundary condition is "
+                         "a special case of the current one where the prescribed velocity "
+                         "happens to be zero. It can thus be implemented by indicating that "
+                                        "a particular boundary is part of the ones selected "
+                                        "using the current parameter and using ``zero velocity'' as "
+                                        "the boundary values. Alternatively, you can simply list the "
+                                        "part of the boundary on which the velocity is to be zero with "
+                                        "the parameter ``Zero velocity boundary indicator'' in the "
+                                        "current parameter section.");
     }
     prm.leave_subsection ();
 
@@ -483,7 +500,7 @@ namespace aspect
                   ExcMessage ("Boundary indicator <" + key +
                               "> appears more than once in the list of indicators "
                               "for nonzero velocity boundaries."));
-          prescribed_velocity_boundary_indicators[boundary_id] = "value";
+          prescribed_velocity_boundary_indicators[boundary_id] = value;
         }
     }
     prm.leave_subsection ();
