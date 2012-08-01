@@ -49,6 +49,7 @@ all-dirs := source \
             source/boundary_temperature \
             source/initial_conditions \
             source/material_model \
+            source/velocity_boundary_conditions \
             source/postprocess \
             source/postprocess/visualization
 
