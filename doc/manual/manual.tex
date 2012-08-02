@@ -1944,13 +1944,19 @@ actual source code. Section~\ref{sec:extending} provides information on how to
 do that.
 
 The remainder of this section shows a number of applications of
-\aspect{}. They are grouped into two categories: Setups that try to model
-geophysical situations (Section~\ref{sec:cookbooks-geophysical}) and setups
-that are used to benchmark \aspect{} to ensure correctness or to test accuracy
+\aspect{}. They are grouped into three categories: Simple setups of examples
+that show thermal convection (Section~\ref{sec:cookbooks-simple}), setups
+that try to model geophysical situations (Section~\ref{sec:cookbooks-geophysical})
+and setups that are used to benchmark \aspect{} to ensure correctness or to test accuracy
 of our solvers (Section~\ref{sec:cookbooks-benchmarks}).
 
 \note{The input files discussed in the following sections can generally be
   found in the \texttt{cookbooks/} directory of your \aspect{} installation.}
+
+
+\subsection{Simple setups}
+\label{sec:cookbooks-simple}
+
 
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
@@ -1976,7 +1982,9 @@ processes. Some of them have solutions that are analytically known and can be
 compared with, while for others, there are only sets of numbers that are
 approximately known. We have implemented a number of them in \aspect{} to
 convince ourselves (and our users) that \aspect{} indeed works as intended and
-advertised. Some of these benchmarks are discussed below.
+advertised. Some of these benchmarks are discussed below. Numerical results
+for these benchmarks are also presented in \cite{KHB12} in much more detail
+than shown here.
 
 
 \subsubsection{The SolCx Stokes benchmark}
