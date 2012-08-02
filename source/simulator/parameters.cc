@@ -237,12 +237,12 @@ namespace aspect
                          "Note that the no-slip boundary condition is "
                          "a special case of the current one where the prescribed velocity "
                          "happens to be zero. It can thus be implemented by indicating that "
-                                        "a particular boundary is part of the ones selected "
-                                        "using the current parameter and using ``zero velocity'' as "
-                                        "the boundary values. Alternatively, you can simply list the "
-                                        "part of the boundary on which the velocity is to be zero with "
-                                        "the parameter ``Zero velocity boundary indicator'' in the "
-                                        "current parameter section.");
+                         "a particular boundary is part of the ones selected "
+                         "using the current parameter and using ``zero velocity'' as "
+                         "the boundary values. Alternatively, you can simply list the "
+                         "part of the boundary on which the velocity is to be zero with "
+                         "the parameter ``Zero velocity boundary indicator'' in the "
+                         "current parameter section.");
     }
     prm.leave_subsection ();
 
@@ -542,6 +542,7 @@ namespace aspect
     GravityModel::declare_parameters<dim> (prm);
     InitialConditions::declare_parameters<dim> (prm);
     BoundaryTemperature::declare_parameters<dim> (prm);
+    VelocityBoundaryConditions::declare_parameters<dim> (prm);
   }
 }
 
