@@ -201,6 +201,18 @@ namespace aspect
                                                              *material_model,
                                                              parameters.surface_pressure,
                                                              parameters.adiabatic_surface_temperature));
+    for (std::map<types::boundary_id_t,std::string>::const_iterator
+         p = parameters.prescribed_velocity_boundary_indicators.begin();
+         p != parameters.prescribed_velocity_boundary_indicators.end();
+         ++p)
+      {
+        VelocityBoundaryConditions::Interface<dim> *bv
+          = VelocityBoundaryConditions::create_velocity_boundary_conditions
+            (p->second,
+             prm,
+             *geometry_model);
+        velocity_boundary_conditions[p->first].reset (bv);
+      }
 
     pressure_scaling = material_model->reference_viscosity() / geometry_model->length_scale();
 
@@ -228,6 +240,101 @@ namespace aspect
   }
 
 
+  namespace
+  {
+    template <int dim>
+    class VectorFunctionFromVelocityFunctionObject : public Function<dim>
+    {
+      public:
+        /**
+         * Given a function object that takes a Point and returns a Tensor<1,dim>,
+         * convert this into an object that matches the Function@<dim@>
+         * interface.
+         *
+         * @param function_object The scalar function that will form one component
+         *     of the resulting Function object.
+         **/
+        VectorFunctionFromVelocityFunctionObject (const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
+
+        /**
+         * Return the value of the
+         * function at the given
+         * point. Returns the value the
+         * function given to the constructor
+         * produces for this point.
+         */
+        virtual double value (const Point<dim>   &p,
+                              const unsigned int  component = 0) const;
+
+        /**
+         * Return all components of a
+         * vector-valued function at a
+         * given point.
+         *
+         * <tt>values</tt> shall have the right
+         * size beforehand,
+         * i.e. #n_components.
+         */
+        virtual void vector_value (const Point<dim>   &p,
+                                   Vector<double>     &values) const;
+
+      private:
+        /**
+         * The function object which we call when this class's value() or
+         * value_list() functions are called.
+         **/
+        const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> function_object;
+    };
+
+
+    template <int dim>
+    VectorFunctionFromVelocityFunctionObject<dim>::
+    VectorFunctionFromVelocityFunctionObject
+    (const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
+    :
+    Function<dim>(dim+2),
+    function_object (function_object)
+    {
+    }
+
+
+
+    template <int dim>
+    double
+    VectorFunctionFromVelocityFunctionObject<dim>::value (const Point<dim> &p,
+                                                        const unsigned int component) const
+    {
+      Assert (component < this->n_components,
+              ExcIndexRange (component, 0, this->n_components));
+
+      if (component < dim)
+        {
+          const Tensor<1,dim> v = function_object(p);
+          return v[component];
+        }
+      else
+        return 0;
+    }
+
+
+
+    template <int dim>
+    void
+    VectorFunctionFromVelocityFunctionObject<dim>::
+    vector_value (const Point<dim>   &p,
+                  Vector<double>     &values) const
+    {
+      AssertDimension(values.size(), this->n_components);
+
+      // set everything to zero, and then the right components to their correct values
+      values = 0;
+
+      const Tensor<1,dim> v = function_object(p);
+      for (unsigned int d=0; d<dim; ++d)
+        values(d) = v[d];
+    }
+
+  }
   namespace TODO
   {
 //TODO: This is a copy of the code in duretz_et_al.cc. Unify it in
@@ -336,20 +443,26 @@ namespace aspect
       current_constraints.reinit (system_relevant_set);
       current_constraints.merge (constraints);
 
-      // do the interpolation for the prescribed velocity field
-      // TODO: make the function selection configurable:
+      // set the current time and do the interpolation
+      // for the prescribed velocity fields
       TODO::FunctionInclusion<dim> func(1e3);
       std::vector<bool> velocity_mask (dim+2, true);
       velocity_mask[dim] = false;
       velocity_mask[dim+1] = false;
-      for (std::map<types::boundary_id_t,std::string>::const_iterator
-           p = parameters.prescribed_velocity_boundary_indicators.begin();
-           p != parameters.prescribed_velocity_boundary_indicators.end(); ++p)
-        VectorTools::interpolate_boundary_values (dof_handler,
-                                                  p->first,
-                                                  func,//ZeroFunction<dim>(dim+2), //TODO!
-                                                  current_constraints,
-                                                  velocity_mask);
+      for (typename std::map<types::boundary_id_t,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::iterator
+           p = velocity_boundary_conditions.begin();
+           p != velocity_boundary_conditions.end(); ++p)
+        {
+          p->second->set_current_time (0);
+          VectorTools::interpolate_boundary_values (dof_handler,
+                                                    p->first,
+                                                    VectorFunctionFromVelocityFunctionObject<dim>
+                                                    (std_cxx1x::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,
+                                                                      p->second,
+                                                                      std_cxx1x::_1)),
+                                                    current_constraints,
+                                                    velocity_mask);
+        }
       current_constraints.close();
     }
 

@@ -147,13 +147,14 @@ namespace aspect
      *
      * This function makes the newly created object read its parameters from the
      * input parameter object, and then initializes it with the given geometry
-     * model, boundary values object, and adiabatic conditions object.
+     * model.
      *
      * @ingroup VelocityBoundaryConditionsModels
      */
     template <int dim>
     Interface<dim> *
-    create_velocity_boundary_conditions (ParameterHandler &prm,
+    create_velocity_boundary_conditions (const std::string &name,
+                                         ParameterHandler &prm,
                                          const GeometryModel::Interface<dim> &geometry_model);
 
     /**

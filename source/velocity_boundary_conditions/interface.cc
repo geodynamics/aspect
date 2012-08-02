@@ -99,17 +99,11 @@ namespace aspect
 
     template <int dim>
     Interface<dim> *
-    create_velocity_boundary_conditions (ParameterHandler &prm,
+    create_velocity_boundary_conditions (const std::string &name,
+                                         ParameterHandler &prm,
                                          const GeometryModel::Interface<dim> &geometry_model)
     {
-      std::string model_name;
-      prm.enter_subsection ("Velocity boundary conditions");
-      {
-        model_name = prm.get ("Model name");
-      }
-      prm.leave_subsection ();
-
-      Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
+      Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (name, prm);
       plugin->initialize (geometry_model);
       return plugin;
     }
@@ -171,7 +165,8 @@ namespace aspect
   \
   template \
   Interface<dim> * \
-  create_velocity_boundary_conditions<dim> (ParameterHandler &prm, \
+  create_velocity_boundary_conditions<dim> (const std::string &, \
+                                            ParameterHandler &prm, \
                                             const GeometryModel::Interface<dim> &geometry_model);
 
     ASPECT_INSTANTIATE(INSTANTIATE)

@@ -797,6 +797,7 @@ namespace aspect
       const std::auto_ptr<BoundaryTemperature::Interface<dim> > boundary_temperature;
       std::auto_ptr<const InitialConditions::Interface<dim> >   initial_conditions;
       std::auto_ptr<const AdiabaticConditions<dim> >            adiabatic_conditions;
+      std::map<types::boundary_id_t,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       /**
        * @}
        */
