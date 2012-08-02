@@ -291,9 +291,9 @@ namespace aspect
     VectorFunctionFromVelocityFunctionObject<dim>::
     VectorFunctionFromVelocityFunctionObject
     (const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
-    :
-    Function<dim>(dim+2),
-    function_object (function_object)
+      :
+      Function<dim>(dim+2),
+      function_object (function_object)
     {
     }
 
@@ -302,7 +302,7 @@ namespace aspect
     template <int dim>
     double
     VectorFunctionFromVelocityFunctionObject<dim>::value (const Point<dim> &p,
-                                                        const unsigned int component) const
+                                                          const unsigned int component) const
     {
       Assert (component < this->n_components,
               ExcIndexRange (component, 0, this->n_components));
@@ -394,7 +394,7 @@ namespace aspect
            p = velocity_boundary_conditions.begin();
            p != velocity_boundary_conditions.end(); ++p)
         {
-          p->second->set_current_time (0);
+          p->second->set_current_time (time);
           VectorTools::interpolate_boundary_values (dof_handler,
                                                     p->first,
                                                     VectorFunctionFromVelocityFunctionObject<dim>
