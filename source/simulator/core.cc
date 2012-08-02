@@ -333,66 +333,8 @@ namespace aspect
       for (unsigned int d=0; d<dim; ++d)
         values(d) = v[d];
     }
-
   }
-  namespace TODO
-  {
-//TODO: This is a copy of the code in duretz_et_al.cc. Unify it in
-// some way!
-    // based on http://geodynamics.org/hg/cs/AMR/Discontinuous_Stokes with permission
-    void _Inclusion(double pos[2], double r_inclusion, double eta, double *vx, double *vy, double *p)
-    {
-      const double min_eta = 1.0;
-      const double max_eta = eta;
-      const double epsilon = 1; //strain rate
-      const double A(min_eta*(max_eta-min_eta)/(max_eta+min_eta));
-      std::complex<double> phi, psi, dphi;
-      const double offset[2]= {1.0, 1.0};
-      double r2_inclusion = r_inclusion * r_inclusion;
 
-      double x = pos[0]-offset[0];
-      double y = pos[1]-offset[1];
-      double r2 = x*x+y*y;
-
-      std::complex<double> z(x,y);
-      if (r2<r2_inclusion)
-        {
-          //inside the inclusion
-          phi=0;
-          dphi=0;
-          psi=-4*epsilon*(max_eta*min_eta/(min_eta+max_eta))*z;
-        }
-      else
-        {
-          //outside the inclusion
-          phi=-2*epsilon*A*r2_inclusion/z;
-          dphi=-phi/z;
-          psi=-2*epsilon*(min_eta*z+A*r2_inclusion*r2_inclusion/(z*z*z));
-        }
-      double visc = (r2<r2_inclusion)? max_eta : 1.0;
-      std::complex<double> v = (phi - z*conj(dphi) - conj(psi))/(2.0*visc);
-      *vx=v.real();
-      *vy=v.imag();
-      *p=-2*epsilon*dphi.real();
-    }
-
-
-    template <int dim>
-    class FunctionInclusion : public Function<dim>
-    {
-      public:
-        FunctionInclusion (double eta_B) : Function<dim>(dim+2), eta_B_(eta_B) {}
-        virtual void vector_value (const Point< dim >   &p,
-                                   Vector< double >   &values) const
-        {
-          double pos[2]= {p(0),p(1)};
-          _Inclusion(pos,0.2,eta_B_, &values[0], &values[1], &values[2]);
-        }
-
-      private:
-        double eta_B_;
-    };
-  }
 
   template <int dim>
   void
@@ -445,7 +387,6 @@ namespace aspect
 
       // set the current time and do the interpolation
       // for the prescribed velocity fields
-      TODO::FunctionInclusion<dim> func(1e3);
       std::vector<bool> velocity_mask (dim+2, true);
       velocity_mask[dim] = false;
       velocity_mask[dim+1] = false;
@@ -467,7 +408,7 @@ namespace aspect
     }
 
     //TODO: do this in a more efficient way (TH)?
-    if (!parameters.prescribed_velocity_boundary_indicators.empty())
+    if (!velocity_boundary_conditions.empty())
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
   }
 
