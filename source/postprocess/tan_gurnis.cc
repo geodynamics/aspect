@@ -50,7 +50,9 @@ namespace aspect
       AssertThrow(material_model!=NULL, ExcMessage("tan gurnis postprocessor only works with tan gurnis material model"));
 
       double ref=1.0/this->get_triangulation().begin_active()->minimum_vertex_distance();
-      std::ofstream f ((this->get_output_directory() + "vel_"+ Utilities::int_to_string(ref) + ".csv").c_str());
+      std::ofstream f ((this->get_output_directory() + "vel_" +
+                        Utilities::int_to_string(static_cast<unsigned int>(ref)) +
+                        ".csv").c_str());
       f.precision (16);
       f << material_model->parameter_Di() << ' '
         << material_model->parameter_gamma() << ' '
