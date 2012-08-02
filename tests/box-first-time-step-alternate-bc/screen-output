@@ -21,25 +21,25 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      reference_thermal_diffusivity:                 8e-10
 
      Writing graphical output:           output-box-first-time-step-alternate-bc/solution-00000
-     RMS, max velocity:                  9.06e-09 m/s, 3.25e-08 m/s
+     RMS, max velocity:                  9.07e-09 m/s, 3.25e-08 m/s
      Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
      Heat fluxes through boundary parts: 1.668e-07 W, 8.017e-05 W, 2.402e-07 W, 2.402e-07 W
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      4.18s |            |
+| Total wallclock time elapsed since start    |      11.7s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |     0.417s |        10% |
-| Assemble temperature system     |         1 |     0.862s |        21% |
-| Build Stokes preconditioner     |         1 |     0.318s |       7.6% |
-| Build temperature preconditioner|         1 |    0.0152s |      0.36% |
-| Solve Stokes system             |         1 |    0.0942s |       2.3% |
-| Solve temperature system        |         1 |   0.00407s |     0.097% |
-| Initialization                  |         2 |     0.092s |       2.2% |
-| Postprocessing                  |         1 |      1.45s |        35% |
-| Setup dof systems               |         1 |     0.701s |        17% |
+| Assemble Stokes system          |         1 |      1.38s |        12% |
+| Assemble temperature system     |         1 |      2.36s |        20% |
+| Build Stokes preconditioner     |         1 |       1.1s |       9.4% |
+| Build temperature preconditioner|         1 |    0.0198s |      0.17% |
+| Solve Stokes system             |         1 |     0.194s |       1.7% |
+| Solve temperature system        |         1 |    0.0107s |     0.092% |
+| Initialization                  |         2 |     0.191s |       1.6% |
+| Postprocessing                  |         1 |      3.73s |        32% |
+| Setup dof systems               |         1 |      1.49s |        13% |
 +---------------------------------+-----------+------------+------------+
 
