@@ -1548,8 +1548,9 @@ using Visit. The steps necessary for other visualization programs will
 obviously differ but are, in principle, similar.
 
 To this end, let us consider a simulation of convection in a box-shaped, 2d
-region (see the ``cookbooks'' section, Section~\ref{sec:cookbooks}, for
-suitable input files). We can run the program with 4 processors using
+region (see the ``cookbooks'' section, Section~\ref{sec:cookbooks}, and in
+particular Section~\ref{sec:cookbooks-simple-box} for
+the input file for this particular model). We can run the program with 4 processors using
 \begin{verbatim}
   mpirun -np 4 ./lib/aspect-2d box.prm
 \end{verbatim}
@@ -1956,6 +1957,33 @@ of our solvers (Section~\ref{sec:cookbooks-benchmarks}).
 
 \subsection{Simple setups}
 \label{sec:cookbooks-simple}
+
+\subsubsection{Convection in a box}
+\label{sec:cookbooks-simple-box}
+
+In this first example, let us consider a simple situation: a 2d box of dimensions
+$[0,1.2]\times [0,1]$ where we keep the velocity at the left, bottom and right
+boundaries fixed at zero, but allow free slip along the right boundary (in
+other words, along the right boundary we have $\mathbf u \cdot \mathbf n=0$,
+but the tangential component of $\mathbf u$ is unconstrained). Furthermore, we
+assume that the temperature is one along the left, bottom and top boundaries,
+but zero along the right boundary. This results in a situation where the cold
+material along the right wall has negative buoyancy, drops down and creates a
+convection roll in the box. The fact that the domain has different extents in
+the $x$- and $y$-directions complicates the resulting flow slightly.
+
+The verbal description of this problem can be translated into an \aspect{}
+input file in the following way (see Section~\ref{sec:parameters} for a
+description of all of the parameters that appear in the following input file,
+and the indices at the end of this manual if you want to find a particular
+parameter):
+
+\begin{lstlisting}[frame=single,language=prmfile]
+############### Global parameters
+\end{lstlisting}
+
+\subsubsection{Convection in a box with prescribed, variable velocity boundary conditions}
+
 
 
 \subsection{Geophysical setups}
