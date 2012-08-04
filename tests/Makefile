@@ -50,7 +50,12 @@ output-%:
 	@rm -rf $@
 	@mkdir $@
 	@$(PERL) -pi -e 's/(Output directory\s*=).*/\1 $@/g;' $<
-	@../lib/aspect $< > $@/screen-output
+	@MPI=`grep "MPI:" $< | perl -pi -e 's/.*: *(\d+).*/\1/g;'` ; \
+	    if test -z "$$MPI" ; then \
+		../lib/aspect $< > $@/screen-output ; \
+	    else \
+		mpirun -np $$MPI ../lib/aspect $< > $@/screen-output ; \
+	    fi
 	@$(PERL) -pi $D/common/scripts/normalize.pl $@/*
 	@rm -f $@/log
 
