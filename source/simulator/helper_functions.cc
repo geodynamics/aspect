@@ -412,7 +412,7 @@ namespace aspect
 
               // make sure that this DoF is really owned by the current processor
               // and that it is in fact a pressure dof
-              Assert (dof_handler.locally_owned_dofs().is_element(first_pressure_dof),
+              Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[first_pressure_dof]),
                       ExcInternalError());
               Assert (local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
                       ExcInternalError());
