@@ -387,6 +387,15 @@ namespace aspect
         // consequently, adding the adjustment to the global function is
         // achieved by adding the adjustment to the first pressure degree
         // of freedom on each cell.
+        //
+        // an additional complication is that we can't modify individual
+        // elements of the solution vector since that one has ghost element.
+        // rather, we first need to localize it and then distribute back
+//TODO: It isn't strictly necessary to copy system_rhs here. all we want
+//      is to get the partitioning
+        LinearAlgebra::BlockVector distributed_vector (system_rhs);
+        distributed_vector = vector;
+
         Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(1)) != 0,
                 ExcInternalError());
         std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
@@ -409,8 +418,11 @@ namespace aspect
                       ExcInternalError());
 
               // then adjust its value
-              vector(local_dof_indices[first_pressure_dof]) += adjust;
+              distributed_vector(local_dof_indices[first_pressure_dof]) += adjust;
             }
+
+        // now get back to the original vector
+        vector = distributed_vector;
       }
   }
 
