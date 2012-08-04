@@ -32,7 +32,7 @@ subsection Discretization
 
   set Temperature polynomial degree           = 2
 
-  set Use locally conservative discretization = false
+  set Use locally conservative discretization = true
 
   subsection Stabilization parameters
     set alpha = 2
