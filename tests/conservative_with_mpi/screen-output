@@ -4,25 +4,25 @@ Number of degrees of freedom: 291 (162+48+81)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.302s |            |
+| Total wallclock time elapsed since start    |     0.969s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |    0.0248s |       8.2% |
-| Assemble temperature system     |         1 |    0.0992s |        33% |
-| Build Stokes preconditioner     |         1 |    0.0285s |       9.4% |
-| Build temperature preconditioner|         1 |  0.000772s |      0.26% |
-| Solve Stokes system             |         1 |     0.025s |       8.3% |
-| Solve temperature system        |         1 |  0.000945s |      0.31% |
-| Initialization                  |         2 |    0.0471s |        16% |
-| Postprocessing                  |         1 |  0.000312s |       0.1% |
-| Setup dof systems               |         1 |    0.0353s |        12% |
+| Assemble Stokes system          |         1 |    0.0607s |       6.3% |
+| Assemble temperature system     |         1 |     0.394s |        41% |
+| Build Stokes preconditioner     |         1 |    0.0524s |       5.4% |
+| Build temperature preconditioner|         1 |   0.00122s |      0.13% |
+| Solve Stokes system             |         1 |    0.0351s |       3.6% |
+| Solve temperature system        |         1 |   0.00149s |      0.15% |
+| Initialization                  |         2 |     0.097s |        10% |
+| Postprocessing                  |         1 |  0.000582s |      0.06% |
+| Setup dof systems               |         1 |     0.192s |        20% |
 +---------------------------------+-----------+------------+------------+
 
