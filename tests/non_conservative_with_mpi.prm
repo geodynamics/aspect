@@ -1,7 +1,5 @@
-# when using the conservative element in a parallel program, we used to get an
-# assertion in normalize_pressure because we tried to modify an element of a
-# vector with ghost elements. there was also a second thinko in the same
-# function. verify that this doesn't happen any more.
+# this is a variant of the conservative_with_mpi test that verifies that the
+# same as discussed there also works for the non-conservative element
 
 # MPI: 2
 
