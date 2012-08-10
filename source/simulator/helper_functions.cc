@@ -42,7 +42,7 @@
 #include <deal.II/fe/fe_values.h>
 
 #include <deal.II/numerics/error_estimator.h>
-#include <deal.II/numerics/vectors.h>
+#include <deal.II/numerics/vector_tools.h>
 
 #include <deal.II/distributed/solution_transfer.h>
 #include <deal.II/distributed/grid_refinement.h>
