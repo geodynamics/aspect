@@ -133,7 +133,14 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::resume_from_snapshot()
   {
-    triangulation.load ((parameters.output_directory + "mesh").c_str());
+    try
+      {
+        triangulation.load ((parameters.output_directory + "mesh").c_str());
+      }
+    catch (...)
+      {
+        AssertThrow(false, ExcMessage("Cannot open snapshot mesh file."));
+      }
     global_volume = GridTools::volume (triangulation, mapping);
     setup_dofs();
 
@@ -160,6 +167,7 @@ namespace aspect
     //read zlib compressed resume.z
     {
       std::ifstream ifs ((parameters.output_directory + "resume.z").c_str());
+      AssertThrow(ifs.is_open(), ExcMessage("Cannot open snapshot resume file."));
       uint32_t compression_header[4];
       ifs.read((char *)compression_header, 4 * sizeof(compression_header[0]));
       Assert(compression_header[0]==1, ExcInternalError());
