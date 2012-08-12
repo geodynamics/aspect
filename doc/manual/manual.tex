@@ -2683,7 +2683,7 @@ In the following, we will discuss the requirements for individual plugins.
 \index[prmindex]{Model name}
 \index[prmindexfull]{Material model!Model name}
 The material model is responsible for describing the various coefficients in
-the equations that \aspect{} solvers. To implement a new material model, you
+the equations that \aspect{} solves. To implement a new material model, you
 need to overload the \texttt{aspect::MaterialModel::Interface} class and use
 the \texttt{ASPECT\_REGISTER\_MATERIAL\_MODEL} macro to register your new
 class. The implementation of the new class should be in namespace
