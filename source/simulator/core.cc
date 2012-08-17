@@ -1140,8 +1140,16 @@ namespace aspect
           old_old_solution      = old_solution;
           old_solution          = solution;
           if (old_time_step > 0)
-            solution.sadd (1.+time_step/old_time_step, -time_step/old_time_step,
-                           old_old_solution);
+            {
+              //Trilinos sadd does not like ghost vectors even as input. Copy into distributed vectors for now:
+              LinearAlgebra::BlockVector distr_solution (system_rhs);
+              distr_solution = solution;
+              LinearAlgebra::BlockVector distr_old_solution (system_rhs);
+              distr_old_solution = old_old_solution;
+              distr_solution .sadd (1.+time_step/old_time_step, -time_step/old_time_step,
+                  distr_old_solution);
+              solution = distr_solution;
+            }
         }
 
         // periodically generate snapshots so that we can resume here
