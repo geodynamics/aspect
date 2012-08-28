@@ -11,6 +11,11 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: Support for HDF5/XDMF visualization output.
+<br>
+(Eric Heien, 2012/08/28)
+
+<li>
 New: It is now possible to select the tolerance for linear
 solvers from the parameter file via the global parameter
 "Linear solver tolerance".
