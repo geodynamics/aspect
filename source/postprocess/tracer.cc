@@ -27,8 +27,7 @@
 #include <aspect/postprocess/tracer.h>
 #include <aspect/simulator.h>
 
-//#define HAVE_HDF5
-#ifdef HAVE_HDF5
+#ifdef DEAL_II_HAVE_HDF5
 #include <hdf5.h>
 #endif
 
@@ -143,13 +142,13 @@ namespace aspect
     template <int dim>
     std::pair<std::string,std::string> ParticleSet<dim>::execute (TableHandler &statistics)
     {
-      std::string     result_string = "done.", gfx_file_name, data_file_name;
-      bool            output_gfx, output_data;
+      std::string     result_string = "done.", data_file_name;
+      bool            output_data;
 
-      output_gfx = output_data = false;
+      output_data = false;
       if (!initialized)
         {
-          next_gfx_output_time = next_data_output_time = this->get_time();
+          next_data_output_time = this->get_time();
           setup_mpi(this->get_mpi_communicator());
           initialized = true;
           generate_particles(this->get_triangulation(), num_initial_tracers);
@@ -162,20 +161,12 @@ namespace aspect
                        this->get_dof_handler(),
                        this->get_mapping());
 
-      if (this->get_time() >= next_gfx_output_time)
-        {
-          set_next_gfx_output_time (this->get_time());
-          gfx_file_name = output_particle_gfx(this->get_output_directory(), this->get_triangulation());
-          output_gfx = true;
-        }
-
-      if (data_out_format != "none" && this->get_time() >= next_data_output_time)
+      if (data_output_format != "none" && this->get_time() >= next_data_output_time)
         {
           set_next_data_output_time (this->get_time());
           data_file_name = output_particle_data(this->get_output_directory(), this->get_triangulation());
           output_data = true;
         }
-      if (output_gfx) result_string += " Wrote particle graphics: " + gfx_file_name + ".";
       if (output_data) result_string += " Wrote particle data: " + data_file_name + ".";
 
       triangulation_changed = false;
@@ -581,6 +572,7 @@ namespace aspect
 
     // Advect particles based on the velocity field using a RK2 method.
     // Currently investigating whether this is the optimal method or not.
+    // Will likely be replaced by a hybrid method.
     template <int dim>
     void ParticleSet<dim>::advect_particles(const parallel::distributed::Triangulation<dim> &triangulation,
                                             double timestep,
@@ -694,141 +686,21 @@ namespace aspect
       check_particle_count();
     }
 
-    // Output the particle locations to parallel VTK files
-    template <int dim>
-    std::string ParticleSet<dim>::output_particle_gfx(const std::string &output_dir, const parallel::distributed::Triangulation<dim> &triangulation)
-    {
-      typename ParticleMap::iterator  it;
-      unsigned int                  d, i;
-      std::string                                     output_file_prefix, output_path_prefix;
-      DataOut<dim>            data_out;
-
-      output_file_prefix = "particle-" + Utilities::int_to_string (gfx_out_index, 5);
-      output_path_prefix = output_dir + output_file_prefix;
-
-      const std::string filename = (output_file_prefix +
-                                    "." +
-                                    Utilities::int_to_string(triangulation.locally_owned_subdomain(), 4) +
-                                    ".vtu");
-      const std::string full_filename = (output_dir + filename);
-
-      unsigned int myid = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
-      unsigned int nproc = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
-      std::ofstream output (full_filename.c_str());
-      if (!output) std::cout << "ERROR: proc " << myid << " could not create " << filename << std::endl;
-
-      // Write VTU file XML
-      output << "<?xml version=\"1.0\"?>\n";
-      output << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
-      output << "  <UnstructuredGrid>\n";
-      output << "    <Piece NumberOfPoints=\"" << particles.size() << "\" NumberOfCells=\"" << particles.size() << "\">\n";
-
-      // Go through the particles on this domain and print the position of each one
-      // TODO: can we change this to dim-dimensions rather than 3?
-      output << "      <Points>\n";
-      output << "        <DataArray name=\"Position\" type=\"Float64\" NumberOfComponents=\"3\" Format=\"ascii\">\n";
-      for (it=particles.begin(); it!=particles.end(); ++it)
-        {
-          output << "          ";
-          for (d=0; d<3; ++d)
-            {
-              if (d < dim) output << it->second.getPosition()[d] << " ";
-              else output << "0.0 ";
-            }
-          output << "\n";
-        }
-      output << "        </DataArray>\n";
-      output << "      </Points>\n";
-
-      // Write cell related data (empty)
-      output << "      <Cells>\n";
-      output << "        <DataArray type=\"Int32\" Name=\"connectivity\" Format=\"ascii\">\n";
-      for (i=1; i<=particles.size(); ++i) output << "          " << i-1 << "\n";
-      output << "        </DataArray>\n";
-      output << "        <DataArray type=\"Int32\" Name=\"offsets\" Format=\"ascii\">\n";
-      for (i=1; i<=particles.size(); ++i) output << "          " << i << "\n";
-      output << "        </DataArray>\n";
-      output << "        <DataArray type=\"UInt8\" Name=\"types\" Format=\"ascii\">\n";
-      for (i=1; i<=particles.size(); ++i) output << "          1\n";
-      output << "        </DataArray>\n";
-      output << "      </Cells>\n";
-
-      // Write point related data (id, velocity, etc)
-      output << "      <PointData Scalars=\"scalars\">\n";
-
-      output << "        <DataArray type=\"Float64\" Name=\"velocity\" NumberOfComponents=\"3\" Format=\"ascii\">\n";
-      for (it=particles.begin(); it!=particles.end(); ++it)
-        {
-          output << "          ";
-          for (d=0; d<3; ++d)
-            {
-              if (d < dim) output << it->second.getVelocity()[d] << " ";
-              else output << "0.0 ";
-            }
-          output << "\n";
-        }
-      output << "        </DataArray>\n";
-      output << "        <DataArray type=\"Float64\" Name=\"id\" Format=\"ascii\">\n";
-      for (it=particles.begin(); it!=particles.end(); ++it)
-        {
-          output << "          " << it->second.getID() << "\n";
-        }
-      output << "        </DataArray>\n";
-      output << "      </PointData>\n";
-
-      output << "    </Piece>\n";
-      output << "  </UnstructuredGrid>\n";
-      output << "</VTKFile>\n";
-
-      output.close();
-
-      // Write the parallel pvtu and pvd files on the root process
-      if (myid == 0)
-        {
-          const std::string pvtu_filename = (output_path_prefix + ".pvtu");
-
-          std::ofstream pvtu_output (pvtu_filename.c_str());
-          if (!pvtu_output) std::cout << "ERROR: Could not create " << filename << std::endl;
-
-          pvtu_output << "<?xml version=\"1.0\"?>\n";
-          pvtu_output << "<VTKFile type=\"PUnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
-          pvtu_output << "  <PUnstructuredGrid GhostLevel=\"0\">\n";
-          pvtu_output << "    <PPoints>\n";
-          pvtu_output << "      <PDataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"ascii\"/>\n";
-          pvtu_output << "    </PPoints>\n";
-          pvtu_output << "    <PPointData Scalars=\"scalars\">\n";
-          pvtu_output << "      <PDataArray type=\"Float64\" Name=\"velocity\" NumberOfComponents=\"3\" format=\"ascii\"/>\n";
-          pvtu_output << "      <PDataArray type=\"Float64\" Name=\"id\" format=\"ascii\"/>\n";
-          pvtu_output << "    </PPointData>\n";
-          for (i=0; i<nproc; ++i)
-            {
-              pvtu_output << "    <Piece Source=\"" << output_file_prefix << "." << Utilities::int_to_string(i, 4) << ".vtu\"/>\n";
-            }
-          pvtu_output << "  </PUnstructuredGrid>\n";
-          pvtu_output << "</VTKFile>\n";
-          pvtu_output.close();
-
-          times_and_pvtu_names.push_back(std::pair<double,std::string>(this->get_time(), output_file_prefix+".pvtu"));
-          const std::string pvd_master_filename = (this->get_output_directory() + "particle.pvd");
-          std::ofstream pvd_master (pvd_master_filename.c_str());
-          data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
-        }
-      gfx_out_index++;
-
-      return output_path_prefix;
-    }
-
-    // Output the particle locations to parallel VTK files
+    // Output the particle locations to a specified data file type
     template <int dim>
     std::string ParticleSet<dim>::output_particle_data(const std::string &output_dir, const parallel::distributed::Triangulation<dim> &triangulation)
     {
       typename ParticleMap::iterator  it;
       MPI_Particle<dim>       particle_data;
-      int                     d;
-      std::string             output_path_prefix, full_filename;
+      unsigned int            d, i;
+      std::string             output_file_prefix, output_path_prefix, full_filename;
+      DataOut<dim>            data_out;
+      unsigned int myid = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
+      unsigned int nproc = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 
-      output_path_prefix = output_dir + "data_particle-" + Utilities::int_to_string (data_out_index, 5);
-      if (data_out_format == "ascii")
+      output_file_prefix = "particle-" + Utilities::int_to_string (data_out_index, 5);
+      output_path_prefix = output_dir + output_file_prefix;
+      if (data_output_format == "ascii")
         {
           full_filename = output_path_prefix + "." + Utilities::int_to_string(triangulation.locally_owned_subdomain(), 4) + ".txt";
           std::ofstream output (full_filename.c_str());
@@ -850,118 +722,247 @@ namespace aspect
 
           data_out_index++;
         }
-#ifdef H5_HAVE_PARALLEL
-      else if (data_out_format == "hdf5")
+      else if (data_output_format == "vtu")
+        {
+          const std::string filename = (output_file_prefix +
+                                        "." +
+                                        Utilities::int_to_string(triangulation.locally_owned_subdomain(), 4) +
+                                        ".vtu");
+          const std::string full_filename = (output_dir + filename);
+
+          std::ofstream output (full_filename.c_str());
+          if (!output) std::cout << "ERROR: proc " << myid << " could not create " << filename << std::endl;
+
+          // Write VTU file XML
+          output << "<?xml version=\"1.0\"?>\n";
+          output << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
+          output << "  <UnstructuredGrid>\n";
+          output << "    <Piece NumberOfPoints=\"" << particles.size() << "\" NumberOfCells=\"" << particles.size() << "\">\n";
+
+          // Go through the particles on this domain and print the position of each one
+          // TODO: can we change this to dim-dimensions rather than 3?
+          output << "      <Points>\n";
+          output << "        <DataArray name=\"Position\" type=\"Float64\" NumberOfComponents=\"3\" Format=\"ascii\">\n";
+          for (it=particles.begin(); it!=particles.end(); ++it)
+            {
+              output << "          ";
+              for (d=0; d<3; ++d)
+                {
+                  if (d < dim) output << it->second.getPosition()[d] << " ";
+                  else output << "0.0 ";
+                }
+              output << "\n";
+            }
+          output << "        </DataArray>\n";
+          output << "      </Points>\n";
+
+          // Write cell related data (empty)
+          output << "      <Cells>\n";
+          output << "        <DataArray type=\"Int32\" Name=\"connectivity\" Format=\"ascii\">\n";
+          for (i=1; i<=particles.size(); ++i) output << "          " << i-1 << "\n";
+          output << "        </DataArray>\n";
+          output << "        <DataArray type=\"Int32\" Name=\"offsets\" Format=\"ascii\">\n";
+          for (i=1; i<=particles.size(); ++i) output << "          " << i << "\n";
+          output << "        </DataArray>\n";
+          output << "        <DataArray type=\"UInt8\" Name=\"types\" Format=\"ascii\">\n";
+          for (i=1; i<=particles.size(); ++i) output << "          1\n";
+          output << "        </DataArray>\n";
+          output << "      </Cells>\n";
+
+          // Write point related data (id, velocity, etc)
+          output << "      <PointData Scalars=\"scalars\">\n";
+
+          output << "        <DataArray type=\"Float64\" Name=\"velocity\" NumberOfComponents=\"3\" Format=\"ascii\">\n";
+          for (it=particles.begin(); it!=particles.end(); ++it)
+            {
+              output << "          ";
+              for (d=0; d<3; ++d)
+                {
+                  if (d < dim) output << it->second.getVelocity()[d] << " ";
+                  else output << "0.0 ";
+                }
+              output << "\n";
+            }
+          output << "        </DataArray>\n";
+          output << "        <DataArray type=\"Float64\" Name=\"id\" Format=\"ascii\">\n";
+          for (it=particles.begin(); it!=particles.end(); ++it)
+            {
+              output << "          " << it->second.getID() << "\n";
+            }
+          output << "        </DataArray>\n";
+          output << "      </PointData>\n";
+
+          output << "    </Piece>\n";
+          output << "  </UnstructuredGrid>\n";
+          output << "</VTKFile>\n";
+
+          output.close();
+
+          // Write the parallel pvtu and pvd files on the root process
+          if (myid == 0)
+            {
+              const std::string pvtu_filename = (output_path_prefix + ".pvtu");
+
+              std::ofstream pvtu_output (pvtu_filename.c_str());
+              if (!pvtu_output) std::cout << "ERROR: Could not create " << filename << std::endl;
+
+              pvtu_output << "<?xml version=\"1.0\"?>\n";
+              pvtu_output << "<VTKFile type=\"PUnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
+              pvtu_output << "  <PUnstructuredGrid GhostLevel=\"0\">\n";
+              pvtu_output << "    <PPoints>\n";
+              pvtu_output << "      <PDataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"ascii\"/>\n";
+              pvtu_output << "    </PPoints>\n";
+              pvtu_output << "    <PPointData Scalars=\"scalars\">\n";
+              pvtu_output << "      <PDataArray type=\"Float64\" Name=\"velocity\" NumberOfComponents=\"3\" format=\"ascii\"/>\n";
+              pvtu_output << "      <PDataArray type=\"Float64\" Name=\"id\" format=\"ascii\"/>\n";
+              pvtu_output << "    </PPointData>\n";
+              for (i=0; i<nproc; ++i)
+                {
+                  pvtu_output << "    <Piece Source=\"" << output_file_prefix << "." << Utilities::int_to_string(i, 4) << ".vtu\"/>\n";
+                }
+              pvtu_output << "  </PUnstructuredGrid>\n";
+              pvtu_output << "</VTKFile>\n";
+              pvtu_output.close();
+
+              times_and_pvtu_names.push_back(std::pair<double,std::string>(this->get_time(), output_file_prefix+".pvtu"));
+              const std::string pvd_master_filename = (this->get_output_directory() + "particle.pvd");
+              std::ofstream pvd_master (pvd_master_filename.c_str());
+              data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
+            }
+        }
+#ifdef DEAL_II_HAVE_HDF5
+      // TODO: error checking for H5 calls
+      else if (data_output_format == "hdf5")
         {
           hid_t   h5_file_id;
-          hid_t   plist_id, xfer_plist_id, particle_dataset_id, particle_type_id;
-          hid_t   file_dataspace_id, mem_dataspace_id, pattr_id;
+          hid_t   plist_id, xfer_plist_id, position_dataset_id, velocity_dataset_id, pid_dataset_id;
+          hid_t   file_dataspace_id, pos_file_dataspace_id, vel_file_dataspace_id, pid_file_dataspace_id;
+          hid_t   dim_dataspace_id, one_dim_ds_id;
+          hid_t   dim_mem_ds_id, one_dim_mem_ds_id;
+          hid_t   pattr_id;
           herr_t  status;
           int     i;
-          hsize_t global_particle_count, offset, count;
+          hsize_t global_particle_count, dims[2], offset[2], count[2];
+          unsigned int  mpi_offset, mpi_count;
 
-          HDF5_Particle<dim>  *particle_data;
+          double  *pos_data, *vel_data, *id_data;
+
           std::string h5_filename = output_path_prefix+".h5";
 
           // Create parallel file access
           plist_id = H5Pcreate(H5P_FILE_ACCESS);
           H5Pset_fapl_mpio(plist_id, MPI_COMM_WORLD, MPI_INFO_NULL);
 
+          // Create the file
           h5_file_id = H5Fcreate(h5_filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, plist_id);
 
-          // Create the particle data type
-          particle_type_id = H5Tcreate(H5T_COMPOUND, sizeof(HDF5_Particle<dim>));
-          offset = 0;
-          for (d=0; d<dim; ++d)
-            {
-              std::stringstream entry_name;
-              entry_name << "POSITION_" << d;
-              H5Tinsert(particle_type_id, entry_name.str().c_str(), offset, H5T_NATIVE_DOUBLE);
-              offset += sizeof(double);
-            }
-          for (d=0; d<dim; ++d)
-            {
-              std::stringstream entry_name;
-              entry_name << "VELOCITY_" << d;
-              H5Tinsert(particle_type_id, entry_name.str().c_str(), offset, H5T_NATIVE_DOUBLE);
-              offset += sizeof(double);
-            }
-          H5Tinsert(particle_type_id, "ID", offset, H5T_NATIVE_UINT);
-          H5Tcommit(h5_file_id, "PARTICLE_STRUCT", particle_type_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-
-          // Create the file dataspace description
+          // Create the file dataspace descriptions
           global_particle_count = get_global_particle_count();
-          file_dataspace_id = H5Screate_simple(1, &global_particle_count, NULL);
+          dims[0] = global_particle_count;
+          dims[1] = 3;
+          one_dim_ds_id = H5Screate_simple(1, dims, NULL);
+          dim_dataspace_id = H5Screate_simple(2, dims, NULL);
 
-          // Create the dataset
-          particle_dataset_id = H5Dcreate(h5_file_id, "PARTICLES", particle_type_id, file_dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+          // Create the datasets
+          position_dataset_id = H5Dcreate(h5_file_id, "nodes", H5T_NATIVE_DOUBLE, dim_dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+          velocity_dataset_id = H5Dcreate(h5_file_id, "velocity", H5T_NATIVE_DOUBLE, dim_dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+          pid_dataset_id = H5Dcreate(h5_file_id, "id", H5T_NATIVE_DOUBLE, one_dim_ds_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
-          // Close the file dataspace
-          H5Sclose(file_dataspace_id);
+          // Close the file dataspaces
+          H5Sclose(dim_dataspace_id);
+          H5Sclose(one_dim_ds_id);
 
           // Just in case we forget what they are
-          count = 1;
-          file_dataspace_id = H5Screate_simple (1, &count, NULL);
+          count[0] = 1;
+          file_dataspace_id = H5Screate_simple (1, count, NULL);
           pattr_id = H5Acreate(h5_file_id, "Ermahgerd! Pertecrs!", H5T_NATIVE_INT, file_dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
           H5Aclose(pattr_id);
           H5Sclose(file_dataspace_id);
 
           // Count the number of particles on this process and get the offset among all processes
-          count = particles.size();
-          MPI_Scan(&count, &offset, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-          offset -= count;
+          mpi_count = particles.size();
+          MPI_Scan(&mpi_count, &mpi_offset, 1, MPI_UNSIGNED, MPI_SUM, MPI_COMM_WORLD);
+          count[0] = mpi_count;
+          count[1] = 3;
+          offset[0] = mpi_offset-mpi_count;
+          offset[1] = 0;
 
-          mem_dataspace_id = H5Screate_simple(1, &count, NULL);
-          file_dataspace_id = H5Dget_space(particle_dataset_id);
-          H5Sselect_hyperslab(file_dataspace_id, H5S_SELECT_SET, &offset, NULL, &count, NULL);
+          // Select the appropriate dataspace for this process
+          one_dim_mem_ds_id = H5Screate_simple(1, count, NULL);
+          dim_mem_ds_id = H5Screate_simple(2, count, NULL);
+          pos_file_dataspace_id = H5Dget_space(position_dataset_id);
+          vel_file_dataspace_id = H5Dget_space(velocity_dataset_id);
+          pid_file_dataspace_id = H5Dget_space(pid_dataset_id);
+
+          // And select the hyperslabs from each dataspace
+          status = H5Sselect_hyperslab(pos_file_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);
+          status = H5Sselect_hyperslab(vel_file_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);
+          status = H5Sselect_hyperslab(pid_file_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);
 
           // Create property list for collective dataset write
           xfer_plist_id = H5Pcreate(H5P_DATASET_XFER);
           H5Pset_dxpl_mpio(xfer_plist_id, H5FD_MPIO_COLLECTIVE);
 
           // Read the local particle data
-          particle_data = new HDF5_Particle<dim>[particles.size()];
+          pos_data = new double[3*particles.size()];
+          vel_data = new double[3*particles.size()];
+          id_data = new double[particles.size()];
+
           for (i=0,it=particles.begin(); it!=particles.end(); ++i,++it)
             {
-              particle_data[i] = it->second.hdf5_data();
+              for (d=0; d<dim; ++d)
+                {
+                  pos_data[i*3+d] = it->second.getPosition()(d);
+                  vel_data[i*3+d] = it->second.getVelocity()(d);
+                }
+              if (dim < 3)
+                {
+                  pos_data[i*3+2] = 0;
+                  vel_data[i*3+2] = 0;
+                }
+              id_data[i] = it->second.getID();
             }
 
           // Write particle data to the HDF5 file
-          H5Dwrite(particle_dataset_id, particle_type_id, mem_dataspace_id, file_dataspace_id, xfer_plist_id, particle_data);
+          H5Dwrite(position_dataset_id, H5T_NATIVE_DOUBLE, dim_mem_ds_id, pos_file_dataspace_id, xfer_plist_id, pos_data);
+          H5Dwrite(velocity_dataset_id, H5T_NATIVE_DOUBLE, dim_mem_ds_id, vel_file_dataspace_id, xfer_plist_id, vel_data);
+          H5Dwrite(pid_dataset_id, H5T_NATIVE_DOUBLE, one_dim_mem_ds_id, pid_file_dataspace_id, xfer_plist_id, id_data);
 
           // Clear allocated resources
-          delete particle_data;
+          delete pos_data;
+          delete vel_data;
+          delete id_data;
           status = H5Pclose(xfer_plist_id);
-          status = H5Sclose(mem_dataspace_id);
-          status = H5Sclose(file_dataspace_id);
-          status = H5Dclose(particle_dataset_id);
-          status = H5Tclose(particle_type_id);
+          status = H5Sclose(one_dim_mem_ds_id);
+          status = H5Sclose(dim_mem_ds_id);
+          status = H5Sclose(pos_file_dataspace_id);
+          status = H5Sclose(vel_file_dataspace_id);
+          status = H5Sclose(pid_file_dataspace_id);
+          status = H5Dclose(position_dataset_id);
+          status = H5Dclose(velocity_dataset_id);
+          status = H5Dclose(pid_dataset_id);
           status = H5Pclose(plist_id);
           status = H5Fclose(h5_file_id);
 
+          // Record and output XDMF info on root process
+          if (myid == 0)
+            {
+              std::string local_h5_filename = output_file_prefix+".h5";
+              XDMFEntry   entry(local_h5_filename, this->get_time(), global_particle_count, 0, 3);
+              DataOut<dim> data_out;
+              const std::string xdmf_filename = (this->get_output_directory() + "particle.xdmf");
+
+              entry.add_attribute("velocity", 3);
+              entry.add_attribute("id", 1);
+              xdmf_entries.push_back(entry);
+
+              data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(), MPI_COMM_WORLD);
+            }
           data_out_index++;
         }
 #endif
 
       return output_path_prefix;
-    }
-
-    template <int dim>
-    void
-    ParticleSet<dim>::set_next_gfx_output_time (const double current_time)
-    {
-      // if output_interval is positive, then set the next output interval to
-      // a positive multiple; we need to interpret output_interval either
-      // as years or as seconds
-      if (gfx_output_interval > 0)
-        {
-          if (this->convert_output_to_years() == true)
-            next_gfx_output_time = std::ceil(current_time / (gfx_output_interval * year_in_seconds)) *
-                                   (gfx_output_interval * year_in_seconds);
-          else
-            next_gfx_output_time = std::ceil(current_time / (gfx_output_interval)) *
-                                   (gfx_output_interval);
-        }
     }
 
     template <int dim>
@@ -993,28 +994,19 @@ namespace aspect
           prm.declare_entry ("Number of tracers", "1e3",
                              Patterns::Double (0),
                              "Total number of tracers to create (not per processor or per element).");
-          prm.declare_entry ("Time between graphical output", "1e8",
-                             Patterns::Double (0),
-                             "The time interval between each generation of "
-                             "graphical output files. A value of zero indicates "
-                             "that output should be generated in each time step. "
-                             "Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
-                             "seconds otherwise.");
           prm.declare_entry ("Time between data output", "1e8",
                              Patterns::Double (0),
                              "The time interval between each generation of "
-                             "graphical output files. A value of zero indicates "
-                             "that output should be generated in each time step. "
+                             "output files. A value of zero indicates that "
+                             "output should be generated every time step. "
                              "Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
           prm.declare_entry("Data output format", "none",
                             Patterns::Selection("none|"
-                                                "ascii"
-#ifdef HAVE_HDF5
-                                                "|hdf5"
-#endif
+                                                "ascii|"
+                                                "vtu|"
+                                                "hdf5"
                                                ),
                             "File format to output raw particle data in.");
         }
@@ -1033,9 +1025,14 @@ namespace aspect
         prm.enter_subsection("Tracers");
         {
           num_initial_tracers = prm.get_double ("Number of tracers");
-          gfx_output_interval = prm.get_double ("Time between graphical output");
           data_output_interval = prm.get_double ("Time between data output");
-          data_out_format = prm.get("Data output format");
+          data_output_format = prm.get("Data output format");
+#ifndef DEAL_II_HAVE_HDF5
+          AssertThrow (data_output_format == "hdf5",
+                       ExcMessage ("deal.ii was not compiled with HDF5 support, "
+                                   "so HDF5 output is not possible. Please "
+                                   "recompile deal.ii with HDF5 support turned on."));
+#endif
         }
         prm.leave_subsection ();
       }

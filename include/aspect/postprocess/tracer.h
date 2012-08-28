@@ -140,20 +140,20 @@ namespace aspect
 
         // Interval between output (in years if appropriate
         // simulation parameter is set, otherwise seconds)
-        double                          gfx_output_interval, data_output_interval;
+        double                          data_output_interval;
 
-        // Output format for raw particle data
-        std::string                     data_out_format;
+        // Output format for particle data
+        std::string                     data_output_format;
 
         // Records time for next output to occur
-        double                          next_gfx_output_time, next_data_output_time;
+        double                          next_data_output_time;
 
         // Set of particles currently in the local domain, organized by
         // the level/index of the cell they are in
         ParticleMap                     particles;
 
         // Index of output file
-        unsigned int                    gfx_out_index, data_out_index;
+        unsigned int                    data_out_index;
 
         // Total number of particles in simulation
         double                          global_sum_particles;
@@ -171,6 +171,9 @@ namespace aspect
         int                             total_send, total_recv;
         int                             *send_offset, *recv_offset;
         MPI_Request                     *send_reqs, *recv_reqs;
+
+        // A set of XDMF data objects to create the XDMF file for particles
+        std::vector<XDMFEntry>          xdmf_entries;
 
         /**
          * A list of pairs (time, pvtu_filename) that have so far been written
@@ -196,7 +199,7 @@ namespace aspect
         };
 
       public:
-        ParticleSet(void) : initialized(false), triangulation_changed(true), next_gfx_output_time(std::numeric_limits<double>::quiet_NaN()), next_data_output_time(std::numeric_limits<double>::quiet_NaN()), gfx_out_index(0), data_out_index(0), world_size(0), self_rank(0), num_send(NULL), num_recv(NULL), send_offset(NULL), recv_offset(NULL), send_reqs(NULL), recv_reqs(NULL) {};
+        ParticleSet(void) : initialized(false), triangulation_changed(true),  next_data_output_time(std::numeric_limits<double>::quiet_NaN()), data_out_index(0), world_size(0), self_rank(0), num_send(NULL), num_recv(NULL), send_offset(NULL), recv_offset(NULL), send_reqs(NULL), recv_reqs(NULL) {};
         ~ParticleSet(void);
 
         virtual std::pair<std::string,std::string> execute (TableHandler &statistics);
@@ -206,8 +209,6 @@ namespace aspect
                                       std::string filename);
         void generate_particles(const parallel::distributed::Triangulation<dim> &triangulation,
                                 double total_particles);
-        std::string output_particle_gfx(const std::string &output_dir,
-                                        const parallel::distributed::Triangulation<dim> &triangulation);
         std::string output_particle_data(const std::string &output_dir,
                                          const parallel::distributed::Triangulation<dim> &triangulation);
         void advect_particles(const parallel::distributed::Triangulation<dim> &triangulation,
@@ -231,7 +232,6 @@ namespace aspect
         unsigned int get_global_particle_count(void);
         void check_particle_count(void);
 
-        void set_next_gfx_output_time (const double current_time);
         void set_next_data_output_time (const double current_time);
 
 
