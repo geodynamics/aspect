@@ -1147,7 +1147,7 @@ namespace aspect
               LinearAlgebra::BlockVector distr_old_solution (system_rhs);
               distr_old_solution = old_old_solution;
               distr_solution .sadd (1.+time_step/old_time_step, -time_step/old_time_step,
-                  distr_old_solution);
+                                    distr_old_solution);
               solution = distr_solution;
             }
         }

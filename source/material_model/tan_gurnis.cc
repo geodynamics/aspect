@@ -51,7 +51,7 @@ namespace aspect
     viscosity (const double,
                const double,
                const SymmetricTensor<2,dim> &,
-               const Point<dim> & pos) const
+               const Point<dim> &pos) const
     {
       const double depth = 1.0-pos(dim-1);
       return exp(a*depth);
@@ -123,7 +123,7 @@ namespace aspect
     TanGurnis<dim>::
     density (const double,
              const double,
-             const Point<dim> & pos) const
+             const Point<dim> &pos) const
     {
       const double depth = 1.0-pos(dim-1);
       const double temperature = sin(numbers::PI*pos(dim-1))*cos(numbers::PI*wavenumber*pos(0));
@@ -147,7 +147,7 @@ namespace aspect
     TanGurnis<dim>::
     compressibility (const double temperature,
                      const double pressure,
-                     const Point<dim> & pos) const
+                     const Point<dim> &pos) const
     {
       return Di/gamma / density(temperature, pressure, pos);
     }

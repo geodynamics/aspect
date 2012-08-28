@@ -203,134 +203,132 @@ namespace aspect
       data_out.add_data_vector (Vp_anomaly, "Vp_anomaly");
       data_out.build_patches ();
 
-//TODO: There is some code duplication between the following two
-//code blocks. unify!
-      if (output_format=="vtu" && group_files!=0)
+      std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);
+      if (output_format=="hdf5")
         {
-          AssertThrow(group_files==1, ExcNotImplemented());
-          data_out.write_vtu_in_parallel((this->get_output_directory() + std::string("solution-") +
-                                          Utilities::int_to_string (output_file_number, 5) +
-                                          ".vtu").c_str(), MPI_COMM_WORLD);
-
-          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-            {
-              std::vector<std::string> filenames;
-              filenames.push_back (std::string("solution-") +
-                                   Utilities::int_to_string (output_file_number, 5) +
-                                   ".vtu");
-              const std::string
-              pvtu_master_filename = ("solution-" +
-                                      Utilities::int_to_string (output_file_number, 5) +
-                                      ".pvtu");
-              std::ofstream pvtu_master ((this->get_output_directory() +
-                                          pvtu_master_filename).c_str());
-              data_out.write_pvtu_record (pvtu_master, filenames);
-
-              // now also generate a .pvd file that matches simulation
-              // time and corresponding .pvtu record
-              times_and_pvtu_names.push_back(std::pair<double,std::string>
-                                             (this->get_time(), pvtu_master_filename));
-              const std::string
-              pvd_master_filename = (this->get_output_directory() + "solution.pvd");
-              std::ofstream pvd_master (pvd_master_filename.c_str());
-              data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
-
-              // finally, do the same for Visit via the .visit file
-              const std::string
-              visit_master_filename = (this->get_output_directory() +
-                                       "solution-" +
-                                       Utilities::int_to_string (output_file_number, 5) +
-                                       ".visit");
-              std::ofstream visit_master (visit_master_filename.c_str());
-              data_out.write_visit_record (visit_master, filenames);
-            }
+          std::string     h5_filename = solution_file_prefix + ".h5";
+          std::string     xdmf_filename = this->get_output_directory() + "solution.xdmf";
+          data_out.write_hdf5_parallel((this->get_output_directory()+h5_filename).c_str(), MPI_COMM_WORLD);
+          xdmf_entries.push_back(data_out.create_xdmf_entry(h5_filename.c_str(), this->get_time(), MPI_COMM_WORLD));
+          data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(), MPI_COMM_WORLD);
         }
-      else
+      else if (output_format=="vtu")
         {
-          // put the stuff we want to write into a string object that
-          // we can then write in the background
-          const std::string *file_contents;
-          {
-            std::ostringstream tmp;
-            data_out.write (tmp, DataOutBase::parse_output_format(output_format));
-
-            file_contents = new std::string (tmp.str());
-          }
-
-          // let the master processor write the master record for all the distributed
-          // files
-          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+          //TODO: There is some code duplication between the following two
+          //code blocks. unify!
+          if (group_files!=0)
             {
-              std::vector<std::string> filenames;
-              for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
-                filenames.push_back (std::string("solution-") +
-                                     Utilities::int_to_string (output_file_number, 5) +
-                                     "." +
-                                     Utilities::int_to_string(i, 4) +
-                                     DataOutBase::default_suffix
-                                     (DataOutBase::parse_output_format(output_format)));
-              const std::string
-              pvtu_master_filename = ("solution-" +
-                                      Utilities::int_to_string (output_file_number, 5) +
-                                      ".pvtu");
-              std::ofstream pvtu_master ((this->get_output_directory() +
-                                          pvtu_master_filename).c_str());
-              data_out.write_pvtu_record (pvtu_master, filenames);
+              AssertThrow(group_files==1, ExcNotImplemented());
+              data_out.write_vtu_in_parallel((this->get_output_directory() + solution_file_prefix +
+                                              ".vtu").c_str(), MPI_COMM_WORLD);
 
-              // now also generate a .pvd file that matches simulation
-              // time and corresponding .pvtu record
-              times_and_pvtu_names.push_back(std::pair<double,std::string>
-                                             (this->get_time(), pvtu_master_filename));
-              const std::string
-              pvd_master_filename = (this->get_output_directory() + "solution.pvd");
-              std::ofstream pvd_master (pvd_master_filename.c_str());
-              data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
+              if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+                {
+                  std::vector<std::string> filenames;
+                  filenames.push_back (solution_file_prefix + ".vtu");
+                  const std::string pvtu_master_filename = (solution_file_prefix + ".pvtu");
+                  std::ofstream pvtu_master ((this->get_output_directory() +
+                                              pvtu_master_filename).c_str());
+                  data_out.write_pvtu_record (pvtu_master, filenames);
 
-              // finally, do the same for Visit via the .visit file
-              const std::string
-              visit_master_filename = (this->get_output_directory() +
-                                       "solution-" +
-                                       Utilities::int_to_string (output_file_number, 5) +
-                                       ".visit");
-              std::ofstream visit_master (visit_master_filename.c_str());
-              data_out.write_visit_record (visit_master, filenames);
+                  // now also generate a .pvd file that matches simulation
+                  // time and corresponding .pvtu record
+                  times_and_pvtu_names.push_back(std::pair<double,std::string>
+                                                 (this->get_time(), pvtu_master_filename));
+                  const std::string
+                  pvd_master_filename = (this->get_output_directory() + "solution.pvd");
+                  std::ofstream pvd_master (pvd_master_filename.c_str());
+                  data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
+
+                  // finally, do the same for Visit via the .visit file
+                  const std::string
+                  visit_master_filename = (this->get_output_directory() +
+                                           solution_file_prefix +
+                                           ".visit");
+                  std::ofstream visit_master (visit_master_filename.c_str());
+                  data_out.write_visit_record (visit_master, filenames);
+                }
             }
+          else
+            {
+              // put the stuff we want to write into a string object that
+              // we can then write in the background
+              const std::string *file_contents;
+              {
+                std::ostringstream tmp;
+                data_out.write (tmp, DataOutBase::parse_output_format(output_format));
 
-          const std::string *filename
-            = new std::string (this->get_output_directory() +
-                               "solution-" +
-                               Utilities::int_to_string (output_file_number, 5) +
-                               "." +
-                               Utilities::int_to_string
-                               (this->get_triangulation().locally_owned_subdomain(), 4) +
-                               DataOutBase::default_suffix
-                               (DataOutBase::parse_output_format(output_format)));
+                file_contents = new std::string (tmp.str());
+              }
 
-          // wait for all previous write operations to finish, should
-          // any be still active
-          background_thread.join ();
+              // let the master processor write the master record for all the distributed
+              // files
+              if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+                {
+                  std::vector<std::string> filenames;
+                  for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
+                    filenames.push_back (solution_file_prefix +
+                                         "." +
+                                         Utilities::int_to_string(i, 4) +
+                                         DataOutBase::default_suffix
+                                         (DataOutBase::parse_output_format(output_format)));
+                  const std::string
+                  pvtu_master_filename = (solution_file_prefix +
+                                          ".pvtu");
+                  std::ofstream pvtu_master ((this->get_output_directory() +
+                                              pvtu_master_filename).c_str());
+                  data_out.write_pvtu_record (pvtu_master, filenames);
 
-          // then continue with writing our own stuff
-          background_thread = Threads::new_thread (&background_writer,
-                                                   filename,
-                                                   file_contents);
+                  // now also generate a .pvd file that matches simulation
+                  // time and corresponding .pvtu record
+                  times_and_pvtu_names.push_back(std::pair<double,std::string>
+                                                 (this->get_time(), pvtu_master_filename));
+                  const std::string
+                  pvd_master_filename = (this->get_output_directory() + "solution.pvd");
+                  std::ofstream pvd_master (pvd_master_filename.c_str());
+                  data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
+
+                  // finally, do the same for Visit via the .visit file
+                  const std::string
+                  visit_master_filename = (this->get_output_directory() +
+                                           solution_file_prefix +
+                                           ".visit");
+                  std::ofstream visit_master (visit_master_filename.c_str());
+                  data_out.write_visit_record (visit_master, filenames);
+                }
+
+              const std::string *filename
+                = new std::string (this->get_output_directory() +
+                                   solution_file_prefix +
+                                   "." +
+                                   Utilities::int_to_string
+                                   (this->get_triangulation().locally_owned_subdomain(), 4) +
+                                   DataOutBase::default_suffix
+                                   (DataOutBase::parse_output_format(output_format)));
+
+              // wait for all previous write operations to finish, should
+              // any be still active
+              background_thread.join ();
+
+              // then continue with writing our own stuff
+              background_thread = Threads::new_thread (&background_writer,
+                                                       filename,
+                                                       file_contents);
+            }
         }
 
       // record the file base file name in the output file
       statistics.add_value ("Visualization file name",
-                            this->get_output_directory() + "solution-" +
-                            Utilities::int_to_string (output_file_number, 5));
+                            this->get_output_directory() + solution_file_prefix);
 
       // up the counter of the number of the file by one; also
       // up the next time we need output
       ++output_file_number;
       set_next_output_time (this->get_time());
 
-      // return what should be printed to the screen. note that we had
-      // just incremented the number, so use the previous value
+      // return what should be printed to the screen.
       return std::make_pair (std::string ("Writing graphical output:"),
-                             this->get_output_directory() +"solution-" +
-                             Utilities::int_to_string (output_file_number-1, 5));
+                             this->get_output_directory() + solution_file_prefix);
     }
 
 

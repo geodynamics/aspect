@@ -28,6 +28,7 @@
 
 #include <deal.II/base/thread_management.h>
 #include <deal.II/numerics/data_postprocessor.h>
+#include <deal.II/base/data_out_base.h>
 
 namespace aspect
 {
@@ -342,6 +343,13 @@ namespace aspect
          * time inside the .pvtu or .vtu files).
          */
         std::vector<std::pair<double,std::string> > times_and_pvtu_names;
+
+        /**
+         * A set of data related to XDMF file sections describing the HDF5 heavy data
+         * files created. These contain things such as the dimensions and names of data
+         * written at all steps during the simulation.
+         */
+        std::vector<XDMFEntry>  xdmf_entries;
     };
   }
 
