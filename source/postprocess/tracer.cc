@@ -851,7 +851,9 @@ namespace aspect
 
           // Create parallel file access
           plist_id = H5Pcreate(H5P_FILE_ACCESS);
+#ifdef H5_HAVE_PARALLEL
           H5Pset_fapl_mpio(plist_id, MPI_COMM_WORLD, MPI_INFO_NULL);
+#endif
 
           // Create the file
           h5_file_id = H5Fcreate(h5_filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, plist_id);
@@ -901,7 +903,9 @@ namespace aspect
 
           // Create property list for collective dataset write
           xfer_plist_id = H5Pcreate(H5P_DATASET_XFER);
+#ifdef H5_HAVE_PARALLEL
           H5Pset_dxpl_mpio(xfer_plist_id, H5FD_MPIO_COLLECTIVE);
+#endif
 
           // Read the local particle data
           pos_data = new double[3*particles.size()];
