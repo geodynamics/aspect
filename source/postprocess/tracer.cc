@@ -866,9 +866,15 @@ namespace aspect
           dim_dataspace_id = H5Screate_simple(2, dims, NULL);
 
           // Create the datasets
+#if H5Dcreate_vers == 1
+          position_dataset_id = H5Dcreate(h5_file_id, "nodes", H5T_NATIVE_DOUBLE, dim_dataspace_id, H5P_DEFAULT);
+          velocity_dataset_id = H5Dcreate(h5_file_id, "velocity", H5T_NATIVE_DOUBLE, dim_dataspace_id, H5P_DEFAULT);
+          pid_dataset_id = H5Dcreate(h5_file_id, "id", H5T_NATIVE_DOUBLE, one_dim_ds_id, H5P_DEFAULT);
+#else
           position_dataset_id = H5Dcreate(h5_file_id, "nodes", H5T_NATIVE_DOUBLE, dim_dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
           velocity_dataset_id = H5Dcreate(h5_file_id, "velocity", H5T_NATIVE_DOUBLE, dim_dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
           pid_dataset_id = H5Dcreate(h5_file_id, "id", H5T_NATIVE_DOUBLE, one_dim_ds_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#endif
 
           // Close the file dataspaces
           H5Sclose(dim_dataspace_id);
@@ -877,7 +883,11 @@ namespace aspect
           // Just in case we forget what they are
           count[0] = 1;
           file_dataspace_id = H5Screate_simple (1, count, NULL);
+#if H5Acreate_vers == 1
+          pattr_id = H5Acreate(h5_file_id, "Ermahgerd! Pertecrs!", H5T_NATIVE_INT, file_dataspace_id, H5P_DEFAULT);
+#else
           pattr_id = H5Acreate(h5_file_id, "Ermahgerd! Pertecrs!", H5T_NATIVE_INT, file_dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
+#endif
           H5Aclose(pattr_id);
           H5Sclose(file_dataspace_id);
 
