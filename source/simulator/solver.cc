@@ -244,7 +244,7 @@ namespace aspect
       pcout << "   Solving temperature system... " << std::flush;
 
       SolverControl solver_control (system_matrix.block(2,2).m(),
-                                    1e-12*system_rhs.block(2).l2_norm());
+                                    parameters.temperature_solver_tolerance*system_rhs.block(2).l2_norm());
 
       SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
                                                    SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));

@@ -11,6 +11,12 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: Added parameter 'Temperature solver tolerance' to control the
+accuracy of the temperature solver.
+<br>
+(Timo Heister, 2012/09/05)
+
+<li>
 New: Added MaterialModel::update() and GravityModel::update() that are
 called before every time step.
 <br>
