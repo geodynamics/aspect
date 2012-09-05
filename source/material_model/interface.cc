@@ -38,6 +38,12 @@ namespace aspect
 
 
     template <int dim>
+    void
+    Interface<dim>::update ()
+    {}
+
+
+    template <int dim>
     double
     Interface<dim>::viscosity_derivative (const double,
                                           const double,

@@ -410,6 +410,9 @@ namespace aspect
     //TODO: do this in a more efficient way (TH)?
     if (!velocity_boundary_conditions.empty())
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
+    // notify different system components that we started the next time step
+    material_model->update();
   }
 
 

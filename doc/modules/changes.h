@@ -11,6 +11,11 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: Added MaterialModel::update() that is called before every time step.
+<br>
+(Timo Heister, 2012/09/05)
+
+<li>
 New: Support for HDF5/XDMF visualization output.
 <br>
 (Eric Heien, 2012/08/28)

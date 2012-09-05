@@ -75,6 +75,12 @@ namespace aspect
         virtual ~Interface();
 
         /**
+         * Called at the beginning of each time step and allows the material model
+         * to update internal data structures.
+         */
+        virtual void update();
+
+        /**
          * @name Physical parameters used in the basic equations
          * @{
          */
