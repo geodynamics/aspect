@@ -34,7 +34,7 @@ namespace aspect
     initial_temperature (const Point<dim> &position) const
     {
       // this initial condition only makes sense if the geometry is a
-      // spherical shell. verify that it is indeed
+      // Box. verify that it is indeed
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (this->geometry_model);
       Assert (geometry != 0,
