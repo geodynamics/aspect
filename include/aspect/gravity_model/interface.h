@@ -55,6 +55,12 @@ namespace aspect
         virtual ~Interface();
 
         /**
+         * Called at the beginning of each time step and allows the implementation
+         * to update internal data structures.
+         */
+        virtual void update();
+
+        /**
          * Return the gravity vector as a function of position.
          */
         virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const = 0;

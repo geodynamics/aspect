@@ -413,6 +413,7 @@ namespace aspect
 
     // notify different system components that we started the next time step
     material_model->update();
+    gravity_model->update();
   }
 
 
