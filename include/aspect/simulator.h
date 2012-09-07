@@ -767,7 +767,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void output_statistics();
+      void output_program_stats();
       /**
        * @}
        */
@@ -781,9 +781,16 @@ namespace aspect
       MPI_Comm                            mpi_communicator;
 
       ConditionalOStream                  pcout;
-      TableHandler                        statistics;
       Postprocess::Manager<dim>           postprocess_manager;
       TimerOutput                         computing_timer;
+
+      /**
+       * An object that stores a bunch of statistics such as the number of
+       * linear solver iterations, the time corresponding to each time
+       * step, etc, as well as whatever the various postprocessors want
+       * to put into it.
+       */
+      TableHandler                        statistics;
       /**
        * @}
        */

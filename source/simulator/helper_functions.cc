@@ -58,7 +58,7 @@ namespace aspect
 {
 
   template <int dim>
-  void Simulator<dim>::output_statistics()
+  void Simulator<dim>::output_program_stats()
   {
     if (!aspect::output_parallel_statistics)
       return;
@@ -949,7 +949,7 @@ namespace aspect
   template void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_Vs_anomaly(Vector<float> &values) const; \
   template void Simulator<dim>::compute_Vp_anomaly(Vector<float> &values) const; \
-  template void Simulator<dim>::output_statistics();
+  template void Simulator<dim>::output_program_stats();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

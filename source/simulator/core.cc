@@ -1085,7 +1085,7 @@ namespace aspect
         if ((timestep_number == 0) &&
             (pre_refinement_step < parameters.initial_adaptive_refinement))
           {
-            output_statistics();
+            output_program_stats();
 
             if (parameters.run_postprocessors_on_initial_refinement)
               postprocess ();
@@ -1131,7 +1131,7 @@ namespace aspect
             (timestep_number % parameters.timing_output_frequency == 0))
           {
             computing_timer.print_summary ();
-            output_statistics();
+            output_program_stats();
           }
 
         // increment time step by one. then prepare
