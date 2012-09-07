@@ -240,6 +240,18 @@ namespace aspect
   }
 
 
+  /**
+   * Destructor.
+   **/
+  template <int dim>
+  Simulator<dim>::~Simulator ()
+  {
+    // wait if there is a thread that's still writing the statistics
+    // object (set from the output_statistics() function)
+    output_statistics_thread.join();
+  }
+
+
   namespace
   {
     template <int dim>
@@ -657,27 +669,10 @@ namespace aspect
     std::list<std::pair<std::string,std::string> >
     output_list = postprocess_manager.execute (statistics);
 
+    // if we are on processor zero, print to screen
+    // whatever the postprocessors have generated
     if (Utilities::MPI::this_mpi_process(mpi_communicator)==0)
       {
-        std::string tmp_file_name = parameters.output_directory+"statistics_tmp";
-        std::string stat_file_name = parameters.output_directory+"statistics";
-        std::ofstream stat_file (tmp_file_name.c_str());
-        if (parameters.convert_to_years == true)
-          {
-            statistics.set_scientific("Time (years)", true);
-            statistics.set_scientific("Time step size (years)", true);
-          }
-        else
-          {
-            statistics.set_scientific("Time (seconds)", true);
-            statistics.set_scientific("Time step size (seconds)", true);
-          }
-
-        statistics.write_text (stat_file,
-                               TableHandler::table_with_separate_column_description);
-        stat_file.close();
-        rename(tmp_file_name.c_str(), stat_file_name.c_str());
-
         // determine the width of the first column of text so that
         // everything gets nicely aligned; then output everything
         {
@@ -701,6 +696,9 @@ namespace aspect
 
         pcout << std::endl;
       }
+
+    // finally, write the entire set of current results to disk
+    output_statistics();
 
     computing_timer.exit_section ();
   }

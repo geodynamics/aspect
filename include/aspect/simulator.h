@@ -238,6 +238,12 @@ namespace aspect
       Simulator (const MPI_Comm mpi_communicator,
                  ParameterHandler &prm);
 
+      /**
+       * Destructor. Destroy what needs to be destroyed after waiting
+       * for all threads that may still be doing something in the
+       * background.
+       */
+      ~Simulator ();
 
       /**
        * Declare the run-time parameters this class takes,
@@ -768,6 +774,17 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void output_program_stats();
+
+      /**
+       * This function is called at the end of each time step and writes the
+       * statistics object that contains data like the current time, the number
+       * of linear solver iterations, and whatever the postprocessors have
+       * generated, to disk.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void output_statistics();
       /**
        * @}
        */
@@ -789,8 +806,20 @@ namespace aspect
        * linear solver iterations, the time corresponding to each time
        * step, etc, as well as whatever the various postprocessors want
        * to put into it.
+       *
+       * This variable is written to disk after every time step, by the
+       * Simulator::output_statistics() function.
        */
       TableHandler                        statistics;
+
+      /**
+       * In output_statistics(), where we output the statistics object above,
+       * we do the actual writing on a separate thread. This variable is
+       * the handle we get for this thread so that we can wait for it
+       * to finish, either if we want to write the statistics object for
+       * the next thread, or if we want to terminate altogether.
+       */
+      Threads::Thread<>                   output_statistics_thread;
       /**
        * @}
        */

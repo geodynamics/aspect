@@ -91,6 +91,75 @@ namespace aspect
 
 
 
+  namespace
+  {
+    /**
+     * A function that writes the statistics object into a file.
+     *
+     * @param stat_file_name The name of the file into which the result
+     * should go
+     * @param copy_of_table A copy of the table that we're to write. Since
+     * this function is called in the background on a separate thread,
+     * the actual table might be modified while we are about to write
+     * it, so we need to work on a copy. This copy is deleted at the end
+     * of this function.
+     */
+    void do_output_statistics (const std::string stat_file_name,
+                               const TableHandler *copy_of_table)
+    {
+      // write into a temporary file for now so that we don't
+      // interrupt anyone who might want to look at the real
+      // statistics file while the program is still running
+      const std::string tmp_file_name = stat_file_name + " tmp";
+
+      std::ofstream stat_file (tmp_file_name.c_str());
+      copy_of_table->write_text (stat_file,
+          TableHandler::table_with_separate_column_description);
+      stat_file.close();
+
+      // now move the temporary file into place
+      std::rename(tmp_file_name.c_str(), stat_file_name.c_str());
+
+      // delete the copy now:
+      delete copy_of_table;
+    }
+  }
+
+
+  template <int dim>
+  void Simulator<dim>::output_statistics()
+  {
+    // only write the statistics file from processor zero
+    if (Utilities::MPI::this_mpi_process(mpi_communicator)!=0)
+      return;
+
+    if (parameters.convert_to_years == true)
+      {
+        statistics.set_scientific("Time (years)", true);
+        statistics.set_scientific("Time step size (years)", true);
+      }
+    else
+      {
+        statistics.set_scientific("Time (seconds)", true);
+        statistics.set_scientific("Time step size (seconds)", true);
+      }
+
+    // formatting the table we're about to output and writing the
+    // actual file may take some time, so do it on a separate
+    // thread. we pass a pointer to a copy of the statistics
+    // object which the called function then has to destroy
+    //
+    // before we can start working on a new thread, we need to
+    // make sure that the previous thread is done or they'll
+    // stomp on each other's feet
+    output_statistics_thread.join();
+    output_statistics_thread = Threads::new_thread (&do_output_statistics,
+                                                    parameters.output_directory+"statistics",
+                                                    new TableHandler(statistics));
+  }
+
+
+
   /**
    * Find the largest velocity throughout the domain.
    **/
@@ -949,7 +1018,8 @@ namespace aspect
   template void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_Vs_anomaly(Vector<float> &values) const; \
   template void Simulator<dim>::compute_Vp_anomaly(Vector<float> &values) const; \
-  template void Simulator<dim>::output_program_stats();
+  template void Simulator<dim>::output_program_stats(); \
+  template void Simulator<dim>::output_statistics();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }
