@@ -60,7 +60,7 @@ namespace aspect
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Boundary velocity model");
+      prm.enter_subsection("Initial conditions");
       {
         prm.enter_subsection("Function");
         {
