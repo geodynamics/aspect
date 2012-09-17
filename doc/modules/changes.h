@@ -11,6 +11,12 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: InitialCondition::Function for the temperature given in the parameter
+file.
+<br>
+(Timo Heister, 2012/09/17)
+
+<li>
 New: BoundaryTemperature::Box is more flexible because it has parameters
  for the values for all sides of the box.
 <br>
