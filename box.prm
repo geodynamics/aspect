@@ -336,8 +336,7 @@ subsection Postprocess
   # into files that can be read by a graphical visualization program.
   # Additional run time parameters are read from the parameter subsection
   # 'Visualization'.
-  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics
-#, tracers
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, tracers
 
   subsection Depth average
     # The time interval between each generation of graphical output files. A
