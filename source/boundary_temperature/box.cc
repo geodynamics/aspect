@@ -48,16 +48,8 @@ namespace aspect
               ExcMessage ("This boundary model is only implemented if the geometry is "
                           "in fact a box."));
 
-      switch (boundary_indicator)
-        {
-          case 0:
-            return 1;
-          case 1:
-            return 0;
-          default:
-            Assert (false, ExcMessage ("Unknown boundary indicator."));
-            return std::numeric_limits<double>::quiet_NaN();
-        }
+      Assert (boundary_indicator>=0 && boundary_indicator<2*dim, ExcMessage ("Unknown boundary indicator."));
+      return temperature_[boundary_indicator];
     }
 
 
@@ -66,7 +58,7 @@ namespace aspect
     Box<dim>::
     minimal_temperature () const
     {
-      return 0;
+      return *std::min_element(temperature_, temperature_+2*dim);
     }
 
 
@@ -76,8 +68,69 @@ namespace aspect
     Box<dim>::
     maximal_temperature () const
     {
-      return 1;
+      return *std::max_element(temperature_, temperature_+2*dim);
     }
+
+    template <int dim>
+    void
+    Box<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Boundary temperature model");
+      {
+        prm.enter_subsection("Box");
+        {
+          prm.declare_entry ("Left temperature", "1",
+                             Patterns::Double (),
+                             "Temperature at the Left boundary. Units: K.");
+          prm.declare_entry ("Right temperature", "0",
+                             Patterns::Double (),
+                             "Temperature at the Right boundary. Units: K.");
+          prm.declare_entry ("Bottom temperature", "0",
+                             Patterns::Double (),
+                             "Temperature at the Bottom boundary. Units: K.");
+          prm.declare_entry ("Top temperature", "0",
+                             Patterns::Double (),
+                             "Temperature at the Top boundary. Units: K.");
+          if (dim==3)
+            {
+              prm.declare_entry ("Front temperature", "0",
+                                 Patterns::Double (),
+                                 "Temperature at the Front boundary. Units: K.");
+              prm.declare_entry ("Back temperature", "0",
+                                 Patterns::Double (),
+                                 "Temperature at the Back boundary. Units: K.");
+            }
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+
+
+    template <int dim>
+    void
+    Box<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Boundary temperature model");
+      {
+        prm.enter_subsection("Box");
+        {
+          temperature_[0] = prm.get_double ("Left temperature");
+          temperature_[1] = prm.get_double ("Right temperature");
+          temperature_[2] = prm.get_double ("Bottom temperature");
+          temperature_[3] = prm.get_double ("Top temperature");
+          if (dim==3)
+            {
+              temperature_[4] = prm.get_double ("Front temperature");
+              temperature_[5] = prm.get_double ("Back temperature");
+            }
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+
+
   }
 }
 
@@ -89,6 +142,6 @@ namespace aspect
     ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(Box,
                                                "box",
                                                "A model in which the temperature is chosen constant on "
-                                               "the left and right sides of a box.");
+                                               "all the sides of a box.");
   }
 }
