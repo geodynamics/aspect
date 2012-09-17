@@ -77,6 +77,25 @@ namespace aspect
          */
         virtual
         double maximal_temperature () const;
+
+        /**
+         * Declare the parameters this class takes through input files.
+         * This class declares the inner and outer boundary temperatures.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter
+         * file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+      private:
+        double temperature_[2*dim];
     };
   }
 }

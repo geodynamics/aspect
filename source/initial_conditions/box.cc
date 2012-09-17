@@ -41,6 +41,14 @@ namespace aspect
               ExcMessage ("This initial condition can only be used if the geometry "
                           "is a box."));
 
+      const double x = position[0];
+      const double z = position[dim-1];
+      const double L = geometry->maximal_depth();
+      const double p = 0.01;
+      const double k = 1.0;
+      //return (1.0-z) - p*cos(k*numbers::PI*x/L)*sin(numbers::PI*z);
+
+
       double perturbation = 1;
       for (unsigned int d=0; d<dim; ++d)
         perturbation *= std::sin(numbers::PI*position[d]/geometry->get_extents()[d]);
