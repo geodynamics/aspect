@@ -1,0 +1,119 @@
+set Adiabatic surface temperature          = 0
+set CFL number                             = 1.0
+set Dimension                              = 2
+set End time                               = 0.5
+set Linear solver tolerance                = 1e-15   # default: 1e-7
+set Temperature solver tolerance           = 1e-15   # default: 1e-12
+
+set Output directory                       = output
+
+set Pressure normalization                 = surface
+
+set Resume computation                     = false
+set Surface pressure                       = 0
+
+set Timing output frequency                = 100
+
+set Use years in output instead of seconds = false   # default: true
+
+
+subsection Boundary temperature model
+  set Model name = box
+
+  subsection Box
+    set Bottom temperature = 1.0
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+subsection Checkpointing
+  set Steps between checkpoint = 500 # default: 0
+  set Time between checkpoint  = 0
+end
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 2
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    set alpha = 2
+    set beta  = 0.078
+    set cR    = 0.5   # default: 0.11
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1e14 # = 1e10 * Ra
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function # default: 
+
+  subsection Function
+    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
+    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z)
+    set Variable names      = x,z
+  end
+end
+
+subsection Material model
+  set Model name = simple # default: 
+
+  subsection Simple model
+    set Reference density             = 1     # default: 3300
+    set Reference specific heat       = 1     # default: 1250
+    set Reference temperature         = 1     # default: 293
+    set Thermal conductivity          = 1     # default: 4.7
+    set Thermal expansion coefficient = 1e-10 # default: 2e-5
+    set Viscosity                     = 1     # default: 5e24
+  end
+end
+
+
+subsection Mesh refinement
+  set Additional refinement times              = 
+  set Coarsening fraction                      = 0.0                     # default: 0.05
+  set Initial adaptive refinement              = 0                       # default: 2
+  set Initial global refinement                = 4                       # default: 2
+  set Refinement fraction                      = 0.0                     # default: 0.3
+  set Run postprocessors on initial refinement = false
+  set Strategy                                 = Density c_p temperature
+  set Time steps between mesh refinement       = 0                       # default: 10
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2,3     # default: 
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false   # default: true
+  set Prescribed velocity boundary indicators = 
+  set Radiogenic heating rate                 = 0       # default: 0e0
+  set Tangential velocity boundary indicators = 0,1,2,3 # default: 
+  set Zero velocity boundary indicators       = 
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics # default: all
+end
+
+
