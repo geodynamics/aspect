@@ -647,6 +647,8 @@ namespace aspect
     old_solution.reinit(system_relevant_partitioning, mpi_communicator);
     old_old_solution.reinit(system_relevant_partitioning, mpi_communicator);
 
+    current_linearization_point.reinit (system_relevant_partitioning, MPI_COMM_WORLD);
+
     if (material_model->is_compressible())
       pressure_shape_function_integrals.reinit (system_partitioning, mpi_communicator);
 
@@ -699,7 +701,7 @@ namespace aspect
 
     // finally, write the entire set of current results to disk
     output_statistics();
-
+    
     computing_timer.exit_section ();
   }
 
@@ -980,43 +982,114 @@ namespace aspect
   }
 
 
-
   template <int dim>
-  void Simulator<dim>::solve_system ()
+  void
+  Simulator<dim>::
+  solve_timestep ()
   {
-    if (parameters.nonlinear_iteration)
+    // start any scheme with an extrapolated value from the previous
+    // two time steps if those are available
+    current_linearization_point = old_solution;
+    if (timestep_number > 1)
       {
-        assemble_temperature_system ();
-        solve_temperature();
+      current_linearization_point.sadd ((1 + time_step/old_time_step),
+                                          -time_step/old_time_step,
+                                          old_old_solution);
+    }
 
-        for (int i=0; i<10; ++i)
-          {
-            rebuild_stokes_matrix =
-              rebuild_stokes_preconditioner = true;
-
-            assemble_stokes_system();
-            build_stokes_preconditioner();
-            solve_stokes();
-            old_solution = solution;
-
-            pcout << std::endl;
-          }
-      }
-    else
+    switch (parameters.nonlinear_solver)
       {
-        //solve for temperature first, and then for Stokes (once each)
+        case NonlinearSolver::IMPES:
+        {
+          assemble_temperature_system ();
+          build_temperature_preconditioner();
+          solve_temperature();
 
-        assemble_temperature_system ();
-        solve_temperature();
+          current_linearization_point.block(2) = solution.block(2);
+          assemble_stokes_system();
+          build_stokes_preconditioner();
+          solve_stokes();
 
-        assemble_stokes_system();
-        build_stokes_preconditioner();
-        solve_stokes();
+          break;
+        }
 
-        pcout << std::endl;
+        case NonlinearSolver::iterated_IMPES:
+        {
+          double initial_temperature_residual = 0;
+          double initial_stokes_residual      = 0;
+
+          unsigned int iteration = 0;
+
+          do
+            {
+              assemble_temperature_system();
+
+              if (iteration == 0)
+                build_temperature_preconditioner();
+
+              const double temperature_residual = solve_temperature();
+
+              current_linearization_point.block(2) = solution.block(2);
+
+              assemble_stokes_system();
+              if (iteration == 0)
+                build_stokes_preconditioner();
+              const double stokes_residual = solve_stokes();
+
+              current_linearization_point = solution;
+
+              pcout << "   Nonlinear residuals: " << temperature_residual
+                    << ", " << stokes_residual
+                    << std::endl
+                    << std::endl;
+
+              if (iteration == 0)
+                {
+                  initial_temperature_residual = temperature_residual;
+                  initial_stokes_residual      = stokes_residual;
+                }
+              else
+//TODO: make this a parameter in the input file
+                if (std::max(stokes_residual/initial_stokes_residual,
+                             temperature_residual/initial_temperature_residual) < 1e-3)
+                  break;
+
+              ++iteration;
+//TODO: terminate here if the number of iterations is too large and we see no convergence
+            }
+          while (iteration < 10);
+
+          break;
+        }
+
+	case NonlinearSolver::iterated_Stokes:
+	{
+          // solve the temperature system once...
+	  assemble_temperature_system ();
+	  solve_temperature();
+
+	  // ...and then iterate the solution
+	  // of the Stokes system
+	  for (int i=0; i<10; ++i)
+	    {
+	      rebuild_stokes_matrix =
+		rebuild_stokes_preconditioner = true;
+
+	      assemble_stokes_system();
+	      build_stokes_preconditioner();
+	      solve_stokes();
+	      old_solution = solution;
+
+	      pcout << std::endl;
+	    }
+
+	  break;
+	}
+
+        default:
+          Assert (false, ExcNotImplemented());
       }
   }
-
 
 
   /**
@@ -1066,7 +1139,9 @@ namespace aspect
         start_timestep ();
 
         // then do the core work: assemble systems and solve
-        solve_system();
+        solve_timestep ();
+
+        pcout << std::endl;
 
         // update the time step size
         old_time_step = time_step;
@@ -1083,7 +1158,7 @@ namespace aspect
         if ((timestep_number == 0) &&
             (pre_refinement_step < parameters.initial_adaptive_refinement))
           {
-            output_program_stats();
+            output_statistics();
 
             if (parameters.run_postprocessors_on_initial_refinement)
               postprocess ();
@@ -1129,29 +1204,17 @@ namespace aspect
             (timestep_number % parameters.timing_output_frequency == 0))
           {
             computing_timer.print_summary ();
-            output_program_stats();
+            output_statistics();
           }
 
         // increment time step by one. then prepare
         // for the next time step by shifting solution vectors
-        // by one time step and presetting the current solution based
-        // on an extrapolation
+        // by one time step
         time += time_step;
         ++timestep_number;
         {
           old_old_solution      = old_solution;
           old_solution          = solution;
-          if (old_time_step > 0)
-            {
-              //Trilinos sadd does not like ghost vectors even as input. Copy into distributed vectors for now:
-              LinearAlgebra::BlockVector distr_solution (system_rhs);
-              distr_solution = solution;
-              LinearAlgebra::BlockVector distr_old_solution (system_rhs);
-              distr_old_solution = old_old_solution;
-              distr_solution .sadd (1.+time_step/old_time_step, -time_step/old_time_step,
-                                    distr_old_solution);
-              solution = distr_solution;
-            }
         }
 
         // periodically generate snapshots so that we can resume here

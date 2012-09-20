@@ -98,6 +98,17 @@ namespace aspect
                        "one can choose $c>1$) though a CFL number significantly larger than "
                        "one will yield rather diffusive solutions. Units: None.");
 
+    prm.declare_entry ("Nonlinear solver scheme", "IMPES",
+                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes"),
+                       "The kind of scheme used to resolve the nonlinearity in the system. "
+                       "'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme "
+                       "in which ones solves the temperatures and Stokes equations exactly "
+                       "once per time step, one after the other. The 'iterated IMPES' scheme "
+                       "iterates this decoupled approach by alternating the solution of the "
+		                   "temperature and Stokes systems. The 'iterated Stokes' scheme solves "
+		                   "the temperature equation once at the beginning of each time step "
+		                   "and then iterates out the solution of the Stokes equation.");
+
     prm.declare_entry ("Pressure normalization", "surface",
                        Patterns::Selection ("surface|"
                                             "volume|"
@@ -402,7 +413,15 @@ namespace aspect
     CFL_number              = prm.get_double ("CFL number");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
     timing_output_frequency = prm.get_integer ("Timing output frequency");
-    nonlinear_iteration     = prm.get_bool ("Nonlinear iteration");
+
+    if (prm.get ("Nonlinear solver scheme") == "IMPES")
+      nonlinear_solver = NonlinearSolver::IMPES;
+    else if (prm.get ("Nonlinear solver scheme") == "iterated IMPES")
+      nonlinear_solver = NonlinearSolver::iterated_IMPES;
+    else if (prm.get ("Nonlinear solver scheme") == "iterated Stokes")
+      nonlinear_solver = NonlinearSolver::iterated_Stokes;
+    else
+      AssertThrow (false, ExcNotImplemented());
 
     start_time              = prm.get_double ("Start time");
     end_time                = prm.get_double ("End time");
@@ -479,6 +498,7 @@ namespace aspect
       tangential_velocity_boundary_indicators
         = std::set<types::boundary_id_t> (x_tangential_velocity_boundary_indicators.begin(),
                                           x_tangential_velocity_boundary_indicators.end());
+
 
       const std::vector<std::string> x_prescribed_velocity_boundary_indicators
         = Utilities::split_string_list

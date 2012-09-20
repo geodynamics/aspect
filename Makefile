@@ -27,7 +27,7 @@ run-parameters  = parameter-file.prm
 
 # Now, this is the last variable you need to set, namely the path to
 # the deal.II toplevel directory:
-DEAL_DIR?=../../deal.II
+DEAL_DIR?=/home/ws/ae78/deal.II
 D = $(DEAL_DIR)
 
 

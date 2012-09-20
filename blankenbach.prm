@@ -1,6 +1,7 @@
 set End time                               = 1e10   # default: 1e8
 set Output directory                       = output
 set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = IMPES
 
 
 subsection Boundary temperature model

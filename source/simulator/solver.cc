@@ -64,6 +64,13 @@ namespace aspect
         void Tvmult_add (LinearAlgebra::BlockVector       &dst,
                          const LinearAlgebra::BlockVector &src) const;
 
+        /**
+         * Compute the residual with the Stokes block.
+         */
+        double residual (TrilinosWrappers::MPI::BlockVector       &dst,
+                         const TrilinosWrappers::MPI::BlockVector &x,
+                         const TrilinosWrappers::MPI::BlockVector &b) const;
+
         void clear() {};
 
       private:
@@ -121,6 +128,22 @@ namespace aspect
       system_matrix.block(1,1).Tvmult_add(dst.block(1), src.block(1));
     }
 
+
+
+    double StokesBlock::residual (TrilinosWrappers::MPI::BlockVector       &dst,
+                                  const TrilinosWrappers::MPI::BlockVector &x,
+                                  const TrilinosWrappers::MPI::BlockVector &b) const
+    {
+      // compute b-Ax where A is only the top left 2x2 block
+      this->vmult (dst, x);
+      dst.sadd (-1, 1, b);
+
+      // clear blocks we didn't want to fill
+      for (unsigned int b=2; b<dst.n_blocks(); ++b)
+        dst.block(b) = 0;
+
+      return dst.l2_norm();
+    }
 
 
     /**
@@ -237,8 +260,10 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_temperature ()
+  double Simulator<dim>::solve_temperature ()
   {
+    double initial_residual = 0;
+
     computing_timer.enter_section ("   Solve temperature system");
     {
       pcout << "   Solving temperature system... " << std::flush;
@@ -251,9 +276,20 @@ namespace aspect
 
       LinearAlgebra::BlockVector
       distributed_solution (system_rhs);
-      distributed_solution = solution;
+      current_constraints.set_zero(distributed_solution);
+      // create vector with distribution of system_rhs.
+      LinearAlgebra::Vector block_remap (system_rhs.block (2));
+      // copy block of current_linearization_point into it, because
+      // current_linearization is distributed differently.
+      block_remap = current_linearization_point.block (2);
+      // (ab)use the distributed solution vector to temporarily put a residual in
+      initial_residual = system_matrix.block(2,2).residual (distributed_solution.block(2),
+                                                            block_remap,
+                                                            system_rhs.block(2));
       current_constraints.set_zero(distributed_solution);
 
+      // then overwrite it again with the current best guess and solve the linear system
+      distributed_solution.block(2) = block_remap;
       solver.solve (system_matrix.block(2,2), distributed_solution.block(2),
                     system_rhs.block(2), *T_preconditioner);
 
@@ -269,22 +305,40 @@ namespace aspect
                            solver_control.last_step());
     }
     computing_timer.exit_section();
+
+    return initial_residual;
   }
 
 
 
   template <int dim>
-  void Simulator<dim>::solve_stokes ()
+  double Simulator<dim>::solve_stokes ()
   {
+    double initial_residual = 0;
+
     computing_timer.enter_section ("   Solve Stokes system");
 
     pcout << "   Solving Stokes system... " << std::flush;
 
+    const internal::StokesBlock stokes_block(system_matrix);
+
     // extract Stokes parts of solution vector, without any ghost elements
     LinearAlgebra::BlockVector distributed_stokes_solution;
     distributed_stokes_solution.reinit(system_rhs);
-    distributed_stokes_solution.block(0) = solution.block(0);
-    distributed_stokes_solution.block(1) = solution.block(1);
+    // create vector with distribution of system_rhs.
+    LinearAlgebra::BlockVector remap (system_rhs);
+    // copy current_linearization_point into it, because its distribution
+    // is different.
+    remap.block (0) = current_linearization_point.block (0);
+    remap.block (1) = current_linearization_point.block (1);
+    // (ab)use the distributed solution vector to temporarily put a residual in
+    initial_residual = stokes_block.residual (distributed_stokes_solution,
+                                              remap,
+                                              system_rhs);
+
+    // then overwrite it again with the current best guess and solve the linear system
+    distributed_stokes_solution.block(0) = remap.block(0);
+    distributed_stokes_solution.block(1) = remap.block(1);
 
     // before solving we scale the initial solution to the right dimensions
     distributed_stokes_solution.block(1) /= pressure_scaling;
@@ -304,8 +358,6 @@ namespace aspect
     distributed_stokes_rhs.block(1) = system_rhs.block(1);
 
     PrimitiveVectorMemory< LinearAlgebra::BlockVector > mem;
-
-    const internal::StokesBlock stokes_block(system_matrix);
 
     // step 1a: try if the simple and fast solver
     // succeeds in 30 steps or less.
@@ -376,6 +428,8 @@ namespace aspect
                          solver_control_cheap.last_step() + solver_control_expensive.last_step());
 
     computing_timer.exit_section();
+
+    return initial_residual;
   }
 
 }
@@ -388,8 +442,8 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template void Simulator<dim>::solve_temperature (); \
-  template void Simulator<dim>::solve_stokes ();
+  template double Simulator<dim>::solve_temperature (); \
+  template double Simulator<dim>::solve_stokes ();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

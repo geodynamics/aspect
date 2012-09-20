@@ -20,6 +20,7 @@ set Surface pressure                       = 0
 
 set Use years in output instead of seconds = false  # default: true
 
+set Nonlinear solver scheme                = IMPES
 
 subsection Boundary temperature model
   set Model name = box

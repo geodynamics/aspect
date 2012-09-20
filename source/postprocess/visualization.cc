@@ -257,7 +257,6 @@ namespace aspect
               {
                 std::ostringstream tmp;
                 data_out.write (tmp, DataOutBase::parse_output_format(output_format));
-
                 file_contents = new std::string (tmp.str());
               }
 

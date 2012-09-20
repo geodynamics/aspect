@@ -58,8 +58,8 @@ namespace aspect
           std::vector<double>                  phi_p;
 
           std::vector<double>                  temperature_values;
-          std::vector<double>                  old_pressure_values;
-          std::vector<SymmetricTensor<2,dim> > old_strain_rates;
+          std::vector<double>                  pressure_values;
+          std::vector<SymmetricTensor<2,dim> > strain_rates;
         };
 
 
@@ -76,8 +76,8 @@ namespace aspect
           grads_phi_u (finite_element.dofs_per_cell),
           phi_p (finite_element.dofs_per_cell),
           temperature_values (quadrature.size()),
-          old_pressure_values (quadrature.size()),
-          old_strain_rates (quadrature.size())
+          pressure_values (quadrature.size()),
+          strain_rates (quadrature.size())
         {}
 
 
@@ -93,8 +93,8 @@ namespace aspect
           grads_phi_u (scratch.grads_phi_u),
           phi_p (scratch.phi_p),
           temperature_values (scratch.temperature_values),
-          old_pressure_values (scratch.old_pressure_values),
-          old_strain_rates (scratch.old_strain_rates)
+          pressure_values (scratch.pressure_values),
+          strain_rates (scratch.strain_rates)
         {}
 
 
@@ -127,8 +127,7 @@ namespace aspect
           std::vector<Tensor<1,dim> >          phi_u;
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  div_phi_u;
-          std::vector<Tensor<1,dim> > old_velocity_values;
-          std::vector<Tensor<1,dim> > old_old_velocity_values;
+          std::vector<Tensor<1,dim> >          velocity_values;
         };
 
 
@@ -146,8 +145,7 @@ namespace aspect
           phi_u (finite_element.dofs_per_cell),
           grads_phi_u (finite_element.dofs_per_cell),
           div_phi_u (finite_element.dofs_per_cell),
-          old_velocity_values (quadrature.size()),
-          old_old_velocity_values (quadrature.size())
+          velocity_values (quadrature.size())
         {}
 
 
@@ -160,8 +158,7 @@ namespace aspect
           phi_u (scratch.phi_u),
           grads_phi_u (scratch.grads_phi_u),
           div_phi_u (scratch.div_phi_u),
-          old_velocity_values (scratch.old_velocity_values),
-          old_old_velocity_values (scratch.old_old_velocity_values)
+          velocity_values (scratch.velocity_values)
         {}
 
 
@@ -194,6 +191,11 @@ namespace aspect
           std::vector<Tensor<1,dim> > old_old_temperature_grads;
           std::vector<double>         old_temperature_laplacians;
           std::vector<double>         old_old_temperature_laplacians;
+
+          std::vector<double>         current_temperature_values;
+          std::vector<Tensor<1,dim> > current_velocity_values;
+          std::vector<SymmetricTensor<2,dim> > current_strain_rates;
+          std::vector<double>         current_pressure_values;
         };
 
 
@@ -225,7 +227,11 @@ namespace aspect
           old_temperature_grads(quadrature.size()),
           old_old_temperature_grads(quadrature.size()),
           old_temperature_laplacians(quadrature.size()),
-          old_old_temperature_laplacians(quadrature.size())
+          old_old_temperature_laplacians(quadrature.size()),
+          current_temperature_values(quadrature.size()),
+          current_velocity_values(quadrature.size()),
+          current_strain_rates(quadrature.size()),
+          current_pressure_values(quadrature.size())
         {}
 
 
@@ -252,7 +258,11 @@ namespace aspect
           old_temperature_grads (scratch.old_temperature_grads),
           old_old_temperature_grads (scratch.old_old_temperature_grads),
           old_temperature_laplacians (scratch.old_temperature_laplacians),
-          old_old_temperature_laplacians (scratch.old_old_temperature_laplacians)
+          old_old_temperature_laplacians (scratch.old_old_temperature_laplacians),
+          current_temperature_values(scratch.current_temperature_values),
+          current_velocity_values(scratch.current_velocity_values),
+          current_strain_rates(scratch.current_strain_rates),
+          current_pressure_values(scratch.current_pressure_values)
         {}
       }
 
@@ -631,19 +641,19 @@ namespace aspect
 
     scratch.finite_element_values.reinit (cell);
 
-    scratch.finite_element_values[temperature].get_function_values (solution,
+    scratch.finite_element_values[temperature].get_function_values (current_linearization_point,
                                                                     scratch.temperature_values);
-    scratch.finite_element_values[pressure].get_function_values(old_solution,
-                                                                scratch.old_pressure_values);
-    scratch.finite_element_values[velocities].get_function_symmetric_gradients(old_solution,
-                                                                               scratch.old_strain_rates);
+    scratch.finite_element_values[pressure].get_function_values(current_linearization_point,
+                                                                scratch.pressure_values);
+    scratch.finite_element_values[velocities].get_function_symmetric_gradients(current_linearization_point,
+                                                                               scratch.strain_rates);
 
     data.local_matrix = 0;
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
         const double current_temperature = scratch.temperature_values[q];
-        const double old_pressure = scratch.old_pressure_values[q];
+        const double current_pressure = scratch.pressure_values[q];
 
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
@@ -652,8 +662,8 @@ namespace aspect
           }
 
         const double eta = material_model->viscosity(current_temperature,
-                                                     old_pressure,
-                                                     scratch.old_strain_rates[q],
+                                                     current_pressure,
+                                                     scratch.strain_rates[q],
                                                      scratch.finite_element_values.quadrature_point(q) );
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
@@ -793,21 +803,19 @@ namespace aspect
     //scratch.finite_element_values[temperature].get_function_values (old_solution,
     //                                              scratch.old_temperature_values);
     // Assuming we already have the temperature for the current time step:
-    scratch.finite_element_values[temperature].get_function_values (solution,
+    scratch.finite_element_values[temperature].get_function_values (current_linearization_point,
                                                                     scratch.temperature_values);
-    scratch.finite_element_values[pressure].get_function_values(old_solution,
-                                                                scratch.old_pressure_values);
-    scratch.finite_element_values[velocities].get_function_values(old_solution,
-                                                                  scratch.old_velocity_values);
-    scratch.finite_element_values[velocities].get_function_values(old_old_solution,
-                                                                  scratch.old_old_velocity_values);
+    scratch.finite_element_values[pressure].get_function_values(current_linearization_point,
+                                                                scratch.pressure_values);
+    scratch.finite_element_values[velocities].get_function_values(current_linearization_point,
+                                                                  scratch.velocity_values);
 
     // we only need the strain rates for the viscosity,
     // which we only need when rebuilding the matrix
     if (rebuild_stokes_matrix)
       scratch.finite_element_values[velocities]
-      .get_function_symmetric_gradients(old_solution,
-                                        scratch.old_strain_rates);
+      .get_function_symmetric_gradients(current_linearization_point,
+                                        scratch.strain_rates);
 
 
 
@@ -824,11 +832,8 @@ namespace aspect
     for (unsigned int q=0; q<n_q_points; ++q)
       {
         const double current_temperature = scratch.temperature_values[q];
-        const double old_pressure = scratch.old_pressure_values[q];
-        const Tensor<1,dim> extrapolated_u
-          = aspect::internal::bdf2_extrapolate(
-              use_bdf2_scheme, old_time_step, time_step,
-              scratch.old_old_velocity_values[q], scratch.old_velocity_values[q]);
+        const double current_pressure    = scratch.pressure_values[q];
+        const Tensor<1,dim> current_u    = scratch.velocity_values[q];
 
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
@@ -844,8 +849,8 @@ namespace aspect
         const double eta = (rebuild_stokes_matrix
                             ?
                             material_model->viscosity(current_temperature,
-                                                      old_pressure,
-                                                      scratch.old_strain_rates[q],
+                                                      current_pressure,
+                                                      scratch.strain_rates[q],
                                                       scratch.finite_element_values.quadrature_point(q))
                             :
                             std::numeric_limits<double>::quiet_NaN());
@@ -857,13 +862,13 @@ namespace aspect
           = (is_compressible
              ?
              material_model->compressibility(current_temperature,
-                                             old_pressure,
+                                             current_pressure,
                                              scratch.finite_element_values
                                              .quadrature_point(q))
              :
              std::numeric_limits<double>::quiet_NaN() );
         const double density = material_model->density(current_temperature,
-                                                       old_pressure,
+                                                       current_pressure,
                                                        scratch.finite_element_values
                                                        .quadrature_point(q));
 
@@ -889,7 +894,7 @@ namespace aspect
                                     ?
                                     (pressure_scaling *
                                      compressibility * density *
-                                     (extrapolated_u * gravity) *
+                                     (scratch.velocity_values[q] * gravity) *
                                      scratch.phi_p[i])
                                     :
                                     0)
@@ -987,6 +992,20 @@ namespace aspect
   }
 
 
+
+  template <int dim>
+  void
+  Simulator<dim>::build_temperature_preconditioner ()
+  {
+    computing_timer.enter_section ("   Build temperature preconditioner");
+    T_preconditioner.reset (new TrilinosWrappers::PreconditionILU());
+    T_preconditioner->initialize (system_matrix.block(2,2));
+
+    computing_timer.exit_section();
+  }
+
+
+
   template <int dim>
   void Simulator<dim>::
   local_assemble_temperature_system (const std::pair<double,double> global_T_range,
@@ -1040,6 +1059,19 @@ namespace aspect
     scratch.finite_element_values[pressure].get_function_values (old_old_solution,
                                                                  scratch.old_old_pressure);
 
+    scratch.finite_element_values[temperature].get_function_values(current_linearization_point,
+                                                                   scratch.current_temperature_values);
+    scratch.finite_element_values[velocities].get_function_values(current_linearization_point,
+                                                                   scratch.current_velocity_values);
+    scratch.finite_element_values[velocities].get_function_symmetric_gradients(current_linearization_point,
+                                                                   scratch.current_strain_rates);
+    scratch.finite_element_values[pressure].get_function_values(current_linearization_point,
+                                                                scratch.current_pressure_values);
+
+
+    // TODO: Compute artificial viscosity once per timestep instead of each time
+    // temperature system is assembled (as this might happen more than once per
+    // timestep for iterative solvers)
     const double nu
       = compute_viscosity (scratch.old_temperature_values,
                            scratch.old_old_temperature_values,
@@ -1078,7 +1110,7 @@ namespace aspect
               (old_time_step * (time_step + old_time_step)))
              :
              scratch.old_temperature_values[q]);
-
+/*
         const double ext_T
           = aspect::internal::bdf2_extrapolate(
               use_bdf2_scheme, old_time_step, time_step,
@@ -1098,23 +1130,28 @@ namespace aspect
           = aspect::internal::bdf2_extrapolate(
               use_bdf2_scheme, old_time_step, time_step,
               scratch.old_old_pressure[q], scratch.old_pressure[q]);
+*/
+        const double current_T = scratch.current_temperature_values[q];
+        const SymmetricTensor<2,dim> current_strain_rate = scratch.current_strain_rates[q];
+        const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+        const double current_p = scratch.current_pressure_values[q];
 
-        const double alpha                = material_model->thermal_expansion_coefficient(ext_T,
-                                            ext_pressure,
-                                            scratch.finite_element_values.quadrature_point(q));
-        const double density              = material_model->density(ext_T,
-                                                                    ext_pressure,
+        const double alpha                = material_model->thermal_expansion_coefficient(current_T,
+											                      current_p,
+											                      scratch.finite_element_values.quadrature_point(q));
+        const double density              = material_model->density(current_T,
+                                                                    current_p,
                                                                     scratch.finite_element_values.quadrature_point(q));
-        const double thermal_conductivity = material_model->thermal_conductivity(ext_T,
-                                                                                 ext_pressure,
+        const double thermal_conductivity = material_model->thermal_conductivity(current_T,
+                                                                                 current_p,
                                                                                  scratch.finite_element_values.quadrature_point(q));
-        const double c_P                  = material_model->specific_heat (ext_T,
-                                                                           ext_pressure,
+        const double c_P                  = material_model->specific_heat (current_T,
+                                                                           current_p,
                                                                            scratch.finite_element_values.quadrature_point(q));
 
-        const double viscosity =  material_model->viscosity(ext_T,
-                                                            ext_pressure,
-                                                            extrapolated_strain_rate,
+        const double viscosity =  material_model->viscosity(current_T,
+                                                            current_p,
+                                                            current_strain_rate,
                                                             scratch.finite_element_values.quadrature_point(q));
         const bool is_compressible = material_model->is_compressible ();
         const double compressibility
@@ -1149,11 +1186,11 @@ namespace aspect
              (parameters.include_shear_heating
               ?
               2 * viscosity *
-              extrapolated_strain_rate * extrapolated_strain_rate
+              current_strain_rate * current_strain_rate
               -
               (is_compressible
                ?
-               2./3.*viscosity*std::pow(compressibility * density * (extrapolated_u * gravity),
+               2./3.*viscosity*std::pow(compressibility * density * (current_u * gravity),
                                         2)
                :
                0)
@@ -1166,7 +1203,7 @@ namespace aspect
                //   alpha = - 1/rho drho/dT
                (parameters.include_adiabatic_heating
                 ?
-                alpha * density * (extrapolated_u*gravity) * ext_T
+                alpha * density * (current_u*gravity) * current_T
                 :
                 0)
               );
@@ -1188,7 +1225,7 @@ namespace aspect
                 += (
                      (time_step * (thermal_conductivity +
                                    nu * density * c_P) * scratch.grad_phi_T[i] * scratch.grad_phi_T[j])
-                     + ((time_step * (extrapolated_u * scratch.grad_phi_T[j] * scratch.phi_T[i]))
+                     + ((time_step * (current_u * scratch.grad_phi_T[j] * scratch.phi_T[i]))
                         + (factor * scratch.phi_T[i] * scratch.phi_T[j])) * density * c_P
                    )
                    * scratch.finite_element_values.JxW(q);
@@ -1293,6 +1330,7 @@ namespace aspect
   template void Simulator<dim>::assemble_stokes_system (); \
   template void Simulator<dim>::copy_local_to_global_temperature_system ( \
                                                                           const internal::Assembly::CopyData::TemperatureSystem<dim> &data); \
+  template void Simulator<dim>::build_temperature_preconditioner (); \
   template void Simulator<dim>::assemble_temperature_system (); \
   template void Simulator<dim>::local_assemble_temperature_system ( \
                                                                     const std::pair<double,double> global_T_range, \

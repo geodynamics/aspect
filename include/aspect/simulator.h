@@ -91,6 +91,20 @@ namespace aspect
   template <int dim>
   class Simulator : public Subscriptor
   {
+    private:
+      /**
+       * A structure that contains enum values that identify the nonlinear solver in use.
+       */
+      struct NonlinearSolver
+      {
+        enum Kind
+        {
+          IMPES,
+          iterated_IMPES,
+	        iterated_Stokes
+        };
+      };
+
     public:
       /**
        * A structure that holds run-time parameters. These parameters are all
@@ -140,18 +154,21 @@ namespace aspect
          * @name Global parameters
          * @{
          */
-        bool                           resume_computation;
+        typedef typename NonlinearSolver::Kind NonlinearSolverKind;
+
+        NonlinearSolverKind            nonlinear_solver;
+
+	      bool                           resume_computation;
         double                         start_time;
         double                         end_time;
         double                         CFL_number;
         bool                           convert_to_years;
-        bool                           nonlinear_iteration;
         std::string                    output_directory;
         double                         surface_pressure;
         double                         adiabatic_surface_temperature;
         unsigned int                   timing_output_frequency;
         double                         linear_solver_tolerance;
-        double                          temperature_solver_tolerance;
+        double                         temperature_solver_tolerance;
         /**
          * @}
          */
@@ -166,7 +183,7 @@ namespace aspect
         std::set<types::boundary_id_t> fixed_temperature_boundary_indicators;
         std::set<types::boundary_id_t> zero_velocity_boundary_indicators;
         std::set<types::boundary_id_t> tangential_velocity_boundary_indicators;
-        std::map<types::boundary_id_t,std::string> prescribed_velocity_boundary_indicators;
+        std::map<types::boundary_id_t, std::string> prescribed_velocity_boundary_indicators;
         /**
          * @}
          */
@@ -270,6 +287,11 @@ namespace aspect
        * <code>source/simulator/core.cc</code>.
        */
       void run ();
+      
+      /**
+       * Destructor.
+       */
+      ~Simulator ();
 
     private:
       /**
@@ -330,6 +352,15 @@ namespace aspect
       void start_timestep ();
 
       /**
+       * Do the various steps necessary to assemble and solve the things
+       * necessary in each time step.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
+      void solve_timestep ();
+
+      /**
        * Initiate the assembly of the Stokes preconditioner matrix via
        * assemble_stokes_preconditoner(), then set up the data structures
        * to actually build a preconditioner from this matrix.
@@ -338,6 +369,14 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void build_stokes_preconditioner ();
+
+      /**
+       * Initialize preconditioner for the temperature equation.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void build_temperature_preconditioner ();
 
       /**
        * Initiate the assembly of the Stokes matrix and right hand side.
@@ -357,20 +396,26 @@ namespace aspect
       void assemble_temperature_system ();
 
       /**
-       * Solve the temperature linear system.
+       * Solve the temperature linear system. Return the initial nonlinear residual,
+       * i.e., if the linear system to be solved is $Ax=b$, then return $\|Ax_0-b\|$
+       * where $x_0$ is the initial guess for the solution variable and is taken from
+       * the current_linearization_point member variable.
        *
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
        */
-      void solve_temperature ();
+      double solve_temperature ();
 
       /**
-       * Solve the Stokes linear system.
+       * Solve the Stokes linear system. Return the initial nonlinear residual,
+       * i.e., if the linear system to be solved is $Ax=b$, then return $\|Ax_0-b\|$
+       * where $x_0$ is the initial guess for the solution variable and is taken from
+       * the current_linearization_point member variable.
        *
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
        */
-      void solve_stokes ();
+      double solve_stokes ();
 
       /**
        * Handles assembly and solving of the temperature
@@ -798,9 +843,7 @@ namespace aspect
       MPI_Comm                            mpi_communicator;
 
       ConditionalOStream                  pcout;
-      Postprocess::Manager<dim>           postprocess_manager;
-      TimerOutput                         computing_timer;
-
+      
       /**
        * An object that stores a bunch of statistics such as the number of
        * linear solver iterations, the time corresponding to each time
@@ -811,6 +854,9 @@ namespace aspect
        * Simulator::output_statistics() function.
        */
       TableHandler                        statistics;
+      
+      Postprocess::Manager<dim>           postprocess_manager;
+      TimerOutput                         computing_timer;
 
       /**
        * In output_statistics(), where we output the statistics object above,
@@ -895,6 +941,8 @@ namespace aspect
       LinearAlgebra::BlockVector                                old_solution;
       LinearAlgebra::BlockVector                                old_old_solution;
       LinearAlgebra::BlockVector                                system_rhs;
+
+      TrilinosWrappers::MPI::BlockVector                        current_linearization_point;
 
       // only used if is_compressible()
       LinearAlgebra::BlockVector                                pressure_shape_function_integrals;

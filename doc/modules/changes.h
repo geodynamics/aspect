@@ -11,6 +11,11 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: Add structures for iterated IMPES and nonlinear solvers.
+<br>
+(Markus Buerg, 2012/09/20)
+
+<li>
 New: InitialCondition::Function for the temperature given in the parameter
 file.
 <br>
