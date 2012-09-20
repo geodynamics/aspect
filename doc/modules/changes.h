@@ -11,6 +11,11 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+Fixed: Resume does no longer trigger additional refinement times in the past.
+<br>
+(Timo Heister, 2012/09/20)
+
+<li>
 New: Add structures for iterated IMPES and nonlinear solvers.
 <br>
 (Markus Buerg, 2012/09/20)

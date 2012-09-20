@@ -1099,12 +1099,27 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::run ()
   {
+    last_checkpoint_time = std::time(NULL);
+    unsigned int max_refinement_level = parameters.initial_global_refinement +
+                                        parameters.initial_adaptive_refinement;
+    unsigned int pre_refinement_step = 0;
+
     // if we want to resume a computation from an earlier point
     // then reload it from a snapshot. otherwise do the basic
     // start-up
     if (parameters.resume_computation == true)
       {
         resume_from_snapshot();
+        // we need to remove additional_refinement_times that are in the past
+        // and adjust max_refinement_level which is not written to file
+        while ((parameters.additional_refinement_times.size() > 0)
+               &&
+               (parameters.additional_refinement_times.front () < time+time_step))
+          {
+            ++max_refinement_level;
+            parameters.additional_refinement_times
+            .erase (parameters.additional_refinement_times.begin());
+          }
       }
     else
       {
@@ -1114,10 +1129,6 @@ namespace aspect
         setup_dofs();
       }
 
-    last_checkpoint_time = std::time(NULL);
-    unsigned int max_refinement_level = parameters.initial_global_refinement +
-                                        parameters.initial_adaptive_refinement;
-    unsigned int pre_refinement_step = 0;
 
   start_time_iteration:
 
