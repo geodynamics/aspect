@@ -287,11 +287,6 @@ namespace aspect
        * <code>source/simulator/core.cc</code>.
        */
       void run ();
-      
-      /**
-       * Destructor.
-       */
-      ~Simulator ();
 
     private:
       /**
@@ -843,7 +838,7 @@ namespace aspect
       MPI_Comm                            mpi_communicator;
 
       ConditionalOStream                  pcout;
-      
+
       /**
        * An object that stores a bunch of statistics such as the number of
        * linear solver iterations, the time corresponding to each time
@@ -854,7 +849,7 @@ namespace aspect
        * Simulator::output_statistics() function.
        */
       TableHandler                        statistics;
-      
+
       Postprocess::Manager<dim>           postprocess_manager;
       TimerOutput                         computing_timer;
 
