@@ -1,4 +1,4 @@
-DEAL_DIR?=/home/ws/ae78/deal.II
+DEAL_DIR?=../../../deal.II
 D = $(DEAL_DIR)
 include $D/common/Make.global_options
 
