@@ -24,7 +24,7 @@
 #define __aspect__postprocess_duretz_et_al_h
 
 #include <aspect/postprocess/interface.h>
-
+#include <aspect/simulator.h>
 
 namespace aspect
 {
@@ -54,7 +54,7 @@ namespace aspect
      * @ingroup Postprocessing
      */
     template <int dim>
-    class DuretzEtAl : public Interface<dim>, public SimulatorAccess<dim>
+    class DuretzEtAl : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**

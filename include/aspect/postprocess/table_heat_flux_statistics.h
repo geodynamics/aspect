@@ -24,6 +24,7 @@
 #define __aspect__postprocess_table_heat_flux_statistics_h
 
 #include <aspect/postprocess/interface.h>
+#include <aspect/simulator.h>
 
 
 namespace aspect
@@ -37,7 +38,7 @@ namespace aspect
      * @ingroup Postprocessing
      */
     template <int dim>
-    class TableHeatfluxStatistics : public Interface<dim>, public SimulatorAccess<dim>
+    class TableHeatfluxStatistics : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**

@@ -11,6 +11,12 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+Changed: SimulatorAccess moved from aspect::Postproccessor to aspect:: and
+can be used in material/gravity/... models too. If needed, derive from SimulatorAccess.
+<br>
+(Timo Heister, 2012/09/24)
+
+<li>
 Fixed: Resume does no longer trigger additional refinement times in the past.
 <br>
 (Timo Heister, 2012/09/20)

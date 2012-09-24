@@ -190,6 +190,19 @@ namespace aspect
 
     // continue with initializing members that can't be initialized for one reason
     // or another in the member initializer list above
+
+    // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it:
+    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*geometry_model))
+      sim->initialize (*this);
+    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*material_model))
+      sim->initialize (*this);
+    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*gravity_model))
+      sim->initialize (*this);
+    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*boundary_temperature))
+      sim->initialize (*this);
+    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_conditions))
+      sim->initialize (*this);
+
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
 

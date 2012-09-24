@@ -23,6 +23,7 @@
 #define __aspect__postprocess_tracer_h
 
 #include <aspect/postprocess/interface.h>
+#include <aspect/simulator.h>
 
 namespace aspect
 {
@@ -122,7 +123,7 @@ namespace aspect
     const int           PARTICLE_XFER_TAG = 382;
 
     template <int dim>
-    class ParticleSet : public Interface<dim>, public SimulatorAccess<dim>
+    class ParticleSet : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       private:
         typedef std::multimap<LevelInd, Particle<dim> > ParticleMap;
