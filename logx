@@ -1,0 +1,226 @@
+./lib/aspect-2d parameter-file.prm
+Number of active cells: 1,536 (on 5 levels)
+Number of degrees of freedom: 20,756 (12,738+1,649+6,369)
+
+*** Timestep 0:  t=0 years
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+3 iterations.
+   Solving temperature system... 10 iterations.
+
+Number of active cells: 2,121 (on 6 levels)
+Number of degrees of freedom: 30,186 (18,526+2,397+9,263)
+
+*** Timestep 0:  t=0 years
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+3 iterations.
+   Solving temperature system... 8 iterations.
+
+   Postprocessing:
+     Writing graphical output: output/solution-00000
+     RMS, max velocity:        0.144 cm/year, 0.264 cm/year
+     Temperature min/avg/max:  300 K, 3007 K, 6300 K
+     Inner/outer heat fluxes:  1.079e+05 W, 1.956e+05 W
+
+*** Timestep 1:  t=1.5504e+07 years
+
+   Solving Stokes system... 28 iterations.
+   Solving temperature system... 7 iterations.
+
+   Postprocessing:
+     Writing graphical output: output/solution-00001
+     RMS, max velocity:        0.162 cm/year, 0.294 cm/year
+     Temperature min/avg/max:  300 K, 3007 K, 6300 K
+     Inner/outer heat fluxes:  1.086e+05 W, 1.962e+05 W
+
+*** Timestep 2:  t=3.10081e+07 years
+
+   Solving Stokes system... 25 iterations.
+   Solving temperature system... 8 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.184 cm/year, 0.328 cm/year
+     Temperature min/avg/max: 300 K, 3007 K, 6300 K
+     Inner/outer heat fluxes: 1.097e+05 W, 1.971e+05 W
+
+*** Timestep 3:  t=4.65121e+07 years
+
+   Solving Stokes system... 25 iterations.
+   Solving temperature system... 8 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.209 cm/year, 0.367 cm/year
+     Temperature min/avg/max: 300 K, 3007 K, 6300 K
+     Inner/outer heat fluxes: 1.111e+05 W, 1.981e+05 W
+
+*** Timestep 4:  t=6.20162e+07 years
+
+   Solving Stokes system... 25 iterations.
+   Solving temperature system... 8 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.238 cm/year, 0.411 cm/year
+     Temperature min/avg/max: 300 K, 3006 K, 6300 K
+     Inner/outer heat fluxes: 1.13e+05 W, 1.995e+05 W
+
+*** Timestep 5:  t=7.75202e+07 years
+
+   Solving Stokes system... 25 iterations.
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.27 cm/year, 0.461 cm/year
+     Temperature min/avg/max: 300 K, 3006 K, 6300 K
+     Inner/outer heat fluxes: 1.154e+05 W, 2.014e+05 W
+
+Number of active cells: 2,643 (on 6 levels)
+Number of degrees of freedom: 36,933 (22,678+2,916+11,339)
+
+*** Timestep 6:  t=9.30243e+07 years
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28 iterations.
+   Solving temperature system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.306 cm/year, 0.516 cm/year
+     Temperature min/avg/max: 300 K, 3006 K, 6300 K
+     Inner/outer heat fluxes: 1.182e+05 W, 2.042e+05 W
+
+*** Timestep 7:  t=1.07333e+08 years
+
+   Solving Stokes system... 29 iterations.
+   Solving temperature system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.344 cm/year, 0.574 cm/year
+     Temperature min/avg/max: 300 K, 3006 K, 6300 K
+     Inner/outer heat fluxes: 1.214e+05 W, 2.07e+05 W
+
+*** Timestep 8:  t=1.2022e+08 years
+
+   Solving Stokes system... 26 iterations.
+   Solving temperature system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.381 cm/year, 0.63 cm/year
+     Temperature min/avg/max: 300 K, 3006 K, 6300 K
+     Inner/outer heat fluxes: 1.25e+05 W, 2.105e+05 W
+
+*** Timestep 9:  t=1.31949e+08 years
+
+   Solving Stokes system... 26 iterations.
+   Solving temperature system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.419 cm/year, 0.687 cm/year
+     Temperature min/avg/max: 300 K, 3006 K, 6300 K
+     Inner/outer heat fluxes: 1.289e+05 W, 2.145e+05 W
+
+*** Timestep 10:  t=1.42719e+08 years
+
+   Solving Stokes system... 25 iterations.
+   Solving temperature system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.456 cm/year, 0.743 cm/year
+     Temperature min/avg/max: 300 K, 3005 K, 6300 K
+     Inner/outer heat fluxes: 1.332e+05 W, 2.19e+05 W
+
+Number of active cells: 2,928 (on 6 levels)
+Number of degrees of freedom: 41,321 (25,388+3,239+12,694)
+
+*** Timestep 11:  t=1.5268e+08 years
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28 iterations.
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.492 cm/year, 0.799 cm/year
+     Temperature min/avg/max: 300 K, 3005 K, 6300 K
+     Inner/outer heat fluxes: 1.377e+05 W, 2.281e+05 W
+
+*** Timestep 12:  t=1.61278e+08 years
+
+   Solving Stokes system... 27 iterations.
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.526 cm/year, 0.856 cm/year
+     Temperature min/avg/max: 300 K, 3005 K, 6300 K
+     Inner/outer heat fluxes: 1.424e+05 W, 2.347e+05 W
+
+*** Timestep 13:  t=1.69316e+08 years
+
+   Solving Stokes system... 25 iterations.
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.559 cm/year, 0.913 cm/year
+     Temperature min/avg/max: 300 K, 3004 K, 6300 K
+     Inner/outer heat fluxes: 1.475e+05 W, 2.395e+05 W
+
+*** Timestep 14:  t=1.76873e+08 years
+
+   Solving Stokes system... 24 iterations.
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.591 cm/year, 0.968 cm/year
+     Temperature min/avg/max: 300 K, 3004 K, 6300 K
+     Inner/outer heat fluxes: 1.529e+05 W, 2.432e+05 W
+
+*** Timestep 15:  t=1.84012e+08 years
+
+   Solving Stokes system... 24 iterations.
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.623 cm/year, 1.02 cm/year
+     Temperature min/avg/max: 300 K, 3004 K, 6300 K
+     Inner/outer heat fluxes: 1.586e+05 W, 2.465e+05 W
+
+Number of active cells: 3,432 (on 6 levels)
+Number of degrees of freedom: 47,713 (29,310+3,748+14,655)
+
+*** Timestep 16:  t=1.90787e+08 years
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28 iterations.
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.654 cm/year, 1.08 cm/year
+     Temperature min/avg/max: 300 K, 3003 K, 6300 K
+     Inner/outer heat fluxes: 1.64e+05 W, 2.492e+05 W
+
+*** Timestep 17:  t=1.96505e+08 years
+
+   Solving Stokes system... 28 iterations.
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.681 cm/year, 1.13 cm/year
+     Temperature min/avg/max: 300 K, 3003 K, 6300 K
+     Inner/outer heat fluxes: 1.696e+05 W, 2.521e+05 W
+
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |67.9      s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          | 19        |4.65      s |6.8       % |
+| Assemble temperature system     | 19        |10.5      s |15        % |
+| Build Stokes preconditioner     | 5         |2.97      s |4.4       % |
+| Solve Stokes system             | 19        |18.2      s |27        % |
+| Solve temperature system        | 19        |0.765     s |1.1       % |
+| Postprocessing                  | 18        |9.74      s |14        % |
+| Refine mesh structure, part 1   | 4         |6.44      s |9.5       % |
+| Refine mesh structure, part 2   | 4         |0.356     s |0.52      % |
+| Setup dof systems               | 5         |11.7      s |17        % |
++---------------------------------+-----------+------------+------------+
+

@@ -394,6 +394,15 @@ namespace aspect
       prm.leave_subsection ();
     }
     prm.leave_subsection ();
+
+    prm.enter_subsection ("Compositional fields");
+    {
+      prm.declare_entry ("Number of fields", "0",
+                         Patterns::Integer (0),
+                         "The number of fields that will be advected along with the flow field, excluding "
+                         "velocity, pressure and temperature.");
+    }
+    prm.leave_subsection ();
   }
 
 
@@ -555,6 +564,11 @@ namespace aspect
       prm.leave_subsection ();
     }
     prm.leave_subsection ();
+
+    prm.enter_subsection ("Compositional fields");
+    {
+      n_compositional_fields = prm.get_integer ("Number of fields");
+    }
   }
 
 

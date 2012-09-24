@@ -158,7 +158,7 @@ namespace aspect
 
         NonlinearSolverKind            nonlinear_solver;
 
-	      bool                           resume_computation;
+	bool                           resume_computation;
         double                         start_time;
         double                         end_time;
         double                         CFL_number;
@@ -233,6 +233,15 @@ namespace aspect
         bool                           use_locally_conservative_discretization;
         unsigned int                   temperature_degree;
         std::string                    pressure_normalization;
+        /**
+         * @}
+         */
+
+        /**
+         * @name Parameters that have to do with compositional field
+         * @{
+         */
+        unsigned int                   n_compositional_fields;
         /**
          * @}
          */
