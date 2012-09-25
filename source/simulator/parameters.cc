@@ -347,6 +347,10 @@ namespace aspect
                          Patterns::Integer (1),
                          "The polynomial degree to use for the temperature variable. "
                          "Units: None.");
+      prm.declare_entry ("Composition polynomial degree", "2",
+                         Patterns::Integer (1),
+                         "The polynomial degree to use for the composition variable(s). "
+                         "Units: None.");
       prm.declare_entry ("Use locally conservative discretization", "false",
                          Patterns::Bool (),
                          "Whether to use a Stokes discretization that is locally "
@@ -552,6 +556,7 @@ namespace aspect
     {
       stokes_velocity_degree = prm.get_integer ("Stokes velocity polynomial degree");
       temperature_degree     = prm.get_integer ("Temperature polynomial degree");
+      composition_degree     = prm.get_integer ("Composition polynomial degree");
       use_locally_conservative_discretization
         = prm.get_bool ("Use locally conservative discretization");
 

@@ -232,6 +232,7 @@ namespace aspect
         unsigned int                   stokes_velocity_degree;
         bool                           use_locally_conservative_discretization;
         unsigned int                   temperature_degree;
+        unsigned int                   composition_degree;
         std::string                    pressure_normalization;
         /**
          * @}

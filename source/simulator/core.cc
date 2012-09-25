@@ -127,7 +127,9 @@ namespace aspect
                     (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
                    1,
                    FE_Q<dim>(parameters.temperature_degree),
-                   1),
+                   1,
+                   FE_Q<dim>(parameters.composition_degree),
+                   parameters.n_compositional_fields),
 
     dof_handler (triangulation),
 
