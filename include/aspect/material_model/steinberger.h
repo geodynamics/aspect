@@ -24,13 +24,13 @@
 #define __aspect__model_table_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/simulator.h>
 
 namespace aspect
 {
   namespace MaterialModel
   {
     using namespace dealii;
-
     /**
      * A variable viscosity material model that reads the essential values of coefficients from
      * tables in input files.
@@ -42,9 +42,14 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Steinberger: public MaterialModel::Interface<dim>
+    class Steinberger: public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
+        /**
+          * Called at the beginning of each time step and allows the material model
+          * to update internal data structures.
+          */
+        virtual void update();
         /**
          * @name Physical parameters used in the basic equations
          * @{
@@ -141,6 +146,9 @@ namespace aspect
         /**
          * @}
          */
+
+      private:
+        std::vector<double> avg_temp;
     };
   }
 }

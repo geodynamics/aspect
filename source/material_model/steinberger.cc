@@ -21,6 +21,7 @@
 
 
 #include <aspect/material_model/steinberger.h>
+#include <aspect/simulator.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/table.h>
 #include <fstream>
@@ -146,23 +147,33 @@ namespace aspect
     }
 
 
+    template <int dim>
+    void
+    Steinberger<dim>::
+    update()
+    {
+    	this->get_depth_average_temperature(avg_temp);
+    }
 
     template <int dim>
     double
     Steinberger<dim>::
-    viscosity (const double,
+    viscosity (const double temperature,
                const double,
                const SymmetricTensor<2,dim> &,
                const Point<dim> &position) const
     {
       static internal::radial_viscosity_lookup table("data/material-model/steinberger/radial_visc.txt");
-      const double vis_lateral = 1.0; // TODO
 
+      const unsigned int idx = 100 * this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth();
+      const double vis_lateral = std::max(std::min(std::exp(-8.0*(temperature-avg_temp[idx])/4000),1e1),1e-1); // TODO
+      //const double vis_lateral = 1.0;
+      //std:cout << vis_lateral << std::endl;
       const double R1=6371000.0; //TODO
       const double depth = R1-std::sqrt(position.square());
       const double vis_radial = table.radial_viscosity(depth);
 
-      return std::max(1e10,vis_lateral * vis_radial);
+      return std::max(std::min(vis_lateral * vis_radial,1e23),1e19);
     }
 
     template <int dim>
@@ -257,7 +268,7 @@ namespace aspect
     Steinberger<dim>::
     viscosity_depends_on (const NonlinearDependence::Dependence) const
     {
-      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      //Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
       return false;
     }
 
@@ -267,7 +278,7 @@ namespace aspect
     Steinberger<dim>::
     density_depends_on (const NonlinearDependence::Dependence) const
     {
-      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      //Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
       return false;
     }
 
@@ -276,7 +287,7 @@ namespace aspect
     Steinberger<dim>::
     compressibility_depends_on (const NonlinearDependence::Dependence) const
     {
-      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      //Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
       return false;
     }
 
@@ -285,7 +296,7 @@ namespace aspect
     Steinberger<dim>::
     specific_heat_depends_on (const NonlinearDependence::Dependence) const
     {
-      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      //Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
       return false;
     }
 
@@ -294,7 +305,7 @@ namespace aspect
     Steinberger<dim>::
     thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      //Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
       return false;
     }
 
