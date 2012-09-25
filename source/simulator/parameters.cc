@@ -569,6 +569,7 @@ namespace aspect
     {
       n_compositional_fields = prm.get_integer ("Number of fields");
     }
+    prm.leave_subsection ();
   }
 
 
