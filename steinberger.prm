@@ -17,7 +17,20 @@ set CFL number                             = 1.0
 # instead of seconds' parameter is set; seconds otherwise.
 set End time                               = 1e17
 
-set Linear solver tolerance                = 1e-5
+set Linear solver tolerance                = 1e-7
+
+# In order to make the problem in the first time step easier to solve, we need
+# a reasonable guess for the temperature and pressure. To obtain it, we use an
+# adiabatic pressure and temperature field. This parameter describes what the
+# `adiabatic' temperature would be at the surface of the domain (i.e. at depth
+# zero). Note that this value need not coincide with the boundary condition
+# posed at this point. Rather, the boundary condition may differ significantly
+# from the adiabatic value, and then typically induce a thermal boundary
+# layer.
+# For more information, see the section in the manual that discusses the
+# general mathematical model.
+set Adiabatic surface temperature          = 1613.0
+
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
@@ -172,7 +185,14 @@ subsection Initial conditions
   # otherwise constant value equal to one. The perturbation is chosen in such
   # a way that the initial temperature is constant to one along the entire
   # boundary.
-  set Model name = constant temperature
+  set Model name = function
+  
+  subsection Function
+  
+       set Function expression = 1613.0
+       set Variable names      = x,y,t
+  
+  end
 
 
   subsection Spherical gaussian perturbation
@@ -249,26 +269,26 @@ subsection Mesh refinement
 
   # The number of adaptive refinement steps performed after initial global
   # refinement but while still within the first time step.
-  set Initial adaptive refinement        = 2
+  set Initial adaptive refinement        = 0
 
   # The number of global refinement steps performed on the initial coarse
   # mesh, before the problem is first solved there.
-  set Initial global refinement          = 4
+  set Initial global refinement          = 5
 
   # The fraction of cells with the largest error that should be flagged for
   # refinement.
-  set Refinement fraction                = 0.3
+  set Refinement fraction                = 0.0
 
   # The fraction of cells with the smallest error that should be flagged for
   # coarsening.
-  set Coarsening fraction                = 0.05
+  set Coarsening fraction                = 0.0
 
   # The method used to determine which cells to refine and which to coarsen.
   set Strategy                           = Velocity
 
   # The number of time steps after which the mesh is to be adapted again based
   # on computed error indicators.
-  set Time steps between mesh refinement = 5
+  set Time steps between mesh refinement = 0
 end
 
 

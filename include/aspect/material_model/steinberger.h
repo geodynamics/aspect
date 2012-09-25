@@ -149,6 +149,7 @@ namespace aspect
 
       private:
         std::vector<double> avg_temp;
+
     };
   }
 }
