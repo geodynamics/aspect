@@ -116,7 +116,9 @@ namespace aspect
 
     mapping (4),
 
-    finite_element(FE_Q<dim>(parameters.stokes_velocity_degree),
+    finite_element(parameters.n_compositional_fields > 0
+                  ?
+                   FE_Q<dim>(parameters.stokes_velocity_degree),
                    dim,
                    (parameters.use_locally_conservative_discretization
                     ?
@@ -129,7 +131,20 @@ namespace aspect
                    FE_Q<dim>(parameters.temperature_degree),
                    1,
                    FE_Q<dim>(parameters.composition_degree),
-                   parameters.n_compositional_fields),
+                   parameters.n_compositional_fields
+                 :
+                   FE_Q<dim>(parameters.stokes_velocity_degree),
+                  dim,
+                  (parameters.use_locally_conservative_discretization
+                   ?
+                   static_cast<const FiniteElement<dim> &>
+                   (FE_DGP<dim>(parameters.stokes_velocity_degree-1))
+                   :
+                   static_cast<const FiniteElement<dim> &>
+                   (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
+                  1,
+                  FE_Q<dim>(parameters.temperature_degree),
+                  1),
 
     dof_handler (triangulation),
 
