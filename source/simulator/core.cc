@@ -116,35 +116,20 @@ namespace aspect
 
     mapping (4),
 
-    finite_element(parameters.n_compositional_fields > 0
-                  ?
-                   FE_Q<dim>(parameters.stokes_velocity_degree),
-                   dim,
-                   (parameters.use_locally_conservative_discretization
-                    ?
-                    static_cast<const FiniteElement<dim> &>
-                    (FE_DGP<dim>(parameters.stokes_velocity_degree-1))
-                    :
-                    static_cast<const FiniteElement<dim> &>
-                    (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
-                   1,
-                   FE_Q<dim>(parameters.temperature_degree),
-                   1,
-                   FE_Q<dim>(parameters.composition_degree),
-                   parameters.n_compositional_fields
-                 :
-                   FE_Q<dim>(parameters.stokes_velocity_degree),
-                  dim,
-                  (parameters.use_locally_conservative_discretization
-                   ?
-                   static_cast<const FiniteElement<dim> &>
-                   (FE_DGP<dim>(parameters.stokes_velocity_degree-1))
-                   :
-                   static_cast<const FiniteElement<dim> &>
-                   (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
-                  1,
-                  FE_Q<dim>(parameters.temperature_degree),
-                  1),
+                  finite_element(FE_Q<dim>(parameters.stokes_velocity_degree),
+                                 dim,
+                                 (parameters.use_locally_conservative_discretization
+                                    ?
+                                    static_cast<const FiniteElement<dim> &>
+                                    (FE_DGP<dim>(parameters.stokes_velocity_degree-1))
+                                    :
+                                    static_cast<const FiniteElement<dim> &>
+                                    (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
+                                 1,
+                                 FE_Q<dim>(parameters.temperature_degree),
+                                 1,
+                                 FE_Q<dim>(parameters.composition_degree),
+                                 parameters.n_compositional_fields),
 
     dof_handler (triangulation),
 
@@ -546,6 +531,7 @@ namespace aspect
     system_sub_blocks[dim+1] = 2;
     for(unsigned int i=dim+2;i<dim+2+parameters.n_compositional_fields;++i)
       system_sub_blocks[i] = i-dim+1;
+
     DoFRenumbering::component_wise (dof_handler, system_sub_blocks);
 
     std::vector<unsigned int> system_dofs_per_block (3+parameters.n_compositional_fields);
@@ -690,6 +676,28 @@ namespace aspect
                                                     temperature_mask);
 
         }
+
+      // set composition to zero on all boundaries
+
+        if(parameters.n_compositional_fields>0) {
+          std::vector<bool> composition_mask (dim+2+parameters.n_compositional_fields, false);
+          for(unsigned int i=dim+2;i<dim+2+parameters.n_compositional_fields;++i)
+            composition_mask[i] = true;
+
+          for (unsigned char
+               p = 0;
+               p != 4; ++p)
+            {
+              Assert (is_element (p, geometry_model->get_used_boundary_indicators()),
+                      ExcInternalError());
+              VectorTools::interpolate_boundary_values (dof_handler,
+                                                        p,
+                                                        ZeroFunction<dim>(dim+2+parameters.n_compositional_fields),
+                                                        constraints,
+                                                        composition_mask);
+            }
+
+          }
       constraints.close();
     }
 

@@ -264,7 +264,110 @@ namespace aspect
           current_strain_rates(scratch.current_strain_rates),
           current_pressure_values(scratch.current_pressure_values)
         {}
-      }
+
+
+      template <int dim>
+      struct CompositionSystem
+      {
+          CompositionSystem (const FiniteElement<dim> &finite_element,
+                           const Mapping<dim>       &mapping,
+                           const Quadrature<dim>    &quadrature);
+          CompositionSystem (const CompositionSystem &data);
+
+        FEValues<dim>               finite_element_values;
+
+        std::vector<double>         phi_C;
+        std::vector<Tensor<1,dim> > grad_phi_C;
+
+        std::vector<Tensor<1,dim> > old_velocity_values;
+        std::vector<Tensor<1,dim> > old_old_velocity_values;
+
+        std::vector<double>         old_pressure;
+        std::vector<double>         old_old_pressure;
+
+        std::vector<SymmetricTensor<2,dim> > old_strain_rates;
+        std::vector<SymmetricTensor<2,dim> > old_old_strain_rates;
+
+        std::vector<double>         old_composition_values;
+        std::vector<double>         old_old_composition_values;
+        std::vector<Tensor<1,dim> > old_composition_grads;
+        std::vector<Tensor<1,dim> > old_old_composition_grads;
+        std::vector<double>         old_composition_laplacians;
+        std::vector<double>         old_old_composition_laplacians;
+
+        std::vector<double>         current_composition_values;
+        std::vector<Tensor<1,dim> > current_velocity_values;
+        std::vector<SymmetricTensor<2,dim> > current_strain_rates;
+        std::vector<double>         current_pressure_values;
+      };
+
+
+
+      template <int dim>
+      CompositionSystem<dim>::
+      CompositionSystem (const FiniteElement<dim> &finite_element,
+                         const Mapping<dim>       &mapping,
+                         const Quadrature<dim>    &quadrature)
+        :
+        finite_element_values (mapping,
+                               finite_element, quadrature,
+                               update_values    |
+                               update_gradients |
+                               update_hessians  |
+                               update_quadrature_points |
+                               update_JxW_values),
+
+        phi_C (finite_element.dofs_per_cell),
+        grad_phi_C (finite_element.dofs_per_cell),
+        old_velocity_values (quadrature.size()),
+        old_old_velocity_values (quadrature.size()),
+        old_pressure (quadrature.size()),
+        old_old_pressure (quadrature.size()),
+        old_strain_rates (quadrature.size()),
+        old_old_strain_rates (quadrature.size()),
+        old_composition_values (quadrature.size()),
+        old_old_composition_values(quadrature.size()),
+        old_composition_grads(quadrature.size()),
+        old_old_composition_grads(quadrature.size()),
+        old_composition_laplacians(quadrature.size()),
+        old_old_composition_laplacians(quadrature.size()),
+        current_composition_values(quadrature.size()),
+        current_velocity_values(quadrature.size()),
+        current_strain_rates(quadrature.size()),
+        current_pressure_values(quadrature.size())
+      {}
+
+
+
+      template <int dim>
+      CompositionSystem<dim>::
+      CompositionSystem (const CompositionSystem &scratch)
+        :
+        finite_element_values (scratch.finite_element_values.get_mapping(),
+                               scratch.finite_element_values.get_fe(),
+                               scratch.finite_element_values.get_quadrature(),
+                               scratch.finite_element_values.get_update_flags()),
+
+        phi_C (scratch.phi_C),
+        grad_phi_C (scratch.grad_phi_C),
+        old_velocity_values (scratch.old_velocity_values),
+        old_old_velocity_values (scratch.old_old_velocity_values),
+        old_pressure (scratch.old_pressure),
+        old_old_pressure (scratch.old_old_pressure),
+        old_strain_rates (scratch.old_strain_rates),
+        old_old_strain_rates (scratch.old_old_strain_rates),
+        old_composition_values (scratch.old_composition_values),
+        old_old_composition_values (scratch.old_old_composition_values),
+        old_composition_grads (scratch.old_composition_grads),
+        old_old_composition_grads (scratch.old_old_composition_grads),
+        old_composition_laplacians (scratch.old_composition_laplacians),
+        old_old_composition_laplacians (scratch.old_old_composition_laplacians),
+        current_composition_values(scratch.current_composition_values),
+        current_velocity_values(scratch.current_velocity_values),
+        current_strain_rates(scratch.current_strain_rates),
+        current_pressure_values(scratch.current_pressure_values)
+      {}
+    }
 
 
       // The CopyData arrays are similar to the
@@ -371,6 +474,42 @@ namespace aspect
         template <int dim>
         TemperatureSystem<dim>::
         TemperatureSystem (const TemperatureSystem &data)
+          :
+          local_matrix (data.local_matrix),
+          local_rhs (data.local_rhs),
+          local_dof_indices (data.local_dof_indices)
+        {}
+
+
+
+        template <int dim>
+        struct CompositionSystem
+        {
+          CompositionSystem (const FiniteElement<dim> &finite_element);
+          CompositionSystem (const CompositionSystem &data);
+
+          FullMatrix<double>          local_matrix;
+          Vector<double>              local_rhs;
+          std::vector<unsigned int>   local_dof_indices;
+        };
+
+
+
+        template <int dim>
+        CompositionSystem<dim>::
+        CompositionSystem (const FiniteElement<dim> &finite_element)
+          :
+          local_matrix (finite_element.dofs_per_cell,
+                        finite_element.dofs_per_cell),
+          local_rhs (finite_element.dofs_per_cell),
+          local_dof_indices (finite_element.dofs_per_cell)
+        {}
+
+
+
+        template <int dim>
+        CompositionSystem<dim>::
+        CompositionSystem (const CompositionSystem &data)
           :
           local_matrix (data.local_matrix),
           local_rhs (data.local_rhs),
@@ -1237,6 +1376,145 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::
+  local_assemble_composition_system (const std::pair<double,double> global_T_range,
+                                     const double                   global_max_velocity,
+                                     const double                   global_entropy_variation,
+                                     const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                     internal::Assembly::Scratch::CompositionSystem<dim> &scratch,
+                                     internal::Assembly::CopyData::CompositionSystem<dim> &data)
+  {
+    const bool use_bdf2_scheme = (timestep_number > 1);
+
+    const FEValuesExtractors::Vector velocities (0);
+    const FEValuesExtractors::Scalar pressure (dim);
+    const FEValuesExtractors::Scalar temperature (dim+1);
+    const FEValuesExtractors::Scalar composition (dim+2);
+
+    const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+    const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+    scratch.finite_element_values.reinit (cell);
+    cell->get_dof_indices (data.local_dof_indices);
+
+    data.local_matrix = 0;
+    data.local_rhs = 0;
+
+    scratch.finite_element_values[composition].get_function_values (old_solution,
+                                                                    scratch.old_composition_values);
+    scratch.finite_element_values[composition].get_function_values (old_old_solution,
+                                                                    scratch.old_old_composition_values);
+
+    scratch.finite_element_values[composition].get_function_gradients (old_solution,
+                                                                       scratch.old_composition_grads);
+    scratch.finite_element_values[composition].get_function_gradients (old_old_solution,
+                                                                       scratch.old_old_composition_grads);
+
+    scratch.finite_element_values[composition].get_function_laplacians (old_solution,
+                                                                        scratch.old_composition_laplacians);
+    scratch.finite_element_values[composition].get_function_laplacians (old_old_solution,
+                                                                        scratch.old_old_composition_laplacians);
+
+    scratch.finite_element_values[velocities].get_function_values (old_solution,
+                                                                   scratch.old_velocity_values);
+    scratch.finite_element_values[velocities].get_function_values (old_old_solution,
+                                                                   scratch.old_old_velocity_values);
+    scratch.finite_element_values[velocities].get_function_symmetric_gradients (old_solution,
+                                                                                scratch.old_strain_rates);
+    scratch.finite_element_values[velocities].get_function_symmetric_gradients (old_old_solution,
+                                                                                scratch.old_old_strain_rates);
+
+    scratch.finite_element_values[pressure].get_function_values (old_solution,
+                                                                 scratch.old_pressure);
+    scratch.finite_element_values[pressure].get_function_values (old_old_solution,
+                                                                 scratch.old_old_pressure);
+
+    scratch.finite_element_values[composition].get_function_values(current_linearization_point,
+                                                                   scratch.current_composition_values);
+    scratch.finite_element_values[velocities].get_function_values(current_linearization_point,
+                                                                   scratch.current_velocity_values);
+    scratch.finite_element_values[velocities].get_function_symmetric_gradients(current_linearization_point,
+                                                                   scratch.current_strain_rates);
+    scratch.finite_element_values[pressure].get_function_values(current_linearization_point,
+                                                                scratch.current_pressure_values);
+
+
+    for (unsigned int q=0; q<n_q_points; ++q)
+      {
+        for (unsigned int k=0; k<dofs_per_cell; ++k)
+          {
+            scratch.grad_phi_C[k] = scratch.finite_element_values[composition].gradient (k,q);
+            scratch.phi_C[k]      = scratch.finite_element_values[composition].value (k, q);
+          }
+
+        const double C_term_for_rhs
+          = (use_bdf2_scheme ?
+             (scratch.old_composition_values[q] *
+              (1 + time_step/old_time_step)
+              -
+              scratch.old_old_composition_values[q] *
+              (time_step * time_step) /
+              (old_time_step * (time_step + old_time_step)))
+             :
+             scratch.old_composition_values[q]);
+/*
+        const double ext_T
+          = aspect::internal::bdf2_extrapolate(
+              use_bdf2_scheme, old_time_step, time_step,
+              scratch.old_old_composition_values[q], scratch.old_composition_values[q]);
+
+        const Tensor<1,dim> extrapolated_u
+          = aspect::internal::bdf2_extrapolate(
+              use_bdf2_scheme, old_time_step, time_step,
+              scratch.old_old_velocity_values[q], scratch.old_velocity_values[q]);
+
+        const SymmetricTensor<2,dim> extrapolated_strain_rate
+          = aspect::internal::bdf2_extrapolate(
+              use_bdf2_scheme, old_time_step, time_step,
+              scratch.old_old_strain_rates[q], scratch.old_strain_rates[q]);
+
+        const double ext_pressure
+          = aspect::internal::bdf2_extrapolate(
+              use_bdf2_scheme, old_time_step, time_step,
+              scratch.old_old_pressure[q], scratch.old_pressure[q]);
+*/
+        const double current_C = scratch.current_composition_values[q];
+        const SymmetricTensor<2,dim> current_strain_rate = scratch.current_strain_rates[q];
+        const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+        const double current_p = scratch.current_pressure_values[q];
+
+        const double kappa = 0.01;
+
+        const bool is_compressible = material_model->is_compressible ();
+
+        const Tensor<1,dim>
+        gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
+
+        for (unsigned int i=0; i<dofs_per_cell; ++i)
+        {
+            data.local_rhs(i) += C_term_for_rhs * scratch.phi_C[i]
+                                 *
+                                 scratch.finite_element_values.JxW(q);
+
+            for (unsigned int j=0; j<dofs_per_cell; ++j)
+              {
+                const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
+                                                          (time_step + old_time_step)) : 1.0;
+                data.local_matrix(i,j)
+                += (
+                     time_step * kappa * scratch.grad_phi_C[i] * scratch.grad_phi_C[j]
+                     + time_step * current_u * scratch.grad_phi_C[j] * scratch.phi_C[i]
+                        + factor * scratch.phi_C[i] * scratch.phi_C[j]
+                   )
+                   * scratch.finite_element_values.JxW(q);
+              }
+          }
+      }
+  }
+
+
+
+  template <int dim>
   void
   Simulator<dim>::
   copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data)
@@ -1338,7 +1616,14 @@ namespace aspect
                                                                     const double                   global_entropy_variation, \
                                                                     const DoFHandler<dim>::active_cell_iterator &cell, \
                                                                     internal::Assembly::Scratch::TemperatureSystem<dim>  &scratch, \
-                                                                    internal::Assembly::CopyData::TemperatureSystem<dim> &data);
+                                                                    internal::Assembly::CopyData::TemperatureSystem<dim> &data); \
+  template void Simulator<dim>::local_assemble_composition_system ( \
+                                                                    const std::pair<double,double> global_T_range, \
+                                                                    const double                   global_max_velocity, \
+                                                                    const double                   global_entropy_variation, \
+                                                                    const DoFHandler<dim>::active_cell_iterator &cell, \
+                                                                    internal::Assembly::Scratch::CompositionSystem<dim>  &scratch, \
+                                                                    internal::Assembly::CopyData::CompositionSystem<dim> &data);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

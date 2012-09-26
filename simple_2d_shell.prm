@@ -99,7 +99,7 @@ end
 
 subsection Compositional fields
  
-  set Number of fields = 0
+  set Number of fields = 2
 end 
 
 subsection Geometry model

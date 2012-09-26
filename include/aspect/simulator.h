@@ -64,6 +64,7 @@ namespace aspect
         template <int dim>      struct StokesPreconditioner;
         template <int dim>      struct StokesSystem;
         template <int dim>      struct TemperatureSystem;
+        template <int dim>      struct CompositionSystem;
       }
 
       namespace CopyData
@@ -71,6 +72,7 @@ namespace aspect
         template <int dim>      struct StokesPreconditioner;
         template <int dim>      struct StokesSystem;
         template <int dim>      struct TemperatureSystem;
+        template <int dim>      struct CompositionSystem;
       }
     }
   }
@@ -608,6 +610,21 @@ namespace aspect
                                          const typename DoFHandler<dim>::active_cell_iterator &cell,
                                          internal::Assembly::Scratch::TemperatureSystem<dim>  &scratch,
                                          internal::Assembly::CopyData::TemperatureSystem<dim> &data);
+
+      /**
+       * Compute the integrals for the composition matrix and right hand side
+       * on a single cell.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      local_assemble_composition_system (const std::pair<double,double> global_T_range,
+                                         const double                   global_max_velocity,
+                                         const double                   global_entropy_variation,
+                                         const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                         internal::Assembly::Scratch::CompositionSystem<dim>  &scratch,
+                                         internal::Assembly::CopyData::CompositionSystem<dim> &data);
 
       /**
        * Copy the contribution to the temperature system
