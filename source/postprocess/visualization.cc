@@ -29,6 +29,7 @@
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <math.h>
 #include <stdio.h>
@@ -128,12 +129,20 @@ namespace aspect
       std::vector<std::string> solution_names (dim, "velocity");
       solution_names.push_back ("p");
       solution_names.push_back ("T");
+      std::string C_number;
+      for(unsigned int i=0;i<(this->get_compositional_fields());++i) {
+          C_number = "C_" + boost::lexical_cast<std::string>(i+1);
+          solution_names.push_back (C_number);
+      }
+
 
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
       interpretation (dim,
                       DataComponentInterpretation::component_is_part_of_vector);
       interpretation.push_back (DataComponentInterpretation::component_is_scalar);
       interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+      for(unsigned int i=0;i<(this->get_compositional_fields());++i)
+        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
 
       data_out.add_data_vector (this->get_solution(),
                                 solution_names,

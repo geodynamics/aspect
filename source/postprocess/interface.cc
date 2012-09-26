@@ -161,6 +161,27 @@ namespace aspect
 
 
     template <int dim>
+    unsigned int
+    SimulatorAccess<dim>::get_compositional_fields () const
+    {
+      return simulator->parameters.n_compositional_fields;
+    }
+
+
+
+    template <int dim>
+    unsigned int
+    SimulatorAccess<dim>::get_composition_true () const
+    {
+      if(simulator->parameters.n_compositional_fields > 0)
+        return 1;
+      else
+        return 0;
+    }
+
+
+
+    template <int dim>
     void
     SimulatorAccess<dim>::get_refinement_criteria (Vector<float> &estimated_error_per_cell) const
     {

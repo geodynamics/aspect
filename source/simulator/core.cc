@@ -376,10 +376,12 @@ namespace aspect
     statistics.add_value("Number of mesh cells",
                          triangulation.n_global_active_cells());
 
-    std::vector<unsigned int> system_sub_blocks (dim+2,0);
+    std::vector<unsigned int> system_sub_blocks (dim+2+parameters.n_compositional_fields,0);
     system_sub_blocks[dim] = 1;
     system_sub_blocks[dim+1] = 2;
-    std::vector<unsigned int> system_dofs_per_block (3);
+    for(unsigned int i=dim+2;i<dim+2+parameters.n_compositional_fields;++i)
+      system_sub_blocks[i] = i-dim+1;
+    std::vector<unsigned int> system_dofs_per_block (3+parameters.n_compositional_fields);
     DoFTools::count_dofs_per_block (dof_handler, system_dofs_per_block,
                                     system_sub_blocks);
 
@@ -387,6 +389,13 @@ namespace aspect
                          system_dofs_per_block[0]+system_dofs_per_block[1]);
     statistics.add_value("Number of temperature degrees of freedom",
                          system_dofs_per_block[2]);
+
+    unsigned int C_dofs = 0;
+    for(unsigned int i=dim+2;i<dim+2+parameters.n_compositional_fields;++i)
+      C_dofs += system_dofs_per_block[i];
+    statistics.add_value("Number of composition degrees of freedom",
+                               C_dofs);
+
 
     // then interpolate the current boundary velocities. this adds to
     // the current_constraints object we already have
@@ -401,9 +410,9 @@ namespace aspect
 
       // set the current time and do the interpolation
       // for the prescribed velocity fields
-      std::vector<bool> velocity_mask (dim+2, true);
-      velocity_mask[dim] = false;
-      velocity_mask[dim+1] = false;
+      std::vector<bool> velocity_mask (dim+2+parameters.n_compositional_fields, true);
+      for(unsigned int i=dim;i<dim+2+parameters.n_compositional_fields;++i)
+        velocity_mask[i] = false;
       for (typename std::map<types::boundary_id_t,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::iterator
            p = velocity_boundary_conditions.begin();
            p != velocity_boundary_conditions.end(); ++p)
@@ -442,7 +451,7 @@ namespace aspect
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
                                                mpi_communicator);
 
-    Table<2,DoFTools::Coupling> coupling (dim+2, dim+2);
+    Table<2,DoFTools::Coupling> coupling (dim+2+parameters.n_compositional_fields, dim+2+parameters.n_compositional_fields);
 
     // determine which blocks should be fillable in the matrix.
     // note:
@@ -457,6 +466,8 @@ namespace aspect
     for (unsigned int c=0; c<dim; ++c)
       coupling[c][dim] = coupling[dim][c] = DoFTools::always;
     coupling[dim+1][dim+1] = DoFTools::always;
+    for (unsigned int c=dim+2; c<dim+2+parameters.n_compositional_fields; ++c)
+      coupling[c][c] = DoFTools::always;
 
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
@@ -483,9 +494,9 @@ namespace aspect
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
                                                mpi_communicator);
 
-    Table<2,DoFTools::Coupling> coupling (dim+2, dim+2);
-    for (unsigned int c=0; c<dim+2; ++c)
-      for (unsigned int d=0; d<dim+2; ++d)
+    Table<2,DoFTools::Coupling> coupling (dim+2+parameters.n_compositional_fields, dim+2+parameters.n_compositional_fields);
+    for (unsigned int c=0; c<dim+2+parameters.n_compositional_fields; ++c)
+      for (unsigned int d=0; d<dim+2+parameters.n_compositional_fields; ++d)
         if (c == d)
           coupling[c][d] = DoFTools::always;
         else
@@ -515,18 +526,27 @@ namespace aspect
     // is because the numbering depends on the order the
     // cells are created.
     DoFRenumbering::hierarchical (dof_handler);
-    std::vector<unsigned int> system_sub_blocks (dim+2,0);
+    std::vector<unsigned int> system_sub_blocks (dim+2+parameters.n_compositional_fields,0);
     system_sub_blocks[dim] = 1;
     system_sub_blocks[dim+1] = 2;
+    for(unsigned int i=dim+2;i<dim+2+parameters.n_compositional_fields;++i)
+      system_sub_blocks[i] = i-dim+1;
     DoFRenumbering::component_wise (dof_handler, system_sub_blocks);
 
-    std::vector<unsigned int> system_dofs_per_block (3);
+    std::vector<unsigned int> system_dofs_per_block (3+parameters.n_compositional_fields);
     DoFTools::count_dofs_per_block (dof_handler, system_dofs_per_block,
                                     system_sub_blocks);
 
     const unsigned int n_u = system_dofs_per_block[0],
                        n_p = system_dofs_per_block[1],
                        n_T = system_dofs_per_block[2];
+    unsigned int       n_C_sum = 0;
+    std::vector<unsigned int> n_C (parameters.n_compositional_fields+1);
+    for(unsigned int i=0;i<parameters.n_compositional_fields;++i) {
+                       n_C[i] = system_dofs_per_block[i+3];
+                       n_C_sum += n_C[i];
+    }
+
 
     // print dof numbers with 1000s
     // separator since they are frequently
@@ -549,8 +569,13 @@ namespace aspect
           << " levels)"
           << std::endl
           << "Number of degrees of freedom: "
-          << n_u + n_p + n_T
-          << " (" << n_u << '+' << n_p << '+'<< n_T <<')'
+          << n_u + n_p + n_T + n_C_sum
+          << " (" << n_u << '+' << n_p << '+'<< n_T;
+
+    for(unsigned int i=0;i<parameters.n_compositional_fields;++i)
+        pcout << '+' << n_C[i];
+
+    pcout <<')'
           << std::endl
           << std::endl;
     pcout.get_stream().imbue(s);
@@ -559,6 +584,8 @@ namespace aspect
     // now also compute the various partitionings between processors and blocks
     // of vectors and matrices
 
+    n_C_sum = 0;
+
     std::vector<IndexSet> system_partitioning, system_relevant_partitioning;
     IndexSet system_relevant_set;
     {
@@ -566,12 +593,22 @@ namespace aspect
       system_partitioning.push_back(system_index_set.get_view(0,n_u));
       system_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
       system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
+      for(unsigned int i=0;i<parameters.n_compositional_fields;++i) {
+          system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_sum,n_u+n_p+n_T+n_C_sum+n_C[i]));
+          n_C_sum += n_C[i];
+      }
+
+      n_C_sum = 0;
 
       DoFTools::extract_locally_relevant_dofs (dof_handler,
                                                system_relevant_set);
       system_relevant_partitioning.push_back(system_relevant_set.get_view(0,n_u));
       system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u,n_u+n_p));
       system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
+      for(unsigned int i=0;i<parameters.n_compositional_fields;++i) {
+          system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p+n_T+n_C_sum,n_u+n_p+n_T+n_C_sum+n_C[i]));
+          n_C_sum += n_C[i];
+      }
     }
 
     // then compute constraints for the velocity. the constraints we compute
@@ -587,15 +624,17 @@ namespace aspect
                                                constraints);
 
       // do the interpolation for zero velocity
-      std::vector<bool> velocity_mask (dim+2, true);
+      std::vector<bool> velocity_mask (dim+2+parameters.n_compositional_fields, true);
       velocity_mask[dim] = false;
       velocity_mask[dim+1] = false;
+      for(unsigned int i=dim+2;i<dim+2+parameters.n_compositional_fields;++i)
+        velocity_mask[i] = false;
       for (std::set<types::boundary_id_t>::const_iterator
            p = parameters.zero_velocity_boundary_indicators.begin();
            p != parameters.zero_velocity_boundary_indicators.end(); ++p)
         VectorTools::interpolate_boundary_values (dof_handler,
                                                   *p,
-                                                  ZeroFunction<dim>(dim+2),
+                                                  ZeroFunction<dim>(dim+2+parameters.n_compositional_fields),
                                                   constraints,
                                                   velocity_mask);
 
@@ -614,7 +653,7 @@ namespace aspect
       // obtain the boundary indicators that belong to Dirichlet-type
       // temperature boundary conditions and interpolate the temperature
       // there
-      std::vector<bool> temperature_mask (dim+2, false);
+      std::vector<bool> temperature_mask (dim+2+parameters.n_compositional_fields, false);
       temperature_mask[dim+1] = true;
 
       for (std::set<types::boundary_id_t>::const_iterator
@@ -631,7 +670,7 @@ namespace aspect
                                                         *p,
                                                         std_cxx1x::_1),
                                                         dim+1,
-                                                        dim+2),
+                                                        dim+2+parameters.n_compositional_fields),
                                                     constraints,
                                                     temperature_mask);
 
@@ -827,7 +866,7 @@ namespace aspect
     // compute the errors for temperature solution
     if (parameters.refinement_strategy != "Density c_p temperature")
       {
-        std::vector<bool> temperature_component (dim+2, false);
+        std::vector<bool> temperature_component (dim+2+parameters.n_compositional_fields, false);
         temperature_component[dim+1] = true;
         KellyErrorEstimator<dim>::estimate (dof_handler,
                                             QGauss<dim-1>(parameters.temperature_degree+1),
@@ -847,7 +886,7 @@ namespace aspect
     // compute the errors for the stokes solution
     if (parameters.refinement_strategy == "Velocity")
       {
-        std::vector<bool> velocity_mask (dim+2, true);
+        std::vector<bool> velocity_mask (dim+2+parameters.n_compositional_fields, true);
         velocity_mask[dim] = velocity_mask[dim+1] = false;
         KellyErrorEstimator<dim>::estimate (dof_handler,
                                             QGauss<dim-1>(parameters.stokes_velocity_degree+1),

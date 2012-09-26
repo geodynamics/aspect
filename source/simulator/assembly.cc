@@ -757,9 +757,9 @@ namespace aspect
     // then extract the other information necessary to build the
     // AMG preconditioners for the A and M blocks
     std::vector<std::vector<bool> > constant_modes;
-    std::vector<bool>  velocity_components (dim+2,true);
-    velocity_components[dim] = false;
-    velocity_components[dim+1] = false;
+    std::vector<bool>  velocity_components (dim+2+parameters.n_compositional_fields,true);
+    for(unsigned int i=dim;i<dim+2+parameters.n_compositional_fields;++i)
+      velocity_components[i] = false;
     DoFTools::extract_constant_modes (dof_handler, velocity_components,
                                       constant_modes);
 

@@ -145,7 +145,7 @@ namespace aspect
                                                                                std_cxx1x::cref (*adiabatic_conditions),
                                                                                std_cxx1x::_1),
                                                                                dim,
-                                                                               dim+2),
+                                                                               dim+2+parameters.n_compositional_fields),
                                   system_tmp);
 
         // we may have hanging nodes, so apply constraints

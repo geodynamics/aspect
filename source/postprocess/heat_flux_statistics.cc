@@ -40,7 +40,7 @@ namespace aspect
       // create a quadrature formula based on the temperature element alone.
       // be defensive about determining that what we think is the temperature
       // element is it in fact
-      Assert (this->get_dof_handler().get_fe().n_base_elements() == 3,
+      Assert (this->get_dof_handler().get_fe().n_base_elements() == 3+(this->get_composition_true()),
               ExcNotImplemented());
       const QGauss<dim-1> quadrature_formula (this->get_dof_handler().get_fe().base_element(2).degree+1);
 
