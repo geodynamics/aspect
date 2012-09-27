@@ -1373,11 +1373,93 @@ namespace aspect
       }
   }
 
+  template <int dim>
+  void
+  Simulator<dim>::
+  copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data)
+  {
+    current_constraints.distribute_local_to_global (data.local_matrix,
+                                                    data.local_rhs,
+                                                    data.local_dof_indices,
+                                                    system_matrix,
+                                                    system_rhs
+                                                   );
+
+  }
+
+
+  template <int dim>
+  void Simulator<dim>::assemble_temperature_system ()
+  {
+    computing_timer.enter_section ("   Assemble temperature system");
+
+    // Reset only temperature block (might reuse Stokes block)
+    system_matrix.block(2,2) = 0;
+    system_rhs = 0;
+
+    const std::pair<double,double>
+    global_T_range = get_extrapolated_temperature_range();
+
+    typedef
+    FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
+    CellFilter;
+
+    WorkStream::
+    run (CellFilter (IteratorFilters::LocallyOwnedCell(),
+                     dof_handler.begin_active()),
+         CellFilter (IteratorFilters::LocallyOwnedCell(),
+                     dof_handler.end()),
+         std_cxx1x::bind (&Simulator<dim>::
+                          local_assemble_temperature_system,
+                          this,
+                          global_T_range,
+                          get_maximal_velocity(old_solution),
+                          // use the mid temperature instead of the
+                          // integral mean. results are not very
+                          // sensitive to this and this is far simpler
+                          get_entropy_variation ((global_T_range.first +
+                                                  global_T_range.second) / 2),
+                          std_cxx1x::_1,
+                          std_cxx1x::_2,
+                          std_cxx1x::_3),
+         std_cxx1x::bind (&Simulator<dim>::
+                          copy_local_to_global_temperature_system,
+                          this,
+                          std_cxx1x::_1),
+         internal::Assembly::Scratch::
+         TemperatureSystem<dim> (finite_element, mapping, QGauss<dim>(parameters.temperature_degree+2)),
+         internal::Assembly::CopyData::
+         TemperatureSystem<dim> (finite_element));
+
+    system_matrix.compress();
+    system_rhs.compress(Add);
+
+    computing_timer.exit_section();
+
+    computing_timer.enter_section ("   Build temperature preconditioner");
+    T_preconditioner.reset (new LinearAlgebra::PreconditionILU());
+    T_preconditioner->initialize (system_matrix.block(2,2));
+
+    computing_timer.exit_section();
+  }
+
+
+  template <int dim>
+  void
+  Simulator<dim>::build_composition_preconditioner (unsigned int n_comp)
+  {
+    computing_timer.enter_section ("   Build composition preconditioner");
+    C_preconditioner.reset (new TrilinosWrappers::PreconditionILU());
+    C_preconditioner->initialize (system_matrix.block(3+n_comp,3+n_comp));
+
+    computing_timer.exit_section();
+  }
 
 
   template <int dim>
   void Simulator<dim>::
-  local_assemble_composition_system (const std::pair<double,double> global_T_range,
+  local_assemble_composition_system (const unsigned int             n_comp,
+                                     const std::pair<double,double> global_T_range,
                                      const double                   global_max_velocity,
                                      const double                   global_entropy_variation,
                                      const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -1389,7 +1471,7 @@ namespace aspect
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
-    const FEValuesExtractors::Scalar composition (dim+2);
+    const FEValuesExtractors::Scalar composition (dim+2+n_comp);
 
     const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
     const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
@@ -1479,16 +1561,9 @@ namespace aspect
               scratch.old_old_pressure[q], scratch.old_pressure[q]);
 */
         const double current_C = scratch.current_composition_values[q];
-        const SymmetricTensor<2,dim> current_strain_rate = scratch.current_strain_rates[q];
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
-        const double current_p = scratch.current_pressure_values[q];
 
-        const double kappa = 0.01;
-
-        const bool is_compressible = material_model->is_compressible ();
-
-        const Tensor<1,dim>
-        gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
+        const double kappa = 1.e-12;
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
         {
@@ -1517,7 +1592,7 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::
-  copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data)
+  copy_local_to_global_composition_system (const internal::Assembly::CopyData::CompositionSystem<dim> &data)
   {
     current_constraints.distribute_local_to_global (data.local_matrix,
                                                     data.local_rhs,
@@ -1530,12 +1605,12 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::assemble_temperature_system ()
+  void Simulator<dim>::assemble_composition_system (unsigned int n_comp)
   {
-    computing_timer.enter_section ("   Assemble temperature system");
+    computing_timer.enter_section ("   Assemble composition system");
 
-    // Reset only temperature block (might reuse Stokes block)
-    system_matrix.block(2,2) = 0;
+    // Reset only composition block (might reuse Stokes block)
+    system_matrix.block(3+n_comp,3+n_comp) = 0;
     system_rhs = 0;
 
     const std::pair<double,double>
@@ -1551,8 +1626,9 @@ namespace aspect
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
          std_cxx1x::bind (&Simulator<dim>::
-                          local_assemble_temperature_system,
+                          local_assemble_composition_system,
                           this,
+                          n_comp,
                           global_T_range,
                           get_maximal_velocity(old_solution),
                           // use the mid temperature instead of the
@@ -1564,25 +1640,27 @@ namespace aspect
                           std_cxx1x::_2,
                           std_cxx1x::_3),
          std_cxx1x::bind (&Simulator<dim>::
-                          copy_local_to_global_temperature_system,
+                          copy_local_to_global_composition_system,
                           this,
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
-         TemperatureSystem<dim> (finite_element, mapping, QGauss<dim>(parameters.temperature_degree+2)),
+         CompositionSystem<dim> (finite_element, mapping, QGauss<dim>(parameters.composition_degree+2)),
          internal::Assembly::CopyData::
-         TemperatureSystem<dim> (finite_element));
+         CompositionSystem<dim> (finite_element));
 
     system_matrix.compress();
     system_rhs.compress(Add);
 
     computing_timer.exit_section();
 
-    computing_timer.enter_section ("   Build temperature preconditioner");
-    T_preconditioner.reset (new LinearAlgebra::PreconditionILU());
-    T_preconditioner->initialize (system_matrix.block(2,2));
+    computing_timer.enter_section ("   Build composition preconditioner");
+    C_preconditioner.reset (new LinearAlgebra::PreconditionILU());
+    C_preconditioner->initialize (system_matrix.block(2,2));
 
     computing_timer.exit_section();
   }
+
+
 }
 
 
@@ -1610,6 +1688,10 @@ namespace aspect
                                                                           const internal::Assembly::CopyData::TemperatureSystem<dim> &data); \
   template void Simulator<dim>::build_temperature_preconditioner (); \
   template void Simulator<dim>::assemble_temperature_system (); \
+  template void Simulator<dim>::copy_local_to_global_composition_system ( \
+                                                                          const internal::Assembly::CopyData::CompositionSystem<dim> &data); \
+  template void Simulator<dim>::build_composition_preconditioner (unsigned int n_comp); \
+  template void Simulator<dim>::assemble_composition_system (unsigned int n_comp); \
   template void Simulator<dim>::local_assemble_temperature_system ( \
                                                                     const std::pair<double,double> global_T_range, \
                                                                     const double                   global_max_velocity, \
@@ -1618,6 +1700,7 @@ namespace aspect
                                                                     internal::Assembly::Scratch::TemperatureSystem<dim>  &scratch, \
                                                                     internal::Assembly::CopyData::TemperatureSystem<dim> &data); \
   template void Simulator<dim>::local_assemble_composition_system ( \
+                                                                    const unsigned int             n_comp, \
                                                                     const std::pair<double,double> global_T_range, \
                                                                     const double                   global_max_velocity, \
                                                                     const double                   global_entropy_variation, \

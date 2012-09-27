@@ -488,6 +488,7 @@ namespace aspect
     Amg_preconditioner.reset ();
     Mp_preconditioner.reset ();
     T_preconditioner.reset ();
+    C_preconditioner.reset ();
 
     system_preconditioner_matrix.clear ();
 
@@ -1070,6 +1071,9 @@ namespace aspect
           solve_temperature();
 
           current_linearization_point.block(2) = solution.block(2);
+
+          solve_composition();
+
           assemble_stokes_system();
           build_stokes_preconditioner();
           solve_stokes();
@@ -1200,6 +1204,7 @@ namespace aspect
       {
         computing_timer.enter_section ("Initialization");
         set_initial_temperature_field ();
+        set_initial_compositional_field ();
         compute_initial_pressure_field ();
 
         time                      = parameters.start_time;

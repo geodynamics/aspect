@@ -309,6 +309,71 @@ namespace aspect
     return initial_residual;
   }
 
+  template <int dim>
+  double Simulator<dim>::solve_composition ()
+  {
+    double composition_residual;
+
+    for(unsigned int n=0;n<parameters.n_compositional_fields;++n) {
+        assemble_composition_system (n);
+        build_composition_preconditioner(n);
+        composition_residual = solve_single_block(n);
+        current_linearization_point.block(3+n) = solution.block(3+n);
+    }
+    return composition_residual;
+  }
+
+  template <int dim>
+  double Simulator<dim>::solve_single_block (unsigned int n_comp)
+  {
+    double initial_residual = 0;
+
+    computing_timer.enter_section ("   Solve composition system");
+    {
+      pcout << "   Solving composition system " << n_comp << "... " << std::flush;
+
+      SolverControl solver_control (system_matrix.block(3+n_comp,3+n_comp).m(),
+                                    parameters.composition_solver_tolerance*system_rhs.block(3+n_comp).l2_norm());
+
+      SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
+                                                   SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
+
+      LinearAlgebra::BlockVector
+      distributed_solution (system_rhs);
+      current_constraints.set_zero(distributed_solution);
+      // create vector with distribution of system_rhs.
+      LinearAlgebra::Vector block_remap (system_rhs.block (3+n_comp));
+      // copy block of current_linearization_point into it, because
+      // current_linearization is distributed differently.
+      block_remap = current_linearization_point.block (3+n_comp);
+      // (ab)use the distributed solution vector to temporarily put a residual in
+      initial_residual = system_matrix.block(3+n_comp,3+n_comp).residual (distributed_solution.block(3+n_comp),
+                                                            block_remap,
+                                                            system_rhs.block(3+n_comp));
+      current_constraints.set_zero(distributed_solution);
+
+      // then overwrite it again with the current best guess and solve the linear system
+      distributed_solution.block(3+n_comp) = block_remap;
+      solver.solve (system_matrix.block(3+n_comp,3+n_comp), distributed_solution.block(3+n_comp),
+                    system_rhs.block(3+n_comp), *C_preconditioner);
+
+      current_constraints.distribute (distributed_solution);
+      solution.block(3+n_comp) = distributed_solution.block(3+n_comp);
+
+      // print number of iterations and also record it in the
+      // statistics file
+      pcout << solver_control.last_step()
+            << " iterations." << std::endl;
+
+      statistics.add_value("Iterations for composition solver",
+                           solver_control.last_step());
+    }
+    computing_timer.exit_section();
+
+    return initial_residual;
+  }
+
+
 
 
   template <int dim>
@@ -443,6 +508,8 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template double Simulator<dim>::solve_temperature (); \
+  template double Simulator<dim>::solve_composition (); \
+  template double Simulator<dim>::solve_single_block (unsigned int n_comp); \
   template double Simulator<dim>::solve_stokes ();
 
   ASPECT_INSTANTIATE(INSTANTIATE)

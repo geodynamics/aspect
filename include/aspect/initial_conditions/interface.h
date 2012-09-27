@@ -74,6 +74,7 @@ namespace aspect
         virtual
         double initial_temperature (const Point<dim> &position) const = 0;
 
+
         /**
          * Declare the parameters this class takes through input files.
          * The default implementation of this function does not describe

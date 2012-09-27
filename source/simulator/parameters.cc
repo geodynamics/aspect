@@ -194,6 +194,12 @@ namespace aspect
                        "the temperature system gets solved. See 'linear solver "
                        "tolerance' for more details.");
 
+    prm.declare_entry ("Composition solver tolerance", "1e-12",
+                       Patterns::Double(0,1),
+                       "The relative tolerance up to which the linear system for "
+                       "the composition system gets solved. See 'linear solver "
+                       "tolerance' for more details.");
+
     prm.enter_subsection ("Model settings");
     {
       prm.declare_entry ("Include shear heating", "true",
@@ -456,6 +462,7 @@ namespace aspect
 
     linear_solver_tolerance       = prm.get_double ("Linear solver tolerance");
     temperature_solver_tolerance  = prm.get_double ("Temperature solver tolerance");
+    composition_solver_tolerance  = prm.get_double ("Composition solver tolerance");
 
     prm.enter_subsection ("Mesh refinement");
     {

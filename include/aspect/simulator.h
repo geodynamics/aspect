@@ -171,6 +171,7 @@ namespace aspect
         unsigned int                   timing_output_frequency;
         double                         linear_solver_tolerance;
         double                         temperature_solver_tolerance;
+        double                         composition_solver_tolerance;
         /**
          * @}
          */
@@ -329,6 +330,16 @@ namespace aspect
       void set_initial_temperature_field ();
 
       /**
+       * A function that is responsible for initializing the compositional field(s)
+       * before the first time step. This compositional field  is subsequently
+       * overwritten by the temperature field one gets by advancing by one time step.
+       *
+       * This function is implemented in
+       * <code>source/simulator/initial_conditions.cc</code>.
+       */
+      void set_initial_compositional_field ();
+
+      /**
        * A function that initializes the pressure variable before the first
        * time step. It does so by either interpolating (for continuous pressure
        * finite elements) or projecting (for discontinuous elements) the adiabatic
@@ -386,6 +397,14 @@ namespace aspect
       void build_temperature_preconditioner ();
 
       /**
+       * Initialize preconditioner for the composition equation.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void build_composition_preconditioner (unsigned int n_comp);
+
+      /**
        * Initiate the assembly of the Stokes matrix and right hand side.
        *
        * This function is implemented in
@@ -403,6 +422,15 @@ namespace aspect
       void assemble_temperature_system ();
 
       /**
+       * Initiate the assembly of the composition matrix and right hand side
+       * and build a preconditioner for the matrix.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void assemble_composition_system (unsigned int n_comp);
+
+      /**
        * Solve the temperature linear system. Return the initial nonlinear residual,
        * i.e., if the linear system to be solved is $Ax=b$, then return $\|Ax_0-b\|$
        * where $x_0$ is the initial guess for the solution variable and is taken from
@@ -412,6 +440,25 @@ namespace aspect
        * <code>source/simulator/solver.cc</code>.
        */
       double solve_temperature ();
+
+      /**
+       * Solve the composition linear system by solving all the single blocks.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver.cc</code>.
+       */
+      double solve_composition ();
+
+      /**
+       * Solve one block of the the composition linear system. Return the initial
+       * nonlinear residual, i.e., if the linear system to be solved is $Ax=b$, then
+       * return $\|Ax_0-b\|$ where $x_0$ is the initial guess for the solution variable
+       * and is taken from the current_linearization_point member variable.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver.cc</code>.
+       */
+      double solve_single_block (unsigned int n_comp);
 
       /**
        * Solve the Stokes linear system. Return the initial nonlinear residual,
@@ -612,21 +659,6 @@ namespace aspect
                                          internal::Assembly::CopyData::TemperatureSystem<dim> &data);
 
       /**
-       * Compute the integrals for the composition matrix and right hand side
-       * on a single cell.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void
-      local_assemble_composition_system (const std::pair<double,double> global_T_range,
-                                         const double                   global_max_velocity,
-                                         const double                   global_entropy_variation,
-                                         const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                         internal::Assembly::Scratch::CompositionSystem<dim>  &scratch,
-                                         internal::Assembly::CopyData::CompositionSystem<dim> &data);
-
-      /**
        * Copy the contribution to the temperature system
        * from a single cell into the global matrix that stores these elements.
        *
@@ -635,6 +667,32 @@ namespace aspect
        */
       void
       copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data);
+
+      /**
+       * Compute the integrals for the composition matrix and right hand side
+       * on a single cell.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      local_assemble_composition_system (const unsigned int             n_comp,
+                                         const std::pair<double,double> global_T_range,
+                                         const double                   global_max_velocity,
+                                         const double                   global_entropy_variation,
+                                         const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                         internal::Assembly::Scratch::CompositionSystem<dim>  &scratch,
+                                         internal::Assembly::CopyData::CompositionSystem<dim> &data);
+
+      /**
+       * Copy the contribution to the composition system
+       * from a single cell into the global matrix that stores these elements.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      copy_local_to_global_composition_system (const internal::Assembly::CopyData::CompositionSystem<dim> &data);
 
       /**
        * @}
@@ -974,6 +1032,7 @@ namespace aspect
       std_cxx1x::shared_ptr<LinearAlgebra::PreconditionAMG>     Amg_preconditioner;
       std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     Mp_preconditioner;
       std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     T_preconditioner;
+      std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     C_preconditioner;
 
       bool                                                      rebuild_stokes_matrix;
       bool                                                      rebuild_stokes_preconditioner;
