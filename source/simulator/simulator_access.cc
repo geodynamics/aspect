@@ -121,7 +121,19 @@ namespace aspect
       return simulator->parameters.convert_to_years;
     }
 
+    template <int dim>
+    bool
+    SimulatorAccess<dim>::include_adiabatic_heating () const
+    {
+      return simulator->parameters.include_adiabatic_heating;
+    }
 
+    template <int dim>
+    double
+    SimulatorAccess<dim>::get_adiabatic_surface_temperature () const
+    {
+      return simulator->parameters.adiabatic_surface_temperature;
+    }
 
     template <int dim>
     void

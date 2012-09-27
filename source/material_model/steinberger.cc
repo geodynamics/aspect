@@ -38,65 +38,163 @@ namespace aspect
     namespace internal
     {
 
+      class material_lookup
+         {
+           public:
+             material_lookup(const std::string &filename)
+             {
+
+            	/* Initializing variables */
+
+                delta_press=-1.0;
+                min_press=-1.0;
+                delta_temp=-1.0;
+                min_temp=-1.0;
+                numtemp=0;
+                numpress=0;
+
+               std::string temp;
+               std::ifstream in(filename, std::ios::in);
+               AssertThrow (in,
+                            ExcMessage (std::string("Couldn't open file <") + filename));
+
+               getline(in, temp); // eat first line
+               getline(in, temp); // eat next line
+               getline(in, temp); // eat next line
+               getline(in, temp); // eat next line
+
+               in >> min_temp;
+               getline(in, temp);
+               in >> delta_temp;
+               getline(in, temp);
+               in >> numtemp;
+               getline(in, temp);
+               getline(in, temp);
+               in >> min_press;
+               min_press *= 1e5;  // conversion from [bar] to [Pa]
+               getline(in, temp);
+               in >> delta_press;
+               delta_press *= 1e5; // conversion from [bar] to [Pa]
+               getline(in, temp);
+               in >> numpress;
+               getline(in, temp);
+               getline(in, temp);
+               getline(in, temp);
+
+               Assert(min_temp >= 0.0, ExcMessage("Read in of Material header failed (mintemp)."));
+               Assert(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
+               Assert(numtemp > 0, ExcMessage("Read in of Material header failed (numtemp)."));
+               Assert(min_press >= 0, ExcMessage("Read in of Material header failed (min_press)."));
+               Assert(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
+               Assert(numpress > 0, ExcMessage("Read in of Material header failed (numpress)."));
 
 
-      class thermal_exp_lookup
-      {
-        public:
-          thermal_exp_lookup(const char *filename)
-          {
-            std::string temp;
-            std::ifstream in(filename, std::ios::in);
-            AssertThrow (in,
-                         ExcMessage (std::string("Couldn't open file <") + filename));
+               max_temp = min_temp + (numtemp-1) * delta_temp;
+               max_press = min_press + (numtemp-1) * delta_press;
 
-            getline(in, temp); // eat first line
+               density_values.reinit(numtemp,numpress);
+               thermal_expansivity_values.reinit(numtemp,numpress);
+               specific_heat_values.reinit(numtemp,numpress);
 
-            delta_depth=1000;
-            min_depth=-1;
+               int i = 0;
+               while (!in.eof())
+                 {
+            	   double temp1,temp2;
+                   double rho,alpha,cp;
+                   in >> temp1 >> temp2;
+                   in >> rho;
+                   if (in.fail())
+                   {
+                	 in.clear();
+                     rho = density_values[(i-1)%numtemp][(i-1)/numtemp];
+                   }
+                   in >> alpha;
+                   if (in.fail())
+                   {
+                  	 in.clear();
+                	 alpha = thermal_expansivity_values[(i-1)%numtemp][(i-1)/numtemp];
+                   }
+                   in >> cp;
+                   if (in.fail())
+                   {
+                  	 in.clear();
+                	 cp = specific_heat_values[(i-1)%numtemp][(i-1)/numtemp];
+                   }
+                   getline(in, temp);
+                   if (in.eof())
+                     break;
 
-            while (!in.eof())
-              {
-                double exps_real, exps_simple, depth;
-                in >> exps_real;
-                if (in.eof())
-                  break;
-                in >> exps_simple >> depth;
-                getline(in, temp);
-                depth*=-1000.0; //[km] to [m] and positive sign
-                if (min_depth<0)
-                  min_depth= depth;
-                max_depth=depth;
-                values.push_back(exps_simple);
-              }
+                   density_values[i%numtemp][i/numtemp]=rho;
+                   thermal_expansivity_values[i%numtemp][i/numtemp]=alpha;
+                   specific_heat_values[i%numtemp][i/numtemp]=cp;
+                   i++;
+                 }
+               Assert(i==numtemp*numpress, ExcMessage("Material table size not consistent with header."));
+
+             }
+
+             double specific_heat(double temperature,double pressure)
+             {
+            	return specific_heat_values[get_idT(temperature)][get_idp(pressure)];
+             }
+
+             double density(double temperature,double pressure)
+             {
+            	return density_values[get_idT(temperature)][get_idp(pressure)];
+             }
+
+             double thermal_expansivity(double temperature,double pressure)
+             {
+            	return specific_heat_values[get_idT(temperature)][get_idp(pressure)];
+             }
 
 
-          }
+           private:
 
-          double thermal_expansivity(double depth)
-          {
-            depth=std::max(min_depth, depth);
-            depth=std::min(depth, max_depth);
 
-            Assert(depth>=min_depth, ExcMessage("not in range"));
-            Assert(depth<=max_depth, ExcMessage("not in range"));
-            const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
-            Assert(idx<values.size(), ExcMessage("not in range"));
-            return values[idx];
-          }
+             int get_idT(double temperature)
+             {
+            	temperature=std::max(min_temp, temperature);
+            	temperature=std::min(temperature, max_temp);
+            	Assert(temperature>=min_temp, ExcMessage("not in range"));
+            	Assert(temperature<=max_temp, ExcMessage("not in range"));
+            	const unsigned int idT = static_cast<unsigned int>((temperature-min_temp)/delta_temp);
+            	// This check only works if all 3 parameter tables are equally sized
+            	Assert(idT<density_values.n_rows(), ExcMessage("not in range"));
+            	return idT;
+             }
 
-        private:
-          std::vector<double> values;
-          double delta_depth;
-          double min_depth;
-          double max_depth;
+             int get_idp(double pressure)
+             {
+            	pressure=std::max(min_press, pressure);
+            	pressure=std::min(pressure, max_press);
+            	Assert(pressure>=min_press, ExcMessage("not in range"));
+            	Assert(pressure<=max_press, ExcMessage("not in range"));
+            	const unsigned int idp = static_cast<unsigned int>((pressure-min_press)/delta_press);
+            	// This check only works if all 3 parameter tables are equally sized
+            	Assert(idp<density_values.n_cols(), ExcMessage("not in range"));
+            	return idp;
+             }
 
-      };
+
+             dealii::Table<2,double> density_values;
+             dealii::Table<2,double> thermal_expansivity_values;
+             dealii::Table<2,double> specific_heat_values;
+
+             double delta_press;
+             double min_press;
+             double max_press;
+             double delta_temp;
+             double min_temp;
+             double max_temp;
+             int numtemp;
+             int numpress;
+         };
 
       class lateral_viscosity_lookup
           {
             public:
-              lateral_viscosity_lookup(const char *filename)
+              lateral_viscosity_lookup(const std::string &filename)
               {
                 std::string temp;
                 std::ifstream in(filename, std::ios::in);
@@ -146,11 +244,10 @@ namespace aspect
 
           };
 
-
       class radial_viscosity_lookup
       {
         public:
-          radial_viscosity_lookup(const char *filename)
+          radial_viscosity_lookup(const std::string &filename)
           {
             std::string temp;
             std::ifstream in(filename, std::ios::in);
@@ -216,8 +313,8 @@ namespace aspect
                const SymmetricTensor<2,dim> &,
                const Point<dim> &position) const
     {
-      static internal::radial_viscosity_lookup table("data/material-model/steinberger/radial_visc.txt");
-      static internal::lateral_viscosity_lookup lat_table("data/material-model/steinberger/temp_viscosity_prefactor.txt");
+      static internal::radial_viscosity_lookup table(datadirectory+radial_viscosity_file_name);
+      static internal::lateral_viscosity_lookup lat_table(datadirectory+lateral_viscosity_file_name);
 
       const double depth = this->get_geometry_model().depth(position);
       const unsigned int idx = 100 * depth / this->get_geometry_model().maximal_depth();
@@ -226,10 +323,29 @@ namespace aspect
 
       const double vis_lateral_exp = -1.0*lat_table.lateral_viscosity(depth)*delta_temp/(temperature*adia_temp);
 
-      const double vis_lateral = std::max(std::min(std::exp(vis_lateral_exp),1e2),1e-2);
+      const double vis_lateral = std::max(std::min(std::exp(vis_lateral_exp),1e4),1e-4);
       const double vis_radial = table.radial_viscosity(depth);
 
       return std::max(std::min(vis_lateral * vis_radial,1e23),1e19);
+    }
+
+    internal::material_lookup&
+    get_material_data (std::string &datapath)
+    {
+      static internal::material_lookup mat(datapath);
+      return mat;
+    }
+
+    template <int dim>
+    double
+    Steinberger<dim>::
+    get_deltat (const Point<dim> &position) const
+    {
+    	if (!(&this->get_adiabatic_conditions()))
+    		return 0.0;
+    	static const bool a = this->include_adiabatic_heating();
+    	return a ? 0.0 : (this->get_adiabatic_conditions().temperature(position)
+    			- this->get_adiabatic_surface_temperature());
     }
 
     template <int dim>
@@ -237,7 +353,7 @@ namespace aspect
     Steinberger<dim>::
     reference_viscosity () const
     {
-      const double reference_eta    = 5e24;
+      const double reference_eta    = 1e23;
       return reference_eta;
     }
 
@@ -256,7 +372,7 @@ namespace aspect
     Steinberger<dim>::
     reference_thermal_expansion_coefficient () const
     {
-      Assert (false, ExcNotImplemented());
+      const double reference_density    = 4.89e-4;
       return 0;
     }
 
@@ -266,10 +382,10 @@ namespace aspect
     Steinberger<dim>::
     specific_heat (const double temperature,
                    const double pressure,
-                   const Point<dim> &p) const
+                   const Point<dim> &position) const
     {
-      return 1200;
-
+      static std::string datapath = datadirectory+material_file_name;
+      return get_material_data(datapath).specific_heat(temperature+get_deltat(position),pressure);
     }
 
 
@@ -292,17 +408,19 @@ namespace aspect
              const double pressure,
              const Point<dim> &position) const
     {
-      static internal::thermal_exp_lookup table("data/material-model/steinberger/thermal_expansivity.d");
+      static std::string datapath = datadirectory+material_file_name;
+      return get_material_data(datapath).density(temperature+get_deltat(position),pressure);
+    }
 
-      const double depth = this->get_geometry_model().depth(position);
-
-      const double reference_density = 3300;
-      const double thermal_expansion_coefficient = table.thermal_expansivity(depth);
-      const double reference_temperature = 293;
-
-      return (reference_density *
-              (1 - thermal_expansion_coefficient * (temperature -
-                                                    reference_temperature)));
+    template <int dim>
+    double
+    Steinberger<dim>::
+    thermal_expansion_coefficient (const double      temperature,
+                                                  const double      pressure,
+                                                  const Point<dim> &position) const
+    {
+      static std::string datapath = datadirectory+material_file_name;
+      return get_material_data(datapath).thermal_expansivity(temperature+get_deltat(position),pressure);
     }
 
 
@@ -371,6 +489,51 @@ namespace aspect
     {
       return false;
     }
+
+
+	template <int dim>
+	void
+	Steinberger<dim>::declare_parameters (ParameterHandler &prm)
+	{
+	   prm.enter_subsection("Material model");
+	   {
+		 prm.enter_subsection("Steinberger model");
+		 {
+		   prm.declare_entry ("Data directory", "data/material-model/steinberger/",
+							  Patterns::DirectoryName (),
+							  "The path to the model data. ");
+		   prm.declare_entry ("Material file name", "pyr-ringwood88.txt",
+							  Patterns::Anything (),
+							  "The file name of the material data. ");
+		   prm.declare_entry ("Radial viscosity file name", "radial_visc.txt",
+							  Patterns::Anything (),
+							  "The file name of the radial viscosity data. ");
+		   prm.declare_entry ("Lateral viscosity file name", "temp_viscosity_prefactor.txt",
+							  Patterns::Anything (),
+							  "The file name of the lateral viscosity data. ");
+		 prm.leave_subsection();
+	   }
+	   prm.leave_subsection();
+	 }
+	}
+
+	template <int dim>
+	void
+	Steinberger<dim>::parse_parameters (ParameterHandler &prm)
+	   {
+		 prm.enter_subsection("Material model");
+		 {
+		   prm.enter_subsection("Steinberger model");
+		   {
+			 datadirectory        = prm.get ("Data directory");
+			 material_file_name   = prm.get ("Material file name");
+			 radial_viscosity_file_name   = prm.get ("Radial viscosity file name");
+			 lateral_viscosity_file_name   = prm.get ("Lateral viscosity file name");
+		   prm.leave_subsection();
+		 }
+		 prm.leave_subsection();
+	   }
+	 }
   }
 }
 
@@ -382,6 +545,10 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(Steinberger,
                                    "Steinberger",
-                                   "lookup from the paper of Steinberger/Calderwood")
+                                   "lookup viscosity from the paper of Steinberger/Calderwood"
+                                   "2006 and material data from a database generated by Perplex. "
+                                   "The database builds upon the thermodynamic database by "
+                                   "Stixrude 2011 and assumes a pyrolitic composition by "
+                                   "Ringwood 1988. ")
   }
 }

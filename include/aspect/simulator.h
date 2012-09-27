@@ -181,6 +181,18 @@ namespace aspect
       get_output_directory () const;
 
       /**
+       * Return whether we use the adiabatic heating term.
+       */
+      bool
+      include_adiabatic_heating () const;
+
+      /**
+       * Return the adiabatic surface temperature.
+       */
+      double
+      get_adiabatic_surface_temperature () const;
+
+      /**
       * Return whether things like velocities should be converted from
       * the seconds in the MKS system to years. The value of this flag
       * is set by the corresponding entry in the input parameter file.

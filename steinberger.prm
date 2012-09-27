@@ -233,26 +233,6 @@ subsection Material model
   # The value for the components of this formula and additional parameters are
   # read from the parameter file in subsection 'Simple model'.
   set Model name = Steinberger
-
-
-  subsection Simple model
-    # Reference density $\rho_0$. Units: $kg/m^3$.
-    set Reference density             = 3300
-
-    # The reference temperature $T_0$. Units: $K$.
-    set Reference temperature         = 293
-
-    # The value of the thermal conductivity $k$. Units: $W/m/K$.
-    set Thermal conductivity          = 4.7#1e-6
-
-    # The value of the thermal expansion coefficient $\beta$. Units: $1/K$.
-    set Thermal expansion coefficient = 4e-5
-
-    # The value of the constant viscosity. Units: $kg/m/s$.
-    set Viscosity                     = 1e22
-  end
-
-
 end
 
 
@@ -319,11 +299,11 @@ subsection Model settings
   # velocity is tangential and unrestrained, i.e., where no external forces
   # act to prescribe a particular tangential velocity (although there is a
   # force that requires the flow to be tangential).
-  set Tangential velocity boundary indicators = 1,2,3
+  set Tangential velocity boundary indicators = 0,2,3
 
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is zero.
-  set Zero velocity boundary indicators       = 0
+  set Zero velocity boundary indicators       = 1
 end
 
 

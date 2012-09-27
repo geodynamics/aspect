@@ -74,7 +74,11 @@ namespace aspect
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
                                              const Point<dim> &position) const;
-        /**
+
+        virtual double thermal_expansion_coefficient (const double      temperature,
+                                                      const double      pressure,
+                                                      const Point<dim> &position) const;
+       /**
          * @}
          */
 
@@ -147,8 +151,31 @@ namespace aspect
          * @}
          */
 
+        /**
+          * Declare the parameters this class takes through input files.
+          */
+         static
+         void
+         declare_parameters (ParameterHandler &prm);
+
+         /**
+          * Read the parameters this class declares from the parameter
+          * file.
+          */
+         virtual
+         void
+         parse_parameters (ParameterHandler &prm);
+         /**
+          * @}
+          */
+
       private:
         std::vector<double> avg_temp;
+        std::string datadirectory;
+        std::string material_file_name;
+        std::string radial_viscosity_file_name;
+        std::string lateral_viscosity_file_name;
+        virtual double get_deltat (const Point<dim> &position) const;
 
     };
   }
