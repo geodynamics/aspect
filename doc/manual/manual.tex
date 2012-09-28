@@ -30,7 +30,8 @@
 % use the listings package for code snippets
 \usepackage{listings}
 \lstset{language=C++,basicstyle=\footnotesize}
-\lstdefinelanguage{prmfile}{morekeywords={set,subsection,end},}
+\lstdefinelanguage{prmfile}{morekeywords={set,subsection,end},
+                            morecomment=[l]{\#},}
 
 % use the hyperref package; set the base for relative links to
 % the top-level aspect directory so that we can link to
@@ -2007,12 +2008,11 @@ write sophisticated models for the boundary velocity on parts or all of the
 boundary, but there is also one simple implementation that just takes a formula
 for the components of the velocity.
 
-To illustrate this, let us consider the \url{cookbooks/platelike.prm} input
-file. It essentially extends the input file considered in the previous example.
+To illustrate this, let us consider the \url{cookbooks/platelike-boundary.prm}
+input file. It essentially extends the input file considered in the previous example.
 The part of this file that we are particularly interested in in the current 
 context is the selection of the kind of boundary conditions on the four
 sides of the box geometry, which we do using a section like this:
-
 \begin{lstlisting}[frame=single,language=prmfile]
 subsection Model settings
   set Fixed temperature boundary indicators   = 0, 1
@@ -2022,8 +2022,8 @@ subsection Model settings
 end
 \end{lstlisting}
 
-Following the convention described above, this means that we prescribe a fixed
-temperature at the left and right sides of the box (boundary numbers zero and
+Following the convention described in the previous section, this means that we
+prescribe a fixed temperature at the left and right sides of the box (boundary numbers zero and
 one). We fix the velocity to zero at the left, right, and bottom boundaries. No
 boundary will use tangential flow. Finally, the last entry above is a comma
 separated list (here with only a single element) of pairs consisting of the
@@ -2031,6 +2031,36 @@ number of a boundary and the name of the prescribed velocity boundary model to
 be used on this boundary. Here, we use the \texttt{function} boundary model,
 which allows us to provide a function-like notation for the components of the
 velocity vector at the boundary.
+
+The second part we need is that we actually describe the function that sets the
+velocity. We do this as follows:
+\begin{lstlisting}[frame=single,language=prmfile]
+subsection Boundary velocity model
+  subsection Function
+    # The name of the variables as they will be used in the function,
+    # separated by ','.
+    set Variable names      = x,y,t
+
+    # Any constant used inside the function which is not a variable name.
+    set Function constants  = pi=3.1415926
+
+    # Vector valued expression for the velocity; separate components by ';'
+    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
+  end
+end
+\end{lstlisting}
+The first of these gives names to the components of the position vector (here,
+we are in 2d) and the time. The value given here is actually just the default
+value. In the second parameter we define symbolic constants that can be used in
+the formula for the velocity that is specified in the last parameter. This
+formula needs to have as many components as there are space dimensions,
+separated by semicolons. As stated, this means that we prescribe the
+(horizontal) $x$-velocity and set the vertical velocity to zero. The horizontal
+component is here either $1$ or $-1$, depending on whether we are to the right
+or the left of the point $1+\sin(\pi t/2)$ that is moving back and forth with
+time once every four time units. The \texttt{if} statement understood by the
+parser we use for these formulas has the syntax
+\texttt{if(condition, value-if-true, value-if-false)}.
 
 
 \subsection{Geophysical setups}
