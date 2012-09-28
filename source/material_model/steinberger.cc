@@ -95,12 +95,15 @@ namespace aspect
                density_values.reinit(numtemp,numpress);
                thermal_expansivity_values.reinit(numtemp,numpress);
                specific_heat_values.reinit(numtemp,numpress);
+               vp_values.reinit(numtemp,numpress);
+               vs_values.reinit(numtemp,numpress);
+               enthalpy_values.reinit(numtemp,numpress);
 
                int i = 0;
                while (!in.eof())
                  {
             	   double temp1,temp2;
-                   double rho,alpha,cp;
+                   double rho,alpha,cp,vp,vs,h;
                    in >> temp1 >> temp2;
                    in >> rho;
                    if (in.fail())
@@ -120,6 +123,25 @@ namespace aspect
                   	 in.clear();
                 	 cp = specific_heat_values[(i-1)%numtemp][(i-1)/numtemp];
                    }
+                   in >> vp;
+                   if (in.fail())
+                   {
+                  	 in.clear();
+                	 vp = vp_values[(i-1)%numtemp][(i-1)/numtemp];
+                   }
+                   in >> vs;
+                   if (in.fail())
+                   {
+                  	 in.clear();
+                	 vs = vs_values[(i-1)%numtemp][(i-1)/numtemp];
+                   }
+                   in >> h;
+                   if (in.fail())
+                   {
+                  	 in.clear();
+                	 h = enthalpy_values[(i-1)%numtemp][(i-1)/numtemp];
+                   }
+
                    getline(in, temp);
                    if (in.eof())
                      break;
@@ -127,59 +149,98 @@ namespace aspect
                    density_values[i%numtemp][i/numtemp]=rho;
                    thermal_expansivity_values[i%numtemp][i/numtemp]=alpha;
                    specific_heat_values[i%numtemp][i/numtemp]=cp;
+                   vp_values[i%numtemp][i/numtemp]=vp;
+                   vs_values[i%numtemp][i/numtemp]=vs;
+                   enthalpy_values[i%numtemp][i/numtemp]=h;
+
                    i++;
                  }
                Assert(i==numtemp*numpress, ExcMessage("Material table size not consistent with header."));
 
              }
 
-             double specific_heat(double temperature,double pressure)
+             double specific_heat(double temperature,double pressure) const
              {
-            	return specific_heat_values[get_idT(temperature)][get_idp(pressure)];
+             	return value(temperature,pressure,specific_heat_values);
              }
 
-             double density(double temperature,double pressure)
+             double density(double temperature,double pressure) const
              {
-            	return density_values[get_idT(temperature)][get_idp(pressure)];
+             	return value(temperature,pressure,density_values);
              }
 
-             double thermal_expansivity(double temperature,double pressure)
+             double thermal_expansivity(const double temperature,const double pressure) const
              {
-            	return thermal_expansivity_values[get_idT(temperature)][get_idp(pressure)];
+            	return value(temperature,pressure,thermal_expansivity_values);
              }
+
+             double seismic_Vp(const double temperature,const double pressure) const
+             {
+            	return value(temperature,pressure,vp_values);
+             }
+
+             double seismic_Vs(const double temperature,const double pressure) const
+             {
+            	return value(temperature,pressure,vs_values);
+             }
+
+             double value (const double temperature,const double pressure, dealii::Table<2,double> values) const
+             {
+               const double nT = get_nT(temperature);
+               const unsigned int inT = static_cast<unsigned int>(nT);
+
+               const double np = get_np(pressure);
+               const unsigned int inp = static_cast<unsigned int>(np);
+
+           	   Assert(nT<values.n_rows(), ExcMessage("not in range"));
+               Assert(np<values.n_cols(), ExcMessage("not in range"));
+
+               // compute the coordinates of this point in the
+               // reference cell between the data points
+               const double xi = nT-inT;
+               const double eta = np-inp;
+
+               Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
+               Assert ((0 <= eta) && (eta <= 1), ExcInternalError());
+
+               // use these coordinates for a bilinear interpolation
+               return ((1-xi)*(1-eta)*values[nT][np] +
+                       xi    *(1-eta)*values[nT+1][np] +
+                       (1-xi)*eta    *values[nT][np+1] +
+                       xi    *eta    *values[nT+1][np+1]);
+             }
+
 
 
            private:
 
 
-             int get_idT(double temperature)
+             double get_nT(double temperature) const
              {
-            	temperature=std::max(min_temp, temperature);
-            	temperature=std::min(temperature, max_temp);
+            	temperature=std::max(min_temp+delta_temp, temperature);
+            	temperature=std::min(temperature, max_temp-delta_temp);
             	Assert(temperature>=min_temp, ExcMessage("not in range"));
             	Assert(temperature<=max_temp, ExcMessage("not in range"));
-            	const unsigned int idT = static_cast<unsigned int>((temperature-min_temp)/delta_temp);
-            	// This check only works if all 3 parameter tables are equally sized
-            	Assert(idT<density_values.n_rows(), ExcMessage("not in range"));
-            	return idT;
+            	return (temperature-min_temp)/delta_temp;
              }
 
-             int get_idp(double pressure)
+             double get_np(double pressure) const
              {
-            	pressure=std::max(min_press, pressure);
-            	pressure=std::min(pressure, max_press);
+            	pressure=std::max(min_press+delta_press, pressure);
+            	pressure=std::min(pressure, max_press-delta_press);
             	Assert(pressure>=min_press, ExcMessage("not in range"));
             	Assert(pressure<=max_press, ExcMessage("not in range"));
-            	const unsigned int idp = static_cast<unsigned int>((pressure-min_press)/delta_press);
-            	// This check only works if all 3 parameter tables are equally sized
-            	Assert(idp<density_values.n_cols(), ExcMessage("not in range"));
-            	return idp;
+            	return (pressure-min_press)/delta_press;
              }
 
 
              dealii::Table<2,double> density_values;
              dealii::Table<2,double> thermal_expansivity_values;
              dealii::Table<2,double> specific_heat_values;
+             dealii::Table<2,double> vp_values;
+             dealii::Table<2,double> vs_values;
+             dealii::Table<2,double> enthalpy_values;
+
 
              double delta_press;
              double min_press;
@@ -416,11 +477,31 @@ namespace aspect
     double
     Steinberger<dim>::
     thermal_expansion_coefficient (const double      temperature,
-                                                  const double      pressure,
-                                                  const Point<dim> &position) const
+                                   const double      pressure,
+                                   const Point<dim> &position) const
     {
       static std::string datapath = datadirectory+material_file_name;
       return get_material_data(datapath).thermal_expansivity(temperature+get_deltat(position),pressure);
+    }
+
+    template <int dim>
+    double
+    Steinberger<dim>::
+    seismic_Vp (const double      temperature,
+                const double      pressure) const
+    {
+      static std::string datapath = datadirectory+material_file_name;
+      return get_material_data(datapath).seismic_Vp(temperature,pressure);
+    }
+
+    template <int dim>
+    double
+    Steinberger<dim>::
+    seismic_Vs (const double      temperature,
+                const double      pressure) const
+    {
+      static std::string datapath = datadirectory+material_file_name;
+      return get_material_data(datapath).seismic_Vs(temperature,pressure);
     }
 
 
