@@ -543,7 +543,7 @@ namespace aspect
    */
   template <int dim>
   double
-  Simulator<dim>::get_entropy_variation (const double average_temperature) const
+  Simulator<dim>::get_entropy_variation (const double average_field, const unsigned int block) const
   {
     // only do this if we really need entropy
     // variation. otherwise return something that's obviously
@@ -551,24 +551,28 @@ namespace aspect
     if (parameters.stabilization_alpha != 2)
       return std::numeric_limits<double>::quiet_NaN();
 
+    // we should only calculate the entropy of a temperature or
+    //  composition field
+    Assert (block > dim, ExcInternalError());
+
     // record maximal entropy on Gauss quadrature
     // points
     const QGauss<dim> quadrature_formula (parameters.temperature_degree+1);
     const unsigned int n_q_points = quadrature_formula.size();
 
-    const FEValuesExtractors::Scalar temperature (dim+1);
+    const FEValuesExtractors::Scalar field (block);
 
     FEValues<dim> fe_values (finite_element, quadrature_formula,
                              update_values | update_JxW_values);
-    std::vector<double> old_temperature_values(n_q_points);
-    std::vector<double> old_old_temperature_values(n_q_points);
+    std::vector<double> old_field_values(n_q_points);
+    std::vector<double> old_old_field_values(n_q_points);
 
     double min_entropy = std::numeric_limits<double>::max(),
            max_entropy = -std::numeric_limits<double>::max(),
            area = 0,
            entropy_integrated = 0;
 
-    // loop over all locally owned cells and evaluate the entrop
+    // loop over all locally owned cells and evaluate the entropy
     // at all quadrature points. keep a running tally of the
     // integral over the entropy as well as the area and the
     // maximal and minimal entropy
@@ -579,16 +583,16 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[temperature].get_function_values (old_solution,
-                                                      old_temperature_values);
-          fe_values[temperature].get_function_values (old_old_solution,
-                                                      old_old_temperature_values);
+          fe_values[field].get_function_values (old_solution,
+                                                      old_field_values);
+          fe_values[field].get_function_values (old_old_solution,
+                                                      old_old_field_values);
           for (unsigned int q=0; q<n_q_points; ++q)
             {
-              const double T = (old_temperature_values[q] +
-                                old_old_temperature_values[q]) / 2;
-              const double entropy = ((T-average_temperature) *
-                                      (T-average_temperature));
+              const double T = (old_field_values[q] +
+                                old_old_field_values[q]) / 2;
+              const double entropy = ((T-average_field) *
+                                      (T-average_field));
 
               min_entropy = std::min (min_entropy, entropy);
               max_entropy = std::max (max_entropy, entropy);
@@ -1418,7 +1422,7 @@ namespace aspect
                           // integral mean. results are not very
                           // sensitive to this and this is far simpler
                           get_entropy_variation ((global_T_range.first +
-                                                  global_T_range.second) / 2),
+                                                  global_T_range.second) / 2, dim+1),
                           std_cxx1x::_1,
                           std_cxx1x::_2,
                           std_cxx1x::_3),
@@ -1520,6 +1524,28 @@ namespace aspect
     scratch.finite_element_values[pressure].get_function_values(current_linearization_point,
                                                                 scratch.current_pressure_values);
 
+    // TODO: Compute artificial viscosity once per timestep instead of each time
+    // temperature system is assembled (as this might happen more than once per
+    // timestep for iterative solvers)
+    const double nu
+      = compute_viscosity (scratch.old_composition_values,
+                           scratch.old_old_composition_values,
+                           scratch.old_composition_grads,
+                           scratch.old_old_composition_grads,
+                           scratch.old_composition_laplacians,
+                           scratch.old_old_composition_laplacians,
+                           scratch.old_velocity_values,
+                           scratch.old_old_velocity_values,
+                           scratch.old_strain_rates,
+                           scratch.old_old_strain_rates,
+                           scratch.old_pressure,
+                           scratch.old_old_pressure,
+                           global_max_velocity,
+                           1.0,
+                           0.5,
+                           global_entropy_variation,
+                           scratch.finite_element_values.get_quadrature_points(),
+                           cell->diameter());
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
@@ -1577,7 +1603,7 @@ namespace aspect
                                                           (time_step + old_time_step)) : 1.0;
                 data.local_matrix(i,j)
                 += (
-                     time_step * kappa * scratch.grad_phi_C[i] * scratch.grad_phi_C[j]
+                     time_step * (kappa + nu) * scratch.grad_phi_C[i] * scratch.grad_phi_C[j]
                      + time_step * current_u * scratch.grad_phi_C[j] * scratch.phi_C[i]
                         + factor * scratch.phi_C[i] * scratch.phi_C[j]
                    )
@@ -1634,8 +1660,7 @@ namespace aspect
                           // use the mid temperature instead of the
                           // integral mean. results are not very
                           // sensitive to this and this is far simpler
-                          get_entropy_variation ((global_T_range.first +
-                                                  global_T_range.second) / 2),
+                          get_entropy_variation (0.5, dim+2+n_comp),
                           std_cxx1x::_1,
                           std_cxx1x::_2,
                           std_cxx1x::_3),

@@ -839,7 +839,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      double get_entropy_variation (const double average_temperature) const;
+      double get_entropy_variation (const double average_temperature, const unsigned int block) const;
 
       /**
        * Compute the minimal and maximal temperature througout the domain from a
