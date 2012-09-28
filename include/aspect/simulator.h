@@ -442,14 +442,6 @@ namespace aspect
       double solve_temperature ();
 
       /**
-       * Solve the composition linear system by solving all the single blocks.
-       *
-       * This function is implemented in
-       * <code>source/simulator/solver.cc</code>.
-       */
-      double solve_composition ();
-
-      /**
        * Solve one block of the the composition linear system. Return the initial
        * nonlinear residual, i.e., if the linear system to be solved is $Ax=b$, then
        * return $\|Ax_0-b\|$ where $x_0$ is the initial guess for the solution variable

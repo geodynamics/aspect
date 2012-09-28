@@ -310,20 +310,6 @@ namespace aspect
   }
 
   template <int dim>
-  double Simulator<dim>::solve_composition ()
-  {
-    double composition_residual;
-
-    for(unsigned int n=0;n<parameters.n_compositional_fields;++n) {
-        assemble_composition_system (n);
-        build_composition_preconditioner(n);
-        composition_residual = solve_single_block(n);
-        current_linearization_point.block(3+n) = solution.block(3+n);
-    }
-    return composition_residual;
-  }
-
-  template <int dim>
   double Simulator<dim>::solve_single_block (unsigned int n_comp)
   {
     double initial_residual = 0;
@@ -508,7 +494,6 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template double Simulator<dim>::solve_temperature (); \
-  template double Simulator<dim>::solve_composition (); \
   template double Simulator<dim>::solve_single_block (unsigned int n_comp); \
   template double Simulator<dim>::solve_stokes ();
 

@@ -19,7 +19,7 @@ set End time                               = 1e12
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
-set Output directory                       = output2
+set Output directory                       = output
 
 # A flag indicating whether the computation should be resumed from a
 # previously saved state (if true) or start from scratch (if false).
@@ -254,19 +254,19 @@ subsection Mesh refinement
 
   # The number of adaptive refinement steps performed after initial global
   # refinement but while still within the first time step.
-  set Initial adaptive refinement        = 0
+  set Initial adaptive refinement        = 3
 
   # The number of global refinement steps performed on the initial coarse
   # mesh, before the problem is first solved there.
-  set Initial global refinement          = 6
+  set Initial global refinement          = 4
 
   # The fraction of cells with the largest error that should be flagged for
   # refinement.
-  set Refinement fraction                = 0.0
+  set Refinement fraction                = 0.3
 
   # The fraction of cells with the smallest error that should be flagged for
   # coarsening.
-  set Coarsening fraction                = 0.0
+  set Coarsening fraction                = 0.05
 
   # The method used to determine which cells to refine and which to coarsen.
   set Strategy                           = Temperature

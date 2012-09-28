@@ -1072,7 +1072,12 @@ namespace aspect
 
           current_linearization_point.block(2) = solution.block(2);
 
-          solve_composition();
+          for(unsigned int n=0;n<parameters.n_compositional_fields;++n) {
+              assemble_composition_system (n);
+              build_composition_preconditioner(n);
+              solve_single_block(n);
+              current_linearization_point.block(3+n) = solution.block(3+n);
+          }
 
           assemble_stokes_system();
           build_stokes_preconditioner();
@@ -1085,6 +1090,7 @@ namespace aspect
         {
           double initial_temperature_residual = 0;
           double initial_stokes_residual      = 0;
+          std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
 
           unsigned int iteration = 0;
 
@@ -1099,6 +1105,15 @@ namespace aspect
 
               current_linearization_point.block(2) = solution.block(2);
 
+              std::vector<double> composition_residual (parameters.n_compositional_fields,0);
+
+              for(unsigned int n=0;n<parameters.n_compositional_fields;++n) {
+                  assemble_composition_system (n);
+                  build_composition_preconditioner(n);
+                  composition_residual[n] = solve_single_block(n);
+                  current_linearization_point.block(3+n) = solution.block(3+n);
+              }
+
               assemble_stokes_system();
               if (iteration == 0)
                 build_stokes_preconditioner();
@@ -1107,20 +1122,32 @@ namespace aspect
               current_linearization_point = solution;
 
               pcout << "   Nonlinear residuals: " << temperature_residual
-                    << ", " << stokes_residual
-                    << std::endl
+                    << ", " << stokes_residual;
+
+              for(unsigned int n=0;n<parameters.n_compositional_fields;++n)
+                pcout << ", " << composition_residual[n];
+
+              pcout << std::endl
                     << std::endl;
 
               if (iteration == 0)
                 {
                   initial_temperature_residual = temperature_residual;
+                  for(unsigned int n=0;n<parameters.n_compositional_fields;++n)
+                    initial_composition_residual[n] = composition_residual[n];
                   initial_stokes_residual      = stokes_residual;
                 }
               else
+                {
 //TODO: make this a parameter in the input file
-                if (std::max(stokes_residual/initial_stokes_residual,
-                             temperature_residual/initial_temperature_residual) < 1e-3)
-                  break;
+                  double max = 0.0;
+                  for(unsigned int n=0;n<parameters.n_compositional_fields;++n)
+                    max = std::max(composition_residual[n]/initial_composition_residual[n],max);
+                  if (std::max(std::max(stokes_residual/initial_stokes_residual,
+                               temperature_residual/initial_temperature_residual),
+                               max) < 1e-3)
+                    break;
+                }
 
               ++iteration;
 //TODO: terminate here if the number of iterations is too large and we see no convergence
@@ -1135,6 +1162,11 @@ namespace aspect
           // solve the temperature system once...
 	  assemble_temperature_system ();
 	  solve_temperature();
+
+          for(unsigned int n=0;n<parameters.n_compositional_fields;++n) {
+              assemble_composition_system (n);
+              solve_single_block(n);
+          }
 
 	  // ...and then iterate the solution
 	  // of the Stokes system
