@@ -114,7 +114,7 @@ namespace aspect
   }
 
 
-
+// TODO merge with the preceding function
   template <int dim>
   void Simulator<dim>::set_initial_compositional_field ()
   {

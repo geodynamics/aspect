@@ -309,6 +309,8 @@ namespace aspect
     return initial_residual;
   }
 
+  //TODO merge with the corresponding temperature function
+
   template <int dim>
   double Simulator<dim>::solve_single_block (unsigned int n_comp)
   {
