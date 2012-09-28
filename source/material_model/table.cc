@@ -658,10 +658,10 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the gravity constant."
                              "Units: $m/s^2$.");
-          prm.declare_entry ("Composition", "olixene",
+          prm.declare_entry ("Composition", "standard",
                              Patterns::Anything (),
                              "The Composition of the model. ");
-          prm.declare_entry ("Path to model data", "datadir",
+          prm.declare_entry ("Path to model data", "data/material-model/table/",
                              Patterns::DirectoryName (),
                              "The path to the model data. ");
           prm.declare_entry ("ComputePhases", "false",
