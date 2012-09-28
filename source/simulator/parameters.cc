@@ -595,6 +595,7 @@ namespace aspect
     GeometryModel::declare_parameters <dim>(prm);
     GravityModel::declare_parameters<dim> (prm);
     InitialConditions::declare_parameters<dim> (prm);
+    CompositionalInitialConditions::declare_parameters<dim> (prm);
     BoundaryTemperature::declare_parameters<dim> (prm);
     VelocityBoundaryConditions::declare_parameters<dim> (prm);
   }

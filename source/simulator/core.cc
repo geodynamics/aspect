@@ -102,6 +102,10 @@ namespace aspect
                                                                       *geometry_model,
                                                                       *boundary_temperature,
                                                                       *adiabatic_conditions)),
+    compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions (prm,
+                                                                      *geometry_model,
+                                                                      *boundary_temperature,
+                                                                      *adiabatic_conditions)),
 
     time (std::numeric_limits<double>::quiet_NaN()),
     time_step (0),
