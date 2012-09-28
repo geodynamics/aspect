@@ -54,7 +54,7 @@ namespace aspect
                 numpress=0;
 
                std::string temp;
-               std::ifstream in(filename, std::ios::in);
+               std::ifstream in(filename.c_str(), std::ios::in);
                AssertThrow (in,
                             ExcMessage (std::string("Couldn't open file <") + filename));
 
@@ -197,7 +197,7 @@ namespace aspect
               lateral_viscosity_lookup(const std::string &filename)
               {
                 std::string temp;
-                std::ifstream in(filename, std::ios::in);
+                std::ifstream in(filename.c_str(), std::ios::in);
                 AssertThrow (in,
                              ExcMessage (std::string("Couldn't open file <") + filename));
 
@@ -250,7 +250,7 @@ namespace aspect
           radial_viscosity_lookup(const std::string &filename)
           {
             std::string temp;
-            std::ifstream in(filename, std::ios::in);
+            std::ifstream in(filename.c_str(), std::ios::in);
             AssertThrow (in,
                          ExcMessage (std::string("Couldn't open file <") + filename));
 
