@@ -145,7 +145,7 @@ namespace aspect
 
              double thermal_expansivity(double temperature,double pressure)
              {
-            	return specific_heat_values[get_idT(temperature)][get_idp(pressure)];
+            	return thermal_expansivity_values[get_idT(temperature)][get_idp(pressure)];
              }
 
 
