@@ -1986,7 +1986,8 @@ The verbal description of this problem can be translated into an \aspect{}
 input file in the following way (see Section~\ref{sec:parameters} for a
 description of all of the parameters that appear in the following input file,
 and the indices at the end of this manual if you want to find a particular
-parameter):
+parameter; you can find the input file to run this cookbook example in
+\url{cookbooks/convection-box.prm}):
 
 \begin{lstlisting}[frame=single,language=prmfile]
 ############### Global parameters
@@ -2145,7 +2146,7 @@ the box (right).}
 
 
 Furthermore, \aspect{} automatically also collects statistics about many of its
-internal workings. Fig.~\ref{fig:convection-box-stats} shows the number of
+internal workings. Fig.~\ref{fig:convection-box-iterations} shows the number of
 iterations required to solve the Stokes and temperature linear systems in each
 time step. It is easy to see that these are more difficult to solve in the
 beginning when the solution still changes significant from time step to time
@@ -2162,8 +2163,9 @@ more iterations to solve these equations.
 \includegraphics[width=0.4\textwidth]{cookbooks/convection-box/iterations}
 \hfill
 \phantom.
-\caption{\it Convection in a box: ...}
-\label{fig:convection-box-stats}
+\caption{\it Convection in a box: Number of linear iterations required to solve
+the Stokes and temperature equations in each time step.}
+\label{fig:convection-box-iterations}
 \end{figure}
 
 
