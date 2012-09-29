@@ -632,7 +632,7 @@ namespace aspect
       void build_stokes_preconditioner ();
 
       /**
-       * Initialize preconditioner for the temperature equation.
+       * Initialize the preconditioner for the temperature equation.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -648,8 +648,10 @@ namespace aspect
       void assemble_stokes_system ();
 
       /**
-       * Initiate the assembly of the temperature matrix and right hand side
-       * and build a preconditioner for the matrix.
+       * Initiate the assembly of the temperature matrix and right hand side.
+       * This function does not build a preconditioner for the matrix as one
+       * may want to re-use a preconditioner initialized using a previously
+       * computed matrix.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.

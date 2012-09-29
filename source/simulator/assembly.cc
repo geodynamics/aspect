@@ -998,9 +998,10 @@ namespace aspect
   Simulator<dim>::build_temperature_preconditioner ()
   {
     computing_timer.enter_section ("   Build temperature preconditioner");
-    T_preconditioner.reset (new TrilinosWrappers::PreconditionILU());
-    T_preconditioner->initialize (system_matrix.block(2,2));
-
+    {
+      T_preconditioner.reset (new TrilinosWrappers::PreconditionILU());
+      T_preconditioner->initialize (system_matrix.block(2,2));
+    }
     computing_timer.exit_section();
   }
 
@@ -1296,12 +1297,6 @@ namespace aspect
 
     system_matrix.compress();
     system_rhs.compress(Add);
-
-    computing_timer.exit_section();
-
-    computing_timer.enter_section ("   Build temperature preconditioner");
-    T_preconditioner.reset (new LinearAlgebra::PreconditionILU());
-    T_preconditioner->initialize (system_matrix.block(2,2));
 
     computing_timer.exit_section();
   }
