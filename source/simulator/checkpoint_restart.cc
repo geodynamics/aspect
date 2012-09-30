@@ -124,7 +124,7 @@ namespace aspect
         }
 
       }
-    pcout << "*** Snapshot created!" << std::endl;
+    pcout << "*** Snapshot created!" << std::endl << std::endl;
     computing_timer.exit_section();
   }
 
@@ -190,7 +190,7 @@ namespace aspect
     // re-initialize the postprocessors with the current object
     postprocess_manager.initialize (*this);
 
-    pcout << "*** Resuming from snapshot!" << std::endl;
+    pcout << "*** Resuming from snapshot!" << std::endl << std::endl;
   }
 
 }
