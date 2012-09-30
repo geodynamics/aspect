@@ -7,22 +7,23 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 5.054531e-06, 1.492378e-02, 7.343795e-06, 1.994003e-02
+     Errors u_L1, p_L1, u_L2, p_L2: 5.054534e-06, 1.492377e-02, 7.343796e-06, 1.993999e-02
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.405s |            |
+| Total wallclock time elapsed since start    |     0.102s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |    0.0317s |       7.8% |
-| Assemble temperature system     |         1 |     0.141s |        35% |
-| Build Stokes preconditioner     |         1 |    0.0345s |       8.5% |
-| Build temperature preconditioner|         1 |   0.00127s |      0.31% |
-| Solve Stokes system             |         1 |    0.0185s |       4.6% |
-| Solve temperature system        |         1 |  0.000793s |       0.2% |
-| Postprocessing                  |         1 |    0.0369s |       9.1% |
-| Setup dof systems               |         1 |    0.0426s |        11% |
+| Assemble Stokes system          |         1 |   0.00656s |       6.4% |
+| Assemble temperature system     |         1 |    0.0219s |        21% |
+| Build Stokes preconditioner     |         1 |    0.0105s |        10% |
+| Build temperature preconditioner|         1 |   0.00116s |       1.1% |
+| Solve Stokes system             |         1 |    0.0108s |        11% |
+| Solve temperature system        |         1 |  0.000454s |      0.44% |
+| Initialization                  |         2 |    0.0225s |        22% |
+| Postprocessing                  |         1 |   0.00775s |       7.6% |
+| Setup dof systems               |         1 |   0.00891s |       8.7% |
 +---------------------------------+-----------+------------+------------+
 
