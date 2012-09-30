@@ -113,8 +113,7 @@ namespace aspect
         // in the set of boundary indicators
         const std::set<types::boundary_id_t>
         boundary_indicators
-          =
-            this->get_geometry_model().get_used_boundary_indicators ();
+          = this->get_geometry_model().get_used_boundary_indicators ();
         std::vector<double> local_values;
         for (std::set<types::boundary_id_t>::const_iterator
              p = boundary_indicators.begin();
@@ -142,7 +141,8 @@ namespace aspect
            p != global_boundary_fluxes.end(); ++p, ++index)
         {
           const std::string name = "Outward heat flux through boundary with indicator "
-                                   + Utilities::int_to_string(p->first);
+                                   + Utilities::int_to_string(p->first)
+                                   + " (W)";
           statistics.add_value (name, p->second);
 
           // also make sure that the other columns filled by the this object
