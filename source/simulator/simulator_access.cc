@@ -124,24 +124,13 @@ namespace aspect
 
     template <int dim>
     unsigned int
-    SimulatorAccess<dim>::get_compositional_fields () const
+    SimulatorAccess<dim>::n_compositional_fields () const
     {
       return simulator->parameters.n_compositional_fields;
     }
 
 
 
-    template <int dim>
-    unsigned int
-    SimulatorAccess<dim>::get_composition_true () const
-    {
-      if(simulator->parameters.n_compositional_fields > 0)
-        return 1;
-      else
-        return 0;
-    }
-
-  
     template <int dim>
     bool
     SimulatorAccess<dim>::include_adiabatic_heating () const

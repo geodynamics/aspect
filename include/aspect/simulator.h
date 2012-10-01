@@ -208,15 +208,7 @@ namespace aspect
         * parameter file that will be advected along with the flow field.
         */
         unsigned int
-        get_compositional_fields () const;
-
-        /**
-        * Return 1 if there are compositional fields that will be advected
-        * along with the flowfield, otherwise return 0.
-        */
-        unsigned int
-        get_composition_true () const;
-
+        n_compositional_fields () const;
       
       /**
       * Compute the error indicators in the same way they are normally used

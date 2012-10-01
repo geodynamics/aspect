@@ -28,8 +28,6 @@ namespace aspect
   {
     template <int dim>
     Function<dim>::Function ()
-      :
-      function (1)
     {}
 
     template <int dim>
@@ -37,7 +35,7 @@ namespace aspect
     Function<dim>::
     initial_composition (const Point<dim> &position) const
     {
-      return function.value(position);
+      return function->value(position);
     }
 
     template <int dim>
@@ -60,11 +58,21 @@ namespace aspect
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {
+      // we need to get at the number of compositional fields here to
+      // initialize the function parser. unfortunately, we can't get it
+      // via SimulatorAccess from the simulator itself because at the
+      // current point the SimulatorAccess hasn't been initialized
+      // yet. so get it from the parameter file directly.
+      prm.enter_subsection ("Compositional fields");
+      const unsigned int n_compositional_fields = prm.get_integer ("Number of fields");
+      prm.leave_subsection ();
+
       prm.enter_subsection("Compositional initial conditions");
       {
         prm.enter_subsection("Function");
         {
-          function.parse_parameters (prm);
+          function.reset (new Functions::ParsedFunction<dim>(n_compositional_fields));
+          function->parse_parameters (prm);
         }
         prm.leave_subsection();
       }

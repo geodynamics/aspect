@@ -24,6 +24,7 @@
 #define __aspect__compositional_initial_conditions_function_h
 
 #include <aspect/compositional_initial_conditions/interface.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -40,7 +41,8 @@ namespace aspect
      * @ingroup VelocityBoundaryConditionsModels
      */
     template <int dim>
-    class Function : public Interface<dim>
+    class Function : public Interface<dim>,
+                     public SimulatorAccess<dim>
     {
       public:
         /**
@@ -78,7 +80,7 @@ namespace aspect
         /**
          * A function object representing the components of the velocity.
          */
-        Functions::ParsedFunction<dim> function;
+        std::auto_ptr<Functions::ParsedFunction<dim> > function;
     };
   }
 }

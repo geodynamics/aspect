@@ -207,7 +207,7 @@ subsection Compositional initial conditions
   subsection Function
 
     set Variable names = x,y
-    set Function expression = if(x*x+y*y > 3781000*3781000,0,1) 
+    set Function expression = if(x*x+y*y > 3781000*3781000,0,1) ; sin(x)
 
   end
 end
