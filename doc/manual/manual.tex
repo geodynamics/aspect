@@ -1989,28 +1989,28 @@ and the indices at the end of this manual if you want to find a particular
 parameter; you can find the input file to run this cookbook example in
 \url{cookbooks/convection-box.prm}):
 
-\begin{lstlisting}[frame=single,language=prmfile]
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
 # At the top, we define the number of space dimensions we would like to
 # work in:
-set Dimension                              = 2
+set Dimension                              = 2 % \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
 
 # There are several global variables that have to do with what
 # time system we want to work in and what the end time is. We
 # also designate an output directory.
-set Use years in output instead of seconds = false
-set End time                               = 0.5
-set Output directory                       = output
+set Use years in output instead of seconds = false % \index[prmindex]{Use years in output instead of seconds} \index[prmindexfull]{Use years in output instead of seconds} %
+set End time                               = 0.5 % \index[prmindex]{End time} \index[prmindexfull]{End time} %
+set Output directory                       = output % \index[prmindex]{Output directory} \index[prmindexfull]{Output directory} %
 
 # Then there are variables that describe the tolerance of
 # the linear solver as well as how the pressure should
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain (for the current geometry, the
 # surface is defined as the top boundary).
-set Linear solver tolerance                = 1e-15
-set Temperature solver tolerance           = 1e-15
+set Linear solver tolerance                = 1e-15 % \index[prmindex]{Linear solver tolerance} \index[prmindexfull]{Linear solver tolerance} %
+set Temperature solver tolerance           = 1e-15 % \index[prmindex]{Temperature solver tolerance} \index[prmindexfull]{Temperature solver tolerance} %
 
-set Pressure normalization                 = surface
-set Surface pressure                       = 0
+set Pressure normalization                 = surface % \index[prmindex]{Pressure normalization} \index[prmindexfull]{Pressure normalization} %
+set Surface pressure                       = 0 % \index[prmindex]{Surface pressure} \index[prmindexfull]{Surface pressure} %
 
 
 # Then come a number of sections that deal with the setup
@@ -2022,11 +2022,11 @@ set Surface pressure                       = 0
 # set the parameters that are specific to this particular
 # model.
 subsection Geometry model
-  set Model name = box
+  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
 
   subsection Box
-    set X extent = 1
-    set Y extent = 1
+    set X extent = 1 % \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
+    set Y extent = 1 % \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
   end
 end
 
@@ -2042,12 +2042,12 @@ end
 # matches the boundary conditions defined below plus
 # a small perturbation:
 subsection Initial conditions
-  set Model name = function
+  set Model name = function % \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
 
   subsection Function
-    set Variable names      = x,z
-    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
-    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z)
+    set Variable names      = x,z % \index[prmindex]{Variable names} \index[prmindexfull]{Initial conditions!Function!Variable names} %
+    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1 % \index[prmindex]{Function constants} \index[prmindexfull]{Initial conditions!Function!Function constants} %
+    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z) % \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
   end
 end
 
@@ -2060,13 +2060,13 @@ end
 # in the next section, the actual temperature prescribed here
 # at the left and right does not matter.)
 subsection Boundary temperature model
-  set Model name = box
+  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
 
   subsection Box
-    set Bottom temperature = 1
-    set Left temperature   = 0
-    set Right temperature  = 0
-    set Top temperature    = 0
+    set Bottom temperature = 1 % \index[prmindex]{Bottom temperature} \index[prmindexfull]{Boundary temperature model!Box!Bottom temperature} %
+    set Left temperature   = 0 % \index[prmindex]{Left temperature} \index[prmindexfull]{Boundary temperature model!Box!Left temperature} %
+    set Right temperature  = 0 % \index[prmindex]{Right temperature} \index[prmindexfull]{Boundary temperature model!Box!Right temperature} %
+    set Top temperature    = 0 % \index[prmindex]{Top temperature} \index[prmindexfull]{Boundary temperature model!Box!Top temperature} %
   end
 end
 
@@ -2079,25 +2079,25 @@ end
 # no heat flux through these boundaries; this is also often used
 # to specify symmetry boundaries).
 subsection Model settings
-  set Fixed temperature boundary indicators   = 2,3
-  
+  set Fixed temperature boundary indicators   = 2,3 % \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
+
   # The next parameters then describe on which parts of the
   # boundary we prescribe a zero or nonzero velocity and
   # on which parts the flow is allowed to be tangential.
-  # Here, all four sides of the box allow tangential 
+  # Here, all four sides of the box allow tangential
   # unrestricted flow but with a zero normal component:
-  set Zero velocity boundary indicators       =
-  set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 0,1,2,3
+  set Zero velocity boundary indicators       = % \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
+  set Prescribed velocity boundary indicators = % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
+  set Tangential velocity boundary indicators = 0,1,2,3 % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
 
   # The final part of this section describes whether we
   # want to include adiabatic heating (from a small
   # compressibility of the medium) or from shear friction,
   # as well as the rate of internal heating. We do not
   # want to use any of these options here:
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
-  set Radiogenic heating rate                 = 0
+  set Include adiabatic heating               = false % \index[prmindex]{Include adiabatic heating} \index[prmindexfull]{Model settings!Include adiabatic heating} %
+  set Include shear heating                   = false % \index[prmindex]{Include shear heating} \index[prmindexfull]{Model settings!Include shear heating} %
+  set Radiogenic heating rate                 = 0 % \index[prmindex]{Radiogenic heating rate} \index[prmindexfull]{Model settings!Radiogenic heating rate} %
 end
 
 
@@ -2107,24 +2107,24 @@ end
 # discussed the settings used here in the introduction to
 # this cookbook in the manual already.
 subsection Gravity model
-  set Model name = vertical
+  set Model name = vertical % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
 
   subsection Vertical
-    set Magnitude = 1e14   # = Thermal expansion coefficient * Ra
+    set Magnitude = 1e14   # = Thermal expansion coefficient * Ra % \index[prmindex]{Magnitude} \index[prmindexfull]{Gravity model!Vertical!Magnitude} %
   end
 end
 
 
 subsection Material model
-  set Model name = simple # default:
+  set Model name = simple # default: % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
 
   subsection Simple model
-    set Reference density             = 1
-    set Reference specific heat       = 1
-    set Reference temperature         = 1
-    set Thermal conductivity          = 1
-    set Thermal expansion coefficient = 1e-10
-    set Viscosity                     = 1
+    set Reference density             = 1 % \index[prmindex]{Reference density} \index[prmindexfull]{Material model!Simple model!Reference density} %
+    set Reference specific heat       = 1 % \index[prmindex]{Reference specific heat} \index[prmindexfull]{Material model!Simple model!Reference specific heat} %
+    set Reference temperature         = 1 % \index[prmindex]{Reference temperature} \index[prmindexfull]{Material model!Simple model!Reference temperature} %
+    set Thermal conductivity          = 1 % \index[prmindex]{Thermal conductivity} \index[prmindexfull]{Material model!Simple model!Thermal conductivity} %
+    set Thermal expansion coefficient = 1e-10 % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Simple model!Thermal expansion coefficient} %
+    set Viscosity                     = 1 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
   end
 end
 
@@ -2136,9 +2136,9 @@ end
 # on. We here use a globally refined mesh without
 # adaptive mesh refinement.
 subsection Mesh refinement
-  set Initial global refinement                = 4
-  set Initial adaptive refinement              = 0
-  set Time steps between mesh refinement       = 0
+  set Initial global refinement                = 4 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
+  set Initial adaptive refinement              = 0 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
+  set Time steps between mesh refinement       = 0 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
 end
 
 
@@ -2154,10 +2154,10 @@ end
 # we will obtain 50 output files.
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, ...
-                                        ... heat flux statistics, visualization
-  
+                                           ... heat flux statistics, visualization % \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
+
   subsection Visualization
-    set Time between graphical output = 0.01
+    set Time between graphical output = 0.01 % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
   end
 end
 \end{lstlisting}
