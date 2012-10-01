@@ -54,7 +54,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{End time}
 \index[prmindexfull]{End time}
-{\it Value:} 5e6
+{\it Value:} 20
 
 
 {\it Default:} 1e8
@@ -64,6 +64,38 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Linear solver tolerance}
+
+
+\index[prmindex]{Linear solver tolerance}
+\index[prmindexfull]{Linear solver tolerance}
+{\it Value:} 1e-7
+
+
+{\it Default:} 1e-7
+
+
+{\it Description:} A relative tolerance up to which linear systems in each time or nonlinear step should be solved. The absolute tolerance will then be the norm of the right hand side of the equation times this tolerance. A given tolerance value of 1 would mean that a zero solution vector is an acceptable solution since in that case the norm of the residual of the linear system equals the norm of the right hand side. A given tolerance of 0 would mean that the linear system has to be solved exactly, since this is the only way to obtain a zero residual.
+
+In practice, you should choose the value of this parameter to be so that if you make it smaller the results of your simulation do not change any more (qualitatively) whereas if you make it larger, they do. For most cases, the default value should be sufficient. However, for cases where the static pressure is much larger than the dynamic one, it may be necessary to choose a smaller value.
+
+
+{\it Possible values:} [Double 0...1 (inclusive)]
+\item {\it Parameter name:} {\tt Nonlinear iteration}
+
+
+\index[prmindex]{Nonlinear iteration}
+\index[prmindexfull]{Nonlinear iteration}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} A flag indicating whether the Stokes+Advection equation should be solved once per time step (false) or resolved using a fixed-point iteration (true).
+
+
+{\it Possible values:} [Bool]
 \item {\it Parameter name:} {\tt Output directory}
 
 
@@ -140,6 +172,36 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Temperature solver tolerance}
+
+
+\index[prmindex]{Temperature solver tolerance}
+\index[prmindexfull]{Temperature solver tolerance}
+{\it Value:} 1e-12
+
+
+{\it Default:} 1e-12
+
+
+{\it Description:} The relative tolerance up to which the linear system for the temperature system gets solved. See 'linear solver tolerance' for more details.
+
+
+{\it Possible values:} [Double 0...1 (inclusive)]
+\item {\it Parameter name:} {\tt Timing output frequency}
+
+
+\index[prmindex]{Timing output frequency}
+\index[prmindexfull]{Timing output frequency}
+{\it Value:} 100
+
+
+{\it Default:} 100
+
+
+{\it Description:} How frequently in timesteps to output timing information. This is generally adjusted only for debugging and timing purposes.
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
 \item {\it Parameter name:} {\tt Use years in output instead of seconds}
 
 
@@ -176,15 +238,55 @@ For more information, see the section in the manual that discusses the general m
 
 {\it Description:} Select one of the following models:
 
-`spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Sherical constant'.
+`ConvBox2D': A model in which the temperature is chosen constant on the top and bottom sides of a box.
 
 `box': A model in which the temperature is chosen constant on the left and right sides of a box.
 
+`spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Sherical constant'.
 
-{\it Possible values:} [Selection spherical constant|box ]
+`Tan Gurnis': A model for the Tan/Gurnis benchmark.
+
+
+{\it Possible values:} [Selection ConvBox2D|box|spherical constant|Tan Gurnis ]
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Boundary temperature model/Convection Box 2D}
+\label{parameters:Boundary_20temperature_20model/Convection_20Box_202D}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Bottom temperature}
+
+
+\index[prmindex]{Bottom temperature}
+\index[prmindexfull]{Boundary temperature model!Convection Box 2D!Bottom temperature}
+{\it Value:} 6000
+
+
+{\it Default:} 6000
+
+
+{\it Description:} Temperature at the Bottom boundary (core mantle boundary). Units: K.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Top temperature}
+
+
+\index[prmindex]{Top temperature}
+\index[prmindexfull]{Boundary temperature model!Convection Box 2D!Top temperature}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Temperature at the Top boundary. Units: K.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\end{itemize}
 
 \subsection{Parameters in section \tt Boundary temperature model/Spherical constant}
 \label{parameters:Boundary_20temperature_20model/Spherical_20constant}
@@ -222,6 +324,65 @@ For more information, see the section in the manual that discusses the general m
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
 \end{itemize}
 
+\subsection{Parameters in section \tt Boundary velocity model}
+\label{parameters:Boundary_20velocity_20model}
+
+
+\subsection{Parameters in section \tt Boundary velocity model/Function}
+\label{parameters:Boundary_20velocity_20model/Function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Function constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Boundary velocity model!Function!Function constants}
+{\it Value:} pi=3.1415926
+
+
+{\it Default:}
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Function expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Boundary velocity model!Function!Function expression}
+{\it Value:} if(x>1+sin(0.5*pi*t) , 1 , -1); 0
+
+
+{\it Default:} 0; 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the fparser library.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Variable names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Boundary velocity model!Function!Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} [Anything]
+\end{itemize}
+
 \subsection{Parameters in section \tt Checkpointing}
 \label{parameters:Checkpointing}
 
@@ -231,7 +392,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Steps between checkpoint}
 \index[prmindexfull]{Checkpointing!Steps between checkpoint}
-{\it Value:} 50
+{\it Value:} 0
 
 
 {\it Default:} 0
@@ -273,7 +434,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} 2
 
 
-{\it Description:} The polynomial degree to use for the velocity variables in the Stokes system. Units: None.
+{\it Description:} The polynomial degree to use for the velocity variables in the Stokes system. The polynomial degree for the pressure variable will then be one less in order to make the velocity/pressure pair conform with the usual LBB (Babuska-Brezzi) condition. In other words, we are using a Taylor-Hood element for the Stoeks equations and this parameter indicates the polynomial degree of it. Units: None.
 
 
 {\it Possible values:} [Integer range 1...2147483647 (inclusive)]
@@ -356,7 +517,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{cR}
 \index[prmindexfull]{Discretization!Stabilization parameters!cR}
-{\it Value:} 0.5
+{\it Value:} 0.11
 
 
 {\it Default:} 0.11
@@ -385,12 +546,12 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 {\it Description:} Select one of the following models:
 
-`spherical shell': A geometry representing a spherical shell or a pice of it. Inner and outer radii are read from the parameter file in subsection 'Spherical shell'.
-
 `box': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. The box geometry labels its 2*dim sides as follows: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries; in 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries. See also the documentation of the deal.II class ``GeometryInfo''.
 
+`spherical shell': A geometry representing a spherical shell or a pice of it. Inner and outer radii are read from the parameter file in subsection 'Spherical shell'.
 
-{\it Possible values:} [Selection spherical shell|box ]
+
+{\it Possible values:} [Selection box|spherical shell ]
 \end{itemize}
 
 
@@ -404,7 +565,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{X extent}
 \index[prmindexfull]{Geometry model!Box!X extent}
-{\it Value:} 1.2
+{\it Value:} 2
 
 
 {\it Default:} 1
@@ -514,14 +675,14 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 {\it Description:} Select one of the following models:
 
-`vertical': A gravity model in which the gravity direction is vertically downward and at a constant magnitude equal to one.
-
 `radial constant': A gravity model in which the gravity direction is radially inward and at constant magnitude. The magnitude is read from the parameter file in subsection 'Radial constant'.
 
 `radial earth-like': A gravity model in which the gravity direction is radially inward and with a magnitude that matches that of the earth at the core-mantle boundary as well as at the surface and in between is physically correct under the assumption of a constant density.
 
+`vertical': A gravity model in which the gravity direction is vertically downward and at a constant magnitude by default equal to one.
 
-{\it Possible values:} [Selection vertical|radial constant|radial earth-like ]
+
+{\it Possible values:} [Selection radial constant|radial earth-like|vertical ]
 \end{itemize}
 
 
@@ -547,6 +708,27 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
 
+\subsection{Parameters in section \tt Gravity model/Vertical}
+\label{parameters:Gravity_20model/Vertical}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Magnitude}
+
+
+\index[prmindex]{Magnitude}
+\index[prmindexfull]{Gravity model!Vertical!Magnitude}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Value of the gravity vector in $m/s^2$ directed along negative y (2D) or z (3D) axis.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
+
 \subsection{Parameters in section \tt Initial conditions}
 \label{parameters:Initial_20conditions}
 
@@ -564,14 +746,14 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 {\it Description:} Select one of the following models:
 
+`perturbed box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is chosen in such a way that the initial temperature is constant to one along the entire boundary.
+
 `spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following a six-fold pattern in angular direction from an otherwise spherically symmetric state.
 
 `spherical gaussian perturbation': An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection 'Spherical gaussian perturbation'.
 
-`perturbed box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is chosen in such a way that the initial temperature is constant to one along the entire boundary.
 
-
-{\it Possible values:} [Selection spherical hexagonal perturbation|spherical gaussian perturbation|perturbed box ]
+{\it Possible values:} [Selection perturbed box|spherical hexagonal perturbation|spherical gaussian perturbation ]
 \end{itemize}
 
 
@@ -615,13 +797,15 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{Filename for initial geotherm table}
 \index[prmindexfull]{Initial conditions!Spherical gaussian perturbation!Filename for initial geotherm table}
-{\it Value:} initial\_geotherm\_table
+{\it Value:} initial geotherm table
 
 
-{\it Default:} initial\_geotherm\_table
+{\it Default:} initial geotherm table
 
 
-{\it Description:} The file from which the initial geotherm table is to be read. The format of the file is defined by what is read in source/initial\_conditions/spherical\_shell.cc.
+{\it Description:} The file from which the initial geotherm table is to be
+read. The format of the file is defined by what is read in source/initial
+conditions/spherical shell.cc.
 
 
 {\it Possible values:} [FileName (Type: input)]
@@ -689,22 +873,22 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 {\it Description:} Select one of the following models:
 
-`Tan Gurnis': A simple compressible material model based on a benchmark from the paper of Tan/Gurnis (2007). This does not use the temperature equation, but has a hardcoded temperature.
-
-`table': A material model that reads tables of pressure and temperature dependent material coefficients from files.
-
-`Steinberger': lookup from the paper of Steinberger/Calderwood
-
-`simple': A simple material model that has constant values for all coefficients but the density. This model uses the formulation that assumes an incompressible medium despite the fact that the density follows the law $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$. The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Simple model'.
-
 `SolCx': A material model that corresponds to the 'SolCx' benchmark defined in Duretz et al., G-Cubed, 2011.
 
 `SolKz': A material model that corresponds to the 'SolKz' benchmark defined in Duretz et al., G-Cubed, 2011.
 
 `Inclusion': A material model that corresponds to the 'Inclusion' benchmark defined in Duretz et al., G-Cubed, 2011.
 
+`simple': A simple material model that has constant values for all coefficients but the density. This model uses the formulation that assumes an incompressible medium despite the fact that the density follows the law $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$. The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Simple model'.
 
-{\it Possible values:} [Selection Tan Gurnis|table|Steinberger|simple|SolCx|SolKz|Inclusion ]
+`Steinberger': lookup from the paper of Steinberger/Calderwood
+
+`table': A material model that reads tables of pressure and temperature dependent material coefficients from files. The default values for this model's runtime parameters use a material description taken from the paper \textit{Complex phase distribution and seismic velocity structure of the transition zone: Convection model predictions for a magnesium-endmember olivine–pyroxene mantle} by Michael H.G. Jacobs and Arie P. van den Berg, Physics of the Earth and Planetary Interiors, Volume 186, Issues 1–2, May 2011, Pages 36–48. See \url{http://www.sciencedirect.com/science/article/pii/S0031920111000422}.
+
+`Tan Gurnis': A simple compressible material model based on a benchmark from the paper of Tan/Gurnis (2007). This does not use the temperature equation, but has a hardcoded temperature.
+
+
+{\it Possible values:} [Selection SolCx|SolKz|Inclusion|simple|Steinberger|table|Tan Gurnis ]
 \end{itemize}
 
 
@@ -739,7 +923,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{Reference density}
 \index[prmindexfull]{Material model!Simple model!Reference density}
-{\it Value:} 1
+{\it Value:} 3300
 
 
 {\it Default:} 3300
@@ -760,7 +944,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 1250
 
 
-{\it Description:} The value of the specific heat $cp$. Units: $JG/kgK$.
+{\it Description:} The value of the specific heat $cp$. Units: $J/kg/K$.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -769,7 +953,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Simple model!Reference temperature}
-{\it Value:} 1
+{\it Value:} 293
 
 
 {\it Default:} 293
@@ -830,6 +1014,21 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 \label{parameters:Material_20model/SolCx}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Background density}
+
+
+\index[prmindex]{Background density}
+\index[prmindexfull]{Material model!SolCx!Background density}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Density value upon which the variation of this testcase is overlaid. Since this background density is constant it does not affect the flow pattern but it adds to the total pressure since it produces a nonzero adiabatic pressure if set to a nonzero value.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \item {\it Parameter name:} {\tt Viscosity jump}
 
 
@@ -952,7 +1151,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 1250
 
 
-{\it Description:} The value of the specific heat $cp$. Units: $JG/kgK$.
+{\it Description:} The value of the specific heat $cp$. Units: $J/kg/K$.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -1326,6 +1525,18 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 \label{parameters:Material_20model/Tan_20Gurnis_20model}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Di}
+
+
+\index[prmindex]{Di}
+\index[prmindexfull]{Material model!Tan Gurnis model!Di}
+{\it Value:} 0.5
+
+
+{\it Default:} 0.5
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \item {\it Parameter name:} {\tt Reference density}
 
 
@@ -1352,7 +1563,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 1250
 
 
-{\it Description:} The value of the specific heat $cp$. Units: $JG/kgK$.
+{\it Description:} The value of the specific heat $cp$. Units: $J/kg/K$.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -1416,6 +1627,42 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt a}
+
+
+\index[prmindex]{a}
+\index[prmindexfull]{Material model!Tan Gurnis model!a}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt gamma}
+
+
+\index[prmindex]{gamma}
+\index[prmindexfull]{Material model!Tan Gurnis model!gamma}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt wavenumber}
+
+
+\index[prmindex]{wavenumber}
+\index[prmindexfull]{Material model!Tan Gurnis model!wavenumber}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Mesh refinement}
@@ -1457,7 +1704,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{Initial adaptive refinement}
 \index[prmindexfull]{Mesh refinement!Initial adaptive refinement}
-{\it Value:} 1
+{\it Value:} 0
 
 
 {\it Default:} 2
@@ -1472,7 +1719,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{Initial global refinement}
 \index[prmindexfull]{Mesh refinement!Initial global refinement}
-{\it Value:} 2
+{\it Value:} 5
 
 
 {\it Default:} 2
@@ -1509,7 +1756,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} false
 
 
-{\it Description:} Whether or not the postproccessors should be run at the end of each of the initial adaptive refinement cycles at the start of the simulation.
+{\it Description:} Whether or not the postproccessors should be run at the end of each of ths initial adaptive refinement cycles at the of the simulation start.
 
 
 {\it Possible values:} [Bool]
@@ -1533,16 +1780,16 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{Time steps between mesh refinement}
 \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement}
-{\it Value:} 5
+{\it Value:} 0
 
 
 {\it Default:} 10
 
 
-{\it Description:} The number of time steps after which the mesh is to be adapted again based on computed error indicators.
+{\it Description:} The number of time steps after which the mesh is to be adapted again based on computed error indicators. If 0 then the mesh will never be changed.
 
 
-{\it Possible values:} [Integer range 1...2147483647 (inclusive)]
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Model settings}
@@ -1561,6 +1808,8 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 
 {\it Description:} A comma separated list of integers denoting those boundaries on which the temperature is fixed and described by the boundary temperature object selected in its own section of this input file. All boundary indicators used by the geometry but not explicitly listed here will end up with no-flux (insulating) boundary conditions.
+
+This parameter only describes which boundaries have a fixed temperature, but not what temperature should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryTemperature group, unless an existing implementation in this group already provides what you want.
 
 
 {\it Possible values:} [List list of <[Integer range 0...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
@@ -1584,7 +1833,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{Include shear heating}
 \index[prmindexfull]{Model settings!Include shear heating}
-{\it Value:} false
+{\it Value:} true
 
 
 {\it Default:} true
@@ -1599,22 +1848,26 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{Prescribed velocity boundary indicators}
 \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators}
-{\it Value:}
+{\it Value:} 3: function
 
 
 {\it Default:}
 
 
-{\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is tangential but prescribed, i.e., where external forces act to prescribe a particular velocity. This is often used to prescribe a velocity that equals that of overlying plates.
+{\it Description:} A comma separated list denoting those boundaries on which the velocity is tangential but prescribed, i.e., where external forces act to prescribe a particular velocity. This is often used to prescribe a velocity that equals that of overlying plates.
+
+The format of valid entries for this parameter is that of a map given as ``key1: value1, key2: value2, key3: value3, ...'' where each key must be a valid boundary indicator and each value must be one of the currently implemented boundary velocity models.
+
+Note that the no-slip boundary condition is a special case of the current one where the prescribed velocity happens to be zero. It can thus be implemented by indicating that a particular boundary is part of the ones selected using the current parameter and using ``zero velocity'' as the boundary values. Alternatively, you can simply list the part of the boundary on which the velocity is to be zero with the parameter ``Zero velocity boundary indicator'' in the current parameter section.
 
 
-{\it Possible values:} [List list of <[Integer range 0...255 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [Map map of <[Integer range 0...255 (inclusive)]:[Selection inclusion|function|zero velocity ]> of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Radiogenic heating rate}
 
 
 \index[prmindex]{Radiogenic heating rate}
 \index[prmindexfull]{Model settings!Radiogenic heating rate}
-{\it Value:} 0
+{\it Value:} 0e0
 
 
 {\it Default:} 0e0
@@ -1629,13 +1882,13 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{Tangential velocity boundary indicators}
 \index[prmindexfull]{Model settings!Tangential velocity boundary indicators}
-{\it Value:} 1
+{\it Value:}
 
 
 {\it Default:}
 
 
-{\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is tangential and unrestrained, i.e., where no external forces act to prescribe a particular tangential velocity (although there is a force that requires the flow to be tangential).
+{\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is tangential and unrestrained, i.e., free-slip where no external forces act to prescribe a particular tangential velocity (although there is a force that requires the flow to be tangential).
 
 
 {\it Possible values:} [List list of <[Integer range 0...255 (inclusive)]> of length 0...4294967295 (inclusive)]
@@ -1644,7 +1897,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{Zero velocity boundary indicators}
 \index[prmindexfull]{Model settings!Zero velocity boundary indicators}
-{\it Value:} 0, 2, 3
+{\it Value:} 0, 1, 2
 
 
 {\it Default:}
@@ -1665,7 +1918,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{List of postprocessors}
 \index[prmindexfull]{Postprocess!List of postprocessors}
-{\it Value:} visualization, velocity statistics, temperature statistics, heat flux statistics, tracers
+{\it Value:} visualization, velocity statistics, temperature statistics, heat flux statistics
 
 
 {\it Default:} all
@@ -1675,28 +1928,28 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 The following postprocessors are available:
 
-`visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
-
-`velocity statistics': A postprocessor that computes some statistics about the velocity field.
-
-`tracers': Postprocessor that propagates tracer particles based on the velocity field.
-
-`temperature statistics': A postprocessor that computes some statistics about the temperature field.
-
-`Tan Gurnis error': A postprocessor that compares the solution of the benchmarks from the Tan/Gurnis (2007) paper with the one computed by ASPECT by outputing data that is compared using a matlab script.
-
-`velocity statistics for the table model': A postprocessor that computes some statistics about the velocity field.
-
-`heat flux statistics for the table model': A postprocessor that computes some statistics about the heat flux across boundaries.
-
-`heat flux statistics': A postprocessor that computes some statistics about the heat flux across boundaries.
+`depth average': A postprocessor that computes depth averaged quantities and writes them out.
 
 `DuretzEtAl error': A postprocessor that compares the solution of the benchmarks from the Duretz et al., G-Cubed, 2011, paper with the one computed by ASPECT and reports the error. Specifically, it can compute the errors for the SolCx, SolKz and inclusion benchmarks. The postprocessor inquires which material model is currently being used and adjusts which exact solution to use accordingly.
 
-`depth average': A postprocessor that computes depth averaged quantities and writes them out.
+`heat flux statistics': A postprocessor that computes some statistics about the heat flux across boundaries.
+
+`heat flux statistics for the table model': A postprocessor that computes some statistics about the heat flux across boundaries.
+
+`velocity statistics for the table model': A postprocessor that computes some statistics about the velocity field.
+
+`Tan Gurnis error': A postprocessor that compares the solution of the benchmarks from the Tan/Gurnis (2007) paper with the one computed by ASPECT by outputing data that is compared using a matlab script.
+
+`temperature statistics': A postprocessor that computes some statistics about the temperature field.
+
+`tracers': Postprocessor that propagates tracer particles based on the velocity field.
+
+`velocity statistics': A postprocessor that computes some statistics about the velocity field.
+
+`visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
 
-{\it Possible values:} [MultipleSelection visualization|velocity statistics|tracers|temperature statistics|Tan Gurnis error|velocity statistics for the table model|heat flux statistics for the table model|heat flux statistics|DuretzEtAl error|depth average|all ]
+{\it Possible values:} [MultipleSelection depth average|DuretzEtAl error|heat flux statistics|heat flux statistics for the table model|velocity statistics for the table model|Tan Gurnis error|temperature statistics|tracers|velocity statistics|visualization|all ]
 \end{itemize}
 
 
@@ -1726,6 +1979,21 @@ The following postprocessors are available:
 \label{parameters:Postprocess/Tracers}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Data output format}
+
+
+\index[prmindex]{Data output format}
+\index[prmindexfull]{Postprocess!Tracers!Data output format}
+{\it Value:} none
+
+
+{\it Default:} none
+
+
+{\it Description:} File format to output raw particle data in.
+
+
+{\it Possible values:} [Selection none|ascii|vtu|hdf5 ]
 \item {\it Parameter name:} {\tt Number of tracers}
 
 
@@ -1741,18 +2009,18 @@ The following postprocessors are available:
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Time between graphical output}
+\item {\it Parameter name:} {\tt Time between data output}
 
 
-\index[prmindex]{Time between graphical output}
-\index[prmindexfull]{Postprocess!Tracers!Time between graphical output}
+\index[prmindex]{Time between data output}
+\index[prmindexfull]{Postprocess!Tracers!Time between data output}
 {\it Value:} 1e8
 
 
 {\it Default:} 1e8
 
 
-{\it Description:} The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+{\it Description:} The time interval between each generation of output files. A value of zero indicates that output should be generated every time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -1767,7 +2035,7 @@ The following postprocessors are available:
 
 \index[prmindex]{List of output variables}
 \index[prmindexfull]{Postprocess!Visualization!List of output variables}
-{\it Value:} strain rate
+{\it Value:}
 
 
 {\it Default:}
@@ -1777,32 +2045,32 @@ The following postprocessors are available:
 
 The following postprocessors are available:
 
-`viscosity ratio': A visualization output object that generates output for the ratio between dislocation viscosity and diffusion viscosity.
+`density': A visualization output object that generates output for the density.
 
-`viscosity': A visualization output object that generates output for the viscosity.
-
-`thermodynamic phase': A visualization output object that generates output for the integer number of the phase that is thermodynamically stable at the temperature and pressure of the current point.
-
-`strain rate': A visualization output object that generates output for the norm of the strain rate, i.e., for the quantity $\sqrt{\varepsilon(\mathbf u):\varepsilon(\mathbf u)}$ in the incompressible case and $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u)\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u)\mathbf I]}$ in the compressible case.
-
-`specific heat': A visualization output object that generates output for the specific heat $C_p$.
-
-`seismic vs': A visualization output object that generates output for the seismic S-wave speed.
-
-`seismic vp': A visualization output object that generates output for the seismic P-wave speed.
-
-`partition': A visualization output object that generates output for the parallel partition that every cell of the mesh is associated with.
-
-`nonadiabatic temperature': A visualization output object that generates output for the non-adiabatic component of the temperature.
+`friction heating': A visualization output object that generates output for the amount of friction heating often referred to as $\tau:\epsilon$. More concisely, in the incompressible case, the quantity that is output is defined as $\eta \varepsilon(\mathbf u):\varepsilon(\mathbf u)$ where $\eta$ is itself a function of temperature, pressure and strain rate. In the compressible case, the quantity that's computed is $\eta [\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]$.
 
 `nonadiabatic pressure': A visualization output object that generates output for the non-adiabatic component of the pressure.
 
-`friction heating': A visualization output object that generates output for the amount of friction heating often referred to as $\tau:\epsilon$. More concisely, in the incompressible case, the quantity that is output is defined as $\eta \varepsilon(\mathbf u):\varepsilon(\mathbf u)$ where $\eta$ is itself a function of temperature, pressure and strain rate. In the compressible case, the quantity that's computed is $\eta [\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u)\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u)\mathbf I]$.
+`nonadiabatic temperature': A visualization output object that generates output for the non-adiabatic component of the pressure.
 
-`density': A visualization output object that generates output for the density.
+`partition': A visualization output object that generates output for the parallel partition that every cell of the mesh is associated with.
+
+`seismic vp': A visualization output object that generates output for the seismic P-wave speed.
+
+`seismic vs': A visualization output object that generates output for the seismic S-wave speed.
+
+`specific heat': A visualization output object that generates output for the specific heat $C_p$.
+
+`strain rate': A visualization output object that generates output for the norm of the strain rate, i.e., for the quantity $\sqrt{\varepsilon(\mathbf u):\varepsilon(\mathbf u)}$ in the incompressible case and $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]}$ in the compressible case.
+
+`thermodynamic phase': A visualization output object that generates output for the integer number of the phase that is thermodynamically stable at the temperature and pressure of the current point.
+
+`viscosity': A visualization output object that generates output for the viscosity.
+
+`viscosity ratio': A visualization output object that generates output for the ratio between dislocation viscosity and diffusion viscosity.
 
 
-{\it Possible values:} [MultipleSelection viscosity ratio|viscosity|thermodynamic phase|strain rate|specific heat|seismic vs|seismic vp|partition|nonadiabatic temperature|nonadiabatic pressure|friction heating|density|all ]
+{\it Possible values:} [MultipleSelection density|friction heating|nonadiabatic pressure|nonadiabatic temperature|partition|seismic vp|seismic vs|specific heat|strain rate|thermodynamic phase|viscosity|viscosity ratio|all ]
 \item {\it Parameter name:} {\tt Number of grouped files}
 
 
@@ -1832,13 +2100,13 @@ The following postprocessors are available:
 {\it Description:} The file format to be used for graphical output.
 
 
-{\it Possible values:} [Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot\_binary|vtk|vtu|deal.II intermediate ]
+{\it Possible values:} [Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot\_binary|vtk|vtu|hdf5|deal.II intermediate ]
 \item {\it Parameter name:} {\tt Time between graphical output}
 
 
 \index[prmindex]{Time between graphical output}
 \index[prmindexfull]{Postprocess!Visualization!Time between graphical output}
-{\it Value:} 0
+{\it Value:} 0.1
 
 
 {\it Default:} 1e8

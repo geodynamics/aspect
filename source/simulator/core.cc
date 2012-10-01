@@ -196,6 +196,19 @@ namespace aspect
 
     // continue with initializing members that can't be initialized for one reason
     // or another in the member initializer list above
+
+    // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it:
+    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*geometry_model))
+      sim->initialize (*this);
+    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*material_model))
+      sim->initialize (*this);
+    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*gravity_model))
+      sim->initialize (*this);
+    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*boundary_temperature))
+      sim->initialize (*this);
+    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_conditions))
+      sim->initialize (*this);
+
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
 
@@ -1061,10 +1074,16 @@ namespace aspect
     current_linearization_point = old_solution;
     if (timestep_number > 1)
       {
-      current_linearization_point.sadd ((1 + time_step/old_time_step),
-                                          -time_step/old_time_step,
-                                          old_old_solution);
-    }
+        //Trilinos sadd does not like ghost vectors even as input. Copy into distributed vectors for now:
+        LinearAlgebra::BlockVector distr_solution (system_rhs);
+        distr_solution = current_linearization_point;
+        LinearAlgebra::BlockVector distr_old_solution (system_rhs);
+        distr_old_solution = old_old_solution;
+        distr_solution .sadd ((1 + time_step/old_time_step),
+            -time_step/old_time_step,
+            distr_old_solution);
+        current_linearization_point = distr_solution;
+      }
 
     switch (parameters.nonlinear_solver)
       {

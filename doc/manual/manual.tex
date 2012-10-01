@@ -30,7 +30,8 @@
 % use the listings package for code snippets
 \usepackage{listings}
 \lstset{language=C++,basicstyle=\footnotesize}
-\lstdefinelanguage{prmfile}{morekeywords={set,subsection,end},}
+\lstdefinelanguage{prmfile}{morekeywords={set,subsection,end},
+                            morecomment=[l]{\#},}
 
 % use the hyperref package; set the base for relative links to
 % the top-level aspect directory so that we can link to
@@ -466,11 +467,11 @@ implement geometry and material models in which the dimension of the domain is
 one, density and viscosity are one, and the density variation as a function of
 temperature is scaled by the Rayleigh number -- i.e., to use the usual
 non-dimensionalization of the Boussinesq equations. Some of the cookbooks in
-Section~\ref{sec:cookbooks} uses this non-dimensional form; for example, the
-SolCx, SolKz and inclusion benchmarks in Section~\ref{sec:benchmark-solcx},
-\ref{sec:benchmark-solkz} and \ref{sec:benchmark-inclusion} clearly do so. In
-such cases, output showing units \texttt{m/s} or \texttt{W/m\^{}2} clearly no
-longer have a literal meaning. Rather, the unit postfix must in this case simply
+Section~\ref{sec:cookbooks} use this non-dimensional form; for example,
+the simplest cookbook in Section~\ref{sec:cookbooks-simple-box} as well as
+the SolCx, SolKz and inclusion benchmarks in Sections~\ref{sec:benchmark-solcx},
+are such cases. Whenever this is the case, output showing units \texttt{m/s} or
+\texttt{W/m\^{}2} clearly no longer have a literal meaning. Rather, the unit postfix must in this case simply
 be interpreted to mean that the number that precedes the first is a velocity and
 a heat flux in the second case.
 
@@ -1482,7 +1483,8 @@ above and, if the condition is violated, abort the program with a detailed
 message that shows the failed check, the location in the source code, and a
 stacktrace how the program got there. The downside of debug mode is, of
 course, that it makes the program much slower -- depending on application by a
-factor of 4--10.
+factor of 4--10. An example of the speedup one can get is shown in
+Section~\ref{sec:cookbooks-simple-box}.
 
 \aspect{} by default uses debug mode because most users will want to play with
 the source code, and because it is also a way to verify that the compilation
@@ -1682,6 +1684,7 @@ More information on all of these topis can be found in the Visit
 documentation, see \url{http://www.llnl.gov/visit/}.
 
 \subsubsection{Visualizing statistical data}
+\label{sec:viz-stat}
 
 \marginpar{To be written}
 
@@ -1978,18 +1981,497 @@ material along the right wall has negative buoyancy, drops down and creates a
 convection roll in the box. The fact that the domain has different extents in
 the $x$- and $y$-directions complicates the resulting flow slightly.
 
+\paragraph{The input file.}
 The verbal description of this problem can be translated into an \aspect{}
 input file in the following way (see Section~\ref{sec:parameters} for a
 description of all of the parameters that appear in the following input file,
 and the indices at the end of this manual if you want to find a particular
-parameter):
+parameter; you can find the input file to run this cookbook example in
+\url{cookbooks/convection-box.prm}):
 
-\begin{lstlisting}[frame=single,language=prmfile]
-############### Global parameters
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+# At the top, we define the number of space dimensions we would like to
+# work in:
+set Dimension                              = 2 % \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
+
+# There are several global variables that have to do with what
+# time system we want to work in and what the end time is. We
+# also designate an output directory.
+set Use years in output instead of seconds = false % \index[prmindex]{Use years in output instead of seconds} \index[prmindexfull]{Use years in output instead of seconds} %
+set End time                               = 0.5 % \index[prmindex]{End time} \index[prmindexfull]{End time} %
+set Output directory                       = output % \index[prmindex]{Output directory} \index[prmindexfull]{Output directory} %
+
+# Then there are variables that describe the tolerance of
+# the linear solver as well as how the pressure should
+# be normalized. Here, we choose a zero average pressure
+# at the surface of the domain (for the current geometry, the
+# surface is defined as the top boundary).
+set Linear solver tolerance                = 1e-15 % \index[prmindex]{Linear solver tolerance} \index[prmindexfull]{Linear solver tolerance} %
+set Temperature solver tolerance           = 1e-15 % \index[prmindex]{Temperature solver tolerance} \index[prmindexfull]{Temperature solver tolerance} %
+
+set Pressure normalization                 = surface % \index[prmindex]{Pressure normalization} \index[prmindexfull]{Pressure normalization} %
+set Surface pressure                       = 0 % \index[prmindex]{Surface pressure} \index[prmindexfull]{Surface pressure} %
+
+
+# Then come a number of sections that deal with the setup
+# of the problem to solve. The first one deals with the
+# geometry of the domain within which we want to solve.
+# The sections that follow all have the same basic setup
+# where we select the name of a particular model (here,
+# the box geometry) and then, in a further subsection,
+# set the parameters that are specific to this particular
+# model.
+subsection Geometry model
+  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
+
+  subsection Box
+    set X extent = 1 % \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
+    set Y extent = 1 % \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
+  end
+end
+
+
+# The next section deals with the initial conditions for the
+# temperature (there are no initial conditions for the
+# velocity variable since the velocity is assumed to always
+# be in a static equilibrium with the temperature field).
+# There are a number of models with the 'function' model
+# a generic one that allows us to enter the actual initial
+# conditions in the form of a formula that can contain
+# constants. We choose a linear temperature profile that
+# matches the boundary conditions defined below plus
+# a small perturbation:
+subsection Initial conditions
+  set Model name = function % \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
+
+  subsection Function
+    set Variable names      = x,z % \index[prmindex]{Variable names} \index[prmindexfull]{Initial conditions!Function!Variable names} %
+    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1 % \index[prmindex]{Function constants} \index[prmindexfull]{Initial conditions!Function!Function constants} %
+    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z) % \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
+  end
+end
+
+
+# Then follows a section that describes the boundary conditions
+# for the temperature. The model we choose is called 'box' and
+# allows to set a constant temperature on each of the four sides
+# of the box geometry. In our case, we choose something that is
+# heated from below and cooled from above. (As will be seen
+# in the next section, the actual temperature prescribed here
+# at the left and right does not matter.)
+subsection Boundary temperature model
+  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
+
+  subsection Box
+    set Bottom temperature = 1 % \index[prmindex]{Bottom temperature} \index[prmindexfull]{Boundary temperature model!Box!Bottom temperature} %
+    set Left temperature   = 0 % \index[prmindex]{Left temperature} \index[prmindexfull]{Boundary temperature model!Box!Left temperature} %
+    set Right temperature  = 0 % \index[prmindex]{Right temperature} \index[prmindexfull]{Boundary temperature model!Box!Right temperature} %
+    set Top temperature    = 0 % \index[prmindex]{Top temperature} \index[prmindexfull]{Boundary temperature model!Box!Top temperature} %
+  end
+end
+
+
+# We then also have to prescribe several other parts of the model
+# such as which boundaries actually carry a prescribed boundary
+# temperature (as described in the documentation of the `box'
+# geometry, boundaries 2 and 3 are the bottom and top boundaries)
+# whereas all other parts of the boundary are insulated (i.e.,
+# no heat flux through these boundaries; this is also often used
+# to specify symmetry boundaries).
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2,3 % \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
+
+  # The next parameters then describe on which parts of the
+  # boundary we prescribe a zero or nonzero velocity and
+  # on which parts the flow is allowed to be tangential.
+  # Here, all four sides of the box allow tangential
+  # unrestricted flow but with a zero normal component:
+  set Zero velocity boundary indicators       = % \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
+  set Prescribed velocity boundary indicators = % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
+  set Tangential velocity boundary indicators = 0,1,2,3 % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
+
+  # The final part of this section describes whether we
+  # want to include adiabatic heating (from a small
+  # compressibility of the medium) or from shear friction,
+  # as well as the rate of internal heating. We do not
+  # want to use any of these options here:
+  set Include adiabatic heating               = false % \index[prmindex]{Include adiabatic heating} \index[prmindexfull]{Model settings!Include adiabatic heating} %
+  set Include shear heating                   = false % \index[prmindex]{Include shear heating} \index[prmindexfull]{Model settings!Include shear heating} %
+  set Radiogenic heating rate                 = 0 % \index[prmindex]{Radiogenic heating rate} \index[prmindexfull]{Model settings!Radiogenic heating rate} %
+end
+
+
+# The following two sections describe first the
+# direction (vertical) and magnitude of gravity and the
+# material model (i.e., density, viscosity, etc). We have
+# discussed the settings used here in the introduction to
+# this cookbook in the manual already.
+subsection Gravity model
+  set Model name = vertical % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
+
+  subsection Vertical
+    set Magnitude = 1e14   # = Thermal expansion coefficient * Ra % \index[prmindex]{Magnitude} \index[prmindexfull]{Gravity model!Vertical!Magnitude} %
+  end
+end
+
+
+subsection Material model
+  set Model name = simple # default: % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+
+  subsection Simple model
+    set Reference density             = 1 % \index[prmindex]{Reference density} \index[prmindexfull]{Material model!Simple model!Reference density} %
+    set Reference specific heat       = 1 % \index[prmindex]{Reference specific heat} \index[prmindexfull]{Material model!Simple model!Reference specific heat} %
+    set Reference temperature         = 1 % \index[prmindex]{Reference temperature} \index[prmindexfull]{Material model!Simple model!Reference temperature} %
+    set Thermal conductivity          = 1 % \index[prmindex]{Thermal conductivity} \index[prmindexfull]{Material model!Simple model!Thermal conductivity} %
+    set Thermal expansion coefficient = 1e-10 % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Simple model!Thermal expansion coefficient} %
+    set Viscosity                     = 1 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
+  end
+end
+
+
+# The settings above all pertain to the description of the
+# continuous partial differential equations we want to solve.
+# The following section deals with the discretization of
+# this problem, namely the kind of mesh we want to compute
+# on. We here use a globally refined mesh without
+# adaptive mesh refinement.
+subsection Mesh refinement
+  set Initial global refinement                = 4 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
+  set Initial adaptive refinement              = 0 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
+  set Time steps between mesh refinement       = 0 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
+end
+
+
+# The final part is to specify what ASPECT should do with the
+# solution once computed at the end of every time step. The
+# process of evaluating the solution is called `postprocessing'
+# and we choose to compute velocity and temperature statistics,
+# statistics about the heat flux through the boundaries of the
+# domain, and to generate graphical output files for later
+# visualization. These output files are created every time
+# a time step crosses time points separated by 0.01. Given
+# our start time (zero) and final time (0.5) this means that
+# we will obtain 50 output files.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, ...
+                                           ... heat flux statistics, visualization % \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
+
+  subsection Visualization
+    set Time between graphical output = 0.01 % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
+  end
+end
 \end{lstlisting}
+
+\marginpar{Finish}
+
+\paragraph{Running the program.}
+When you run this program for the first time, you are probably still running
+\aspect{} in debug mode (see Section~\ref{sec:debug-mode}) and you will get
+output like the following:
+
+\begin{lstlisting}[frame=single,language=ksh]
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+5 iterations.
+
+[... ...]
+
+*** Timestep 1077:  t=0.499903 seconds
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  43.1 m/s, 69.8 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0.02056 W, -0.02061 W, -4.931 W, 4.931 W
+
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |       454s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |      1078 |      19.2s |       4.2% |
+| Assemble temperature system     |      1078 |       329s |        72% |
+| Build Stokes preconditioner     |         1 |    0.0995s |     0.022% |
+| Build temperature preconditioner|      1078 |      5.84s |       1.3% |
+| Solve Stokes system             |      1078 |      15.6s |       3.4% |
+| Solve temperature system        |      1078 |      3.72s |      0.82% |
+| Initialization                  |         2 |    0.0474s |      0.01% |
+| Postprocessing                  |      1078 |      61.9s |        14% |
+| Setup dof systems               |         1 |     0.221s |     0.049% |
++---------------------------------+-----------+------------+------------+
+\end{lstlisting}
+
+If you've read up on the difference between debug and optimized mode (and you
+should before you switch!) then consider disabling debug mode. If you run the
+program again, every number should look exactly the same (and it does, in fact,
+as I am writing this) except for the timing information printed every hundred
+time steps and at the end of the program:
+
+\begin{lstlisting}[frame=single,language=ksh]
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      48.3s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |      1078 |      1.68s |       3.5% |
+| Assemble temperature system     |      1078 |      26.3s |        54% |
+| Build Stokes preconditioner     |         1 |    0.0401s |     0.083% |
+| Build temperature preconditioner|      1078 |      4.87s |        10% |
+| Solve Stokes system             |      1078 |      6.76s |        14% |
+| Solve temperature system        |      1078 |      1.76s |       3.7% |
+| Initialization                  |         2 |    0.0241s |      0.05% |
+| Postprocessing                  |      1078 |      4.99s |        10% |
+| Setup dof systems               |         1 |    0.0394s |     0.082% |
++---------------------------------+-----------+------------+------------+
+\end{lstlisting}
+
+In other words, the program ran about 10 times faster than before. Not all
+operations became faster to the same degree: assembly, for example, is an area
+that traverses a lot of code both in \aspect{} and in \dealii{} and so
+encounters a lot of verification code in debug mode. On the other hand, solving
+linear systems primarily requires lots of matrix vector operations. Overall, the
+fact that in this example, assembling linear systems and preconditioners takes
+so much time compared to actually solving them is primarily a reflection of how
+simple the problem is that we solve in this example. This can also be seen in
+the fact that the number of iterations necessary to solve the Stokes and
+temperature equations is so low. For more complex problems with nonconstant
+coefficients such as the viscosity, as well as in 3d, we have to spend much more
+work solving linear systems whereas the effort to assemble linear systems
+remains the same.
+
+\paragraph{Visualizing results.}
+Having run the program, we now want to visualize the numerical results we got.
+\aspect{} can generate graphical output in formats understood by pretty much any
+visualization program (see the parameters described in
+Section~\ref{parameters:Postprocess/Visualization}) but we will here follow the
+discussion in Section~\ref{sec:viz} and use the default VTU output format to
+visualize using the Visit program.
+
+In the parameter file we have specified that graphical output should be
+generated every 0.01 time units. Looking through these output files, we find
+that the flow and temperature fields quickly converge to a stationary state.
+Fig.~\ref{fig:convection-box-fields} shows the initial and final states of this
+simulation.
+
+\begin{figure}
+\phantom.
+\hfill
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/visit0000}
+\hfill
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/visit0001}
+\hfill
+\phantom.
+\caption{\it Convection in a box: Initial temperature and velocity field (left)
+and final state (right).}
+\label{fig:convection-box-fields}
+\end{figure}
+
+There are many other things we can learn from the output files generated by
+\aspect{}, specifically from the statistics file that contains information
+collected at every time step and that has been discussed in
+Section~\ref{sec:viz-stat}. In particular, in our input file, we have selected
+that we would like to compute velocity, temperature, and heat flux statistics.
+These statistics, among others, are listed in the statistics file whose head
+looks like this for the current input file:
+\begin{lstlisting}[frame=single,language=prmfile]
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Time step size (seconds)
+# 9: RMS velocity (m/s)
+# 10: Max. velocity (m/s)
+# 11: Minimal temperature (K)
+# 12: Average temperature (K)
+# 13: Maximal temperature (K)
+# 14: Average nondimensional temperature (K)
+# 15: Outward heat flux through boundary with indicator 0 (W)
+# 16: Outward heat flux through boundary with indicator 1 (W)
+# 17: Outward heat flux through boundary with indicator 2 (W)
+# 18: Outward heat flux through boundary with indicator 3 (W)
+# 19: Visualization file name
+... lots of numbers arranged in columns ...
+\end{lstlisting}
+
+Fig.~\ref{fig:convection-box-stats} shows the results of visualizing the data
+that can be found in columns 2 (the time) plotted against columns 9 and 10
+(root mean square and maximal velocities). It shows clearly that the simulation
+enters a steady state after about $t\approx 0.1$ and then changes very little. This can also be observed using the
+graphical output files from which we have generated
+Fig.~\ref{fig:convection-box-fields}. One can look further into this data to
+find that the flux through the top and bottom boundaries is not exactly the same
+(up to the obvious difference in sign, given that at the bottom boundary heat
+flows into the domain and at the top boundary out of it) at the beginning of the
+simulation until the fluid has attained its equilibrium. However, after
+$t\approx 0.2$, the fluxes differ by only $5\cdot 10^{-5}$, i.e., by less than
+0.001\% of their magnitude.%
+\footnote{This difference is far smaller than the numerical error in the heat
+flux on the mesh this data is computed on.}
+Secondly, the fluxes through the left and right boundary are not exactly zero
+but small. Of course, we have prescribed boundary conditions of the form
+$\frac{\partial T}{\partial \mathbf n}=0$ along these boundaries, but this is
+subject to discretization errors. It is easy to verify that the heat flux
+through these two boundaries disappears as we refine the mesh further.
+
+\begin{figure}
+\phantom.
+\hfill
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/velocity}
+\hfill
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/heatflux}
+\hfill
+\phantom.
+\caption{\it Convection in a box: Root mean square and maximal velocity as a
+function of simulation time (left). Heat flux through the four boundaries of
+the box (right).}
+\label{fig:convection-box-stats}
+\end{figure}
+
+
+Furthermore, \aspect{} automatically also collects statistics about many of its
+internal workings. Fig.~\ref{fig:convection-box-iterations} shows the number of
+iterations required to solve the Stokes and temperature linear systems in each
+time step. It is easy to see that these are more difficult to solve in the
+beginning when the solution still changes significant from time step to time
+step. However, after some time, the solution remains mostly the same and solvers
+then only need 9 or 10 iterations for the temperature equation and 4 or 5
+iterations for the Stokes equations because the starting guess for the linear
+solver -- the previous time step's solution -- is already pretty good. If you
+look at any of the more complex cookbooks, you will find that one needs many
+more iterations to solve these equations.
+
+\begin{figure}
+\phantom.
+\hfill
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/iterations}
+\hfill
+\phantom.
+\caption{\it Convection in a box: Number of linear iterations required to solve
+the Stokes and temperature equations in each time step.}
+\label{fig:convection-box-iterations}
+\end{figure}
+
+
+\paragraph{Play time.}
+- finer mesh than 16x16
+- higher Ra number
+- different discretization
+
 
 \subsubsection{Convection in a box with prescribed, variable velocity boundary conditions}
 
+A similarly simple setup is to equip the model we had in the previous section
+with a different set of boundary conditions. There, we used slip boundary
+conditions, i.e., the fluid can flow tangentially along the four sides of our
+box but this tangential velocity is unspecified. On the other hand, in many
+situations, one would like to actually prescribe the tangential flow velocity as
+well. A typical application would to use boundary conditions at the top that
+describe experimentally determined velocities of plates. This cookbook shows a
+simple version of something like this.
+
+Like for many other things, \aspect{} has a set of plugins for prescribed
+velocity boundary values (see
+Sections~\ref{parameters:Boundary_20velocity_20model} and
+\ref{sec:prescribed-velocity-boundary-conditions}). These plugins allow one to
+write sophisticated models for the boundary velocity on parts or all of the
+boundary, but there is also one simple implementation that just takes a formula
+for the components of the velocity.
+
+To illustrate this, let us consider the \url{cookbooks/platelike-boundary.prm}
+input file. It essentially extends the input file considered in the previous example.
+The part of this file that we are particularly interested in in the current 
+context is the selection of the kind of boundary conditions on the four
+sides of the box geometry, which we do using a section like this:
+\begin{lstlisting}[frame=single,language=prmfile]
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0, 1
+  set Zero velocity boundary indicators       = 0, 1, 2
+  set Tangential velocity boundary indicators =
+  set Prescribed velocity boundary indicators = 3: function
+end
+\end{lstlisting}
+
+Following the convention described in the previous section, this means that we
+prescribe a fixed temperature at the left and right sides of the box (boundary numbers zero and
+one). We fix the velocity to zero at the left, right, and bottom boundaries. No
+boundary will use tangential flow. Finally, the last entry above is a comma
+separated list (here with only a single element) of pairs consisting of the
+number of a boundary and the name of the prescribed velocity boundary model to
+be used on this boundary. Here, we use the \texttt{function} boundary model,
+which allows us to provide a function-like notation for the components of the
+velocity vector at the boundary.
+
+The second part we need is that we actually describe the function that sets the
+velocity. We do this as follows:
+\begin{lstlisting}[frame=single,language=prmfile]
+subsection Boundary velocity model
+  subsection Function
+    # The name of the variables as they will be used in the function,
+    # separated by ','.
+    set Variable names      = x,y,t
+
+    # Any constant used inside the function which is not a variable name.
+    set Function constants  = pi=3.1415926
+
+    # Vector valued expression for the velocity; separate components by ';'
+    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
+  end
+end
+\end{lstlisting}
+The first of these gives names to the components of the position vector (here,
+we are in 2d) and the time. The value given here is actually just the default
+value. In the second parameter we define symbolic constants that can be used in
+the formula for the velocity that is specified in the last parameter. This
+formula needs to have as many components as there are space dimensions,
+separated by semicolons. As stated, this means that we prescribe the
+(horizontal) $x$-velocity and set the vertical velocity to zero. The horizontal
+component is here either $1$ or $-1$, depending on whether we are to the right
+or the left of the point $1+\sin(\pi t/2)$ that is moving back and forth with
+time once every four time units. The \texttt{if} statement understood by the
+parser we use for these formulas has the syntax
+\texttt{if(condition, value-if-true, value-if-false)}.
+
+\note{While you can enter most any expression into the parser for these
+velocity boundary conditions, not all make sense. In particular, if you use an
+incompressible medium like we do here, then you need to make sure that either
+the flow you prescribe is indeed tangential, or that at least the flow into and
+out of the boundary this function applies to is balanced so that in sum the
+amount of material in the domain stays constant.
+
+It is in general not possible for \aspect{} to verify that a given input is
+sensible. However, you will quickly find out if it isn't: The linear solver for
+the Stokes equations will simply not converge. For example, if your function
+expression in the input file above read \\
+\hspace*{.25cm} \texttt{if(x>1+sin(0.5*pi*t), 1, -1); 1}\\
+then at the time of writing this you would get the following error message: \\
+\hspace*{.25cm}\texttt{*** Timestep 0:  t=0 seconds} \\
+\hspace*{.25cm}\texttt{   Solving temperature system... 0 iterations.} \\
+\hspace*{.25cm}\texttt{   Rebuilding Stokes preconditioner...} \\
+\hspace*{.25cm}\texttt{   Solving Stokes system... } \\
+\\
+\hspace*{.25cm}\texttt{\ldots some timing output \ldots} \\
+\\
+\\
+\hspace*{.25cm}\texttt{----------------------------------------------------} \\
+\hspace*{.25cm}\texttt{Exception on processing: } \\
+\hspace*{.25cm}\texttt{Iterative method reported convergence failure in step
+9539 with residual 6.0552} \\
+\hspace*{.25cm}\texttt{Aborting!} \\
+\hspace*{.25cm}\texttt{----------------------------------------------------}
+
+The reason is, of course, that there is no incompressible (divergence free) flow
+field that allows for a constant vertical outflow component along the top
+boundary without corresponding inflow anywhere else.}
 
 
 \subsection{Geophysical setups}
@@ -2992,6 +3474,14 @@ The meaning of the first class should be clear. The purpose
 of the last two functions has been discussed in the general overview of
 plugins above.
 
+
+\subsubsection{Prescribed velocity boundary conditions}
+\label{sec:prescribed-velocity-boundary-conditions}
+
+\index[prmindex]{Prescribed velocity boundary indicators}
+\index[prmindexfull]{Model settings!Prescribed velocity boundary indicators}
+
+\marginpar{To be written}
 
 \subsubsection{Temperature boundary conditions}
 \label{sec:temperature-boundary-conditions}

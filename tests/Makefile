@@ -56,7 +56,7 @@ output-%:
 	    else \
 		mpirun -np $$MPI ../lib/aspect $< > $@/screen-output ; \
 	    fi
-	@$(PERL) -pi $D/common/scripts/normalize.pl $@/*
+	@$(PERL) -pi $D/tests/normalize.pl $@/*
 	@rm -f $@/log
 
 

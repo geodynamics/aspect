@@ -276,23 +276,22 @@ namespace aspect
 
       LinearAlgebra::BlockVector
       distributed_solution (system_rhs);
-      current_constraints.set_zero(distributed_solution);
       // create vector with distribution of system_rhs.
-      LinearAlgebra::Vector block_remap (system_rhs.block (2));
+      LinearAlgebra::BlockVector remap (system_rhs);
       // copy block of current_linearization_point into it, because
       // current_linearization is distributed differently.
-      block_remap = current_linearization_point.block (2);
+      remap.block (2) = current_linearization_point.block (2);
+      current_constraints.set_zero (remap);
       // (ab)use the distributed solution vector to temporarily put a residual in
       initial_residual = system_matrix.block(2,2).residual (distributed_solution.block(2),
-                                                            block_remap,
+                                                            remap.block (2),
                                                             system_rhs.block(2));
-      current_constraints.set_zero(distributed_solution);
 
       // then overwrite it again with the current best guess and solve the linear system
-      distributed_solution.block(2) = block_remap;
+      distributed_solution.block(2) = remap.block (2);
       solver.solve (system_matrix.block(2,2), distributed_solution.block(2),
                     system_rhs.block(2), *T_preconditioner);
-
+      
       current_constraints.distribute (distributed_solution);
       solution.block(2) = distributed_solution.block(2);
 
@@ -384,6 +383,9 @@ namespace aspect
     // is different.
     remap.block (0) = current_linearization_point.block (0);
     remap.block (1) = current_linearization_point.block (1);
+    // before solving we scale the initial solution to the right dimensions
+    remap.block (1) /= pressure_scaling;
+    current_constraints.set_zero (remap);
     // (ab)use the distributed solution vector to temporarily put a residual in
     initial_residual = stokes_block.residual (distributed_stokes_solution,
                                               remap,
@@ -392,11 +394,6 @@ namespace aspect
     // then overwrite it again with the current best guess and solve the linear system
     distributed_stokes_solution.block(0) = remap.block(0);
     distributed_stokes_solution.block(1) = remap.block(1);
-
-    // before solving we scale the initial solution to the right dimensions
-    distributed_stokes_solution.block(1) /= pressure_scaling;
-
-    current_constraints.set_zero(distributed_stokes_solution);
 
     // if the model is compressible then we need to adjust the right hand
     // side of the equation to make it compatible with the matrix on the

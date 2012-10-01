@@ -24,7 +24,7 @@
 #define __aspect__postprocess_tan_gurnis_h
 
 #include <aspect/postprocess/interface.h>
-
+#include <aspect/simulator.h>
 
 namespace aspect
 {
@@ -52,7 +52,7 @@ namespace aspect
      * @ingroup Postprocessing
      */
     template <int dim>
-    class TanGurnis : public Interface<dim>, public SimulatorAccess<dim>
+    class TanGurnis : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         virtual

@@ -658,10 +658,10 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the gravity constant."
                              "Units: $m/s^2$.");
-          prm.declare_entry ("Composition", "olixene",
+          prm.declare_entry ("Composition", "standard",
                              Patterns::Anything (),
                              "The Composition of the model. ");
-          prm.declare_entry ("Path to model data", "datadir",
+          prm.declare_entry ("Path to model data", "data/material-model/table/",
                              Patterns::DirectoryName (),
                              "The path to the model data. ");
           prm.declare_entry ("ComputePhases", "false",
@@ -672,10 +672,10 @@ namespace aspect
                              "whether the model is compressible. ");
           prm.enter_subsection ("Viscosity");
           {
-            prm.declare_entry ("ViscosityModel", "Exponential",
+            prm.declare_entry ("ViscositycModel", "Exponential",
                                Patterns::Anything (),
                                "Viscosity Model");
-            prm.declare_entry ("ReferenceViscosity", "5e24",
+            prm.declare_entry ("Reference Viscosity", "5e24",
                                Patterns::Double (0),
                                "The value of the constant viscosity. Units: $kg/m/s$.");
             prm.declare_entry ("Viscosity increase lower mantle", "1e0",
@@ -683,23 +683,23 @@ namespace aspect
                                "The Viscosity increase (jump) in the lower mantle.");
             prm.enter_subsection ("Exponential");
             {
-              prm.declare_entry ("exponential_T", "1",
+              prm.declare_entry ("Exponential T", "1",
                                  Patterns::Double (0),
                                  "multiplication factor or Temperature exponent");
-              prm.declare_entry ("exponential_P", "1",
+              prm.declare_entry ("Exponential P", "1",
                                  Patterns::Double (0),
                                  "multiplication factor or Pressure exponent");
             }
             prm.leave_subsection();
             prm.enter_subsection ("Diffusion");
             {
-              prm.declare_entry ("activation_energy_diffusion", "335e3",
+              prm.declare_entry ("Activation energy diffusion", "335e3",
                                  Patterns::Double (0),
                                  "activation energy for diffusion creep");
-              prm.declare_entry ("activation_volume_diffusion", "4.0e-6",
+              prm.declare_entry ("Activation volume diffusion", "4.0e-6",
                                  Patterns::Double (0),
                                  "activation volume for diffusion creep");
-              prm.declare_entry ("prefactor_diffusion", "1.92e-11",
+              prm.declare_entry ("Prefactor diffusion", "1.92e-11",
                                  Patterns::Double (0),
                                  "prefactor for diffusion creep "
                                  "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
@@ -707,44 +707,44 @@ namespace aspect
             prm.leave_subsection();
             prm.enter_subsection ("Dislocation");
             {
-              prm.declare_entry ("activation_energy_dislocation", "335e3",
+              prm.declare_entry ("Activation energy dislocation", "335e3",
                                  Patterns::Double (0),
                                  "activation energy for dislocation creep");
-              prm.declare_entry ("activation_volume_dislocation", "4.0e-6",
+              prm.declare_entry ("Activation volume dislocation", "4.0e-6",
                                  Patterns::Double (0),
                                  "activation volume for dislocation creep");
-              prm.declare_entry ("prefactor_dislocation", "1.92e-11",
+              prm.declare_entry ("Prefactor dislocation", "1.92e-11",
                                  Patterns::Double (0),
                                  "prefactor for dislocation creep "
                                  "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
-              prm.declare_entry ("stress_exponent", "3.5",
+              prm.declare_entry ("Stress exponent", "3.5",
                                  Patterns::Double (0),
                                  "stress exponent for dislocation creep");
             }
             prm.leave_subsection();
             prm.enter_subsection ("Composite");
             {
-              prm.declare_entry ("activation_energy_diffusion", "335e3",
+              prm.declare_entry ("Activation energy diffusion", "335e3",
                                  Patterns::Double (0),
                                  "activation energy for diffusion creep");
-              prm.declare_entry ("activation_volume_diffusion", "4.0e-6",
+              prm.declare_entry ("Activation volume diffusion", "4.0e-6",
                                  Patterns::Double (0),
                                  "activation volume for diffusion creep");
-              prm.declare_entry ("prefactor_diffusion", "1.92e-11",
+              prm.declare_entry ("Prefactor diffusion", "1.92e-11",
                                  Patterns::Double (0),
                                  "prefactor for diffusion creep "
                                  "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
-              prm.declare_entry ("activation_energy_dislocation", "540e3",
+              prm.declare_entry ("Activation energy dislocation", "540e3",
                                  Patterns::Double (0),
                                  "activation energy for dislocation creep");
-              prm.declare_entry ("activation_volume_dislocation", "14.0e-6",
+              prm.declare_entry ("Activation volume dislocation", "14.0e-6",
                                  Patterns::Double (0),
                                  "activation volume for dislocation creep");
-              prm.declare_entry ("prefactor_dislocation", "2.42e-10",
+              prm.declare_entry ("Prefactor dislocation", "2.42e-10",
                                  Patterns::Double (0),
                                  "prefactor for dislocation creep "
                                  "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
-              prm.declare_entry ("stress_exponent", "3.5",
+              prm.declare_entry ("Stress exponent", "3.5",
                                  Patterns::Double (0),
                                  "stress exponent for dislocation creep");
             }
@@ -778,15 +778,15 @@ namespace aspect
           model_is_compressible = prm.get_bool ("Compressible");
           prm.enter_subsection ("Viscosity");
           {
-            viscosity_model      = prm.get ("ViscosityModel");
-            reference_eta       = prm.get_double ("ReferenceViscosity");
+            viscosity_model      = prm.get ("Viscosity Model");
+            reference_eta       = prm.get_double ("Reference Viscosity");
             increase_lower_mantle   = prm.get_double ("Viscosity increase lower mantle");
             if (viscosity_model == "Exponential")
               {
                 prm.enter_subsection ("Exponential");
                 {
-                  exponential_T         = prm.get_double ("exponential_T");
-                  exponential_P         = prm.get_double ("exponential_P");
+                  exponential_T         = prm.get_double ("Exponential T");
+                  exponential_P         = prm.get_double ("Exponential P");
                 }
                 prm.leave_subsection();
               }
@@ -794,9 +794,9 @@ namespace aspect
               {
                 prm.enter_subsection ("Diffusion");
                 {
-                  activation_energy_diffusion   = prm.get_double ("activation_energy_diffusion");
-                  activation_volume_diffusion   = prm.get_double ("activation_volume_diffusion");
-                  prefactor_diffusion           = prm.get_double ("prefactor_diffusion");
+                  activation_energy_diffusion   = prm.get_double ("Activation energy diffusion");
+                  activation_volume_diffusion   = prm.get_double ("Activation volume diffusion");
+                  prefactor_diffusion           = prm.get_double ("Prefactor diffusion");
                 }
                 prm.leave_subsection();
               }
@@ -804,10 +804,10 @@ namespace aspect
               {
                 prm.enter_subsection ("Dislocation");
                 {
-                  activation_energy_dislocation = prm.get_double ("activation_energy_dislocation");
-                  activation_volume_dislocation = prm.get_double ("activation_volume_dislocation");
-                  prefactor_dislocation         = prm.get_double ("prefactor_dislocation");
-                  stress_exponent                = prm.get_double ("stress_exponent");
+                  activation_energy_dislocation = prm.get_double ("Activation energy dislocation");
+                  activation_volume_dislocation = prm.get_double ("Activation volume dislocation");
+                  prefactor_dislocation         = prm.get_double ("Prefactor dislocation");
+                  stress_exponent                = prm.get_double ("Stress exponent");
                 }
                 prm.leave_subsection();
               }
@@ -815,13 +815,13 @@ namespace aspect
               {
                 prm.enter_subsection ("Composite");
                 {
-                  activation_energy_diffusion   = prm.get_double ("activation_energy_diffusion");
-                  activation_volume_diffusion   = prm.get_double ("activation_volume_diffusion");
-                  prefactor_diffusion           = prm.get_double ("prefactor_diffusion");
-                  activation_energy_dislocation = prm.get_double ("activation_energy_dislocation");
-                  activation_volume_dislocation = prm.get_double ("activation_volume_dislocation");
-                  prefactor_dislocation         = prm.get_double ("prefactor_dislocation");
-                  stress_exponent               = prm.get_double ("stress_exponent");
+                  activation_energy_diffusion   = prm.get_double ("Activation energy diffusion");
+                  activation_volume_diffusion   = prm.get_double ("Activation volume diffusion");
+                  prefactor_diffusion           = prm.get_double ("Prefactor diffusion");
+                  activation_energy_dislocation = prm.get_double ("Activation energy dislocation");
+                  activation_volume_dislocation = prm.get_double ("Activation volume dislocation");
+                  prefactor_dislocation         = prm.get_double ("Prefactor dislocation");
+                  stress_exponent               = prm.get_double ("Stress exponent");
                 }
                 prm.leave_subsection();
               }
@@ -848,9 +848,9 @@ namespace aspect
                                    "this model's runtime parameters use a material description taken "
                                    "from the paper \\textit{Complex phase distribution and seismic velocity "
                                    "structure of the transition zone: Convection model predictions "
-                                   "for a magnesium-endmember olivine–pyroxene mantle} by Michael H.G. "
+                                   "for a magnesium-endmember olivine-pyroxene mantle} by Michael H.G. "
                                    "Jacobs and Arie P. van den Berg, Physics of the Earth and Planetary "
-                                   "Interiors, Volume 186, Issues 1–2, May 2011, Pages 36–48. See "
+                                   "Interiors, Volume 186, Issues 1-2, May 2011, Pages 36--48. See "
                                    "\\url{http://www.sciencedirect.com/science/article/pii/S0031920111000422}.")
   }
 }

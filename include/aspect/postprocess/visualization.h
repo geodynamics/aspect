@@ -24,6 +24,7 @@
 #define __aspect__postprocess_visualization_h
 
 #include <aspect/postprocess/interface.h>
+#include <aspect/simulator.h>
 #include <aspect/plugins.h>
 
 #include <deal.II/base/thread_management.h>
@@ -59,7 +60,7 @@ namespace aspect
        * A typical class derived from the current class would then have the following
        * base classes:
        * - aspect::Postprocess::VisualizationPostprocessors::Interface
-       * - aspect::Postprocess::SimulatorAccess
+       * - aspect::SimulatorAccess
        * - deal::DataPostprocessor or any of the other ones listed above
        *
        * @ingroup Postprocessing
@@ -159,7 +160,7 @@ namespace aspect
      * @ingroup Postprocessing
      */
     template <int dim>
-    class Visualization : public Interface<dim>, public SimulatorAccess<dim>
+    class Visualization : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**

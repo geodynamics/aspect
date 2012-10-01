@@ -8,22 +8,23 @@ Number of degrees of freedom: 268 (162+25+81)
 
    Postprocessing:
      Writing graphical output:      output-inclusion_2/solution-00000
-     Errors u_L1, p_L1, u_L2, p_L2: 4.145861e-02, 5.044066e-01, 2.432442e-02, 3.912138e-01
+     Errors u_L1, p_L1, u_L2, p_L2: 4.145860e-02, 5.044068e-01, 2.432442e-02, 3.912139e-01
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.493s |            |
+| Total wallclock time elapsed since start    |     0.125s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |    0.0328s |       6.7% |
-| Assemble temperature system     |         1 |     0.137s |        28% |
-| Build Stokes preconditioner     |         1 |     0.034s |       6.9% |
-| Build temperature preconditioner|         1 |   0.00144s |      0.29% |
-| Solve Stokes system             |         1 |    0.0397s |         8% |
-| Solve temperature system        |         1 |   0.00097s |       0.2% |
-| Postprocessing                  |         1 |     0.125s |        25% |
-| Setup dof systems               |         1 |    0.0298s |       6.1% |
+| Assemble Stokes system          |         1 |   0.00429s |       3.4% |
+| Assemble temperature system     |         1 |    0.0229s |        18% |
+| Build Stokes preconditioner     |         1 |    0.0102s |       8.1% |
+| Build temperature preconditioner|         1 |   0.00119s |      0.95% |
+| Solve Stokes system             |         1 |    0.0286s |        23% |
+| Solve temperature system        |         1 |   0.00047s |      0.37% |
+| Initialization                  |         2 |    0.0226s |        18% |
+| Postprocessing                  |         1 |     0.015s |        12% |
+| Setup dof systems               |         1 |   0.00741s |       5.9% |
 +---------------------------------+-----------+------------+------------+
 

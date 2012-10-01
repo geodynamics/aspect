@@ -24,13 +24,13 @@
 #define __aspect__model_table_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/simulator.h>
 
 namespace aspect
 {
   namespace MaterialModel
   {
     using namespace dealii;
-
     /**
      * A variable viscosity material model that reads the essential values of coefficients from
      * tables in input files.
@@ -42,9 +42,14 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Steinberger: public MaterialModel::Interface<dim>
+    class Steinberger: public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
+        /**
+          * Called at the beginning of each time step and allows the material model
+          * to update internal data structures.
+          */
+        virtual void update();
         /**
          * @name Physical parameters used in the basic equations
          * @{
@@ -69,6 +74,16 @@ namespace aspect
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
                                              const Point<dim> &position) const;
+
+        virtual double thermal_expansion_coefficient (const double      temperature,
+                                                      const double      pressure,
+                                                      const Point<dim> &position) const;
+
+        virtual double seismic_Vp (const double      temperature,
+                                   const double      pressure) const;
+
+        virtual double seismic_Vs (const double      temperature,
+                                   const double      pressure) const;
         /**
          * @}
          */
@@ -141,6 +156,33 @@ namespace aspect
         /**
          * @}
          */
+
+        /**
+          * Declare the parameters this class takes through input files.
+          */
+         static
+         void
+         declare_parameters (ParameterHandler &prm);
+
+         /**
+          * Read the parameters this class declares from the parameter
+          * file.
+          */
+         virtual
+         void
+         parse_parameters (ParameterHandler &prm);
+         /**
+          * @}
+          */
+
+      private:
+        std::vector<double> avg_temp;
+        std::string datadirectory;
+        std::string material_file_name;
+        std::string radial_viscosity_file_name;
+        std::string lateral_viscosity_file_name;
+        virtual double get_deltat (const Point<dim> &position) const;
+
     };
   }
 }

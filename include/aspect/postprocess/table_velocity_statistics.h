@@ -24,7 +24,7 @@
 #define __aspect__postprocess_table_velocity_statistics_h
 
 #include <aspect/postprocess/interface.h>
-
+#include <aspect/simulator.h>
 
 namespace aspect
 {
@@ -39,7 +39,7 @@ namespace aspect
      * @ingroup Postprocessing
      */
     template <int dim>
-    class TableVelocityStatistics : public Interface<dim>, public SimulatorAccess<dim>
+    class TableVelocityStatistics : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**

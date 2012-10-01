@@ -78,6 +78,15 @@ First release
 - Better 3d coarse mesh?
 - Participate in Shijie's benchmarking effort, see email of 12/16/2011
 
-For late
---------
+For later (from the Berkeley discussion, 9/26/2012)
+---------------------------------------------------
+- compositional fields or tracers (John Naliboff and Eric Heien have
+  		       	  	   initial tracers; Juliane Dannberg
+				   is working on fields)
+- rheology and nonlinear iteration
+- free surfaces (Ian Rose has something initial)
+- self gravity (Ian Rose has something initial)
+- compressibility
 - prescribed heat flux
+
+- document variable velocity boundary conditions
