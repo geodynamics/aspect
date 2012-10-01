@@ -100,6 +100,8 @@ end
 subsection Compositional fields
  
   set Number of fields = 2
+  set List of normalized fields = 0,1
+  
 end 
 
 subsection Geometry model
@@ -212,7 +214,7 @@ subsection Compositional initial conditions
   subsection Function
 
     set Variable names = x,y
-    set Function expression = if(x*x+y*y > 3781000*3781000,0,1) ; sin(x/6.371e6*2*3.14)
+    set Function expression = if(x*x+y*y > 3781000*3781000,0,1) ; 0.5*sin(x/6.371e6*2*3.14)+0.5
 
   end
 end

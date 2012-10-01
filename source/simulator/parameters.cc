@@ -411,6 +411,11 @@ namespace aspect
                          Patterns::Integer (0),
                          "The number of fields that will be advected along with the flow field, excluding "
                          "velocity, pressure and temperature.");
+      prm.declare_entry ("List of normalized fields", "",
+                         Patterns::List (Patterns::Integer(0)),
+                         "A list of integers smaller than or equal to the number of"
+                         "compositional fields. All compositional fields in this"
+                         "list will be normalized before the first timestep.");
     }
     prm.leave_subsection ();
   }
@@ -580,6 +585,13 @@ namespace aspect
     prm.enter_subsection ("Compositional fields");
     {
       n_compositional_fields = prm.get_integer ("Number of fields");
+      const std::vector<int> n_normalized_fields = Utilities::string_to_int
+          (Utilities::split_string_list(prm.get ("List of normalized fields")));
+      normalized_fields = std::vector<unsigned int> (n_normalized_fields.begin(),
+          n_normalized_fields.end());
+
+      Assert (normalized_fields.size() <= n_compositional_fields,
+              ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
     }
     prm.leave_subsection ();
   }

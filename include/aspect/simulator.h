@@ -203,13 +203,13 @@ namespace aspect
       bool
       convert_output_to_years () const;
 
-        /**
-        * Return the number of compositional fields specified in the input
-        * parameter file that will be advected along with the flow field.
-        */
-        unsigned int
-        n_compositional_fields () const;
-      
+      /**
+      * Return the number of compositional fields specified in the input
+      * parameter file that will be advected along with the flow field.
+      */
+      unsigned int
+      n_compositional_fields () const;
+
       /**
       * Compute the error indicators in the same way they are normally used
       * for mesh refinement. The mesh is not refined when doing so, but the
@@ -520,6 +520,7 @@ namespace aspect
          * @{
          */
         unsigned int                   n_compositional_fields;
+        std::vector<unsigned int>      normalized_fields;
         /**
          * @}
          */

@@ -62,6 +62,8 @@ namespace aspect
     // need to write into it and we can not
     // write into vectors with ghost elements
     LinearAlgebra::BlockVector initial_solution;
+    bool normalize_composition = false;
+    double max_sum_comp = 0.0;
 
     for(unsigned int n=0;n<(base_element == 2 ? 1 : parameters.n_compositional_fields);++n)
       {
@@ -99,8 +101,31 @@ namespace aspect
                   (base_element == 2 ?
                       initial_conditions->initial_temperature(fe_values.quadrature_point(i))
                       : compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n));
+
+                // if it is specified in the parameter file that the sum of all compositional fields
+                // must not exceed one, this should be checked
+                if((parameters.normalized_fields.size()>0)
+                    && (base_element == 3)
+                    && (n == 0))
+                  {
+                    double sum = 0;
+                    for(unsigned int m=0;m<parameters.normalized_fields.size();++m)
+                      sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),parameters.normalized_fields[m]);
+                    if(sum<1.0-1e-6 || sum > 1.0+1e-6) {
+                        max_sum_comp = std::max(sum,max_sum_comp);
+                        normalize_composition = true;
+                    }
+                  }
+
+                Assert (initial_solution(local_dof_indices[system_local_dof]) >= 0,
+                        ExcMessage("Invalid initial conditions: Temperature and/or composition is negative"));
               }
           }
+
+      if(normalize_composition){
+          if(n==0) pcout << "Sum of compositional fields is not one, fields will be normalized" << std::endl;
+          initial_solution/=max_sum_comp;
+      }
 
       // we should not have written at all into any of the blocks with
       // the exception of the composition blocks
