@@ -21,21 +21,22 @@
 
 
 #include <aspect/compositional_initial_conditions/function.h>
+#include <aspect/postprocess/interface.h>
 
 namespace aspect
 {
   namespace CompositionalInitialConditions
   {
-    template <int dim>
-    Function<dim>::Function ()
-    {}
+//    template <int dim>
+//    Function<dim>::Function ()
+//    {}
 
     template <int dim>
     double
     Function<dim>::
-    initial_composition (const Point<dim> &position) const
+    initial_composition (const Point<dim> &position, const unsigned int n_comp) const
     {
-      return function->value(position);
+      return function->value(position,n_comp);
     }
 
     template <int dim>

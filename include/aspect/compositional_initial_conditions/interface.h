@@ -44,7 +44,7 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A base class for parameterizations of initial conditions.
+     * A base class for parameterizatiocompositional_initial_conditions/interfacens of initial conditions.
      *
      * @ingroup InitialConditionsModels
      */
@@ -72,7 +72,7 @@ namespace aspect
          * Return the initial temperature as a function of position.
          */
         virtual
-        double initial_composition (const Point<dim> &position) const = 0;
+        double initial_composition (const Point<dim> &position, const unsigned int n_comp) const = 0;
 
 
         /**

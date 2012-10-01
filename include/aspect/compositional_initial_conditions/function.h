@@ -48,13 +48,12 @@ namespace aspect
         /**
          * Constructor.
          */
-        Function ();
 
         /**
-         * Return the initial composition as a function of position.
+         * Return the initial composition as a function of position and number of compositional field.
          */
         virtual
-        double initial_composition (const Point<dim> &position) const;
+        double initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
 
         /**
          * Declare the parameters this class takes through input files.

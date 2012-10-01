@@ -175,7 +175,7 @@ namespace aspect
                 const Point<dim> midpoint (3500000.0,3500000.0);
                 initial_solution(local_dof_indices[system_local_dof])
 //                    = fe_values.quadrature_point(i).distance(midpoint) > 600000 ? 0.0 : 1.0;
-                  = compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i));
+                  = compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n);
               }
           }
 
