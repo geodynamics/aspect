@@ -1990,7 +1990,176 @@ parameter; you can find the input file to run this cookbook example in
 \url{cookbooks/convection-box.prm}):
 
 \begin{lstlisting}[frame=single,language=prmfile]
-############### Global parameters
+# At the top, we define the number of space dimensions we would like to
+# work in:
+set Dimension                              = 2
+
+# There are several global variables that have to do with what
+# time system we want to work in and what the end time is. We
+# also designate an output directory.
+set Use years in output instead of seconds = false
+set End time                               = 0.5
+set Output directory                       = output
+
+# Then there are variables that describe the tolerance of
+# the linear solver as well as how the pressure should
+# be normalized. Here, we choose a zero average pressure
+# at the surface of the domain (for the current geometry, the
+# surface is defined as the top boundary).
+set Linear solver tolerance                = 1e-15
+set Temperature solver tolerance           = 1e-15
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+
+# Then come a number of sections that deal with the setup
+# of the problem to solve. The first one deals with the
+# geometry of the domain within which we want to solve.
+# The sections that follow all have the same basic setup
+# where we select the name of a particular model (here,
+# the box geometry) and then, in a further subsection,
+# set the parameters that are specific to this particular
+# model.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+# The next section deals with the initial conditions for the
+# temperature (there are no initial conditions for the
+# velocity variable since the velocity is assumed to always
+# be in a static equilibrium with the temperature field).
+# There are a number of models with the 'function' model
+# a generic one that allows us to enter the actual initial
+# conditions in the form of a formula that can contain
+# constants. We choose a linear temperature profile that
+# matches the boundary conditions defined below plus
+# a small perturbation:
+subsection Initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
+    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z)
+  end
+end
+
+
+# Then follows a section that describes the boundary conditions
+# for the temperature. The model we choose is called 'box' and
+# allows to set a constant temperature on each of the four sides
+# of the box geometry. In our case, we choose something that is
+# heated from below and cooled from above. (As will be seen
+# in the next section, the actual temperature prescribed here
+# at the left and right does not matter.)
+subsection Boundary temperature model
+  set Model name = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+
+# We then also have to prescribe several other parts of the model
+# such as which boundaries actually carry a prescribed boundary
+# temperature (as described in the documentation of the `box'
+# geometry, boundaries 2 and 3 are the bottom and top boundaries)
+# whereas all other parts of the boundary are insulated (i.e.,
+# no heat flux through these boundaries; this is also often used
+# to specify symmetry boundaries).
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2,3
+  
+  # The next parameters then describe on which parts of the
+  # boundary we prescribe a zero or nonzero velocity and
+  # on which parts the flow is allowed to be tangential.
+  # Here, all four sides of the box allow tangential 
+  # unrestricted flow but with a zero normal component:
+  set Zero velocity boundary indicators       =
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 0,1,2,3
+
+  # The final part of this section describes whether we
+  # want to include adiabatic heating (from a small
+  # compressibility of the medium) or from shear friction,
+  # as well as the rate of internal heating. We do not
+  # want to use any of these options here:
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+  set Radiogenic heating rate                 = 0
+end
+
+
+# The following two sections describe first the
+# direction (vertical) and magnitude of gravity and the
+# material model (i.e., density, viscosity, etc). We have
+# discussed the settings used here in the introduction to
+# this cookbook in the manual already.
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1e14   # = Thermal expansion coefficient * Ra
+  end
+end
+
+
+subsection Material model
+  set Model name = simple # default:
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1e-10
+    set Viscosity                     = 1
+  end
+end
+
+
+# The settings above all pertain to the description of the
+# continuous partial differential equations we want to solve.
+# The following section deals with the discretization of
+# this problem, namely the kind of mesh we want to compute
+# on. We here use a globally refined mesh without
+# adaptive mesh refinement.
+subsection Mesh refinement
+  set Initial global refinement                = 4
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+# The final part is to specify what ASPECT should do with the
+# solution once computed at the end of every time step. The
+# process of evaluating the solution is called `postprocessing'
+# and we choose to compute velocity and temperature statistics,
+# statistics about the heat flux through the boundaries of the
+# domain, and to generate graphical output files for later
+# visualization. These output files are created every time
+# a time step crosses time points separated by 0.01. Given
+# our start time (zero) and final time (0.5) this means that
+# we will obtain 50 output files.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, ...
+                                        ... heat flux statistics, visualization
+  
+  subsection Visualization
+    set Time between graphical output = 0.01
+  end
+end
 \end{lstlisting}
 
 \marginpar{Finish}
@@ -2011,32 +2180,31 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 [... ...]
 
-*** Timestep 1093:  t=0.499561 seconds
+*** Timestep 1077:  t=0.499903 seconds
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 4 iterations.
+   Solving Stokes system... 5 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  43.9 m/s, 70.9 m/s
+     RMS, max velocity:                  43.1 m/s, 69.8 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
-     Heat fluxes through boundary parts: 0.01891 W, -0.01895 W, -4.669 W, 4.669 W
+     Heat fluxes through boundary parts: 0.02056 W, -0.02061 W, -4.931 W, 4.931 W
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       464s |            |
+| Total wallclock time elapsed since start    |       454s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |      1094 |      20.2s |       4.4% |
-| Assemble temperature system     |      1094 |       343s |        74% |
-| Build Stokes preconditioner     |         3 |     0.344s |     0.074% |
-| Build temperature preconditioner|      1094 |      7.21s |       1.6% |
-| Solve Stokes system             |      1094 |      17.7s |       3.8% |
-| Solve temperature system        |      1094 |      4.48s |      0.97% |
-| Create snapshot                 |         2 |     0.279s |      0.06% |
-| Initialization                  |         2 |    0.0477s |      0.01% |
-| Postprocessing                  |      1094 |      48.7s |        11% |
-| Setup dof systems               |         1 |     0.222s |     0.048% |
+| Assemble Stokes system          |      1078 |      19.2s |       4.2% |
+| Assemble temperature system     |      1078 |       329s |        72% |
+| Build Stokes preconditioner     |         1 |    0.0995s |     0.022% |
+| Build temperature preconditioner|      1078 |      5.84s |       1.3% |
+| Solve Stokes system             |      1078 |      15.6s |       3.4% |
+| Solve temperature system        |      1078 |      3.72s |      0.82% |
+| Initialization                  |         2 |    0.0474s |      0.01% |
+| Postprocessing                  |      1078 |      61.9s |        14% |
+| Setup dof systems               |         1 |     0.221s |     0.049% |
 +---------------------------------+-----------+------------+------------+
 \end{lstlisting}
 
@@ -2048,20 +2216,19 @@ time steps and at the end of the program:
 
 \begin{lstlisting}[frame=single,language=ksh]
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      47.2s |            |
+| Total wallclock time elapsed since start    |      48.3s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |      1094 |      1.74s |       3.7% |
-| Assemble temperature system     |      1094 |        27s |        57% |
-| Build Stokes preconditioner     |         3 |    0.0682s |      0.14% |
-| Build temperature preconditioner|      1094 |      5.05s |        11% |
-| Solve Stokes system             |      1094 |      6.87s |        15% |
-| Solve temperature system        |      1094 |      1.81s |       3.8% |
-| Create snapshot                 |         2 |     0.346s |      0.73% |
-| Initialization                  |         2 |   0.00904s |     0.019% |
-| Postprocessing                  |      1094 |      2.54s |       5.4% |
-| Setup dof systems               |         1 |    0.0262s |     0.056% |
+| Assemble Stokes system          |      1078 |      1.68s |       3.5% |
+| Assemble temperature system     |      1078 |      26.3s |        54% |
+| Build Stokes preconditioner     |         1 |    0.0401s |     0.083% |
+| Build temperature preconditioner|      1078 |      4.87s |        10% |
+| Solve Stokes system             |      1078 |      6.76s |        14% |
+| Solve temperature system        |      1078 |      1.76s |       3.7% |
+| Initialization                  |         2 |    0.0241s |      0.05% |
+| Postprocessing                  |      1078 |      4.99s |        10% |
+| Setup dof systems               |         1 |    0.0394s |     0.082% |
 +---------------------------------+-----------+------------+------------+
 \end{lstlisting}
 
@@ -2194,6 +2361,11 @@ the Stokes and temperature equations in each time step.}
 \label{fig:convection-box-iterations}
 \end{figure}
 
+
+\paragraph{Play time.}
+- finer mesh than 16x16
+- higher Ra number
+- different discretization
 
 
 \subsubsection{Convection in a box with prescribed, variable velocity boundary conditions}
