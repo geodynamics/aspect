@@ -40,84 +40,7 @@ namespace aspect
 {
 
   template <int dim>
-  void Simulator<dim>::set_initial_temperature_field ()
-  {
-    // below, we would want to call VectorTools::interpolate on the
-    // entire FESystem. there currently is no way to restrict the
-    // interpolation operations to only a subset of vector
-    // components (oversight in deal.II?), specifically to the
-    // temperature component. this causes more work than necessary
-    // but worse yet, it doesn't work for the DGP(q) pressure element
-    // if we use a locally conservative formulation since there the
-    // pressure element is non-interpolating (we get an exception
-    // even though we are, strictly speaking, not interested in
-    // interpolating the pressure; but, as mentioned, there is no way
-    // to tell VectorTools::interpolate that)
-    //
-    // to work around this problem, the following code is essentially
-    // a (simplified) copy of the code in VectorTools::interpolate
-    // that only works on the temperature component
-
-    // create a fully distributed vector since we
-    // need to write into it and we can not
-    // write into vectors with ghost elements
-    LinearAlgebra::BlockVector initial_solution;
-    initial_solution.reinit(system_rhs);
-
-    // get the temperature support points
-    const std::vector<Point<dim> > temperature_support_points
-      = finite_element.base_element(2).get_unit_support_points();
-    Assert (temperature_support_points.size() != 0,
-            ExcInternalError());
-
-    // create an FEValues object with just the temperature element
-    FEValues<dim> fe_values (mapping, finite_element,
-                             temperature_support_points,
-                             update_quadrature_points);
-
-    std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
-
-    for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
-         cell != dof_handler.end(); ++cell)
-      if (cell->is_locally_owned())
-        {
-          fe_values.reinit (cell);
-
-          // go through the temperature dofs and set their global values
-          // to the temperature field interpolated at these points
-          cell->get_dof_indices (local_dof_indices);
-          for (unsigned int i=0; i<finite_element.base_element(2).dofs_per_cell; ++i)
-            {
-              const unsigned int system_local_dof
-                = finite_element.component_to_system_index(/*temperature component=*/dim+1,
-                                                                                     /*dof index within component=*/i);
-
-              initial_solution(local_dof_indices[system_local_dof])
-                = initial_conditions->initial_temperature(fe_values.quadrature_point(i));
-            }
-        }
-
-    // we should not have written at all into any of the blocks with
-    // the exception of the temperature block
-    for (unsigned int b=0; b<initial_solution.n_blocks(); ++b)
-      if (b != 2)
-        Assert (initial_solution.block(b).l2_norm() == 0,
-                ExcInternalError());
-
-    // then apply constraints and copy the
-    // result into vectors with ghost elements
-    constraints.distribute(initial_solution);
-
-    // copy temperature block only
-    solution.block(2) = initial_solution.block(2);
-    old_solution.block(2) = initial_solution.block(2);
-    old_old_solution.block(2) = initial_solution.block(2);
-  }
-
-
-// TODO merge with the preceding function
-  template <int dim>
-  void Simulator<dim>::set_initial_compositional_field ()
+  void Simulator<dim>::set_initial_field (unsigned int base_element)
   {
     // below, we would want to call VectorTools::interpolate on the
     // entire FESystem. there currently is no way to restrict the
@@ -140,19 +63,19 @@ namespace aspect
     // write into vectors with ghost elements
     LinearAlgebra::BlockVector initial_solution;
 
-    for(unsigned int n=0;n<parameters.n_compositional_fields;++n)
+    for(unsigned int n=0;n<(base_element == 2 ? 1 : parameters.n_compositional_fields);++n)
       {
       initial_solution.reinit(system_rhs,false);
 
-      // get the temperature support points
-      const std::vector<Point<dim> > composition_support_points
-        = finite_element.base_element(3).get_unit_support_points();
-      Assert (composition_support_points.size() != 0,
+      // get the temperature/composition support points
+      const std::vector<Point<dim> > support_points
+        = finite_element.base_element(base_element).get_unit_support_points();
+      Assert (support_points.size() != 0,
               ExcInternalError());
 
-      // create an FEValues object with just the composition element
+      // create an FEValues object with just the temperature/composition element
       FEValues<dim> fe_values (mapping, finite_element,
-                               composition_support_points,
+                               support_points,
                                update_quadrature_points);
 
       std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
@@ -163,26 +86,26 @@ namespace aspect
           {
             fe_values.reinit (cell);
 
-            // go through the composition dofs and set their global values
-            // to the composition field interpolated at these points
+            // go through the temperature/composition dofs and set their global values
+            // to the temperature/composition field interpolated at these points
             cell->get_dof_indices (local_dof_indices);
-            for (unsigned int i=0; i<finite_element.base_element(3).dofs_per_cell; ++i)
+            for (unsigned int i=0; i<finite_element.base_element(base_element).dofs_per_cell; ++i)
               {
                 const unsigned int system_local_dof
-                  = finite_element.component_to_system_index(/*composition component=*/dim+2+n,
-                                                                                       /*dof index within component=*/i);
+                  = finite_element.component_to_system_index(/*temperature/composition component=*/dim+base_element-1+n,
+                                                                                /*dof index within component=*/i);
 
-                const Point<dim> midpoint (3500000.0,3500000.0);
-                initial_solution(local_dof_indices[system_local_dof])
-//                    = fe_values.quadrature_point(i).distance(midpoint) > 600000 ? 0.0 : 1.0;
-                  = compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n);
+                initial_solution(local_dof_indices[system_local_dof]) =
+                  (base_element == 2 ?
+                      initial_conditions->initial_temperature(fe_values.quadrature_point(i))
+                      : compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n));
               }
           }
 
       // we should not have written at all into any of the blocks with
       // the exception of the composition blocks
       for (unsigned int b=0; b<initial_solution.n_blocks(); ++b)
-        if (b != 3+n)
+        if (b != base_element+n)
           Assert (initial_solution.block(b).l2_norm() == 0,
                   ExcInternalError());
 
@@ -191,12 +114,11 @@ namespace aspect
       constraints.distribute(initial_solution);
 
       // copy composition block only
-      solution.block(3+n) = initial_solution.block(3+n);
-      old_solution.block(3+n) = initial_solution.block(3+n);
-      old_old_solution.block(3+n) = initial_solution.block(3+n);
+      solution.block(base_element+n) = initial_solution.block(base_element+n);
+      old_solution.block(base_element+n) = initial_solution.block(base_element+n);
+      old_old_solution.block(base_element+n) = initial_solution.block(base_element+n);
       }
   }
-
 
 
   template <int dim>
@@ -340,8 +262,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template void Simulator<dim>::set_initial_temperature_field(); \
-  template void Simulator<dim>::set_initial_compositional_field(); \
+  template void Simulator<dim>::set_initial_field(unsigned int base_element); \
   template void Simulator<dim>::compute_initial_pressure_field();
 
   ASPECT_INSTANTIATE(INSTANTIATE)

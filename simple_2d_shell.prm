@@ -19,7 +19,7 @@ set End time                               = 1e12
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
-set Output directory                       = output
+set Output directory                       = output1
 
 # A flag indicating whether the computation should be resumed from a
 # previously saved state (if true) or start from scratch (if false).
@@ -201,7 +201,12 @@ subsection Initial conditions
 end
 
 subsection Compositional initial conditions
-
+  # Select one of the following models:
+  # 
+  # `function':
+  # An initial compositional field that is determined by the functions stated under
+  # set Function expression. Give as many functions as there are compositional fields, 
+  # separate functions by semicolons.
   set Model name = function
 
   subsection Function

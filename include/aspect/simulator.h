@@ -592,8 +592,8 @@ namespace aspect
       void setup_dofs ();
 
       /**
-       * A function that is responsible for initializing the temperature field
-       * before the first time step. This temperature field then serves as the
+       * A function that is responsible for initializing the temperature/compositional
+       * field before the first time step. The temperature field then serves as the
        * temperature from which the velocity is computed during the first time
        * step, and is subsequently overwritten by the temperature field one gets
        * by advancing by one time step.
@@ -601,17 +601,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/initial_conditions.cc</code>.
        */
-      void set_initial_temperature_field ();
-
-      /**
-       * A function that is responsible for initializing the compositional field(s)
-       * before the first time step. This compositional field  is subsequently
-       * overwritten by the temperature field one gets by advancing by one time step.
-       *
-       * This function is implemented in
-       * <code>source/simulator/initial_conditions.cc</code>.
-       */
-      void set_initial_compositional_field ();
+      void set_initial_field (unsigned int base_element);
 
       /**
        * A function that initializes the pressure variable before the first

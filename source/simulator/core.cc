@@ -695,27 +695,8 @@ namespace aspect
 
         }
 
-      // set composition to zero on all boundaries
+      // we do nothing with the compositional fields: homogeneous Neumann boundary conditions
 
-        if(parameters.n_compositional_fields>0) {
-          std::vector<bool> composition_mask (dim+2+parameters.n_compositional_fields, false);
-          for(unsigned int i=dim+2;i<dim+2+parameters.n_compositional_fields;++i)
-            composition_mask[i] = true;
-
-          for (unsigned char
-               p = 0;
-               p != 4; ++p)
-            {
-              Assert (is_element (p, geometry_model->get_used_boundary_indicators()),
-                      ExcInternalError());
-              VectorTools::interpolate_boundary_values (dof_handler,
-                                                        p,
-                                                        ZeroFunction<dim>(dim+2+parameters.n_compositional_fields),
-                                                        constraints,
-                                                        composition_mask);
-            }
-
-          }
       constraints.close();
     }
 
@@ -1258,8 +1239,8 @@ namespace aspect
     if (parameters.resume_computation == false)
       {
         computing_timer.enter_section ("Initialization");
-        set_initial_temperature_field ();
-        set_initial_compositional_field ();
+        set_initial_field (2); //temperature
+        set_initial_field (3); //composition
         compute_initial_pressure_field ();
 
         time                      = parameters.start_time;
