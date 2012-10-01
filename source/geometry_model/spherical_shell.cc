@@ -133,7 +133,7 @@ namespace aspect
     SphericalShell<dim>::representative_point(const double depth) const
     {
       Point<dim> p;
-      p(dim-1) = std::min (std::max(R1 - depth, 0.), maximal_depth());
+      p(dim-1) = std::min (std::max(R1 - depth, R0), R1);
       return p;
     }
 
