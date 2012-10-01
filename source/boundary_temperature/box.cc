@@ -115,14 +115,26 @@ namespace aspect
       {
         prm.enter_subsection("Box");
         {
-          temperature_[0] = prm.get_double ("Left temperature");
-          temperature_[1] = prm.get_double ("Right temperature");
-          temperature_[2] = prm.get_double ("Bottom temperature");
-          temperature_[3] = prm.get_double ("Top temperature");
-          if (dim==3)
+          switch (dim)
             {
-              temperature_[4] = prm.get_double ("Front temperature");
-              temperature_[5] = prm.get_double ("Back temperature");
+              case 2:
+                temperature_[0] = prm.get_double ("Left temperature");
+                temperature_[1] = prm.get_double ("Right temperature");
+                temperature_[2] = prm.get_double ("Bottom temperature");
+                temperature_[3] = prm.get_double ("Top temperature");
+                break;
+
+              case 3:
+                temperature_[0] = prm.get_double ("Left temperature");
+                temperature_[1] = prm.get_double ("Right temperature");
+                temperature_[2] = prm.get_double ("Front temperature");
+                temperature_[3] = prm.get_double ("Back temperature");
+                temperature_[4] = prm.get_double ("Bottom temperature");
+                temperature_[5] = prm.get_double ("Top temperature");
+                break;
+
+              default:
+                Assert (false, ExcNotImplemented());
             }
         }
         prm.leave_subsection ();
