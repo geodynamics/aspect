@@ -81,24 +81,24 @@ namespace aspect
         {
           prm.declare_entry ("Left temperature", "1",
                              Patterns::Double (),
-                             "Temperature at the Left boundary. Units: K.");
+                             "Temperature at the left boundary (at minimal x-value). Units: K.");
           prm.declare_entry ("Right temperature", "0",
                              Patterns::Double (),
-                             "Temperature at the Right boundary. Units: K.");
+                             "Temperature at the right boundary (at maximal x-value). Units: K.");
           prm.declare_entry ("Bottom temperature", "0",
                              Patterns::Double (),
-                             "Temperature at the Bottom boundary. Units: K.");
+                             "Temperature at the bottom boundary (at minimal z-value). Units: K.");
           prm.declare_entry ("Top temperature", "0",
                              Patterns::Double (),
-                             "Temperature at the Top boundary. Units: K.");
+                             "Temperature at the top boundary (at maximal x-value). Units: K.");
           if (dim==3)
             {
               prm.declare_entry ("Front temperature", "0",
                                  Patterns::Double (),
-                                 "Temperature at the Front boundary. Units: K.");
+                                 "Temperature at the front boundary (at minimal y-value). Units: K.");
               prm.declare_entry ("Back temperature", "0",
                                  Patterns::Double (),
-                                 "Temperature at the Back boundary. Units: K.");
+                                 "Temperature at the back boundary (at maximal y-value). Units: K.");
             }
         }
         prm.leave_subsection ();
