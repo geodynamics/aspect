@@ -359,6 +359,11 @@ namespace aspect
         virtual
         double
         seismic_Vp (const double      temperature,
+                    const double      pressure,
+                    const Point<dim> &position) const;
+        virtual
+        double
+        seismic_Vp (const double      temperature,
                     const double      pressure) const;
 
         /**
@@ -372,6 +377,11 @@ namespace aspect
          * function returns -1 to indicate that no useful value is
          * implemented.
          */
+        virtual
+        double
+        seismic_Vs (const double      temperature,
+                    const double      pressure,
+                    const Point<dim> &position) const;
         virtual
         double
         seismic_Vs (const double      temperature,

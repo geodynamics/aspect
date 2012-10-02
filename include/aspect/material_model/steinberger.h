@@ -80,10 +80,12 @@ namespace aspect
                                                       const Point<dim> &position) const;
 
         virtual double seismic_Vp (const double      temperature,
-                                   const double      pressure) const;
+                                   const double      pressure,
+                                   const Point<dim> &position) const;
 
         virtual double seismic_Vs (const double      temperature,
-                                   const double      pressure) const;
+                                   const double      pressure,
+                                   const Point<dim> &position) const;
         /**
          * @}
          */

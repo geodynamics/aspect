@@ -517,27 +517,28 @@ namespace aspect
  		 const double alpha = (1 - density(temperature,pressure,position) * dHdp) / temperature;
  		 return std::max(std::min(alpha,1e-3),1e-5);
  	 }
-
     }
 
     template <int dim>
     double
     Steinberger<dim>::
     seismic_Vp (const double      temperature,
-                const double      pressure) const
+                const double      pressure,
+                const Point<dim> &position) const
     {
       static std::string datapath = datadirectory+material_file_name;
-      return get_material_data(datapath,interpolation).seismic_Vp(temperature,pressure);
+      return get_material_data(datapath,interpolation).seismic_Vp(temperature+get_deltat(position),pressure);
     }
 
     template <int dim>
     double
     Steinberger<dim>::
     seismic_Vs (const double      temperature,
-                const double      pressure) const
+                const double      pressure,
+                const Point<dim> &position) const
     {
       static std::string datapath = datadirectory+material_file_name;
-      return get_material_data(datapath,interpolation).seismic_Vs(temperature,pressure);
+      return get_material_data(datapath,interpolation).seismic_Vs(temperature+get_deltat(position),pressure);
     }
 
 
