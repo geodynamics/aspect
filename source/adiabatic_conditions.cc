@@ -96,7 +96,7 @@ namespace aspect
 
 	  for(unsigned int n = 0 ; n < num_slices; n++)
 	  {
-		  depth = n * max_depth / num_slices;
+		  depth = n * max_depth / (num_slices-1);
 		  const Point<dim> p = geometry_model.representative_point(depth);
 		  values[n] = temperature(p);
 	  }
