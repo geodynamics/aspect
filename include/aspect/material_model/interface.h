@@ -361,10 +361,6 @@ namespace aspect
         seismic_Vp (const double      temperature,
                     const double      pressure,
                     const Point<dim> &position) const;
-        virtual
-        double
-        seismic_Vp (const double      temperature,
-                    const double      pressure) const;
 
         /**
          * Return the s-wave seismic velocity Vs of the model as a
@@ -382,10 +378,6 @@ namespace aspect
         seismic_Vs (const double      temperature,
                     const double      pressure,
                     const Point<dim> &position) const;
-        virtual
-        double
-        seismic_Vs (const double      temperature,
-                    const double      pressure) const;
         /**
          * Return the Phase number of the model as a function of
          * temperature and pressure.
