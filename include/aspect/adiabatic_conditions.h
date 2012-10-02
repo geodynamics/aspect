@@ -65,6 +65,11 @@ namespace aspect
       double temperature (const Point<dim> &p) const;
 
       /**
+       * Return the adiabatic temperature profile as a vector with n points
+       */
+      void get_adiabatic_temperature_profile(std::vector<double> &values,unsigned int num_slices) const;
+
+      /**
        * Return the adiabatic pressure at a given point of the domain.
        */
       double pressure (const Point<dim> &p) const;
