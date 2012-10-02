@@ -64,6 +64,7 @@ namespace aspect
     LinearAlgebra::BlockVector initial_solution;
     bool normalize_composition = false;
     double max_sum_comp = 0.0;
+    double global_max = 0.0;
 
     for(unsigned int n=0;n<(base_element == 2 ? 1 : parameters.n_compositional_fields);++n)
       {
@@ -123,8 +124,11 @@ namespace aspect
           }
 
       if(normalize_composition){
+          global_max = max_sum_comp;
+          global_max = Utilities::MPI::max (max_sum_comp, mpi_communicator);
           if(n==0) pcout << "Sum of compositional fields is not one, fields will be normalized" << std::endl;
-          initial_solution/=max_sum_comp;
+          for(unsigned int m=0;m<parameters.normalized_fields.size();++m)
+            if(n==parameters.normalized_fields[m]) initial_solution/=global_max;
       }
 
       // we should not have written at all into any of the blocks with

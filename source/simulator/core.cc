@@ -285,7 +285,7 @@ namespace aspect
          * @param function_object The scalar function that will form one component
          *     of the resulting Function object.
          **/
-        VectorFunctionFromVelocityFunctionObject (const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
+        VectorFunctionFromVelocityFunctionObject (unsigned int n_comp_fields, const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
 
         /**
          * Return the value of the
@@ -321,9 +321,9 @@ namespace aspect
     template <int dim>
     VectorFunctionFromVelocityFunctionObject<dim>::
     VectorFunctionFromVelocityFunctionObject
-    (const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
+    (unsigned int n_comp_fields, const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
       :
-      Function<dim>(dim+2),
+      Function<dim>(dim+2+n_comp_fields),
       function_object (function_object)
     {
     }
@@ -435,12 +435,14 @@ namespace aspect
            p != velocity_boundary_conditions.end(); ++p)
         {
           p->second->set_current_time (time);
+          VectorFunctionFromVelocityFunctionObject<dim> vel
+                                                              (parameters.n_compositional_fields,
+                                                                  std_cxx1x::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,
+                                                                                p->second,
+                                                                                std_cxx1x::_1));
           VectorTools::interpolate_boundary_values (dof_handler,
                                                     p->first,
-                                                    VectorFunctionFromVelocityFunctionObject<dim>
-                                                    (std_cxx1x::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,
-                                                                      p->second,
-                                                                      std_cxx1x::_1)),
+                                                    vel,
                                                     current_constraints,
                                                     velocity_mask);
         }
