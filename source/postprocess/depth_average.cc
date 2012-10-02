@@ -68,11 +68,12 @@ namespace aspect
       if (this->get_time() < next_output_time)
         return std::pair<std::string,std::string>();
 
-      const unsigned int n_statistics = 6;
+      const unsigned int n_statistics = 7;
       std::vector<double> temp[n_statistics];
       {
         unsigned int i = 0;
         this->get_depth_average_temperature(temp[i++]);
+        this->get_adiabatic_conditions().get_adiabatic_temperature_profile(temp[i++],100);
         this->get_depth_average_velocity_magnitude(temp[i++]);
         this->get_depth_average_sinking_velocity(temp[i++]);
         this->get_depth_average_Vs(temp[i++]);
@@ -106,7 +107,7 @@ namespace aspect
           // write out the file
           const std::string filename = this->get_output_directory() + "depthaverage.plt";
           std::ofstream f (filename.c_str());
-          f << "# time, depth, avg T, velocity magnitude, avg sinking velocity, avg Vs, avg Vp, avg viscosity" << std::endl;
+          f << "# time, depth, avg T, adiabatic T, velocity magnitude, avg sinking velocity, avg Vs, avg Vp, avg viscosity" << std::endl;
           f << std::scientific;
 
           for (unsigned int i=0; i<entries.size(); ++i)
