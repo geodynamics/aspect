@@ -1049,7 +1049,7 @@ namespace aspect
               const double temperature_residual = solve_temperature();
 
               current_linearization_point.block(2) = solution.block(2);
-
+rebuild_stokes_matrix = true;
               assemble_stokes_system();
               if (iteration == 0)
                 build_stokes_preconditioner();
