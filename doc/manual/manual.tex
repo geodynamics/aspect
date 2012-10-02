@@ -1971,15 +1971,78 @@ of our solvers (Section~\ref{sec:cookbooks-benchmarks}).
 \label{sec:cookbooks-simple-box}
 
 In this first example, let us consider a simple situation: a 2d box of dimensions
-$[0,1.2]\times [0,1]$ where we keep the velocity at the left, bottom and right
-boundaries fixed at zero, but allow free slip along the right boundary (in
-other words, along the right boundary we have $\mathbf u \cdot \mathbf n=0$,
-but the tangential component of $\mathbf u$ is unconstrained). Furthermore, we
-assume that the temperature is one along the left, bottom and top boundaries,
-but zero along the right boundary. This results in a situation where the cold
-material along the right wall has negative buoyancy, drops down and creates a
-convection roll in the box. The fact that the domain has different extents in
-the $x$- and $y$-directions complicates the resulting flow slightly.
+$[0,1]\times [0,1]$ that is heated from below, insulated at the left and right,
+and cooled from the top. We will also consider the simplest model, the
+incompressible Boussinesq approximation with constant coefficients
+$\eta,\rho_0,\mathbf g,C_p k$, for this testcase. Furthermore, we
+assume that the medium expands linearly with
+temperature. This leads to the following set of equations:
+\begin{align}
+  -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
+                \right] + \nabla p &=
+  \rho_0 (1-\alpha (T-T_0)) \mathbf g
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \nabla \cdot \mathbf u &= 0
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \rho_0 (1-\alpha (T-T_0)) C_p \left(\frac{\partial T}{\partial t} + \mathbf
+  u\cdot\nabla T\right) - \nabla\cdot k\nabla T
+  &=
+  0
+  & \qquad
+  & \textrm{in $\Omega$}.
+\end{align}
+It is well known that we can non-dimensionalize this set of equations by
+choosing introducing the Raleigh number $Ra=\frac{g\alpha}{\eta k}$. Formally,
+we can obtain the non-dimensionalized equations by using the above form and
+setting coefficients in the following way:
+\begin{align*}
+  \rho_0=C_p=k=\alpha=\eta=1, \qquad T_0=0, \qquad g=Ra, 
+\end{align*}
+where $\mathbf g=-g \mathbf e_z$ is the gravity vector in negative
+$z$-direction. While this would be a valid description of the problem, it is not
+what one typically finds in the literature because there the density in the
+temperature equation is chosen as $\rho_0$ rather than $\rho(1-\alpha(T-T_0))$
+as used by \aspect{}. However, we can mimick this by choosing a very small value
+for $\alpha$ -- small enough to ensure that for all reasonable temperatures,
+the density used here is equal to $\rho_0$ for all practical purposes --, and
+instead making $g$ correspondingly larger.
+Consequently, in this cookbook we will use the following set of parameters:
+\begin{align*}
+  \rho_0=C_p=T_0=k=\eta=1, \qquad T_0=0, \qquad \alpha=10^{-10}, \qquad
+  g=10^{10} Ra.
+\end{align*}
+We will see all of these values again in the input file discussed below.
+The problem is completed by stating the velocity boundary conditions: tangential
+flow along all four of the boundaries of the box.
+
+This situation describes a well-known benchmark problems for which a lot is
+known and against which we can compare our results. For example, the following
+is well understood:
+\begin{itemize}
+  \item For values of the Rayleigh number less than a critical number
+  $Ra_c\approx 780$, thermal diffusion dominates convective heat transport and
+  any movement in the fluid is damped exponentially. If the Rayleigh number is moderately larger
+  than this threshold then a stable convection pattern forms that transports
+  heat from the bottom to the top boundaries. The simulations we will set up
+  operates in this regime. Specifically, we will choose $Ra=10^4$.
+  
+  On the other hand, if the Rayleigh number becomes even larger, a serious of
+  period doublings starts that makes the system become more and more unstable.
+  We will investigate some of this behavior at the end of this section.
+  
+  \item For certain values of the Rayleigh number, very accurate values for the
+  heat flux through the bottom and top boundaries are available in the literate.
+  For example, Blankenbach \textit{et al.} report a non-dimensional heat flux of
+  $4.884409 \pm 0.00001$, see \cite{BBC89}. We will compare our results against
+  this value below.
+\end{itemize}
+
+With this said, let us consider how to represent this situation in practice.
+
 
 \paragraph{The input file.}
 The verbal description of this problem can be translated into an \aspect{}
@@ -2121,7 +2184,7 @@ subsection Material model
   subsection Simple model
     set Reference density             = 1 % \index[prmindex]{Reference density} \index[prmindexfull]{Material model!Simple model!Reference density} %
     set Reference specific heat       = 1 % \index[prmindex]{Reference specific heat} \index[prmindexfull]{Material model!Simple model!Reference specific heat} %
-    set Reference temperature         = 1 % \index[prmindex]{Reference temperature} \index[prmindexfull]{Material model!Simple model!Reference temperature} %
+    set Reference temperature         = 0 % \index[prmindex]{Reference temperature} \index[prmindexfull]{Material model!Simple model!Reference temperature} %
     set Thermal conductivity          = 1 % \index[prmindex]{Thermal conductivity} \index[prmindexfull]{Material model!Simple model!Thermal conductivity} %
     set Thermal expansion coefficient = 1e-10 % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Simple model!Thermal expansion coefficient} %
     set Viscosity                     = 1 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
@@ -2162,7 +2225,6 @@ subsection Postprocess
 end
 \end{lstlisting}
 
-\marginpar{Finish}
 
 \paragraph{Running the program.}
 When you run this program for the first time, you are probably still running
@@ -2180,7 +2242,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 [... ...]
 
-*** Timestep 1077:  t=0.499903 seconds
+*** Timestep 1077:  t=0.499901 seconds
    Solving temperature system... 9 iterations.
    Solving Stokes system... 5 iterations.
 
@@ -2317,10 +2379,14 @@ $t\approx 0.2$, the fluxes differ by only $5\cdot 10^{-5}$, i.e., by less than
 0.001\% of their magnitude.%
 \footnote{This difference is far smaller than the numerical error in the heat
 flux on the mesh this data is computed on.}
-Secondly, the fluxes through the left and right boundary are not exactly zero
-but small. Of course, we have prescribed boundary conditions of the form
-$\frac{\partial T}{\partial \mathbf n}=0$ along these boundaries, but this is
-subject to discretization errors. It is easy to verify that the heat flux
+The flux we get at the last time step, 4.931, is less than 1\% away from the
+value reported in \cite{BBC89} although we compute on a $16\times 16$ mesh and
+the values reported by Blankenbach are extrapolated from meshes of size up to
+$72\times 72$. This shows the accuracy that can be obtained using a higher order
+finite element. Secondly, the fluxes through the left and right boundary are not
+exactly zero but small. Of course, we have prescribed boundary conditions of the
+form $\frac{\partial T}{\partial \mathbf n}=0$ along these boundaries, but this
+is subject to discretization errors. It is easy to verify that the heat flux
 through these two boundaries disappears as we refine the mesh further.
 
 \begin{figure}
@@ -2364,8 +2430,38 @@ the Stokes and temperature equations in each time step.}
 
 \paragraph{Play time.}
 - finer mesh than 16x16
+- increase mesh size in stages
 - higher Ra number
 - different discretization
+
+\begin{figure}
+\phantom.
+\hfill
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e2_visit0000}
+\hfill
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e6_visit0001}
+\hfill
+\phantom.
+\caption{\it Convection in a box: Temperature fields at the end of a
+simulation for $Ra=10^2$ where thermal diffusion dominates (left) and $Ra=10^6$
+where convective heat transport dominates (right).
+The mesh on the right is clearly too coarse to resolve the structure of the solution.}
+\label{fig:convection-box-fields-different-Ra}
+\end{figure}
+
+\begin{figure}
+\phantom.
+\hfill
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e6_velocity}
+\hfill
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/ra_1e6_heatflux}
+\hfill
+\phantom.
+\caption{\it Convection in a box: Velocities (left) and heat flux across the
+top and bottom boundaries (right) as a function of time at $Ra=10^6$.}
+\label{fig:convection-box-stats-different-Ra}
+\end{figure}
+
 
 
 \subsubsection{Convection in a box with prescribed, variable velocity boundary conditions}
