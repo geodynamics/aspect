@@ -73,7 +73,7 @@ subsection Boundary temperature model
     set Inner temperature = 4273
 
     # Temperature at the outer boundary (lithosphere water/air). Units: K.
-    set Outer temperature = 973
+    set Outer temperature = 273
   end
 
 end
@@ -133,7 +133,7 @@ subsection Geometry model
     set Opening angle = 90
 
     # Outer radius of the spherical shell. Units: m.
-    set Outer radius  = 6336000
+    set Outer radius  = 6371000
   end
 
 end
@@ -154,7 +154,7 @@ subsection Gravity model
   # inward and with a magnitude that matches that of the earth at the
   # core-mantle boundary as well as at the surface and in between is
   # physically correct under the assumption of a constant density.
-  set Model name = radial earth-like
+  set Model name = radial constant
 
 
   subsection Radial constant
@@ -233,6 +233,12 @@ subsection Material model
   # The value for the components of this formula and additional parameters are
   # read from the parameter file in subsection 'Simple model'.
   set Model name = Steinberger
+
+  subsection Steinberger model
+    set Bilinear interpolation = true
+    set Latent heat            = false
+  end
+
 end
 
 
@@ -349,7 +355,7 @@ subsection Postprocess
     # The file format to be used for graphical output.
     set Output format                 = vtu
     
-    set List of output variables      = viscosity
+    set List of output variables      = viscosity, density, thermal expansivity, specific heat, seismic vp, seismic vs
 
     # The time interval between each generation of graphical output files. A
     # value of zero indicates that output should be generated in each time

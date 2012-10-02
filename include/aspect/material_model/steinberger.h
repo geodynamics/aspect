@@ -20,8 +20,8 @@
 /*  $Id$  */
 
 
-#ifndef __aspect__model_table_h
-#define __aspect__model_table_h
+#ifndef __aspect__model_steinberger_h
+#define __aspect__model_steinberger_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator.h>
@@ -176,6 +176,8 @@ namespace aspect
           */
 
       private:
+        bool interpolation;
+        bool latent_heat;
         std::vector<double> avg_temp;
         std::string datadirectory;
         std::string material_file_name;
