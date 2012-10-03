@@ -2501,7 +2501,7 @@ end
 will achieve the desired effect of computing with $Ra=10^6$.
 
 
-\paragraph{Play time 2: Thinking about finer meshes}
+\paragraph{Play time 2: Thinking about finer meshes.}
 In our computations for $Ra=10^4$ we used a $16\times 16$ mesh and obtained a
 value for the heat flux that differed from the generally accepted value from
 Blankenbach \textit{et al.} \cite{BBC89} by less than 1\%. However, it may be
@@ -2586,14 +2586,113 @@ indicating that the mesh before this refinement step may already have been fine
 enough to resolve the majority of the dynamics.
 
 In any case, we can compare the heat fluxes we obtain at the end of these
-computations: With a globally four times refined mesh, we get a value of 4.931,
-with a globally five times refined mesh 4.914 and with the mesh generated using
-the procedure above we get 4.895 with the four digits printed on the screen
-(the statistics file gives a more exact value, 4.89488768).
-The accepted value from Blankenbach is $4.884409\pm 0.00001$. In other words, our
+computations: With a globally four times refined mesh, we get a value of 4.931
+(an error of approximately 1\% against the accepted value from Blankenbach,
+$4.884409\pm 0.00001$). With a globally five times refined mesh we get 4.914 (an
+error of 0.6\%) and with the mesh generated using the procedure above we get
+4.895 with the four digits printed on the screen%
+\footnote{The statistics file gives this
+value to more digits: 4.89488768. However, these are clearly more digits than
+the result is accurate.}
+(corresponding to an error of 0.2\%). In other words, our
 simple procedure of refining the mesh during the simulation run yields an
-accuracy of 0.2\%.
+accuracy of three times smaller than using the globally refined approach even
+though the compute time is not much larger than that necessary for the 5 times
+globally refined mesh.
 
+
+\paragraph{Play time 3: Changing the finite element in use.}
+Another way to increase the accuracy of a finite element computation is to use a
+higher polynomial degree for the finite element shape functions. By default,
+\aspect{} uses quadratic shape functions for the velocity and the temperature
+and linear ones for the pressure. However, this can be changed with a single
+number in the input file. 
+
+Before doing so, let us consider some aspects of such a change. First, looking
+at the pictures of the solution in Fig.~\ref{fig:convection-box-fields}, one
+could surmise that the quadratic elements should be able to resolve the velocity
+field reasonably well given that it is rather smooth. On the other hand, the
+temperature field has a boundary layer at the top and bottom. One could
+conjecture that the temperature polynomial degree is therefore the limiting
+factor and not the polynomial degree for the flow variables. We will test this
+conjecture below. Secondly, given the nature of the equations, increasing the
+polynomial degree of the flow variables increases the cost to solve these
+equations by a factor of $\frac{22}{9}$ in 2d (you can get this factor by
+counting the number of degrees of freedom uniquely associated with each cell) but leaves
+the time step size and the cost of solving the temperature system unchanged. On
+the other hand, increasing the polynomial degree of the temperature variable
+from 2 to 3 requires $\frac 94$ times as many degrees of freedom for the
+temperature and also requires us to reduce the size of the time step by a factor
+of $\frac 23$. Because solving the temperature system is not a dominant factor
+in each time step (see the timing results shown at the end of the screen output
+above), the reduction in time step is the only important factor. Overall,
+increasing the polynomial degree of the temperature variable turns out to be the
+cheaper of the two options.
+
+Following these considerations, let us add the following section to the
+parameter file:
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2 % \index[prmindex]{Stokes velocity polynomial degree} \index[prmindexfull]{Discretization!Stokes velocity polynomial degree} %
+  set Temperature polynomial degree           = 3 % \index[prmindex]{Temperature polynomial degree} \index[prmindexfull]{Discretization!Temperature polynomial degree} %
+end
+\end{lstlisting}
+This leaves the velocity and pressure shape functions at quadratic and linear
+polynomial degree but increases the polynomial degree of the temperature from
+quadratic to cubic. Using the original, four times globally refined mesh, we 
+then get the following output:
+\begin{lstlisting}[frame=single,language=ksh]
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 4,868 (2,178+289+2,401)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+5 iterations.
+
+[... ...]
+
+*** Timestep 1619:  t=0.499807 seconds
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.5 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: -0.004622 W, 0.004624 W, -4.878 W, 4.878 W
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |       127s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |      1620 |      3.03s |       2.4% |
+| Assemble temperature system     |      1620 |      75.7s |        60% |
+| Build Stokes preconditioner     |         1 |    0.0422s |     0.033% |
+| Build temperature preconditioner|      1620 |      21.7s |        17% |
+| Solve Stokes system             |      1620 |      10.3s |       8.1% |
+| Solve temperature system        |      1620 |       4.9s |       3.8% |
+| Initialization                  |         2 |    0.0246s |     0.019% |
+| Postprocessing                  |      1620 |      8.05s |       6.3% |
+| Setup dof systems               |         1 |    0.0438s |     0.034% |
++---------------------------------+-----------+------------+------------+
+\end{lstlisting}
+
+Note here that the heat flux through the top and bottom boundaries is now
+computed as 4.878, an error of 0.13\%. This is 4 times more accurate than the
+once more globally refined mesh with the original quadratic elements, at a cost
+significantly smaller. Furthermore, we can of course combine this with the mesh
+that is gradually refined as simulation time progresses, and we then get a heat
+flux that is equal to 4.8843, only 0.002\% away from the accepted value!
+
+As a final remark, to test our hypothesis that it was indeed the temperature
+polynomial degree that was the limiting factor, we can increase the Stokes
+polynomial degree to 3 while leaving the temperature polynomial degree at 2. A
+quick computation shows that in that case we get a heat flux of 4.931 -- exactly
+the same value as we got initially with the lower order Stokes element. In other
+words, at least for this testcase, it really was the temperature variable that
+limits the accuracy.
 
 
 \subsubsection{Convection in a box with prescribed, variable velocity boundary conditions}
