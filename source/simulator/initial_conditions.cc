@@ -126,13 +126,6 @@ namespace aspect
           }
 
       initial_solution.compress();
-      
-      if(normalize_composition){
-          global_max = Utilities::MPI::max (max_sum_comp, mpi_communicator);
-          if(n==0) pcout << "Sum of compositional fields is not one, fields will be normalized" << std::endl;
-          for(unsigned int m=0;m<parameters.normalized_fields.size();++m)
-            if(n==parameters.normalized_fields[m]) initial_solution/=global_max;
-      }
 
       // we should not have written at all into any of the blocks with
       // the exception of the composition blocks
@@ -140,6 +133,15 @@ namespace aspect
         if (b != base_element+n)
           Assert (initial_solution.block(b).l2_norm() == 0,
                   ExcInternalError());
+
+      if(normalize_composition){
+          //TODO Fix this (error: dealii HyperShellBoundary is still used by 2 other objects)
+//          global_max = Utilities::MPI::max (max_sum_comp, mpi_communicator);
+          global_max=1.0;
+          if(n==0) pcout << "Sum of compositional fields is not one, fields will be normalized" << std::endl;
+          for(unsigned int m=0;m<parameters.normalized_fields.size();++m)
+            if(n==parameters.normalized_fields[m]) initial_solution/=global_max;
+      }
 
       // then apply constraints and copy the
       // result into vectors with ghost elements

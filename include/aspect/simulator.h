@@ -698,18 +698,7 @@ namespace aspect
       void assemble_composition_system (unsigned int n_comp);
 
       /**
-       * Solve the temperature linear system. Return the initial nonlinear residual,
-       * i.e., if the linear system to be solved is $Ax=b$, then return $\|Ax_0-b\|$
-       * where $x_0$ is the initial guess for the solution variable and is taken from
-       * the current_linearization_point member variable.
-       *
-       * This function is implemented in
-       * <code>source/simulator/solver.cc</code>.
-       */
-      double solve_temperature ();
-
-      /**
-       * Solve one block of the the composition linear system. Return the initial
+       * Solve one block of the the temperature/composition linear system. Return the initial
        * nonlinear residual, i.e., if the linear system to be solved is $Ax=b$, then
        * return $\|Ax_0-b\|$ where $x_0$ is the initial guess for the solution variable
        * and is taken from the current_linearization_point member variable.
@@ -717,7 +706,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
        */
-      double solve_single_block (unsigned int n_comp);
+      double solve_single_block (unsigned int block_number);
 
       /**
        * Solve the Stokes linear system. Return the initial nonlinear residual,

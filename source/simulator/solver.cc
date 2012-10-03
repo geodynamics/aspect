@@ -257,70 +257,23 @@ namespace aspect
 
   }
 
-
-
   template <int dim>
-  double Simulator<dim>::solve_temperature ()
+  double Simulator<dim>::solve_single_block (unsigned int block_number)
   {
     double initial_residual = 0;
 
-    computing_timer.enter_section ("   Solve temperature system");
+    if(block_number == 2)
+      computing_timer.enter_section ("   Solve temperature system");
+    else
+      computing_timer.enter_section ("   Solve composition system");
     {
-      pcout << "   Solving temperature system... " << std::flush;
+        if(block_number == 2)
+          pcout << "   Solving temperature system... " << std::flush;
+        else
+          pcout << "   Solving composition system " << block_number-2 << "... " << std::flush;
 
-      SolverControl solver_control (system_matrix.block(2,2).m(),
-                                    parameters.temperature_solver_tolerance*system_rhs.block(2).l2_norm());
-
-      SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
-                                                   SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
-
-      LinearAlgebra::BlockVector
-      distributed_solution (system_rhs);
-      // create vector with distribution of system_rhs.
-      LinearAlgebra::BlockVector remap (system_rhs);
-      // copy block of current_linearization_point into it, because
-      // current_linearization is distributed differently.
-      remap.block (2) = current_linearization_point.block (2);
-      current_constraints.set_zero (remap);
-      // (ab)use the distributed solution vector to temporarily put a residual in
-      initial_residual = system_matrix.block(2,2).residual (distributed_solution.block(2),
-                                                            remap.block (2),
-                                                            system_rhs.block(2));
-
-      // then overwrite it again with the current best guess and solve the linear system
-      distributed_solution.block(2) = remap.block (2);
-      solver.solve (system_matrix.block(2,2), distributed_solution.block(2),
-                    system_rhs.block(2), *T_preconditioner);
-      
-      current_constraints.distribute (distributed_solution);
-      solution.block(2) = distributed_solution.block(2);
-
-      // print number of iterations and also record it in the
-      // statistics file
-      pcout << solver_control.last_step()
-            << " iterations." << std::endl;
-
-      statistics.add_value("Iterations for temperature solver",
-                           solver_control.last_step());
-    }
-    computing_timer.exit_section();
-
-    return initial_residual;
-  }
-
-  //TODO merge with the corresponding temperature function
-
-  template <int dim>
-  double Simulator<dim>::solve_single_block (unsigned int n_comp)
-  {
-    double initial_residual = 0;
-
-    computing_timer.enter_section ("   Solve composition system");
-    {
-      pcout << "   Solving composition system " << n_comp << "... " << std::flush;
-
-      SolverControl solver_control (system_matrix.block(3+n_comp,3+n_comp).m(),
-                                    parameters.composition_solver_tolerance*system_rhs.block(3+n_comp).l2_norm());
+      SolverControl solver_control (system_matrix.block(block_number,block_number).m(),
+                                    parameters.composition_solver_tolerance*system_rhs.block(block_number).l2_norm());
 
       SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
                                                    SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
@@ -329,30 +282,34 @@ namespace aspect
       distributed_solution (system_rhs);
       current_constraints.set_zero(distributed_solution);
       // create vector with distribution of system_rhs.
-      LinearAlgebra::Vector block_remap (system_rhs.block (3+n_comp));
+      LinearAlgebra::Vector block_remap (system_rhs.block (block_number));
       // copy block of current_linearization_point into it, because
       // current_linearization is distributed differently.
-      block_remap = current_linearization_point.block (3+n_comp);
+      block_remap = current_linearization_point.block (block_number);
       // (ab)use the distributed solution vector to temporarily put a residual in
-      initial_residual = system_matrix.block(3+n_comp,3+n_comp).residual (distributed_solution.block(3+n_comp),
+      initial_residual = system_matrix.block(block_number,block_number).residual (distributed_solution.block(block_number),
                                                             block_remap,
-                                                            system_rhs.block(3+n_comp));
+                                                            system_rhs.block(block_number));
       current_constraints.set_zero(distributed_solution);
 
       // then overwrite it again with the current best guess and solve the linear system
-      distributed_solution.block(3+n_comp) = block_remap;
-      solver.solve (system_matrix.block(3+n_comp,3+n_comp), distributed_solution.block(3+n_comp),
-                    system_rhs.block(3+n_comp), *C_preconditioner);
+      distributed_solution.block(block_number) = block_remap;
+      solver.solve (system_matrix.block(block_number,block_number), distributed_solution.block(block_number),
+                    system_rhs.block(block_number), block_number==2?*T_preconditioner:*C_preconditioner);
 
       current_constraints.distribute (distributed_solution);
-      solution.block(3+n_comp) = distributed_solution.block(3+n_comp);
+      solution.block(block_number) = distributed_solution.block(block_number);
 
       // print number of iterations and also record it in the
       // statistics file
       pcout << solver_control.last_step()
             << " iterations." << std::endl;
 
-      statistics.add_value("Iterations for composition solver",
+      if(block_number == 2)
+        statistics.add_value("Iterations for temperature solver",
+                                   solver_control.last_step());
+      else
+        statistics.add_value("Iterations for composition solver",
                            solver_control.last_step());
     }
     computing_timer.exit_section();
@@ -492,8 +449,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template double Simulator<dim>::solve_temperature (); \
-  template double Simulator<dim>::solve_single_block (unsigned int n_comp); \
+  template double Simulator<dim>::solve_single_block (unsigned int block_number); \
   template double Simulator<dim>::solve_stokes ();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
