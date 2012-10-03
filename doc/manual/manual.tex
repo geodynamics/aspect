@@ -173,12 +173,12 @@ to some part using \aspect{}, you cite the following, canonical reference for
 this software:
 \begin{lstlisting}[frame=single,language=tex]
 @Article{KHB12,
-  author =  {M. Kronbichler and T. Heister and W. Bangerth},
-  title =   {High Accuracy Mantle Convection Simulation through
-             Modern Numerical Methods},
-  journal = {submitted},
-  year =    {2011}
-}
+  author = 	 {Martin Kronbichler and Timo Heister and Wolfgang Bangerth},
+  title = 	 {High Accuracy Mantle Convection Simulation through Modern Numerical Methods},
+  journal = 	 {Geophysics Journal International},
+  year = 	 2012,
+  volume = 	 191,
+  pages = 	 {12--29}}
 \end{lstlisting}
 
 
@@ -1349,7 +1349,7 @@ The purpose of these files is as follows:
   \texttt{.visit} files. To make it easy for you to view data, \aspect{}
   simply creates both kinds of files in each time step in which graphical data
   is produced.
-  
+
   The final file of this kind, \texttt{solution.pvd} is a file that
   describes to Paraview which \texttt{solution-xxxx.pvtu} jointly form
   a complete simulation by listing the \texttt{.pvtu} files of all
@@ -2000,7 +2000,7 @@ choosing introducing the Raleigh number $Ra=\frac{g\alpha}{\eta k}$. Formally,
 we can obtain the non-dimensionalized equations by using the above form and
 setting coefficients in the following way:
 \begin{align*}
-  \rho_0=C_p=k=\alpha=\eta=1, \qquad T_0=0, \qquad g=Ra, 
+  \rho_0=C_p=k=\alpha=\eta=1, \qquad T_0=0, \qquad g=Ra,
 \end{align*}
 where $\mathbf g=-g \mathbf e_z$ is the gravity vector in negative
 $z$-direction. While this would be a valid description of the problem, it is not
@@ -2029,11 +2029,11 @@ is well understood:
   than this threshold then a stable convection pattern forms that transports
   heat from the bottom to the top boundaries. The simulations we will set up
   operates in this regime. Specifically, we will choose $Ra=10^4$.
-  
+
   On the other hand, if the Rayleigh number becomes even larger, a serious of
   period doublings starts that makes the system become more and more unstable.
   We will investigate some of this behavior at the end of this section.
-  
+
   \item For certain values of the Rayleigh number, very accurate values for the
   heat flux through the bottom and top boundaries are available in the literate.
   For example, Blankenbach \textit{et al.} report a non-dimensional heat flux of
@@ -2606,7 +2606,7 @@ Another way to increase the accuracy of a finite element computation is to use a
 higher polynomial degree for the finite element shape functions. By default,
 \aspect{} uses quadratic shape functions for the velocity and the temperature
 and linear ones for the pressure. However, this can be changed with a single
-number in the input file. 
+number in the input file.
 
 Before doing so, let us consider some aspects of such a change. First, looking
 at the pictures of the solution in Fig.~\ref{fig:convection-box-fields}, one
@@ -2639,7 +2639,7 @@ end
 \end{lstlisting}
 This leaves the velocity and pressure shape functions at quadratic and linear
 polynomial degree but increases the polynomial degree of the temperature from
-quadratic to cubic. Using the original, four times globally refined mesh, we 
+quadratic to cubic. Using the original, four times globally refined mesh, we
 then get the following output:
 \begin{lstlisting}[frame=single,language=ksh]
 Number of active cells: 256 (on 5 levels)
@@ -2716,7 +2716,7 @@ for the components of the velocity.
 
 To illustrate this, let us consider the \url{cookbooks/platelike-boundary.prm}
 input file. It essentially extends the input file considered in the previous example.
-The part of this file that we are particularly interested in in the current 
+The part of this file that we are particularly interested in in the current
 context is the selection of the kind of boundary conditions on the four
 sides of the box geometry, which we do using a section like this:
 \begin{lstlisting}[frame=single,language=prmfile]
