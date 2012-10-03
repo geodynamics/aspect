@@ -2428,11 +2428,26 @@ the Stokes and temperature equations in each time step.}
 \end{figure}
 
 
-\paragraph{Play time.}
-- finer mesh than 16x16
-- increase mesh size in stages
-- higher Ra number
-- different discretization
+\paragraph{Play time 1: Different Rayleigh numbers.} After showing you results
+for the input file as it can be found in \url{cookbooks/convection-box.prm}, let us
+end this section with a few ideas on how to play with it and what to explore.
+The first direction one could take this example is certainly to consider
+different Rayleigh numbers. As mentioned above, for the value $Ra=10^4$ for
+which the results above have been produced, one gets a stable convection
+pattern. On the other hand, for values $Ra<Ra_c\approx 780$, any movement of
+the fluid dies down exponentially and we end up with a situation where the fluid
+doesn't move and heat is transported from the bottom to the top only through
+heat conduction. This can be explained by considering that the Rayleigh number
+in a box of unit extent is defined as $Ra=\frac{g\alpha}{\eta k}$. A small
+Rayleigh number means that the viscosity is too large (i.e., the buoyancy given
+by the product of the magnitude of gravity times the thermal expension
+coefficient is not strong enough to overcome friction forces within the fluid).
+
+On the other hand, if the Rayleigh number is large (i.e., the viscosity is
+small or the buoyancy large) then the fluid develops an unsteady convection
+period. As we consider fluids with larger and larger $Ra$, this pattern goes
+through a sequence of period-doubling events until flow finally becomes chaotic.
+The structures of the flow pattern also become smaller and smaller.
 
 \begin{figure}
 \phantom.
@@ -2461,6 +2476,123 @@ The mesh on the right is clearly too coarse to resolve the structure of the solu
 top and bottom boundaries (right) as a function of time at $Ra=10^6$.}
 \label{fig:convection-box-stats-different-Ra}
 \end{figure}
+
+We illustrate these situations in
+Fig.s~\ref{fig:convection-box-fields-different-Ra} and
+\ref{fig:convection-box-stats-different-Ra}. The first shows the temperature
+field at the end of a simulation for $Ra=10^2$ (below $Ra_c$) and at $Ra=10^6$.
+Obviously, for the right picture, the mesh is not fine enough to accurately
+resolve the features of the flow field and we would have to refine it more. The
+second of the figures shows the velocity and heatflux statistics for the
+computation with $Ra=10^6$; it is obvious here that the flow no longer settles
+into a steady state but has a periodic behavior. This can also be seen by
+looking at movies of the solution.
+
+To generate these results, remember that we have chosen $\alpha=10^{-10}$ and
+$g=10^{10}Ra$ in our input file. In other words, changing the input file to
+contain the parameter setting
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Gravity model
+  subsection Vertical
+    set Magnitude = 1e16   # = Thermal expansion coefficient * Ra % \index[prmindex]{Magnitude} \index[prmindexfull]{Gravity model!Vertical!Magnitude} %
+  end
+end
+\end{lstlisting}
+will achieve the desired effect of computing with $Ra=10^6$.
+
+
+\paragraph{Play time 2: Thinking about finer meshes}
+In our computations for $Ra=10^4$ we used a $16\times 16$ mesh and obtained a
+value for the heat flux that differed from the generally accepted value from
+Blankenbach \textit{et al.} \cite{BBC89} by less than 1\%. However, it may be
+interesting to think about computing even more accurately. This is easily done
+by using a finer mesh, for example. In the parameter file above, we have chosen
+the mesh setting as follows:
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Mesh refinement
+  set Initial global refinement                = 4 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
+  set Initial adaptive refinement              = 0 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
+  set Time steps between mesh refinement       = 0 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
+end
+\end{lstlisting}
+We start out with a box geometry consisting of a single cell that is refined
+four times. Each time we split each cell into its 4 children, obtaining the
+$16\times 16$ mesh already mentioned. The other settings indicate that we do not
+want to refine the mesh adaptively at all in the first time step, and a setting
+of zero for the last parameter means that we also never want to adapt the mesh
+again at a later time. Let us stick with the never-changing, globally refined
+mesh for now (we will come back to adaptive mesh refinement again at a later
+time) and only vary the initial global refinement. In particular, we could
+choose the parameter \texttt{Initial global refinement} to be 5, 6, or even
+larger. This will get us closer to the exact solution albeit at the expense of a
+significantly increased computational time.
+
+A better strategy is to realize that for $Ra=10^4$, the flow enters a steady
+state after settling in during the first part of the simulation (see, for
+example, the graphs in Fig.~\ref{fig:convection-box-stats}). Since we are not
+particularly interested in this initial transient process, there is really no
+reason to spend CPU time using a fine mesh and correspondingly small time
+steps during this part of the simulation (remember that each refinement results
+in four times as many cells in 2d and a time step half as long, making reaching
+a particular time at least 8 times as expensive, assuming that all solvers in
+\aspect{} scale perfectly with the number of cells). Rather, we can use a
+parameter in the \aspect{} input file that let's us increase the mesh resolution
+at later times. To this end, let us use the following snippet for the input
+file:
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Mesh refinement
+  set Initial global refinement                = 3 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
+  set Initial adaptive refinement              = 0 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
+  set Time steps between mesh refinement       = 0 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
+  set Additional refinement times              = 0.2, 0.3, 0.4 % \index[prmindex]{Additional refinement times} \index[prmindexfull]{Mesh refinement!Additional refinement times} %
+  set Refinement fraction                      = 1.0 % \index[prmindex]{Refinement fraction} \index[prmindexfull]{Mesh refinement!Refinement fraction} %
+  set Coarsening fraction                      = 0.0 % \index[prmindex]{Coarsening fraction} \index[prmindexfull]{Mesh refinement!Coarsening fraction} %
+end
+\end{lstlisting}
+
+What this does is the following: We start with an $8\times 8$ mesh (3 times
+globally refined) but then at times $t=0.2,0.3$ and $0.4$ we refine the mesh
+using the default refinement indicator (which one this is is not important
+because of the next statement). Each time, we refine, we refine a fraction 1.0
+of the cells, i.e., \textit{all} cells and we coarsen a fraction of 0.0 of the
+cells, i.e. no cells at all. In effect, at these additional refinement times, we
+do another global refinement, bringing us to refinement levels 4, 5 and finally
+6.
+
+\begin{figure}
+\phantom.
+\hfill
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/steps_unknowns}
+\hfill
+\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/steps_heatflux}
+\hfill
+\phantom.
+\caption{\it Convection in a box: Refinement in stages. Total number
+of unknowns in each time step, including all velocity, pressure and
+temperature unknowns (left) and heat flux across the top boundary (right).}
+\label{fig:convection-box-stats-steps}
+\end{figure}
+
+
+Fig.~\ref{fig:convection-box-stats-steps} shows the results. In the left panel,
+we see how the number of unknowns grows over time (note the logscale for the
+$y$-axis). The right panel displays the heat flux. The jumps in the number of
+cells is clearly visible in this picture as well. This may be surprising at
+first but remember that the mesh is clearly too coarse in the beginning to
+really resolve the flow and so we should expect that the solution changes
+significantly if the mesh is refined. This effect becomes smaller with every
+additional refinement and is barely visible at the last time this happens,
+indicating that the mesh before this refinement step may already have been fine
+enough to resolve the majority of the dynamics.
+
+In any case, we can compare the heat fluxes we obtain at the end of these
+computations: With a globally four times refined mesh, we get a value of 4.931,
+with a globally five times refined mesh 4.914 and with the mesh generated using
+the procedure above we get 4.895 with the four digits printed on the screen
+(the statistics file gives a more exact value, 4.89488768).
+The accepted value from Blankenbach is $4.884409\pm 0.00001$. In other words, our
+simple procedure of refining the mesh during the simulation run yields an
+accuracy of 0.2\%.
 
 
 
