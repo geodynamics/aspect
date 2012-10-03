@@ -98,10 +98,12 @@ namespace aspect
                   = finite_element.component_to_system_index(/*temperature/composition component=*/dim+base_element-1+n,
                                                                                 /*dof index within component=*/i);
 
-                initial_solution(local_dof_indices[system_local_dof]) =
+		double value = 
                   (base_element == 2 ?
                       initial_conditions->initial_temperature(fe_values.quadrature_point(i))
                       : compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n));
+                initial_solution(local_dof_indices[system_local_dof]) = value;
+		
 
                 // if it is specified in the parameter file that the sum of all compositional fields
                 // must not exceed one, this should be checked
@@ -118,13 +120,14 @@ namespace aspect
                     }
                   }
 
-                Assert (initial_solution(local_dof_indices[system_local_dof]) >= 0,
+                Assert (value >= 0,
                         ExcMessage("Invalid initial conditions: Temperature and/or composition is negative"));
               }
           }
 
+      initial_solution.compress();
+      
       if(normalize_composition){
-          global_max = max_sum_comp;
           global_max = Utilities::MPI::max (max_sum_comp, mpi_communicator);
           if(n==0) pcout << "Sum of compositional fields is not one, fields will be normalized" << std::endl;
           for(unsigned int m=0;m<parameters.normalized_fields.size();++m)
