@@ -537,7 +537,7 @@ namespace aspect
 
 //TODO: unify the following functions
   template <int dim>
-  void Simulator<dim>::compute_depth_average_temperature(std::vector<double> &values) const
+  void Simulator<dim>::compute_depth_average_field(std::vector<double> &values, unsigned int block_number) const
   {
     const unsigned int num_slices = 100;
     values.resize(num_slices);
@@ -554,8 +554,8 @@ namespace aspect
                              finite_element,
                              quadrature_formula,
                              update_values | update_quadrature_points);
-    const FEValuesExtractors::Scalar temperature (dim+1);
-    std::vector<double> temperature_values(n_q_points);
+    const FEValuesExtractors::Scalar field (block_number);
+    std::vector<double> field_values(n_q_points);
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
@@ -565,8 +565,8 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[temperature].get_function_values (this->solution,
-                                                      temperature_values);
+          fe_values[field].get_function_values (this->solution,
+                                                      field_values);
           for (unsigned int q=0; q<n_q_points; ++q)
             {
               const Point<dim> &p = fe_values.quadrature_point(q);
@@ -575,7 +575,7 @@ namespace aspect
               Assert(idx<num_slices, ExcInternalError());
 
               ++counts[idx];
-              values[idx]+= temperature_values[q];
+              values[idx]+= field_values[q];
             }
         }
 
@@ -774,7 +774,7 @@ namespace aspect
   {
 
     std::vector<double> average_temperature;
-    compute_depth_average_temperature(average_temperature);
+    compute_depth_average_field(average_temperature,dim+1);
 
     values.resize(average_temperature.size());
     std::vector<unsigned int> counts(average_temperature.size());
@@ -835,7 +835,7 @@ namespace aspect
 
     std::vector<double> average_temperature;
 
-    compute_depth_average_temperature(average_temperature);
+    compute_depth_average_field(average_temperature,dim+1);
 
     values.resize(average_temperature.size());
     std::vector<unsigned int> counts(average_temperature.size());
@@ -1010,7 +1010,7 @@ namespace aspect
   template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_range () const; \
   template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::compute_depth_average_temperature(std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_depth_average_field(std::vector<double> &values,  unsigned int block_number) const; \
   template void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const; \

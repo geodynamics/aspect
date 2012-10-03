@@ -265,7 +265,7 @@ namespace aspect
        * slices.
        */
       void
-      get_depth_average_temperature(std::vector<double> &values) const;
+      get_depth_average_field(std::vector<double> &values, unsigned int block_number) const;
 
       /**
        * Compute a depth average of the current viscosity
@@ -989,15 +989,15 @@ namespace aspect
       void compute_running_average(std::vector<double> &values, const int npoints) const;
 
       /**
-       * Compute a depth average of the current temperature. The function
-       * fills a vector that contains average temperatures over slices of the
+       * Compute a depth average of the current temperature/composition. The function
+       * fills a vector that contains average temperatures/compositions over slices of the
        * domain of same depth. The function resizes the output vector to match
        * the number of depth slices.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void compute_depth_average_temperature(std::vector<double> &values) const;
+      void compute_depth_average_field(std::vector<double> &values, unsigned int block_number) const;
 
       /**
        * Compute a depth average of the current temperature. The function

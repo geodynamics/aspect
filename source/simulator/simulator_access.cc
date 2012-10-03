@@ -183,9 +183,9 @@ namespace aspect
 
     template <int dim>
     void
-    SimulatorAccess<dim>::get_depth_average_temperature(std::vector<double> &values) const
+    SimulatorAccess<dim>::get_depth_average_field(std::vector<double> &values, unsigned int block_number) const
     {
-      simulator->compute_depth_average_temperature(values);
+      simulator->compute_depth_average_field(values,block_number);
     }
 
     template <int dim>

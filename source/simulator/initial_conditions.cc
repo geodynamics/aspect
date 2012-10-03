@@ -104,6 +104,8 @@ namespace aspect
                       : compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n));
                 initial_solution(local_dof_indices[system_local_dof]) = value;
 		
+                Assert (value >= 0,
+                        ExcMessage("Invalid initial conditions: Temperature and/or composition is negative"));
 
                 // if it is specified in the parameter file that the sum of all compositional fields
                 // must not exceed one, this should be checked
@@ -114,14 +116,12 @@ namespace aspect
                     double sum = 0;
                     for(unsigned int m=0;m<parameters.normalized_fields.size();++m)
                       sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),parameters.normalized_fields[m]);
-                    if(sum<1.0-1e-6 || sum > 1.0+1e-6) {
+                    if(abs(sum) > 1.0+1e-6) {
                         max_sum_comp = std::max(sum,max_sum_comp);
                         normalize_composition = true;
                     }
                   }
 
-                Assert (value >= 0,
-                        ExcMessage("Invalid initial conditions: Temperature and/or composition is negative"));
               }
           }
 

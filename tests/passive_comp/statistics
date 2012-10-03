@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of composition degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver
+# 9: Iterations for Stokes solver
+# 10: Time step size (seconds)
+# 11: Visualization file name
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+# 18: Outward heat flux through boundary with indicator 0 (W)
+# 19: Outward heat flux through boundary with indicator 1 (W)
+0 0.0000e+00 3072 28608 12672       32  0  0 42 1.4081e+12 passive_comp_output/solution-00000 5.11140534e-08 6.31531304e-08 0.00000000e+00 0.00000000e+00 2.22507386e-308 -nan 0.00000000e+00 0.00000000e+00 
+1 1.4081e+12 3072 28608 12672 50466216 17 18  0 1.4081e+12 passive_comp_output/solution-00001 5.11140534e-08 6.31531304e-08 0.00000000e+00 5.39134862e-06  4.45495179e-05  inf 2.37825864e-02 8.50052170e-02 
