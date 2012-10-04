@@ -44,7 +44,7 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A base class for parameterizatiocompositional_initial_conditions/interfacens of initial conditions.
+     * A base class for parameterizations of initial conditions.
      *
      * @ingroup InitialConditionsModels
      */
