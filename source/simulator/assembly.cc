@@ -1254,27 +1254,7 @@ namespace aspect
               (old_time_step * (time_step + old_time_step)))
              :
              scratch.old_temperature_values[q]);
-        /*
-                const double ext_T
-                  = aspect::internal::bdf2_extrapolate(
-                      use_bdf2_scheme, old_time_step, time_step,
-                      scratch.old_old_temperature_values[q], scratch.old_temperature_values[q]);
 
-                const Tensor<1,dim> extrapolated_u
-                  = aspect::internal::bdf2_extrapolate(
-                      use_bdf2_scheme, old_time_step, time_step,
-                      scratch.old_old_velocity_values[q], scratch.old_velocity_values[q]);
-
-                const SymmetricTensor<2,dim> extrapolated_strain_rate
-                  = aspect::internal::bdf2_extrapolate(
-                      use_bdf2_scheme, old_time_step, time_step,
-                      scratch.old_old_strain_rates[q], scratch.old_strain_rates[q]);
-
-                const double ext_pressure
-                  = aspect::internal::bdf2_extrapolate(
-                      use_bdf2_scheme, old_time_step, time_step,
-                      scratch.old_old_pressure[q], scratch.old_pressure[q]);
-        */
         const double current_T = scratch.current_temperature_values[q];
         const SymmetricTensor<2,dim> current_strain_rate = scratch.current_strain_rates[q];
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
@@ -1560,27 +1540,7 @@ namespace aspect
               (old_time_step * (time_step + old_time_step)))
              :
              scratch.old_composition_values[q]);
-        /*
-                const double ext_T
-                  = aspect::internal::bdf2_extrapolate(
-                      use_bdf2_scheme, old_time_step, time_step,
-                      scratch.old_old_composition_values[q], scratch.old_composition_values[q]);
 
-                const Tensor<1,dim> extrapolated_u
-                  = aspect::internal::bdf2_extrapolate(
-                      use_bdf2_scheme, old_time_step, time_step,
-                      scratch.old_old_velocity_values[q], scratch.old_velocity_values[q]);
-
-                const SymmetricTensor<2,dim> extrapolated_strain_rate
-                  = aspect::internal::bdf2_extrapolate(
-                      use_bdf2_scheme, old_time_step, time_step,
-                      scratch.old_old_strain_rates[q], scratch.old_strain_rates[q]);
-
-                const double ext_pressure
-                  = aspect::internal::bdf2_extrapolate(
-                      use_bdf2_scheme, old_time_step, time_step,
-                      scratch.old_old_pressure[q], scratch.old_pressure[q]);
-        */
         const double current_C = scratch.current_composition_values[q];
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
 
