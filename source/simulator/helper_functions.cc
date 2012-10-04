@@ -114,7 +114,7 @@ namespace aspect
 
       std::ofstream stat_file (tmp_file_name.c_str());
       copy_of_table->write_text (stat_file,
-          TableHandler::table_with_separate_column_description);
+                                 TableHandler::table_with_separate_column_description);
       stat_file.close();
 
       // now move the temporary file into place
@@ -566,7 +566,7 @@ namespace aspect
         {
           fe_values.reinit (cell);
           fe_values[field].get_function_values (this->solution,
-                                                      field_values);
+                                                field_values);
           for (unsigned int q=0; q<n_q_points; ++q)
             {
               const Point<dim> &p = fe_values.quadrature_point(q);
@@ -816,8 +816,8 @@ namespace aspect
               Assert(idx<num_slices, ExcInternalError());
 
               const double Vs_depth_average = material_model->seismic_Vs(average_temperature[idx],
-            		                                                     pressure_values[q],
-            		                                                     fe_values.quadrature_point(q));
+                                                                         pressure_values[q],
+                                                                         fe_values.quadrature_point(q));
               ++counts[idx];
               values[idx] += Vs_depth_average;
             }
@@ -880,8 +880,8 @@ namespace aspect
               Assert(idx<num_slices, ExcInternalError());
 
               const double Vp_depth_average = material_model->seismic_Vp(average_temperature[idx],
-            		                                                     pressure_values[q],
-            		                                                     fe_values.quadrature_point(q));
+                                                                         pressure_values[q],
+                                                                         fe_values.quadrature_point(q));
               ++counts[idx];
               values[idx] += Vp_depth_average;
             }
@@ -941,8 +941,8 @@ namespace aspect
                                                       temperature_values);
 
           const double Vs = material_model->seismic_Vs(temperature_values[0],
-        		                                       pressure_values[0],
-        		                                       fe_values.quadrature_point(0));
+                                                       pressure_values[0],
+                                                       fe_values.quadrature_point(0));
           const double depth = geometry_model->depth(fe_values.quadrature_point(0));
           const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
           Assert(idx<num_slices, ExcInternalError());
@@ -999,8 +999,8 @@ namespace aspect
                                                       temperature_values);
 
           const double Vp = material_model->seismic_Vp(temperature_values[0],
-        		                                       pressure_values[0],
-        		                                       fe_values.quadrature_point(0));
+                                                       pressure_values[0],
+                                                       fe_values.quadrature_point(0));
           const double depth = geometry_model->depth(fe_values.quadrature_point(0));
           const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
           Assert(idx<num_slices, ExcInternalError());

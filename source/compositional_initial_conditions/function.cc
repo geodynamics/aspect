@@ -89,7 +89,7 @@ namespace aspect
   namespace CompositionalInitialConditions
   {
     ASPECT_REGISTER_COMPOSITIONAL_INITIAL_CONDITIONS(Function,
-                                       "function",
-                                       "Composition is given in terms of an explicit formula");
+                                                     "function",
+                                                     "Composition is given in terms of an explicit formula");
   }
 }

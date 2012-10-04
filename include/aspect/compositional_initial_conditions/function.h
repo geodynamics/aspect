@@ -42,7 +42,7 @@ namespace aspect
      */
     template <int dim>
     class Function : public Interface<dim>,
-                     public SimulatorAccess<dim>
+      public SimulatorAccess<dim>
     {
       public:
         /**

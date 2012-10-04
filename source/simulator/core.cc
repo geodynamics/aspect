@@ -103,9 +103,9 @@ namespace aspect
                                                                       *boundary_temperature,
                                                                       *adiabatic_conditions)),
     compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions (prm,
-                                                                      *geometry_model,
-                                                                      *boundary_temperature,
-                                                                      *adiabatic_conditions)),
+                                      *geometry_model,
+                                      *boundary_temperature,
+                                      *adiabatic_conditions)),
 
     time (std::numeric_limits<double>::quiet_NaN()),
     time_step (0),
@@ -120,20 +120,20 @@ namespace aspect
 
     mapping (4),
 
-                  finite_element(FE_Q<dim>(parameters.stokes_velocity_degree),
-                                 dim,
-                                 (parameters.use_locally_conservative_discretization
-                                    ?
-                                    static_cast<const FiniteElement<dim> &>
-                                    (FE_DGP<dim>(parameters.stokes_velocity_degree-1))
-                                    :
-                                    static_cast<const FiniteElement<dim> &>
-                                    (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
-                                 1,
-                                 FE_Q<dim>(parameters.temperature_degree),
-                                 1,
-                                 FE_Q<dim>(parameters.composition_degree),
-                                 parameters.n_compositional_fields),
+    finite_element(FE_Q<dim>(parameters.stokes_velocity_degree),
+                   dim,
+                   (parameters.use_locally_conservative_discretization
+                    ?
+                    static_cast<const FiniteElement<dim> &>
+                    (FE_DGP<dim>(parameters.stokes_velocity_degree-1))
+                    :
+                    static_cast<const FiniteElement<dim> &>
+                    (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
+                   1,
+                   FE_Q<dim>(parameters.temperature_degree),
+                   1,
+                   FE_Q<dim>(parameters.composition_degree),
+                   parameters.n_compositional_fields),
 
     dof_handler (triangulation),
 
@@ -396,7 +396,7 @@ namespace aspect
     std::vector<unsigned int> system_sub_blocks (dim+2+parameters.n_compositional_fields,0);
     system_sub_blocks[dim] = 1;
     system_sub_blocks[dim+1] = 2;
-    for(unsigned int i=dim+2;i<dim+2+parameters.n_compositional_fields;++i)
+    for (unsigned int i=dim+2; i<dim+2+parameters.n_compositional_fields; ++i)
       system_sub_blocks[i] = i-dim+1;
     std::vector<unsigned int> system_dofs_per_block (3+parameters.n_compositional_fields);
     DoFTools::count_dofs_per_block (dof_handler, system_dofs_per_block,
@@ -408,10 +408,10 @@ namespace aspect
                          system_dofs_per_block[2]);
 
     unsigned int C_dofs = 0;
-    for(unsigned int i=dim+2;i<dim+2+parameters.n_compositional_fields;++i)
+    for (unsigned int i=dim+2; i<dim+2+parameters.n_compositional_fields; ++i)
       C_dofs += system_dofs_per_block[i];
     statistics.add_value("Number of composition degrees of freedom",
-                               C_dofs);
+                         C_dofs);
 
 
     // then interpolate the current boundary velocities. this adds to
@@ -428,7 +428,7 @@ namespace aspect
       // set the current time and do the interpolation
       // for the prescribed velocity fields
       std::vector<bool> velocity_mask (dim+2+parameters.n_compositional_fields, true);
-      for(unsigned int i=dim;i<dim+2+parameters.n_compositional_fields;++i)
+      for (unsigned int i=dim; i<dim+2+parameters.n_compositional_fields; ++i)
         velocity_mask[i] = false;
       for (typename std::map<types::boundary_id_t,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::iterator
            p = velocity_boundary_conditions.begin();
@@ -436,10 +436,10 @@ namespace aspect
         {
           p->second->set_current_time (time);
           VectorFunctionFromVelocityFunctionObject<dim> vel
-                                                              (parameters.n_compositional_fields,
-                                                                  std_cxx1x::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,
-                                                                                p->second,
-                                                                                std_cxx1x::_1));
+          (parameters.n_compositional_fields,
+           std_cxx1x::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,
+                            p->second,
+                            std_cxx1x::_1));
           VectorTools::interpolate_boundary_values (dof_handler,
                                                     p->first,
                                                     vel,
@@ -549,7 +549,7 @@ namespace aspect
     std::vector<unsigned int> system_sub_blocks (dim+2+parameters.n_compositional_fields,0);
     system_sub_blocks[dim] = 1;
     system_sub_blocks[dim+1] = 2;
-    for(unsigned int i=dim+2;i<dim+2+parameters.n_compositional_fields;++i)
+    for (unsigned int i=dim+2; i<dim+2+parameters.n_compositional_fields; ++i)
       system_sub_blocks[i] = i-dim+1;
 
     DoFRenumbering::component_wise (dof_handler, system_sub_blocks);
@@ -563,10 +563,11 @@ namespace aspect
                        n_T = system_dofs_per_block[2];
     unsigned int       n_C_sum = 0;
     std::vector<unsigned int> n_C (parameters.n_compositional_fields+1);
-    for(unsigned int i=0;i<parameters.n_compositional_fields;++i) {
-                       n_C[i] = system_dofs_per_block[i+3];
-                       n_C_sum += n_C[i];
-    }
+    for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
+      {
+        n_C[i] = system_dofs_per_block[i+3];
+        n_C_sum += n_C[i];
+      }
 
 
     // print dof numbers with 1000s
@@ -593,8 +594,8 @@ namespace aspect
           << n_u + n_p + n_T + n_C_sum
           << " (" << n_u << '+' << n_p << '+'<< n_T;
 
-    for(unsigned int i=0;i<parameters.n_compositional_fields;++i)
-        pcout << '+' << n_C[i];
+    for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
+      pcout << '+' << n_C[i];
 
     pcout <<')'
           << std::endl
@@ -614,10 +615,11 @@ namespace aspect
       system_partitioning.push_back(system_index_set.get_view(0,n_u));
       system_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
       system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
-      for(unsigned int i=0;i<parameters.n_compositional_fields;++i) {
+      for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
+        {
           system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_sum,n_u+n_p+n_T+n_C_sum+n_C[i]));
           n_C_sum += n_C[i];
-      }
+        }
 
       n_C_sum = 0;
 
@@ -626,10 +628,11 @@ namespace aspect
       system_relevant_partitioning.push_back(system_relevant_set.get_view(0,n_u));
       system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u,n_u+n_p));
       system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
-      for(unsigned int i=0;i<parameters.n_compositional_fields;++i) {
+      for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
+        {
           system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p+n_T+n_C_sum,n_u+n_p+n_T+n_C_sum+n_C[i]));
           n_C_sum += n_C[i];
-      }
+        }
     }
 
     // then compute constraints for the velocity. the constraints we compute
@@ -648,7 +651,7 @@ namespace aspect
       std::vector<bool> velocity_mask (dim+2+parameters.n_compositional_fields, true);
       velocity_mask[dim] = false;
       velocity_mask[dim+1] = false;
-      for(unsigned int i=dim+2;i<dim+2+parameters.n_compositional_fields;++i)
+      for (unsigned int i=dim+2; i<dim+2+parameters.n_compositional_fields; ++i)
         velocity_mask[i] = false;
       for (std::set<types::boundary_id_t>::const_iterator
            p = parameters.zero_velocity_boundary_indicators.begin();
@@ -766,7 +769,7 @@ namespace aspect
 
     // finally, write the entire set of current results to disk
     output_statistics();
-    
+
     computing_timer.exit_section ();
   }
 
@@ -1063,8 +1066,8 @@ namespace aspect
         LinearAlgebra::BlockVector distr_old_solution (system_rhs);
         distr_old_solution = old_old_solution;
         distr_solution .sadd ((1 + time_step/old_time_step),
-            -time_step/old_time_step,
-            distr_old_solution);
+                              -time_step/old_time_step,
+                              distr_old_solution);
         current_linearization_point = distr_solution;
       }
 
@@ -1078,12 +1081,13 @@ namespace aspect
 
           current_linearization_point.block(2) = solution.block(2);
 
-          for(unsigned int n=0;n<parameters.n_compositional_fields;++n) {
+          for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
+            {
               assemble_composition_system (n);
               build_composition_preconditioner(n);
               solve_single_block(3+n);
               current_linearization_point.block(3+n) = solution.block(3+n);
-          }
+            }
 
           assemble_stokes_system();
           build_stokes_preconditioner();
@@ -1110,15 +1114,16 @@ namespace aspect
               const double temperature_residual = solve_single_block(2);
 
               current_linearization_point.block(2) = solution.block(2);
-rebuild_stokes_matrix = true;
+              rebuild_stokes_matrix = true;
               std::vector<double> composition_residual (parameters.n_compositional_fields,0);
 
-              for(unsigned int n=0;n<parameters.n_compositional_fields;++n) {
+              for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
+                {
                   assemble_composition_system (n);
                   build_composition_preconditioner(n);
                   composition_residual[n] = solve_single_block(3+n);
                   current_linearization_point.block(3+n) = solution.block(3+n);
-              }
+                }
 
               assemble_stokes_system();
               if (iteration == 0)
@@ -1130,7 +1135,7 @@ rebuild_stokes_matrix = true;
               pcout << "   Nonlinear residuals: " << temperature_residual
                     << ", " << stokes_residual;
 
-              for(unsigned int n=0;n<parameters.n_compositional_fields;++n)
+              for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
                 pcout << ", " << composition_residual[n];
 
               pcout << std::endl
@@ -1139,7 +1144,7 @@ rebuild_stokes_matrix = true;
               if (iteration == 0)
                 {
                   initial_temperature_residual = temperature_residual;
-                  for(unsigned int n=0;n<parameters.n_compositional_fields;++n)
+                  for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
                     initial_composition_residual[n] = composition_residual[n];
                   initial_stokes_residual      = stokes_residual;
                 }
@@ -1147,10 +1152,10 @@ rebuild_stokes_matrix = true;
                 {
 //TODO: make this a parameter in the input file
                   double max = 0.0;
-                  for(unsigned int n=0;n<parameters.n_compositional_fields;++n)
+                  for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
                     max = std::max(composition_residual[n]/initial_composition_residual[n],max);
                   if (std::max(std::max(stokes_residual/initial_stokes_residual,
-                               temperature_residual/initial_temperature_residual),
+                                        temperature_residual/initial_temperature_residual),
                                max) < 1e-3)
                     break;
                 }
@@ -1163,34 +1168,35 @@ rebuild_stokes_matrix = true;
           break;
         }
 
-	case NonlinearSolver::iterated_Stokes:
-	{
+        case NonlinearSolver::iterated_Stokes:
+        {
           // solve the temperature system once...
-	  assemble_temperature_system ();
-	  solve_single_block(2);
+          assemble_temperature_system ();
+          solve_single_block(2);
 
-          for(unsigned int n=0;n<parameters.n_compositional_fields;++n) {
+          for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
+            {
               assemble_composition_system (n);
               solve_single_block(3+n);
-          }
+            }
 
-	  // ...and then iterate the solution
-	  // of the Stokes system
-	  for (int i=0; i<10; ++i)
-	    {
-	      rebuild_stokes_matrix =
-		rebuild_stokes_preconditioner = true;
+          // ...and then iterate the solution
+          // of the Stokes system
+          for (int i=0; i<10; ++i)
+            {
+              rebuild_stokes_matrix =
+                rebuild_stokes_preconditioner = true;
 
-	      assemble_stokes_system();
-	      build_stokes_preconditioner();
-	      solve_stokes();
-	      old_solution = solution;
+              assemble_stokes_system();
+              build_stokes_preconditioner();
+              solve_stokes();
+              old_solution = solution;
 
-	      pcout << std::endl;
-	    }
+              pcout << std::endl;
+            }
 
-	  break;
-	}
+          break;
+        }
 
         default:
           Assert (false, ExcNotImplemented());

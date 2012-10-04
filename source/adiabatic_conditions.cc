@@ -68,15 +68,15 @@ namespace aspect
         const double density = material_model.density(temperatures[i-1], pressures[i-1],
                                                       representative_point);
         const double alpha = material_model.thermal_expansion_coefficient(temperatures[i-1], pressures[i-1],
-                                                      representative_point);
+                                                                          representative_point);
         const double cp = material_model.specific_heat(temperatures[i-1], pressures[i-1],
-                                                      representative_point);
+                                                       representative_point);
         const double gravity = gravity_model.gravity_vector(representative_point).norm();
 
         pressures[i] = pressures[i-1]
                        + density * gravity * delta_z;
         temperatures[i] = temperatures[i-1] * (1 +
-                          alpha * gravity * delta_z / cp);
+                                               alpha * gravity * delta_z / cp);
       }
 
     Assert (*std::min_element (pressures.begin(), pressures.end()) >=
@@ -90,16 +90,16 @@ namespace aspect
   template <int dim>
   void AdiabaticConditions<dim>::get_adiabatic_temperature_profile(std::vector<double> &values,unsigned int num_slices) const
   {
-	  values.resize(num_slices);
-	  const double max_depth = geometry_model.maximal_depth();
-	  double depth = 0.0;
+    values.resize(num_slices);
+    const double max_depth = geometry_model.maximal_depth();
+    double depth = 0.0;
 
-	  for(unsigned int n = 0 ; n < num_slices; n++)
-	  {
-		  depth = n * max_depth / (num_slices-1);
-		  const Point<dim> p = geometry_model.representative_point(depth);
-		  values[n] = temperature(p);
-	  }
+    for (unsigned int n = 0 ; n < num_slices; n++)
+      {
+        depth = n * max_depth / (num_slices-1);
+        const Point<dim> p = geometry_model.representative_point(depth);
+        values[n] = temperature(p);
+      }
   }
 
 

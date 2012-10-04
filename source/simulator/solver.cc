@@ -262,15 +262,15 @@ namespace aspect
   {
     double initial_residual = 0;
 
-    if(block_number == 2)
+    if (block_number == 2)
       computing_timer.enter_section ("   Solve temperature system");
     else
       computing_timer.enter_section ("   Solve composition system");
     {
-        if(block_number == 2)
-          pcout << "   Solving temperature system... " << std::flush;
-        else
-          pcout << "   Solving composition system " << block_number-2 << "... " << std::flush;
+      if (block_number == 2)
+        pcout << "   Solving temperature system... " << std::flush;
+      else
+        pcout << "   Solving composition system " << block_number-2 << "... " << std::flush;
 
       SolverControl solver_control (system_matrix.block(block_number,block_number).m(),
                                     parameters.composition_solver_tolerance*system_rhs.block(block_number).l2_norm());
@@ -288,8 +288,8 @@ namespace aspect
       block_remap = current_linearization_point.block (block_number);
       // (ab)use the distributed solution vector to temporarily put a residual in
       initial_residual = system_matrix.block(block_number,block_number).residual (distributed_solution.block(block_number),
-                                                            block_remap,
-                                                            system_rhs.block(block_number));
+                                                                                  block_remap,
+                                                                                  system_rhs.block(block_number));
       current_constraints.set_zero(distributed_solution);
 
       // then overwrite it again with the current best guess and solve the linear system
@@ -305,12 +305,12 @@ namespace aspect
       pcout << solver_control.last_step()
             << " iterations." << std::endl;
 
-      if(block_number == 2)
+      if (block_number == 2)
         statistics.add_value("Iterations for temperature solver",
-                                   solver_control.last_step());
+                             solver_control.last_step());
       else
         statistics.add_value("Iterations for composition solver",
-                           solver_control.last_step());
+                             solver_control.last_step());
     }
     computing_timer.exit_section();
 
@@ -417,10 +417,10 @@ namespace aspect
     // into the ghosted one with all solution components
     solution.block(0) = distributed_stokes_solution.block(0);
     solution.block(1) = distributed_stokes_solution.block(1);
-    
+
     // now rescale the pressure back to real physical units
     solution.block(1) *= pressure_scaling;
-    
+
     normalize_pressure(solution);
 
     // print the number of iterations to screen and record it in the
@@ -431,7 +431,7 @@ namespace aspect
       pcout << solver_control_cheap.last_step() << '+'
             << solver_control_expensive.last_step() << " iterations.";
     pcout << std::endl;
-    
+
     statistics.add_value("Iterations for Stokes solver",
                          solver_control_cheap.last_step() + solver_control_expensive.last_step());
 

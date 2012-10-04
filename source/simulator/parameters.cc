@@ -105,9 +105,9 @@ namespace aspect
                        "in which ones solves the temperatures and Stokes equations exactly "
                        "once per time step, one after the other. The 'iterated IMPES' scheme "
                        "iterates this decoupled approach by alternating the solution of the "
-		                   "temperature and Stokes systems. The 'iterated Stokes' scheme solves "
-		                   "the temperature equation once at the beginning of each time step "
-		                   "and then iterates out the solution of the Stokes equation.");
+                       "temperature and Stokes systems. The 'iterated Stokes' scheme solves "
+                       "the temperature equation once at the beginning of each time step "
+                       "and then iterates out the solution of the Stokes equation.");
 
     prm.declare_entry ("Pressure normalization", "surface",
                        Patterns::Selection ("surface|"
@@ -586,9 +586,9 @@ namespace aspect
     {
       n_compositional_fields = prm.get_integer ("Number of fields");
       const std::vector<int> n_normalized_fields = Utilities::string_to_int
-          (Utilities::split_string_list(prm.get ("List of normalized fields")));
+                                                   (Utilities::split_string_list(prm.get ("List of normalized fields")));
       normalized_fields = std::vector<unsigned int> (n_normalized_fields.begin(),
-          n_normalized_fields.end());
+                                                     n_normalized_fields.end());
 
       Assert (normalized_fields.size() <= n_compositional_fields,
               ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));

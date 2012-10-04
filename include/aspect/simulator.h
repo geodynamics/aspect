@@ -377,7 +377,7 @@ namespace aspect
         {
           IMPES,
           iterated_IMPES,
-	        iterated_Stokes
+          iterated_Stokes
         };
       };
 
@@ -434,7 +434,7 @@ namespace aspect
 
         NonlinearSolverKind            nonlinear_solver;
 
-	bool                           resume_computation;
+        bool                           resume_computation;
         double                         start_time;
         double                         end_time;
         double                         CFL_number;

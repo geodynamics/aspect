@@ -64,8 +64,8 @@ namespace aspect
             const double temperature = uh[q][dim+1];
 
             computed_quantities[q](0) = this->get_material_model().thermal_expansion_coefficient(temperature,
-                                                                                                 pressure,
-                                                                                                 evaluation_points[q]);
+                                        pressure,
+                                        evaluation_points[q]);
           }
       }
     }

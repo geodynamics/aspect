@@ -66,95 +66,96 @@ namespace aspect
     double max_sum_comp = 0.0;
     double global_max = 0.0;
 
-    for(unsigned int n=0;n<(base_element == 2 ? 1 : parameters.n_compositional_fields);++n)
+    for (unsigned int n=0; n<(base_element == 2 ? 1 : parameters.n_compositional_fields); ++n)
       {
-      initial_solution.reinit(system_rhs,false);
+        initial_solution.reinit(system_rhs,false);
 
-      // get the temperature/composition support points
-      const std::vector<Point<dim> > support_points
-        = finite_element.base_element(base_element).get_unit_support_points();
-      Assert (support_points.size() != 0,
-              ExcInternalError());
+        // get the temperature/composition support points
+        const std::vector<Point<dim> > support_points
+          = finite_element.base_element(base_element).get_unit_support_points();
+        Assert (support_points.size() != 0,
+                ExcInternalError());
 
-      // create an FEValues object with just the temperature/composition element
-      FEValues<dim> fe_values (mapping, finite_element,
-                               support_points,
-                               update_quadrature_points);
+        // create an FEValues object with just the temperature/composition element
+        FEValues<dim> fe_values (mapping, finite_element,
+                                 support_points,
+                                 update_quadrature_points);
 
-      std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
+        std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
 
-      for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
-           cell != dof_handler.end(); ++cell)
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit (cell);
+        for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
+             cell != dof_handler.end(); ++cell)
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit (cell);
 
-            // go through the temperature/composition dofs and set their global values
-            // to the temperature/composition field interpolated at these points
-            cell->get_dof_indices (local_dof_indices);
-            for (unsigned int i=0; i<finite_element.base_element(base_element).dofs_per_cell; ++i)
-              {
-                const unsigned int system_local_dof
-                  = finite_element.component_to_system_index(/*temperature/composition component=*/dim+base_element-1+n,
-                                                                                /*dof index within component=*/i);
+              // go through the temperature/composition dofs and set their global values
+              // to the temperature/composition field interpolated at these points
+              cell->get_dof_indices (local_dof_indices);
+              for (unsigned int i=0; i<finite_element.base_element(base_element).dofs_per_cell; ++i)
+                {
+                  const unsigned int system_local_dof
+                    = finite_element.component_to_system_index(/*temperature/composition component=*/dim+base_element-1+n,
+                        /*dof index within component=*/i);
 
-		double value = 
-                  (base_element == 2 ?
-                      initial_conditions->initial_temperature(fe_values.quadrature_point(i))
-                      : compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n));
-                initial_solution(local_dof_indices[system_local_dof]) = value;
-		
-                Assert (value >= 0,
-                        ExcMessage("Invalid initial conditions: Temperature and/or composition is negative"));
+                  double value =
+                    (base_element == 2 ?
+                     initial_conditions->initial_temperature(fe_values.quadrature_point(i))
+                     : compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n));
+                  initial_solution(local_dof_indices[system_local_dof]) = value;
 
-                // if it is specified in the parameter file that the sum of all compositional fields
-                // must not exceed one, this should be checked
-                if((parameters.normalized_fields.size()>0)
-                    && (base_element == 3)
-                    && (n == 0))
-                  {
-                    double sum = 0;
-                    for(unsigned int m=0;m<parameters.normalized_fields.size();++m)
-                      sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),parameters.normalized_fields[m]);
-                    if(abs(sum) > 1.0+1e-6) {
-                        max_sum_comp = std::max(sum,max_sum_comp);
-                        normalize_composition = true;
+                  Assert (value >= 0,
+                          ExcMessage("Invalid initial conditions: Temperature and/or composition is negative"));
+
+                  // if it is specified in the parameter file that the sum of all compositional fields
+                  // must not exceed one, this should be checked
+                  if ((parameters.normalized_fields.size()>0)
+                      && (base_element == 3)
+                      && (n == 0))
+                    {
+                      double sum = 0;
+                      for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
+                        sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),parameters.normalized_fields[m]);
+                      if (abs(sum) > 1.0+1e-6)
+                        {
+                          max_sum_comp = std::max(sum,max_sum_comp);
+                          normalize_composition = true;
+                        }
                     }
-                  }
 
-              }
+                }
+            }
+
+        initial_solution.compress(VectorOperation::insert);
+
+        // we should not have written at all into any of the blocks with
+        // the exception of the composition blocks
+        for (unsigned int b=0; b<initial_solution.n_blocks(); ++b)
+          if (b != base_element+n)
+            Assert (initial_solution.block(b).l2_norm() == 0,
+                    ExcInternalError());
+
+        // if at least one processor decides that it needs
+        // to normalize, do the same on all processors.
+        int my_normalize_decision = normalize_composition;
+        int global_dec = Utilities::MPI::max (my_normalize_decision, mpi_communicator);
+
+        if (global_dec>0)
+          {
+            global_max = Utilities::MPI::max (max_sum_comp, mpi_communicator);
+            if (n==0) pcout << "Sum of compositional fields is not one, fields will be normalized" << global_max<< std::endl;
+            for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
+              if (n==parameters.normalized_fields[m]) initial_solution/=global_max;
           }
 
-      initial_solution.compress(VectorOperation::insert);
+        // then apply constraints and copy the
+        // result into vectors with ghost elements
+        constraints.distribute(initial_solution);
 
-      // we should not have written at all into any of the blocks with
-      // the exception of the composition blocks
-      for (unsigned int b=0; b<initial_solution.n_blocks(); ++b)
-        if (b != base_element+n)
-          Assert (initial_solution.block(b).l2_norm() == 0,
-                  ExcInternalError());
-
-				       // if at least one processor decides that it needs
-				       // to normalize, do the same on all processors.
-      int my_normalize_decision = normalize_composition;
-      int global_dec = Utilities::MPI::max (my_normalize_decision, mpi_communicator);
-      
-      if(global_dec>0)
-	{
-          global_max = Utilities::MPI::max (max_sum_comp, mpi_communicator);
-          if(n==0) pcout << "Sum of compositional fields is not one, fields will be normalized" << global_max<< std::endl;
-          for(unsigned int m=0;m<parameters.normalized_fields.size();++m)
-            if(n==parameters.normalized_fields[m]) initial_solution/=global_max;
-	}
-
-      // then apply constraints and copy the
-      // result into vectors with ghost elements
-      constraints.distribute(initial_solution);
-
-      // copy composition block only
-      solution.block(base_element+n) = initial_solution.block(base_element+n);
-      old_solution.block(base_element+n) = initial_solution.block(base_element+n);
-      old_old_solution.block(base_element+n) = initial_solution.block(base_element+n);
+        // copy composition block only
+        solution.block(base_element+n) = initial_solution.block(base_element+n);
+        old_solution.block(base_element+n) = initial_solution.block(base_element+n);
+        old_old_solution.block(base_element+n) = initial_solution.block(base_element+n);
       }
   }
 

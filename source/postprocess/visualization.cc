@@ -130,10 +130,11 @@ namespace aspect
       solution_names.push_back ("p");
       solution_names.push_back ("T");
       std::string C_number;
-      for(unsigned int i=0;i<(this->n_compositional_fields());++i) {
+      for (unsigned int i=0; i<(this->n_compositional_fields()); ++i)
+        {
           C_number = "C_" + boost::lexical_cast<std::string>(i+1);
           solution_names.push_back (C_number);
-      }
+        }
 
 
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
@@ -141,7 +142,7 @@ namespace aspect
                       DataComponentInterpretation::component_is_part_of_vector);
       interpretation.push_back (DataComponentInterpretation::component_is_scalar);
       interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-      for(unsigned int i=0;i<(this->n_compositional_fields());++i)
+      for (unsigned int i=0; i<(this->n_compositional_fields()); ++i)
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
 
       data_out.add_data_vector (this->get_solution(),
