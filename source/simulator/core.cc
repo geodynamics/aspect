@@ -273,6 +273,13 @@ namespace aspect
 
   namespace
   {
+    /**
+     * Conversion object where one can provide a function that returns
+     * a tensor for the velocity at a given point and it returns something
+     * that matches the dealii::Function interface with a number of output
+     * components equal to the number of components of the finite element
+     * in use.
+     */
     template <int dim>
     class VectorFunctionFromVelocityFunctionObject : public Function<dim>
     {
@@ -282,10 +289,14 @@ namespace aspect
          * convert this into an object that matches the Function@<dim@>
          * interface.
          *
+	 * @param n_comp_fields The number of compositional fields used in
+	 *        this vector-valued problem. Needed to determine
+	 *        the total size of the output vectors.
          * @param function_object The scalar function that will form one component
          *     of the resulting Function object.
-         **/
-        VectorFunctionFromVelocityFunctionObject (unsigned int n_comp_fields, const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
+         */
+        VectorFunctionFromVelocityFunctionObject (const unsigned int n_comp_fields,
+						  const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
 
         /**
          * Return the value of the
