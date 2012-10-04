@@ -278,6 +278,9 @@ namespace aspect
       SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
                                                    SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
 
+//TODO: clean up: why do we copy system_rhs here, then call set_zero when we later
+// overwrite the vector in residual(), then call set_zero again, and then throw away
+// the result
       LinearAlgebra::BlockVector
       distributed_solution (system_rhs);
       current_constraints.set_zero(distributed_solution);
@@ -331,6 +334,11 @@ namespace aspect
 
     const internal::StokesBlock stokes_block(system_matrix);
 
+//TODO: clean up: why do we copy system_rhs here, then call set_zero when we later
+// overwrite the vector in residual(), then call set_zero again, and then throw away
+// the result
+// --- see the same place above in the function that solves the temperature and
+// compositional fields
     // extract Stokes parts of solution vector, without any ghost elements
     LinearAlgebra::BlockVector distributed_stokes_solution;
     distributed_stokes_solution.reinit(system_rhs);
