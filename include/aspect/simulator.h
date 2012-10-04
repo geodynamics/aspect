@@ -703,10 +703,14 @@ namespace aspect
        * Initiate the assembly of the composition matrix and right hand side
        * and build a preconditioner for the matrix.
        *
+       * @param composition_index The index of the compositional field whose
+       * matrix we want to assemble (0 <= composition_index < number of
+       * compositional fields in this problem).
+       *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      void assemble_composition_system (unsigned int n_comp);
+      void assemble_composition_system (unsigned int composition_index);
 
       /**
        * Solve one block of the the temperature/composition linear system. Return the initial
@@ -1109,7 +1113,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      std::pair<double,double> get_extrapolated_temperature_range () const;
+      std::pair<double,double> get_extrapolated_temperature_or_composition_range (const bool field) const;
 
       /**
        * Compute the size of the next time step from the mesh size and

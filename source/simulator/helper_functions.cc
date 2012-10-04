@@ -257,18 +257,20 @@ namespace aspect
 
   template <int dim>
   std::pair<double,double>
-  Simulator<dim>::get_extrapolated_temperature_range () const
+  Simulator<dim>::get_extrapolated_temperature_or_composition_range (const bool is_temperature) const
+  // is_temperature is true for temperature and false for composition
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                             parameters.temperature_degree);
+                                             is_temperature ? parameters.temperature_degree : parameters.composition_degree);
+
     const unsigned int n_q_points = quadrature_formula.size();
 
-    const FEValuesExtractors::Scalar temperature (dim+1);
+    const FEValuesExtractors::Scalar field (is_temperature ? dim+1 : dim+2);
 
     FEValues<dim> fe_values (mapping, finite_element, quadrature_formula,
                              update_values);
-    std::vector<double> old_temperature_values(n_q_points);
-    std::vector<double> old_old_temperature_values(n_q_points);
+    std::vector<double> old_field_values(n_q_points);
+    std::vector<double> old_old_field_values(n_q_points);
 
     // This presets the minimum with a bigger
     // and the maximum with a smaller number
@@ -276,8 +278,8 @@ namespace aspect
     // be overwritten in the cell loop or in
     // the communication step at the
     // latest.
-    double min_local_temperature = std::numeric_limits<double>::max(),
-           max_local_temperature = -std::numeric_limits<double>::max();
+    double min_local_field = std::numeric_limits<double>::max(),
+           max_local_field = -std::numeric_limits<double>::max();
 
     if (timestep_number != 0)
       {
@@ -288,21 +290,21 @@ namespace aspect
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
-              fe_values[temperature].get_function_values (old_solution,
-                                                          old_temperature_values);
-              fe_values[temperature].get_function_values (old_old_solution,
-                                                          old_old_temperature_values);
+              fe_values[field].get_function_values (old_solution,
+                                                          old_field_values);
+              fe_values[field].get_function_values (old_old_solution,
+                                                          old_old_field_values);
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
-                  const double extrapolated_temperature =
-                    (1. + time_step/old_time_step) * old_temperature_values[q]-
-                    time_step/old_time_step * old_old_temperature_values[q];
+                  const double extrapolated_field =
+                    (1. + time_step/old_time_step) * old_field_values[q]-
+                    time_step/old_time_step * old_old_field_values[q];
 
-                  min_local_temperature = std::min (min_local_temperature,
-                                                    extrapolated_temperature);
-                  max_local_temperature = std::max (max_local_temperature,
-                                                    extrapolated_temperature);
+                  min_local_field = std::min (min_local_field,
+                                                    extrapolated_field);
+                  max_local_field = std::max (max_local_field,
+                                                    extrapolated_field);
                 }
             }
       }
@@ -315,24 +317,24 @@ namespace aspect
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
-              fe_values[temperature].get_function_values (old_solution,
-                                                          old_temperature_values);
+              fe_values[field].get_function_values (old_solution,
+                                                          old_field_values);
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
-                  const double extrapolated_temperature = old_temperature_values[q];
+                  const double extrapolated_field = old_field_values[q];
 
-                  min_local_temperature = std::min (min_local_temperature,
-                                                    extrapolated_temperature);
-                  max_local_temperature = std::max (max_local_temperature,
-                                                    extrapolated_temperature);
+                  min_local_field = std::min (min_local_field,
+                                                    extrapolated_field);
+                  max_local_field = std::max (max_local_field,
+                                                    extrapolated_field);
                 }
             }
       }
 
-    return std::make_pair(-Utilities::MPI::max (-min_local_temperature,
+    return std::make_pair(-Utilities::MPI::max (-min_local_field,
                                                 mpi_communicator),
-                          Utilities::MPI::max (max_local_temperature,
+                          Utilities::MPI::max (max_local_field,
                                                mpi_communicator));
   }
 
@@ -1019,7 +1021,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
-  template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_range () const; \
+  template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const bool field) const; \
   template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::compute_depth_average_field(const unsigned int block_number, std::vector<double> &values) const; \

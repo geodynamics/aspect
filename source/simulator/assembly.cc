@@ -1383,7 +1383,7 @@ namespace aspect
     system_rhs = 0;
 
     const std::pair<double,double>
-    global_T_range = get_extrapolated_temperature_range();
+    global_T_range = get_extrapolated_temperature_or_composition_range (true);
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
@@ -1589,16 +1589,16 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::assemble_composition_system (unsigned int n_comp)
+  void Simulator<dim>::assemble_composition_system (unsigned int composition_index)
   {
     computing_timer.enter_section ("   Assemble composition system");
 
     // Reset only composition block (might reuse Stokes block)
-    system_matrix.block(3+n_comp,3+n_comp) = 0;
+    system_matrix.block(3+composition_index,3+composition_index) = 0;
     system_rhs = 0;
 
     const std::pair<double,double>
-    global_T_range = get_extrapolated_temperature_range();
+    global_C_range = get_extrapolated_temperature_or_composition_range (false);
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
@@ -1612,14 +1612,14 @@ namespace aspect
          std_cxx1x::bind (&Simulator<dim>::
                           local_assemble_composition_system,
                           this,
-                          n_comp,
-                          global_T_range,
+                          composition_index,
+                          global_C_range,
                           get_maximal_velocity(old_solution),
                           // use the mid-value of the composition instead of the
                           // integral mean. results are not very
                           // sensitive to this and this is far simpler
 //TODO: compute mean just like for the temperature
-                          get_entropy_variation (0.5, dim+2+n_comp),
+                          get_entropy_variation (0.5, dim+2+composition_index),
                           std_cxx1x::_1,
                           std_cxx1x::_2,
                           std_cxx1x::_3),
@@ -1669,7 +1669,7 @@ namespace aspect
   template void Simulator<dim>::copy_local_to_global_composition_system ( \
                                                                           const internal::Assembly::CopyData::CompositionSystem<dim> &data); \
   template void Simulator<dim>::build_composition_preconditioner (unsigned int composition_index); \
-  template void Simulator<dim>::assemble_composition_system (unsigned int n_comp); \
+  template void Simulator<dim>::assemble_composition_system (unsigned int composition_index); \
   template void Simulator<dim>::local_assemble_temperature_system ( \
                                                                     const std::pair<double,double> global_T_range, \
                                                                     const double                   global_max_velocity, \
