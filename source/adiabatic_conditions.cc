@@ -43,8 +43,6 @@ namespace aspect
     delta_z (geometry_model.maximal_depth() / (n_points-1)),
     geometry_model (geometry_model)
   {
-    //TODO: look up real value!
-    const double dTdp = 2.5e-8;
 
     temperatures[0] = surface_temperature;
     pressures[0]    = surface_pressure;
@@ -52,8 +50,7 @@ namespace aspect
     // now integrate downward using the explicit Euler method for simplicity
     //
     // note: p'(z) = rho(p,T) * |g|
-    //       T'(z) = alpha rho |g| T with alpha=1/rho drho/dT
-    // TODO: check formulas!
+    //       T'(z) = alpha |g| T / c_p
     double z;
     for (unsigned int i=1; i<n_points; ++i)
       {
@@ -70,12 +67,16 @@ namespace aspect
         // approximation here.
         const double density = material_model.density(temperatures[i-1], pressures[i-1],
                                                       representative_point);
+        const double alpha = material_model.thermal_expansion_coefficient(temperatures[i-1], pressures[i-1],
+                                                      representative_point);
+        const double cp = material_model.specific_heat(temperatures[i-1], pressures[i-1],
+                                                      representative_point);
         const double gravity = gravity_model.gravity_vector(representative_point).norm();
 
         pressures[i] = pressures[i-1]
                        + density * gravity * delta_z;
-        temperatures[i] = temperatures[i-1] +
-                          dTdp * density * gravity * delta_z;
+        temperatures[i] = temperatures[i-1] * (1 +
+                          alpha * gravity * delta_z / cp);
       }
 
     Assert (*std::min_element (pressures.begin(), pressures.end()) >=
@@ -86,6 +87,20 @@ namespace aspect
             ExcInternalError());
   }
 
+  template <int dim>
+  void AdiabaticConditions<dim>::get_adiabatic_temperature_profile(std::vector<double> &values,unsigned int num_slices) const
+  {
+	  values.resize(num_slices);
+	  const double max_depth = geometry_model.maximal_depth();
+	  double depth = 0.0;
+
+	  for(unsigned int n = 0 ; n < num_slices; n++)
+	  {
+		  depth = n * max_depth / (num_slices-1);
+		  const Point<dim> p = geometry_model.representative_point(depth);
+		  values[n] = temperature(p);
+	  }
+  }
 
 
   template <int dim>

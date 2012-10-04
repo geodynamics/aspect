@@ -182,7 +182,8 @@ namespace aspect
     double
     Interface<dim>::
     seismic_Vp (double dummy1,
-                double dummy2) const
+                double dummy2,
+                const Point<dim> &dummy3) const
     {
       return -1.0;
     }
@@ -192,7 +193,8 @@ namespace aspect
     double
     Interface<dim>::
     seismic_Vs (double dummy1,
-                double dummy2) const
+                double dummy2,
+                const Point<dim> &dummy3) const
     {
       return -1.0;
     }

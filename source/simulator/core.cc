@@ -1110,7 +1110,7 @@ namespace aspect
               const double temperature_residual = solve_single_block(2);
 
               current_linearization_point.block(2) = solution.block(2);
-
+rebuild_stokes_matrix = true;
               std::vector<double> composition_residual (parameters.n_compositional_fields,0);
 
               for(unsigned int n=0;n<parameters.n_compositional_fields;++n) {

@@ -62,7 +62,9 @@ namespace aspect
             const double pressure    = uh[q][dim];
             const double temperature = uh[q][dim+1];
 
-            computed_quantities[q](0) = this->get_material_model().seismic_Vp(temperature, pressure);
+            computed_quantities[q](0) = this->get_material_model().seismic_Vp(temperature,
+            		                                                          pressure,
+            		                                                          evaluation_points[q]);
           }
       }
     }

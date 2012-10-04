@@ -41,11 +41,11 @@ namespace aspect
       class material_lookup
          {
            public:
-             material_lookup(const std::string &filename)
+             material_lookup(const std::string &filename, const bool interpol)
              {
 
             	/* Initializing variables */
-
+                interpolation = interpol;
                 delta_press=-1.0;
                 min_press=-1.0;
                 delta_temp=-1.0;
@@ -161,30 +161,44 @@ namespace aspect
 
              double specific_heat(double temperature,double pressure) const
              {
-             	return value(temperature,pressure,specific_heat_values);
+               return value(temperature,pressure,specific_heat_values,interpolation);
              }
 
              double density(double temperature,double pressure) const
              {
-             	return value(temperature,pressure,density_values);
+               return value(temperature,pressure,density_values,interpolation);
              }
 
              double thermal_expansivity(const double temperature,const double pressure) const
              {
-            	return value(temperature,pressure,thermal_expansivity_values);
+               return value(temperature,pressure,thermal_expansivity_values,interpolation);
              }
 
              double seismic_Vp(const double temperature,const double pressure) const
              {
-            	return value(temperature,pressure,vp_values);
+               return value(temperature,pressure,vp_values,false);
              }
 
              double seismic_Vs(const double temperature,const double pressure) const
              {
-            	return value(temperature,pressure,vs_values);
+               return value(temperature,pressure,vs_values,false);
              }
 
-             double value (const double temperature,const double pressure, dealii::Table<2,double> values) const
+             double dHdT (const double temperature,const double pressure) const
+             {
+                const double h = value(temperature,pressure,enthalpy_values,interpolation);
+                const double dh = value(temperature+delta_temp,pressure,enthalpy_values,interpolation);
+                return (dh - h) / delta_temp;
+             }
+
+             double dHdp (const double temperature,const double pressure) const
+             {
+               const double h = value(temperature,pressure,enthalpy_values,interpolation);
+               const double dh = value(temperature,pressure+delta_press,enthalpy_values,interpolation);
+               return (dh - h) / delta_press;
+             }
+
+             double value (const double temperature,const double pressure,const dealii::Table<2,double>& values,bool interpol) const
              {
                const double nT = get_nT(temperature);
                const unsigned int inT = static_cast<unsigned int>(nT);
@@ -195,19 +209,24 @@ namespace aspect
            	   Assert(nT<values.n_rows(), ExcMessage("not in range"));
                Assert(np<values.n_cols(), ExcMessage("not in range"));
 
-               // compute the coordinates of this point in the
-               // reference cell between the data points
-               const double xi = nT-inT;
-               const double eta = np-inp;
+               if (!interpol)
+            	   return values[nT][np];
+               else
+               {
+                   // compute the coordinates of this point in the
+                   // reference cell between the data points
+                   const double xi = nT-inT;
+                   const double eta = np-inp;
 
-               Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
-               Assert ((0 <= eta) && (eta <= 1), ExcInternalError());
+                   Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
+                   Assert ((0 <= eta) && (eta <= 1), ExcInternalError());
 
-               // use these coordinates for a bilinear interpolation
-               return ((1-xi)*(1-eta)*values[nT][np] +
-                       xi    *(1-eta)*values[nT+1][np] +
-                       (1-xi)*eta    *values[nT][np+1] +
-                       xi    *eta    *values[nT+1][np+1]);
+                   // use these coordinates for a bilinear interpolation
+                   return ((1-xi)*(1-eta)*values[nT][np] +
+                           xi    *(1-eta)*values[nT+1][np] +
+                           (1-xi)*eta    *values[nT][np+1] +
+                           xi    *eta    *values[nT+1][np+1]);
+               }
              }
 
 
@@ -250,6 +269,7 @@ namespace aspect
              double max_temp;
              int numtemp;
              int numpress;
+             bool interpolation;
          };
 
       class lateral_viscosity_lookup
@@ -391,9 +411,9 @@ namespace aspect
     }
 
     internal::material_lookup&
-    get_material_data (std::string &datapath)
+    get_material_data (std::string &datapath,bool interpolation)
     {
-      static internal::material_lookup mat(datapath);
+      static internal::material_lookup mat(datapath,interpolation);
       return mat;
     }
 
@@ -433,7 +453,7 @@ namespace aspect
     Steinberger<dim>::
     reference_thermal_expansion_coefficient () const
     {
-      const double reference_density    = 4.89e-4;
+      const double reference_thermal_expansion_coefficient    = 4.89e-4;
       return 0;
     }
 
@@ -446,7 +466,14 @@ namespace aspect
                    const Point<dim> &position) const
     {
       static std::string datapath = datadirectory+material_file_name;
-      return get_material_data(datapath).specific_heat(temperature+get_deltat(position),pressure);
+
+      if (!latent_heat)
+          return get_material_data(datapath,interpolation).specific_heat(temperature+get_deltat(position),pressure);
+ 	 else
+ 	 {
+         const double cp = get_material_data(datapath,interpolation).dHdT(temperature+get_deltat(position),pressure);
+         return std::max(std::min(cp,6000.0),500.0);
+ 	 }
     }
 
 
@@ -470,7 +497,7 @@ namespace aspect
              const Point<dim> &position) const
     {
       static std::string datapath = datadirectory+material_file_name;
-      return get_material_data(datapath).density(temperature+get_deltat(position),pressure);
+      return get_material_data(datapath,interpolation).density(temperature+get_deltat(position),pressure);
     }
 
     template <int dim>
@@ -481,27 +508,37 @@ namespace aspect
                                    const Point<dim> &position) const
     {
       static std::string datapath = datadirectory+material_file_name;
-      return get_material_data(datapath).thermal_expansivity(temperature+get_deltat(position),pressure);
+
+      if (!latent_heat)
+          return get_material_data(datapath,interpolation).thermal_expansivity(temperature+get_deltat(position),pressure);
+ 	 else
+ 	 {
+ 		 const double dHdp = get_material_data(datapath,interpolation).dHdp(temperature+get_deltat(position),pressure);
+ 		 const double alpha = (1 - density(temperature,pressure,position) * dHdp) / temperature;
+ 		 return std::max(std::min(alpha,1e-3),1e-5);
+ 	 }
     }
 
     template <int dim>
     double
     Steinberger<dim>::
     seismic_Vp (const double      temperature,
-                const double      pressure) const
+                const double      pressure,
+                const Point<dim> &position) const
     {
       static std::string datapath = datadirectory+material_file_name;
-      return get_material_data(datapath).seismic_Vp(temperature,pressure);
+      return get_material_data(datapath,interpolation).seismic_Vp(temperature+get_deltat(position),pressure);
     }
 
     template <int dim>
     double
     Steinberger<dim>::
     seismic_Vs (const double      temperature,
-                const double      pressure) const
+                const double      pressure,
+                const Point<dim> &position) const
     {
       static std::string datapath = datadirectory+material_file_name;
-      return get_material_data(datapath).seismic_Vs(temperature,pressure);
+      return get_material_data(datapath,interpolation).seismic_Vs(temperature+get_deltat(position),pressure);
     }
 
 
@@ -592,6 +629,15 @@ namespace aspect
 		   prm.declare_entry ("Lateral viscosity file name", "temp_viscosity_prefactor.txt",
 							  Patterns::Anything (),
 							  "The file name of the lateral viscosity data. ");
+	       prm.declare_entry ("Bilinear interpolation", "true",
+	                          Patterns::Bool (),
+	                          "whether to use bilinear interpolation to compute "
+	                          "material properties (slower but more accurate).");
+	       prm.declare_entry ("Latent heat", "false",
+	                          Patterns::Bool (),
+	                          "whether to include latent heat effects in the"
+	                          "calculation of thermal expansivity and specific heat."
+	                          "Following the approach of Nakagawa et al. 2009.");
 		 prm.leave_subsection();
 	   }
 	   prm.leave_subsection();
@@ -610,6 +656,8 @@ namespace aspect
 			 material_file_name   = prm.get ("Material file name");
 			 radial_viscosity_file_name   = prm.get ("Radial viscosity file name");
 			 lateral_viscosity_file_name   = prm.get ("Lateral viscosity file name");
+			 interpolation        = prm.get_bool ("Bilinear interpolation");
+			 latent_heat          = prm.get_bool ("Latent heat");
 		   prm.leave_subsection();
 		 }
 		 prm.leave_subsection();

@@ -343,6 +343,12 @@ namespace aspect
     // before solving we scale the initial solution to the right dimensions
     remap.block (1) /= pressure_scaling;
     current_constraints.set_zero (remap);
+    // if the model is compressible then we need to adjust the right hand
+    // side of the equation to make it compatible with the matrix on the
+    // left
+    if (material_model->is_compressible ())
+      make_pressure_rhs_compatible(system_rhs);
+
     // (ab)use the distributed solution vector to temporarily put a residual in
     initial_residual = stokes_block.residual (distributed_stokes_solution,
                                               remap,
@@ -351,12 +357,6 @@ namespace aspect
     // then overwrite it again with the current best guess and solve the linear system
     distributed_stokes_solution.block(0) = remap.block(0);
     distributed_stokes_solution.block(1) = remap.block(1);
-
-    // if the model is compressible then we need to adjust the right hand
-    // side of the equation to make it compatible with the matrix on the
-    // left
-    if (material_model->is_compressible ())
-      make_pressure_rhs_compatible(system_rhs);
 
     // extract Stokes parts of rhs vector
     LinearAlgebra::BlockVector distributed_stokes_rhs;
@@ -368,8 +368,9 @@ namespace aspect
 
     // step 1a: try if the simple and fast solver
     // succeeds in 30 steps or less.
-    const double solver_tolerance = parameters.linear_solver_tolerance *
-                                    distributed_stokes_rhs.l2_norm();
+    const double solver_tolerance = std::max (parameters.linear_solver_tolerance *
+                                              distributed_stokes_rhs.l2_norm(),
+                                              1e-12 * initial_residual);
     SolverControl solver_control_cheap (30, solver_tolerance);
     SolverControl solver_control_expensive (system_matrix.block(0,1).m() +
                                             system_matrix.block(1,0).m(), solver_tolerance);
@@ -416,10 +417,10 @@ namespace aspect
     // into the ghosted one with all solution components
     solution.block(0) = distributed_stokes_solution.block(0);
     solution.block(1) = distributed_stokes_solution.block(1);
-
+    
     // now rescale the pressure back to real physical units
     solution.block(1) *= pressure_scaling;
-
+    
     normalize_pressure(solution);
 
     // print the number of iterations to screen and record it in the
@@ -430,7 +431,7 @@ namespace aspect
       pcout << solver_control_cheap.last_step() << '+'
             << solver_control_expensive.last_step() << " iterations.";
     pcout << std::endl;
-
+    
     statistics.add_value("Iterations for Stokes solver",
                          solver_control_cheap.last_step() + solver_control_expensive.last_step());
 
