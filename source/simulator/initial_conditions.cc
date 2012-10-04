@@ -134,16 +134,14 @@ namespace aspect
           Assert (initial_solution.block(b).l2_norm() == 0,
                   ExcInternalError());
 
-				       // if at least one processor decides that he needs
+				       // if at least one processor decides that it needs
 				       // to normalize, do the same on all processors.
       int my_normalize_decision = normalize_composition;
       int global_dec = Utilities::MPI::max (my_normalize_decision, mpi_communicator);
       
       if(global_dec>0)
 	{
-          //TODO Fix this (error: dealii HyperShellBoundary is still used by 2 other objects)
           global_max = Utilities::MPI::max (max_sum_comp, mpi_communicator);
-//          global_max=1.0;
           if(n==0) pcout << "Sum of compositional fields is not one, fields will be normalized" << global_max<< std::endl;
           for(unsigned int m=0;m<parameters.normalized_fields.size();++m)
             if(n==parameters.normalized_fields[m]) initial_solution/=global_max;
