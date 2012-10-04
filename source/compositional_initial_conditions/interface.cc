@@ -98,18 +98,29 @@ namespace aspect
                                const BoundaryTemperature::Interface<dim> &boundary_temperature,
                                const AdiabaticConditions<dim>      &adiabatic_conditions)
     {
-      std::string model_name;
-      prm.enter_subsection ("Compositional initial conditions");
-      {
-        model_name = prm.get ("Model name");
-      }
+      // we need to get at the number of compositional fields here to
+      // know whether we need to generate something at all.
+      prm.enter_subsection ("Compositional fields");
+      const unsigned int n_compositional_fields = prm.get_integer ("Number of fields");
       prm.leave_subsection ();
 
-      Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
-      plugin->initialize (geometry_model,
-                          boundary_temperature,
-                          adiabatic_conditions);
-      return plugin;
+      if (n_compositional_fields == 0)
+	return NULL;
+      else
+	{
+	  std::string model_name;
+	  prm.enter_subsection ("Compositional initial conditions");
+	  {
+	    model_name = prm.get ("Model name");
+	  }
+	  prm.leave_subsection ();
+
+	  Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
+	  plugin->initialize (geometry_model,
+			      boundary_temperature,
+			      adiabatic_conditions);
+	  return plugin;
+	}
     }
 
 
