@@ -66,7 +66,6 @@ namespace aspect
     double max_sum_comp = 0.0;
     double global_max = 0.0;
 
-//    for (unsigned int n=0; n<(base_element == 2 ? 1 : parameters.n_compositional_fields); ++n)
     for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
       {
         initial_solution.reinit(system_rhs,false);

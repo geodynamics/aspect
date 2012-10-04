@@ -671,10 +671,14 @@ namespace aspect
       /**
        * Initialize preconditioner for the composition equation.
        *
+       * @param composition_index The index of the compositional field whose
+       * preconditioner we want to build (0 <= composition_index < number of
+       * compositional fields in this problem).
+       *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      void build_composition_preconditioner (unsigned int n_comp);
+      void build_composition_preconditioner (unsigned int composition_index);
 
       /**
        * Initiate the assembly of the Stokes matrix and right hand side.

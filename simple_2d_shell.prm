@@ -276,7 +276,7 @@ subsection Mesh refinement
 
   # The number of global refinement steps performed on the initial coarse
   # mesh, before the problem is first solved there.
-  set Initial global refinement          = 4
+  set Initial global refinement          = 3
 
   # The fraction of cells with the largest error that should be flagged for
   # refinement.

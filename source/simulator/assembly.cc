@@ -1425,11 +1425,14 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::build_composition_preconditioner (unsigned int n_comp)
+  Simulator<dim>::build_composition_preconditioner (unsigned int composition_index)
   {
+    // make sure that what we get here is really an index of one of the compositional fields
+    AssertIndexRange(composition_index,parameters.n_compositional_fields);
+
     computing_timer.enter_section ("   Build composition preconditioner");
     C_preconditioner.reset (new TrilinosWrappers::PreconditionILU());
-    C_preconditioner->initialize (system_matrix.block(3+n_comp,3+n_comp));
+    C_preconditioner->initialize (system_matrix.block(3+composition_index,3+composition_index));
 
     computing_timer.exit_section();
   }
@@ -1665,7 +1668,7 @@ namespace aspect
   template void Simulator<dim>::assemble_temperature_system (); \
   template void Simulator<dim>::copy_local_to_global_composition_system ( \
                                                                           const internal::Assembly::CopyData::CompositionSystem<dim> &data); \
-  template void Simulator<dim>::build_composition_preconditioner (unsigned int n_comp); \
+  template void Simulator<dim>::build_composition_preconditioner (unsigned int composition_index); \
   template void Simulator<dim>::assemble_composition_system (unsigned int n_comp); \
   template void Simulator<dim>::local_assemble_temperature_system ( \
                                                                     const std::pair<double,double> global_T_range, \
