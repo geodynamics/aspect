@@ -259,13 +259,20 @@ namespace aspect
 
       /**
        * Fill the argument with a set of depth averages of the current
-       * temperature field. The function fills a vector that contains
-       * average temperatures over slices of the domain of same depth. The
-       * function resizes the output vector to match the number of depth
-       * slices.
+       * temperature or compositional fields. The function fills a
+       * vector that contains average field values over slices of the
+       * domain of same depth. The function resizes the output vector
+       * to match the number of depth slices.
+       *
+       * @param block_number The block number (within the finite element)
+       *        of the field of which the depth average should be computed.
+       *        A value equals 2 indicates the temperature, larger values
+       *        indicate the compositional fields.
+       * @param values The output vector of depth averaged values.
        */
       void
-      get_depth_average_field(std::vector<double> &values, unsigned int block_number) const;
+      get_depth_average_field (const unsigned int block_number,
+			       std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the current viscosity
@@ -602,7 +609,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/initial_conditions.cc</code>.
        */
-      void set_initial_field (unsigned int base_element);
+      void set_initial_field (const unsigned int base_element);
 
       /**
        * A function that initializes the pressure variable before the first
@@ -986,7 +993,8 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void compute_depth_average_field(std::vector<double> &values, unsigned int block_number) const;
+      void compute_depth_average_field(const unsigned int block_number,
+				       std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the current temperature. The function
@@ -1281,6 +1289,7 @@ namespace aspect
       std_cxx1x::shared_ptr<LinearAlgebra::PreconditionAMG>     Amg_preconditioner;
       std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     Mp_preconditioner;
       std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     T_preconditioner;
+//TODO: use n_compositional_field separate preconditioners
       std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     C_preconditioner;
 
       bool                                                      rebuild_stokes_matrix;

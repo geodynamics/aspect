@@ -183,9 +183,10 @@ namespace aspect
 
   template <int dim>
   void
-  SimulatorAccess<dim>::get_depth_average_field(std::vector<double> &values, unsigned int block_number) const
+  SimulatorAccess<dim>::get_depth_average_field(const unsigned int block_number,
+						std::vector<double> &values) const
   {
-    simulator->compute_depth_average_field(values,block_number);
+    simulator->compute_depth_average_field(block_number, values);
   }
 
   template <int dim>
@@ -285,6 +286,6 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template class SimulatorAccess<dim>; \
-   
+
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

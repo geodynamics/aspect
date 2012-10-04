@@ -537,8 +537,12 @@ namespace aspect
 
 //TODO: unify the following functions
   template <int dim>
-  void Simulator<dim>::compute_depth_average_field(std::vector<double> &values, unsigned int block_number) const
+  void Simulator<dim>::compute_depth_average_field(const unsigned int block_number,
+						   std::vector<double> &values) const
   {
+    Assert ((block_number>=2) && (block_number<3+parameters.n_compositional_fields),
+	    ExcIndexRange (block_number, 2, 3+parameters.n_compositional_fields));
+
     const unsigned int num_slices = 100;
     values.resize(num_slices);
     std::vector<unsigned int> counts(num_slices);
@@ -774,7 +778,7 @@ namespace aspect
   {
 
     std::vector<double> average_temperature;
-    compute_depth_average_field(average_temperature,dim+1);
+    compute_depth_average_field(dim+1, average_temperature);
 
     values.resize(average_temperature.size());
     std::vector<unsigned int> counts(average_temperature.size());
@@ -837,7 +841,7 @@ namespace aspect
 
     std::vector<double> average_temperature;
 
-    compute_depth_average_field(average_temperature,dim+1);
+    compute_depth_average_field(dim+1, average_temperature);
 
     values.resize(average_temperature.size());
     std::vector<unsigned int> counts(average_temperature.size());
@@ -1018,7 +1022,7 @@ namespace aspect
   template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_range () const; \
   template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::compute_depth_average_field(std::vector<double> &values,  unsigned int block_number) const; \
+  template void Simulator<dim>::compute_depth_average_field(const unsigned int block_number, std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const; \
