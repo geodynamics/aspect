@@ -40,7 +40,7 @@ namespace aspect
 {
 
   template <int dim>
-  void Simulator<dim>::set_initial_field (unsigned int base_element)
+  void Simulator<dim>::set_initial_temperature_and_compositional_fields ()
   {
     // below, we would want to call VectorTools::interpolate on the
     // entire FESystem. there currently is no way to restrict the
@@ -66,9 +66,14 @@ namespace aspect
     double max_sum_comp = 0.0;
     double global_max = 0.0;
 
-    for (unsigned int n=0; n<(base_element == 2 ? 1 : parameters.n_compositional_fields); ++n)
+//    for (unsigned int n=0; n<(base_element == 2 ? 1 : parameters.n_compositional_fields); ++n)
+    for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
       {
         initial_solution.reinit(system_rhs,false);
+
+        // base element in the finite element is 2 for temperature (n=0) and 3 for
+        // compositional fields (n>0)
+        const unsigned int base_element = (n==0 ? 2 : 3);
 
         // get the temperature/composition support points
         const std::vector<Point<dim> > support_points
@@ -95,13 +100,13 @@ namespace aspect
               for (unsigned int i=0; i<finite_element.base_element(base_element).dofs_per_cell; ++i)
                 {
                   const unsigned int system_local_dof
-                    = finite_element.component_to_system_index(/*temperature/composition component=*/dim+base_element-1+n,
+                    = finite_element.component_to_system_index(/*temperature/composition component=*/dim+1+n,
                         /*dof index within component=*/i);
 
                   double value =
                     (base_element == 2 ?
                      initial_conditions->initial_temperature(fe_values.quadrature_point(i))
-                     : compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n));
+                     : compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n-1));
                   initial_solution(local_dof_indices[system_local_dof]) = value;
 
 		  if (base_element != 2)
@@ -110,9 +115,7 @@ namespace aspect
 
                   // if it is specified in the parameter file that the sum of all compositional fields
                   // must not exceed one, this should be checked
-                  if ((parameters.normalized_fields.size()>0)
-                      && (base_element == 3)
-                      && (n == 0))
+                  if (parameters.normalized_fields.size()>0 && n == 1)
                     {
                       double sum = 0;
                       for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
@@ -130,9 +133,9 @@ namespace aspect
         initial_solution.compress(VectorOperation::insert);
 
         // we should not have written at all into any of the blocks with
-        // the exception of the composition blocks
+        // the exception of the current temperature or composition block
         for (unsigned int b=0; b<initial_solution.n_blocks(); ++b)
-          if (b != base_element+n)
+          if (b != 2+n)
             Assert (initial_solution.block(b).l2_norm() == 0,
                     ExcInternalError());
 
@@ -144,9 +147,9 @@ namespace aspect
         if (global_dec>0)
           {
             global_max = Utilities::MPI::max (max_sum_comp, mpi_communicator);
-            if (n==0) pcout << "Sum of compositional fields is not one, fields will be normalized" << std::endl;
+            if (n==1) pcout << "Sum of compositional fields is not one, fields will be normalized" << std::endl;
             for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
-              if (n==parameters.normalized_fields[m]) initial_solution/=global_max;
+              if (n-1==parameters.normalized_fields[m]) initial_solution/=global_max;
           }
 
         // then apply constraints and copy the
@@ -154,9 +157,9 @@ namespace aspect
         constraints.distribute(initial_solution);
 
         // copy composition block only
-        solution.block(base_element+n) = initial_solution.block(base_element+n);
-        old_solution.block(base_element+n) = initial_solution.block(base_element+n);
-        old_old_solution.block(base_element+n) = initial_solution.block(base_element+n);
+        solution.block(2+n) = initial_solution.block(2+n);
+        old_solution.block(2+n) = initial_solution.block(2+n);
+        old_old_solution.block(2+n) = initial_solution.block(2+n);
       }
   }
 
@@ -302,7 +305,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template void Simulator<dim>::set_initial_field(unsigned int base_element); \
+  template void Simulator<dim>::set_initial_temperature_and_compositional_fields(); \
   template void Simulator<dim>::compute_initial_pressure_field();
 
   ASPECT_INSTANTIATE(INSTANTIATE)

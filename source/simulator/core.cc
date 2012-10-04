@@ -1258,8 +1258,7 @@ namespace aspect
     if (parameters.resume_computation == false)
       {
         computing_timer.enter_section ("Initialization");
-        set_initial_field (2); //temperature
-        set_initial_field (3); //composition
+        set_initial_temperature_and_compositional_fields ();
         compute_initial_pressure_field ();
 
         time                      = parameters.start_time;

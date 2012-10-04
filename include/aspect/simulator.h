@@ -609,7 +609,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/initial_conditions.cc</code>.
        */
-      void set_initial_field (const unsigned int base_element);
+      void set_initial_temperature_and_compositional_fields ();
 
       /**
        * A function that initializes the pressure variable before the first
