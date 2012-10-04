@@ -332,7 +332,8 @@ namespace aspect
     template <int dim>
     VectorFunctionFromVelocityFunctionObject<dim>::
     VectorFunctionFromVelocityFunctionObject
-    (unsigned int n_comp_fields, const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
+    (const unsigned int n_comp_fields,
+     const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
       :
       Function<dim>(dim+2+n_comp_fields),
       function_object (function_object)
@@ -617,8 +618,6 @@ namespace aspect
     // now also compute the various partitionings between processors and blocks
     // of vectors and matrices
 
-    n_C_sum = 0;
-
     std::vector<IndexSet> system_partitioning, system_relevant_partitioning;
     IndexSet system_relevant_set;
     {
@@ -626,24 +625,25 @@ namespace aspect
       system_partitioning.push_back(system_index_set.get_view(0,n_u));
       system_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
       system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
-      for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
-        {
-          system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_sum,n_u+n_p+n_T+n_C_sum+n_C[i]));
-          n_C_sum += n_C[i];
-        }
-
-      n_C_sum = 0;
 
       DoFTools::extract_locally_relevant_dofs (dof_handler,
                                                system_relevant_set);
       system_relevant_partitioning.push_back(system_relevant_set.get_view(0,n_u));
       system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u,n_u+n_p));
       system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
-      for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
-        {
-          system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p+n_T+n_C_sum,n_u+n_p+n_T+n_C_sum+n_C[i]));
-          n_C_sum += n_C[i];
+
+      {
+	unsigned int n_C_so_far = 0;
+
+	for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
+	  {
+	    system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_so_far,
+								    n_u+n_p+n_T+n_C_so_far+n_C[i]));
+          system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p+n_T+n_C_so_far,
+									      n_u+n_p+n_T+n_C_so_far+n_C[i]));
+	    n_C_so_far += n_C[i];
         }
+      }
     }
 
     // then compute constraints for the velocity. the constraints we compute
