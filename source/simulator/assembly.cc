@@ -1633,12 +1633,6 @@ namespace aspect
     system_rhs.compress(Add);
 
     computing_timer.exit_section();
-
-    computing_timer.enter_section ("   Build composition preconditioner");
-    C_preconditioner.reset (new LinearAlgebra::PreconditionILU());
-    C_preconditioner->initialize (system_matrix.block(2,2));
-
-    computing_timer.exit_section();
   }
 
 
