@@ -144,7 +144,7 @@ namespace aspect
         if (global_dec>0)
           {
             global_max = Utilities::MPI::max (max_sum_comp, mpi_communicator);
-            if (n==0) pcout << "Sum of compositional fields is not one, fields will be normalized" << global_max<< std::endl;
+            if (n==0) pcout << "Sum of compositional fields is not one, fields will be normalized" << std::endl;
             for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
               if (n==parameters.normalized_fields[m]) initial_solution/=global_max;
           }

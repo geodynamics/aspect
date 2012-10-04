@@ -540,8 +540,8 @@ namespace aspect
   void Simulator<dim>::compute_depth_average_field(const unsigned int block_number,
 						   std::vector<double> &values) const
   {
-    Assert ((block_number>=2) && (block_number<3+parameters.n_compositional_fields),
-	    ExcIndexRange (block_number, 2, 3+parameters.n_compositional_fields));
+    Assert ((block_number>=3) && (block_number<4+parameters.n_compositional_fields),
+	    ExcIndexRange (block_number, 3, 4+parameters.n_compositional_fields));
 
     const unsigned int num_slices = 100;
     values.resize(num_slices);
