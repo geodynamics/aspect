@@ -1612,9 +1612,10 @@ namespace aspect
                           n_comp,
                           global_T_range,
                           get_maximal_velocity(old_solution),
-                          // use the mid temperature instead of the
+                          // use the mid-value of the composition instead of the
                           // integral mean. results are not very
                           // sensitive to this and this is far simpler
+//TODO: compute mean just like for the temperature
                           get_entropy_variation (0.5, dim+2+n_comp),
                           std_cxx1x::_1,
                           std_cxx1x::_2,
