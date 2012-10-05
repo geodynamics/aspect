@@ -1440,7 +1440,7 @@ namespace aspect
 
   template <int dim>
   void Simulator<dim>::
-  local_assemble_composition_system (const unsigned int             comp_index,
+  local_assemble_composition_system (const unsigned int             composition_index,
                                      const std::pair<double,double> global_C_range,
                                      const double                   global_max_velocity,
                                      const double                   global_entropy_variation,
@@ -1450,10 +1450,13 @@ namespace aspect
   {
     const bool use_bdf2_scheme = (timestep_number > 1);
 
+    // make sure that what we get here is really an index of one of the compositional fields
+    AssertIndexRange(composition_index,parameters.n_compositional_fields);
+
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
-    const FEValuesExtractors::Scalar composition (dim+2+comp_index);
+    const FEValuesExtractors::Scalar composition (dim+2+composition_index);
 
     const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
     const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
@@ -1593,6 +1596,9 @@ namespace aspect
   {
     computing_timer.enter_section ("   Assemble composition system");
 
+    // make sure that what we get here is really an index of one of the compositional fields
+    AssertIndexRange(composition_index,parameters.n_compositional_fields);
+
     // Reset only composition block (might reuse Stokes block)
     system_matrix.block(3+composition_index,3+composition_index) = 0;
     system_rhs = 0;
@@ -1678,7 +1684,7 @@ namespace aspect
                                                                     internal::Assembly::Scratch::TemperatureSystem<dim>  &scratch, \
                                                                     internal::Assembly::CopyData::TemperatureSystem<dim> &data); \
   template void Simulator<dim>::local_assemble_composition_system ( \
-                                                                    const unsigned int             comp_index, \
+                                                                    const unsigned int             composition_index, \
                                                                     const std::pair<double,double> global_C_range, \
                                                                     const double                   global_max_velocity, \
                                                                     const double                   global_entropy_variation, \

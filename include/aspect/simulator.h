@@ -947,11 +947,15 @@ namespace aspect
        * Compute the integrals for the composition matrix and right hand side
        * on a single cell.
        *
+       * @param composition_index The index of the compositional field whose
+       * local matrix we want to assemble (0 <= composition_index < number of
+       * compositional fields in this problem).
+       *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
       void
-      local_assemble_composition_system (const unsigned int             comp_index,
+      local_assemble_composition_system (const unsigned int             composition_index,
                                          const std::pair<double,double> global_C_range,
                                          const double                   global_max_velocity,
                                          const double                   global_entropy_variation,
