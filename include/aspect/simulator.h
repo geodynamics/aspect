@@ -259,20 +259,28 @@ namespace aspect
 
       /**
        * Fill the argument with a set of depth averages of the current
-       * temperature or compositional fields. The function fills a
+       * temperature field. The function fills a
        * vector that contains average field values over slices of the
        * domain of same depth. The function resizes the output vector
        * to match the number of depth slices.
        *
-       * @param block_number The block number (within the finite element)
-       *        of the field of which the depth average should be computed.
-       *        A value equals 2 indicates the temperature, larger values
-       *        indicate the compositional fields.
        * @param values The output vector of depth averaged values.
        */
       void
-      get_depth_average_field (const unsigned int block_number,
-			       std::vector<double> &values) const;
+      get_depth_average_temperature(std::vector<double> &values) const;
+
+      /**
+       * Fill the argument with a set of depth averages of the current
+       * compositional fields. See get_depth_average_temperature.
+       *
+       * @param composition_index The index of the compositional field whose
+       * matrix we want to assemble (0 <= composition_index < number of
+       * compositional fields in this problem).
+       *
+       * @param values The output vector of depth averaged values.
+       */
+      void
+      get_depth_average_composition(const unsigned int composition_index, std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the current viscosity
@@ -1002,10 +1010,14 @@ namespace aspect
        * domain of same depth. The function resizes the output vector to match
        * the number of depth slices.
        *
+       * @param index The index of the block to be solved:
+       * 0                              temperature
+       * 1...n_compositional_fields     compositional field
+       *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void compute_depth_average_field(const unsigned int block_number,
+      void compute_depth_average_field(const unsigned int index,
 				       std::vector<double> &values) const;
 
       /**

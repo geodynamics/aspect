@@ -539,11 +539,11 @@ namespace aspect
 
 //TODO: unify the following functions
   template <int dim>
-  void Simulator<dim>::compute_depth_average_field(const unsigned int block_number,
+  void Simulator<dim>::compute_depth_average_field(const unsigned int index,
 						   std::vector<double> &values) const
   {
-    Assert ((block_number>=3) && (block_number<4+parameters.n_compositional_fields),
-	    ExcIndexRange (block_number, 3, 4+parameters.n_compositional_fields));
+    // make sure that what we get here is really an index of one of the temperature/compositional fields
+    AssertIndexRange(index,parameters.n_compositional_fields+1);
 
     const unsigned int num_slices = 100;
     values.resize(num_slices);
@@ -560,7 +560,7 @@ namespace aspect
                              finite_element,
                              quadrature_formula,
                              update_values | update_quadrature_points);
-    const FEValuesExtractors::Scalar field (block_number);
+    const FEValuesExtractors::Scalar field (index+dim+1);
     std::vector<double> field_values(n_q_points);
 
     typename DoFHandler<dim>::active_cell_iterator
@@ -780,7 +780,7 @@ namespace aspect
   {
 
     std::vector<double> average_temperature;
-    compute_depth_average_field(dim+1, average_temperature);
+    compute_depth_average_field(0, average_temperature);
 
     values.resize(average_temperature.size());
     std::vector<unsigned int> counts(average_temperature.size());
@@ -843,7 +843,7 @@ namespace aspect
 
     std::vector<double> average_temperature;
 
-    compute_depth_average_field(dim+1, average_temperature);
+    compute_depth_average_field(0, average_temperature);
 
     values.resize(average_temperature.size());
     std::vector<unsigned int> counts(average_temperature.size());
@@ -1024,7 +1024,7 @@ namespace aspect
   template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const bool is_temperature) const; \
   template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::compute_depth_average_field(const unsigned int block_number, std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_depth_average_field(const unsigned int index, std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const; \

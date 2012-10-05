@@ -409,8 +409,8 @@ namespace aspect
     system_sub_blocks[dim] = 1;
     system_sub_blocks[dim+1] = 2;
     for (unsigned int i=dim+2; i<dim+2+parameters.n_compositional_fields; ++i)
-      system_sub_blocks[i] = i-dim+1;
-    std::vector<unsigned int> system_dofs_per_block (3+parameters.n_compositional_fields);
+      system_sub_blocks[i] = 3;
+    std::vector<unsigned int> system_dofs_per_block (3+((parameters.n_compositional_fields>0)?1:0));
     DoFTools::count_dofs_per_block (dof_handler, system_dofs_per_block,
                                     system_sub_blocks);
 
@@ -418,12 +418,8 @@ namespace aspect
                          system_dofs_per_block[0]+system_dofs_per_block[1]);
     statistics.add_value("Number of temperature degrees of freedom",
                          system_dofs_per_block[2]);
-
-    unsigned int C_dofs = 0;
-    for (unsigned int i=dim+2; i<dim+2+parameters.n_compositional_fields; ++i)
-      C_dofs += system_dofs_per_block[i];
     statistics.add_value("Number of composition degrees of freedom",
-                         C_dofs);
+        (parameters.n_compositional_fields>0)?system_dofs_per_block[3]:0);
 
 
     // then interpolate the current boundary velocities. this adds to

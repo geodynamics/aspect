@@ -74,8 +74,9 @@ namespace aspect
         unsigned int i = 0;
         // add temperature and the compositional fields that follow
         // it immediately
-        for (unsigned int k=dim+1; k<dim+2+this->n_compositional_fields(); ++k)
-          this->get_depth_average_field(k, temp[i++]);
+        this->get_depth_average_temperature(temp[i++]);
+        for (unsigned int k=0; k<this->n_compositional_fields(); ++k)
+          this->get_depth_average_composition(k, temp[i++]);
         this->get_adiabatic_conditions().get_adiabatic_temperature_profile(temp[i++],100);
         this->get_depth_average_velocity_magnitude(temp[i++]);
         this->get_depth_average_sinking_velocity(temp[i++]);

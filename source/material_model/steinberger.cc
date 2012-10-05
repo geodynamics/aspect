@@ -383,7 +383,7 @@ namespace aspect
     Steinberger<dim>::
     update()
     {
-      this->get_depth_average_field(dim+1, avg_temp);
+      this->get_depth_average_temperature(avg_temp);
     }
 
     template <int dim>
