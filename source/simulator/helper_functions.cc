@@ -1021,7 +1021,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
-  template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const bool field) const; \
+  template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const bool is_temperature) const; \
   template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::compute_depth_average_field(const unsigned int block_number, std::vector<double> &values) const; \

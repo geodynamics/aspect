@@ -1440,8 +1440,8 @@ namespace aspect
 
   template <int dim>
   void Simulator<dim>::
-  local_assemble_composition_system (const unsigned int             n_comp,
-                                     const std::pair<double,double> global_T_range,
+  local_assemble_composition_system (const unsigned int             comp_index,
+                                     const std::pair<double,double> global_C_range,
                                      const double                   global_max_velocity,
                                      const double                   global_entropy_variation,
                                      const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -1453,7 +1453,7 @@ namespace aspect
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
-    const FEValuesExtractors::Scalar composition (dim+2+n_comp);
+    const FEValuesExtractors::Scalar composition (dim+2+comp_index);
 
     const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
     const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
@@ -1519,8 +1519,8 @@ namespace aspect
                            scratch.old_pressure,
                            scratch.old_old_pressure,
                            global_max_velocity,
-                           1.0,
-                           0.5,
+                           global_C_range.second - global_C_range.first,
+                           0.5 * (global_C_range.second + global_C_range.first),
                            global_entropy_variation,
                            scratch.finite_element_values.get_quadrature_points(),
                            cell->diameter());
@@ -1618,8 +1618,8 @@ namespace aspect
                           // use the mid-value of the composition instead of the
                           // integral mean. results are not very
                           // sensitive to this and this is far simpler
-//TODO: compute mean just like for the temperature
-                          get_entropy_variation (0.5, dim+2+composition_index),
+                          get_entropy_variation ((global_C_range.first +
+                                                  global_C_range.second) / 2, dim+2+composition_index),
                           std_cxx1x::_1,
                           std_cxx1x::_2,
                           std_cxx1x::_3),
@@ -1678,8 +1678,8 @@ namespace aspect
                                                                     internal::Assembly::Scratch::TemperatureSystem<dim>  &scratch, \
                                                                     internal::Assembly::CopyData::TemperatureSystem<dim> &data); \
   template void Simulator<dim>::local_assemble_composition_system ( \
-                                                                    const unsigned int             n_comp, \
-                                                                    const std::pair<double,double> global_T_range, \
+                                                                    const unsigned int             comp_index, \
+                                                                    const std::pair<double,double> global_C_range, \
                                                                     const double                   global_max_velocity, \
                                                                     const double                   global_entropy_variation, \
                                                                     const DoFHandler<dim>::active_cell_iterator &cell, \

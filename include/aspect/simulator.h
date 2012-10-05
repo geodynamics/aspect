@@ -939,8 +939,8 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void
-      local_assemble_composition_system (const unsigned int             n_comp,
-                                         const std::pair<double,double> global_T_range,
+      local_assemble_composition_system (const unsigned int             comp_index,
+                                         const std::pair<double,double> global_C_range,
                                          const double                   global_max_velocity,
                                          const double                   global_entropy_variation,
                                          const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -1110,10 +1110,13 @@ namespace aspect
        * solution vector extrapolated from the previous time steps. This is needed
        * to compute the artificial diffusion stabilization terms.
        *
+       * @param is_temperature True, if we want to use this function for the temperature
+       * field, otherwise false (if we want to use it for the compositional fields)
+       *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      std::pair<double,double> get_extrapolated_temperature_or_composition_range (const bool field) const;
+      std::pair<double,double> get_extrapolated_temperature_or_composition_range (const bool is_temperature) const;
 
       /**
        * Compute the size of the next time step from the mesh size and
