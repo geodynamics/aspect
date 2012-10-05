@@ -718,10 +718,14 @@ namespace aspect
        * return $\|Ax_0-b\|$ where $x_0$ is the initial guess for the solution variable
        * and is taken from the current_linearization_point member variable.
        *
+       * @param index The index of the block to be solved:
+       * 0                              temperature
+       * 1...n_compositional_fields     compositional field
+       *
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
        */
-      double solve_single_block (unsigned int block_number);
+      double solve_temperature_or_composition (unsigned int index);
 
       /**
        * Solve the Stokes linear system. Return the initial nonlinear residual,

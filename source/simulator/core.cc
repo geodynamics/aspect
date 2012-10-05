@@ -1088,7 +1088,7 @@ namespace aspect
         {
           assemble_temperature_system ();
           build_temperature_preconditioner();
-          solve_single_block(2);
+          solve_temperature_or_composition(0);
 
           current_linearization_point.block(2) = solution.block(2);
 
@@ -1096,7 +1096,7 @@ namespace aspect
             {
               assemble_composition_system (n);
               build_composition_preconditioner(n);
-              solve_single_block(3+n);
+              solve_temperature_or_composition(1+n);
               current_linearization_point.block(3+n) = solution.block(3+n);
             }
 
@@ -1122,7 +1122,7 @@ namespace aspect
               if (iteration == 0)
                 build_temperature_preconditioner();
 
-              const double temperature_residual = solve_single_block(2);
+              const double temperature_residual = solve_temperature_or_composition(0);
 
               current_linearization_point.block(2) = solution.block(2);
               rebuild_stokes_matrix = true;
@@ -1132,7 +1132,7 @@ namespace aspect
                 {
                   assemble_composition_system (n);
                   build_composition_preconditioner(n);
-                  composition_residual[n] = solve_single_block(3+n);
+                  composition_residual[n] = solve_temperature_or_composition(1+n);
                   current_linearization_point.block(3+n) = solution.block(3+n);
                 }
 
@@ -1183,12 +1183,12 @@ namespace aspect
         {
           // solve the temperature system once...
           assemble_temperature_system ();
-          solve_single_block(2);
+          solve_temperature_or_composition(0);
 
           for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
             {
               assemble_composition_system (n);
-              solve_single_block(3+n);
+              solve_temperature_or_composition(1+n);
             }
 
           // ...and then iterate the solution
