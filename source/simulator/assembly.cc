@@ -539,11 +539,11 @@ namespace aspect
 
   /**
    * Compute the variation in the entropy needed in the definition of the
-   * artificial viscosity used to stabilize the temperature equation.
+   * artificial viscosity used to stabilize the composition/temperature equation.
    */
   template <int dim>
   double
-  Simulator<dim>::get_entropy_variation (const double average_field, const unsigned int block) const
+  Simulator<dim>::get_entropy_variation (const double average_field, const unsigned int index) const
   {
     // only do this if we really need entropy
     // variation. otherwise return something that's obviously
@@ -553,14 +553,14 @@ namespace aspect
 
     // we should only calculate the entropy of a temperature or
     //  composition field
-    Assert (block > dim, ExcInternalError());
+    AssertIndexRange(index,parameters.n_compositional_fields+1);
 
     // record maximal entropy on Gauss quadrature
     // points
     const QGauss<dim> quadrature_formula (parameters.temperature_degree+1);
     const unsigned int n_q_points = quadrature_formula.size();
 
-    const FEValuesExtractors::Scalar field (block);
+    const FEValuesExtractors::Scalar field (dim+1+index);
 
     FEValues<dim> fe_values (finite_element, quadrature_formula,
                              update_values | update_JxW_values);
@@ -1403,7 +1403,7 @@ namespace aspect
                           // integral mean. results are not very
                           // sensitive to this and this is far simpler
                           get_entropy_variation ((global_T_range.first +
-                                                  global_T_range.second) / 2, dim+1),
+                                                  global_T_range.second) / 2, 0),
                           std_cxx1x::_1,
                           std_cxx1x::_2,
                           std_cxx1x::_3),
@@ -1619,7 +1619,7 @@ namespace aspect
                           // integral mean. results are not very
                           // sensitive to this and this is far simpler
                           get_entropy_variation ((global_C_range.first +
-                                                  global_C_range.second) / 2, dim+2+composition_index),
+                                                  global_C_range.second) / 2, 1+composition_index),
                           std_cxx1x::_1,
                           std_cxx1x::_2,
                           std_cxx1x::_3),

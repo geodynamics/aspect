@@ -1116,10 +1116,15 @@ namespace aspect
        * This function is used in computing the artificial diffusion
        * stabilization term.
        *
+       * @param index The index of the field we want to calculate the entropy
+       * variation of:
+       * 0                              temperature
+       * 1...n_compositional_fields     compositional field
+       *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      double get_entropy_variation (const double average_temperature, const unsigned int block) const;
+      double get_entropy_variation (const double average_temperature, const unsigned int index) const;
 
       /**
        * Compute the minimal and maximal temperature througout the domain from a

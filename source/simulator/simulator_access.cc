@@ -192,6 +192,9 @@ namespace aspect
    void
    SimulatorAccess<dim>::get_depth_average_composition(const unsigned int composition_index, std::vector<double> &values) const
    {
+    // make sure that what we get here is really an index of one of the compositional fields
+    AssertIndexRange(composition_index,this->n_compositional_fields());
+
      simulator->compute_depth_average_field(composition_index+1, values);
    }
 
