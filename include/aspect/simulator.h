@@ -1135,13 +1135,15 @@ namespace aspect
        * solution vector extrapolated from the previous time steps. This is needed
        * to compute the artificial diffusion stabilization terms.
        *
-       * @param is_temperature True, if we want to use this function for the temperature
-       * field, otherwise false (if we want to use it for the compositional fields)
+       * @param index The index of the field we want to calculate the entropy
+       * variation of:
+       * 0                              temperature
+       * 1...n_compositional_fields     compositional field
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      std::pair<double,double> get_extrapolated_temperature_or_composition_range (const bool is_temperature) const;
+      std::pair<double,double> get_extrapolated_temperature_or_composition_range (const unsigned int index) const;
 
       /**
        * Compute the size of the next time step from the mesh size and

@@ -1383,7 +1383,7 @@ namespace aspect
     system_rhs = 0;
 
     const std::pair<double,double>
-    global_T_range = get_extrapolated_temperature_or_composition_range (true);
+    global_T_range = get_extrapolated_temperature_or_composition_range (0);
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
@@ -1604,7 +1604,7 @@ namespace aspect
     system_rhs = 0;
 
     const std::pair<double,double>
-    global_C_range = get_extrapolated_temperature_or_composition_range (false);
+    global_C_range = get_extrapolated_temperature_or_composition_range (1+composition_index);
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>

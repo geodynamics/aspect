@@ -257,15 +257,15 @@ namespace aspect
 
   template <int dim>
   std::pair<double,double>
-  Simulator<dim>::get_extrapolated_temperature_or_composition_range (const bool is_temperature) const
+  Simulator<dim>::get_extrapolated_temperature_or_composition_range (const unsigned int index) const
   // is_temperature is true for temperature and false for composition
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                             is_temperature ? parameters.temperature_degree : parameters.composition_degree);
+                                             (index==0) ? parameters.temperature_degree : parameters.composition_degree);
 
     const unsigned int n_q_points = quadrature_formula.size();
 
-    const FEValuesExtractors::Scalar field (is_temperature ? dim+1 : dim+2);
+    const FEValuesExtractors::Scalar field (dim+1+index);
 
     FEValues<dim> fe_values (mapping, finite_element, quadrature_formula,
                              update_values);
@@ -1021,7 +1021,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
-  template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const bool is_temperature) const; \
+  template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const unsigned int index) const; \
   template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::compute_depth_average_field(const unsigned int index, std::vector<double> &values) const; \
