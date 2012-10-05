@@ -114,7 +114,7 @@ namespace aspect
 
       std::ofstream stat_file (tmp_file_name.c_str());
       copy_of_table->write_text (stat_file,
-          TableHandler::table_with_separate_column_description);
+                                 TableHandler::table_with_separate_column_description);
       stat_file.close();
 
       // now move the temporary file into place
@@ -257,18 +257,19 @@ namespace aspect
 
   template <int dim>
   std::pair<double,double>
-  Simulator<dim>::get_extrapolated_temperature_range () const
+  Simulator<dim>::get_extrapolated_temperature_or_composition_range (const unsigned int index) const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                             parameters.temperature_degree);
+                                             (index==0) ? parameters.temperature_degree : parameters.composition_degree);
+
     const unsigned int n_q_points = quadrature_formula.size();
 
-    const FEValuesExtractors::Scalar temperature (dim+1);
+    const FEValuesExtractors::Scalar field (dim+1+index);
 
     FEValues<dim> fe_values (mapping, finite_element, quadrature_formula,
                              update_values);
-    std::vector<double> old_temperature_values(n_q_points);
-    std::vector<double> old_old_temperature_values(n_q_points);
+    std::vector<double> old_field_values(n_q_points);
+    std::vector<double> old_old_field_values(n_q_points);
 
     // This presets the minimum with a bigger
     // and the maximum with a smaller number
@@ -276,8 +277,8 @@ namespace aspect
     // be overwritten in the cell loop or in
     // the communication step at the
     // latest.
-    double min_local_temperature = std::numeric_limits<double>::max(),
-           max_local_temperature = -std::numeric_limits<double>::max();
+    double min_local_field = std::numeric_limits<double>::max(),
+           max_local_field = -std::numeric_limits<double>::max();
 
     if (timestep_number != 0)
       {
@@ -288,21 +289,21 @@ namespace aspect
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
-              fe_values[temperature].get_function_values (old_solution,
-                                                          old_temperature_values);
-              fe_values[temperature].get_function_values (old_old_solution,
-                                                          old_old_temperature_values);
+              fe_values[field].get_function_values (old_solution,
+                                                          old_field_values);
+              fe_values[field].get_function_values (old_old_solution,
+                                                          old_old_field_values);
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
-                  const double extrapolated_temperature =
-                    (1. + time_step/old_time_step) * old_temperature_values[q]-
-                    time_step/old_time_step * old_old_temperature_values[q];
+                  const double extrapolated_field =
+                    (1. + time_step/old_time_step) * old_field_values[q]-
+                    time_step/old_time_step * old_old_field_values[q];
 
-                  min_local_temperature = std::min (min_local_temperature,
-                                                    extrapolated_temperature);
-                  max_local_temperature = std::max (max_local_temperature,
-                                                    extrapolated_temperature);
+                  min_local_field = std::min (min_local_field,
+                                                    extrapolated_field);
+                  max_local_field = std::max (max_local_field,
+                                                    extrapolated_field);
                 }
             }
       }
@@ -315,24 +316,24 @@ namespace aspect
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
-              fe_values[temperature].get_function_values (old_solution,
-                                                          old_temperature_values);
+              fe_values[field].get_function_values (old_solution,
+                                                          old_field_values);
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
-                  const double extrapolated_temperature = old_temperature_values[q];
+                  const double extrapolated_field = old_field_values[q];
 
-                  min_local_temperature = std::min (min_local_temperature,
-                                                    extrapolated_temperature);
-                  max_local_temperature = std::max (max_local_temperature,
-                                                    extrapolated_temperature);
+                  min_local_field = std::min (min_local_field,
+                                                    extrapolated_field);
+                  max_local_field = std::max (max_local_field,
+                                                    extrapolated_field);
                 }
             }
       }
 
-    return std::make_pair(-Utilities::MPI::max (-min_local_temperature,
+    return std::make_pair(-Utilities::MPI::max (-min_local_field,
                                                 mpi_communicator),
-                          Utilities::MPI::max (max_local_temperature,
+                          Utilities::MPI::max (max_local_field,
                                                mpi_communicator));
   }
 
@@ -537,8 +538,12 @@ namespace aspect
 
 //TODO: unify the following functions
   template <int dim>
-  void Simulator<dim>::compute_depth_average_temperature(std::vector<double> &values) const
+  void Simulator<dim>::compute_depth_average_field(const unsigned int index,
+						   std::vector<double> &values) const
   {
+    // make sure that what we get here is really an index of one of the temperature/compositional fields
+    AssertIndexRange(index,parameters.n_compositional_fields+1);
+
     const unsigned int num_slices = 100;
     values.resize(num_slices);
     std::vector<unsigned int> counts(num_slices);
@@ -554,8 +559,8 @@ namespace aspect
                              finite_element,
                              quadrature_formula,
                              update_values | update_quadrature_points);
-    const FEValuesExtractors::Scalar temperature (dim+1);
-    std::vector<double> temperature_values(n_q_points);
+    const FEValuesExtractors::Scalar field (index+dim+1);
+    std::vector<double> field_values(n_q_points);
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
@@ -565,8 +570,8 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[temperature].get_function_values (this->solution,
-                                                      temperature_values);
+          fe_values[field].get_function_values (this->solution,
+                                                field_values);
           for (unsigned int q=0; q<n_q_points; ++q)
             {
               const Point<dim> &p = fe_values.quadrature_point(q);
@@ -575,7 +580,7 @@ namespace aspect
               Assert(idx<num_slices, ExcInternalError());
 
               ++counts[idx];
-              values[idx]+= temperature_values[q];
+              values[idx]+= field_values[q];
             }
         }
 
@@ -774,7 +779,7 @@ namespace aspect
   {
 
     std::vector<double> average_temperature;
-    compute_depth_average_temperature(average_temperature);
+    compute_depth_average_field(0, average_temperature);
 
     values.resize(average_temperature.size());
     std::vector<unsigned int> counts(average_temperature.size());
@@ -816,8 +821,8 @@ namespace aspect
               Assert(idx<num_slices, ExcInternalError());
 
               const double Vs_depth_average = material_model->seismic_Vs(average_temperature[idx],
-            		                                                     pressure_values[q],
-            		                                                     fe_values.quadrature_point(q));
+                                                                         pressure_values[q],
+                                                                         fe_values.quadrature_point(q));
               ++counts[idx];
               values[idx] += Vs_depth_average;
             }
@@ -837,7 +842,7 @@ namespace aspect
 
     std::vector<double> average_temperature;
 
-    compute_depth_average_temperature(average_temperature);
+    compute_depth_average_field(0, average_temperature);
 
     values.resize(average_temperature.size());
     std::vector<unsigned int> counts(average_temperature.size());
@@ -880,8 +885,8 @@ namespace aspect
               Assert(idx<num_slices, ExcInternalError());
 
               const double Vp_depth_average = material_model->seismic_Vp(average_temperature[idx],
-            		                                                     pressure_values[q],
-            		                                                     fe_values.quadrature_point(q));
+                                                                         pressure_values[q],
+                                                                         fe_values.quadrature_point(q));
               ++counts[idx];
               values[idx] += Vp_depth_average;
             }
@@ -941,8 +946,8 @@ namespace aspect
                                                       temperature_values);
 
           const double Vs = material_model->seismic_Vs(temperature_values[0],
-        		                                       pressure_values[0],
-        		                                       fe_values.quadrature_point(0));
+                                                       pressure_values[0],
+                                                       fe_values.quadrature_point(0));
           const double depth = geometry_model->depth(fe_values.quadrature_point(0));
           const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
           Assert(idx<num_slices, ExcInternalError());
@@ -999,8 +1004,8 @@ namespace aspect
                                                       temperature_values);
 
           const double Vp = material_model->seismic_Vp(temperature_values[0],
-        		                                       pressure_values[0],
-        		                                       fe_values.quadrature_point(0));
+                                                       pressure_values[0],
+                                                       fe_values.quadrature_point(0));
           const double depth = geometry_model->depth(fe_values.quadrature_point(0));
           const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
           Assert(idx<num_slices, ExcInternalError());
@@ -1015,10 +1020,10 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
-  template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_range () const; \
+  template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const unsigned int index) const; \
   template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::compute_depth_average_temperature(std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_depth_average_field(const unsigned int index, std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const; \

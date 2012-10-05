@@ -45,6 +45,7 @@
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/initial_conditions/interface.h>
+#include <aspect/compositional_initial_conditions/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/adiabatic_conditions.h>
@@ -64,6 +65,7 @@ namespace aspect
         template <int dim>      struct StokesPreconditioner;
         template <int dim>      struct StokesSystem;
         template <int dim>      struct TemperatureSystem;
+        template <int dim>      struct CompositionSystem;
       }
 
       namespace CopyData
@@ -71,6 +73,7 @@ namespace aspect
         template <int dim>      struct StokesPreconditioner;
         template <int dim>      struct StokesSystem;
         template <int dim>      struct TemperatureSystem;
+        template <int dim>      struct CompositionSystem;
       }
     }
   }
@@ -201,6 +204,13 @@ namespace aspect
       convert_output_to_years () const;
 
       /**
+      * Return the number of compositional fields specified in the input
+      * parameter file that will be advected along with the flow field.
+      */
+      unsigned int
+      n_compositional_fields () const;
+
+      /**
       * Compute the error indicators in the same way they are normally used
       * for mesh refinement. The mesh is not refined when doing so, but the
       * indicators can be used when generating graphical output to check
@@ -249,13 +259,28 @@ namespace aspect
 
       /**
        * Fill the argument with a set of depth averages of the current
-       * temperature field. The function fills a vector that contains
-       * average temperatures over slices of the domain of same depth. The
-       * function resizes the output vector to match the number of depth
-       * slices.
+       * temperature field. The function fills a
+       * vector that contains average field values over slices of the
+       * domain of same depth. The function resizes the output vector
+       * to match the number of depth slices.
+       *
+       * @param values The output vector of depth averaged values.
        */
       void
       get_depth_average_temperature(std::vector<double> &values) const;
+
+      /**
+       * Fill the argument with a set of depth averages of the current
+       * compositional fields. See get_depth_average_temperature.
+       *
+       * @param composition_index The index of the compositional field whose
+       * matrix we want to assemble (0 <= composition_index < number of
+       * compositional fields in this problem).
+       *
+       * @param values The output vector of depth averaged values.
+       */
+      void
+      get_depth_average_composition(const unsigned int composition_index, std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the current viscosity
@@ -367,7 +392,7 @@ namespace aspect
         {
           IMPES,
           iterated_IMPES,
-	        iterated_Stokes
+          iterated_Stokes
         };
       };
 
@@ -424,7 +449,7 @@ namespace aspect
 
         NonlinearSolverKind            nonlinear_solver;
 
-	      bool                           resume_computation;
+        bool                           resume_computation;
         double                         start_time;
         double                         end_time;
         double                         CFL_number;
@@ -435,6 +460,7 @@ namespace aspect
         unsigned int                   timing_output_frequency;
         double                         linear_solver_tolerance;
         double                         temperature_solver_tolerance;
+        double                         composition_solver_tolerance;
         /**
          * @}
          */
@@ -498,7 +524,18 @@ namespace aspect
         unsigned int                   stokes_velocity_degree;
         bool                           use_locally_conservative_discretization;
         unsigned int                   temperature_degree;
+        unsigned int                   composition_degree;
         std::string                    pressure_normalization;
+        /**
+         * @}
+         */
+
+        /**
+         * @name Parameters that have to do with compositional field
+         * @{
+         */
+        unsigned int                   n_compositional_fields;
+        std::vector<unsigned int>      normalized_fields;
         /**
          * @}
          */
@@ -571,8 +608,8 @@ namespace aspect
       void setup_dofs ();
 
       /**
-       * A function that is responsible for initializing the temperature field
-       * before the first time step. This temperature field then serves as the
+       * A function that is responsible for initializing the temperature/compositional
+       * field before the first time step. The temperature field then serves as the
        * temperature from which the velocity is computed during the first time
        * step, and is subsequently overwritten by the temperature field one gets
        * by advancing by one time step.
@@ -580,7 +617,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/initial_conditions.cc</code>.
        */
-      void set_initial_temperature_field ();
+      void set_initial_temperature_and_compositional_fields ();
 
       /**
        * A function that initializes the pressure variable before the first
@@ -640,6 +677,18 @@ namespace aspect
       void build_temperature_preconditioner ();
 
       /**
+       * Initialize preconditioner for the composition equation.
+       *
+       * @param composition_index The index of the compositional field whose
+       * preconditioner we want to build (0 <= composition_index < number of
+       * compositional fields in this problem).
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void build_composition_preconditioner (unsigned int composition_index);
+
+      /**
        * Initiate the assembly of the Stokes matrix and right hand side.
        *
        * This function is implemented in
@@ -659,15 +708,32 @@ namespace aspect
       void assemble_temperature_system ();
 
       /**
-       * Solve the temperature linear system. Return the initial nonlinear residual,
-       * i.e., if the linear system to be solved is $Ax=b$, then return $\|Ax_0-b\|$
-       * where $x_0$ is the initial guess for the solution variable and is taken from
-       * the current_linearization_point member variable.
+       * Initiate the assembly of the composition matrix and right hand side
+       * and build a preconditioner for the matrix.
+       *
+       * @param composition_index The index of the compositional field whose
+       * matrix we want to assemble (0 <= composition_index < number of
+       * compositional fields in this problem).
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void assemble_composition_system (unsigned int composition_index);
+
+      /**
+       * Solve one block of the the temperature/composition linear system. Return the initial
+       * nonlinear residual, i.e., if the linear system to be solved is $Ax=b$, then
+       * return $\|Ax_0-b\|$ where $x_0$ is the initial guess for the solution variable
+       * and is taken from the current_linearization_point member variable.
+       *
+       * @param index The index of the block to be solved:
+       * 0                              temperature
+       * 1...n_compositional_fields     compositional field
        *
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
        */
-      double solve_temperature ();
+      double solve_temperature_or_composition (unsigned int index);
 
       /**
        * Solve the Stokes linear system. Return the initial nonlinear residual,
@@ -878,6 +944,36 @@ namespace aspect
       copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data);
 
       /**
+       * Compute the integrals for the composition matrix and right hand side
+       * on a single cell.
+       *
+       * @param composition_index The index of the compositional field whose
+       * local matrix we want to assemble (0 <= composition_index < number of
+       * compositional fields in this problem).
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      local_assemble_composition_system (const unsigned int             composition_index,
+                                         const std::pair<double,double> global_C_range,
+                                         const double                   global_max_velocity,
+                                         const double                   global_entropy_variation,
+                                         const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                         internal::Assembly::Scratch::CompositionSystem<dim>  &scratch,
+                                         internal::Assembly::CopyData::CompositionSystem<dim> &data);
+
+      /**
+       * Copy the contribution to the composition system
+       * from a single cell into the global matrix that stores these elements.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      copy_local_to_global_composition_system (const internal::Assembly::CopyData::CompositionSystem<dim> &data);
+
+      /**
        * @}
        */
 
@@ -913,15 +1009,20 @@ namespace aspect
       void compute_running_average(std::vector<double> &values, const int npoints) const;
 
       /**
-       * Compute a depth average of the current temperature. The function
-       * fills a vector that contains average temperatures over slices of the
+       * Compute a depth average of the current temperature/composition. The function
+       * fills a vector that contains average temperatures/compositions over slices of the
        * domain of same depth. The function resizes the output vector to match
        * the number of depth slices.
+       *
+       * @param index The index of the block to be solved:
+       * 0                              temperature
+       * 1...n_compositional_fields     compositional field
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void compute_depth_average_temperature(std::vector<double> &values) const;
+      void compute_depth_average_field(const unsigned int index,
+				       std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the current temperature. The function
@@ -1019,20 +1120,30 @@ namespace aspect
        * This function is used in computing the artificial diffusion
        * stabilization term.
        *
+       * @param index The index of the field we want to calculate the entropy
+       * variation of:
+       * 0                              temperature
+       * 1...n_compositional_fields     compositional field
+       *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      double get_entropy_variation (const double average_temperature) const;
+      double get_entropy_variation (const double average_temperature, const unsigned int index) const;
 
       /**
        * Compute the minimal and maximal temperature througout the domain from a
        * solution vector extrapolated from the previous time steps. This is needed
        * to compute the artificial diffusion stabilization terms.
        *
+       * @param index The index of the field we want to calculate the entropy
+       * variation of:
+       * 0                              temperature
+       * 1...n_compositional_fields     compositional field
+       *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      std::pair<double,double> get_extrapolated_temperature_range () const;
+      std::pair<double,double> get_extrapolated_temperature_or_composition_range (const unsigned int index) const;
 
       /**
        * Compute the size of the next time step from the mesh size and
@@ -1142,6 +1253,7 @@ namespace aspect
       const std::auto_ptr<GravityModel::Interface<dim> >        gravity_model;
       const std::auto_ptr<BoundaryTemperature::Interface<dim> > boundary_temperature;
       std::auto_ptr<    InitialConditions::Interface<dim> >   initial_conditions;
+      std::auto_ptr<const CompositionalInitialConditions::Interface<dim> >   compositional_initial_conditions;
       std::auto_ptr<const AdiabaticConditions<dim> >            adiabatic_conditions;
       std::map<types::boundary_id_t,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       /**
@@ -1215,6 +1327,8 @@ namespace aspect
       std_cxx1x::shared_ptr<LinearAlgebra::PreconditionAMG>     Amg_preconditioner;
       std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     Mp_preconditioner;
       std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     T_preconditioner;
+//TODO: use n_compositional_field separate preconditioners
+      std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     C_preconditioner;
 
       bool                                                      rebuild_stokes_matrix;
       bool                                                      rebuild_stokes_preconditioner;

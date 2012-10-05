@@ -257,56 +257,72 @@ namespace aspect
 
   }
 
-
-
   template <int dim>
-  double Simulator<dim>::solve_temperature ()
+  double Simulator<dim>::solve_temperature_or_composition (unsigned int index)
   {
     double initial_residual = 0;
 
-    computing_timer.enter_section ("   Solve temperature system");
-    {
-      pcout << "   Solving temperature system... " << std::flush;
+    // make sure that what we get here is really an index of one of the temperature/compositional fields
+    AssertIndexRange(index,parameters.n_compositional_fields+1);
 
-      SolverControl solver_control (system_matrix.block(2,2).m(),
-                                    parameters.temperature_solver_tolerance*system_rhs.block(2).l2_norm());
+    if (index == 0)
+      computing_timer.enter_section ("   Solve temperature system");
+    else
+      computing_timer.enter_section ("   Solve composition system");
+    {
+      if (index == 0)
+        pcout << "   Solving temperature system... " << std::flush;
+      else
+        pcout << "   Solving composition system " << index << "... " << std::flush;
+
+      SolverControl solver_control (system_matrix.block(index+2,index+2).m(),
+                                    parameters.composition_solver_tolerance*system_rhs.block(index+2).l2_norm());
 
       SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
                                                    SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
 
+//TODO: clean up: why do we copy system_rhs here, then call set_zero when we later
+// overwrite the vector in residual(), then call set_zero again, and then throw away
+// the result
       LinearAlgebra::BlockVector
       distributed_solution (system_rhs);
+      current_constraints.set_zero(distributed_solution);
       // create vector with distribution of system_rhs.
-      LinearAlgebra::BlockVector remap (system_rhs);
+      LinearAlgebra::Vector block_remap (system_rhs.block (index+2));
       // copy block of current_linearization_point into it, because
       // current_linearization is distributed differently.
-      remap.block (2) = current_linearization_point.block (2);
-      current_constraints.set_zero (remap);
+      block_remap = current_linearization_point.block (index+2);
       // (ab)use the distributed solution vector to temporarily put a residual in
-      initial_residual = system_matrix.block(2,2).residual (distributed_solution.block(2),
-                                                            remap.block (2),
-                                                            system_rhs.block(2));
+      initial_residual = system_matrix.block(index+2,index+2).residual (distributed_solution.block(index+2),
+                                                                                  block_remap,
+                                                                                  system_rhs.block(index+2));
+      current_constraints.set_zero(distributed_solution);
 
       // then overwrite it again with the current best guess and solve the linear system
-      distributed_solution.block(2) = remap.block (2);
-      solver.solve (system_matrix.block(2,2), distributed_solution.block(2),
-                    system_rhs.block(2), *T_preconditioner);
-      
+      distributed_solution.block(index+2) = block_remap;
+      solver.solve (system_matrix.block(index+2,index+2), distributed_solution.block(index+2),
+                    system_rhs.block(index+2), index==0?*T_preconditioner:*C_preconditioner);
+
       current_constraints.distribute (distributed_solution);
-      solution.block(2) = distributed_solution.block(2);
+      solution.block(index+2) = distributed_solution.block(index+2);
 
       // print number of iterations and also record it in the
       // statistics file
       pcout << solver_control.last_step()
             << " iterations." << std::endl;
 
-      statistics.add_value("Iterations for temperature solver",
-                           solver_control.last_step());
+      if (index == 0)
+        statistics.add_value("Iterations for temperature solver",
+                             solver_control.last_step());
+      else
+        statistics.add_value("Iterations for composition solver",
+                             solver_control.last_step());
     }
     computing_timer.exit_section();
 
     return initial_residual;
   }
+
 
 
 
@@ -321,6 +337,11 @@ namespace aspect
 
     const internal::StokesBlock stokes_block(system_matrix);
 
+//TODO: clean up: why do we copy system_rhs here, then call set_zero when we later
+// overwrite the vector in residual(), then call set_zero again, and then throw away
+// the result
+// --- see the same place above in the function that solves the temperature and
+// compositional fields
     // extract Stokes parts of solution vector, without any ghost elements
     LinearAlgebra::BlockVector distributed_stokes_solution;
     distributed_stokes_solution.reinit(system_rhs);
@@ -407,10 +428,10 @@ namespace aspect
     // into the ghosted one with all solution components
     solution.block(0) = distributed_stokes_solution.block(0);
     solution.block(1) = distributed_stokes_solution.block(1);
-    
+
     // now rescale the pressure back to real physical units
     solution.block(1) *= pressure_scaling;
-    
+
     normalize_pressure(solution);
 
     // print the number of iterations to screen and record it in the
@@ -421,7 +442,7 @@ namespace aspect
       pcout << solver_control_cheap.last_step() << '+'
             << solver_control_expensive.last_step() << " iterations.";
     pcout << std::endl;
-    
+
     statistics.add_value("Iterations for Stokes solver",
                          solver_control_cheap.last_step() + solver_control_expensive.last_step());
 
@@ -440,7 +461,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template double Simulator<dim>::solve_temperature (); \
+  template double Simulator<dim>::solve_temperature_or_composition (unsigned int index); \
   template double Simulator<dim>::solve_stokes ();
 
   ASPECT_INSTANTIATE(INSTANTIATE)

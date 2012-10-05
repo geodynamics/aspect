@@ -68,11 +68,15 @@ namespace aspect
       if (this->get_time() < next_output_time)
         return std::pair<std::string,std::string>();
 
-      const unsigned int n_statistics = 7;
+      const unsigned int n_statistics = 7+this->n_compositional_fields();
       std::vector<double> temp[n_statistics];
       {
         unsigned int i = 0;
+        // add temperature and the compositional fields that follow
+        // it immediately
         this->get_depth_average_temperature(temp[i++]);
+        for (unsigned int k=0; k<this->n_compositional_fields(); ++k)
+          this->get_depth_average_composition(k, temp[i++]);
         this->get_adiabatic_conditions().get_adiabatic_temperature_profile(temp[i++],100);
         this->get_depth_average_velocity_magnitude(temp[i++]);
         this->get_depth_average_sinking_velocity(temp[i++]);
@@ -107,7 +111,10 @@ namespace aspect
           // write out the file
           const std::string filename = this->get_output_directory() + "depthaverage.plt";
           std::ofstream f (filename.c_str());
-          f << "# time, depth, avg T, adiabatic T, velocity magnitude, avg sinking velocity, avg Vs, avg Vp, avg viscosity" << std::endl;
+          f << "# time, depth, avg T";
+          for (unsigned int k=0; k<this->n_compositional_fields(); ++k)
+            f << ", avg C_" << k+1;
+          f << ", adiabatic T, velocity magnitude, avg sinking velocity, avg Vs, avg Vp, avg viscosity" << std::endl;
           f << std::scientific;
 
           for (unsigned int i=0; i<entries.size(); ++i)

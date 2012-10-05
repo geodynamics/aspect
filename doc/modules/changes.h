@@ -11,6 +11,12 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: introduce compositional fields, that are advected by the velocity. These are passive
+for now.
+<br>
+(Juliane Dannberg, 2012/10/05)
+
+<li>
 Changed: SimulatorAccess moved from aspect::Postproccessor to aspect:: and
 can be used in material/gravity/... models too. If needed, derive from SimulatorAccess.
 <br>

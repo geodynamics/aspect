@@ -48,6 +48,7 @@ all-dirs := source \
             source/gravity_model \
             source/boundary_temperature \
             source/initial_conditions \
+            source/compositional_initial_conditions \
             source/material_model \
             source/velocity_boundary_conditions \
             source/postprocess \

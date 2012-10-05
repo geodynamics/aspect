@@ -23,6 +23,7 @@
 #include <aspect/simulator.h>
 #include <aspect/adiabatic_conditions.h>
 #include <aspect/initial_conditions/interface.h>
+#include <aspect/compositional_initial_conditions/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/function.h>
@@ -39,7 +40,7 @@ namespace aspect
 {
 
   template <int dim>
-  void Simulator<dim>::set_initial_temperature_field ()
+  void Simulator<dim>::set_initial_temperature_and_compositional_fields ()
   {
     // below, we would want to call VectorTools::interpolate on the
     // entire FESystem. there currently is no way to restrict the
@@ -61,58 +62,105 @@ namespace aspect
     // need to write into it and we can not
     // write into vectors with ghost elements
     LinearAlgebra::BlockVector initial_solution;
-    initial_solution.reinit(system_rhs);
+    bool normalize_composition = false;
+    double max_sum_comp = 0.0;
+    double global_max = 0.0;
 
-    // get the temperature support points
-    const std::vector<Point<dim> > temperature_support_points
-      = finite_element.base_element(2).get_unit_support_points();
-    Assert (temperature_support_points.size() != 0,
-            ExcInternalError());
+    for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
+      {
+        initial_solution.reinit(system_rhs,false);
 
-    // create an FEValues object with just the temperature element
-    FEValues<dim> fe_values (mapping, finite_element,
-                             temperature_support_points,
-                             update_quadrature_points);
+        // base element in the finite element is 2 for temperature (n=0) and 3 for
+        // compositional fields (n>0)
+        const unsigned int base_element = (n==0 ? 2 : 3);
 
-    std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
-
-    for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
-         cell != dof_handler.end(); ++cell)
-      if (cell->is_locally_owned())
-        {
-          fe_values.reinit (cell);
-
-          // go through the temperature dofs and set their global values
-          // to the temperature field interpolated at these points
-          cell->get_dof_indices (local_dof_indices);
-          for (unsigned int i=0; i<finite_element.base_element(2).dofs_per_cell; ++i)
-            {
-              const unsigned int system_local_dof
-                = finite_element.component_to_system_index(/*temperature component=*/dim+1,
-                                                                                     /*dof index within component=*/i);
-
-              initial_solution(local_dof_indices[system_local_dof])
-                = initial_conditions->initial_temperature(fe_values.quadrature_point(i));
-            }
-        }
-
-    // we should not have written at all into any of the blocks with
-    // the exception of the temperature block
-    for (unsigned int b=0; b<initial_solution.n_blocks(); ++b)
-      if (b != 2)
-        Assert (initial_solution.block(b).l2_norm() == 0,
+        // get the temperature/composition support points
+        const std::vector<Point<dim> > support_points
+          = finite_element.base_element(base_element).get_unit_support_points();
+        Assert (support_points.size() != 0,
                 ExcInternalError());
 
-    // then apply constraints and copy the
-    // result into vectors with ghost elements
-    constraints.distribute(initial_solution);
+        // create an FEValues object with just the temperature/composition element
+        FEValues<dim> fe_values (mapping, finite_element,
+                                 support_points,
+                                 update_quadrature_points);
 
-    // copy temperature block only
-    solution.block(2) = initial_solution.block(2);
-    old_solution.block(2) = initial_solution.block(2);
-    old_old_solution.block(2) = initial_solution.block(2);
+        std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
+
+        for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
+             cell != dof_handler.end(); ++cell)
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit (cell);
+
+              // go through the temperature/composition dofs and set their global values
+              // to the temperature/composition field interpolated at these points
+              cell->get_dof_indices (local_dof_indices);
+              for (unsigned int i=0; i<finite_element.base_element(base_element).dofs_per_cell; ++i)
+                {
+                  const unsigned int system_local_dof
+                    = finite_element.component_to_system_index(/*temperature/composition component=*/dim+1+n,
+                        /*dof index within component=*/i);
+
+                  double value =
+                    (base_element == 2 ?
+                     initial_conditions->initial_temperature(fe_values.quadrature_point(i))
+                     : compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n-1));
+                  initial_solution(local_dof_indices[system_local_dof]) = value;
+
+		  if (base_element != 2)
+		    Assert (value >= 0,
+			    ExcMessage("Invalid initial conditions: Composition is negative"));
+
+                  // if it is specified in the parameter file that the sum of all compositional fields
+                  // must not exceed one, this should be checked
+                  if (parameters.normalized_fields.size()>0 && n == 1)
+                    {
+                      double sum = 0;
+                      for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
+                        sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),parameters.normalized_fields[m]);
+                      if (abs(sum) > 1.0+1e-6)
+                        {
+                          max_sum_comp = std::max(sum,max_sum_comp);
+                          normalize_composition = true;
+                        }
+                    }
+
+                }
+            }
+
+        initial_solution.compress(VectorOperation::insert);
+
+        // we should not have written at all into any of the blocks with
+        // the exception of the current temperature or composition block
+        for (unsigned int b=0; b<initial_solution.n_blocks(); ++b)
+          if (b != 2+n)
+            Assert (initial_solution.block(b).l2_norm() == 0,
+                    ExcInternalError());
+
+        // if at least one processor decides that it needs
+        // to normalize, do the same on all processors.
+        int my_normalize_decision = normalize_composition;
+        int global_dec = Utilities::MPI::max (my_normalize_decision, mpi_communicator);
+
+        if (global_dec>0)
+          {
+            global_max = Utilities::MPI::max (max_sum_comp, mpi_communicator);
+            if (n==1) pcout << "Sum of compositional fields is not one, fields will be normalized" << std::endl;
+            for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
+              if (n-1==parameters.normalized_fields[m]) initial_solution/=global_max;
+          }
+
+        // then apply constraints and copy the
+        // result into vectors with ghost elements
+        constraints.distribute(initial_solution);
+
+        // copy temperature/composition block only
+        solution.block(2+n) = initial_solution.block(2+n);
+        old_solution.block(2+n) = initial_solution.block(2+n);
+        old_old_solution.block(2+n) = initial_solution.block(2+n);
+      }
   }
-
 
 
   template <int dim>
@@ -145,7 +193,7 @@ namespace aspect
                                                                                std_cxx1x::cref (*adiabatic_conditions),
                                                                                std_cxx1x::_1),
                                                                                dim,
-                                                                               dim+2),
+                                                                               dim+2+parameters.n_compositional_fields),
                                   system_tmp);
 
         // we may have hanging nodes, so apply constraints
@@ -256,7 +304,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template void Simulator<dim>::set_initial_temperature_field(); \
+  template void Simulator<dim>::set_initial_temperature_and_compositional_fields(); \
   template void Simulator<dim>::compute_initial_pressure_field();
 
   ASPECT_INSTANTIATE(INSTANTIATE)

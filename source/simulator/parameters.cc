@@ -105,9 +105,9 @@ namespace aspect
                        "in which ones solves the temperatures and Stokes equations exactly "
                        "once per time step, one after the other. The 'iterated IMPES' scheme "
                        "iterates this decoupled approach by alternating the solution of the "
-		                   "temperature and Stokes systems. The 'iterated Stokes' scheme solves "
-		                   "the temperature equation once at the beginning of each time step "
-		                   "and then iterates out the solution of the Stokes equation.");
+                       "temperature and Stokes systems. The 'iterated Stokes' scheme solves "
+                       "the temperature equation once at the beginning of each time step "
+                       "and then iterates out the solution of the Stokes equation.");
 
     prm.declare_entry ("Pressure normalization", "surface",
                        Patterns::Selection ("surface|"
@@ -192,6 +192,12 @@ namespace aspect
                        Patterns::Double(0,1),
                        "The relative tolerance up to which the linear system for "
                        "the temperature system gets solved. See 'linear solver "
+                       "tolerance' for more details.");
+
+    prm.declare_entry ("Composition solver tolerance", "1e-12",
+                       Patterns::Double(0,1),
+                       "The relative tolerance up to which the linear system for "
+                       "the composition system gets solved. See 'linear solver "
                        "tolerance' for more details.");
 
     prm.enter_subsection ("Model settings");
@@ -347,6 +353,10 @@ namespace aspect
                          Patterns::Integer (1),
                          "The polynomial degree to use for the temperature variable. "
                          "Units: None.");
+      prm.declare_entry ("Composition polynomial degree", "2",
+                         Patterns::Integer (1),
+                         "The polynomial degree to use for the composition variable(s). "
+                         "Units: None.");
       prm.declare_entry ("Use locally conservative discretization", "false",
                          Patterns::Bool (),
                          "Whether to use a Stokes discretization that is locally "
@@ -392,6 +402,25 @@ namespace aspect
                            "and 0.078 for 3d. Units: None.");
       }
       prm.leave_subsection ();
+    }
+    prm.leave_subsection ();
+
+    prm.enter_subsection ("Compositional fields");
+    {
+      prm.declare_entry ("Number of fields", "0",
+                         Patterns::Integer (0),
+                         "The number of fields that will be advected along with the flow field, excluding "
+                         "velocity, pressure and temperature.");
+      prm.declare_entry ("List of normalized fields", "",
+                         Patterns::List (Patterns::Integer(0)),
+                         "A list of integers smaller than or equal to the number of"
+                         "compositional fields. All compositional fields in this"
+                         "list will be normalized before the first timestep."
+                         "The normalization is implemented in the following way:"
+                         "First, the sum of the fields to be normalized is calculated"
+                         "at every point and the global maximum is determined."
+                         "Second, the compositional fields to be normalized are "
+                         "divided by this maximum.");
     }
     prm.leave_subsection ();
   }
@@ -443,6 +472,7 @@ namespace aspect
 
     linear_solver_tolerance       = prm.get_double ("Linear solver tolerance");
     temperature_solver_tolerance  = prm.get_double ("Temperature solver tolerance");
+    composition_solver_tolerance  = prm.get_double ("Composition solver tolerance");
 
     prm.enter_subsection ("Mesh refinement");
     {
@@ -543,6 +573,7 @@ namespace aspect
     {
       stokes_velocity_degree = prm.get_integer ("Stokes velocity polynomial degree");
       temperature_degree     = prm.get_integer ("Temperature polynomial degree");
+      composition_degree     = prm.get_integer ("Composition polynomial degree");
       use_locally_conservative_discretization
         = prm.get_bool ("Use locally conservative discretization");
 
@@ -553,6 +584,19 @@ namespace aspect
         stabilization_beta  = prm.get_double ("beta");
       }
       prm.leave_subsection ();
+    }
+    prm.leave_subsection ();
+
+    prm.enter_subsection ("Compositional fields");
+    {
+      n_compositional_fields = prm.get_integer ("Number of fields");
+      const std::vector<int> n_normalized_fields = Utilities::string_to_int
+                                                   (Utilities::split_string_list(prm.get ("List of normalized fields")));
+      normalized_fields = std::vector<unsigned int> (n_normalized_fields.begin(),
+                                                     n_normalized_fields.end());
+
+      Assert (normalized_fields.size() <= n_compositional_fields,
+              ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
     }
     prm.leave_subsection ();
   }
@@ -568,6 +612,7 @@ namespace aspect
     GeometryModel::declare_parameters <dim>(prm);
     GravityModel::declare_parameters<dim> (prm);
     InitialConditions::declare_parameters<dim> (prm);
+    CompositionalInitialConditions::declare_parameters<dim> (prm);
     BoundaryTemperature::declare_parameters<dim> (prm);
     VelocityBoundaryConditions::declare_parameters<dim> (prm);
   }
