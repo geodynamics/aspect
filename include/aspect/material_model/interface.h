@@ -219,7 +219,7 @@ namespace aspect
          * Return whether the model is compressible or not.  Incompressibility
          * does not necessarily imply that the density is constant; rather, it
          * may still depend on temperature or pressure. In the current
-         * context, compressibility means whether we should solve the contuity
+         * context, compressibility means whether we should solve the continuity
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
@@ -395,6 +395,35 @@ namespace aspect
         /**
          * @}
          */
+
+        struct MaterialModelInputs
+        {
+          MaterialModelInputs(unsigned int n_points, unsigned int n_comp);
+
+          std::vector<Point<dim>> position;
+          std::vector<double> temperature;
+          std::vector<double> pressure;
+          std::vector<std::vector<double>> composition;
+          std::vector<SymmetricTensor<2,dim>> strain_rate;
+       };
+
+        struct MaterialModelOutputs
+        {
+          MaterialModelOutputs(unsigned int n_points);
+
+          std::vector<double> viscosities;
+          std::vector<double> densities;
+          std::vector<double> thermal_expansion_coefficients;
+          std::vector<double> seismic_Vp;
+          std::vector<double> seismic_Vs;
+          std::vector<double> specific_heat;
+          std::vector<double> thermal_conductivities;
+          std::vector<double> compressibilities;
+          std::vector<int> thermodynamic_phases;
+          bool is_compressible;
+        };
+
+        void compute_parameters(MaterialModelInputs & in, MaterialModelOutputs & out);
 
         /**
          * @name Functions used in dealing with run-time parameters

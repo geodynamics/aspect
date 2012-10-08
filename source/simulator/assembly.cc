@@ -120,7 +120,8 @@ namespace aspect
           StokesSystem (const FiniteElement<dim> &finite_element,
                         const Mapping<dim>       &mapping,
                         const Quadrature<dim>    &quadrature,
-                        const UpdateFlags         update_flags);
+                        const UpdateFlags         update_flags,
+                        const unsigned int        n_compositional_fields);
 
           StokesSystem (const StokesSystem<dim> &data);
 
@@ -128,6 +129,11 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<Tensor<1,dim> >          velocity_values;
+
+          std::vector<std::vector<double>> composition_values;
+
+          typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs;
+          typename MaterialModel::Interface<dim>::MaterialModelOutputs material_model_outputs;
         };
 
 
@@ -137,7 +143,8 @@ namespace aspect
         StokesSystem (const FiniteElement<dim> &finite_element,
                       const Mapping<dim>       &mapping,
                       const Quadrature<dim>    &quadrature,
-                      const UpdateFlags         update_flags)
+                      const UpdateFlags         update_flags,
+                      const unsigned int        n_compositional_fields)
           :
           StokesPreconditioner<dim> (finite_element, quadrature,
                                      mapping,
@@ -145,7 +152,11 @@ namespace aspect
           phi_u (finite_element.dofs_per_cell),
           grads_phi_u (finite_element.dofs_per_cell),
           div_phi_u (finite_element.dofs_per_cell),
-          velocity_values (quadrature.size())
+          velocity_values (quadrature.size()),
+          composition_values(quadrature.size(),
+                                     std::vector<double>(n_compositional_fields)),
+          material_model_inputs(quadrature.size(), n_compositional_fields),
+          material_model_outputs(quadrature.size())
         {}
 
 
@@ -158,7 +169,10 @@ namespace aspect
           phi_u (scratch.phi_u),
           grads_phi_u (scratch.grads_phi_u),
           div_phi_u (scratch.div_phi_u),
-          velocity_values (scratch.velocity_values)
+          velocity_values (scratch.velocity_values),
+          composition_values(scratch.composition_values),
+          material_model_inputs(scratch.material_model_inputs),
+          material_model_outputs(scratch.material_model_outputs)
         {}
 
 
@@ -168,7 +182,8 @@ namespace aspect
         {
           TemperatureSystem (const FiniteElement<dim> &finite_element,
                              const Mapping<dim>       &mapping,
-                             const Quadrature<dim>    &quadrature);
+                             const Quadrature<dim>    &quadrature,
+                             const unsigned int        n_compositional_fields);
           TemperatureSystem (const TemperatureSystem &data);
 
           FEValues<dim>               finite_element_values;
@@ -196,6 +211,11 @@ namespace aspect
           std::vector<Tensor<1,dim> > current_velocity_values;
           std::vector<SymmetricTensor<2,dim> > current_strain_rates;
           std::vector<double>         current_pressure_values;
+
+          std::vector<std::vector<double>> current_composition_values;
+
+          typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs;
+          typename MaterialModel::Interface<dim>::MaterialModelOutputs material_model_outputs;
         };
 
 
@@ -204,7 +224,8 @@ namespace aspect
         TemperatureSystem<dim>::
         TemperatureSystem (const FiniteElement<dim> &finite_element,
                            const Mapping<dim>       &mapping,
-                           const Quadrature<dim>    &quadrature)
+                           const Quadrature<dim>    &quadrature,
+                           const unsigned int        n_compositional_fields)
           :
           finite_element_values (mapping,
                                  finite_element, quadrature,
@@ -231,7 +252,11 @@ namespace aspect
           current_temperature_values(quadrature.size()),
           current_velocity_values(quadrature.size()),
           current_strain_rates(quadrature.size()),
-          current_pressure_values(quadrature.size())
+          current_pressure_values(quadrature.size()),
+          current_composition_values(n_compositional_fields,
+                                     std::vector<double>(quadrature.size())),
+          material_model_inputs(quadrature.size(), n_compositional_fields),
+          material_model_outputs(quadrature.size())
         {}
 
 
@@ -262,7 +287,10 @@ namespace aspect
           current_temperature_values(scratch.current_temperature_values),
           current_velocity_values(scratch.current_velocity_values),
           current_strain_rates(scratch.current_strain_rates),
-          current_pressure_values(scratch.current_pressure_values)
+          current_pressure_values(scratch.current_pressure_values),
+          current_composition_values(scratch.current_composition_values),
+          material_model_inputs(scratch.material_model_inputs),
+          material_model_outputs(scratch.material_model_outputs)
         {}
 
 
@@ -960,16 +988,21 @@ namespace aspect
       .get_function_symmetric_gradients(current_linearization_point,
                                         scratch.strain_rates);
 
-
-
-    // cache whether the model is compressible or not
-    const bool is_compressible = material_model->is_compressible ();
-
     if (rebuild_stokes_matrix)
       data.local_matrix = 0;
     data.local_rhs = 0;
-    if (is_compressible)
+    if (material_model->is_compressible())
       data.local_pressure_shape_function_integrals = 0;
+
+    scratch.material_model_inputs.temperature = scratch.temperature_values;
+    for (unsigned int q=0; q<n_q_points; ++q)
+      scratch.material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
+    scratch.material_model_inputs.pressure = scratch.pressure_values;
+    //for(unsigned int i=0;i<n_q_points;++i)
+    //  material_model->in.composition[i] = 0.0;
+    scratch.material_model_inputs.strain_rate = scratch.strain_rates;
+
+    material_model->compute_parameters(scratch.material_model_inputs,scratch.material_model_outputs);
 
 
     for (unsigned int q=0; q<n_q_points; ++q)
@@ -991,10 +1024,7 @@ namespace aspect
 
         const double eta = (rebuild_stokes_matrix
                             ?
-                            material_model->viscosity(current_temperature,
-                                                      current_pressure,
-                                                      scratch.strain_rates[q],
-                                                      scratch.finite_element_values.quadrature_point(q))
+                            scratch.material_model_outputs.viscosities[q]
                             :
                             std::numeric_limits<double>::quiet_NaN());
 
@@ -1002,24 +1032,18 @@ namespace aspect
         gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
         const double compressibility
-          = (is_compressible
+          = (scratch.material_model_outputs.is_compressible
              ?
-             material_model->compressibility(current_temperature,
-                                             current_pressure,
-                                             scratch.finite_element_values
-                                             .quadrature_point(q))
+             scratch.material_model_outputs.compressibilities[q]
              :
              std::numeric_limits<double>::quiet_NaN() );
-        const double density = material_model->density(current_temperature,
-                                                       current_pressure,
-                                                       scratch.finite_element_values
-                                                       .quadrature_point(q));
+        const double density = scratch.material_model_outputs.densities[q];
 
         if (rebuild_stokes_matrix)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             for (unsigned int j=0; j<dofs_per_cell; ++j)
               data.local_matrix(i,j) += ( eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
-                                          - (is_compressible
+                                          - (scratch.material_model_outputs.is_compressible
                                              ?
                                              eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                              :
@@ -1033,7 +1057,7 @@ namespace aspect
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           data.local_rhs(i) += (
                                  (density * gravity * scratch.phi_u[i])
-                                 + (is_compressible
+                                 + (scratch.material_model_outputs.is_compressible
                                     ?
                                     (pressure_scaling *
                                      compressibility * density *
@@ -1043,7 +1067,7 @@ namespace aspect
                                     0)
                                )
                                * scratch.finite_element_values.JxW(q);
-        if (is_compressible)
+        if (scratch.material_model_outputs.is_compressible)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
@@ -1119,7 +1143,8 @@ namespace aspect
                               ?
                               update_gradients
                               :
-                              UpdateFlags(0)))),
+                              UpdateFlags(0))),
+                            parameters.n_compositional_fields),
          internal::Assembly::CopyData::
          StokesSystem<dim> (finite_element));
 
@@ -1164,6 +1189,13 @@ namespace aspect
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
+    std::vector<FEValuesExtractors::Scalar> compositional_fields;
+
+    for (unsigned int q=0;q<parameters.n_compositional_fields;++q)
+      {
+      const FEValuesExtractors::Scalar temp(dim+1+q);
+      compositional_fields.push_back(temp);
+      }
 
     const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
     const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
@@ -1212,6 +1244,10 @@ namespace aspect
     scratch.finite_element_values[pressure].get_function_values(current_linearization_point,
                                                                 scratch.current_pressure_values);
 
+    for(unsigned int q=0;q<parameters.n_compositional_fields;++q)
+      scratch.finite_element_values[compositional_fields[q]].get_function_values(current_linearization_point,
+                                                                            scratch.current_composition_values[q]);
+
 
     // TODO: Compute artificial viscosity once per timestep instead of each time
     // temperature system is assembled (as this might happen more than once per
@@ -1235,6 +1271,16 @@ namespace aspect
                            global_entropy_variation,
                            scratch.finite_element_values.get_quadrature_points(),
                            cell->diameter());
+
+    scratch.material_model_inputs.temperature = scratch.current_temperature_values;
+    for (unsigned int q=0; q<n_q_points; ++q)
+      scratch.material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
+    scratch.material_model_inputs.pressure = scratch.current_pressure_values;
+    for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
+      scratch.material_model_inputs.composition[i] = scratch.current_composition_values[i];
+    scratch.material_model_inputs.strain_rate = scratch.current_strain_rates;
+
+    material_model->compute_parameters(scratch.material_model_inputs,scratch.material_model_outputs);
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
@@ -1260,32 +1306,17 @@ namespace aspect
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
         const double current_p = scratch.current_pressure_values[q];
 
-        const double alpha                = material_model->thermal_expansion_coefficient(current_T,
-                                            current_p,
-                                            scratch.finite_element_values.quadrature_point(q));
-        const double density              = material_model->density(current_T,
-                                                                    current_p,
-                                                                    scratch.finite_element_values.quadrature_point(q));
-        const double thermal_conductivity = material_model->thermal_conductivity(current_T,
-                                                                                 current_p,
-                                                                                 scratch.finite_element_values.quadrature_point(q));
-        const double c_P                  = material_model->specific_heat (current_T,
-                                                                           current_p,
-                                                                           scratch.finite_element_values.quadrature_point(q));
-
-        const double viscosity =  material_model->viscosity(current_T,
-                                                            current_p,
-                                                            current_strain_rate,
-                                                            scratch.finite_element_values.quadrature_point(q));
-        const bool is_compressible = material_model->is_compressible ();
-        const double compressibility
-          = (is_compressible
-             ?
-             material_model->compressibility(scratch.old_temperature_values[q],
-                                             scratch.old_pressure[q],
-                                             scratch.finite_element_values.quadrature_point(q))
-             :
-             std::numeric_limits<double>::quiet_NaN() );
+        const double alpha                = scratch.material_model_outputs.thermal_expansion_coefficients[q];
+        const double density              = scratch.material_model_outputs.densities[q];
+        const double thermal_conductivity = scratch.material_model_outputs.thermal_conductivities[q];
+        const double c_P                  = scratch.material_model_outputs.specific_heat[q];
+        const double viscosity            = scratch.material_model_outputs.viscosities[q];
+        const bool is_compressible        = scratch.material_model_outputs.is_compressible;
+        const double compressibility      = (is_compressible
+                                            ?
+                                            scratch.material_model_outputs.compressibilities[q]
+                                            :
+                                            std::numeric_limits<double>::quiet_NaN() );
 
         const Tensor<1,dim>
         gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
@@ -1412,7 +1443,8 @@ namespace aspect
                           this,
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
-         TemperatureSystem<dim> (finite_element, mapping, QGauss<dim>(parameters.temperature_degree+2)),
+         TemperatureSystem<dim> (finite_element, mapping, QGauss<dim>(parameters.temperature_degree+2),
+                                 parameters.n_compositional_fields),
          internal::Assembly::CopyData::
          TemperatureSystem<dim> (finite_element));
 
