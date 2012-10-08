@@ -153,8 +153,8 @@ namespace aspect
           grads_phi_u (finite_element.dofs_per_cell),
           div_phi_u (finite_element.dofs_per_cell),
           velocity_values (quadrature.size()),
-          composition_values(quadrature.size(),
-                                     std::vector<double>(n_compositional_fields)),
+          composition_values(n_compositional_fields,
+                             std::vector<double>(quadrature.size())),
           material_model_inputs(quadrature.size(), n_compositional_fields),
           material_model_outputs(quadrature.size())
         {}
@@ -969,6 +969,13 @@ namespace aspect
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
+    std::vector<FEValuesExtractors::Scalar> compositional_fields;
+
+    for (unsigned int q=0;q<parameters.n_compositional_fields;++q)
+      {
+      const FEValuesExtractors::Scalar temp(dim+1+q);
+      compositional_fields.push_back(temp);
+      }
 
     scratch.finite_element_values.reinit (cell);
     //scratch.finite_element_values[temperature].get_function_values (old_solution,
@@ -980,6 +987,10 @@ namespace aspect
                                                                 scratch.pressure_values);
     scratch.finite_element_values[velocities].get_function_values(current_linearization_point,
                                                                   scratch.velocity_values);
+
+    for(unsigned int q=0;q<parameters.n_compositional_fields;++q)
+      scratch.finite_element_values[compositional_fields[q]].get_function_values(current_linearization_point,
+                                                                            scratch.composition_values[q]);
 
     // we only need the strain rates for the viscosity,
     // which we only need when rebuilding the matrix
@@ -998,8 +1009,8 @@ namespace aspect
     for (unsigned int q=0; q<n_q_points; ++q)
       scratch.material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
     scratch.material_model_inputs.pressure = scratch.pressure_values;
-    //for(unsigned int i=0;i<n_q_points;++i)
-    //  material_model->in.composition[i] = 0.0;
+    for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
+      scratch.material_model_inputs.composition[i] = scratch.composition_values[i];
     scratch.material_model_inputs.strain_rate = scratch.strain_rates;
 
     material_model->compute_parameters(scratch.material_model_inputs,scratch.material_model_outputs);
