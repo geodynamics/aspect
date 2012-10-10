@@ -24,6 +24,7 @@
 #define __aspect__model_simple_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/simulator.h>
 
 namespace aspect
 {
@@ -43,7 +44,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Simple : public MaterialModel::Interface<dim>
+    class Simple : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -74,6 +75,9 @@ namespace aspect
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
                                              const Point<dim> &position) const;
+
+        virtual void compute_parameters(typename Interface<dim>::MaterialModelInputs &in,
+                                        typename Interface<dim>::MaterialModelOutputs &out);
         /**
          * @}
          */

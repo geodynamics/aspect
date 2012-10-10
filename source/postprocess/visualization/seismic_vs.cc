@@ -53,14 +53,17 @@ namespace aspect
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
         const unsigned int n_quadrature_points = uh.size();
-        Assert (computed_quantities.size() == n_quadrature_points,  ExcInternalError());
-        Assert (computed_quantities[0].size() == 1,                 ExcInternalError());
-        Assert (uh[0].size() == dim+2,                              ExcInternalError());
+        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
+        Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
+        Assert (uh[0].size() == dim+2+this->n_compositional_fields(), ExcInternalError());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             const double pressure    = uh[q][dim];
             const double temperature = uh[q][dim+1];
+            std::vector<double> composition(this->n_compositional_fields());
+            for (unsigned int i=0;i<this->n_compositional_fields();++i)
+              composition[i] = uh[q][dim+2+i];
 
             computed_quantities[q](0) = this->get_material_model().seismic_Vs(temperature,
                                                                               pressure,

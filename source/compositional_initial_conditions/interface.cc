@@ -134,7 +134,7 @@ namespace aspect
       {
         const std::string pattern_of_names
           = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
-        prm.declare_entry ("Model name", "",
+        prm.declare_entry ("Model name", "function",
                            Patterns::Selection (pattern_of_names),
                            "Select one of the following models:\n\n"
                            +

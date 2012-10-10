@@ -423,7 +423,7 @@ namespace aspect
           bool is_compressible;
         };
 
-        void compute_parameters(MaterialModelInputs & in, MaterialModelOutputs & out);
+        virtual void compute_parameters(MaterialModelInputs & in, MaterialModelOutputs & out);
 
         /**
          * @name Functions used in dealing with run-time parameters
