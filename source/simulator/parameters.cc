@@ -606,6 +606,9 @@ namespace aspect
 
       Assert (normalized_fields.size() <= n_compositional_fields,
               ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
+      Assert (chemical_diffusivities.size() == n_compositional_fields,
+              ExcMessage("Invalid input parameter file: number of chemical diffusivities must be equal "
+                         "to the number of compositional fields!"));
     }
     prm.leave_subsection ();
   }
