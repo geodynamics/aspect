@@ -219,12 +219,15 @@ namespace aspect
           std::vector<double>         old_temperature_laplacians;
           std::vector<double>         old_old_temperature_laplacians;
 
+          std::vector<std::vector<double>> old_composition_values;
+          std::vector<std::vector<double>> old_old_composition_values;
+
           std::vector<double>         current_temperature_values;
           std::vector<Tensor<1,dim> > current_velocity_values;
           std::vector<SymmetricTensor<2,dim> > current_strain_rates;
           std::vector<double>         current_pressure_values;
-
           std::vector<std::vector<double>> current_composition_values;
+
 
           typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs;
           typename MaterialModel::Interface<dim>::MaterialModelOutputs material_model_outputs;
@@ -261,6 +264,10 @@ namespace aspect
           old_old_temperature_grads(quadrature.size()),
           old_temperature_laplacians(quadrature.size()),
           old_old_temperature_laplacians(quadrature.size()),
+          old_composition_values(n_compositional_fields,
+                                     std::vector<double>(quadrature.size())),
+          old_old_composition_values(n_compositional_fields,
+                                     std::vector<double>(quadrature.size())),
           current_temperature_values(quadrature.size()),
           current_velocity_values(quadrature.size()),
           current_strain_rates(quadrature.size()),
@@ -296,6 +303,8 @@ namespace aspect
           old_old_temperature_grads (scratch.old_old_temperature_grads),
           old_temperature_laplacians (scratch.old_temperature_laplacians),
           old_old_temperature_laplacians (scratch.old_old_temperature_laplacians),
+          old_composition_values(scratch.old_composition_values),
+          old_old_composition_values(scratch.old_old_composition_values),
           current_temperature_values(scratch.current_temperature_values),
           current_velocity_values(scratch.current_velocity_values),
           current_strain_rates(scratch.current_strain_rates),
@@ -311,7 +320,8 @@ namespace aspect
         {
           CompositionSystem (const FiniteElement<dim> &finite_element,
                              const Mapping<dim>       &mapping,
-                             const Quadrature<dim>    &quadrature);
+                             const Quadrature<dim>    &quadrature,
+                             const unsigned int        n_compositional_fields);
           CompositionSystem (const CompositionSystem &data);
 
           FEValues<dim>               finite_element_values;
@@ -322,12 +332,6 @@ namespace aspect
           std::vector<Tensor<1,dim> > old_velocity_values;
           std::vector<Tensor<1,dim> > old_old_velocity_values;
 
-          std::vector<double>         old_pressure;
-          std::vector<double>         old_old_pressure;
-
-          std::vector<SymmetricTensor<2,dim> > old_strain_rates;
-          std::vector<SymmetricTensor<2,dim> > old_old_strain_rates;
-
           std::vector<double>         old_composition_values;
           std::vector<double>         old_old_composition_values;
           std::vector<Tensor<1,dim> > old_composition_grads;
@@ -335,10 +339,7 @@ namespace aspect
           std::vector<double>         old_composition_laplacians;
           std::vector<double>         old_old_composition_laplacians;
 
-          std::vector<double>         current_composition_values;
           std::vector<Tensor<1,dim> > current_velocity_values;
-          std::vector<SymmetricTensor<2,dim> > current_strain_rates;
-          std::vector<double>         current_pressure_values;
         };
 
 
@@ -347,7 +348,8 @@ namespace aspect
         CompositionSystem<dim>::
         CompositionSystem (const FiniteElement<dim> &finite_element,
                            const Mapping<dim>       &mapping,
-                           const Quadrature<dim>    &quadrature)
+                           const Quadrature<dim>    &quadrature,
+                           const unsigned int        n_compositional_fields)
           :
           finite_element_values (mapping,
                                  finite_element, quadrature,
@@ -361,20 +363,13 @@ namespace aspect
           grad_phi_C (finite_element.dofs_per_cell),
           old_velocity_values (quadrature.size()),
           old_old_velocity_values (quadrature.size()),
-          old_pressure (quadrature.size()),
-          old_old_pressure (quadrature.size()),
-          old_strain_rates (quadrature.size()),
-          old_old_strain_rates (quadrature.size()),
-          old_composition_values (quadrature.size()),
+          old_composition_values(quadrature.size()),
           old_old_composition_values(quadrature.size()),
           old_composition_grads(quadrature.size()),
           old_old_composition_grads(quadrature.size()),
           old_composition_laplacians(quadrature.size()),
           old_old_composition_laplacians(quadrature.size()),
-          current_composition_values(quadrature.size()),
-          current_velocity_values(quadrature.size()),
-          current_strain_rates(quadrature.size()),
-          current_pressure_values(quadrature.size())
+          current_velocity_values(quadrature.size())
         {}
 
 
@@ -392,20 +387,13 @@ namespace aspect
           grad_phi_C (scratch.grad_phi_C),
           old_velocity_values (scratch.old_velocity_values),
           old_old_velocity_values (scratch.old_old_velocity_values),
-          old_pressure (scratch.old_pressure),
-          old_old_pressure (scratch.old_old_pressure),
-          old_strain_rates (scratch.old_strain_rates),
-          old_old_strain_rates (scratch.old_old_strain_rates),
           old_composition_values (scratch.old_composition_values),
           old_old_composition_values (scratch.old_old_composition_values),
           old_composition_grads (scratch.old_composition_grads),
           old_old_composition_grads (scratch.old_old_composition_grads),
           old_composition_laplacians (scratch.old_composition_laplacians),
           old_old_composition_laplacians (scratch.old_old_composition_laplacians),
-          current_composition_values(scratch.current_composition_values),
-          current_velocity_values(scratch.current_velocity_values),
-          current_strain_rates(scratch.current_strain_rates),
-          current_pressure_values(scratch.current_pressure_values)
+          current_velocity_values(scratch.current_velocity_values)
         {}
       }
 
@@ -664,70 +652,70 @@ namespace aspect
   }
 
 
-
   template <int dim>
-  double
+  void
   Simulator<dim>::
-  compute_viscosity (const std::vector<double>          &old_temperature,
-                     const std::vector<double>          &old_old_temperature,
-                     const std::vector<Tensor<1,dim> >  &old_temperature_grads,
-                     const std::vector<Tensor<1,dim> >  &old_old_temperature_grads,
-                     const std::vector<double>          &old_temperature_laplacians,
-                     const std::vector<double>          &old_old_temperature_laplacians,
-                     const std::vector<Tensor<1,dim> >  &old_velocity_values,
-                     const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
-                     const std::vector<SymmetricTensor<2,dim> >  &old_strain_rates,
-                     const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
-                     const std::vector<double>          &old_pressure,
-                     const std::vector<double>          &old_old_pressure,
-                     const double                        global_u_infty,
-                     const double                        global_T_variation,
-                     const double                        average_temperature,
-                     const double                        global_entropy_variation,
-                     const std::vector<Point<dim> >     &evaluation_points,
-                     const double                        cell_diameter) const
-  {
-    if (global_u_infty == 0)
-      return 5e-3 * cell_diameter;
+  compute_temperature_system_residual(const std::vector<double>          &old_temperature,
+                                      const std::vector<double>          &old_old_temperature,
+                                      const std::vector<Tensor<1,dim> >  &old_temperature_grads,
+                                      const std::vector<Tensor<1,dim> >  &old_old_temperature_grads,
+                                      const std::vector<double>          &old_temperature_laplacians,
+                                      const std::vector<double>          &old_old_temperature_laplacians,
+                                      const std::vector<Tensor<1,dim> >  &old_velocity_values,
+                                      const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
+                                      const std::vector<SymmetricTensor<2,dim> >  &old_strain_rates,
+                                      const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
+                                      const std::vector<double>          &old_pressure,
+                                      const std::vector<double>          &old_old_pressure,
+                                      const double                        average_temperature,
+                                      const std::vector<Point<dim> >     &evaluation_points,
+                                      double                             &max_residual,
+                                      double                             &max_velocity) const
+    {
 
     const unsigned int n_q_points = old_temperature.size();
 
-    double max_residual = 0;
-    double max_velocity = 0;
+    typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs (n_q_points, parameters.n_compositional_fields);
+    typename MaterialModel::Interface<dim>::MaterialModelOutputs material_model_outputs (n_q_points);
+
+    for (unsigned int q=0; q<n_q_points; ++q) {
+      material_model_inputs.temperature[q] = (old_temperature[q] + old_old_temperature[q]) / 2;
+      material_model_inputs.position[q] = evaluation_points[q];
+      material_model_inputs.pressure[q] = (old_pressure[q] + old_old_pressure[q]) / 2;
+//        for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
+//        material_model_inputs.composition[i] = scratch.current_composition_values[i];
+      material_model_inputs.strain_rate[q] = (old_strain_rates[q] + old_old_strain_rates[q]) / 2;
+    }
+
+    material_model->compute_parameters(material_model_inputs,material_model_outputs);
 
     for (unsigned int q=0; q < n_q_points; ++q)
       {
         const Tensor<1,dim> u = (old_velocity_values[q] +
                                  old_old_velocity_values[q]) / 2;
 
-        const SymmetricTensor<2,dim> strain_rate = (old_strain_rates[q] +
-                                                    old_old_strain_rates[q]) / 2;
+        const SymmetricTensor<2,dim> strain_rate = material_model_inputs.strain_rate[q];
 
-        const double T = (old_temperature[q] + old_old_temperature[q]) / 2;
-        const double p = (old_pressure[q] + old_old_pressure[q]) / 2;
         const double dT_dt = (old_temperature[q] - old_old_temperature[q])
                              / old_time_step;
         const double u_grad_T = u * (old_temperature_grads[q] +
                                      old_old_temperature_grads[q]) / 2;
 
-        const double alpha                = material_model->thermal_expansion_coefficient(T, p, evaluation_points[q]);
-        const double density              = material_model->density(T, p, evaluation_points[q]);
-        const double thermal_conductivity = material_model->thermal_conductivity(T, p, evaluation_points[q]);
-        const double c_P                  = material_model->specific_heat(T, p, evaluation_points[q]);
+        const double alpha                = material_model_outputs.thermal_expansion_coefficients[q];
+        const double density              = material_model_outputs.densities[q];
+        const double thermal_conductivity = material_model_outputs.thermal_conductivities[q];
+        const double c_P                  = material_model_outputs.specific_heat[q];
         const double k_Delta_T = thermal_conductivity
                                  * (old_temperature_laplacians[q] +
                                     old_old_temperature_laplacians[q]) / 2;
 
         // verify correctness of the heating term
-        const double viscosity =  material_model->viscosity(T,
-                                                            p,
-                                                            strain_rate,
-                                                            evaluation_points[q]);
-        const bool is_compressible = material_model->is_compressible ();
+        const double viscosity =  material_model_outputs.viscosities[q];
+        const bool is_compressible = material_model_outputs.is_compressible;
         const double compressibility
           = (is_compressible
              ?
-             material_model->compressibility(T, p, evaluation_points[q] )
+             material_model_outputs.compressibilities[q]
              :
              std::numeric_limits<double>::quiet_NaN() );
         const Tensor<1,dim> gravity = gravity_model->gravity_vector (evaluation_points[q] );
@@ -768,18 +756,132 @@ namespace aspect
                //   alpha = - 1/rho drho/dT
                (parameters.include_adiabatic_heating
                 ?
-                alpha * density * (u*gravity) * T
+                alpha * density * (u*gravity) * material_model_inputs.temperature[q]
                 :
                 0)
               );
         double residual
           = std::abs(density * c_P * (dT_dt + u_grad_T) - k_Delta_T - gamma);
         if (parameters.stabilization_alpha == 2)
-          residual *= std::abs(T - average_temperature);
+          residual *= std::abs(material_model_inputs.temperature[q] - average_temperature);
 
         max_residual = std::max (residual,        max_residual);
         max_velocity = std::max (std::sqrt (u*u), max_velocity);
       }
+    }
+
+  template <int dim>
+  void
+  Simulator<dim>::
+  compute_composition_system_residual(const std::vector<double>          &old_composition,
+                                      const std::vector<double>          &old_old_composition,
+                                      const std::vector<Tensor<1,dim> >  &old_composition_grads,
+                                      const std::vector<Tensor<1,dim> >  &old_old_composition_grads,
+                                      const std::vector<double>          &old_composition_laplacians,
+                                      const std::vector<double>          &old_old_composition_laplacians,
+                                      const std::vector<Tensor<1,dim> >  &old_velocity_values,
+                                      const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
+                                      const double                        average_composition,
+                                      double                             &max_residual,
+                                      double                             &max_velocity) const
+    {
+
+    const unsigned int n_q_points = old_composition.size();
+
+    for (unsigned int q=0; q < n_q_points; ++q)
+      {
+        const Tensor<1,dim> u = (old_velocity_values[q] +
+                                 old_old_velocity_values[q]) / 2;
+        const double C = (old_composition[q] + old_old_composition[q]) / 2;
+
+        const double dC_dt = (old_composition[q] - old_old_composition[q])
+                             / old_time_step;
+        const double u_grad_C = u * (old_composition_grads[q] +
+                                     old_old_composition_grads[q]) / 2;
+
+        const double kappa = 1.e-12;
+
+        const double kappa_Delta_C = kappa
+                                 * (old_composition_laplacians[q] +
+                                    old_old_composition_laplacians[q]) / 2;
+
+        double residual
+          = std::abs(dC_dt + u_grad_C - kappa_Delta_C);
+        if (parameters.stabilization_alpha == 2)
+          residual *= std::abs(C - average_composition);
+
+        max_residual = std::max (residual,        max_residual);
+        max_velocity = std::max (std::sqrt (u*u), max_velocity);
+      }
+    }
+
+
+
+  template <int dim>
+  double
+  Simulator<dim>::
+  compute_viscosity (const std::vector<double>          &old_field,
+                     const std::vector<double>          &old_old_field,
+                     const std::vector<Tensor<1,dim> >  &old_field_grads,
+                     const std::vector<Tensor<1,dim> >  &old_old_field_grads,
+                     const std::vector<double>          &old_field_laplacians,
+                     const std::vector<double>          &old_old_field_laplacians,
+                     const std::vector<Tensor<1,dim> >  &old_velocity_values,
+                     const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
+                     const std::vector<SymmetricTensor<2,dim> >  &old_strain_rates,
+                     const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
+                     const std::vector<double>          &old_pressure,
+                     const std::vector<double>          &old_old_pressure,
+                     const double                        global_u_infty,
+                     const double                        global_T_variation,
+                     const double                        average_field,
+                     const double                        global_entropy_variation,
+                     const std::vector<Point<dim> >     &evaluation_points,
+                     const double                        cell_diameter,
+                     const bool                          is_temperature) const
+  {
+    if (global_u_infty == 0)
+      return 5e-3 * cell_diameter;
+
+    double max_residual = 0;
+    double max_velocity = 0;
+
+    if(is_temperature) {
+      //make sure that all arguments we need for computing the residual are passed
+      Assert (old_strain_rates.size() > 0 && old_old_strain_rates.size() > 0
+              && old_pressure.size() > 0 && old_old_pressure.size() > 0,
+              ExcMessage ("Not enough parameters to calculate artificial viscosity "
+                          "for the temperature equation."));
+
+      compute_temperature_system_residual(old_field,
+                                          old_old_field,
+                                          old_field_grads,
+                                          old_old_field_grads,
+                                          old_field_laplacians,
+                                          old_old_field_laplacians,
+                                          old_velocity_values,
+                                          old_old_velocity_values,
+                                          old_strain_rates,
+                                          old_old_strain_rates,
+                                          old_pressure,
+                                          old_old_pressure,
+                                          average_field,
+                                          evaluation_points,
+                                          max_residual,
+                                          max_velocity);
+    }
+    else
+      compute_composition_system_residual(old_field,
+                                          old_old_field,
+                                          old_field_grads,
+                                          old_old_field_grads,
+                                          old_field_laplacians,
+                                          old_old_field_laplacians,
+                                          old_velocity_values,
+                                          old_old_velocity_values,
+                                          average_field,
+                                          max_residual,
+                                          max_velocity);
 
     const double max_viscosity = (parameters.stabilization_beta *
                                   max_velocity * cell_diameter);
@@ -1284,9 +1386,14 @@ namespace aspect
     scratch.finite_element_values[pressure].get_function_values(current_linearization_point,
                                                                 scratch.current_pressure_values);
 
-    for(unsigned int q=0;q<parameters.n_compositional_fields;++q)
+    for(unsigned int q=0;q<parameters.n_compositional_fields;++q) {
       scratch.finite_element_values[compositional_fields[q]].get_function_values(current_linearization_point,
                                                                             scratch.current_composition_values[q]);
+      scratch.finite_element_values[compositional_fields[q]].get_function_values(old_solution,
+                                                                                  scratch.old_composition_values[q]);
+      scratch.finite_element_values[compositional_fields[q]].get_function_values(old_old_solution,
+                                                                                  scratch.old_old_composition_values[q]);
+    }
 
 
     // TODO: Compute artificial viscosity once per timestep instead of each time
@@ -1310,7 +1417,8 @@ namespace aspect
                            0.5 * (global_T_range.second + global_T_range.first),
                            global_entropy_variation,
                            scratch.finite_element_values.get_quadrature_points(),
-                           cell->diameter());
+                           cell->diameter(),
+                           true);  //true for temperature, false for compositional field
 
     scratch.material_model_inputs.temperature = scratch.current_temperature_values;
     for (unsigned int q=0; q<n_q_points; ++q)
@@ -1558,24 +1666,9 @@ namespace aspect
                                                                    scratch.old_velocity_values);
     scratch.finite_element_values[velocities].get_function_values (old_old_solution,
                                                                    scratch.old_old_velocity_values);
-    scratch.finite_element_values[velocities].get_function_symmetric_gradients (old_solution,
-                                                                                scratch.old_strain_rates);
-    scratch.finite_element_values[velocities].get_function_symmetric_gradients (old_old_solution,
-                                                                                scratch.old_old_strain_rates);
 
-    scratch.finite_element_values[pressure].get_function_values (old_solution,
-                                                                 scratch.old_pressure);
-    scratch.finite_element_values[pressure].get_function_values (old_old_solution,
-                                                                 scratch.old_old_pressure);
-
-    scratch.finite_element_values[composition].get_function_values(current_linearization_point,
-                                                                   scratch.current_composition_values);
     scratch.finite_element_values[velocities].get_function_values(current_linearization_point,
                                                                   scratch.current_velocity_values);
-    scratch.finite_element_values[velocities].get_function_symmetric_gradients(current_linearization_point,
-                                                                               scratch.current_strain_rates);
-    scratch.finite_element_values[pressure].get_function_values(current_linearization_point,
-                                                                scratch.current_pressure_values);
 
     // TODO: Compute artificial viscosity once per timestep instead of each time
     // temperature system is assembled (as this might happen more than once per
@@ -1589,16 +1682,17 @@ namespace aspect
                            scratch.old_old_composition_laplacians,
                            scratch.old_velocity_values,
                            scratch.old_old_velocity_values,
-                           scratch.old_strain_rates,
-                           scratch.old_old_strain_rates,
-                           scratch.old_pressure,
-                           scratch.old_old_pressure,
+                           std::vector<SymmetricTensor<2,dim> >(), //we do not need these values for compositional fields
+                           std::vector<SymmetricTensor<2,dim> >(), //we do not need these values for compositional fields
+                           std::vector<double>(),                  //we do not need these values for compositional fields
+                           std::vector<double>(),                  //we do not need these values for compositional fields
                            global_max_velocity,
                            global_C_range.second - global_C_range.first,
                            0.5 * (global_C_range.second + global_C_range.first),
                            global_entropy_variation,
-                           scratch.finite_element_values.get_quadrature_points(),
-                           cell->diameter());
+                           std::vector<Point<dim, double> >(),     //we do not need these values for compositional fields
+                           cell->diameter(),
+                           false);   //true for temperature, false for compositional field
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
@@ -1619,7 +1713,6 @@ namespace aspect
              :
              scratch.old_composition_values[q]);
 
-        const double current_C = scratch.current_composition_values[q];
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
 
         const double kappa = 1.e-12;
@@ -1706,7 +1799,8 @@ namespace aspect
                           this,
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
-         CompositionSystem<dim> (finite_element, mapping, QGauss<dim>(parameters.composition_degree+2)),
+         CompositionSystem<dim> (finite_element, mapping, QGauss<dim>(parameters.composition_degree+2),
+                                 parameters.n_compositional_fields),
          internal::Assembly::CopyData::
          CompositionSystem<dim> (finite_element));
 

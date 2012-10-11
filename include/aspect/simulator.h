@@ -1182,7 +1182,57 @@ namespace aspect
                         const double                        average_temperature,
                         const double                        global_entropy_variation,
                         const std::vector<Point<dim> >     &evaluation_points,
-                        const double                        cell_diameter) const;
+                        const double                        cell_diameter,
+                        const bool                          is_temperature) const;
+
+      /**
+       * Compute the residual of the temperature equation to be used
+       * for the artificial diffusion coefficient value on a cell
+       * given the values and gradients of the solution
+       * passed as arguments.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      compute_temperature_system_residual(const std::vector<double>          &old_temperature,
+                                          const std::vector<double>          &old_old_temperature,
+                                          const std::vector<Tensor<1,dim> >  &old_temperature_grads,
+                                          const std::vector<Tensor<1,dim> >  &old_old_temperature_grads,
+                                          const std::vector<double>          &old_temperature_laplacians,
+                                          const std::vector<double>          &old_old_temperature_laplacians,
+                                          const std::vector<Tensor<1,dim> >  &old_velocity_values,
+                                          const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
+                                          const std::vector<SymmetricTensor<2,dim> >  &old_strain_rates,
+                                          const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
+                                          const std::vector<double>          &old_pressure,
+                                          const std::vector<double>          &old_old_pressure,
+                                          const double                        average_temperature,
+                                          const std::vector<Point<dim> >     &evaluation_points,
+                                          double                             &max_residual,
+                                          double                             &max_velocity) const;
+
+      /**
+       * Compute the residual of the composition equation to be used
+       * for the artificial diffusion coefficient value on a cell
+       * given the values and gradients of the solution
+       * passed as arguments.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      compute_composition_system_residual(const std::vector<double>          &old_composition,
+                                          const std::vector<double>          &old_old_composition,
+                                          const std::vector<Tensor<1,dim> >  &old_composition_grads,
+                                          const std::vector<Tensor<1,dim> >  &old_old_composition_grads,
+                                          const std::vector<double>          &old_composition_laplacians,
+                                          const std::vector<double>          &old_old_composition_laplacians,
+                                          const std::vector<Tensor<1,dim> >  &old_velocity_values,
+                                          const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
+                                          const double                        average_composition,
+                                          double                             &max_residual,
+                                          double                             &max_velocity) const;
 
       /**
        * Generate and output some statistics like timing information and memory consumption.

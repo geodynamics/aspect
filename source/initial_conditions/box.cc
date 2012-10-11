@@ -45,6 +45,7 @@ namespace aspect
       for (unsigned int d=0; d<dim; ++d)
         perturbation *= std::sin(numbers::PI*position[d]/geometry->get_extents()[d]);
       return 1 + perturbation/10;
+//      return 293;
     }
   }
 }
