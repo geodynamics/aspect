@@ -421,6 +421,11 @@ namespace aspect
                          "at every point and the global maximum is determined."
                          "Second, the compositional fields to be normalized are "
                          "divided by this maximum.");
+      prm.declare_entry ("List of chemical diffusivities", "",
+                         Patterns::List (Patterns::Double(0)),
+                         "A list of doubles with as many entries as there are"
+                         "compositional fields (see Number of fields). These are"
+                         "the chemical diffusivities of each compositional field. ");
     }
     prm.leave_subsection ();
   }
@@ -594,6 +599,10 @@ namespace aspect
                                                    (Utilities::split_string_list(prm.get ("List of normalized fields")));
       normalized_fields = std::vector<unsigned int> (n_normalized_fields.begin(),
                                                      n_normalized_fields.end());
+      const std::vector<double> n_chemical_diffusivities = Utilities::string_to_double
+                                                   (Utilities::split_string_list(prm.get ("List of chemical diffusivities")));
+      chemical_diffusivities = std::vector<double> (n_chemical_diffusivities.begin(),
+                                                    n_chemical_diffusivities.end());
 
       Assert (normalized_fields.size() <= n_compositional_fields,
               ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));

@@ -667,6 +667,8 @@ namespace aspect
                                       const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
                                       const std::vector<double>          &old_pressure,
                                       const std::vector<double>          &old_old_pressure,
+                                      const std::vector<std::vector<double>> &old_composition,
+                                      const std::vector<std::vector<double>> &old_old_composition,
                                       const double                        average_temperature,
                                       const std::vector<Point<dim> >     &evaluation_points,
                                       double                             &max_residual,
@@ -682,8 +684,8 @@ namespace aspect
       material_model_inputs.temperature[q] = (old_temperature[q] + old_old_temperature[q]) / 2;
       material_model_inputs.position[q] = evaluation_points[q];
       material_model_inputs.pressure[q] = (old_pressure[q] + old_old_pressure[q]) / 2;
-//        for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
-//        material_model_inputs.composition[i] = scratch.current_composition_values[i];
+      for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
+        material_model_inputs.composition[i][q] = (old_composition[i][q] + old_old_composition[i][q]) / 2;
       material_model_inputs.strain_rate[q] = (old_strain_rates[q] + old_old_strain_rates[q]) / 2;
     }
 
@@ -782,6 +784,7 @@ namespace aspect
                                       const std::vector<Tensor<1,dim> >  &old_velocity_values,
                                       const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
                                       const double                        average_composition,
+                                      const unsigned int                  composition_index,
                                       double                             &max_residual,
                                       double                             &max_velocity) const
     {
@@ -799,7 +802,7 @@ namespace aspect
         const double u_grad_C = u * (old_composition_grads[q] +
                                      old_old_composition_grads[q]) / 2;
 
-        const double kappa = 1.e-12;
+        const double kappa = parameters.chemical_diffusivities[composition_index];
 
         const double kappa_Delta_C = kappa
                                  * (old_composition_laplacians[q] +
@@ -832,13 +835,15 @@ namespace aspect
                      const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
                      const std::vector<double>          &old_pressure,
                      const std::vector<double>          &old_old_pressure,
+                     const std::vector<std::vector<double>> &old_composition,
+                     const std::vector<std::vector<double>> &old_old_composition,
                      const double                        global_u_infty,
                      const double                        global_T_variation,
                      const double                        average_field,
                      const double                        global_entropy_variation,
                      const std::vector<Point<dim> >     &evaluation_points,
                      const double                        cell_diameter,
-                     const bool                          is_temperature) const
+                     const unsigned int                  index) const
   {
     if (global_u_infty == 0)
       return 5e-3 * cell_diameter;
@@ -846,7 +851,9 @@ namespace aspect
     double max_residual = 0;
     double max_velocity = 0;
 
-    if(is_temperature) {
+    AssertIndexRange(index,parameters.n_compositional_fields+1);
+
+    if(index == 0) {
       //make sure that all arguments we need for computing the residual are passed
       Assert (old_strain_rates.size() > 0 && old_old_strain_rates.size() > 0
               && old_pressure.size() > 0 && old_old_pressure.size() > 0,
@@ -865,6 +872,8 @@ namespace aspect
                                           old_old_strain_rates,
                                           old_pressure,
                                           old_old_pressure,
+                                          old_composition,
+                                          old_old_composition,
                                           average_field,
                                           evaluation_points,
                                           max_residual,
@@ -880,6 +889,7 @@ namespace aspect
                                           old_velocity_values,
                                           old_old_velocity_values,
                                           average_field,
+                                          index-1,   //index of compositional field
                                           max_residual,
                                           max_velocity);
 
@@ -1412,13 +1422,15 @@ namespace aspect
                            scratch.old_old_strain_rates,
                            scratch.old_pressure,
                            scratch.old_old_pressure,
+                           scratch.old_composition_values,
+                           scratch.old_old_composition_values,
                            global_max_velocity,
                            global_T_range.second - global_T_range.first,
                            0.5 * (global_T_range.second + global_T_range.first),
                            global_entropy_variation,
                            scratch.finite_element_values.get_quadrature_points(),
                            cell->diameter(),
-                           true);  //true for temperature, false for compositional field
+                           0);  //index for temperature field
 
     scratch.material_model_inputs.temperature = scratch.current_temperature_values;
     for (unsigned int q=0; q<n_q_points; ++q)
@@ -1682,17 +1694,19 @@ namespace aspect
                            scratch.old_old_composition_laplacians,
                            scratch.old_velocity_values,
                            scratch.old_old_velocity_values,
-                           std::vector<SymmetricTensor<2,dim> >(), //we do not need these values for compositional fields
-                           std::vector<SymmetricTensor<2,dim> >(), //we do not need these values for compositional fields
-                           std::vector<double>(),                  //we do not need these values for compositional fields
-                           std::vector<double>(),                  //we do not need these values for compositional fields
+                           std::vector<SymmetricTensor<2,dim> >(), //we do not need the strain rate for calculating the artificial viscosity
+                           std::vector<SymmetricTensor<2,dim> >(), //strain rate
+                           std::vector<double>(),                  //we also do not need the pressure
+                           std::vector<double>(),                  //pressure
+                           std::vector<std::vector<double>> (),    //we also do not need the other compositional fields
+                           std::vector<std::vector<double>> (),    //other compositional fields
                            global_max_velocity,
                            global_C_range.second - global_C_range.first,
                            0.5 * (global_C_range.second + global_C_range.first),
                            global_entropy_variation,
-                           std::vector<Point<dim, double> >(),     //we do not need these values for compositional fields
+                           std::vector<Point<dim, double> >(),     //we also do not need the position for calculating the artificial viscosity
                            cell->diameter(),
-                           false);   //true for temperature, false for compositional field
+                           composition_index+1);                   //index for the compositional field (0 is temperature)
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
@@ -1715,7 +1729,7 @@ namespace aspect
 
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
 
-        const double kappa = 1.e-12;
+        const double kappa = parameters.chemical_diffusivities[composition_index];
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           {

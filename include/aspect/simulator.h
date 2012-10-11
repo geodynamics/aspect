@@ -536,6 +536,7 @@ namespace aspect
          */
         unsigned int                   n_compositional_fields;
         std::vector<unsigned int>      normalized_fields;
+        std::vector<double>            chemical_diffusivities;
         /**
          * @}
          */
@@ -1161,6 +1162,11 @@ namespace aspect
        * given the values and gradients of the solution passed as
        * arguments.
        *
+       * @param index The index of the field we need the artificial
+       * diffusion coefficient for:
+       * 0                              temperature
+       * 1...n_compositional_fields     compositional field
+       *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
@@ -1177,13 +1183,15 @@ namespace aspect
                         const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
                         const std::vector<double>          &old_pressure,
                         const std::vector<double>          &old_old_pressure,
+                        const std::vector<std::vector<double>> &old_composition,
+                        const std::vector<std::vector<double>> &old_old_composition,
                         const double                        global_u_infty,
                         const double                        global_T_variation,
                         const double                        average_temperature,
                         const double                        global_entropy_variation,
                         const std::vector<Point<dim> >     &evaluation_points,
                         const double                        cell_diameter,
-                        const bool                          is_temperature) const;
+                        const unsigned int                  index) const;
 
       /**
        * Compute the residual of the temperature equation to be used
@@ -1207,6 +1215,8 @@ namespace aspect
                                           const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
                                           const std::vector<double>          &old_pressure,
                                           const std::vector<double>          &old_old_pressure,
+                                          const std::vector<std::vector<double>> &old_composition,
+                                          const std::vector<std::vector<double>> &old_old_composition,
                                           const double                        average_temperature,
                                           const std::vector<Point<dim> >     &evaluation_points,
                                           double                             &max_residual,
@@ -1217,6 +1227,10 @@ namespace aspect
        * for the artificial diffusion coefficient value on a cell
        * given the values and gradients of the solution
        * passed as arguments.
+       *
+       * @param composition_index The index of the compositional field whose
+       * residual we want to get (0 <= composition_index < number of
+       * compositional fields in this problem).
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -1231,6 +1245,7 @@ namespace aspect
                                           const std::vector<Tensor<1,dim> >  &old_velocity_values,
                                           const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
                                           const double                        average_composition,
+                                          const unsigned int                  composition_index,
                                           double                             &max_residual,
                                           double                             &max_velocity) const;
 
