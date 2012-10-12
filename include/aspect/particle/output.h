@@ -53,7 +53,7 @@ namespace aspect
           file_index = 0;
         };
         virtual ~Output(void) {};
-        
+
         void set_output_directory(std::string new_out_dir)
         {
           output_dir = new_out_dir;

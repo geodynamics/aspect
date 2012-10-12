@@ -105,22 +105,22 @@ namespace aspect
       prm.leave_subsection ();
 
       if (n_compositional_fields == 0)
-	return NULL;
+        return NULL;
       else
-	{
-	  std::string model_name;
-	  prm.enter_subsection ("Compositional initial conditions");
-	  {
-	    model_name = prm.get ("Model name");
-	  }
-	  prm.leave_subsection ();
+        {
+          std::string model_name;
+          prm.enter_subsection ("Compositional initial conditions");
+          {
+            model_name = prm.get ("Model name");
+          }
+          prm.leave_subsection ();
 
-	  Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
-	  plugin->initialize (geometry_model,
-			      boundary_temperature,
-			      adiabatic_conditions);
-	  return plugin;
-	}
+          Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
+          plugin->initialize (geometry_model,
+                              boundary_temperature,
+                              adiabatic_conditions);
+          return plugin;
+        }
     }
 
 

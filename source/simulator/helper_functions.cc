@@ -290,9 +290,9 @@ namespace aspect
             {
               fe_values.reinit (cell);
               fe_values[field].get_function_values (old_solution,
-                                                          old_field_values);
+                                                    old_field_values);
               fe_values[field].get_function_values (old_old_solution,
-                                                          old_old_field_values);
+                                                    old_old_field_values);
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
@@ -301,9 +301,9 @@ namespace aspect
                     time_step/old_time_step * old_old_field_values[q];
 
                   min_local_field = std::min (min_local_field,
-                                                    extrapolated_field);
+                                              extrapolated_field);
                   max_local_field = std::max (max_local_field,
-                                                    extrapolated_field);
+                                              extrapolated_field);
                 }
             }
       }
@@ -317,16 +317,16 @@ namespace aspect
             {
               fe_values.reinit (cell);
               fe_values[field].get_function_values (old_solution,
-                                                          old_field_values);
+                                                    old_field_values);
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
                   const double extrapolated_field = old_field_values[q];
 
                   min_local_field = std::min (min_local_field,
-                                                    extrapolated_field);
+                                              extrapolated_field);
                   max_local_field = std::max (max_local_field,
-                                                    extrapolated_field);
+                                              extrapolated_field);
                 }
             }
       }
@@ -539,7 +539,7 @@ namespace aspect
 //TODO: unify the following functions
   template <int dim>
   void Simulator<dim>::compute_depth_average_field(const unsigned int index,
-						   std::vector<double> &values) const
+                                                   std::vector<double> &values) const
   {
     // make sure that what we get here is really an index of one of the temperature/compositional fields
     AssertIndexRange(index,parameters.n_compositional_fields+1);

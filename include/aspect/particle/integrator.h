@@ -36,7 +36,7 @@ namespace aspect
     {
       public:
         virtual ~Integrator(void) {};
-        
+
         // Perform an integration step of moving the particles by the specified timestep dt.
         // Implementations of this function should update the particle location.
         // If the integrator requires multiple internal steps, this should return true until
@@ -437,7 +437,7 @@ namespace aspect
                       cur_level_ind = it->first;
                       found_cell = typename DoFHandler<dim>::active_cell_iterator(_tria, cur_level_ind.first, cur_level_ind.second, _dh);
                       for (unsigned int i=0; i<GeometryInfo<dim>::vertices_per_cell; ++i) cell_vertices[i] = found_cell->vertex(i);
-                        
+
                       cur_scheme = select_scheme(cell_vertices, cell_velocities);
                     }
                   _scheme[it->second.id_num()] = cur_scheme;

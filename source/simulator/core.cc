@@ -289,14 +289,14 @@ namespace aspect
          * convert this into an object that matches the Function@<dim@>
          * interface.
          *
-	 * @param n_comp_fields The number of compositional fields used in
-	 *        this vector-valued problem. Needed to determine
-	 *        the total size of the output vectors.
+        * @param n_comp_fields The number of compositional fields used in
+        *        this vector-valued problem. Needed to determine
+        *        the total size of the output vectors.
          * @param function_object The scalar function that will form one component
          *     of the resulting Function object.
          */
         VectorFunctionFromVelocityFunctionObject (const unsigned int n_comp_fields,
-						  const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
+                                                  const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
 
         /**
          * Return the value of the
@@ -419,7 +419,7 @@ namespace aspect
     statistics.add_value("Number of temperature degrees of freedom",
                          system_dofs_per_block[2]);
     statistics.add_value("Number of composition degrees of freedom",
-        (parameters.n_compositional_fields>0)?system_dofs_per_block[3]:0);
+                         (parameters.n_compositional_fields>0)?system_dofs_per_block[3]:0);
 
 
     // then interpolate the current boundary velocities. this adds to
@@ -629,16 +629,16 @@ namespace aspect
       system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
 
       {
-	unsigned int n_C_so_far = 0;
+        unsigned int n_C_so_far = 0;
 
-	for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
-	  {
-	    system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_so_far,
-								    n_u+n_p+n_T+n_C_so_far+n_C[i]));
-          system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p+n_T+n_C_so_far,
-									      n_u+n_p+n_T+n_C_so_far+n_C[i]));
-	    n_C_so_far += n_C[i];
-        }
+        for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
+          {
+            system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_so_far,
+                                                                    n_u+n_p+n_T+n_C_so_far+n_C[i]));
+            system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p+n_T+n_C_so_far,
+                                                                                n_u+n_p+n_T+n_C_so_far+n_C[i]));
+            n_C_so_far += n_C[i];
+          }
       }
     }
 
@@ -921,7 +921,7 @@ namespace aspect
     if (parameters.refinement_strategy == "Velocity")
       {
         std::vector<bool> velocity_mask (dim+2+parameters.n_compositional_fields, false);
-        for (unsigned int i=0;i<dim;++i)
+        for (unsigned int i=0; i<dim; ++i)
           velocity_mask[i] = true;
         KellyErrorEstimator<dim>::estimate (dof_handler,
                                             QGauss<dim-1>(parameters.stokes_velocity_degree+1),
