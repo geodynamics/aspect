@@ -76,6 +76,8 @@ namespace aspect
 
         BaseParticle(const Point<dim> &new_loc, const double &new_id) : _loc(new_loc), _id(new_id), _local(true), _check_vel(true) {};
 
+        virtual ~BaseParticle(void) {};
+        
         static unsigned int data_len(ParticleDataFormat format)
         {
           switch (format)

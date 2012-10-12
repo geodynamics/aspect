@@ -52,6 +52,8 @@ namespace aspect
           world_size = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
           file_index = 0;
         };
+        virtual ~Output(void) {};
+        
         void set_output_directory(std::string new_out_dir)
         {
           output_dir = new_out_dir;
@@ -76,7 +78,7 @@ namespace aspect
         virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles, const double &current_time)
         {
           typename std::multimap<LevelInd, T>::const_iterator  it;
-          unsigned int                            i, d;
+          unsigned int                            i;
           std::string                             output_file_prefix, output_path_prefix, full_filename;
           std::vector<MPIDataInfo>                data_info;
           std::vector<MPIDataInfo>::iterator      dit;

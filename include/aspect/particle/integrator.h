@@ -35,6 +35,8 @@ namespace aspect
     class Integrator
     {
       public:
+        virtual ~Integrator(void) {};
+        
         // Perform an integration step of moving the particles by the specified timestep dt.
         // Implementations of this function should update the particle location.
         // If the integrator requires multiple internal steps, this should return true until
