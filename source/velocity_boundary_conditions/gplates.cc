@@ -99,7 +99,7 @@ namespace aspect
 
 
             const int n_points = pt.get_child("gpml:FeatureCollection.gml:featureMember.gpml:VelocityField.gml:domainSet.gml:MultiPoint").size();
-            const int n_phi = std::sqrt(2*n_points);
+            const int n_phi = static_cast<int>(std::sqrt(2.*n_points));
             const int n_theta = n_phi /2;
 
             if ((delta_theta != 0.0) || (delta_phi != 0.0))
