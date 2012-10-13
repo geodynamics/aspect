@@ -978,7 +978,8 @@ namespace aspect
                 << std::endl;
 
           for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
-            estimated_error_per_cell(i) = estimated_error_per_cell_T(i)*(1.0+estimated_error_per_cell_rho(i));
+            estimated_error_per_cell(i)
+	      = estimated_error_per_cell_T(i)*(1.0+estimated_error_per_cell_rho(i));
         }
       else if (parameters.refinement_strategy == "Density c_p temperature")
         {
