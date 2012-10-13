@@ -1068,7 +1068,8 @@ namespace aspect
     current_linearization_point = old_solution;
     if (timestep_number > 1)
       {
-        //Trilinos sadd does not like ghost vectors even as input. Copy into distributed vectors for now:
+        //TODO: Trilinos sadd does not like ghost vectors even as input. Copy
+        //into distributed vectors for now:
         LinearAlgebra::BlockVector distr_solution (system_rhs);
         distr_solution = current_linearization_point;
         LinearAlgebra::BlockVector distr_old_solution (system_rhs);
@@ -1129,13 +1130,15 @@ namespace aspect
                 {
                   assemble_composition_system (n);
                   build_composition_preconditioner(n);
-                  composition_residual[n] = solve_temperature_or_composition(1+n); // 1+n is correct, because 0 is for temperature
+                  composition_residual[n]
+		    = solve_temperature_or_composition(1+n); // 1+n is correct, because 0 is for temperature
                   current_linearization_point.block(3+n) = solution.block(3+n);
                 }
 
               assemble_stokes_system();
               if (iteration == 0)
                 build_stokes_preconditioner();
+
               const double stokes_residual = solve_stokes();
 
               current_linearization_point = solution;
