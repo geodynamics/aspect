@@ -866,13 +866,10 @@ namespace aspect
                                                         estimated_error_per_cell_rho,
                                                         dim+1);
 
-        // Scale gradient in each cell with the
-        // correct power of h. Otherwise, error
-        // indicators do not reduce when
-        // refined if there is a density
-        // jump. We need at least order 1 for
-        // the error not to grow when refining,
-        // so anything >1 should work.
+        // Scale gradient in each cell with the correct power of h. Otherwise,
+        // error indicators do not reduce when refined if there is a density
+        // jump. We need at least order 1 for the error not to grow when
+        // refining, so anything >1 should work.
         double power = 0.0;
         if (parameters.refinement_strategy == "Density c_p temperature")
           power = 1.5;
