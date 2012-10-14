@@ -672,7 +672,7 @@ namespace aspect
                              "whether the model is compressible. ");
           prm.enter_subsection ("Viscosity");
           {
-            prm.declare_entry ("ViscositycModel", "Exponential",
+            prm.declare_entry ("Viscosity Model", "Exponential",
                                Patterns::Anything (),
                                "Viscosity Model");
             prm.declare_entry ("Reference Viscosity", "5e24",
