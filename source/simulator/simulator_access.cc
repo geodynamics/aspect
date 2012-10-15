@@ -287,6 +287,18 @@ namespace aspect
   {
     return *simulator->adiabatic_conditions.get();
   }
+
+  template <int dim>
+  void
+  SimulatorAccess<dim>::get_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
+                                                           const unsigned int                      q,
+                                                           std::vector<double>                    &composition_values_at_q_point) const
+  {
+    simulator->extract_composition_values_at_q_point (composition_values,
+                                                      q,
+                                                      composition_values_at_q_point);
+  }
+
 }
 
 

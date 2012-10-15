@@ -86,7 +86,7 @@ namespace aspect
          */
         /**
          * Return the viscosity $\eta$ of the model as a function of temperature,
-         * pressure, strain rate, and position.
+         * pressure, composition, strain rate, and position.
         *
         * @note The strain rate given as the third argument of this function
         * is computed as $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u +
@@ -98,6 +98,7 @@ namespace aspect
          */
         virtual double viscosity (const double                  temperature,
                                   const double                  pressure,
+                                  const std::vector<double>    &compositional_fields,
                                   const SymmetricTensor<2,dim> &strain_rate,
                                   const Point<dim>             &position) const = 0;
 
@@ -107,6 +108,7 @@ namespace aspect
          */
         virtual double viscosity_ratio (const double      temperature,
                                         const double      pressure,
+                                        const std::vector<double>    &compositional_fields,
                                         const SymmetricTensor<2,dim> &strainrate,
                                         const Point<dim> &position) const;
 

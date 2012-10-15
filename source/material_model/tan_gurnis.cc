@@ -50,6 +50,7 @@ namespace aspect
     TanGurnis<dim>::
     viscosity (const double,
                const double,
+               const std::vector<double> &,       /*composition*/
                const SymmetricTensor<2,dim> &,
                const Point<dim> &pos) const
     {

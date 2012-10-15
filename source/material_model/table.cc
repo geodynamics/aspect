@@ -347,6 +347,7 @@ namespace aspect
     Table<dim>::
     viscosity (const double temperature,
                const double pressure,
+               const std::vector<double> &,       /*composition*/
                const SymmetricTensor<2,dim> &strain_rate,
                const Point<dim> &position) const
     {
@@ -413,6 +414,7 @@ namespace aspect
     Table<dim>::
     viscosity_ratio (const double temperature,
                      const double pressure,
+                     const std::vector<double> &, /*composition*/
                      const SymmetricTensor<2,dim> &strain_rate,
                      const Point<dim> &position) const
     {

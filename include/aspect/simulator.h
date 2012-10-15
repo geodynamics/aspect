@@ -362,6 +362,19 @@ namespace aspect
       const BoundaryTemperature::Interface<dim> &
       get_boundary_temperature () const;
 
+      /**
+       * Copy the values of the compositional fields at the quadrature point
+       * q given as input parameter to the output vector
+       * composition_values_at_q_point.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void
+      get_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
+                                         const unsigned int                      q,
+                                         std::vector<double>                    &composition_values_at_q_point) const;
+
       /** @} */
 
     private:
@@ -536,7 +549,6 @@ namespace aspect
          */
         unsigned int                   n_compositional_fields;
         std::vector<unsigned int>      normalized_fields;
-        std::vector<double>            chemical_diffusivities;
         /**
          * @}
          */
@@ -1248,6 +1260,40 @@ namespace aspect
                                           const unsigned int                  composition_index,
                                           double                             &max_residual,
                                           double                             &max_velocity) const;
+      /**
+       * Extract the values of temperature, pressure, composition and
+       * optional strain rate for the current linearization point.
+       * These values are stored as input arguments for the material
+       * model. The compositional fields are extracted with the
+       * individual compositional fields as outer vectors and the values
+       * at each quadrature point as inner vectors, but the material
+       * model needs it the other way round. Hence, this vector of vectors
+       * is transposed.
+       *
+       * @param compute_strainrate If the strain rate should be computed
+       * or not
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      compute_material_model_input_values (const TrilinosWrappers::MPI::BlockVector                    &current_linearization_point,
+                                           const FEValues<dim,dim>                                     &input_finite_element_values,
+                                           const bool                                                   compute_strainrate,
+                                           typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const;
+
+      /**
+       * Copy the values of the compositional fields at the quadrature point
+       * q given as input parameter to the output vector
+       * composition_values_at_q_point.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void
+      extract_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
+                                             const unsigned int                      q,
+                                             std::vector<double>                    &composition_values_at_q_point) const;
 
       /**
        * Generate and output some statistics like timing information and memory consumption.

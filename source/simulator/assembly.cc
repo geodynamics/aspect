@@ -677,47 +677,47 @@ namespace aspect
 
     const unsigned int n_q_points = old_temperature.size();
 
-    typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs (n_q_points, parameters.n_compositional_fields);
-    typename MaterialModel::Interface<dim>::MaterialModelOutputs material_model_outputs (n_q_points);
+    typename MaterialModel::Interface<dim>::MaterialModelInputs inputs (n_q_points, parameters.n_compositional_fields);
+    typename MaterialModel::Interface<dim>::MaterialModelOutputs outputs (n_q_points);
 
     for (unsigned int q=0; q<n_q_points; ++q) {
-      material_model_inputs.temperature[q] = (old_temperature[q] + old_old_temperature[q]) / 2;
-      material_model_inputs.position[q] = evaluation_points[q];
-      material_model_inputs.pressure[q] = (old_pressure[q] + old_old_pressure[q]) / 2;
+      inputs.temperature[q] = (old_temperature[q] + old_old_temperature[q]) / 2;
+      inputs.position[q] = evaluation_points[q];
+      inputs.pressure[q] = (old_pressure[q] + old_old_pressure[q]) / 2;
       for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
-        material_model_inputs.composition[i][q] = (old_composition[i][q] + old_old_composition[i][q]) / 2;
-      material_model_inputs.strain_rate[q] = (old_strain_rates[q] + old_old_strain_rates[q]) / 2;
+        inputs.composition[q][i] = (old_composition[i][q] + old_old_composition[i][q]) / 2;
+      inputs.strain_rate[q] = (old_strain_rates[q] + old_old_strain_rates[q]) / 2;
     }
 
-    material_model->compute_parameters(material_model_inputs,material_model_outputs);
+    material_model->compute_parameters(inputs,outputs);
 
     for (unsigned int q=0; q < n_q_points; ++q)
       {
         const Tensor<1,dim> u = (old_velocity_values[q] +
                                  old_old_velocity_values[q]) / 2;
 
-        const SymmetricTensor<2,dim> strain_rate = material_model_inputs.strain_rate[q];
+        const SymmetricTensor<2,dim> strain_rate = inputs.strain_rate[q];
 
         const double dT_dt = (old_temperature[q] - old_old_temperature[q])
                              / old_time_step;
         const double u_grad_T = u * (old_temperature_grads[q] +
                                      old_old_temperature_grads[q]) / 2;
 
-        const double alpha                = material_model_outputs.thermal_expansion_coefficients[q];
-        const double density              = material_model_outputs.densities[q];
-        const double thermal_conductivity = material_model_outputs.thermal_conductivities[q];
-        const double c_P                  = material_model_outputs.specific_heat[q];
+        const double alpha                = outputs.thermal_expansion_coefficients[q];
+        const double density              = outputs.densities[q];
+        const double thermal_conductivity = outputs.thermal_conductivities[q];
+        const double c_P                  = outputs.specific_heat[q];
         const double k_Delta_T = thermal_conductivity
                                  * (old_temperature_laplacians[q] +
                                     old_old_temperature_laplacians[q]) / 2;
 
         // verify correctness of the heating term
-        const double viscosity =  material_model_outputs.viscosities[q];
-        const bool is_compressible = material_model_outputs.is_compressible;
+        const double viscosity =  outputs.viscosities[q];
+        const bool is_compressible = outputs.is_compressible;
         const double compressibility
           = (is_compressible
              ?
-             material_model_outputs.compressibilities[q]
+             outputs.compressibilities[q]
              :
              std::numeric_limits<double>::quiet_NaN() );
         const Tensor<1,dim> gravity = gravity_model->gravity_vector (evaluation_points[q] );
@@ -758,14 +758,14 @@ namespace aspect
                //   alpha = - 1/rho drho/dT
                (parameters.include_adiabatic_heating
                 ?
-                alpha * density * (u*gravity) * material_model_inputs.temperature[q]
+                alpha * density * (u*gravity) * inputs.temperature[q]
                 :
                 0)
               );
         double residual
           = std::abs(density * c_P * (dT_dt + u_grad_T) - k_Delta_T - gamma);
         if (parameters.stabilization_alpha == 2)
-          residual *= std::abs(material_model_inputs.temperature[q] - average_temperature);
+          residual *= std::abs(inputs.temperature[q] - average_temperature);
 
         max_residual = std::max (residual,        max_residual);
         max_velocity = std::max (std::sqrt (u*u), max_velocity);
@@ -802,7 +802,9 @@ namespace aspect
         const double u_grad_C = u * (old_composition_grads[q] +
                                      old_old_composition_grads[q]) / 2;
 
-        const double kappa = parameters.chemical_diffusivities[composition_index];
+        // the chemical diffusivity kappa is always smaller than the numerical diffusivity
+        // therefore we set it to zero
+        const double kappa = 0;
 
         const double kappa_Delta_C = kappa
                                  * (old_composition_laplacians[q] +
@@ -919,6 +921,53 @@ namespace aspect
   }
 
 
+  template <int dim>
+  void
+  Simulator<dim>::
+  compute_material_model_input_values (const TrilinosWrappers::MPI::BlockVector                    &current_linearization_point,
+                                       const FEValues<dim>                                         &input_finite_element_values,
+                                       const bool                                                   compute_strainrate,
+                                       typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const
+  {
+
+    const FEValuesExtractors::Vector input_velocities (0);
+    const FEValuesExtractors::Scalar input_pressure (dim);
+    const FEValuesExtractors::Scalar input_temperature (dim+1);
+    std::vector<FEValuesExtractors::Scalar> input_composition;
+
+    unsigned int n_q_points = material_model_inputs.temperature.size();
+
+    for (unsigned int q=0;q<parameters.n_compositional_fields;++q)
+      {
+      const FEValuesExtractors::Scalar temp(dim+2+q);
+      input_composition.push_back(temp);
+      }
+
+    input_finite_element_values[input_temperature].get_function_values (current_linearization_point,
+                                                                        material_model_inputs.temperature);
+    input_finite_element_values[input_pressure].get_function_values(current_linearization_point,
+                                                                    material_model_inputs.pressure);
+    if(compute_strainrate)
+      input_finite_element_values[input_velocities].get_function_symmetric_gradients(current_linearization_point,
+                                                                                     material_model_inputs.strain_rate);
+
+    // the values of the compositional fields are stored as blockvectors for each field
+    // we have to extract them in this structure
+    std::vector<std::vector<double>> composition_values (parameters.n_compositional_fields,
+        std::vector<double> (n_q_points));
+
+    for(unsigned int i=0;i<parameters.n_compositional_fields;++i)
+      input_finite_element_values[input_composition[i]].get_function_values(current_linearization_point,
+                                                                      composition_values[i]);
+
+    // then we copy these values to exchange the inner and outer vector, because for the material
+    // model we need a vector with values of all the compositional fields for every quadrature point
+    for(unsigned int q=0;q<n_q_points;++q)
+      for(unsigned int i=0;i<parameters.n_compositional_fields;++i)
+        material_model_inputs.composition[q][i] = composition_values[i][q];
+
+  }
+
 
   template <int dim>
   void
@@ -932,43 +981,22 @@ namespace aspect
 
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
-    const FEValuesExtractors::Scalar temperature (dim+1);
-    std::vector<FEValuesExtractors::Scalar> compositional_fields;
-
-    for (unsigned int q=0;q<parameters.n_compositional_fields;++q)
-      {
-      const FEValuesExtractors::Scalar temp(dim+2+q);
-      compositional_fields.push_back(temp);
-      }
 
     scratch.finite_element_values.reinit (cell);
 
-    scratch.finite_element_values[temperature].get_function_values (current_linearization_point,
-                                                                    scratch.temperature_values);
-    scratch.finite_element_values[pressure].get_function_values(current_linearization_point,
-                                                                scratch.pressure_values);
-    scratch.finite_element_values[velocities].get_function_symmetric_gradients(current_linearization_point,
-                                                                               scratch.strain_rates);
-    for(unsigned int q=0;q<parameters.n_compositional_fields;++q)
-      scratch.finite_element_values[compositional_fields[q]].get_function_values(current_linearization_point,
-                                                                            scratch.composition_values[q]);
-
     data.local_matrix = 0;
 
-    scratch.material_model_inputs.temperature = scratch.temperature_values;
-    for (unsigned int q=0; q<n_q_points; ++q)
-      scratch.material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
-    scratch.material_model_inputs.pressure = scratch.pressure_values;
-    for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
-      scratch.material_model_inputs.composition[i] = scratch.composition_values[i];
-    scratch.material_model_inputs.strain_rate = scratch.strain_rates;
+    compute_material_model_input_values (current_linearization_point,
+                                         scratch.finite_element_values,
+                                         true,
+                                         scratch.material_model_inputs);
 
     material_model->compute_parameters(scratch.material_model_inputs,scratch.material_model_outputs);
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
-        const double current_temperature = scratch.temperature_values[q];
-        const double current_pressure = scratch.pressure_values[q];
+        const double current_temperature = scratch.material_model_inputs.temperature[q];
+        const double current_pressure = scratch.material_model_inputs.pressure[q];
 
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
@@ -1110,35 +1138,8 @@ namespace aspect
 
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
-    const FEValuesExtractors::Scalar temperature (dim+1);
-    std::vector<FEValuesExtractors::Scalar> compositional_fields;
-
-    for (unsigned int q=0;q<parameters.n_compositional_fields;++q)
-      {
-      const FEValuesExtractors::Scalar temp(dim+2+q);
-      compositional_fields.push_back(temp);
-      }
 
     scratch.finite_element_values.reinit (cell);
-    //scratch.finite_element_values[temperature].get_function_values (old_solution,
-    //                                              scratch.old_temperature_values);
-    // Assuming we already have the temperature for the current time step:
-    scratch.finite_element_values[temperature].get_function_values (current_linearization_point,
-                                                                    scratch.temperature_values);
-    scratch.finite_element_values[pressure].get_function_values(current_linearization_point,
-                                                                scratch.pressure_values);
-    scratch.finite_element_values[velocities].get_function_values(current_linearization_point,
-                                                                  scratch.velocity_values);
-    for(unsigned int q=0;q<parameters.n_compositional_fields;++q)
-      scratch.finite_element_values[compositional_fields[q]].get_function_values(current_linearization_point,
-                                                                            scratch.composition_values[q]);
-
-    // we only need the strain rates for the viscosity,
-    // which we only need when rebuilding the matrix
-    if (rebuild_stokes_matrix)
-      scratch.finite_element_values[velocities]
-      .get_function_symmetric_gradients(current_linearization_point,
-                                        scratch.strain_rates);
 
     if (rebuild_stokes_matrix)
       data.local_matrix = 0;
@@ -1146,21 +1147,22 @@ namespace aspect
     if (material_model->is_compressible())
       data.local_pressure_shape_function_integrals = 0;
 
-    scratch.material_model_inputs.temperature = scratch.temperature_values;
-    for (unsigned int q=0; q<n_q_points; ++q)
-      scratch.material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
-    scratch.material_model_inputs.pressure = scratch.pressure_values;
-    for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
-      scratch.material_model_inputs.composition[i] = scratch.composition_values[i];
-    scratch.material_model_inputs.strain_rate = scratch.strain_rates;
+    // we only need the strain rates for the viscosity,
+    // which we only need when rebuilding the matrix
+    compute_material_model_input_values (current_linearization_point,
+                                         scratch.finite_element_values,
+                                         rebuild_stokes_matrix,
+                                         scratch.material_model_inputs);
 
     material_model->compute_parameters(scratch.material_model_inputs,scratch.material_model_outputs);
 
+    scratch.finite_element_values[velocities].get_function_values(current_linearization_point,
+                                                                  scratch.velocity_values);
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
-        const double current_temperature = scratch.temperature_values[q];
-        const double current_pressure    = scratch.pressure_values[q];
+        const double current_temperature = scratch.material_model_inputs.temperature[q];
+        const double current_pressure    = scratch.material_model_inputs.pressure[q];
         const Tensor<1,dim> current_u    = scratch.velocity_values[q];
 
         for (unsigned int k=0; k<dofs_per_cell; ++k)
@@ -1387,18 +1389,10 @@ namespace aspect
     scratch.finite_element_values[pressure].get_function_values (old_old_solution,
                                                                  scratch.old_old_pressure);
 
-    scratch.finite_element_values[temperature].get_function_values(current_linearization_point,
-                                                                   scratch.current_temperature_values);
     scratch.finite_element_values[velocities].get_function_values(current_linearization_point,
                                                                   scratch.current_velocity_values);
-    scratch.finite_element_values[velocities].get_function_symmetric_gradients(current_linearization_point,
-                                                                               scratch.current_strain_rates);
-    scratch.finite_element_values[pressure].get_function_values(current_linearization_point,
-                                                                scratch.current_pressure_values);
 
     for(unsigned int q=0;q<parameters.n_compositional_fields;++q) {
-      scratch.finite_element_values[compositional_fields[q]].get_function_values(current_linearization_point,
-                                                                            scratch.current_composition_values[q]);
       scratch.finite_element_values[compositional_fields[q]].get_function_values(old_solution,
                                                                                   scratch.old_composition_values[q]);
       scratch.finite_element_values[compositional_fields[q]].get_function_values(old_old_solution,
@@ -1432,13 +1426,10 @@ namespace aspect
                            cell->diameter(),
                            0);  //index for temperature field
 
-    scratch.material_model_inputs.temperature = scratch.current_temperature_values;
-    for (unsigned int q=0; q<n_q_points; ++q)
-      scratch.material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
-    scratch.material_model_inputs.pressure = scratch.current_pressure_values;
-    for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
-      scratch.material_model_inputs.composition[i] = scratch.current_composition_values[i];
-    scratch.material_model_inputs.strain_rate = scratch.current_strain_rates;
+    compute_material_model_input_values (current_linearization_point,
+                                         scratch.finite_element_values,
+                                         true,
+                                         scratch.material_model_inputs);
 
     material_model->compute_parameters(scratch.material_model_inputs,scratch.material_model_outputs);
 
@@ -1461,10 +1452,10 @@ namespace aspect
              :
              scratch.old_temperature_values[q]);
 
-        const double current_T = scratch.current_temperature_values[q];
-        const SymmetricTensor<2,dim> current_strain_rate = scratch.current_strain_rates[q];
+        const double current_T = scratch.material_model_inputs.temperature[q];
+        const SymmetricTensor<2,dim> current_strain_rate = scratch.material_model_inputs.strain_rate[q];
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
-        const double current_p = scratch.current_pressure_values[q];
+        const double current_p = scratch.material_model_inputs.pressure[q];
 
         const double alpha                = scratch.material_model_outputs.thermal_expansion_coefficients[q];
         const double density              = scratch.material_model_outputs.densities[q];
@@ -1729,7 +1720,9 @@ namespace aspect
 
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
 
-        const double kappa = parameters.chemical_diffusivities[composition_index];
+        // the chemical diffusivity kappa is always smaller than the numerical diffusivity
+        // therefore we set it to zero
+        const double kappa = 0.0;
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           {

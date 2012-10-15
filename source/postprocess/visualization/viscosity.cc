@@ -82,6 +82,7 @@ namespace aspect
 
             computed_quantities[q](0) = this->get_material_model().viscosity(temperature,
                                                                              pressure,
+                                                                             composition,
                                                                              strain_rate,
                                                                              evaluation_points[q]);
           }

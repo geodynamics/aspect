@@ -35,10 +35,12 @@ namespace aspect
     Simple<dim>::
     viscosity (const double,
                const double,
+               const std::vector<double> &composition,       /*composition*/
                const SymmetricTensor<2,dim> &,
                const Point<dim> &) const
     {
-      return eta;
+//      return eta;
+      return (4.0*composition[0]+1) * eta;
     }
 
 
@@ -141,11 +143,10 @@ namespace aspect
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
       {
-        out.viscosities[i]                    = viscosity                     (in.temperature[i], in.pressure[i], in.strain_rate[i], in.position[i]);
-//        out.viscosities[i]                    = (29.0*in.composition[0][i]+1) * eta;
+        out.viscosities[i]                    = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
         out.densities[i]                      = (this->n_compositional_fields()>0)
                                                 ?
-                                                (100*in.composition[0][i]) + reference_rho *(1 - thermal_alpha * (in.temperature[i] - reference_T))
+                                                (100*in.composition[i][0]) + reference_rho *(1 - thermal_alpha * (in.temperature[i] - reference_T))
                                                 :
                                                 density                       (in.temperature[i], in.pressure[i], in.position[i]);
         out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.position[i]);

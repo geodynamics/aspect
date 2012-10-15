@@ -21,6 +21,7 @@
 
 
 #include <aspect/global.h>
+#include <aspect/simulator.h>
 #include <aspect/material_model/interface.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx1x/tuple.h>
@@ -171,6 +172,7 @@ namespace aspect
     Interface<dim>::
     viscosity_ratio (const double temperature,
                      const double pressure,
+                     const std::vector<double>    &compositional_fields,
                      const SymmetricTensor<2,dim> &strain_rate,
                      const Point<dim> &position) const
     {
@@ -247,9 +249,9 @@ namespace aspect
         position.resize(n_points);
         temperature.resize(n_points);
         pressure.resize(n_points);
-        composition.resize(n_comp);
-        for(unsigned int i=0;i<n_comp;++i)
-          composition[i].resize(n_points);
+        composition.resize(n_points);
+        for(unsigned int i=0;i<n_points;++i)
+          composition[i].resize(n_comp);
         strain_rate.resize(n_points);
       }
 
@@ -273,7 +275,7 @@ namespace aspect
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
       {
-        out.viscosities[i]                    = viscosity                     (in.temperature[i], in.pressure[i], in.strain_rate[i], in.position[i]);
+        out.viscosities[i]                    = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
         out.densities[i]                      = density                       (in.temperature[i], in.pressure[i], in.position[i]);
         out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.position[i]);
         out.seismic_Vp[i]                     = seismic_Vp                    (in.temperature[i], in.pressure[i], in.position[i]);

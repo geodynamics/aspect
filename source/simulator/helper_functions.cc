@@ -254,6 +254,15 @@ namespace aspect
   }
 
 
+  template <int dim>
+  void Simulator<dim>::extract_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
+                                                              const unsigned int                      q,
+                                                              std::vector<double>                    &composition_values_at_q_point) const
+  {
+    for(unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
+      composition_values_at_q_point[k] = composition_values[k][q];
+  }
+
 
   template <int dim>
   std::pair<double,double>
@@ -616,10 +625,19 @@ namespace aspect
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
+    std::vector<FEValuesExtractors::Scalar> compositional_fields;
+
+    for (unsigned int q=0;q<parameters.n_compositional_fields;++q)
+      {
+      const FEValuesExtractors::Scalar temp(dim+2+q);
+      compositional_fields.push_back(temp);
+      }
 
     std::vector<SymmetricTensor<2,dim> > strain_rates(n_q_points);
     std::vector<double> pressure_values(n_q_points);
     std::vector<double> temperature_values(n_q_points);
+    std::vector<std::vector<double>> composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
@@ -637,6 +655,9 @@ namespace aspect
                                                       temperature_values);
           fe_values[velocities].get_function_symmetric_gradients (this->solution,
                                                                   strain_rates);
+          for(unsigned int i=0;i<parameters.n_compositional_fields;++i)
+            fe_values[compositional_fields[i]].get_function_values(this->solution,
+                                                                   composition_values[i]);
 
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
@@ -644,8 +665,13 @@ namespace aspect
               const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());
 
+              extract_composition_values_at_q_point (composition_values,
+                                                     q,
+                                                     composition_values_at_q_point);
+
               const double viscosity = material_model->viscosity(temperature_values[q],
                                                                  pressure_values[q],
+                                                                 composition_values_at_q_point,
                                                                  strain_rates[q],
                                                                  fe_values.quadrature_point(q));
               ++counts[idx];
@@ -1021,6 +1047,9 @@ namespace aspect
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const unsigned int index) const; \
+  template void Simulator<dim>::extract_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values, \
+                                                                       const unsigned int q, \
+                                                                       std::vector<double> &composition_values_at_q_point) const;  \
   template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::compute_depth_average_field(const unsigned int index, std::vector<double> &values) const; \

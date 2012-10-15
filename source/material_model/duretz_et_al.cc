@@ -38,6 +38,7 @@ namespace aspect
       SolCx<dim>::
       viscosity (const double,
                  const double,
+                 const std::vector<double> &,       /*composition*/
                  const SymmetricTensor<2,dim> &,
                  const Point<dim> &p) const
       {
@@ -257,6 +258,7 @@ namespace aspect
       SolKz<dim>::
       viscosity (const double,
                  const double,
+                 const std::vector<double> &,       /*composition*/
                  const SymmetricTensor<2,dim> &,
                  const Point<dim> &p) const
       {
@@ -420,6 +422,7 @@ namespace aspect
       Inclusion<dim>::
       viscosity (const double,
                  const double,
+                 const std::vector<double> &,       /*composition*/
                  const SymmetricTensor<2,dim> &,
                  const Point<dim> &p) const
       {
