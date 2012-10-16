@@ -67,6 +67,7 @@ namespace aspect
 
             computed_quantities[q](0) = this->get_material_model().seismic_Vp(temperature,
                                                                               pressure,
+                                                                              composition,
                                                                               evaluation_points[q]);
           }
       }

@@ -66,7 +66,8 @@ namespace aspect
               composition[i] = uh[q][dim+2+i];
 
             computed_quantities[q](0) = this->get_material_model().thermodynamic_phase(temperature,
-                                                                                       pressure);
+                                                                                       pressure,
+                                                                                       composition);
           }
       }
     }

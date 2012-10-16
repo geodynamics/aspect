@@ -118,6 +118,7 @@ namespace aspect
          */
         virtual double density (const double      temperature,
                                 const double      pressure,
+                                const std::vector<double> &compositional_fields,
                                 const Point<dim> &position) const = 0;
 
         /**
@@ -127,6 +128,7 @@ namespace aspect
          */
         virtual double compressibility (const double temperature,
                                         const double pressure,
+                                        const std::vector<double> &compositional_fields,
                                         const Point<dim> &position) const = 0;
 
         /**
@@ -135,6 +137,7 @@ namespace aspect
          */
         virtual double specific_heat (const double      temperature,
                                       const double      pressure,
+                                      const std::vector<double> &compositional_fields,
                                       const Point<dim> &position) const = 0;
 
         /**
@@ -151,6 +154,7 @@ namespace aspect
          */
         virtual double thermal_expansion_coefficient (const double      temperature,
                                                       const double      pressure,
+                                                      const std::vector<double> &compositional_fields,
                                                       const Point<dim> &position) const;
 
         /**
@@ -169,6 +173,7 @@ namespace aspect
          */
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
+                                             const std::vector<double> &compositional_fields,
                                              const Point<dim> &position) const = 0;
         /**
          * @}
@@ -247,6 +252,7 @@ namespace aspect
         virtual double
         viscosity_derivative (const double              temperature,
                               const double              pressure,
+                              const std::vector<double> &compositional_fields,
                               const Point<dim>         &position,
                               const NonlinearDependence::Dependence dependence) const;
 
@@ -261,6 +267,7 @@ namespace aspect
         virtual double
         density_derivative (const double              temperature,
                             const double              pressure,
+                            const std::vector<double> &compositional_fields,
                             const Point<dim>         &position,
                             const NonlinearDependence::Dependence dependence) const;
 
@@ -275,6 +282,7 @@ namespace aspect
         virtual double
         compressibility_derivative (const double              temperature,
                                     const double              pressure,
+                                    const std::vector<double> &compositional_fields,
                                     const Point<dim>         &position,
                                     const NonlinearDependence::Dependence dependence) const;
 
@@ -289,6 +297,7 @@ namespace aspect
         virtual double
         specific_heat_derivative (const double              temperature,
                                   const double              pressure,
+                                  const std::vector<double> &compositional_fields,
                                   const Point<dim>         &position,
                                   const NonlinearDependence::Dependence dependence) const;
 
@@ -303,6 +312,7 @@ namespace aspect
         virtual double
         thermal_conductivity_derivative (const double              temperature,
                                          const double              pressure,
+                                         const std::vector<double> &compositional_fields,
                                          const Point<dim>         &position,
                                          const NonlinearDependence::Dependence dependence) const;
         /**
@@ -362,6 +372,7 @@ namespace aspect
         double
         seismic_Vp (const double      temperature,
                     const double      pressure,
+                    const std::vector<double> &compositional_fields,
                     const Point<dim> &position) const;
 
         /**
@@ -379,6 +390,7 @@ namespace aspect
         double
         seismic_Vs (const double      temperature,
                     const double      pressure,
+                    const std::vector<double> &compositional_fields,
                     const Point<dim> &position) const;
         /**
          * Return the Phase number of the model as a function of
@@ -393,7 +405,8 @@ namespace aspect
         virtual
         unsigned int
         thermodynamic_phase (const double      temperature,
-                             const double      pressure) const;
+                             const double      pressure,
+                             const std::vector<double> &compositional_fields) const;
         /**
          * @}
          */

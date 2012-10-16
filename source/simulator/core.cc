@@ -104,8 +104,7 @@ namespace aspect
                                                                       *adiabatic_conditions)),
     compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions (prm,
                                       *geometry_model,
-                                      *boundary_temperature,
-                                      *adiabatic_conditions)),
+                                      *boundary_temperature)),
 
     time (std::numeric_limits<double>::quiet_NaN()),
     time_step (0),
@@ -218,8 +217,10 @@ namespace aspect
     adiabatic_conditions.reset (new AdiabaticConditions<dim>(*geometry_model,
                                                              *gravity_model,
                                                              *material_model,
+                                                             *compositional_initial_conditions,
                                                              parameters.surface_pressure,
-                                                             parameters.adiabatic_surface_temperature));
+                                                             parameters.adiabatic_surface_temperature,
+                                                             parameters.n_compositional_fields));
     for (std::map<types::boundary_id_t,std::string>::const_iterator
          p = parameters.prescribed_velocity_boundary_indicators.begin();
          p != parameters.prescribed_velocity_boundary_indicators.end();
@@ -790,6 +791,13 @@ namespace aspect
 
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
+    std::vector<FEValuesExtractors::Scalar> composition;
+
+    for (unsigned int q=0;q<parameters.n_compositional_fields;++q)
+      {
+      const FEValuesExtractors::Scalar temp(dim+2+q);
+      composition.push_back(temp);
+      }
 
     //Velocity|Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature
 
@@ -818,6 +826,13 @@ namespace aspect
         std::vector<double> pressure_values(quadrature.size());
         std::vector<double> temperature_values(quadrature.size());
 
+        // the values of the compositional fields are stored as blockvectors for each field
+        // we have to extract them in this structure
+        std::vector<std::vector<double>> prelim_composition_values (parameters.n_compositional_fields,
+            std::vector<double> (quadrature.size()));
+        std::vector<std::vector<double>> composition_values (quadrature.size(),
+            std::vector<double> (parameters.n_compositional_fields));
+
 
         typename DoFHandler<dim>::active_cell_iterator
         cell = dof_handler.begin_active(),
@@ -830,6 +845,14 @@ namespace aspect
                                                        pressure_values);
               fe_values[temperature].get_function_values (solution,
                                                           temperature_values);
+              for(unsigned int i=0;i<parameters.n_compositional_fields;++i)
+                fe_values[composition[i]].get_function_values (solution,
+                                                               prelim_composition_values[i]);
+              // then we copy these values to exchange the inner and outer vector, because for the material
+              // model we need a vector with values of all the compositional fields for every quadrature point
+              for(unsigned int q=0;q<quadrature.size();++q)
+                for(unsigned int i=0;i<parameters.n_compositional_fields;++i)
+                  composition_values[q][i] = prelim_composition_values[i][q];
 
               cell->get_dof_indices (local_dof_indices);
 
@@ -845,12 +868,14 @@ namespace aspect
                   vec_distributed(local_dof_indices[system_local_dof])
                     = material_model->density( temperature_values[i],
                                                pressure_values[i],
+                                               composition_values[i],
                                                fe_values.quadrature_point(i))
                       * ((lookup_rho_c_p_T)
                          ?
                          (temperature_values[i]
                           * material_model->specific_heat(temperature_values[i],
                                                           pressure_values[i],
+                                                          composition_values[i],
                                                           fe_values.quadrature_point(i)))
                          :
                          1.0);

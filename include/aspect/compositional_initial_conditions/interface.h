@@ -26,7 +26,6 @@
 #include <aspect/plugins.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
-#include <aspect/adiabatic_conditions.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
@@ -65,8 +64,7 @@ namespace aspect
          */
         void
         initialize (const GeometryModel::Interface<dim>       &geometry_model,
-                    const BoundaryTemperature::Interface<dim> &boundary_temperature,
-                    const AdiabaticConditions<dim>            &adiabatic_conditions);
+                    const BoundaryTemperature::Interface<dim> &boundary_temperature);
 
         /**
          * Return the initial temperature as a function of position.
@@ -107,10 +105,6 @@ namespace aspect
          */
         const BoundaryTemperature::Interface<dim> *boundary_temperature;
 
-        /**
-         * Pointer to an object that describes adiabatic conditions.
-         */
-        const AdiabaticConditions<dim>            *adiabatic_conditions;
     };
 
 
@@ -151,8 +145,7 @@ namespace aspect
     Interface<dim> *
     create_initial_conditions (ParameterHandler &prm,
                                const GeometryModel::Interface<dim> &geometry_model,
-                               const BoundaryTemperature::Interface<dim> &boundary_temperature,
-                               const AdiabaticConditions<dim>      &adiabatic_conditions);
+                               const BoundaryTemperature::Interface<dim> &boundary_temperature);
 
 
     /**

@@ -468,6 +468,7 @@ namespace aspect
     Table<dim>::
     thermal_expansion_coefficient (const double temperature,
                                    const double pressure,
+                                   const std::vector<double> &, /*composition*/
                                    const Point<dim> &p) const
     {
       static internal::P_T_LookupFunction alpha(data_directory+"alpha_bin");
@@ -479,6 +480,7 @@ namespace aspect
     Table<dim>::
     specific_heat (const double temperature,
                    const double pressure,
+                   const std::vector<double> &, /*composition*/
                    const Point<dim> &) const
     {
 //    const double reference_specific_heat = 1250;    /* J / K / kg */  //??
@@ -502,6 +504,7 @@ namespace aspect
     Table<dim>::
     thermal_conductivity (const double,
                           const double,
+                          const std::vector<double> &, /*composition*/
                           const Point<dim> &) const
     {
       // this model assumes that the thermal conductivity is in fact constant
@@ -521,6 +524,7 @@ namespace aspect
     Table<dim>::
     density (const double temperature,
              const double pressure,
+             const std::vector<double> &, /*composition*/
              const Point<dim> &position) const
     {
       static internal::P_T_LookupFunction rho(data_directory+"rho_bin");
@@ -531,7 +535,8 @@ namespace aspect
     double
     Table<dim>::
     seismic_Vp (const double temperature,
-                const double pressure) const
+                const double pressure,
+                const std::vector<double> & /*composition*/) const
     {
       static internal::P_T_LookupFunction vp(data_directory+"vseis_p_bin");
       return vp.value(temperature, pressure);
@@ -542,7 +547,8 @@ namespace aspect
     double
     Table<dim>::
     seismic_Vs (const double temperature,
-                const double pressure) const
+                const double pressure,
+                const std::vector<double> & /*composition*/) const
     {
       static internal::P_T_LookupFunction vs(data_directory+"vseis_s_bin");
       return vs.value(temperature, pressure);
@@ -553,7 +559,8 @@ namespace aspect
     unsigned int
     Table<dim>::
     thermodynamic_phase (const double temperature,
-                         const double pressure) const
+                         const double pressure,
+                         const std::vector<double> & /*composition*/) const
     {
       if (!compute_phases)
         return 0;
@@ -568,6 +575,7 @@ namespace aspect
     Table<dim>::
     compressibility (const double temperature,
                      const double pressure,
+                     const std::vector<double> &, /*composition*/
                      const Point<dim> &position) const
     {
       static internal::P_T_LookupFunction rho(data_directory+"rho_bin");

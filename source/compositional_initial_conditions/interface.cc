@@ -41,12 +41,11 @@ namespace aspect
     template <int dim>
     void
     Interface<dim>::initialize (const GeometryModel::Interface<dim>       &geometry_model_,
-                                const BoundaryTemperature::Interface<dim> &boundary_temperature_,
-                                const AdiabaticConditions<dim>            &adiabatic_conditions_)
+                                const BoundaryTemperature::Interface<dim> &boundary_temperature_)
+                                // TODO check why we need boundary temperature. is this boundary composition?
     {
       geometry_model       = &geometry_model_;
       boundary_temperature = &boundary_temperature_;
-      adiabatic_conditions = &adiabatic_conditions_;
     }
 
 
@@ -95,8 +94,7 @@ namespace aspect
     Interface<dim> *
     create_initial_conditions (ParameterHandler &prm,
                                const GeometryModel::Interface<dim> &geometry_model,
-                               const BoundaryTemperature::Interface<dim> &boundary_temperature,
-                               const AdiabaticConditions<dim>      &adiabatic_conditions)
+                               const BoundaryTemperature::Interface<dim> &boundary_temperature)
     {
       // we need to get at the number of compositional fields here to
       // know whether we need to generate something at all.
@@ -117,8 +115,7 @@ namespace aspect
 
 	  Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
 	  plugin->initialize (geometry_model,
-			      boundary_temperature,
-			      adiabatic_conditions);
+			      boundary_temperature);
 	  return plugin;
 	}
     }
@@ -183,8 +180,7 @@ namespace aspect
   Interface<dim> * \
   create_initial_conditions<dim> (ParameterHandler &prm, \
                                   const GeometryModel::Interface<dim> &geometry_model, \
-                                  const BoundaryTemperature::Interface<dim> &boundary_temperature, \
-                                  const AdiabaticConditions<dim>      &adiabatic_conditions);
+                                  const BoundaryTemperature::Interface<dim> &boundary_temperature);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

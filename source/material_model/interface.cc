@@ -48,6 +48,7 @@ namespace aspect
     double
     Interface<dim>::viscosity_derivative (const double,
                                           const double,
+                                          const std::vector<double> &, /*composition*/
                                           const Point<dim> &,
                                           const NonlinearDependence::Dependence dependence) const
     {
@@ -62,6 +63,7 @@ namespace aspect
     double
     Interface<dim>::density_derivative (const double,
                                         const double,
+                                        const std::vector<double> &, /*composition*/
                                         const Point<dim> &,
                                         const NonlinearDependence::Dependence dependence) const
     {
@@ -75,6 +77,7 @@ namespace aspect
     double
     Interface<dim>::compressibility_derivative (const double,
                                                 const double,
+                                                const std::vector<double> &, /*composition*/
                                                 const Point<dim> &,
                                                 const NonlinearDependence::Dependence dependence) const
     {
@@ -88,6 +91,7 @@ namespace aspect
     double
     Interface<dim>::specific_heat_derivative (const double,
                                               const double,
+                                              const std::vector<double> &, /*composition*/
                                               const Point<dim> &,
                                               const NonlinearDependence::Dependence dependence) const
     {
@@ -101,6 +105,7 @@ namespace aspect
     double
     Interface<dim>::thermal_conductivity_derivative (const double,
                                                      const double,
+                                                     const std::vector<double> &, /*composition*/
                                                      const Point<dim> &,
                                                      const NonlinearDependence::Dependence dependence) const
     {
@@ -185,6 +190,7 @@ namespace aspect
     Interface<dim>::
     seismic_Vp (double dummy1,
                 double dummy2,
+                const std::vector<double> &, /*composition*/
                 const Point<dim> &dummy3) const
     {
       return -1.0;
@@ -196,6 +202,7 @@ namespace aspect
     Interface<dim>::
     seismic_Vs (double dummy1,
                 double dummy2,
+                const std::vector<double> &, /*composition*/
                 const Point<dim> &dummy3) const
     {
       return -1.0;
@@ -206,7 +213,8 @@ namespace aspect
     unsigned int
     Interface<dim>::
     thermodynamic_phase (double dummy1,
-                         double dummy2) const
+                         double dummy2,
+                         const std::vector<double> & /*composition*/) const
     {
       return 0;
     }
@@ -216,11 +224,12 @@ namespace aspect
     Interface<dim>::
     thermal_expansion_coefficient (const double temperature,
                                    const double pressure,
+                                   const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const
     {
-      return (-1./density(temperature, pressure, position)
+      return (-1./density(temperature, pressure, compositional_fields, position)
               *
-              density_derivative(temperature, pressure, position, NonlinearDependence::temperature));
+              density_derivative(temperature, pressure, compositional_fields, position, NonlinearDependence::temperature));
     }
 
     template <int dim>
@@ -276,14 +285,14 @@ namespace aspect
       for (unsigned int i=0; i < in.temperature.size(); ++i)
       {
         out.viscosities[i]                    = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
-        out.densities[i]                      = density                       (in.temperature[i], in.pressure[i], in.position[i]);
-        out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.position[i]);
-        out.seismic_Vp[i]                     = seismic_Vp                    (in.temperature[i], in.pressure[i], in.position[i]);
-        out.seismic_Vs[i]                     = seismic_Vs                    (in.temperature[i], in.pressure[i], in.position[i]);
-        out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.position[i]);
-        out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.position[i]);
-        out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.position[i]);
-        out.thermodynamic_phases[i]           = thermodynamic_phase           (in.temperature[i], in.pressure[i]);
+        out.densities[i]                      = density                       (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+        out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+        out.seismic_Vp[i]                     = seismic_Vp                    (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+        out.seismic_Vs[i]                     = seismic_Vs                    (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+        out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+        out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+        out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+        out.thermodynamic_phases[i]           = thermodynamic_phase           (in.temperature[i], in.pressure[i], in.composition[i]);
         out.is_compressible = is_compressible();
       }
     }

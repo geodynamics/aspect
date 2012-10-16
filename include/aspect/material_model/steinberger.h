@@ -62,30 +62,37 @@ namespace aspect
 
         virtual double density (const double temperature,
                                 const double pressure,
+                                const std::vector<double> &compositional_fields,
                                 const Point<dim> &position) const;
 
         virtual double compressibility (const double temperature,
                                         const double pressure,
+                                        const std::vector<double> &compositional_fields,
                                         const Point<dim> &position) const;
 
         virtual double specific_heat (const double temperature,
                                       const double pressure,
+                                      const std::vector<double> &compositional_fields,
                                       const Point<dim> &position) const;
 
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
+                                             const std::vector<double> &compositional_fields,
                                              const Point<dim> &position) const;
 
         virtual double thermal_expansion_coefficient (const double      temperature,
                                                       const double      pressure,
+                                                      const std::vector<double> &compositional_fields,
                                                       const Point<dim> &position) const;
 
         virtual double seismic_Vp (const double      temperature,
                                    const double      pressure,
+                                   const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const;
 
         virtual double seismic_Vs (const double      temperature,
                                    const double      pressure,
+                                   const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const;
         /**
          * @}

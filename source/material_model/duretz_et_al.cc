@@ -76,6 +76,7 @@ namespace aspect
       SolCx<dim>::
       specific_heat (const double,
                      const double,
+                     const std::vector<double> &, /*composition*/
                      const Point<dim> &) const
       {
         return 0;
@@ -94,6 +95,7 @@ namespace aspect
       SolCx<dim>::
       thermal_conductivity (const double,
                             const double,
+                            const std::vector<double> &, /*composition*/
                             const Point<dim> &) const
       {
         return 0;
@@ -112,6 +114,7 @@ namespace aspect
       SolCx<dim>::
       density (const double,
                const double,
+               const std::vector<double> &, /*composition*/
                const Point<dim> &p) const
       {
         // defined as given in the paper, plus the constant
@@ -125,6 +128,7 @@ namespace aspect
       SolCx<dim>::
       thermal_expansion_coefficient (const double temperature,
                                      const double,
+                                     const std::vector<double> &, /*composition*/
                                      const Point<dim> &) const
       {
         return 0;
@@ -136,6 +140,7 @@ namespace aspect
       SolCx<dim>::
       compressibility (const double,
                        const double,
+                       const std::vector<double> &, /*composition*/
                        const Point<dim> &) const
       {
         return 0.0;
@@ -297,6 +302,7 @@ namespace aspect
       SolKz<dim>::
       specific_heat (const double,
                      const double,
+                     const std::vector<double> &, /*composition*/
                      const Point<dim> &) const
       {
         return 0;
@@ -315,6 +321,7 @@ namespace aspect
       SolKz<dim>::
       thermal_conductivity (const double,
                             const double,
+                            const std::vector<double> &, /*composition*/
                             const Point<dim> &) const
       {
         return 0;
@@ -333,6 +340,7 @@ namespace aspect
       SolKz<dim>::
       density (const double,
                const double,
+               const std::vector<double> &, /*composition*/
                const Point<dim> &p) const
       {
         // defined as given in the paper
@@ -345,6 +353,7 @@ namespace aspect
       SolKz<dim>::
       thermal_expansion_coefficient (const double temperature,
                                      const double,
+                                     const std::vector<double> &, /*composition*/
                                      const Point<dim> &) const
       {
         return 0;
@@ -356,6 +365,7 @@ namespace aspect
       SolKz<dim>::
       compressibility (const double,
                        const double,
+                       const std::vector<double> &, /*composition*/
                        const Point<dim> &) const
       {
         return 0.0;
@@ -460,6 +470,7 @@ namespace aspect
       Inclusion<dim>::
       specific_heat (const double,
                      const double,
+                     const std::vector<double> &, /*composition*/
                      const Point<dim> &) const
       {
         return 0;
@@ -478,6 +489,7 @@ namespace aspect
       Inclusion<dim>::
       thermal_conductivity (const double,
                             const double,
+                            const std::vector<double> &, /*composition*/
                             const Point<dim> &) const
       {
         return 0;
@@ -496,6 +508,7 @@ namespace aspect
       Inclusion<dim>::
       density (const double,
                const double,
+               const std::vector<double> &, /*composition*/
                const Point<dim> &p) const
       {
         return 0;
@@ -507,6 +520,7 @@ namespace aspect
       Inclusion<dim>::
       thermal_expansion_coefficient (const double temperature,
                                      const double,
+                                     const std::vector<double> &, /*composition*/
                                      const Point<dim> &) const
       {
         return 0;
@@ -518,6 +532,7 @@ namespace aspect
       Inclusion<dim>::
       compressibility (const double,
                        const double,
+                       const std::vector<double> &, /*composition*/
                        const Point<dim> &) const
       {
         return 0.0;

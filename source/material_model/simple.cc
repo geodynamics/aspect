@@ -40,7 +40,11 @@ namespace aspect
                const Point<dim> &) const
     {
 //      return eta;
-      return (4.0*composition[0]+1) * eta;
+      return (this->n_compositional_fields()>0
+          ?
+          (4.0*composition[0]+1) * eta
+          :
+          eta);
     }
 
 
@@ -73,6 +77,7 @@ namespace aspect
     Simple<dim>::
     specific_heat (const double,
                    const double,
+                   const std::vector<double> &, /*composition*/
                    const Point<dim> &) const
     {
       return reference_specific_heat;
@@ -91,6 +96,7 @@ namespace aspect
     Simple<dim>::
     thermal_conductivity (const double,
                           const double,
+                          const std::vector<double> &, /*composition*/
                           const Point<dim> &) const
     {
       return k_value;
@@ -108,11 +114,16 @@ namespace aspect
     double
     Simple<dim>::
     density (const double temperature,
-             const double comp,
+             const double,
+             const std::vector<double> &compositional_fields, /*composition*/
              const Point<dim> &) const
     {
-      return (reference_rho *
-              (1 - thermal_alpha * (temperature - reference_T)));
+      return (this->n_compositional_fields()>0
+          ?
+          100.0 * compositional_fields[0] + reference_rho *
+              (1 - thermal_alpha * (temperature - reference_T))
+          :
+          reference_rho * (1 - thermal_alpha * (temperature - reference_T)));
     }
 
 
@@ -121,6 +132,7 @@ namespace aspect
     Simple<dim>::
     thermal_expansion_coefficient (const double temperature,
                                    const double,
+                                   const std::vector<double> &, /*composition*/
                                    const Point<dim> &) const
     {
       return thermal_alpha;
@@ -132,35 +144,11 @@ namespace aspect
     Simple<dim>::
     compressibility (const double,
                      const double,
+                     const std::vector<double> &, /*composition*/
                      const Point<dim> &) const
     {
       return 0.0;
     }
-
-    template <int dim>
-    void
-    Simple<dim>::compute_parameters(struct Interface<dim>::MaterialModelInputs &in, struct Interface<dim>::MaterialModelOutputs &out)
-    {
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
-      {
-        out.viscosities[i]                    = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
-        out.densities[i]                      = (this->n_compositional_fields()>0)
-                                                ?
-                                                (100*in.composition[i][0]) + reference_rho *(1 - thermal_alpha * (in.temperature[i] - reference_T))
-                                                :
-                                                density                       (in.temperature[i], in.pressure[i], in.position[i]);
-        out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.position[i]);
-        out.seismic_Vp[i]                     = seismic_Vp                    (in.temperature[i], in.pressure[i], in.position[i]);
-        out.seismic_Vs[i]                     = seismic_Vs                    (in.temperature[i], in.pressure[i], in.position[i]);
-        out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.position[i]);
-        out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.position[i]);
-        out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.position[i]);
-        out.thermodynamic_phases[i]           = thermodynamic_phase           (in.temperature[i], in.pressure[i]);
-        out.is_compressible = is_compressible();
-      }
-    }
-
-
 
     template <int dim>
     bool
