@@ -39,7 +39,7 @@ namespace aspect
                const Point<dim> &) const
     {
       const double delta_temp = temperature-reference_T;
-      const double temperature_dependence = std::max(std::min(std::exp(-viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
+      const double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
 
       return temperature_dependence * eta;
     }
