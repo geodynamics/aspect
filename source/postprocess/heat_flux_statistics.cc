@@ -55,9 +55,9 @@ namespace aspect
       const FEValuesExtractors::Scalar temperature (dim+1);
       std::vector<FEValuesExtractors::Scalar> compositional_fields;
 
-      for (unsigned int q=0;q<this->n_compositional_fields();++q)
+      for (unsigned int c=0;c<this->n_compositional_fields();++c)
         {
-        const FEValuesExtractors::Scalar temp(dim+2+q);
+        const FEValuesExtractors::Scalar temp(dim+2+c);
         compositional_fields.push_back(temp);
         }
 
@@ -94,9 +94,9 @@ namespace aspect
                                                                  temperature_values);
                 fe_face_values[pressure].get_function_values (this->get_solution(),
                                                               pressure_values);
-                for(unsigned int i=0;i<this->n_compositional_fields();++i)
-                  fe_face_values[compositional_fields[i]].get_function_values(this->get_solution(),
-                                                                              composition_values[i]);
+                for(unsigned int c=0;c<this->n_compositional_fields();++c)
+                  fe_face_values[compositional_fields[c]].get_function_values(this->get_solution(),
+                                                                              composition_values[c]);
 
                 double local_normal_flux = 0;
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)

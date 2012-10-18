@@ -684,8 +684,8 @@ namespace aspect
       inputs.temperature[q] = (old_temperature[q] + old_old_temperature[q]) / 2;
       inputs.position[q] = evaluation_points[q];
       inputs.pressure[q] = (old_pressure[q] + old_old_pressure[q]) / 2;
-      for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
-        inputs.composition[q][i] = (old_composition[i][q] + old_old_composition[i][q]) / 2;
+      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+        inputs.composition[q][c] = (old_composition[c][q] + old_old_composition[c][q]) / 2;
       inputs.strain_rate[q] = (old_strain_rates[q] + old_old_strain_rates[q]) / 2;
     }
 
@@ -937,9 +937,9 @@ namespace aspect
 
     unsigned int n_q_points = material_model_inputs.temperature.size();
 
-    for (unsigned int q=0;q<parameters.n_compositional_fields;++q)
+    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
       {
-      const FEValuesExtractors::Scalar temp(dim+2+q);
+      const FEValuesExtractors::Scalar temp(dim+2+c);
       input_composition.push_back(temp);
       }
 
@@ -956,15 +956,15 @@ namespace aspect
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,
         std::vector<double> (n_q_points));
 
-    for(unsigned int i=0;i<parameters.n_compositional_fields;++i)
-      input_finite_element_values[input_composition[i]].get_function_values(current_linearization_point,
-                                                                      composition_values[i]);
+    for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+      input_finite_element_values[input_composition[c]].get_function_values(current_linearization_point,
+                                                                      composition_values[c]);
 
     // then we copy these values to exchange the inner and outer vector, because for the material
     // model we need a vector with values of all the compositional fields for every quadrature point
     for(unsigned int q=0;q<n_q_points;++q)
-      for(unsigned int i=0;i<parameters.n_compositional_fields;++i)
-        material_model_inputs.composition[q][i] = composition_values[i][q];
+      for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+        material_model_inputs.composition[q][c] = composition_values[c][q];
 
   }
 
@@ -1345,9 +1345,9 @@ namespace aspect
     const FEValuesExtractors::Scalar temperature (dim+1);
     std::vector<FEValuesExtractors::Scalar> compositional_fields;
 
-    for (unsigned int q=0;q<parameters.n_compositional_fields;++q)
+    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
       {
-      const FEValuesExtractors::Scalar temp(dim+2+q);
+      const FEValuesExtractors::Scalar temp(dim+2+c);
       compositional_fields.push_back(temp);
       }
 
@@ -1392,11 +1392,11 @@ namespace aspect
     scratch.finite_element_values[velocities].get_function_values(current_linearization_point,
                                                                   scratch.current_velocity_values);
 
-    for(unsigned int q=0;q<parameters.n_compositional_fields;++q) {
-      scratch.finite_element_values[compositional_fields[q]].get_function_values(old_solution,
-                                                                                  scratch.old_composition_values[q]);
-      scratch.finite_element_values[compositional_fields[q]].get_function_values(old_old_solution,
-                                                                                  scratch.old_old_composition_values[q]);
+    for(unsigned int c=0;c<parameters.n_compositional_fields;++c) {
+      scratch.finite_element_values[compositional_fields[c]].get_function_values(old_solution,
+                                                                                  scratch.old_composition_values[c]);
+      scratch.finite_element_values[compositional_fields[c]].get_function_values(old_old_solution,
+                                                                                  scratch.old_old_composition_values[c]);
     }
 
 

@@ -429,16 +429,13 @@ namespace aspect
           std::vector<double> viscosities;
           std::vector<double> densities;
           std::vector<double> thermal_expansion_coefficients;
-          std::vector<double> seismic_Vp;
-          std::vector<double> seismic_Vs;
           std::vector<double> specific_heat;
           std::vector<double> thermal_conductivities;
           std::vector<double> compressibilities;
-          std::vector<int> thermodynamic_phases;
           bool is_compressible;
         };
 
-        virtual void compute_parameters(MaterialModelInputs & in, MaterialModelOutputs & out);
+        virtual void compute_parameters(const MaterialModelInputs & in, MaterialModelOutputs & out);
 
         /**
          * @name Functions used in dealing with run-time parameters

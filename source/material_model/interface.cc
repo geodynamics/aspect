@@ -270,29 +270,23 @@ namespace aspect
         viscosities.resize(n_points);
         densities.resize(n_points);
         thermal_expansion_coefficients.resize(n_points);
-        seismic_Vp.resize(n_points);
-        seismic_Vs.resize(n_points);
         specific_heat.resize(n_points);
         thermal_conductivities.resize(n_points);
         compressibilities.resize(n_points);
-        thermodynamic_phases.resize(n_points);
       }
 
     template <int dim>
     void
-    Interface<dim>::compute_parameters(struct MaterialModelInputs &in, struct MaterialModelOutputs &out)
+    Interface<dim>::compute_parameters(const struct MaterialModelInputs &in, struct MaterialModelOutputs &out)
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
       {
         out.viscosities[i]                    = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
         out.densities[i]                      = density                       (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
         out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-        out.seismic_Vp[i]                     = seismic_Vp                    (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-        out.seismic_Vs[i]                     = seismic_Vs                    (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
         out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
         out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
         out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-        out.thermodynamic_phases[i]           = thermodynamic_phase           (in.temperature[i], in.pressure[i], in.composition[i]);
         out.is_compressible = is_compressible();
       }
     }

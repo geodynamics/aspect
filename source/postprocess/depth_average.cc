@@ -75,8 +75,8 @@ namespace aspect
         // add temperature and the compositional fields that follow
         // it immediately
         this->get_depth_average_temperature(temp[i++]);
-        for (unsigned int k=0; k<this->n_compositional_fields(); ++k)
-          this->get_depth_average_composition(k, temp[i++]);
+        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+          this->get_depth_average_composition(c, temp[i++]);
         this->get_adiabatic_conditions().get_adiabatic_temperature_profile(temp[i++],100);
         this->get_depth_average_velocity_magnitude(temp[i++]);
         this->get_depth_average_sinking_velocity(temp[i++]);
@@ -112,8 +112,8 @@ namespace aspect
           const std::string filename = this->get_output_directory() + "depthaverage.plt";
           std::ofstream f (filename.c_str());
           f << "# time, depth, avg T";
-          for (unsigned int k=0; k<this->n_compositional_fields(); ++k)
-            f << ", avg C_" << k+1;
+          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+            f << ", avg C_" << c+1;
           f << ", adiabatic T, velocity magnitude, avg sinking velocity, avg Vs, avg Vp, avg viscosity" << std::endl;
           f << std::scientific;
 

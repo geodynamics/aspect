@@ -77,8 +77,8 @@ namespace aspect
                  strain_rate);
 
             std::vector<double> composition(this->n_compositional_fields());
-            for (unsigned int i=0;i<this->n_compositional_fields();++i)
-              composition[i] = uh[q][dim+2+i];
+            for (unsigned int c=0;c<this->n_compositional_fields();++c)
+              composition[c] = uh[q][dim+2+c];
 
             computed_quantities[q](0) = 2 * this->get_material_model().viscosity(temperature,
                                                                                  pressure,
