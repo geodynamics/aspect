@@ -669,6 +669,8 @@ namespace aspect
                                                      q,
                                                      composition_values_at_q_point);
 
+              // TODO: we should use compute_parameters() instead. This should be done
+              // together with merging all the *_average() functions.
               const double viscosity = material_model->viscosity(temperature_values[q],
                                                                  pressure_values[q],
                                                                  composition_values_at_q_point,

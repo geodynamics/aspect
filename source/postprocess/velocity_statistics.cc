@@ -148,6 +148,7 @@ namespace aspect
               const double h = this->get_geometry_model().maximal_depth();
 
               const double dT = this->get_boundary_temperature().maximal_temperature() - this->get_boundary_temperature().minimal_temperature();
+              // we do not compute the compositions but give the functions below the value 0.0 instead
               std::vector<double> composition_values(this->n_compositional_fields(),0.0);
 
               Point<dim> representative_point = Point<dim>::unit_vector(dim-1);
@@ -185,13 +186,13 @@ namespace aspect
                                << Ra
                                << std::endl;
               this->get_pcout()<< "     k_value:                                       "
-                               << material_model.thermal_conductivity(dT, dT, composition_values, representative_point)
+                               << material_model.thermal_conductivity(dT, dT, composition_values, representative_point) //TODO: dT for the pressure is wrong
                                << std::endl;
               this->get_pcout()<< "     reference_cp:                                  "
                                << material_model.reference_cp()
                                << std::endl;
               this->get_pcout()<< "     reference_thermal_diffusivity:                 "
-                               << material_model.thermal_conductivity(dT, dT, composition_values, representative_point)/(material_model.reference_density()*material_model.reference_cp())
+                               << material_model.thermal_conductivity(dT, dT, composition_values, representative_point)/(material_model.reference_density()*material_model.reference_cp()) //TODO: dT for the pressure is wrong
                                << std::endl;
               this->get_pcout()<<  std::endl;
             }

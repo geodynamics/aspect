@@ -63,6 +63,8 @@ namespace aspect
 
         const Point<dim> representative_point = geometry_model.representative_point (z);
 
+        //TODO: we look up the composition at the representative point, but we should
+        // use averaged compositional values here. Right?
         std::vector<double> initial_composition(n_compositional_fields);
         for (unsigned int k=0;k<n_compositional_fields;++k)
           initial_composition[k] = compositional_initial_conditions.initial_composition(representative_point, k);
