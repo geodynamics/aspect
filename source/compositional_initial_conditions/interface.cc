@@ -40,12 +40,9 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::initialize (const GeometryModel::Interface<dim>       &geometry_model_,
-                                const BoundaryTemperature::Interface<dim> &boundary_temperature_)
-                                // TODO check why we need boundary temperature. is this boundary composition?
+    Interface<dim>::initialize (const GeometryModel::Interface<dim>       &geometry_model_)
     {
       geometry_model       = &geometry_model_;
-      boundary_temperature = &boundary_temperature_;
     }
 
 
@@ -93,8 +90,7 @@ namespace aspect
     template <int dim>
     Interface<dim> *
     create_initial_conditions (ParameterHandler &prm,
-                               const GeometryModel::Interface<dim> &geometry_model,
-                               const BoundaryTemperature::Interface<dim> &boundary_temperature)
+                               const GeometryModel::Interface<dim> &geometry_model)
     {
       // we need to get at the number of compositional fields here to
       // know whether we need to generate something at all.
@@ -114,8 +110,7 @@ namespace aspect
           prm.leave_subsection ();
 
 	  Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
-	  plugin->initialize (geometry_model,
-			      boundary_temperature);
+	  plugin->initialize (geometry_model);
 	  return plugin;
 	}
     }
@@ -179,8 +174,7 @@ namespace aspect
   template \
   Interface<dim> * \
   create_initial_conditions<dim> (ParameterHandler &prm, \
-                                  const GeometryModel::Interface<dim> &geometry_model, \
-                                  const BoundaryTemperature::Interface<dim> &boundary_temperature);
+                                  const GeometryModel::Interface<dim> &geometry_model);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

@@ -63,8 +63,7 @@ namespace aspect
          * adiabatic conditions and store them so that derived classes can access them.
          */
         void
-        initialize (const GeometryModel::Interface<dim>       &geometry_model,
-                    const BoundaryTemperature::Interface<dim> &boundary_temperature);
+        initialize (const GeometryModel::Interface<dim>       &geometry_model);
 
         /**
          * Return the initial temperature as a function of position.
@@ -98,12 +97,6 @@ namespace aspect
          * Pointer to the geometry object in use.
          */
         const GeometryModel::Interface<dim>       *geometry_model;
-
-        /**
-         * Pointer to an object that described the boundary values
-         * for the temperature field.
-         */
-        const BoundaryTemperature::Interface<dim> *boundary_temperature;
 
     };
 
@@ -144,8 +137,7 @@ namespace aspect
     template <int dim>
     Interface<dim> *
     create_initial_conditions (ParameterHandler &prm,
-                               const GeometryModel::Interface<dim> &geometry_model,
-                               const BoundaryTemperature::Interface<dim> &boundary_temperature);
+                               const GeometryModel::Interface<dim> &geometry_model);
 
 
     /**
