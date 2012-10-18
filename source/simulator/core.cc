@@ -961,9 +961,6 @@ namespace aspect
                                                 0,
                                                 0,
                                                 triangulation.locally_owned_subdomain());
-
-            for (unsigned int k=0;k<estimated_error_per_cell.size();++k)
-              pcout << estimated_error_per_cell_C[i](k) << std::endl;
           }
       }
     else
