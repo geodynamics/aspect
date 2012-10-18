@@ -788,6 +788,8 @@ namespace aspect
     Vector<float> estimated_error_per_cell_rho (triangulation.n_active_cells());
     Vector<float> estimated_error_per_cell_T (triangulation.n_active_cells());
     Vector<float> estimated_error_per_cell_u (triangulation.n_active_cells());
+    std::vector<Vector<float> > estimated_error_per_cell_C (parameters.n_compositional_fields,
+                                                            Vector<float> (triangulation.n_active_cells()));
 
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
@@ -802,7 +804,8 @@ namespace aspect
     //Velocity|Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature
 
     // compute density error
-    if (parameters.refinement_strategy != "Temperature" && parameters.refinement_strategy != "Velocity")
+    if (parameters.refinement_strategy != "Temperature" && parameters.refinement_strategy != "Velocity"
+                                                        && parameters.refinement_strategy != "Composition")
       {
         bool lookup_rho_c_p_T = (parameters.refinement_strategy == "Density c_p temperature");
 
@@ -942,6 +945,33 @@ namespace aspect
         estimated_error_per_cell_T = 0;
       }
 
+    // compute the errors for composition solution
+    if (parameters.refinement_strategy == "Composition")
+      {
+        for (unsigned int i=0;i<parameters.n_compositional_fields;++i)
+          {
+            std::vector<bool> composition_component (dim+2+parameters.n_compositional_fields, false);
+            composition_component[dim+2+i] = true;
+            KellyErrorEstimator<dim>::estimate (dof_handler,
+                                                QGauss<dim-1>(parameters.composition_degree+1),
+                                                typename FunctionMap<dim>::type(),
+                                                solution,
+                                                estimated_error_per_cell_C[i],
+                                                composition_component,
+                                                0,
+                                                0,
+                                                triangulation.locally_owned_subdomain());
+
+            for (unsigned int k=0;k<estimated_error_per_cell.size();++k)
+              pcout << estimated_error_per_cell_C[i](k) << std::endl;
+          }
+      }
+    else
+      {
+        for (unsigned int i=0;i<parameters.n_compositional_fields;++i)
+          estimated_error_per_cell_C[i] = 0;
+      }
+
     // compute the errors for the stokes solution
     if (parameters.refinement_strategy == "Velocity")
       {
@@ -1009,6 +1039,14 @@ namespace aspect
         {
           for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
             estimated_error_per_cell(i) = estimated_error_per_cell_rho(i);
+        }
+      else if (parameters.refinement_strategy == "Composition")
+        {
+          for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+            estimated_error_per_cell(i) = 0;
+          for (unsigned int k=0; k<parameters.n_compositional_fields; ++k)
+            for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+              estimated_error_per_cell(i) += estimated_error_per_cell_C[k](i);
         }
       else
         AssertThrow(false, ExcNotImplemented());

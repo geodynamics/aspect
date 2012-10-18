@@ -39,12 +39,12 @@ namespace aspect
                const SymmetricTensor<2,dim> &,
                const Point<dim> &) const
     {
-//      return eta;
-      return (this->n_compositional_fields()>0
+      return eta;
+/*      return (this->n_compositional_fields()>0
           ?
-          (4.0*composition[0]+1) * eta
+          (6.5*composition[0]+1) * eta
           :
-          eta);
+          eta);*/
     }
 
 
