@@ -8,10 +8,10 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00000
-     Errors u_L1, p_L1, u_L2, p_L2: 1.728441e-01, 1.486559e+00, 8.838171e-02, 1.109955e+00
+     Errors u_L1, p_L1, u_L2, p_L2: 1.728441e-01, 1.486558e+00, 8.838170e-02, 1.109955e+00
 
-Number of active cells: 94 (on 5 levels)
-Number of degrees of freedom: 1,442 (882+119+441)
+Number of active cells: 91 (on 5 levels)
+Number of degrees of freedom: 1,403 (858+116+429)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
@@ -20,19 +20,19 @@ Number of degrees of freedom: 1,442 (882+119+441)
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00001
-     Errors u_L1, p_L1, u_L2, p_L2: 1.197106e-01, 1.286040e+00, 6.230476e-02, 1.287985e+00
+     Errors u_L1, p_L1, u_L2, p_L2: 1.242982e-01, 1.255978e+00, 6.452254e-02, 1.175021e+00
 
-Number of active cells: 148 (on 6 levels)
-Number of degrees of freedom: 2,326 (1,426+187+713)
+Number of active cells: 145 (on 6 levels)
+Number of degrees of freedom: 2,287 (1,402+184+701)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+15 iterations.
+   Solving Stokes system... 30+13 iterations.
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00002
-     Errors u_L1, p_L1, u_L2, p_L2: 6.243732e-02, 6.581966e-01, 3.272050e-02, 7.599117e-01
+     Errors u_L1, p_L1, u_L2, p_L2: 7.327782e-02, 6.591830e-01, 3.820852e-02, 5.526678e-01
 
 Number of active cells: 229 (on 7 levels)
 Number of degrees of freedom: 3,509 (2,154+278+1,077)
@@ -44,10 +44,10 @@ Number of degrees of freedom: 3,509 (2,154+278+1,077)
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00003
-     Errors u_L1, p_L1, u_L2, p_L2: 2.996881e-02, 5.410807e-01, 1.591665e-02, 1.177301e+00
+     Errors u_L1, p_L1, u_L2, p_L2: 3.200656e-02, 5.565040e-01, 1.704239e-02, 1.142766e+00
 
-Number of active cells: 340 (on 8 levels)
-Number of degrees of freedom: 5,264 (3,234+413+1,617)
+Number of active cells: 325 (on 8 levels)
+Number of degrees of freedom: 5,082 (3,122+399+1,561)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
@@ -56,37 +56,37 @@ Number of degrees of freedom: 5,264 (3,234+413+1,617)
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00004
-     Errors u_L1, p_L1, u_L2, p_L2: 1.926539e-02, 4.014865e-01, 1.030092e-02, 9.626832e-01
+     Errors u_L1, p_L1, u_L2, p_L2: 2.209050e-02, 4.386382e-01, 1.174566e-02, 9.889714e-01
 
-Number of active cells: 502 (on 8 levels)
-Number of degrees of freedom: 7,734 (4,754+603+2,377)
+Number of active cells: 505 (on 8 levels)
+Number of degrees of freedom: 7,812 (4,802+609+2,401)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+13 iterations.
+   Solving Stokes system... 30+12 iterations.
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00005
-     Errors u_L1, p_L1, u_L2, p_L2: 1.233480e-02, 2.860685e-01, 6.633396e-03, 8.115277e-01
+     Errors u_L1, p_L1, u_L2, p_L2: 1.259834e-02, 3.095804e-01, 6.762907e-03, 8.868306e-01
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      2.45s |            |
+| Total wallclock time elapsed since start    |      25.5s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         6 |    0.0863s |       3.5% |
-| Assemble temperature system     |         6 |     0.183s |       7.5% |
-| Build Stokes preconditioner     |         6 |     0.139s |       5.7% |
-| Build temperature preconditioner|         6 |    0.0261s |       1.1% |
-| Solve Stokes system             |         6 |      1.31s |        54% |
-| Solve temperature system        |         6 |   0.00465s |      0.19% |
-| Initialization                  |         7 |    0.0414s |       1.7% |
-| Postprocessing                  |         6 |     0.281s |        11% |
-| Refine mesh structure, part 1   |         5 |     0.139s |       5.7% |
-| Refine mesh structure, part 2   |         5 |   0.00496s |       0.2% |
-| Setup dof systems               |         6 |     0.201s |       8.2% |
+| Assemble Stokes system          |         6 |      2.24s |       8.8% |
+| Assemble temperature system     |         6 |      4.46s |        18% |
+| Build Stokes preconditioner     |         6 |      1.86s |       7.3% |
+| Build temperature preconditioner|         6 |    0.0253s |     0.099% |
+| Solve Stokes system             |         6 |      3.04s |        12% |
+| Solve temperature system        |         6 |    0.0567s |      0.22% |
+| Initialization                  |         7 |     0.642s |       2.5% |
+| Postprocessing                  |         6 |      4.72s |        19% |
+| Refine mesh structure, part 1   |         5 |      2.12s |       8.3% |
+| Refine mesh structure, part 2   |         5 |    0.0842s |      0.33% |
+| Setup dof systems               |         6 |      4.18s |        16% |
 +---------------------------------+-----------+------------+------------+
 

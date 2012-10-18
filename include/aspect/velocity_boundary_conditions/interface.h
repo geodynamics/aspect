@@ -60,6 +60,7 @@ namespace aspect
          * Initialization function. Takes a reference to the geometry model so
          * that derived classes can access them.
          */
+        virtual
         void
         initialize (const GeometryModel::Interface<dim> &geometry_model);
 

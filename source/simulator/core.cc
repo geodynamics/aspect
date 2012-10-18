@@ -290,14 +290,14 @@ namespace aspect
          * convert this into an object that matches the Function@<dim@>
          * interface.
          *
-	 * @param n_comp_fields The number of compositional fields used in
-	 *        this vector-valued problem. Needed to determine
-	 *        the total size of the output vectors.
+        * @param n_comp_fields The number of compositional fields used in
+        *        this vector-valued problem. Needed to determine
+        *        the total size of the output vectors.
          * @param function_object The scalar function that will form one component
          *     of the resulting Function object.
          */
         VectorFunctionFromVelocityFunctionObject (const unsigned int n_comp_fields,
-						  const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
+                                                  const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
 
         /**
          * Return the value of the
@@ -420,7 +420,7 @@ namespace aspect
     statistics.add_value("Number of temperature degrees of freedom",
                          system_dofs_per_block[2]);
     statistics.add_value("Number of composition degrees of freedom",
-        (parameters.n_compositional_fields>0)?system_dofs_per_block[3]:0);
+                         (parameters.n_compositional_fields>0)?system_dofs_per_block[3]:0);
 
 
     // then interpolate the current boundary velocities. this adds to
@@ -630,16 +630,16 @@ namespace aspect
       system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
 
       {
-	unsigned int n_C_so_far = 0;
+        unsigned int n_C_so_far = 0;
 
-	for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
-	  {
-	    system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_so_far,
-								    n_u+n_p+n_T+n_C_so_far+n_C[i]));
-          system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p+n_T+n_C_so_far,
-									      n_u+n_p+n_T+n_C_so_far+n_C[i]));
-	    n_C_so_far += n_C[i];
-        }
+        for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
+          {
+            system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_so_far,
+                                                                    n_u+n_p+n_T+n_C_so_far+n_C[i]));
+            system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p+n_T+n_C_so_far,
+                                                                                n_u+n_p+n_T+n_C_so_far+n_C[i]));
+            n_C_so_far += n_C[i];
+          }
       }
     }
 
@@ -894,13 +894,10 @@ namespace aspect
                                                         estimated_error_per_cell_rho,
                                                         dim+1);
 
-        // Scale gradient in each cell with the
-        // correct power of h. Otherwise, error
-        // indicators do not reduce when
-        // refined if there is a density
-        // jump. We need at least order 1 for
-        // the error not to grow when refining,
-        // so anything >1 should work.
+        // Scale gradient in each cell with the correct power of h. Otherwise,
+        // error indicators do not reduce when refined if there is a density
+        // jump. We need at least order 1 for the error not to grow when
+        // refining, so anything >1 should work.
         double power = 0.0;
         if (parameters.refinement_strategy == "Density c_p temperature")
           power = 1.5;
@@ -973,7 +970,7 @@ namespace aspect
     if (parameters.refinement_strategy == "Velocity")
       {
         std::vector<bool> velocity_mask (dim+2+parameters.n_compositional_fields, false);
-        for (unsigned int i=0;i<dim;++i)
+        for (unsigned int i=0; i<dim; ++i)
           velocity_mask[i] = true;
         KellyErrorEstimator<dim>::estimate (dof_handler,
                                             QGauss<dim-1>(parameters.stokes_velocity_degree+1),
@@ -1030,7 +1027,8 @@ namespace aspect
                 << std::endl;
 
           for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
-            estimated_error_per_cell(i) = estimated_error_per_cell_T(i)*(1.0+estimated_error_per_cell_rho(i));
+            estimated_error_per_cell(i)
+	      = estimated_error_per_cell_T(i)*(1.0+estimated_error_per_cell_rho(i));
         }
       else if (parameters.refinement_strategy == "Density c_p temperature")
         {
@@ -1128,7 +1126,8 @@ namespace aspect
     current_linearization_point = old_solution;
     if (timestep_number > 1)
       {
-        //Trilinos sadd does not like ghost vectors even as input. Copy into distributed vectors for now:
+        //TODO: Trilinos sadd does not like ghost vectors even as input. Copy
+        //into distributed vectors for now:
         LinearAlgebra::BlockVector distr_solution (system_rhs);
         distr_solution = current_linearization_point;
         LinearAlgebra::BlockVector distr_old_solution (system_rhs);
@@ -1189,13 +1188,15 @@ namespace aspect
                 {
                   assemble_composition_system (n);
                   build_composition_preconditioner(n);
-                  composition_residual[n] = solve_temperature_or_composition(1+n); // 1+n is correct, because 0 is for temperature
+                  composition_residual[n]
+		    = solve_temperature_or_composition(1+n); // 1+n is correct, because 0 is for temperature
                   current_linearization_point.block(3+n) = solution.block(3+n);
                 }
 
               assemble_stokes_system();
               if (iteration == 0)
                 build_stokes_preconditioner();
+
               const double stokes_residual = solve_stokes();
 
               current_linearization_point = solution;

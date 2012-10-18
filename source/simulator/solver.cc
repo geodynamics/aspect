@@ -294,8 +294,8 @@ namespace aspect
       block_remap = current_linearization_point.block (index+2);
       // (ab)use the distributed solution vector to temporarily put a residual in
       initial_residual = system_matrix.block(index+2,index+2).residual (distributed_solution.block(index+2),
-                                                                                  block_remap,
-                                                                                  system_rhs.block(index+2));
+                                                                        block_remap,
+                                                                        system_rhs.block(index+2));
       current_constraints.set_zero(distributed_solution);
 
       // then overwrite it again with the current best guess and solve the linear system

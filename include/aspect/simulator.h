@@ -1035,7 +1035,7 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void compute_depth_average_field(const unsigned int index,
-				       std::vector<double> &values) const;
+                                       std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the current temperature. The function

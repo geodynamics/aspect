@@ -226,11 +226,11 @@ namespace aspect
             const double np = get_np(pressure);
             const unsigned int inp = static_cast<unsigned int>(np);
 
-            Assert(nT<values.n_rows(), ExcMessage("not in range"));
-            Assert(np<values.n_cols(), ExcMessage("not in range"));
+            Assert(inT<values.n_rows(), ExcMessage("not in range"));
+            Assert(inp<values.n_cols(), ExcMessage("not in range"));
 
             if (!interpol)
-              return values[nT][np];
+              return values[inT][inp];
             else
               {
                 // compute the coordinates of this point in the
@@ -242,10 +242,10 @@ namespace aspect
                 Assert ((0 <= eta) && (eta <= 1), ExcInternalError());
 
                 // use these coordinates for a bilinear interpolation
-                return ((1-xi)*(1-eta)*values[nT][np] +
-                        xi    *(1-eta)*values[nT+1][np] +
-                        (1-xi)*eta    *values[nT][np+1] +
-                        xi    *eta    *values[nT+1][np+1]);
+                return ((1-xi)*(1-eta)*values[inT][inp] +
+                        xi    *(1-eta)*values[inT+1][inp] +
+                        (1-xi)*eta    *values[inT][inp+1] +
+                        xi    *eta    *values[inT+1][inp+1]);
               }
           }
 
@@ -419,7 +419,7 @@ namespace aspect
       static internal::lateral_viscosity_lookup lat_table(datadirectory+lateral_viscosity_file_name);
 
       const double depth = this->get_geometry_model().depth(position);
-      const unsigned int idx = 100 * depth / this->get_geometry_model().maximal_depth();
+      const unsigned int idx = static_cast<unsigned int>(avg_temp.size() * depth / this->get_geometry_model().maximal_depth());
       const double delta_temp = temperature-avg_temp[idx];
       const double adia_temp = this->get_adiabatic_conditions().temperature(position);
 

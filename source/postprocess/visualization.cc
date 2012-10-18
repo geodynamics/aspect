@@ -130,7 +130,7 @@ namespace aspect
       solution_names.push_back ("p");
       solution_names.push_back ("T");
       for (unsigned int i=0; i<this->n_compositional_fields(); ++i)
-	solution_names.push_back ("C_" + boost::lexical_cast<std::string>(i+1));
+        solution_names.push_back ("C_" + boost::lexical_cast<std::string>(i+1));
 
 
       std::vector<DataComponentInterpretation::DataComponentInterpretation>

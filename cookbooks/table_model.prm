@@ -71,7 +71,7 @@ subsection Material model
     subsection Viscosity
       set Reference Viscosity             = 5e24
       set Viscosity increase lower mantle = 1e0
-      set ViscositycModel                 = Exponential
+      set Viscosity Model                 = Exponential
       subsection Composite
         set Activation energy diffusion   = 335e3
         set Activation energy dislocation = 540e3
