@@ -35,17 +35,17 @@ namespace aspect
 
     namespace internal
     {
-    /**
-     * GPlatesLookup handles all kinds of tasks around looking up a certain velocity boundary
-     * condition from a gplates .gpml file. This class keeps around the contents of two sets
-     * of files, corresponding to two instances in time where GPlates provides us with data;
-     * the boundary values at one particular time are interpolated between the two currently
-     * loaded data sets.
-     */
+      /**
+       * GPlatesLookup handles all kinds of tasks around looking up a certain velocity boundary
+       * condition from a gplates .gpml file. This class keeps around the contents of two sets
+       * of files, corresponding to two instances in time where GPlates provides us with data;
+       * the boundary values at one particular time are interpolated between the two currently
+       * loaded data sets.
+       */
 
       class GPlatesLookup
       {
-      public:
+        public:
 
           /**
            * Initialize all members and the two pointers referring to the actual velocities.
@@ -74,80 +74,80 @@ namespace aspect
           template <int dim>
           Tensor<1,dim> surface_velocity(const Point<dim> &position_, const double time_weight) const;
 
-      private:
+        private:
 
-        /**
-         * Tables which contain the velocities
-         */
-        dealii::Table<2,Tensor<1,2> > velocity_vals;
-        dealii::Table<2,Tensor<1,2> > old_velocity_vals;
+          /**
+           * Tables which contain the velocities
+           */
+          dealii::Table<2,Tensor<1,2> > velocity_vals;
+          dealii::Table<2,Tensor<1,2> > old_velocity_vals;
 
-        /**
-         * Pointers to the actual tables.
-         * Used to avoid unnecessary copying
-         * of values.
-         */
-        dealii::Table<2,Tensor<1,2> > * velocity_values;
-        dealii::Table<2,Tensor<1,2> > * old_velocity_values;
+          /**
+           * Pointers to the actual tables.
+           * Used to avoid unnecessary copying
+           * of values.
+           */
+          dealii::Table<2,Tensor<1,2> > * velocity_values;
+          dealii::Table<2,Tensor<1,2> > * old_velocity_values;
 
-        /**
-         * Distances between adjacent point in the Lat/Lon grid
-         */
-        double delta_phi,delta_theta;
+          /**
+           * Distances between adjacent point in the Lat/Lon grid
+           */
+          double delta_phi,delta_theta;
 
-        /**
-         * The rotation axis and angle around which a 2D model needs to be rotated to
-         * be transformed to a plane that contains the origin and the two
-         * user prescribed points. Is not used for 3D.
-         */
-        Tensor<1,3> rotation_axis;
-        double rotation_angle;
+          /**
+           * The rotation axis and angle around which a 2D model needs to be rotated to
+           * be transformed to a plane that contains the origin and the two
+           * user prescribed points. Is not used for 3D.
+           */
+          Tensor<1,3> rotation_axis;
+          double rotation_angle;
 
 
-        /**
-         * A function that returns the rotated vector r' that results out of a
-         * rotation from vector r around a specified rotation_axis by an defined angle
-         */
-        Tensor<1,3>
-        rotate (const Tensor<1,3> &position,const Tensor<1,3> &rotation_axis, const double angle) const;
+          /**
+           * A function that returns the rotated vector r' that results out of a
+           * rotation from vector r around a specified rotation_axis by an defined angle
+           */
+          Tensor<1,3>
+          rotate (const Tensor<1,3> &position,const Tensor<1,3> &rotation_axis, const double angle) const;
 
-        /**
-         * Convert a tensor of rank 1 and dimension in to rank 1 and dimension out.
-         * If $out < in$ the last elements will be discarded, if $out > in$ zeroes will
-         * be appended to fill the tensor.
-         */
-        template <int in, int out>
-        Tensor<1,out> convert_tensor (Tensor<1,in> old_tensor) const;
+          /**
+           * Convert a tensor of rank 1 and dimension in to rank 1 and dimension out.
+           * If $out < in$ the last elements will be discarded, if $out > in$ zeroes will
+           * be appended to fill the tensor.
+           */
+          template <int in, int out>
+          Tensor<1,out> convert_tensor (Tensor<1,in> old_tensor) const;
 
-        /**
-         * Returns spherical coordinates of a cartesian position.
-         */
-        Tensor<1,3> spherical_surface_coordinates(const Tensor<1,3> &position) const;
+          /**
+           * Returns spherical coordinates of a cartesian position.
+           */
+          Tensor<1,3> spherical_surface_coordinates(const Tensor<1,3> &position) const;
 
-        /**
-         * Return the cartesian coordinates of a spherical surface position
-         * defined by theta (polar angle. not geographical latitude) and phi.
-         */
-        Tensor<1,3>
-        cartesian_surface_coordinates(const Tensor<1,2> &sposition) const;
+          /**
+           * Return the cartesian coordinates of a spherical surface position
+           * defined by theta (polar angle. not geographical latitude) and phi.
+           */
+          Tensor<1,3>
+          cartesian_surface_coordinates(const Tensor<1,2> &sposition) const;
 
-        /**
-         * Returns cartesian velocities calculated from surface velocities and position in spherical coordinates
-         *
-         * @param s_velocities Surface velocities in spherical coordinates (theta, phi) @param s_position Position
-         * in spherical coordinates (theta,phi,radius)
-         */
-        Tensor<1,3> sphere_to_cart_velocity(const Tensor<1,2> &s_velocities, const Tensor<1,3> &s_position) const;
+          /**
+           * Returns cartesian velocities calculated from surface velocities and position in spherical coordinates
+           *
+           * @param s_velocities Surface velocities in spherical coordinates (theta, phi) @param s_position Position
+           * in spherical coordinates (theta,phi,radius)
+           */
+          Tensor<1,3> sphere_to_cart_velocity(const Tensor<1,2> &s_velocities, const Tensor<1,3> &s_position) const;
 
-        /**
-         * calculates the phi-index given a certain phi
-         */
-        double get_idphi(const double phi_) const;
+          /**
+           * calculates the phi-index given a certain phi
+           */
+          double get_idphi(const double phi_) const;
 
-        /**
-         * calculates the theta-index given a certain polar angle
-         */
-        double get_idtheta(const double theta_) const;
+          /**
+           * calculates the theta-index given a certain polar angle
+           */
+          double get_idtheta(const double theta_) const;
       };
     }
 
