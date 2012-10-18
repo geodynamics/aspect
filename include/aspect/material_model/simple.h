@@ -174,6 +174,7 @@ namespace aspect
         double reference_rho;
         double reference_T;
         double eta;
+        double thermal_viscosity_exponent;
         double thermal_alpha;
         double reference_specific_heat;
 

@@ -33,12 +33,15 @@ namespace aspect
     template <int dim>
     double
     Simple<dim>::
-    viscosity (const double,
+    viscosity (const double temperature,
                const double,
                const SymmetricTensor<2,dim> &,
                const Point<dim> &) const
     {
-      return eta;
+      const double delta_temp = temperature-reference_T;
+      const double temperature_dependence = std::max(std::min(std::exp(-viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
+
+      return temperature_dependence * eta;
     }
 
 
@@ -206,6 +209,9 @@ namespace aspect
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0),
                              "The value of the constant viscosity. Units: $kg/m/s$.");
+          prm.declare_entry ("Thermal viscosity exponent", "0.0",
+                             Patterns::Double (0),
+                             "The temperature dependence of viscosity. Dimensionless exponent.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
@@ -234,12 +240,13 @@ namespace aspect
       {
         prm.enter_subsection("Simple model");
         {
-          reference_rho     = prm.get_double ("Reference density");
-          reference_T = prm.get_double ("Reference temperature");
-          eta                   = prm.get_double ("Viscosity");
-          k_value               = prm.get_double ("Thermal conductivity");
-          reference_specific_heat = prm.get_double ("Reference specific heat");
-          thermal_alpha = prm.get_double ("Thermal expansion coefficient");
+          reference_rho              = prm.get_double ("Reference density");
+          reference_T                = prm.get_double ("Reference temperature");
+          eta                        = prm.get_double ("Viscosity");
+          thermal_viscosity_exponent = prm.get_double ("Thermal viscosity exponent");
+          k_value                    = prm.get_double ("Thermal conductivity");
+          reference_specific_heat    = prm.get_double ("Reference specific heat");
+          thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
         }
         prm.leave_subsection();
       }
@@ -256,11 +263,14 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(Simple,
                                    "simple",
                                    "A simple material model that has constant values "
-                                   "for all coefficients but the density. This model uses "
-                                   "the formulation that assumes an incompressible medium "
-                                   "despite the fact that the density follows the law "
-                                   "$\\rho(T)=\\rho_0(1-\\beta(T-T_{\\text{ref}})$. The value for "
-                                   "the components of this formula and additional "
+                                   "for all coefficients but the density and viscosity. "
+                                   "This model uses the formulation that assumes an incompressible"
+                                   " medium despite the fact that the density follows the law "
+                                   "$\\rho(T)=\\rho_0(1-\\beta(T-T_{\\text{ref}})$. "
+                                   "The temperature dependency of viscosity is "
+                                   " switched off by default and follows the formula"
+                                   "$\\eta(T)=\\eta_0*e^{\\eta_T*\\Delta T / T_{\\text{ref}})}$."
+                                   "The value for the components of this formula and additional "
                                    "parameters are read from the parameter file in subsection "
                                    "'Simple model'.")
   }
