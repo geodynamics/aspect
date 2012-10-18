@@ -37,23 +37,9 @@ namespace aspect
 {
   namespace VelocityBoundaryConditions
   {
-
     namespace internal
     {
-      /**
-       * GPlatesLookup handles all kinds of tasks around looking up a certain velocity boundary
-       * condition from a gplates .gpml file. This class keeps around the contents of two sets
-       * of files, corresponding to two instances in time where GPlates provides us with data;
-       * the boundary values at one particular time are interpolated between the two currently
-       * loaded data sets.
-       */
-      class GPlatesLookup
-      {
-        public:
-          /**
-           * Initialize all members and the two pointers referring to the actual velocities
-           */
-          GPlatesLookup()
+    	  GPlatesLookup::GPlatesLookup(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two)
           {
             velocity_vals.reinit(0,0);
             old_velocity_vals.reinit(0,0);
@@ -63,22 +49,44 @@ namespace aspect
 
             delta_phi = 0.0;
             delta_theta = 0.0;
+
+            // get the cartesian coordinates of the points the 2D model shall lie in
+            // this computation is done also for 3D since it is not expensive and the
+            // template dim is currently not used here. Could be changed.
+            const Tensor<1,3> point_one = cartesian_surface_coordinates(surface_point_one);
+            const Tensor<1,3> point_two = cartesian_surface_coordinates(surface_point_two);
+
+            //Set up the normal vector of an unrotated 2D spherical shell
+            // that by default lies in the x-y plane.
+            const double normal[3] = {0.0,0.0,1.0};
+            const Tensor<1,3> unrotated_normal_vector (normal);
+
+            // Compute the normal vector of the plane that contains
+            // the origin and the two user-specified points
+            Tensor<1,3> rotated_normal_vector;
+            cross_product(rotated_normal_vector,point_one,point_two);
+            rotated_normal_vector /= rotated_normal_vector.norm();
+
+            // Calculate the crossing line of the two normals,
+            // which will be the rotation axis to transform the
+            // into each other
+            cross_product(rotation_axis,unrotated_normal_vector,rotated_normal_vector);
+            rotation_axis /= rotation_axis.norm();
+
+            // Calculate the rotation angle from the inner product rule
+            rotation_angle = std::acos(rotated_normal_vector*unrotated_normal_vector);
+
           }
 
-          /**
-           * Check whether a file named filename exists.
-           */
-          bool fexists(const std::string &filename) const
+          bool
+          GPlatesLookup::fexists(const std::string &filename) const
           {
             std::ifstream ifile(filename.c_str());
             return ifile;
           }
 
-          /**
-           * Loads a gplates .gpml velocity file. Throws an exception if
-           * the file does not exist.
-           */
-          void load_file(const std::string &filename)
+          void
+          GPlatesLookup::load_file(const std::string &filename)
           {
             using boost::property_tree::ptree;
             ptree pt;
@@ -95,8 +103,6 @@ namespace aspect
 
             // populate tree structure pt
             read_xml(filename, pt);
-
-
 
             const int n_points = pt.get_child("gpml:FeatureCollection.gml:featureMember.gpml:VelocityField.gml:domainSet.gml:MultiPoint").size();
             const int n_phi = static_cast<int>(std::sqrt(2.*n_points));
@@ -141,25 +147,30 @@ namespace aspect
               }
           }
 
-
-          /**
-           * Returns the computed surface velocity in cartesian coordinates. Takes
-           * as input the position and current time weight.
-           *
-           * @param position The current position to compute velocity @param time_weight A weighting between
-           * the two current timesteps n and n+1
-           */
           template <int dim>
-          Tensor<1,dim> surface_velocity(const Point<dim> &position, const double time_weight) const
+          Tensor<1,dim>
+          GPlatesLookup::surface_velocity(const Point<dim> &position_, const double time_weight) const
           {
-            const Point<dim> scoord = spherical_surface_coordinates(position);
 
-            const double idtheta = get_idtheta(scoord(0));
+        	Tensor<1,dim> tensor_position;
+        	for (unsigned int i = 0 ; i < dim; i++) tensor_position[i] = position_[i];
+
+        	Tensor<1,3> position;
+        	if (dim == 2)
+        	{
+        		position = rotate(convert_tensor<dim,3>(tensor_position),rotation_axis,rotation_angle);
+        	}
+        	else
+            	position = convert_tensor<dim,3>(tensor_position);
+
+            const Tensor<1,3> scoord = spherical_surface_coordinates(position);
+
+            const double idtheta = get_idtheta(scoord[0]);
             const unsigned int idxtheta = static_cast<unsigned int>(idtheta);
             const unsigned int nexttheta = idxtheta + 1;
 
 
-            const double idphi = get_idphi(scoord(1));
+            const double idphi = get_idphi(scoord[1]);
             const unsigned int idxphi = static_cast<unsigned int>(idphi);
             const unsigned int nextphi = (idxphi+1) % velocity_values->n_cols();
 
@@ -210,79 +221,75 @@ namespace aspect
                             (1-xi)*eta    *(*old_velocity_values)[idxtheta][nextphi][1] +
                             xi    *eta    *(*old_velocity_values)[nexttheta][nextphi][1]);
 
+            const Tensor<1,3> cart_velo = sphere_to_cart_velocity(surf_vel,scoord);
+            Tensor<1,dim> velos;
 
-            return sphere_to_cart_velocities(surf_vel,scoord);
-          }
-
-
-        private:
-
-          /**
-           * Tables which contain the velocities
-           */
-          dealii::Table<2,Tensor<1,2> > velocity_vals;
-          dealii::Table<2,Tensor<1,2> > old_velocity_vals;
-
-          /**
-           * Pointers to the actual tables.
-           * Used to avoid unnecessary copying
-           * of values.
-           */
-          dealii::Table<2,Tensor<1,2> > * velocity_values;
-          dealii::Table<2,Tensor<1,2> > * old_velocity_values;
-
-          /**
-           * Distances between adjacent point in the Lat/Lon grid
-           */
-          double delta_phi,delta_theta;
-
-          /**
-           * Returns spherical coordinates of a cartesian position.
-           */
-          template <int dim>
-          Point<dim> spherical_surface_coordinates(const Point<dim> &position) const
-          {
-            double coord[dim];
-            Point<dim> scoord;
-
-            if (dim == 3)
-              {
-                coord[0] = std::acos(position(2)/std::sqrt(position.square())); // Theta
-                coord[1] = std::atan2(position(1),position(0)); // Phi
-                if (coord[1] < 0.0) coord[1] = 2*numbers::PI + coord[1]; // correct phi to [0,2*pi]
-                coord[2] = std::sqrt(position.square()); // R
-
-                return Point<dim> (coord[0],coord[1],coord[2]);
-              }
+            if (dim == 2)
+                velos = convert_tensor<3,dim>(rotate(cart_velo,rotation_axis,-1.0*rotation_angle));
             else
-              return Point<dim>(); // TODO: define for 2 Dimensions
+            	velos = convert_tensor<3,dim>(cart_velo);
+
+            return velos;
           }
 
-          /**
-           * Returns cartesian velocities calculated from surface velocities and position in spherical coordinates
-           *
-           * @param s_velocities Surface velocities in spherical coordinates (theta, phi) @param s_position Position
-           * in spherical coordinates (theta,phi,radius)
-           */
-          template <int dim>
-          Tensor<1,dim> sphere_to_cart_velocities(const Tensor<1,2> &s_velocities, const Point<dim> &s_position) const
+          Tensor<1,3>
+          GPlatesLookup::rotate (const Tensor<1,3> &position, const Tensor<1,3> &rotation_axis, const double angle) const
           {
-            Tensor<1,dim> velocities;
-            if (dim == 3)
-              {
-                velocities[0] = -1.0 * s_velocities[1] * std::sin(s_position[1]) + s_velocities[0]*std::cos(s_position[0])*std::cos(s_position[1]);
-                velocities[1] = s_velocities[1]*std::cos(s_position[1])+s_velocities[0]*std::cos(s_position[0])*std::sin(s_position[1]);
-                velocities[2] = -1.0*s_velocities[0]*std::sin(s_position[0]);
-                return velocities;
-              }
-            else
-              return Tensor<1,dim>();  // TODO: define for 2 Dimensions
+        	  Tensor<1,3> cross;
+        	  cross_product(cross,position,rotation_axis);
+        	  Tensor<1,3> newpos = (1-std::cos(angle)) * rotation_axis*(rotation_axis*position) +
+        			               std::cos(angle) * position + std::sin(angle) * cross;
+        	  return newpos;
           }
 
-          /**
-           * calculates the phi-index given a certain phi
-           */
-          double get_idphi(const double phi_) const
+          Tensor<1,3>
+          GPlatesLookup::spherical_surface_coordinates(const Tensor<1,3> &position) const
+          {
+            Tensor<1,3> scoord;
+
+			scoord[0] = std::acos(position[2]/std::sqrt(position.norm_square())); // Theta
+			scoord[1] = std::atan2(position[1],position[0]); // Phi
+			if (scoord[1] < 0.0) scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
+			scoord[2] = std::sqrt(position.norm_square()); // R
+			return scoord;
+          }
+
+          Tensor<1,3>
+          GPlatesLookup::cartesian_surface_coordinates(const Tensor<1,2> &sposition) const
+          {
+            Tensor<1,3> ccoord;
+
+			ccoord[0] = std::sin(sposition[0] * std::cos(sposition[1])); // X
+			ccoord[1] = std::sin(sposition[0] * std::sin(sposition[1])); // Y
+			ccoord[2] = std::cos(sposition[0]); // Z
+			return ccoord;
+          }
+
+          Tensor<1,3>
+          GPlatesLookup::sphere_to_cart_velocity(const Tensor<1,2> &s_velocities, const Tensor<1,3> &s_position) const
+          {
+            Tensor<1,3> velocity;
+
+			velocity[0] = -1.0 * s_velocities[1] * std::sin(s_position[1]) + s_velocities[0]*std::cos(s_position[0])*std::cos(s_position[1]);
+			velocity[1] = s_velocities[1]*std::cos(s_position[1])+s_velocities[0]*std::cos(s_position[0])*std::sin(s_position[1]);
+			velocity[2] = -1.0*s_velocities[0]*std::sin(s_position[0]);
+			return velocity;
+          }
+
+          template <int in, int out>
+          Tensor<1,out>
+          GPlatesLookup::convert_tensor (Tensor<1,in> old_tensor) const
+		{
+        	  Tensor<1,out> new_tensor;
+        	  for (unsigned int i = 0; i < out; i++)
+        		  if (i < in) new_tensor[i] = old_tensor[i];
+        		  else new_tensor[i] = 0.0;
+
+        	  return new_tensor;
+		}
+
+          double
+          GPlatesLookup::get_idphi(const double phi_) const
           {
             const double phi = std::max(std::min(phi_,2*numbers::PI-1e-7),0.0);
 
@@ -291,10 +298,8 @@ namespace aspect
             return phi/delta_phi;
           }
 
-          /**
-           * calculates the theta-index given a certain polar angle
-           */
-          double get_idtheta(const double theta_) const
+          double
+          GPlatesLookup::get_idtheta(const double theta_) const
           {
             double theta = std::max(std::min(theta_,numbers::PI-1e-7),0.0);
 
@@ -302,18 +307,20 @@ namespace aspect
             Assert(theta<=numbers::PI, ExcMessage("not in range"));
             return theta/delta_theta;
           }
-
-
-      };
     }
-
 
     template <int dim>
     GPlates<dim>::GPlates ()
-      :
-      lookup (new internal::GPlatesLookup)
+    :
+    current_time(0.0),
+    current_time_step(0),
+    time_step(0.0),
+    time_weight(0.0),
+    time_dependent(true),
+    point1("0.0,0.0"),
+    point2("0.0,0.0"),
+    lookup(NULL)
     {}
-
 
 
     template <int dim>
@@ -321,15 +328,22 @@ namespace aspect
     GPlates<dim>::initialize (const GeometryModel::Interface<dim> &geometry_model)
     {
       int loaded;
+      Tensor<1,2> pointone;
+      Tensor<1,2> pointtwo;
+      char sep;
 
-      Assert(dim==3, ExcMessage("gplates velocity model just works for dim = 3"));
+      std::stringstream streampoint(point1);
+      streampoint >> pointone[0] >> sep >> pointone[1];
+
+      std::stringstream streampoint2(point2);
+      streampoint2 >> pointtwo[0] >> sep >> pointtwo[1];
+
+      lookup.reset(new internal::GPlatesLookup(pointone,pointtwo));
+
       Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model) != 0,
               ExcMessage ("This boundary condition can only be used if the geometry "
                           "is a spherical shell."));
-
-      // Initialize variables
-      current_time_step = 0;
-      time_weight = 0.0;
+      Assert((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model))->opening_angle()==360, ExcMessage("gplates velocity model just works for opening angle == 360"));
 
       // Load first velocity file
       lookup->load_file(create_filename(current_time_step));
@@ -375,23 +389,27 @@ namespace aspect
       current_time = time;
       if (time_dependent)
         {
-          Assert ((0 <= time_weight) && (time_weight <= 1),
-                  ExcMessage("Error in set_current_time. Time_weight has to be in [0,1]"));
+          const unsigned int old_time_step = current_time_step;
 
           if (static_cast<unsigned int>(current_time / time_step) > current_time_step)
             {
               current_time_step = static_cast<unsigned int>(current_time / time_step);
-
               // Load next velocity file for interpolation
               try
                 {
+            	  // If the time step was large enough to move forward more
+            	  // then one velocity file, we need to load both current files
+            	  // to stay accurate in interpolation
+            	  if (current_time_step > old_time_step + 1)
+                      lookup->load_file(create_filename(current_time_step));
+
                   lookup->load_file(create_filename(current_time_step+1));
                 }
               catch (...)
-                // of loading failed, simply take the previous file a second time
+                // if loading failed, simply take the previous file a second time
                 {
                   // Next velocity file not found --> Constant velocities
-                  lookup->load_file(create_filename(current_time_step));
+                  lookup->load_file(create_filename(old_time_step));
                   // no longer consider the problem time dependent from here on out
                   time_dependent = false;
 
@@ -403,7 +421,8 @@ namespace aspect
                 }
             }
           time_weight = current_time/time_step - current_time_step;
-
+          Assert ((0 <= time_weight) && (time_weight <= 1),
+                  ExcMessage("Error in set_current_time. Time_weight has to be in [0,1]"));
         }
     }
 
@@ -437,6 +456,16 @@ namespace aspect
                              Patterns::Anything (),
                              "Time step between following velocity files."
                              " Default is one million years expressed in SI units.");
+          prm.declare_entry ("Point one", "1.570796,0.0",
+                             Patterns::Anything (),
+                             "Point that determines the plane in which a 2D model lies in."
+                             " Has to be in the format 'a,b' where a and b are theta (polar angle) "
+                             " and phi in radians.");
+          prm.declare_entry ("Point two", "1.570796,1.570796",
+                             Patterns::Anything (),
+                             "Point that determines the plane in which a 2D model lies in."
+                             " Has to be in the format 'a,b' where a and b are theta (polar angle) "
+                             " and phi in radians.");
         }
         prm.leave_subsection();
       }
@@ -452,8 +481,10 @@ namespace aspect
         prm.enter_subsection("GPlates model");
         {
           data_directory        = prm.get ("Data directory");
-          velocity_file_name   = prm.get ("Velocity file name");
+          velocity_file_name    = prm.get ("Velocity file name");
           time_step             = prm.get_double ("Time step");
+          point1                = prm.get("Point one");
+          point2                = prm.get("Point two");
         }
         prm.leave_subsection();
       }

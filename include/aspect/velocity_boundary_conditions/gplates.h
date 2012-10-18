@@ -35,7 +35,120 @@ namespace aspect
 
     namespace internal
     {
-      class GPlatesLookup;
+    /**
+     * GPlatesLookup handles all kinds of tasks around looking up a certain velocity boundary
+     * condition from a gplates .gpml file. This class keeps around the contents of two sets
+     * of files, corresponding to two instances in time where GPlates provides us with data;
+     * the boundary values at one particular time are interpolated between the two currently
+     * loaded data sets.
+     */
+
+      class GPlatesLookup
+      {
+      public:
+
+          /**
+           * Initialize all members and the two pointers referring to the actual velocities.
+           * Also calculates any necessary rotation parameters for a 2D model.
+           */
+          GPlatesLookup(const Tensor<1,2> &pointone, const Tensor<1,2> &pointtwo);
+
+          /**
+           * Check whether a file named filename exists.
+           */
+          bool fexists(const std::string &filename) const;
+
+          /**
+           * Loads a gplates .gpml velocity file. Throws an exception if
+           * the file does not exist.
+           */
+          void load_file(const std::string &filename);
+
+          /**
+           * Returns the computed surface velocity in cartesian coordinates. Takes
+           * as input the position and current time weight.
+           *
+           * @param position The current position to compute velocity @param time_weight A weighting between
+           * the two current timesteps n and n+1
+           */
+          template <int dim>
+          Tensor<1,dim> surface_velocity(const Point<dim> &position_, const double time_weight) const;
+
+      private:
+
+        /**
+         * Tables which contain the velocities
+         */
+        dealii::Table<2,Tensor<1,2> > velocity_vals;
+        dealii::Table<2,Tensor<1,2> > old_velocity_vals;
+
+        /**
+         * Pointers to the actual tables.
+         * Used to avoid unnecessary copying
+         * of values.
+         */
+        dealii::Table<2,Tensor<1,2> > * velocity_values;
+        dealii::Table<2,Tensor<1,2> > * old_velocity_values;
+
+        /**
+         * Distances between adjacent point in the Lat/Lon grid
+         */
+        double delta_phi,delta_theta;
+
+        /**
+         * The rotation axis and angle around which a 2D model needs to be rotated to
+         * be transformed to a plane that contains the origin and the two
+         * user prescribed points. Is not used for 3D.
+         */
+        Tensor<1,3> rotation_axis;
+        double rotation_angle;
+
+
+        /**
+         * A function that returns the rotated vector r' that results out of a
+         * rotation from vector r around a specified rotation_axis by an defined angle
+         */
+        Tensor<1,3>
+        rotate (const Tensor<1,3> &position,const Tensor<1,3> &rotation_axis, const double angle) const;
+
+        /**
+         * Convert a tensor of rank 1 and dimension in to rank 1 and dimension out.
+         * If $out < in$ the last elements will be discarded, if $out > in$ zeroes will
+         * be appended to fill the tensor.
+         */
+        template <int in, int out>
+        Tensor<1,out> convert_tensor (Tensor<1,in> old_tensor) const;
+
+        /**
+         * Returns spherical coordinates of a cartesian position.
+         */
+        Tensor<1,3> spherical_surface_coordinates(const Tensor<1,3> &position) const;
+
+        /**
+         * Return the cartesian coordinates of a spherical surface position
+         * defined by theta (polar angle. not geographical latitude) and phi.
+         */
+        Tensor<1,3>
+        cartesian_surface_coordinates(const Tensor<1,2> &sposition) const;
+
+        /**
+         * Returns cartesian velocities calculated from surface velocities and position in spherical coordinates
+         *
+         * @param s_velocities Surface velocities in spherical coordinates (theta, phi) @param s_position Position
+         * in spherical coordinates (theta,phi,radius)
+         */
+        Tensor<1,3> sphere_to_cart_velocity(const Tensor<1,2> &s_velocities, const Tensor<1,3> &s_position) const;
+
+        /**
+         * calculates the phi-index given a certain phi
+         */
+        double get_idphi(const double phi_) const;
+
+        /**
+         * calculates the theta-index given a certain polar angle
+         */
+        double get_idtheta(const double theta_) const;
+      };
     }
 
     /**
@@ -49,7 +162,7 @@ namespace aspect
     {
       public:
         /**
-         * Constructor.
+         * Empty Constructor.
          */
         GPlates ();
 
@@ -94,11 +207,6 @@ namespace aspect
 
       private:
         /**
-         * Pointer to the geometry object in use.
-         */
-        const GeometryModel::Interface<dim> *geometry_model;
-
-        /**
         * A variable that stores the current time of the simulation. Derived
         * classes can query this variable. It is set at the beginning of each
         * time step.
@@ -139,6 +247,15 @@ namespace aspect
          * finding no more velocity files to suppress attempts to read in new files.
          */
         bool time_dependent;
+
+        /**
+         * Two user defined points that prescribe the plane from which the 2D model takes
+         * the velocity boundary condition. One can think of this, as if the model is lying
+         * in this plane although no actual model coordinate is changed. The strings need to
+         * have the format "a,b" where a and b are doubles and define theta and phi on a sphere.
+         */
+        std::string point1;
+        std::string point2;
 
         /**
          * Pointer to an object that reads and processes data we get from gplates files.
