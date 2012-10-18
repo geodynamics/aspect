@@ -61,7 +61,7 @@ namespace aspect
           std::vector<double>                  temperature_values;
           std::vector<double>                  pressure_values;
           std::vector<SymmetricTensor<2,dim> > strain_rates;
-          std::vector<std::vector<double>>     composition_values;
+          std::vector<std::vector<double> >     composition_values;
 
           typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs;
           typename MaterialModel::Interface<dim>::MaterialModelOutputs material_model_outputs;
@@ -142,7 +142,7 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<Tensor<1,dim> >          velocity_values;
-          std::vector<std::vector<double>>     composition_values;
+          std::vector<std::vector<double> >     composition_values;
 
           typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs;
           typename MaterialModel::Interface<dim>::MaterialModelOutputs material_model_outputs;
@@ -219,14 +219,14 @@ namespace aspect
           std::vector<double>         old_temperature_laplacians;
           std::vector<double>         old_old_temperature_laplacians;
 
-          std::vector<std::vector<double>> old_composition_values;
-          std::vector<std::vector<double>> old_old_composition_values;
+          std::vector<std::vector<double> > old_composition_values;
+          std::vector<std::vector<double> > old_old_composition_values;
 
           std::vector<double>         current_temperature_values;
           std::vector<Tensor<1,dim> > current_velocity_values;
           std::vector<SymmetricTensor<2,dim> > current_strain_rates;
           std::vector<double>         current_pressure_values;
-          std::vector<std::vector<double>> current_composition_values;
+          std::vector<std::vector<double> > current_composition_values;
 
 
           typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs;
@@ -667,8 +667,8 @@ namespace aspect
                                       const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
                                       const std::vector<double>          &old_pressure,
                                       const std::vector<double>          &old_old_pressure,
-                                      const std::vector<std::vector<double>> &old_composition,
-                                      const std::vector<std::vector<double>> &old_old_composition,
+                                      const std::vector<std::vector<double> > &old_composition,
+                                      const std::vector<std::vector<double> > &old_old_composition,
                                       const double                        average_temperature,
                                       const std::vector<Point<dim> >     &evaluation_points,
                                       double                             &max_residual,
@@ -837,8 +837,8 @@ namespace aspect
                      const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
                      const std::vector<double>          &old_pressure,
                      const std::vector<double>          &old_old_pressure,
-                     const std::vector<std::vector<double>> &old_composition,
-                     const std::vector<std::vector<double>> &old_old_composition,
+                     const std::vector<std::vector<double> > &old_composition,
+                     const std::vector<std::vector<double> > &old_old_composition,
                      const double                        global_u_infty,
                      const double                        global_T_variation,
                      const double                        average_field,
@@ -953,7 +953,7 @@ namespace aspect
 
     // the values of the compositional fields are stored as blockvectors for each field
     // we have to extract them in this structure
-    std::vector<std::vector<double>> composition_values (parameters.n_compositional_fields,
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,
         std::vector<double> (n_q_points));
 
     for(unsigned int i=0;i<parameters.n_compositional_fields;++i)
@@ -1689,8 +1689,8 @@ namespace aspect
                            std::vector<SymmetricTensor<2,dim> >(), //strain rate
                            std::vector<double>(),                  //we also do not need the pressure
                            std::vector<double>(),                  //pressure
-                           std::vector<std::vector<double>> (),    //we also do not need the other compositional fields
-                           std::vector<std::vector<double>> (),    //other compositional fields
+                           std::vector<std::vector<double> > (),    //we also do not need the other compositional fields
+                           std::vector<std::vector<double> > (),    //other compositional fields
                            global_max_velocity,
                            global_C_range.second - global_C_range.first,
                            0.5 * (global_C_range.second + global_C_range.first),

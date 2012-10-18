@@ -415,11 +415,11 @@ namespace aspect
         {
           MaterialModelInputs(unsigned int n_points, unsigned int n_comp);
 
-          std::vector<Point<dim>> position;
+          std::vector<Point<dim> > position;
           std::vector<double> temperature;
           std::vector<double> pressure;
-          std::vector<std::vector<double>> composition;
-          std::vector<SymmetricTensor<2,dim>> strain_rate;
+          std::vector<std::vector<double> > composition;
+          std::vector<SymmetricTensor<2,dim> > strain_rate;
        };
 
         struct MaterialModelOutputs

@@ -255,7 +255,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::extract_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
+  void Simulator<dim>::extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
                                                               const unsigned int                      q,
                                                               std::vector<double>                    &composition_values_at_q_point) const
   {
@@ -636,7 +636,7 @@ namespace aspect
     std::vector<SymmetricTensor<2,dim> > strain_rates(n_q_points);
     std::vector<double> pressure_values(n_q_points);
     std::vector<double> temperature_values(n_q_points);
-    std::vector<std::vector<double>> composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
     std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator
@@ -836,7 +836,7 @@ namespace aspect
       }
 
     std::vector<double> pressure_values(n_q_points);
-    std::vector<std::vector<double>> composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
     std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator
@@ -917,7 +917,7 @@ namespace aspect
       }
 
     std::vector<double> pressure_values(n_q_points);
-    std::vector<std::vector<double>> composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
     std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator
@@ -999,7 +999,7 @@ namespace aspect
 
     std::vector<double> pressure_values(n_q_points);
     std::vector<double> temperature_values(n_q_points);
-    std::vector<std::vector<double>> composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
     std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator
@@ -1074,7 +1074,7 @@ namespace aspect
 
     std::vector<double> pressure_values(n_q_points);
     std::vector<double> temperature_values(n_q_points);
-    std::vector<std::vector<double>> composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
     std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator
@@ -1118,7 +1118,7 @@ namespace aspect
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const unsigned int index) const; \
-  template void Simulator<dim>::extract_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values, \
+  template void Simulator<dim>::extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values, \
                                                                        const unsigned int q, \
                                                                        std::vector<double> &composition_values_at_q_point) const;  \
   template double Simulator<dim>::compute_time_step () const; \

@@ -831,9 +831,9 @@ namespace aspect
 
         // the values of the compositional fields are stored as blockvectors for each field
         // we have to extract them in this structure
-        std::vector<std::vector<double>> prelim_composition_values (parameters.n_compositional_fields,
+        std::vector<std::vector<double> > prelim_composition_values (parameters.n_compositional_fields,
             std::vector<double> (quadrature.size()));
-        std::vector<std::vector<double>> composition_values (quadrature.size(),
+        std::vector<std::vector<double> > composition_values (quadrature.size(),
             std::vector<double> (parameters.n_compositional_fields));
 
 

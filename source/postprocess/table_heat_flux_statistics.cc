@@ -63,7 +63,7 @@ namespace aspect
       std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
       std::vector<double>         temperature_values (quadrature_formula.size());
       std::vector<double>         pressure_values (quadrature_formula.size());
-      std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
       std::vector<double> composition_values_at_q_point (this->n_compositional_fields());
 
 
