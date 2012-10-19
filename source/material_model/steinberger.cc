@@ -41,7 +41,8 @@ namespace aspect
       class material_lookup
       {
         public:
-          material_lookup(const std::string &filename, const bool interpol)
+          material_lookup(const std::string &filename,
+                          const bool interpol)
           {
 
             /* Initializing variables */
@@ -159,46 +160,65 @@ namespace aspect
 
           }
 
-          double specific_heat(double temperature,double pressure) const
+          double
+          specific_heat(double temperature,
+                        double pressure) const
           {
             return value(temperature,pressure,specific_heat_values,interpolation);
           }
 
-          double density(double temperature,double pressure) const
+          double
+          density(double temperature,
+                  double pressure) const
           {
             return value(temperature,pressure,density_values,interpolation);
           }
 
-          double thermal_expansivity(const double temperature,const double pressure) const
+          double
+          thermal_expansivity(const double temperature,
+                              const double pressure) const
           {
             return value(temperature,pressure,thermal_expansivity_values,interpolation);
           }
 
-          double seismic_Vp(const double temperature,const double pressure) const
+          double
+          seismic_Vp(const double temperature,
+                     const double pressure) const
           {
             return value(temperature,pressure,vp_values,false);
           }
 
-          double seismic_Vs(const double temperature,const double pressure) const
+          double
+          seismic_Vs(const double temperature,
+                     const double pressure) const
           {
             return value(temperature,pressure,vs_values,false);
           }
 
-          double dHdT (const double temperature,const double pressure) const
+          double
+          dHdT (const double temperature,
+                const double pressure) const
           {
             const double h = value(temperature,pressure,enthalpy_values,interpolation);
             const double dh = value(temperature+delta_temp,pressure,enthalpy_values,interpolation);
             return (dh - h) / delta_temp;
           }
 
-          double dHdp (const double temperature,const double pressure) const
+          double
+          dHdp (const double temperature,
+                const double pressure) const
           {
             const double h = value(temperature,pressure,enthalpy_values,interpolation);
             const double dh = value(temperature,pressure+delta_press,enthalpy_values,interpolation);
             return (dh - h) / delta_press;
           }
 
-          double value (const double temperature,const double pressure,const dealii::Table<2,double>& values,bool interpol) const
+          double
+          value (const double temperature,
+                 const double pressure,
+                 const dealii::Table<2,
+                 double>& values,
+                 bool interpol) const
           {
             const double nT = get_nT(temperature);
             const unsigned int inT = static_cast<unsigned int>(nT);
@@ -391,6 +411,7 @@ namespace aspect
     Steinberger<dim>::
     viscosity (const double temperature,
                const double,
+               const std::vector<double> &compositional_fields,
                const SymmetricTensor<2,dim> &,
                const Point<dim> &position) const
     {
@@ -463,6 +484,7 @@ namespace aspect
     Steinberger<dim>::
     specific_heat (const double temperature,
                    const double pressure,
+                   const std::vector<double> &compositional_fields,
                    const Point<dim> &position) const
     {
       static std::string datapath = datadirectory+material_file_name;
@@ -483,6 +505,7 @@ namespace aspect
     Steinberger<dim>::
     thermal_conductivity (const double,
                           const double,
+                          const std::vector<double> &, /*composition*/
                           const Point<dim> &) const
     {
       return 4.7;
@@ -494,6 +517,7 @@ namespace aspect
     Steinberger<dim>::
     density (const double temperature,
              const double pressure,
+             const std::vector<double> &compositional_fields,
              const Point<dim> &position) const
     {
       static std::string datapath = datadirectory+material_file_name;
@@ -505,6 +529,7 @@ namespace aspect
     Steinberger<dim>::
     thermal_expansion_coefficient (const double      temperature,
                                    const double      pressure,
+                                   const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const
     {
       static std::string datapath = datadirectory+material_file_name;
@@ -514,7 +539,7 @@ namespace aspect
       else
         {
           const double dHdp = get_material_data(datapath,interpolation).dHdp(temperature+get_deltat(position),pressure);
-          const double alpha = (1 - density(temperature,pressure,position) * dHdp) / temperature;
+          const double alpha = (1 - density(temperature,pressure,compositional_fields,position) * dHdp) / temperature;
           return std::max(std::min(alpha,1e-3),1e-5);
         }
     }
@@ -524,6 +549,7 @@ namespace aspect
     Steinberger<dim>::
     seismic_Vp (const double      temperature,
                 const double      pressure,
+                const std::vector<double> &compositional_fields,
                 const Point<dim> &position) const
     {
       static std::string datapath = datadirectory+material_file_name;
@@ -535,6 +561,7 @@ namespace aspect
     Steinberger<dim>::
     seismic_Vs (const double      temperature,
                 const double      pressure,
+                const std::vector<double> &compositional_fields,
                 const Point<dim> &position) const
     {
       static std::string datapath = datadirectory+material_file_name;
@@ -547,6 +574,7 @@ namespace aspect
     Steinberger<dim>::
     compressibility (const double temperature,
                      const double pressure,
+                     const std::vector<double> &compositional_fields,
                      const Point<dim> &position) const
     {
       return 0.0;

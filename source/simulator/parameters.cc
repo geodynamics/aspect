@@ -299,7 +299,8 @@ namespace aspect
                                               "Velocity|"
                                               "Normalized density and temperature|"
                                               "Weighted density and temperature|"
-                                              "Density c_p temperature"),
+                                              "Density c_p temperature|"
+                                              "Composition"),
                          "The method used to determine which cells to refine and which "
                          "to coarsen.");
       prm.declare_entry ("Additional refinement times", "",

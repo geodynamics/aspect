@@ -48,28 +48,34 @@ namespace aspect
          */
         virtual double viscosity (const double                  temperature,
                                   const double                  pressure,
+                                  const std::vector<double>    &compositional_fields,
                                   const SymmetricTensor<2,dim> &strain_rate,
                                   const Point<dim>             &position) const;
 
         virtual double viscosity_ratio (const double temperature,
                                         const double pressure,
+                                        const std::vector<double>    &compositional_fields,
                                         const SymmetricTensor<2,dim> &strain_rate,
                                         const Point<dim> &position) const;
 
         virtual double density (const double temperature,
                                 const double pressure,
+                                const std::vector<double> &compositional_fields,
                                 const Point<dim> &position) const;
 
         virtual double compressibility (const double temperature,
                                         const double pressure,
+                                        const std::vector<double> &compositional_fields,
                                         const Point<dim> &position) const;
 
         virtual double specific_heat (const double temperature,
                                       const double pressure,
+                                      const std::vector<double> &compositional_fields,
                                       const Point<dim> &position) const;
 
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
+                                             const std::vector<double> &compositional_fields,
                                              const Point<dim> &position) const;
         /**
          * @}
@@ -180,6 +186,7 @@ namespace aspect
          */
         virtual double thermal_expansion_coefficient (const double temperature,
                                                       const double pressure,
+                                                      const std::vector<double> &compositional_fields,
                                                       const Point<dim> &position) const;
 
         /**
@@ -207,7 +214,8 @@ namespace aspect
          * quantities.
          */
         virtual double seismic_Vp (const double temperature,
-                                   const double pressure) const;
+                                   const double pressure,
+                                   const std::vector<double> &compositional_fields) const;
 
         /**
          * the seismic shear wave speed
@@ -217,7 +225,8 @@ namespace aspect
          * quantities.
          */
         virtual double seismic_Vs (const double temperature,
-                                   const double pressure) const;
+                                   const double pressure,
+                                   const std::vector<double> &compositional_fields) const;
 
         /**
          * the phase of the composition at given pressure and temperature
@@ -229,7 +238,8 @@ namespace aspect
          * quantities.
          */
         virtual unsigned int thermodynamic_phase (const double temperature,
-                                                  const double pressure) const;
+                                                  const double pressure,
+                                                  const std::vector<double> &compositional_fields) const;
 
 
         /**

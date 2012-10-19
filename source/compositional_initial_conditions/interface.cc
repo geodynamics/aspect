@@ -40,13 +40,9 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::initialize (const GeometryModel::Interface<dim>       &geometry_model_,
-                                const BoundaryTemperature::Interface<dim> &boundary_temperature_,
-                                const AdiabaticConditions<dim>            &adiabatic_conditions_)
+    Interface<dim>::initialize (const GeometryModel::Interface<dim>       &geometry_model_)
     {
       geometry_model       = &geometry_model_;
-      boundary_temperature = &boundary_temperature_;
-      adiabatic_conditions = &adiabatic_conditions_;
     }
 
 
@@ -94,9 +90,7 @@ namespace aspect
     template <int dim>
     Interface<dim> *
     create_initial_conditions (ParameterHandler &prm,
-                               const GeometryModel::Interface<dim> &geometry_model,
-                               const BoundaryTemperature::Interface<dim> &boundary_temperature,
-                               const AdiabaticConditions<dim>      &adiabatic_conditions)
+                               const GeometryModel::Interface<dim> &geometry_model)
     {
       // we need to get at the number of compositional fields here to
       // know whether we need to generate something at all.
@@ -115,12 +109,10 @@ namespace aspect
           }
           prm.leave_subsection ();
 
-          Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
-          plugin->initialize (geometry_model,
-                              boundary_temperature,
-                              adiabatic_conditions);
-          return plugin;
-        }
+	  Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
+	  plugin->initialize (geometry_model);
+	  return plugin;
+	}
     }
 
 
@@ -134,7 +126,7 @@ namespace aspect
       {
         const std::string pattern_of_names
           = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
-        prm.declare_entry ("Model name", "",
+        prm.declare_entry ("Model name", "function",
                            Patterns::Selection (pattern_of_names),
                            "Select one of the following models:\n\n"
                            +
@@ -182,9 +174,7 @@ namespace aspect
   template \
   Interface<dim> * \
   create_initial_conditions<dim> (ParameterHandler &prm, \
-                                  const GeometryModel::Interface<dim> &geometry_model, \
-                                  const BoundaryTemperature::Interface<dim> &boundary_temperature, \
-                                  const AdiabaticConditions<dim>      &adiabatic_conditions);
+                                  const GeometryModel::Interface<dim> &geometry_model);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

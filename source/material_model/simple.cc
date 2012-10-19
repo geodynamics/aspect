@@ -35,6 +35,7 @@ namespace aspect
     Simple<dim>::
     viscosity (const double temperature,
                const double,
+               const std::vector<double> &composition,       /*composition*/
                const SymmetricTensor<2,dim> &,
                const Point<dim> &) const
     {
@@ -42,6 +43,11 @@ namespace aspect
       const double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
 
       return temperature_dependence * eta;
+/*      return (this->n_compositional_fields()>0
+          ?
+          (6.5*composition[0]+1) * eta
+          :
+          eta);*/
     }
 
 
@@ -74,6 +80,7 @@ namespace aspect
     Simple<dim>::
     specific_heat (const double,
                    const double,
+                   const std::vector<double> &, /*composition*/
                    const Point<dim> &) const
     {
       return reference_specific_heat;
@@ -92,6 +99,7 @@ namespace aspect
     Simple<dim>::
     thermal_conductivity (const double,
                           const double,
+                          const std::vector<double> &, /*composition*/
                           const Point<dim> &) const
     {
       return k_value;
@@ -110,10 +118,15 @@ namespace aspect
     Simple<dim>::
     density (const double temperature,
              const double,
+             const std::vector<double> &compositional_fields, /*composition*/
              const Point<dim> &) const
     {
-      return (reference_rho *
-              (1 - thermal_alpha * (temperature - reference_T)));
+      return (this->n_compositional_fields()>0
+          ?
+          100.0 * compositional_fields[0] + reference_rho *
+              (1 - thermal_alpha * (temperature - reference_T))
+          :
+          reference_rho * (1 - thermal_alpha * (temperature - reference_T)));
     }
 
 
@@ -122,6 +135,7 @@ namespace aspect
     Simple<dim>::
     thermal_expansion_coefficient (const double temperature,
                                    const double,
+                                   const std::vector<double> &, /*composition*/
                                    const Point<dim> &) const
     {
       return thermal_alpha;
@@ -133,12 +147,11 @@ namespace aspect
     Simple<dim>::
     compressibility (const double,
                      const double,
+                     const std::vector<double> &, /*composition*/
                      const Point<dim> &) const
     {
       return 0.0;
     }
-
-
 
     template <int dim>
     bool

@@ -86,7 +86,7 @@ namespace aspect
          */
         /**
          * Return the viscosity $\eta$ of the model as a function of temperature,
-         * pressure, strain rate, and position.
+         * pressure, composition, strain rate, and position.
         *
         * @note The strain rate given as the third argument of this function
         * is computed as $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u +
@@ -98,6 +98,7 @@ namespace aspect
          */
         virtual double viscosity (const double                  temperature,
                                   const double                  pressure,
+                                  const std::vector<double>    &compositional_fields,
                                   const SymmetricTensor<2,dim> &strain_rate,
                                   const Point<dim>             &position) const = 0;
 
@@ -107,6 +108,7 @@ namespace aspect
          */
         virtual double viscosity_ratio (const double      temperature,
                                         const double      pressure,
+                                        const std::vector<double>    &compositional_fields,
                                         const SymmetricTensor<2,dim> &strainrate,
                                         const Point<dim> &position) const;
 
@@ -116,6 +118,7 @@ namespace aspect
          */
         virtual double density (const double      temperature,
                                 const double      pressure,
+                                const std::vector<double> &compositional_fields,
                                 const Point<dim> &position) const = 0;
 
         /**
@@ -125,6 +128,7 @@ namespace aspect
          */
         virtual double compressibility (const double temperature,
                                         const double pressure,
+                                        const std::vector<double> &compositional_fields,
                                         const Point<dim> &position) const = 0;
 
         /**
@@ -133,6 +137,7 @@ namespace aspect
          */
         virtual double specific_heat (const double      temperature,
                                       const double      pressure,
+                                      const std::vector<double> &compositional_fields,
                                       const Point<dim> &position) const = 0;
 
         /**
@@ -149,6 +154,7 @@ namespace aspect
          */
         virtual double thermal_expansion_coefficient (const double      temperature,
                                                       const double      pressure,
+                                                      const std::vector<double> &compositional_fields,
                                                       const Point<dim> &position) const;
 
         /**
@@ -167,6 +173,7 @@ namespace aspect
          */
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
+                                             const std::vector<double> &compositional_fields,
                                              const Point<dim> &position) const = 0;
         /**
          * @}
@@ -219,7 +226,7 @@ namespace aspect
          * Return whether the model is compressible or not.  Incompressibility
          * does not necessarily imply that the density is constant; rather, it
          * may still depend on temperature or pressure. In the current
-         * context, compressibility means whether we should solve the contuity
+         * context, compressibility means whether we should solve the continuity
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
@@ -245,6 +252,7 @@ namespace aspect
         virtual double
         viscosity_derivative (const double              temperature,
                               const double              pressure,
+                              const std::vector<double> &compositional_fields,
                               const Point<dim>         &position,
                               const NonlinearDependence::Dependence dependence) const;
 
@@ -259,6 +267,7 @@ namespace aspect
         virtual double
         density_derivative (const double              temperature,
                             const double              pressure,
+                            const std::vector<double> &compositional_fields,
                             const Point<dim>         &position,
                             const NonlinearDependence::Dependence dependence) const;
 
@@ -273,6 +282,7 @@ namespace aspect
         virtual double
         compressibility_derivative (const double              temperature,
                                     const double              pressure,
+                                    const std::vector<double> &compositional_fields,
                                     const Point<dim>         &position,
                                     const NonlinearDependence::Dependence dependence) const;
 
@@ -287,6 +297,7 @@ namespace aspect
         virtual double
         specific_heat_derivative (const double              temperature,
                                   const double              pressure,
+                                  const std::vector<double> &compositional_fields,
                                   const Point<dim>         &position,
                                   const NonlinearDependence::Dependence dependence) const;
 
@@ -301,6 +312,7 @@ namespace aspect
         virtual double
         thermal_conductivity_derivative (const double              temperature,
                                          const double              pressure,
+                                         const std::vector<double> &compositional_fields,
                                          const Point<dim>         &position,
                                          const NonlinearDependence::Dependence dependence) const;
         /**
@@ -360,6 +372,7 @@ namespace aspect
         double
         seismic_Vp (const double      temperature,
                     const double      pressure,
+                    const std::vector<double> &compositional_fields,
                     const Point<dim> &position) const;
 
         /**
@@ -377,6 +390,7 @@ namespace aspect
         double
         seismic_Vs (const double      temperature,
                     const double      pressure,
+                    const std::vector<double> &compositional_fields,
                     const Point<dim> &position) const;
         /**
          * Return the Phase number of the model as a function of
@@ -391,10 +405,37 @@ namespace aspect
         virtual
         unsigned int
         thermodynamic_phase (const double      temperature,
-                             const double      pressure) const;
+                             const double      pressure,
+                             const std::vector<double> &compositional_fields) const;
         /**
          * @}
          */
+
+        struct MaterialModelInputs
+        {
+          MaterialModelInputs(unsigned int n_points, unsigned int n_comp);
+
+          std::vector<Point<dim> > position;
+          std::vector<double> temperature;
+          std::vector<double> pressure;
+          std::vector<std::vector<double> > composition;
+          std::vector<SymmetricTensor<2,dim> > strain_rate;
+       };
+
+        struct MaterialModelOutputs
+        {
+          MaterialModelOutputs(unsigned int n_points);
+
+          std::vector<double> viscosities;
+          std::vector<double> densities;
+          std::vector<double> thermal_expansion_coefficients;
+          std::vector<double> specific_heat;
+          std::vector<double> thermal_conductivities;
+          std::vector<double> compressibilities;
+          bool is_compressible;
+        };
+
+        virtual void compute_parameters(const MaterialModelInputs & in, MaterialModelOutputs & out);
 
         /**
          * @name Functions used in dealing with run-time parameters

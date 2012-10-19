@@ -27,6 +27,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/compositional_initial_conditions/interface.h>
 #include <deal.II/base/point.h>
 
 
@@ -56,8 +57,10 @@ namespace aspect
       AdiabaticConditions (const GeometryModel::Interface<dim> &geometry_model,
                            const GravityModel::Interface<dim>  &gravity_model,
                            const MaterialModel::Interface<dim> &material_model,
+                           const CompositionalInitialConditions::Interface<dim> &compositional_initial_conditions,
                            const double                         surface_pressure,
-                           const double                         surface_temperature);
+                           const double                         surface_temperature,
+                           const unsigned int                   n_compositional_fields);
 
       /**
        * Return the adiabatic temperature at a given point of the domain.

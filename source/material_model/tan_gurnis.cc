@@ -50,6 +50,7 @@ namespace aspect
     TanGurnis<dim>::
     viscosity (const double,
                const double,
+               const std::vector<double> &,       /*composition*/
                const SymmetricTensor<2,dim> &,
                const Point<dim> &pos) const
     {
@@ -87,6 +88,7 @@ namespace aspect
     TanGurnis<dim>::
     specific_heat (const double,
                    const double,
+                   const std::vector<double> &, /*composition*/
                    const Point<dim> &) const
     {
       return 1250;
@@ -105,6 +107,7 @@ namespace aspect
     TanGurnis<dim>::
     thermal_conductivity (const double,
                           const double,
+                          const std::vector<double> &, /*composition*/
                           const Point<dim> &) const
     {
       return 2e-5;
@@ -123,6 +126,7 @@ namespace aspect
     TanGurnis<dim>::
     density (const double,
              const double,
+             const std::vector<double> &, /*composition*/
              const Point<dim> &pos) const
     {
       const double depth = 1.0-pos(dim-1);
@@ -136,6 +140,7 @@ namespace aspect
     TanGurnis<dim>::
     thermal_expansion_coefficient (const double temperature,
                                    const double,
+                                   const std::vector<double> &, /*composition*/
                                    const Point<dim> &) const
     {
       return thermal_alpha;
@@ -147,9 +152,10 @@ namespace aspect
     TanGurnis<dim>::
     compressibility (const double temperature,
                      const double pressure,
+                     const std::vector<double> &compositional_fields,
                      const Point<dim> &pos) const
     {
-      return Di/gamma / density(temperature, pressure, pos);
+      return Di/gamma / density(temperature, pressure, compositional_fields, pos);
     }
 
 

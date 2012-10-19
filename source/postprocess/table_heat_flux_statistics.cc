@@ -52,10 +52,20 @@ namespace aspect
                                         update_q_points       | update_JxW_values);
       const FEValuesExtractors::Scalar pressure (dim);
       const FEValuesExtractors::Scalar temperature (dim+1);
+      std::vector<FEValuesExtractors::Scalar> compositional_fields;
+
+      for (unsigned int c=0;c<this->n_compositional_fields();++c)
+        {
+        const FEValuesExtractors::Scalar temp(dim+2+c);
+        compositional_fields.push_back(temp);
+        }
 
       std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
       std::vector<double>         temperature_values (quadrature_formula.size());
       std::vector<double>         pressure_values (quadrature_formula.size());
+      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+      std::vector<double> composition_values_at_q_point (this->n_compositional_fields());
+
 
       // find out which boundary indicators are related to Dirichlet temperature boundaries.
       // it only makes sense to compute heat fluxes on these boundaries.
@@ -89,13 +99,21 @@ namespace aspect
                                                                  temperature_values);
                 fe_face_values[pressure].get_function_values (this->get_solution(),
                                                               pressure_values);
+                for(unsigned int c=0;c<this->n_compositional_fields();++c)
+                  fe_face_values[compositional_fields[c]].get_function_values(this->get_solution(),
+                                                                              composition_values[c]);
 
                 double local_normal_flux = 0;
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
+                    this->get_composition_values_at_q_point (composition_values,
+                                                           q,
+                                                           composition_values_at_q_point);
+
                     const double thermal_conductivity
                       = this->get_material_model().thermal_conductivity(temperature_values[q],
                                                                         pressure_values[q],
+                                                                        composition_values_at_q_point,
                                                                         fe_face_values.quadrature_point(q));
 
                     local_normal_flux

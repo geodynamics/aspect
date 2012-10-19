@@ -254,6 +254,15 @@ namespace aspect
   }
 
 
+  template <int dim>
+  void Simulator<dim>::extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
+                                                              const unsigned int                      q,
+                                                              std::vector<double>                    &composition_values_at_q_point) const
+  {
+    for(unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
+      composition_values_at_q_point[k] = composition_values[k][q];
+  }
+
 
   template <int dim>
   std::pair<double,double>
@@ -616,10 +625,19 @@ namespace aspect
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
+    std::vector<FEValuesExtractors::Scalar> compositional_fields;
+
+    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+      {
+      const FEValuesExtractors::Scalar temp(dim+2+c);
+      compositional_fields.push_back(temp);
+      }
 
     std::vector<SymmetricTensor<2,dim> > strain_rates(n_q_points);
     std::vector<double> pressure_values(n_q_points);
     std::vector<double> temperature_values(n_q_points);
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
@@ -637,6 +655,9 @@ namespace aspect
                                                       temperature_values);
           fe_values[velocities].get_function_symmetric_gradients (this->solution,
                                                                   strain_rates);
+          for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+            fe_values[compositional_fields[c]].get_function_values(this->solution,
+                                                                   composition_values[c]);
 
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
@@ -644,8 +665,15 @@ namespace aspect
               const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());
 
+              extract_composition_values_at_q_point (composition_values,
+                                                     q,
+                                                     composition_values_at_q_point);
+
+              // TODO: we should use compute_parameters() instead. This should be done
+              // together with merging all the *_average() functions.
               const double viscosity = material_model->viscosity(temperature_values[q],
                                                                  pressure_values[q],
+                                                                 composition_values_at_q_point,
                                                                  strain_rates[q],
                                                                  fe_values.quadrature_point(q));
               ++counts[idx];
@@ -799,8 +827,17 @@ namespace aspect
                              update_values | update_quadrature_points);
 
     const FEValuesExtractors::Scalar pressure (dim);
+    std::vector<FEValuesExtractors::Scalar> compositional_fields;
+
+    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+      {
+      const FEValuesExtractors::Scalar temp(dim+2+c);
+      compositional_fields.push_back(temp);
+      }
 
     std::vector<double> pressure_values(n_q_points);
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
@@ -814,14 +851,22 @@ namespace aspect
           fe_values.reinit (cell);
           fe_values[pressure].get_function_values (this->solution,
                                                    pressure_values);
+          for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+            fe_values[compositional_fields[c]].get_function_values(this->solution,
+                                                                   composition_values[c]);
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
               const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());
 
+              extract_composition_values_at_q_point (composition_values,
+                                                     q,
+                                                     composition_values_at_q_point);
+
               const double Vs_depth_average = material_model->seismic_Vs(average_temperature[idx],
                                                                          pressure_values[q],
+                                                                         composition_values_at_q_point,
                                                                          fe_values.quadrature_point(q));
               ++counts[idx];
               values[idx] += Vs_depth_average;
@@ -863,8 +908,17 @@ namespace aspect
                              update_quadrature_points );
 
     const FEValuesExtractors::Scalar pressure (dim);
+    std::vector<FEValuesExtractors::Scalar> compositional_fields;
+
+    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+      {
+      const FEValuesExtractors::Scalar temp(dim+2+c);
+      compositional_fields.push_back(temp);
+      }
 
     std::vector<double> pressure_values(n_q_points);
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
@@ -878,14 +932,22 @@ namespace aspect
           fe_values.reinit (cell);
           fe_values[pressure].get_function_values (this->solution,
                                                    pressure_values);
+          for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+            fe_values[compositional_fields[c]].get_function_values(this->solution,
+                                                                   composition_values[c]);
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
               const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());
 
+              extract_composition_values_at_q_point (composition_values,
+                                                     q,
+                                                     composition_values_at_q_point);
+
               const double Vp_depth_average = material_model->seismic_Vp(average_temperature[idx],
                                                                          pressure_values[q],
+                                                                         composition_values_at_q_point,
                                                                          fe_values.quadrature_point(q));
               ++counts[idx];
               values[idx] += Vp_depth_average;
@@ -927,9 +989,18 @@ namespace aspect
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
+    std::vector<FEValuesExtractors::Scalar> compositional_fields;
+
+    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+      {
+      const FEValuesExtractors::Scalar temp(dim+2+c);
+      compositional_fields.push_back(temp);
+      }
 
     std::vector<double> pressure_values(n_q_points);
     std::vector<double> temperature_values(n_q_points);
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
@@ -944,9 +1015,18 @@ namespace aspect
                                                    pressure_values);
           fe_values[temperature].get_function_values (this->solution,
                                                       temperature_values);
+          for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+            fe_values[compositional_fields[c]].get_function_values(this->solution,
+                                                                   composition_values[c]);
+
+
+          extract_composition_values_at_q_point (composition_values,
+                                                 0,
+                                                 composition_values_at_q_point);
 
           const double Vs = material_model->seismic_Vs(temperature_values[0],
                                                        pressure_values[0],
+                                                       composition_values_at_q_point,
                                                        fe_values.quadrature_point(0));
           const double depth = geometry_model->depth(fe_values.quadrature_point(0));
           const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
@@ -984,9 +1064,18 @@ namespace aspect
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
+    std::vector<FEValuesExtractors::Scalar> compositional_fields;
+
+    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+      {
+      const FEValuesExtractors::Scalar temp(dim+2+c);
+      compositional_fields.push_back(temp);
+      }
 
     std::vector<double> pressure_values(n_q_points);
     std::vector<double> temperature_values(n_q_points);
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
@@ -1002,9 +1091,17 @@ namespace aspect
                                                    pressure_values);
           fe_values[temperature].get_function_values (this->solution,
                                                       temperature_values);
+          for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+            fe_values[compositional_fields[c]].get_function_values(this->solution,
+                                                                   composition_values[c]);
+
+          extract_composition_values_at_q_point (composition_values,
+                                                 0,
+                                                 composition_values_at_q_point);
 
           const double Vp = material_model->seismic_Vp(temperature_values[0],
                                                        pressure_values[0],
+                                                       composition_values_at_q_point,
                                                        fe_values.quadrature_point(0));
           const double depth = geometry_model->depth(fe_values.quadrature_point(0));
           const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
@@ -1021,6 +1118,9 @@ namespace aspect
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const unsigned int index) const; \
+  template void Simulator<dim>::extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values, \
+                                                                       const unsigned int q, \
+                                                                       std::vector<double> &composition_values_at_q_point) const;  \
   template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::compute_depth_average_field(const unsigned int index, std::vector<double> &values) const; \

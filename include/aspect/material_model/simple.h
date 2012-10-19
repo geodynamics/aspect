@@ -24,6 +24,7 @@
 #define __aspect__model_simple_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/simulator.h>
 
 namespace aspect
 {
@@ -43,7 +44,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Simple : public MaterialModel::Interface<dim>
+    class Simple : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -52,27 +53,33 @@ namespace aspect
          */
         virtual double viscosity (const double                  temperature,
                                   const double                  pressure,
+                                  const std::vector<double>    &compositional_fields,
                                   const SymmetricTensor<2,dim> &strain_rate,
                                   const Point<dim>             &position) const;
 
         virtual double density (const double temperature,
                                 const double pressure,
+                                const std::vector<double> &compositional_fields,
                                 const Point<dim> &position) const;
 
         virtual double compressibility (const double temperature,
                                         const double pressure,
+                                        const std::vector<double> &compositional_fields,
                                         const Point<dim> &position) const;
 
         virtual double specific_heat (const double temperature,
                                       const double pressure,
+                                      const std::vector<double> &compositional_fields,
                                       const Point<dim> &position) const;
 
         virtual double thermal_expansion_coefficient (const double      temperature,
                                                       const double      pressure,
+                                                      const std::vector<double> &compositional_fields,
                                                       const Point<dim> &position) const;
 
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
+                                             const std::vector<double> &compositional_fields,
                                              const Point<dim> &position) const;
         /**
          * @}

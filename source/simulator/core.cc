@@ -103,9 +103,7 @@ namespace aspect
                                                                       *boundary_temperature,
                                                                       *adiabatic_conditions)),
     compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions (prm,
-                                      *geometry_model,
-                                      *boundary_temperature,
-                                      *adiabatic_conditions)),
+                                      *geometry_model)),
 
     time (std::numeric_limits<double>::quiet_NaN()),
     time_step (0),
@@ -218,8 +216,10 @@ namespace aspect
     adiabatic_conditions.reset (new AdiabaticConditions<dim>(*geometry_model,
                                                              *gravity_model,
                                                              *material_model,
+                                                             *compositional_initial_conditions,
                                                              parameters.surface_pressure,
-                                                             parameters.adiabatic_surface_temperature));
+                                                             parameters.adiabatic_surface_temperature,
+                                                             parameters.n_compositional_fields));
     for (std::map<types::boundary_id_t,std::string>::const_iterator
          p = parameters.prescribed_velocity_boundary_indicators.begin();
          p != parameters.prescribed_velocity_boundary_indicators.end();
@@ -571,10 +571,10 @@ namespace aspect
                        n_T = system_dofs_per_block[2];
     unsigned int       n_C_sum = 0;
     std::vector<unsigned int> n_C (parameters.n_compositional_fields+1);
-    for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       {
-        n_C[i] = system_dofs_per_block[i+3];
-        n_C_sum += n_C[i];
+        n_C[c] = system_dofs_per_block[c+3];
+        n_C_sum += n_C[c];
       }
 
 
@@ -602,8 +602,8 @@ namespace aspect
           << n_u + n_p + n_T + n_C_sum
           << " (" << n_u << '+' << n_p << '+'<< n_T;
 
-    for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
-      pcout << '+' << n_C[i];
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+      pcout << '+' << n_C[c];
 
     pcout <<')'
           << std::endl
@@ -631,13 +631,13 @@ namespace aspect
       {
         unsigned int n_C_so_far = 0;
 
-        for (unsigned int i=0; i<parameters.n_compositional_fields; ++i)
+        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
           {
             system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_so_far,
-                                                                    n_u+n_p+n_T+n_C_so_far+n_C[i]));
+                                                                    n_u+n_p+n_T+n_C_so_far+n_C[c]));
             system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p+n_T+n_C_so_far,
-                                                                                n_u+n_p+n_T+n_C_so_far+n_C[i]));
-            n_C_so_far += n_C[i];
+                                                                                n_u+n_p+n_T+n_C_so_far+n_C[c]));
+            n_C_so_far += n_C[c];
           }
       }
     }
@@ -787,14 +787,24 @@ namespace aspect
     Vector<float> estimated_error_per_cell_rho (triangulation.n_active_cells());
     Vector<float> estimated_error_per_cell_T (triangulation.n_active_cells());
     Vector<float> estimated_error_per_cell_u (triangulation.n_active_cells());
+    std::vector<Vector<float> > estimated_error_per_cell_C (parameters.n_compositional_fields,
+                                                            Vector<float> (triangulation.n_active_cells()));
 
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
+    std::vector<FEValuesExtractors::Scalar> composition;
+
+    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+      {
+      const FEValuesExtractors::Scalar temp(dim+2+c);
+      composition.push_back(temp);
+      }
 
     //Velocity|Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature
 
     // compute density error
-    if (parameters.refinement_strategy != "Temperature" && parameters.refinement_strategy != "Velocity")
+    if (parameters.refinement_strategy != "Temperature" && parameters.refinement_strategy != "Velocity"
+                                                        && parameters.refinement_strategy != "Composition")
       {
         bool lookup_rho_c_p_T = (parameters.refinement_strategy == "Density c_p temperature");
 
@@ -818,6 +828,13 @@ namespace aspect
         std::vector<double> pressure_values(quadrature.size());
         std::vector<double> temperature_values(quadrature.size());
 
+        // the values of the compositional fields are stored as blockvectors for each field
+        // we have to extract them in this structure
+        std::vector<std::vector<double> > prelim_composition_values (parameters.n_compositional_fields,
+            std::vector<double> (quadrature.size()));
+        std::vector<std::vector<double> > composition_values (quadrature.size(),
+            std::vector<double> (parameters.n_compositional_fields));
+
 
         typename DoFHandler<dim>::active_cell_iterator
         cell = dof_handler.begin_active(),
@@ -830,6 +847,14 @@ namespace aspect
                                                        pressure_values);
               fe_values[temperature].get_function_values (solution,
                                                           temperature_values);
+              for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+                fe_values[composition[c]].get_function_values (solution,
+                                                               prelim_composition_values[c]);
+              // then we copy these values to exchange the inner and outer vector, because for the material
+              // model we need a vector with values of all the compositional fields for every quadrature point
+              for(unsigned int q=0;q<quadrature.size();++q)
+                for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+                  composition_values[q][c] = prelim_composition_values[c][q];
 
               cell->get_dof_indices (local_dof_indices);
 
@@ -845,12 +870,14 @@ namespace aspect
                   vec_distributed(local_dof_indices[system_local_dof])
                     = material_model->density( temperature_values[i],
                                                pressure_values[i],
+                                               composition_values[i],
                                                fe_values.quadrature_point(i))
                       * ((lookup_rho_c_p_T)
                          ?
                          (temperature_values[i]
                           * material_model->specific_heat(temperature_values[i],
                                                           pressure_values[i],
+                                                          composition_values[i],
                                                           fe_values.quadrature_point(i)))
                          :
                          1.0);
@@ -912,6 +939,30 @@ namespace aspect
     else
       {
         estimated_error_per_cell_T = 0;
+      }
+
+    // compute the errors for composition solution
+    if (parameters.refinement_strategy == "Composition")
+      {
+        for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+          {
+            std::vector<bool> composition_component (dim+2+parameters.n_compositional_fields, false);
+            composition_component[dim+2+c] = true;
+            KellyErrorEstimator<dim>::estimate (dof_handler,
+                                                QGauss<dim-1>(parameters.composition_degree+1),
+                                                typename FunctionMap<dim>::type(),
+                                                solution,
+                                                estimated_error_per_cell_C[c],
+                                                composition_component,
+                                                0,
+                                                0,
+                                                triangulation.locally_owned_subdomain());
+          }
+      }
+    else
+      {
+        for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+          estimated_error_per_cell_C[c] = 0;
       }
 
     // compute the errors for the stokes solution
@@ -982,6 +1033,14 @@ namespace aspect
         {
           for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
             estimated_error_per_cell(i) = estimated_error_per_cell_rho(i);
+        }
+      else if (parameters.refinement_strategy == "Composition")
+        {
+          for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+            estimated_error_per_cell(i) = 0;
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
+              estimated_error_per_cell(i) += estimated_error_per_cell_C[c](i);
         }
       else
         AssertThrow(false, ExcNotImplemented());
@@ -1088,12 +1147,12 @@ namespace aspect
 
           current_linearization_point.block(2) = solution.block(2);
 
-          for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
-              assemble_composition_system (n);
-              build_composition_preconditioner(n);
-              solve_temperature_or_composition(1+n); // this is correct, 0 would be temperature
-              current_linearization_point.block(3+n) = solution.block(3+n);
+              assemble_composition_system (c);
+              build_composition_preconditioner(c);
+              solve_temperature_or_composition(1+c); // this is correct, 0 would be temperature
+              current_linearization_point.block(3+c) = solution.block(3+c);
             }
 
           assemble_stokes_system();
@@ -1124,13 +1183,13 @@ namespace aspect
               rebuild_stokes_matrix = true;
               std::vector<double> composition_residual (parameters.n_compositional_fields,0);
 
-              for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
+              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 {
-                  assemble_composition_system (n);
-                  build_composition_preconditioner(n);
-                  composition_residual[n]
-		    = solve_temperature_or_composition(1+n); // 1+n is correct, because 0 is for temperature
-                  current_linearization_point.block(3+n) = solution.block(3+n);
+                  assemble_composition_system (c);
+                  build_composition_preconditioner(c);
+                  composition_residual[c]
+		    = solve_temperature_or_composition(1+c); // 1+n is correct, because 0 is for temperature
+                  current_linearization_point.block(3+c) = solution.block(3+c);
                 }
 
               assemble_stokes_system();
@@ -1144,8 +1203,8 @@ namespace aspect
               pcout << "   Nonlinear residuals: " << temperature_residual
                     << ", " << stokes_residual;
 
-              for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
-                pcout << ", " << composition_residual[n];
+              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                pcout << ", " << composition_residual[c];
 
               pcout << std::endl
                     << std::endl;
@@ -1153,16 +1212,16 @@ namespace aspect
               if (iteration == 0)
                 {
                   initial_temperature_residual = temperature_residual;
-                  for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
-                    initial_composition_residual[n] = composition_residual[n];
+                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                    initial_composition_residual[c] = composition_residual[c];
                   initial_stokes_residual      = stokes_residual;
                 }
               else
                 {
 //TODO: make this a parameter in the input file
                   double max = 0.0;
-                  for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
-                    max = std::max(composition_residual[n]/initial_composition_residual[n],max);
+                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                    max = std::max(composition_residual[c]/initial_composition_residual[c],max);
                   if (std::max(std::max(stokes_residual/initial_stokes_residual,
                                         temperature_residual/initial_temperature_residual),
                                max) < 1e-3)
@@ -1183,10 +1242,10 @@ namespace aspect
           assemble_temperature_system ();
           solve_temperature_or_composition(0);
 
-          for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
-              assemble_composition_system (n);
-              solve_temperature_or_composition(1+n); // 1+n is correct, because 0 is the temperature
+              assemble_composition_system (c);
+              solve_temperature_or_composition(1+c); // 1+n is correct, because 0 is the temperature
             }
 
           // ...and then iterate the solution

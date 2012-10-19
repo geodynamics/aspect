@@ -3287,6 +3287,208 @@ subsection Postprocess
 end
 \end{lstlisting}
 
+\subsubsection{The ``Stokes' law'' benchmark}
+\label{sec:benchmark-stokes_law}
+
+Stokes' law was derived by George Gabriel Stokes in 1851 and describes the frictional force 
+a sphere experiences in a laminar flowing viscous medium. A setup for testing this
+law is a sphere with the radius r falling in a highly viscous fluid with lower density. Due to its 
+higher density the sphere is accelerated by the gravitational force. While 
+the frictional force increases with the velocity of the falling particle, 
+the buoyancy force remains constant. Thus, at some time the forces will 
+be balanced and the settling velocity of the sphere $v_s$ will remain constant:
+
+\begin{align}
+  \label{eq:stokes-law}
+  \underbrace{6 \pi \, \eta \, r \, v_s}_{\text{frictional force}} = 
+  \underbrace{4/3 \pi \, r^3 \, \Delta\rho \, g}_{\text{buoyancy force}}
+\end{align}
+
+\begin{align*}
+  \eta \quad &\text{dynamic viscosity of the fluid}\\
+  \Delta\rho \quad &\text{density difference between sphere and fluid}\\
+  g \quad &\text{gravitational acceleration}
+\end{align*}
+
+The resulting settling velocity is given by:
+\begin{align}
+  \label{eq:stokes-velo}
+  v_s = \frac{2}{9} \frac{\Delta\rho \, r^2 \, g}{\eta}.
+\end{align}
+
+Because we do not take into account inertia in our numerical computation,
+the falling particle will reach the constant settling velocity right after 
+the first timestep.
+For the setup of this benchmark, we chose the following parameters:
+\begin{align*}
+  \label{eq:stokes-parameters}
+  r &= 200 \, \text{km}\\
+  \Delta\rho &= 100 \, \text{kg}/\text{m}^3\\
+  \eta &= 10^{22} \, \text{Pa s}\\
+  g &= 9.81 \, \text{m}/\text{s}^2\\
+  \vspace{1mm}
+  \text{resulting }  v_s &= 8.72 \cdot 10^{-10} \, \text{m}/\text{s}
+\end{align*}
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.55\textwidth]{cookbooks/benchmarks/stokes-velocity}
+    \hfill
+    \includegraphics[width=0.44\textwidth]{cookbooks/benchmarks/stokes-density}
+    \caption{Stokes benchmark. Both figures show only a 2D slice of the
+      three-dimensional model. 
+      Left: The compositional field and overlaid to it some velocity vectors.
+      The composition is 1 inside a sphere with the radius of 200 km and 0
+      outside of this sphere. As the velocity vectors show, the sphere sinks
+      in the viscous medium. 
+      Right: The density distribution of the model. The compositional density 
+      contrast of 100 kg$/\text{m}^3$ leads to a higher density inside of the
+      sphere.}
+    \label{fig:solcx}
+  \end{center}
+\end{figure}
+
+To run this benchmark, you can use the following input file:
+
+\begin{lstlisting}[frame=single,language=prmfile]
+############### Global parameters
+
+set Dimension                              = 3
+
+set Start time                             = 0
+set End time                               = 2e13
+
+set Output directory                       = output
+set Use years in output instead of seconds = false
+
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 2890000
+    set Y extent  = 2890000
+    set Z extent  = 2890000
+  end
+end
+
+
+subsection Model settings
+  set Tangential velocity boundary indicators = 0,1,2,3,4,5
+  set Fixed temperature boundary indicators   = 0,1 
+  set Include shear heating                   = false
+end
+
+
+subsection Material model
+  set Model name = simple
+
+    subsection Simple model
+    set Reference density             = 3300
+    set Reference temperature         = 1
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1e22
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+
+############### Parameters describing the temperature field
+
+subsection Boundary temperature model
+  set Model name = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Left temperature   = 1
+    set Right temperature  = 1
+    set Top temperature    = 1
+    set Front temperature  = 1
+    set Back temperature   = 1
+  end
+end
+
+subsection Initial conditions
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1
+  end
+end
+
+############### Parameters describing the compositional field
+
+subsection Compositional fields
+  set Number of fields = 1
+end 
+
+subsection Compositional initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names = x,y,z
+    set Function expression = if(sqrt((x-1445000)*(x-1445000)+(y-1445000)*(y-1445000)
+                              +(z-1445000)*(z-1445000)) > 200000,0,1)
+  end
+end
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 6
+  set Initial global refinement          = 5
+  set Refinement fraction                = 0.2
+  set Strategy                           = Velocity
+end
+
+
+############### Parameters describing the what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 1e6   
+    set List of output variables = density, viscosity
+  end
+end
+\end{lstlisting}
+
+\vspace{5mm}
+
+Finally, we want to know the settling velocity of the sphere in our numerical 
+model. You can visualize the output in different ways, one of it being ParaView. 
+Here you can calculate the average velocity of the sphere using the filters
+
+\begin{enumerate}
+ \item Threshold (Scalars: C\_1, Lower Threshold 0.5, Upper Threshold 1),
+ \item Integrate Variables,
+ \item Cell Data to Point Data,
+ \item Calculator (use the formula sqrt(velocity\_x\textasciicircum2+
+       velocity\_y\textasciicircum2+velocity\_z\textasciicircum2)/Volume).
+\end{enumerate}
+
+If you now look at 
+the Calculator object in the Spreadsheet View, you can see the average sinking 
+velocity of the sphere in the column ``Result'' and compare it to the theoretical
+value ($v_s = 8.72 \cdot 10^{-10} \, \text{m}/\text{s}$). 
+In this case, this value should be about 8.865 $\cdot 10^{-10} \, \text{m}/\text{s}$.
+The difference between the analytical and the numerical solution can be explained by
+different points: In our case the sphere is viscous and not rigid, as in Stokes'
+law, and we have a finite box instead of an infinite medium. 
+
+
 \section{Extending \aspect}
 \label{sec:extending}
 

@@ -362,6 +362,19 @@ namespace aspect
       const BoundaryTemperature::Interface<dim> &
       get_boundary_temperature () const;
 
+      /**
+       * Copy the values of the compositional fields at the quadrature point
+       * q given as input parameter to the output vector
+       * composition_values_at_q_point.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void
+      get_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
+                                         const unsigned int                      q,
+                                         std::vector<double>                    &composition_values_at_q_point) const;
+
       /** @} */
 
     private:
@@ -1161,6 +1174,11 @@ namespace aspect
        * given the values and gradients of the solution passed as
        * arguments.
        *
+       * @param index The index of the field we need the artificial
+       * diffusion coefficient for:
+       * 0                              temperature
+       * 1...n_compositional_fields     compositional field
+       *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
@@ -1177,12 +1195,105 @@ namespace aspect
                         const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
                         const std::vector<double>          &old_pressure,
                         const std::vector<double>          &old_old_pressure,
+                        const std::vector<std::vector<double>> &old_composition,
+                        const std::vector<std::vector<double>> &old_old_composition,
                         const double                        global_u_infty,
                         const double                        global_T_variation,
                         const double                        average_temperature,
                         const double                        global_entropy_variation,
                         const std::vector<Point<dim> >     &evaluation_points,
-                        const double                        cell_diameter) const;
+                        const double                        cell_diameter,
+                        const unsigned int                  index) const;
+
+      /**
+       * Compute the residual of the temperature equation to be used
+       * for the artificial diffusion coefficient value on a cell
+       * given the values and gradients of the solution
+       * passed as arguments.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      compute_temperature_system_residual(const std::vector<double>          &old_temperature,
+                                          const std::vector<double>          &old_old_temperature,
+                                          const std::vector<Tensor<1,dim> >  &old_temperature_grads,
+                                          const std::vector<Tensor<1,dim> >  &old_old_temperature_grads,
+                                          const std::vector<double>          &old_temperature_laplacians,
+                                          const std::vector<double>          &old_old_temperature_laplacians,
+                                          const std::vector<Tensor<1,dim> >  &old_velocity_values,
+                                          const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
+                                          const std::vector<SymmetricTensor<2,dim> >  &old_strain_rates,
+                                          const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
+                                          const std::vector<double>          &old_pressure,
+                                          const std::vector<double>          &old_old_pressure,
+                                          const std::vector<std::vector<double>> &old_composition,
+                                          const std::vector<std::vector<double>> &old_old_composition,
+                                          const double                        average_temperature,
+                                          const std::vector<Point<dim> >     &evaluation_points,
+                                          double                             &max_residual,
+                                          double                             &max_velocity) const;
+
+      /**
+       * Compute the residual of the composition equation to be used
+       * for the artificial diffusion coefficient value on a cell
+       * given the values and gradients of the solution
+       * passed as arguments.
+       *
+       * @param composition_index The index of the compositional field whose
+       * residual we want to get (0 <= composition_index < number of
+       * compositional fields in this problem).
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      compute_composition_system_residual(const std::vector<double>          &old_composition,
+                                          const std::vector<double>          &old_old_composition,
+                                          const std::vector<Tensor<1,dim> >  &old_composition_grads,
+                                          const std::vector<Tensor<1,dim> >  &old_old_composition_grads,
+                                          const std::vector<double>          &old_composition_laplacians,
+                                          const std::vector<double>          &old_old_composition_laplacians,
+                                          const std::vector<Tensor<1,dim> >  &old_velocity_values,
+                                          const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
+                                          const double                        average_composition,
+                                          const unsigned int                  composition_index,
+                                          double                             &max_residual,
+                                          double                             &max_velocity) const;
+      /**
+       * Extract the values of temperature, pressure, composition and
+       * optional strain rate for the current linearization point.
+       * These values are stored as input arguments for the material
+       * model. The compositional fields are extracted with the
+       * individual compositional fields as outer vectors and the values
+       * at each quadrature point as inner vectors, but the material
+       * model needs it the other way round. Hence, this vector of vectors
+       * is transposed.
+       *
+       * @param compute_strainrate If the strain rate should be computed
+       * or not
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      compute_material_model_input_values (const TrilinosWrappers::MPI::BlockVector                    &current_linearization_point,
+                                           const FEValues<dim,dim>                                     &input_finite_element_values,
+                                           const bool                                                   compute_strainrate,
+                                           typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const;
+
+      /**
+       * Copy the values of the compositional fields at the quadrature point
+       * q given as input parameter to the output vector
+       * composition_values_at_q_point.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void
+      extract_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
+                                             const unsigned int                      q,
+                                             std::vector<double>                    &composition_values_at_q_point) const;
 
       /**
        * Generate and output some statistics like timing information and memory consumption.
@@ -1253,7 +1364,7 @@ namespace aspect
       const std::auto_ptr<GravityModel::Interface<dim> >        gravity_model;
       const std::auto_ptr<BoundaryTemperature::Interface<dim> > boundary_temperature;
       std::auto_ptr<    InitialConditions::Interface<dim> >   initial_conditions;
-      std::auto_ptr<const CompositionalInitialConditions::Interface<dim> >   compositional_initial_conditions;
+      std::auto_ptr<CompositionalInitialConditions::Interface<dim> >   compositional_initial_conditions;
       std::auto_ptr<const AdiabaticConditions<dim> >            adiabatic_conditions;
       std::map<types::boundary_id_t,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       /**
