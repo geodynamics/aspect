@@ -259,7 +259,7 @@ namespace aspect
                                                               const unsigned int                      q,
                                                               std::vector<double>                    &composition_values_at_q_point) const
   {
-    for(unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
+    for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
       composition_values_at_q_point[k] = composition_values[k][q];
   }
 
@@ -627,10 +627,10 @@ namespace aspect
     const FEValuesExtractors::Scalar temperature (dim+1);
     std::vector<FEValuesExtractors::Scalar> compositional_fields;
 
-    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       {
-      const FEValuesExtractors::Scalar temp(dim+2+c);
-      compositional_fields.push_back(temp);
+        const FEValuesExtractors::Scalar temp(dim+2+c);
+        compositional_fields.push_back(temp);
       }
 
     std::vector<SymmetricTensor<2,dim> > strain_rates(n_q_points);
@@ -655,7 +655,7 @@ namespace aspect
                                                       temperature_values);
           fe_values[velocities].get_function_symmetric_gradients (this->solution,
                                                                   strain_rates);
-          for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             fe_values[compositional_fields[c]].get_function_values(this->solution,
                                                                    composition_values[c]);
 
@@ -829,10 +829,10 @@ namespace aspect
     const FEValuesExtractors::Scalar pressure (dim);
     std::vector<FEValuesExtractors::Scalar> compositional_fields;
 
-    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       {
-      const FEValuesExtractors::Scalar temp(dim+2+c);
-      compositional_fields.push_back(temp);
+        const FEValuesExtractors::Scalar temp(dim+2+c);
+        compositional_fields.push_back(temp);
       }
 
     std::vector<double> pressure_values(n_q_points);
@@ -851,7 +851,7 @@ namespace aspect
           fe_values.reinit (cell);
           fe_values[pressure].get_function_values (this->solution,
                                                    pressure_values);
-          for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             fe_values[compositional_fields[c]].get_function_values(this->solution,
                                                                    composition_values[c]);
           for (unsigned int q = 0; q < n_q_points; ++q)
@@ -910,10 +910,10 @@ namespace aspect
     const FEValuesExtractors::Scalar pressure (dim);
     std::vector<FEValuesExtractors::Scalar> compositional_fields;
 
-    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       {
-      const FEValuesExtractors::Scalar temp(dim+2+c);
-      compositional_fields.push_back(temp);
+        const FEValuesExtractors::Scalar temp(dim+2+c);
+        compositional_fields.push_back(temp);
       }
 
     std::vector<double> pressure_values(n_q_points);
@@ -932,7 +932,7 @@ namespace aspect
           fe_values.reinit (cell);
           fe_values[pressure].get_function_values (this->solution,
                                                    pressure_values);
-          for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             fe_values[compositional_fields[c]].get_function_values(this->solution,
                                                                    composition_values[c]);
           for (unsigned int q = 0; q < n_q_points; ++q)
@@ -991,10 +991,10 @@ namespace aspect
     const FEValuesExtractors::Scalar temperature (dim+1);
     std::vector<FEValuesExtractors::Scalar> compositional_fields;
 
-    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       {
-      const FEValuesExtractors::Scalar temp(dim+2+c);
-      compositional_fields.push_back(temp);
+        const FEValuesExtractors::Scalar temp(dim+2+c);
+        compositional_fields.push_back(temp);
       }
 
     std::vector<double> pressure_values(n_q_points);
@@ -1015,7 +1015,7 @@ namespace aspect
                                                    pressure_values);
           fe_values[temperature].get_function_values (this->solution,
                                                       temperature_values);
-          for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             fe_values[compositional_fields[c]].get_function_values(this->solution,
                                                                    composition_values[c]);
 
@@ -1066,10 +1066,10 @@ namespace aspect
     const FEValuesExtractors::Scalar temperature (dim+1);
     std::vector<FEValuesExtractors::Scalar> compositional_fields;
 
-    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       {
-      const FEValuesExtractors::Scalar temp(dim+2+c);
-      compositional_fields.push_back(temp);
+        const FEValuesExtractors::Scalar temp(dim+2+c);
+        compositional_fields.push_back(temp);
       }
 
     std::vector<double> pressure_values(n_q_points);
@@ -1091,7 +1091,7 @@ namespace aspect
                                                    pressure_values);
           fe_values[temperature].get_function_values (this->solution,
                                                       temperature_values);
-          for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             fe_values[compositional_fields[c]].get_function_values(this->solution,
                                                                    composition_values[c]);
 

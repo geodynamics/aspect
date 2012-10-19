@@ -794,17 +794,17 @@ namespace aspect
     const FEValuesExtractors::Scalar temperature (dim+1);
     std::vector<FEValuesExtractors::Scalar> composition;
 
-    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       {
-      const FEValuesExtractors::Scalar temp(dim+2+c);
-      composition.push_back(temp);
+        const FEValuesExtractors::Scalar temp(dim+2+c);
+        composition.push_back(temp);
       }
 
     //Velocity|Temperature|Normalized density and temperature|Weighted density and temperature|Density c_p temperature
 
     // compute density error
     if (parameters.refinement_strategy != "Temperature" && parameters.refinement_strategy != "Velocity"
-                                                        && parameters.refinement_strategy != "Composition")
+        && parameters.refinement_strategy != "Composition")
       {
         bool lookup_rho_c_p_T = (parameters.refinement_strategy == "Density c_p temperature");
 
@@ -831,9 +831,9 @@ namespace aspect
         // the values of the compositional fields are stored as blockvectors for each field
         // we have to extract them in this structure
         std::vector<std::vector<double> > prelim_composition_values (parameters.n_compositional_fields,
-            std::vector<double> (quadrature.size()));
+                                                                     std::vector<double> (quadrature.size()));
         std::vector<std::vector<double> > composition_values (quadrature.size(),
-            std::vector<double> (parameters.n_compositional_fields));
+                                                              std::vector<double> (parameters.n_compositional_fields));
 
 
         typename DoFHandler<dim>::active_cell_iterator
@@ -847,13 +847,13 @@ namespace aspect
                                                        pressure_values);
               fe_values[temperature].get_function_values (solution,
                                                           temperature_values);
-              for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe_values[composition[c]].get_function_values (solution,
                                                                prelim_composition_values[c]);
               // then we copy these values to exchange the inner and outer vector, because for the material
               // model we need a vector with values of all the compositional fields for every quadrature point
-              for(unsigned int q=0;q<quadrature.size();++q)
-                for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+              for (unsigned int q=0; q<quadrature.size(); ++q)
+                for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                   composition_values[q][c] = prelim_composition_values[c][q];
 
               cell->get_dof_indices (local_dof_indices);
@@ -944,7 +944,7 @@ namespace aspect
     // compute the errors for composition solution
     if (parameters.refinement_strategy == "Composition")
       {
-        for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
           {
             std::vector<bool> composition_component (dim+2+parameters.n_compositional_fields, false);
             composition_component[dim+2+c] = true;
@@ -961,7 +961,7 @@ namespace aspect
       }
     else
       {
-        for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
           estimated_error_per_cell_C[c] = 0;
       }
 
@@ -1027,7 +1027,7 @@ namespace aspect
 
           for (unsigned int i=0; i<estimated_error_per_cell.size(); ++i)
             estimated_error_per_cell(i)
-	      = estimated_error_per_cell_T(i)*(1.0+estimated_error_per_cell_rho(i));
+              = estimated_error_per_cell_T(i)*(1.0+estimated_error_per_cell_rho(i));
         }
       else if (parameters.refinement_strategy == "Density c_p temperature")
         {
@@ -1188,7 +1188,7 @@ namespace aspect
                   assemble_composition_system (c);
                   build_composition_preconditioner(c);
                   composition_residual[c]
-		    = solve_temperature_or_composition(1+c); // 1+n is correct, because 0 is for temperature
+                    = solve_temperature_or_composition(1+c); // 1+n is correct, because 0 is for temperature
                   current_linearization_point.block(3+c) = solution.block(3+c);
                 }
 

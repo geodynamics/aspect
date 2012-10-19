@@ -420,7 +420,7 @@ namespace aspect
           std::vector<double> pressure;
           std::vector<std::vector<double> > composition;
           std::vector<SymmetricTensor<2,dim> > strain_rate;
-       };
+        };
 
         struct MaterialModelOutputs
         {
@@ -435,7 +435,7 @@ namespace aspect
           bool is_compressible;
         };
 
-        virtual void compute_parameters(const MaterialModelInputs & in, MaterialModelOutputs & out);
+        virtual void compute_parameters(const MaterialModelInputs &in, MaterialModelOutputs &out);
 
         /**
          * @name Functions used in dealing with run-time parameters

@@ -265,7 +265,7 @@ namespace aspect
           old_temperature_laplacians(quadrature.size()),
           old_old_temperature_laplacians(quadrature.size()),
           old_composition_values(n_compositional_fields,
-                                     std::vector<double>(quadrature.size())),
+                                 std::vector<double>(quadrature.size())),
           old_old_composition_values(n_compositional_fields,
                                      std::vector<double>(quadrature.size())),
           current_temperature_values(quadrature.size()),
@@ -673,21 +673,22 @@ namespace aspect
                                       const std::vector<Point<dim> >     &evaluation_points,
                                       double                             &max_residual,
                                       double                             &max_velocity) const
-    {
+  {
 
     const unsigned int n_q_points = old_temperature.size();
 
     typename MaterialModel::Interface<dim>::MaterialModelInputs inputs (n_q_points, parameters.n_compositional_fields);
     typename MaterialModel::Interface<dim>::MaterialModelOutputs outputs (n_q_points);
 
-    for (unsigned int q=0; q<n_q_points; ++q) {
-      inputs.temperature[q] = (old_temperature[q] + old_old_temperature[q]) / 2;
-      inputs.position[q] = evaluation_points[q];
-      inputs.pressure[q] = (old_pressure[q] + old_old_pressure[q]) / 2;
-      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-        inputs.composition[q][c] = (old_composition[c][q] + old_old_composition[c][q]) / 2;
-      inputs.strain_rate[q] = (old_strain_rates[q] + old_old_strain_rates[q]) / 2;
-    }
+    for (unsigned int q=0; q<n_q_points; ++q)
+      {
+        inputs.temperature[q] = (old_temperature[q] + old_old_temperature[q]) / 2;
+        inputs.position[q] = evaluation_points[q];
+        inputs.pressure[q] = (old_pressure[q] + old_old_pressure[q]) / 2;
+        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          inputs.composition[q][c] = (old_composition[c][q] + old_old_composition[c][q]) / 2;
+        inputs.strain_rate[q] = (old_strain_rates[q] + old_old_strain_rates[q]) / 2;
+      }
 
     material_model->compute_parameters(inputs,outputs);
 
@@ -770,7 +771,7 @@ namespace aspect
         max_residual = std::max (residual,        max_residual);
         max_velocity = std::max (std::sqrt (u*u), max_velocity);
       }
-    }
+  }
 
   template <int dim>
   void
@@ -787,7 +788,7 @@ namespace aspect
                                       const unsigned int                  composition_index,
                                       double                             &max_residual,
                                       double                             &max_velocity) const
-    {
+{
 
     const unsigned int n_q_points = old_composition.size();
 
@@ -807,8 +808,8 @@ namespace aspect
         const double kappa = 0;
 
         const double kappa_Delta_C = kappa
-                                 * (old_composition_laplacians[q] +
-                                    old_old_composition_laplacians[q]) / 2;
+                                     * (old_composition_laplacians[q] +
+                                        old_old_composition_laplacians[q]) / 2;
 
         double residual
           = std::abs(dC_dt + u_grad_C - kappa_Delta_C);
@@ -818,7 +819,7 @@ namespace aspect
         max_residual = std::max (residual,        max_residual);
         max_velocity = std::max (std::sqrt (u*u), max_velocity);
       }
-    }
+  }
 
 
 
@@ -855,32 +856,33 @@ namespace aspect
 
     AssertIndexRange(index,parameters.n_compositional_fields+1);
 
-    if(index == 0) {
-      //make sure that all arguments we need for computing the residual are passed
-      Assert (old_strain_rates.size() > 0 && old_old_strain_rates.size() > 0
-              && old_pressure.size() > 0 && old_old_pressure.size() > 0,
-              ExcMessage ("Not enough parameters to calculate artificial viscosity "
-                          "for the temperature equation."));
+    if (index == 0)
+      {
+        //make sure that all arguments we need for computing the residual are passed
+        Assert (old_strain_rates.size() > 0 && old_old_strain_rates.size() > 0
+                && old_pressure.size() > 0 && old_old_pressure.size() > 0,
+                ExcMessage ("Not enough parameters to calculate artificial viscosity "
+                            "for the temperature equation."));
 
-      compute_temperature_system_residual(old_field,
-                                          old_old_field,
-                                          old_field_grads,
-                                          old_old_field_grads,
-                                          old_field_laplacians,
-                                          old_old_field_laplacians,
-                                          old_velocity_values,
-                                          old_old_velocity_values,
-                                          old_strain_rates,
-                                          old_old_strain_rates,
-                                          old_pressure,
-                                          old_old_pressure,
-                                          old_composition,
-                                          old_old_composition,
-                                          average_field,
-                                          evaluation_points,
-                                          max_residual,
-                                          max_velocity);
-    }
+        compute_temperature_system_residual(old_field,
+                                            old_old_field,
+                                            old_field_grads,
+                                            old_old_field_grads,
+                                            old_field_laplacians,
+                                            old_old_field_laplacians,
+                                            old_velocity_values,
+                                            old_old_velocity_values,
+                                            old_strain_rates,
+                                            old_old_strain_rates,
+                                            old_pressure,
+                                            old_old_pressure,
+                                            old_composition,
+                                            old_old_composition,
+                                            average_field,
+                                            evaluation_points,
+                                            max_residual,
+                                            max_velocity);
+      }
     else
       compute_composition_system_residual(old_field,
                                           old_old_field,
@@ -901,7 +903,7 @@ namespace aspect
       // we don't have sensible timesteps during the first two iterations
       return max_viscosity;
     else
-    {
+      {
         Assert (old_time_step > 0, ExcInternalError());
 
         double entropy_viscosity;
@@ -937,33 +939,33 @@ namespace aspect
 
     unsigned int n_q_points = material_model_inputs.temperature.size();
 
-    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       {
-      const FEValuesExtractors::Scalar temp(dim+2+c);
-      input_composition.push_back(temp);
+        const FEValuesExtractors::Scalar temp(dim+2+c);
+        input_composition.push_back(temp);
       }
 
     input_finite_element_values[input_temperature].get_function_values (current_linearization_point,
                                                                         material_model_inputs.temperature);
     input_finite_element_values[input_pressure].get_function_values(current_linearization_point,
                                                                     material_model_inputs.pressure);
-    if(compute_strainrate)
+    if (compute_strainrate)
       input_finite_element_values[input_velocities].get_function_symmetric_gradients(current_linearization_point,
                                                                                      material_model_inputs.strain_rate);
 
     // the values of the compositional fields are stored as blockvectors for each field
     // we have to extract them in this structure
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,
-        std::vector<double> (n_q_points));
+                                                          std::vector<double> (n_q_points));
 
-    for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       input_finite_element_values[input_composition[c]].get_function_values(current_linearization_point,
-                                                                      composition_values[c]);
+                                                                            composition_values[c]);
 
     // then we copy these values to exchange the inner and outer vector, because for the material
     // model we need a vector with values of all the compositional fields for every quadrature point
-    for(unsigned int q=0;q<n_q_points;++q)
-      for(unsigned int c=0;c<parameters.n_compositional_fields;++c)
+    for (unsigned int q=0; q<n_q_points; ++q)
+      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
         material_model_inputs.composition[q][c] = composition_values[c][q];
 
   }
@@ -1345,10 +1347,10 @@ namespace aspect
     const FEValuesExtractors::Scalar temperature (dim+1);
     std::vector<FEValuesExtractors::Scalar> compositional_fields;
 
-    for (unsigned int c=0;c<parameters.n_compositional_fields;++c)
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       {
-      const FEValuesExtractors::Scalar temp(dim+2+c);
-      compositional_fields.push_back(temp);
+        const FEValuesExtractors::Scalar temp(dim+2+c);
+        compositional_fields.push_back(temp);
       }
 
     const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
@@ -1392,12 +1394,13 @@ namespace aspect
     scratch.finite_element_values[velocities].get_function_values(current_linearization_point,
                                                                   scratch.current_velocity_values);
 
-    for(unsigned int c=0;c<parameters.n_compositional_fields;++c) {
-      scratch.finite_element_values[compositional_fields[c]].get_function_values(old_solution,
-                                                                                  scratch.old_composition_values[c]);
-      scratch.finite_element_values[compositional_fields[c]].get_function_values(old_old_solution,
-                                                                                  scratch.old_old_composition_values[c]);
-    }
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+      {
+        scratch.finite_element_values[compositional_fields[c]].get_function_values(old_solution,
+                                                                                   scratch.old_composition_values[c]);
+        scratch.finite_element_values[compositional_fields[c]].get_function_values(old_old_solution,
+                                                                                   scratch.old_old_composition_values[c]);
+      }
 
 
     // TODO: Compute artificial viscosity once per timestep instead of each time
@@ -1464,10 +1467,10 @@ namespace aspect
         const double viscosity            = scratch.material_model_outputs.viscosities[q];
         const bool is_compressible        = scratch.material_model_outputs.is_compressible;
         const double compressibility      = (is_compressible
-                                            ?
-                                            scratch.material_model_outputs.compressibilities[q]
-                                            :
-                                            std::numeric_limits<double>::quiet_NaN() );
+                                             ?
+                                             scratch.material_model_outputs.compressibilities[q]
+                                             :
+                                             std::numeric_limits<double>::quiet_NaN() );
 
         const Tensor<1,dim>
         gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));

@@ -66,7 +66,7 @@ namespace aspect
         //TODO: we look up the composition at the representative point, but we should
         // use averaged compositional values here. Right?
         std::vector<double> initial_composition(n_compositional_fields);
-        for (unsigned int c=0;c<n_compositional_fields;++c)
+        for (unsigned int c=0; c<n_compositional_fields; ++c)
           initial_composition[c] = compositional_initial_conditions.initial_composition(representative_point, c);
 
         // get material parameters and the magnitude of gravity. we assume

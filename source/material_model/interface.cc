@@ -254,41 +254,41 @@ namespace aspect
 
     template <int dim>
     Interface<dim>::MaterialModelInputs::MaterialModelInputs(unsigned int n_points, unsigned int n_comp)
-      {
-        position.resize(n_points);
-        temperature.resize(n_points);
-        pressure.resize(n_points);
-        composition.resize(n_points);
-        for(unsigned int i=0;i<n_points;++i)
-          composition[i].resize(n_comp);
-        strain_rate.resize(n_points);
-      }
+    {
+      position.resize(n_points);
+      temperature.resize(n_points);
+      pressure.resize(n_points);
+      composition.resize(n_points);
+      for (unsigned int i=0; i<n_points; ++i)
+        composition[i].resize(n_comp);
+      strain_rate.resize(n_points);
+    }
 
     template <int dim>
     Interface<dim>::MaterialModelOutputs::MaterialModelOutputs(unsigned int n_points)
-      {
-        viscosities.resize(n_points);
-        densities.resize(n_points);
-        thermal_expansion_coefficients.resize(n_points);
-        specific_heat.resize(n_points);
-        thermal_conductivities.resize(n_points);
-        compressibilities.resize(n_points);
-      }
+    {
+      viscosities.resize(n_points);
+      densities.resize(n_points);
+      thermal_expansion_coefficients.resize(n_points);
+      specific_heat.resize(n_points);
+      thermal_conductivities.resize(n_points);
+      compressibilities.resize(n_points);
+    }
 
     template <int dim>
     void
     Interface<dim>::compute_parameters(const struct MaterialModelInputs &in, struct MaterialModelOutputs &out)
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
-      {
-        out.viscosities[i]                    = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
-        out.densities[i]                      = density                       (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-        out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-        out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-        out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-        out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-        out.is_compressible = is_compressible();
-      }
+        {
+          out.viscosities[i]                    = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
+          out.densities[i]                      = density                       (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          out.is_compressible = is_compressible();
+        }
     }
 
 

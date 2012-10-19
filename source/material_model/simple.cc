@@ -43,11 +43,11 @@ namespace aspect
       const double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
 
       return temperature_dependence * eta;
-/*      return (this->n_compositional_fields()>0
-          ?
-          (6.5*composition[0]+1) * eta
-          :
-          eta);*/
+      /*      return (this->n_compositional_fields()>0
+                ?
+                (6.5*composition[0]+1) * eta
+                :
+                eta);*/
     }
 
 
@@ -122,11 +122,11 @@ namespace aspect
              const Point<dim> &) const
     {
       return (this->n_compositional_fields()>0
-          ?
-          100.0 * compositional_fields[0] + reference_rho *
+              ?
+              100.0 * compositional_fields[0] + reference_rho *
               (1 - thermal_alpha * (temperature - reference_T))
-          :
-          reference_rho * (1 - thermal_alpha * (temperature - reference_T)));
+              :
+              reference_rho * (1 - thermal_alpha * (temperature - reference_T)));
     }
 
 
