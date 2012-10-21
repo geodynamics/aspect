@@ -67,11 +67,20 @@
   \\[1cm]
   {\large
     Wolfgang Bangerth\\
-    Thomas Geenen\\
-    Timo Heister\\
-    Martin Kronbichler\\
+    Timo Heister\\[24pt]
   }
 \end{centering}
+{\parindent0pt
+ \large
+    with contributions by:\\
+    Markus B{\"u}rg,
+    Juliane Dannberg,
+    Ren{\'e} Ga{\ss}m{\"o}ller,
+    Thomas Geenen,
+    Eric Heien,
+    Martin Kronbichler
+}
+
 
 
 \pagebreak
@@ -3290,187 +3299,215 @@ end
 \subsubsection{The ``Stokes' law'' benchmark}
 \label{sec:benchmark-stokes_law}
 
-Stokes' law was derived by George Gabriel Stokes in 1851 and describes the frictional force 
-a sphere experiences in a laminar flowing viscous medium. A setup for testing this
-law is a sphere with the radius r falling in a highly viscous fluid with lower density. Due to its 
-higher density the sphere is accelerated by the gravitational force. While 
-the frictional force increases with the velocity of the falling particle, 
-the buoyancy force remains constant. Thus, at some time the forces will 
+\textit{This section was contributed by Juliane Dannberg.}
+
+Stokes' law was derived by George Gabriel Stokes in 1851 and describes the frictional force
+a sphere with a density different than the surrounding fluid experiences in a
+laminar flowing viscous medium.
+A setup for testing this law is a sphere with the radius $r$ falling in a highly
+viscous fluid with lower density. Due to its higher density the sphere is
+accelerated by the gravitational force. While
+the frictional force increases with the velocity of the falling particle,
+the buoyancy force remains constant. Thus, after some time the forces will
 be balanced and the settling velocity of the sphere $v_s$ will remain constant:
 
 \begin{align}
   \label{eq:stokes-law}
-  \underbrace{6 \pi \, \eta \, r \, v_s}_{\text{frictional force}} = 
-  \underbrace{4/3 \pi \, r^3 \, \Delta\rho \, g}_{\text{buoyancy force}}
+  \underbrace{6 \pi \, \eta \, r \, v_s}_{\text{frictional force}} =
+  \underbrace{4/3 \pi \, r^3 \, \Delta\rho \, g,}_{\text{buoyancy force}}
 \end{align}
-
-\begin{align*}
-  \eta \quad &\text{dynamic viscosity of the fluid}\\
-  \Delta\rho \quad &\text{density difference between sphere and fluid}\\
-  g \quad &\text{gravitational acceleration}
-\end{align*}
-
-The resulting settling velocity is given by:
+where $\eta$ is the dynamic viscosity of the fluid, $\Delta\rho$ is the
+density difference between sphere and fluid and $g$ the gravitational
+acceleration. The resulting settling velocity is then given by
 \begin{align}
   \label{eq:stokes-velo}
   v_s = \frac{2}{9} \frac{\Delta\rho \, r^2 \, g}{\eta}.
 \end{align}
-
 Because we do not take into account inertia in our numerical computation,
-the falling particle will reach the constant settling velocity right after 
+the falling particle will reach the constant settling velocity right after
 the first timestep.
+
 For the setup of this benchmark, we chose the following parameters:
 \begin{align*}
   \label{eq:stokes-parameters}
   r &= 200 \, \text{km}\\
   \Delta\rho &= 100 \, \text{kg}/\text{m}^3\\
   \eta &= 10^{22} \, \text{Pa s}\\
-  g &= 9.81 \, \text{m}/\text{s}^2\\
-  \vspace{1mm}
-  \text{resulting }  v_s &= 8.72 \cdot 10^{-10} \, \text{m}/\text{s}
+  g &= 9.81 \, \text{m}/\text{s}^2.
 \end{align*}
+With these values, the exact value of sinking velocity is $v_s =
+8.72 \cdot 10^{-10} \, \text{m}/\text{s}$.
 
-\begin{figure}
-  \begin{center}
-    \includegraphics[width=0.55\textwidth]{cookbooks/benchmarks/stokes-velocity}
-    \hfill
-    \includegraphics[width=0.44\textwidth]{cookbooks/benchmarks/stokes-density}
-    \caption{Stokes benchmark. Both figures show only a 2D slice of the
-      three-dimensional model. 
-      Left: The compositional field and overlaid to it some velocity vectors.
-      The composition is 1 inside a sphere with the radius of 200 km and 0
-      outside of this sphere. As the velocity vectors show, the sphere sinks
-      in the viscous medium. 
-      Right: The density distribution of the model. The compositional density 
-      contrast of 100 kg$/\text{m}^3$ leads to a higher density inside of the
-      sphere.}
-    \label{fig:solcx}
-  \end{center}
-\end{figure}
+To run this benchmark, we need to set up an input file that describes the
+situation. In principle, what we need to do is to describe a spherical object
+with a density that is larger than the surrounding material. There are multiple
+ways of doing this. For example, we could simply set the initial temperature of
+the material in the sphere to a lower value, yielding a higher density with any
+of the common material models. Or, we could use \aspect{}'s facilities to advect
+along what are called ``compositional fields'' and make the density dependent on
+these fields.
 
-To run this benchmark, you can use the following input file:
+We will go with the second approach and tell \aspect{} to advect a single
+compositional field. The initial conditions for this field will be zero outside
+the sphere and one inside. We then need to also tell the material model to
+increase the density by $\Delta\rho=100 kg\, m^{-3}$ times the concentration of
+the compositional field. This can be done, like everything else, from the input
+file. 
 
-\begin{lstlisting}[frame=single,language=prmfile]
+All of this setup is then described by the following input file.
+(You can find the input file to run this cookbook example in
+\url{cookbooks/stokes.prm}. For your first runs you will probably want to
+reduce the number of mesh refinement steps to make things run more quickly.)
+
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
 ############### Global parameters
+# We use a 3d setup. Since we are only interested
+# in a steady state solution, we set the end time
+# equal to the start time to force a single time
+# step before the program terminates.
 
-set Dimension                              = 3
+set Dimension                              = 3 % \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
 
-set Start time                             = 0
-set End time                               = 2e13
+set Start time                             = 0 % \index[prmindex]{Start time} \index[prmindexfull]{Start time} %
+set End time                               = 0 % \index[prmindex]{End time} \index[prmindexfull]{End time} %
+set Use years in output instead of seconds = false % \index[prmindex]{Use years in output instead of seconds} \index[prmindexfull]{Use years in output instead of seconds} %
 
-set Output directory                       = output
-set Use years in output instead of seconds = false
+set Output directory                       = output % \index[prmindex]{Output directory} \index[prmindexfull]{Output directory} %
+
 
 ############### Parameters describing the model
+# The setup is a 3d box with edge length 2890000 in which
+# all 6 sides have free slip boundary conditions. Because
+# the temperature plays no role in this model we need not
+# bother to describe temperature boundary conditions or
+# the material parameters that pertain to the temperature.
+
 
 subsection Geometry model
-  set Model name = box
+  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
 
   subsection Box
-    set X extent  = 2890000
-    set Y extent  = 2890000
-    set Z extent  = 2890000
+    set X extent  = 2890000 % \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
+    set Y extent  = 2890000 % \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
+    set Z extent  = 2890000 % \index[prmindex]{Z extent} \index[prmindexfull]{Geometry model!Box!Z extent} %
   end
 end
 
 
 subsection Model settings
-  set Tangential velocity boundary indicators = 0,1,2,3,4,5
-  set Fixed temperature boundary indicators   = 0,1 
-  set Include shear heating                   = false
+  set Tangential velocity boundary indicators = 0,1,2,3,4,5 % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
 end
 
 
 subsection Material model
-  set Model name = simple
+  set Model name = simple % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
 
-    subsection Simple model
-    set Reference density             = 3300
-    set Reference temperature         = 1
-    set Thermal expansion coefficient = 4e-5
-    set Viscosity                     = 1e22
+  subsection Simple model
+    set Reference density             = 3300 % \index[prmindex]{Reference density} \index[prmindexfull]{Material model!Simple model!Reference density} %
+    set Viscosity                     = 1e22 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
   end
 end
 
 
 subsection Gravity model
-  set Model name = vertical
+  set Model name = vertical % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
 
   subsection Vertical
-    set Magnitude = 9.81
+    set Magnitude = 9.81 % \index[prmindex]{Magnitude} \index[prmindexfull]{Gravity model!Vertical!Magnitude} %
   end
 end
 
 
 ############### Parameters describing the temperature field
+# As above, there is no need to set anything for the
+# temperature boundary conditions.
 
 subsection Boundary temperature model
-  set Model name = box
-
-  subsection Box
-    set Bottom temperature = 1
-    set Left temperature   = 1
-    set Right temperature  = 1
-    set Top temperature    = 1
-    set Front temperature  = 1
-    set Back temperature   = 1
-  end
+  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
 end
 
 subsection Initial conditions
-  set Model name = function
+  set Model name = function % \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
 
   subsection Function
-    set Function expression = 1
+    set Function expression = 0 % \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
   end
 end
 
 ############### Parameters describing the compositional field
+# This, however, is the more important part: We need to describe
+# the compositional field and its influence on the density
+# function. The following blocks say that we want to 
+# advect a single compositional field and that we give it an
+# initial value that is zero outside a sphere of radius
+# r=200000m and centered at the point (p,p,p) with
+# p=1445000 (which is half the diameter of the box) and one inside.
+# The last block re-opens the material model and sets the
+# density differential per unit change in compositional field to
+# 100.
 
 subsection Compositional fields
-  set Number of fields = 1
+  set Number of fields = 1 % \index[prmindex]{Number of fields} \index[prmindexfull]{Compositional fields!Number of fields} %
 end 
 
 subsection Compositional initial conditions
-  set Model name = function
+  set Model name = function % \index[prmindex]{Model name} \index[prmindexfull]{Compositional initial conditions!Model name} %
 
   subsection Function
-    set Variable names = x,y,z
-    set Function expression = if(sqrt((x-1445000)*(x-1445000)+(y-1445000)*(y-1445000)
-                              +(z-1445000)*(z-1445000)) > 200000,0,1)
+    set Variable names      = x,y,z % \index[prmindex]{Variable names} \index[prmindexfull]{Compositional initial conditions!Function!Variable names} %
+    set Function constants  = r=200000,p=1445000 % \index[prmindex]{Function constants} \index[prmindexfull]{Compositional initial conditions!Function!Function constants} %
+    set Function expression = if(sqrt((x-p)*(x-p)+(y-p)*(y-p)+(z-p)*(z-p)) > r, 0, 1) % \index[prmindex]{Function expression} \index[prmindexfull]{Compositional initial conditions!Function!Function expression} %
   end
 end
 
+subsection Material model
+  subsection Simple model
+    set Density differential for compositional field 1 = 100 % \index[prmindex]{Density differential for compositional field 1} \index[prmindexfull]{Material model!Simple model!Density differential for compositional field 1} %
+  end
+end
+
+
+
+
 ############### Parameters describing the discretization
+# The following parameters describe how often we want to refine
+# the mesh globally and adaptively, what fraction of cells should
+# be refined in each adaptive refinement step, and what refinement
+# indicator to use when refining the mesh adaptively. 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 6
-  set Initial global refinement          = 5
-  set Refinement fraction                = 0.2
-  set Strategy                           = Velocity
+  set Initial adaptive refinement        = 4 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
+  set Initial global refinement          = 4 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
+  set Refinement fraction                = 0.2 % \index[prmindex]{Refinement fraction} \index[prmindexfull]{Mesh refinement!Refinement fraction} %
+  set Strategy                           = Velocity % \index[prmindex]{Strategy} \index[prmindexfull]{Mesh refinement!Strategy} %
 end
 
 
 ############### Parameters describing the what to do with the solution
+# The final section allows us to choose which postprocessors to
+# run at the end of each time step. We select to generate graphical
+# output that will consist of the primary variables (velocity, pressure,
+# temperature and the compositional fields) as well as the density and
+# viscosity. We also select to compute some statistics about the
+# velocity field.
 
 subsection Postprocess
-  set List of postprocessors = visualization
+  set List of postprocessors = visualization, velocity statistics % \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
 
   subsection Visualization
-    set Number of grouped files       = 0
-    set Output format                 = vtu
-    set Time between graphical output = 1e6   
-    set List of output variables = density, viscosity
+    set List of output variables = density, viscosity % \index[prmindex]{List of output variables} \index[prmindexfull]{Postprocess!Visualization!List of output variables} %
   end
 end
 \end{lstlisting}
 
-\vspace{5mm}
-
-Finally, we want to know the settling velocity of the sphere in our numerical 
-model. You can visualize the output in different ways, one of it being ParaView. 
-Here you can calculate the average velocity of the sphere using the filters
-
+Usig this input file, let us try to evaluate the results of the current
+computations for the settling velocity of the sphere. You can visualize the output in different
+ways, one of it being ParaView and shown in
+Fig.~\ref{fig:stokes-falling-sphere-2d} (an alternative is to use Visit as
+described in Section~\ref{sec:viz}; 3d images of this simulation using Visit
+are shown in Fig.~\ref{fig:stokes-falling-sphere-3d}).
+Here, Paraview has the advantage that you can calculate the average velocity
+of the sphere using the following filters:
 \begin{enumerate}
  \item Threshold (Scalars: C\_1, Lower Threshold 0.5, Upper Threshold 1),
  \item Integrate Variables,
@@ -3478,15 +3515,56 @@ Here you can calculate the average velocity of the sphere using the filters
  \item Calculator (use the formula sqrt(velocity\_x\textasciicircum2+
        velocity\_y\textasciicircum2+velocity\_z\textasciicircum2)/Volume).
 \end{enumerate}
-
-If you now look at 
-the Calculator object in the Spreadsheet View, you can see the average sinking 
+If you then look at
+the Calculator object in the Spreadsheet View, you can see the average sinking
 velocity of the sphere in the column ``Result'' and compare it to the theoretical
-value ($v_s = 8.72 \cdot 10^{-10} \, \text{m}/\text{s}$). 
-In this case, this value should be about 8.865 $\cdot 10^{-10} \, \text{m}/\text{s}$.
-The difference between the analytical and the numerical solution can be explained by
-different points: In our case the sphere is viscous and not rigid, as in Stokes'
-law, and we have a finite box instead of an infinite medium. 
+value $v_s = 8.72 \cdot 10^{-10} \, \text{m}/\text{s}$.
+In this case, the numerical result is 8.865 $\cdot 10^{-10} \,
+\text{m}/\text{s}$ when you add a few more refinement steps to actually resolve
+the 3d flow field adequately. The ``velocity statistics'' postprocessor we have
+selected above also provides us with a maximal velocity that is on the same
+order of magnitude. The difference between the analytical and the numerical
+values can be explained by different at least the following three points:
+(i) In our case the sphere is viscous and not rigid as assumed in Stokes' initial model, leading to
+a velocity field that varies inside the sphere rather than being constant.
+(ii) Stokes' law is derived using an infinite domain but we have a finite box
+instead. (iii) The mesh may not yet fine enough to provide a fully converges
+solution. Nevertheless, the fact that we get a result that is accurate to less
+than 2\% is a good indication that \aspect{} implements the equations correctly.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.55\textwidth]{cookbooks/benchmarks/stokes/stokes-velocity}
+    \hfill
+    \includegraphics[width=0.44\textwidth]{cookbooks/benchmarks/stokes/stokes-density}
+  \end{center}
+  \caption{Stokes benchmark. Both figures show only a 2D slice of the
+      three-dimensional model.
+      Left: The compositional field and overlaid to it some velocity vectors.
+      The composition is 1 inside a sphere with the radius of 200 km and 0
+      outside of this sphere. As the velocity vectors show, the sphere sinks
+      in the viscous medium.
+      Right: The density distribution of the model. The compositional density
+      contrast of 100 kg$/\text{m}^3$ leads to a higher density inside of the
+      sphere.}
+  \label{fig:stokes-falling-sphere-2d}
+\end{figure}
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/composition}
+    \hfill
+    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/mesh}
+    \hfill
+    \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/velocity}
+  \end{center}
+  \caption{Stokes benchmark. Three-dimensional views of the compositional field
+  (left), the adaptively refined mesh (center) and the resulting velocity field
+  (right).}
+  \label{fig:stokes-falling-sphere-3d}
+\end{figure}
+
+
 
 
 \section{Extending \aspect}
