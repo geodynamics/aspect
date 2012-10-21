@@ -121,12 +121,13 @@ namespace aspect
              const std::vector<double> &compositional_fields, /*composition*/
              const Point<dim> &) const
     {
-      return (this->n_compositional_fields()>0
-              ?
-              100.0 * compositional_fields[0] + reference_rho *
-              (1 - thermal_alpha * (temperature - reference_T))
-              :
-              reference_rho * (1 - thermal_alpha * (temperature - reference_T)));
+      return (reference_rho * (1 - thermal_alpha * (temperature - reference_T))
+              +
+              (this->n_compositional_fields()>0
+               ?
+               compositional_delta_rho * compositional_fields[0]
+               :
+               0));
     }
 
 
@@ -237,6 +238,17 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\beta$. "
                              "Units: $1/K$.");
+          prm.declare_entry ("Density differential for compositional field 1", "0",
+                             Patterns::Double(),
+                             "If compositional fields are used, then one would frequently want "
+                             "to make the density depend on these fields. In this simple material "
+                             "model, we make the following assumptions: if no compositional fields "
+                             "are used in the current simulation, then the density is simply the usual "
+                             "one with its linear dependence on the temperature. If there are compositional "
+                             "fields, then the density only depends on the first one in such a way that "
+                             "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
+                             "This parameter describes the value of $\\Delta \\rho$. Units: $kg/m^3/\\textrm{unit "
+                             "change in composition}.");
         }
         prm.leave_subsection();
       }
@@ -260,6 +272,7 @@ namespace aspect
           k_value                    = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
+          compositional_delta_rho    = prm.get_double ("Density differential for compositional field 1");
         }
         prm.leave_subsection();
       }

@@ -189,6 +189,8 @@ namespace aspect
          * The thermal conductivity.
          */
         double k_value;
+
+        double compositional_delta_rho;
     };
 
   }
