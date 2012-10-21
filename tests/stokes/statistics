@@ -1,0 +1,16 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of composition degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver
+# 9: Iterations for Stokes solver
+# 10: Time step size (seconds)
+# 11: Visualization file name
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+0 0.0000e+00  64 2312  729  729 0 0 39 4.0417e+14                           "" 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 120 4438 1405 1405 0 0 40 1.8789e+14                           "" 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 120 4438 1405 1405 0 0 40 1.8789e+14 output-stokes/solution-00000 5.45841472e-11 7.70027618e-10 
