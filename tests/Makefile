@@ -44,12 +44,20 @@ $(tests):
 # creating the output involves running ../lib/aspect; at first, however,
 # we make sure that we don't care what the parameter file says
 # regarding the output directory, but that we simply set what is
-# appropriate
+# appropriate. we do so in a way that creates a temporary parameter
+# file with a fixed output directory and if the two are different
+# overwrite the original one
 output-%:
 	@echo =====$(SUBDIR)=======================testing============ $<
 	@rm -rf $@
 	@mkdir $@
-	@$(PERL) -pi -e 's/(Output directory\s*=).*/\1 $@/g;' $<
+	@cat $< | $(PERL) -pi -e 's/(Output directory\s*=).*/\1 $@/g;' \
+		> $(<).tmp
+	@if (diff -q $< $(<).tmp > /dev/null) ; then \
+		rm $(<).tmp ; \
+	 else \
+		mv $(<).tmp $< ; \
+	 fi
 	@MPI=`grep "MPI:" $< | perl -pi -e 's/.*: *(\d+).*/\1/g;'` ; \
 	    if test -z "$$MPI" ; then \
 		../lib/aspect $< > $@/screen-output ; \
