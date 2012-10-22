@@ -418,8 +418,9 @@ namespace aspect
                          system_dofs_per_block[0]+system_dofs_per_block[1]);
     statistics.add_value("Number of temperature degrees of freedom",
                          system_dofs_per_block[2]);
-    statistics.add_value("Number of composition degrees of freedom",
-                         (parameters.n_compositional_fields>0)?system_dofs_per_block[3]:0);
+    if (parameters.n_compositional_fields > 0)
+      statistics.add_value("Number of composition degrees of freedom",
+                           system_dofs_per_block[3]);
 
 
     // then interpolate the current boundary velocities. this adds to
