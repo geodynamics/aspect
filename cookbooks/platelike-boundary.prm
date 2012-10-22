@@ -10,6 +10,11 @@ set Use years in output instead of seconds = false
 
 subsection Boundary temperature model
   set Model name = box
+  
+  subsection Box
+    set Bottom temperature = 1
+    set Top temperature    = 0
+  end
 end
 
 
@@ -25,13 +30,17 @@ subsection Geometry model
   subsection Box
     set X extent = 2
     set Y extent = 1
-    set Z extent = 1
   end
 end
 
 
 subsection Initial conditions
-  set Model name = perturbed box
+  set Model name = function
+  
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = (1-z)    
+  end
 end
 
 
@@ -40,7 +49,7 @@ subsection Material model
 
   subsection Simple model
     set Thermal conductivity          = 1e-6
-    set Thermal expansion coefficient = 2e-5
+    set Thermal expansion coefficient = 1e-4
     set Viscosity                     = 1
   end
 end
@@ -54,9 +63,9 @@ end
 
 
 subsection Model settings
-  set Fixed temperature boundary indicators   = 0, 1
-  set Zero velocity boundary indicators       = 0, 1, 2
-  set Tangential velocity boundary indicators =
+  set Fixed temperature boundary indicators   = 2, 3
+  set Zero velocity boundary indicators       = 
+  set Tangential velocity boundary indicators = 0, 1, 2
   set Prescribed velocity boundary indicators = 3: function
 end
 
