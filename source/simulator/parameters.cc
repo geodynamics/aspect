@@ -25,6 +25,7 @@
 
 #include <deal.II/base/parameter_handler.h>
 
+#include <dirent.h>
 
 
 namespace aspect
@@ -466,6 +467,23 @@ namespace aspect
       output_directory = "./";
     else if (output_directory[output_directory.size()-1] != '/')
       output_directory += "/";
+
+    // verify that the output directory actually exists. trying to
+    // write to a non-existing output directory will eventually
+    // produce an error but one not easily understood. since
+    // this is no error where a nicely formatted error message
+    // with a backtrace is likely very useful, just print an
+    // error and exit
+    if (opendir(output_directory.c_str()) == NULL)
+      {
+        std::cerr << "\n"
+                  << "-----------------------------------------------------------------------------\n"
+                  << "The output directory <" << output_directory
+                  << "> provided in the input file appears not to exist!\n"
+                  << "-----------------------------------------------------------------------------\n"
+                  << std::endl;
+        std::exit (1);
+      }
 
     surface_pressure              = prm.get_double ("Surface pressure");
     adiabatic_surface_temperature = prm.get_double ("Adiabatic surface temperature");
