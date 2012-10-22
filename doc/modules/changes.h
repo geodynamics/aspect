@@ -11,10 +11,20 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
-New: introduce compositional fields, that are advected by the velocity. These are passive
-for now.
+New: Material models can now depend on compositional fields.
 <br>
-(Juliane Dannberg, 2012/10/05)
+(Juliane Dannberg, 2012/10/19)
+
+<li>
+New: Introduce compositional fields, that are advected by the velocity.
+<br>
+(Juliane Dannberg, 2012/10/19)
+
+<li>
+New: There is now a plugin that allows using GPlates velocity models
+as input for the velocity boundary conditions.
+<br>
+(Rene Gassmoeller, 2012/10/18)
 
 <li>
 Changed: SimulatorAccess moved from aspect::Postproccessor to aspect:: and
