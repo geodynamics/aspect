@@ -371,7 +371,7 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void
-      get_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
+      get_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
                                          const unsigned int                      q,
                                          std::vector<double>                    &composition_values_at_q_point) const;
 
@@ -1195,8 +1195,8 @@ namespace aspect
                         const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
                         const std::vector<double>          &old_pressure,
                         const std::vector<double>          &old_old_pressure,
-                        const std::vector<std::vector<double>> &old_composition,
-                        const std::vector<std::vector<double>> &old_old_composition,
+                        const std::vector<std::vector<double> > &old_composition,
+                        const std::vector<std::vector<double> > &old_old_composition,
                         const double                        global_u_infty,
                         const double                        global_T_variation,
                         const double                        average_temperature,
@@ -1227,8 +1227,8 @@ namespace aspect
                                           const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
                                           const std::vector<double>          &old_pressure,
                                           const std::vector<double>          &old_old_pressure,
-                                          const std::vector<std::vector<double>> &old_composition,
-                                          const std::vector<std::vector<double>> &old_old_composition,
+                                          const std::vector<std::vector<double> > &old_composition,
+                                          const std::vector<std::vector<double> > &old_old_composition,
                                           const double                        average_temperature,
                                           const std::vector<Point<dim> >     &evaluation_points,
                                           double                             &max_residual,
@@ -1291,7 +1291,7 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void
-      extract_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
+      extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
                                              const unsigned int                      q,
                                              std::vector<double>                    &composition_values_at_q_point) const;
 

@@ -290,7 +290,7 @@ namespace aspect
 
   template <int dim>
   void
-  SimulatorAccess<dim>::get_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
+  SimulatorAccess<dim>::get_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
                                                            const unsigned int                      q,
                                                            std::vector<double>                    &composition_values_at_q_point) const
   {

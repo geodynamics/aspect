@@ -319,7 +319,7 @@ namespace aspect
       time_dependent(true),
       point1("0.0,0.0"),
       point2("0.0,0.0"),
-      lookup(NULL)
+      lookup()
     {}
 
 
