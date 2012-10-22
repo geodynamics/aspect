@@ -11,6 +11,14 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: Aspect now catches if the output directory specified in
+the parameter file does not exist, rather than providing a
+cryptic error message upon first attempt to write to this
+directory.
+<br>
+(Wolfgang Bangerth, 2012/10/21)
+
+<li>
 New: Material models can now depend on compositional fields.
 <br>
 (Juliane Dannberg, 2012/10/19)
