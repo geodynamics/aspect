@@ -2376,7 +2376,12 @@ looks like this for the current input file:
 
 Fig.~\ref{fig:convection-box-stats} shows the results of visualizing the data
 that can be found in columns 2 (the time) plotted against columns 9 and 10
-(root mean square and maximal velocities). It shows clearly that the simulation
+(root mean square and maximal velocities). Plots of this kind can be generated with
+\texttt{gnuplot} by typing:
+\begin{verbatim}
+  plot "output/statistics" using 2:9 with lines
+\end{verbatim}
+Fig.~\ref{fig:convection-box-stats} shows clearly that the simulation
 enters a steady state after about $t\approx 0.1$ and then changes very little. This can also be observed using the
 graphical output files from which we have generated
 Fig.~\ref{fig:convection-box-fields}. One can look further into this data to
