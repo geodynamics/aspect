@@ -2711,9 +2711,10 @@ with a different set of boundary conditions. There, we used slip boundary
 conditions, i.e., the fluid can flow tangentially along the four sides of our
 box but this tangential velocity is unspecified. On the other hand, in many
 situations, one would like to actually prescribe the tangential flow velocity as
-well. A typical application would to use boundary conditions at the top that
+well. A typical application would be to use boundary conditions at the top that
 describe experimentally determined velocities of plates. This cookbook shows a
-simple version of something like this.
+simple version of something like this. To make it slightly more interesting, we
+choose a $2\times 1$ domain in 2d.
 
 Like for many other things, \aspect{} has a set of plugins for prescribed
 velocity boundary values (see
@@ -2728,20 +2729,20 @@ input file. It essentially extends the input file considered in the previous exa
 The part of this file that we are particularly interested in in the current
 context is the selection of the kind of boundary conditions on the four
 sides of the box geometry, which we do using a section like this:
-\begin{lstlisting}[frame=single,language=prmfile]
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
 subsection Model settings
-  set Fixed temperature boundary indicators   = 0, 1
-  set Zero velocity boundary indicators       = 0, 1, 2
-  set Tangential velocity boundary indicators =
-  set Prescribed velocity boundary indicators = 3: function
+  set Fixed temperature boundary indicators   = 2, 3 % \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
+  set Zero velocity boundary indicators       =  % \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
+  set Tangential velocity boundary indicators = 0, 1, 2 % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
+  set Prescribed velocity boundary indicators = 3: function % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
 end
 \end{lstlisting}
 
-Following the convention described in the previous section, this means that we
-prescribe a fixed temperature at the left and right sides of the box (boundary numbers zero and
-one). We fix the velocity to zero at the left, right, and bottom boundaries. No
-boundary will use tangential flow. Finally, the last entry above is a comma
-separated list (here with only a single element) of pairs consisting of the
+Following the convention for numbering boundaries described in the previous
+section, this means that we prescribe a fixed temperature at the bottom and top sides of the box (boundary
+numbers two and three). We use tangential flow at boundaries zero, one and two
+(left, right and bottom).
+Finally, the last entry above is a comma separated list (here with only a single element) of pairs consisting of the
 number of a boundary and the name of the prescribed velocity boundary model to
 be used on this boundary. Here, we use the \texttt{function} boundary model,
 which allows us to provide a function-like notation for the components of the
@@ -2749,25 +2750,22 @@ velocity vector at the boundary.
 
 The second part we need is that we actually describe the function that sets the
 velocity. We do this as follows:
-\begin{lstlisting}[frame=single,language=prmfile]
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
 subsection Boundary velocity model
   subsection Function
-    # The name of the variables as they will be used in the function,
-    # separated by ','.
-    set Variable names      = x,y,t
-
-    # Any constant used inside the function which is not a variable name.
-    set Function constants  = pi=3.1415926
-
-    # Vector valued expression for the velocity; separate components by ';'
-    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
+    set Variable names      = x,z,t % \index[prmindex]{Variable names} \index[prmindexfull]{Boundary velocity model!Function!Variable names} %
+    set Function constants  = pi=3.1415926 % \index[prmindex]{Function constants} \index[prmindexfull]{Boundary velocity model!Function!Function constants} %
+    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0 % \index[prmindex]{Function expression} \index[prmindexfull]{Boundary velocity model!Function!Function expression} %
   end
 end
 \end{lstlisting}
 The first of these gives names to the components of the position vector (here,
-we are in 2d) and the time. The value given here is actually just the default
-value. In the second parameter we define symbolic constants that can be used in
-the formula for the velocity that is specified in the last parameter. This
+we are in 2d and we use $x$ and $z$ as spatial variable names) and the time.
+We could have left this entry at its default, \texttt{x,y,t}, but since we
+often think in terms of ``depth'' as the vertical direction, let us use
+\texttt{z} for the second coordinate.
+In the second parameter we define symbolic constants that can be used 
+in the formula for the velocity that is specified in the last parameter. This
 formula needs to have as many components as there are space dimensions,
 separated by semicolons. As stated, this means that we prescribe the
 (horizontal) $x$-velocity and set the vertical velocity to zero. The horizontal
@@ -2808,6 +2806,142 @@ then at the time of writing this you would get the following error message: \\
 The reason is, of course, that there is no incompressible (divergence free) flow
 field that allows for a constant vertical outflow component along the top
 boundary without corresponding inflow anywhere else.}
+
+The remainder of the setup is described in the following, complete input file:
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+############### Global parameters
+
+set Dimension                              = 2 % \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
+set Start time                             = 0 % \index[prmindex]{Start time} \index[prmindexfull]{Start time} %
+set End time                               = 20 % \index[prmindex]{End time} \index[prmindexfull]{End time} %
+set Use years in output instead of seconds = false % \index[prmindex]{Use years in output instead of seconds} \index[prmindexfull]{Use years in output instead of seconds} %
+set Output directory                       = output % \index[prmindex]{Output directory} \index[prmindexfull]{Output directory} %
+
+
+############### Parameters describing the model
+# Let us here choose again a box domain of size 2x1
+# where we fix the temperature at the bottom and top,
+# allow free slip along the bottom, left and right,
+# and prescribe the velocity along the top using the
+# `function' description.
+
+subsection Geometry model
+  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
+
+  subsection Box
+    set X extent = 2 % \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
+    set Y extent = 1 % \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
+  end
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2, 3 % \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
+  set Zero velocity boundary indicators       =  % \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
+  set Tangential velocity boundary indicators = 0, 1, 2 % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
+  set Prescribed velocity boundary indicators = 3: function % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
+end
+
+
+# We then set the temperature to one at the bottom and zero
+# at the top: 
+subsection Boundary temperature model
+  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
+  
+  subsection Box
+    set Bottom temperature = 1 % \index[prmindex]{Bottom temperature} \index[prmindexfull]{Boundary temperature model!Box!Bottom temperature} %
+    set Top temperature    = 0 % \index[prmindex]{Top temperature} \index[prmindexfull]{Boundary temperature model!Box!Top temperature} %
+  end
+end
+
+
+# The velocity along the top boundary models a spreading
+# center that is moving left and right:
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,z,t % \index[prmindex]{Variable names} \index[prmindexfull]{Boundary velocity model!Function!Variable names} %
+    set Function constants  = pi=3.1415926 % \index[prmindex]{Function constants} \index[prmindexfull]{Boundary velocity model!Function!Function constants} %
+    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0 % \index[prmindex]{Function expression} \index[prmindexfull]{Boundary velocity model!Function!Function expression} %
+  end
+end
+
+
+# We then choose a vertical gravity model and describe the
+# initial temperature with a vertical gradient. The default
+# strength for gravity is one. The material model is the
+# same as before.
+subsection Gravity model
+  set Model name = vertical % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
+end
+
+
+subsection Initial conditions
+  set Model name = function % \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
+  
+  subsection Function
+    set Variable names      = x,z % \index[prmindex]{Variable names} \index[prmindexfull]{Initial conditions!Function!Variable names} %
+    set Function expression = (1-z)     % \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
+  end
+end
+
+
+subsection Material model
+  set Model name = simple % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+
+  subsection Simple model
+    set Thermal conductivity          = 1e-6 % \index[prmindex]{Thermal conductivity} \index[prmindexfull]{Material model!Simple model!Thermal conductivity} %
+    set Thermal expansion coefficient = 1e-4 % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Simple model!Thermal expansion coefficient} %
+    set Viscosity                     = 1 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
+  end
+end
+
+
+# The final part of this input file describes how many times the
+# mesh is refined and what to do with the solution once computed
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
+  set Initial global refinement          = 5 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
+  set Time steps between mesh refinement = 0 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics, heat flux statistics % \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
+
+  subsection Visualization
+    set Time between graphical output = 0.1 % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
+  end
+end
+\end{lstlisting}
+
+This model description yields a setup with a Rayleigh number of 200 (taking
+into account that the domain has size 2). It would, thus, be dominated by heat
+conduction rather than convection if the prescribed velocity boundary conditions
+did not provide a stirring action. Visualizing the results of this simulation%
+\footnote{In fact, the pictures are generated using a twice more refined mesh
+to provide adequate resolution. We keep the default setting of five
+global refinements in the parameter file as documented above to keep compute
+time reasonable when using the default settings.}
+yields images like the ones shown in Fig.~\ref{fig:platelike}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0000.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0001.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0003.png}
+  \\
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0004.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0005.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0006.png}
+  \caption{Variable velocity boundary conditions: Temperature and velocity
+  fields at the initial time (top left) and at various other points in time during the
+  simulation.}
+  \label{fig:platelike}
+\end{figure}
 
 
 \subsection{Geophysical setups}
@@ -3352,7 +3486,7 @@ compositional field. The initial conditions for this field will be zero outside
 the sphere and one inside. We then need to also tell the material model to
 increase the density by $\Delta\rho=100 kg\, m^{-3}$ times the concentration of
 the compositional field. This can be done, like everything else, from the input
-file. 
+file.
 
 All of this setup is then described by the following input file.
 (You can find the input file to run this cookbook example in
@@ -3437,7 +3571,7 @@ end
 ############### Parameters describing the compositional field
 # This, however, is the more important part: We need to describe
 # the compositional field and its influence on the density
-# function. The following blocks say that we want to 
+# function. The following blocks say that we want to
 # advect a single compositional field and that we give it an
 # initial value that is zero outside a sphere of radius
 # r=200000m and centered at the point (p,p,p) with
@@ -3448,7 +3582,7 @@ end
 
 subsection Compositional fields
   set Number of fields = 1 % \index[prmindex]{Number of fields} \index[prmindexfull]{Compositional fields!Number of fields} %
-end 
+end
 
 subsection Compositional initial conditions
   set Model name = function % \index[prmindex]{Model name} \index[prmindexfull]{Compositional initial conditions!Model name} %
@@ -3473,7 +3607,7 @@ end
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
 # be refined in each adaptive refinement step, and what refinement
-# indicator to use when refining the mesh adaptively. 
+# indicator to use when refining the mesh adaptively.
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 4 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
