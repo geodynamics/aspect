@@ -42,12 +42,16 @@ namespace aspect
       const double delta_temp = temperature-reference_T;
       const double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
 
-      return temperature_dependence * eta;
-      /*      return (this->n_compositional_fields()>0
-                ?
-                (6.5*composition[0]+1) * eta
-                :
-                eta);*/
+      double composition_dependence = 1.0;
+      if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
+      {
+          // TODO: Currently using an arithmetic interpolation. Usually a geometric interpolation 
+          // is assumed more realistic for viscosity
+          composition_dependence *= (1-composition[0]);
+          composition_dependence += composition_viscosity_prefactor * composition[0];
+      }
+
+      return composition_dependence * temperature_dependence * eta;
     }
 
 
@@ -223,6 +227,9 @@ namespace aspect
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0),
                              "The value of the constant viscosity. Units: $kg/m/s$.");
+          prm.declare_entry ("Composition viscosity prefactor", "1.0",
+                             Patterns::Double (0),
+                             "A linear dependency of viscosity on composition. Dimensionless prefactor.");
           prm.declare_entry ("Thermal viscosity exponent", "0.0",
                              Patterns::Double (0),
                              "The temperature dependence of viscosity. Dimensionless exponent.");
@@ -268,6 +275,7 @@ namespace aspect
           reference_rho              = prm.get_double ("Reference density");
           reference_T                = prm.get_double ("Reference temperature");
           eta                        = prm.get_double ("Viscosity");
+          composition_viscosity_prefactor = prm.get_double ("Composition viscosity prefactor");
           thermal_viscosity_exponent = prm.get_double ("Thermal viscosity exponent");
           k_value                    = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
