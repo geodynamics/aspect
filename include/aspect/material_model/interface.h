@@ -75,6 +75,13 @@ namespace aspect
         virtual ~Interface();
 
         /**
+         * Initialization function. TODO: Is there some argument that is possibly needed by some material models?
+         */
+        virtual
+        void
+        initialize ();
+
+        /**
          * Called at the beginning of each time step and allows the material model
          * to update internal data structures.
          */

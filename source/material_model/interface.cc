@@ -37,6 +37,10 @@ namespace aspect
     Interface<dim>::~Interface ()
     {}
 
+    template <int dim>
+    void
+    Interface<dim>::initialize ()
+    {}
 
     template <int dim>
     void
@@ -168,7 +172,9 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      return std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
+      Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
+      plugin->initialize();
+      return plugin;
     }
 
 
