@@ -2971,30 +2971,68 @@ concentration(s) at any given position is simply given by the value of the
 field(s) at this location.
 
 \aspect{} implements both strategies, at least to a certain degree. In this
-cookbook, we will consider the exact same situation as in the previous section
-but we will ask where the material that started in the bottom 20\% of the domain
-ends up.
+cookbook, we will follow the route of advected fields.
 
+\paragraph{The passive case.}
+We will consider the
+exact same situation as in the previous section but we will ask where the
+material that started in the bottom 20\% of the domain
+ends up, as well as the material that started in the top 20\%. For the moment,
+let us assume that there is no material between the materials at the bottom, the
+top, and the middle. The way to describe this situation is to simply add the
+following block of definitions to the parameter file (you can find the full
+parameter file in \url{cookbooks/compositional-passive.prm}:
 
 \begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
 # This is the new part: We declare that there will
-# be a single compositional field that will be
-# advected along. Its initial conditions are given by
+# be two compositional fields that will be
+# advected along. Their initial conditions are given by
 # a function that is one for the lowermost 0.2 height
-# units of the domain and zero otherwise.
+# units of the domain and zero otherwise in the first case,
+# and one in the top most 0.2 height units in the latter.
 subsection Compositional fields
-  set Number of fields = 1 % \index[prmindex]{Number of fields} \index[prmindexfull]{Compositional fields!Number of fields} %
+  set Number of fields = 2
 end
 
 subsection Compositional initial conditions
-  set Model name = function % \index[prmindex]{Model name} \index[prmindexfull]{Compositional initial conditions!Model name} %
+  set Model name = function
 
   subsection Function
-    set Variable names      = x,y % \index[prmindex]{Variable names} \index[prmindexfull]{Compositional initial conditions!Function!Variable names} %
-    set Function expression = if(y<0.2, 1, 0) % \index[prmindex]{Function expression} \index[prmindexfull]{Compositional initial conditions!Function!Function expression} %
+    set Variable names      = x,y
+    set Function expression = if(y<0.2, 1, 0) ; if(y>0.8, 1, 0) % \index[prmindex]{Function expression} \index[prmindexfull]{Compositional initial conditions!Function!Function expression} %
   end
 end
 \end{lstlisting}
+
+Running this simulation yields results such as the ones shown in
+Fig.~\ref{fig:compositional-passive} where we show the values of the functions
+$c_1(\mathbf x,t)$ and $c_2(\mathbf x,t)$ at various times in the simulation.
+Because these fields were one only inside the lowermost and uppermost parts of
+the domain, zero everywhere else, and because they have simply been advected
+along with the flow field, the places where they are larger than one half
+indicate where material has been transported to so far.%
+\footnote{Of course, this interpretation suggests that we could have achieved
+the same goal by encoding everything into a single function -- that would, for
+example, have had initial values one, zero and minus one in the three parts of
+the domain we are interested in.}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0000.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0001.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0003.png}
+  \\
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0004.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0005.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0006.png}
+  \caption{Passive compositional fields: \ldots}
+  \label{fig:compositional-passive}
+\end{figure}
+
 
 
 \subsection{Geophysical setups}

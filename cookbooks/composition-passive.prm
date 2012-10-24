@@ -91,10 +91,11 @@ end
 
 
 # This is the new part: We declare that there will
-# be a single compositional field that will be
-# advected along. Its initial conditions are given by
+# be two compositional fields that will be
+# advected along. Their initial conditions are given by
 # a function that is one for the lowermost 0.2 height
-# units of the domain and zero otherwise.
+# units of the domain and zero otherwise in the first case,
+# and one in the top most 0.2 height units in the latter.
 subsection Compositional fields
   set Number of fields = 2
 end
