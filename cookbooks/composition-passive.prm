@@ -96,7 +96,7 @@ end
 # a function that is one for the lowermost 0.2 height
 # units of the domain and zero otherwise.
 subsection Compositional fields
-  set Number of fields = 1
+  set Number of fields = 2
 end
 
 subsection Compositional initial conditions
@@ -104,6 +104,6 @@ subsection Compositional initial conditions
 
   subsection Function
     set Variable names      = x,y
-    set Function expression = if(y<0.2, 1, 0)
+    set Function expression = if(y<0.2, 1, 0) ; if(y>0.8, 1, 0)
   end
 end
