@@ -31,6 +31,13 @@ namespace aspect
   namespace MaterialModel
   {
     using namespace dealii;
+
+    namespace internal
+    {
+    class MaterialLookup;
+    class LateralViscosityLookup;
+    class RadialViscosityLookup;
+    }
     /**
      * A variable viscosity material model that reads the essential values of coefficients from
      * tables in input files.
@@ -45,6 +52,13 @@ namespace aspect
     class Steinberger: public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
+
+        /**
+         * Initialization function. Loads the material data and sets up pointers.
+         */
+        void
+        initialize ();
+
         /**
           * Called at the beginning of each time step and allows the material model
           * to update internal data structures.
@@ -190,10 +204,29 @@ namespace aspect
         bool latent_heat;
         std::vector<double> avg_temp;
         std::string datadirectory;
-        std::string material_file_name;
+        std::vector<std::string> material_file_names;
+        unsigned int n_material_data;
         std::string radial_viscosity_file_name;
         std::string lateral_viscosity_file_name;
         virtual double get_deltat (const Point<dim> &position) const;
+
+        /**
+         * Pointer to an object that reads and processes data we get from Perplex files.
+         */
+        std::vector<std_cxx1x::shared_ptr<internal::MaterialLookup> > material_lookup;
+        //std_cxx1x::shared_ptr<internal::MaterialLookup> material_lookup;
+
+        /**
+         * Pointer to an object that reads and processes data for the lateral temperature
+         * dependency of viscosity.
+         */
+        std_cxx1x::shared_ptr<internal::LateralViscosityLookup> lateral_viscosity_lookup;
+
+        /**
+         * Pointer to an object that reads and processes data for the radial viscosity
+         * profile.
+         */
+        std_cxx1x::shared_ptr<internal::RadialViscosityLookup> radial_viscosity_lookup;
 
     };
   }

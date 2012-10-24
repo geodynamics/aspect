@@ -38,10 +38,10 @@ namespace aspect
     namespace internal
     {
 
-      class material_lookup
+      class MaterialLookup
       {
         public:
-          material_lookup(const std::string &filename,
+          MaterialLookup(const std::string &filename,
                           const bool interpol)
           {
 
@@ -100,7 +100,7 @@ namespace aspect
             vs_values.reinit(numtemp,numpress);
             enthalpy_values.reinit(numtemp,numpress);
 
-            int i = 0;
+            unsigned int i = 0;
             while (!in.eof())
               {
                 double temp1,temp2;
@@ -287,15 +287,15 @@ namespace aspect
           double delta_temp;
           double min_temp;
           double max_temp;
-          int numtemp;
-          int numpress;
+          unsigned int numtemp;
+          unsigned int numpress;
           bool interpolation;
       };
 
-      class lateral_viscosity_lookup
+      class LateralViscosityLookup
       {
         public:
-          lateral_viscosity_lookup(const std::string &filename)
+          LateralViscosityLookup(const std::string &filename)
           {
             std::string temp;
             std::ifstream in(filename.c_str(), std::ios::in);
@@ -345,10 +345,10 @@ namespace aspect
 
       };
 
-      class radial_viscosity_lookup
+      class RadialViscosityLookup
       {
         public:
-          radial_viscosity_lookup(const std::string &filename)
+          RadialViscosityLookup(const std::string &filename)
           {
             std::string temp;
             std::ifstream in(filename.c_str(), std::ios::in);
@@ -397,6 +397,18 @@ namespace aspect
       };
     }
 
+    template <int dim>
+    void
+    Steinberger<dim>::initialize()
+    {
+
+    	n_material_data = material_file_names.size();
+    	for (unsigned i = 0; i < n_material_data; i++)
+    		material_lookup.push_back(std_cxx1x::shared_ptr<internal::MaterialLookup>
+    	                         (new internal::MaterialLookup(datadirectory+material_file_names[i],interpolation)));
+    	lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(datadirectory+lateral_viscosity_file_name));
+    	radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name));
+    }
 
     template <int dim>
     void
@@ -415,27 +427,17 @@ namespace aspect
                const SymmetricTensor<2,dim> &,
                const Point<dim> &position) const
     {
-      static internal::radial_viscosity_lookup table(datadirectory+radial_viscosity_file_name);
-      static internal::lateral_viscosity_lookup lat_table(datadirectory+lateral_viscosity_file_name);
-
       const double depth = this->get_geometry_model().depth(position);
       const unsigned int idx = static_cast<unsigned int>(avg_temp.size() * depth / this->get_geometry_model().maximal_depth());
       const double delta_temp = temperature-avg_temp[idx];
       const double adia_temp = this->get_adiabatic_conditions().temperature(position);
 
-      const double vis_lateral_exp = -1.0*lat_table.lateral_viscosity(depth)*delta_temp/(temperature*adia_temp);
+      const double vis_lateral_exp = -1.0*lateral_viscosity_lookup->lateral_viscosity(depth)*delta_temp/(temperature*adia_temp);
 
       const double vis_lateral = std::max(std::min(std::exp(vis_lateral_exp),1e4),1e-4);
-      const double vis_radial = table.radial_viscosity(depth);
+      const double vis_radial = radial_viscosity_lookup->radial_viscosity(depth);
 
       return std::max(std::min(vis_lateral * vis_radial,1e23),1e19);
-    }
-
-    internal::material_lookup &
-    get_material_data (std::string &datapath,bool interpolation)
-    {
-      static internal::material_lookup mat(datapath,interpolation);
-      return mat;
     }
 
     template <int dim>
@@ -487,15 +489,20 @@ namespace aspect
                    const std::vector<double> &compositional_fields,
                    const Point<dim> &position) const
     {
-      static std::string datapath = datadirectory+material_file_name;
-
+    	Assert (n_material_data <= compositional_fields.size(),
+    			ExcMessage("There are more material files provided than compositional"
+    					   " Fields. This can not be intended."));
+    	double cp = 0.0;
       if (!latent_heat)
-        return get_material_data(datapath,interpolation).specific_heat(temperature+get_deltat(position),pressure);
+      	for (unsigned i = 0; i < n_material_data; i++)
+          cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature+get_deltat(position),pressure);
       else
         {
-          const double cp = get_material_data(datapath,interpolation).dHdT(temperature+get_deltat(position),pressure);
-          return std::max(std::min(cp,6000.0),500.0);
+      	for (unsigned i = 0; i < n_material_data; i++)
+          cp += compositional_fields[i] * material_lookup[0]->dHdT(temperature+get_deltat(position),pressure);
+          cp = std::max(std::min(cp,6000.0),500.0);
         }
+      return cp;
     }
 
 
@@ -520,8 +527,13 @@ namespace aspect
              const std::vector<double> &compositional_fields,
              const Point<dim> &position) const
     {
-      static std::string datapath = datadirectory+material_file_name;
-      return get_material_data(datapath,interpolation).density(temperature+get_deltat(position),pressure);
+    	Assert (n_material_data <= compositional_fields.size(),
+    			ExcMessage("There are more material files provided than compositional"
+    					   " Fields. This can not be intended."));
+    	double rho = 0.0;
+      	for (unsigned i = 0; i < n_material_data; i++)
+           rho += compositional_fields[i] * material_lookup[i]->density(temperature+get_deltat(position),pressure);
+      	return rho;
     }
 
     template <int dim>
@@ -532,16 +544,22 @@ namespace aspect
                                    const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const
     {
-      static std::string datapath = datadirectory+material_file_name;
-
+    	Assert (n_material_data <= compositional_fields.size(),
+    			ExcMessage("There are more material files provided than compositional"
+    					   " Fields. This can not be intended."));
+    	double alpha = 0.0;
       if (!latent_heat)
-        return get_material_data(datapath,interpolation).thermal_expansivity(temperature+get_deltat(position),pressure);
+        	for (unsigned i = 0; i < n_material_data; i++)
+             alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature+get_deltat(position),pressure);
       else
         {
-          const double dHdp = get_material_data(datapath,interpolation).dHdp(temperature+get_deltat(position),pressure);
-          const double alpha = (1 - density(temperature,pressure,compositional_fields,position) * dHdp) / temperature;
-          return std::max(std::min(alpha,1e-3),1e-5);
+    	  double dHdp = 0.0;
+        	for (unsigned i = 0; i < n_material_data; i++)
+              dHdp += material_lookup[i]->dHdp(temperature+get_deltat(position),pressure);
+            alpha = (1 - density(temperature,pressure,compositional_fields,position) * dHdp) / temperature;
+            alpha = std::max(std::min(alpha,1e-3),1e-5);
         }
+      return alpha;
     }
 
     template <int dim>
@@ -552,8 +570,13 @@ namespace aspect
                 const std::vector<double> &compositional_fields,
                 const Point<dim> &position) const
     {
-      static std::string datapath = datadirectory+material_file_name;
-      return get_material_data(datapath,interpolation).seismic_Vp(temperature+get_deltat(position),pressure);
+    	Assert (n_material_data <= compositional_fields.size(),
+    			ExcMessage("There are more material files provided than compositional"
+    					   " Fields. This can not be intended."));
+    	double vp = 0.0;
+      	for (unsigned i = 0; i < n_material_data; i++)
+          vp += material_lookup[0]->seismic_Vp(temperature+get_deltat(position),pressure);
+      	return vp;
     }
 
     template <int dim>
@@ -564,8 +587,13 @@ namespace aspect
                 const std::vector<double> &compositional_fields,
                 const Point<dim> &position) const
     {
-      static std::string datapath = datadirectory+material_file_name;
-      return get_material_data(datapath,interpolation).seismic_Vs(temperature+get_deltat(position),pressure);
+    	Assert (n_material_data <= compositional_fields.size(),
+    			ExcMessage("There are more material files provided than compositional"
+    					   " Fields. This can not be intended."));
+    	double vs = 0.0;
+      	for (unsigned i = 0; i < n_material_data; i++)
+          vs += material_lookup[i]->seismic_Vs(temperature+get_deltat(position),pressure);
+      	return vs;
     }
 
 
@@ -648,9 +676,12 @@ namespace aspect
           prm.declare_entry ("Data directory", "data/material-model/steinberger/",
                              Patterns::DirectoryName (),
                              "The path to the model data. ");
-          prm.declare_entry ("Material file name", "pyr-ringwood88.txt",
-                             Patterns::Anything (),
-                             "The file name of the material data. ");
+          prm.declare_entry ("Material file names", "pyr-ringwood88.txt",
+        		              Patterns::List (Patterns::Anything()),
+                             "The file names of the material data. "
+                             "List with as many components as active"
+                             "compositional fields (material data is assumed to"
+                             "be in order with the ordering of the fields). ");
           prm.declare_entry ("Radial viscosity file name", "radial_visc.txt",
                              Patterns::Anything (),
                              "The file name of the radial viscosity data. ");
@@ -681,11 +712,13 @@ namespace aspect
         prm.enter_subsection("Steinberger model");
         {
           datadirectory        = prm.get ("Data directory");
-          material_file_name   = prm.get ("Material file name");
+          material_file_names  = Utilities::split_string_list
+                                   (prm.get ("Material file names"));
           radial_viscosity_file_name   = prm.get ("Radial viscosity file name");
           lateral_viscosity_file_name   = prm.get ("Lateral viscosity file name");
           interpolation        = prm.get_bool ("Bilinear interpolation");
           latent_heat          = prm.get_bool ("Latent heat");
+
           prm.leave_subsection();
         }
         prm.leave_subsection();
