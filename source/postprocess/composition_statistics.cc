@@ -1,0 +1,172 @@
+/*
+  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file doc/COPYING.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+/*  $Id$  */
+
+
+#include <aspect/postprocess/composition_statistics.h>
+#include <aspect/simulator.h>
+
+#include <deal.II/base/quadrature_lib.h>
+#include <deal.II/fe/fe_values.h>
+
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+
+
+namespace aspect
+{
+  namespace Postprocess
+  {
+    template <int dim>
+    std::pair<std::string,std::string>
+    CompositionStatistics<dim>::execute (TableHandler &statistics)
+    {
+      if (this->n_compositional_fields() == 0)
+        return std::pair<std::string,std::string>();
+
+      // create a quadrature formula based on the compositional element alone.
+      // be defensive about determining that what we think is the temperature
+      // element is it in fact
+      Assert (this->get_dof_handler().get_fe().n_base_elements() == 4,
+              ExcNotImplemented());
+      const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe().base_element(3).degree+1);
+      const unsigned int n_q_points = quadrature_formula.size();
+
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_dof_handler().get_fe(),
+                               quadrature_formula,
+                               update_values   |
+                               update_quadrature_points |
+                               update_JxW_values);
+
+      std::vector<double> compositional_values(n_q_points);
+
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+
+      std::vector<double> local_compositional_integrals (this->n_compositional_fields());
+
+      // compute the integral quantities by quadrature
+      for (; cell!=endc; ++cell)
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit (cell);
+
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              {
+                const FEValuesExtractors::Scalar compositional_field (dim+1+c);
+
+                fe_values[compositional_field].get_function_values (this->get_solution(),
+                                                                    compositional_values);
+                for (unsigned int q=0; q<n_q_points; ++q)
+                  local_compositional_integrals[c] += compositional_values[q]*fe_values.JxW(q);
+              }
+          }
+      // compute the sum over all processors
+      std::vector<double> global_compositional_integrals (local_compositional_integrals.size());
+      Utilities::MPI::sum (local_compositional_integrals,
+                           this->get_mpi_communicator(),
+                           global_compositional_integrals);
+
+      // compute min/max by simply
+      // looping over the elements of the
+      // solution vector.
+      double local_min_temperature = std::numeric_limits<double>::max();
+      double local_max_temperature = std::numeric_limits<double>::min();
+      for (unsigned int i=0; i<this->get_solution().block(2).local_size(); ++i)
+        {
+          local_min_temperature
+            = std::min<double> (local_min_temperature,
+                                this->get_solution().block(2).trilinos_vector()[0][i]);
+          local_max_temperature
+            = std::max<double> (local_max_temperature,
+                                this->get_solution().block(2).trilinos_vector()[0][i]);
+        }
+
+      double global_min_temperature = 0;
+      double global_max_temperature = 0;
+
+      // now do the reductions that are
+      // min/max operations. do them in
+      // one communication by multiplying
+      // one value by -1
+      {
+        double local_values[2] = { -local_min_temperature, local_max_temperature };
+        double global_values[2];
+
+        Utilities::MPI::max (local_values, this->get_mpi_communicator(), global_values);
+
+        global_min_temperature = -global_values[0];
+        global_max_temperature = global_values[1];
+      }
+
+      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+        {
+          statistics.add_value ("Minimal temperature (K)",
+                                global_min_temperature);
+          statistics.add_value ("Global mass for composition " + Utilities::int_to_string(c),
+                                global_compositional_integrals[c]);
+          statistics.add_value ("Maximal temperature (K)",
+                                global_max_temperature);
+        }
+
+      // also make sure that the other columns filled by the this object
+      // all show up with sufficient accuracy and in scientific notation
+      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+        {
+          const std::string columns[] = { "Minimal temperature (K)",
+                                          "Global mass for composition " + Utilities::int_to_string(c),
+                                          "Maximal temperature (K)"
+                                        };
+          for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+            {
+              statistics.set_precision (columns[i], 8);
+              statistics.set_scientific (columns[i], true);
+            }
+        }
+
+      std::ostringstream output;
+      output.precision(4);
+      output << global_min_temperature << " K, "
+             << global_max_temperature << " K";
+
+      return std::pair<std::string, std::string> ("Temperature min/avg/max:",
+                                                  output.str());
+    }
+  }
+}
+
+
+// explicit instantiations
+namespace aspect
+{
+  namespace Postprocess
+  {
+    ASPECT_REGISTER_POSTPROCESSOR(CompositionStatistics,
+                                  "composition statistics",
+                                  "A postprocessor that computes some statistics about "
+                                  "the compositional fields, if present in this simulation. "
+                                  "In particular, it computes maximal and minimal values of "
+                                  "each field, as well as the total mass contained in this "
+                                  "field as defined by the integral "
+                                  "$m_i(t) = \\int_\\Omega c_i(\\mathbf x,t) \\; dx$.")
+  }
+}
