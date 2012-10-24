@@ -345,6 +345,9 @@ namespace aspect
                           "is a spherical shell."));
       Assert((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model))->opening_angle()==360, ExcMessage("gplates velocity model just works for opening angle == 360"));
 
+      // TODO: Move the loading of files into set_current_time would remove
+      // some double effort if the Start time != 0
+
       // Load first velocity file
       lookup->load_file(create_filename(current_time_step));
 
