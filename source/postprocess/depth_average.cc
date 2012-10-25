@@ -224,16 +224,15 @@ namespace aspect
     DepthAverage<dim>::set_next_output_time (const double current_time)
     {
       // if output_interval is positive, then set the next output interval to
-      // a positive multiple; we need to interpret output_interval either
-      // as years or as seconds
+      // a positive multiple.
       if (output_interval > 0)
         {
-          if (this->convert_output_to_years() == true)
-            next_output_time = std::ceil(current_time / (output_interval * year_in_seconds)) *
-                               (output_interval * year_in_seconds);
-          else
-            next_output_time = std::ceil(current_time / (output_interval )) *
-                               output_interval;
+          // the current time is always in seconds, so we need to convert the output_interval to the same unit
+          double output_interval_in_s = (this->convert_output_to_years()) ? (output_interval*year_in_seconds) : output_interval;
+
+          // we need to compute the smallest integer that is bigger than current_time/my_output_interval,
+          // even if it is a whole number already (otherwise we output twice in a row)
+          next_output_time = (std::floor(current_time/output_interval_in_s)+1.0) * output_interval_in_s;
         }
     }
   }
