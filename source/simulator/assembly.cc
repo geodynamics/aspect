@@ -938,6 +938,8 @@ namespace aspect
     std::vector<FEValuesExtractors::Scalar> input_composition;
 
     unsigned int n_q_points = material_model_inputs.temperature.size();
+    for (unsigned int q=0; q<n_q_points; ++q)
+      material_model_inputs.position[q] = input_finite_element_values.quadrature_point(q);
 
     for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       {
