@@ -40,7 +40,10 @@ namespace aspect
                const Point<dim> &) const
     {
       const double delta_temp = temperature-reference_T;
-      const double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
+      double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
+
+      if (std::isnan(temperature_dependence))
+    	  temperature_dependence = 1.0;
 
       double composition_dependence = 1.0;
       if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
@@ -281,6 +284,9 @@ namespace aspect
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
           compositional_delta_rho    = prm.get_double ("Density differential for compositional field 1");
+
+          if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
+        	  AssertThrow(false, ExcMessage("Error: Material model simple with Thermal viscosity exponent can not have reference_T=0."));
         }
         prm.leave_subsection();
       }
