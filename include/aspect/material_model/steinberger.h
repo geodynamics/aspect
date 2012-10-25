@@ -34,9 +34,9 @@ namespace aspect
 
     namespace internal
     {
-    class MaterialLookup;
-    class LateralViscosityLookup;
-    class RadialViscosityLookup;
+      class MaterialLookup;
+      class LateralViscosityLookup;
+      class RadialViscosityLookup;
     }
     /**
      * A variable viscosity material model that reads the essential values of coefficients from

@@ -42,7 +42,7 @@ namespace aspect
       {
         public:
           MaterialLookup(const std::string &filename,
-                          const bool interpol)
+                         const bool interpol)
           {
 
             /* Initializing variables */
@@ -402,12 +402,12 @@ namespace aspect
     Steinberger<dim>::initialize()
     {
 
-    	n_material_data = material_file_names.size();
-    	for (unsigned i = 0; i < n_material_data; i++)
-    		material_lookup.push_back(std_cxx1x::shared_ptr<internal::MaterialLookup>
-    	                         (new internal::MaterialLookup(datadirectory+material_file_names[i],interpolation)));
-    	lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(datadirectory+lateral_viscosity_file_name));
-    	radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name));
+      n_material_data = material_file_names.size();
+      for (unsigned i = 0; i < n_material_data; i++)
+        material_lookup.push_back(std_cxx1x::shared_ptr<internal::MaterialLookup>
+                                  (new internal::MaterialLookup(datadirectory+material_file_names[i],interpolation)));
+      lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(datadirectory+lateral_viscosity_file_name));
+      radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name));
     }
 
     template <int dim>
@@ -489,17 +489,17 @@ namespace aspect
                    const std::vector<double> &compositional_fields,
                    const Point<dim> &position) const
     {
-    	Assert (n_material_data <= compositional_fields.size(),
-    			ExcMessage("There are more material files provided than compositional"
-    					   " Fields. This can not be intended."));
-    	double cp = 0.0;
+      Assert (n_material_data <= compositional_fields.size(),
+              ExcMessage("There are more material files provided than compositional"
+                         " Fields. This can not be intended."));
+      double cp = 0.0;
       if (!latent_heat)
-      	for (unsigned i = 0; i < n_material_data; i++)
+        for (unsigned i = 0; i < n_material_data; i++)
           cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature+get_deltat(position),pressure);
       else
         {
-      	for (unsigned i = 0; i < n_material_data; i++)
-          cp += compositional_fields[i] * material_lookup[0]->dHdT(temperature+get_deltat(position),pressure);
+          for (unsigned i = 0; i < n_material_data; i++)
+            cp += compositional_fields[i] * material_lookup[0]->dHdT(temperature+get_deltat(position),pressure);
           cp = std::max(std::min(cp,6000.0),500.0);
         }
       return cp;
@@ -527,13 +527,13 @@ namespace aspect
              const std::vector<double> &compositional_fields,
              const Point<dim> &position) const
     {
-    	Assert (n_material_data <= compositional_fields.size(),
-    			ExcMessage("There are more material files provided than compositional"
-    					   " Fields. This can not be intended."));
-    	double rho = 0.0;
-      	for (unsigned i = 0; i < n_material_data; i++)
-           rho += compositional_fields[i] * material_lookup[i]->density(temperature+get_deltat(position),pressure);
-      	return rho;
+      Assert (n_material_data <= compositional_fields.size(),
+              ExcMessage("There are more material files provided than compositional"
+                         " Fields. This can not be intended."));
+      double rho = 0.0;
+      for (unsigned i = 0; i < n_material_data; i++)
+        rho += compositional_fields[i] * material_lookup[i]->density(temperature+get_deltat(position),pressure);
+      return rho;
     }
 
     template <int dim>
@@ -544,20 +544,20 @@ namespace aspect
                                    const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const
     {
-    	Assert (n_material_data <= compositional_fields.size(),
-    			ExcMessage("There are more material files provided than compositional"
-    					   " Fields. This can not be intended."));
-    	double alpha = 0.0;
+      Assert (n_material_data <= compositional_fields.size(),
+              ExcMessage("There are more material files provided than compositional"
+                         " Fields. This can not be intended."));
+      double alpha = 0.0;
       if (!latent_heat)
-        	for (unsigned i = 0; i < n_material_data; i++)
-             alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature+get_deltat(position),pressure);
+        for (unsigned i = 0; i < n_material_data; i++)
+          alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature+get_deltat(position),pressure);
       else
         {
-    	  double dHdp = 0.0;
-        	for (unsigned i = 0; i < n_material_data; i++)
-              dHdp += material_lookup[i]->dHdp(temperature+get_deltat(position),pressure);
-            alpha = (1 - density(temperature,pressure,compositional_fields,position) * dHdp) / temperature;
-            alpha = std::max(std::min(alpha,1e-3),1e-5);
+          double dHdp = 0.0;
+          for (unsigned i = 0; i < n_material_data; i++)
+            dHdp += material_lookup[i]->dHdp(temperature+get_deltat(position),pressure);
+          alpha = (1 - density(temperature,pressure,compositional_fields,position) * dHdp) / temperature;
+          alpha = std::max(std::min(alpha,1e-3),1e-5);
         }
       return alpha;
     }
@@ -570,13 +570,13 @@ namespace aspect
                 const std::vector<double> &compositional_fields,
                 const Point<dim> &position) const
     {
-    	Assert (n_material_data <= compositional_fields.size(),
-    			ExcMessage("There are more material files provided than compositional"
-    					   " Fields. This can not be intended."));
-    	double vp = 0.0;
-      	for (unsigned i = 0; i < n_material_data; i++)
-          vp += material_lookup[0]->seismic_Vp(temperature+get_deltat(position),pressure);
-      	return vp;
+      Assert (n_material_data <= compositional_fields.size(),
+              ExcMessage("There are more material files provided than compositional"
+                         " Fields. This can not be intended."));
+      double vp = 0.0;
+      for (unsigned i = 0; i < n_material_data; i++)
+        vp += material_lookup[0]->seismic_Vp(temperature+get_deltat(position),pressure);
+      return vp;
     }
 
     template <int dim>
@@ -587,13 +587,13 @@ namespace aspect
                 const std::vector<double> &compositional_fields,
                 const Point<dim> &position) const
     {
-    	Assert (n_material_data <= compositional_fields.size(),
-    			ExcMessage("There are more material files provided than compositional"
-    					   " Fields. This can not be intended."));
-    	double vs = 0.0;
-      	for (unsigned i = 0; i < n_material_data; i++)
-          vs += material_lookup[i]->seismic_Vs(temperature+get_deltat(position),pressure);
-      	return vs;
+      Assert (n_material_data <= compositional_fields.size(),
+              ExcMessage("There are more material files provided than compositional"
+                         " Fields. This can not be intended."));
+      double vs = 0.0;
+      for (unsigned i = 0; i < n_material_data; i++)
+        vs += material_lookup[i]->seismic_Vs(temperature+get_deltat(position),pressure);
+      return vs;
     }
 
 
@@ -677,7 +677,7 @@ namespace aspect
                              Patterns::DirectoryName (),
                              "The path to the model data. ");
           prm.declare_entry ("Material file names", "pyr-ringwood88.txt",
-        		              Patterns::List (Patterns::Anything()),
+                             Patterns::List (Patterns::Anything()),
                              "The file names of the material data. "
                              "List with as many components as active"
                              "compositional fields (material data is assumed to"
@@ -713,7 +713,7 @@ namespace aspect
         {
           datadirectory        = prm.get ("Data directory");
           material_file_names  = Utilities::split_string_list
-                                   (prm.get ("Material file names"));
+                                 (prm.get ("Material file names"));
           radial_viscosity_file_name   = prm.get ("Radial viscosity file name");
           lateral_viscosity_file_name   = prm.get ("Lateral viscosity file name");
           interpolation        = prm.get_bool ("Bilinear interpolation");

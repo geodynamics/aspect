@@ -43,16 +43,16 @@ namespace aspect
       double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
 
       if (std::isnan(temperature_dependence))
-    	  temperature_dependence = 1.0;
+        temperature_dependence = 1.0;
 
       double composition_dependence = 1.0;
       if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
-      {
-          // TODO: Currently using an arithmetic interpolation. Usually a geometric interpolation 
+        {
+          // TODO: Currently using an arithmetic interpolation. Usually a geometric interpolation
           // is assumed more realistic for viscosity
           composition_dependence *= (1-composition[0]);
           composition_dependence += composition_viscosity_prefactor * composition[0];
-      }
+        }
 
       return composition_dependence * temperature_dependence * eta;
     }
@@ -286,7 +286,7 @@ namespace aspect
           compositional_delta_rho    = prm.get_double ("Density differential for compositional field 1");
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
-        	  AssertThrow(false, ExcMessage("Error: Material model simple with Thermal viscosity exponent can not have reference_T=0."));
+            AssertThrow(false, ExcMessage("Error: Material model simple with Thermal viscosity exponent can not have reference_T=0."));
         }
         prm.leave_subsection();
       }
