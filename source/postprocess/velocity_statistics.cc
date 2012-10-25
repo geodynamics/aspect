@@ -151,7 +151,7 @@ namespace aspect
               // we do not compute the compositions but give the functions below the value 0.0 instead
               std::vector<double> composition_values(this->n_compositional_fields(),0.0);
 
-              Point<dim> representative_point = Point<dim>::unit_vector(dim-1);
+              Point<dim> representative_point = this->get_geometry_model().representative_point(0);
               const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
               const double Ra = material_model.reference_density()*
                                 gravity*
