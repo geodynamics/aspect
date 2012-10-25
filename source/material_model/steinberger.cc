@@ -494,13 +494,25 @@ namespace aspect
                          " Fields. This can not be intended."));
       double cp = 0.0;
       if (!latent_heat)
-        for (unsigned i = 0; i < n_material_data; i++)
-          cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature+get_deltat(position),pressure);
+        {
+          if (n_material_data == 1)
+            cp = material_lookup[0]->specific_heat(temperature+get_deltat(position),pressure);
+          else
+            {
+              for (unsigned i = 0; i < n_material_data; i++)
+                cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature+get_deltat(position),pressure);
+            }
+        }
       else
         {
-          for (unsigned i = 0; i < n_material_data; i++)
-            cp += compositional_fields[i] * material_lookup[0]->dHdT(temperature+get_deltat(position),pressure);
-          cp = std::max(std::min(cp,6000.0),500.0);
+          if (n_material_data == 1)
+            cp = material_lookup[0]->dHdT(temperature+get_deltat(position),pressure);
+          else
+            {
+              for (unsigned i = 0; i < n_material_data; i++)
+                cp += compositional_fields[i] * material_lookup[i]->dHdT(temperature+get_deltat(position),pressure);
+              cp = std::max(std::min(cp,6000.0),500.0);
+            }
         }
       return cp;
     }
@@ -527,12 +539,17 @@ namespace aspect
              const std::vector<double> &compositional_fields,
              const Point<dim> &position) const
     {
-      Assert (n_material_data <= compositional_fields.size(),
+      Assert ((n_material_data <= compositional_fields.size()) || (n_material_data == 1),
               ExcMessage("There are more material files provided than compositional"
                          " Fields. This can not be intended."));
       double rho = 0.0;
-      for (unsigned i = 0; i < n_material_data; i++)
-        rho += compositional_fields[i] * material_lookup[i]->density(temperature+get_deltat(position),pressure);
+      if (n_material_data == 1)
+        rho = material_lookup[0]->density(temperature+get_deltat(position),pressure);
+      else
+        {
+          for (unsigned i = 0; i < n_material_data; i++)
+            rho += compositional_fields[i] * material_lookup[i]->density(temperature+get_deltat(position),pressure);
+        }
       return rho;
     }
 
@@ -544,18 +561,30 @@ namespace aspect
                                    const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const
     {
-      Assert (n_material_data <= compositional_fields.size(),
+      Assert ((n_material_data <= compositional_fields.size()) || (n_material_data == 1),
               ExcMessage("There are more material files provided than compositional"
                          " Fields. This can not be intended."));
       double alpha = 0.0;
       if (!latent_heat)
-        for (unsigned i = 0; i < n_material_data; i++)
-          alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature+get_deltat(position),pressure);
+        {
+          if (n_material_data == 1)
+            alpha = material_lookup[0]->thermal_expansivity(temperature+get_deltat(position),pressure);
+          else
+            {
+              for (unsigned i = 0; i < n_material_data; i++)
+                alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature+get_deltat(position),pressure);
+            }
+        }
       else
         {
           double dHdp = 0.0;
-          for (unsigned i = 0; i < n_material_data; i++)
-            dHdp += material_lookup[i]->dHdp(temperature+get_deltat(position),pressure);
+          if (n_material_data == 1)
+            dHdp += material_lookup[0]->dHdp(temperature+get_deltat(position),pressure);
+          else
+            {
+              for (unsigned i = 0; i < n_material_data; i++)
+                dHdp += compositional_fields[i] * material_lookup[i]->dHdp(temperature+get_deltat(position),pressure);
+            }
           alpha = (1 - density(temperature,pressure,compositional_fields,position) * dHdp) / temperature;
           alpha = std::max(std::min(alpha,1e-3),1e-5);
         }
@@ -570,12 +599,17 @@ namespace aspect
                 const std::vector<double> &compositional_fields,
                 const Point<dim> &position) const
     {
-      Assert (n_material_data <= compositional_fields.size(),
+      Assert ((n_material_data <= compositional_fields.size()) || (n_material_data == 1),
               ExcMessage("There are more material files provided than compositional"
                          " Fields. This can not be intended."));
       double vp = 0.0;
-      for (unsigned i = 0; i < n_material_data; i++)
+      if (n_material_data == 1)
         vp += material_lookup[0]->seismic_Vp(temperature+get_deltat(position),pressure);
+      else
+        {
+          for (unsigned i = 0; i < n_material_data; i++)
+            vp += compositional_fields[i] * material_lookup[i]->seismic_Vp(temperature+get_deltat(position),pressure);
+        }
       return vp;
     }
 
@@ -587,12 +621,17 @@ namespace aspect
                 const std::vector<double> &compositional_fields,
                 const Point<dim> &position) const
     {
-      Assert (n_material_data <= compositional_fields.size(),
+      Assert ((n_material_data <= compositional_fields.size()) || (n_material_data == 1),
               ExcMessage("There are more material files provided than compositional"
                          " Fields. This can not be intended."));
       double vs = 0.0;
-      for (unsigned i = 0; i < n_material_data; i++)
-        vs += material_lookup[i]->seismic_Vs(temperature+get_deltat(position),pressure);
+      if (n_material_data == 1)
+        vs += material_lookup[0]->seismic_Vs(temperature+get_deltat(position),pressure);
+      else
+        {
+          for (unsigned i = 0; i < n_material_data; i++)
+            vs += compositional_fields[i] * material_lookup[i]->seismic_Vs(temperature+get_deltat(position),pressure);
+        }
       return vs;
     }
 
