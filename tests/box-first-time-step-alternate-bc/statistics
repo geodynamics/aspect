@@ -3,19 +3,18 @@
 # 3: Number of mesh cells
 # 4: Number of Stokes degrees of freedom
 # 5: Number of temperature degrees of freedom
-# 6: Number of composition degrees of freedom
-# 7: Iterations for temperature solver
-# 8: Iterations for Stokes solver
-# 9: Time step size (seconds)
-# 10: Visualization file name
-# 11: RMS velocity (m/s)
-# 12: Max. velocity (m/s)
-# 13: Minimal temperature (K)
-# 14: Average temperature (K)
-# 15: Maximal temperature (K)
-# 16: Average nondimensional temperature (K)
-# 17: Outward heat flux through boundary with indicator 0 (W)
-# 18: Outward heat flux through boundary with indicator 1 (W)
-# 19: Outward heat flux through boundary with indicator 2 (W)
-# 20: Outward heat flux through boundary with indicator 3 (W)
-0 0.0000e+00 1024 9539 4225 0 1 21 4.7507e+05 output-box-first-time-step-alternate-bc/solution-00000 9.06752486e-09 3.24958188e-08 0.00000000e+00 1.03532014e+00 1.10000000e+00 1.03532014e+00 1.66800424e-07 8.01668004e-05 2.40192611e-07 2.40192611e-07 
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Time step size (seconds)
+# 9: Visualization file name
+# 10: RMS velocity (m/s)
+# 11: Max. velocity (m/s)
+# 12: Minimal temperature (K)
+# 13: Average temperature (K)
+# 14: Maximal temperature (K)
+# 15: Average nondimensional temperature (K)
+# 16: Outward heat flux through boundary with indicator 0 (W)
+# 17: Outward heat flux through boundary with indicator 1 (W)
+# 18: Outward heat flux through boundary with indicator 2 (W)
+# 19: Outward heat flux through boundary with indicator 3 (W)
+0 0.0000e+00 1024 9539 4225 1 21 4.7507e+05 output-box-first-time-step-alternate-bc/solution-00000 9.06752486e-09 3.24958188e-08 0.00000000e+00 1.03532014e+00 1.10000000e+00 1.03532014e+00 1.66800424e-07 8.01668004e-05 2.40192611e-07 2.40192611e-07 

@@ -16,14 +16,14 @@ Number of degrees of freedom: 268 (162+25+81)
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |     0.222s |        15% |
-| Assemble temperature system     |         1 |     0.564s |        39% |
-| Build Stokes preconditioner     |         1 |     0.171s |        12% |
-| Build temperature preconditioner|         1 |   0.00121s |     0.083% |
-| Solve Stokes system             |         1 |     0.039s |       2.7% |
-| Solve temperature system        |         1 |   0.00112s |     0.077% |
-| Initialization                  |         2 |    0.0968s |       6.6% |
-| Postprocessing                  |         1 |     0.139s |       9.6% |
-| Setup dof systems               |         1 |     0.132s |       9.1% |
+| Assemble Stokes system          |         1 |     0.129s |       8.8% |
+| Assemble temperature system     |         1 |     0.619s |        42% |
+| Build Stokes preconditioner     |         1 |     0.147s |        10% |
+| Build temperature preconditioner|         1 |   0.00117s |      0.08% |
+| Solve Stokes system             |         1 |    0.0842s |       5.8% |
+| Solve temperature system        |         1 |   0.00104s |     0.072% |
+| Initialization                  |         2 |    0.0437s |         3% |
+| Postprocessing                  |         1 |     0.159s |        11% |
+| Setup dof systems               |         1 |     0.181s |        12% |
 +---------------------------------+-----------+------------+------------+
 

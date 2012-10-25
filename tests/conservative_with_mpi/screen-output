@@ -11,18 +11,18 @@ Number of degrees of freedom: 291 (162+48+81)
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      1.04s |            |
+| Total wallclock time elapsed since start    |     0.947s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |    0.0775s |       7.5% |
-| Assemble temperature system     |         1 |     0.401s |        39% |
-| Build Stokes preconditioner     |         1 |     0.113s |        11% |
-| Build temperature preconditioner|         1 |   0.00113s |      0.11% |
-| Solve Stokes system             |         1 |    0.0348s |       3.4% |
-| Solve temperature system        |         1 |   0.00149s |      0.14% |
-| Initialization                  |         2 |    0.0834s |         8% |
-| Postprocessing                  |         1 |   0.00026s |     0.025% |
-| Setup dof systems               |         1 |      0.23s |        22% |
+| Assemble Stokes system          |         1 |    0.0593s |       6.3% |
+| Assemble temperature system     |         1 |     0.319s |        34% |
+| Build Stokes preconditioner     |         1 |    0.0523s |       5.5% |
+| Build temperature preconditioner|         1 |   0.00109s |      0.11% |
+| Solve Stokes system             |         1 |    0.0352s |       3.7% |
+| Solve temperature system        |         1 |   0.00142s |      0.15% |
+| Initialization                  |         2 |      0.11s |        12% |
+| Postprocessing                  |         1 |  0.000255s |     0.027% |
+| Setup dof systems               |         1 |     0.226s |        24% |
 +---------------------------------+-----------+------------+------------+
 

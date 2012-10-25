@@ -73,20 +73,20 @@ Number of degrees of freedom: 7,812 (4,802+609+2,401)
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      25.5s |            |
+| Total wallclock time elapsed since start    |      30.9s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         6 |      2.24s |       8.8% |
-| Assemble temperature system     |         6 |      4.46s |        18% |
-| Build Stokes preconditioner     |         6 |      1.86s |       7.3% |
-| Build temperature preconditioner|         6 |    0.0253s |     0.099% |
-| Solve Stokes system             |         6 |      3.04s |        12% |
-| Solve temperature system        |         6 |    0.0567s |      0.22% |
-| Initialization                  |         7 |     0.642s |       2.5% |
-| Postprocessing                  |         6 |      4.72s |        19% |
-| Refine mesh structure, part 1   |         5 |      2.12s |       8.3% |
-| Refine mesh structure, part 2   |         5 |    0.0842s |      0.33% |
-| Setup dof systems               |         6 |      4.18s |        16% |
+| Assemble Stokes system          |         6 |      2.88s |       9.3% |
+| Assemble temperature system     |         6 |      5.33s |        17% |
+| Build Stokes preconditioner     |         6 |      2.58s |       8.3% |
+| Build temperature preconditioner|         6 |    0.0255s |     0.083% |
+| Solve Stokes system             |         6 |      3.65s |        12% |
+| Solve temperature system        |         6 |    0.0563s |      0.18% |
+| Initialization                  |         7 |     0.572s |       1.8% |
+| Postprocessing                  |         6 |      5.35s |        17% |
+| Refine mesh structure, part 1   |         5 |      2.55s |       8.2% |
+| Refine mesh structure, part 2   |         5 |     0.136s |      0.44% |
+| Setup dof systems               |         6 |      5.45s |        18% |
 +---------------------------------+-----------+------------+------------+
 
