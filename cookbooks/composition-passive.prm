@@ -82,7 +82,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization, temperature statistics, heat flux statistics
+  set List of postprocessors = visualization, temperature statistics, composition statistics
 
   subsection Visualization
     set Time between graphical output = 0.1

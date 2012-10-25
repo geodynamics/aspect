@@ -72,7 +72,7 @@ namespace aspect
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               {
-                const FEValuesExtractors::Scalar compositional_field (dim+1+c);
+                const FEValuesExtractors::Scalar compositional_field (dim+2+c);
 
                 fe_values[compositional_field].get_function_values (this->get_solution(),
                                                                     compositional_values);
@@ -89,52 +89,67 @@ namespace aspect
       // compute min/max by simply
       // looping over the elements of the
       // solution vector.
-      double local_min_temperature = std::numeric_limits<double>::max();
-      double local_max_temperature = std::numeric_limits<double>::min();
-      for (unsigned int i=0; i<this->get_solution().block(2).local_size(); ++i)
-        {
-          local_min_temperature
-            = std::min<double> (local_min_temperature,
-                                this->get_solution().block(2).trilinos_vector()[0][i]);
-          local_max_temperature
-            = std::max<double> (local_max_temperature,
-                                this->get_solution().block(2).trilinos_vector()[0][i]);
-        }
-
-      double global_min_temperature = 0;
-      double global_max_temperature = 0;
-
-      // now do the reductions that are
-      // min/max operations. do them in
-      // one communication by multiplying
-      // one value by -1
-      {
-        double local_values[2] = { -local_min_temperature, local_max_temperature };
-        double global_values[2];
-
-        Utilities::MPI::max (local_values, this->get_mpi_communicator(), global_values);
-
-        global_min_temperature = -global_values[0];
-        global_max_temperature = global_values[1];
-      }
+      std::vector<double> local_min_compositions (this->n_compositional_fields(),
+                                                  std::numeric_limits<double>::max());
+      std::vector<double> local_max_compositions (this->n_compositional_fields(),
+                                                  std::numeric_limits<double>::min());
 
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+        for (unsigned int i=0; i<this->get_solution().block(3+c).local_size(); ++i)
+          {
+            local_min_compositions[c]
+              = std::min<double> (local_min_compositions[c],
+                                  this->get_solution().block(3+c).trilinos_vector()[0][i]);
+            local_max_compositions[c]
+              = std::max<double> (local_max_compositions[c],
+                                  this->get_solution().block(3+c).trilinos_vector()[0][i]);
+          }
+
+      // now do the reductions over all processors. we can use Utilities::MPI::max
+      // for the maximal values. unfortunately, there is currently no matching
+      // Utilities::MPI::min function, so negate the argument, take the maximum
+      // as well, then negate it all again
+      std::vector<double> global_min_compositions (this->n_compositional_fields(),
+                                                   std::numeric_limits<double>::min());
+      std::vector<double> global_max_compositions (this->n_compositional_fields(),
+                                                   std::numeric_limits<double>::min());
+
+      {
+        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+          local_min_compositions[c] = -local_min_compositions[c];
+        Utilities::MPI::max (local_min_compositions,
+                             this->get_mpi_communicator(),
+                             global_min_compositions);
+        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+          {
+            local_min_compositions[c] = -local_min_compositions[c];
+            global_min_compositions[c] = -global_min_compositions[c];
+          }
+
+        // it's simpler for the maximal values
+        Utilities::MPI::max (local_max_compositions,
+                             this->get_mpi_communicator(),
+                             global_max_compositions);
+      }
+
+      // finally produce something for the statistics file
+      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         {
-          statistics.add_value ("Minimal temperature (K)",
-                                global_min_temperature);
+          statistics.add_value ("Minimal value for composition " + Utilities::int_to_string(c),
+                                global_min_compositions[c]);
+          statistics.add_value ("Maximal value for composition " + Utilities::int_to_string(c),
+                                global_max_compositions[c]);
           statistics.add_value ("Global mass for composition " + Utilities::int_to_string(c),
                                 global_compositional_integrals[c]);
-          statistics.add_value ("Maximal temperature (K)",
-                                global_max_temperature);
         }
 
       // also make sure that the other columns filled by the this object
       // all show up with sufficient accuracy and in scientific notation
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         {
-          const std::string columns[] = { "Minimal temperature (K)",
-                                          "Global mass for composition " + Utilities::int_to_string(c),
-                                          "Maximal temperature (K)"
+          const std::string columns[] = { "Minimal value for composition " + Utilities::int_to_string(c),
+                                          "Maximal value for composition " + Utilities::int_to_string(c),
+                                          "Global mass for composition " + Utilities::int_to_string(c)
                                         };
           for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
             {
@@ -145,10 +160,16 @@ namespace aspect
 
       std::ostringstream output;
       output.precision(4);
-      output << global_min_temperature << " K, "
-             << global_max_temperature << " K";
+      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+        {
+          output << global_min_compositions[c] << '/'
+                 << global_max_compositions[c] << '/'
+                 << global_compositional_integrals[c];
+          if (c+1 != this->n_compositional_fields())
+            output << " // ";
+        }
 
-      return std::pair<std::string, std::string> ("Temperature min/avg/max:",
+      return std::pair<std::string, std::string> ("Compositions min/max/mass:",
                                                   output.str());
     }
   }
