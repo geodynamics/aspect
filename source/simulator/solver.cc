@@ -258,7 +258,7 @@ namespace aspect
   }
 
   template <int dim>
-  double Simulator<dim>::solve_temperature_or_composition (unsigned int index)
+  double Simulator<dim>::solve_temperature_or_composition (const unsigned int index)
   {
     double initial_residual = 0;
 
@@ -315,7 +315,7 @@ namespace aspect
         statistics.add_value("Iterations for temperature solver",
                              solver_control.last_step());
       else
-        statistics.add_value("Iterations for composition solver",
+        statistics.add_value("Iterations for composition solver " + Utilities::int_to_string(index),
                              solver_control.last_step());
     }
     computing_timer.exit_section();
