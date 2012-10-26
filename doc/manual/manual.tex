@@ -3082,12 +3082,12 @@ This is an area in which \aspect{} may see improvements in the future.
 \begin{figure}
   \centering
   \includegraphics[width=0.4\textwidth]{cookbooks/composition-passive/mass-composition-1.png}
-  \caption{Passive compositional fields: Minimum and maximum of the first compositional variable 
+  \caption{Passive compositional fields: Minimum and maximum of the first compositional variable
    over time, as well as the mass $m_1(t)=\int_\Omega c_1(\mathbf x,t)$ stored in this variable.}
   \label{fig:compositional-passive-mass}
 \end{figure}
 
-A different way of looking at the quality of compositional fields as opposed to 
+A different way of looking at the quality of compositional fields as opposed to
 tracers is to ask whether they conserve mass. In the current context, the
 mass contained in the $i$th compositional field is $m_i(t)=\int_\Omega c_i(\mathbf x,t)$.
 This can easily be achieve in the following way, by adding the \texttt{composition statistics}
@@ -3151,7 +3151,7 @@ exerted by whatever is driving the velocity at the top.}
 
 This setup of the problem can be described using an input file that is almost
 completely unchanged from the passive case. The only difference is the use of
-the following section (the complete input file can be found in 
+the following section (the complete input file can be found in
 \url{cookbooks/compositional-active.prm}:
 
 \begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
@@ -3184,7 +3184,18 @@ subsection Postprocess
 end
 \end{lstlisting}
 
-Results of this model are visualized in Fig.~\ref{\ldots}. It is easy, using the
+Results of this model are visualized in Fig.~\ref{\ldots}. What is visible is
+that over the course of the simulation, the material that starts at the bottom
+of the domain remains there. This can only happen if the circulation is
+decoupled between the bottom materail and the rest of the domain and this is
+indeed visible in the velocity vectors. As a second consequence, if the
+material at the bottom does not move away, then there needs to be a different
+way for the heat provided at the bottom to get through the bottom layer:
+either there must be a secondary convection system in the bottom layer, or
+simply through heat conduction. The pictures in the figure seem to suggest
+that the latter is the case.
+
+It is easy, using the
 outline above, to play with the various factors that drive this system, namely:
 \begin{itemize}
   \item The magnitude of the velocity prescribed at the top.
@@ -3194,7 +3205,12 @@ outline above, to play with the various factors that drive this system, namely:
   described by the coefficient $\gamma$ and the magnitude of gravity.
 \end{itemize}
 Using the coefficients involved in these considerations, it is trivially
-possible to map out parameter space to find which of these effects is dominant.
+possible to map out the parameter space to find which of these effects is
+dominant. As mentioned in discussing the values in the input file, what is
+important is the \textit{relative} size of these parameters, not the fact
+that currently the density in the material at the bottom is 100 times larger
+than in the rest of the domain, an effect that from a physical perspective
+clearly makes no sense at all.
 
 
 
