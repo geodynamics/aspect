@@ -3107,9 +3107,94 @@ along with the mass $m_1(t)$ (these are all tabulated in columns of the
 statistics file, see Sections~\ref{sec:running-overview} and \ref{sec:viz-stat}). While
 the maximum and minimum fluctuate slightly due to the instability of the finite element
 method in resolving discontinuous functions,
-the mass appears stable at a value of 0.403646. In fact, the maximal difference in this
-value between time steps 1 and 500 is only $1.1\cdot 10^{-6}$. In other words, these numbers
-show that the compositional field approach is almost exactly mass conservative.
+the mass appears stable at a value of 0.403646 (the exact value, namely the
+area that was initially filled by each material, is 0.4; the difference is a
+result of the fact that we can't exactly represent the step function on our
+mesh with the finite element space). In fact, the maximal difference in this
+value between time steps 1 and 500 is only $1.1\cdot 10^{-6}$. In other words,
+these numbers show that the compositional field approach is almost exactly mass conservative.
+
+
+\paragraph{The active case.} The next step, of course, is to make the flow
+actually depend on the composition. After all, compositional fields are not only
+intended to indicate where material come from, but also to indicate the
+properties of this material. In general, the way to achieve this is to write
+material models where the density, viscosity, and other parameters depend on the
+composition, taking into account what the compositional fields actually denote
+(e.g., if they simply indicate the origin of material, or the concentration of
+things like olivine, perovskite, \ldots). The construction of material models is
+discussed in much greater detail in Section~\ref{sec:material-models}; we do not
+want to revisit this issue here and instead choose -- once again -- the simplest
+material model that is implemented in \aspect{}: the \texttt{simple} model.
+
+The place where we are going to hook in a compositional dependence is the
+density. In the \texttt{simple} model, the density is fundamentally described by
+a material that expands linearly with the temperature; for small density
+variations, this corresponds to a density model of the form
+$\rho(T)=\rho_0(1-\alpha(T-T_0))$. This is, by virtue of its simplicity, the
+most often considered density model. But the \texttt{simple} model also has a
+hook to make the density depend on the first compositional field $c_1(\mathbf
+x,t)$, yielding a dependence of the form
+$\rho(T)=\rho_0(1-\alpha(T-T_0))+\gamma c_1$. Here, let us choose $\rho_0=1,
+\alpha=0.01, T_0=0, \gamma=100$. The rest of our model setup will be as
+in the passive case above. Because the temperature will be between zero and one,
+the temperature induced density variations will be restricted to 0.01, whereas
+the density variation by origin of the material is 100. This should make sure
+that dense material remains at the bottom despite the fact that it is hotter
+than the surrounding material.%
+\footnote{The actual values do not matter as much here. They are chosen in such
+a way that the system -- previously driven primarily by the velocity boundary
+conditions at the top -- now also feels the impact of the density variations.
+To have an effect, the buoyancy induced by the density difference between
+materials must be strong enough to balance or at least approach the forces
+exerted by whatever is driving the velocity at the top.}
+
+This setup of the problem can be described using an input file that is almost
+completely unchanged from the passive case. The only difference is the use of
+the following section (the complete input file can be found in 
+\url{cookbooks/compositional-active.prm}:
+
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Material model
+  set Model name = simple % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+
+  subsection Simple model
+    set Thermal conductivity                           = 1e-6 % \index[prmindex]{Thermal conductivity} \index[prmindexfull]{Material model!Simple model!Thermal conductivity} %
+    set Thermal expansion coefficient                  = 0.01 % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Simple model!Thermal expansion coefficient} %
+    set Viscosity                                      = 1 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
+    set Reference density                              = 1 % \index[prmindex]{Reference density} \index[prmindexfull]{Material model!Simple model!Reference density} %
+    set Reference temperature                          = 0 % \index[prmindex]{Reference temperature} \index[prmindexfull]{Material model!Simple model!Reference temperature} %
+    set Density differential for compositional field 1 = 0.1 % \index[prmindex]{Density differential for compositional field 1} \index[prmindexfull]{Material model!Simple model!Density differential for compositional field 1} %
+  end
+end
+\end{lstlisting}
+
+To debug the model, we will also want to visualize the density in our
+graphical output files. This is done using the following addition to the
+postprocessing section, using the \texttt{density} visualization plugin:
+
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics, composition statistics % \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
+
+  subsection Visualization
+    set List of output variables = density % \index[prmindex]{List of output variables} \index[prmindexfull]{Postprocess!Visualization!List of output variables} %
+    set Time between graphical output = 0.1 % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
+  end
+end
+\end{lstlisting}
+
+Results of this model are visualized in Fig.~\ref{\ldots}. It is easy, using the
+outline above, to play with the various factors that drive this system, namely:
+\begin{itemize}
+  \item The magnitude of the velocity prescribed at the top.
+  \item The magnitude of the velocities induced by thermal buoyancy, as
+  resulting from the magnitude of gravity and the thermal expansion coefficient.
+  \item The magnitude of the velocities induced by compositional variability, as
+  described by the coefficient $\gamma$ and the magnitude of gravity.
+\end{itemize}
+Using the coefficients involved in these considerations, it is trivially
+possible to map out parameter space to find which of these effects is dominant.
 
 
 
