@@ -10,7 +10,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Postprocessing:
 
      Reference density (kg/m^3):                    3300
-     Reference gravity (m/s^2):                     7.714e+13
+     Reference gravity (m/s^2):                     9.80986
      Reference thermal expansion (1/K):             4e-05
      Temperature contrast accross model domain (K): 0
      Model domain depth (m):                        2.855e+06
@@ -56,21 +56,21 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      61.4s |            |
+| Total wallclock time elapsed since start    |      36.5s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         3 |       5.2s |       8.5% |
-| Assemble composition system     |         3 |      11.2s |        18% |
-| Assemble temperature system     |         3 |      9.41s |        15% |
-| Build Stokes preconditioner     |         3 |      4.74s |       7.7% |
-| Build composition preconditioner|         3 |    0.0451s |     0.073% |
-| Build temperature preconditioner|         3 |    0.0925s |      0.15% |
-| Solve Stokes system             |         3 |      2.21s |       3.6% |
-| Solve composition system        |         3 |    0.0824s |      0.13% |
-| Solve temperature system        |         3 |     0.177s |      0.29% |
-| Initialization                  |         2 |     0.278s |      0.45% |
-| Postprocessing                  |         3 |      24.1s |        39% |
-| Setup dof systems               |         1 |      1.44s |       2.3% |
+| Assemble Stokes system          |         3 |      2.66s |       7.3% |
+| Assemble composition system     |         3 |      5.78s |        16% |
+| Assemble temperature system     |         3 |      6.63s |        18% |
+| Build Stokes preconditioner     |         3 |       1.7s |       4.7% |
+| Build composition preconditioner|         3 |    0.0723s |       0.2% |
+| Build temperature preconditioner|         3 |    0.0587s |      0.16% |
+| Solve Stokes system             |         3 |      0.59s |       1.6% |
+| Solve composition system        |         3 |     0.112s |      0.31% |
+| Solve temperature system        |         3 |    0.0896s |      0.25% |
+| Initialization                  |         2 |     0.274s |      0.75% |
+| Postprocessing                  |         3 |      13.6s |        37% |
+| Setup dof systems               |         1 |      2.63s |       7.2% |
 +---------------------------------+-----------+------------+------------+
 
