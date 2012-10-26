@@ -3184,15 +3184,56 @@ subsection Postprocess
 end
 \end{lstlisting}
 
-Results of this model are visualized in Fig.~\ref{\ldots}. What is visible is
+\begin{figure}
+  \centering
+  \centering
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0007.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0009.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0008.png}
+  \caption{Active compositional fields: Compositional field 1 at the time
+    $t=0, 10, 20$. Compared to the results shown in
+    Fig.~\ref{fig:compositional-passive} it is clear that the heavy material
+    stays at the bottom of the domain now. The effect of the density on the
+    velocity field is also clearly visible by noting that at all three times
+    the spreading center at the top boundary is in exactly the same position;
+    this would result in exactly the same velocity field if the density and
+    temperature were constant.}
+  \label{fig:composition-active-composition}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \centering
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0000.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0001.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0002.png}
+  \\
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0003.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0004.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0006.png}
+  \caption{Active compositional fields: Temperature fields at $t=0, 2, 4, 8, 12,
+    20$. The black line is the isocontour line $c_1(\vec x,t)=0.5$
+    delineating the position of the dense material at the bottom.}
+  \label{fig:composition-active-temperature}
+\end{figure}
+
+Results of this model are visualized in
+Fig.s~\ref{fig:composition-active-composition} and \ref{fig:composition-active-temperature}. What is visible is
 that over the course of the simulation, the material that starts at the bottom
 of the domain remains there. This can only happen if the circulation is
-decoupled between the bottom materail and the rest of the domain and this is
+significantly affected by the high density material once the interface starts
+to become non-horizontal, and this is
 indeed visible in the velocity vectors. As a second consequence, if the
 material at the bottom does not move away, then there needs to be a different
 way for the heat provided at the bottom to get through the bottom layer:
 either there must be a secondary convection system in the bottom layer, or
-simply through heat conduction. The pictures in the figure seem to suggest
+heat is simply conducted. The pictures in the figure seem to suggest
 that the latter is the case.
 
 It is easy, using the
