@@ -265,6 +265,13 @@ namespace aspect
   }
 
 
+  template <int dim>
+  const std::set<types::boundary_id_t>&
+  SimulatorAccess<dim>::get_fixed_temperature_boundary_indicators () const
+  {
+    return simulator->parameters.fixed_temperature_boundary_indicators;
+  }
+
 
   template <int dim>
   const GeometryModel::Interface<dim> &

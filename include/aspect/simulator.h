@@ -363,6 +363,14 @@ namespace aspect
       get_boundary_temperature () const;
 
       /**
+       * Return a set of boudary indicators that describes which of the boundaries
+       * have a fixed temperature.
+       */
+      const std::set<types::boundary_id_t>&
+      get_fixed_temperature_boundary_indicators () const;
+
+
+      /**
        * Copy the values of the compositional fields at the quadrature point
        * q given as input parameter to the output vector
        * composition_values_at_q_point.
