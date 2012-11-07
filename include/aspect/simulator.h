@@ -366,7 +366,7 @@ namespace aspect
        * Return a set of boudary indicators that describes which of the boundaries
        * have a fixed temperature.
        */
-      const std::set<types::boundary_id_t>&
+      const std::set<types::boundary_id_t> &
       get_fixed_temperature_boundary_indicators () const;
 
 
@@ -474,6 +474,7 @@ namespace aspect
         double                         start_time;
         double                         end_time;
         double                         CFL_number;
+        bool                           use_conduction_timestep;
         bool                           convert_to_years;
         std::string                    output_directory;
         double                         surface_pressure;
@@ -1170,12 +1171,16 @@ namespace aspect
        * Compute the size of the next time step from the mesh size and
        * the velocity on each cell. The computed time step has to satisfy
        * the CFL number chosen in the input parameter file on each cell
-       * of the mesh.
+       * of the mesh. If specified in the parameter file, the time step
+       * will be the minimum of the convection *and* conduction time
+       * steps. Also returns whether the timestep is dominated by
+       * convection or conduction.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      double compute_time_step () const;
+      void compute_time_step (double &new_time_step,
+                              bool &convection_dominant) const;
 
       /**
        * Compute the artificial diffusion coefficient value on a cell

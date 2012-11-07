@@ -11,6 +11,14 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: If the "Use conduction timestep" parameter is true, the timestep
+is calculated as the minimum of the convection *and* heat conduction
+timesteps. This is to allow models where flow is very slow relative
+to conduction.
+<br>
+(Eric Heien, 2012/11/06)
+
+<li>
 New: Aspect now catches if the output directory specified in
 the parameter file does not exist, rather than providing a
 cryptic error message upon first attempt to write to this

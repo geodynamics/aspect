@@ -207,18 +207,22 @@ namespace aspect
 
 
   template <int dim>
-  double Simulator<dim>::compute_time_step () const
+  void Simulator<dim>::compute_time_step (double &new_time_step, bool &convection_dominant) const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
                                              parameters.stokes_velocity_degree);
     const unsigned int n_q_points = quadrature_formula.size();
 
-    FEValues<dim> fe_values (mapping, finite_element, quadrature_formula, update_values);
+    FEValues<dim> fe_values (mapping, finite_element, quadrature_formula, update_values | (parameters.use_conduction_timestep ? update_quadrature_points : update_default));
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+    std::vector<double> pressure_values(n_q_points), temperature_values(n_q_points);
 
     const FEValuesExtractors::Vector velocities (0);
+    const FEValuesExtractors::Scalar pressure (dim);
+    const FEValuesExtractors::Scalar temperature (dim+1);
 
     double max_local_speed_over_meshsize = 0;
+    double min_local_conduction_timestep = std::numeric_limits<double>::max(), min_conduction_timestep;
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
@@ -238,19 +242,53 @@ namespace aspect
                                                    max_local_velocity
                                                    /
                                                    cell->minimum_vertex_distance());
+          if (parameters.use_conduction_timestep)
+            {
+              fe_values[pressure].get_function_values (solution,
+                                                       pressure_values);
+              fe_values[temperature].get_function_values (solution,
+                                                          temperature_values);
+              // In the future we may want to evaluate thermal diffusivity at
+              // each point in the mesh, but for now we just use the reference value
+              for (unsigned int q=0; q<n_q_points; ++q)
+                {
+                  std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
+                  double      thermal_diffusivity;
+
+                  // TODO: calculate composition field as well
+                  thermal_diffusivity = material_model->thermal_diffusivity(temperature_values[q],
+                                                                            pressure_values[q],
+                                                                            composition_values_at_q_point,
+                                                                            fe_values.quadrature_point(q));
+
+                  min_local_conduction_timestep = std::min(min_local_conduction_timestep,
+                                                           pow(cell->minimum_vertex_distance(),2)
+                                                           / thermal_diffusivity);
+                }
+            }
         }
 
     const double max_global_speed_over_meshsize
       = Utilities::MPI::max (max_local_speed_over_meshsize, mpi_communicator);
+    if (parameters.use_conduction_timestep)
+      MPI_Allreduce (&min_local_conduction_timestep, &min_conduction_timestep, 1, MPI_DOUBLE, MPI_MIN, mpi_communicator);
+    else
+      min_conduction_timestep = std::numeric_limits<double>::max();
 
     // if the velocity is zero, then it is somewhat arbitrary what time step
     // we should choose. in that case, do as if the velocity was one
-    if (max_global_speed_over_meshsize == 0)
-      return  (parameters.CFL_number / (parameters.temperature_degree *
-                                        1));
+    if (max_global_speed_over_meshsize == 0 && !parameters.use_conduction_timestep)
+      {
+        new_time_step = (parameters.CFL_number /
+                         (parameters.temperature_degree * 1));
+        convection_dominant = false;
+      }
     else
-      return (parameters.CFL_number / (parameters.temperature_degree *
-                                       max_global_speed_over_meshsize));
+      {
+        new_time_step = std::min(min_conduction_timestep,
+                                 (parameters.CFL_number / (parameters.temperature_degree * max_global_speed_over_meshsize)));
+        convection_dominant = (new_time_step < min_conduction_timestep);
+      }
   }
 
 
@@ -1121,7 +1159,7 @@ namespace aspect
   template void Simulator<dim>::extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values, \
                                                                        const unsigned int q, \
                                                                        std::vector<double> &composition_values_at_q_point) const;  \
-  template double Simulator<dim>::compute_time_step () const; \
+  template void Simulator<dim>::compute_time_step (double &new_time_step, bool &convection_dominant) const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::compute_depth_average_field(const unsigned int index, std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const; \

@@ -99,6 +99,14 @@ namespace aspect
                        "one can choose $c>1$) though a CFL number significantly larger than "
                        "one will yield rather diffusive solutions. Units: None.");
 
+    prm.declare_entry ("Use conduction timestep", "false",
+                       Patterns::Bool (),
+                       "Mantle convection simulations are often focused on convection "
+                       "dominated systems. However, these codes can also be used to "
+                       "investigate systems where heat conduction plays a dominant role. "
+                       "This parameter indicates whether the simulator should also use "
+                       "heat conduction in determining the length of each time step.");
+
     prm.declare_entry ("Nonlinear solver scheme", "IMPES",
                        Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes"),
                        "The kind of scheme used to resolve the nonlinearity in the system. "
@@ -442,6 +450,7 @@ namespace aspect
 
     resume_computation      = prm.get_bool ("Resume computation");
     CFL_number              = prm.get_double ("CFL number");
+    use_conduction_timestep = prm.get_bool ("Use conduction timestep");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
     timing_output_frequency = prm.get_integer ("Timing output frequency");
 

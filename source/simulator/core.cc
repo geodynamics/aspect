@@ -196,15 +196,15 @@ namespace aspect
     // or another in the member initializer list above
 
     // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it:
-    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*geometry_model))
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*geometry_model))
       sim->initialize (*this);
-    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*material_model))
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*material_model))
       sim->initialize (*this);
-    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*gravity_model))
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*gravity_model))
       sim->initialize (*this);
-    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*boundary_temperature))
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*boundary_temperature))
       sim->initialize (*this);
-    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_conditions))
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_conditions))
       sim->initialize (*this);
 
     postprocess_manager.parse_parameters (prm);
@@ -1336,8 +1336,9 @@ namespace aspect
         pcout << std::endl;
 
         // update the time step size
+        bool convection_dominant; // for now this is unused, will be added to statistics later
         old_time_step = time_step;
-        time_step = compute_time_step();
+        compute_time_step(time_step, convection_dominant);
 
         if (parameters.convert_to_years == true)
           statistics.add_value("Time step size (years)", time_step / year_in_seconds);
