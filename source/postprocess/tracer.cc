@@ -70,7 +70,10 @@ namespace aspect
             }
           else if (_integration_scheme == "hybrid")
             {
-              _integrator = new Particle::HybridIntegrator<dim, Particle::BaseParticle<dim> >(&(this->get_triangulation()), &(this->get_dof_handler()));
+              _integrator = new Particle::HybridIntegrator<dim, Particle::BaseParticle<dim> >(&(this->get_triangulation()),
+                                                                                              &(this->get_dof_handler()),
+                                                                                              &(this->get_mapping()),
+                                                                                              &(this->get_solution()));
             }
 
           // Set up the particle world with the appropriate simulation objects

@@ -392,14 +392,16 @@ namespace aspect
         std::map<double, IntegrationScheme>        _scheme;
         const parallel::distributed::Triangulation<dim>   *_tria;
         const DoFHandler<dim>           *_dh;
+        const Mapping<dim>              *_mapping;
+        const TrilinosWrappers::MPI::BlockVector *_solution;
 
-        virtual IntegrationScheme select_scheme(const std::vector<Point<dim> > &cell_vertices, const std::vector<Point<dim> > &cell_velocities)
+        virtual IntegrationScheme select_scheme(const std::vector<Point<dim> > &cell_vertices, const std::vector<Point<dim> > &cell_velocities, const double timestep)
         {
           return cell_vertices[0][0] > 0.5 ? SCHEME_RK4 : SCHEME_EULER;
         };
 
       public:
-        HybridIntegrator(const parallel::distributed::Triangulation<dim> *new_tria, const DoFHandler<dim> *new_dh)
+        HybridIntegrator(const parallel::distributed::Triangulation<dim> *new_tria, const DoFHandler<dim> *new_dh, const Mapping<dim> *new_mapping, const TrilinosWrappers::MPI::BlockVector *new_solution)
         {
           _step = 0;
           _loc0.clear();
@@ -409,6 +411,8 @@ namespace aspect
           _scheme.clear();
           _tria = new_tria;
           _dh = new_dh;
+          _mapping = new_mapping;
+          _solution = new_solution;
         };
 
         virtual bool integrate_step(std::multimap<LevelInd, T> &particles, double dt)
@@ -418,17 +422,23 @@ namespace aspect
           double                              id_num;
           LevelInd                            cur_level_ind;
           IntegrationScheme                   cur_scheme;
-          typename parallel::distributed::Triangulation<dim>::cell_iterator found_cell;
+          //typename parallel::distributed::Triangulation<dim>::cell_iterator found_cell;
+          typename DoFHandler<dim>::active_cell_iterator found_cell;
+          Functions::FEFieldFunction<dim, DoFHandler<dim>, TrilinosWrappers::MPI::BlockVector> fe_value(*_dh, *_solution, *_mapping);
 
           // If this is the first step, go through all the cells and determine
           // which integration scheme the particles in each cell should use
           if (_step == 0)
             {
+              Vector<double>                single_res(dim+2);
               std::vector<Point<dim> >    cell_vertices, cell_velocities;
+              std::vector<Vector<double> > temp_vals;
+
               cell_vertices.resize(GeometryInfo<dim>::vertices_per_cell);
               cell_velocities.resize(GeometryInfo<dim>::vertices_per_cell);
               cur_level_ind.first = cur_level_ind.second = -1;
               cur_scheme = SCHEME_UNDEFINED;
+              temp_vals.resize(GeometryInfo<dim>::vertices_per_cell, single_res);
 
               for (it=particles.begin(); it!=particles.end(); ++it)
                 {
@@ -436,9 +446,21 @@ namespace aspect
                     {
                       cur_level_ind = it->first;
                       found_cell = typename DoFHandler<dim>::active_cell_iterator(_tria, cur_level_ind.first, cur_level_ind.second, _dh);
-                      for (unsigned int i=0; i<GeometryInfo<dim>::vertices_per_cell; ++i) cell_vertices[i] = found_cell->vertex(i);
 
-                      cur_scheme = select_scheme(cell_vertices, cell_velocities);
+                      // Ideally we should use all quadrature point velocities, but for now
+                      // we just evaluate them at the vertices
+                      fe_value.set_active_cell(found_cell);
+                      for (unsigned int i=0; i<GeometryInfo<dim>::vertices_per_cell; ++i) cell_vertices[i] = found_cell->vertex(i);
+                      fe_value.vector_value_list(cell_vertices, temp_vals);
+                      for (unsigned int i=0; i<GeometryInfo<dim>::vertices_per_cell; ++i)
+                        {
+                          for (unsigned int d=0; d<dim; ++d)
+                            {
+                              cell_velocities[i][d] = temp_vals[i][d];
+                            }
+                        }
+
+                      cur_scheme = select_scheme(cell_vertices, cell_velocities, dt);
                     }
                   _scheme[it->second.id_num()] = cur_scheme;
                 }
