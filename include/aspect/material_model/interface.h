@@ -182,6 +182,26 @@ namespace aspect
                                              const double pressure,
                                              const std::vector<double> &compositional_fields,
                                              const Point<dim> &position) const = 0;
+
+        /**
+         * Return the thermal diffusivity $\kappa$ of the model as a function of temperature,
+         * pressure and position. This is by default calculated as $\kappa=k/(\rho c_p)$ where
+         * $k$, $\rho$, and $c_p$ are determined by the appropriate material model functions.
+         * $\kappa$ has units $\textrm{m}^2/\textrm{s}$.
+         */
+        virtual double thermal_diffusivity (const double temperature,
+                                            const double pressure,
+                                            const std::vector<double> &compositional_fields,
+                                            const Point<dim> &position) const
+        {
+          double k, rho, c_p;
+
+          k = thermal_conductivity(temperature, pressure, compositional_fields, position);
+          rho = density(temperature, pressure, compositional_fields, position);
+          c_p = specific_heat(temperature, pressure, compositional_fields, position);
+
+          return k/(rho*c_p);
+        };
         /**
          * @}
          */
