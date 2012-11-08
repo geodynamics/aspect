@@ -897,12 +897,7 @@ namespace aspect
                                           max_residual,
                                           max_velocity);
 
-    const double max_viscosity = (index == 0 ?
-				  material_model->reference_density() *
-				  material_model->reference_cp()
-				  :
-				  1.0) *
-				 (parameters.stabilization_beta *
+    const double max_viscosity = (parameters.stabilization_beta *
                                   max_velocity * cell_diameter);
     if (timestep_number <= 1)
       // we don't have sensible timesteps during the first two iterations
@@ -1540,7 +1535,7 @@ namespace aspect
                 data.local_matrix(i,j)
                 += (
                      (time_step * (thermal_conductivity +
-                                   nu) * scratch.grad_phi_T[i] * scratch.grad_phi_T[j])
+                                   nu * density * c_P) * scratch.grad_phi_T[i] * scratch.grad_phi_T[j])
                      + ((time_step * (current_u * scratch.grad_phi_T[j] * scratch.phi_T[i]))
                         + (factor * scratch.phi_T[i] * scratch.phi_T[j])) * density * c_P
                    )
