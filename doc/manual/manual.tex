@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage[pdftex]{graphicx,color}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{subfigure}
 
 % use a larger page size; otherwise, it is difficult to have complete
@@ -217,7 +218,8 @@ the temperature. In the following, we largely follow the exposition of this
 material in Schubert, Turcotte and Olson \cite{STO01}.
 
 Specifically, we consider the following set of equations for velocity $\mathbf
-u$, pressure $p$ and temperature $T$:
+u$, pressure $p$ and temperature $T$, as well as a set of advected quantities
+$c_i$ that we call \textit{compositional fields}:
 \marginpar{To be finished}
 \marginpar{Wouldn't the last term need to have a minus sign? drho/dT
   is negative...}
@@ -254,6 +256,14 @@ u$, pressure $p$ and temperature $T$:
   & \quad
   & \textrm{in $\Omega$},
   \notag
+  \\
+  \label{eq:compositional}
+  \frac{\partial c_i}{\partial t} + \mathbf u\cdot\nabla T
+  &=
+  0
+  & \quad
+  & \textrm{in $\Omega$},
+  i=1\ldots C
 \end{align}
 where $\varepsilon(\mathbf u) = \frac{1}{2}(\nabla \mathbf u + \nabla\mathbf
 u^T)$ is the symmetric gradient of the velocity (often called the
@@ -282,6 +292,19 @@ terms of this equation correspond to
 The equations \aspect{} currently solves do not include phase change terms,
 see Section~\ref{sec:future}.
 
+The final set equations, \eqref{eq:compositional}, describes the motion of
+a set of advected quantities $c_i(\mathbf x,t),i=1\ldots C$. We call these
+\textit{compositional fields} because we think of them as spatially and
+temporally varying concentrations of different elements, minerals, or other
+constituents of the composition of the material that convects. As such, these
+fields participate actively in determining the values of the various
+coefficients of these equations. On the other hand, \aspect{} also allows the
+definition of material models that are independent of these compositional
+fields, making them passively advected quantities. Several of the cookbooks in
+Section~\ref{sec:cookbooks} consider compositional fields in this way, i.e.,
+essentially as tracer quantities that only keep track of where material came
+from.
+
 These equations are
 augmented by boundary conditions that can either be of Dirichlet-, Neumann, or
 tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
@@ -295,6 +318,10 @@ tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
   \\
   \mathbf n \cdot k\nabla T &= 0
    & \qquad &\textrm{on $\Gamma_{N,T}$}.
+  \\
+  c_i &= 0
+   & \qquad &\textrm{on $\Gamma_\textit{in}=\{\mathbf x: \mathbf
+   u\cdot\mathbf n<0\}$}.
 \end{align}
 Here,
 $\Gamma_{0,\mathbf u}$ corresponds to parts of the boundary on which the
@@ -309,13 +336,16 @@ of the shell that constitutes the domain the Earth mantle occupies is
 simulated). We require that one of these boundary conditions hold at each
 point for both velocity and temperature, i.e.,
 $\Gamma_{0,\mathbf u}\cup\Gamma_{\parallel,\mathbf u}=\Gamma$ and
-$\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$.
+$\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. No boundary conditions have to be posed
+for the compositional fields at those parts of the boundary where flow is either
+tangential to the boundary or points outward.
 
 \aspect{} solves these equations in essentially the form stated. In
 particular, the form given in \eqref{eq:stokes-1} implies that the pressure
 $p$ we compute is in fact the \textit{total pressure}, i.e., the sum of
 hydrostatic pressure and dynamic pressure (however, see
-Section~\ref{sec:pressure-static-dyn} for more information on this).
+Section~\ref{sec:pressure-static-dyn} for more information on this, as well as
+the extensive discussion of this issue in \cite{KHB12}).
 Consequently, it allows the direct use of this pressure when looking up
 pressure dependent material parameters.
 
@@ -327,8 +357,11 @@ The equations above contain a significant number of coefficients that we will
 discuss in the following. In the most general form, many of these coefficients
 depend nonlinearly on the solution variables pressure $p$, temperature $T$
 and, in the case of the viscosity, on the strain rate $\varepsilon(\mathbf
-u)$. Alternatively, they may be parameterized as a function of the spatial
-variable $\mathbf x$. \aspect{} allows both kinds of parameterizations.
+u)$. If compositional fields $\mathfrak c=\{c_1,\ldots,c_C\}$ are present (i.e.,
+if $C>0$), coefficients may also depend on them. Alternatively, they may be
+parameterized as a function
+of the spatial variable $\mathbf x$. \aspect{} allows both kinds of
+parameterizations.
 
 \note{One of the next versions of \aspect{} will actually iterate out
   nonlinearities in the material description. However, in the current version,
@@ -347,8 +380,8 @@ modifications.
 
 Concretely, we consider the following coefficients and dependencies:
 \begin{itemize}
-\item \textit{The viscosity $\eta=\eta(p,T,\varepsilon(\mathbf u),\mathbf
-    x)$:} Units $\textrm{Pa}\cdot \textrm{s} =
+\item \textit{The viscosity $\eta=\eta(p,T,\varepsilon(\mathbf u),\mathfrak
+c,\mathbf x)$:} Units $\textrm{Pa}\cdot \textrm{s} =
   \textrm{kg}\frac{1}{\textrm{m}\cdot\textrm{s}}$.
 
   The viscosity is the proportionality factor that relates total forces
@@ -361,7 +394,7 @@ Concretely, we consider the following coefficients and dependencies:
   difficult to quantify, one modeling approach is to make $\eta$ spatially
   dependent.
 
-\item \textit{The density $\rho=\rho(p,T,\mathbf x)$:} Units
+\item \textit{The density $\rho=\rho(p,T,\mathfrak c,\mathbf x)$:} Units
   $\frac{\textrm{kg}}{\textrm{m}^3}$.
 
   In general, the density depends on pressure and temperature, both through
@@ -393,8 +426,8 @@ Concretely, we consider the following coefficients and dependencies:
   that changes as a function of time. Such a model is not currently
   implemented.
 
-\item \textit{The specific heat capacity $C_p=C_p(p,T,\mathbf x)$:} Units
-  $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
+\item \textit{The specific heat capacity $C_p=C_p(p,T,\mathfrak c,\mathbf x)$:}
+Units $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
   \frac{\textrm{m}^2}{\textrm{s}^2\cdot\textrm{K}}$.
 
   The specific heat capacity denotes the amount of energy needed to increase
@@ -406,7 +439,7 @@ Concretely, we consider the following coefficients and dependencies:
   suggested by the literature.
 
 
-\item \textit{The thermal conductivity $k=k(p,T,\mathbf x)$:} Units
+\item \textit{The thermal conductivity $k=k(p,T,\mathfrak c,\mathbf x)$:} Units
   $\frac{\textrm{W}}{\textrm{m}\cdot\textrm{K}}=\frac{\textrm{kg}\cdot\textrm{m}}{\textrm{s}^3\cdot\textrm{K}}$.
 
   The thermal conductivity denotes the amount of thermal energy flowing
@@ -470,7 +503,7 @@ flux.
   than in non-dimensionalized form, see below.}
 
 That said, in reality, \aspect{} has no preferred system of
-units as long as every material constant, geometry, time, etc., is all
+units as long as every material constant, geometry, time, etc., are all
 expressed in the same system. In other words, it is entirely legitimate to
 implement geometry and material models in which the dimension of the domain is
 one, density and viscosity are one, and the density variation as a function of
@@ -515,7 +548,7 @@ physical units. On the other hand, there are also downsides:
   \footnote{To illustrate this, consider convection in the Earth as a
   back-of-the-envelope example.
   With the length scale of the mantle $L=3\cdot 10^6\;m$, viscosity
-  $\eta=10^24 \; kg/m/s$, density $\rho=3\cdot 10^3 \; kg/m^3$ and a typical
+  $\eta=10^{24} \; kg/m/s$, density $\rho=3\cdot 10^3 \; kg/m^3$ and a typical
   velocity of $U=0.1\;m/year=3\cdot 10^{-9}\; m/s$, we get that the friction
   term in \eqref{eq:stokes-1} has size $\eta U/L^2 \approx 3\cdot 10^2 \;
   kg/m/s^3$. On the other hand, the term $\nabla\cdot(\rho u)$ in the
@@ -671,10 +704,17 @@ in which the medium was considered incompressible, i.e., where the definition
 of a static density was simple.
 
 On the other hand, we intend \aspect{} to be a code that can solve more
-general models for which this definition is not as simple.
-
-\textbf{Rest to be written; we have a scheme in mind but haven't implemented
-  it yet.}
+general models for which this definition is not as simple. As a consequence, we
+have chosen to solve the equations as stated originally -- i.e., we solve for
+the \textit{full} pressure rather than just its \textit{dynamic} component. With
+most traditional methods, this would lead to a catastrophic loss of accuracy in the
+dynamic pressure since it is many orders of magnitude smaller than the total
+pressure at the bottom of the earth mantle. We avoid this problem in \aspect{}
+by using a cleverly chosen iterative solver that ensures that the full pressure
+we compute is accurate enough so that the dynamic pressure can be extracted from
+it with the same accuracy one would get if one were to solve for only the 
+dynamic component. The methods that ensure this are described in detail in
+\cite{KHB12} and in particular in the appendix of that paper.
 
 
 \subsection{Pressure normalization}
@@ -1074,10 +1114,10 @@ prerequisites:
   \href{http://trilinos.sandia.gov/download/trilinos-10.4.html}{http://trilinos.sandia.gov/}. At
   the current time we recommend Trilinos Version 10.4.x.%
   \footnote{There are newer versions of Trilinos, but at least Trilinos 10.6.x
-  and 10.8.x have bugs that make these versions unusable for our purpose.}
-  For installation instructions see
-  \href{http://www.dealii.org/developer/readme-petsc-trilinos.html}{the
-    deal.II README file on installing Trilinos and PETSc}. Note that you have
+  and 10.8.x have bugs that make these versions unusable for our purpose. The
+  \dealii{} ReadMe file provides a list of versions that are known to work
+  without bugs with \dealii{}.} For installation instructions see
+  \href{http://www.dealii.org/developer/readme-petsc-trilinos.html}{the deal.II README file on installing Trilinos and PETSc}. Note that you have
   to configure with MPI by using
 \begin{verbatim}
  TPL_ENABLE_MPI:BOOL=ON
@@ -1915,19 +1955,19 @@ categorized into the following groups:
   together with the sections in which their parameters are declared:
   \begin{itemize}
   \item The material model:
-    Sections~\ref{parameters:Material_20model}, \ref{parameters:Material_20model/Simple_20model}.
+    Sections~\ref{parameters:Material_20model} and following.
   \item The geometry:
-    Sections~\ref{parameters:Geometry_20model}, \ref{parameters:Geometry_20model/Spherical_20shell}.
+    Sections~\ref{parameters:Geometry_20model} and following.
   \item The gravity description:
-    Sections~\ref{parameters:Gravity_20model}, \ref{parameters:Gravity_20model/Radial_20constant}.
+    Sections~\ref{parameters:Gravity_20model} and following.
   \item Initial conditions for the temperature:
-    Sections~\ref{parameters:Initial_20conditions},
-    \ref{parameters:Initial_20conditions/Spherical_20gaussian_20perturbation}.
+    Sections~\ref{parameters:Initial_20conditions} and following.
   \item Temperature boundary conditions:
-    Sections~\ref{parameters:Boundary_20temperature_20model},
-    \ref{parameters:Boundary_20temperature_20model/Spherical_20constant}.
+    Sections~\ref{parameters:Boundary_20temperature_20model} and following.
   \item Postprocessors:
-    Sections~\ref{parameters:Postprocess}, \ref{parameters:Postprocess/Visualization}.
+    Sections~\ref{parameters:Postprocess} and following for most postprocessors,
+    section \ref{parameters:Postprocess/Visualization} and following for
+    postprocessors related to visualization.
   \end{itemize}
 \end{itemize}
 
