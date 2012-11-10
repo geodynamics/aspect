@@ -207,7 +207,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_time_step (double &new_time_step, bool &convection_dominant) const
+  std::pair<double,bool> Simulator<dim>::compute_time_step () const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
                                              parameters.stokes_velocity_degree);
@@ -220,6 +220,8 @@ namespace aspect
     const FEValuesExtractors::Vector velocities (0);
     const FEValuesExtractors::Scalar pressure (dim);
     const FEValuesExtractors::Scalar temperature (dim+1);
+    double new_time_step;
+    bool convection_dominant;
 
     double max_local_speed_over_meshsize = 0;
     double min_local_conduction_timestep = std::numeric_limits<double>::max(), min_conduction_timestep;
@@ -289,6 +291,8 @@ namespace aspect
                                  (parameters.CFL_number / (parameters.temperature_degree * max_global_speed_over_meshsize)));
         convection_dominant = (new_time_step < min_conduction_timestep);
       }
+
+    return std::make_pair(new_time_step, convection_dominant);
   }
 
 
@@ -1159,7 +1163,7 @@ namespace aspect
   template void Simulator<dim>::extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values, \
                                                                        const unsigned int q, \
                                                                        std::vector<double> &composition_values_at_q_point) const;  \
-  template void Simulator<dim>::compute_time_step (double &new_time_step, bool &convection_dominant) const; \
+  template std::pair<double,bool> Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::compute_depth_average_field(const unsigned int index, std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const; \

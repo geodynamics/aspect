@@ -1174,13 +1174,12 @@ namespace aspect
        * of the mesh. If specified in the parameter file, the time step
        * will be the minimum of the convection *and* conduction time
        * steps. Also returns whether the timestep is dominated by
-       * convection or conduction.
+       * convection (true) or conduction (false).
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void compute_time_step (double &new_time_step,
-                              bool &convection_dominant) const;
+      std::pair<double,bool> compute_time_step () const;
 
       /**
        * Compute the artificial diffusion coefficient value on a cell

@@ -1336,9 +1336,12 @@ namespace aspect
         pcout << std::endl;
 
         // update the time step size
-        bool convection_dominant; // for now this is unused, will be added to statistics later
+        // for now the bool (convection/conduction dominated)
+        // is unused, will be added to statistics later
+        std::pair<double, bool>   time_step_result;
         old_time_step = time_step;
-        compute_time_step(time_step, convection_dominant);
+        time_step_result = compute_time_step();
+        time_step = time_step_result.first;
 
         if (parameters.convert_to_years == true)
           statistics.add_value("Time step size (years)", time_step / year_in_seconds);
