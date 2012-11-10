@@ -8,8 +8,8 @@
 # 8: Time step size (seconds)
 # 9: Visualization file name
 0 0.0000e+00  64  659  289 0 36 8.8424e-02 output-inclusion_adaptive/solution-00000 
-0 0.0000e+00  91  974  429 0 42 8.8424e-02 output-inclusion_adaptive/solution-00001 
-0 0.0000e+00 145 1586  701 0 43 8.6708e-02 output-inclusion_adaptive/solution-00002 
-0 0.0000e+00 229 2432 1077 0 44 7.5177e-02 output-inclusion_adaptive/solution-00003 
-0 0.0000e+00 325 3521 1561 0 43 6.3999e-02 output-inclusion_adaptive/solution-00004 
-0 0.0000e+00 505 5411 2401 0 42 4.5840e-02 output-inclusion_adaptive/solution-00005 
+0 0.0000e+00 100 1055  465 0 40 8.8424e-02 output-inclusion_adaptive/solution-00001 
+0 0.0000e+00 166 1793  793 0 42 8.7928e-02 output-inclusion_adaptive/solution-00002 
+0 0.0000e+00 271 2918 1293 0 43 6.4697e-02 output-inclusion_adaptive/solution-00003 
+0 0.0000e+00 433 4727 2097 0 40 6.3301e-02 output-inclusion_adaptive/solution-00004 
+0 0.0000e+00 700 7661 3401 0 43 4.5455e-02 output-inclusion_adaptive/solution-00005 
