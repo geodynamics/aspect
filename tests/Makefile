@@ -23,9 +23,10 @@ $(tests):
 	   for i in `cd $@; echo *` ; do \
              cat $@/$$i | egrep -v '^\|' > $@/$$i.notime ; \
              cat output-$@/$$i | egrep -v '^\|' > output-$@/$$i.notime ; \
-	     if (diff -q $@/$$i.notime output-$@/$$i.notime 2>&1) ; then \
+	     if ((diff -q $@/$$i.notime output-$@/$$i.notime 2>&1) > /dev/null) ; then \
 		  : ; \
 	     else \
+		  echo "Files $@/$$i output-$@/$$i differ" ; \
 		  failed=true ; \
 	     fi ; \
 	     rm -f $@/$$i.notime output-$@/$$i.notime ; \
