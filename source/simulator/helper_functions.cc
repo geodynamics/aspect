@@ -264,7 +264,7 @@ namespace aspect
                                                                             fe_values.quadrature_point(q));
 
                   min_local_conduction_timestep = std::min(min_local_conduction_timestep,
-                                                           pow(cell->minimum_vertex_distance(),2)
+                                                           parameters.CFL_number*pow(cell->minimum_vertex_distance(),2)
                                                            / thermal_diffusivity);
                 }
             }
