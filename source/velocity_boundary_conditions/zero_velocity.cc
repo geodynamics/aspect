@@ -49,6 +49,6 @@ namespace aspect
                                                  "velocity is zero. This is commonly referred to as "
                                                  "a ``stick boundary condition'', indicating that "
                                                  "the material ``sticks'' to the material on the "
-                                                 "other side of the boundary.");
+                                                 "other side of the boundary.")
   }
 }

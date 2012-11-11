@@ -95,7 +95,7 @@ namespace aspect
                                   "radial constant",
                                   "A gravity model in which the gravity direction is radially inward "
                                   "and at constant magnitude. The magnitude is read from the parameter "
-                                  "file in subsection 'Radial constant'.");
+                                  "file in subsection 'Radial constant'.")
 
     ASPECT_REGISTER_GRAVITY_MODEL(RadialEarthLike,
                                   "radial earth-like",
@@ -103,6 +103,6 @@ namespace aspect
                                   "and with a magnitude that matches that of the earth at "
                                   "the core-mantle boundary as well as at the surface and "
                                   "in between is physically correct under the assumption "
-                                  "of a constant density.");
+                                  "of a constant density.")
   }
 }

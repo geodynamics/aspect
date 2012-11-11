@@ -79,7 +79,7 @@ namespace aspect
                                                    "Implementation of the velocity boundary conditions for the "
                                                    "``inclusion'' benchmark. See the manual and the Kronbichler, Heister "
                                                    "and Bangerth paper on ASPECT for more information about this "
-                                                   "benchmark.");
+                                                   "benchmark.")
     }
   }
 }

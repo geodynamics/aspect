@@ -53,7 +53,7 @@ namespace aspect
         pressure,
         strain_rate
       };
-    };
+    }
 
 
     /**

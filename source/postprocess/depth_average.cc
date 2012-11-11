@@ -69,7 +69,7 @@ namespace aspect
         return std::pair<std::string,std::string>();
 
       const unsigned int n_statistics = 7+this->n_compositional_fields();
-      std::vector<double> temp[n_statistics];
+      std::vector<std::vector<double> > temp(n_statistics);
       {
         unsigned int i = 0;
         // add temperature and the compositional fields that follow

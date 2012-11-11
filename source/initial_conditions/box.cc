@@ -60,6 +60,6 @@ namespace aspect
                                        "is perturbed slightly from an otherwise constant value "
                                        "equal to one. The perturbation is chosen in such a way "
                                        "that the initial temperature is constant to one along "
-                                       "the entire boundary.");
+                                       "the entire boundary.")
   }
 }

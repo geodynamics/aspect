@@ -80,6 +80,6 @@ namespace aspect
   {
     ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(TanGurnis,
                                                "Tan Gurnis",
-                                               "A model for the Tan/Gurnis benchmark.");
+                                               "A model for the Tan/Gurnis benchmark.")
   }
 }

@@ -154,6 +154,6 @@ namespace aspect
     ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(Box,
                                                "box",
                                                "A model in which the temperature is chosen constant on "
-                                               "all the sides of a box.");
+                                               "all the sides of a box.")
   }
 }

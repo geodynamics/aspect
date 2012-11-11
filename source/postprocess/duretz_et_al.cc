@@ -3078,6 +3078,6 @@ namespace aspect
                                   "and reports the error. Specifically, it can compute the errors for "
                                   "the SolCx, SolKz and inclusion benchmarks. The postprocessor inquires "
                                   "which material model is currently being used and adjusts "
-                                  "which exact solution to use accordingly.");
+                                  "which exact solution to use accordingly.")
   }
 }

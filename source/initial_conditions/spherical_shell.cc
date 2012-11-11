@@ -232,7 +232,7 @@ namespace aspect
                                        "An initial temperature field in which the temperature "
                                        "is perturbed following a six-fold pattern in angular "
                                        "direction from an otherwise spherically symmetric "
-                                       "state.");
+                                       "state.")
 
     ASPECT_REGISTER_INITIAL_CONDITIONS(SphericalGaussianPerturbation,
                                        "spherical gaussian perturbation",
@@ -240,6 +240,6 @@ namespace aspect
                                        "is perturbed by a single Gaussian added to an "
                                        "otherwise spherically symmetric state. Additional "
                                        "parameters are read from the parameter file in subsection "
-                                       "'Spherical gaussian perturbation'.");
+                                       "'Spherical gaussian perturbation'.")
   }
 }

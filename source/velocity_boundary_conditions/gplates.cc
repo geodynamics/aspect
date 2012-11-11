@@ -505,6 +505,6 @@ namespace aspect
     ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(GPlates,
                                                  "gplates",
                                                  "Implementation of a model in which the boundary "
-                                                 "velocity is derived from GPlates.");
+                                                 "velocity is derived from GPlates.")
   }
 }

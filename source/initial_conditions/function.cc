@@ -81,6 +81,6 @@ namespace aspect
   {
     ASPECT_REGISTER_INITIAL_CONDITIONS(Function,
                                        "function",
-                                       "Temperature is given in terms of an explicit formula");
+                                       "Temperature is given in terms of an explicit formula")
   }
 }

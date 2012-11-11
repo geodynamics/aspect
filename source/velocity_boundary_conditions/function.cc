@@ -100,6 +100,6 @@ namespace aspect
                                                  "Implementation of a model in which the boundary "
                                                  "velocity is given in terms of an explicit formula "
                                                  "that is elaborated in the parameters in section "
-                                                 "``Boundary velocity model|Function''.");
+                                                 "``Boundary velocity model|Function''.")
   }
 }
