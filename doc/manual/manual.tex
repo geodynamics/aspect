@@ -2222,7 +2222,7 @@ subsection Gravity model
   set Model name = vertical % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
 
   subsection Vertical
-    set Magnitude = 1e14   # = Thermal expansion coefficient * Ra % \index[prmindex]{Magnitude} \index[prmindexfull]{Gravity model!Vertical!Magnitude} %
+    set Magnitude = 1e14   # = Ra / Thermal expansion coefficient % \index[prmindex]{Magnitude} \index[prmindexfull]{Gravity model!Vertical!Magnitude} %
   end
 end
 
@@ -2548,7 +2548,7 @@ contain the parameter setting
 \begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
 subsection Gravity model
   subsection Vertical
-    set Magnitude = 1e16   # = Thermal expansion coefficient * Ra % \index[prmindex]{Magnitude} \index[prmindexfull]{Gravity model!Vertical!Magnitude} %
+    set Magnitude = 1e16   # = Ra / Thermal expansion coefficient % \index[prmindex]{Magnitude} \index[prmindexfull]{Gravity model!Vertical!Magnitude} %
   end
 end
 \end{lstlisting}
