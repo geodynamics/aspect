@@ -1142,17 +1142,17 @@ namespace aspect
       {
         case NonlinearSolver::IMPES:
         {
-          assemble_temperature_system ();
-          build_temperature_preconditioner();
-          solve_temperature_or_composition(0);
+          assemble_advection_system (0);
+          build_advection_preconditioner(0,T_preconditioner);
+          solve_advection(0);
 
           current_linearization_point.block(2) = solution.block(2);
 
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
-              assemble_composition_system (c);
-              build_composition_preconditioner(c);
-              solve_temperature_or_composition(1+c); // this is correct, 0 would be temperature
+              assemble_advection_system (1+c);
+              build_advection_preconditioner(1+c,C_preconditioner);
+              solve_advection(1+c); // this is correct, 0 would be temperature
               current_linearization_point.block(3+c) = solution.block(3+c);
             }
 
@@ -1173,12 +1173,12 @@ namespace aspect
 
           do
             {
-              assemble_temperature_system();
+              assemble_advection_system(0);
 
               if (iteration == 0)
-                build_temperature_preconditioner();
+                build_advection_preconditioner(0,T_preconditioner);
 
-              const double temperature_residual = solve_temperature_or_composition(0);
+              const double temperature_residual = solve_advection(0);
 
               current_linearization_point.block(2) = solution.block(2);
               rebuild_stokes_matrix = true;
@@ -1186,10 +1186,10 @@ namespace aspect
 
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 {
-                  assemble_composition_system (c);
-                  build_composition_preconditioner(c);
+                  assemble_advection_system (c+1);
+                  build_advection_preconditioner(c+1,C_preconditioner);
                   composition_residual[c]
-                    = solve_temperature_or_composition(1+c); // 1+n is correct, because 0 is for temperature
+                    = solve_advection(1+c); // 1+n is correct, because 0 is for temperature
                   current_linearization_point.block(3+c) = solution.block(3+c);
                 }
 
@@ -1240,13 +1240,13 @@ namespace aspect
         case NonlinearSolver::iterated_Stokes:
         {
           // solve the temperature system once...
-          assemble_temperature_system ();
-          solve_temperature_or_composition(0);
+          assemble_advection_system (0);
+          solve_advection(0);
 
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
-              assemble_composition_system (c);
-              solve_temperature_or_composition(1+c); // 1+n is correct, because 0 is the temperature
+              assemble_advection_system (c+1);
+              solve_advection(1+c); // 1+n is correct, because 0 is the temperature
             }
 
           // ...and then iterate the solution

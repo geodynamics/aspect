@@ -64,16 +64,15 @@ namespace aspect
       {
         template <int dim>      struct StokesPreconditioner;
         template <int dim>      struct StokesSystem;
-        template <int dim>      struct TemperatureSystem;
-        template <int dim>      struct CompositionSystem;
+        template <int dim>      struct AdvectionSystem;
       }
 
       namespace CopyData
       {
         template <int dim>      struct StokesPreconditioner;
         template <int dim>      struct StokesSystem;
-        template <int dim>      struct TemperatureSystem;
-        template <int dim>      struct CompositionSystem;
+        template <int dim>      struct AdvectionSystem;
+
       }
     }
   }
@@ -691,24 +690,15 @@ namespace aspect
       void build_stokes_preconditioner ();
 
       /**
-       * Initialize the preconditioner for the temperature equation.
+       * Initialize the preconditioner for the advection equation of
+       * field index. Index = 0 is temperature. Index = n with n > 0
+       * represents the nth compositional field.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      void build_temperature_preconditioner ();
-
-      /**
-       * Initialize preconditioner for the composition equation.
-       *
-       * @param composition_index The index of the compositional field whose
-       * preconditioner we want to build (0 <= composition_index < number of
-       * compositional fields in this problem).
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void build_composition_preconditioner (unsigned int composition_index);
+      void build_advection_preconditioner (const unsigned int index,
+                                           std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner);
 
       /**
        * Initiate the assembly of the Stokes matrix and right hand side.
@@ -719,28 +709,18 @@ namespace aspect
       void assemble_stokes_system ();
 
       /**
-       * Initiate the assembly of the temperature matrix and right hand side.
-       * This function does not build a preconditioner for the matrix as one
-       * may want to re-use a preconditioner initialized using a previously
-       * computed matrix.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void assemble_temperature_system ();
-
-      /**
-       * Initiate the assembly of the composition matrix and right hand side
+       * Initiate the assembly of one advection matrix and right hand side
        * and build a preconditioner for the matrix.
        *
-       * @param composition_index The index of the compositional field whose
-       * matrix we want to assemble (0 <= composition_index < number of
-       * compositional fields in this problem).
+       * @param index The index of the advected field whose
+       * matrix we want to assemble (0 - temperature,
+       * 1 <= index <= number of compositional fields
+       * in this problem, ).
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      void assemble_composition_system (unsigned int composition_index);
+      void assemble_advection_system (const unsigned int index);
 
       /**
        * Solve one block of the the temperature/composition linear system. Return the initial
@@ -755,7 +735,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
        */
-      double solve_temperature_or_composition (unsigned int index);
+      double solve_advection (const unsigned int index);
 
       /**
        * Solve the Stokes linear system. Return the initial nonlinear residual,
@@ -941,59 +921,58 @@ namespace aspect
       copy_local_to_global_stokes_system (const internal::Assembly::CopyData::StokesSystem<dim> &data);
 
       /**
-       * Compute the integrals for the temperature matrix and right hand side
-       * on a single cell.
+        * Compute the integrals for one advection matrix and right hand side
+        * on a single cell.
+        *
+        * @param index The index of the advected field whose
+        * local matrix we want to assemble (0 = temperature;
+        *  1 <= composition_index <= number of compositional fields
+        *  in this problem).
+        *
+        * This function is implemented in
+        * <code>source/simulator/assembly.cc</code>.
+        */
+      void
+      local_assemble_advection_system (const unsigned int             index,
+                                       const std::pair<double,double> global_field_range,
+                                       const double                   global_max_velocity,
+                                       const double                   global_entropy_variation,
+                                       const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                       internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                       internal::Assembly::CopyData::AdvectionSystem<dim> &data);
+
+      /**
+       * Compute the heating term for the advection system index.
+       * Currently the heating term is 0
+       * for compositional fields, but this can be changed in the
+       * future to allow for interactions between compositional fields.
+       *
+       * @param index The index of the advected field whose
+       * heating term we want to compute (0 = temperature;
+       *  1 <= composition_index < number of compositional fields
+       *  in this problem).
+       *  @param use_current_values Bool that decides which values
+       *  from scratch to use to compute the heating term
+       *  (current time step or last one).
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      void
-      local_assemble_temperature_system (const std::pair<double,double> global_T_range,
-                                         const double                   global_max_velocity,
-                                         const double                   global_entropy_variation,
-                                         const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                         internal::Assembly::Scratch::TemperatureSystem<dim>  &scratch,
-                                         internal::Assembly::CopyData::TemperatureSystem<dim> &data);
+      double compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                  const unsigned int index,
+                                  const bool use_current_values,
+                                  const unsigned int q) const;
+
 
       /**
-       * Copy the contribution to the temperature system
+       * Copy the contribution to the advection system
        * from a single cell into the global matrix that stores these elements.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
       void
-      copy_local_to_global_temperature_system (const internal::Assembly::CopyData::TemperatureSystem<dim> &data);
-
-      /**
-       * Compute the integrals for the composition matrix and right hand side
-       * on a single cell.
-       *
-       * @param composition_index The index of the compositional field whose
-       * local matrix we want to assemble (0 <= composition_index < number of
-       * compositional fields in this problem).
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void
-      local_assemble_composition_system (const unsigned int             composition_index,
-                                         const std::pair<double,double> global_C_range,
-                                         const double                   global_max_velocity,
-                                         const double                   global_entropy_variation,
-                                         const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                         internal::Assembly::Scratch::CompositionSystem<dim>  &scratch,
-                                         internal::Assembly::CopyData::CompositionSystem<dim> &data);
-
-      /**
-       * Copy the contribution to the composition system
-       * from a single cell into the global matrix that stores these elements.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void
-      copy_local_to_global_composition_system (const internal::Assembly::CopyData::CompositionSystem<dim> &data);
+      copy_local_to_global_advection_system (const internal::Assembly::CopyData::AdvectionSystem<dim> &data);
 
       /**
        * @}
@@ -1195,20 +1174,7 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       double
-      compute_viscosity(const std::vector<double>          &old_temperature,
-                        const std::vector<double>          &old_old_temperature,
-                        const std::vector<Tensor<1,dim> >  &old_temperature_grads,
-                        const std::vector<Tensor<1,dim> >  &old_old_temperature_grads,
-                        const std::vector<double>          &old_temperature_laplacians,
-                        const std::vector<double>          &old_old_temperature_laplacians,
-                        const std::vector<Tensor<1,dim> >  &old_velocity_values,
-                        const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
-                        const std::vector<SymmetricTensor<2,dim> >  &old_strain_rates,
-                        const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
-                        const std::vector<double>          &old_pressure,
-                        const std::vector<double>          &old_old_pressure,
-                        const std::vector<std::vector<double> > &old_composition,
-                        const std::vector<std::vector<double> > &old_old_composition,
+      compute_viscosity(internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
                         const double                        global_u_infty,
                         const double                        global_T_variation,
                         const double                        average_temperature,
@@ -1218,7 +1184,7 @@ namespace aspect
                         const unsigned int                  index) const;
 
       /**
-       * Compute the residual of the temperature equation to be used
+       * Compute the residual of one advection equation to be used
        * for the artificial diffusion coefficient value on a cell
        * given the values and gradients of the solution
        * passed as arguments.
@@ -1227,51 +1193,14 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void
-      compute_temperature_system_residual(const std::vector<double>          &old_temperature,
-                                          const std::vector<double>          &old_old_temperature,
-                                          const std::vector<Tensor<1,dim> >  &old_temperature_grads,
-                                          const std::vector<Tensor<1,dim> >  &old_old_temperature_grads,
-                                          const std::vector<double>          &old_temperature_laplacians,
-                                          const std::vector<double>          &old_old_temperature_laplacians,
-                                          const std::vector<Tensor<1,dim> >  &old_velocity_values,
-                                          const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
-                                          const std::vector<SymmetricTensor<2,dim> >  &old_strain_rates,
-                                          const std::vector<SymmetricTensor<2,dim> >  &old_old_strain_rates,
-                                          const std::vector<double>          &old_pressure,
-                                          const std::vector<double>          &old_old_pressure,
-                                          const std::vector<std::vector<double> > &old_composition,
-                                          const std::vector<std::vector<double> > &old_old_composition,
-                                          const double                        average_temperature,
-                                          const std::vector<Point<dim> >     &evaluation_points,
-                                          double                             &max_residual,
-                                          double                             &max_velocity) const;
+      compute_advection_system_residual(internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
+                                        const double                        average_field,
+                                        const unsigned int                  index,
+                                        double                             &max_residual,
+                                        double                             &max_velocity,
+                                        double                             &max_density,
+                                        double                             &max_specific_heat) const;
 
-      /**
-       * Compute the residual of the composition equation to be used
-       * for the artificial diffusion coefficient value on a cell
-       * given the values and gradients of the solution
-       * passed as arguments.
-       *
-       * @param composition_index The index of the compositional field whose
-       * residual we want to get (0 <= composition_index < number of
-       * compositional fields in this problem).
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void
-      compute_composition_system_residual(const std::vector<double>          &old_composition,
-                                          const std::vector<double>          &old_old_composition,
-                                          const std::vector<Tensor<1,dim> >  &old_composition_grads,
-                                          const std::vector<Tensor<1,dim> >  &old_old_composition_grads,
-                                          const std::vector<double>          &old_composition_laplacians,
-                                          const std::vector<double>          &old_old_composition_laplacians,
-                                          const std::vector<Tensor<1,dim> >  &old_velocity_values,
-                                          const std::vector<Tensor<1,dim> >  &old_old_velocity_values,
-                                          const double                        average_composition,
-                                          const unsigned int                  composition_index,
-                                          double                             &max_residual,
-                                          double                             &max_velocity) const;
       /**
        * Extract the values of temperature, pressure, composition and
        * optional strain rate for the current linearization point.

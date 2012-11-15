@@ -258,7 +258,7 @@ namespace aspect
   }
 
   template <int dim>
-  double Simulator<dim>::solve_temperature_or_composition (const unsigned int index)
+  double Simulator<dim>::solve_advection (const unsigned int index)
   {
     double initial_residual = 0;
 
@@ -275,8 +275,9 @@ namespace aspect
       else
         pcout << "   Solving composition system " << index << "... " << std::flush;
 
+      const double advection_solver_tolerance = (index == 0) ? parameters.temperature_solver_tolerance : parameters.composition_solver_tolerance;
       SolverControl solver_control (system_matrix.block(index+2,index+2).m(),
-                                    parameters.composition_solver_tolerance*system_rhs.block(index+2).l2_norm());
+                                    advection_solver_tolerance*system_rhs.block(index+2).l2_norm());
 
       SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
                                                    SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
@@ -461,7 +462,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template double Simulator<dim>::solve_temperature_or_composition (unsigned int index); \
+  template double Simulator<dim>::solve_advection (const unsigned int index); \
   template double Simulator<dim>::solve_stokes ();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
