@@ -1450,6 +1450,8 @@ The purpose of these files is as follows:
 \note{As noted in Section~\ref{sec:equations}, \aspect{} can be thought to compute
   in the meter-kilogram-second (MKS, or SI) system. Unless otherwise noted,
   the quantities in the output file are therefore also in MKS units.}
+  
+  A simple way to plot the contents of this file is shown in Section~\ref{sec:viz-stat}.
 
 \item \textit{Depth average statistics:} Similar to the
   \texttt{output/statistics} file, Aspect can generate depth-average
@@ -1732,9 +1734,50 @@ In order to visualize one time step, follow these steps:%
 More information on all of these topis can be found in the Visit
 documentation, see \url{http://www.llnl.gov/visit/}.
 
+
 \subsubsection{Visualizing statistical data}
 \label{sec:viz-stat}
 
+In addition to the graphical outputdiscussed above, \aspect{} produces a 
+statistics file that collects information produced during each time step.
+This file has a structure that looks like this:
+  \begin{lstlisting}[frame=single,language=ksh]
+# 1: Time step number
+# 2: Time (years)
+# 3: Iterations for Stokes solver
+# 4: Time step size (year)
+# 5: Iterations for temperature solver
+# 6: Visualization file name
+# 7: RMS velocity (m/year)
+# 8: Max. velocity (m/year)
+# 9: Minimal temperature (K)
+# 10: Average temperature (K)
+# 11: Maximal temperature (K)
+# 12: Average nondimensional temperature (K)
+# 13: Core-mantle heat flux (W)
+# 14: Surface heat flux (W)
+0 0.0000e+00 33 2.9543e+07 8                    "" 0.0000 0.0000   0.0000    0.0000 ...
+0 0.0000e+00 34 1.9914e+07 8 output/solution-00000 0.0946 0.1829 300.0000 3007.2519 ...
+1 1.9914e+07 33 1.9914e+07 8 output/solution-00001 0.1040 0.2172 300.0000 3007.8406 ...
+2 3.9827e+07 33 1.9914e+07 8                    "" 0.1114 0.2306 300.0000 3008.3939 ...
+  \end{lstlisting}
+  
+In other words, it first lists what the individual columns mean with a hash
+mark at the beginning of the line and then has one line for each time step
+in which the individual columns list what has been explained above. In the
+example shown here, the first time step appears twice because we use a mesh
+that starts out globally refined and we then start the entire computation
+over again on a once adaptively refined mesh (see the parameters in 
+Section~\ref{parameters:Mesh_20refinement} for how to do that).
+
+This file is easy to visualize. For example, one can import it as a whitespace
+separated file into a spreadsheet such as Microsoft Excel or OpenOffice/LibreOffice
+Calc and then generate graphs of one column against another. Or, maybe simpler,
+there is a multitude of simple graphing programs that do not need the overhead
+of a full fledged spreadsheet engine and simply plot graphs. One that is 
+particularly simple to use and available on every major platform is \texttt{Gnuplot}.
+It is extensively documented at \url{http://www.gnuplot.info/}.
+  
 \marginpar{To be written}
 
 
