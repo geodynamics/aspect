@@ -401,15 +401,15 @@ namespace aspect
         prm.declare_entry ("alpha", "2",
                            Patterns::Double (1, 2),
                            "The exponent $\\alpha$ in the entropy viscosity stabilization. Units: None.");
-        prm.declare_entry ("cR", "0.11",
+        prm.declare_entry ("cR", "0.33",
                            Patterns::Double (0),
                            "The $c_R$ factor in the entropy viscosity "
                            "stabilization. Units: None.");
         prm.declare_entry ("beta", "0.078",
                            Patterns::Double (0),
                            "The $\\beta$ factor in the artificial viscosity "
-                           "stabilization. An appropriate value for 2d is 0.052 "
-                           "and 0.078 for 3d. Units: None.");
+                           "stabilization. An appropriate value for 2d is 0.078 "
+                           "and 0.117 for 3d. Units: None.");
       }
       prm.leave_subsection ();
     }

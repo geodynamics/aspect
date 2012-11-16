@@ -7,7 +7,18 @@ Aspect version 0.1.
 All entries are signed with the names of the author.
 </p>
 
+<li>
+Changed: Adjusted the stabilization parameters to stabilize
+advection benchmarks without natural diffusion.
+<br>
+(Rene Gassmoeller, 2012/11/16)
 
+<li>
+Changed: Unified the routines for advecting temperature and
+compositional fields. This includes a different scaling for
+the temperature stabilization that may change results.
+<br>
+(Rene Gassmoeller, 2012/11/15)
 
 <ol>
 <li>

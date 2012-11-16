@@ -1218,7 +1218,7 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void
-      compute_material_model_input_values (const TrilinosWrappers::MPI::BlockVector                    &current_linearization_point,
+      compute_material_model_input_values (const TrilinosWrappers::MPI::BlockVector                    &input_solution,
                                            const FEValues<dim,dim>                                     &input_finite_element_values,
                                            const bool                                                   compute_strainrate,
                                            typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const;

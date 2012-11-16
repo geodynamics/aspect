@@ -654,7 +654,7 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::
-  compute_material_model_input_values (const TrilinosWrappers::MPI::BlockVector                    &current_linearization_point,
+  compute_material_model_input_values (const TrilinosWrappers::MPI::BlockVector                    &input_solution,
                                        const FEValues<dim>                                         &input_finite_element_values,
                                        const bool                                                   compute_strainrate,
                                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const
@@ -675,12 +675,12 @@ namespace aspect
         input_composition.push_back(temp);
       }
 
-    input_finite_element_values[input_temperature].get_function_values (current_linearization_point,
+    input_finite_element_values[input_temperature].get_function_values (input_solution,
                                                                         material_model_inputs.temperature);
-    input_finite_element_values[input_pressure].get_function_values(current_linearization_point,
+    input_finite_element_values[input_pressure].get_function_values(input_solution,
                                                                     material_model_inputs.pressure);
     if (compute_strainrate)
-      input_finite_element_values[input_velocities].get_function_symmetric_gradients(current_linearization_point,
+      input_finite_element_values[input_velocities].get_function_symmetric_gradients(input_solution,
                                                                                      material_model_inputs.strain_rate);
 
     // the values of the compositional fields are stored as blockvectors for each field
@@ -689,7 +689,7 @@ namespace aspect
                                                           std::vector<double> (n_q_points));
 
     for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      input_finite_element_values[input_composition[c]].get_function_values(current_linearization_point,
+      input_finite_element_values[input_composition[c]].get_function_values(input_solution,
                                                                             composition_values[c]);
 
     // then we copy these values to exchange the inner and outer vector, because for the material
@@ -1386,7 +1386,7 @@ namespace aspect
                           index,
                           global_field_range,
                           get_maximal_velocity(old_solution),
-                          // use the mid-value of the composition instead of the
+                          // use the mid-value of the advected field instead of the
                           // integral mean. results are not very
                           // sensitive to this and this is far simpler
                           get_entropy_variation ((global_field_range.first +
