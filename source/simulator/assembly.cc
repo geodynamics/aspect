@@ -1070,7 +1070,7 @@ namespace aspect
                                        const unsigned int q) const
   {
 
-    if (index == 0)
+    if (index != 0)
       return 0.0;
 
     double current_T,current_p,alpha,density,viscosity,compressibility;
