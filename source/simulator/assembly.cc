@@ -112,21 +112,11 @@ namespace aspect
 
 
 
-        // Observe that we derive the
-        // StokesSystem scratch array from the
-        // StokesPreconditioner array. We do this
-        // because all the objects that are
-        // necessary for the assembly of the
-        // preconditioner are also needed for the
-        // actual matrix system and right hand
-        // side, plus some extra data. This makes
-        // the program more compact. Note also
-        // that the assembly of the Stokes system
-        // and the temperature right hand side
-        // further down requires data from
-        // temperature and velocity,
-        // respectively, so we actually need two
-        // FEValues objects for those two cases.
+        // We derive the StokesSystem scratch array from the
+        // StokesPreconditioner array. We do this because all the objects that
+        // are necessary for the assembly of the preconditioner are also
+        // needed for the actual matrix system and right hand side, plus some
+        // extra data that we need for the time stepping right hand side.
         template <int dim>
         struct StokesSystem : public StokesPreconditioner<dim>
         {
@@ -1445,7 +1435,7 @@ namespace aspect
   template void Simulator<dim>::copy_local_to_global_advection_system ( \
                                                                         const internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::assemble_advection_system (const unsigned int index); \
-   
+
 
 
   ASPECT_INSTANTIATE(INSTANTIATE)
