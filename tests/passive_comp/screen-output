@@ -41,7 +41,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      Writing depth average               output-passive_comp/depthaverage.plt
 
 *** Timestep 2:  t=5.6325e+12 seconds
-   Solving temperature system... 11 iterations.
+   Solving temperature system... 12 iterations.
    Solving composition system 1... 19 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3 iterations.
@@ -49,28 +49,28 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution-00002
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
-     Temperature min/avg/max:            0 K, 0.0008465 K, 0.003176 K
-     Heat fluxes through boundary parts: 0.5829 W, 1.873 W
+     Temperature min/avg/max:            0 K, 0.0008465 K, 0.003177 K
+     Heat fluxes through boundary parts: 0.5829 W, 1.872 W
      Writing depth average               output-passive_comp/depthaverage.plt
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      36.5s |            |
+| Total wallclock time elapsed since start    |      50.4s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         3 |      2.66s |       7.3% |
-| Assemble composition system     |         3 |      5.78s |        16% |
-| Assemble temperature system     |         3 |      6.63s |        18% |
-| Build Stokes preconditioner     |         3 |       1.7s |       4.7% |
-| Build composition preconditioner|         3 |    0.0723s |       0.2% |
-| Build temperature preconditioner|         3 |    0.0587s |      0.16% |
-| Solve Stokes system             |         3 |      0.59s |       1.6% |
-| Solve composition system        |         3 |     0.112s |      0.31% |
-| Solve temperature system        |         3 |    0.0896s |      0.25% |
-| Initialization                  |         2 |     0.274s |      0.75% |
-| Postprocessing                  |         3 |      13.6s |        37% |
-| Setup dof systems               |         1 |      2.63s |       7.2% |
+| Assemble Stokes system          |         3 |      3.07s |       6.1% |
+| Assemble composition system     |         3 |      8.44s |        17% |
+| Assemble temperature system     |         3 |      9.29s |        18% |
+| Build Stokes preconditioner     |         3 |      2.73s |       5.4% |
+| Build composition preconditioner|         3 |     0.103s |       0.2% |
+| Build temperature preconditioner|         3 |    0.0596s |      0.12% |
+| Solve Stokes system             |         3 |     0.889s |       1.8% |
+| Solve composition system        |         3 |     0.101s |       0.2% |
+| Solve temperature system        |         3 |     0.104s |      0.21% |
+| Initialization                  |         2 |     0.332s |      0.66% |
+| Postprocessing                  |         3 |        21s |        42% |
+| Setup dof systems               |         1 |      2.54s |         5% |
 +---------------------------------+-----------+------------+------------+
 
