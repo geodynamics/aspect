@@ -8,7 +8,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00000
-     Errors u_L1, p_L1, u_L2, p_L2: 1.728441e-01, 1.486559e+00, 8.838169e-02, 1.109955e+00
+     Errors u_L1, p_L1, u_L2, p_L2: 1.728440e-01, 1.486559e+00, 8.838169e-02, 1.109955e+00
 
 Number of active cells: 100 (on 5 levels)
 Number of degrees of freedom: 1,520 (930+125+465)
@@ -32,7 +32,7 @@ Number of degrees of freedom: 2,586 (1,586+207+793)
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00002
-     Errors u_L1, p_L1, u_L2, p_L2: 3.410617e-02, 5.750904e-01, 1.827126e-02, 1.111030e+00
+     Errors u_L1, p_L1, u_L2, p_L2: 3.410616e-02, 5.750905e-01, 1.827126e-02, 1.111030e+00
 
 Number of active cells: 271 (on 7 levels)
 Number of degrees of freedom: 4,211 (2,586+332+1,293)
@@ -44,7 +44,7 @@ Number of degrees of freedom: 4,211 (2,586+332+1,293)
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00003
-     Errors u_L1, p_L1, u_L2, p_L2: 2.503708e-02, 5.099100e-01, 1.348258e-02, 1.200322e+00
+     Errors u_L1, p_L1, u_L2, p_L2: 2.503708e-02, 5.099100e-01, 1.348258e-02, 1.200321e+00
 
 Number of active cells: 433 (on 8 levels)
 Number of degrees of freedom: 6,824 (4,194+533+2,097)
@@ -68,25 +68,25 @@ Number of degrees of freedom: 11,062 (6,802+859+3,401)
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00005
-     Errors u_L1, p_L1, u_L2, p_L2: 9.848741e-03, 2.316497e-01, 5.288153e-03, 6.894286e-01
+     Errors u_L1, p_L1, u_L2, p_L2: 9.848738e-03, 2.316496e-01, 5.288154e-03, 6.894286e-01
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      30.3s |            |
+| Total wallclock time elapsed since start    |      37.8s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         6 |      2.66s |       8.8% |
-| Assemble temperature system     |         6 |      5.39s |        18% |
-| Build Stokes preconditioner     |         6 |      2.05s |       6.8% |
-| Build temperature preconditioner|         6 |    0.0507s |      0.17% |
-| Solve Stokes system             |         6 |      2.85s |       9.4% |
-| Solve temperature system        |         6 |    0.0471s |      0.16% |
-| Initialization                  |         7 |     0.645s |       2.1% |
-| Postprocessing                  |         6 |      4.63s |        15% |
-| Refine mesh structure, part 1   |         5 |      2.52s |       8.3% |
-| Refine mesh structure, part 2   |         5 |     0.119s |      0.39% |
-| Setup dof systems               |         6 |      6.59s |        22% |
+| Assemble Stokes system          |         6 |      2.34s |       6.2% |
+| Assemble temperature system     |         6 |      6.83s |        18% |
+| Build Stokes preconditioner     |         6 |      2.33s |       6.2% |
+| Build temperature preconditioner|         6 |    0.0727s |      0.19% |
+| Solve Stokes system             |         6 |      4.08s |        11% |
+| Solve temperature system        |         6 |     0.104s |      0.27% |
+| Initialization                  |         7 |     0.778s |       2.1% |
+| Postprocessing                  |         6 |      6.95s |        18% |
+| Refine mesh structure, part 1   |         5 |      3.14s |       8.3% |
+| Refine mesh structure, part 2   |         5 |     0.202s |      0.53% |
+| Setup dof systems               |         6 |         8s |        21% |
 +---------------------------------+-----------+------------+------------+
 

@@ -121,20 +121,20 @@ Number of degrees of freedom: 268 (162+25+81)
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.323s |            |
+| Total wallclock time elapsed since start    |      15.6s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        16 |    0.0178s |       5.5% |
-| Assemble temperature system     |        16 |     0.116s |        36% |
-| Build Stokes preconditioner     |         2 |    0.0311s |       9.6% |
-| Build temperature preconditioner|        16 |    0.0116s |       3.6% |
-| Solve Stokes system             |        16 |   0.00568s |       1.8% |
-| Solve temperature system        |        16 |   0.00687s |       2.1% |
-| Initialization                  |         2 |   0.00787s |       2.4% |
-| Postprocessing                  |        16 |    0.0798s |        25% |
-| Refine mesh structure, part 1   |         1 |   0.00386s |       1.2% |
-| Refine mesh structure, part 2   |         1 |  0.000103s |     0.032% |
-| Setup dof systems               |         2 |    0.0208s |       6.4% |
+| Assemble Stokes system          |        16 |      1.23s |       7.9% |
+| Assemble temperature system     |        16 |      8.28s |        53% |
+| Build Stokes preconditioner     |         2 |      0.35s |       2.2% |
+| Build temperature preconditioner|        16 |     0.175s |       1.1% |
+| Solve Stokes system             |        16 |    0.0679s |      0.44% |
+| Solve temperature system        |        16 |    0.0195s |      0.13% |
+| Initialization                  |         2 |    0.0644s |      0.41% |
+| Postprocessing                  |        16 |      4.67s |        30% |
+| Refine mesh structure, part 1   |         1 |     0.119s |      0.76% |
+| Refine mesh structure, part 2   |         1 |  0.000706s |    0.0045% |
+| Setup dof systems               |         2 |     0.136s |      0.87% |
 +---------------------------------+-----------+------------+------------+
 
