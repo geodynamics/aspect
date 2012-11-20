@@ -94,9 +94,6 @@ namespace aspect
           _initialized = true;
         }
 
-      // Advance the particles in the world by the current timestep
-      _world.advance_timestep(this->get_timestep(), this->get_solution());
-
       // If it's time to generate an output file, call the appropriate functions and reset the timer
       if (this->get_time() >= _next_data_output_time)
         {
@@ -105,6 +102,9 @@ namespace aspect
           output_data = true;
         }
       if (output_data) result_string += " Wrote particle data: " + data_file_name + ".";
+
+      // Advance the particles in the world by the current timestep
+      _world.advance_timestep(this->get_timestep(), this->get_solution());
 
       return std::make_pair("Advecting particles...", result_string);
     }
