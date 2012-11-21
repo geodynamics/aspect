@@ -48,10 +48,9 @@ namespace aspect
       double composition_dependence = 1.0;
       if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
         {
-          // TODO: Currently using an arithmetic interpolation. Usually a geometric interpolation
-          // is assumed more realistic for viscosity
-          composition_dependence *= (1-composition[0]);
-          composition_dependence += composition_viscosity_prefactor * composition[0];
+          //geometric interpolation
+          return (pow(10, ((1-composition[0]) * log10(eta*temperature_dependence)
+                         + composition[0] * log10(eta*composition_viscosity_prefactor*temperature_dependence))));
         }
 
       return composition_dependence * temperature_dependence * eta;
@@ -130,7 +129,7 @@ namespace aspect
     {
       return (reference_rho * (1 - thermal_alpha * (temperature - reference_T))
               +
-              (this->n_compositional_fields()>0
+              (compositional_fields.size()>0
                ?
                compositional_delta_rho * compositional_fields[0]
                :
