@@ -389,8 +389,8 @@ namespace aspect
     void
     GPlates<dim>::set_current_time (const double time)
     {
-      current_time = time;
-      if (time_dependent)
+      current_time = time-velocity_file_start_time;
+      if (time_dependent && (current_time > 0.0))
         {
           const unsigned int old_time_step = current_time_step;
 
@@ -435,7 +435,10 @@ namespace aspect
     GPlates<dim>::
     boundary_velocity (const Point<dim> &position) const
     {
-      return lookup->surface_velocity(position,time_weight);
+      if (current_time > 0.0)
+        return lookup->surface_velocity(position,time_weight);
+      else
+        return Tensor<1,dim> ();
     }
 
 
@@ -459,6 +462,10 @@ namespace aspect
                              Patterns::Anything (),
                              "Time step between following velocity files."
                              " Default is one million years expressed in SI units.");
+          prm.declare_entry ("Velocity file start time", "0.0",
+                             Patterns::Anything (),
+                             "Time at which the velocity file with number 0 shall be loaded."
+                             "Previous to this time, a no-slip boundary condition is assumed.");
           prm.declare_entry ("Point one", "1.570796,0.0",
                              Patterns::Anything (),
                              "Point that determines the plane in which a 2D model lies in."
@@ -486,6 +493,7 @@ namespace aspect
           data_directory        = prm.get ("Data directory");
           velocity_file_name    = prm.get ("Velocity file name");
           time_step             = prm.get_double ("Time step");
+          velocity_file_start_time = prm.get_double ("Velocity file start time");
           point1                = prm.get("Point one");
           point2                = prm.get("Point two");
         }

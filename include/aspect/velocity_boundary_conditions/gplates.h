@@ -220,6 +220,12 @@ namespace aspect
         unsigned int  current_time_step;
 
         /**
+         * Time at which the velocity file with number 0 shall be loaded.
+         * Previous to this time, a no-slip boundary condition is assumed.
+         */
+        double velocity_file_start_time;
+
+        /**
          * Directory in which the gplates velocity are present.
          */
         std::string data_directory;
