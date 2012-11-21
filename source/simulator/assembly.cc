@@ -1268,7 +1268,6 @@ namespace aspect
                            global_field_range.second - global_field_range.first,
                            0.5 * (global_field_range.second + global_field_range.first),
                            global_entropy_variation,
-                           scratch.finite_element_values.get_quadrature_points(),
                            cell->diameter(),
                            index);  //index for advected solution_field
 
