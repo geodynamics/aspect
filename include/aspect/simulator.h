@@ -1179,7 +1179,6 @@ namespace aspect
                         const double                        global_T_variation,
                         const double                        average_temperature,
                         const double                        global_entropy_variation,
-                        const std::vector<Point<dim> >     &evaluation_points,
                         const double                        cell_diameter,
                         const unsigned int                  index) const;
 

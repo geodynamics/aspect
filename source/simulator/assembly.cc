@@ -558,7 +558,7 @@ namespace aspect
                                          scratch.old_old_field_grads[q]) / 2;
 
         const double density              = (index == 0) ? scratch.explicit_material_model_outputs.densities[q] : 1.0;
-        const double conductivity = (index == 0) ? scratch.material_model_outputs.thermal_conductivities[q] : 0.0;
+        const double conductivity = (index == 0) ? scratch.explicit_material_model_outputs.thermal_conductivities[q] : 0.0;
         const double c_P                  = (index == 0) ? scratch.explicit_material_model_outputs.specific_heat[q] : 1.0;
         const double k_Delta_field = conductivity
                                      * (scratch.old_field_laplacians[q] +
@@ -590,7 +590,6 @@ namespace aspect
                      const double                        global_field_variation,
                      const double                        average_field,
                      const double                        global_entropy_variation,
-                     const std::vector<Point<dim> >     &evaluation_points,
                      const double                        cell_diameter,
                      const unsigned int                  index) const
   {
