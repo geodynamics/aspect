@@ -241,6 +241,8 @@ namespace aspect
 
     // finally produce a record of the run-time parameters by writing
     // the currently used values into a file
+    // Only write the parameter files on the root node to avoid file system conflicts
+    if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
     {
       std::ofstream prm_out ((parameters.output_directory + "parameters.prm").c_str());
       AssertThrow (prm_out,
@@ -248,6 +250,7 @@ namespace aspect
                                parameters.output_directory + "parameters.prm>."));
       prm.print_parameters(prm_out, ParameterHandler::Text);
     }
+    if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
     {
       std::ofstream prm_out ((parameters.output_directory + "parameters.tex").c_str());
       AssertThrow (prm_out,
