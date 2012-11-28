@@ -44,6 +44,7 @@ include $D/common/Make.global_options
 # list the directories and the various kinds of files
 all-dirs := source \
 	    source/simulator \
+            source/mesh_refinement \
             source/geometry_model \
             source/gravity_model \
             source/boundary_temperature \
