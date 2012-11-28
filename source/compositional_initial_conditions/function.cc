@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: function.cc 1088 2012-08-02 13:52:16Z bangerth $  */
+/*  $Id$  */
 
 
 #include <aspect/compositional_initial_conditions/function.h>

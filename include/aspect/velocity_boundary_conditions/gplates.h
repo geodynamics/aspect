@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: zero_velocity.h 1071 2012-08-01 16:50:02Z bangerth $  */
+/*  $Id$  */
 
 
 #ifndef __aspect__velocity_boundary_conditions_gplates_h

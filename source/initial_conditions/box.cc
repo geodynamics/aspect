@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: box.cc 1122 2012-09-05 20:32:21Z heister $  */
+/*  $Id$  */
 
 
 #include <aspect/initial_conditions/box.h>

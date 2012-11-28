@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: interface.cc 1019 2012-05-19 11:37:00Z bangerth $  */
+/*  $Id$  */
 
 
 #include <aspect/simulator.h>

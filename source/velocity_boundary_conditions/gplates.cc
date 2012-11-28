@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: zero_velocity.cc 1071 2012-08-01 16:50:02Z bangerth $  */
+/*  $Id$  */
 
 
 #include <aspect/global.h>
