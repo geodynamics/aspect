@@ -8,6 +8,12 @@ All entries are signed with the names of the author.
 </p>
 
 <li>
+Changed: Write the parameter file only on the root node
+to avoid file system locking issues.
+<br>
+(Eric Heien, 2012/11/28)
+
+<li>
 Changed: Adjusted the stabilization parameters to stabilize
 advection benchmarks without natural diffusion.
 <br>
