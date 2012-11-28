@@ -1433,7 +1433,7 @@ namespace aspect
   template void Simulator<dim>::copy_local_to_global_advection_system ( \
                                                                         const internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::assemble_advection_system (const unsigned int index); \
-
+   
 
 
   ASPECT_INSTANTIATE(INSTANTIATE)

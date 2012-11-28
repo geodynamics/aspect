@@ -243,21 +243,21 @@ namespace aspect
     // the currently used values into a file
     // Only write the parameter files on the root node to avoid file system conflicts
     if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
-    {
-      std::ofstream prm_out ((parameters.output_directory + "parameters.prm").c_str());
-      AssertThrow (prm_out,
-                   ExcMessage (std::string("Couldn't open file <") +
-                               parameters.output_directory + "parameters.prm>."));
-      prm.print_parameters(prm_out, ParameterHandler::Text);
-    }
+      {
+        std::ofstream prm_out ((parameters.output_directory + "parameters.prm").c_str());
+        AssertThrow (prm_out,
+                     ExcMessage (std::string("Couldn't open file <") +
+                                 parameters.output_directory + "parameters.prm>."));
+        prm.print_parameters(prm_out, ParameterHandler::Text);
+      }
     if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
-    {
-      std::ofstream prm_out ((parameters.output_directory + "parameters.tex").c_str());
-      AssertThrow (prm_out,
-                   ExcMessage (std::string("Couldn't open file <") +
-                               parameters.output_directory + "parameters.tex>."));
-      prm.print_parameters(prm_out, ParameterHandler::LaTeX);
-    }
+      {
+        std::ofstream prm_out ((parameters.output_directory + "parameters.tex").c_str());
+        AssertThrow (prm_out,
+                     ExcMessage (std::string("Couldn't open file <") +
+                                 parameters.output_directory + "parameters.tex>."));
+        prm.print_parameters(prm_out, ParameterHandler::LaTeX);
+      }
     computing_timer.exit_section();
   }
 

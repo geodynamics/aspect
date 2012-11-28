@@ -71,8 +71,8 @@ namespace aspect
       // 'using' declaration we can promote it to a public member).
       class MySimulatorAccess : public SimulatorAccess<dim>
       {
-      public:
-        using SimulatorAccess<dim>::get_mpi_communicator;
+        public:
+          using SimulatorAccess<dim>::get_mpi_communicator;
       };
       MySimulatorAccess simulator_access;
       simulator_access.initialize (simulator);
@@ -89,25 +89,25 @@ namespace aspect
       // here in turns. then normalize the output vector and
       // verify that its values are non-negative numbers
       std::vector<Vector<float> > all_error_indicators (mesh_refinement_objects.size(),
-          Vector<float>(error_indicators.size()));
+                                                        Vector<float>(error_indicators.size()));
       unsigned int index = 0;
       for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p, ++index)
         {
           try
-          {
-           (*p)->execute (all_error_indicators[index]);
+            {
+              (*p)->execute (all_error_indicators[index]);
 
-           for (unsigned int i=0; i<error_indicators.size(); ++i)
-             Assert (all_error_indicators[index](i) >= 0,
-                 ExcMessage ("Error indicators must be non-negative numbers!"));
+              for (unsigned int i=0; i<error_indicators.size(); ++i)
+                Assert (all_error_indicators[index](i) >= 0,
+                        ExcMessage ("Error indicators must be non-negative numbers!"));
 
-           const double global_max = Utilities::MPI::max (all_error_indicators[index].linfty_norm(),
-               mpi_communicator);
-           if (global_max != 0)
-             all_error_indicators[index] /= global_max;
-          }
+              const double global_max = Utilities::MPI::max (all_error_indicators[index].linfty_norm(),
+                                                             mpi_communicator);
+              if (global_max != 0)
+                all_error_indicators[index] /= global_max;
+            }
           // plugins that throw exceptions usually do not result in
           // anything good because they result in an unwinding of the stack
           // and, if only one processor triggers an exception, the
@@ -197,18 +197,18 @@ namespace aspect
                           std_cxx1x::get<dim>(registered_plugins).get_description_string());
 
         prm.declare_entry("Merge operation",
-            "plus",
-            Patterns::Selection("plus|max"),
-            "If multiple mesh refinement criteria are computed for each cell, "
-            "then one will have to decide which one should win when deciding "
-            "which cell to refine. The operation that selects from these competing "
-            "criteria is the one that is selected here. The options are:\n\n"
-            "\\begin{itemize}\n"
-            "\\item \\texttt{plus}: Add the various error indicators together and "
-            "refine those cells on which the sum of indicators is largest.\n"
-            "\\item \\texttt{max}: Take the maximum of the various error indicators and "
-            "refine those cells on which the maximal indicators is largest.\n"
-            "\\end{itemize}");
+                          "plus",
+                          Patterns::Selection("plus|max"),
+                          "If multiple mesh refinement criteria are computed for each cell, "
+                          "then one will have to decide which one should win when deciding "
+                          "which cell to refine. The operation that selects from these competing "
+                          "criteria is the one that is selected here. The options are:\n\n"
+                          "\\begin{itemize}\n"
+                          "\\item \\texttt{plus}: Add the various error indicators together and "
+                          "refine those cells on which the sum of indicators is largest.\n"
+                          "\\item \\texttt{max}: Take the maximum of the various error indicators and "
+                          "refine those cells on which the maximal indicators is largest.\n"
+                          "\\end{itemize}");
       }
       prm.leave_subsection();
 
@@ -247,18 +247,18 @@ namespace aspect
       // their own parameters
       for (unsigned int name=0; name<plugin_names.size(); ++name)
         mesh_refinement_objects.push_back (std_cxx1x::shared_ptr<Interface<dim> >
-                                  (std_cxx1x::get<dim>(registered_plugins)
-                                   .create_plugin (plugin_names[name],
-                                                   prm)));
+                                           (std_cxx1x::get<dim>(registered_plugins)
+                                            .create_plugin (plugin_names[name],
+                                                            prm)));
     }
 
 
     template <int dim>
     void
     Manager<dim>::register_mesh_refinement_criterion (const std::string &name,
-                                          const std::string &description,
-                                          void (*declare_parameters_function) (ParameterHandler &),
-                                          Interface<dim> *(*factory_function) ())
+                                                      const std::string &description,
+                                                      void (*declare_parameters_function) (ParameterHandler &),
+                                                      Interface<dim> *(*factory_function) ())
     {
       std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
