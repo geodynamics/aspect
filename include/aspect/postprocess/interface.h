@@ -249,7 +249,7 @@ namespace aspect
          * without having to know them by name. This allows the files
          * in which individual postprocessors are implement to register
          * these postprocessors, rather than also having to modify the
-         * Manage class by adding the new postprocessor class.
+         * Manager class by adding the new postprocessor class.
          *
          * @param name The name under which this postprocessor is to
          * be called in parameter files.
