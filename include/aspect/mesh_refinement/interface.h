@@ -82,7 +82,7 @@ namespace aspect
          */
         virtual
         void
-        execute (Vector<float> &error_indicators) = 0;
+        execute (Vector<float> &error_indicators) const = 0;
 
         /**
          * Declare the parameters this class takes through input files.
