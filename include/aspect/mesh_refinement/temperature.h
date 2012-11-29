@@ -20,8 +20,8 @@
 /*  $Id$  */
 
 
-#ifndef __aspect__mesh_refinement_composition_h
-#define __aspect__mesh_refinement_composition_h
+#ifndef __aspect__mesh_refinement_temperature_h
+#define __aspect__mesh_refinement_temperature_h
 
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/simulator.h>
@@ -33,12 +33,12 @@ namespace aspect
 
     /**
      * A class that implements a mesh refinement criterion based on
-     * the compositional fields (if available).
+     * the temperature field.
      *
      * @ingroup MeshRefinement
      */
     template <int dim>
-    class Composition : public Interface<dim>,
+    class Temperature : public Interface<dim>,
       public SimulatorAccess<dim>
     {
       public:

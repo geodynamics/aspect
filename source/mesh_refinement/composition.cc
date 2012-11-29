@@ -35,7 +35,7 @@ namespace aspect
     {
       AssertThrow (this->n_compositional_fields() >= 1,
                    ExcMessage ("This refinement criterion can not be used when no "
-                       "compositional fields are active!"));
+                               "compositional fields are active!"));
       indicators = 0;
 
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
@@ -66,11 +66,11 @@ namespace aspect
   namespace MeshRefinement
   {
     ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(Composition,
-                                  "composition",
-                                  "A mesh refinement criterion that computes "
-                                  "refinement indicators from the compositional fields. "
-                                  "If there is more than one compositional field, then "
-                                  "it simply takes the sum of the indicators computed "
-                                  "from each of the compositional field.")
+                                              "composition",
+                                              "A mesh refinement criterion that computes "
+                                              "refinement indicators from the compositional fields. "
+                                              "If there is more than one compositional field, then "
+                                              "it simply takes the sum of the indicators computed "
+                                              "from each of the compositional field.")
   }
 }
