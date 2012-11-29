@@ -67,7 +67,7 @@ namespace aspect
   {
     ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(Composition,
                                   "composition",
-                                  "A mesh refinement criterion that takes computes "
+                                  "A mesh refinement criterion that computes "
                                   "refinement indicators from the compositional fields. "
                                   "If there is more than one compositional field, then "
                                   "it simply takes the sum of the indicators computed "
