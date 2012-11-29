@@ -73,8 +73,7 @@ namespace aspect
       {
         public:
           using SimulatorAccess<dim>::get_mpi_communicator;
-      };
-      MySimulatorAccess simulator_access;
+      } simulator_access;
       simulator_access.initialize (simulator);
       mpi_communicator = simulator_access.get_mpi_communicator();
     }
@@ -85,6 +84,8 @@ namespace aspect
     void
     Manager<dim>::execute (Vector<float> &error_indicators)
     {
+      Assert (mesh_refinement_objects.size() > 0, ExcInternalError());
+
       // call the execute() functions of all plugins we have
       // here in turns. then normalize the output vector and
       // verify that its values are non-negative numbers
@@ -153,6 +154,32 @@ namespace aspect
         }
 
       // now merge the results
+      switch  (merge_operation)
+        {
+          case plus:
+          {
+            for (unsigned int i=0; i<=mesh_refinement_objects.size(); ++i)
+              error_indicators += all_error_indicators[i];
+            break;
+          }
+
+          case max:
+          {
+            error_indicators = all_error_indicators[0];
+            for (unsigned int i=1; i<=mesh_refinement_objects.size(); ++i)
+              {
+                Assert (error_indicators.size() == all_error_indicators[i].size(),
+                        ExcInternalError());
+                for (unsigned int j=0; j<error_indicators.size(); ++j)
+                  error_indicators(j) = std::max (error_indicators(j),
+                                                  all_error_indicators[i](j));
+              }
+            break;
+          }
+
+          default:
+            Assert (false, ExcNotImplemented());
+        }
     }
 
 
