@@ -82,7 +82,7 @@ namespace aspect
 
     template <int dim>
     void
-    Manager<dim>::execute (Vector<float> &error_indicators)
+    Manager<dim>::execute (Vector<float> &error_indicators) const
     {
       Assert (mesh_refinement_objects.size() > 0, ExcInternalError());
 
@@ -92,7 +92,7 @@ namespace aspect
       std::vector<Vector<float> > all_error_indicators (mesh_refinement_objects.size(),
                                                         Vector<float>(error_indicators.size()));
       unsigned int index = 0;
-      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::iterator
+      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p, ++index)
         {
@@ -208,9 +208,11 @@ namespace aspect
         // construct a string for Patterns::MultipleSelection that
         // contains the names of all registered plugins
         const std::string pattern_of_names
-          = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names (true);
-        prm.declare_entry("List of mesh refinement criteria",
-                          "plus",
+          = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+//TODO: rename when the parameter in parameters.cc has been deletd
+        prm.declare_entry("Strategy x",
+//TODO: set to rho c_p temperature
+                          "temperature",
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma separated list of mesh refinement criteria that "
                           "will be run whenever mesh refinement is required. The "
@@ -223,10 +225,12 @@ namespace aspect
                           +
                           std_cxx1x::get<dim>(registered_plugins).get_description_string());
 
-        prm.declare_entry("Merge operation",
+        prm.declare_entry("Refinement criteria merge operation",
                           "plus",
                           Patterns::Selection("plus|max"),
-                          "If multiple mesh refinement criteria are computed for each cell, "
+                          "If multiple mesh refinement criteria are computed for each cell "
+                          "(by passing a list of more than element to the \\texttt{Strategy} "
+                          "parameter in this section of the input file) "
                           "then one will have to decide which one should win when deciding "
                           "which cell to refine. The operation that selects from these competing "
                           "criteria is the one that is selected here. The options are:\n\n"
@@ -258,12 +262,12 @@ namespace aspect
       prm.enter_subsection("Mesh refinement");
       {
         plugin_names
-          = Utilities::split_string_list(prm.get("List of mesh refinement criteria"));
+          = Utilities::split_string_list(prm.get("Strategy x"));
 
         // while we're in this section, also read the merge operation
-        if (prm.get("Merge operation") == "plus")
+        if (prm.get("Refinement criteria merge operation") == "plus")
           merge_operation = plus;
-        else if (prm.get("Merge operation") == "max")
+        else if (prm.get("Refinement criteria merge operation") == "max")
           merge_operation = max;
         else
           Assert (false, ExcNotImplemented());
@@ -272,6 +276,8 @@ namespace aspect
 
       // go through the list, create objects and let them parse
       // their own parameters
+      AssertThrow (plugin_names.size() >= 1,
+                   ExcMessage ("You need to provide at least one mesh refinement criterion in the input file!"));
       for (unsigned int name=0; name<plugin_names.size(); ++name)
         mesh_refinement_objects.push_back (std_cxx1x::shared_ptr<Interface<dim> >
                                            (std_cxx1x::get<dim>(registered_plugins)

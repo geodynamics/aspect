@@ -210,6 +210,9 @@ namespace aspect
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
 
+    mesh_refinement_manager.parse_parameters (prm);
+    mesh_refinement_manager.initialize (*this);
+
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
 

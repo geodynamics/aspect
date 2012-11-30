@@ -143,7 +143,7 @@ namespace aspect
          */
         virtual
         void
-        execute (Vector<float> &error_indicators) = 0;
+        execute (Vector<float> &error_indicators) const;
 
         /**
          * Declare the parameters of all known mesh refinement plugins, as
