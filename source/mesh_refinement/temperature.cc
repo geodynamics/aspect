@@ -38,15 +38,14 @@ namespace aspect
                                "compositional fields are active!"));
       indicators = 0;
 
-      std::vector<bool> temperature_component (dim+2+this->n_compositional_fields(), false);
-      temperature_component[dim+2] = true;
+      const FEValuesExtractors::Scalar temperature (dim+1);
       KellyErrorEstimator<dim>::estimate (this->get_dof_handler(),
 //TODO: Replace the 2 by something reasonable, adjusted to the polynomial degree
                                           QGauss<dim-1>(2),
                                           typename FunctionMap<dim>::type(),
                                           this->get_solution(),
                                           indicators,
-                                          temperature_component,
+                                          this->get_dof_handler().get_fe().component_mask(temperature),
                                           0,
                                           0,
                                           this->get_triangulation().locally_owned_subdomain());

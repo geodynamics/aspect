@@ -42,15 +42,14 @@ namespace aspect
         {
           Vector<float> this_indicator (indicators.size());
 
-          std::vector<bool> composition_component (dim+2+this->n_compositional_fields(), false);
-          composition_component[dim+2+c] = true;
+          const FEValuesExtractors::Scalar this_composition (dim+2+this->n_compositional_fields());
           KellyErrorEstimator<dim>::estimate (this->get_dof_handler(),
 //TODO: Replace the 2 by something reasonable, adjusted to the polynomial degree
                                               QGauss<dim-1>(2),
                                               typename FunctionMap<dim>::type(),
                                               this->get_solution(),
                                               this_indicator,
-                                              composition_component,
+                                              this->get_dof_handler().get_fe().component_mask(this_composition),
                                               0,
                                               0,
                                               this->get_triangulation().locally_owned_subdomain());
