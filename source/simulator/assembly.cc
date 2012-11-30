@@ -567,7 +567,7 @@ namespace aspect
         const double field = ((*scratch.old_field_values)[q] + (*scratch.old_old_field_values)[q]) / 2;
 
         const double gamma
-          = compute_heating_term(scratch,index,false,q);
+          = compute_heating_term(scratch,scratch.explicit_material_model_inputs,scratch.explicit_material_model_outputs,index,q);
         double residual
           = std::abs(density * c_P * (dField_dt + u_grad_field) - k_Delta_field - gamma);
 
@@ -1054,53 +1054,29 @@ namespace aspect
   template <int dim>
   double
   Simulator<dim>::compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                       typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                                       typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
                                        const unsigned int index,
-                                       const bool use_current_values,
                                        const unsigned int q) const
   {
 
     if (index != 0)
       return 0.0;
 
-    double current_T,current_p,alpha,density,viscosity,compressibility;
-    bool is_compressible;
-    SymmetricTensor<2,dim> current_strain_rate;
-    Tensor<1,dim> current_u;
+    const double current_T = material_model_inputs.temperature[q];
+    const SymmetricTensor<2,dim> current_strain_rate = material_model_inputs.strain_rate[q];
+    const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+    const double current_p = material_model_inputs.pressure[q];
 
-    if (use_current_values)
-      {
-        current_T = scratch.material_model_inputs.temperature[q];
-        current_strain_rate = scratch.material_model_inputs.strain_rate[q];
-        current_u = scratch.current_velocity_values[q];
-        current_p = scratch.material_model_inputs.pressure[q];
-
-        alpha                = scratch.material_model_outputs.thermal_expansion_coefficients[q];
-        density              = scratch.material_model_outputs.densities[q];
-        viscosity            = scratch.material_model_outputs.viscosities[q];
-        is_compressible        = scratch.material_model_outputs.is_compressible;
-        compressibility      = (is_compressible
-                                ?
-                                scratch.material_model_outputs.compressibilities[q]
-                                :
-                                std::numeric_limits<double>::quiet_NaN() );
-      }
-    else
-      {
-        current_T = scratch.explicit_material_model_inputs.temperature[q];
-        current_strain_rate = scratch.explicit_material_model_inputs.strain_rate[q];
-        current_u = (scratch.old_velocity_values[q]+scratch.old_old_velocity_values[q])/2.0;
-        current_p = scratch.explicit_material_model_inputs.pressure[q];
-
-        alpha                = scratch.explicit_material_model_outputs.thermal_expansion_coefficients[q];
-        density              = scratch.explicit_material_model_outputs.densities[q];
-        viscosity            = scratch.explicit_material_model_outputs.viscosities[q];
-        is_compressible        = scratch.explicit_material_model_outputs.is_compressible;
-        compressibility      = (is_compressible
-                                ?
-                                scratch.explicit_material_model_outputs.compressibilities[q]
-                                :
-                                std::numeric_limits<double>::quiet_NaN() );
-      }
+    const double alpha                = material_model_outputs.thermal_expansion_coefficients[q];
+    const double density              = material_model_outputs.densities[q];
+    const double viscosity            = material_model_outputs.viscosities[q];
+    const bool is_compressible        = material_model_outputs.is_compressible;
+    const double compressibility      = (is_compressible
+                                         ?
+                                         material_model_outputs.compressibilities[q]
+                                         :
+                                         std::numeric_limits<double>::quiet_NaN() );
 
     const Tensor<1,dim>
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
@@ -1279,9 +1255,10 @@ namespace aspect
             scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (k, q);
           }
 
-        const double density              = scratch.material_model_outputs.densities[q];
-        const double c_P                  = scratch.material_model_outputs.specific_heat[q];
+        const double density_c_P              = (index == 0 ? scratch.material_model_outputs.densities[q] *
+                                            scratch.material_model_outputs.specific_heat[q] : 1.0);
         const double conductivity = (index == 0 ? scratch.material_model_outputs.thermal_conductivities[q] : 0.0);
+        const double gamma = compute_heating_term(scratch,scratch.material_model_inputs,scratch.material_model_outputs,index,q);
 
         const double field_term_for_rhs
           = (use_bdf2_scheme ?
@@ -1294,7 +1271,7 @@ namespace aspect
              :
              (*scratch.old_field_values)[q])
             *
-            (index == 0 ? density * c_P : 1.0);
+            density_c_P;
 
 
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
@@ -1303,7 +1280,7 @@ namespace aspect
           {
             data.local_rhs(i) += (field_term_for_rhs * scratch.phi_field[i]
                                   + time_step *
-                                  compute_heating_term(scratch,index,true,q)
+                                  gamma
                                   * scratch.phi_field[i])
                                  *
                                  scratch.finite_element_values.JxW(q);
@@ -1318,7 +1295,7 @@ namespace aspect
                       * scratch.grad_phi_field[i] * scratch.grad_phi_field[j])
                      + ((time_step * (current_u * scratch.grad_phi_field[j] * scratch.phi_field[i]))
                         + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
-                     (index == 0 ? density * c_P: 1.0)
+                     density_c_P
                    )
                    * scratch.finite_element_values.JxW(q);
               }

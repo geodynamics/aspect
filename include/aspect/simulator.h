@@ -962,8 +962,9 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       double compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                  typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                                  typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
                                   const unsigned int index,
-                                  const bool use_current_values,
                                   const unsigned int q) const;
 
 
