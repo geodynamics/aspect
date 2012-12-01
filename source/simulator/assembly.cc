@@ -1256,7 +1256,7 @@ namespace aspect
           }
 
         const double density_c_P              = (index == 0 ? scratch.material_model_outputs.densities[q] *
-                                            scratch.material_model_outputs.specific_heat[q] : 1.0);
+                                                 scratch.material_model_outputs.specific_heat[q] : 1.0);
         const double conductivity = (index == 0 ? scratch.material_model_outputs.thermal_conductivities[q] : 0.0);
         const double gamma = compute_heating_term(scratch,scratch.material_model_inputs,scratch.material_model_outputs,index,q);
 

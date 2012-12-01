@@ -182,6 +182,15 @@ namespace aspect
 
 
   template <int dim>
+  const FiniteElement<dim> &
+  SimulatorAccess<dim>::get_fe () const
+  {
+    return simulator->dof_handler.get_fe();
+  }
+
+
+
+  template <int dim>
   void
   SimulatorAccess<dim>::get_depth_average_temperature(std::vector<double> &values) const
   {

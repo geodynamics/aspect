@@ -45,7 +45,7 @@ namespace aspect
                                           typename FunctionMap<dim>::type(),
                                           this->get_solution(),
                                           indicators,
-                                          this->get_dof_handler().get_fe().component_mask(temperature),
+                                          this->get_fe().component_mask(temperature),
                                           0,
                                           0,
                                           this->get_triangulation().locally_owned_subdomain());

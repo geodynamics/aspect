@@ -49,7 +49,7 @@ namespace aspect
                                               typename FunctionMap<dim>::type(),
                                               this->get_solution(),
                                               this_indicator,
-                                              this->get_dof_handler().get_fe().component_mask(this_composition),
+                                              this->get_fe().component_mask(this_composition),
                                               0,
                                               0,
                                               this->get_triangulation().locally_owned_subdomain());

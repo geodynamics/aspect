@@ -90,10 +90,10 @@ namespace aspect
       }
       LinearAlgebra::BlockVector vec_distributed (system_partitioning, this->get_mpi_communicator());
 
-      const Quadrature<dim> quadrature(this->get_dof_handler().get_fe().base_element(2).get_unit_support_points());
-      std::vector<unsigned int> local_dof_indices (this->get_dof_handler().get_fe().dofs_per_cell);
+      const Quadrature<dim> quadrature(this->get_fe().base_element(2).get_unit_support_points());
+      std::vector<unsigned int> local_dof_indices (this->get_fe().dofs_per_cell);
       FEValues<dim> fe_values (this->get_mapping(),
-    		  this->get_dof_handler().get_fe(),
+                               this->get_fe(),
                                quadrature,
                                update_quadrature_points | update_values);
       std::vector<double> pressure_values(quadrature.size());
@@ -141,22 +141,22 @@ namespace aspect
             // for each temperature dof, write into the output
             // vector the density. note that quadrature points and
             // dofs are enumerated in the same order
-            for (unsigned int i=0; i<this->get_dof_handler().get_fe().base_element(2).dofs_per_cell; ++i)
+            for (unsigned int i=0; i<this->get_fe().base_element(2).dofs_per_cell; ++i)
               {
                 const unsigned int system_local_dof
-                  = this->get_dof_handler().get_fe().component_to_system_index(/*temperature component=*/dim+1,
+                  = this->get_fe().component_to_system_index(/*temperature component=*/dim+1,
                                                                                        /*dof index within component=*/i);
 
                 vec_distributed(local_dof_indices[system_local_dof])
                   = this->get_material_model().density( temperature_values[i],
-                                             pressure_values[i],
-                                             composition_values[i],
-                                             fe_values.quadrature_point(i))
-                    * temperature_values[i]
-                    * this->get_material_model().specific_heat(temperature_values[i],
                                                         pressure_values[i],
                                                         composition_values[i],
-                                                        fe_values.quadrature_point(i));
+                                                        fe_values.quadrature_point(i))
+                    * temperature_values[i]
+                    * this->get_material_model().specific_heat(temperature_values[i],
+                                                               pressure_values[i],
+                                                               composition_values[i],
+                                                               fe_values.quadrature_point(i));
               }
           }
 //...

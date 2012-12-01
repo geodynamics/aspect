@@ -44,13 +44,13 @@ namespace aspect
       // create a quadrature formula based on the compositional element alone.
       // be defensive about determining that what we think is the temperature
       // element is it in fact
-      Assert (this->get_dof_handler().get_fe().n_base_elements() == 4,
+      Assert (this->get_fe().n_base_elements() == 4,
               ExcNotImplemented());
-      const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe().base_element(3).degree+1);
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(3).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_dof_handler().get_fe(),
+                               this->get_fe(),
                                quadrature_formula,
                                update_values   |
                                update_quadrature_points |

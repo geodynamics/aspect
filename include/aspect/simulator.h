@@ -258,6 +258,17 @@ namespace aspect
       get_dof_handler () const;
 
       /**
+       * Return a reference to the finite element that the DoFHandler that
+       * is used to discretize the variables at the current time step is built
+       * on. This is the finite element for the entire, couple problem, i.e.,
+       * it contains sub-elements for velocity, pressure, temperature
+       * and all other variables in this problem (e.g., compositional variables,
+       * if used in this simulation).
+       */
+      const FiniteElement<dim> &
+      get_fe () const;
+
+      /**
        * Fill the argument with a set of depth averages of the current
        * temperature field. The function fills a
        * vector that contains average field values over slices of the

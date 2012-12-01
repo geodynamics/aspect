@@ -41,12 +41,12 @@ namespace aspect
     std::pair<std::string,std::string>
     VelocityStatistics<dim>::execute (TableHandler &statistics)
     {
-      const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe()
+      const QGauss<dim> quadrature_formula (this->get_fe()
                                             .base_element(0).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_dof_handler().get_fe(),
+                               this->get_fe(),
                                quadrature_formula,
                                update_values   |
                                update_quadrature_points |

@@ -63,10 +63,10 @@ namespace aspect
       f << std::scientific;
 
 
-      const QGauss<dim> quadrature_formula (this->get_dof_handler().get_fe().base_element(0).degree+2);
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(0).degree+2);
 
       const unsigned int n_q_points =  quadrature_formula.size();
-      FEValues<dim> fe_values (this->get_mapping(), this->get_dof_handler().get_fe(),  quadrature_formula,
+      FEValues<dim> fe_values (this->get_mapping(), this->get_fe(),  quadrature_formula,
                                update_JxW_values | update_values | update_quadrature_points);
 
       const unsigned int dofs_per_cell = fe_values.get_fe().dofs_per_cell;
