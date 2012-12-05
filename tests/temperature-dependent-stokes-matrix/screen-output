@@ -1,0 +1,67 @@
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 21 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    1
+     Reference gravity (m/s^2):                     1
+     Reference thermal expansion (1/K):             2e-05
+     Temperature contrast accross model domain (K): 1
+     Model domain depth (m):                        1
+     Reference thermal diffusivity (m^2/s):         8e-10
+     Reference viscosity (Pas):                     1
+     Ra number:                                     25000
+     k_value:                                       1e-06
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 8e-10
+
+     Writing graphical output: output-temperature-dependent-stokes-matrix/solution-00000
+     RMS, max velocity:        9.07e-09 m/s, 3.15e-08 m/s
+
+*** Timestep 1:  t=493369 seconds
+   Solving temperature system... 20 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.56e-08 m/s, 5.82e-08 m/s
+
+*** Timestep 2:  t=761469 seconds
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.83e-08 m/s, 6.8e-08 m/s
+
+*** Timestep 3:  t=991272 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.01e-08 m/s, 7.39e-08 m/s
+
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      10.3s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         4 |      1.85s |        18% |
+| Assemble temperature system     |         4 |      3.78s |        37% |
+| Build Stokes preconditioner     |         4 |      1.32s |        13% |
+| Build temperature preconditioner|         4 |    0.0699s |      0.68% |
+| Solve Stokes system             |         4 |     0.214s |       2.1% |
+| Solve temperature system        |         4 |    0.0539s |      0.52% |
+| Initialization                  |         2 |     0.087s |      0.85% |
+| Postprocessing                  |         4 |      1.58s |        15% |
+| Setup dof systems               |         1 |     0.985s |       9.6% |
++---------------------------------+-----------+------------+------------+
+

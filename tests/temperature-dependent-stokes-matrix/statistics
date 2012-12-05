@@ -1,0 +1,15 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Time step size (seconds)
+# 9: Visualization file name
+# 10: RMS velocity (m/s)
+# 11: Max. velocity (m/s)
+0 0.0000e+00 1024 9539 4225  1 21 4.9337e+05 output-temperature-dependent-stokes-matrix/solution-00000 9.07151633e-09 3.14943648e-08 
+1 4.9337e+05 1024 9539 4225 20 10 2.6810e+05                                                        "" 1.56126720e-08 5.82105523e-08 
+2 7.6147e+05 1024 9539 4225 13  6 2.2980e+05                                                        "" 1.82616187e-08 6.79513029e-08 
+3 9.9127e+05 1024 9539 4225 11  5 2.1126e+05                                                        "" 2.00919997e-08 7.39215768e-08 
