@@ -45,6 +45,7 @@ namespace aspect
       wavenumber=1;
     }
 
+
     template <int dim>
     double
     TanGurnis<dim>::
@@ -67,6 +68,8 @@ namespace aspect
       return 1.0;
     }
 
+
+
     template <int dim>
     double
     TanGurnis<dim>::
@@ -75,6 +78,8 @@ namespace aspect
       return 1.0;
     }
 
+
+
     template <int dim>
     double
     TanGurnis<dim>::
@@ -82,6 +87,8 @@ namespace aspect
     {
       return 1.0;
     }
+
+
 
     template <int dim>
     double
@@ -94,6 +101,8 @@ namespace aspect
       return 1250;
     }
 
+
+
     template <int dim>
     double
     TanGurnis<dim>::
@@ -101,6 +110,8 @@ namespace aspect
     {
       return 1250;
     }
+
+
 
     template <int dim>
     double
@@ -113,6 +124,8 @@ namespace aspect
       return 2e-5;
     }
 
+
+
     template <int dim>
     double
     TanGurnis<dim>::
@@ -120,6 +133,8 @@ namespace aspect
     {
       return k_value/(reference_rho*reference_specific_heat);
     }
+
+
 
     template <int dim>
     double
@@ -135,16 +150,18 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     TanGurnis<dim>::
-    thermal_expansion_coefficient (const double temperature,
+    thermal_expansion_coefficient (const double,
                                    const double,
                                    const std::vector<double> &, /*composition*/
                                    const Point<dim> &) const
     {
       return thermal_alpha;
     }
+
 
 
     template <int dim>
@@ -169,6 +186,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     bool
     TanGurnis<dim>::
@@ -176,6 +194,8 @@ namespace aspect
     {
       return false;
     }
+
+
 
     template <int dim>
     bool
@@ -185,6 +205,8 @@ namespace aspect
       return false;
     }
 
+
+
     template <int dim>
     bool
     TanGurnis<dim>::
@@ -192,6 +214,8 @@ namespace aspect
     {
       return false;
     }
+
+
 
     template <int dim>
     bool
@@ -202,6 +226,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     bool
     TanGurnis<dim>::
@@ -209,6 +234,8 @@ namespace aspect
     {
       return true;
     }
+
+
 
     template <int dim>
     double
@@ -218,6 +245,8 @@ namespace aspect
       return a;
     }
 
+
+
     template <int dim>
     double
     TanGurnis<dim>::
@@ -226,6 +255,8 @@ namespace aspect
       return wavenumber;
     }
 
+
+
     template <int dim>
     double
     TanGurnis<dim>::
@@ -233,6 +264,8 @@ namespace aspect
     {
       return Di;
     }
+
+
 
     template <int dim>
     double
