@@ -397,6 +397,8 @@ namespace aspect
       };
     }
 
+
+
     template <int dim>
     void
     Steinberger<dim>::initialize()
@@ -410,6 +412,8 @@ namespace aspect
       radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name));
     }
 
+
+
     template <int dim>
     void
     Steinberger<dim>::
@@ -418,11 +422,13 @@ namespace aspect
       this->get_depth_average_temperature(avg_temp);
     }
 
+
+
     template <int dim>
     double
     Steinberger<dim>::
     viscosity (const double temperature,
-               const double,
+               const double /*pressure*/,
                const std::vector<double> &compositional_fields,
                const SymmetricTensor<2,dim> &,
                const Point<dim> &position) const
@@ -440,6 +446,8 @@ namespace aspect
       return std::max(std::min(vis_lateral * vis_radial,1e23),1e19);
     }
 
+
+
     template <int dim>
     double
     Steinberger<dim>::
@@ -452,6 +460,8 @@ namespace aspect
                         - this->get_adiabatic_surface_temperature());
     }
 
+
+
     template <int dim>
     double
     Steinberger<dim>::
@@ -461,6 +471,8 @@ namespace aspect
       return reference_eta;
     }
 
+
+
     template <int dim>
     double
     Steinberger<dim>::
@@ -469,6 +481,7 @@ namespace aspect
       const double reference_density    = 3300e0;
       return reference_density;
     }
+
 
 
     template <int dim>
@@ -531,6 +544,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     Steinberger<dim>::
@@ -552,6 +566,8 @@ namespace aspect
         }
       return rho;
     }
+
+
 
     template <int dim>
     double
@@ -591,6 +607,8 @@ namespace aspect
       return alpha;
     }
 
+
+
     template <int dim>
     double
     Steinberger<dim>::
@@ -612,6 +630,8 @@ namespace aspect
         }
       return vp;
     }
+
+
 
     template <int dim>
     double
@@ -636,6 +656,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     Steinberger<dim>::
@@ -658,6 +679,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     bool
     Steinberger<dim>::
@@ -666,6 +688,8 @@ namespace aspect
       //Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
       return false;
     }
+
+
 
     template <int dim>
     bool
@@ -676,6 +700,8 @@ namespace aspect
       return false;
     }
 
+
+
     template <int dim>
     bool
     Steinberger<dim>::
@@ -684,6 +710,8 @@ namespace aspect
       //Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
       return false;
     }
+
+
 
     template <int dim>
     bool
@@ -695,6 +723,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     bool
     Steinberger<dim>::
@@ -702,6 +731,7 @@ namespace aspect
     {
       return false;
     }
+
 
 
     template <int dim>
@@ -741,6 +771,8 @@ namespace aspect
         prm.leave_subsection();
       }
     }
+
+
 
     template <int dim>
     void
