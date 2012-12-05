@@ -163,18 +163,40 @@ namespace aspect
     template <int dim>
     bool
     Simple<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence) const
+    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      return false;
+      // compare this with the implementation of the viscosity() function
+      // to see the dependencies
+      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
+          &&
+          (thermal_viscosity_exponent != 0))
+        return true;
+      else if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
+          &&
+          (composition_viscosity_prefactor != 0))
+        return true;
+      else
+        return false;
     }
 
 
     template <int dim>
     bool
     Simple<dim>::
-    density_depends_on (const NonlinearDependence::Dependence) const
+    density_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      return false;
+      // compare this with the implementation of the density() function
+      // to see the dependencies
+      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
+          &&
+          (thermal_alpha != 0))
+        return true;
+      else if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
+          &&
+          (compositional_delta_rho != 0))
+        return true;
+      else
+        return false;
     }
 
     template <int dim>

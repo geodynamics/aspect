@@ -447,6 +447,8 @@ namespace aspect
       return reference_eta;
     }
 
+
+
     template <int dim>
     double
     Table<dim>::
@@ -455,6 +457,8 @@ namespace aspect
       return reference_rho;
     }
 
+
+
     template <int dim>
     double
     Table<dim>::
@@ -462,6 +466,8 @@ namespace aspect
     {
       return reference_alpha;
     }
+
+
 
     template <int dim>
     double
@@ -475,6 +481,8 @@ namespace aspect
       return alpha.value(temperature, pressure);
     }
 
+
+
     template <int dim>
     double
     Table<dim>::
@@ -485,11 +493,11 @@ namespace aspect
     {
 //    const double reference_specific_heat = 1250;    /* J / K / kg */  //??
 //      if (!IsCompressible) return reference_specific_heat; TODO
-      std::string path= data_directory;
-      path +="cp_bin";
-      static internal::P_T_LookupFunction cp(path);
+      static internal::P_T_LookupFunction cp(data_directory + "cp_bin");
       return cp.value(temperature, pressure);
     }
+
+
 
     template <int dim>
     double
@@ -498,6 +506,8 @@ namespace aspect
     {
       return reference_specific_heat;
     }
+
+
 
     template <int dim>
     double
@@ -511,6 +521,8 @@ namespace aspect
       return k_value;
     }
 
+
+
     template <int dim>
     double
     Table<dim>::
@@ -518,6 +530,8 @@ namespace aspect
     {
       return k_value/(reference_rho*reference_specific_heat);
     }
+
+
 
     template <int dim>
     double
@@ -531,6 +545,8 @@ namespace aspect
       return rho.value(temperature, pressure);
     }
 
+
+
     template <int dim>
     double
     Table<dim>::
@@ -541,6 +557,7 @@ namespace aspect
       static internal::P_T_LookupFunction vp(data_directory+"vseis_p_bin");
       return vp.value(temperature, pressure);
     }
+
 
 
     template <int dim>
@@ -555,6 +572,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     unsigned int
     Table<dim>::
@@ -564,10 +582,13 @@ namespace aspect
     {
       if (!compute_phases)
         return 0;
-
+      else
+        {
       static internal::PhaseLookupFunction<dim> phase(data_directory+"Phases.lab");
       return phase.value(temperature, pressure);
+        }
     }
+
 
 
     template <int dim>
@@ -583,51 +604,64 @@ namespace aspect
     }
 
 
+
     template <int dim>
     bool
     Table<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence) const
+    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
-      return false;
+      return ((dependence & NonlinearDependence::pressure)
+          ||
+          (dependence & NonlinearDependence::temperature));
     }
 
 
     template <int dim>
     bool
     Table<dim>::
-    density_depends_on (const NonlinearDependence::Dependence) const
+    density_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
-      return false;
+      return ((dependence & NonlinearDependence::pressure)
+          ||
+          (dependence & NonlinearDependence::temperature));
     }
+
+
 
     template <int dim>
     bool
     Table<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
+    compressibility_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
-      return false;
+      return ((dependence & NonlinearDependence::pressure)
+          ||
+          (dependence & NonlinearDependence::temperature));
     }
+
+
 
     template <int dim>
     bool
     Table<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
+    specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
-      return false;
+      return ((dependence & NonlinearDependence::pressure)
+          ||
+          (dependence & NonlinearDependence::temperature));
     }
+
+
 
     template <int dim>
     bool
     Table<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
     {
-      Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
+      // this coefficient is in fact constant in this model
       return false;
     }
+
+
 
     template <int dim>
     bool

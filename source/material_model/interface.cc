@@ -33,6 +33,22 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace NonlinearDependence
+    {
+      bool
+      identifies_single_variable(const Dependence dependence)
+      {
+        return ((dependence == temperature)
+                ||
+                (dependence == pressure)
+                ||
+                (dependence == strain_rate)
+                ||
+                (dependence == compositional_fields));
+      }
+
+    }
+
     template <int dim>
     Interface<dim>::~Interface ()
     {}
@@ -59,6 +75,8 @@ namespace aspect
       Assert (viscosity_depends_on(dependence) == false,
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
+      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
+          ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
 
@@ -74,6 +92,8 @@ namespace aspect
       Assert (density_depends_on(dependence) == false,
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
+      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
+          ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
 
@@ -88,6 +108,8 @@ namespace aspect
       Assert (compressibility_depends_on(dependence) == false,
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
+      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
+          ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
 
@@ -102,6 +124,8 @@ namespace aspect
       Assert (specific_heat_depends_on(dependence) == false,
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
+      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
+          ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
 
@@ -116,6 +140,8 @@ namespace aspect
       Assert (thermal_conductivity_depends_on(dependence) == false,
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
+      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
+          ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
 

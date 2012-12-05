@@ -43,16 +43,70 @@ namespace aspect
 
     /**
      * An namespace whose enum members are used in querying the
-     * nonlinear dependence of physical parameters on other quantities.
+     * nonlinear dependence of physical parameters on other solution
+     * variables.
      */
     namespace NonlinearDependence
     {
+      /**
+       * An enum whose members are used in querying the
+       * nonlinear dependence of physical parameters on other solution
+       * variables.
+       *
+       * The values of this enum are used in the
+       * MaterialModel::Interface::viscosity_depends_on and similar functions
+       * to query if a coefficient, here the viscosity, depends on the temperature,
+       * pressure, strain rate, or compositional field value. While these functions
+       * can be queried multiple times with each possible dependence repeatedly,
+       * for efficiency, these functions may also be called with a combination of
+       * flags, for example as in
+       * @code
+       *   material_model.viscosity_depends_on (temperature | strain_rate);
+       * @endcode
+       * where the operation in passing the argument concatenates the two
+       * values by performing a bitwise 'or' operation. Because the values of
+       * the enum are chosen so that they represent single bits in an integer, the
+       * result here is a number that can be represented in base-2 as 101 (the
+       * number 100=4 for the strain rate and 001=1 for the temperature). The
+       * functions taking such arguments are required to return <code>true</code>
+       * whenever the coefficient represented by this function depends on <i>any</i>
+       * of the variables identified in the argument.
+       *
+       * To query nonlinear dependence of a coefficient on any other variable,
+       * you can use
+       * @code
+       *   material_model.viscosity_depends_on (any_variable);
+       * @endcode
+       * Here, <code>any_variable</code> is a value that has its bits set for
+       * all possible dependencies.
+       *
+       * On the other hand, in functions such as MaterialModel::viscosity_derivative,
+       * only a single variable may be identified in a variable of this type since
+       * it only makes sense to, for example, query the derivative of the density
+       * with respect to temperature, not with respect to temperature or pressure.
+       */
       enum Dependence
       {
-        temperature,
-        pressure,
-        strain_rate
+        none                 = 0,
+        temperature          = 1,
+        pressure             = 2,
+        strain_rate          = 4,
+        compositional_fields = 8,
+
+        any_variable         = 0xffff
       };
+
+      /**
+       * Return whether the given argument @p dependence identifies
+       * a single variable (e.g., the pressure, the temperature, etc) or
+       * a combination of variables. Technically, this corresponds to the
+       * question of whether there is exactly one bit set in the
+       * argument.
+       *
+       * @return true if yes, false otherwise.
+       */
+      bool
+      identifies_single_variable(const Dependence dependence);
     }
 
 
@@ -213,38 +267,83 @@ namespace aspect
 
         /**
         * Return true if the viscosity() function returns something that
-        * may depend on the variable identifies by the argument.
+        * may depend on the variable identified by the argument.
+        *
+        * @param dependence[in] A variable that represents which dependence
+        * on other variables is being queried. Note that this argument
+        * may either identify just a single dependence (e.g. on the
+        * temperature or the strain rate) but also a combination of values
+        * (see the documentation of the NonlinearDependence::Dependence
+        * enum for more information). In the latter case, this function
+        * should return whether the viscosity depends on <i>any</i> of the
+        * variables identified in @p dependence.
         */
         virtual bool
         viscosity_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
 
         /**
         * Return true if the density() function returns something that
-        * may depend on the variable identifies by the argument.
+        * may depend on the variable identified by the argument.
+        *
+        * @param dependence[in] A variable that represents which dependence
+        * on other variables is being queried. Note that this argument
+        * may either identify just a single dependence (e.g. on the
+        * temperature or the strain rate) but also a combination of values
+        * (see the documentation of the NonlinearDependence::Dependence
+        * enum for more information). In the latter case, this function
+        * should return whether the density depends on <i>any</i> of the
+        * variables identified in @p dependence.
         */
         virtual bool
         density_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
 
         /**
         * Return true if the compressibility() function returns something that
-        * may depend on the variable identifies by the argument.
+        * may depend on the variable identified by the argument.
         *
         * This function must return false for all possible arguments if the
         * is_compressible() function returns false.
+        *
+        * @param dependence[in] A variable that represents which dependence
+        * on other variables is being queried. Note that this argument
+        * may either identify just a single dependence (e.g. on the
+        * temperature or the strain rate) but also a combination of values
+        * (see the documentation of the NonlinearDependence::Dependence
+        * enum for more information). In the latter case, this function
+        * should return whether the compressibility depends on <i>any</i> of the
+        * variables identified in @p dependence.
         */
         virtual bool
         compressibility_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
 
         /**
         * Return true if the specific_heat() function returns something that
-        * may depend on the variable identifies by the argument.
+        * may depend on the variable identified by the argument.
+        *
+        * @param dependence[in] A variable that represents which dependence
+        * on other variables is being queried. Note that this argument
+        * may either identify just a single dependence (e.g. on the
+        * temperature or the strain rate) but also a combination of values
+        * (see the documentation of the NonlinearDependence::Dependence
+        * enum for more information). In the latter case, this function
+        * should return whether the specific heat depends on <i>any</i> of the
+        * variables identified in @p dependence.
         */
         virtual bool
         specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
 
         /**
         * Return true if the thermal_conductivity() function returns something that
-        * may depend on the variable identifies by the argument.
+        * may depend on the variable identified by the argument.
+        *
+        * @param dependence[in] A variable that represents which dependence
+        * on other variables is being queried. Note that this argument
+        * may either identify just a single dependence (e.g. on the
+        * temperature or the strain rate) but also a combination of values
+        * (see the documentation of the NonlinearDependence::Dependence
+        * enum for more information). In the latter case, this function
+        * should return whether the thermal conductivity depends on <i>any</i> of the
+        * variables identified in @p dependence.
         */
         virtual bool
         thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
@@ -275,6 +374,11 @@ namespace aspect
         * The default implementation of this function returns zero
         * provided viscosity_depends_on() returns false for the given
         * dependence and throws an exception otherwise.
+        *
+        * @note The @p dependence argument may identify only a single
+        * variable, not a combination. In other words,
+        * <code>NonlinearDependence::identifies_single_variable(dependence)</code>
+        * must return true.
         */
         virtual double
         viscosity_derivative (const double              temperature,
@@ -290,6 +394,11 @@ namespace aspect
         * The default implementation of this function returns zero
         * provided density_depends_on() returns false for the given
         * dependence and throws an exception otherwise.
+        *
+        * @note The @p dependence argument may identify only a single
+        * variable, not a combination. In other words,
+        * <code>NonlinearDependence::identifies_single_variable(dependence)</code>
+        * must return true.
         */
         virtual double
         density_derivative (const double              temperature,
@@ -305,6 +414,11 @@ namespace aspect
         * The default implementation of this function returns zero
         * provided compressibility_depends_on() returns false for the given
         * dependence and throws an exception otherwise.
+        *
+        * @note The @p dependence argument may identify only a single
+        * variable, not a combination. In other words,
+        * <code>NonlinearDependence::identifies_single_variable(dependence)</code>
+        * must return true.
         */
         virtual double
         compressibility_derivative (const double              temperature,
@@ -320,6 +434,11 @@ namespace aspect
         * The default implementation of this function returns zero
         * provided specific_heat_depends_on() returns false for the given
         * dependence and throws an exception otherwise.
+        *
+        * @note The @p dependence argument may identify only a single
+        * variable, not a combination. In other words,
+        * <code>NonlinearDependence::identifies_single_variable(dependence)</code>
+        * must return true.
         */
         virtual double
         specific_heat_derivative (const double              temperature,
@@ -335,6 +454,11 @@ namespace aspect
         * The default implementation of this function returns zero
         * provided thermal_conductivity_depends_on() returns false
         * for the given dependence and throws an exception otherwise.
+        *
+        * @note The @p dependence argument may identify only a single
+        * variable, not a combination. In other words,
+        * <code>NonlinearDependence::identifies_single_variable(dependence)</code>
+        * must return true.
         */
         virtual double
         thermal_conductivity_derivative (const double              temperature,
