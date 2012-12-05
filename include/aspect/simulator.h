@@ -1251,6 +1251,24 @@ namespace aspect
                                              std::vector<double>                    &composition_values_at_q_point) const;
 
       /**
+       * Return whether the Stokes matrix depends on the values of the
+       * solution at the previous time step. This is the case is
+       * the coefficients that appear in the matrix (i.e., the
+       * viscosity and, in the case of a compressible model, the
+       * density) depend on the solution.
+       *
+       * This function exists to ensure that the Stokes matrix is
+       * rebuilt in time steps where it may have changed, while we
+       * want to save the effort of rebuilding it whenever we don't
+       * need to.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      bool
+      stokes_matrix_depends_on_solution () const;
+
+      /**
        * Generate and output some statistics like timing information and memory consumption.
        * Whether this function does anything or not is controlled through the
        * variable aspect::output_parallel_statistics.

@@ -1151,6 +1151,19 @@ namespace aspect
           values(cell_index) = (Vp - Vp_depth_average[idx])/Vp_depth_average[idx]*1e2;
         }
   }
+
+
+  template <int dim>
+  bool
+  Simulator<dim>::stokes_matrix_depends_on_solution() const
+  {
+    // currently, the only coefficient that really appears on the
+    // left hand side of the Stokes equation is the viscosity. note
+    // that our implementation of compressible materials makes sure
+    // that the density does not appear on the lhs.
+    return (material_model->viscosity_depends_on (MaterialModel::NonlinearDependence::any_variable)
+        == true);
+  }
 }
 
 // explicit instantiation of the functions we implement in this file
@@ -1174,7 +1187,8 @@ namespace aspect
   template void Simulator<dim>::compute_Vs_anomaly(Vector<float> &values) const; \
   template void Simulator<dim>::compute_Vp_anomaly(Vector<float> &values) const; \
   template void Simulator<dim>::output_program_stats(); \
-  template void Simulator<dim>::output_statistics();
+  template void Simulator<dim>::output_statistics(); \
+  template bool Simulator<dim>::stokes_matrix_depends_on_solution() const;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

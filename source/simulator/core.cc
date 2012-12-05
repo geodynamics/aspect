@@ -464,7 +464,10 @@ namespace aspect
       current_constraints.close();
     }
 
-    //TODO: do this in a more efficient way (TH)?
+    //TODO: do this in a more efficient way (TH)? we really only need
+    // to make sure that the time dependent velocity boundary conditions
+    // end up in the right hand side in the righth way; we currently do
+    // that by re-assembling the entire system
     if (!velocity_boundary_conditions.empty())
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
@@ -1162,6 +1165,15 @@ namespace aspect
               current_linearization_point.block(3+c) = solution.block(3+c);
             }
 
+
+          // the Stokes matrix depends on the viscosity. if the viscosity
+          // depends on other solution variables, then after we need to
+          // update the Stokes matrix in every time step and so need to set
+          // the following flag. if we change the Stokes matrix we also
+          // need to update the Stokes preconditioner.
+          if (stokes_matrix_depends_on_solution() == true)
+            rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
           assemble_stokes_system();
           build_stokes_preconditioner();
           solve_stokes();
@@ -1198,6 +1210,14 @@ namespace aspect
                     = solve_advection(1+c); // 1+n is correct, because 0 is for temperature
                   current_linearization_point.block(3+c) = solution.block(3+c);
                 }
+
+              // the Stokes matrix depends on the viscosity. if the viscosity
+              // depends on other solution variables, then after we need to
+              // update the Stokes matrix in every time step and so need to set
+              // the following flag. if we change the Stokes matrix we also
+              // need to update the Stokes preconditioner.
+              if (stokes_matrix_depends_on_solution() == true)
+                rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
               assemble_stokes_system();
               if (iteration == 0)
@@ -1259,13 +1279,18 @@ namespace aspect
           // of the Stokes system
           for (int i=0; i<10; ++i)
             {
-              rebuild_stokes_matrix =
-                rebuild_stokes_preconditioner = true;
+              // rebuild the matrix if it actually depends on the solution
+              // of the previous iteration.
+              if (stokes_matrix_depends_on_solution() == true)
+                  rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
               assemble_stokes_system();
               build_stokes_preconditioner();
               solve_stokes();
               old_solution = solution;
+
+//TODO: don't we need to set the linearization point here somehow?
+              Assert (false, ExcNotImplemented());
 
               pcout << std::endl;
             }
