@@ -172,8 +172,8 @@ namespace aspect
           (thermal_viscosity_exponent != 0))
         return true;
       else if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-          &&
-          (composition_viscosity_prefactor != 1.0))
+               &&
+               (composition_viscosity_prefactor != 1.0))
         return true;
       else
         return false;
@@ -192,8 +192,8 @@ namespace aspect
           (thermal_alpha != 0))
         return true;
       else if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-          &&
-          (compositional_delta_rho != 0))
+               &&
+               (compositional_delta_rho != 0))
         return true;
       else
         return false;

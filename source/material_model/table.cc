@@ -584,8 +584,8 @@ namespace aspect
         return 0;
       else
         {
-      static internal::PhaseLookupFunction<dim> phase(data_directory+"Phases.lab");
-      return phase.value(temperature, pressure);
+          static internal::PhaseLookupFunction<dim> phase(data_directory+"Phases.lab");
+          return phase.value(temperature, pressure);
         }
     }
 
@@ -611,8 +611,8 @@ namespace aspect
     viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
     {
       return ((dependence & NonlinearDependence::pressure)
-          ||
-          (dependence & NonlinearDependence::temperature));
+              ||
+              (dependence & NonlinearDependence::temperature));
     }
 
 
@@ -622,8 +622,8 @@ namespace aspect
     density_depends_on (const NonlinearDependence::Dependence dependence) const
     {
       return ((dependence & NonlinearDependence::pressure)
-          ||
-          (dependence & NonlinearDependence::temperature));
+              ||
+              (dependence & NonlinearDependence::temperature));
     }
 
 
@@ -634,8 +634,8 @@ namespace aspect
     compressibility_depends_on (const NonlinearDependence::Dependence dependence) const
     {
       return ((dependence & NonlinearDependence::pressure)
-          ||
-          (dependence & NonlinearDependence::temperature));
+              ||
+              (dependence & NonlinearDependence::temperature));
     }
 
 
@@ -646,8 +646,8 @@ namespace aspect
     specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
     {
       return ((dependence & NonlinearDependence::pressure)
-          ||
-          (dependence & NonlinearDependence::temperature));
+              ||
+              (dependence & NonlinearDependence::temperature));
     }
 
 

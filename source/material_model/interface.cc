@@ -76,7 +76,7 @@ namespace aspect
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
       Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-          ExcMessage ("The given dependence must identify a single variable!"));
+              ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
 
@@ -93,7 +93,7 @@ namespace aspect
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
       Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-          ExcMessage ("The given dependence must identify a single variable!"));
+              ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
 
@@ -109,7 +109,7 @@ namespace aspect
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
       Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-          ExcMessage ("The given dependence must identify a single variable!"));
+              ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
 
@@ -125,7 +125,7 @@ namespace aspect
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
       Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-          ExcMessage ("The given dependence must identify a single variable!"));
+              ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
 
@@ -141,7 +141,7 @@ namespace aspect
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
       Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-          ExcMessage ("The given dependence must identify a single variable!"));
+              ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
 

@@ -1282,7 +1282,7 @@ namespace aspect
               // rebuild the matrix if it actually depends on the solution
               // of the previous iteration.
               if (stokes_matrix_depends_on_solution() == true)
-                  rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+                rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
               assemble_stokes_system();
               build_stokes_preconditioner();
