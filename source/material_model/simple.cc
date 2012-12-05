@@ -173,7 +173,7 @@ namespace aspect
         return true;
       else if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
           &&
-          (composition_viscosity_prefactor != 0))
+          (composition_viscosity_prefactor != 1.0))
         return true;
       else
         return false;
