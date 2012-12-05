@@ -1029,6 +1029,16 @@ namespace aspect
     if (material_model->is_compressible())
       pressure_shape_function_integrals.compress(Add);
 
+
+    // if we got here and have rebuilt the matrix, make sure that
+    // the flag for the preconditioner had previously also been
+    // set
+    if (rebuild_stokes_matrix == true)
+      Assert (rebuild_stokes_preconditioner == true,
+              ExcInternalError());
+
+
+    // record that we have just rebuilt the matrix
     rebuild_stokes_matrix = false;
 
     computing_timer.exit_section();
