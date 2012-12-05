@@ -25,7 +25,7 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/fe/fe_values.h>
-#include <deal.II/numerics/error_estimator.h>
+#include <deal.II/numerics/derivative_approximation.h>
 
 namespace aspect
 {
@@ -159,7 +159,32 @@ namespace aspect
                                                                fe_values.quadrature_point(i));
               }
           }
-//...
+
+      // now create a vector with the requisite ghost elements
+      // and use it for estimating the gradients
+      LinearAlgebra::BlockVector vec (this->get_solution());
+      vec = vec_distributed;
+
+      DerivativeApproximation::approximate_gradient  (this->get_mapping(),
+                                                      this->get_dof_handler(),
+                                                      vec,
+                                                      indicators,
+                                                      dim+1);
+
+      // Scale gradient in each cell with the correct power of h. Otherwise,
+      // error indicators do not reduce when refined if there is a density
+      // jump. We need at least order 1 for the error not to grow when
+      // refining, so anything >1 should work.
+      const double power = 1.5;
+      {
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = this->get_dof_handler().begin_active(),
+        endc = this->get_dof_handler().end();
+        unsigned int i=0;
+        for (; cell!=endc; ++cell, ++i)
+          if (cell->is_locally_owned())
+            indicators(i) *= std::pow(cell->diameter(), power);
+      }
     }
   }
 }
