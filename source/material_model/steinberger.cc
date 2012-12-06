@@ -440,7 +440,7 @@ namespace aspect
 
       const double vis_lateral_exp = -1.0*lateral_viscosity_lookup->lateral_viscosity(depth)*delta_temp/(temperature*adia_temp);
 
-      const double vis_lateral = std::max(std::min(std::exp(vis_lateral_exp),1e4),1e-4);
+      const double vis_lateral = std::max(std::min(std::exp(vis_lateral_exp),1e2),1e-2);
       const double vis_radial = radial_viscosity_lookup->radial_viscosity(depth);
 
       return std::max(std::min(vis_lateral * vis_radial,1e23),1e19);
@@ -502,7 +502,7 @@ namespace aspect
                    const std::vector<double> &compositional_fields,
                    const Point<dim> &position) const
     {
-      Assert (n_material_data <= compositional_fields.size(),
+      Assert ((n_material_data <= compositional_fields.size()) || (n_material_data == 1),
               ExcMessage("There are more material files provided than compositional"
                          " Fields. This can not be intended."));
       double cp = 0.0;
@@ -668,14 +668,15 @@ namespace aspect
       return 0.0;
     }
 
-
     template <int dim>
     bool
     Steinberger<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence) const
+    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      //Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
-      return false;
+      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
+        return true;
+      else
+        return false;
     }
 
 
@@ -683,10 +684,16 @@ namespace aspect
     template <int dim>
     bool
     Steinberger<dim>::
-    density_depends_on (const NonlinearDependence::Dependence) const
+    density_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      //Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
-      return false;
+      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
+        return true;
+      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
+        return true;
+      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
+        return true;
+      else
+        return false;
     }
 
 
@@ -696,7 +703,6 @@ namespace aspect
     Steinberger<dim>::
     compressibility_depends_on (const NonlinearDependence::Dependence) const
     {
-      //Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
       return false;
     }
 
@@ -705,10 +711,16 @@ namespace aspect
     template <int dim>
     bool
     Steinberger<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
+    specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      //Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
-      return false;
+      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
+        return true;
+      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
+        return true;
+      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
+        return true;
+      else
+        return false;
     }
 
 
@@ -716,9 +728,8 @@ namespace aspect
     template <int dim>
     bool
     Steinberger<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
     {
-      //Assert (false, ExcMessage("Need to go through this model and figure out the correct answer."));
       return false;
     }
 
