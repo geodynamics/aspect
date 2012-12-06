@@ -174,7 +174,9 @@ namespace aspect
       // Scale gradient in each cell with the correct power of h. Otherwise,
       // error indicators do not reduce when refined if there is a density
       // jump. We need at least order 1 for the error not to grow when
-      // refining, so anything >1 should work.
+      // refining, so anything >1 should work. (note that the gradient
+      // itself scales like 1/h, so multiplying it with any factor h^s, s>1
+      // will yield convergence of the error indicators to zero as h->0)
       const double power = 1.5;
       {
         typename DoFHandler<dim>::active_cell_iterator
@@ -199,8 +201,14 @@ namespace aspect
                                               "A mesh refinement criterion that computes "
                                               "refinement indicators from a field that describes "
                                               "the spatial variability of the thermal energy density, $\\rho C_p T$. "
-                                              "Unlike most other criteria, this one uses the gradient, rather than "
-                                              "the second derivative of the energy density field to compute error "
-                                              "indicators.")
+                                              "Because this quantity may not be a continuous function ($\\rho$$ "
+                                              "and $C_p$ may be discontinuous functions along discontinuities in the "
+                                              "medium, for example due to phase changes), we approximate the "
+                                              "gradient of this quantity to refine the mesh. The error indicator "
+                                              "defined here takes the magnitude of the approximate gradient "
+                                              "and scales it by $h_K^{1.5}$ where $h_K$ is the diameter of each cell. "
+                                              "This scaling ensures that the error indicators converge to zero as "
+                                              "$h_K\\rightarrow 0$ even if the energy density is discontinuous, since "
+                                              "the gradient of a discontinuous function grows like $1/h_K$.")
   }
 }
