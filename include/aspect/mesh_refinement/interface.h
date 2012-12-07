@@ -209,6 +209,18 @@ namespace aspect
         MergeOperation merge_operation;
 
         /**
+         * Whether to normalize the individual refinement indicators
+         * to the range $[0,1]$ before merging.
+         */
+        bool normalize_criteria;
+
+        /**
+         * The scaling factors that should be applied to the individual
+         * refinement indicators before merging.
+         */
+        std::vector<double> scaling_factors;
+
+        /**
          * A list of mesh refinement objects that have been requested
          * in the parameter file.
          */

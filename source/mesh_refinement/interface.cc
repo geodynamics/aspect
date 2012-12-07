@@ -104,10 +104,17 @@ namespace aspect
                 Assert (all_error_indicators[index](i) >= 0,
                         ExcMessage ("Error indicators must be non-negative numbers!"));
 
-              const double global_max = Utilities::MPI::max (all_error_indicators[index].linfty_norm(),
-                                                             mpi_communicator);
-              if (global_max != 0)
-                all_error_indicators[index] /= global_max;
+              // see if we want to normalize the criteria
+              if (normalize_criteria == true)
+                {
+                  const double global_max = Utilities::MPI::max (all_error_indicators[index].linfty_norm(),
+                                                                 mpi_communicator);
+                  if (global_max != 0)
+                    all_error_indicators[index] /= global_max;
+                }
+
+              // then also scale them
+              all_error_indicators[index] *= scaling_factors[index];
             }
           // plugins that throw exceptions usually do not result in
           // anything good because they result in an unwinding of the stack
@@ -209,7 +216,7 @@ namespace aspect
         // contains the names of all registered plugins
         const std::string pattern_of_names
           = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
-//TODO: rename when the parameter in parameters.cc has been deletd
+//TODO: rename when the parameter in parameters.cc has been deleted
         prm.declare_entry("Strategy x",
 //TODO: set to rho c_p temperature
                           "temperature",
@@ -225,6 +232,49 @@ namespace aspect
                           +
                           std_cxx1x::get<dim>(registered_plugins).get_description_string());
 
+        prm.declare_entry("Normalize individual refinement criteria",
+                          "true",
+                          Patterns::Bool(),
+                          "If multiple refinement criteria are specified in the "
+                          "``Strategy'' parameter, then they need to be combined "
+                          "somehow to form the final refinement indicators. This "
+                          "is done using the method described by the ``Refinement "
+                          "criteria merge operation'' parameter which can either "
+                          "operate on the raw refinement indicators returned by "
+                          "each strategy (i.e., dimensional quantities) or using "
+                          "normalized values where the indicators of each strategy "
+                          "are first normalized to the interval $[0,1]$ (which also "
+                          "makes them non-dimensional). This parameter determines "
+                          "whether this normalization will happen.");
+        prm.declare_entry("Refinement criteria scaling factors",
+                          "",
+                          Patterns::List (Patterns::Double(0)),
+                          "A list of scaling factors by which every individual refinement "
+                          "criterion will be multiplied by. If only a single refinement "
+                          "criterion is selected (using the ``Strategy'' parameter, then "
+                          "this parameter has no particular meaning. On the other hand, if "
+                          "multiple criteria are chosen, then these factors are used to "
+                          "weigh the various indicators relative to each other. "
+                          "\n\n"
+                          "If ``Normalize individual refinement criteria'' is set to true, "
+                          "then the criteria will first be normalized to the interval $[0,1]$ "
+                          "and then multiplied by the factors specified here. You will likely "
+                          "want to choose the factors to be not too far from 1 in that case, say "
+                          "between 1 and 10, to avoid essentially disabling those criteria "
+                          "with small weights. On the other hand, if the criteria are not "
+                          "normalized to $[0,1]$ using the parameter mentioned above, then "
+                          "the factors you specify here need to take into account the relative "
+                          "numerical size of refinement indicators (which in that case carry "
+                          "physical units)."
+                          "\n\n"
+                          "You can experimentally play with these scaling factors by choosing "
+                          "to output the refinement indicators into the graphical output of "
+                          "a run."
+                          "\n\n"
+                          "If the list of indicators given in this parameter is empty, then this "
+                          "indicates that they should all be chosen equal to one. If the list "
+                          "is not empty then it needs to have as many entries as there are "
+                          "indicators chosen in the ``Strategy'' parameter.");
         prm.declare_entry("Refinement criteria merge operation",
                           "plus",
                           Patterns::Selection("plus|max"),
@@ -239,7 +289,10 @@ namespace aspect
                           "refine those cells on which the sum of indicators is largest.\n"
                           "\\item \\texttt{max}: Take the maximum of the various error indicators and "
                           "refine those cells on which the maximal indicators is largest.\n"
-                          "\\end{itemize}");
+                          "\\end{itemize}"
+                          "The refinement indicators computed by each strategy are modified by "
+                          "the ``Normalize individual refinement criteria'' and ``Refinement "
+                          "criteria scale factors'' parameters.");
       }
       prm.leave_subsection();
 
@@ -257,20 +310,33 @@ namespace aspect
       Assert (std_cxx1x::get<dim>(registered_plugins).plugins != 0,
               ExcMessage ("No mesh refinement plugins registered!?"));
 
-      // first find out which plugins are requested
+      // find out which plugins are requested and the various other
+      // parameters we declare here
       std::vector<std::string> plugin_names;
       prm.enter_subsection("Mesh refinement");
       {
         plugin_names
           = Utilities::split_string_list(prm.get("Strategy x"));
 
-        // while we're in this section, also read the merge operation
+        normalize_criteria = prm.get_bool ("Normalize individual refinement criteria");
+
+        scaling_factors
+          = Utilities::string_to_double(
+              Utilities::split_string_list(prm.get("Refinement criteria scaling factors")));
+        AssertThrow (scaling_factors.size() == plugin_names.size()
+                     ||
+                     scaling_factors.size() == 0,
+                     ExcMessage ("The number of scaling factors given here must either be "
+                                 "zero or equal to the number of chosen refinement criteria."));
+        if (scaling_factors.size() == 0)
+          scaling_factors = std::vector<double> (plugin_names.size(), 1.0);
+
         if (prm.get("Refinement criteria merge operation") == "plus")
           merge_operation = plus;
         else if (prm.get("Refinement criteria merge operation") == "max")
           merge_operation = max;
         else
-          Assert (false, ExcNotImplemented());
+          AssertThrow (false, ExcNotImplemented());
       }
       prm.leave_subsection();
 
