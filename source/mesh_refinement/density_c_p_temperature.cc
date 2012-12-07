@@ -35,9 +35,6 @@ namespace aspect
     void
     DensityCpTemperature<dim>::execute(Vector<float> &indicators) const
     {
-      AssertThrow (this->n_compositional_fields() >= 1,
-                   ExcMessage ("This refinement criterion can not be used when no "
-                               "compositional fields are active!"));
       indicators = 0;
 
       // create a vector in which we set the temperature block to
