@@ -165,7 +165,7 @@ namespace aspect
         {
           case plus:
           {
-            for (unsigned int i=0; i<=mesh_refinement_objects.size(); ++i)
+            for (unsigned int i=0; i<mesh_refinement_objects.size(); ++i)
               error_indicators += all_error_indicators[i];
             break;
           }
@@ -173,7 +173,7 @@ namespace aspect
           case max:
           {
             error_indicators = all_error_indicators[0];
-            for (unsigned int i=1; i<=mesh_refinement_objects.size(); ++i)
+            for (unsigned int i=1; i<mesh_refinement_objects.size(); ++i)
               {
                 Assert (error_indicators.size() == all_error_indicators[i].size(),
                         ExcInternalError());
@@ -218,8 +218,7 @@ namespace aspect
           = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
 //TODO: rename when the parameter in parameters.cc has been deleted
         prm.declare_entry("Strategy x",
-//TODO: set to rho c_p temperature
-                          "temperature",
+                          "density cp temperature",
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma separated list of mesh refinement criteria that "
                           "will be run whenever mesh refinement is required. The "
