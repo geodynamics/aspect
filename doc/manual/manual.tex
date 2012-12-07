@@ -715,7 +715,7 @@ dynamic pressure since it is many orders of magnitude smaller than the total
 pressure at the bottom of the earth mantle. We avoid this problem in \aspect{}
 by using a cleverly chosen iterative solver that ensures that the full pressure
 we compute is accurate enough so that the dynamic pressure can be extracted from
-it with the same accuracy one would get if one were to solve for only the 
+it with the same accuracy one would get if one were to solve for only the
 dynamic component. The methods that ensure this are described in detail in
 \cite{KHB12} and in particular in the appendix of that paper.
 
@@ -1453,7 +1453,7 @@ The purpose of these files is as follows:
 \note{As noted in Section~\ref{sec:equations}, \aspect{} can be thought to compute
   in the meter-kilogram-second (MKS, or SI) system. Unless otherwise noted,
   the quantities in the output file are therefore also in MKS units.}
-  
+
   A simple way to plot the contents of this file is shown in Section~\ref{sec:viz-stat}.
 
 \item \textit{Depth average statistics:} Similar to the
@@ -1741,7 +1741,7 @@ documentation, see \url{http://www.llnl.gov/visit/}.
 \subsubsection{Visualizing statistical data}
 \label{sec:viz-stat}
 
-In addition to the graphical outputdiscussed above, \aspect{} produces a 
+In addition to the graphical outputdiscussed above, \aspect{} produces a
 statistics file that collects information produced during each time step.
 For the remainder of this section, let us assume that we have run \aspect{}
 with the input file discussed in Section~\ref{sec:cookbooks-simple-box},
@@ -1774,22 +1774,22 @@ This file has a structure that looks like this:
    2 1.5966e-02 256 2467 1089 25 15 2.0249e-03 1.08925316e+01 1.54185045e+01 ...
    3 1.7991e-02 256 2467 1089 19 15 1.3658e-03 1.61586242e+01 2.28690070e+01 ...
    4 1.9357e-02 256 2467 1089 16 14 1.0291e-03 2.14311381e+01 3.03519178e+01 ...
-   5 2.0386e-02 256 2467 1089 14 14 8.2853e-04 2.65966688e+01 3.76989179e+01 ... 
+   5 2.0386e-02 256 2467 1089 14 14 8.2853e-04 2.65966688e+01 3.76989179e+01 ...
   \end{lstlisting}
-  
+
 In other words, it first lists what the individual columns mean with a hash
 mark at the beginning of the line and then has one line for each time step
 in which the individual columns list what has been explained above. In the
 example shown here, the first time step appears twice because we use a mesh
 that starts out globally refined and we then start the entire computation
-over again on a once adaptively refined mesh (see the parameters in 
+over again on a once adaptively refined mesh (see the parameters in
 Section~\ref{parameters:Mesh_20refinement} for how to do that).
 
 This file is easy to visualize. For example, one can import it as a whitespace
 separated file into a spreadsheet such as Microsoft Excel or OpenOffice/LibreOffice
 Calc and then generate graphs of one column against another. Or, maybe simpler,
 there is a multitude of simple graphing programs that do not need the overhead
-of a full fledged spreadsheet engine and simply plot graphs. One that is 
+of a full fledged spreadsheet engine and simply plot graphs. One that is
 particularly simple to use and available on every major platform is \texttt{Gnuplot}.
 It is extensively documented at \url{http://www.gnuplot.info/}.
 
@@ -1800,7 +1800,7 @@ get a screen that looks like this:
 /home/user/aspect/output$ gnuplot
 
         G N U P L O T
-        Version 4.6 patchlevel 0    last modified 2012-03-04 
+        Version 4.6 patchlevel 0    last modified 2012-03-04
         Build System: Linux x86_64
 
         Copyright (C) 1986-1993, 1998, 2004, 2007-2012
@@ -1814,7 +1814,7 @@ Terminal type set to 'qt'
 gnuplot>
 \end{lstlisting}
 At the prompt on the last line, you can then enter commands. Given the
-description of the individual columns given above, let us first try to 
+description of the individual columns given above, let us first try to
 plot the heat flux through boundary 2 (which in this case is the bottom
 boundary of the box), i.e., column 17, as a function of time (column 2).
 This can be achieved using the following command:
@@ -1829,7 +1829,7 @@ use not just points but lines and points for the curves,
 restrict the time axis to the range $[0,0.2]$ and the heat flux axis to
 $[-10:10]$,
 plot not only the flux through the bottom but also through the top boundary
-(column 18) and finally add a key to the figure, then the following 
+(column 18) and finally add a key to the figure, then the following
 commands achieve this:
 \begin{lstlisting}[frame=single,language=gnuplot]
   set xlabel "Time"
@@ -1852,7 +1852,7 @@ the entire command into the width of the page.
   \includegraphics[width=0.4\textwidth]{viz/statistics/2}
   \hfill
   \phantom.
-  \caption{\it Visualizing the statistics file obtained from the example in 
+  \caption{\it Visualizing the statistics file obtained from the example in
     Section~\ref{sec:cookbooks-simple-box} using \texttt{Gnuplot}: Output
     using simple commands.}
   \label{fig:viz-gnuplot-1}
@@ -1905,7 +1905,7 @@ of the physical setup. It is also a very useful tool if one wants to generate
 the same kind of plot again later with a different data set, for example when
 a reviewer requested additional computations to be made for a paper or if one
 realizes that one has forgotten or misspelled an axis label in a plot.%
-\footnote{In my own work, I usually save the \aspect{} input file, the 
+\footnote{In my own work, I usually save the \aspect{} input file, the
   \texttt{statistics} output file and the \texttt{Gnuplot} script along with
   the actual figure I want to include in a paper. This way, it is easy to
   either re-run an entire simulation, or just tweak the graphic at a later
@@ -4258,7 +4258,8 @@ or extend certain components of the program:
 \item the functions that generate derived quantities that can be put into
   graphical output files for visualization such as fields that depict the
   strength of the friction heating term, spatially dependent actual
-  viscosities, and so on.
+  viscosities, and so on,
+  \item the computation of refinement indicators.
 \end{itemize}
 We will discuss the way this is achieved in Section
 \ref{sec:plugins}. Changing the core functionality, i.e., the basic equations
@@ -4345,13 +4346,13 @@ in Section~\ref{sec:coefficients}); change the geometry; change the direction
 and magnitude of the gravity vector $\mathbf g$; or change the initial and
 boundary conditions.
 
-To make this as simple as possible, all of these parts of the program have
+To make this as simple as possible, all of these parts of the program (and some more) have
 been separated into modules that can be replaced quickly and where it is
 simple to add a new implementation and make it available to the rest of the
 program and the input parameter file. The way this is achieved is through the
 following two steps:
 \begin{itemize}
-\item The rest of the program only communicates with material models,
+\item The core of \aspect{} really only communicates with material models,
   geometry descriptions, etc., through a simple and very basic
   interface. These interfaces are declared in the files
   \url{include/aspect/material_model/interface.h},
@@ -4363,7 +4364,7 @@ following two steps:
   To show an example of a rather minimal case, here is the declaration of the
   \texttt{aspect::GravityModel::Interface} class (documentation comments have
   been removed):
-  \begin{lstlisting}[frame=single]
+  \begin{lstlisting}[frame=single,language=C++]
     class Interface
     {
       public:
@@ -4398,17 +4399,18 @@ following two steps:
     -- even without it being declared as virtual.}
 
   Each of the categories above that allow plugins have several implementations
-  of their respective interfaces that you can use to get an idea how to
+  of their respective interfaces that you can use to get an idea of how to
   implement a new model.
 
 \item At the end of the file where you implement your new model, you need to
-  have a call to the macro \texttt{ASPECT\_REGISTER\_GRAVITY\_MODEL}. For
+  have a call to the macro \texttt{ASPECT\_REGISTER\_GRAVITY\_MODEL} (or the
+  equivalent for the other kinds of plugins). For
   example, let us say that you had implemented a gravity model that takes
   actual gravimetric readings from the GRACE satellites into account, and had
   put everything that is necessary into a class
   \texttt{aspect::GravityModel::GRACE}. Then you need a statement like this at
   the bottom of the file:
-  \begin{lstlisting}[frame=single]
+  \begin{lstlisting}[frame=single,language=C++]
     ASPECT_REGISTER_GRAVITY_MODEL
     (GRACE,
      "grace",
@@ -4429,21 +4431,134 @@ following two steps:
   of this kind when selected in the parameter file.
 
   Note that you need not announce the existence of this class in any other
-  part of the code: Everything should just work automatically. Note also that
-  the existing implementations of models of the gravity and other interfaces
+  part of the code: Everything should just work automatically.%
+  \footnote{The existing implementations of models of the gravity and other interfaces
   declare the class in a header file and define the member functions in a
   \texttt{.cc} file. This is done so that these classes show up in our
   doxygen-generated documentation, but it is not necessary: you can put your
   entire class declaration and implementation into a single file as long as
   you call the macro discussed above on it. This single file is all you need
-  to touch to add a new model.
+  to touch to add a new model.}
+  This has the advantage that things are neatly separated: You do not need to
+  understand the core of \aspect{} to be able to add a new gravity model that
+  can then be selected in an input file. In fact, this is true for
+  all of the plugins we have: by and large, they just receive some data
+  from the simulator and do something with it (e.g., postprocessors), or they
+  just provide information (e.g., initial meshes, gravity models), but they
+  writing either does not imply that you have even fundamental understanding
+  of what the core of the program does.
 \end{itemize}
 
 The procedure for the other areas where plugins are supported works
 essentially the same, with the obvious change in namespace for the interface
 class and macro name.
 
-In the following, we will discuss the requirements for individual plugins.
+In the following, we will discuss the requirements for individual plugins. Before
+doing so, however, let us discuss ways in which plugins can query other information.
+To this end, let us not consider those plugins that by and large just
+provide information without any context of the simulation, such as gravity models,
+prescribed boundary velocities, or initial temperatures. Rather, let us
+consider things like postprocessors that can compute things like boundary heat
+fluxes. Taking this as an example (see Section~\ref{sec:postprocessors}), you are
+required to write a function with the following interface
+\begin{lstlisting}[frame=single,language=C++]
+    template <int dim>
+    class MyPostprocessor : public aspect::Postprocess::Interface
+    {
+      public:
+        virtual
+        std::pair<std::string,std::string>
+        execute (TableHandler &statistics);
+
+      // ... more things ...
+\end{lstlisting}
+The idea is that in the implementation of the \texttt{execute} function
+you would compute whatever you are interested in (e.g., heat fluxes)
+and return this information in the statistics object that then gets written
+to a file (see Sections~\ref{sec:running-overview} and \ref{sec:viz-stat}).
+A postprocessor may also generate other files if it so likes -- e.g., graphical
+output, a file that stores the locations of tracers, etc.
+To do so, obviously you need access to the current solution. This is
+stored in a vector somewhere in the core of \aspect{}. However, this
+vector is, by itself, not sufficient: you also need to know the finite
+element space it is associated with, and for that the triangulation it
+is defined on. Furthermore, you may need to know what the current
+simulation time is. A variety of other pieces of information enters
+computations in these kinds of plugins.
+
+All of this information is of course part of the core of \aspect{},
+as part of the
+\href{doc/doxygen/classaspect_1_1Simulator.html}{aspect::Simulator
+class}. However, this is a rather heavy class: it's got dozens of
+member variables and functions, and it is the one that does all
+of the numerical heavy lifting. Furthermore, to access data in
+this class would require that you need to learn about the internals,
+the data structures, and the design of this class.
+It would be poor design if plugins had to access information from this
+core class directly. Rather, the way this works is that those plugin
+classes that wish to access information about the state of the simulation
+inherit from the
+\href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{aspect::SimulatorAccess
+class}. This class has an interface that looks like this:
+\begin{lstlisting}[frame=single,language=C++]
+    template <int dim>
+    class SimulatorAccess
+    {
+    protected:
+      double       get_time () const;
+
+      std::string  get_output_directory () const;
+
+      const LinearAlgebra::BlockVector &
+      get_solution () const;
+
+      const DoFHandler<dim> &
+      get_dof_handler () const;
+
+      // ... many more things ...
+\end{lstlisting}
+This way, \texttt{SimulatorAccess} makes information available to plugins
+without the need for them to understand details of the core of \aspect{}.
+Rather, if the core changes, the \texttt{SimulatorAccess} class can still
+provide exactly the same interface. Thus, it insulates plugins from having
+to know the core. Equally importantly, since \texttt{SimulatorAccess} only
+offers its information in a read-only way it insulates the core from
+plugins since they can not interfere in the workings of the core except
+through the interface they themselves provide to the core.
+
+Using this class, if a plugin class \texttt{MyPostprocess} is then not only
+derived from the corresponding \texttt{Interface} class but \textit{also}
+from the \texttt{SimulatorAccess} class, then you can write a member
+function of the following kind (a non-sensical but instructive example; see
+Section~\ref{sec:postprocessors} for more details on what postprocessors do
+and how they are implemented):%
+\footnote{For complicated, technical reasons, in the code below we need to
+	access elements of the \texttt{SimulatorAccess} class using the notation
+	\texttt{this->get\_solution()}, etc. This is due to the fact that both the
+	current class and the base class are templates. A long description of
+	why it is necessary to use \texttt{this->} can be found in the \dealii{}
+	Frequently Asked Questions.}
+\begin{lstlisting}[frame=single,language=C++]
+    template <int dim>
+    std::pair<std::string,std::string>
+    MyPostprocessor<dim>::execute (TableHandler &statistics)
+    {
+      // compute the mean value of vector component 'dim' of the solution
+      // (which here is the pressure block) using a deal.II function:
+      const double
+        average_pressure = VectorTools::compute_mean_value (this->get_mapping(),
+                                                            this->get_dof_handler(),
+                                                            QGauss<dim>(2),
+                                                            this->get_solution(),
+                                                            dim);
+      statistics.add_value ("Average pressure", average_pressure);
+
+      // return that there is nothing to print to screen (a useful
+      // plugin would produce something more elaborate here):
+      return std::pair<std::string,std::string>();
+    }
+\end{lstlisting}
+
 
 
 \subsubsection{Material models}
@@ -4459,7 +4574,7 @@ class. The implementation of the new class should be in namespace
 \texttt{aspect::MaterialModel}.
 
 Specifically, your new class needs to implement the basic interface:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}[frame=single,language=C++]
     template <int dim>
     class aspect::MaterialModel::Interface
     {
@@ -4629,7 +4744,7 @@ class. The implementation of the new class should be in namespace
 \texttt{aspect::GeometryModel}.
 
 Specifically, your new class needs to implement the following basic interface:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}[frame=single,language=C++]
     template <int dim>
     class aspect::GeometryModel::Interface
     {
@@ -4684,7 +4799,7 @@ class. The implementation of the new class should be in namespace
 \texttt{aspect::GravityModel}.
 
 Specifically, your new class needs to implement the following basic interface:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}[frame=single,language=C++]
     template <int dim>
     class aspect::GravityModel::Interface
     {
@@ -4732,7 +4847,7 @@ class. The implementation of the new class should be in namespace
 \texttt{aspect::InitialConditions}.
 
 Specifically, your new class needs to implement the following basic interface:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}[frame=single,language=C++]
     template <int dim>
     class aspect::InitialConditions::Interface
     {
@@ -4780,7 +4895,7 @@ class. The implementation of the new class should be in namespace
 \texttt{aspect::BoundaryTemperature}.
 
 Specifically, your new class needs to implement the following basic interface:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}[frame=single,language=C++]
     template <int dim>
     class aspect::BoundaryTemperature::Interface
     {
@@ -4820,6 +4935,7 @@ plugins above.
 
 
 \subsubsection{Postprocessors: Evaluating the solution after each time step}
+\label{sec:postprocessors}
 
 \index[prmindex]{List of postprocessors}
 \index[prmindexfull]{Postprocess!List of postprocessors}
@@ -4948,7 +5064,7 @@ difficult. Primarily, this difficulty results from two facts:
 
 Given these comments, the interface a postprocessor class has to implement is
 rather basic:
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}[frame=single,language=C++]
     template <int dim>
     class aspect::Postprocess::Interface
     {
@@ -5060,7 +5176,7 @@ postprocessors do the following:
   functions of this interface class are all already implemented as doing
   nothing in the base class but can be overriden in a plugin. Specifically,
   the following functions exist:
-  \begin{lstlisting}[frame=single]
+  \begin{lstlisting}[frame=single,language=C++]
     class Interface
     {
       public:
@@ -5087,7 +5203,7 @@ postprocessors do the following:
   or \texttt{dealii::DataPostprocessorVector} classes. For example, to derive
   from the second of these classes, the following interface functions has to be
   implemented:
-  \begin{lstlisting}[frame=single]
+  \begin{lstlisting}[frame=single,language=C++]
     class dealii::DataPostprocessorScalar
     {
       public:
@@ -5110,6 +5226,14 @@ postprocessors do the following:
 If all of this sounds confusing, we recommend consulting the implementation of
 the various visualization plugins that already exist in the \aspect{} sources,
 and using them as a template.
+
+
+\subsubsection{Mesh refinement criteria}
+\label{sec:mesh-refinement-criteria}
+
+\index[prmindex]{Mesh refinement}
+\index[prmindexfull]{Mesh refinement}
+
 
 
 \subsection{Extending the basic solver}
@@ -5234,10 +5358,6 @@ soon:
   Clapeyron slope as a function of temperature and pressure \cite{CY85,STO01},
   which we currently don't have. If someone contributes such a description
   we'll be happy to add the relevant terms into the model.
-
-\item \textit{Prescribing boundary velocities:} One might want to prescribe the
-  velocity at the outer boundary, for example using GPS-inferred plate
-  velocities.
 
 \item \textit{Melting:} An important part of mantle behavior is
   melting. Melting not only affects the properties of the material such as
