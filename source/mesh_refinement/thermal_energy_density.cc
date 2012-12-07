@@ -20,7 +20,7 @@
 /*  $Id$  */
 
 
-#include <aspect/mesh_refinement/density_c_p_temperature.h>
+#include <aspect/mesh_refinement/thermal_energy_density.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/dofs/dof_tools.h>
