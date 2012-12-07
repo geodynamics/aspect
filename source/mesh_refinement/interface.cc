@@ -218,7 +218,7 @@ namespace aspect
           = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
 //TODO: rename when the parameter in parameters.cc has been deleted
         prm.declare_entry("Strategy x",
-                          "density cp temperature",
+                          "thermal energy density",
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma separated list of mesh refinement criteria that "
                           "will be run whenever mesh refinement is required. The "

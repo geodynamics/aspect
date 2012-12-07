@@ -20,8 +20,8 @@
 /*  $Id$  */
 
 
-#ifndef __aspect__mesh_refinement_density_c_p_temperature_h
-#define __aspect__mesh_refinement_density_c_p_temperature_h
+#ifndef __aspect__mesh_refinement_thermal_energy_density_h
+#define __aspect__mesh_refinement_thermal_energy_density_h
 
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/simulator.h>
@@ -40,7 +40,7 @@ namespace aspect
      * @ingroup MeshRefinement
      */
     template <int dim>
-    class DensityCpTemperature : public Interface<dim>,
+    class ThermalEnergyDensity : public Interface<dim>,
       public SimulatorAccess<dim>
     {
       public:

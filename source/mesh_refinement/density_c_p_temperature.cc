@@ -33,7 +33,7 @@ namespace aspect
   {
     template <int dim>
     void
-    DensityCpTemperature<dim>::execute(Vector<float> &indicators) const
+    ThermalEnergyDensity<dim>::execute(Vector<float> &indicators) const
     {
       indicators = 0;
 
@@ -193,8 +193,8 @@ namespace aspect
 {
   namespace MeshRefinement
   {
-    ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(DensityCpTemperature,
-                                              "density cp temperature",
+    ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(ThermalEnergyDensity,
+                                              "thermal energy density",
                                               "A mesh refinement criterion that computes "
                                               "refinement indicators from a field that describes "
                                               "the spatial variability of the thermal energy density, $\\rho C_p T$. "
