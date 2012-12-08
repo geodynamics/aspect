@@ -96,7 +96,7 @@ namespace aspect
    * than becoming part of the public interface of these classes), the
    * functions of this class are made @p protected.
    *
-   * @ingroup ?
+   * @ingroup Simulator
    */
   template <int dim>
   class SimulatorAccess
