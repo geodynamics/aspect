@@ -810,19 +810,6 @@ namespace aspect
     Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
     mesh_refinement_manager.execute (estimated_error_per_cell);
 
-    {
-      Vector<float> x (triangulation.n_active_cells());
-      mesh_refinement_manager.execute (x);
-
-      std::cout << "xxx "
-          << x.l2_norm()
-          << ' ' << estimated_error_per_cell.l2_norm()
-          << std::endl;
-
-      x -= estimated_error_per_cell;
-      Assert (x.l2_norm() <= 1e-8 * estimated_error_per_cell.l2_norm(), ExcInternalError());
-    }
-
     parallel::distributed::GridRefinement::
     refine_and_coarsen_fixed_fraction (triangulation,
                                        estimated_error_per_cell,
