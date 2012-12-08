@@ -619,20 +619,14 @@ namespace aspect
                                                constraints);
 
       // do the interpolation for zero velocity
-//TODO: use component mask from introspection
-      std::vector<bool> velocity_mask (dim+2+parameters.n_compositional_fields, true);
-      velocity_mask[dim] = false;
-      velocity_mask[dim+1] = false;
-      for (unsigned int i=dim+2; i<dim+2+parameters.n_compositional_fields; ++i)
-        velocity_mask[i] = false;
       for (std::set<types::boundary_id_t>::const_iterator
            p = parameters.zero_velocity_boundary_indicators.begin();
            p != parameters.zero_velocity_boundary_indicators.end(); ++p)
         VectorTools::interpolate_boundary_values (dof_handler,
                                                   *p,
-                                                  ZeroFunction<dim>(dim+2+parameters.n_compositional_fields),
+                                                  ZeroFunction<dim>(introspection.n_components),
                                                   constraints,
-                                                  velocity_mask);
+                                                  introspection.component_masks.velocities);
 
 
       // do the same for no-normal-flux boundaries
@@ -645,7 +639,6 @@ namespace aspect
 
     // now do the same for the temperature variable
     {
-
       // obtain the boundary indicators that belong to Dirichlet-type
       // temperature boundary conditions and interpolate the temperature
       // there
@@ -662,8 +655,7 @@ namespace aspect
                                                         std_cxx1x::cref(*geometry_model),
                                                         *p,
                                                         std_cxx1x::_1),
-//TODO: use something out of introspection
-                                                        dim+1,
+                                                        introspection.component_masks.temperature.first_selected_component(),
                                                         introspection.n_components),
                                                     constraints,
                                                     introspection.component_masks.temperature);
