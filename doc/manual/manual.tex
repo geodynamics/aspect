@@ -165,7 +165,7 @@ geodynamics community and beyond!
 \note{\aspect{} is a community project. As such, we encourage contributions
   from the community to improve this code over time. Natural candidates for
   such contributions are implementations of new plugins as discussed in
-  Section~\ref{sec:plugins} since they are typically self-contained and do not
+  Section~\ref{sec:plugins-concrete} since they are typically self-contained and do not
   require much knowledge of the details of the remaining code. Obviously,
   however, we also encourage contributions to the core functionality in any
   form! If you have something that might be of general interest, please
@@ -4261,8 +4261,8 @@ or extend certain components of the program:
   viscosities, and so on,
   \item the computation of refinement indicators.
 \end{itemize}
-We will discuss the way this is achieved in Section
-\ref{sec:plugins}. Changing the core functionality, i.e., the basic equations
+We will discuss the way this is achieved in Sections~\ref{sec:plugins} and
+\ref{sec:plugins-concrete}. Changing the core functionality, i.e., the basic equations
 \eqref{eq:stokes-1}--\eqref{eq:temperature}, and how they are solved is
 arguably more involved. We will discuss this in Section
 \ref{sec:extending-solver}.
@@ -4335,8 +4335,7 @@ documented. You can find documentation on all classes, functions and
 namespaces starting from the \url{doc/doxygen/index.html} page.
 
 
-\subsection{Materials, geometries, gravitation and other aspects of the model:
-  plugins}
+\subsection{The idea of plugins and the \texttt{SimulatorAccess} and \texttt{Introspection} classes}
 \label{sec:plugins}
 
 The most common modification you will probably want to do to \aspect{} are to
@@ -4559,7 +4558,40 @@ and how they are implemented):%
     }
 \end{lstlisting}
 
+The second piece of information that plugins can use is called ``introspection''.
+In the code snippet above, we had to use that the pressure variable is at
+position \texttt{dim}. This kind of \textit{implicit knowledge} is usually
+bad style: it is error prone because one can easily forget where each
+component is located; and it is an obstacle to the extensibility of a code
+if this kind of knowledge is scattered all across the code base.
 
+Introspection is a way out of this dilemma. Using the \texttt{SimulatorAccess::introspection()}
+function returns a reference to an object (of type
+\href{doc/doxygen/structaspect_1_1Introspection.html}{aspect::Introspection})
+that plugins can use to learn about these sort of conventions. For example,
+\texttt{this->introspection().component\_mask.pressure} returns a
+component mask (a deal.II concept that describes a list of booleans for each
+component in a finite element that
+are true if a component is part of a variable we would like to select and
+false otherwise) that describes which component of the finite element
+corresponds to the pressure. The variable, \texttt{dim}, we need above
+to indicate that we want the pressure component can be accessed
+as \texttt{this->introspection().component\_indices.pressure}. While this
+is certainly not shorter than just writing \texttt{dim}, it may in
+fact be easier to remember. It is most definitely less prone to
+errors and makes it simpler to extend the code in the future because
+we don't litter the sources with ``magic constants'' like the one
+above.
+
+This \href{doc/doxygen/structaspect_1_1Introspection.html}{aspect::Introspection} class
+has a significant number of variables that can be used in this way, i.e.,
+they provide symbolic names for things one frequently has to do and
+that would otherwise require implicit knowledge of things such as the
+order of variables, etc.
+
+
+\subsection{Materials, geometries, gravitation and other plugin types}
+\label{sec:plugins-concrete}
 
 \subsubsection{Material models}
 \label{sec:material-models}
@@ -5384,7 +5416,7 @@ introduction:
 \note{\aspect{} is a community project. As such, we encourage contributions
   from the community to improve this code over time. Obvious candidates for
   such contributions are implementations of new plugins as discussed in
-  Section~\ref{sec:plugins} since they are typically self-contained and do not
+  Section~\ref{sec:plugins-concrete} since they are typically self-contained and do not
   require much knowledge of the details of the remaining code. Obviously,
   however, we also encourage contributions to the core functionality in any
   form!}
