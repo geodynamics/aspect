@@ -34,6 +34,14 @@ namespace aspect
     extractors (n_compositional_fields),
     system_dofs_per_block (n_blocks)
   {
+    // set up variables that describe which variable has which component
+    for (unsigned int d=0; d<dim; ++d)
+      component_indices.velocities[d] = d;
+    component_indices.pressure = dim;
+    component_indices.temperature = dim +1;
+    for (unsigned int c=0; c<n_compositional_fields; ++c)
+      component_indices.compositional_fields.push_back (dim+2+c);
+
     // set up a mapping between vector components to the blocks they
     // correspond to. each variable has its own block except
     // for the velocities which are all mapped into block 0

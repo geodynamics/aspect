@@ -32,7 +32,7 @@ namespace aspect
 {
   using namespace dealii;
 
-
+//TODO: make a whole bunch of fields const, or even static const
 
   /**
    * The introspection class provides information about the simulation
@@ -70,12 +70,22 @@ namespace aspect
       {
         Extractors (const unsigned int n_compositional_fields);
 
-        FEValuesExtractors::Vector              velocities;
-        FEValuesExtractors::Scalar              pressure;
-        FEValuesExtractors::Scalar              temperature;
+        const FEValuesExtractors::Vector              velocities;
+        const FEValuesExtractors::Scalar              pressure;
+        const FEValuesExtractors::Scalar              temperature;
         std::vector<FEValuesExtractors::Scalar> compositional_fields;
       };
-      Extractors extractors;
+      const Extractors extractors;
+
+
+      struct ComponentIndices
+      {
+        unsigned int velocities[dim];
+        unsigned int pressure;
+        unsigned int temperature;
+        std::vector<FEValuesExtractors::Scalar> compositional_fields;
+      };
+      ComponentIndices component_indices;
 
 
       struct ComponentMasks
