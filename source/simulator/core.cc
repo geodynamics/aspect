@@ -572,54 +572,39 @@ namespace aspect
     // masks, etc
     setup_introspection();
 
-    std::vector<unsigned int> system_dofs_per_block (3+parameters.n_compositional_fields);
-    DoFTools::count_dofs_per_block (dof_handler, system_dofs_per_block,
-                                    introspection.components_to_blocks);
-
-    const unsigned int n_u = system_dofs_per_block[0],
-                       n_p = system_dofs_per_block[1],
-                       n_T = system_dofs_per_block[2];
-    unsigned int       n_C_sum = 0;
-    std::vector<unsigned int> n_C (parameters.n_compositional_fields+1);
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      {
-        n_C[c] = system_dofs_per_block[c+3];
-        n_C_sum += n_C[c];
-      }
-
-
-    // print dof numbers with 1000s
-    // separator since they are frequently
+    // print dof numbers. Do so with 1000s separator since they are frequently
     // large
-    std::locale s = pcout.get_stream().getloc();
-    // Creating std::locale with an empty string causes problems
-    // on some platforms, so catch the exception and ignore
-    try
-      {
-        pcout.get_stream().imbue(std::locale(""));
-      }
-    catch (std::runtime_error e)
-      {
-        // If the locale doesn't work, just give up
-      }
-    pcout << "Number of active cells: "
-          << triangulation.n_global_active_cells()
-          << " (on "
-          << triangulation.n_levels()
-          << " levels)"
-          << std::endl
-          << "Number of degrees of freedom: "
-          << n_u + n_p + n_T + n_C_sum
-          << " (" << n_u << '+' << n_p << '+'<< n_T;
+    {
+      std::locale s = pcout.get_stream().getloc();
+      // Creating std::locale with an empty string causes problems
+      // on some platforms, so catch the exception and ignore
+      try
+        {
+          pcout.get_stream().imbue(std::locale(""));
+        }
+      catch (std::runtime_error e)
+        {
+          // If the locale doesn't work, just give up
+        }
 
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      pcout << '+' << n_C[c];
+      pcout << "Number of active cells: "
+            << triangulation.n_global_active_cells()
+            << " (on "
+            << triangulation.n_levels()
+            << " levels)"
+            << std::endl
+            << "Number of degrees of freedom: "
+            << dof_handler.n_dofs()
+            << " ("
+            << introspection.system_dofs_per_block[0];
+      for (unsigned int b=1; b<introspection.system_dofs_per_block.size(); ++b)
+        pcout << '+' << introspection.system_dofs_per_block[b];
+      pcout <<')'
+            << std::endl
+            << std::endl;
 
-    pcout <<')'
-          << std::endl
-          << std::endl;
-    pcout.get_stream().imbue(s);
-
+      pcout.get_stream().imbue(s);
+    }
 
     // then compute constraints for the velocity. the constraints we compute
     // here are the ones that are the same for all following time steps. in
@@ -680,6 +665,7 @@ namespace aspect
                                                         std_cxx1x::cref(*geometry_model),
                                                         *p,
                                                         std_cxx1x::_1),
+//TODO: use something out of introspection
                                                         dim+1,
                                                         dim+2+parameters.n_compositional_fields),
                                                     constraints,
@@ -734,21 +720,16 @@ namespace aspect
 
     // now also compute the various partitionings between processors and blocks
     // of vectors and matrices
+    DoFTools::count_dofs_per_block (dof_handler,
+                                    introspection.system_dofs_per_block,
+                                    introspection.components_to_blocks);
     {
-      std::vector<unsigned int> system_dofs_per_block (3+parameters.n_compositional_fields);
-      DoFTools::count_dofs_per_block (dof_handler, system_dofs_per_block,
-                                      introspection.components_to_blocks);
-
-      const unsigned int n_u = system_dofs_per_block[0],
-                         n_p = system_dofs_per_block[1],
-                         n_T = system_dofs_per_block[2];
-      unsigned int       n_C_sum = 0;
+      const unsigned int n_u = introspection.system_dofs_per_block[0],
+                         n_p = introspection.system_dofs_per_block[1],
+                         n_T = introspection.system_dofs_per_block[2];
       std::vector<unsigned int> n_C (parameters.n_compositional_fields+1);
       for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-        {
-          n_C[c] = system_dofs_per_block[c+3];
-          n_C_sum += n_C[c];
-        }
+        n_C[c] = introspection.system_dofs_per_block[c+3];
 
 
       IndexSet system_index_set = dof_handler.locally_owned_dofs();

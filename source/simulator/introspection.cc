@@ -29,12 +29,13 @@ namespace aspect
   template <int dim>
   Introspection<dim>::Introspection(const unsigned int n_compositional_fields)
     :
-    extractors (n_compositional_fields)
+    extractors (n_compositional_fields),
+    system_dofs_per_block (3+n_compositional_fields)
   {
     // set up a mapping between vector components to the blocks they
     // correspond to. each variable has its own block except
     // for the velocities which are all mapped into block 0
-    components_to_blocks.resize (dim+2+n_compositional_fields,0);
+    components_to_blocks.resize (dim+2+n_compositional_fields, 0U);
     components_to_blocks[dim] = 1;
     components_to_blocks[dim+1] = 2;
     for (unsigned int i=dim+2; i<dim+2+n_compositional_fields; ++i)

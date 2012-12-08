@@ -59,6 +59,10 @@ namespace aspect
     public:
       Introspection (const unsigned int n_compositional_fields);
 
+      /**
+       * @name Things that are independent of the current mesh
+       * @{
+       */
       struct Extractors
       {
         Extractors (const unsigned int n_compositional_fields);
@@ -68,7 +72,6 @@ namespace aspect
         FEValuesExtractors::Scalar              temperature;
         std::vector<FEValuesExtractors::Scalar> compositional_fields;
       };
-
       Extractors extractors;
 
 
@@ -79,11 +82,19 @@ namespace aspect
         ComponentMask              temperature;
         std::vector<ComponentMask> compositional_fields;
       };
-
       ComponentMasks component_masks;
 
       std::vector<unsigned int> components_to_blocks;
-      std::vector<unsigned int> dofs_per_block;
+
+      /**
+       * @}
+       */
+
+      /**
+       * @name Things that depend on the current mesh
+       * @{
+       */
+      std::vector<unsigned int> system_dofs_per_block;
 
       struct IndexSets
       {
@@ -92,8 +103,11 @@ namespace aspect
         std::vector<IndexSet> system_partitioning;
         std::vector<IndexSet> system_relevant_partitioning;
       };
-
       IndexSets index_sets;
+
+      /**
+       * @}
+       */
   };
 }
 
