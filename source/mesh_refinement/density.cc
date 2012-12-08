@@ -117,12 +117,12 @@ namespace aspect
           {
             fe_values.reinit(cell);
             fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                     pressure_values);
+                                                                                      pressure_values);
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                                                        temperature_values);
+                                                                                         temperature_values);
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
-                                                             prelim_composition_values[c]);
+                  prelim_composition_values[c]);
             // then we copy these values to exchange the inner and outer vector, because for the material
             // model we need a vector with values of all the compositional fields for every quadrature point
             for (unsigned int q=0; q<quadrature.size(); ++q)

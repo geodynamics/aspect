@@ -85,6 +85,7 @@ namespace aspect
                              ParameterHandler &prm)
     :
     parameters (prm),
+    introspection (parameters.n_compositional_fields),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     pcout (std::cout,
            (Utilities::MPI::
@@ -564,13 +565,7 @@ namespace aspect
     // is because the numbering depends on the order the
     // cells are created.
     DoFRenumbering::hierarchical (dof_handler);
-    std::vector<unsigned int> system_sub_blocks (dim+2+parameters.n_compositional_fields,0);
-    system_sub_blocks[dim] = 1;
-    system_sub_blocks[dim+1] = 2;
-    for (unsigned int i=dim+2; i<dim+2+parameters.n_compositional_fields; ++i)
-      system_sub_blocks[i] = i-dim+1;
-
-    DoFRenumbering::component_wise (dof_handler, system_sub_blocks);
+    DoFRenumbering::component_wise (dof_handler, introspection.components_to_blocks);
 
     // set up the introspection object that stores all sorts of
     // information about components of the finite element, component
@@ -579,7 +574,7 @@ namespace aspect
 
     std::vector<unsigned int> system_dofs_per_block (3+parameters.n_compositional_fields);
     DoFTools::count_dofs_per_block (dof_handler, system_dofs_per_block,
-                                    system_sub_blocks);
+                                    introspection.components_to_blocks);
 
     const unsigned int n_u = system_dofs_per_block[0],
                        n_p = system_dofs_per_block[1],
@@ -626,37 +621,6 @@ namespace aspect
     pcout.get_stream().imbue(s);
 
 
-    // now also compute the various partitionings between processors and blocks
-    // of vectors and matrices
-
-    std::vector<IndexSet> system_partitioning, system_relevant_partitioning;
-    IndexSet system_relevant_set;
-    {
-      IndexSet system_index_set = dof_handler.locally_owned_dofs();
-      system_partitioning.push_back(system_index_set.get_view(0,n_u));
-      system_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
-      system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
-
-      DoFTools::extract_locally_relevant_dofs (dof_handler,
-                                               system_relevant_set);
-      system_relevant_partitioning.push_back(system_relevant_set.get_view(0,n_u));
-      system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u,n_u+n_p));
-      system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
-
-      {
-        unsigned int n_C_so_far = 0;
-
-        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-          {
-            system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_so_far,
-                                                                    n_u+n_p+n_T+n_C_so_far+n_C[c]));
-            system_relevant_partitioning.push_back(system_relevant_set.get_view(n_u+n_p+n_T+n_C_so_far,
-                                                                                n_u+n_p+n_T+n_C_so_far+n_C[c]));
-            n_C_so_far += n_C[c];
-          }
-      }
-    }
-
     // then compute constraints for the velocity. the constraints we compute
     // here are the ones that are the same for all following time steps. in
     // addition, we may be computing constraints from boundary values for the
@@ -664,12 +628,13 @@ namespace aspect
     // into current_constraints in start_timestep().
     {
       constraints.clear();
-      constraints.reinit(system_relevant_set);
+      constraints.reinit(introspection.index_sets.system_relevant_set);
 
       DoFTools::make_hanging_node_constraints (dof_handler,
                                                constraints);
 
       // do the interpolation for zero velocity
+//TODO: use component mask from introspection
       std::vector<bool> velocity_mask (dim+2+parameters.n_compositional_fields, true);
       velocity_mask[dim] = false;
       velocity_mask[dim+1] = false;
@@ -729,18 +694,18 @@ namespace aspect
 
     // finally initialize vectors, matrices, etc.
 
-    setup_system_matrix (system_partitioning);
-    setup_system_preconditioner (system_partitioning);
+    setup_system_matrix (introspection.index_sets.system_partitioning);
+    setup_system_preconditioner (introspection.index_sets.system_partitioning);
 
-    system_rhs.reinit(system_partitioning, mpi_communicator);
-    solution.reinit(system_relevant_partitioning, mpi_communicator);
-    old_solution.reinit(system_relevant_partitioning, mpi_communicator);
-    old_old_solution.reinit(system_relevant_partitioning, mpi_communicator);
+    system_rhs.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
+    solution.reinit(introspection.index_sets.system_relevant_partitioning, mpi_communicator);
+    old_solution.reinit(introspection.index_sets.system_relevant_partitioning, mpi_communicator);
+    old_old_solution.reinit(introspection.index_sets.system_relevant_partitioning, mpi_communicator);
 
-    current_linearization_point.reinit (system_relevant_partitioning, MPI_COMM_WORLD);
+    current_linearization_point.reinit (introspection.index_sets.system_relevant_partitioning, MPI_COMM_WORLD);
 
     if (material_model->is_compressible())
-      pressure_shape_function_integrals.reinit (system_partitioning, mpi_communicator);
+      pressure_shape_function_integrals.reinit (introspection.index_sets.system_partitioning, mpi_communicator);
 
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
@@ -752,22 +717,71 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::setup_introspection ()
   {
-    // the extractors for the default variables have already been initialized.
-    // take care of the ones for the compositional variables now
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      introspection.extractors.compositional_fields
-      .push_back (FEValuesExtractors::Scalar(dim+2+c));
+    // initialize the component masks, if not already set
+    if (! (introspection.component_masks.velocities == ComponentMask()))
+      {
+        introspection.component_masks.velocities
+          = finite_element.component_mask (introspection.extractors.velocities);
+        introspection.component_masks.pressure
+          = finite_element.component_mask (introspection.extractors.pressure);
+        introspection.component_masks.temperature
+          = finite_element.component_mask (introspection.extractors.temperature);
+        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          introspection.component_masks.compositional_fields
+          .push_back (finite_element.component_mask(introspection.extractors.compositional_fields[c]));
+      }
 
-    // next initialize the component masks
-    introspection.component_masks.velocities
-    = finite_element.component_mask (introspection.extractors.velocities);
-    introspection.component_masks.pressure
-    = finite_element.component_mask (introspection.extractors.pressure);
-    introspection.component_masks.temperature
-    = finite_element.component_mask (introspection.extractors.temperature);
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      introspection.component_masks.compositional_fields
-      .push_back (finite_element.component_mask(introspection.extractors.compositional_fields[c]));
+
+    // now also compute the various partitionings between processors and blocks
+    // of vectors and matrices
+    {
+      std::vector<unsigned int> system_dofs_per_block (3+parameters.n_compositional_fields);
+      DoFTools::count_dofs_per_block (dof_handler, system_dofs_per_block,
+                                      introspection.components_to_blocks);
+
+      const unsigned int n_u = system_dofs_per_block[0],
+                         n_p = system_dofs_per_block[1],
+                         n_T = system_dofs_per_block[2];
+      unsigned int       n_C_sum = 0;
+      std::vector<unsigned int> n_C (parameters.n_compositional_fields+1);
+      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+        {
+          n_C[c] = system_dofs_per_block[c+3];
+          n_C_sum += n_C[c];
+        }
+
+
+      IndexSet system_index_set = dof_handler.locally_owned_dofs();
+      introspection.index_sets.system_partitioning.clear ();
+      introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(0,n_u));
+      introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
+      introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
+
+      DoFTools::extract_locally_relevant_dofs (dof_handler,
+                                               introspection.index_sets.system_relevant_set);
+      introspection.index_sets.system_relevant_partitioning.clear ();
+      introspection.index_sets.system_relevant_partitioning
+      .push_back(introspection.index_sets.system_relevant_set.get_view(0,n_u));
+      introspection.index_sets.system_relevant_partitioning
+      .push_back(introspection.index_sets.system_relevant_set.get_view(n_u,n_u+n_p));
+      introspection.index_sets.system_relevant_partitioning
+      .push_back(introspection.index_sets.system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
+
+      {
+        unsigned int n_C_so_far = 0;
+
+        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          {
+            introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_so_far,
+                                                                   n_u+n_p+n_T+n_C_so_far+n_C[c]));
+            introspection.index_sets.system_relevant_partitioning
+            .push_back(introspection.index_sets.system_relevant_set.get_view(n_u+n_p+n_T+n_C_so_far,
+                                                                             n_u+n_p+n_T+n_C_so_far+n_C[c]));
+            n_C_so_far += n_C[c];
+          }
+      }
+    }
+
   }
 
 

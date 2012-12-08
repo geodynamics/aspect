@@ -23,6 +23,7 @@
 #ifndef __aspect__introspection_h
 #define __aspect__introspection_h
 
+#include <deal.II/base/index_set.h>
 #include <deal.II/fe/component_mask.h>
 #include <deal.II/fe/fe_values_extractors.h>
 
@@ -56,30 +57,43 @@ namespace aspect
   struct Introspection
   {
     public:
-    Introspection ();
+      Introspection (const unsigned int n_compositional_fields);
 
-    struct ComponentMasks
-    {
-      ComponentMask              velocities;
-      ComponentMask              pressure;
-      ComponentMask              temperature;
-      std::vector<ComponentMask> compositional_fields;
-    };
+      struct Extractors
+      {
+        Extractors (const unsigned int n_compositional_fields);
 
-    ComponentMasks component_masks;
+        FEValuesExtractors::Vector              velocities;
+        FEValuesExtractors::Scalar              pressure;
+        FEValuesExtractors::Scalar              temperature;
+        std::vector<FEValuesExtractors::Scalar> compositional_fields;
+      };
+
+      Extractors extractors;
 
 
-    struct Extractors
-    {
-      Extractors ();
+      struct ComponentMasks
+      {
+        ComponentMask              velocities;
+        ComponentMask              pressure;
+        ComponentMask              temperature;
+        std::vector<ComponentMask> compositional_fields;
+      };
 
-      FEValuesExtractors::Vector              velocities;
-      FEValuesExtractors::Scalar              pressure;
-      FEValuesExtractors::Scalar              temperature;
-      std::vector<FEValuesExtractors::Scalar> compositional_fields;
-    };
+      ComponentMasks component_masks;
 
-    Extractors extractors;
+      std::vector<unsigned int> components_to_blocks;
+      std::vector<unsigned int> dofs_per_block;
+
+      struct IndexSets
+      {
+        IndexSet system_relevant_set;
+
+        std::vector<IndexSet> system_partitioning;
+        std::vector<IndexSet> system_relevant_partitioning;
+      };
+
+      IndexSets index_sets;
   };
 }
 

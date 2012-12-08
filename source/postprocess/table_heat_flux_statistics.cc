@@ -85,14 +85,14 @@ namespace aspect
               {
                 fe_face_values.reinit (cell, f);
                 fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
-                                                                    temperature_gradients);
+                    temperature_gradients);
                 fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                                                                 temperature_values);
+                    temperature_values);
                 fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                              pressure_values);
+                                                                                               pressure_values);
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
-                                                                              composition_values[c]);
+                      composition_values[c]);
 
                 double local_normal_flux = 0;
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)

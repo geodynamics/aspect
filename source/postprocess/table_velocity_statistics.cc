@@ -74,7 +74,7 @@ namespace aspect
           {
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                       velocity_values);
+                                                                                        velocity_values);
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
                 local_velocity_square_integral += ((velocity_values[q] * velocity_values[q]) *

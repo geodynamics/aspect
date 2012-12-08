@@ -27,17 +27,31 @@ namespace aspect
 {
 
   template <int dim>
-  Introspection<dim>::Introspection()
-  {}
+  Introspection<dim>::Introspection(const unsigned int n_compositional_fields)
+    :
+    extractors (n_compositional_fields)
+  {
+    // set up a mapping between vector components to the blocks they
+    // correspond to. each variable has its own block except
+    // for the velocities which are all mapped into block 0
+    components_to_blocks.resize (dim+2+n_compositional_fields,0);
+    components_to_blocks[dim] = 1;
+    components_to_blocks[dim+1] = 2;
+    for (unsigned int i=dim+2; i<dim+2+n_compositional_fields; ++i)
+      components_to_blocks[i] = i-dim+1;
+  }
 
 
   template <int dim>
-  Introspection<dim>::Extractors::Extractors ()
-  :
-  velocities (0),
-  pressure (dim),
-  temperature (dim+1)
-  {}
+  Introspection<dim>::Extractors::Extractors (const unsigned int n_compositional_fields)
+    :
+    velocities (0),
+    pressure (dim),
+    temperature (dim+1)
+  {
+    for (unsigned int c=0; c<n_compositional_fields; ++c)
+      compositional_fields.push_back (FEValuesExtractors::Scalar(dim+2+c));
+  }
 }
 
 

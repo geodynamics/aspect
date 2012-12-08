@@ -191,7 +191,7 @@ namespace aspect
         {
           fe_values.reinit (cell);
           fe_values[introspection.extractors.velocities].get_function_values (solution,
-                                                     velocity_values);
+                                                                              velocity_values);
 
           for (unsigned int q=0; q<n_q_points; ++q)
             max_local_velocity = std::max (max_local_velocity,
@@ -229,7 +229,7 @@ namespace aspect
         {
           fe_values.reinit (cell);
           fe_values[introspection.extractors.velocities].get_function_values (solution,
-                                                     velocity_values);
+                                                                              velocity_values);
 
           double max_local_velocity = 0;
           for (unsigned int q=0; q<n_q_points; ++q)
@@ -242,9 +242,9 @@ namespace aspect
           if (parameters.use_conduction_timestep)
             {
               fe_values[introspection.extractors.pressure].get_function_values (solution,
-                                                       pressure_values);
+                                                                                pressure_values);
               fe_values[introspection.extractors.temperature].get_function_values (solution,
-                                                          temperature_values);
+                                                                                   temperature_values);
               // In the future we may want to evaluate thermal diffusivity at
               // each point in the mesh, but for now we just use the reference value
               for (unsigned int q=0; q<n_q_points; ++q)
@@ -423,7 +423,7 @@ namespace aspect
                     {
                       fe_face_values.reinit (cell, face_no);
                       fe_face_values[introspection.extractors.pressure].get_function_values(vector,
-                                                                   pressure_values);
+                                                                                            pressure_values);
 
                       for (unsigned int q = 0; q < n_q_points; ++q)
                         {
@@ -453,7 +453,7 @@ namespace aspect
             {
               fe_values.reinit (cell);
               fe_values[introspection.extractors.pressure].get_function_values(vector,
-                                                      pressure_values);
+                                                                               pressure_values);
 
               for (unsigned int q = 0; q < n_q_points; ++q)
                 {
@@ -674,14 +674,14 @@ namespace aspect
         {
           fe_values.reinit (cell);
           fe_values[introspection.extractors.pressure].get_function_values (this->solution,
-                                                   pressure_values);
+                                                                            pressure_values);
           fe_values[introspection.extractors.temperature].get_function_values (this->solution,
-                                                      temperature_values);
+                                                                               temperature_values);
           fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (this->solution,
-                                                                  strain_rates);
+              strain_rates);
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
-                                                                   composition_values[c]);
+                                                                                            composition_values[c]);
 
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
@@ -744,7 +744,7 @@ namespace aspect
         {
           fe_values.reinit (cell);
           fe_values[introspection.extractors.velocities].get_function_values (this->solution,
-                                                     velocity_values);
+                                                                              velocity_values);
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
               const Point<dim> &p = fe_values.quadrature_point(q);
@@ -800,7 +800,7 @@ namespace aspect
         {
           fe_values.reinit (cell);
           fe_values[introspection.extractors.velocities].get_function_values (this->solution,
-                                                     velocity_values);
+                                                                              velocity_values);
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
               const Point<dim> p = fe_values.quadrature_point(q);
@@ -862,10 +862,10 @@ namespace aspect
         {
           fe_values.reinit (cell);
           fe_values[introspection.extractors.pressure].get_function_values (this->solution,
-                                                   pressure_values);
+                                                                            pressure_values);
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
-                                                                   composition_values[c]);
+                                                                                            composition_values[c]);
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
@@ -934,10 +934,10 @@ namespace aspect
         {
           fe_values.reinit (cell);
           fe_values[introspection.extractors.pressure].get_function_values (this->solution,
-                                                   pressure_values);
+                                                                            pressure_values);
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
-                                                                   composition_values[c]);
+                                                                                            composition_values[c]);
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
@@ -1004,12 +1004,12 @@ namespace aspect
         {
           fe_values.reinit (cell);
           fe_values[introspection.extractors.pressure].get_function_values (this->solution,
-                                                   pressure_values);
+                                                                            pressure_values);
           fe_values[introspection.extractors.temperature].get_function_values (this->solution,
-                                                      temperature_values);
+                                                                               temperature_values);
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
-                                                                   composition_values[c]);
+                                                                                            composition_values[c]);
 
 
           extract_composition_values_at_q_point (composition_values,
@@ -1068,12 +1068,12 @@ namespace aspect
         {
           fe_values.reinit (cell);
           fe_values[introspection.extractors.pressure].get_function_values (this->solution,
-                                                   pressure_values);
+                                                                            pressure_values);
           fe_values[introspection.extractors.temperature].get_function_values (this->solution,
-                                                      temperature_values);
+                                                                               temperature_values);
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
-                                                                   composition_values[c]);
+                                                                                            composition_values[c]);
 
           extract_composition_values_at_q_point (composition_values,
                                                  0,

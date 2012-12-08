@@ -73,7 +73,7 @@ namespace aspect
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               {
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
-                                                                    compositional_values);
+                    compositional_values);
                 for (unsigned int q=0; q<n_q_points; ++q)
                   local_compositional_integrals[c] += compositional_values[q]*fe_values.JxW(q);
               }
