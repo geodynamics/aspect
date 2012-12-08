@@ -54,6 +54,11 @@ namespace aspect
 // ------------------------------ Manager -----------------------------
 
     template <int dim>
+    Manager<dim>::~Manager()
+    {}
+
+
+    template <int dim>
     void
     Manager<dim>::initialize (const Simulator<dim> &simulator)
     {

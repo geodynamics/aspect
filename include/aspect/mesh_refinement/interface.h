@@ -127,6 +127,11 @@ namespace aspect
     {
       public:
         /**
+         * Destructor. Made virtual since this class has virtual member functions.
+         */
+        virtual ~Manager ();
+
+        /**
          * Initialize the plugins handled by this object for a given simulator.
          *
          * @param simulator A reference to the main simulator object to which the
