@@ -60,7 +60,7 @@ namespace aspect
 
     struct ComponentMasks
     {
-      ComponentMask              velocity;
+      ComponentMask              velocities;
       ComponentMask              pressure;
       ComponentMask              temperature;
       std::vector<ComponentMask> compositional_fields;
@@ -73,7 +73,7 @@ namespace aspect
     {
       Extractors ();
 
-      FEValuesExtractors::Vector              velocity;
+      FEValuesExtractors::Vector              velocities;
       FEValuesExtractors::Scalar              pressure;
       FEValuesExtractors::Scalar              temperature;
       std::vector<FEValuesExtractors::Scalar> compositional_fields;

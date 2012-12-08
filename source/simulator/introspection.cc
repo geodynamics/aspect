@@ -34,7 +34,7 @@ namespace aspect
   template <int dim>
   Introspection<dim>::Extractors::Extractors ()
   :
-  velocity (0),
+  velocities (0),
   pressure (dim),
   temperature (dim+1)
   {}

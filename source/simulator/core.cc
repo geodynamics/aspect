@@ -754,8 +754,8 @@ namespace aspect
       .push_back (FEValuesExtractors::Scalar(dim+2+c));
 
     // next initialize the component masks
-    introspection.component_masks.velocity
-    = finite_element.component_mask (introspection.extractors.velocity);
+    introspection.component_masks.velocities
+    = finite_element.component_mask (introspection.extractors.velocities);
     introspection.component_masks.pressure
     = finite_element.component_mask (introspection.extractors.pressure);
     introspection.component_masks.temperature

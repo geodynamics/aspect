@@ -219,7 +219,6 @@ namespace aspect
                                                update_JxW_values);
 
         FEValues<dim> fe_values (mapping, finite_element, quadrature, update_flags);
-        const FEValuesExtractors::Scalar pressure (dim);
 
         const unsigned int
         dofs_per_cell = fe_values.dofs_per_cell,
@@ -260,7 +259,7 @@ namespace aspect
                       cell_vector(i)
                       +=
                         rhs_values[point] *
-                        fe_values[pressure].value(i,point) *
+                        fe_values[introspection.extractors.pressure].value(i,point) *
                         fe_values.JxW(point);
 
                     // populate the local matrix; create the pressure mass matrix
@@ -271,8 +270,8 @@ namespace aspect
                       if ((finite_element.system_to_component_index(i).first == dim)
                           &&
                           (finite_element.system_to_component_index(j).first == dim))
-                        local_mass_matrix(j,i) += (fe_values[pressure].value(i,point) *
-                                                   fe_values[pressure].value(j,point) *
+                        local_mass_matrix(j,i) += (fe_values[introspection.extractors.pressure].value(i,point) *
+                                                   fe_values[introspection.extractors.pressure].value(j,point) *
                                                    fe_values.JxW(point));
                       else if (i == j)
                         local_mass_matrix(i,j) = 1;

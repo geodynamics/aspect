@@ -648,28 +648,16 @@ namespace aspect
                                        const bool                                                   compute_strainrate,
                                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const
   {
-
-    const FEValuesExtractors::Vector input_velocities (0);
-    const FEValuesExtractors::Scalar input_pressure (dim);
-    const FEValuesExtractors::Scalar input_temperature (dim+1);
-    std::vector<FEValuesExtractors::Scalar> input_composition;
-
     unsigned int n_q_points = material_model_inputs.temperature.size();
     for (unsigned int q=0; q<n_q_points; ++q)
       material_model_inputs.position[q] = input_finite_element_values.quadrature_point(q);
 
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      {
-        const FEValuesExtractors::Scalar temp(dim+2+c);
-        input_composition.push_back(temp);
-      }
-
-    input_finite_element_values[input_temperature].get_function_values (input_solution,
+    input_finite_element_values[introspection.extractors.temperature].get_function_values (input_solution,
                                                                         material_model_inputs.temperature);
-    input_finite_element_values[input_pressure].get_function_values(input_solution,
+    input_finite_element_values[introspection.extractors.pressure].get_function_values(input_solution,
                                                                     material_model_inputs.pressure);
     if (compute_strainrate)
-      input_finite_element_values[input_velocities].get_function_symmetric_gradients(input_solution,
+      input_finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients(input_solution,
                                                                                      material_model_inputs.strain_rate);
 
     // the values of the compositional fields are stored as blockvectors for each field
@@ -678,7 +666,7 @@ namespace aspect
                                                           std::vector<double> (n_q_points));
 
     for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      input_finite_element_values[input_composition[c]].get_function_values(input_solution,
+      input_finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(input_solution,
                                                                             composition_values[c]);
 
     // then we copy these values to exchange the inner and outer vector, because for the material
@@ -686,7 +674,6 @@ namespace aspect
     for (unsigned int q=0; q<n_q_points; ++q)
       for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
         material_model_inputs.composition[q][c] = composition_values[c][q];
-
   }
 
 
@@ -699,9 +686,6 @@ namespace aspect
   {
     const unsigned int   dofs_per_cell   = finite_element.dofs_per_cell;
     const unsigned int   n_q_points      = scratch.finite_element_values.n_quadrature_points;
-
-    const FEValuesExtractors::Vector velocities (0);
-    const FEValuesExtractors::Scalar pressure (dim);
 
     scratch.finite_element_values.reinit (cell);
 
@@ -721,8 +705,8 @@ namespace aspect
 
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
-            scratch.grads_phi_u[k] = scratch.finite_element_values[velocities].symmetric_gradient(k,q);
-            scratch.phi_p[k]       = scratch.finite_element_values[pressure].value (k, q);
+            scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
+            scratch.phi_p[k]       = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
           }
 
         const double eta = scratch.material_model_outputs.viscosities[q];
@@ -857,9 +841,6 @@ namespace aspect
     const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
     const bool use_bdf2_scheme       = (timestep_number > 1);
 
-    const FEValuesExtractors::Vector velocities (0);
-    const FEValuesExtractors::Scalar pressure (dim);
-
     scratch.finite_element_values.reinit (cell);
 
     if (rebuild_stokes_matrix)
@@ -877,7 +858,7 @@ namespace aspect
 
     material_model->compute_parameters(scratch.material_model_inputs,scratch.material_model_outputs);
 
-    scratch.finite_element_values[velocities].get_function_values(current_linearization_point,
+    scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
                                                                   scratch.velocity_values);
 
     for (unsigned int q=0; q<n_q_points; ++q)
@@ -888,12 +869,12 @@ namespace aspect
 
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
-            scratch.phi_u[k] = scratch.finite_element_values[velocities].value (k,q);
-            scratch.phi_p[k] = scratch.finite_element_values[pressure].value (k, q);
+            scratch.phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
+            scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
             if (rebuild_stokes_matrix)
               {
-                scratch.grads_phi_u[k] = scratch.finite_element_values[velocities].symmetric_gradient(k,q);
-                scratch.div_phi_u[k]   = scratch.finite_element_values[velocities].divergence (k, q);
+                scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
+                scratch.div_phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (k, q);
               }
           }
 
@@ -1146,24 +1127,13 @@ namespace aspect
                                    const typename DoFHandler<dim>::active_cell_iterator &cell,
                                    internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
                                    internal::Assembly::CopyData::AdvectionSystem<dim> &data)
-{
+  {
     const bool use_bdf2_scheme = (timestep_number > 1);
-
-    const FEValuesExtractors::Scalar solution_field (dim+1+index);
-    const FEValuesExtractors::Vector velocities (0);
-    const FEValuesExtractors::Scalar pressure (dim);
-    const FEValuesExtractors::Scalar temperature (dim+1);
-    std::vector<FEValuesExtractors::Scalar> compositional_fields;
-
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      {
-        const FEValuesExtractors::Scalar temp(dim+2+c);
-        compositional_fields.push_back(temp);
-      }
-
 
     const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
     const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+    const FEValuesExtractors::Scalar solution_field (dim+1+index);
 
     scratch.finite_element_values.reinit (cell);
     cell->get_dof_indices (data.local_dof_indices);
@@ -1173,42 +1143,42 @@ namespace aspect
 
     if (index == 0)
       {
-        scratch.finite_element_values[temperature].get_function_values (old_solution,
+        scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_solution,
                                                                         scratch.old_temperature_values);
-        scratch.finite_element_values[temperature].get_function_values (old_old_solution,
+        scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_old_solution,
                                                                         scratch.old_old_temperature_values);
 
-        scratch.finite_element_values[velocities].get_function_symmetric_gradients (old_solution,
+        scratch.finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients (old_solution,
                                                                                     scratch.old_strain_rates);
-        scratch.finite_element_values[velocities].get_function_symmetric_gradients (old_old_solution,
+        scratch.finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients (old_old_solution,
                                                                                     scratch.old_old_strain_rates);
 
-        scratch.finite_element_values[pressure].get_function_values (old_solution,
+        scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_solution,
                                                                      scratch.old_pressure);
-        scratch.finite_element_values[pressure].get_function_values (old_old_solution,
+        scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_old_solution,
                                                                      scratch.old_old_pressure);
 
         for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
           {
-            scratch.finite_element_values[compositional_fields[c]].get_function_values(old_solution,
+            scratch.finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(old_solution,
                                                                                        scratch.old_composition_values[c]);
-            scratch.finite_element_values[compositional_fields[c]].get_function_values(old_old_solution,
+            scratch.finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(old_old_solution,
                                                                                        scratch.old_old_composition_values[c]);
           }
       }
     else
       {
-        scratch.finite_element_values[compositional_fields[index-1]].get_function_values(old_solution,
+        scratch.finite_element_values[introspection.extractors.compositional_fields[index-1]].get_function_values(old_solution,
             scratch.old_composition_values[index-1]);
-        scratch.finite_element_values[compositional_fields[index-1]].get_function_values(old_old_solution,
+        scratch.finite_element_values[introspection.extractors.compositional_fields[index-1]].get_function_values(old_old_solution,
             scratch.old_old_composition_values[index-1]);
       }
 
-    scratch.finite_element_values[velocities].get_function_values (old_solution,
+    scratch.finite_element_values[introspection.extractors.velocities].get_function_values (old_solution,
                                                                    scratch.old_velocity_values);
-    scratch.finite_element_values[velocities].get_function_values (old_old_solution,
+    scratch.finite_element_values[introspection.extractors.velocities].get_function_values (old_old_solution,
                                                                    scratch.old_old_velocity_values);
-    scratch.finite_element_values[velocities].get_function_values(current_linearization_point,
+    scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
                                                                   scratch.current_velocity_values);
 
 
@@ -1322,10 +1292,10 @@ namespace aspect
                                                     data.local_rhs,
                                                     data.local_dof_indices,
                                                     system_matrix,
-                                                    system_rhs
-                                                   );
-
+                                                    system_rhs);
   }
+
+
 
   template <int dim>
   void Simulator<dim>::assemble_advection_system (unsigned int index)

@@ -178,8 +178,6 @@ namespace aspect
     FEValues<dim> fe_values (mapping, finite_element, quadrature_formula, update_values);
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
 
-    const FEValuesExtractors::Vector velocities (0);
-
     double max_local_velocity = 0;
 
     // loop over all locally owned cells and evaluate the velocities at each
@@ -192,7 +190,7 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[velocities].get_function_values (solution,
+          fe_values[introspection.extractors.velocities].get_function_values (solution,
                                                      velocity_values);
 
           for (unsigned int q=0; q<n_q_points; ++q)
@@ -217,9 +215,6 @@ namespace aspect
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
     std::vector<double> pressure_values(n_q_points), temperature_values(n_q_points);
 
-    const FEValuesExtractors::Vector velocities (0);
-    const FEValuesExtractors::Scalar pressure (dim);
-    const FEValuesExtractors::Scalar temperature (dim+1);
     double new_time_step;
     bool convection_dominant;
 
@@ -233,7 +228,7 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[velocities].get_function_values (solution,
+          fe_values[introspection.extractors.velocities].get_function_values (solution,
                                                      velocity_values);
 
           double max_local_velocity = 0;
@@ -246,9 +241,9 @@ namespace aspect
                                                    cell->minimum_vertex_distance());
           if (parameters.use_conduction_timestep)
             {
-              fe_values[pressure].get_function_values (solution,
+              fe_values[introspection.extractors.pressure].get_function_values (solution,
                                                        pressure_values);
-              fe_values[temperature].get_function_values (solution,
+              fe_values[introspection.extractors.temperature].get_function_values (solution,
                                                           temperature_values);
               // In the future we may want to evaluate thermal diffusivity at
               // each point in the mesh, but for now we just use the reference value
@@ -409,7 +404,6 @@ namespace aspect
         const unsigned int n_q_points = quadrature.size();
         FEFaceValues<dim> fe_face_values (mapping, finite_element,  quadrature,
                                           update_JxW_values | update_values);
-        const FEValuesExtractors::Scalar pressure (dim);
 
         std::vector<double> pressure_values(n_q_points);
 
@@ -428,7 +422,7 @@ namespace aspect
                        (face->diameter() / std::sqrt(1.*dim-1) / 3)))
                     {
                       fe_face_values.reinit (cell, face_no);
-                      fe_face_values[pressure].get_function_values(vector,
+                      fe_face_values[introspection.extractors.pressure].get_function_values(vector,
                                                                    pressure_values);
 
                       for (unsigned int q = 0; q < n_q_points; ++q)
@@ -443,12 +437,11 @@ namespace aspect
       }
     else if (parameters.pressure_normalization=="volume")
       {
-        QGauss<dim> quadrature (parameters.stokes_velocity_degree + 1);
+        const QGauss<dim> quadrature (parameters.stokes_velocity_degree + 1);
 
         const unsigned int n_q_points = quadrature.size();
         FEValues<dim> fe_values (mapping, finite_element,  quadrature,
                                  update_JxW_values | update_values);
-        const FEValuesExtractors::Scalar pressure (dim);
 
         std::vector<double> pressure_values(n_q_points);
 
@@ -459,7 +452,7 @@ namespace aspect
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
-              fe_values[pressure].get_function_values(vector,
+              fe_values[introspection.extractors.pressure].get_function_values(vector,
                                                       pressure_values);
 
               for (unsigned int q = 0; q < n_q_points; ++q)
@@ -664,17 +657,6 @@ namespace aspect
                              quadrature_formula,
                              update_values | update_gradients | update_quadrature_points);
 
-    const FEValuesExtractors::Vector velocities (0);
-    const FEValuesExtractors::Scalar pressure (dim);
-    const FEValuesExtractors::Scalar temperature (dim+1);
-    std::vector<FEValuesExtractors::Scalar> compositional_fields;
-
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      {
-        const FEValuesExtractors::Scalar temp(dim+2+c);
-        compositional_fields.push_back(temp);
-      }
-
     std::vector<SymmetricTensor<2,dim> > strain_rates(n_q_points);
     std::vector<double> pressure_values(n_q_points);
     std::vector<double> temperature_values(n_q_points);
@@ -691,14 +673,14 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[pressure].get_function_values (this->solution,
+          fe_values[introspection.extractors.pressure].get_function_values (this->solution,
                                                    pressure_values);
-          fe_values[temperature].get_function_values (this->solution,
+          fe_values[introspection.extractors.temperature].get_function_values (this->solution,
                                                       temperature_values);
-          fe_values[velocities].get_function_symmetric_gradients (this->solution,
+          fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (this->solution,
                                                                   strain_rates);
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-            fe_values[compositional_fields[c]].get_function_values(this->solution,
+            fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
                                                                    composition_values[c]);
 
           for (unsigned int q = 0; q < n_q_points; ++q)
@@ -722,6 +704,7 @@ namespace aspect
               values[idx] += viscosity;
             }
         }
+
     std::vector<double> values_all(num_slices);
     std::vector<unsigned int> counts_all(num_slices);
     Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
@@ -753,8 +736,6 @@ namespace aspect
                              update_values | update_quadrature_points | update_JxW_values);
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
 
-    const FEValuesExtractors::Vector velocities (0);
-
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
     endc = dof_handler.end();
@@ -762,7 +743,7 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[velocities].get_function_values (this->solution,
+          fe_values[introspection.extractors.velocities].get_function_values (this->solution,
                                                      velocity_values);
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
@@ -776,6 +757,7 @@ namespace aspect
                              fe_values.JxW(q));
             }
         }
+
     std::vector<double> values_all(num_slices);
     std::vector<unsigned int> counts_all(num_slices);
     Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
@@ -810,9 +792,6 @@ namespace aspect
 
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
 
-    const FEValuesExtractors::Vector velocities (0);
-
-
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
     endc = dof_handler.end();
@@ -820,7 +799,7 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[velocities].get_function_values (this->solution,
+          fe_values[introspection.extractors.velocities].get_function_values (this->solution,
                                                      velocity_values);
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
@@ -868,15 +847,6 @@ namespace aspect
                              quadrature_formula,
                              update_values | update_quadrature_points);
 
-    const FEValuesExtractors::Scalar pressure (dim);
-    std::vector<FEValuesExtractors::Scalar> compositional_fields;
-
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      {
-        const FEValuesExtractors::Scalar temp(dim+2+c);
-        compositional_fields.push_back(temp);
-      }
-
     std::vector<double> pressure_values(n_q_points);
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
     std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
@@ -891,10 +861,10 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[pressure].get_function_values (this->solution,
+          fe_values[introspection.extractors.pressure].get_function_values (this->solution,
                                                    pressure_values);
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-            fe_values[compositional_fields[c]].get_function_values(this->solution,
+            fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
                                                                    composition_values[c]);
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
@@ -949,15 +919,6 @@ namespace aspect
                              update_values   |
                              update_quadrature_points );
 
-    const FEValuesExtractors::Scalar pressure (dim);
-    std::vector<FEValuesExtractors::Scalar> compositional_fields;
-
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      {
-        const FEValuesExtractors::Scalar temp(dim+2+c);
-        compositional_fields.push_back(temp);
-      }
-
     std::vector<double> pressure_values(n_q_points);
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
     std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
@@ -972,10 +933,10 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[pressure].get_function_values (this->solution,
+          fe_values[introspection.extractors.pressure].get_function_values (this->solution,
                                                    pressure_values);
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-            fe_values[compositional_fields[c]].get_function_values(this->solution,
+            fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
                                                                    composition_values[c]);
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
@@ -1028,17 +989,6 @@ namespace aspect
                              update_values   |
                              update_quadrature_points );
 
-    const FEValuesExtractors::Vector velocities (0);
-    const FEValuesExtractors::Scalar pressure (dim);
-    const FEValuesExtractors::Scalar temperature (dim+1);
-    std::vector<FEValuesExtractors::Scalar> compositional_fields;
-
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      {
-        const FEValuesExtractors::Scalar temp(dim+2+c);
-        compositional_fields.push_back(temp);
-      }
-
     std::vector<double> pressure_values(n_q_points);
     std::vector<double> temperature_values(n_q_points);
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
@@ -1053,12 +1003,12 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[pressure].get_function_values (this->solution,
+          fe_values[introspection.extractors.pressure].get_function_values (this->solution,
                                                    pressure_values);
-          fe_values[temperature].get_function_values (this->solution,
+          fe_values[introspection.extractors.temperature].get_function_values (this->solution,
                                                       temperature_values);
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-            fe_values[compositional_fields[c]].get_function_values(this->solution,
+            fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
                                                                    composition_values[c]);
 
 
@@ -1102,18 +1052,6 @@ namespace aspect
                              update_values   |
                              update_quadrature_points );
 
-
-    const FEValuesExtractors::Vector velocities (0);
-    const FEValuesExtractors::Scalar pressure (dim);
-    const FEValuesExtractors::Scalar temperature (dim+1);
-    std::vector<FEValuesExtractors::Scalar> compositional_fields;
-
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      {
-        const FEValuesExtractors::Scalar temp(dim+2+c);
-        compositional_fields.push_back(temp);
-      }
-
     std::vector<double> pressure_values(n_q_points);
     std::vector<double> temperature_values(n_q_points);
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
@@ -1129,12 +1067,12 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          fe_values[pressure].get_function_values (this->solution,
+          fe_values[introspection.extractors.pressure].get_function_values (this->solution,
                                                    pressure_values);
-          fe_values[temperature].get_function_values (this->solution,
+          fe_values[introspection.extractors.temperature].get_function_values (this->solution,
                                                       temperature_values);
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-            fe_values[compositional_fields[c]].get_function_values(this->solution,
+            fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
                                                                    composition_values[c]);
 
           extract_composition_values_at_q_point (composition_values,
