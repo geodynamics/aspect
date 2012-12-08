@@ -57,6 +57,12 @@ namespace aspect
   struct Introspection
   {
     public:
+      /**
+       * Constructor.
+       * @param n_compositional_fields The number of compositional fields
+       * that will be used in this simulation. This is used in initializing
+       * the fields of this class.
+       */
       Introspection (const unsigned int n_compositional_fields);
 
       /**
