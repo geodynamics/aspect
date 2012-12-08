@@ -21,7 +21,7 @@
 
 
 #include <aspect/material_model/steinberger.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/table.h>
 #include <fstream>

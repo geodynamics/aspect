@@ -21,7 +21,7 @@
 
 #include <aspect/material_model/tan_gurnis.h>
 #include <aspect/postprocess/tan_gurnis.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
 #include <deal.II/dofs/dof_tools.h>

@@ -23,7 +23,7 @@
 #include <aspect/postprocess/table_heat_flux_statistics.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/box.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>

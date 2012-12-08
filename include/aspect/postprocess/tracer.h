@@ -25,7 +25,7 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/particle/world.h>
 #include <aspect/particle/output.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {

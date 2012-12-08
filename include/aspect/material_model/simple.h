@@ -24,7 +24,7 @@
 #define __aspect__model_simple_h
 
 #include <aspect/material_model/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {

@@ -21,7 +21,7 @@
 
 
 #include <aspect/global.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx1x/tuple.h>

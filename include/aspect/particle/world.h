@@ -25,7 +25,7 @@
 #include <deal.II/numerics/fe_field_function.h>
 #include <aspect/particle/particle.h>
 #include <aspect/particle/integrator.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {

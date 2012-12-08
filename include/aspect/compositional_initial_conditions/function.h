@@ -24,7 +24,7 @@
 #define __aspect__compositional_initial_conditions_function_h
 
 #include <aspect/compositional_initial_conditions/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/parsed_function.h>
 

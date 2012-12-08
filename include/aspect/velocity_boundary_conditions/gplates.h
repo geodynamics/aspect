@@ -24,7 +24,7 @@
 #define __aspect__velocity_boundary_conditions_gplates_h
 
 #include <aspect/velocity_boundary_conditions/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 
 namespace aspect

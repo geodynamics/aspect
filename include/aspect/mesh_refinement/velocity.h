@@ -24,7 +24,7 @@
 #define __aspect__mesh_refinement_velocity_h
 
 #include <aspect/mesh_refinement/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {

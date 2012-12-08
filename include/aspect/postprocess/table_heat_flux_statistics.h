@@ -24,7 +24,7 @@
 #define __aspect__postprocess_table_heat_flux_statistics_h
 
 #include <aspect/postprocess/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 
 namespace aspect

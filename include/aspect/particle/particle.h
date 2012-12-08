@@ -23,7 +23,7 @@
 #define __aspect__particle_particle_h
 
 #include <aspect/postprocess/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {

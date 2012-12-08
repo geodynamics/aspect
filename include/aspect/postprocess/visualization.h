@@ -24,7 +24,7 @@
 #define __aspect__postprocess_visualization_h
 
 #include <aspect/postprocess/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 #include <aspect/plugins.h>
 
 #include <deal.II/base/thread_management.h>
