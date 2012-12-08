@@ -1,7 +1,7 @@
 # Listing of Parameters
 # ---------------------
 
-# At the top, state that the program should be run for a two-dimensional 
+# At the top, state that the program should be run for a two-dimensional
 # simulation
 set Dimension = 2
 
@@ -255,7 +255,7 @@ subsection Mesh refinement
   set Coarsening fraction                = 0.05
 
   # The method used to determine which cells to refine and which to coarsen.
-  set Strategy                           = Density c_p temperature
+  set Strategy                           = thermal energy density
 
   # The number of time steps after which the mesh is to be adapted again based
   # on computed error indicators.
@@ -372,4 +372,3 @@ subsection Postprocess
     set Time between graphical output = 0   # default: 1e8
   end
 end
-
