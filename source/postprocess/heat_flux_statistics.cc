@@ -51,16 +51,6 @@ namespace aspect
                                         update_normal_vectors |
                                         update_q_points       | update_JxW_values);
 
-      const FEValuesExtractors::Scalar pressure (dim);
-      const FEValuesExtractors::Scalar temperature (dim+1);
-      std::vector<FEValuesExtractors::Scalar> compositional_fields;
-
-      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-        {
-          const FEValuesExtractors::Scalar temp(dim+2+c);
-          compositional_fields.push_back(temp);
-        }
-
       std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
       std::vector<double>         temperature_values (quadrature_formula.size());
       std::vector<double>         pressure_values (quadrature_formula.size());
@@ -88,14 +78,14 @@ namespace aspect
             if (cell->at_boundary(f))
               {
                 fe_face_values.reinit (cell, f);
-                fe_face_values[temperature].get_function_gradients (this->get_solution(),
+                fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
                                                                     temperature_gradients);
-                fe_face_values[temperature].get_function_values (this->get_solution(),
+                fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                                                                  temperature_values);
-                fe_face_values[pressure].get_function_values (this->get_solution(),
+                fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
                                                               pressure_values);
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                  fe_face_values[compositional_fields[c]].get_function_values(this->get_solution(),
+                  fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                                                                               composition_values[c]);
 
                 double local_normal_flux = 0;

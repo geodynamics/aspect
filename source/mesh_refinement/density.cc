@@ -109,16 +109,6 @@ namespace aspect
       std::vector<std::vector<double> > composition_values (quadrature.size(),
                                                             std::vector<double> (this->n_compositional_fields()));
 
-      const FEValuesExtractors::Scalar pressure (dim);
-      const FEValuesExtractors::Scalar temperature (dim+1);
-      std::vector<FEValuesExtractors::Scalar> composition;
-
-      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-        {
-          const FEValuesExtractors::Scalar temp(dim+2+c);
-          composition.push_back(temp);
-        }
-
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
@@ -126,12 +116,12 @@ namespace aspect
         if (cell->is_locally_owned())
           {
             fe_values.reinit(cell);
-            fe_values[pressure].get_function_values (this->get_solution(),
+            fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
                                                      pressure_values);
-            fe_values[temperature].get_function_values (this->get_solution(),
+            fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                                                         temperature_values);
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              fe_values[composition[c]].get_function_values (this->get_solution(),
+              fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
                                                              prelim_composition_values[c]);
             // then we copy these values to exchange the inner and outer vector, because for the material
             // model we need a vector with values of all the compositional fields for every quadrature point
@@ -167,6 +157,7 @@ namespace aspect
                                                       this->get_dof_handler(),
                                                       vec,
                                                       indicators,
+//TODO: replace by the appropriate component mask
                                                       dim+1);
 
       // Scale gradient in each cell with the correct power of h. Otherwise,

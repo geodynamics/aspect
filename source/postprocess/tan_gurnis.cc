@@ -40,7 +40,6 @@ namespace aspect
     std::pair<std::string,std::string>
     TanGurnis<dim>::execute (TableHandler &statistics)
     {
-
       AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
                   ExcNotImplemented());
 
@@ -69,11 +68,6 @@ namespace aspect
       FEValues<dim> fe_values (this->get_mapping(), this->get_fe(),  quadrature_formula,
                                update_JxW_values | update_values | update_quadrature_points);
 
-      const unsigned int dofs_per_cell = fe_values.get_fe().dofs_per_cell;
-      const FEValuesExtractors::Vector velocities (0);
-      const FEValuesExtractors::Scalar pressure (dim);
-      const FEValuesExtractors::Scalar temperature (dim+1);
-
       std::vector<Tensor<1, dim> > velocity_values (quadrature_formula.size());
       std::vector<double>         temperature_values (quadrature_formula.size());
       std::vector<double>         pressure_values (quadrature_formula.size());
@@ -84,9 +78,9 @@ namespace aspect
       for (; cell != endc; ++cell)
         {
           fe_values.reinit (cell);
-          fe_values[velocities].get_function_values (this->get_solution(), velocity_values);
-          fe_values[pressure].get_function_values (this->get_solution(), pressure_values);
-          fe_values[temperature].get_function_values (this->get_solution(), temperature_values);
+          fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(), velocity_values);
+          fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), pressure_values);
+          fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(), temperature_values);
 
           for (unsigned int q = 0; q < n_q_points; ++q)
             {

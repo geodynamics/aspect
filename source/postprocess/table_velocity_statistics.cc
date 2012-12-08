@@ -63,8 +63,6 @@ namespace aspect
                                update_JxW_values);
       std::vector<Tensor<1,dim> > velocity_values(n_q_points);
 
-      const FEValuesExtractors::Vector velocities (0);
-
       double local_velocity_square_integral = 0;
       double local_max_velocity = 0;
 
@@ -75,7 +73,7 @@ namespace aspect
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
-            fe_values[velocities].get_function_values (this->get_solution(),
+            fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
                                                        velocity_values);
             for (unsigned int q = 0; q < n_q_points; ++q)
               {

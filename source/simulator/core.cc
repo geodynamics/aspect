@@ -572,6 +572,11 @@ namespace aspect
 
     DoFRenumbering::component_wise (dof_handler, system_sub_blocks);
 
+    // set up the introspection object that stores all sorts of
+    // information about components of the finite element, component
+    // masks, etc
+    setup_introspection();
+
     std::vector<unsigned int> system_dofs_per_block (3+parameters.n_compositional_fields);
     DoFTools::count_dofs_per_block (dof_handler, system_dofs_per_block,
                                     system_sub_blocks);

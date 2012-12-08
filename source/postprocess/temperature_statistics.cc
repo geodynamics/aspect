@@ -53,7 +53,6 @@ namespace aspect
                                update_quadrature_points |
                                update_JxW_values);
 
-      const FEValuesExtractors::Scalar temperature (dim+1);
       std::vector<double> temperature_values(n_q_points);
 
       typename DoFHandler<dim>::active_cell_iterator
@@ -67,7 +66,7 @@ namespace aspect
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
-            fe_values[temperature].get_function_values (this->get_solution(),
+            fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                                                         temperature_values);
             for (unsigned int q=0; q<n_q_points; ++q)
               local_temperature_integral += temperature_values[q]*fe_values.JxW(q);
