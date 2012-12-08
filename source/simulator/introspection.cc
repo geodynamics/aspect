@@ -29,8 +29,8 @@ namespace aspect
   template <int dim>
   Introspection<dim>::Introspection(const unsigned int n_compositional_fields)
     :
-  n_components (dim+2+n_compositional_fields),
-  n_blocks (3+n_compositional_fields),
+    n_components (dim+2+n_compositional_fields),
+    n_blocks (3+n_compositional_fields),
     extractors (n_compositional_fields),
     system_dofs_per_block (n_blocks)
   {
