@@ -216,8 +216,7 @@ namespace aspect
         // contains the names of all registered plugins
         const std::string pattern_of_names
           = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
-//TODO: rename when the parameter in parameters.cc has been deleted
-        prm.declare_entry("Strategy x",
+        prm.declare_entry("Strategy",
                           "thermal energy density",
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma separated list of mesh refinement criteria that "
@@ -275,7 +274,7 @@ namespace aspect
                           "is not empty then it needs to have as many entries as there are "
                           "indicators chosen in the ``Strategy'' parameter.");
         prm.declare_entry("Refinement criteria merge operation",
-                          "plus",
+                          "max",
                           Patterns::Selection("plus|max"),
                           "If multiple mesh refinement criteria are computed for each cell "
                           "(by passing a list of more than element to the \\texttt{Strategy} "
@@ -315,7 +314,7 @@ namespace aspect
       prm.enter_subsection("Mesh refinement");
       {
         plugin_names
-          = Utilities::split_string_list(prm.get("Strategy x"));
+          = Utilities::split_string_list(prm.get("Strategy"));
 
         normalize_criteria = prm.get_bool ("Normalize individual refinement criteria");
 

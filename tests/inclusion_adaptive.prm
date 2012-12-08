@@ -91,7 +91,7 @@ subsection Mesh refinement
   set Coarsening fraction                = 0.0
 
 
-  set Strategy                           = Velocity#Density c_p temperature
+  set Strategy                           = velocity
 end
 
 
@@ -132,7 +132,3 @@ subsection Inclusion
 set Viscosity jump = 1e3
 end
 end
-
-
-
-

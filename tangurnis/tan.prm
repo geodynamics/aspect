@@ -214,7 +214,7 @@ subsection Mesh refinement
   set Initial global refinement          = 6                       # default: 2
 
   # The method used to determine which cells to refine and which to coarsen.
-  set Strategy                           = Density c_p temperature
+  set Strategy                           = thermal energy density
 
    set Time steps between mesh refinement = 100
 end

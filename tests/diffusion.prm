@@ -283,7 +283,7 @@ subsection Mesh refinement
   set Coarsening fraction                = 0.05
 
   # The method used to determine which cells to refine and which to coarsen.
-  set Strategy                           = Density c_p temperature
+  set Strategy                           = thermal energy density
 
   # The number of time steps after which the mesh is to be adapted again based
   # on computed error indicators.

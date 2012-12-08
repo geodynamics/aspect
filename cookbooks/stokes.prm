@@ -117,7 +117,7 @@ subsection Mesh refinement
   set Initial adaptive refinement        = 4
   set Initial global refinement          = 4
   set Refinement fraction                = 0.2
-  set Strategy                           = Velocity
+  set Strategy                           = velocity
 end
 
 

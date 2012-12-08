@@ -107,7 +107,7 @@ subsection Mesh refinement
   set Initial global refinement                = 4           # default: 2
   set Refinement fraction                      = 0.3
   set Run postprocessors on initial refinement = false
-  set Strategy                                 = Temperature # default: Density c_p temperature
+  set Strategy                                 = temperature # default: Density c_p temperature
   set Time steps between mesh refinement       = 5           # default: 10
 end
 

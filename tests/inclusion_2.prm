@@ -81,7 +81,7 @@ subsection Mesh refinement
   set Initial adaptive refinement        = 0                       # default: 2
   set Initial global refinement          = 2                       # default: 2
 
-  set Strategy                           = Density c_p temperature
+  set Strategy                           = thermal energy density
 end
 
 

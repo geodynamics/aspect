@@ -44,7 +44,7 @@ namespace aspect
 //TODO: unify this piece of code with the same code in DensityCpTemperature
 
       // create a vector in which we set the temperature block to
-      // be a finite element interpolation of the density or rho*c_p*T.
+      // be a finite element interpolation of the density.
       // we do so by setting up a quadrature formula with the
       // temperature unit support points, then looping over these
       // points, compute the output quantity at them, and writing
@@ -199,7 +199,7 @@ namespace aspect
                                               "A mesh refinement criterion that computes "
                                               "refinement indicators from a field that describes "
                                               "the spatial variability of the density, $\\rho$. "
-                                              "Because this quantity may not be a continuous function ($\\rho$$ "
+                                              "Because this quantity may not be a continuous function ($\\rho$ "
                                               "and $C_p$ may be discontinuous functions along discontinuities in the "
                                               "medium, for example due to phase changes), we approximate the "
                                               "gradient of this quantity to refine the mesh. The error indicator "

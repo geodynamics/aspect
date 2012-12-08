@@ -34,6 +34,21 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Composition solver tolerance}
+
+
+\index[prmindex]{Composition solver tolerance}
+\index[prmindexfull]{Composition solver tolerance}
+{\it Value:} 1e-12
+
+
+{\it Default:} 1e-12
+
+
+{\it Description:} The relative tolerance up to which the linear system for the composition system gets solved. See 'linear solver tolerance' for more details.
+
+
+{\it Possible values:} [Double 0...1 (inclusive)]
 \item {\it Parameter name:} {\tt Dimension}
 
 
@@ -54,7 +69,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{End time}
 \index[prmindexfull]{End time}
-{\it Value:} 20
+{\it Value:} 1e8
 
 
 {\it Default:} 1e8
@@ -96,6 +111,21 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 
 {\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Nonlinear solver scheme}
+
+
+\index[prmindex]{Nonlinear solver scheme}
+\index[prmindexfull]{Nonlinear solver scheme}
+{\it Value:} IMPES
+
+
+{\it Default:} IMPES
+
+
+{\it Description:} The kind of scheme used to resolve the nonlinearity in the system. 'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme in which ones solves the temperatures and Stokes equations exactly once per time step, one after the other. The 'iterated IMPES' scheme iterates this decoupled approach by alternating the solution of the temperature and Stokes systems. The 'iterated Stokes' scheme solves the temperature equation once at the beginning of each time step and then iterates out the solution of the Stokes equation.
+
+
+{\it Possible values:} [Selection IMPES|iterated IMPES|iterated Stokes ]
 \item {\it Parameter name:} {\tt Output directory}
 
 
@@ -202,12 +232,27 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Possible values:} [Integer range 0...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Use conduction timestep}
+
+
+\index[prmindex]{Use conduction timestep}
+\index[prmindexfull]{Use conduction timestep}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Mantle convection simulations are often focused on convection dominated systems. However, these codes can also be used to investigate systems where heat conduction plays a dominant role. This parameter indicates whether the simulator should also use heat conduction in determining the length of each time step.
+
+
+{\it Possible values:} [Bool]
 \item {\it Parameter name:} {\tt Use years in output instead of seconds}
 
 
 \index[prmindex]{Use years in output instead of seconds}
 \index[prmindexfull]{Use years in output instead of seconds}
-{\it Value:} false
+{\it Value:} true
 
 
 {\it Default:} true
@@ -233,41 +278,69 @@ For more information, see the section in the manual that discusses the general m
 {\it Value:} box
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Select one of the following models:
 
-`ConvBox2D': A model in which the temperature is chosen constant on the top and bottom sides of a box.
-
-`box': A model in which the temperature is chosen constant on the left and right sides of a box.
+`box': A model in which the temperature is chosen constant on all the sides of a box.
 
 `spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Sherical constant'.
 
 `Tan Gurnis': A model for the Tan/Gurnis benchmark.
 
 
-{\it Possible values:} [Selection ConvBox2D|box|spherical constant|Tan Gurnis ]
+{\it Possible values:} [Selection box|spherical constant|Tan Gurnis ]
 \end{itemize}
 
 
 
-\subsection{Parameters in section \tt Boundary temperature model/Convection Box 2D}
-\label{parameters:Boundary_20temperature_20model/Convection_20Box_202D}
+\subsection{Parameters in section \tt Boundary temperature model/Box}
+\label{parameters:Boundary_20temperature_20model/Box}
 
 \begin{itemize}
 \item {\it Parameter name:} {\tt Bottom temperature}
 
 
 \index[prmindex]{Bottom temperature}
-\index[prmindexfull]{Boundary temperature model!Convection Box 2D!Bottom temperature}
-{\it Value:} 6000
+\index[prmindexfull]{Boundary temperature model!Box!Bottom temperature}
+{\it Value:} 0
 
 
-{\it Default:} 6000
+{\it Default:} 0
 
 
-{\it Description:} Temperature at the Bottom boundary (core mantle boundary). Units: K.
+{\it Description:} Temperature at the bottom boundary (at minimal z-value). Units: K.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Left temperature}
+
+
+\index[prmindex]{Left temperature}
+\index[prmindexfull]{Boundary temperature model!Box!Left temperature}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Temperature at the left boundary (at minimal x-value). Units: K.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Right temperature}
+
+
+\index[prmindex]{Right temperature}
+\index[prmindexfull]{Boundary temperature model!Box!Right temperature}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Temperature at the right boundary (at maximal x-value). Units: K.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
@@ -275,14 +348,14 @@ For more information, see the section in the manual that discusses the general m
 
 
 \index[prmindex]{Top temperature}
-\index[prmindexfull]{Boundary temperature model!Convection Box 2D!Top temperature}
+\index[prmindexfull]{Boundary temperature model!Box!Top temperature}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} Temperature at the Top boundary. Units: K.
+{\it Description:} Temperature at the top boundary (at maximal x-value). Units: K.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
@@ -337,10 +410,10 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Function constants}
 \index[prmindexfull]{Boundary velocity model!Function!Function constants}
-{\it Value:} pi=3.1415926
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
@@ -354,7 +427,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 \index[prmindex]{Function expression}
 \index[prmindexfull]{Boundary velocity model!Function!Function expression}
-{\it Value:} if(x>1+sin(0.5*pi*t) , 1 , -1); 0
+{\it Value:} 0; 0
 
 
 {\it Default:} 0; 0
@@ -378,6 +451,102 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} [Anything]
+\end{itemize}
+
+\subsection{Parameters in section \tt Boundary velocity model/GPlates model}
+\label{parameters:Boundary_20velocity_20model/GPlates_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Data directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Boundary velocity model!GPlates model!Data directory}
+{\it Value:} data/velocity-boundary-conditions/gplates/
+
+
+{\it Default:} data/velocity-boundary-conditions/gplates/
+
+
+{\it Description:} The path to the model data.
+
+
+{\it Possible values:} [DirectoryName]
+\item {\it Parameter name:} {\tt Point one}
+
+
+\index[prmindex]{Point one}
+\index[prmindexfull]{Boundary velocity model!GPlates model!Point one}
+{\it Value:} 1.570796,0.0
+
+
+{\it Default:} 1.570796,0.0
+
+
+{\it Description:} Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Point two}
+
+
+\index[prmindex]{Point two}
+\index[prmindexfull]{Boundary velocity model!GPlates model!Point two}
+{\it Value:} 1.570796,1.570796
+
+
+{\it Default:} 1.570796,1.570796
+
+
+{\it Description:} Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Time step}
+
+
+\index[prmindex]{Time step}
+\index[prmindexfull]{Boundary velocity model!GPlates model!Time step}
+{\it Value:} 3.1558e13
+
+
+{\it Default:} 3.1558e13
+
+
+{\it Description:} Time step between following velocity files. Default is one million years expressed in SI units.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Velocity file name}
+
+
+\index[prmindex]{Velocity file name}
+\index[prmindexfull]{Boundary velocity model!GPlates model!Velocity file name}
+{\it Value:} phi\_test.%d
+
+
+{\it Default:} phi\_test.%d
+
+
+{\it Description:} The file name of the material data. Provide file in format: (Velocity file name).%d.gpml where %d is any sprintf integer qualifier, specifying the format of the current file number.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Velocity file start time}
+
+
+\index[prmindex]{Velocity file start time}
+\index[prmindexfull]{Boundary velocity model!GPlates model!Velocity file start time}
+{\it Value:} 0.0
+
+
+{\it Default:} 0.0
+
+
+{\it Description:} Time at which the velocity file with number 0 shall be loaded.Previous to this time, a no-slip boundary condition is assumed.
 
 
 {\it Possible values:} [Anything]
@@ -419,10 +588,141 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} [Integer range 0...2147483647 (inclusive)]
 \end{itemize}
 
+\subsection{Parameters in section \tt Compositional fields}
+\label{parameters:Compositional_20fields}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt List of normalized fields}
+
+
+\index[prmindex]{List of normalized fields}
+\index[prmindexfull]{Compositional fields!List of normalized fields}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of integers smaller than or equal to the number ofcompositional fields. All compositional fields in thislist will be normalized before the first timestep.The normalization is implemented in the following way:First, the sum of the fields to be normalized is calculatedat every point and the global maximum is determined.Second, the compositional fields to be normalized are divided by this maximum.
+
+
+{\it Possible values:} [List list of <[Integer range 0...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
+\item {\it Parameter name:} {\tt Number of fields}
+
+
+\index[prmindex]{Number of fields}
+\index[prmindexfull]{Compositional fields!Number of fields}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The number of fields that will be advected along with the flow field, excluding velocity, pressure and temperature.
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Compositional initial conditions}
+\label{parameters:Compositional_20initial_20conditions}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Model name}
+
+
+\index[prmindex]{Model name}
+\index[prmindexfull]{Compositional initial conditions!Model name}
+{\it Value:} function
+
+
+{\it Default:} function
+
+
+{\it Description:} Select one of the following models:
+
+`function': Composition is given in terms of an explicit formula
+
+
+{\it Possible values:} [Selection function ]
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Compositional initial conditions/Function}
+\label{parameters:Compositional_20initial_20conditions/Function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Function constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Compositional initial conditions!Function!Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Function expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Compositional initial conditions!Function!Function expression}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the fparser library.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Variable names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Compositional initial conditions!Function!Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} [Anything]
+\end{itemize}
+
 \subsection{Parameters in section \tt Discretization}
 \label{parameters:Discretization}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Composition polynomial degree}
+
+
+\index[prmindex]{Composition polynomial degree}
+\index[prmindexfull]{Discretization!Composition polynomial degree}
+{\it Value:} 2
+
+
+{\it Default:} 2
+
+
+{\it Description:} The polynomial degree to use for the composition variable(s). Units: None.
+
+
+{\it Possible values:} [Integer range 1...2147483647 (inclusive)]
 \item {\it Parameter name:} {\tt Stokes velocity polynomial degree}
 
 
@@ -508,7 +808,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 0.078
 
 
-{\it Description:} The $\beta$ factor in the artificial viscosity stabilization. An appropriate value for 2d is 0.052 and 0.078 for 3d. Units: None.
+{\it Description:} The $\beta$ factor in the artificial viscosity stabilization. An appropriate value for 2d is 0.078 and 0.117 for 3d. Units: None.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -517,10 +817,10 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{cR}
 \index[prmindexfull]{Discretization!Stabilization parameters!cR}
-{\it Value:} 0.11
+{\it Value:} 0.33
 
 
-{\it Default:} 0.11
+{\it Default:} 0.33
 
 
 {\it Description:} The $c_R$ factor in the entropy viscosity stabilization. Units: None.
@@ -541,7 +841,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Value:} box
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Select one of the following models:
@@ -565,7 +865,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{X extent}
 \index[prmindexfull]{Geometry model!Box!X extent}
-{\it Value:} 2
+{\it Value:} 1
 
 
 {\it Default:} 1
@@ -670,7 +970,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Value:} vertical
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Select one of the following models:
@@ -741,22 +1041,79 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Value:} perturbed box
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Select one of the following models:
 
 `perturbed box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is chosen in such a way that the initial temperature is constant to one along the entire boundary.
 
+`function': Temperature is given in terms of an explicit formula
+
 `spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following a six-fold pattern in angular direction from an otherwise spherically symmetric state.
 
 `spherical gaussian perturbation': An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection 'Spherical gaussian perturbation'.
 
 
-{\it Possible values:} [Selection perturbed box|spherical hexagonal perturbation|spherical gaussian perturbation ]
+{\it Possible values:} [Selection perturbed box|function|spherical hexagonal perturbation|spherical gaussian perturbation ]
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Initial conditions/Function}
+\label{parameters:Initial_20conditions/Function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Function constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Initial conditions!Function!Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Function expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Initial conditions!Function!Function expression}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the fparser library.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Variable names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Initial conditions!Function!Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} [Anything]
+\end{itemize}
 
 \subsection{Parameters in section \tt Initial conditions/Spherical gaussian perturbation}
 \label{parameters:Initial_20conditions/Spherical_20gaussian_20perturbation}
@@ -797,15 +1154,13 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{Filename for initial geotherm table}
 \index[prmindexfull]{Initial conditions!Spherical gaussian perturbation!Filename for initial geotherm table}
-{\it Value:} initial geotherm table
+{\it Value:} initial\_geotherm\_table
 
 
-{\it Default:} initial geotherm table
+{\it Default:} initial\_geotherm\_table
 
 
-{\it Description:} The file from which the initial geotherm table is to be
-read. The format of the file is defined by what is read in source/initial
-conditions/spherical shell.cc.
+{\it Description:} The file from which the initial geotherm table is to be read. The format of the file is defined by what is read in source/initial\_conditions/spherical\_shell.cc.
 
 
 {\it Possible values:} [FileName (Type: input)]
@@ -868,7 +1223,7 @@ conditions/spherical shell.cc.
 {\it Value:} simple
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Select one of the following models:
@@ -879,11 +1234,11 @@ conditions/spherical shell.cc.
 
 `Inclusion': A material model that corresponds to the 'Inclusion' benchmark defined in Duretz et al., G-Cubed, 2011.
 
-`simple': A simple material model that has constant values for all coefficients but the density. This model uses the formulation that assumes an incompressible medium despite the fact that the density follows the law $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$. The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Simple model'.
+`simple': A simple material model that has constant values for all coefficients but the density and viscosity. This model uses the formulation that assumes an incompressible medium despite the fact that the density follows the law $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$. The temperature dependency of viscosity is  switched off by default and follows the formula$\eta(T)=\eta_0*e^{\eta_T*\Delta T / T_{\text{ref}})}$.The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Simple model'.
 
-`Steinberger': lookup from the paper of Steinberger/Calderwood
+`Steinberger': lookup viscosity from the paper of Steinberger/Calderwood2006 and material data from a database generated by Perplex. The database builds upon the thermodynamic database by Stixrude 2011 and assumes a pyrolitic composition by Ringwood 1988. 
 
-`table': A material model that reads tables of pressure and temperature dependent material coefficients from files. The default values for this model's runtime parameters use a material description taken from the paper \textit{Complex phase distribution and seismic velocity structure of the transition zone: Convection model predictions for a magnesium-endmember olivine–pyroxene mantle} by Michael H.G. Jacobs and Arie P. van den Berg, Physics of the Earth and Planetary Interiors, Volume 186, Issues 1–2, May 2011, Pages 36–48. See \url{http://www.sciencedirect.com/science/article/pii/S0031920111000422}.
+`table': A material model that reads tables of pressure and temperature dependent material coefficients from files. The default values for this model's runtime parameters use a material description taken from the paper \textit{Complex phase distribution and seismic velocity structure of the transition zone: Convection model predictions for a magnesium-endmember olivine-pyroxene mantle} by Michael H.G. Jacobs and Arie P. van den Berg, Physics of the Earth and Planetary Interiors, Volume 186, Issues 1-2, May 2011, Pages 36--48. See \url{http://www.sciencedirect.com/science/article/pii/S0031920111000422}.
 
 `Tan Gurnis': A simple compressible material model based on a benchmark from the paper of Tan/Gurnis (2007). This does not use the temperature equation, but has a hardcoded temperature.
 
@@ -918,6 +1273,36 @@ conditions/spherical shell.cc.
 \label{parameters:Material_20model/Simple_20model}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Composition viscosity prefactor}
+
+
+\index[prmindex]{Composition viscosity prefactor}
+\index[prmindexfull]{Material model!Simple model!Composition viscosity prefactor}
+{\it Value:} 1.0
+
+
+{\it Default:} 1.0
+
+
+{\it Description:} A linear dependency of viscosity on composition. Dimensionless prefactor.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Density differential for compositional field 1}
+
+
+\index[prmindex]{Density differential for compositional field 1}
+\index[prmindexfull]{Material model!Simple model!Density differential for compositional field 1}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $kg/m^3/\textrm{unit change in composition}$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
 \item {\it Parameter name:} {\tt Reference density}
 
 
@@ -968,7 +1353,7 @@ conditions/spherical shell.cc.
 
 \index[prmindex]{Thermal conductivity}
 \index[prmindexfull]{Material model!Simple model!Thermal conductivity}
-{\it Value:} 1e-6
+{\it Value:} 4.7
 
 
 {\it Default:} 4.7
@@ -993,12 +1378,27 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal viscosity exponent}
+
+
+\index[prmindex]{Thermal viscosity exponent}
+\index[prmindexfull]{Material model!Simple model!Thermal viscosity exponent}
+{\it Value:} 0.0
+
+
+{\it Default:} 0.0
+
+
+{\it Description:} The temperature dependence of viscosity. Dimensionless exponent.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \item {\it Parameter name:} {\tt Viscosity}
 
 
 \index[prmindex]{Viscosity}
 \index[prmindexfull]{Material model!Simple model!Viscosity}
-{\it Value:} 1
+{\it Value:} 5e24
 
 
 {\it Default:} 5e24
@@ -1046,6 +1446,102 @@ conditions/spherical shell.cc.
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
 
+\subsection{Parameters in section \tt Material model/Steinberger model}
+\label{parameters:Material_20model/Steinberger_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Bilinear interpolation}
+
+
+\index[prmindex]{Bilinear interpolation}
+\index[prmindexfull]{Material model!Steinberger model!Bilinear interpolation}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} whether to use bilinear interpolation to compute material properties (slower but more accurate).
+
+
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Data directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Material model!Steinberger model!Data directory}
+{\it Value:} data/material-model/steinberger/
+
+
+{\it Default:} data/material-model/steinberger/
+
+
+{\it Description:} The path to the model data. 
+
+
+{\it Possible values:} [DirectoryName]
+\item {\it Parameter name:} {\tt Latent heat}
+
+
+\index[prmindex]{Latent heat}
+\index[prmindexfull]{Material model!Steinberger model!Latent heat}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} whether to include latent heat effects in thecalculation of thermal expansivity and specific heat.Following the approach of Nakagawa et al. 2009.
+
+
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Lateral viscosity file name}
+
+
+\index[prmindex]{Lateral viscosity file name}
+\index[prmindexfull]{Material model!Steinberger model!Lateral viscosity file name}
+{\it Value:} temp\_viscosity\_prefactor.txt
+
+
+{\it Default:} temp\_viscosity\_prefactor.txt
+
+
+{\it Description:} The file name of the lateral viscosity data. 
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Material file names}
+
+
+\index[prmindex]{Material file names}
+\index[prmindexfull]{Material model!Steinberger model!Material file names}
+{\it Value:} pyr-ringwood88.txt
+
+
+{\it Default:} pyr-ringwood88.txt
+
+
+{\it Description:} The file names of the material data. List with as many components as activecompositional fields (material data is assumed tobe in order with the ordering of the fields). 
+
+
+{\it Possible values:} [List list of <[Anything]> of length 0...4294967295 (inclusive)]
+\item {\it Parameter name:} {\tt Radial viscosity file name}
+
+
+\index[prmindex]{Radial viscosity file name}
+\index[prmindexfull]{Material model!Steinberger model!Radial viscosity file name}
+{\it Value:} radial\_visc.txt
+
+
+{\it Default:} radial\_visc.txt
+
+
+{\it Description:} The file name of the radial viscosity data. 
+
+
+{\it Possible values:} [Anything]
+\end{itemize}
+
 \subsection{Parameters in section \tt Material model/Table model}
 \label{parameters:Material_20model/Table_20model}
 
@@ -1055,13 +1551,13 @@ conditions/spherical shell.cc.
 
 \index[prmindex]{Composition}
 \index[prmindexfull]{Material model!Table model!Composition}
-{\it Value:} olixene
+{\it Value:} standard
 
 
-{\it Default:} olixene
+{\it Default:} standard
 
 
-{\it Description:} The Composition of the model.
+{\it Description:} The Composition of the model. 
 
 
 {\it Possible values:} [Anything]
@@ -1076,7 +1572,7 @@ conditions/spherical shell.cc.
 {\it Default:} true
 
 
-{\it Description:} whether the model is compressible.
+{\it Description:} whether the model is compressible. 
 
 
 {\it Possible values:} [Bool]
@@ -1091,7 +1587,7 @@ conditions/spherical shell.cc.
 {\it Default:} false
 
 
-{\it Description:} whether to compute phases.
+{\it Description:} whether to compute phases. 
 
 
 {\it Possible values:} [Bool]
@@ -1115,13 +1611,13 @@ conditions/spherical shell.cc.
 
 \index[prmindex]{Path to model data}
 \index[prmindexfull]{Material model!Table model!Path to model data}
-{\it Value:} datadir
+{\it Value:} data/material-model/table/
 
 
-{\it Default:} datadir
+{\it Default:} data/material-model/table/
 
 
-{\it Description:} The path to the model data.
+{\it Description:} The path to the model data. 
 
 
 {\it Possible values:} [DirectoryName]
@@ -1208,11 +1704,11 @@ conditions/spherical shell.cc.
 \label{parameters:Material_20model/Table_20model/Viscosity}
 
 \begin{itemize}
-\item {\it Parameter name:} {\tt ReferenceViscosity}
+\item {\it Parameter name:} {\tt Reference Viscosity}
 
 
-\index[prmindex]{ReferenceViscosity}
-\index[prmindexfull]{Material model!Table model!Viscosity!ReferenceViscosity}
+\index[prmindex]{Reference Viscosity}
+\index[prmindexfull]{Material model!Table model!Viscosity!Reference Viscosity}
 {\it Value:} 5e24
 
 
@@ -1223,11 +1719,11 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt ViscosityModel}
+\item {\it Parameter name:} {\tt Viscosity Model}
 
 
-\index[prmindex]{ViscosityModel}
-\index[prmindexfull]{Material model!Table model!Viscosity!ViscosityModel}
+\index[prmindex]{Viscosity Model}
+\index[prmindexfull]{Material model!Table model!Viscosity!Viscosity Model}
 {\it Value:} Exponential
 
 
@@ -1261,11 +1757,11 @@ conditions/spherical shell.cc.
 \label{parameters:Material_20model/Table_20model/Viscosity/Composite}
 
 \begin{itemize}
-\item {\it Parameter name:} {\tt activation\_energy\_diffusion}
+\item {\it Parameter name:} {\tt Activation energy diffusion}
 
 
-\index[prmindex]{activation\_energy\_diffusion}
-\index[prmindexfull]{Material model!Table model!Viscosity!Composite!activation\_energy\_diffusion}
+\index[prmindex]{Activation energy diffusion}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!Activation energy diffusion}
 {\it Value:} 335e3
 
 
@@ -1276,11 +1772,11 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt activation\_energy\_dislocation}
+\item {\it Parameter name:} {\tt Activation energy dislocation}
 
 
-\index[prmindex]{activation\_energy\_dislocation}
-\index[prmindexfull]{Material model!Table model!Viscosity!Composite!activation\_energy\_dislocation}
+\index[prmindex]{Activation energy dislocation}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!Activation energy dislocation}
 {\it Value:} 540e3
 
 
@@ -1291,11 +1787,11 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt activation\_volume\_diffusion}
+\item {\it Parameter name:} {\tt Activation volume diffusion}
 
 
-\index[prmindex]{activation\_volume\_diffusion}
-\index[prmindexfull]{Material model!Table model!Viscosity!Composite!activation\_volume\_diffusion}
+\index[prmindex]{Activation volume diffusion}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!Activation volume diffusion}
 {\it Value:} 4.0e-6
 
 
@@ -1306,11 +1802,11 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt activation\_volume\_dislocation}
+\item {\it Parameter name:} {\tt Activation volume dislocation}
 
 
-\index[prmindex]{activation\_volume\_dislocation}
-\index[prmindexfull]{Material model!Table model!Viscosity!Composite!activation\_volume\_dislocation}
+\index[prmindex]{Activation volume dislocation}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!Activation volume dislocation}
 {\it Value:} 14.0e-6
 
 
@@ -1321,11 +1817,11 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt prefactor\_diffusion}
+\item {\it Parameter name:} {\tt Prefactor diffusion}
 
 
-\index[prmindex]{prefactor\_diffusion}
-\index[prmindexfull]{Material model!Table model!Viscosity!Composite!prefactor\_diffusion}
+\index[prmindex]{Prefactor diffusion}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!Prefactor diffusion}
 {\it Value:} 1.92e-11
 
 
@@ -1336,11 +1832,11 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt prefactor\_dislocation}
+\item {\it Parameter name:} {\tt Prefactor dislocation}
 
 
-\index[prmindex]{prefactor\_dislocation}
-\index[prmindexfull]{Material model!Table model!Viscosity!Composite!prefactor\_dislocation}
+\index[prmindex]{Prefactor dislocation}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!Prefactor dislocation}
 {\it Value:} 2.42e-10
 
 
@@ -1351,11 +1847,11 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt stress\_exponent}
+\item {\it Parameter name:} {\tt Stress exponent}
 
 
-\index[prmindex]{stress\_exponent}
-\index[prmindexfull]{Material model!Table model!Viscosity!Composite!stress\_exponent}
+\index[prmindex]{Stress exponent}
+\index[prmindexfull]{Material model!Table model!Viscosity!Composite!Stress exponent}
 {\it Value:} 3.5
 
 
@@ -1372,11 +1868,11 @@ conditions/spherical shell.cc.
 \label{parameters:Material_20model/Table_20model/Viscosity/Diffusion}
 
 \begin{itemize}
-\item {\it Parameter name:} {\tt activation\_energy\_diffusion}
+\item {\it Parameter name:} {\tt Activation energy diffusion}
 
 
-\index[prmindex]{activation\_energy\_diffusion}
-\index[prmindexfull]{Material model!Table model!Viscosity!Diffusion!activation\_energy\_diffusion}
+\index[prmindex]{Activation energy diffusion}
+\index[prmindexfull]{Material model!Table model!Viscosity!Diffusion!Activation energy diffusion}
 {\it Value:} 335e3
 
 
@@ -1387,11 +1883,11 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt activation\_volume\_diffusion}
+\item {\it Parameter name:} {\tt Activation volume diffusion}
 
 
-\index[prmindex]{activation\_volume\_diffusion}
-\index[prmindexfull]{Material model!Table model!Viscosity!Diffusion!activation\_volume\_diffusion}
+\index[prmindex]{Activation volume diffusion}
+\index[prmindexfull]{Material model!Table model!Viscosity!Diffusion!Activation volume diffusion}
 {\it Value:} 4.0e-6
 
 
@@ -1402,11 +1898,11 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt prefactor\_diffusion}
+\item {\it Parameter name:} {\tt Prefactor diffusion}
 
 
-\index[prmindex]{prefactor\_diffusion}
-\index[prmindexfull]{Material model!Table model!Viscosity!Diffusion!prefactor\_diffusion}
+\index[prmindex]{Prefactor diffusion}
+\index[prmindexfull]{Material model!Table model!Viscosity!Diffusion!Prefactor diffusion}
 {\it Value:} 1.92e-11
 
 
@@ -1423,11 +1919,11 @@ conditions/spherical shell.cc.
 \label{parameters:Material_20model/Table_20model/Viscosity/Dislocation}
 
 \begin{itemize}
-\item {\it Parameter name:} {\tt activation\_energy\_dislocation}
+\item {\it Parameter name:} {\tt Activation energy dislocation}
 
 
-\index[prmindex]{activation\_energy\_dislocation}
-\index[prmindexfull]{Material model!Table model!Viscosity!Dislocation!activation\_energy\_dislocation}
+\index[prmindex]{Activation energy dislocation}
+\index[prmindexfull]{Material model!Table model!Viscosity!Dislocation!Activation energy dislocation}
 {\it Value:} 335e3
 
 
@@ -1438,11 +1934,11 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt activation\_volume\_dislocation}
+\item {\it Parameter name:} {\tt Activation volume dislocation}
 
 
-\index[prmindex]{activation\_volume\_dislocation}
-\index[prmindexfull]{Material model!Table model!Viscosity!Dislocation!activation\_volume\_dislocation}
+\index[prmindex]{Activation volume dislocation}
+\index[prmindexfull]{Material model!Table model!Viscosity!Dislocation!Activation volume dislocation}
 {\it Value:} 4.0e-6
 
 
@@ -1453,11 +1949,11 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt prefactor\_dislocation}
+\item {\it Parameter name:} {\tt Prefactor dislocation}
 
 
-\index[prmindex]{prefactor\_dislocation}
-\index[prmindexfull]{Material model!Table model!Viscosity!Dislocation!prefactor\_dislocation}
+\index[prmindex]{Prefactor dislocation}
+\index[prmindexfull]{Material model!Table model!Viscosity!Dislocation!Prefactor dislocation}
 {\it Value:} 1.92e-11
 
 
@@ -1468,11 +1964,11 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt stress\_exponent}
+\item {\it Parameter name:} {\tt Stress exponent}
 
 
-\index[prmindex]{stress\_exponent}
-\index[prmindexfull]{Material model!Table model!Viscosity!Dislocation!stress\_exponent}
+\index[prmindex]{Stress exponent}
+\index[prmindexfull]{Material model!Table model!Viscosity!Dislocation!Stress exponent}
 {\it Value:} 3.5
 
 
@@ -1489,11 +1985,11 @@ conditions/spherical shell.cc.
 \label{parameters:Material_20model/Table_20model/Viscosity/Exponential}
 
 \begin{itemize}
-\item {\it Parameter name:} {\tt exponential\_P}
+\item {\it Parameter name:} {\tt Exponential P}
 
 
-\index[prmindex]{exponential\_P}
-\index[prmindexfull]{Material model!Table model!Viscosity!Exponential!exponential\_P}
+\index[prmindex]{Exponential P}
+\index[prmindexfull]{Material model!Table model!Viscosity!Exponential!Exponential P}
 {\it Value:} 1
 
 
@@ -1504,11 +2000,11 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt exponential\_T}
+\item {\it Parameter name:} {\tt Exponential T}
 
 
-\index[prmindex]{exponential\_T}
-\index[prmindexfull]{Material model!Table model!Viscosity!Exponential!exponential\_T}
+\index[prmindex]{Exponential T}
+\index[prmindexfull]{Material model!Table model!Viscosity!Exponential!Exponential T}
 {\it Value:} 1
 
 
@@ -1674,10 +2170,10 @@ conditions/spherical shell.cc.
 
 \index[prmindex]{Additional refinement times}
 \index[prmindexfull]{Mesh refinement!Additional refinement times}
-{\it Value:}
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} A list of times so that if the end time of a time step is beyond this time, an additional round of mesh refinement is triggered. This is mostly useful to make sure we can get through the initial transient phase of a simulation on a relatively coarse mesh, and then refine again when we are in a time range that we are interested in and where we would like to use a finer mesh. Units: each element of the list has units years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
@@ -1704,7 +2200,7 @@ conditions/spherical shell.cc.
 
 \index[prmindex]{Initial adaptive refinement}
 \index[prmindexfull]{Mesh refinement!Initial adaptive refinement}
-{\it Value:} 0
+{\it Value:} 2
 
 
 {\it Default:} 2
@@ -1719,7 +2215,7 @@ conditions/spherical shell.cc.
 
 \index[prmindex]{Initial global refinement}
 \index[prmindexfull]{Mesh refinement!Initial global refinement}
-{\it Value:} 5
+{\it Value:} 2
 
 
 {\it Default:} 2
@@ -1729,6 +2225,62 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Integer range 0...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Normalize individual refinement criteria}
+
+
+\index[prmindex]{Normalize individual refinement criteria}
+\index[prmindexfull]{Mesh refinement!Normalize individual refinement criteria}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} If multiple refinement criteria are specified in the ``Strategy'' parameter, then they need to be combined somehow to form the final refinement indicators. This is done using the method described by the ``Refinement criteria merge operation'' parameter which can either operate on the raw refinement indicators returned by each strategy (i.e., dimensional quantities) or using normalized values where the indicators of each strategy are first normalized to the interval $[0,1]$ (which also makes them non-dimensional). This parameter determines whether this normalization will happen.
+
+
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Refinement criteria merge operation}
+
+
+\index[prmindex]{Refinement criteria merge operation}
+\index[prmindexfull]{Mesh refinement!Refinement criteria merge operation}
+{\it Value:} max
+
+
+{\it Default:} max
+
+
+{\it Description:} If multiple mesh refinement criteria are computed for each cell (by passing a list of more than element to the \texttt{Strategy} parameter in this section of the input file) then one will have to decide which one should win when deciding which cell to refine. The operation that selects from these competing criteria is the one that is selected here. The options are:
+
+\begin{itemize}
+\item \texttt{plus}: Add the various error indicators together and refine those cells on which the sum of indicators is largest.
+\item \texttt{max}: Take the maximum of the various error indicators and refine those cells on which the maximal indicators is largest.
+\end{itemize}The refinement indicators computed by each strategy are modified by the ``Normalize individual refinement criteria'' and ``Refinement criteria scale factors'' parameters.
+
+
+{\it Possible values:} [Selection plus|max ]
+\item {\it Parameter name:} {\tt Refinement criteria scaling factors}
+
+
+\index[prmindex]{Refinement criteria scaling factors}
+\index[prmindexfull]{Mesh refinement!Refinement criteria scaling factors}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of scaling factors by which every individual refinement criterion will be multiplied by. If only a single refinement criterion is selected (using the ``Strategy'' parameter, then this parameter has no particular meaning. On the other hand, if multiple criteria are chosen, then these factors are used to weigh the various indicators relative to each other. 
+
+If ``Normalize individual refinement criteria'' is set to true, then the criteria will first be normalized to the interval $[0,1]$ and then multiplied by the factors specified here. You will likely want to choose the factors to be not too far from 1 in that case, say between 1 and 10, to avoid essentially disabling those criteria with small weights. On the other hand, if the criteria are not normalized to $[0,1]$ using the parameter mentioned above, then the factors you specify here need to take into account the relative numerical size of refinement indicators (which in that case carry physical units).
+
+You can experimentally play with these scaling factors by choosing to output the refinement indicators into the graphical output of a run.
+
+If the list of indicators given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are indicators chosen in the ``Strategy'' parameter.
+
+
+{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Refinement fraction}
 
 
@@ -1744,7 +2296,6 @@ conditions/spherical shell.cc.
 
 
 {\it Possible values:} [Double 0...1 (inclusive)]
-<<<<<<< .working
 \item {\it Parameter name:} {\tt Run postprocessors on initial refinement}
 
 
@@ -1765,22 +2316,34 @@ conditions/spherical shell.cc.
 
 \index[prmindex]{Strategy}
 \index[prmindexfull]{Mesh refinement!Strategy}
-{\it Value:} Density c\_p temperature
+{\it Value:} thermal energy density
 
 
-{\it Default:} Density c\_p temperature
+{\it Default:} thermal energy density
 
 
-{\it Description:} The method used to determine which cells to refine and which to coarsen.
+{\it Description:} A comma separated list of mesh refinement criteria that will be run whenever mesh refinement is required. The results of each of these criteria will, i.e., the refinement indicators they produce for all the cells of the mesh will then be normalized to a range between zero and one and the results of different criteria will then be merged through the operation selected in this section.
+
+The following criteria are available:
+
+`composition': A mesh refinement criterion that computes refinement indicators from the compositional fields. If there is more than one compositional field, then it simply takes the sum of the indicators computed from each of the compositional field.
+
+`density': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the density, $\rho$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
+
+`temperature': A mesh refinement criterion that computes refinement indicators from the temperature field.
+
+`thermal energy density': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the thermal energy density, $\rho C_p T$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1.5}$ where $h_K$ is the diameter of each cell. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
+
+`velocity': A mesh refinement criterion that computes refinement indicators from the velocity field.
 
 
-{\it Possible values:} [Selection Temperature|Velocity|Normalized density and temperature|Weighted density and temperature|Density c\_p temperature ]
+{\it Possible values:} [MultipleSelection composition|density|temperature|thermal energy density|velocity ]
 \item {\it Parameter name:} {\tt Time steps between mesh refinement}
 
 
 \index[prmindex]{Time steps between mesh refinement}
 \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement}
-{\it Value:} 0
+{\it Value:} 10
 
 
 {\it Default:} 10
@@ -1801,10 +2364,10 @@ conditions/spherical shell.cc.
 
 \index[prmindex]{Fixed temperature boundary indicators}
 \index[prmindexfull]{Model settings!Fixed temperature boundary indicators}
-{\it Value:} 0, 1
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} A comma separated list of integers denoting those boundaries on which the temperature is fixed and described by the boundary temperature object selected in its own section of this input file. All boundary indicators used by the geometry but not explicitly listed here will end up with no-flux (insulating) boundary conditions.
@@ -1848,10 +2411,10 @@ This parameter only describes which boundaries have a fixed temperature, but not
 
 \index[prmindex]{Prescribed velocity boundary indicators}
 \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators}
-{\it Value:} 3: function
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} A comma separated list denoting those boundaries on which the velocity is tangential but prescribed, i.e., where external forces act to prescribe a particular velocity. This is often used to prescribe a velocity that equals that of overlying plates.
@@ -1861,7 +2424,7 @@ The format of valid entries for this parameter is that of a map given as ``key1:
 Note that the no-slip boundary condition is a special case of the current one where the prescribed velocity happens to be zero. It can thus be implemented by indicating that a particular boundary is part of the ones selected using the current parameter and using ``zero velocity'' as the boundary values. Alternatively, you can simply list the part of the boundary on which the velocity is to be zero with the parameter ``Zero velocity boundary indicator'' in the current parameter section.
 
 
-{\it Possible values:} [Map map of <[Integer range 0...255 (inclusive)]:[Selection inclusion|function|zero velocity ]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [Map map of <[Integer range 0...255 (inclusive)]:[Selection inclusion|function|gplates|zero velocity ]> of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Radiogenic heating rate}
 
 
@@ -1882,10 +2445,10 @@ Note that the no-slip boundary condition is a special case of the current one wh
 
 \index[prmindex]{Tangential velocity boundary indicators}
 \index[prmindexfull]{Model settings!Tangential velocity boundary indicators}
-{\it Value:}
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is tangential and unrestrained, i.e., free-slip where no external forces act to prescribe a particular tangential velocity (although there is a force that requires the flow to be tangential).
@@ -1897,10 +2460,10 @@ Note that the no-slip boundary condition is a special case of the current one wh
 
 \index[prmindex]{Zero velocity boundary indicators}
 \index[prmindexfull]{Model settings!Zero velocity boundary indicators}
-{\it Value:} 0, 1, 2
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is zero.
@@ -1918,7 +2481,7 @@ Note that the no-slip boundary condition is a special case of the current one wh
 
 \index[prmindex]{List of postprocessors}
 \index[prmindexfull]{Postprocess!List of postprocessors}
-{\it Value:} visualization, velocity statistics, temperature statistics, heat flux statistics
+{\it Value:} 
 
 
 {\it Default:} all
@@ -1927,6 +2490,8 @@ Note that the no-slip boundary condition is a special case of the current one wh
 {\it Description:} A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text 'all' indicates that all available postprocessors should be run after each time step.
 
 The following postprocessors are available:
+
+`composition statistics': A postprocessor that computes some statistics about the compositional fields, if present in this simulation. In particular, it computes maximal and minimal values of each field, as well as the total mass contained in this field as defined by the integral $m_i(t) = \int_\Omega c_i(\mathbf x,t) \; dx$.
 
 `depth average': A postprocessor that computes depth averaged quantities and writes them out.
 
@@ -1942,14 +2507,14 @@ The following postprocessors are available:
 
 `temperature statistics': A postprocessor that computes some statistics about the temperature field.
 
-`tracers': Postprocessor that propagates tracer particles based on the velocity field.
+`tracers': Postprocessor that propagates passive tracer particles based on the velocity field.
 
 `velocity statistics': A postprocessor that computes some statistics about the velocity field.
 
 `visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
 
-{\it Possible values:} [MultipleSelection depth average|DuretzEtAl error|heat flux statistics|heat flux statistics for the table model|velocity statistics for the table model|Tan Gurnis error|temperature statistics|tracers|velocity statistics|visualization|all ]
+{\it Possible values:} [MultipleSelection composition statistics|depth average|DuretzEtAl error|heat flux statistics|heat flux statistics for the table model|velocity statistics for the table model|Tan Gurnis error|temperature statistics|tracers|velocity statistics|visualization|all ]
 \end{itemize}
 
 
@@ -1994,6 +2559,21 @@ The following postprocessors are available:
 
 
 {\it Possible values:} [Selection none|ascii|vtu|hdf5 ]
+\item {\it Parameter name:} {\tt Integration scheme}
+
+
+\index[prmindex]{Integration scheme}
+\index[prmindexfull]{Postprocess!Tracers!Integration scheme}
+{\it Value:} rk2
+
+
+{\it Default:} rk2
+
+
+{\it Description:} Integration scheme to move particles.
+
+
+{\it Possible values:} [Selection euler|rk2|rk4|hybrid ]
 \item {\it Parameter name:} {\tt Number of tracers}
 
 
@@ -2035,10 +2615,10 @@ The following postprocessors are available:
 
 \index[prmindex]{List of output variables}
 \index[prmindexfull]{Postprocess!Visualization!List of output variables}
-{\it Value:}
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} A comma separated list of visualization objects that should be run whenever writing graphical output. By default, the graphical output files will always contain the primary variables velocity, pressure, and temperature. However, one frequently wants to also visualize derived quantities, such as the thermodynamic phase that corresponds to a given temperature-pressure value, or the corresponding seismic wave speeds. The visualization objects do exactly this: they compute such derived quantities and place them into the output file. The current parameter is the place where you decide which of these additional output variables you want to have in your output file.
@@ -2063,6 +2643,8 @@ The following postprocessors are available:
 
 `strain rate': A visualization output object that generates output for the norm of the strain rate, i.e., for the quantity $\sqrt{\varepsilon(\mathbf u):\varepsilon(\mathbf u)}$ in the incompressible case and $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]}$ in the compressible case.
 
+`thermal expansivity': A visualization output object that generates output for the thermal expansivity.
+
 `thermodynamic phase': A visualization output object that generates output for the integer number of the phase that is thermodynamically stable at the temperature and pressure of the current point.
 
 `viscosity': A visualization output object that generates output for the viscosity.
@@ -2070,7 +2652,7 @@ The following postprocessors are available:
 `viscosity ratio': A visualization output object that generates output for the ratio between dislocation viscosity and diffusion viscosity.
 
 
-{\it Possible values:} [MultipleSelection density|friction heating|nonadiabatic pressure|nonadiabatic temperature|partition|seismic vp|seismic vs|specific heat|strain rate|thermodynamic phase|viscosity|viscosity ratio|all ]
+{\it Possible values:} [MultipleSelection density|friction heating|nonadiabatic pressure|nonadiabatic temperature|partition|seismic vp|seismic vs|specific heat|strain rate|thermal expansivity|thermodynamic phase|viscosity|viscosity ratio|all ]
 \item {\it Parameter name:} {\tt Number of grouped files}
 
 
@@ -2106,7 +2688,7 @@ The following postprocessors are available:
 
 \index[prmindex]{Time between graphical output}
 \index[prmindexfull]{Postprocess!Visualization!Time between graphical output}
-{\it Value:} 0.1
+{\it Value:} 1e8
 
 
 {\it Default:} 1e8

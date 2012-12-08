@@ -38,8 +38,8 @@ namespace aspect
       indicators = 0;
 
       // create a vector in which we set the temperature block to
-      // be a finite element interpolation of the density or rho*c_p*T.
-      // we do so by setting up a quadrature formula with the
+      // be a finite element interpolation of the thermal energy density
+      // rho*c_p*T. we do so by setting up a quadrature formula with the
       // temperature unit support points, then looping over these
       // points, compute the output quantity at them, and writing
       // the result into the output vector in the same order
@@ -198,7 +198,7 @@ namespace aspect
                                               "A mesh refinement criterion that computes "
                                               "refinement indicators from a field that describes "
                                               "the spatial variability of the thermal energy density, $\\rho C_p T$. "
-                                              "Because this quantity may not be a continuous function ($\\rho$$ "
+                                              "Because this quantity may not be a continuous function ($\\rho$ "
                                               "and $C_p$ may be discontinuous functions along discontinuities in the "
                                               "medium, for example due to phase changes), we approximate the "
                                               "gradient of this quantity to refine the mesh. The error indicator "

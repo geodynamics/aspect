@@ -33,17 +33,14 @@ namespace aspect
     void
     Velocity<dim>::execute(Vector<float> &indicators) const
     {
-      AssertThrow (this->n_compositional_fields() >= 1,
-                   ExcMessage ("This refinement criterion can not be used when no "
-                               "compositional fields are active!"));
       indicators = 0;
 
       std::vector<bool> velocity_components (dim+2+this->n_compositional_fields(), false);
       for (unsigned int d=0; d<dim; ++d)
         velocity_components[d] = true;
       KellyErrorEstimator<dim>::estimate (this->get_dof_handler(),
-//TODO: Replace the 2 by something reasonable, adjusted to the polynomial degree
-                                          QGauss<dim-1>(2),
+//TODO: Replace the 3 by something reasonable, adjusted to the polynomial degree
+                                          QGauss<dim-1>(3),
                                           typename FunctionMap<dim>::type(),
                                           this->get_solution(),
                                           indicators,

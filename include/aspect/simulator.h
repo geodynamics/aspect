@@ -523,7 +523,6 @@ namespace aspect
         unsigned int                   initial_adaptive_refinement;
         double                         refinement_fraction;
         double                         coarsening_fraction;
-        std::string                    refinement_strategy;
         std::vector<double>            additional_refinement_times;
         unsigned int                   adaptive_refinement_interval;
         bool                           run_postprocessors_on_initial_refinement;
@@ -782,15 +781,6 @@ namespace aspect
        * <code>source/simulator/core.cc</code>.
        */
       void postprocess ();
-
-      /**
-       * Compute error indicators based on a variety of criteria to determine which
-       * cells to refine and coarsen, which is done in refine_mesh().
-       *
-       * This function is implemented in
-       * <code>source/simulator/core.cc</code>.
-       */
-      void compute_refinement_criterion (Vector<float> &estimated_error_per_cell) const;
 
       /**
        * Refine the mesh according to error indicators calculated by

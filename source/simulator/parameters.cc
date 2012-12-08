@@ -303,15 +303,6 @@ namespace aspect
                          Patterns::Double(0,1),
                          "The fraction of cells with the smallest error that "
                          "should be flagged for coarsening.");
-      prm.declare_entry ("Strategy", "Density c_p temperature",
-                         Patterns::Selection ("Temperature|"
-                                              "Velocity|"
-                                              "Normalized density and temperature|"
-                                              "Weighted density and temperature|"
-                                              "Density c_p temperature|"
-                                              "Composition"),
-                         "The method used to determine which cells to refine and which "
-                         "to coarsen.");
       prm.declare_entry ("Additional refinement times", "",
                          Patterns::List (Patterns::Double(0)),
                          "A list of times so that if the end time of a time step "
@@ -510,7 +501,6 @@ namespace aspect
       adaptive_refinement_interval= prm.get_integer ("Time steps between mesh refinement");
       refinement_fraction         = prm.get_double ("Refinement fraction");
       coarsening_fraction         = prm.get_double ("Coarsening fraction");
-      refinement_strategy         = prm.get ("Strategy");
 
       // extract the list of times at which additional refinement is requested
       // then sort it and convert it to seconds

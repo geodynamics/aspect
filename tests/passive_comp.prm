@@ -287,7 +287,7 @@ subsection Mesh refinement
   set Coarsening fraction                = 0.00
 
   # The method used to determine which cells to refine and which to coarsen.
-  set Strategy                           = Temperature
+  set Strategy                           = temperature
 
   # The number of time steps after which the mesh is to be adapted again based
   # on computed error indicators.

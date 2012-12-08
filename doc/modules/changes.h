@@ -7,6 +7,28 @@ Aspect version 0.1.
 All entries are signed with the names of the author.
 </p>
 
+<ol>
+<li>
+New: The way we do mesh refinement has been completely rewritten.
+This is now handled via plugins that provide different
+refinement strategies and that can be combined if
+so desired. The names of refinement criteria have also been
+changed: "Temperature", "Velocity", and "Density c_p temperature"
+have been renamed to "temperature", "velocity", and "thermal energy
+density". Furthermore, the effect of the old name "Normalized density
+and temperature" can be obtained by passing the list
+"density, temperature". For more detail, see the manual's section
+on parameters that describe the mesh refinement process.
+<br>
+(Wolfgang Bangerth, 2012/12/08)
+
+<li>
+Fixed: In nonlinear models, we did not recompute the matrix and
+preconditioner for the Stokes system in every time step. This is
+now fixed.
+<br>
+(Wolfgang Bangerth, 2012/12/04)
+
 <li>
 Changed: Write the parameter file only on the root node
 to avoid file system locking issues.
@@ -26,7 +48,6 @@ the temperature stabilization that may change results.
 <br>
 (Rene Gassmoeller, 2012/11/15)
 
-<ol>
 <li>
 New: If the "Use conduction timestep" parameter is true, the timestep
 is calculated as the minimum of the convection *and* heat conduction

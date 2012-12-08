@@ -149,7 +149,7 @@ namespace aspect
   void
   SimulatorAccess<dim>::get_refinement_criteria (Vector<float> &estimated_error_per_cell) const
   {
-    simulator->compute_refinement_criterion(estimated_error_per_cell);
+    simulator->mesh_refinement_manager.execute (estimated_error_per_cell);
   }
 
 
