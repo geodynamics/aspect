@@ -63,6 +63,9 @@ namespace aspect
        * @name Things that are independent of the current mesh
        * @{
        */
+      const unsigned int n_components;
+      const unsigned int n_blocks;
+
       struct Extractors
       {
         Extractors (const unsigned int n_compositional_fields);

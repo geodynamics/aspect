@@ -649,9 +649,6 @@ namespace aspect
       // obtain the boundary indicators that belong to Dirichlet-type
       // temperature boundary conditions and interpolate the temperature
       // there
-      std::vector<bool> temperature_mask (dim+2+parameters.n_compositional_fields, false);
-      temperature_mask[dim+1] = true;
-
       for (std::set<types::boundary_id_t>::const_iterator
            p = parameters.fixed_temperature_boundary_indicators.begin();
            p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
@@ -667,9 +664,9 @@ namespace aspect
                                                         std_cxx1x::_1),
 //TODO: use something out of introspection
                                                         dim+1,
-                                                        dim+2+parameters.n_compositional_fields),
+                                                        introspection.n_components),
                                                     constraints,
-                                                    temperature_mask);
+                                                    introspection.component_masks.temperature);
 
         }
 
