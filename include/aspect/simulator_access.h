@@ -31,6 +31,7 @@
 #include <deal.II/fe/mapping_q.h>
 
 #include <aspect/global.h>
+#include <aspect/introspection.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
@@ -97,6 +98,16 @@ namespace aspect
     protected:
       /** @name Accessing variables that identify overall properties of the simulator */
       /** @{ */
+
+      /**
+       * Return a reference to an introspection object that describes
+       * overall properties of the simulator. In particular, it provides
+       * symbolic names for extractors and component masks for each variable,
+       * etc, and thereby reduces the need for implicit knowledge throughout
+       * the code base.
+       */
+      const Introspection<dim> &
+      introspection () const;
 
       /**
        * Return the MPI communicator for this simulation.

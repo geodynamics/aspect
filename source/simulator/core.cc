@@ -744,6 +744,28 @@ namespace aspect
   }
 
 
+  template <int dim>
+  void Simulator<dim>::setup_introspection ()
+  {
+    // the extractors for the default variables have already been initialized.
+    // take care of the ones for the compositional variables now
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+      introspection.extractors.compositional_fields
+      .push_back (FEValuesExtractors::Scalar(dim+2+c));
+
+    // next initialize the component masks
+    introspection.component_masks.velocity
+    = finite_element.component_mask (introspection.extractors.velocity);
+    introspection.component_masks.pressure
+    = finite_element.component_mask (introspection.extractors.pressure);
+    introspection.component_masks.temperature
+    = finite_element.component_mask (introspection.extractors.temperature);
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+      introspection.component_masks.compositional_fields
+      .push_back (finite_element.component_mask(introspection.extractors.compositional_fields[c]));
+  }
+
+
 
   template <int dim>
   void Simulator<dim>::postprocess ()

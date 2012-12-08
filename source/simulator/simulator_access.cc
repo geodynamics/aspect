@@ -22,8 +22,6 @@
 
 #include <aspect/simulator.h>
 
-#include <typeinfo>
-
 namespace aspect
 {
 
@@ -41,6 +39,14 @@ namespace aspect
     simulator = SmartPointer<const Simulator<dim> > (&simulator_object, typeid(*this).name());
   }
 
+
+
+  template <int dim>
+  const Introspection<dim> &
+  SimulatorAccess<dim>::introspection () const
+  {
+    return simulator->introspection;
+  }
 
 
   template <int dim>
@@ -322,7 +328,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template class SimulatorAccess<dim>; \
+  template class SimulatorAccess<dim>;
    
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

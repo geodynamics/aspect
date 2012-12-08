@@ -315,6 +315,16 @@ namespace aspect
       void setup_dofs ();
 
       /**
+       * This function initializes the variables of the introspection object.
+       * It is called by setup_dofs() right after distributing degrees of
+       * freedom since this is when all of the information is available.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
+      void setup_introspection ();
+
+      /**
        * A function that is responsible for initializing the temperature/compositional
        * field before the first time step. The temperature field then serves as the
        * temperature from which the velocity is computed during the first time
@@ -956,10 +966,12 @@ namespace aspect
        */
 
       /**
-       * @name Variables that have to do with input, output and parallel communication
+       * @name Variables that have to do with input, output, parallel communication
+       * and interfacing with other parts of the program.
        * @{
        */
       Parameters                          parameters;
+      Introspection<dim>                  introspection;
 
       MPI_Comm                            mpi_communicator;
 
@@ -977,7 +989,6 @@ namespace aspect
       TableHandler                        statistics;
 
       Postprocess::Manager<dim>           postprocess_manager;
-      MeshRefinement::Manager<dim>        mesh_refinement_manager;
       TimerOutput                         computing_timer;
 
       /**
@@ -1036,6 +1047,8 @@ namespace aspect
       parallel::distributed::Triangulation<dim>                 triangulation;
       double                                                    global_Omega_diameter;
       double                                                    global_volume;
+
+      MeshRefinement::Manager<dim>        mesh_refinement_manager;
 
       const MappingQ<dim>                                       mapping;
 
