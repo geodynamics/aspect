@@ -35,16 +35,13 @@ namespace aspect
     {
       indicators = 0;
 
-      std::vector<bool> velocity_components (dim+2+this->n_compositional_fields(), false);
-      for (unsigned int d=0; d<dim; ++d)
-        velocity_components[d] = true;
       KellyErrorEstimator<dim>::estimate (this->get_dof_handler(),
 //TODO: Replace the 3 by something reasonable, adjusted to the polynomial degree
                                           QGauss<dim-1>(3),
                                           typename FunctionMap<dim>::type(),
                                           this->get_solution(),
                                           indicators,
-                                          velocity_components,
+                                          this->introspection().component_masks.velocities,
                                           0,
                                           0,
                                           this->get_triangulation().locally_owned_subdomain());
