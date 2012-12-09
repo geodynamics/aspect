@@ -279,7 +279,7 @@ namespace aspect
               << temperature_or_composition.compositional_variable+1
               << "... " << std::flush;
         advection_solver_tolerance = parameters.composition_solver_tolerance;
-        block_number = 3+temperature_or_composition.compositional_field;
+        block_number = 3+temperature_or_composition.compositional_variable;
       }
 
     SolverControl solver_control (system_matrix.block(block_number, block_number).m(),
