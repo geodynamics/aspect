@@ -359,6 +359,12 @@ namespace aspect
          */
         static
         TemperatureOrComposition composition (const unsigned int compositional_variable);
+
+        /**
+         * Return whether this object refers to the temperature field.
+         */
+        bool
+        is_temperature () const;
       };
 
       /**

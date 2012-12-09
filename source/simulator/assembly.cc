@@ -467,9 +467,7 @@ namespace aspect
     const unsigned int n_q_points = quadrature_formula.size();
 
     const FEValuesExtractors::Scalar field
-      = (temperature_or_composition.field_type
-         ==
-         TemperatureOrComposition::temperature_field
+      = (temperature_or_composition.is_temperature()
          ?
          introspection.extractors.temperature
          :
@@ -562,10 +560,10 @@ namespace aspect
         const double u_grad_field = u * (scratch.old_field_grads[q] +
                                          scratch.old_old_field_grads[q]) / 2;
 
-        const double density              = ((temperature_or_composition.field_type == TemperatureOrComposition::temperature_field)
+        const double density              = ((temperature_or_composition.is_temperature())
                                              ? scratch.explicit_material_model_outputs.densities[q] : 1.0);
-        const double conductivity = ((temperature_or_composition.field_type == TemperatureOrComposition::temperature_field) ? scratch.explicit_material_model_outputs.thermal_conductivities[q] : 0.0);
-        const double c_P                  = ((temperature_or_composition.field_type == TemperatureOrComposition::temperature_field) ? scratch.explicit_material_model_outputs.specific_heat[q] : 1.0);
+        const double conductivity = ((temperature_or_composition.is_temperature()) ? scratch.explicit_material_model_outputs.thermal_conductivities[q] : 0.0);
+        const double c_P                  = ((temperature_or_composition.is_temperature()) ? scratch.explicit_material_model_outputs.specific_heat[q] : 1.0);
         const double k_Delta_field = conductivity
                                      * (scratch.old_field_laplacians[q] +
                                         scratch.old_old_field_laplacians[q]) / 2;
@@ -1161,9 +1159,7 @@ namespace aspect
     const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
     const FEValuesExtractors::Scalar solution_field
-      = (temperature_or_composition.field_type
-         ==
-         TemperatureOrComposition::temperature_field
+      = (temperature_or_composition.is_temperature()
          ?
          introspection.extractors.temperature
          :
@@ -1176,7 +1172,7 @@ namespace aspect
     data.local_matrix = 0;
     data.local_rhs = 0;
 
-    if (temperature_or_composition.field_type == TemperatureOrComposition::temperature_field)
+    if (temperature_or_composition.is_temperature())
       {
         scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_solution,
             scratch.old_temperature_values);
@@ -1217,8 +1213,8 @@ namespace aspect
         scratch.current_velocity_values);
 
 
-    scratch.old_field_values = ((temperature_or_composition.field_type == TemperatureOrComposition::temperature_field) ? &scratch.old_temperature_values : &scratch.old_composition_values[temperature_or_composition.compositional_variable]);
-    scratch.old_old_field_values = ((temperature_or_composition.field_type == TemperatureOrComposition::temperature_field) ? &scratch.old_old_temperature_values : &scratch.old_old_composition_values[temperature_or_composition.compositional_variable]);
+    scratch.old_field_values = ((temperature_or_composition.is_temperature()) ? &scratch.old_temperature_values : &scratch.old_composition_values[temperature_or_composition.compositional_variable]);
+    scratch.old_old_field_values = ((temperature_or_composition.is_temperature()) ? &scratch.old_old_temperature_values : &scratch.old_old_composition_values[temperature_or_composition.compositional_variable]);
 
     scratch.finite_element_values[solution_field].get_function_gradients (old_solution,
                                                                           scratch.old_field_grads);
@@ -1230,7 +1226,7 @@ namespace aspect
     scratch.finite_element_values[solution_field].get_function_laplacians (old_old_solution,
                                                                            scratch.old_old_field_laplacians);
 
-    if (temperature_or_composition.field_type == TemperatureOrComposition::temperature_field)
+    if (temperature_or_composition.is_temperature())
       {
         compute_material_model_input_values (current_linearization_point,
                                              scratch.finite_element_values,
@@ -1271,14 +1267,14 @@ namespace aspect
           }
 
         const double density_c_P              =
-          ((temperature_or_composition.field_type == TemperatureOrComposition::temperature_field)
+          ((temperature_or_composition.is_temperature())
            ?
            scratch.material_model_outputs.densities[q] *
            scratch.material_model_outputs.specific_heat[q]
            :
            1.0);
         const double conductivity =
-          ((temperature_or_composition.field_type == TemperatureOrComposition::temperature_field)
+          ((temperature_or_composition.is_temperature())
            ?
            scratch.material_model_outputs.thermal_conductivities[q]
            :
@@ -1349,7 +1345,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::assemble_advection_system (const TemperatureOrComposition &temperature_or_composition)
   {
-    if (temperature_or_composition.field_type == TemperatureOrComposition::temperature_field)
+    if (temperature_or_composition.is_temperature())
       {
         computing_timer.enter_section ("   Assemble temperature system");
         system_matrix.block (2,2) = 0;

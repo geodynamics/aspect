@@ -265,7 +265,7 @@ namespace aspect
     double advection_solver_tolerance = -1;
     unsigned int block_number = -1;
 
-    if (temperature_or_composition.field_type == TemperatureOrComposition::temperature_field)
+    if (temperature_or_composition.is_temperature())
       {
         computing_timer.enter_section ("   Solve temperature system");
         pcout << "   Solving temperature system... " << std::flush;
@@ -309,7 +309,7 @@ namespace aspect
     distributed_solution.block(block_number) = block_remap;
     solver.solve (system_matrix.block(block_number,block_number), distributed_solution.block(block_number),
                   system_rhs.block(block_number),
-                  (temperature_or_composition.field_type == TemperatureOrComposition::temperature_field
+                  (temperature_or_composition.is_temperature()
                    ?
                    *T_preconditioner
                    :
@@ -323,7 +323,7 @@ namespace aspect
     pcout << solver_control.last_step()
           << " iterations." << std::endl;
 
-    if (temperature_or_composition.field_type == TemperatureOrComposition::temperature_field)
+    if (temperature_or_composition.is_temperature())
       statistics.add_value("Iterations for temperature solver",
                            solver_control.last_step());
     else

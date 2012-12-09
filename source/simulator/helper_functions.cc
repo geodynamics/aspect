@@ -92,6 +92,14 @@ namespace aspect
 
 
   template <int dim>
+  bool
+  Simulator<dim>::TemperatureOrComposition::is_temperature() const
+  {
+    return (field_type == temperature_field);
+  }
+
+
+  template <int dim>
   void Simulator<dim>::output_program_stats()
   {
     if (!aspect::output_parallel_statistics)
@@ -341,18 +349,14 @@ namespace aspect
   get_extrapolated_temperature_or_composition_range (const TemperatureOrComposition &temperature_or_composition) const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                             (temperature_or_composition.field_type
-                                              ==
-                                              TemperatureOrComposition::temperature_field) ?
-                                             parameters.temperature_degree :
-                                             parameters.composition_degree);
+                                             (temperature_or_composition.is_temperature() ?
+                                              parameters.temperature_degree :
+                                              parameters.composition_degree));
 
     const unsigned int n_q_points = quadrature_formula.size();
 
     const FEValuesExtractors::Scalar field
-      = (temperature_or_composition.field_type
-         ==
-         TemperatureOrComposition::temperature_field
+      = (temperature_or_composition.is_temperature()
          ?
          introspection.extractors.temperature
          :
@@ -648,9 +652,7 @@ namespace aspect
                              quadrature_formula,
                              update_values | update_quadrature_points);
     const FEValuesExtractors::Scalar field
-      = (temperature_or_composition.field_type
-         ==
-         TemperatureOrComposition::temperature_field
+      = (temperature_or_composition.is_temperature()
          ?
          introspection.extractors.temperature
          :
