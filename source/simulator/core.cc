@@ -412,40 +412,25 @@ namespace aspect
     statistics.add_value("Number of mesh cells",
                          triangulation.n_global_active_cells());
 
-    std::vector<unsigned int> system_sub_blocks (dim+2+parameters.n_compositional_fields,0);
-    system_sub_blocks[dim] = 1;
-    system_sub_blocks[dim+1] = 2;
-    for (unsigned int i=dim+2; i<dim+2+parameters.n_compositional_fields; ++i)
-      system_sub_blocks[i] = 3;
-    std::vector<unsigned int> system_dofs_per_block (3+((parameters.n_compositional_fields>0)?1:0));
-    DoFTools::count_dofs_per_block (dof_handler, system_dofs_per_block,
-                                    system_sub_blocks);
-
     statistics.add_value("Number of Stokes degrees of freedom",
-                         system_dofs_per_block[0]+system_dofs_per_block[1]);
+                         introspection.system_dofs_per_block[0] +
+			 introspection.system_dofs_per_block[1]);
     statistics.add_value("Number of temperature degrees of freedom",
-                         system_dofs_per_block[2]);
+                         introspection.system_dofs_per_block[2]);
     if (parameters.n_compositional_fields > 0)
       statistics.add_value("Number of composition degrees of freedom",
-                           system_dofs_per_block[3]);
+                           introspection.system_dofs_per_block[3]);
 
 
     // then interpolate the current boundary velocities. this adds to
     // the current_constraints object we already have
     {
-      IndexSet system_relevant_set;
-      DoFTools::extract_locally_relevant_dofs (dof_handler,
-                                               system_relevant_set);
-
       current_constraints.clear ();
-      current_constraints.reinit (system_relevant_set);
+      current_constraints.reinit (introspection.index_sets.system_relevant_set);
       current_constraints.merge (constraints);
 
       // set the current time and do the interpolation
       // for the prescribed velocity fields
-      std::vector<bool> velocity_mask (dim+2+parameters.n_compositional_fields, true);
-      for (unsigned int i=dim; i<dim+2+parameters.n_compositional_fields; ++i)
-        velocity_mask[i] = false;
       for (typename std::map<types::boundary_id_t,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::iterator
            p = velocity_boundary_conditions.begin();
            p != velocity_boundary_conditions.end(); ++p)
@@ -460,7 +445,7 @@ namespace aspect
                                                     p->first,
                                                     vel,
                                                     current_constraints,
-                                                    velocity_mask);
+                                                    introspection.component_masks.velocities);
         }
       current_constraints.close();
     }
