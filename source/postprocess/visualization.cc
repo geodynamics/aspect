@@ -109,7 +109,9 @@ namespace aspect
       if (this->get_time() < next_output_time)
         return std::pair<std::string,std::string>();
 
-//TODO: try to somehow get these variables into the viz plugins as well...
+//TODO: try to somehow get these variables into the viz plugins as well.
+      // the problem with these is that they are not derived from DataPostprocessor
+      // so we need to find a different way to make this work...
       Vector<float> estimated_error_per_cell(this->get_triangulation().n_active_cells());
       this->get_refinement_criteria(estimated_error_per_cell);
 
