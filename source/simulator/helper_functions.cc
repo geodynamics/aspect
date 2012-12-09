@@ -337,14 +337,27 @@ namespace aspect
 
   template <int dim>
   std::pair<double,double>
-  Simulator<dim>::get_extrapolated_temperature_or_composition_range (const unsigned int index) const
+  Simulator<dim>::
+  get_extrapolated_temperature_or_composition_range (const TemperatureOrComposition &temperature_or_composition) const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                             (index==0) ? parameters.temperature_degree : parameters.composition_degree);
+                                             (temperature_or_composition.field_type
+                                              ==
+                                              TemperatureOrComposition::temperature_field) ?
+                                             parameters.temperature_degree :
+                                             parameters.composition_degree);
 
     const unsigned int n_q_points = quadrature_formula.size();
 
-    const FEValuesExtractors::Scalar field (dim+1+index);
+    const FEValuesExtractors::Scalar field
+      = (temperature_or_composition.field_type
+         ==
+         TemperatureOrComposition::temperature_field
+         ?
+         introspection.extractors.temperature
+         :
+         introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]
+        );
 
     FEValues<dim> fe_values (mapping, finite_element, quadrature_formula,
                              update_values);
@@ -616,12 +629,9 @@ namespace aspect
 
 //TODO: unify the following functions
   template <int dim>
-  void Simulator<dim>::compute_depth_average_field(const unsigned int index,
+  void Simulator<dim>::compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition,
                                                    std::vector<double> &values) const
   {
-    // make sure that what we get here is really an index of one of the temperature/compositional fields
-    AssertIndexRange(index,parameters.n_compositional_fields+1);
-
     const unsigned int num_slices = 100;
     values.resize(num_slices);
     std::vector<unsigned int> counts(num_slices);
@@ -637,7 +647,15 @@ namespace aspect
                              finite_element,
                              quadrature_formula,
                              update_values | update_quadrature_points);
-    const FEValuesExtractors::Scalar field (index+dim+1);
+    const FEValuesExtractors::Scalar field
+      = (temperature_or_composition.field_type
+         ==
+         TemperatureOrComposition::temperature_field
+         ?
+         introspection.extractors.temperature
+         :
+         introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]
+        );
     std::vector<double> field_values(n_q_points);
 
     typename DoFHandler<dim>::active_cell_iterator
@@ -862,7 +880,8 @@ namespace aspect
   {
 
     std::vector<double> average_temperature;
-    compute_depth_average_field(0, average_temperature);
+    compute_depth_average_field(TemperatureOrComposition::temperature(),
+                                average_temperature);
 
     values.resize(average_temperature.size());
     std::vector<unsigned int> counts(average_temperature.size());
@@ -933,7 +952,8 @@ namespace aspect
 
     std::vector<double> average_temperature;
 
-    compute_depth_average_field(0, average_temperature);
+    compute_depth_average_field(TemperatureOrComposition::temperature(),
+                                average_temperature);
 
     values.resize(average_temperature.size());
     std::vector<unsigned int> counts(average_temperature.size());
@@ -1145,13 +1165,13 @@ namespace aspect
   template class Simulator<dim>::TemperatureOrComposition; \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
-  template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const unsigned int index) const; \
+  template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const TemperatureOrComposition &temperature_or_composition) const; \
   template void Simulator<dim>::extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values, \
                                                                        const unsigned int q, \
                                                                        std::vector<double> &composition_values_at_q_point) const;  \
   template std::pair<double,bool> Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::compute_depth_average_field(const unsigned int index, std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition, std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const; \

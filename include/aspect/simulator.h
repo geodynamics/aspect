@@ -469,15 +469,10 @@ namespace aspect
        * Initiate the assembly of one advection matrix and right hand side
        * and build a preconditioner for the matrix.
        *
-       * @param index The index of the advected field whose
-       * matrix we want to assemble (0 - temperature,
-       * 1 <= index <= number of compositional fields
-       * in this problem, ).
-       *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      void assemble_advection_system (const unsigned int index);
+      void assemble_advection_system (const TemperatureOrComposition &temperature_or_composition);
 
       /**
        * Solve one block of the the temperature/composition linear system. Return the initial
@@ -485,14 +480,10 @@ namespace aspect
        * return $\|Ax_0-b\|$ where $x_0$ is the initial guess for the solution variable
        * and is taken from the current_linearization_point member variable.
        *
-       * @param index The index of the block to be solved:
-       * 0                              temperature
-       * 1...n_compositional_fields     compositional field
-       *
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
        */
-      double solve_advection (const unsigned int index);
+      double solve_advection (const TemperatureOrComposition &temperature_or_composition);
 
       /**
        * Solve the Stokes linear system. Return the initial nonlinear residual,
@@ -672,16 +663,11 @@ namespace aspect
         * Compute the integrals for one advection matrix and right hand side
         * on a single cell.
         *
-        * @param index The index of the advected field whose
-        * local matrix we want to assemble (0 = temperature;
-        *  1 <= composition_index <= number of compositional fields
-        *  in this problem).
-        *
         * This function is implemented in
         * <code>source/simulator/assembly.cc</code>.
         */
       void
-      local_assemble_advection_system (const unsigned int             index,
+      local_assemble_advection_system (const TemperatureOrComposition &temperature_or_composition,
                                        const std::pair<double,double> global_field_range,
                                        const double                   global_max_velocity,
                                        const double                   global_entropy_variation,
@@ -695,21 +681,13 @@ namespace aspect
        * for compositional fields, but this can be changed in the
        * future to allow for interactions between compositional fields.
        *
-       * @param index The index of the advected field whose
-       * heating term we want to compute (0 = temperature;
-       *  1 <= composition_index < number of compositional fields
-       *  in this problem).
-       *  @param use_current_values Bool that decides which values
-       *  from scratch to use to compute the heating term
-       *  (current time step or last one).
-       *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
       double compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                   typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                                   typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                                  const unsigned int index,
+                                  const TemperatureOrComposition &temperature_or_composition,
                                   const unsigned int q) const;
 
 
@@ -764,14 +742,10 @@ namespace aspect
        * domain of same depth. The function resizes the output vector to match
        * the number of depth slices.
        *
-       * @param index The index of the block to be solved:
-       * 0                              temperature
-       * 1...n_compositional_fields     compositional field
-       *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void compute_depth_average_field(const unsigned int index,
+      void compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition,
                                        std::vector<double> &values) const;
 
       /**
@@ -870,30 +844,22 @@ namespace aspect
        * This function is used in computing the artificial diffusion
        * stabilization term.
        *
-       * @param index The index of the field we want to calculate the entropy
-       * variation of:
-       * 0                              temperature
-       * 1...n_compositional_fields     compositional field
-       *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      double get_entropy_variation (const double average_temperature, const unsigned int index) const;
+      double get_entropy_variation (const double average_value,
+                                    const TemperatureOrComposition &temperature_or_composition) const;
 
       /**
        * Compute the minimal and maximal temperature througout the domain from a
        * solution vector extrapolated from the previous time steps. This is needed
        * to compute the artificial diffusion stabilization terms.
        *
-       * @param index The index of the field we want to calculate the entropy
-       * variation of:
-       * 0                              temperature
-       * 1...n_compositional_fields     compositional field
-       *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      std::pair<double,double> get_extrapolated_temperature_or_composition_range (const unsigned int index) const;
+      std::pair<double,double>
+      get_extrapolated_temperature_or_composition_range (const TemperatureOrComposition &temperature_or_composition) const;
 
       /**
        * Compute the size of the next time step from the mesh size and
@@ -914,11 +880,6 @@ namespace aspect
        * given the values and gradients of the solution passed as
        * arguments.
        *
-       * @param index The index of the field we need the artificial
-       * diffusion coefficient for:
-       * 0                              temperature
-       * 1...n_compositional_fields     compositional field
-       *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
@@ -929,7 +890,7 @@ namespace aspect
                         const double                        average_temperature,
                         const double                        global_entropy_variation,
                         const double                        cell_diameter,
-                        const unsigned int                  index) const;
+                        const TemperatureOrComposition     &temperature_or_composition) const;
 
       /**
        * Compute the residual of one advection equation to be used
@@ -943,7 +904,7 @@ namespace aspect
       void
       compute_advection_system_residual(internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
                                         const double                        average_field,
-                                        const unsigned int                  index,
+                                        const TemperatureOrComposition     &temperature_or_composition,
                                         double                             &max_residual,
                                         double                             &max_velocity,
                                         double                             &max_density,

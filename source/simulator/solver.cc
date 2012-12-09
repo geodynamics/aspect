@@ -258,67 +258,79 @@ namespace aspect
   }
 
   template <int dim>
-  double Simulator<dim>::solve_advection (const unsigned int index)
+  double Simulator<dim>::solve_advection (const TemperatureOrComposition &temperature_or_composition)
   {
     double initial_residual = 0;
 
-    // make sure that what we get here is really an index of one of the temperature/compositional fields
-    AssertIndexRange(index,parameters.n_compositional_fields+1);
+    double advection_solver_tolerance = -1;
+    unsigned int block_number = -1;
 
-    if (index == 0)
-      computing_timer.enter_section ("   Solve temperature system");
-    else
-      computing_timer.enter_section ("   Solve composition system");
-    {
-      if (index == 0)
+    if (temperature_or_composition.field_type == TemperatureOrComposition::temperature_field)
+      {
+        computing_timer.enter_section ("   Solve temperature system");
         pcout << "   Solving temperature system... " << std::flush;
-      else
-        pcout << "   Solving composition system " << index << "... " << std::flush;
+        advection_solver_tolerance = parameters.temperature_solver_tolerance;
+        block_number = 2;
+      }
+    else
+      {
+        computing_timer.enter_section ("   Solve composition system");
+        pcout << "   Solving composition system "
+              << temperature_or_composition.compositional_variable+1
+              << "... " << std::flush;
+        advection_solver_tolerance = parameters.composition_solver_tolerance;
+        block_number = 3+temperature_or_composition.compositional_field;
+      }
 
-      const double advection_solver_tolerance = (index == 0) ? parameters.temperature_solver_tolerance : parameters.composition_solver_tolerance;
-      SolverControl solver_control (system_matrix.block(index+2,index+2).m(),
-                                    advection_solver_tolerance*system_rhs.block(index+2).l2_norm());
+    SolverControl solver_control (system_matrix.block(block_number, block_number).m(),
+                                  advection_solver_tolerance*system_rhs.block(block_number).l2_norm());
 
-      SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
-                                                   SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
+    SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
+                                                 SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
 
 //TODO: clean up: why do we copy system_rhs here, then call set_zero when we later
 // overwrite the vector in residual(), then call set_zero again, and then throw away
 // the result
-      LinearAlgebra::BlockVector
-      distributed_solution (system_rhs);
-      current_constraints.set_zero(distributed_solution);
-      // create vector with distribution of system_rhs.
-      LinearAlgebra::Vector block_remap (system_rhs.block (index+2));
-      // copy block of current_linearization_point into it, because
-      // current_linearization is distributed differently.
-      block_remap = current_linearization_point.block (index+2);
-      // (ab)use the distributed solution vector to temporarily put a residual in
-      initial_residual = system_matrix.block(index+2,index+2).residual (distributed_solution.block(index+2),
-                                                                        block_remap,
-                                                                        system_rhs.block(index+2));
-      current_constraints.set_zero(distributed_solution);
+    LinearAlgebra::BlockVector
+    distributed_solution (system_rhs);
+    current_constraints.set_zero(distributed_solution);
+    // create vector with distribution of system_rhs.
+    LinearAlgebra::Vector block_remap (system_rhs.block (block_number));
+    // copy block of current_linearization_point into it, because
+    // current_linearization is distributed differently.
+    block_remap = current_linearization_point.block (block_number);
+    // (ab)use the distributed solution vector to temporarily put a residual in
+    initial_residual = system_matrix.block(block_number,block_number).residual (distributed_solution.block(block_number),
+                                                                                block_remap,
+                                                                                system_rhs.block(block_number));
+    current_constraints.set_zero(distributed_solution);
 
-      // then overwrite it again with the current best guess and solve the linear system
-      distributed_solution.block(index+2) = block_remap;
-      solver.solve (system_matrix.block(index+2,index+2), distributed_solution.block(index+2),
-                    system_rhs.block(index+2), index==0?*T_preconditioner:*C_preconditioner);
+    // then overwrite it again with the current best guess and solve the linear system
+    distributed_solution.block(block_number) = block_remap;
+    solver.solve (system_matrix.block(block_number,block_number), distributed_solution.block(block_number),
+                  system_rhs.block(block_number),
+                  (temperature_or_composition.field_type == TemperatureOrComposition::temperature_field
+                   ?
+                   *T_preconditioner
+                   :
+                   *C_preconditioner));
 
-      current_constraints.distribute (distributed_solution);
-      solution.block(index+2) = distributed_solution.block(index+2);
+    current_constraints.distribute (distributed_solution);
+    solution.block(block_number) = distributed_solution.block(block_number);
 
-      // print number of iterations and also record it in the
-      // statistics file
-      pcout << solver_control.last_step()
-            << " iterations." << std::endl;
+    // print number of iterations and also record it in the
+    // statistics file
+    pcout << solver_control.last_step()
+          << " iterations." << std::endl;
 
-      if (index == 0)
-        statistics.add_value("Iterations for temperature solver",
-                             solver_control.last_step());
-      else
-        statistics.add_value("Iterations for composition solver " + Utilities::int_to_string(index),
-                             solver_control.last_step());
-    }
+    if (temperature_or_composition.field_type == TemperatureOrComposition::temperature_field)
+      statistics.add_value("Iterations for temperature solver",
+                           solver_control.last_step());
+    else
+      statistics.add_value("Iterations for composition solver " +
+                           Utilities::int_to_string(temperature_or_composition.compositional_variable+1),
+                           solver_control.last_step());
+
     computing_timer.exit_section();
 
     return initial_residual;
@@ -462,7 +474,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template double Simulator<dim>::solve_advection (const unsigned int index); \
+  template double Simulator<dim>::solve_advection (const TemperatureOrComposition &); \
   template double Simulator<dim>::solve_stokes ();
 
   ASPECT_INSTANTIATE(INSTANTIATE)

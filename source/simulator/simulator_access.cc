@@ -200,17 +200,20 @@ namespace aspect
   void
   SimulatorAccess<dim>::get_depth_average_temperature(std::vector<double> &values) const
   {
-    simulator->compute_depth_average_field(0, values);
+    simulator->compute_depth_average_field(Simulator<dim>::TemperatureOrComposition::temperature(),
+                                           values);
   }
 
   template <int dim>
   void
-  SimulatorAccess<dim>::get_depth_average_composition(const unsigned int composition_index, std::vector<double> &values) const
+  SimulatorAccess<dim>::get_depth_average_composition(const unsigned int composition_index,
+                                                      std::vector<double> &values) const
   {
     // make sure that what we get here is really an index of one of the compositional fields
     AssertIndexRange(composition_index,this->n_compositional_fields());
 
-    simulator->compute_depth_average_field(composition_index+1, values);
+    simulator->compute_depth_average_field(Simulator<dim>::TemperatureOrComposition::composition(composition_index),
+                                           values);
   }
 
   template <int dim>
