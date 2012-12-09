@@ -115,7 +115,7 @@ namespace aspect
         unsigned int velocities[dim];
         unsigned int pressure;
         unsigned int temperature;
-        std::vector<FEValuesExtractors::Scalar> compositional_fields;
+        std::vector<unsigned int> compositional_fields;
       };
       /**
        * A variable that enumerates the vector components of the finite
