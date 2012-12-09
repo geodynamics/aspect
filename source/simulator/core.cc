@@ -692,16 +692,20 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::setup_introspection ()
   {
-    // initialize the component masks
-    introspection.component_masks.velocities
-      = finite_element.component_mask (introspection.extractors.velocities);
-    introspection.component_masks.pressure
-      = finite_element.component_mask (introspection.extractors.pressure);
-    introspection.component_masks.temperature
-      = finite_element.component_mask (introspection.extractors.temperature);
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      introspection.component_masks.compositional_fields
-      .push_back (finite_element.component_mask(introspection.extractors.compositional_fields[c]));
+    // initialize the component masks, if not already set
+    if (introspection.component_masks.velocities == ComponentMask())
+      {
+        introspection.component_masks.velocities
+          = finite_element.component_mask (introspection.extractors.velocities);
+        introspection.component_masks.pressure
+          = finite_element.component_mask (introspection.extractors.pressure);
+        introspection.component_masks.temperature
+          = finite_element.component_mask (introspection.extractors.temperature);
+        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          introspection.component_masks.compositional_fields
+          .push_back (finite_element.component_mask(introspection.extractors.compositional_fields[c]));
+      }
+
 
     // now also compute the various partitionings between processors and blocks
     // of vectors and matrices
