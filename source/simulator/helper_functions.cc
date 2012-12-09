@@ -23,7 +23,6 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 
-#include <aspect/geometry_model/spherical_shell.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>

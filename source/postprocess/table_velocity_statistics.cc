@@ -21,7 +21,6 @@
 
 
 #include <aspect/postprocess/table_velocity_statistics.h>
-#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/material_model/table.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>

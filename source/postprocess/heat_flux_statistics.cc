@@ -21,7 +21,6 @@
 
 
 #include <aspect/postprocess/heat_flux_statistics.h>
-#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/simulator_access.h>
 
