@@ -893,7 +893,8 @@ namespace aspect
         case NonlinearSolver::IMPES:
         {
           assemble_advection_system (0);
-          build_advection_preconditioner(0,T_preconditioner);
+          build_advection_preconditioner(TemperatureOrComposition::temperature(),
+                                         T_preconditioner);
           solve_advection(0);
 
           current_linearization_point.block(2) = solution.block(2);
@@ -901,7 +902,8 @@ namespace aspect
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
               assemble_advection_system (1+c);
-              build_advection_preconditioner(1+c,C_preconditioner);
+              build_advection_preconditioner(TemperatureOrComposition::composition(c),
+                                             C_preconditioner);
               solve_advection(1+c); // this is correct, 0 would be temperature
               current_linearization_point.block(3+c) = solution.block(3+c);
             }
@@ -935,7 +937,8 @@ namespace aspect
               assemble_advection_system(0);
 
               if (iteration == 0)
-                build_advection_preconditioner(0,T_preconditioner);
+                build_advection_preconditioner(TemperatureOrComposition::temperature(),
+                                               T_preconditioner);
 
               const double temperature_residual = solve_advection(0);
 
@@ -946,7 +949,8 @@ namespace aspect
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 {
                   assemble_advection_system (c+1);
-                  build_advection_preconditioner(c+1,C_preconditioner);
+                  build_advection_preconditioner(TemperatureOrComposition::composition(c),
+                                                 C_preconditioner);
                   composition_residual[c]
                     = solve_advection(1+c); // 1+n is correct, because 0 is for temperature
                   current_linearization_point.block(3+c) = solution.block(3+c);

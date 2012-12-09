@@ -299,6 +299,68 @@ namespace aspect
       void run ();
 
     private:
+
+      /**
+       * A structure that is used as an argument to functions that can
+       * work on both the temperature and the compositional variables
+       * and that need to be told which one of the two, as well as on
+       * which of the compositional variables.
+       */
+      struct TemperatureOrComposition
+      {
+        /**
+         * An enum indicating whether the identified variable is the
+         * temperature or one of the compositional fields.
+         */
+        enum FieldType { temperature_field, compositional_field };
+
+        /**
+         * A variable indicating whether the identified variable is the
+         * temperature or one of the compositional fields.
+         */
+        const FieldType    field_type;
+
+        /**
+         * A variable identifying which of the compositional fields is
+         * selected. This variable is meaningless if the temperature
+         * is selected.
+         */
+        const unsigned int compositional_variable;
+
+        /**
+         * Constructor.
+         * @param field_type Determines whether this variable should select
+         *   the temperature field or a compositional field.
+         * @param compositional_variable The number of the compositional field
+         *   if the first argument in fact chooses a compositional variable.
+         *   Meaningless if the first argument equals temperature.
+         *
+         * This function is implemented in
+         * <code>source/simulator/helper_functions.cc</code>.
+         */
+        TemperatureOrComposition (const FieldType field_type,
+                                  const unsigned int compositional_variable = numbers::invalid_unsigned_int);
+
+        /**
+         * A static function that creates an object identifying the temperature.
+         *
+         * This function is implemented in
+         * <code>source/simulator/helper_functions.cc</code>.
+         */
+        static
+        TemperatureOrComposition temperature ();
+
+        /**
+         * A static function that creates an object identifying given
+         * compositional field.
+         *
+         * This function is implemented in
+         * <code>source/simulator/helper_functions.cc</code>.
+         */
+        static
+        TemperatureOrComposition composition (const unsigned int compositional_variable);
+      };
+
       /**
        * @name Top-level functions in the overall flow of the numerical algorithm
        * @{
@@ -387,13 +449,12 @@ namespace aspect
 
       /**
        * Initialize the preconditioner for the advection equation of
-       * field index. Index = 0 is temperature. Index = n with n > 0
-       * represents the nth compositional field.
+       * field index.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      void build_advection_preconditioner (const unsigned int index,
+      void build_advection_preconditioner (const TemperatureOrComposition &temperature_or_composition,
                                            std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner);
 
       /**

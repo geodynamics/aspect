@@ -58,6 +58,40 @@ namespace aspect
 {
 
   template <int dim>
+  Simulator<dim>::TemperatureOrComposition::
+  TemperatureOrComposition (const FieldType field_type,
+                            const unsigned int compositional_variable)
+    :
+    field_type (field_type),
+    compositional_variable (compositional_variable)
+  {
+    if (field_type == temperature_field)
+      Assert (compositional_variable == numbers::invalid_unsigned_int,
+              ExcMessage ("You can't specify a compositional variable if you "
+                          "have in fact selected the temperature."));
+  }
+
+
+
+  template <int dim>
+  typename Simulator<dim>::TemperatureOrComposition
+  Simulator<dim>::TemperatureOrComposition::temperature ()
+  {
+    return TemperatureOrComposition(temperature_field);
+  }
+
+
+
+  template <int dim>
+  typename Simulator<dim>::TemperatureOrComposition
+  Simulator<dim>::TemperatureOrComposition::composition (const unsigned int compositional_variable)
+  {
+    return TemperatureOrComposition(compositional_field,
+                                    compositional_variable);
+  }
+
+
+  template <int dim>
   void Simulator<dim>::output_program_stats()
   {
     if (!aspect::output_parallel_statistics)
@@ -1108,6 +1142,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
+  template class Simulator<dim>::TemperatureOrComposition; \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const unsigned int index) const; \

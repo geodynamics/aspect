@@ -1027,18 +1027,45 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::build_advection_preconditioner(const unsigned int index,
+  Simulator<dim>::build_advection_preconditioner(const TemperatureOrComposition &temperature_or_composition,
                                                  std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner)
   {
-    if (index == 0)
-      computing_timer.enter_section ("   Build temperature preconditioner");
-    else
-      computing_timer.enter_section ("   Build composition preconditioner");
-    {
-      preconditioner.reset (new TrilinosWrappers::PreconditionILU());
-      preconditioner->initialize (system_matrix.block(2+index,2+index));
-    }
-    computing_timer.exit_section();
+    switch (temperature_or_composition.field_type)
+      {
+        case TemperatureOrComposition::temperature_field:
+        {
+          computing_timer.enter_section ("   Build temperature preconditioner");
+
+          const unsigned int block_number
+            =
+              introspection.component_indices.temperature;
+          preconditioner.reset (new TrilinosWrappers::PreconditionILU());
+          preconditioner->initialize (system_matrix.block(block_number,
+                                                          block_number));
+
+          computing_timer.exit_section();
+
+          break;
+        }
+
+        case TemperatureOrComposition::compositional_field:
+        {
+          computing_timer.enter_section ("   Build composition preconditioner");
+
+          const unsigned int block_number
+            = introspection.component_indices.compositional_fields[temperature_or_composition.compositional_variable];
+          preconditioner.reset (new TrilinosWrappers::PreconditionILU());
+          preconditioner->initialize (system_matrix.block(block_number,
+                                                          block_number));
+
+          computing_timer.exit_section();
+
+          break;
+        }
+
+        default:
+          Assert (false, ExcNotImplemented());
+      }
   }
 
 
@@ -1377,7 +1404,7 @@ namespace aspect
   template void Simulator<dim>::copy_local_to_global_stokes_system ( \
                                                                      const internal::Assembly::CopyData::StokesSystem<dim> &data); \
   template void Simulator<dim>::assemble_stokes_system (); \
-  template void Simulator<dim>::build_advection_preconditioner (const unsigned int index, \
+  template void Simulator<dim>::build_advection_preconditioner (const TemperatureOrComposition &, \
                                                                 std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
   template void Simulator<dim>::local_assemble_advection_system ( \
                                                                   const unsigned int             index, \
