@@ -69,9 +69,27 @@ namespace aspect
        * @name Things that are independent of the current mesh
        * @{
        */
+      /**
+       * The number of vector components used by the finite element
+       * description of this problem. It equals $d+2+n_c$ where
+       * $d$ is the dimension and equals the number of velocity components,
+       * and $n_c$ is the number of advected (compositional) fields. The
+       * remaining components are the scalar pressure and temperature
+       * fields.
+       */
       const unsigned int n_components;
+
+      /**
+       * The number of vector blocks. This equals $3+n_c$ where,
+       * in comparison to the n_components field, the velocity components
+       * form a single block.
+       */
       const unsigned int n_blocks;
 
+      /**
+       * A structure that contains FEValues extractors for every block
+       * of the finite element used in the overall description.
+       */
       struct Extractors
       {
         Extractors (const unsigned int n_compositional_fields);
@@ -81,9 +99,17 @@ namespace aspect
         const FEValuesExtractors::Scalar              temperature;
         std::vector<FEValuesExtractors::Scalar> compositional_fields;
       };
+      /**
+       * A variable that contains extractors for every block
+       * of the finite element used in the overall description.
+       */
       const Extractors extractors;
 
 
+      /**
+       * A structure that enumerates the vector components of the finite
+       * element that correspond to each of the variables in this problem.
+       */
       struct ComponentIndices
       {
         unsigned int velocities[dim];
@@ -91,9 +117,18 @@ namespace aspect
         unsigned int temperature;
         std::vector<FEValuesExtractors::Scalar> compositional_fields;
       };
+      /**
+       * A variable that enumerates the vector components of the finite
+       * element that correspond to each of the variables in this problem.
+       */
       ComponentIndices component_indices;
 
 
+      /**
+       * A structure that contains component masks for each of the variables
+       * in this problem. Component masks are a deal.II concept, see the
+       * deal.II glossary.
+       */
       struct ComponentMasks
       {
         ComponentMask              velocities;
@@ -101,8 +136,17 @@ namespace aspect
         ComponentMask              temperature;
         std::vector<ComponentMask> compositional_fields;
       };
+      /**
+       * A variable that contains component masks for each of the variables
+       * in this problem. Component masks are a deal.II concept, see the
+       * deal.II glossary.
+       */
       ComponentMasks component_masks;
 
+      /**
+       * A variable that describes for each vector component which vector
+       * block it corresponds to.
+       */
       std::vector<unsigned int> components_to_blocks;
 
       /**
@@ -113,15 +157,51 @@ namespace aspect
        * @name Things that depend on the current mesh
        * @{
        */
+      /**
+       * A variable that describes how many of the degrees of freedom
+       * on the current mesh belong to each of the n_blocks blocks
+       * of the finite element.
+       */
       std::vector<unsigned int> system_dofs_per_block;
 
+      /**
+       * A structure that contains index sets describing which of the
+       * globally enumerated degrees of freedom are owned by or are
+       * relevant to the current processor in a parallel computation.
+       */
       struct IndexSets
       {
+        /**
+         * An index set that indicates which (among all) degrees of freedom
+         * are relevant to the current processor. See the deal.II documentation
+         * for the definition of the term "locally relevant degrees of freedom".
+         */
         IndexSet system_relevant_set;
 
+        /**
+         * A collection of index sets that for each of the vector blocks
+         * of this finite element represents the global indices of the
+         * degrees of freedom owned by this processor. The n_blocks
+         * elements of this array form a mutually exclusive decomposition
+         * of the index set containing all locally owned degrees of freedom.
+         */
         std::vector<IndexSet> system_partitioning;
+
+        /**
+         * A collection of index sets that for each of the vector blocks
+         * of this finite element represents the global indices of the
+         * degrees of freedom are relevant to this processor. The n_blocks
+         * elements of this array form a mutually exclusive decomposition
+         * of the index set containing all locally relevant degrees of freedom,
+         * i.e., of the system_relevant_set index set.
+         */
         std::vector<IndexSet> system_relevant_partitioning;
       };
+      /**
+       * A variable that contains index sets describing which of the
+       * globally enumerated degrees of freedom are owned by the current
+       * processor in a parallel computation.
+       */
       IndexSets index_sets;
 
       /**

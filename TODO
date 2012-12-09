@@ -94,4 +94,13 @@ For later (from the Berkeley discussion, 9/26/2012)
 - improve compositional tracking:
   . if a field is binary 0/1, use a higher order entropy viscosity
   . if several fields together sum to one, do something else
+
+
+
+
+unify index field into a structure that selects between temperature and compositions
+make output of error estimator a plugin
+tests for the various refinement criteria
+document introspection (in .h and manual.tex)
+fix regression in cookbooks/composition-active in r1370
   
