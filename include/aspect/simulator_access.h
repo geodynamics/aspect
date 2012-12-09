@@ -23,10 +23,9 @@
 #ifndef __aspect__simulator_access_h
 #define __aspect__simulator_access_h
 
+#include <deal.II/base/conditional_ostream.h>
 #include <deal.II/distributed/tria.h>
-
 #include <deal.II/dofs/dof_handler.h>
-
 #include <deal.II/fe/fe.h>
 #include <deal.II/fe/mapping_q.h>
 

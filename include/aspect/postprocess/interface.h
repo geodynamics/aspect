@@ -25,20 +25,10 @@
 
 #include <aspect/global.h>
 #include <aspect/plugins.h>
-#include <aspect/material_model/interface.h>
-#include <aspect/geometry_model/interface.h>
-#include <aspect/boundary_temperature/interface.h>
-#include <aspect/adiabatic_conditions.h>
 
 #include <deal.II/base/std_cxx1x/shared_ptr.h>
 #include <deal.II/base/table_handler.h>
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/lac/trilinos_vector.h>
-#include <deal.II/lac/trilinos_block_vector.h>
-#include <deal.II/dofs/dof_handler.h>
-#include <deal.II/distributed/tria.h>
-#include <deal.II/fe/mapping.h>
-#include <deal.II/base/conditional_ostream.h>
 
 #include <boost/serialization/split_member.hpp>
 
