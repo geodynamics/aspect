@@ -539,9 +539,8 @@ namespace aspect
     // A complication is that we can't modify individual
     // elements of the solution vector since that one has ghost element.
     // rather, we first need to localize it and then distribute back
-//TODO: It isn't strictly necessary to copy system_rhs here. all we want
-//      is to get the partitioning
-    LinearAlgebra::BlockVector distributed_vector (system_rhs);
+    LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.system_partitioning, 
+						   mpi_communicator);
     distributed_vector = vector;
 
     if (parameters.use_locally_conservative_discretization == false)
