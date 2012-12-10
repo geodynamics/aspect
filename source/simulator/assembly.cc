@@ -702,9 +702,6 @@ namespace aspect
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
-        const double current_temperature = scratch.material_model_inputs.temperature[q];
-        const double current_pressure = scratch.material_model_inputs.pressure[q];
-
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
             scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
@@ -839,7 +836,6 @@ namespace aspect
   {
     const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
     const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
-    const bool use_bdf2_scheme       = (timestep_number > 1);
 
     scratch.finite_element_values.reinit (cell);
 
@@ -863,10 +859,6 @@ namespace aspect
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
-        const double current_temperature = scratch.material_model_inputs.temperature[q];
-        const double current_pressure    = scratch.material_model_inputs.pressure[q];
-        const Tensor<1,dim> current_u    = scratch.velocity_values[q];
-
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
             scratch.phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
@@ -1080,7 +1072,6 @@ namespace aspect
     const double current_T = material_model_inputs.temperature[q];
     const SymmetricTensor<2,dim> current_strain_rate = material_model_inputs.strain_rate[q];
     const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
-    const double current_p = material_model_inputs.pressure[q];
 
     const double alpha                = material_model_outputs.thermal_expansion_coefficients[q];
     const double density              = material_model_outputs.densities[q];
