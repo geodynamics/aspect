@@ -787,17 +787,6 @@ namespace aspect
   }
 
 
-// Contrary to step-32, we have found that just refining by the temperature
-// works well in 2d, but only leads to refinement in the boundary layer at the
-// core-mantle boundary in 3d. Consequently, we estimate the error based
-// on the temperature, velocity and other criteria, see the second ASPECT paper;
-// the vectors with the resulting error indicators are then normalized, and we
-// take the maximum or sum of the indicators to decide whether we want to refine or
-// not. In case of more complicated materials with jumps in the density
-// profile, we also need to refine where the density jumps. This ensures that
-// we also refine into plumes where maybe the temperature gradients aren't as
-// strong as in the boundary layer but where nevertheless the gradients in the
-// velocity are large.
   template <int dim>
   void Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
   {
