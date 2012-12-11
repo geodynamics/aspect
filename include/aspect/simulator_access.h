@@ -296,23 +296,10 @@ namespace aspect
       get_depth_average_sinking_velocity(std::vector<double> &values) const;
 
       /**
-       * Compute the seismic shear wave speed, Vs anomaly per element
-       */
-      void
-      get_Vs_anomaly(Vector<float> &values) const;
-
-      /**
-       * Compute the seismic pressure wave speed, Vp anomaly per element
-       */
-      void
-      get_Vp_anomaly(Vector<float> &values) const;
-
-      /**
        * Compute a depth average of the seismic shear wave speed: Vs
        */
       void
       get_depth_average_Vs(std::vector<double> &values) const;
-      /** @} */
 
       /**
        * Compute a depth average of the seismic pressure wave speed: Vp
@@ -366,17 +353,16 @@ namespace aspect
 
 
       /**
-       * Copy the values of the compositional fields at the quadrature point
+       * A convenience function that copies
+       * the values of the compositional fields at the quadrature point
        * q given as input parameter to the output vector
        * composition_values_at_q_point.
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
        */
+      static
       void
       get_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
                                          const unsigned int                      q,
-                                         std::vector<double>                    &composition_values_at_q_point) const;
+                                         std::vector<double>                    &composition_values_at_q_point);
 
       /** @} */
 

@@ -251,21 +251,6 @@ namespace aspect
     simulator->compute_depth_average_Vp(values);
   }
 
-
-  template <int dim>
-  void
-  SimulatorAccess<dim>::get_Vs_anomaly(Vector<float> &values) const
-  {
-    simulator->compute_Vs_anomaly(values);
-  }
-
-  template <int dim>
-  void
-  SimulatorAccess<dim>::get_Vp_anomaly(Vector<float> &values) const
-  {
-    simulator->compute_Vp_anomaly(values);
-  }
-
   template <int dim>
   const MaterialModel::Interface<dim> &
   SimulatorAccess<dim>::get_material_model () const
@@ -317,11 +302,10 @@ namespace aspect
   void
   SimulatorAccess<dim>::get_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
                                                            const unsigned int                      q,
-                                                           std::vector<double>                    &composition_values_at_q_point) const
+                                                           std::vector<double>                    &composition_values_at_q_point)
   {
-    simulator->extract_composition_values_at_q_point (composition_values,
-                                                      q,
-                                                      composition_values_at_q_point);
+    for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
+      composition_values_at_q_point[k] = composition_values[k][q];
   }
 
 }

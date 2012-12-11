@@ -734,15 +734,6 @@ namespace aspect
       void make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector);
 
       /**
-       * Computes a running average of a vector.
-       * http://en.wikipedia.org/wiki/Moving_average
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       */
-      void compute_running_average(std::vector<double> &values, const int npoints) const;
-
-      /**
        * Compute a depth average of the current temperature/composition. The function
        * fills a vector that contains average temperatures/compositions over slices of the
        * domain of same depth. The function resizes the output vector to match
@@ -938,18 +929,6 @@ namespace aspect
                                            const bool                                                   compute_strainrate,
                                            typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const;
 
-      /**
-       * Copy the values of the compositional fields at the quadrature point
-       * q given as input parameter to the output vector
-       * composition_values_at_q_point.
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       */
-      void
-      extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
-                                             const unsigned int                      q,
-                                             std::vector<double>                    &composition_values_at_q_point) const;
 
       /**
        * Return whether the Stokes matrix depends on the values of the

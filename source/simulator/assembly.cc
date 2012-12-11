@@ -803,7 +803,7 @@ namespace aspect
     // AMG preconditioners for the A and M blocks
     std::vector<std::vector<bool> > constant_modes;
     DoFTools::extract_constant_modes (dof_handler,
-				      introspection.component_masks.velocities,
+                                      introspection.component_masks.velocities,
                                       constant_modes);
 
     Mp_preconditioner.reset (new LinearAlgebra::PreconditionILU());
@@ -1425,7 +1425,7 @@ namespace aspect
   template void Simulator<dim>::copy_local_to_global_advection_system ( \
                                                                         const internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::assemble_advection_system (const TemperatureOrComposition     &temperature_or_composition); \
-
+   
 
 
   ASPECT_INSTANTIATE(INSTANTIATE)

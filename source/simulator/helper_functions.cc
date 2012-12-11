@@ -332,13 +332,16 @@ namespace aspect
   }
 
 
-  template <int dim>
-  void Simulator<dim>::extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
-                                                              const unsigned int                      q,
-                                                              std::vector<double>                    &composition_values_at_q_point) const
+  namespace
   {
-    for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
-      composition_values_at_q_point[k] = composition_values[k][q];
+    void
+    extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
+                                           const unsigned int                      q,
+                                           std::vector<double>                    &composition_values_at_q_point)
+    {
+      for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
+        composition_values_at_q_point[k] = composition_values[k][q];
+    }
   }
 
 
@@ -608,25 +611,6 @@ namespace aspect
     vector.block(1).add(correction, pressure_shape_function_integrals.block(1));
   }
 
-
-  template <int dim>
-  void Simulator<dim>::compute_running_average(std::vector<double> &values, const int ncells) const
-  {
-
-    std::vector<double> temp(values.size());
-
-    for (unsigned int idx=0; idx<values.size(); idx++)
-      {
-        double sum = 0;
-        for (int isum=-ncells; isum<=ncells; isum++)
-          {
-            sum += values[std::max(0,std::min((int) values.size()-1,(int) idx+isum))];
-          }
-        temp[idx] = sum/((double) (ncells*2+1));
-      }
-    values = temp;
-
-  }
 
 
 //TODO: unify the following functions
@@ -1022,133 +1006,6 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_Vs_anomaly(Vector<float> &values) const
-  {
-    const int npoints = 2; // npoint in running average half-width of window
-    std::vector<double> Vs_depth_average;
-
-    compute_depth_average_Vs(Vs_depth_average);
-    compute_running_average(Vs_depth_average, npoints);
-
-    const unsigned int num_slices = Vs_depth_average.size();
-    const double max_depth = geometry_model->maximal_depth();
-
-    // evaluate a single point per cell
-    const QMidpoint<dim> quadrature_formula;
-    const unsigned int n_q_points = quadrature_formula.size();
-
-    FEValues<dim> fe_values (mapping,
-                             finite_element,
-                             quadrature_formula,
-                             update_values   |
-                             update_quadrature_points );
-
-    std::vector<double> pressure_values(n_q_points);
-    std::vector<double> temperature_values(n_q_points);
-    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
-    std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
-
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
-
-    unsigned int cell_index = 0;
-    for (; cell!=endc; ++cell,++cell_index)
-      if (cell->is_locally_owned())
-        {
-          fe_values.reinit (cell);
-          fe_values[introspection.extractors.pressure].get_function_values (this->solution,
-                                                                            pressure_values);
-          fe_values[introspection.extractors.temperature].get_function_values (this->solution,
-                                                                               temperature_values);
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-            fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
-                                                                                            composition_values[c]);
-
-
-          extract_composition_values_at_q_point (composition_values,
-                                                 0,
-                                                 composition_values_at_q_point);
-
-          const double Vs = material_model->seismic_Vs(temperature_values[0],
-                                                       pressure_values[0],
-                                                       composition_values_at_q_point,
-                                                       fe_values.quadrature_point(0));
-          const double depth = geometry_model->depth(fe_values.quadrature_point(0));
-          const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
-          Assert(idx<num_slices, ExcInternalError());
-
-          // compute the deviation from the average in per cent
-          values(cell_index) = (Vs - Vs_depth_average[idx])/Vs_depth_average[idx]*1e2;
-        }
-  }
-
-
-
-  template <int dim>
-  void Simulator<dim>::compute_Vp_anomaly(Vector<float> &values) const
-  {
-
-    const int npoints = 2; // npoint in running average half-width of window
-    std::vector<double> Vp_depth_average;
-
-    compute_depth_average_Vp(Vp_depth_average);
-    compute_running_average(Vp_depth_average, npoints);
-
-    const unsigned int num_slices = Vp_depth_average.size();
-    const double max_depth = geometry_model->maximal_depth();
-
-    const QMidpoint<dim> quadrature_formula;
-    const unsigned int n_q_points = quadrature_formula.size();
-
-    FEValues<dim> fe_values (mapping,
-                             finite_element,
-                             quadrature_formula,
-                             update_values   |
-                             update_quadrature_points );
-
-    std::vector<double> pressure_values(n_q_points);
-    std::vector<double> temperature_values(n_q_points);
-    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
-    std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
-
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
-
-    // compute the integral quantities by quadrature
-    unsigned int cell_index = 0;
-    for (; cell!=endc; ++cell,++cell_index)
-      if (cell->is_locally_owned())
-        {
-          fe_values.reinit (cell);
-          fe_values[introspection.extractors.pressure].get_function_values (this->solution,
-                                                                            pressure_values);
-          fe_values[introspection.extractors.temperature].get_function_values (this->solution,
-                                                                               temperature_values);
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-            fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
-                                                                                            composition_values[c]);
-
-          extract_composition_values_at_q_point (composition_values,
-                                                 0,
-                                                 composition_values_at_q_point);
-
-          const double Vp = material_model->seismic_Vp(temperature_values[0],
-                                                       pressure_values[0],
-                                                       composition_values_at_q_point,
-                                                       fe_values.quadrature_point(0));
-          const double depth = geometry_model->depth(fe_values.quadrature_point(0));
-          const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
-          Assert(idx<num_slices, ExcInternalError());
-
-          // compute the deviation from the average in per cent
-          values(cell_index) = (Vp - Vp_depth_average[idx])/Vp_depth_average[idx]*1e2;
-        }
-  }
-
-
-  template <int dim>
   bool
   Simulator<dim>::stokes_matrix_depends_on_solution() const
   {
@@ -1169,9 +1026,6 @@ namespace aspect
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const TemperatureOrComposition &temperature_or_composition) const; \
-  template void Simulator<dim>::extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values, \
-                                                                       const unsigned int q, \
-                                                                       std::vector<double> &composition_values_at_q_point) const;  \
   template std::pair<double,bool> Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition, std::vector<double> &values) const; \
@@ -1180,8 +1034,6 @@ namespace aspect
   template void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_Vs(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const; \
-  template void Simulator<dim>::compute_Vs_anomaly(Vector<float> &values) const; \
-  template void Simulator<dim>::compute_Vp_anomaly(Vector<float> &values) const; \
   template void Simulator<dim>::output_program_stats(); \
   template void Simulator<dim>::output_statistics(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const;
