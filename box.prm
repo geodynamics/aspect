@@ -370,6 +370,5 @@ subsection Postprocess
     # step. Units: years if the 'Use years in output instead of seconds'
     # parameter is set; seconds otherwise.
     set Time between graphical output = 0   # default: 1e8
-    set List of output variables      = error indicator, Vs anomaly, Vp anomaly
   end
 end
