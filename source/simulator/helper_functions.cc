@@ -539,8 +539,8 @@ namespace aspect
     // A complication is that we can't modify individual
     // elements of the solution vector since that one has ghost element.
     // rather, we first need to localize it and then distribute back
-    LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.system_partitioning, 
-						   mpi_communicator);
+    LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.system_partitioning,
+                                                   mpi_communicator);
     distributed_vector = vector;
 
     if (parameters.use_locally_conservative_discretization == false)
@@ -1078,6 +1078,7 @@ namespace aspect
           const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
           Assert(idx<num_slices, ExcInternalError());
 
+          // compute the deviation from the average in per cent
           values(cell_index) = (Vs - Vs_depth_average[idx])/Vs_depth_average[idx]*1e2;
         }
   }
@@ -1140,6 +1141,8 @@ namespace aspect
           const double depth = geometry_model->depth(fe_values.quadrature_point(0));
           const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
           Assert(idx<num_slices, ExcInternalError());
+
+          // compute the deviation from the average in per cent
           values(cell_index) = (Vp - Vp_depth_average[idx])/Vp_depth_average[idx]*1e2;
         }
   }

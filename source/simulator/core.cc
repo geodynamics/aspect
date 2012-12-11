@@ -414,7 +414,7 @@ namespace aspect
 
     statistics.add_value("Number of Stokes degrees of freedom",
                          introspection.system_dofs_per_block[0] +
-			 introspection.system_dofs_per_block[1]);
+                         introspection.system_dofs_per_block[1]);
     statistics.add_value("Number of temperature degrees of freedom",
                          introspection.system_dofs_per_block[2]);
     if (parameters.n_compositional_fields > 0)
