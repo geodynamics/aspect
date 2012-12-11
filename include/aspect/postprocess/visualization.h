@@ -54,15 +54,47 @@ namespace aspect
        * Access to the data of the simulator is granted by the @p protected member functions
        * of the SimulatorAccessor class, i.e., classes implementing this interface will
        * in general want to derive from both this Interface class as well as from the
-       * SimulatorAccess class. Furthermore, in order to do what they are intended to,
-       * derived classes need to also derive from the deal.II DataPostprocessor or any of
-       * the classes like DataPostprocessorScalar or DataPostprocessorVector.
-       * A typical class derived from the current class would then have the following
-       * base classes:
-       * - aspect::Postprocess::VisualizationPostprocessors::Interface
-       * - aspect::SimulatorAccess
-       * - deal::DataPostprocessor or any of the other ones listed above
+       * SimulatorAccess class.
        *
+       * <h3> How visualization plugins work </h3>
+       *
+       * There are two ways in which visualization plugins can work to get data from
+       * a simulation into an output file:
+       * <ul>
+       *   <li> Classes derived from this class can also derive from the deal.II class
+       *   DataPostprocessor or any of
+       *   the classes like DataPostprocessorScalar or DataPostprocessorVector.
+       *   These classes can be thought of as filters: DataOut will call a function in
+       *   them for every cell and this function will transform the values or gradients
+       *   of the solution and other information such as the location of quadrature
+       *   points into the desired quantity to output. A typical case would be
+       *   if the quantity $g(x)$ you want to output can be written as a function
+       *   $g(x) = G(u(x),\nabla u(x), x, ...)$ in a pointwise sense where $u(x)$
+       *   is the value of the solution vector (i.e., the velocities, pressure,
+       *   temperature, etc) at an evaluation point. In the context
+       *   of this program an example would be to output the density of the medium as
+       *   a spatially variable function since this is a quantity that for realistic
+       *   media depends pointwise on the values of the solution.
+       *
+       *   Using this way of describing a visualization postprocessor will
+       *   yield a class  that would then have the following
+       *   base classes:
+       *   - aspect::Postprocess::VisualizationPostprocessors::Interface
+       *   - aspect::SimulatorAccess
+       *   - dealii::DataPostprocessor or any of the other ones listed above
+       *
+       *   <li> The second possibility is for a class to not derive from
+       *   dealii::DataPostprocessor but instead from the CellDataVectorCreator
+       *   class. In this case, a visualization postprocessor would generate
+       *   and return a vector that consists of one element per cell. The
+       *   intent of this option is to output quantities that are not pointwise
+       *   functions of the solution but instead can only be computed as
+       *   integrals or other functionals on a per-cell basis. A typical
+       *   case would be error estimators that do depend on the solution but
+       *   not in a pointwise sense; rather, they yield one value per cell of
+       *   the mesh. See the documentation of the CellDataVectorCreator class
+       *   for more information
+       * </ul>
        * @ingroup Postprocessing
        * @ingroup Visualization
        */
@@ -140,6 +172,46 @@ namespace aspect
            **/
           virtual
           void load (const std::map<std::string, std::string> &status_strings);
+      };
+
+
+
+      /**
+       * As explained in the documentation of the Interface class, the
+       * second kind of visualization plugin is one that wants to generate
+       * cellwise data. Classes derived from this class need to implement
+       * a function execute() that computes these cellwise values and
+       * return a pair of values where the first one indicates the name
+       * of a variable and the second one is a vector with one entry per
+       * cell. This class is the interface that such plugins have to
+       * implement.
+       *
+       * @ingroup Postprocessing
+       * @ingroup Visualization
+       */
+      template <int dim>
+      class CellDataVectorCreator : public Interface<dim>
+      {
+        public:
+          /**
+           * The function classes have to implement that want to output
+           * cellwise data.
+           * @return A pair of values with the following meaning:
+           *   - The first element provides the name by which this
+           *     data should be written to the output file.
+           *   - The second element is a pointer to a vector with
+           *     one element per active cell on the current processor.
+           *     Elements corresponding to active cells that are either
+           *     artificial or ghost cells (in deal.II language, see the
+           *     deal.II glossary) will be ignored but must nevertheless
+           *     exist in the returned vector. While implementations of this
+           *     function must create this vector, ownership is taken over
+           *     by the caller of this function and the caller will take
+           *     care of destroying the vector pointed to.
+           */
+          virtual
+          std::pair<std::string, Vector<float> *>
+          execute () const = 0;
       };
     }
 

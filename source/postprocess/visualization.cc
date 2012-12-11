@@ -109,17 +109,6 @@ namespace aspect
       if (this->get_time() < next_output_time)
         return std::pair<std::string,std::string>();
 
-//TODO: try to somehow get these variables into the viz plugins as well.
-      // the problem with these is that they are not derived from DataPostprocessor
-      // so we need to find a different way to make this work...
-      Vector<float> estimated_error_per_cell(this->get_triangulation().n_active_cells());
-      this->get_refinement_criteria(estimated_error_per_cell);
-
-//TODO: try to somehow get these variables into the viz plugins as well...
-      Vector<float> Vs_anomaly(this->get_triangulation().n_active_cells());
-      this->get_Vs_anomaly(Vs_anomaly);
-      Vector<float> Vp_anomaly(this->get_triangulation().n_active_cells());
-      this->get_Vp_anomaly(Vp_anomaly);
 
       // create a DataOut object on the heap; ownership of this
       // object will later be transferred to a different thread
@@ -150,17 +139,47 @@ namespace aspect
                                 interpretation);
 
       // then for each additional selected output variable
-      // add the computed quantity as well
+      // add the computed quantity as well. keep a list of
+      // pointers to data vectors created by cell data visualization
+      // postprocessors that will later be deleted
+      std::list<std_cxx1x::shared_ptr<Vector<float> > > cell_data_vectors;
       for (typename std::list<std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
            p = postprocessors.begin(); p!=postprocessors.end(); ++p)
         {
           try
             {
-              DataPostprocessor<dim> *viz_postprocessor
-                = dynamic_cast<DataPostprocessor<dim>*>(& **p);
-              Assert (viz_postprocessor != 0,
-                      ExcInternalError());
-              data_out.add_data_vector (this->get_solution(), *viz_postprocessor);
+              // there are two ways of writing visualization postprocessors:
+              // - deriving from DataPostprocessor
+              // - deriving from DataVectorCreator
+              // treat them in turn
+              if (const DataPostprocessor<dim> *viz_postprocessor
+                  = dynamic_cast<const DataPostprocessor<dim>*>(& **p))
+                {
+                  data_out.add_data_vector (this->get_solution(),
+                                            *viz_postprocessor);
+                }
+              else if (const VisualizationPostprocessors::CellDataVectorCreator<dim> *
+                       cell_data_creator
+                       = dynamic_cast<const VisualizationPostprocessors::CellDataVectorCreator<dim>*>
+                         (& **p))
+                {
+                  // get the data produced here
+                  const std::pair<std::string, Vector<float> *>
+                  cell_data = cell_data_creator->execute();
+                  Assert (cell_data.second->size() ==
+                          this->get_triangulation().n_active_cells(),
+                          ExcMessage ("Cell data visualization postprocessors must generate "
+                                      "vectors that have as many entries as there are active cells "
+                                      "on the current processor."));
+
+                  // store the pointer, then attach the vector to the DataOut object
+                  cell_data_vectors.push_back (std_cxx1x::shared_ptr<Vector<float> >
+                                               (cell_data.second));
+
+                  data_out.add_data_vector (*cell_data.second,
+                                            cell_data.first,
+                                            DataOut<dim>::type_cell_data);
+                }
             }
           // viz postprocessors that throw exceptions usually do not result in
           // anything good because they result in an unwinding of the stack
@@ -207,9 +226,7 @@ namespace aspect
 
         }
 
-      data_out.add_data_vector (estimated_error_per_cell, "error_indicator");
-      data_out.add_data_vector (Vs_anomaly, "Vs_anomaly");
-      data_out.add_data_vector (Vp_anomaly, "Vp_anomaly");
+      // now build the patches and see how we can output these
       data_out.build_patches ();
 
       std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);
@@ -525,11 +542,17 @@ namespace aspect
                                   .create_plugin (viz_names[name], prm);
 
               // make sure that the postprocessor is indeed of type
-              // dealii::DataPostprocessor
-              Assert (dynamic_cast<DataPostprocessor<dim>*>(viz_postprocessor)
-                      != 0,
+              // dealii::DataPostprocessor or of type
+              // VisualizationPostprocessors::CellDataVectorCreator
+              Assert ((dynamic_cast<DataPostprocessor<dim>*>(viz_postprocessor)
+                       != 0)
+                      ||
+                      (dynamic_cast<VisualizationPostprocessors::CellDataVectorCreator<dim>*>(viz_postprocessor)
+                       != 0)
+                      ,
                       ExcMessage ("Can't convert visualization postprocessor to type "
-                                  "dealii::DataPostprocessor!?"));
+                                  "dealii::DataPostprocessor or "
+                                  "VisualizationPostprocessors::CellDataVectorCreator!?"));
 
               postprocessors.push_back (std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> >
                                         (viz_postprocessor));
