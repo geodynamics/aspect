@@ -93,7 +93,7 @@ namespace aspect
        *   case would be error estimators that do depend on the solution but
        *   not in a pointwise sense; rather, they yield one value per cell of
        *   the mesh. See the documentation of the CellDataVectorCreator class
-       *   for more information
+       *   for more information.
        * </ul>
        * @ingroup Postprocessing
        * @ingroup Visualization
