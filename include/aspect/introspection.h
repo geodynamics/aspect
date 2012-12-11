@@ -123,6 +123,23 @@ namespace aspect
        */
       ComponentIndices component_indices;
 
+      /**
+       * A structure that enumerates the vector blocks of the finite
+       * element that correspond to each of the variables in this problem.
+       */
+      struct BlockIndices
+      {
+        unsigned int velocities;
+        unsigned int pressure;
+        unsigned int temperature;
+        std::vector<unsigned int> compositional_fields;
+      };
+      /**
+       * A variable that enumerates the vector blocks of the finite
+       * element that correspond to each of the variables in this problem.
+       */
+      BlockIndices block_indices;
+
 
       /**
        * A structure that contains component masks for each of the variables

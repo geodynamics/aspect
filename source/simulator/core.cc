@@ -268,7 +268,7 @@ namespace aspect
 
   /**
    * Destructor.
-   **/
+   */
   template <int dim>
   Simulator<dim>::~Simulator ()
   {
@@ -474,7 +474,8 @@ namespace aspect
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
                                                mpi_communicator);
 
-    Table<2,DoFTools::Coupling> coupling (dim+2+parameters.n_compositional_fields, dim+2+parameters.n_compositional_fields);
+    Table<2,DoFTools::Coupling> coupling (introspection.n_components,
+                                          introspection.n_components);
 
     // determine which blocks should be fillable in the matrix.
     // note:
@@ -483,14 +484,24 @@ namespace aspect
     //   around
     // - temperature only couples with itself when using the impes
     //   scheme
-    for (unsigned int c=0; c<dim; ++c)
+    // - compositional fields only couple with themselves
+    {
+      const typename Introspection<dim>::ComponentIndices &x
+      = introspection.component_indices;
+
+      for (unsigned int c=0; c<dim; ++c)
+        for (unsigned int d=0; d<dim; ++d)
+          coupling[x.velocities[c]][x.velocities[d]] = DoFTools::always;
       for (unsigned int d=0; d<dim; ++d)
-        coupling[c][d] = DoFTools::always;
-    for (unsigned int c=0; c<dim; ++c)
-      coupling[c][dim] = coupling[dim][c] = DoFTools::always;
-    coupling[dim+1][dim+1] = DoFTools::always;
-    for (unsigned int c=dim+2; c<dim+2+parameters.n_compositional_fields; ++c)
-      coupling[c][c] = DoFTools::always;
+        {
+          coupling[x.velocities[d]][x.pressure] = DoFTools::always;
+          coupling[x.pressure][x.velocities[d]] = DoFTools::always;
+        }
+      coupling[x.temperature][x.temperature] = DoFTools::always;
+      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+        coupling[x.compositional_fields[c]][x.compositional_fields[c]]
+          = DoFTools::always;
+    }
 
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
@@ -518,9 +529,10 @@ namespace aspect
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
                                                mpi_communicator);
 
-    Table<2,DoFTools::Coupling> coupling (dim+2+parameters.n_compositional_fields, dim+2+parameters.n_compositional_fields);
-    for (unsigned int c=0; c<dim+2+parameters.n_compositional_fields; ++c)
-      for (unsigned int d=0; d<dim+2+parameters.n_compositional_fields; ++d)
+    Table<2,DoFTools::Coupling> coupling (introspection.n_components,
+                                          introspection.n_components);
+    for (unsigned int c=0; c<introspection.n_components; ++c)
+      for (unsigned int d=0; d<introspection.n_components; ++d)
         if (c == d)
           coupling[c][d] = DoFTools::always;
         else
@@ -550,7 +562,8 @@ namespace aspect
     // is because the numbering depends on the order the
     // cells are created.
     DoFRenumbering::hierarchical (dof_handler);
-    DoFRenumbering::component_wise (dof_handler, introspection.components_to_blocks);
+    DoFRenumbering::component_wise (dof_handler,
+                                    introspection.components_to_blocks);
 
     // set up the introspection object that stores all sorts of
     // information about components of the finite element, component
@@ -616,7 +629,8 @@ namespace aspect
 
       // do the same for no-normal-flux boundaries
       VectorTools::compute_no_normal_flux_constraints (dof_handler,
-                                                       /* first_vector_component= */ 0,
+                                                       /* first_vector_component= */
+                                                       introspection.component_indices.velocities[0],
                                                        parameters.tangential_velocity_boundary_indicators,
                                                        constraints,
                                                        mapping);
@@ -703,7 +717,8 @@ namespace aspect
                          n_T = introspection.system_dofs_per_block[2];
       std::vector<unsigned int> n_C (parameters.n_compositional_fields+1);
       for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-        n_C[c] = introspection.system_dofs_per_block[c+3];
+        n_C[c] = introspection.system_dofs_per_block
+                 [introspection.block_indices.compositional_fields[c]];
 
 
       IndexSet system_index_set = dof_handler.locally_owned_dofs();
@@ -875,7 +890,8 @@ namespace aspect
                                          T_preconditioner);
           solve_advection(TemperatureOrComposition::temperature());
 
-          current_linearization_point.block(2) = solution.block(2);
+          current_linearization_point.block(introspection.block_indices.pressure)
+            = solution.block(introspection.block_indices.pressure);
 
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
@@ -883,7 +899,8 @@ namespace aspect
               build_advection_preconditioner(TemperatureOrComposition::composition(c),
                                              C_preconditioner);
               solve_advection(TemperatureOrComposition::composition(c)); // this is correct, 0 would be temperature
-              current_linearization_point.block(3+c) = solution.block(3+c);
+              current_linearization_point.block(introspection.block_indices.compositional_fields[c])
+                = solution.block(introspection.block_indices.compositional_fields[c]);
             }
 
 
@@ -920,7 +937,8 @@ namespace aspect
 
               const double temperature_residual = solve_advection(TemperatureOrComposition::temperature());
 
-              current_linearization_point.block(2) = solution.block(2);
+              current_linearization_point.block(introspection.block_indices.pressure)
+                = solution.block(introspection.block_indices.pressure);
               rebuild_stokes_matrix = true;
               std::vector<double> composition_residual (parameters.n_compositional_fields,0);
 
@@ -931,7 +949,8 @@ namespace aspect
                                                  C_preconditioner);
                   composition_residual[c]
                     = solve_advection(TemperatureOrComposition::composition(c));
-                  current_linearization_point.block(3+c) = solution.block(3+c);
+                  current_linearization_point.block(introspection.block_indices.compositional_fields[c])
+                    = solution.block(introspection.block_indices.compositional_fields[c]);
                 }
 
               // the Stokes matrix depends on the viscosity. if the viscosity
