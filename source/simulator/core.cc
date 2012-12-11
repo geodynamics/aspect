@@ -487,7 +487,7 @@ namespace aspect
     // - compositional fields only couple with themselves
     {
       const typename Introspection<dim>::ComponentIndices &x
-      = introspection.component_indices;
+        = introspection.component_indices;
 
       for (unsigned int c=0; c<dim; ++c)
         for (unsigned int d=0; d<dim; ++d)

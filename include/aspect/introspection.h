@@ -32,8 +32,6 @@ namespace aspect
 {
   using namespace dealii;
 
-//TODO: make a whole bunch of fields const, or even static const
-
   /**
    * The introspection class provides information about the simulation
    * as a whole. In particular, it provides symbolic names for things
@@ -97,7 +95,7 @@ namespace aspect
         const FEValuesExtractors::Vector              velocities;
         const FEValuesExtractors::Scalar              pressure;
         const FEValuesExtractors::Scalar              temperature;
-        std::vector<FEValuesExtractors::Scalar> compositional_fields;
+        const std::vector<FEValuesExtractors::Scalar> compositional_fields;
       };
       /**
        * A variable that contains extractors for every block
@@ -112,10 +110,12 @@ namespace aspect
        */
       struct ComponentIndices
       {
-        unsigned int velocities[dim];
-        unsigned int pressure;
-        unsigned int temperature;
-        std::vector<unsigned int> compositional_fields;
+        ComponentIndices (const unsigned int n_compositional_fields);
+
+        static const unsigned int       velocities[dim];
+        static const unsigned int       pressure    = dim;
+        static const unsigned int       temperature = dim+1;
+        const std::vector<unsigned int> compositional_fields;
       };
       /**
        * A variable that enumerates the vector components of the finite
@@ -129,10 +129,12 @@ namespace aspect
        */
       struct BlockIndices
       {
-        unsigned int velocities;
-        unsigned int pressure;
-        unsigned int temperature;
-        std::vector<unsigned int> compositional_fields;
+        BlockIndices (const unsigned int n_compositional_fields);
+
+        static const unsigned int       velocities  = 0;
+        static const unsigned int       pressure    = 1;
+        static const unsigned int       temperature = 2;
+        const std::vector<unsigned int> compositional_fields;
       };
       /**
        * A variable that enumerates the vector blocks of the finite
@@ -164,7 +166,7 @@ namespace aspect
        * A variable that describes for each vector component which vector
        * block it corresponds to.
        */
-      std::vector<unsigned int> components_to_blocks;
+      const std::vector<unsigned int> components_to_blocks;
 
       /**
        * @}
