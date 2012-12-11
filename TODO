@@ -98,9 +98,10 @@ For later (from the Berkeley discussion, 9/26/2012)
 
 
 
-unify index field into a structure that selects between temperature and compositions
-make output of error estimator a plugin
 tests for the various refinement criteria
-document introspection (in .h and manual.tex)
 fix regression in cookbooks/composition-active in r1370
+separate out error estimator and vs, vp from default viz;
+  document in the manual (take over stuff from the documentation
+  in the class)
+  
   

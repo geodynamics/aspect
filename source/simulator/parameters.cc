@@ -414,12 +414,12 @@ namespace aspect
                          "velocity, pressure and temperature.");
       prm.declare_entry ("List of normalized fields", "",
                          Patterns::List (Patterns::Integer(0)),
-                         "A list of integers smaller than or equal to the number of"
-                         "compositional fields. All compositional fields in this"
-                         "list will be normalized before the first timestep."
-                         "The normalization is implemented in the following way:"
-                         "First, the sum of the fields to be normalized is calculated"
-                         "at every point and the global maximum is determined."
+                         "A list of integers smaller than or equal to the number of "
+                         "compositional fields. All compositional fields in this "
+                         "list will be normalized before the first timestep. "
+                         "The normalization is implemented in the following way: "
+                         "First, the sum of the fields to be normalized is calculated "
+                         "at every point and the global maximum is determined. "
                          "Second, the compositional fields to be normalized are "
                          "divided by this maximum.");
     }
