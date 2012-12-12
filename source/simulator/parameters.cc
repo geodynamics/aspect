@@ -627,6 +627,7 @@ namespace aspect
     Parameters::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);
+    TerminationCriteria::Manager<dim>::declare_parameters (prm);
     MaterialModel::declare_parameters<dim> (prm);
     GeometryModel::declare_parameters <dim>(prm);
     GravityModel::declare_parameters<dim> (prm);

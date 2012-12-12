@@ -205,18 +205,18 @@ namespace aspect
       sim->initialize (*this);
 
     adiabatic_conditions.reset(new AdiabaticConditions<dim> (*geometry_model,
-                         *gravity_model,
-                         *material_model,
-                         *compositional_initial_conditions,
-                         parameters.surface_pressure,
-                         parameters.adiabatic_surface_temperature,
-                         parameters.n_compositional_fields));
+                                                             *gravity_model,
+                                                             *material_model,
+                                                             *compositional_initial_conditions,
+                                                             parameters.surface_pressure,
+                                                             parameters.adiabatic_surface_temperature,
+                                                             parameters.n_compositional_fields));
 
     initial_conditions.reset (InitialConditions::create_initial_conditions (prm,
-                                                                      *geometry_model,
-                                                                      *boundary_temperature,
-                                                                      *adiabatic_conditions));
-    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_conditions))
+                                                                            *geometry_model,
+                                                                            *boundary_temperature,
+                                                                            *adiabatic_conditions));
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_conditions))
       sim->initialize (*this);
 
     postprocess_manager.parse_parameters (prm);
@@ -224,6 +224,9 @@ namespace aspect
 
     mesh_refinement_manager.parse_parameters (prm);
     mesh_refinement_manager.initialize (*this);
+
+    termination_manager.parse_parameters (prm);
+    termination_manager.initialize (*this);
 
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
@@ -1057,6 +1060,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::run ()
   {
+    bool terminate_simulation = false, perform_final_checkpoint;
     last_checkpoint_time = std::time(NULL);
     unsigned int max_refinement_level = parameters.initial_global_refinement +
                                         parameters.initial_adaptive_refinement;
@@ -1189,6 +1193,10 @@ namespace aspect
           old_solution          = solution;
         }
 
+        // check whether to continue the simulation
+        termination_manager.execute(terminate_simulation, perform_final_checkpoint);
+        terminate_simulation |= (time >= parameters.end_time);
+
         // periodically generate snapshots so that we can resume here
         // if the program aborts or is terminated
         bool do_checkpoint = false;
@@ -1208,8 +1216,13 @@ namespace aspect
             (parameters.checkpoint_steps > 0) &&
             (timestep_number % parameters.checkpoint_steps == 0))
           do_checkpoint = true;
-        if (do_checkpoint)
+
+        // Do a checkpoint either if indicated by checkpoint parameters, or if this
+        // is the end of simulation and the termination criteria say to checkpoint
+        if (do_checkpoint || (terminate_simulation && perform_final_checkpoint))
           {
+            if (perform_final_checkpoint) pcout << "*** Performing final checkpoint." << std::endl;
+
             create_snapshot();
             // matrices will be regenerated after a resume, so do that here too
             // to be consistent. otherwise we would get different results
@@ -1220,7 +1233,7 @@ namespace aspect
             last_checkpoint_time = std::time(NULL);
           }
       }
-    while (time < parameters.end_time);
+    while (!terminate_simulation);
   }
 }
 

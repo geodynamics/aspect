@@ -49,6 +49,7 @@
 #include <aspect/compositional_initial_conditions/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/mesh_refinement/interface.h>
+#include <aspect/termination_criteria/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/adiabatic_conditions.h>
 
@@ -1036,6 +1037,15 @@ namespace aspect
        * @{
        */
       time_t                                                    last_checkpoint_time;
+      /**
+       * @}
+       */
+
+      /**
+       * @name Variables related to simulation termination
+       * @{
+       */
+      TerminationCriteria::Manager<dim>                         termination_manager;
       /**
        * @}
        */

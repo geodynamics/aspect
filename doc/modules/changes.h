@@ -9,6 +9,14 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: a module for specifying termination criteria has been
+added. The first termination criteria is detecting steady
+state RMS velocity. This scheme also allows checkpointing
+the simulation right before termination.
+<br>
+(Eric Heien, 2012/12/11)
+
+<li>
 New: The way we do mesh refinement has been completely rewritten.
 This is now handled via plugins that provide different
 refinement strategies and that can be combined if
