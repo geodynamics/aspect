@@ -503,13 +503,6 @@ namespace aspect
       double solve_stokes ();
 
       /**
-       * Handles assembly and solving of the temperature
-       * and Stokes system, handling the nonlinear system
-       * in different ways.
-       */
-      void solve_system ();
-
-      /**
        * This function is called at the end of every time step. It
        * runs all the postprocessors that have been listed in the input
        * parameter file (see the manual) in turn. In particular, this
