@@ -56,7 +56,7 @@ namespace aspect
      * of the object and restore it (for checkpoint/restart capabilities).
      *
      * Access to the data of the simulator is granted by the @p protected member functions
-     * of the SimulatorAccessor class, i.e., classes implementing this interface will
+     * of the SimulatorAccess class, i.e., classes implementing this interface will
      * in general want to derive from both this Interface class as well as from the
      * SimulatorAccess class.
      *
