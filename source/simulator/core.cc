@@ -1110,11 +1110,10 @@ namespace aspect
 
         // update the time step size
         // for now the bool (convection/conduction dominated)
-        // is unused, will be added to statistics later
-        std::pair<double, bool>   time_step_result;
+        // returned by compute_time_step is unused, will be
+        // added to statistics later
         old_time_step = time_step;
-        time_step_result = compute_time_step();
-        time_step = time_step_result.first;
+        time_step = compute_time_step().first;
 
         if (parameters.convert_to_years == true)
           statistics.add_value("Time step size (years)", time_step / year_in_seconds);
