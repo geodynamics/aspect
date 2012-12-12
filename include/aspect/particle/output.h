@@ -38,25 +38,40 @@ namespace aspect
     class Output
     {
       protected:
-        // Rank and world size of MPI communicator
-        unsigned int    self_rank, world_size;
-        // Internal index of file output number, must be incremented by subclasses when they create a new file
-        unsigned int    file_index;
+        // MPI communicator to be used for output synchronization
+        MPI_Comm        _communicator;
 
-        std::string     output_dir;
+        // Internal index of file output number, must be incremented by subclasses when they create a new file
+        unsigned int    _file_index;
+
+        // Path to directory in which to put particle output files
+        std::string     _output_dir;
 
       public:
         Output(void)
         {
-          self_rank = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
-          world_size = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
-          file_index = 0;
+          _file_index = 0;
         };
         virtual ~Output(void) {};
 
+        unsigned int self_rank(void)
+        {
+          return Utilities::MPI::this_mpi_process(_communicator);
+        };
+
+        unsigned int world_size(void)
+        {
+          return Utilities::MPI::n_mpi_processes(_communicator);
+        };
+
+        void set_mpi_comm(MPI_Comm new_comm_world)
+        {
+          _communicator = new_comm_world;
+        };
+
         void set_output_directory(std::string new_out_dir)
         {
-          output_dir = new_out_dir;
+          _output_dir = new_out_dir;
         };
         virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles, const double &current_time) = 0;
     };
@@ -84,11 +99,11 @@ namespace aspect
           std::vector<MPIDataInfo>::iterator      dit;
           char                                    *particle_data, *p;
 
-          output_file_prefix = "particle-" + Utilities::int_to_string (Output<dim, T>::file_index, 5);
-          output_path_prefix = Output<dim, T>::output_dir + output_file_prefix;
-          full_filename = output_path_prefix + "." + Utilities::int_to_string(Output<dim, T>::self_rank, 4) + ".txt";
+          output_file_prefix = "particle-" + Utilities::int_to_string (Output<dim, T>::_file_index, 5);
+          output_path_prefix = Output<dim, T>::_output_dir + output_file_prefix;
+          full_filename = output_path_prefix + "." + Utilities::int_to_string(Output<dim, T>::self_rank(), 4) + ".txt";
           std::ofstream output (full_filename.c_str());
-          if (!output) std::cout << "ERROR: proc " << Output<dim, T>::self_rank << " could not create " << full_filename << std::endl;
+          if (!output) std::cout << "ERROR: proc " << Output<dim, T>::self_rank() << " could not create " << full_filename << std::endl;
 
           // Get the data types
           T::add_mpi_types(data_info);
@@ -130,7 +145,7 @@ namespace aspect
 
           output.close();
 
-          Output<dim, T>::file_index++;
+          Output<dim, T>::_file_index++;
 
           return output_path_prefix;
         };
@@ -161,17 +176,17 @@ namespace aspect
           unsigned int                            data_offset;
           char                                    *particle_data, *p;
 
-          output_file_prefix = "particle-" + Utilities::int_to_string (Output<dim, T>::file_index, 5);
-          output_path_prefix = Output<dim, T>::output_dir + output_file_prefix;
+          output_file_prefix = "particle-" + Utilities::int_to_string (Output<dim, T>::_file_index, 5);
+          output_path_prefix = Output<dim, T>::_output_dir + output_file_prefix;
 
           const std::string filename = (output_file_prefix +
                                         "." +
-                                        Utilities::int_to_string(Output<dim, T>::self_rank, 4) +
+                                        Utilities::int_to_string(Output<dim, T>::self_rank(), 4) +
                                         ".vtu");
-          const std::string full_filename = (Output<dim, T>::output_dir + filename);
+          const std::string full_filename = (Output<dim, T>::_output_dir + filename);
 
           std::ofstream output (full_filename.c_str());
-          if (!output) std::cout << "ERROR: proc " << Output<dim, T>::self_rank << " could not create " << filename << std::endl;
+          if (!output) std::cout << "ERROR: proc " << Output<dim, T>::self_rank() << " could not create " << filename << std::endl;
 
           num_particles = particles.size();
 
@@ -251,7 +266,7 @@ namespace aspect
           output.close();
 
           // Write the parallel pvtu and pvd files on the root process
-          if (Output<dim, T>::self_rank == 0)
+          if (Output<dim, T>::self_rank() == 0)
             {
               const std::string pvtu_filename = (output_path_prefix + ".pvtu");
 
@@ -271,7 +286,7 @@ namespace aspect
                   pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << dit->_name << "\" NumberOfComponents=\"" << (dit->_num_elems == 2 ? 3 : dit->_num_elems) << "\" format=\"ascii\"/>\n";
                 }
               pvtu_output << "    </PPointData>\n";
-              for (i=0; i<Output<dim, T>::world_size; ++i)
+              for (i=0; i<Output<dim, T>::world_size(); ++i)
                 {
                   pvtu_output << "    <Piece Source=\"" << output_file_prefix << "." << Utilities::int_to_string(i, 4) << ".vtu\"/>\n";
                 }
@@ -280,12 +295,12 @@ namespace aspect
               pvtu_output.close();
 
               times_and_pvtu_names.push_back(std::pair<double,std::string>(current_time, output_file_prefix+".pvtu"));
-              const std::string pvd_master_filename = (Output<dim, T>::output_dir + "particle.pvd");
+              const std::string pvd_master_filename = (Output<dim, T>::_output_dir + "particle.pvd");
               std::ofstream pvd_master (pvd_master_filename.c_str());
               data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
               pvd_master.close();
             }
-          Output<dim, T>::file_index++;
+          Output<dim, T>::_file_index++;
 
           return output_path_prefix;
         };
@@ -304,8 +319,8 @@ namespace aspect
           unsigned int            d, i;
           std::string             output_file_prefix, output_path_prefix, full_filename;
 
-          output_file_prefix = "particle-" + Utilities::int_to_string (Output<dim, T>::file_index, 5);
-          output_path_prefix = Output<dim, T>::output_dir + output_file_prefix;
+          output_file_prefix = "particle-" + Utilities::int_to_string (Output<dim, T>::_file_index, 5);
+          output_path_prefix = Output<dim, T>::_output_dir + output_file_prefix;
 #ifdef DEAL_II_HAVE_HDF5
           // TODO: error checking for H5 calls
           hid_t   h5_file_id;
@@ -325,7 +340,7 @@ namespace aspect
           // Create parallel file access
           plist_id = H5Pcreate(H5P_FILE_ACCESS);
 #ifdef H5_HAVE_PARALLEL
-          H5Pset_fapl_mpio(plist_id, MPI_COMM_WORLD, MPI_INFO_NULL);
+          H5Pset_fapl_mpio(plist_id, Output<dim, T>::_communicator, MPI_INFO_NULL);
 #endif
 
           // Create the file
@@ -334,7 +349,7 @@ namespace aspect
           // Create the file dataspace descriptions
           local_particle_count = particles.size();
           // TODO: error checking on MPI call
-          MPI_Allreduce(&local_particle_count, &global_particle_count, 1, MPI_UNSIGNED, MPI_SUM, MPI_COMM_WORLD);
+          MPI_Allreduce(&local_particle_count, &global_particle_count, 1, MPI_UNSIGNED, MPI_SUM, Output<dim, T>::_communicator);
           dims[0] = global_particle_count;
           dims[1] = 3;
           one_dim_ds_id = H5Screate_simple(1, dims, NULL);
@@ -368,7 +383,7 @@ namespace aspect
 
           // Count the number of particles on this process and get the offset among all processes
           mpi_count = particles.size();
-          MPI_Scan(&mpi_count, &mpi_offset, 1, MPI_UNSIGNED, MPI_SUM, MPI_COMM_WORLD);
+          MPI_Scan(&mpi_count, &mpi_offset, 1, MPI_UNSIGNED, MPI_SUM, Output<dim, T>::_communicator);
           count[0] = mpi_count;
           count[1] = 3;
           offset[0] = mpi_offset-mpi_count;
@@ -434,22 +449,22 @@ namespace aspect
           status = H5Fclose(h5_file_id);
 
           // Record and output XDMF info on root process
-          if (Output<dim, T>::self_rank == 0)
+          if (Output<dim, T>::self_rank() == 0)
             {
               std::string local_h5_filename = output_file_prefix+".h5";
               XDMFEntry   entry(local_h5_filename, current_time, global_particle_count, 0, 3);
               DataOut<dim> data_out;
-              const std::string xdmf_filename = (Output<dim, T>::output_dir + "particle.xdmf");
+              const std::string xdmf_filename = (Output<dim, T>::_output_dir + "particle.xdmf");
 
               entry.add_attribute("velocity", 3);
               entry.add_attribute("id", 1);
               xdmf_entries.push_back(entry);
 
-              data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(), MPI_COMM_WORLD);
+              data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(), Output<dim, T>::_communicator);
             }
 #endif
 
-          Output<dim, T>::file_index++;
+          Output<dim, T>::_file_index++;
 
           return output_path_prefix;
         };
