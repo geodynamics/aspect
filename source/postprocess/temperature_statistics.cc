@@ -69,7 +69,9 @@ namespace aspect
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                                                                                          temperature_values);
             for (unsigned int q=0; q<n_q_points; ++q)
+            {
               local_temperature_integral += temperature_values[q]*fe_values.JxW(q);
+            }
           }
 
       // compute min/max by simply
@@ -120,7 +122,7 @@ namespace aspect
                             global_max_temperature);
       statistics.add_value ("Average nondimensional temperature (K)",
                             global_temperature_integral / this->get_volume() /
-                            this->get_boundary_temperature().maximal_temperature());
+                            this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators()));
 
       // also make sure that the other columns filled by the this object
       // all show up with sufficient accuracy and in scientific notation

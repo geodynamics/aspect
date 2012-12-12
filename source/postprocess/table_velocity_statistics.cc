@@ -161,7 +161,8 @@ namespace aspect
                << " m/s";
       if (this->get_time() == 0e0)
         {
-          double dT = this->get_boundary_temperature().maximal_temperature() - this->get_boundary_temperature().minimal_temperature();
+          double dT = this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
+        		    - this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators());
           // we do not compute the compositions but give the functions below the value 0.0 instead
           std::vector<double> composition_values(this->n_compositional_fields(),0.0);
 

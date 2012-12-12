@@ -99,12 +99,10 @@ namespace aspect
     material_model (MaterialModel::create_material_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     boundary_temperature (BoundaryTemperature::create_boundary_temperature<dim>(prm)),
-    initial_conditions (InitialConditions::create_initial_conditions (prm,
-                                                                      *geometry_model,
-                                                                      *boundary_temperature,
-                                                                      *adiabatic_conditions)),
     compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions (prm,
                                       *geometry_model)),
+    adiabatic_conditions(),
+    initial_conditions (),
 
     time (std::numeric_limits<double>::quiet_NaN()),
     time_step (0),
@@ -205,7 +203,20 @@ namespace aspect
       sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*boundary_temperature))
       sim->initialize (*this);
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_conditions))
+
+    adiabatic_conditions.reset(new AdiabaticConditions<dim> (*geometry_model,
+                         *gravity_model,
+                         *material_model,
+                         *compositional_initial_conditions,
+                         parameters.surface_pressure,
+                         parameters.adiabatic_surface_temperature,
+                         parameters.n_compositional_fields));
+
+    initial_conditions.reset (InitialConditions::create_initial_conditions (prm,
+                                                                      *geometry_model,
+                                                                      *boundary_temperature,
+                                                                      *adiabatic_conditions));
+    if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_conditions))
       sim->initialize (*this);
 
     postprocess_manager.parse_parameters (prm);
@@ -217,13 +228,6 @@ namespace aspect
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
 
-    adiabatic_conditions.reset (new AdiabaticConditions<dim>(*geometry_model,
-                                                             *gravity_model,
-                                                             *material_model,
-                                                             *compositional_initial_conditions,
-                                                             parameters.surface_pressure,
-                                                             parameters.adiabatic_surface_temperature,
-                                                             parameters.n_compositional_fields));
     for (std::map<types::boundary_id_t,std::string>::const_iterator
          p = parameters.prescribed_velocity_boundary_indicators.begin();
          p != parameters.prescribed_velocity_boundary_indicators.end();

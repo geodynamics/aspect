@@ -56,9 +56,20 @@ namespace aspect
     template <int dim>
     double
     Box<dim>::
-    minimal_temperature () const
+    minimal_temperature (const std::set<types::boundary_id_t>& fixed_boundary_ids) const
     {
-      return *std::min_element(temperature_, temperature_+2*dim);
+      if (fixed_boundary_ids.empty())
+    	return *std::min_element(temperature_, temperature_+2*dim);
+      else
+      {
+        double min = maximal_temperature(fixed_boundary_ids);
+        for (typename std::set<types::boundary_id_t>::const_iterator
+             p = fixed_boundary_ids.begin();
+             p != fixed_boundary_ids.end(); ++p)
+          if (p != fixed_boundary_ids.end())
+            min = std::min(min,temperature_[*p]);
+        return min;
+      }
     }
 
 
@@ -66,9 +77,20 @@ namespace aspect
     template <int dim>
     double
     Box<dim>::
-    maximal_temperature () const
+    maximal_temperature (const std::set<types::boundary_id_t>& fixed_boundary_ids) const
     {
-      return *std::max_element(temperature_, temperature_+2*dim);
+      if (fixed_boundary_ids.empty())
+    	return *std::max_element(temperature_, temperature_+2*dim);
+      else
+      {
+    	double max = std::numeric_limits<double>::min();
+        for (typename std::set<types::boundary_id_t>::const_iterator
+             p = fixed_boundary_ids.begin();
+             p != fixed_boundary_ids.end(); ++p)
+          if (p != fixed_boundary_ids.end())
+            max = std::max(max,temperature_[*p]);
+        return max;
+      }
     }
 
     template <int dim>

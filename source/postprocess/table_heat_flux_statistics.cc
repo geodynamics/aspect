@@ -174,7 +174,8 @@ namespace aspect
           const double R1 = (*geometry).outer_radius();
           const double h = R1-R0;
 
-          const double dT = this->get_boundary_temperature().maximal_temperature() - this->get_boundary_temperature().minimal_temperature();
+          const double dT = this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
+        		          - this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators());
           const double conductive_heatflux = dT/h;
           const double nusselt_outer = global_boundary_fluxes[0]/conductive_heatflux;
           const double boundary_curveLength_outer = R0*phi;
