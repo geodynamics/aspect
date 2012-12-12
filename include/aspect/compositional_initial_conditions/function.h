@@ -35,10 +35,11 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements velocity boundary conditions based on a
+     * A class that implements initial conditions for the
+     * compositional fields based on a
      * functional description provided in the input file.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup CompositionalInitialConditionsModels
      */
     template <int dim>
     class Function : public Interface<dim>,
@@ -77,7 +78,7 @@ namespace aspect
 
       private:
         /**
-         * A function object representing the components of the velocity.
+         * A function object representing the compositional fields.
          */
         std::auto_ptr<Functions::ParsedFunction<dim> > function;
     };

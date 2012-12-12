@@ -34,10 +34,10 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements velocity boundary conditions based on a
+     * A class that implements temperature initial conditions based on a
      * functional description provided in the input file.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup InitialConditionsModels
      */
     template <int dim>
     class Function : public Interface<dim>
@@ -76,7 +76,7 @@ namespace aspect
 
       private:
         /**
-         * A function object representing the components of the velocity.
+         * A function object representing the temperature.
          */
         Functions::ParsedFunction<dim> function;
     };

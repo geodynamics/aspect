@@ -452,7 +452,7 @@ namespace aspect
 
     //TODO: do this in a more efficient way (TH)? we really only need
     // to make sure that the time dependent velocity boundary conditions
-    // end up in the right hand side in the righth way; we currently do
+    // end up in the right hand side in the right way; we currently do
     // that by re-assembling the entire system
     if (!velocity_boundary_conditions.empty())
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
