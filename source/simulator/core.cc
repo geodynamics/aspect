@@ -890,8 +890,8 @@ namespace aspect
                                          T_preconditioner);
           solve_advection(TemperatureOrComposition::temperature());
 
-          current_linearization_point.block(introspection.block_indices.pressure)
-            = solution.block(introspection.block_indices.pressure);
+          current_linearization_point.block(introspection.block_indices.temperature)
+            = solution.block(introspection.block_indices.temperature);
 
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
