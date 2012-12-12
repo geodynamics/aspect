@@ -82,6 +82,7 @@ namespace aspect
           _world.set_dof_handler(&(this->get_dof_handler()));
           _world.set_integrator(_integrator);
           _world.set_mpi_comm(this->get_mpi_communicator());
+          _output->set_mpi_comm(this->get_mpi_communicator());
 
           // And initialize the world
           _world.init();
