@@ -527,14 +527,9 @@ namespace aspect
       double temp[2];
       Utilities::MPI::sum (my_temp, mpi_communicator, temp);
       if (parameters.pressure_normalization == "surface")
-        {
-
-          adjust = -temp[0]/temp[1] + parameters.surface_pressure;
-        }
+	adjust = -temp[0]/temp[1] + parameters.surface_pressure;
       else if (parameters.pressure_normalization == "volume")
-        {
-          adjust = -temp[0];
-        }
+	adjust = -temp[0];
       else
         AssertThrow(false, ExcNotImplemented());
     }
