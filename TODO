@@ -100,8 +100,7 @@ For later (from the Berkeley discussion, 9/26/2012)
 
 tests for the various refinement criteria
 fix regression in cookbooks/composition-active in r1370
-separate out error estimator and vs, vp from default viz;
-  document in the manual (take over stuff from the documentation
-  in the class)
-  
-  
+write a testcase for friction heating (Poiseulle flow) and
+  adiabatic heating (constant downward velocity)
+write a postprocessor that shows temperature minus depth averaged
+  temperature. maybe similar for density (= buoyancy)
