@@ -75,8 +75,8 @@ namespace aspect
 
       // If the length of the simulation time covered in the list is shorter than the
       // specified parameter, we must continue the simulation
-      // TODO: handle years vs. seconds
-      if (_time_rmsvel.back().first - _time_rmsvel.front().first < _time_length) return false;
+      double adjusted_time = _time_length * (this->convert_output_to_years() ? year_in_seconds : 1);
+      if (_time_rmsvel.back().first - _time_rmsvel.front().first < adjusted_time) return false;
 
       // Remove old times until we're at the correct time period
       std::list<std::pair<double, double> >::iterator       it;
@@ -85,15 +85,19 @@ namespace aspect
       _time_rmsvel.erase(_time_rmsvel.begin(), it);
 
       // Scan through the list and calculate the min, mean and max of the RMS velocities
-      double      rms_min, rms_max, rms_sum=0, rms_mean, deviation_max;
-      rms_min = rms_max = _time_rmsvel.front().second;
+      // We assume a linear change of RMS velocity between times
+      double      rms_min, rms_max, rms_prev, time_prev, rms_sum=0, rms_mean, deviation_max;
+      rms_min = rms_max = rms_prev = _time_rmsvel.front().second;
+      time_prev = _time_rmsvel.front().first;
       for (it=_time_rmsvel.begin(); it!=_time_rmsvel.end(); ++it)
         {
           rms_min = fmin(rms_min, (*it).second);
           rms_max = fmax(rms_max, (*it).second);
-          rms_sum += (*it).second;
+          rms_sum += (((*it).second + rms_prev)/2.0)*((*it).first-time_prev);
+          time_prev = (*it).first;
+          rms_prev = (*it).second;
         }
-      rms_mean = rms_sum/_time_rmsvel.size();
+      rms_mean = rms_sum/(_time_rmsvel.back().first-_time_rmsvel.front().first);
 
       // If the min and max are within the acceptable deviation of the mean,
       // we are in steady state and return true, otherwise return false
