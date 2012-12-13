@@ -1,6 +1,6 @@
 set Dimension = 2
 set CFL number                             = 1.0
-set End time                               = 1e8
+set End time                               = 5e7
 set Output directory                       = output-box-steady-state-terminate
 set Start time                             = 0
 set Adiabatic surface temperature          = 0

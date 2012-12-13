@@ -24,7 +24,6 @@
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
-#include <deal.II/numerics/error_estimator.h>
 
 namespace aspect
 {
