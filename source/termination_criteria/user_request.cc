@@ -35,7 +35,7 @@ namespace aspect
       // Only check for the file on the root process to avoid overloading the filesystem
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          check_file.open(_end_filename.c_str());
+          check_file.open((this->get_output_directory()+_end_filename).c_str());
           if (check_file.is_open())
             {
               check_file.close();
