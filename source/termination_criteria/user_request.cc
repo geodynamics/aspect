@@ -88,7 +88,7 @@ namespace aspect
     ASPECT_REGISTER_TERMINATION_CRITERION(UserRequest,
                                           "user_request",
                                           "Terminate the simulation gracefully when a file with a specified "
-                                          "name appears in the working directory. This allows the user to "
+                                          "name appears in the output directory. This allows the user to "
                                           "gracefully exit the simulation at any time.")
   }
 }
