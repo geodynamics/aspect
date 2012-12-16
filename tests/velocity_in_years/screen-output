@@ -1,0 +1,42 @@
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    1
+     Reference gravity (m/s^2):                     1
+     Reference thermal expansion (1/K):             0
+     Temperature contrast accross model domain (K): 1
+     Model domain depth (m):                        1
+     Reference thermal diffusivity (m^2/s):         8e-10
+     Reference viscosity (Pas):                     1
+     Ra number:                                     0
+     k_value:                                       1e-06
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 8e-10
+
+     RMS, max velocity: 0.34 m/year, 1.02 m/year
+
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.381s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |    0.0395s |        10% |
+| Assemble temperature system     |         1 |     0.112s |        29% |
+| Build Stokes preconditioner     |         1 |    0.0394s |        10% |
+| Build temperature preconditioner|         1 |   0.00188s |      0.49% |
+| Solve Stokes system             |         1 |   0.00609s |       1.6% |
+| Solve temperature system        |         1 |   0.00119s |      0.31% |
+| Initialization                  |         2 |    0.0413s |        11% |
+| Postprocessing                  |         1 |    0.0041s |       1.1% |
+| Setup dof systems               |         1 |    0.0741s |        19% |
++---------------------------------+-----------+------------+------------+
+

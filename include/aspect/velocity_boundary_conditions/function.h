@@ -92,6 +92,11 @@ namespace aspect
          * A function object representing the components of the velocity.
          */
         Functions::ParsedFunction<dim> boundary_velocity_function;
+
+        /**
+         * Whether to interpret time in years or seconds.
+         */
+        bool use_years_instead_of_seconds;
     };
   }
 }
