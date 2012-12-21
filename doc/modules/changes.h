@@ -9,6 +9,12 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: a postprocessor to output the sparsity pattern of the block
+matrix. Intended mainly for debugging purposes.
+<br>
+(Ted Studley, 2012/12/21)
+
+<li>
 New: a module for specifying termination criteria has been
 added. The first termination criteria is detecting steady
 state RMS velocity. This scheme also allows checkpointing
