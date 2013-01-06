@@ -80,7 +80,7 @@ namespace aspect
          * to the y-axis, etc.
          */
         virtual
-        std::set<types::boundary_id_t>
+        std::set<types::boundary_id>
         get_used_boundary_indicators () const;
 
         /**

@@ -348,7 +348,7 @@ namespace aspect
        * Return a set of boudary indicators that describes which of the boundaries
        * have a fixed temperature.
        */
-      const std::set<types::boundary_id_t> &
+      const std::set<types::boundary_id> &
       get_fixed_temperature_boundary_indicators () const;
 
 

@@ -242,18 +242,18 @@ namespace aspect
                          "group, unless an existing implementation in this group "
                          "already provides what you want.");
       prm.declare_entry ("Zero velocity boundary indicators", "",
-                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id_t>::max())),
+                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max())),
                          "A comma separated list of integers denoting those boundaries "
                          "on which the velocity is zero.");
       prm.declare_entry ("Tangential velocity boundary indicators", "",
-                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id_t>::max())),
+                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max())),
                          "A comma separated list of integers denoting those boundaries "
                          "on which the velocity is tangential and unrestrained, i.e., free-slip where "
                          "no external forces act to prescribe a particular tangential "
                          "velocity (although there is a force that requires the flow to "
                          "be tangential).");
       prm.declare_entry ("Prescribed velocity boundary indicators", "",
-                         Patterns::Map (Patterns::Integer(0, std::numeric_limits<types::boundary_id_t>::max()),
+                         Patterns::Map (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max()),
                                         Patterns::Selection(VelocityBoundaryConditions::get_names<dim>())),
                          "A comma separated list denoting those boundaries "
                          "on which the velocity is tangential but prescribed, i.e., where "
@@ -528,7 +528,7 @@ namespace aspect
           (Utilities::split_string_list
            (prm.get ("Fixed temperature boundary indicators")));
       fixed_temperature_boundary_indicators
-        = std::set<types::boundary_id_t> (x_fixed_temperature_boundary_indicators.begin(),
+        = std::set<types::boundary_id> (x_fixed_temperature_boundary_indicators.begin(),
                                           x_fixed_temperature_boundary_indicators.end());
 
       const std::vector<int> x_zero_velocity_boundary_indicators
@@ -536,7 +536,7 @@ namespace aspect
           (Utilities::split_string_list
            (prm.get ("Zero velocity boundary indicators")));
       zero_velocity_boundary_indicators
-        = std::set<types::boundary_id_t> (x_zero_velocity_boundary_indicators.begin(),
+        = std::set<types::boundary_id> (x_zero_velocity_boundary_indicators.begin(),
                                           x_zero_velocity_boundary_indicators.end());
 
       const std::vector<int> x_tangential_velocity_boundary_indicators
@@ -544,7 +544,7 @@ namespace aspect
           (Utilities::split_string_list
            (prm.get ("Tangential velocity boundary indicators")));
       tangential_velocity_boundary_indicators
-        = std::set<types::boundary_id_t> (x_tangential_velocity_boundary_indicators.begin(),
+        = std::set<types::boundary_id> (x_tangential_velocity_boundary_indicators.begin(),
                                           x_tangential_velocity_boundary_indicators.end());
 
 
@@ -562,7 +562,7 @@ namespace aspect
           key.erase (key.find(":"), std::string::npos);
           while ((key.length() > 0) && (std::isspace (key[key.length()-1])))
             key.erase (key.length()-1, 1);
-          const types::boundary_id_t boundary_id = Utilities::string_to_int(key);
+          const types::boundary_id boundary_id = Utilities::string_to_int(key);
 
           std::string value = *p;
           value.erase (0, value.find(":")+1);

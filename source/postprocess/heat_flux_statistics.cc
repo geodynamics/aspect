@@ -56,7 +56,7 @@ namespace aspect
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
       std::vector<double> composition_values_at_q_point (this->n_compositional_fields());
 
-      std::map<types::boundary_id_t, double> local_boundary_fluxes;
+      std::map<types::boundary_id, double> local_boundary_fluxes;
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -113,15 +113,15 @@ namespace aspect
               }
 
       // now communicate to get the global values
-      std::map<types::boundary_id_t, double> global_boundary_fluxes;
+      std::map<types::boundary_id, double> global_boundary_fluxes;
       {
         // first collect local values in the same order in which they are listed
         // in the set of boundary indicators
-        const std::set<types::boundary_id_t>
+        const std::set<types::boundary_id>
         boundary_indicators
           = this->get_geometry_model().get_used_boundary_indicators ();
         std::vector<double> local_values;
-        for (std::set<types::boundary_id_t>::const_iterator
+        for (std::set<types::boundary_id>::const_iterator
              p = boundary_indicators.begin();
              p != boundary_indicators.end(); ++p)
           local_values.push_back (local_boundary_fluxes[*p]);
@@ -132,7 +132,7 @@ namespace aspect
 
         // and now take them apart into the global map again
         unsigned int index = 0;
-        for (std::set<types::boundary_id_t>::const_iterator
+        for (std::set<types::boundary_id>::const_iterator
              p = boundary_indicators.begin();
              p != boundary_indicators.end(); ++p, ++index)
           global_boundary_fluxes[*p] = global_values[index];
@@ -142,7 +142,7 @@ namespace aspect
       // and create a single string that can be output to the screen
       std::ostringstream screen_text;
       unsigned int index = 0;
-      for (std::map<types::boundary_id_t, double>::const_iterator
+      for (std::map<types::boundary_id, double>::const_iterator
            p = global_boundary_fluxes.begin();
            p != global_boundary_fluxes.end(); ++p, ++index)
         {

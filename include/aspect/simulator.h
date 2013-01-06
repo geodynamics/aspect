@@ -181,10 +181,10 @@ namespace aspect
         bool                           include_shear_heating;
         bool                           include_adiabatic_heating;
         double                         radiogenic_heating_rate;
-        std::set<types::boundary_id_t> fixed_temperature_boundary_indicators;
-        std::set<types::boundary_id_t> zero_velocity_boundary_indicators;
-        std::set<types::boundary_id_t> tangential_velocity_boundary_indicators;
-        std::map<types::boundary_id_t, std::string> prescribed_velocity_boundary_indicators;
+        std::set<types::boundary_id> fixed_temperature_boundary_indicators;
+        std::set<types::boundary_id> zero_velocity_boundary_indicators;
+        std::set<types::boundary_id> tangential_velocity_boundary_indicators;
+        std::map<types::boundary_id, std::string> prescribed_velocity_boundary_indicators;
         /**
          * @}
          */
@@ -1015,7 +1015,7 @@ namespace aspect
       std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
       std::auto_ptr<const AdiabaticConditions<dim> >                 adiabatic_conditions;
       std::auto_ptr<InitialConditions::Interface<dim> >              initial_conditions;
-      std::map<types::boundary_id_t,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
+      std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       /**
       * @}
       */

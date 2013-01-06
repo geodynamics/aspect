@@ -45,12 +45,12 @@ namespace aspect
 
 
     template <int dim>
-    std::set<types::boundary_id_t>
+    std::set<types::boundary_id>
     Box<dim>::
     get_used_boundary_indicators () const
     {
       // boundary indicators are zero through 2*dim-1
-      std::set<types::boundary_id_t> s;
+      std::set<types::boundary_id> s;
       for (unsigned int i=0; i<2*dim; ++i)
         s.insert (i);
       return s;

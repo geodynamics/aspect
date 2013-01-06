@@ -50,7 +50,7 @@ namespace aspect
   void Simulator<dim>::create_snapshot()
   {
     computing_timer.enter_section ("Create snapshot");
-    unsigned int my_id = Utilities::System::get_this_mpi_process (mpi_communicator);
+    unsigned int my_id = Utilities::MPI::get_this_mpi_process (mpi_communicator);
 
     if (my_id == 0)
       {

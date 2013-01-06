@@ -141,12 +141,12 @@ namespace aspect
     // first do some error checking for the parameters we got
     {
       // make sure velocity boundary indicators don't appear in multiple lists
-      std::set<types::boundary_id_t> boundary_indicator_lists[3]
+      std::set<types::boundary_id> boundary_indicator_lists[3]
         = { parameters.zero_velocity_boundary_indicators,
             parameters.tangential_velocity_boundary_indicators,
-            std::set<types::boundary_id_t>()
+            std::set<types::boundary_id>()
           };
-      for (std::map<types::boundary_id_t,std::string>::const_iterator
+      for (std::map<types::boundary_id,std::string>::const_iterator
            p = parameters.prescribed_velocity_boundary_indicators.begin();
            p != parameters.prescribed_velocity_boundary_indicators.end();
            ++p)
@@ -157,7 +157,7 @@ namespace aspect
       for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
         for (unsigned int j=i+1; j<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++j)
           {
-            std::set<types::boundary_id_t> intersection;
+            std::set<types::boundary_id> intersection;
             std::set_intersection (boundary_indicator_lists[i].begin(),
                                    boundary_indicator_lists[i].end(),
                                    boundary_indicator_lists[j].begin(),
@@ -170,10 +170,10 @@ namespace aspect
 
       // next make sure that all listed indicators are actually used by
       // this geometry
-      const std::set<types::boundary_id_t> all_boundary_indicators
+      const std::set<types::boundary_id> all_boundary_indicators
         = geometry_model->get_used_boundary_indicators();
       for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-        for (typename std::set<types::boundary_id_t>::const_iterator
+        for (typename std::set<types::boundary_id>::const_iterator
              p = boundary_indicator_lists[i].begin();
              p != boundary_indicator_lists[i].end(); ++p)
           AssertThrow (all_boundary_indicators.find (*p)
@@ -182,7 +182,7 @@ namespace aspect
                                    "is not used by the geometry model."));
 
       // now do the same for the fixed temperature indicators
-      for (typename std::set<types::boundary_id_t>::const_iterator
+      for (typename std::set<types::boundary_id>::const_iterator
            p = parameters.fixed_temperature_boundary_indicators.begin();
            p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
         AssertThrow (all_boundary_indicators.find (*p)
@@ -231,7 +231,7 @@ namespace aspect
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
 
-    for (std::map<types::boundary_id_t,std::string>::const_iterator
+    for (std::map<types::boundary_id,std::string>::const_iterator
          p = parameters.prescribed_velocity_boundary_indicators.begin();
          p != parameters.prescribed_velocity_boundary_indicators.end();
          ++p)
@@ -438,7 +438,7 @@ namespace aspect
 
       // set the current time and do the interpolation
       // for the prescribed velocity fields
-      for (typename std::map<types::boundary_id_t,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::iterator
+      for (typename std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::iterator
            p = velocity_boundary_conditions.begin();
            p != velocity_boundary_conditions.end(); ++p)
         {
@@ -624,7 +624,7 @@ namespace aspect
                                                constraints);
 
       // do the interpolation for zero velocity
-      for (std::set<types::boundary_id_t>::const_iterator
+      for (std::set<types::boundary_id>::const_iterator
            p = parameters.zero_velocity_boundary_indicators.begin();
            p != parameters.zero_velocity_boundary_indicators.end(); ++p)
         VectorTools::interpolate_boundary_values (dof_handler,
@@ -648,7 +648,7 @@ namespace aspect
       // obtain the boundary indicators that belong to Dirichlet-type
       // temperature boundary conditions and interpolate the temperature
       // there
-      for (std::set<types::boundary_id_t>::const_iterator
+      for (std::set<types::boundary_id>::const_iterator
            p = parameters.fixed_temperature_boundary_indicators.begin();
            p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
         {
