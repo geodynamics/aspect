@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,6 +22,7 @@
 
 #include <aspect/simulator.h>
 
+#include <deal.II/base/mpi.h>
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/distributed/solution_transfer.h>
 
@@ -50,7 +51,7 @@ namespace aspect
   void Simulator<dim>::create_snapshot()
   {
     computing_timer.enter_section ("Create snapshot");
-    unsigned int my_id = Utilities::MPI::get_this_mpi_process (mpi_communicator);
+    unsigned int my_id = Utilities::MPI::this_mpi_process (mpi_communicator);
 
     if (my_id == 0)
       {
