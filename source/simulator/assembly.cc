@@ -997,10 +997,10 @@ namespace aspect
          StokesSystem<dim> (finite_element));
 
     system_matrix.compress();
-    system_rhs.compress(Add);
+    system_rhs.compress(VectorOperation::add);
 
     if (material_model->is_compressible())
-      pressure_shape_function_integrals.compress(Add);
+      pressure_shape_function_integrals.compress(VectorOperation::add);
 
 
     // if we got here and have rebuilt the matrix, make sure that
@@ -1385,7 +1385,7 @@ namespace aspect
          AdvectionSystem<dim> (finite_element));
 
     system_matrix.compress();
-    system_rhs.compress(Add);
+    system_rhs.compress(VectorOperation::add);
 
     computing_timer.exit_section();
   }
