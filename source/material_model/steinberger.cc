@@ -489,7 +489,6 @@ namespace aspect
     Steinberger<dim>::
     reference_thermal_expansion_coefficient () const
     {
-      const double reference_thermal_expansion_coefficient    = 4.89e-4;
       return 0;
     }
 

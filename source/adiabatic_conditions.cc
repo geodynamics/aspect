@@ -124,7 +124,7 @@ namespace aspect
       }
 
     const unsigned int i = static_cast<unsigned int>(z/delta_z);
-    Assert (i >= 0, ExcInternalError());
+    Assert ((z/delta_z) >= 0, ExcInternalError());
     Assert (i+1 < pressures.size(), ExcInternalError());
 
     // now do the linear interpolation
@@ -149,7 +149,7 @@ namespace aspect
       }
 
     const unsigned int i = static_cast<unsigned int>(z/delta_z);
-    Assert (i >= 0, ExcInternalError());
+    Assert ((z/delta_z) >= 0, ExcInternalError());
     Assert (i+1 < temperatures.size(), ExcInternalError());
 
     // now do the linear interpolation
