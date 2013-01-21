@@ -553,8 +553,6 @@ namespace aspect
         const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
                                  scratch.old_old_velocity_values[q]) / 2;
 
-        const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
-
         const double dField_dt = ((*scratch.old_field_values)[q] - (*scratch.old_old_field_values)[q])
                                  / old_time_step;
         const double u_grad_field = u * (scratch.old_field_grads[q] +

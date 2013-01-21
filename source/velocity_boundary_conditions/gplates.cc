@@ -327,7 +327,6 @@ namespace aspect
     void
     GPlates<dim>::initialize (const GeometryModel::Interface<dim> &geometry_model)
     {
-      int loaded;
       Tensor<1,2> pointone;
       Tensor<1,2> pointtwo;
       char sep;

@@ -651,7 +651,6 @@ namespace aspect
                                                 field_values);
           for (unsigned int q=0; q<n_q_points; ++q)
             {
-              const Point<dim> &p = fe_values.quadrature_point(q);
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
               const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());
@@ -780,7 +779,6 @@ namespace aspect
                                                                               velocity_values);
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
-              const Point<dim> &p = fe_values.quadrature_point(q);
               const double depth = geometry_model->depth(fe_values.quadrature_point(q));
               const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());

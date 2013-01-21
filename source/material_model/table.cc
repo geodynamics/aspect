@@ -418,11 +418,7 @@ namespace aspect
                      const SymmetricTensor<2,dim> &strain_rate,
                      const Point<dim> &position) const
     {
-      const double R0=  3591e3; //TODO
-      const double R1=  6591e3; //TODO
       const double R=  8.3143; //TODO gasconstant (well its constant....)
-      const double depth = R1 - position.norm();
-
 
       if (strcmp(viscosity_model.c_str(),"Composite")) return 1;
       const double viscosity_diffusion = std::min(1e22,(1e0/prefactor_diffusion)*
