@@ -294,7 +294,7 @@ namespace aspect
           AssertThrow(data_dim>ind, std::out_of_range("DataParticle[]"));
           return _val[ind];
         };
-        const double operator[](const unsigned int &ind) const
+        double operator[](const unsigned int &ind) const
         {
           AssertThrow(data_dim>ind, std::out_of_range("DataParticle[]"));
           return _val[ind];

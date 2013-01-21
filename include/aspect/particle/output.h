@@ -316,7 +316,6 @@ namespace aspect
         virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles, const double &current_time)
         {
           typename std::multimap<LevelInd, T>::const_iterator  it;
-          unsigned int            d, i;
           std::string             output_file_prefix, output_path_prefix, full_filename;
 
           output_file_prefix = "particle-" + Utilities::int_to_string (Output<dim, T>::_file_index, 5);
