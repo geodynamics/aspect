@@ -330,7 +330,7 @@ namespace aspect
           hid_t   pattr_id;
           herr_t  status;
           hsize_t dims[2], offset[2], count[2];
-          unsigned int  mpi_offset, mpi_count, local_particle_count, global_particle_count;
+          unsigned int  mpi_offset, mpi_count, local_particle_count, global_particle_count, d, i;
 
           double  *pos_data, *vel_data, *id_data;
 
