@@ -76,6 +76,8 @@ namespace aspect
         virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles, const double &current_time) = 0;
     };
 
+    // Blank class to avoid output of data, for example, if particles are used to represent
+    // other physical phenomenon that influences the simulation and we don't care about their positions
     template <int dim, class T>
     class NullOutput : public Output<dim, T>
     {
