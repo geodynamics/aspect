@@ -3482,11 +3482,15 @@ clearly makes no sense at all.
 
 
 
+\subsubsection{Using tracer particles}
+\marginpar{To be written}
+
 
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
 \marginpar{To be written}
 
+Include something that uses the GPlates interface
 
 \subsection{Benchmarks}
 \label{sec:cookbooks-benchmarks}
@@ -5195,7 +5199,7 @@ class.%
   the model is compressible or not, the plugin needs access to the material
   model object, which the class gains by deriving from
   \href{doc/doxygen/classaspect_1_1Postprocess_1_1SimulatorAccess.html}{aspect::Postprocess::SimulatorAccess}.}
-  
+
 Visualization plugins can come in two flavors:
 \begin{itemize}
   \item \textit{Plugins that compute things from the solution in a pointwise way:}
@@ -5274,7 +5278,7 @@ postprocessors do the following:
 
   \item \textit{Plugins that compute things from the solution in a cellwise way:}
    The second possibility is for a class to not derive from
-   \texttt{dealii::DataPostprocessor} but instead from the 
+   \texttt{dealii::DataPostprocessor} but instead from the
    \href{doc/doxygen/classaspect_1_1Postprocess_1_1VisualizationPostprocessors_1_1CellDataVectorCreator.html}{aspect::Postprocess::VisualizationPostprocessors::CellDataVectorCreator}
    class. In this case, a visualization postprocessor would generate
    and return a vector that consists of one element per cell. The
@@ -5283,11 +5287,11 @@ postprocessors do the following:
    integrals or other functionals on a per-cell basis. A typical
    case would be error estimators that do depend on the solution but
    not in a pointwise sense; rather, they yield one value per cell of
-   the mesh. See the documentation of the 
+   the mesh. See the documentation of the
    \texttt{CellDataVectorCreator} class
    for more information.
-\end{itemize}  
-  
+\end{itemize}
+
 
 If all of this sounds confusing, we recommend consulting the implementation of
 the various visualization plugins that already exist in the \aspect{} sources,
