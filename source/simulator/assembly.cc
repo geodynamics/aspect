@@ -779,7 +779,7 @@ namespace aspect
          internal::Assembly::CopyData::
          StokesPreconditioner<dim> (finite_element));
 
-    system_preconditioner_matrix.compress();
+    system_preconditioner_matrix.compress(VectorOperation::add);
   }
 
 
@@ -994,7 +994,7 @@ namespace aspect
          internal::Assembly::CopyData::
          StokesSystem<dim> (finite_element));
 
-    system_matrix.compress();
+    system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);
 
     if (material_model->is_compressible())
@@ -1382,7 +1382,7 @@ namespace aspect
          internal::Assembly::CopyData::
          AdvectionSystem<dim> (finite_element));
 
-    system_matrix.compress();
+    system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);
 
     computing_timer.exit_section();

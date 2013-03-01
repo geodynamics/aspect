@@ -40,6 +40,7 @@ D = $(DEAL_DIR)
 # This tells `make' where to find the global settings and rules:
 include $D/common/Make.global_options
 
+CXXFLAGS.g += -Wunused-variable -Wextra
 
 # list the directories and the various kinds of files
 all-dirs := source \
