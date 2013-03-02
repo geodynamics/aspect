@@ -4822,6 +4822,82 @@ The purpose of the last two functions has been discussed in the general
 overview of plugins above.
 
 
+The \texttt{create\_coarse\_mesh} function does not only create the actual
+mesh (i.e., the locations of the vertices of the coarse mesh and how they
+connect to cells) but it must also set the boundary indicators for all parts
+of the boundary of the mesh. The \dealii{} glossary describes the purpose of
+boundary indicators as follows:
+\begin{quote}
+  In a \texttt{Triangulation} object, every part of the boundary is associated with
+  a unique number (of type \texttt{types::boundary\_id}) that is used to identify which
+  boundary geometry object is responsible to generate new points when the mesh
+  is refined. By convention, this boundary indicator is also often used to
+  determine what kinds of boundary conditions are to be applied to a particular
+  part of a boundary. The boundary is composed of the faces of the cells and, in 3d,
+  the edges of these faces.
+
+  By default, all boundary indicators of a mesh are zero, unless you are
+  reading from a mesh file that specifically sets them to something different,
+  or unless you use one of the mesh generation functions in namespace \texttt{GridGenerator}
+  that have a 'colorize' option. A typical piece of code that sets the boundary
+  indicator on part of the boundary to something else would look like
+  this, here setting the boundary indicator to 42 for all faces located at
+  $x=-1$:
+  \begin{lstlisting}[frame=single,language=C++]
+  for (typename Triangulation<dim>::active_cell_iterator
+         cell = triangulation.begin_active();
+       cell != triangulation.end();
+       ++cell)
+    for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+      if (cell->face(f)->at_boundary())
+        if (cell->face(f)->center()[0] == -1)
+          cell->face(f)->set_boundary_indicator (42);
+  \end{lstlisting}
+  This calls functions \texttt{TriaAccessor::set\_boundary\_indicator}. In 3d, it may
+  also be appropriate to call \texttt{TriaAccessor::set\_all\_boundary\_indicators} instead
+  on each of the selected faces. To query the boundary indicator of a particular
+  face or edge, use \texttt{TriaAccessor::boundary\_indicator}.
+
+  The code above only sets the boundary indicators of a particular part
+  of the boundary, but it does not by itself change the way the Triangulation
+  class treats this boundary for the purposes of mesh refinement. For this,
+  you need to call \texttt{Triangulation::set\_boundary} to associate a boundary
+  object with a particular boundary indicator. This allows the Triangulation
+  object to use a different method of finding new points on faces and edges
+  to be refined; the default is to use a \texttt{StraightBoundary} object for all
+  faces and edges.
+
+  The second use of boundary indicators is to describe not only which geometry
+  object to use on a particular boundary but to select a part of the boundary
+  for particular boundary conditions. \textit{[...]}
+
+  \textbf{Note:} Boundary indicators are inherited from mother faces and edges to
+  their children upon mesh refinement. Some more information about boundary
+  indicators is also presented in a section of the documentation of the
+  Triangulation class.
+\end{quote}
+
+Two comments are in order here. First, if a coarse triangulation's faces
+already accurately represent where you want to pose which boundary condition
+(for example to set temperature values or determine which are no-flow and
+which are tangential flow boundary conditions), then it is sufficient to set
+these boundary conditions only once at the beginning of the program since they
+will be inherited upon mesh refinement to the child faces.
+
+Secondly, however, if you can only accurately determine which boundary
+indicator should hold where on a refined mesh -- for example because the
+coarse mesh is the cube $[0,L]^3$ and you want to have a fixed velocity
+boundary describing an extending slab only for those faces for which
+$z>L-L_\text{slab}$ -- then you need a way to set the boundary indicator
+for all boundary faces either to the value representing the slab or the fluid
+underneath \textit{after every mesh refinement step}. By doing so, child faces
+can obtain boundary indicators different from that of their parents. \dealii{}
+triangulations support this kind of operations using a so-called
+\textit{post-refinement signal}. In essence, what this means is that you can
+provide a function that will be called by the triangulation immediately after
+every mesh refinement step.
+
+
 \subsubsection{Gravity models}
 \label{sec:gravity-models}
 
