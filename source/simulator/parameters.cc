@@ -502,6 +502,11 @@ namespace aspect
       refinement_fraction         = prm.get_double ("Refinement fraction");
       coarsening_fraction         = prm.get_double ("Coarsening fraction");
 
+      AssertThrow(refinement_fraction >= 0 && coarsening_fraction >= 0,
+                  ExcMessage("Refinement/coarsening fractions must be positive."));
+      AssertThrow(refinement_fraction+coarsening_fraction <= 1,
+                  ExcMessage("Refinement and coarsening fractions must be <= 1."));
+
       // extract the list of times at which additional refinement is requested
       // then sort it and convert it to seconds
       additional_refinement_times
@@ -529,7 +534,7 @@ namespace aspect
            (prm.get ("Fixed temperature boundary indicators")));
       fixed_temperature_boundary_indicators
         = std::set<types::boundary_id> (x_fixed_temperature_boundary_indicators.begin(),
-                                          x_fixed_temperature_boundary_indicators.end());
+                                        x_fixed_temperature_boundary_indicators.end());
 
       const std::vector<int> x_zero_velocity_boundary_indicators
         = Utilities::string_to_int
@@ -537,7 +542,7 @@ namespace aspect
            (prm.get ("Zero velocity boundary indicators")));
       zero_velocity_boundary_indicators
         = std::set<types::boundary_id> (x_zero_velocity_boundary_indicators.begin(),
-                                          x_zero_velocity_boundary_indicators.end());
+                                        x_zero_velocity_boundary_indicators.end());
 
       const std::vector<int> x_tangential_velocity_boundary_indicators
         = Utilities::string_to_int
@@ -545,7 +550,7 @@ namespace aspect
            (prm.get ("Tangential velocity boundary indicators")));
       tangential_velocity_boundary_indicators
         = std::set<types::boundary_id> (x_tangential_velocity_boundary_indicators.begin(),
-                                          x_tangential_velocity_boundary_indicators.end());
+                                        x_tangential_velocity_boundary_indicators.end());
 
 
       const std::vector<std::string> x_prescribed_velocity_boundary_indicators
@@ -555,8 +560,8 @@ namespace aspect
            p != x_prescribed_velocity_boundary_indicators.end(); ++p)
         {
           // split the pair "key:value"
-          Assert (p->find(":") != std::string::npos,
-                  ExcInternalError());
+          AssertThrow (p->find(":") != std::string::npos,
+                       ExcInternalError());
 
           std::string key = *p;
           key.erase (key.find(":"), std::string::npos);
@@ -570,11 +575,11 @@ namespace aspect
             value.erase (0, 1);
 
 
-          Assert (prescribed_velocity_boundary_indicators.find(boundary_id)
-                  == prescribed_velocity_boundary_indicators.end(),
-                  ExcMessage ("Boundary indicator <" + key +
-                              "> appears more than once in the list of indicators "
-                              "for nonzero velocity boundaries."));
+          AssertThrow (prescribed_velocity_boundary_indicators.find(boundary_id)
+                       == prescribed_velocity_boundary_indicators.end(),
+                       ExcMessage ("Boundary indicator <" + key +
+                                   "> appears more than once in the list of indicators "
+                                   "for nonzero velocity boundaries."));
           prescribed_velocity_boundary_indicators[boundary_id] = value;
         }
     }
@@ -613,8 +618,8 @@ namespace aspect
       normalized_fields = std::vector<unsigned int> (n_normalized_fields.begin(),
                                                      n_normalized_fields.end());
 
-      Assert (normalized_fields.size() <= n_compositional_fields,
-              ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
+      AssertThrow (normalized_fields.size() <= n_compositional_fields,
+                   ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
     }
     prm.leave_subsection ();
   }
