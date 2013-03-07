@@ -2,6 +2,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
 FIND_PACKAGE(deal.II 8.0 REQUIRED
   HINTS
+    ${DEAL_II_DIR}
     $ENV{DEAL_II_DIR}
     "../../"
     "~/workspace/install-deal.II"
