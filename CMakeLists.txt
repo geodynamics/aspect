@@ -13,7 +13,7 @@ MESSAGE(STATUS
 
 IF(NOT DEAL_II_WITH_TRILINOS)
   MESSAGE(FATAL_ERROR
-    "\naspect requires deal.II build with support for Trilinos!\n"
+    "\nAspect requires a deal.II installation built with support for Trilinos!\n"
     )
 ENDIF()
 
