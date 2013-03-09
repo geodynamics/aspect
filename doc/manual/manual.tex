@@ -4882,7 +4882,10 @@ already accurately represent where you want to pose which boundary condition
 (for example to set temperature values or determine which are no-flow and
 which are tangential flow boundary conditions), then it is sufficient to set
 these boundary conditions only once at the beginning of the program since they
-will be inherited upon mesh refinement to the child faces.
+will be inherited upon mesh refinement to the child faces. Here, \textit{at the
+beginning of the program} is equivalent to inside the
+\texttt{create\_coarse\_mesh())} function of the geometry module shown above
+that generates the coarse mesh.
 
 Secondly, however, if you can only accurately determine which boundary
 indicator should hold where on a refined mesh -- for example because the
@@ -4896,6 +4899,90 @@ triangulations support this kind of operations using a so-called
 \textit{post-refinement signal}. In essence, what this means is that you can
 provide a function that will be called by the triangulation immediately after
 every mesh refinement step.
+
+The way to do this is by writing a function that sets boundary
+indicators and that will be called by the \texttt{Triangulation} class. The
+triangulation does not provide a pointer to itself to the function being
+called, nor any other information, so the trick is to get this information
+into the function. C++ provides a nice mechanism for this that is best
+explained using an example:
+\begin{lstlisting}[frame=single,language=C++]
+    #include <deal.II/base/std_cxx1x/bind.h>
+
+    template <int dim>
+    void set_boundary_indicators (parallel::distributed::Triangulation<dim> &triangulation)
+    {
+      ... set boundary indicators on the triangulation object ...
+    }
+
+    template <int dim>
+    void
+    MyGeometry<dim>::
+    create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
+    {
+      ... create the coarse mesh ...
+
+      coarse_grid.signals.post_refinement.connect
+	(std_cxx1x::bind (&set_boundary_indicators<dim>,
+			  std_cxx1x::ref(coarse_grid)));
+
+    }
+\end{lstlisting}
+
+What the call to \texttt{std\_cxx1x::bind} does is to produce an object that
+can be called like a function with no arguments. It does so by taking the
+address of a function that does, in fact, take an argument but permanently fix
+this one argument to a reference to the coarse grid triangulation. After each
+refinement step, the triangulation will then call the object so created which
+will in turn call \texttt{set\_boundary\_indicators<dim>} with the reference
+to the coarse grid as argument.
+
+This approach can be generalized. In the example above, we have used a global
+function that will be called. However, sometimes it is necessary that this
+function is in fact a member function of the class that generates the mesh,
+for example because it needs to access run-time parameters. This can be
+achieved as follows: assuming the \texttt{set\_boundary\_indicators())}
+function has been declared as a (non-static, but possibly private) member
+function of the \texttt{MyGeometry} class, then the following will work:
+\begin{lstlisting}[frame=single,language=C++]
+    #include <deal.II/base/std_cxx1x/bind.h>
+
+    template <int dim>
+    void
+    MyGeometry<dim>::
+    set_boundary_indicators (parallel::distributed::Triangulation<dim> &triangulation) const
+    {
+      ... set boundary indicators on the triangulation object ...
+    }
+
+    template <int dim>
+    void
+    MyGeometry<dim>::
+    create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
+    {
+      ... create the coarse mesh ...
+
+      coarse_grid.signals.post_refinement.connect
+	(std_cxx1x::bind (&MyGeometry<dim>::set_boundary_indicators,
+			  std_cxx1x::cref(*this),
+			  std_cxx1x::ref(coarse_grid)));
+    }
+\end{lstlisting}
+Here, like any other member function, \texttt{set\_boundary\_indicators}
+implicitly takes a pointer or reference to the object it belongs to as first
+argument. \texttt{std::bind} again creates an object that can be called like a
+global function with no arguments, and this object in turn calls
+\texttt{set\_boundary\_indicators} with a pointer to the current object and a
+reference to the triangulation to work on. Note that because the
+\texttt{create\_coarse\_mesh} function is declared as \texttt{const}, it is
+necessary that the \texttt{set\_boundary\_indicators} function is also
+declared \texttt{const}.
+
+\note{For reasons that have to do with the way the
+  \texttt{parallel::distributed::Triangulation} is implemented, functions that
+  have been attached to the post-refinement signal of the triangulation are
+  called more than once, sometimes several times, every time the triangulation
+  is actually refined.}
 
 
 \subsubsection{Gravity models}
