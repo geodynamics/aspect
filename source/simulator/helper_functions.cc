@@ -520,18 +520,18 @@ namespace aspect
       AssertThrow (false, ExcMessage("Invalid pressure normalization method: " +
                                      parameters.pressure_normalization));
 
-    double adjust = 0;
+    pressure_adjustment = 0.0;
     // sum up the integrals from each processor
     {
       const double my_temp[2] = {my_pressure, my_area};
       double temp[2];
       Utilities::MPI::sum (my_temp, mpi_communicator, temp);
       if (parameters.pressure_normalization == "surface")
-	adjust = -temp[0]/temp[1] + parameters.surface_pressure;
+        pressure_adjustment = -temp[0]/temp[1] + parameters.surface_pressure;
       else if (parameters.pressure_normalization == "volume")
 //TODO: This can't be right. it should be -temp[0]/temp[1] to divide
 	// by the volume. this was definitely wrong in ASPIRE
-	adjust = -temp[0];
+        pressure_adjustment = -temp[0];
       else
         AssertThrow(false, ExcNotImplemented());
     }
@@ -544,7 +544,7 @@ namespace aspect
     distributed_vector = vector;
 
     if (parameters.use_locally_conservative_discretization == false)
-      distributed_vector.block(1).add(adjust);
+      distributed_vector.block(1).add(pressure_adjustment);
     else
       {
         // this case is a bit more complicated: if the condition above is false
@@ -580,12 +580,64 @@ namespace aspect
                       ExcInternalError());
 
               // then adjust its value
-              distributed_vector(local_dof_indices[first_pressure_dof]) += adjust;
+              distributed_vector(local_dof_indices[first_pressure_dof]) += pressure_adjustment;
             }
       }
 
     // now get back to the original vector
     vector = distributed_vector;
+  }
+
+
+  /*
+   * inverse to normalize_pressure.
+   */
+  template <int dim>
+  void Simulator<dim>::denormalize_pressure (LinearAlgebra::BlockVector &vector)
+  {
+    if (parameters.pressure_normalization == "no")
+      return;
+    
+    if (parameters.use_locally_conservative_discretization == false)
+      vector.block (1).add (-1.0 * pressure_adjustment);
+    else
+      {
+        // this case is a bit more complicated: if the condition above is false
+        // then we use the FE_DGP element for which the shape functions do not
+        // add up to one; consequently, adding a constant to all degrees of
+        // freedom does not alter the overall function by that constant, but
+        // by something different
+        //
+        // we can work around this by using the documented property of the
+        // FE_DGP element that the first shape function is constant.
+        // consequently, adding the adjustment to the global function is
+        // achieved by adding the adjustment to the first pressure degree
+        // of freedom on each cell.
+        Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(1)) != 0,
+                ExcInternalError());
+        std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = dof_handler.begin_active(),
+        endc = dof_handler.end();
+        for (; cell != endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              // identify the first pressure dof
+              cell->get_dof_indices (local_dof_indices);
+              const unsigned int first_pressure_dof
+                = finite_element.component_to_system_index (dim, 0);
+
+              // make sure that this DoF is really owned by the current processor
+              // and that it is in fact a pressure dof
+              Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[first_pressure_dof]),
+                      ExcInternalError());
+              Assert (local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
+                      ExcInternalError());
+
+              // then adjust its value
+              vector (local_dof_indices[first_pressure_dof]) -= pressure_adjustment;
+            }
+      }
   }
 
 
@@ -1019,6 +1071,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template class Simulator<dim>::TemperatureOrComposition; \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
+  template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const TemperatureOrComposition &temperature_or_composition) const; \
   template std::pair<double,bool> Simulator<dim>::compute_time_step () const; \

@@ -349,24 +349,20 @@ namespace aspect
     pcout << "   Solving Stokes system... " << std::flush;
 
     const internal::StokesBlock stokes_block(system_matrix);
-
-//TODO: clean up: why do we copy system_rhs here, then call set_zero when we later
-// overwrite the vector in residual(), then call set_zero again, and then throw away
-// the result
-// --- see the same place above in the function that solves the temperature and
-// compositional fields
+    
     // extract Stokes parts of solution vector, without any ghost elements
-    LinearAlgebra::BlockVector distributed_stokes_solution;
-    distributed_stokes_solution.reinit(system_rhs);
+    LinearAlgebra::BlockVector
+      distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
     // create vector with distribution of system_rhs.
-    LinearAlgebra::BlockVector remap (system_rhs);
+    LinearAlgebra::BlockVector remap (introspection.index_sets.system_partitioning, mpi_communicator);
     // copy current_linearization_point into it, because its distribution
     // is different.
     remap.block (0) = current_linearization_point.block (0);
     remap.block (1) = current_linearization_point.block (1);
     // before solving we scale the initial solution to the right dimensions
-    remap.block (1) /= pressure_scaling;
+    denormalize_pressure (remap);
     current_constraints.set_zero (remap);
+    remap.block (1) /= pressure_scaling;
     // if the model is compressible then we need to adjust the right hand
     // side of the equation to make it compatible with the matrix on the
     // left
@@ -383,8 +379,9 @@ namespace aspect
     distributed_stokes_solution.block(1) = remap.block(1);
 
     // extract Stokes parts of rhs vector
-    LinearAlgebra::BlockVector distributed_stokes_rhs;
-    distributed_stokes_rhs.reinit(system_rhs);
+    LinearAlgebra::BlockVector
+      distributed_stokes_rhs (introspection.index_sets.system_partitioning, mpi_communicator);
+    
     distributed_stokes_rhs.block(0) = system_rhs.block(0);
     distributed_stokes_rhs.block(1) = system_rhs.block(1);
 

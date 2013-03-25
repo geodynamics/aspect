@@ -818,6 +818,14 @@ namespace aspect
       void normalize_pressure(LinearAlgebra::BlockVector &vector);
 
       /**
+       * Invert the action of the function above.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void denormalize_pressure(LinearAlgebra::BlockVector &vector);
+
+      /**
        * Compute the maximal velocity throughout the domain. This is needed
        * to compute the size of the time step.
        *
@@ -1069,6 +1077,7 @@ namespace aspect
       ConstraintMatrix                                          constraints;
       ConstraintMatrix                                          current_constraints;
 
+      double                                                    pressure_adjustment;
       double                                                    pressure_scaling;
 
       /**
