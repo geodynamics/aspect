@@ -1114,9 +1114,9 @@ The following steps should guide you through the installation of these
 prerequisites:
 \begin{enumerate}
 \item \textit{Trilinos:} Trilinos can be downloaded from
-  \href{http://trilinos.sandia.gov/download/trilinos-10.4.html}{http://trilinos.sandia.gov/}. At
-  the current time we recommend Trilinos Version 10.4.x.%
-  \footnote{There are newer versions of Trilinos, but at least Trilinos 10.6.x
+  \href{http://trilinos.sandia.gov/download/trilinos-10.12.html}{http://trilinos.sandia.gov/}. At
+  the current time we recommend Trilinos Version 10.12.x.%
+  \footnote{Other versions of Trilinos like 10.6.x
   and 10.8.x have bugs that make these versions unusable for our purpose. The
   \dealii{} ReadMe file provides a list of versions that are known to work
   without bugs with \dealii{}.} For installation instructions see
@@ -1133,15 +1133,20 @@ prerequisites:
   {\tt{p4est-setup.sh}}; do not use the \pfrst{} stand-alone installation
   instructions.
 
-\item  \textit{\dealii{}:}
-  The current version of \aspect{} requires features of \dealii{} that have
-  been developed after the 7.1 release. Since at the time of writing,
-  \dealii{} 7.2 has not yet appears, we currently require the development
-  version of \dealii{}, which can be obtained by running
-\begin{verbatim}
- svn checkout https://svn.dealii.org/trunk/deal.II
-\end{verbatim}
-  Once \dealii{} 7.2 is available, this will suffice as well.
+%\item  \textit{\dealii{}:}
+%  The current version of \aspect{} requires features of \dealii{} that have
+%  been developed after the 7.1 release. Since at the time of writing,
+%  \dealii{} 7.2 has not yet appears, we currently require the development
+%  version of \dealii{}, which can be obtained by running
+%\begin{verbatim}
+% svn checkout https://svn.dealii.org/trunk/deal.II
+%\end{verbatim}
+%  Once \dealii{} 7.2 is available, this will suffice as well.
+
+\item \textit{\dealii{}:} 
+  The current version of \aspect{} requires \dealii{} version 7.3.0 or later.
+  This version can be downloaded and installed from
+  \url{https://code.google.com/p/dealii/downloads/list}.
 
   You may want to set the environment variable\footnote{For bash
     this would be adding the line {\tt{export DEAL\_DIR=/path/to/deal.ii/}} to
@@ -1158,7 +1163,7 @@ prerequisites:
   compilers. A typical command line would look like this:
 \begin{verbatim}
  ./configure CXX=mpicxx --enable-mpi --disable-threads \
-    --with-trilinos=/u/username/bin/trilinos-10.4.2 \
+    --with-trilinos=/u/username/bin/trilinos-10.12.2 \
     --with-p4est=/u/username/bin/p4est-0.3.3.8
 \end{verbatim}
   if the Trilinos and \pfrst{} packages have been installed in the
