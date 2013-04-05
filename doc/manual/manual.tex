@@ -4269,7 +4269,8 @@ or extend certain components of the program:
   graphical output files for visualization such as fields that depict the
   strength of the friction heating term, spatially dependent actual
   viscosities, and so on,
-  \item the computation of refinement indicators.
+\item the computation of refinement indicators,
+\item the determination of how long a computation should run.
 \end{itemize}
 We will discuss the way this is achieved in Sections~\ref{sec:plugins} and
 \ref{sec:plugins-concrete}. Changing the core functionality, i.e., the basic equations
@@ -4363,7 +4364,7 @@ following two steps:
 \begin{itemize}
 \item The core of \aspect{} really only communicates with material models,
   geometry descriptions, etc., through a simple and very basic
-  interface. These interfaces are declared in the files
+  interface. These interfaces are declared in the
   \url{include/aspect/material_model/interface.h},
   \url{include/aspect/geometry_model/interface.h}, etc., header files. These
   classes are always called \texttt{Interface}, are located in namespaces that
@@ -4371,7 +4372,7 @@ following two steps:
   general class overview in \url{doc/doxygen/classes.html}.
 
   To show an example of a rather minimal case, here is the declaration of the
-  \texttt{aspect::GravityModel::Interface} class (documentation comments have
+\href{doc/doxygen/classaspect_1_1GravityModel_1_1Interface.html}{aspect::GravityModel::Interface} class (documentation comments have
   been removed):
   \begin{lstlisting}[frame=single,language=C++]
     class Interface
@@ -4463,7 +4464,8 @@ essentially the same, with the obvious change in namespace for the interface
 class and macro name.
 
 In the following, we will discuss the requirements for individual plugins. Before
-doing so, however, let us discuss ways in which plugins can query other information.
+doing so, however, let us discuss ways in which plugins can query other
+information, in particular about the current state of the simulation.
 To this end, let us not consider those plugins that by and large just
 provide information without any context of the simulation, such as gravity models,
 prescribed boundary velocities, or initial temperatures. Rather, let us
@@ -4526,23 +4528,23 @@ class}. This class has an interface that looks like this:
 
       // ... many more things ...
 \end{lstlisting}
-This way, \texttt{SimulatorAccess} makes information available to plugins
+This way, \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess} makes information available to plugins
 without the need for them to understand details of the core of \aspect{}.
-Rather, if the core changes, the \texttt{SimulatorAccess} class can still
+Rather, if the core changes, the \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess} class can still
 provide exactly the same interface. Thus, it insulates plugins from having
-to know the core. Equally importantly, since \texttt{SimulatorAccess} only
+to know the core. Equally importantly, since \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess} only
 offers its information in a read-only way it insulates the core from
 plugins since they can not interfere in the workings of the core except
 through the interface they themselves provide to the core.
 
 Using this class, if a plugin class \texttt{MyPostprocess} is then not only
 derived from the corresponding \texttt{Interface} class but \textit{also}
-from the \texttt{SimulatorAccess} class, then you can write a member
+from the \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess} class, then you can write a member
 function of the following kind (a non-sensical but instructive example; see
 Section~\ref{sec:postprocessors} for more details on what postprocessors do
 and how they are implemented):%
 \footnote{For complicated, technical reasons, in the code below we need to
-	access elements of the \texttt{SimulatorAccess} class using the notation
+	access elements of the \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess} class using the notation
 	\texttt{this->get\_solution()}, etc. This is due to the fact that both the
 	current class and the base class are templates. A long description of
 	why it is necessary to use \texttt{this->} can be found in the \dealii{}
@@ -4606,11 +4608,13 @@ order of variables, etc.
 \subsubsection{Material models}
 \label{sec:material-models}
 
+\marginpar{Need to update this given the current state of the plugin}
+
 \index[prmindex]{Model name}
 \index[prmindexfull]{Material model!Model name}
 The material model is responsible for describing the various coefficients in
 the equations that \aspect{} solves. To implement a new material model, you
-need to overload the \texttt{aspect::MaterialModel::Interface} class and use
+need to overload the \href{doc/doxygen/classaspect_1_1MaterialModel_1_1Interface.html}{aspect::MaterialModel::Interface} class and use
 the \texttt{ASPECT\_REGISTER\_MATERIAL\_MODEL} macro to register your new
 class. The implementation of the new class should be in namespace
 \texttt{aspect::MaterialModel}.
@@ -4780,7 +4784,9 @@ indicator is a number attached to each piece of the boundary that can be used
 to represent the type of boundary a piece belongs to.
 
 To implement a new geometry model, you
-need to overload the \texttt{aspect::GeometryModel::Interface} class and use
+need to overload the
+\href{doc/doxygen/classaspect_1_1GeometryModel_1_1Interface.html}{aspect::GeometryModel::Interface}
+class and use
 the \texttt{ASPECT\_REGISTER\_GEOMETRY\_MODEL} macro to register your new
 class. The implementation of the new class should be in namespace
 \texttt{aspect::GeometryModel}.
@@ -4871,7 +4877,8 @@ boundary indicators as follows:
   object with a particular boundary indicator. This allows the Triangulation
   object to use a different method of finding new points on faces and edges
   to be refined; the default is to use a \texttt{StraightBoundary} object for all
-  faces and edges.
+  faces and edges. The results section of step-49 has a worked example that
+  shows all of this in action.
 
   The second use of boundary indicators is to describe not only which geometry
   object to use on a particular boundary but to select a part of the boundary
@@ -4887,7 +4894,7 @@ Two comments are in order here. First, if a coarse triangulation's faces
 already accurately represent where you want to pose which boundary condition
 (for example to set temperature values or determine which are no-flow and
 which are tangential flow boundary conditions), then it is sufficient to set
-these boundary conditions only once at the beginning of the program since they
+these boundary indicators only once at the beginning of the program since they
 will be inherited upon mesh refinement to the child faces. Here, \textit{at the
 beginning of the program} is equivalent to inside the
 \texttt{create\_coarse\_mesh())} function of the geometry module shown above
@@ -4998,7 +5005,9 @@ declared \texttt{const}.
 \index[prmindexfull]{Gravity model!Model name}
 The gravity model is responsible for describing the magnitude and direction of
 the gravity vector at each point inside the domain. To implement a new gravity model, you
-need to overload the \texttt{aspect::GravityModel::Interface} class and use
+need to overload the
+\href{doc/doxygen/classaspect_1_1GravityModel_1_1Interface.html}{aspect::GravityModel::Interface}
+class and use
 the \texttt{ASPECT\_REGISTER\_GRAVITY\_MODEL} macro to register your new
 class. The implementation of the new class should be in namespace
 \texttt{aspect::GravityModel}.
@@ -5046,7 +5055,9 @@ velocity. Neither of these two has to be provided by the objects considered in
 this section.
 
 To implement a new initial conditions model, you
-need to overload the \texttt{aspect::InitialConditions::Interface} class and use
+need to overload the
+\href{doc/doxygen/classaspect_1_1InitialConditions_1_1Interface.html}{aspect::InitialConditions::Interface}
+class and use
 the \texttt{ASPECT\_REGISTER\_INITIAL\_CONDITIONS} macro to register your new
 class. The implementation of the new class should be in namespace
 \texttt{aspect::InitialConditions}.
@@ -5094,7 +5105,9 @@ Section~\ref{sec:geometry-models} for how it is determined which parts of the
 boundary this applies to).
 
 To implement a new boundary conditions model, you
-need to overload the \texttt{aspect::BoundaryTemperature::Interface} class and use
+need to overload the
+\href{doc/doxygen/classaspect_1_1BoundaryTemperature_1_1Interface.html}{aspect::BoundaryTemperature::Interface}
+class and use
 the \texttt{ASPECT\_REGISTER\_BOUNDARY\_TEMPERATURE\_MODEL} macro to register your new
 class. The implementation of the new class should be in namespace
 \texttt{aspect::BoundaryTemperature}.
@@ -5237,7 +5250,9 @@ written in a particular time step.
 \paragraph{Implementing a postprocessor.}
 Ultimately, implementing a new postprocessor is no different than any of the
 other plugins. Specifically, you'll have to write a class that
-overloads the \texttt{aspect::Postprocess::Interface} base class and use
+overloads the
+\href{doc/doxygen/classaspect_1_1Postprocess_1_1Interface.html}{aspect::Postprocess::Interface}
+base class and use
 the \texttt{ASPECT\_REGISTER\_POSTPROCESSOR} macro to register your new
 class. The implementation of the new class should be in namespace
 \texttt{aspect::Postprocess}.
@@ -5253,11 +5268,12 @@ difficult. Primarily, this difficulty results from two facts:
   structures. To alleviate this somewhat, and to insulate the two worlds from
   each other, postprocessors do not directly access the data structures of the
   simulator class. Rather, in addition to deriving from the
-  \texttt{aspect::Postprocess::Interface} base class, postprocessors also
-  derive from the \texttt{aspect::Postprocess::SimulatorAccess} class that
+  \href{doc/doxygen/classaspect_1_1Postprocess_1_1Interface.html}{aspect::Postprocess::Interface}
+  base class, postprocessors also
+  derive from the \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess} class that
   has a number of member functions postprocessors can call to obtain read-only
   access to some of the information stored in the main class of \aspect{}. See
-  \href{doc/doxygen/classaspect_1_1Postprocess_1_1SimulatorAccess.html}{the
+  \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{the
     documentation of this class} to see what kind of information is available to
   postprocessors.
 
@@ -5373,7 +5389,7 @@ Visualization plugins can come in two flavors:
 \begin{itemize}
   \item \textit{Plugins that compute things from the solution in a pointwise way:}
    The classes in this group are derived not only from the respective interface class (and possibly
-   the \texttt{SimulatorAccess} class) but also from the deal.II class
+   the \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess} class) but also from the deal.II class
    \texttt{DataPostprocessor} or any of
    the classes like \texttt{DataPostprocessorScalar} or \texttt{DataPostprocessorVector}.
    These classes can be thought of as filters: DataOut will call a function in
