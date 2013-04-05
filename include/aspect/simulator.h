@@ -919,8 +919,18 @@ namespace aspect
        * model needs it the other way round. Hence, this vector of vectors
        * is transposed.
        *
-       * @param compute_strainrate If the strain rate should be computed
-       * or not
+       * @param[in] input_solution A solution vector (or linear combination
+       *   of such vectors) with as many entries as there are degrees of
+       *   freedom in the mesh. It will be evaluated on the cell with which
+       *   the FEValues object was last re-initialized.
+       * @param[in] input_finite_element_values The FEValues object that
+       *   describes the finite element
+       *   space in use and that is used to evaluate the solution values
+       *   at the quadrature points of the current cell.
+       * @param[in] compute_strainrate A flag determining whether the strain
+       *   rate should be computed or not in the output structure.
+       * @param[out] material_model_inputs The output structure that contains
+       *   the solution values evaluated at the quadrature points.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
