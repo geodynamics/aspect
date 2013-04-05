@@ -1143,7 +1143,7 @@ prerequisites:
 %\end{verbatim}
 %  Once \dealii{} 7.2 is available, this will suffice as well.
 
-\item \textit{\dealii{}:} 
+\item \textit{\dealii{}:}
   The current version of \aspect{} requires \dealii{} version 7.3.0 or later.
   This version can be downloaded and installed from
   \url{https://code.google.com/p/dealii/downloads/list}.
@@ -4954,7 +4954,7 @@ This approach can be generalized. In the example above, we have used a global
 function that will be called. However, sometimes it is necessary that this
 function is in fact a member function of the class that generates the mesh,
 for example because it needs to access run-time parameters. This can be
-achieved as follows: assuming the \texttt{set\_boundary\_indicators())}
+achieved as follows: assuming the \texttt{set\_boundary\_indicators()}
 function has been declared as a (non-static, but possibly private) member
 function of the \texttt{MyGeometry} class, then the following will work:
 \begin{lstlisting}[frame=single,language=C++]
