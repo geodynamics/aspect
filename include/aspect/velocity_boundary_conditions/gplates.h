@@ -68,11 +68,13 @@ namespace aspect
            * Returns the computed surface velocity in cartesian coordinates. Takes
            * as input the position and current time weight.
            *
-           * @param position The current position to compute velocity @param time_weight A weighting between
+           * @param position The current position to compute velocity
+           * @param time_weight A weighting between
            * the two current timesteps n and n+1
            */
           template <int dim>
-          Tensor<1,dim> surface_velocity(const Point<dim> &position_, const double time_weight) const;
+          Tensor<1,dim> surface_velocity(const Point<dim> &position,
+                                         const double time_weight) const;
 
         private:
 

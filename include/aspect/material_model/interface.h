@@ -269,7 +269,7 @@ namespace aspect
         * Return true if the viscosity() function returns something that
         * may depend on the variable identified by the argument.
         *
-        * @param dependence[in] A variable that represents which dependence
+        * @param[in] dependence A variable that represents which dependence
         * on other variables is being queried. Note that this argument
         * may either identify just a single dependence (e.g. on the
         * temperature or the strain rate) but also a combination of values
@@ -285,7 +285,7 @@ namespace aspect
         * Return true if the density() function returns something that
         * may depend on the variable identified by the argument.
         *
-        * @param dependence[in] A variable that represents which dependence
+        * @param[in] dependence A variable that represents which dependence
         * on other variables is being queried. Note that this argument
         * may either identify just a single dependence (e.g. on the
         * temperature or the strain rate) but also a combination of values
@@ -304,7 +304,7 @@ namespace aspect
         * This function must return false for all possible arguments if the
         * is_compressible() function returns false.
         *
-        * @param dependence[in] A variable that represents which dependence
+        * @param[in] dependence A variable that represents which dependence
         * on other variables is being queried. Note that this argument
         * may either identify just a single dependence (e.g. on the
         * temperature or the strain rate) but also a combination of values
@@ -320,7 +320,7 @@ namespace aspect
         * Return true if the specific_heat() function returns something that
         * may depend on the variable identified by the argument.
         *
-        * @param dependence[in] A variable that represents which dependence
+        * @param[in] dependence A variable that represents which dependence
         * on other variables is being queried. Note that this argument
         * may either identify just a single dependence (e.g. on the
         * temperature or the strain rate) but also a combination of values
@@ -336,7 +336,7 @@ namespace aspect
         * Return true if the thermal_conductivity() function returns something that
         * may depend on the variable identified by the argument.
         *
-        * @param dependence[in] A variable that represents which dependence
+        * @param[in] dependence A variable that represents which dependence
         * on other variables is being queried. Note that this argument
         * may either identify just a single dependence (e.g. on the
         * temperature or the strain rate) but also a combination of values
