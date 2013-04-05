@@ -648,7 +648,7 @@ namespace aspect
                                        const bool                                                   compute_strainrate,
                                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const
   {
-    unsigned int n_q_points = material_model_inputs.temperature.size();
+    const unsigned int n_q_points = material_model_inputs.temperature.size();
     for (unsigned int q=0; q<n_q_points; ++q)
       material_model_inputs.position[q] = input_finite_element_values.quadrature_point(q);
 
