@@ -363,7 +363,17 @@ namespace aspect
         Assert (plugins != 0,
                 ExcMessage ("No postprocessors registered!?"));
         Assert (name != "",
-                ExcMessage("A plugin must have a name!"));
+                ExcMessage("A plugin must have a name!\n\n"
+                    "This function was asked to create a plugin but no name for the "
+                    "plugin was provided. This may be due to the fact that you did not "
+                    "explicitly specify a name for this plugin in your input file and "
+                    "ASPECT does not provide a default for this kind of plugin, for "
+                    "example because no generally useful plugin exists. An example "
+                    "is that there is no default geometry: You need to explicitly "
+                    "provide one in the input file, and it seems like you have not "
+                    "done so.\n\n"
+                    "To find out which kind of plugin this function tries to create, "
+                    "take a look at the backtrace of this error message."))
 
         for (typename std::list<PluginInfo>::const_iterator p = plugins->begin();
              p != plugins->end(); ++p)
