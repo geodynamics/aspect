@@ -309,7 +309,7 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::compute_parameters(const struct MaterialModelInputs &in, struct MaterialModelOutputs &out)
+    Interface<dim>::evaluate(const struct MaterialModelInputs &in, struct MaterialModelOutputs &out)
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {

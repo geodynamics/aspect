@@ -696,7 +696,7 @@ namespace aspect
                                          true,
                                          scratch.material_model_inputs);
 
-    material_model->compute_parameters(scratch.material_model_inputs,scratch.material_model_outputs);
+    material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
@@ -850,7 +850,7 @@ namespace aspect
                                          rebuild_stokes_matrix,
                                          scratch.material_model_inputs);
 
-    material_model->compute_parameters(scratch.material_model_inputs,scratch.material_model_outputs);
+    material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
@@ -1219,7 +1219,7 @@ namespace aspect
                                              scratch.finite_element_values,
                                              true,
                                              scratch.material_model_inputs);
-        material_model->compute_parameters(scratch.material_model_inputs,scratch.material_model_outputs);
+        material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
 
         for (unsigned int q=0; q<n_q_points; ++q)
           {
@@ -1230,7 +1230,7 @@ namespace aspect
               scratch.explicit_material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;
             scratch.explicit_material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
           }
-        material_model->compute_parameters(scratch.explicit_material_model_inputs,scratch.explicit_material_model_outputs);
+        material_model->evaluate(scratch.explicit_material_model_inputs,scratch.explicit_material_model_outputs);
       }
 
     // TODO: Compute artificial viscosity once per timestep instead of each time
