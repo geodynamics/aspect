@@ -6,6 +6,7 @@ tests = $(shell echo *.prm | sed s/.prm//g)
 
 SUBDIR = x-app-aspect
 ID     = `id -un`"@"`hostname`
+DEAL_II_DIFF ?= diff -q
 
 
 all: $(tests) Makefile.dep
@@ -23,7 +24,8 @@ $(tests):
 	   for i in `cd $@; echo *` ; do \
              cat $@/$$i | egrep -v '^\|' > $@/$$i.notime ; \
              cat output-$@/$$i | egrep -v '^\|' > output-$@/$$i.notime ; \
-	     if ((diff -q $@/$$i.notime output-$@/$$i.notime 2>&1) > /dev/null) ; then \
+             echo $(DEAL_II_DIFF) $@/$$i.notime output-$@/$$i.notime ; \
+	     if (($(DEAL_II_DIFF) $@/$$i.notime output-$@/$$i.notime 2>&1) > /dev/null) ; then \
 		  : ; \
 	     else \
 		  echo "Files $@/$$i output-$@/$$i differ" ; \
@@ -54,7 +56,7 @@ output-%:
 	@mkdir $@
 	@cat $< | $(PERL) -pi -e 's/(Output directory\s*=).*/\1 $@/g;' \
 		> $(<).tmp
-	@if (diff -q $< $(<).tmp > /dev/null) ; then \
+	@if ($(DEAL_II_DIFF) $< $(<).tmp > /dev/null) ; then \
 		rm $(<).tmp ; \
 	 else \
 		mv $(<).tmp $< ; \
@@ -96,6 +98,7 @@ clean:
 	rm -rf output-*
 	rm -rf Makefile.dep
 	rm -rf *~
+	rm -rf */*.notime
 
 
 Makefile.dep: Makefile $(shell echo *.prm)
