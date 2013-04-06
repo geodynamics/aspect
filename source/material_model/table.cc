@@ -420,14 +420,16 @@ namespace aspect
     {
       const double R=  8.3143; //TODO gasconstant (well its constant....)
 
-      if (strcmp(viscosity_model.c_str(),"Composite")) return 1;
+      if (viscosity_model == "Composite")
+        return 1;
+
       const double viscosity_diffusion = std::min(1e22,(1e0/prefactor_diffusion)*
-                                                  exp((activation_energy_diffusion+
+                                                  std::exp((activation_energy_diffusion+
                                                        activation_volume_diffusion*pressure)/(R*temperature)));
       const double viscosity_dislocation = std::min(1e22,std::pow(prefactor_dislocation,-1e0/stress_exponent)*
                                                     std::pow(strain_rate.norm(),(1e0-stress_exponent)/
                                                              stress_exponent)*
-                                                    exp((activation_energy_dislocation+
+                                                    std::exp((activation_energy_dislocation+
                                                          activation_volume_dislocation*pressure)/(stress_exponent*R*temperature)));
 
       return std::max(1e17,viscosity_dislocation)/std::max(1e17,viscosity_diffusion);
@@ -742,7 +744,7 @@ namespace aspect
               prm.declare_entry ("Prefactor diffusion", "1.92e-11",
                                  Patterns::Double (0),
                                  "prefactor for diffusion creep "
-                                 "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
+                                 "(1e0/prefactor)*exp((activation\\_energy+activation\\_volume*pressure)/(R*temperature))");
             }
             prm.leave_subsection();
             prm.enter_subsection ("Dislocation");
@@ -756,7 +758,7 @@ namespace aspect
               prm.declare_entry ("Prefactor dislocation", "1.92e-11",
                                  Patterns::Double (0),
                                  "prefactor for dislocation creep "
-                                 "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
+                                 "(1e0/prefactor)*exp((activation\\_energy+activation\\_volume*pressure)/(R*temperature))");
               prm.declare_entry ("Stress exponent", "3.5",
                                  Patterns::Double (0),
                                  "stress exponent for dislocation creep");
@@ -773,7 +775,7 @@ namespace aspect
               prm.declare_entry ("Prefactor diffusion", "1.92e-11",
                                  Patterns::Double (0),
                                  "prefactor for diffusion creep "
-                                 "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
+                                 "(1e0/prefactor)*exp((activation\\_energy+activation\\_volume*pressure)/(R*temperature))");
               prm.declare_entry ("Activation energy dislocation", "540e3",
                                  Patterns::Double (0),
                                  "activation energy for dislocation creep");
@@ -783,7 +785,7 @@ namespace aspect
               prm.declare_entry ("Prefactor dislocation", "2.42e-10",
                                  Patterns::Double (0),
                                  "prefactor for dislocation creep "
-                                 "(1e0/prefactor)*exp((activation_energy+activation_volume*pressure)/(R*temperature))");
+                                 "(1e0/prefactor)*exp((activation\\_energy+activation\\_volume*pressure)/(R*temperature))");
               prm.declare_entry ("Stress exponent", "3.5",
                                  Patterns::Double (0),
                                  "stress exponent for dislocation creep");

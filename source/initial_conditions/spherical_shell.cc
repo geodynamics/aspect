@@ -192,7 +192,7 @@ namespace aspect
                              Patterns::FileName(),
                              "The file from which the initial geotherm table is to be read. "
                              "The format of the file is defined by what is read in "
-                             "source/initial_conditions/spherical_shell.cc.");
+                             "source/initial\\_conditions/spherical\\_shell.cc.");
         }
         prm.leave_subsection ();
       }
