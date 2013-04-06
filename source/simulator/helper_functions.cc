@@ -530,7 +530,7 @@ namespace aspect
         pressure_adjustment = -temp[0]/temp[1] + parameters.surface_pressure;
       else if (parameters.pressure_normalization == "volume")
 //TODO: This can't be right. it should be -temp[0]/temp[1] to divide
-	// by the volume. this was definitely wrong in ASPIRE
+        // by the volume. this was definitely wrong in ASPIRE
         pressure_adjustment = -temp[0];
       else
         AssertThrow(false, ExcNotImplemented());
@@ -597,7 +597,7 @@ namespace aspect
   {
     if (parameters.pressure_normalization == "no")
       return;
-    
+
     if (parameters.use_locally_conservative_discretization == false)
       vector.block (1).add (-1.0 * pressure_adjustment);
     else

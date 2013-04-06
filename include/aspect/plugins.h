@@ -205,7 +205,7 @@ namespace aspect
         static
         InterfaceClass *
         create_plugin (const std::string  &name,
-            const std::string &documentation);
+                       const std::string &documentation);
 
         /**
          * Given the name of one plugin, create a corresponding object
@@ -221,7 +221,7 @@ namespace aspect
         static
         InterfaceClass *
         create_plugin (const std::string  &name,
-            const std::string &documentation,
+                       const std::string &documentation,
                        ParameterHandler &prm);
 
         /**
@@ -365,26 +365,26 @@ namespace aspect
       InterfaceClass *
       PluginList<InterfaceClass>::
       create_plugin (const std::string  &name,
-          const std::string &documentation)
+                     const std::string &documentation)
       {
         Assert (plugins != 0,
                 ExcMessage ("No postprocessors registered!?"));
         Assert (name != "",
                 ExcMessage(std::string("A plugin must have a name!\n\n"
-                    "This function was asked to create a plugin but no name for the "
-                    "plugin was provided. This may be due to the fact that you did not "
-                    "explicitly specify a name for this plugin in your input file and "
-                    "ASPECT does not provide a default for this kind of plugin, for "
-                    "example because no generally useful plugin exists. An example "
-                    "is that there is no default geometry: You need to explicitly "
-                    "provide one in the input file, and it seems like you have not "
-                    "done so.\n\n"
-                    "To find out which kind of plugin this function tries to create, "
-                    "take a look at the backtrace of this error message.\n\n"
-                    "The place that called this function also provided as "
-                    "additional information this:\n\n"
-                    "   <")
-        + documentation + ">"));
+                                       "This function was asked to create a plugin but no name for the "
+                                       "plugin was provided. This may be due to the fact that you did not "
+                                       "explicitly specify a name for this plugin in your input file and "
+                                       "ASPECT does not provide a default for this kind of plugin, for "
+                                       "example because no generally useful plugin exists. An example "
+                                       "is that there is no default geometry: You need to explicitly "
+                                       "provide one in the input file, and it seems like you have not "
+                                       "done so.\n\n"
+                                       "To find out which kind of plugin this function tries to create, "
+                                       "take a look at the backtrace of this error message.\n\n"
+                                       "The place that called this function also provided as "
+                                       "additional information this:\n\n"
+                                       "   <")
+                           + documentation + ">"));
 
         for (typename std::list<PluginInfo>::const_iterator p = plugins->begin();
              p != plugins->end(); ++p)

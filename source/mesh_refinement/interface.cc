@@ -351,7 +351,7 @@ namespace aspect
         mesh_refinement_objects.push_back (std_cxx1x::shared_ptr<Interface<dim> >
                                            (std_cxx1x::get<dim>(registered_plugins)
                                             .create_plugin (plugin_names[name],
-                                                "Mesh refinement::Refinement criteria merge operation",
+                                                            "Mesh refinement::Refinement criteria merge operation",
                                                             prm)));
     }
 

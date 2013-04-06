@@ -349,10 +349,10 @@ namespace aspect
     pcout << "   Solving Stokes system... " << std::flush;
 
     const internal::StokesBlock stokes_block(system_matrix);
-    
+
     // extract Stokes parts of solution vector, without any ghost elements
     LinearAlgebra::BlockVector
-      distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
+    distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
     // create vector with distribution of system_rhs.
     LinearAlgebra::BlockVector remap (introspection.index_sets.system_partitioning, mpi_communicator);
     // copy current_linearization_point into it, because its distribution
@@ -380,8 +380,8 @@ namespace aspect
 
     // extract Stokes parts of rhs vector
     LinearAlgebra::BlockVector
-      distributed_stokes_rhs (introspection.index_sets.system_partitioning, mpi_communicator);
-    
+    distributed_stokes_rhs (introspection.index_sets.system_partitioning, mpi_communicator);
+
     distributed_stokes_rhs.block(0) = system_rhs.block(0);
     distributed_stokes_rhs.block(1) = system_rhs.block(1);
 

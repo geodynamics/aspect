@@ -87,19 +87,19 @@ namespace aspect
         {
           const types::boundary_id s[] = { 0, 1 };
           return std::set<types::boundary_id>(&s[0],
-                                                &s[sizeof(s)/sizeof(s[0])]);
+                                              &s[sizeof(s)/sizeof(s[0])]);
         }
       else if (phi == 90 && dim == 3)
         {
           const types::boundary_id s[] = { 0, 1, 2, 3, 4};
           return std::set<types::boundary_id>(&s[0],
-                                                &s[sizeof(s)/sizeof(s[0])]);
+                                              &s[sizeof(s)/sizeof(s[0])]);
         }
       else
         {
           const types::boundary_id s[] = { 0, 1, 2, 3 };
           return std::set<types::boundary_id>(&s[0],
-                                                &s[sizeof(s)/sizeof(s[0])]);
+                                              &s[sizeof(s)/sizeof(s[0])]);
         }
     }
 

@@ -104,7 +104,7 @@ namespace aspect
 
       // also query the unit system for time
       use_years_instead_of_seconds
-      = prm.get_bool ("Use years in output instead of seconds");
+        = prm.get_bool ("Use years in output instead of seconds");
     }
 
   }

@@ -562,84 +562,84 @@ namespace aspect
          * @}
          */
 
-	/**
-	 * Data structure with all inputs for the evaluate() method. The
-	 * vectors all have the same length and refer to different
-	 * evaluation points (given in #position).
-	 */
+        /**
+         * Data structure with all inputs for the evaluate() method. The
+         * vectors all have the same length and refer to different
+         * evaluation points (given in #position).
+         */
         struct MaterialModelInputs
         {
           MaterialModelInputs(unsigned int n_points, unsigned int n_comp);
 
-	    /**
-	     * Vector with global positions where the material has to be evaluated in evaluate().
-	     */
+          /**
+           * Vector with global positions where the material has to be evaluated in evaluate().
+           */
           std::vector<Point<dim> > position;
-	    /**
-	     * Temperature values at the points given in the #position vector.
-	     */
+          /**
+           * Temperature values at the points given in the #position vector.
+           */
           std::vector<double> temperature;
-	    /**
-	     * Pressure values at the points given in the #position vector.
-	     */
+          /**
+           * Pressure values at the points given in the #position vector.
+           */
           std::vector<double> pressure;
-	    /**
-	     * Values of the compositional fields at the points given in the #position vector:
-	     composition[i][c] is the compositional field c at point i.
-	     */
+          /**
+           * Values of the compositional fields at the points given in the #position vector:
+           composition[i][c] is the compositional field c at point i.
+           */
           std::vector<std::vector<double> > composition;
-	    /**
-	     * Strain rate at the points given in the #position vector.
-	     */
+          /**
+           * Strain rate at the points given in the #position vector.
+           */
           std::vector<SymmetricTensor<2,dim> > strain_rate;
         };
 
-	/**
-	 * Data structure with the output field of this material model. These
-	 * values are supposed to be filled in evaluate(). The vectors are the
-	 * values at the different positions given by MaterialModelInputs::position.
-	 */
+        /**
+         * Data structure with the output field of this material model. These
+         * values are supposed to be filled in evaluate(). The vectors are the
+         * values at the different positions given by MaterialModelInputs::position.
+         */
         struct MaterialModelOutputs
         {
           MaterialModelOutputs(unsigned int n_points);
 
-	    /**
-	     * Viscosity values at the given positions.
-	     */
+          /**
+           * Viscosity values at the given positions.
+           */
           std::vector<double> viscosities;
-	    /**
-	     * Density values at the given positions.
-	     */
+          /**
+           * Density values at the given positions.
+           */
           std::vector<double> densities;
-	    /**
-	     * Thermal expansion coefficients at the given positions.
-	     */
+          /**
+           * Thermal expansion coefficients at the given positions.
+           */
           std::vector<double> thermal_expansion_coefficients;
-	    /**
-	     * Specific heat at the given positions.
-	     */
+          /**
+           * Specific heat at the given positions.
+           */
           std::vector<double> specific_heat;
-	    /**
-	     * Thermal conductivity at the given positions.
-	     */
+          /**
+           * Thermal conductivity at the given positions.
+           */
           std::vector<double> thermal_conductivities;
-	    /**
-	     * Compressibility at the given positions.
-	     */
+          /**
+           * Compressibility at the given positions.
+           */
           std::vector<double> compressibilities;
-	    /**
-	     * Specify if the material model is compressible.
-	     */
+          /**
+           * Specify if the material model is compressible.
+           */
           bool is_compressible;
         };
 
-	/**
-	 * Function to compute the material properties in @p out given the inputs
-	 * in @p in. The default implementation calls the all the separate implementations
-	 * for viscosity, density, etc. and fills the data structure with these values.
-	 * For complicated models it is recommended to override this function for
-	 * performance reasons. 
-	 */	
+        /**
+         * Function to compute the material properties in @p out given the inputs
+         * in @p in. The default implementation calls the all the separate implementations
+         * for viscosity, density, etc. and fills the data structure with these values.
+         * For complicated models it is recommended to override this function for
+         * performance reasons.
+         */
         virtual void evaluate(const MaterialModelInputs &in, MaterialModelOutputs &out);
 
         /**

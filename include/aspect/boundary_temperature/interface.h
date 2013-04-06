@@ -83,7 +83,7 @@ namespace aspect
          */
         virtual
         double minimal_temperature (const std::set<types::boundary_id>& fixed_boundary_ids =
-        		                    std::set<types::boundary_id>()) const = 0;
+                                      std::set<types::boundary_id>()) const = 0;
 
         /**
          * Return the maximal the temperature on that part of the boundary
@@ -94,7 +94,7 @@ namespace aspect
          */
         virtual
         double maximal_temperature (const std::set<types::boundary_id>& fixed_boundary_ids =
-                                    std::set<types::boundary_id>()) const = 0;
+                                      std::set<types::boundary_id>()) const = 0;
 
         /**
          * Declare the parameters this class takes through input files.

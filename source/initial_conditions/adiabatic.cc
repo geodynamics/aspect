@@ -35,9 +35,9 @@ namespace aspect
     {
       // convert input ages to seconds
       const double age_top =    (this->convert_output_to_years() ? age_top_boundary_layer * year_in_seconds
-    		                                                     : age_top_boundary_layer);
+                                 : age_top_boundary_layer);
       const double age_bottom = (this->convert_output_to_years() ? age_bottom_boundary_layer * year_in_seconds
-    		                                                     : age_bottom_boundary_layer);
+                                 : age_bottom_boundary_layer);
 
       // first, get the temperature at the top and bottom boundary of the model
       const double T_surface = this->boundary_temperature->minimal_temperature(this->get_fixed_temperature_boundary_indicators());
@@ -55,81 +55,81 @@ namespace aspect
       const dealii::Point<1, double> depth(this->geometry_model->depth(position));
 
       std::vector<double> compositional_fields(this->n_compositional_fields());
-      for (unsigned int c=0;c<this->n_compositional_fields();++c)
+      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         compositional_fields[c] = function->value(depth,c);
 
       // get the thermal diffusivity kappa
       const double kappa = this->get_material_model().thermal_conductivity(this->adiabatic_conditions->temperature(position),
-    		                                                               this->adiabatic_conditions->pressure(position),
-    		                                                               compositional_fields,
-    		                                                               position)
-    		               / (this->get_material_model().density(this->adiabatic_conditions->temperature(position),
+                                                                           this->adiabatic_conditions->pressure(position),
+                                                                           compositional_fields,
+                                                                           position)
+                           / (this->get_material_model().density(this->adiabatic_conditions->temperature(position),
                                                                  this->adiabatic_conditions->pressure(position),
                                                                  compositional_fields,
-    		            		                                 position)
-    		               * this->get_material_model().specific_heat(this->adiabatic_conditions->temperature(position),
-                                                                      this->adiabatic_conditions->pressure(position),
-                                                                      compositional_fields,
-    		            		                                      position));
+                                                                 position)
+                              * this->get_material_model().specific_heat(this->adiabatic_conditions->temperature(position),
+                                                                         this->adiabatic_conditions->pressure(position),
+                                                                         compositional_fields,
+                                                                         position));
 
       // analytical solution for the thermal boundary layer from half-space cooling model
       const double surface_cooling_temperature = age_top > 0.0 ?
-        (T_surface - Adiabatic_surface) * erfc(this->geometry_model->depth(position) / (2 * sqrt(kappa * age_top)))
-    	: 0.0;
+                                                 (T_surface - Adiabatic_surface) * erfc(this->geometry_model->depth(position) / (2 * sqrt(kappa * age_top)))
+                                                 : 0.0;
       const double bottom_heating_temperature = age_bottom > 0.0 ?
-    	(T_bottom - Adiabatic_bottom + subadiabaticity)
-    	* erfc((this->geometry_model->maximal_depth() - this->geometry_model->depth(position)) / (2 * sqrt(kappa * age_bottom)))
-    	: 0.0;
+                                                (T_bottom - Adiabatic_bottom + subadiabaticity)
+                                                * erfc((this->geometry_model->maximal_depth() - this->geometry_model->depth(position)) / (2 * sqrt(kappa * age_bottom)))
+                                                : 0.0;
 
       // set the initial temperature perturbation
       // first: get the center of the perturbation, then check the distance to the evaluation point
       Point<dim> mid_point (true);
-      if(perturbation_position == "center")
-      {
-        if (dynamic_cast <const GeometryModel::SphericalShell<dim>*> (this->geometry_model) != 0)
+      if (perturbation_position == "center")
         {
-    	  const double pi = 3.14159265;
-    	  double inner_radius = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).inner_radius();
-    	  double angle = pi/180.0 * 0.5 * dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).opening_angle();
-    	  if (dim==2)
-    	  {
-    	    mid_point(0) = inner_radius * sin(angle),
-    	    mid_point(1) = inner_radius * cos(angle);
-    	  }
-    	  else if (dim==3)
-    	  {
-    	    mid_point(0) = inner_radius * sin(angle) * cos(angle),
-    	    mid_point(1) = inner_radius * sin(angle) * sin(angle);
-    	    if(dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).opening_angle() == 90)
-    	      mid_point(2) = inner_radius * cos(4.0/3.0 * angle);
-    	    else
-    		  mid_point(2) = inner_radius * cos(angle);
-    	  }
+          if (dynamic_cast <const GeometryModel::SphericalShell<dim>*> (this->geometry_model) != 0)
+            {
+              const double pi = 3.14159265;
+              double inner_radius = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).inner_radius();
+              double angle = pi/180.0 * 0.5 * dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).opening_angle();
+              if (dim==2)
+                {
+                  mid_point(0) = inner_radius * sin(angle),
+                  mid_point(1) = inner_radius * cos(angle);
+                }
+              else if (dim==3)
+                {
+                  mid_point(0) = inner_radius * sin(angle) * cos(angle),
+                  mid_point(1) = inner_radius * sin(angle) * sin(angle);
+                  if (dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).opening_angle() == 90)
+                    mid_point(2) = inner_radius * cos(4.0/3.0 * angle);
+                  else
+                    mid_point(2) = inner_radius * cos(angle);
+                }
+            }
+          else if (dynamic_cast <const GeometryModel::Box<dim>*> (this->geometry_model) != 0)
+            for (unsigned int i=0; i<dim-1; ++i)
+              mid_point(i) += 0.5 * dynamic_cast<const GeometryModel::Box<dim>&> (*this->geometry_model).get_extents()[i];
+          else ExcMessage ("Not a valid geometry model for the initial conditions model"
+                             "adiabatic.");
         }
-        else if (dynamic_cast <const GeometryModel::Box<dim>*> (this->geometry_model) != 0)
-          for (unsigned int i=0;i<dim-1;++i)
-     	    mid_point(i) += 0.5 * dynamic_cast<const GeometryModel::Box<dim>&> (*this->geometry_model).get_extents()[i];
-        else ExcMessage ("Not a valid geometry model for the initial conditions model"
-      		             "adiabatic.");
-      }
 
       const double perturbation = (mid_point.distance(position) < radius) ? amplitude
-        		                                                          : 0.0;
+                                  : 0.0;
 
 
       // add the subadiabaticity
       const double zero_depth = 0.174;
       const double nondimesional_depth = (this->geometry_model->depth(position) / this->geometry_model->maximal_depth() - zero_depth)
-    		                             / (1.0 - zero_depth);
+                                         / (1.0 - zero_depth);
       double subadiabatic_T = 0.0;
-      if(nondimesional_depth > 0)
+      if (nondimesional_depth > 0)
         subadiabatic_T = -subadiabaticity * nondimesional_depth * nondimesional_depth;
 
       // return sum of the adiabatic profile, the boundary layer temperatures and the initial
       // temperature perturbation
       return this->adiabatic_conditions->temperature(position) + surface_cooling_temperature
-    		  + (perturbation > 0.0 ? std::max(bottom_heating_temperature + subadiabatic_T,perturbation)
-                                    : bottom_heating_temperature + subadiabatic_T);
+             + (perturbation > 0.0 ? std::max(bottom_heating_temperature + subadiabatic_T,perturbation)
+                : bottom_heating_temperature + subadiabatic_T);
     }
 
 
@@ -214,15 +214,15 @@ namespace aspect
           amplitude = prm.get_double ("Amplitude");
           perturbation_position = prm.get("Position");
           subadiabaticity = prm.get_double ("Subadiabaticity");
-          if(n_compositional_fields > 0)
-          {
-            prm.enter_subsection("Function");
+          if (n_compositional_fields > 0)
             {
-              function.reset (new Functions::ParsedFunction<1>(n_compositional_fields));
-              function->parse_parameters (prm);
+              prm.enter_subsection("Function");
+              {
+                function.reset (new Functions::ParsedFunction<1>(n_compositional_fields));
+                function->parse_parameters (prm);
+              }
+              prm.leave_subsection();
             }
-            prm.leave_subsection();
-          }
         }
         prm.leave_subsection ();
       }

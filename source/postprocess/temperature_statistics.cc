@@ -69,9 +69,9 @@ namespace aspect
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                                                                                          temperature_values);
             for (unsigned int q=0; q<n_q_points; ++q)
-            {
-              local_temperature_integral += temperature_values[q]*fe_values.JxW(q);
-            }
+              {
+                local_temperature_integral += temperature_values[q]*fe_values.JxW(q);
+              }
           }
 
       // compute min/max by simply
