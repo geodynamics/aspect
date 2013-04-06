@@ -104,3 +104,9 @@ write a testcase for friction heating (Poiseulle flow) and
   adiabatic heating (constant downward velocity)
 write a postprocessor that shows temperature minus depth averaged
   temperature. maybe similar for density (= buoyancy)
+
+
+
+
+write tests for the termination modules
+improve the handling of termination criteria in core.cc:1200
