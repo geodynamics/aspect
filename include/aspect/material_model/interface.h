@@ -116,6 +116,16 @@ namespace aspect
      * such as the viscosity, density, etc, typically as a function of position,
      * temperature and pressure at that location.
      *
+     * There is two ways to implement a material model and they can not be mixed:
+     * Option one is to override all the virtual functions like viscosity(),
+     * density(), etc. but not change evaluate().
+     *
+     * Option two only requires you to override evaluate() and fill the output
+     * argument struct. In this case, all other functions are being ignored.
+     *
+     * The second option is more efficient in general, but it is okay to use option
+     * one for simple material models.
+     *
      * @ingroup MaterialModels
      */
     template <int dim>
