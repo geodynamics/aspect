@@ -539,7 +539,9 @@ namespace aspect
             {
               VisualizationPostprocessors::Interface<dim> *
               viz_postprocessor = std_cxx1x::get<dim>(registered_plugins)
-                                  .create_plugin (viz_names[name], prm);
+                                  .create_plugin (viz_names[name],
+                                      "Visualization plugins",
+                                      prm);
 
               // make sure that the postprocessor is indeed of type
               // dealii::DataPostprocessor or of type

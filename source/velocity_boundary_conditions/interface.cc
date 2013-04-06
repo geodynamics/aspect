@@ -103,7 +103,9 @@ namespace aspect
                                          ParameterHandler &prm,
                                          const GeometryModel::Interface<dim> &geometry_model)
     {
-      Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (name, prm);
+      Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
+          "Velocity boundary conditions",
+          prm);
       plugin->initialize (geometry_model);
       return plugin;
     }

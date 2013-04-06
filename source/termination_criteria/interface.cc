@@ -214,6 +214,7 @@ namespace aspect
           termination_objects.push_back (std_cxx1x::shared_ptr<Interface<dim> >
                                          (std_cxx1x::get<dim>(registered_plugins)
                                           .create_plugin (plugin_names[name],
+                                              "Termination criteria::Termination criteria",
                                                           prm)));
           termination_obj_names.push_back(plugin_names[name]);
         }

@@ -109,7 +109,9 @@ namespace aspect
           }
           prm.leave_subsection ();
 
-          Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name, prm);
+          Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
+              "Compositional initial conditions::Model name",
+              prm);
           plugin->initialize (geometry_model);
           return plugin;
         }

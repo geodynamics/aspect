@@ -195,18 +195,23 @@ namespace aspect
 
         /**
          * Given the name of one plugin, create a corresponding object
-         * and return a pointer to it.
+         * and return a pointer to it. The second argument provides a
+         * hint where this function was called from, to be printed
+         * in case there is an error.
          *
          * Ownership of the object is handed over to the caller of
          * this function.
          */
         static
         InterfaceClass *
-        create_plugin (const std::string  &name);
+        create_plugin (const std::string  &name,
+            const std::string &documentation);
 
         /**
          * Given the name of one plugin, create a corresponding object
-         * and return a pointer to it. Before returning, let the newly
+         * and return a pointer to it. The second argument provides a
+         * hint where this function was called from, to be printed
+         * in case there is an error. Before returning, let the newly
          * created object read its run-time parameters from the
          * parameter object.
          *
@@ -216,6 +221,7 @@ namespace aspect
         static
         InterfaceClass *
         create_plugin (const std::string  &name,
+            const std::string &documentation,
                        ParameterHandler &prm);
 
         /**
@@ -358,12 +364,13 @@ namespace aspect
       template <typename InterfaceClass>
       InterfaceClass *
       PluginList<InterfaceClass>::
-      create_plugin (const std::string  &name)
+      create_plugin (const std::string  &name,
+          const std::string &documentation)
       {
         Assert (plugins != 0,
                 ExcMessage ("No postprocessors registered!?"));
         Assert (name != "",
-                ExcMessage("A plugin must have a name!\n\n"
+                ExcMessage(std::string("A plugin must have a name!\n\n"
                     "This function was asked to create a plugin but no name for the "
                     "plugin was provided. This may be due to the fact that you did not "
                     "explicitly specify a name for this plugin in your input file and "
@@ -373,7 +380,11 @@ namespace aspect
                     "provide one in the input file, and it seems like you have not "
                     "done so.\n\n"
                     "To find out which kind of plugin this function tries to create, "
-                    "take a look at the backtrace of this error message."))
+                    "take a look at the backtrace of this error message.\n\n"
+                    "The place that called this function also provided as "
+                    "additional information this:\n\n"
+                    "   <")
+        + documentation + ">"));
 
         for (typename std::list<PluginInfo>::const_iterator p = plugins->begin();
              p != plugins->end(); ++p)
@@ -392,10 +403,11 @@ namespace aspect
       template <typename InterfaceClass>
       InterfaceClass *
       PluginList<InterfaceClass>::
-      create_plugin (const std::string  &name,
+      create_plugin (const std::string &name,
+                     const std::string &documentation,
                      ParameterHandler &prm)
       {
-        InterfaceClass *i = create_plugin(name);
+        InterfaceClass *i = create_plugin(name, documentation);
         i->parse_parameters (prm);
         return i;
       }
