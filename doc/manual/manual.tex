@@ -5399,7 +5399,8 @@ class.%
     13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]}$ instead. To test whether
   the model is compressible or not, the plugin needs access to the material
   model object, which the class gains by deriving from
-  \href{doc/doxygen/classaspect_1_1Postprocess_1_1SimulatorAccess.html}{aspect::Postprocess::SimulatorAccess}.}
+  \href{doc/doxygen/classaspect_1_1Postprocess_1_1SimulatorAccess.html}{aspect::Postprocess::SimulatorAccess}
+  and then calling \texttt{this->get\_material\_model().is\_compressible()}.}
 
 Visualization plugins can come in two flavors:
 \begin{itemize}
@@ -5504,6 +5505,16 @@ and using them as a template.
 
 \index[prmindex]{Mesh refinement}
 \index[prmindexfull]{Mesh refinement}
+
+\marginpar{Write}
+
+
+\subsubsection{Criteria for terminating a simulation}
+\label{sec:terminators}
+
+
+\index[prmindex]{Mesh refinementxxxxxxxxxxxxxxxxxx}
+\index[prmindexfull]{Mesh refinementxxxxxxxxxxxxxxxxx}
 
 \marginpar{Write}
 
