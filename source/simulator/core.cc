@@ -1060,7 +1060,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::run ()
   {
-    bool terminate_simulation = false, perform_final_checkpoint;
+//    bool terminate_simulation = false, perform_final_checkpoint;
     last_checkpoint_time = std::time(NULL);
     unsigned int max_refinement_level = parameters.initial_global_refinement +
                                         parameters.initial_adaptive_refinement;
@@ -1193,9 +1193,12 @@ namespace aspect
           old_solution          = solution;
         }
 
-        // check whether to continue the simulation
-        termination_manager.execute(terminate_simulation, perform_final_checkpoint);
-        terminate_simulation |= (time >= parameters.end_time);
+        // check whether to terminate the simulation. the
+        // first part of the pair indicates whether to terminate
+        // the execution; the second indicates whether to do one
+        // more checkpoint
+        std::pair<bool,bool> termination = termination_manager.execute();
+        termination.first |= (time >= parameters.end_time);
 
         // periodically generate snapshots so that we can resume here
         // if the program aborts or is terminated
@@ -1219,9 +1222,10 @@ namespace aspect
 
         // Do a checkpoint either if indicated by checkpoint parameters, or if this
         // is the end of simulation and the termination criteria say to checkpoint
-        if (do_checkpoint || (terminate_simulation && perform_final_checkpoint))
+        if (do_checkpoint || (termination.first && termination.second))
           {
-            if (perform_final_checkpoint) pcout << "*** Performing final checkpoint." << std::endl;
+            if (termination.second)
+              pcout << "*** Performing final checkpoint." << std::endl;
 
             create_snapshot();
             // matrices will be regenerated after a resume, so do that here too
@@ -1232,8 +1236,12 @@ namespace aspect
               rebuild_stokes_preconditioner = true;
             last_checkpoint_time = std::time(NULL);
           }
+
+        // see if we want to terminate
+        if (termination.first)
+          break;
       }
-    while (!terminate_simulation);
+    while (true);
   }
 }
 

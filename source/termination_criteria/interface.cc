@@ -67,33 +67,35 @@ namespace aspect
 
 
     template <int dim>
-    void
-    Manager<dim>::execute (bool &terminate_simulation, bool &perform_final_checkpoint) const
+    std::pair<bool,bool>
+    Manager<dim>::execute () const
     {
-      std::list<std::string>::const_iterator  itn;
-      bool terminate = false;
-      perform_final_checkpoint = do_checkpoint_on_terminate;
+      bool terminate_simulation = false;
+
 
       // call the execute() functions of all plugins we have
       // here in turns.
-      itn = termination_obj_names.begin();
+      std::list<std::string>::const_iterator  itn = termination_obj_names.begin();;
       for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
            p = termination_objects.begin();
            p != termination_objects.end(); ++p,++itn)
         {
           try
             {
-              terminate = (*p)->execute ();
+              const bool terminate = (*p)->execute ();
 
-              // This is kludgy because of the typecasting, but it works for now
-              terminate_simulation = (bool)Utilities::MPI::max ((double)terminate, this->get_mpi_communicator());
+              // do the reduction: does any one of the processors
+              // think that we should terminate?
+              const bool all_terminate = (Utilities::MPI::max ((terminate ? 1 : 0),
+                                                               this->get_mpi_communicator())
+                                          == 1);
+              terminate_simulation |= all_terminate;
 
-              // Let the user know which criteria caused the termination
-              // TODO: fix this to show the plugin name
-              if (terminate_simulation)
-                {
-                  this->get_pcout() << "Termination requested by criterion: " << *itn << std::endl;
-                }
+              // Let the user know which criterion caused the termination
+              if (all_terminate == true)
+                this->get_pcout() << "Termination requested by criterion: "
+                << *itn
+                << std::endl;
             }
           // plugins that throw exceptions usually do not result in
           // anything good because they result in an unwinding of the stack
@@ -138,6 +140,9 @@ namespace aspect
               MPI_Abort (MPI_COMM_WORLD, 1);
             }
         }
+
+      return std::make_pair (terminate_simulation,
+                             do_checkpoint_on_terminate);
     }
 
 

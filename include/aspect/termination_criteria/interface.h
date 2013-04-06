@@ -134,10 +134,15 @@ namespace aspect
         /**
          * Execute all of the termination criteria objects that have been
          * requested in the input file.
+         *
+         * The function returns a pair of values. The first part of the
+         * returned pair indicates whether the simulation should be
+         * terminated. The second part indicates whether a final checkpoint
+         * should be performed.
          */
         virtual
-        void
-        execute (bool &terminate_simulation, bool &perform_final_checkpoint) const;
+        std::pair<bool,bool>
+        execute () const;
 
         /**
          * Declare the parameters of all known termination criteria plugins, as
