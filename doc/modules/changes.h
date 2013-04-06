@@ -9,6 +9,16 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+Fixed: When running an input file that simply forgot to provide
+names to certain plugins (for example, that does not list anything
+at all for the geometry model), the resulting error message was
+pretty obscure and non-informative. This has now been fixed: the
+error message is much more descriptive and at least says where the
+error may have happened and what the missing parameter is.
+<br>
+(Wolfgang Bangerth, 2013/04/05)
+
+<li>
 New: a postprocessor to output the sparsity pattern of the block
 matrix. Intended mainly for debugging purposes.
 <br>
