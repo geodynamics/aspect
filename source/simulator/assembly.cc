@@ -878,7 +878,7 @@ namespace aspect
         gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
         const double compressibility
-          = (scratch.material_model_outputs.is_compressible
+          = (material_model->is_compressible()
              ?
              scratch.material_model_outputs.compressibilities[q]
              :
@@ -889,7 +889,7 @@ namespace aspect
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             for (unsigned int j=0; j<dofs_per_cell; ++j)
               data.local_matrix(i,j) += ( eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
-                                          - (scratch.material_model_outputs.is_compressible
+                                          - (material_model->is_compressible()
                                              ?
                                              eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                              :
@@ -903,7 +903,7 @@ namespace aspect
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           data.local_rhs(i) += (
                                  (density * gravity * scratch.phi_u[i])
-                                 + (scratch.material_model_outputs.is_compressible
+                                 + (material_model->is_compressible()
                                     ?
                                     (pressure_scaling *
                                      compressibility * density *
@@ -913,7 +913,7 @@ namespace aspect
                                     0)
                                )
                                * scratch.finite_element_values.JxW(q);
-        if (scratch.material_model_outputs.is_compressible)
+        if (material_model->is_compressible())
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
@@ -1074,8 +1074,7 @@ namespace aspect
     const double alpha                = material_model_outputs.thermal_expansion_coefficients[q];
     const double density              = material_model_outputs.densities[q];
     const double viscosity            = material_model_outputs.viscosities[q];
-    const bool is_compressible        = material_model_outputs.is_compressible;
-    const double compressibility      = (is_compressible
+    const double compressibility      = (material_model->is_compressible()
                                          ?
                                          material_model_outputs.compressibilities[q]
                                          :
@@ -1106,7 +1105,7 @@ namespace aspect
           2 * viscosity *
           current_strain_rate * current_strain_rate
           -
-          (is_compressible
+          (material_model->is_compressible()
            ?
            2./3.*viscosity*std::pow(compressibility * density * (current_u * gravity),
                                     2)

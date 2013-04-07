@@ -121,10 +121,14 @@ namespace aspect
      * density(), etc. but not change evaluate().
      *
      * Option two only requires you to override evaluate() and fill the output
-     * argument struct. In this case, all other functions are being ignored.
+     * argument struct instead of implementing the functions viscosity(),
+     * density(), etc.. In this case, all other functions are being ignored.
      *
      * The second option is more efficient in general, but it is okay to use option
      * one for simple material models.
+     *
+     * In all cases, *_depends_on(), is_compressible(), reference_viscosity(),
+     * reference_density() need to be implemented.
      *
      * @ingroup MaterialModels
      */
@@ -171,7 +175,7 @@ namespace aspect
                                   const double                  pressure,
                                   const std::vector<double>    &compositional_fields,
                                   const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const = 0;
+                                  const Point<dim>             &position) const;
 
         /**
          * Return the viscosity ratio between disclocation creep and diffusion creep
@@ -190,7 +194,7 @@ namespace aspect
         virtual double density (const double      temperature,
                                 const double      pressure,
                                 const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const = 0;
+                                const Point<dim> &position) const;
 
         /**
          * Return the compressibility coefficient
@@ -200,7 +204,7 @@ namespace aspect
         virtual double compressibility (const double temperature,
                                         const double pressure,
                                         const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const = 0;
+                                        const Point<dim> &position) const;
 
         /**
          * Return the specific heat $C_p$ of the model as a function of temperature,
@@ -209,7 +213,7 @@ namespace aspect
         virtual double specific_heat (const double      temperature,
                                       const double      pressure,
                                       const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const = 0;
+                                      const Point<dim> &position) const;
 
         /**
          * Return the thermal expansion coefficient $\alpha$ of the model,
@@ -245,7 +249,7 @@ namespace aspect
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
                                              const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const = 0;
+                                             const Point<dim> &position) const;
 
         /**
          * Return the thermal diffusivity $\kappa$ of the model as a function of temperature,
@@ -509,7 +513,7 @@ namespace aspect
          * coefficient $\alpha$. See the thermal_expansion_coefficient()
          * function for a definition of $\alpha$.
          */
-        virtual double reference_thermal_expansion_coefficient () const = 0;
+        virtual double reference_thermal_expansion_coefficient () const;
         /**
          * @}
          */
@@ -637,10 +641,6 @@ namespace aspect
            * Compressibility at the given positions.
            */
           std::vector<double> compressibilities;
-          /**
-           * Specify if the material model is compressible.
-           */
-          bool is_compressible;
         };
 
         /**
@@ -650,7 +650,7 @@ namespace aspect
          * For complicated models it is recommended to override this function for
          * performance reasons.
          */
-        virtual void evaluate(const MaterialModelInputs &in, MaterialModelOutputs &out);
+        virtual void evaluate(const MaterialModelInputs &in, MaterialModelOutputs &out) const;
 
         /**
          * @name Functions used in dealing with run-time parameters

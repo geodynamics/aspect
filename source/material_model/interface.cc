@@ -63,6 +63,73 @@ namespace aspect
     Interface<dim>::update ()
     {}
 
+    template <int dim>
+    double
+    Interface<dim>::viscosity (const double                  temperature,
+                               const double                  pressure,
+                               const std::vector<double>    &compositional_fields,
+                               const SymmetricTensor<2,dim> &strain_rate,
+                               const Point<dim>             &position) const
+    {
+      Assert(false, ExcMessage("Implement individual functions or evaluate() in material model."));
+      return 0.0;
+    }
+
+    template <int dim>
+    double
+    Interface<dim>::density (const double      temperature,
+                             const double      pressure,
+                             const std::vector<double> &compositional_fields,
+                             const Point<dim> &position) const
+    {
+      Assert(false, ExcMessage("Implement individual functions or evaluate() in material model."));
+      return 0.0;
+    }
+
+
+
+    template <int dim>
+    double
+    Interface<dim>::thermal_conductivity (const double temperature,
+                                          const double pressure,
+                                          const std::vector<double> &compositional_fields,
+                                          const Point<dim> &position) const
+    {
+      Assert(false, ExcMessage("Implement individual functions or evaluate() in material model."));
+      return 0.0;
+    }
+
+    template <int dim>
+    double
+    Interface<dim>::compressibility (const double temperature,
+                                    const double pressure,
+                                    const std::vector<double> &compositional_fields,
+                                    const Point<dim> &position) const
+    {
+      Assert(false, ExcMessage("Implement individual functions or evaluate() in material model."));
+      return 0.0;
+    }
+
+
+    template <int dim>
+    double
+    Interface<dim>::reference_thermal_expansion_coefficient () const
+    {
+      Assert(false, ExcMessage("Implement individual functions or evaluate() in material model."));
+      return 1.0;
+    }
+
+    template <int dim>
+    double
+    Interface<dim>::specific_heat (const double      temperature,
+                                  const double      pressure,
+                                  const std::vector<double> &compositional_fields,
+                                  const Point<dim> &position) const
+    {
+      Assert(false, ExcMessage("Implement individual functions or evaluate() in material model."));
+      return 1.0;
+    }
+
 
     template <int dim>
     double
@@ -311,7 +378,7 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::evaluate(const struct MaterialModelInputs &in, struct MaterialModelOutputs &out)
+    Interface<dim>::evaluate(const struct MaterialModelInputs &in, struct MaterialModelOutputs &out) const
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
@@ -321,7 +388,6 @@ namespace aspect
           out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
           out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
           out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-          out.is_compressible = is_compressible();
         }
     }
 
