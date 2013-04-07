@@ -63,22 +63,27 @@ namespace aspect
 
         const Point<dim> representative_point = geometry_model.representative_point (z);
 
+        typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, n_compositional_fields);
+        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1);
+        in.position[0] = representative_point;
+        in.temperature[0] = temperatures[i-1];
+        in.pressure[0] = pressures[i-1];
+
         //TODO: we look up the composition at the representative point, but we should
         // use averaged compositional values here. Right?
-        std::vector<double> initial_composition(n_compositional_fields);
         for (unsigned int c=0; c<n_compositional_fields; ++c)
-          initial_composition[c] = compositional_initial_conditions.initial_composition(representative_point, c);
+          in.composition[0][c] = compositional_initial_conditions.initial_composition(representative_point, c);
 
-        // get material parameters and the magnitude of gravity. we assume
+        in.strain_rate[0] = SymmetricTensor<2,dim>(); // adiabat has strain=0.
+        material_model.evaluate(in, out);
+
+        // get the magnitude of gravity. we assume
         // that gravity always points along the depth direction. this
         // may not strictly be true always but is likely a good enough
         // approximation here.
-        const double density = material_model.density(temperatures[i-1], pressures[i-1],
-                                                      initial_composition,representative_point);
-        const double alpha = material_model.thermal_expansion_coefficient(temperatures[i-1], pressures[i-1],
-                                                                          initial_composition,representative_point);
-        const double cp = material_model.specific_heat(temperatures[i-1], pressures[i-1],
-                                                       initial_composition, representative_point);
+        const double density = out.densities[0];
+        const double alpha = out.thermal_expansion_coefficients[0];
+        const double cp = out.specific_heat[0];
         const double gravity = gravity_model.gravity_vector(representative_point).norm();
 
         pressures[i] = pressures[i-1]

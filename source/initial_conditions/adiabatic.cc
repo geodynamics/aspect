@@ -54,23 +54,19 @@ namespace aspect
       // for the material model
       const dealii::Point<1, double> depth(this->geometry_model->depth(position));
 
-      std::vector<double> compositional_fields(this->n_compositional_fields());
+      // look up material properties
+      typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, this->n_compositional_fields());
+      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1);
+      in.position[0]=position;
+      in.temperature[0]=this->adiabatic_conditions->temperature(position);
+      in.pressure[0]=this->adiabatic_conditions->pressure(position);
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-        compositional_fields[c] = function->value(depth,c);
+        in.composition[0][c] = function->value(depth,c);
+      in.strain_rate[0] = SymmetricTensor<2,dim>(); // adiabat has strain=0.
+      this->get_material_model().evaluate(in, out);
 
-      // get the thermal diffusivity kappa
-      const double kappa = this->get_material_model().thermal_conductivity(this->adiabatic_conditions->temperature(position),
-                                                                           this->adiabatic_conditions->pressure(position),
-                                                                           compositional_fields,
-                                                                           position)
-                           / (this->get_material_model().density(this->adiabatic_conditions->temperature(position),
-                                                                 this->adiabatic_conditions->pressure(position),
-                                                                 compositional_fields,
-                                                                 position)
-                              * this->get_material_model().specific_heat(this->adiabatic_conditions->temperature(position),
-                                                                         this->adiabatic_conditions->pressure(position),
-                                                                         compositional_fields,
-                                                                         position));
+      const double kappa = out.thermal_conductivities[0] / out.densities[0]
+                                                         * out.specific_heat[0];
 
       // analytical solution for the thermal boundary layer from half-space cooling model
       const double surface_cooling_temperature = age_top > 0.0 ?
