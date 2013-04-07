@@ -1051,15 +1051,6 @@ namespace aspect
        */
 
       /**
-       * @name Variables related to checkpointing
-       * @{
-       */
-      time_t                                                    last_checkpoint_time;
-      /**
-       * @}
-       */
-
-      /**
        * @name Variables related to simulation termination
        * @{
        */

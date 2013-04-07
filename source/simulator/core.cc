@@ -1060,8 +1060,6 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::run ()
   {
-//    bool terminate_simulation = false, perform_final_checkpoint;
-    last_checkpoint_time = std::time(NULL);
     unsigned int max_refinement_level = parameters.initial_global_refinement +
                                         parameters.initial_adaptive_refinement;
     unsigned int pre_refinement_step = 0;
@@ -1090,6 +1088,9 @@ namespace aspect
 
         setup_dofs();
       }
+
+    // start the timer for periodic checkpoints after the setup above
+    time_t last_checkpoint_time = std::time(NULL);
 
 
   start_time_iteration:
@@ -1209,11 +1210,11 @@ namespace aspect
         if (parameters.checkpoint_time_secs > 0)
           {
             int global_do_checkpoint = ((std::time(NULL)-last_checkpoint_time) >= parameters.checkpoint_time_secs);
-
             MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
             do_checkpoint = (global_do_checkpoint == 1);
           }
+
         // If we base checkpoint frequency on steps, see if it's time for another checkpoint
         if ((parameters.checkpoint_time_secs == 0) &&
             (parameters.checkpoint_steps > 0) &&
