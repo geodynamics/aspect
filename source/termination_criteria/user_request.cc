@@ -49,11 +49,16 @@ namespace aspect
       {
         prm.enter_subsection("User request");
         {
-          prm.declare_entry ("File name", "terminate_aspect",
+          prm.declare_entry ("File name", "terminate-aspect",
                              Patterns::FileName(Patterns::FileName::input),
                              "The name of a file that, if it exists in the output "
                              "directory (whose name is also specified in the input file) "
-                             "will lead to termination of the simulation.");
+                             "will lead to termination of the simulation. "
+                             "The file's location is chosen to be in the output directory, "
+                             "rather than in a generic location such as the Aspect directory, "
+                             "so that one can run multiple simulations at the same time (which "
+                             "presumably write to different output directories) and can "
+                             "selectively terminate a particular one.");
         }
         prm.leave_subsection ();
       }
@@ -84,10 +89,15 @@ namespace aspect
   namespace TerminationCriteria
   {
     ASPECT_REGISTER_TERMINATION_CRITERION(UserRequest,
-                                          "user_request",
+                                          "user request",
                                           "Terminate the simulation gracefully when a file with a specified "
                                           "name appears in the output directory. This allows the user to "
                                           "gracefully exit the simulation at any time by simply creating "
-                                          "such a file using, for example, \\texttt{touch output/terminate}.")
+                                          "such a file using, for example, \\texttt{touch output/terminate}. "
+                                          "The file's location is chosen to be in the output directory, "
+                                          "rather than in a generic location such as the Aspect directory, "
+                                          "so that one can run multiple simulations at the same time (which "
+                                          "presumably write to different output directories) and can "
+                                          "selectively terminate a particular one.")
   }
 }

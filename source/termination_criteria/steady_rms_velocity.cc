@@ -169,7 +169,7 @@ namespace aspect
   namespace TerminationCriteria
   {
     ASPECT_REGISTER_TERMINATION_CRITERION(SteadyRMSVelocity,
-                                          "steady_rms_velocity",
+                                          "steady state velocity",
                                           "A criterion that terminates the simulation when the RMS "
                                           "of the velocity field stays within a certain range for a "
                                           "specified period of time.")
