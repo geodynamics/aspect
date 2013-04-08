@@ -30,17 +30,13 @@ namespace aspect
     bool
     UserRequest<dim>::execute(void)
     {
-      std::fstream        check_file;
-
-      // Only check for the file on the root process to avoid overloading the filesystem
+      // Only check for the file on the root process to avoid overloading the filesystem.
+      // The plugin manager later does an OR operation over all
+      // processors
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          check_file.open((this->get_output_directory()+_end_filename).c_str());
-          if (check_file.is_open())
-            {
-              check_file.close();
-              return true;
-            }
+          std::fstream check_file((this->get_output_directory()+filename_to_test).c_str());
+          return check_file.is_open();
         }
       return false;
     }
@@ -55,7 +51,9 @@ namespace aspect
         {
           prm.declare_entry ("File name", "terminate_aspect",
                              Patterns::FileName(Patterns::FileName::input),
-                             "");
+                             "The name of a file that, if it exists in the output "
+                             "directory (whose name is also specified in the input file) "
+                             "will lead to termination of the simulation.");
         }
         prm.leave_subsection ();
       }
@@ -71,7 +69,7 @@ namespace aspect
       {
         prm.enter_subsection("User request");
         {
-          _end_filename = prm.get ("File name");
+          filename_to_test = prm.get ("File name");
         }
         prm.leave_subsection ();
       }
@@ -89,6 +87,7 @@ namespace aspect
                                           "user_request",
                                           "Terminate the simulation gracefully when a file with a specified "
                                           "name appears in the output directory. This allows the user to "
-                                          "gracefully exit the simulation at any time.")
+                                          "gracefully exit the simulation at any time by simply creating "
+                                          "such a file using, for example, \\texttt{touch output/terminate}.")
   }
 }

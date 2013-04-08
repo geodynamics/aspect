@@ -85,7 +85,9 @@ namespace aspect
               const bool terminate = (*p)->execute ();
 
               // do the reduction: does any one of the processors
-              // think that we should terminate?
+              // think that we should terminate? (do the reduction in
+              // data type int since there is currently no function
+              // Utilities::MPI::CollectiveOr or similar)
               const bool all_terminate = (Utilities::MPI::max ((terminate ? 1 : 0),
                                                                this->get_mpi_communicator())
                                           == 1);

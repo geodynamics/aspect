@@ -70,42 +70,48 @@ namespace aspect
       const double vrms = std::sqrt(global_velocity_square_integral) / std::sqrt(this->get_volume());
 
       // Keep a list of times and RMS velocities at those times
-      _time_rmsvel.push_back(std::make_pair(this->get_time(), vrms));
+      time_rmsvel.push_back(std::make_pair(this->get_time(), vrms));
 
       // If the length of the simulation time covered in the list is shorter than the
       // specified parameter, we must continue the simulation
-      double adjusted_time = _time_length * (this->convert_output_to_years() ? year_in_seconds : 1);
-      if (_time_rmsvel.back().first - _time_rmsvel.front().first < adjusted_time) return false;
+      const double adjusted_time
+      = time_length * (this->convert_output_to_years() ? year_in_seconds : 1);
+      if ((time_rmsvel.size() == 0)
+          ||
+          (time_rmsvel.back().first - time_rmsvel.front().first < adjusted_time))
+        return false;
 
       // Remove old times until we're at the correct time period
-      std::list<std::pair<double, double> >::iterator       it;
-      it = _time_rmsvel.begin();
-      while (_time_rmsvel.back().first - (*it).first > _time_length) it++;
-      _time_rmsvel.erase(_time_rmsvel.begin(), it);
+      std::list<std::pair<double, double> >::iterator it = time_rmsvel.begin();
+      while (time_rmsvel.back().first - (*it).first > time_length)
+        it++;
+      time_rmsvel.erase(time_rmsvel.begin(), it);
 
       // Scan through the list and calculate the min, mean and max of the RMS velocities
       // We assume a linear change of RMS velocity between times
       double      rms_min, rms_max, rms_prev, time_prev, rms_sum=0, rms_mean, deviation_max;
-      rms_min = rms_max = rms_prev = _time_rmsvel.front().second;
-      time_prev = _time_rmsvel.front().first;
-      for (it=_time_rmsvel.begin(); it!=_time_rmsvel.end(); ++it)
+      rms_min = rms_max = rms_prev = time_rmsvel.front().second;
+      time_prev = time_rmsvel.front().first;
+      for (it=time_rmsvel.begin(); it!=time_rmsvel.end(); ++it)
         {
-          rms_min = fmin(rms_min, (*it).second);
-          rms_max = fmax(rms_max, (*it).second);
+          rms_min = std::min(rms_min, (*it).second);
+          rms_max = std::max(rms_max, (*it).second);
           rms_sum += (((*it).second + rms_prev)/2.0)*((*it).first-time_prev);
           time_prev = (*it).first;
           rms_prev = (*it).second;
         }
-      rms_mean = rms_sum/(_time_rmsvel.back().first-_time_rmsvel.front().first);
+      rms_mean = rms_sum/(time_rmsvel.back().first-time_rmsvel.front().first);
 
       // If the min and max are within the acceptable deviation of the mean,
       // we are in steady state and return true, otherwise return false
-      deviation_max = fmax(rms_mean - rms_min, rms_max - rms_mean);
+      deviation_max = std::max(rms_mean - rms_min, rms_max - rms_mean);
 
-      if (deviation_max/rms_mean > _relative_deviation) return false;
+      if (deviation_max/rms_mean > relative_deviation)
+        return false;
 
       return true;
     }
+
 
     template <int dim>
     void
@@ -119,7 +125,8 @@ namespace aspect
                              Patterns::Double (0),
                              "The maximum relative deviation of the RMS in recent "
                              "simulation time for the system to be considered in "
-                             "steady state and the simulation terminated.");
+                             "steady state. If the actual deviation is smaller "
+                             "than this number, then the simulation will be terminated.");
           prm.declare_entry ("Time in steady state", "1e7",
                              Patterns::Double (0),
                              "The minimum length of simulation time that the system "
@@ -142,14 +149,16 @@ namespace aspect
       {
         prm.enter_subsection("Steady state velocity");
         {
-          _relative_deviation = prm.get_double ("Maximum relative deviation");
-          _time_length = prm.get_double ("Time in steady state");
+          relative_deviation = prm.get_double ("Maximum relative deviation");
+          time_length = prm.get_double ("Time in steady state");
         }
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-      AssertThrow(_relative_deviation >= 0, ExcMessage("Relative deviation must be greater than or equal to 0."));
-      AssertThrow(_time_length > 0, ExcMessage("Steady state minimum time period must be greater than 0."));
+      AssertThrow (relative_deviation >= 0,
+                   ExcMessage("Relative deviation must be greater than or equal to 0."));
+      AssertThrow (time_length > 0,
+                   ExcMessage("Steady state minimum time period must be greater than 0."));
     }
   }
 }

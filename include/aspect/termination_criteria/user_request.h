@@ -67,7 +67,7 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
-        std::string             _end_filename;
+        std::string             filename_to_test;
     };
   }
 }

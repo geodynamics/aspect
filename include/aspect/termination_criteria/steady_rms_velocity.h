@@ -66,10 +66,15 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
-        double                                  _time_length;
-        double                                  _relative_deviation;
+        double                                  time_length;
+        double                                  relative_deviation;
 
-        std::list<std::pair<double, double> >   _time_rmsvel;
+        /**
+         * A list of pairs (time, rms_velocity) that we have
+         * computed at previous time steps. This is used to determine
+         * when we have reached steady state.
+         */
+        std::list<std::pair<double, double> >   time_rmsvel;
 
     };
   }

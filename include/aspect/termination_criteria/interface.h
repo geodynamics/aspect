@@ -56,7 +56,8 @@ namespace aspect
      * Access to the data of the simulator is granted by the @p protected member functions
      * of the SimulatorAccess class, i.e., classes implementing this interface will
      * in general want to derive from both this Interface class as well as from the
-     * SimulatorAccess class.
+     * SimulatorAccess class if they need to find out about the state of the
+     * simulation.
      *
      * @ingroup TerminationCriteria
      */
@@ -65,33 +66,43 @@ namespace aspect
     {
       public:
         /**
-         * Destructor. Does nothing but is virtual so that derived classes
+         * Destructor. Does nothing but is virtual so that derived classes'
          * destructors are also virtual.
-         **/
+         */
         virtual
         ~Interface ();
 
         /**
          * Execute evaluation of the termination criterion.
          *
-         * @return Whether to terminate the simulation (true) or continue (false)
+         * @return Whether to terminate the simulation (true) or continue (false).
+         *
+         * @note For some kinds of termination plugins, it may be difficult
+         * to ensure that all processors come to the same conclusion. An
+         * example is one that terminates the simulation after a certain
+         * amount of CPU time has expired, and this may be different
+         * from MPI process to MPI process. To avoid difficult to deal with
+         * situations, the plugin manager only requires that a single
+         * processor returns <code>true</code> for a given plugin to
+         * record that the plugin wants to terminate the simulation, even if
+         * the other processors return false.
          */
         virtual
         bool
-        execute (void) = 0;
+        execute () = 0;
 
         /**
          * Declare the parameters this class takes through input files.
          * Derived classes should overload this function if they actually
          * do take parameters; this class declares a fall-back function
-         * that does nothing, so that postprocessor classes that do not
+         * that does nothing, so that classes that do not
          * take any parameters do not have to do anything at all.
          *
          * This function is static (and needs to be static in derived
          * classes) so that it can be called without creating actual
          * objects (because declaring parameters happens before we read
          * the input file and thus at a time when we don't even know yet
-         * which postprocessor objects we need).
+         * which plugin objects we need).
          */
         static
         void
@@ -139,6 +150,13 @@ namespace aspect
          * returned pair indicates whether the simulation should be
          * terminated. The second part indicates whether a final checkpoint
          * should be performed.
+         *
+         * To avoid undefined situations, this function only requires that
+         * a single processor's termination request comes back positive
+         * for a given plugin. In other words, for each plugin selected,
+         * not all processors need to return the same value: if only
+         * one of the says that the simulation should be terminated, then
+         * this is enough.
          */
         virtual
         std::pair<bool,bool>
