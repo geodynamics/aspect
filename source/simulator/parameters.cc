@@ -390,8 +390,10 @@ namespace aspect
       prm.enter_subsection ("Stabilization parameters");
       {
         prm.declare_entry ("alpha", "2",
-                           Patterns::Double (1, 2),
-                           "The exponent $\\alpha$ in the entropy viscosity stabilization. Units: None.");
+                           Patterns::Integer (1, 2),
+                           "The exponent $\\alpha$ in the entropy viscosity stabilization. Valid "
+                           "options are 1 or 2. Recommended setting is 2 (only option described "
+                           "in the ASPECT paper). Units: None.");
         prm.declare_entry ("cR", "0.33",
                            Patterns::Double (0),
                            "The $c_R$ factor in the entropy viscosity "
@@ -602,7 +604,7 @@ namespace aspect
 
       prm.enter_subsection ("Stabilization parameters");
       {
-        stabilization_alpha = prm.get_double ("alpha");
+        stabilization_alpha = prm.get_integer ("alpha");
         stabilization_c_R   = prm.get_double ("cR");
         stabilization_beta  = prm.get_double ("beta");
       }

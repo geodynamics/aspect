@@ -208,7 +208,7 @@ namespace aspect
          * @name Parameters that have to do with the stabilization of transport equations
          * @{
          */
-        double                         stabilization_alpha;
+        unsigned int                   stabilization_alpha;
         double                         stabilization_c_R;
         double                         stabilization_beta;
         /**

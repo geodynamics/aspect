@@ -9,6 +9,14 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+Fixed: Entropy exponent stabilization_alpha ("alpha") should be an
+integer, not a double. The recommended setting is the value 2.
+Note that the value 1 is not explained in the ASPECT paper, only
+a value of 2.
+<br>
+(Timo Heister, 2013/04/17)
+
+<li>
 Fixed: When running an input file that simply forgot to provide
 names to certain plugins (for example, that does not list anything
 at all for the geometry model), the resulting error message was
