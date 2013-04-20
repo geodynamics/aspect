@@ -110,3 +110,5 @@ write a postprocessor that shows temperature minus depth averaged
 
 write tests for the termination modules
 improve the handling of termination criteria in core.cc:1200
+
+what is the purpose of the clear() and get() functions in simulartor/solve.cc?
