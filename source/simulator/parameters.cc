@@ -392,17 +392,32 @@ namespace aspect
         prm.declare_entry ("alpha", "2",
                            Patterns::Integer (1, 2),
                            "The exponent $\\alpha$ in the entropy viscosity stabilization. Valid "
-                           "options are 1 or 2. Recommended setting is 2 (only option described "
-                           "in the ASPECT paper). Units: None.");
+                           "options are 1 or 2. The recommended setting is 2. (This parameter does "
+                           "not correspond to any variable in the 2012 GJI paper by Kronbichler, "
+                           "Heister and Bangerth that describes ASPECT. Rather, the paper always uses "
+                           "2 as the exponent in the definition of the entropy, following eq. (15).)."
+                           "Units: None.");
         prm.declare_entry ("cR", "0.33",
                            Patterns::Double (0),
                            "The $c_R$ factor in the entropy viscosity "
-                           "stabilization. Units: None.");
+                           "stabilization. (For historical reasons, the name used here is different "
+                           "from the one used in the 2012 GJI paper by Kronbichler, "
+                           "Heister and Bangerth that describes ASPECT. This parameter corresponds "
+                           "to the factor $\alpha_E$ in the formulas following equation (15) of "
+                           "the paper. After further experiments, we have also chosen to use a "
+                           "different value than described there.) Units: None.");
         prm.declare_entry ("beta", "0.078",
                            Patterns::Double (0),
                            "The $\\beta$ factor in the artificial viscosity "
                            "stabilization. An appropriate value for 2d is 0.078 "
-                           "and 0.117 for 3d. Units: None.");
+                           "and 0.117 for 3d. (For historical reasons, the name used here is different "
+                           "from the one used in the 2012 GJI paper by Kronbichler, "
+                           "Heister and Bangerth that describes ASPECT. This parameter corresponds "
+                           "to the factor $\alpha_\text{max}$ in the formulas following equation (15) of "
+                           "the paper. After further experiments, we have also chosen to use a "
+                           "different value than described there: It can be chosen as stated there for "
+                           "uniformly refined meshes, but it needs to be chosen larger if the mesh has "
+                           "cells that are not squares or cubes.) Units: None.");
       }
       prm.leave_subsection ();
     }
