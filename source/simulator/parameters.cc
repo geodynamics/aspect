@@ -178,7 +178,7 @@ namespace aspect
 
     prm.declare_entry ("Linear solver tolerance", "1e-7",
                        Patterns::Double(0,1),
-                       "A relative tolerance up to which linear systems in each "
+                       "A relative tolerance up to which the linear Stokes systems in each "
                        "time or nonlinear step should be solved. The absolute tolerance will "
                        "then be the norm of the right hand side of the equation "
                        "times this tolerance. A given tolerance value of 1 would "
@@ -196,6 +196,21 @@ namespace aspect
                        "value should be sufficient. However, for cases where the "
                        "static pressure is much larger than the dynamic one, it may "
                        "be necessary to choose a smaller value.");
+    prm.declare_entry ("Number of cheap Stokes solver steps", "30",
+                       Patterns::Integer(0),
+                       "As explained in the ASPECT paper (Kronbichler, Heister, and Bangerth, "
+                       "GJI 2012) we first try to solve the Stokes system in every time "
+                       "step using a GMRES iteration with a poor but cheap "
+                       "preconditioner. By default, we try whether we can converge the GMRES "
+                       "solver in 30 such iterations before deciding that we need a better "
+                       "preconditioner. This is sufficient for simple problems with constant "
+                       "viscosity and we never need the second phase with the more expensive "
+                       "preconditioner. On the other hand, for more complex problems, and in "
+                       "particular for problems with strongly varying viscosity, the 30 "
+                       "cheap iterations don't actually do very much good and one might skip "
+                       "this part right away. In that case, this parameter can be set to "
+                       "zero, i.e., we immediately start with the better but more expensive "
+                       "preconditioner.");
 
     prm.declare_entry ("Temperature solver tolerance", "1e-12",
                        Patterns::Double(0,1),
@@ -507,6 +522,7 @@ namespace aspect
     pressure_normalization        = prm.get("Pressure normalization");
 
     linear_solver_tolerance       = prm.get_double ("Linear solver tolerance");
+    n_cheap_stokes_solver_steps   = prm.get_integer ("Number of cheap Stokes solver steps");
     temperature_solver_tolerance  = prm.get_double ("Temperature solver tolerance");
     composition_solver_tolerance  = prm.get_double ("Composition solver tolerance");
 

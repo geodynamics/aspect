@@ -71,11 +71,11 @@ namespace aspect
                          const TrilinosWrappers::MPI::BlockVector &x,
                          const TrilinosWrappers::MPI::BlockVector &b) const;
 
-        void clear() {};
+        virtual void clear() {};
 
       private:
 
-        const void *get () const
+        virtual const void *get () const
         {
           return &system_matrix;
         };
@@ -265,6 +265,7 @@ namespace aspect
     double advection_solver_tolerance = -1;
     unsigned int block_number = -1;
 
+//TODO: use the introspection facilities here to get at the block number
     if (temperature_or_composition.is_temperature())
       {
         computing_timer.enter_section ("   Solve temperature system");
@@ -388,16 +389,25 @@ namespace aspect
     PrimitiveVectorMemory< LinearAlgebra::BlockVector > mem;
 
     // step 1a: try if the simple and fast solver
-    // succeeds in 30 steps or less.
+    // succeeds in 30 steps or less (or whatever the chosen value for the
+    // corresponding parameter is).
     const double solver_tolerance = std::max (parameters.linear_solver_tolerance *
                                               distributed_stokes_rhs.l2_norm(),
                                               1e-12 * initial_residual);
-    SolverControl solver_control_cheap (30, solver_tolerance);
+    SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
+                                        solver_tolerance);
     SolverControl solver_control_expensive (system_matrix.block(0,1).m() +
                                             system_matrix.block(1,0).m(), solver_tolerance);
 
     try
       {
+        // if this cheaper solver is not desired, the simply short-cut
+        // the attempt at solving with the cheaper preconditioner
+        if (parameters.n_cheap_stokes_solver_steps == 0)
+          throw SolverControl::NoConvergence(0,0);
+
+        // otherwise give it a try with a preconditioner that consists
+        // of only a single V-cycle
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
               LinearAlgebra::PreconditionILU>
               preconditioner (system_matrix, system_preconditioner_matrix,

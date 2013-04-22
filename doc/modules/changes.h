@@ -9,6 +9,18 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: There is now a new top-level parameter, "Number of cheap Stokes
+solver steps" that allows choosing how many iterations the Stokes
+solver should attempt using the "cheap" preconditioner described in
+the ASPECT paper. In particular, a value of zero indicates that the
+first phase should be skipped altogether. This is a useful strategy for
+problems with strongly varying viscosity for which the cheap preconditioner
+does not help very much and the time used for this first phase is often
+wasted.
+<br>
+(Wolfgang Bangerth, 2013/04/22)
+
+<li>
 Fixed: Entropy exponent stabilization_alpha ("alpha") should be an
 integer, not a double. The recommended setting is the value 2.
 Note that the value 1 is not explained in the ASPECT paper, only
