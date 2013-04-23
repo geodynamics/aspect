@@ -391,7 +391,7 @@ namespace aspect
     // step 1a: try if the simple and fast solver
     // succeeds in 30 steps or less (or whatever the chosen value for the
     // corresponding parameter is).
-    const double solver_tolerance = std::max (parameters.linear_solver_tolerance *
+    const double solver_tolerance = std::max (parameters.linear_stokes_solver_tolerance *
                                               distributed_stokes_rhs.l2_norm(),
                                               1e-12 * initial_residual);
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
