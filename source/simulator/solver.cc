@@ -36,9 +36,11 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * Implement multiplication with Stokes part of system matrix
+     * Implement multiplication with Stokes part of system matrix. In essence, this
+     * object represents a 2x2 block matrix that corresponds to the top left
+     * sub-blocks of the entire system matrix (i.e., the Stokes part)
      */
-    class StokesBlock : public PointerMatrixBase<LinearAlgebra::BlockVector>
+    class StokesBlock
     {
       public:
         /**
@@ -47,10 +49,12 @@ namespace aspect
          * @param S The entire system matrix
          */
         StokesBlock (const LinearAlgebra::BlockSparseMatrix  &S)
-          : system_matrix(S) {};
+          : system_matrix(S) {}
 
         /**
-         * Matrix vector product with Stokes block.
+         * Matrix vector product with Stokes block in various forms. Note that
+         * the vectors may have more components than just the two we touch here
+         * but we don't care.
          */
         void vmult (LinearAlgebra::BlockVector       &dst,
                     const LinearAlgebra::BlockVector &src) const;
@@ -71,17 +75,11 @@ namespace aspect
                          const TrilinosWrappers::MPI::BlockVector &x,
                          const TrilinosWrappers::MPI::BlockVector &b) const;
 
-        virtual void clear() {};
 
       private:
 
-        virtual const void *get () const
-        {
-          return &system_matrix;
-        };
-
         /**
-         * References to the system matrix object.
+         * Reference to the system matrix object.
          */
         const LinearAlgebra::BlockSparseMatrix &system_matrix;
     };
@@ -98,6 +96,7 @@ namespace aspect
       system_matrix.block(1,1).vmult_add(dst.block(1), src.block(1));
     }
 
+
     void StokesBlock::Tvmult (LinearAlgebra::BlockVector       &dst,
                               const LinearAlgebra::BlockVector &src) const
     {
@@ -108,6 +107,7 @@ namespace aspect
       system_matrix.block(1,1).Tvmult_add(dst.block(1), src.block(1));
     }
 
+
     void StokesBlock::vmult_add (LinearAlgebra::BlockVector       &dst,
                                  const LinearAlgebra::BlockVector &src) const
     {
@@ -117,6 +117,7 @@ namespace aspect
       system_matrix.block(1,0).vmult_add(dst.block(1), src.block(0));
       system_matrix.block(1,1).vmult_add(dst.block(1), src.block(1));
     }
+
 
     void StokesBlock::Tvmult_add (LinearAlgebra::BlockVector       &dst,
                                   const LinearAlgebra::BlockVector &src) const
@@ -343,6 +344,9 @@ namespace aspect
   template <int dim>
   double Simulator<dim>::solve_stokes ()
   {
+//TODO: We only ever need the first two components of the various vectors in this function,
+// so we may as well just create only two vectors. but that's not what we do: we create
+// vectors with all components. this could be done in a smarter way
     double initial_residual = 0;
 
     computing_timer.enter_section ("   Solve Stokes system");
