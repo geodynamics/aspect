@@ -52,9 +52,7 @@ namespace aspect
           : system_matrix(S) {}
 
         /**
-         * Matrix vector product with Stokes block in various forms. Note that
-         * the vectors may have more components than just the two we touch here
-         * but we don't care.
+         * Matrix vector product with Stokes block.
          */
         void vmult (LinearAlgebra::BlockVector       &dst,
                     const LinearAlgebra::BlockVector &src) const;
@@ -69,7 +67,10 @@ namespace aspect
                          const LinearAlgebra::BlockVector &src) const;
 
         /**
-         * Compute the residual with the Stokes block.
+         * Compute the residual with the Stokes block. In a departure from
+         * the other functions, the #b variable may actually have more than
+         * two blocks so that we can put it a global system_rhs vector. The
+         * other vectors need to have 2 blocks only.
          */
         double residual (TrilinosWrappers::MPI::BlockVector       &dst,
                          const TrilinosWrappers::MPI::BlockVector &x,
@@ -89,6 +90,9 @@ namespace aspect
     void StokesBlock::vmult (LinearAlgebra::BlockVector       &dst,
                              const LinearAlgebra::BlockVector &src) const
     {
+      Assert (src.n_blocks() == 2, ExcInternalError());
+      Assert (dst.n_blocks() == 2, ExcInternalError());
+
       system_matrix.block(0,0).vmult(dst.block(0), src.block(0));
       system_matrix.block(0,1).vmult_add(dst.block(0), src.block(1));
 
@@ -100,6 +104,9 @@ namespace aspect
     void StokesBlock::Tvmult (LinearAlgebra::BlockVector       &dst,
                               const LinearAlgebra::BlockVector &src) const
     {
+      Assert (src.n_blocks() == 2, ExcInternalError());
+      Assert (dst.n_blocks() == 2, ExcInternalError());
+
       system_matrix.block(0,0).Tvmult(dst.block(0), src.block(0));
       system_matrix.block(1,0).Tvmult_add(dst.block(0), src.block(1));
 
@@ -111,6 +118,9 @@ namespace aspect
     void StokesBlock::vmult_add (LinearAlgebra::BlockVector       &dst,
                                  const LinearAlgebra::BlockVector &src) const
     {
+      Assert (src.n_blocks() == 2, ExcInternalError());
+      Assert (dst.n_blocks() == 2, ExcInternalError());
+
       system_matrix.block(0,0).vmult_add(dst.block(0), src.block(0));
       system_matrix.block(0,1).vmult_add(dst.block(0), src.block(1));
 
@@ -122,6 +132,9 @@ namespace aspect
     void StokesBlock::Tvmult_add (LinearAlgebra::BlockVector       &dst,
                                   const LinearAlgebra::BlockVector &src) const
     {
+      Assert (src.n_blocks() == 2, ExcInternalError());
+      Assert (dst.n_blocks() == 2, ExcInternalError());
+
       system_matrix.block(0,0).Tvmult_add(dst.block(0), src.block(0));
       system_matrix.block(1,0).Tvmult_add(dst.block(0), src.block(1));
 
@@ -135,9 +148,13 @@ namespace aspect
                                   const TrilinosWrappers::MPI::BlockVector &x,
                                   const TrilinosWrappers::MPI::BlockVector &b) const
     {
+      Assert (x.n_blocks() == 2, ExcInternalError());
+      Assert (dst.n_blocks() == 2, ExcInternalError());
+
       // compute b-Ax where A is only the top left 2x2 block
       this->vmult (dst, x);
-      dst.sadd (-1, 1, b);
+      dst.block(0).sadd (-1, 1, b.block(0));
+      dst.block(1).sadd (-1, 1, b.block(1));
 
       // clear blocks we didn't want to fill
       for (unsigned int b=2; b<dst.n_blocks(); ++b)
@@ -344,11 +361,6 @@ namespace aspect
   template <int dim>
   double Simulator<dim>::solve_stokes ()
   {
-//TODO: We only ever need the first two components of the various vectors in this function,
-// so we may as well just create only two vectors. but that's not what we do: we create
-// vectors with all components. this could be done in a smarter way
-    double initial_residual = 0;
-
     computing_timer.enter_section ("   Solve Stokes system");
 
     pcout << "   Solving Stokes system... " << std::flush;
@@ -356,14 +368,22 @@ namespace aspect
     const internal::StokesBlock stokes_block(system_matrix);
 
     // extract Stokes parts of solution vector, without any ghost elements
-    LinearAlgebra::BlockVector
-    distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
+    LinearAlgebra::BlockVector distributed_stokes_solution (2);
+    distributed_stokes_solution.block(0).reinit (introspection.index_sets.system_partitioning[0], mpi_communicator);
+    distributed_stokes_solution.block(1).reinit (introspection.index_sets.system_partitioning[1], mpi_communicator);
+    distributed_stokes_solution.collect_sizes();
+
     // create vector with distribution of system_rhs.
-    LinearAlgebra::BlockVector remap (introspection.index_sets.system_partitioning, mpi_communicator);
+    LinearAlgebra::BlockVector remap (2);
+    remap.block(0).reinit (introspection.index_sets.system_partitioning[0], mpi_communicator);
+    remap.block(1).reinit (introspection.index_sets.system_partitioning[1], mpi_communicator);
+    remap.collect_sizes();
+
     // copy current_linearization_point into it, because its distribution
     // is different.
     remap.block (0) = current_linearization_point.block (0);
     remap.block (1) = current_linearization_point.block (1);
+
     // before solving we scale the initial solution to the right dimensions
     denormalize_pressure (remap);
     current_constraints.set_zero (remap);
@@ -375,17 +395,20 @@ namespace aspect
       make_pressure_rhs_compatible(system_rhs);
 
     // (ab)use the distributed solution vector to temporarily put a residual in
-    initial_residual = stokes_block.residual (distributed_stokes_solution,
-                                              remap,
-                                              system_rhs);
+    // (we don't care about the residual vector -- all we care about is the
+    // value (number) of the initial residual)
+    const double initial_residual = stokes_block.residual (distributed_stokes_solution,
+                                                           remap,
+                                                           system_rhs);
 
     // then overwrite it again with the current best guess and solve the linear system
-    distributed_stokes_solution.block(0) = remap.block(0);
-    distributed_stokes_solution.block(1) = remap.block(1);
+    distributed_stokes_solution = remap;
 
     // extract Stokes parts of rhs vector
-    LinearAlgebra::BlockVector
-    distributed_stokes_rhs (introspection.index_sets.system_partitioning, mpi_communicator);
+    LinearAlgebra::BlockVector distributed_stokes_rhs(2);
+    distributed_stokes_rhs.block(0).reinit (introspection.index_sets.system_partitioning[0], mpi_communicator);
+    distributed_stokes_rhs.block(1).reinit (introspection.index_sets.system_partitioning[1], mpi_communicator);
+    distributed_stokes_rhs.collect_sizes();
 
     distributed_stokes_rhs.block(0) = system_rhs.block(0);
     distributed_stokes_rhs.block(1) = system_rhs.block(1);
