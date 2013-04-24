@@ -24,7 +24,8 @@ wasted.
 Fixed: Entropy exponent stabilization_alpha ("alpha") should be an
 integer, not a double. The recommended setting is the value 2.
 Note that the value 1 is not explained in the ASPECT paper, only
-a value of 2.
+a value of 2. The various other stabilization parameters have also
+been better explained and cross-referenced to the ASPECT paper.
 <br>
 (Timo Heister, 2013/04/17)
 
@@ -39,7 +40,7 @@ error may have happened and what the missing parameter is.
 (Wolfgang Bangerth, 2013/04/05)
 
 <li>
-New: a postprocessor to output the sparsity pattern of the block
+New: A postprocessor to output the sparsity pattern of the block
 matrix. Intended mainly for debugging purposes.
 <br>
 (Ted Studley, 2012/12/21)
