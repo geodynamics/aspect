@@ -2,12 +2,6 @@ This file is our internal working list of things to do in the near future
 =========================================================================
 
 
-Rename artificial viscosity stability parameter from beta to alpha to match
-the paper.
-
-average temperature/... depending on depth (for use in material model and output)
-
-
 Create list of publications. Include
 - papers
 - AGU 2011 poster
@@ -108,8 +102,7 @@ write a postprocessor that shows temperature minus depth averaged
 
 
 
-write tests for the termination modules
-improve the handling of termination criteria in core.cc:1200
-
-what is the purpose of the clear() and get() functions in simulartor/solve.cc?
-
+write tests for the depth averaging functions (for example, velocitymagnitude is
+  definitely wrong, since it multiplies one factor by JxW but then doesn't
+  divide by the volume)
+  
