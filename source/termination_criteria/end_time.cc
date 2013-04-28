@@ -52,7 +52,7 @@ namespace aspect
       // read end time from parameter file. if it is to be interpreted
       // in years rather than seconds, then do the conversion
       end_time = prm.get_double ("End time");
-      if (this->convert_output_to_years() == true)
+      if (prm.get_bool ("Use years in output instead of seconds") == true)
         end_time *= year_in_seconds;
     }
   }
@@ -64,7 +64,7 @@ namespace aspect
   namespace TerminationCriteria
   {
     ASPECT_REGISTER_TERMINATION_CRITERION(EndTime,
-                                          "end_time",
+                                          "end time",
                                           "Terminate the simulation once the end time "
                                           "specified in the input file has been reached. "
                                           "Unlike all other termination criteria, this "
