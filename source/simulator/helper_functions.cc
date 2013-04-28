@@ -663,6 +663,8 @@ namespace aspect
 
 
 //TODO: unify the following functions
+//TODO: the average is not computed correctly with adaptive refinement.
+//      instead we should do: sum(variable*jxw)/sum(jxw)
   template <int dim>
   void Simulator<dim>::compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition,
                                                    std::vector<double> &values) const
