@@ -69,7 +69,7 @@ end
 
 subsection Termination criteria
   set Checkpoint on termination = true
-  set Termination criteria      = steady rms velocity
+  set Termination criteria      = steady state velocity
 
   subsection Steady state velocity
     set Maximum relative deviation = 0.05
