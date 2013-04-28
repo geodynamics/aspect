@@ -153,7 +153,7 @@ namespace aspect
          * Called at the beginning of each time step and allows the material model
          * to update internal data structures.
          */
-        virtual void update();
+        virtual void update ();
 
         /**
          * @name Physical parameters used in the basic equations
@@ -566,10 +566,9 @@ namespace aspect
 
         /**
          * Function to compute the material properties in @p out given the inputs
-         * in @p in. The default implementation calls the all the separate implementations
-         * for viscosity, density, etc. and fills the data structure with these values.
-         * For complicated models it is recommended to override this function for
-         * performance reasons.
+         * in @p in.
+         * If MaterialModelInputs.strain_rate has the length 0, then the
+         * viscosity does not need to be computed.
          */
         virtual void evaluate(const MaterialModelInputs &in, MaterialModelOutputs &out) const = 0;
 
