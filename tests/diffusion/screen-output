@@ -10,391 +10,731 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Temperature min/avg/max:            -7.2e-17 K, 0.005208 K, 1 K
      Heat fluxes through boundary parts: -6.648e-19 W, -1.105e-18 W, 2.418e-45 W, -9.6e-05 W
 
-*** Timestep 1:  t=2.31371e+06 seconds
+*** Timestep 1:  t=2.31396e+06 seconds
    Solving temperature system... 47 iterations.
    Solving Stokes system... 9 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.04311 K, 1 K
-     Heat fluxes through boundary parts: 3.511e-12 W, -4.034e-12 W, 3.573e-15 W, -2.17e-05 W
+     Heat fluxes through boundary parts: 3.527e-12 W, -4.018e-12 W, 3.578e-15 W, -2.17e-05 W
 
-*** Timestep 2:  t=4.01892e+06 seconds
+*** Timestep 2:  t=4.05617e+06 seconds
    Solving temperature system... 33 iterations.
    Solving Stokes system... 5 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.06144 K, 1 K
-     Heat fluxes through boundary parts: 1.183e-11 W, 1.674e-11 W, 9.035e-15 W, -1.052e-05 W
+     Temperature min/avg/max:            0 K, 0.06177 K, 1 K
+     Heat fluxes through boundary parts: 1.209e-11 W, 1.608e-11 W, 9.273e-15 W, -1.04e-05 W
 
-*** Timestep 3:  t=6.50268e+06 seconds
+*** Timestep 3:  t=6.52448e+06 seconds
    Solving temperature system... 36 iterations.
    Solving Stokes system... 5 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.08056 K, 1 K
-     Heat fluxes through boundary parts: -4.747e-11 W, -1.29e-11 W, 3.625e-14 W, -7.303e-06 W
+     Temperature min/avg/max:            0 K, 0.08069 K, 1 K
+     Heat fluxes through boundary parts: -4.783e-11 W, -1.152e-11 W, 3.687e-14 W, -7.295e-06 W
 
-*** Timestep 4:  t=8.89959e+06 seconds
+*** Timestep 4:  t=8.9178e+06 seconds
    Solving temperature system... 35 iterations.
    Solving Stokes system... 5 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.09489 K, 1 K
-     Heat fluxes through boundary parts: -2.613e-11 W, -1.153e-11 W, 1.382e-13 W, -6.424e-06 W
+     Temperature min/avg/max:            0 K, 0.09499 K, 1 K
+     Heat fluxes through boundary parts: -2.584e-11 W, -1.09e-11 W, 1.399e-13 W, -6.424e-06 W
 
-*** Timestep 5:  t=1.11996e+07 seconds
+*** Timestep 5:  t=1.12201e+07 seconds
    Solving temperature system... 33 iterations.
    Solving Stokes system... 5 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1066 K, 1 K
-     Heat fluxes through boundary parts: -3.321e-12 W, -3.52e-12 W, 4.57e-13 W, -5.857e-06 W
+     Temperature min/avg/max:            0 K, 0.1067 K, 1 K
+     Heat fluxes through boundary parts: -3.782e-12 W, -2.833e-12 W, 4.63e-13 W, -5.854e-06 W
 
-Number of active cells: 475 (on 6 levels)
-Number of degrees of freedom: 6,614 (4,056+530+2,028)
+Number of active cells: 472 (on 6 levels)
+Number of degrees of freedom: 6,575 (4,032+527+2,016)
 
-*** Timestep 6:  t=1.49278e+07 seconds
+*** Timestep 6:  t=1.48115e+07 seconds
    Solving temperature system... 37 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 4 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1233 K, 1 K
-     Heat fluxes through boundary parts: 4.919e-12 W, -1.656e-12 W, 3.026e-12 W, -5.115e-06 W
+     Temperature min/avg/max:            0 K, 0.1228 K, 1 K
+     Heat fluxes through boundary parts: 4.044e-12 W, -1.253e-12 W, 2.779e-12 W, -5.138e-06 W
 
-*** Timestep 7:  t=1.6658e+07 seconds
-   Solving temperature system... 27 iterations.
-   Solving Stokes system... 4 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1303 K, 1 K
-     Heat fluxes through boundary parts: -4.772e-12 W, 2.019e-11 W, 6.045e-12 W, -4.851e-06 W
-
-*** Timestep 8:  t=1.85683e+07 seconds
-   Solving temperature system... 26 iterations.
+*** Timestep 7:  t=1.58214e+07 seconds
+   Solving temperature system... 22 iterations.
    Solving Stokes system... 0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1376 K, 1 K
-     Heat fluxes through boundary parts: -1.17e-11 W, 2.931e-11 W, 1.224e-11 W, -4.606e-06 W
+     Temperature min/avg/max:            0 K, 0.1269 K, 1 K
+     Heat fluxes through boundary parts: -8.753e-13 W, 2.516e-11 W, 4.102e-12 W, -4.979e-06 W
 
-*** Timestep 9:  t=2.01683e+07 seconds
-   Solving temperature system... 24 iterations.
-   Solving Stokes system... 3 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1434 K, 1 K
-     Heat fluxes through boundary parts: -1.451e-11 W, 3.359e-11 W, 2.129e-11 W, -4.427e-06 W
-
-*** Timestep 10:  t=2.19415e+07 seconds
-   Solving temperature system... 24 iterations.
-   Solving Stokes system... 3 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1495 K, 1 K
-     Heat fluxes through boundary parts: 1.638e-11 W, -8.004e-12 W, 3.827e-11 W, -4.254e-06 W
-
-Number of active cells: 382 (on 6 levels)
-Number of degrees of freedom: 5,388 (3,304+432+1,652)
-
-*** Timestep 11:  t=2.30341e+07 seconds
-   Solving temperature system... 19 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1532 K, 1 K
-     Heat fluxes through boundary parts: 2.133e-11 W, 9.585e-12 W, 1.339e-11 W, -4.155e-06 W
-
-*** Timestep 12:  t=2.37526e+07 seconds
-   Solving temperature system... 15 iterations.
-   Solving Stokes system... 0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1556 K, 1 K
-     Heat fluxes through boundary parts: 2.857e-11 W, 3.655e-12 W, 1.852e-11 W, -4.094e-06 W
-
-*** Timestep 13:  t=2.43293e+07 seconds
-   Solving temperature system... 13 iterations.
-   Solving Stokes system... 1 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1575 K, 1 K
-     Heat fluxes through boundary parts: 3.4e-11 W, -2.745e-12 W, 2.423e-11 W, -4.046e-06 W
-
-*** Timestep 14:  t=2.47457e+07 seconds
-   Solving temperature system... 11 iterations.
-   Solving Stokes system... 2 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1589 K, 1 K
-     Heat fluxes through boundary parts: 2.218e-11 W, -7.407e-12 W, 2.902e-11 W, -4.009e-06 W
-
-*** Timestep 15:  t=2.51539e+07 seconds
-   Solving temperature system... 11 iterations.
-   Solving Stokes system... 1 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1603 K, 1 K
-     Heat fluxes through boundary parts: 3.581e-11 W, -4.677e-12 W, 3.431e-11 W, -3.975e-06 W
-
-Number of active cells: 388 (on 6 levels)
-Number of degrees of freedom: 5,468 (3,354+437+1,677)
-
-*** Timestep 16:  t=2.55178e+07 seconds
-   Solving temperature system... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1615 K, 1 K
-     Heat fluxes through boundary parts: 3.916e-11 W, -1.053e-11 W, -6.712e-10 W, -3.944e-06 W
-
-*** Timestep 17:  t=2.58315e+07 seconds
-   Solving temperature system... 9 iterations.
-   Solving Stokes system... 0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1626 K, 1 K
-     Heat fluxes through boundary parts: 3.622e-11 W, -1.457e-11 W, -7.18e-10 W, -3.917e-06 W
-
-*** Timestep 18:  t=2.60937e+07 seconds
-   Solving temperature system... 8 iterations.
-   Solving Stokes system... 1 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1635 K, 1 K
-     Heat fluxes through boundary parts: 3.193e-11 W, -1.656e-11 W, -7.601e-10 W, -3.894e-06 W
-
-*** Timestep 19:  t=2.63754e+07 seconds
-   Solving temperature system... 9 iterations.
-   Solving Stokes system... 1 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1645 K, 1 K
-     Heat fluxes through boundary parts: 9.682e-12 W, -1.09e-11 W, -8.057e-10 W, -3.868e-06 W
-
-*** Timestep 20:  t=2.73757e+07 seconds
+*** Timestep 8:  t=1.6642e+07 seconds
    Solving temperature system... 17 iterations.
    Solving Stokes system... 4 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1671 K, 1 K
-     Heat fluxes through boundary parts: 5.878e-11 W, -1.402e-11 W, -9.7e-10 W, -3.818e-06 W
+     Temperature min/avg/max:            0 K, 0.1302 K, 1 K
+     Heat fluxes through boundary parts: -4.629e-12 W, 4.116e-11 W, 5.53e-12 W, -4.862e-06 W
 
-Number of active cells: 388 (on 6 levels)
-Number of degrees of freedom: 5,468 (3,354+437+1,677)
+*** Timestep 9:  t=1.77375e+07 seconds
+   Solving temperature system... 19 iterations.
+   Solving Stokes system... 3 iterations.
 
-*** Timestep 21:  t=2.87285e+07 seconds
-   Solving temperature system... 21 iterations.
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1344 K, 1 K
+     Heat fluxes through boundary parts: -9.886e-12 W, 4.666e-11 W, 8.178e-12 W, -4.719e-06 W
+
+*** Timestep 10:  t=1.89012e+07 seconds
+   Solving temperature system... 20 iterations.
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1387 K, 1 K
+     Heat fluxes through boundary parts: 8.278e-12 W, 1.771e-11 W, 1.231e-11 W, -4.583e-06 W
+
+Number of active cells: 349 (on 6 levels)
+Number of degrees of freedom: 4,965 (3,044+399+1,522)
+
+*** Timestep 11:  t=2.06977e+07 seconds
+   Solving temperature system... 24 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 3 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.171 K, 1 K
-     Heat fluxes through boundary parts: -1.691e-11 W, -9.631e-12 W, -1.222e-09 W, -3.741e-06 W
+     Temperature min/avg/max:            0 K, 0.1451 K, 1 K
+     Heat fluxes through boundary parts: 3.919e-12 W, -6.663e-11 W, 2.333e-12 W, -4.388e-06 W
 
-*** Timestep 22:  t=2.92425e+07 seconds
+*** Timestep 12:  t=2.11626e+07 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 4 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1724 K, 1 K
-     Heat fluxes through boundary parts: -2.345e-11 W, -5.512e-12 W, -1.328e-09 W, -3.714e-06 W
+     Temperature min/avg/max:            0 K, 0.1468 K, 1 K
+     Heat fluxes through boundary parts: 5.185e-12 W, -9.822e-11 W, 3.432e-12 W, -4.339e-06 W
 
-*** Timestep 23:  t=2.96798e+07 seconds
-   Solving temperature system... 12 iterations.
-   Solving Stokes system... 0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1736 K, 1 K
-     Heat fluxes through boundary parts: -2.858e-11 W, -8.129e-13 W, -1.422e-09 W, -3.692e-06 W
-
-*** Timestep 24:  t=3.0036e+07 seconds
-   Solving temperature system... 10 iterations.
-   Solving Stokes system... 1 iterations.
+*** Timestep 13:  t=2.21047e+07 seconds
+   Solving temperature system... 17 iterations.
+   Solving Stokes system... 4 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1746 K, 1 K
-     Heat fluxes through boundary parts: -3.153e-11 W, 2.757e-12 W, -1.5e-09 W, -3.674e-06 W
+     Temperature min/avg/max:            0 K, 0.15 K, 1 K
+     Heat fluxes through boundary parts: -3.957e-11 W, 8.958e-11 W, 6.83e-12 W, -4.243e-06 W
 
-*** Timestep 25:  t=3.04484e+07 seconds
+*** Timestep 14:  t=2.27169e+07 seconds
+   Solving temperature system... 15 iterations.
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.152 K, 1 K
+     Heat fluxes through boundary parts: -2.327e-11 W, 7.589e-11 W, 9.737e-12 W, -4.191e-06 W
+
+*** Timestep 15:  t=2.31171e+07 seconds
    Solving temperature system... 11 iterations.
    Solving Stokes system... 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1757 K, 1 K
-     Heat fluxes through boundary parts: -1.331e-11 W, 1.202e-12 W, -1.593e-09 W, -3.653e-06 W
+     Temperature min/avg/max:            0 K, 0.1533 K, 1 K
+     Heat fluxes through boundary parts: -9.678e-12 W, 1.089e-10 W, 1.193e-11 W, -4.159e-06 W
 
-Number of active cells: 388 (on 6 levels)
-Number of degrees of freedom: 5,468 (3,354+437+1,677)
+Number of active cells: 331 (on 6 levels)
+Number of degrees of freedom: 4,729 (2,900+379+1,450)
 
-*** Timestep 26:  t=3.10359e+07 seconds
-   Solving temperature system... 13 iterations.
+*** Timestep 16:  t=2.35853e+07 seconds
+   Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1773 K, 1 K
-     Heat fluxes through boundary parts: 3.393e-13 W, 1.344e-11 W, -1.726e-09 W, -3.619e-06 W
+     Temperature min/avg/max:            0 K, 0.1548 K, 1 K
+     Heat fluxes through boundary parts: -1.1e-11 W, 3.138e-11 W, -5.589e-10 W, -4.123e-06 W
 
-*** Timestep 27:  t=3.18766e+07 seconds
-   Solving temperature system... 15 iterations.
+*** Timestep 17:  t=2.41237e+07 seconds
+   Solving temperature system... 13 iterations.
    Solving Stokes system... 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1798 K, 1 K
-     Heat fluxes through boundary parts: 1.51e-11 W, 3.17e-11 W, -1.92e-09 W, -3.566e-06 W
+     Temperature min/avg/max:            0 K, 0.1565 K, 1 K
+     Heat fluxes through boundary parts: 2.226e-11 W, -5.735e-11 W, -7.561e-10 W, -4.083e-06 W
 
-*** Timestep 28:  t=3.25032e+07 seconds
-   Solving temperature system... 14 iterations.
+*** Timestep 18:  t=2.44987e+07 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1578 K, 1 K
+     Heat fluxes through boundary parts: 5.17e-11 W, -8.063e-11 W, -8.874e-10 W, -4.049e-06 W
+
+*** Timestep 19:  t=2.47075e+07 seconds
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1586 K, 1 K
+     Heat fluxes through boundary parts: 6.371e-11 W, -1.004e-10 W, -9.561e-10 W, -4.027e-06 W
+
+*** Timestep 20:  t=2.48995e+07 seconds
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 2 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1593 K, 1 K
+     Heat fluxes through boundary parts: 7.399e-11 W, -9.515e-11 W, -1.017e-09 W, -4.006e-06 W
+
+Number of active cells: 331 (on 6 levels)
+Number of degrees of freedom: 4,739 (2,906+380+1,453)
+
+*** Timestep 21:  t=2.52345e+07 seconds
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1603 K, 1 K
+     Heat fluxes through boundary parts: -2.955e-11 W, 8.379e-11 W, -1.111e-09 W, -3.98e-06 W
+
+*** Timestep 22:  t=2.54313e+07 seconds
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1609 K, 1 K
+     Heat fluxes through boundary parts: -3.725e-11 W, 7.331e-11 W, -1.159e-09 W, -3.97e-06 W
+
+*** Timestep 23:  t=2.61825e+07 seconds
+   Solving temperature system... 15 iterations.
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1636 K, 1 K
+     Heat fluxes through boundary parts: 1.205e-10 W, -1.881e-10 W, -1.325e-09 W, -3.894e-06 W
+
+*** Timestep 24:  t=2.65763e+07 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1648 K, 1 K
+     Heat fluxes through boundary parts: 8.961e-11 W, -1.627e-10 W, -1.398e-09 W, -3.862e-06 W
+
+*** Timestep 25:  t=2.68211e+07 seconds
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1656 K, 1 K
+     Heat fluxes through boundary parts: 6.679e-11 W, -1.352e-10 W, -1.438e-09 W, -3.843e-06 W
+
+Number of active cells: 373 (on 6 levels)
+Number of degrees of freedom: 5,276 (3,236+422+1,618)
+
+*** Timestep 26:  t=2.70182e+07 seconds
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1662 K, 1 K
+     Heat fluxes through boundary parts: 8.739e-11 W, -1.008e-10 W, -1.157e-09 W, -3.827e-06 W
+
+*** Timestep 27:  t=2.72148e+07 seconds
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1668 K, 1 K
+     Heat fluxes through boundary parts: 4.709e-11 W, -4.181e-11 W, -8.385e-10 W, -3.812e-06 W
+
+*** Timestep 28:  t=2.74715e+07 seconds
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1677 K, 1 K
+     Heat fluxes through boundary parts: 3.391e-11 W, 1.35e-11 W, -4.913e-10 W, -3.791e-06 W
+
+*** Timestep 29:  t=2.77743e+07 seconds
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1687 K, 1 K
+     Heat fluxes through boundary parts: -2.613e-11 W, -3.437e-12 W, -2.082e-10 W, -3.768e-06 W
+
+*** Timestep 30:  t=2.81055e+07 seconds
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1697 K, 1 K
+     Heat fluxes through boundary parts: -1.8e-12 W, -2.967e-11 W, -3.824e-11 W, -3.746e-06 W
+
+Number of active cells: 388 (on 6 levels)
+Number of degrees of freedom: 5,468 (3,354+437+1,677)
+
+*** Timestep 31:  t=2.84691e+07 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1708 K, 1 K
+     Heat fluxes through boundary parts: -4.24e-12 W, -6.801e-11 W, 1.719e-11 W, -3.724e-06 W
+
+*** Timestep 32:  t=2.89154e+07 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.172 K, 1 K
+     Heat fluxes through boundary parts: 1.354e-11 W, 1.069e-11 W, -4.483e-11 W, -3.699e-06 W
+
+*** Timestep 33:  t=2.94545e+07 seconds
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1736 K, 1 K
+     Heat fluxes through boundary parts: -4.287e-11 W, -1.366e-11 W, -2.388e-10 W, -3.666e-06 W
+
+*** Timestep 34:  t=2.97248e+07 seconds
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1744 K, 1 K
+     Heat fluxes through boundary parts: -1.086e-11 W, 7.382e-12 W, -3.706e-10 W, -3.648e-06 W
+
+*** Timestep 35:  t=2.99854e+07 seconds
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1752 K, 1 K
+     Heat fluxes through boundary parts: 5.43e-13 W, 9.474e-13 W, -5.103e-10 W, -3.631e-06 W
+
+Number of active cells: 388 (on 6 levels)
+Number of degrees of freedom: 5,468 (3,354+437+1,677)
+
+*** Timestep 36:  t=3.02796e+07 seconds
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1761 K, 1 K
+     Heat fluxes through boundary parts: 1.12e-11 W, 2.253e-11 W, -6.759e-10 W, -3.612e-06 W
+
+*** Timestep 37:  t=3.07572e+07 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1776 K, 1 K
+     Heat fluxes through boundary parts: 7.287e-12 W, -5.007e-12 W, -9.494e-10 W, -3.584e-06 W
+
+*** Timestep 38:  t=3.125e+07 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.179 K, 1 K
+     Heat fluxes through boundary parts: -6.443e-12 W, -5.006e-11 W, -1.228e-09 W, -3.556e-06 W
+
+*** Timestep 39:  t=3.17308e+07 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1803 K, 1 K
+     Heat fluxes through boundary parts: -1.304e-11 W, -3.965e-11 W, -1.49e-09 W, -3.531e-06 W
+
+*** Timestep 40:  t=3.20016e+07 seconds
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.181 K, 1 K
+     Heat fluxes through boundary parts: -9.773e-12 W, -4.568e-11 W, -1.633e-09 W, -3.517e-06 W
+
+Number of active cells: 388 (on 6 levels)
+Number of degrees of freedom: 5,468 (3,354+437+1,677)
+
+*** Timestep 41:  t=3.22148e+07 seconds
+   Solving temperature system... 7 iterations.
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1816 K, 1 K
-     Heat fluxes through boundary parts: 2.273e-11 W, 9.581e-12 W, -2.066e-09 W, -3.524e-06 W
+     Heat fluxes through boundary parts: -6.822e-12 W, -4.889e-11 W, -1.742e-09 W, -3.506e-06 W
 
-*** Timestep 29:  t=3.28534e+07 seconds
-   Solving temperature system... 10 iterations.
+*** Timestep 42:  t=3.23975e+07 seconds
+   Solving temperature system... 7 iterations.
    Solving Stokes system... 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1827 K, 1 K
-     Heat fluxes through boundary parts: 2.659e-11 W, 7.041e-13 W, -2.148e-09 W, -3.5e-06 W
+     Temperature min/avg/max:            0 K, 0.1821 K, 1 K
+     Heat fluxes through boundary parts: -4.298e-12 W, -4.93e-11 W, -1.833e-09 W, -3.496e-06 W
 
-*** Timestep 30:  t=3.32836e+07 seconds
+*** Timestep 43:  t=3.2603e+07 seconds
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1826 K, 1 K
+     Heat fluxes through boundary parts: -6.12e-12 W, -3.297e-11 W, -1.934e-09 W, -3.485e-06 W
+
+*** Timestep 44:  t=3.28877e+07 seconds
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1834 K, 1 K
+     Heat fluxes through boundary parts: 3.692e-13 W, -2.472e-11 W, -2.069e-09 W, -3.469e-06 W
+
+*** Timestep 45:  t=3.33227e+07 seconds
    Solving temperature system... 11 iterations.
    Solving Stokes system... 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.184 K, 1 K
-     Heat fluxes through boundary parts: 1.942e-11 W, 8.715e-12 W, -2.248e-09 W, -3.473e-06 W
+     Temperature min/avg/max:            0 K, 0.1847 K, 1 K
+     Heat fluxes through boundary parts: 1.37e-11 W, -9.169e-12 W, -2.266e-09 W, -3.444e-06 W
 
 Number of active cells: 436 (on 6 levels)
 Number of degrees of freedom: 6,099 (3,742+486+1,871)
 
-*** Timestep 31:  t=3.39115e+07 seconds
-   Solving temperature system... 13 iterations.
+*** Timestep 46:  t=3.3664e+07 seconds
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1857 K, 1 K
+     Heat fluxes through boundary parts: 4.132e-12 W, 1.198e-11 W, -2.414e-09 W, -3.426e-06 W
+
+*** Timestep 47:  t=3.39373e+07 seconds
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1865 K, 1 K
+     Heat fluxes through boundary parts: -5.715e-13 W, 7.65e-12 W, -2.527e-09 W, -3.413e-06 W
+
+*** Timestep 48:  t=3.41113e+07 seconds
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.187 K, 1 K
+     Heat fluxes through boundary parts: -3.416e-12 W, 2.047e-12 W, -2.596e-09 W, -3.404e-06 W
+
+*** Timestep 49:  t=3.42525e+07 seconds
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1873 K, 1 K
+     Heat fluxes through boundary parts: -6.172e-12 W, -2.767e-12 W, -2.651e-09 W, -3.398e-06 W
+
+*** Snapshot created!
+
+*** Timestep 50:  t=3.44042e+07 seconds
+   Solving temperature system... 6 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1877 K, 1 K
+     Heat fluxes through boundary parts: -7.191e-12 W, 7.823e-12 W, -2.709e-09 W, -3.391e-06 W
+
+Number of active cells: 433 (on 6 levels)
+Number of degrees of freedom: 6,063 (3,720+483+1,860)
+
+*** Timestep 51:  t=3.45823e+07 seconds
+   Solving temperature system... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1857 K, 1 K
-     Heat fluxes through boundary parts: -2.908e-13 W, -7.43e-12 W, -2.394e-09 W, -3.437e-06 W
-
-*** Timestep 32:  t=3.4846e+07 seconds
-   Solving temperature system... 17 iterations.
-   Solving Stokes system... 1 iterations.
-
-   Postprocessing:
      Temperature min/avg/max:            0 K, 0.1882 K, 1 K
-     Heat fluxes through boundary parts: -3.18e-11 W, -3.171e-11 W, -2.603e-09 W, -3.392e-06 W
+     Heat fluxes through boundary parts: -1.973e-12 W, 1.33e-11 W, -2.776e-09 W, -3.382e-06 W
 
-*** Timestep 33:  t=3.56835e+07 seconds
-   Solving temperature system... 16 iterations.
+*** Timestep 52:  t=3.48016e+07 seconds
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1888 K, 1 K
+     Heat fluxes through boundary parts: 7.251e-12 W, 9.43e-12 W, -2.855e-09 W, -3.372e-06 W
+
+*** Timestep 53:  t=3.50864e+07 seconds
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1895 K, 1 K
+     Heat fluxes through boundary parts: 2.157e-11 W, 1.007e-12 W, -2.955e-09 W, -3.358e-06 W
+
+*** Timestep 54:  t=3.53998e+07 seconds
+   Solving temperature system... 9 iterations.
    Solving Stokes system... 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1905 K, 1 K
-     Heat fluxes through boundary parts: -2.459e-11 W, -4.47e-12 W, -2.785e-09 W, -3.349e-06 W
+     Temperature min/avg/max:            0 K, 0.1904 K, 1 K
+     Heat fluxes through boundary parts: 3.99e-11 W, -1.112e-11 W, -3.061e-09 W, -3.343e-06 W
 
-*** Timestep 34:  t=3.61962e+07 seconds
-   Solving temperature system... 13 iterations.
+*** Timestep 55:  t=3.57164e+07 seconds
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1912 K, 1 K
+     Heat fluxes through boundary parts: 2.903e-11 W, -1.438e-11 W, -3.162e-09 W, -3.328e-06 W
+
+Number of active cells: 430 (on 6 levels)
+Number of degrees of freedom: 6,024 (3,696+480+1,848)
+
+*** Timestep 56:  t=3.59595e+07 seconds
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1919 K, 1 K
-     Heat fluxes through boundary parts: -1.834e-11 W, -9.082e-12 W, -2.895e-09 W, -3.321e-06 W
+     Heat fluxes through boundary parts: 2.253e-11 W, -2.204e-11 W, -3.237e-09 W, -3.316e-06 W
 
-*** Timestep 35:  t=3.66063e+07 seconds
-   Solving temperature system... 10 iterations.
-   Solving Stokes system... 0 iterations.
+*** Timestep 57:  t=3.61235e+07 seconds
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1931 K, 1 K
-     Heat fluxes through boundary parts: -1.551e-11 W, -9.608e-12 W, -2.983e-09 W, -3.299e-06 W
+     Temperature min/avg/max:            0 K, 0.1924 K, 1 K
+     Heat fluxes through boundary parts: 1.364e-11 W, -2.947e-11 W, -3.286e-09 W, -3.308e-06 W
 
-Number of active cells: 430 (on 6 levels)
-Number of degrees of freedom: 6,034 (3,702+481+1,851)
+*** Timestep 58:  t=3.6306e+07 seconds
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 1 iterations.
 
-*** Timestep 36:  t=3.69571e+07 seconds
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1929 K, 1 K
+     Heat fluxes through boundary parts: 9.579e-12 W, -9.785e-12 W, -3.341e-09 W, -3.299e-06 W
+
+*** Timestep 59:  t=3.66244e+07 seconds
    Solving temperature system... 9 iterations.
-   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1937 K, 1 K
+     Heat fluxes through boundary parts: 7.302e-12 W, -1.563e-11 W, -3.431e-09 W, -3.285e-06 W
+
+*** Timestep 60:  t=3.68643e+07 seconds
+   Solving temperature system... 8 iterations.
    Solving Stokes system... 0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1941 K, 1 K
-     Heat fluxes through boundary parts: -1.343e-11 W, -7.795e-12 W, -3.056e-09 W, -3.28e-06 W
+     Temperature min/avg/max:            0 K, 0.1943 K, 1 K
+     Heat fluxes through boundary parts: 8.7e-12 W, -1.035e-12 W, -3.495e-09 W, -3.275e-06 W
 
-*** Timestep 37:  t=3.72693e+07 seconds
-   Solving temperature system... 8 iterations.
+Number of active cells: 427 (on 6 levels)
+Number of degrees of freedom: 5,998 (3,680+478+1,840)
+
+*** Timestep 61:  t=3.70133e+07 seconds
+   Solving temperature system... 6 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1947 K, 1 K
+     Heat fluxes through boundary parts: 8.146e-12 W, 1.237e-11 W, -3.532e-09 W, -3.269e-06 W
+
+*** Timestep 62:  t=3.71494e+07 seconds
+   Solving temperature system... 6 iterations.
    Solving Stokes system... 1 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.195 K, 1 K
-     Heat fluxes through boundary parts: -1.125e-11 W, -5.371e-12 W, -3.12e-09 W, -3.264e-06 W
+     Heat fluxes through boundary parts: 2.359e-12 W, 2.126e-11 W, -3.565e-09 W, -3.263e-06 W
 
-*** Timestep 38:  t=3.76395e+07 seconds
-   Solving temperature system... 10 iterations.
+*** Timestep 63:  t=3.72741e+07 seconds
+   Solving temperature system... 6 iterations.
    Solving Stokes system... 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.196 K, 1 K
-     Heat fluxes through boundary parts: -9.781e-12 W, 1.103e-11 W, -3.192e-09 W, -3.245e-06 W
+     Temperature min/avg/max:            0 K, 0.1953 K, 1 K
+     Heat fluxes through boundary parts: -4.721e-12 W, 2.985e-11 W, -3.595e-09 W, -3.258e-06 W
 
-*** Timestep 39:  t=3.81218e+07 seconds
-   Solving temperature system... 12 iterations.
+*** Timestep 64:  t=3.74207e+07 seconds
+   Solving temperature system... 6 iterations.
    Solving Stokes system... 0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1973 K, 1 K
-     Heat fluxes through boundary parts: -3.962e-12 W, 6.702e-12 W, -3.28e-09 W, -3.222e-06 W
+     Temperature min/avg/max:            0 K, 0.1957 K, 1 K
+     Heat fluxes through boundary parts: 2.064e-12 W, 2.17e-11 W, -3.63e-09 W, -3.252e-06 W
 
-*** Timestep 40:  t=3.85375e+07 seconds
-   Solving temperature system... 11 iterations.
+*** Timestep 65:  t=3.75952e+07 seconds
+   Solving temperature system... 7 iterations.
    Solving Stokes system... 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1985 K, 1 K
-     Heat fluxes through boundary parts: -1.631e-12 W, -8.418e-13 W, -3.347e-09 W, -3.204e-06 W
+     Temperature min/avg/max:            0 K, 0.1962 K, 1 K
+     Heat fluxes through boundary parts: 1.56e-11 W, 3.256e-12 W, -3.67e-09 W, -3.245e-06 W
+
+Number of active cells: 427 (on 6 levels)
+Number of degrees of freedom: 5,995 (3,678+478+1,839)
+
+*** Timestep 66:  t=3.78652e+07 seconds
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1969 K, 1 K
+     Heat fluxes through boundary parts: 1.751e-11 W, -1.312e-11 W, -3.729e-09 W, -3.233e-06 W
+
+*** Timestep 67:  t=3.80653e+07 seconds
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1974 K, 1 K
+     Heat fluxes through boundary parts: 1.96e-11 W, -3.09e-11 W, -3.771e-09 W, -3.224e-06 W
+
+*** Timestep 68:  t=3.82056e+07 seconds
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1978 K, 1 K
+     Heat fluxes through boundary parts: 2.081e-11 W, -4.406e-11 W, -3.8e-09 W, -3.218e-06 W
+
+*** Timestep 69:  t=3.83248e+07 seconds
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1981 K, 1 K
+     Heat fluxes through boundary parts: 1.555e-11 W, -3.244e-11 W, -3.823e-09 W, -3.213e-06 W
+
+*** Timestep 70:  t=3.84454e+07 seconds
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1984 K, 1 K
+     Heat fluxes through boundary parts: 1.13e-11 W, -2.366e-11 W, -3.847e-09 W, -3.208e-06 W
 
 Number of active cells: 430 (on 6 levels)
-Number of degrees of freedom: 6,034 (3,702+481+1,851)
+Number of degrees of freedom: 6,024 (3,696+480+1,848)
 
-*** Timestep 41:  t=3.90157e+07 seconds
-   Solving temperature system... 12 iterations.
+*** Timestep 71:  t=3.85646e+07 seconds
+   Solving temperature system... 6 iterations.
    Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1987 K, 1 K
+     Heat fluxes through boundary parts: 1.127e-11 W, -1.456e-11 W, -3.87e-09 W, -3.203e-06 W
+
+*** Timestep 72:  t=3.87481e+07 seconds
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1992 K, 1 K
+     Heat fluxes through boundary parts: 3.123e-12 W, 1.11e-11 W, -3.903e-09 W, -3.196e-06 W
+
+*** Timestep 73:  t=3.89466e+07 seconds
+   Solving temperature system... 7 iterations.
    Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1997 K, 1 K
-     Heat fluxes through boundary parts: 1.047e-12 W, 4.106e-12 W, -3.418e-09 W, -3.183e-06 W
+     Heat fluxes through boundary parts: 5.055e-12 W, 2.122e-11 W, -3.936e-09 W, -3.187e-06 W
 
-*** Timestep 42:  t=3.94829e+07 seconds
-   Solving temperature system... 11 iterations.
+*** Timestep 74:  t=3.91116e+07 seconds
+   Solving temperature system... 6 iterations.
    Solving Stokes system... 1 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.2009 K, 1 K
-     Heat fluxes through boundary parts: 3.507e-12 W, 7.129e-12 W, -3.483e-09 W, -3.164e-06 W
+     Temperature min/avg/max:            0 K, 0.2001 K, 1 K
+     Heat fluxes through boundary parts: 1.043e-11 W, 2.621e-11 W, -3.962e-09 W, -3.181e-06 W
 
+*** Timestep 75:  t=3.92186e+07 seconds
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.2004 K, 1 K
+     Heat fluxes through boundary parts: 1.02e-11 W, 3.136e-11 W, -3.979e-09 W, -3.176e-06 W
+
+Number of active cells: 427 (on 6 levels)
+Number of degrees of freedom: 5,995 (3,678+478+1,839)
+
+*** Timestep 76:  t=3.93221e+07 seconds
+   Solving temperature system... 6 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.2006 K, 1 K
+     Heat fluxes through boundary parts: 8.634e-12 W, 2.66e-11 W, -3.994e-09 W, -3.172e-06 W
+
+*** Timestep 77:  t=3.94442e+07 seconds
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.2009 K, 1 K
+     Heat fluxes through boundary parts: 3.534e-12 W, 2.067e-11 W, -4.013e-09 W, -3.167e-06 W
+
+*** Timestep 78:  t=3.95929e+07 seconds
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.2013 K, 1 K
+     Heat fluxes through boundary parts: -3.155e-12 W, 1.015e-11 W, -4.034e-09 W, -3.161e-06 W
+
+*** Timestep 79:  t=3.98098e+07 seconds
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.2019 K, 1 K
+     Heat fluxes through boundary parts: 7.453e-12 W, -2.492e-11 W, -4.062e-09 W, -3.153e-06 W
+
+*** Timestep 80:  t=3.99831e+07 seconds
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.2023 K, 1 K
+     Heat fluxes through boundary parts: 1.221e-11 W, -3.632e-11 W, -4.083e-09 W, -3.146e-06 W
+
+Number of active cells: 430 (on 6 levels)
+Number of degrees of freedom: 6,024 (3,696+480+1,848)
+
+Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      77.6s |            |
+| Total wallclock time elapsed since start    |       105s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        43 |      6.53s |       8.4% |
-| Assemble temperature system     |        43 |      40.3s |        52% |
-| Build Stokes preconditioner     |         9 |       3.5s |       4.5% |
-| Build temperature preconditioner|        43 |     0.526s |      0.68% |
-| Solve Stokes system             |        43 |      1.48s |       1.9% |
-| Solve temperature system        |        43 |     0.987s |       1.3% |
-| Initialization                  |         2 |     0.157s |       0.2% |
-| Postprocessing                  |        43 |      2.51s |       3.2% |
-| Refine mesh structure, part 1   |         8 |      9.96s |        13% |
-| Refine mesh structure, part 2   |         8 |    0.0956s |      0.12% |
-| Setup dof systems               |         9 |       8.5s |        11% |
+| Assemble Stokes system          |        81 |      7.07s |       6.7% |
+| Assemble temperature system     |        81 |      50.6s |        48% |
+| Build Stokes preconditioner     |        17 |      4.14s |       3.9% |
+| Build temperature preconditioner|        81 |       1.3s |       1.2% |
+| Solve Stokes system             |        81 |      3.03s |       2.9% |
+| Solve temperature system        |        81 |      2.42s |       2.3% |
+| Create snapshot                 |         1 |    0.0338s |     0.032% |
+| Initialization                  |         2 |     0.216s |      0.21% |
+| Postprocessing                  |        81 |      4.25s |       4.1% |
+| Refine mesh structure, part 1   |        16 |      17.4s |        17% |
+| Refine mesh structure, part 2   |        16 |     0.186s |      0.18% |
+| Setup dof systems               |        17 |      11.5s |        11% |
 +---------------------------------+-----------+------------+------------+
 
