@@ -602,6 +602,16 @@ namespace aspect
     };
 
 
+    /**
+     * This class allows material models written in the past to be used
+     * without adapting them to the new interface that requires implementing
+     * a function evaluate() for the physical properties. Derive from
+     * this helper class instead of Interface and implement the virtual
+     * functions viscosity(), etc..
+     *
+     * Note: do not use this class for new material models, but derive
+     * from Interface instead.
+     */
     template <int dim>
     class InterfaceCompatibility: public Interface<dim>
     {
