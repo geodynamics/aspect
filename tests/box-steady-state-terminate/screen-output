@@ -1,5 +1,5 @@
-Number of active cells: 1024 (on 6 levels)
-Number of degrees of freedom: 13764 (8450+1089+4225)
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
@@ -8,91 +8,91 @@ Number of degrees of freedom: 13764 (8450+1089+4225)
 
    Postprocessing:
 
-*** Timestep 1:  t=1.01724e+06 seconds
+*** Timestep 1:  t=1.01841e+06 seconds
    Solving temperature system... 25 iterations.
    Solving Stokes system... 0 iterations.
 
    Postprocessing:
 
-*** Timestep 2:  t=2.03448e+06 seconds
+*** Timestep 2:  t=2.03683e+06 seconds
    Solving temperature system... 18 iterations.
    Solving Stokes system... 0 iterations.
 
    Postprocessing:
 
-*** Timestep 3:  t=3.05172e+06 seconds
+*** Timestep 3:  t=3.05524e+06 seconds
    Solving temperature system... 18 iterations.
    Solving Stokes system... 4 iterations.
 
    Postprocessing:
 
-*** Timestep 4:  t=4.10013e+06 seconds
+*** Timestep 4:  t=4.10453e+06 seconds
    Solving temperature system... 18 iterations.
    Solving Stokes system... 5 iterations.
 
    Postprocessing:
 
-*** Timestep 5:  t=5.24149e+06 seconds
+*** Timestep 5:  t=5.24843e+06 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 3 iterations.
-
-   Postprocessing:
-
-*** Timestep 6:  t=6.50102e+06 seconds
-   Solving temperature system... 19 iterations.
-   Solving Stokes system... 1 iterations.
-
-   Postprocessing:
-
-*** Timestep 7:  t=7.91978e+06 seconds
-   Solving temperature system... 20 iterations.
-   Solving Stokes system... 3 iterations.
-
-   Postprocessing:
-
-*** Timestep 8:  t=9.48682e+06 seconds
-   Solving temperature system... 21 iterations.
-   Solving Stokes system... 6 iterations.
-
-   Postprocessing:
-
-*** Timestep 9:  t=1.09894e+07 seconds
-   Solving temperature system... 20 iterations.
    Solving Stokes system... 2 iterations.
 
    Postprocessing:
 
-*** Timestep 10:  t=1.24726e+07 seconds
+*** Timestep 6:  t=6.51058e+06 seconds
+   Solving temperature system... 19 iterations.
+   Solving Stokes system... 2 iterations.
+
+   Postprocessing:
+
+*** Timestep 7:  t=7.91817e+06 seconds
    Solving temperature system... 20 iterations.
    Solving Stokes system... 3 iterations.
 
    Postprocessing:
 
-Number of active cells: 985 (on 6 levels)
-Number of degrees of freedom: 13318 (8178+1051+4089)
+*** Timestep 8:  t=9.47348e+06 seconds
+   Solving temperature system... 21 iterations.
+   Solving Stokes system... 5 iterations.
 
-Termination requested by criterion: steady_rms_velocity
+   Postprocessing:
+
+*** Timestep 9:  t=1.104e+07 seconds
+   Solving temperature system... 21 iterations.
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+
+*** Timestep 10:  t=1.25774e+07 seconds
+   Solving temperature system... 20 iterations.
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+
+Number of active cells: 982 (on 6 levels)
+Number of degrees of freedom: 13,282 (8,156+1,048+4,078)
+
+Termination requested by criterion: steady state velocity
 *** Performing final checkpoint.
 *** Snapshot created!
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      2.73s |            |
+| Total wallclock time elapsed since start    |      38.6s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        11 |     0.147s |       5.4% |
-| Assemble temperature system     |        11 |      1.67s |        61% |
-| Build Stokes preconditioner     |         1 |    0.0627s |       2.3% |
-| Build temperature preconditioner|        11 |     0.136s |         5% |
-| Solve Stokes system             |        11 |     0.146s |       5.4% |
-| Solve temperature system        |        11 |    0.0791s |       2.9% |
-| Create snapshot                 |         1 |   0.00706s |      0.26% |
-| Initialization                  |         2 |    0.0167s |      0.61% |
-| Postprocessing                  |        11 |   0.00394s |      0.14% |
-| Refine mesh structure, part 1   |         1 |      0.28s |        10% |
-| Refine mesh structure, part 2   |         1 |    0.0018s |     0.066% |
-| Setup dof systems               |         2 |     0.134s |       4.9% |
+| Assemble Stokes system          |        11 |      2.18s |       5.7% |
+| Assemble temperature system     |        11 |      23.1s |        60% |
+| Build Stokes preconditioner     |         1 |     0.658s |       1.7% |
+| Build temperature preconditioner|        11 |     0.493s |       1.3% |
+| Solve Stokes system             |        11 |      1.56s |       4.1% |
+| Solve temperature system        |        11 |      1.21s |       3.1% |
+| Create snapshot                 |         1 |     0.139s |      0.36% |
+| Initialization                  |         2 |      0.28s |      0.73% |
+| Postprocessing                  |        11 |   0.00233s |     0.006% |
+| Refine mesh structure, part 1   |         1 |      2.89s |       7.5% |
+| Refine mesh structure, part 2   |         1 |    0.0229s |     0.059% |
+| Setup dof systems               |         2 |      3.48s |         9% |
 +---------------------------------+-----------+------------+------------+
 
