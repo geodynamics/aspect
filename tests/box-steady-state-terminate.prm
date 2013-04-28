@@ -57,19 +57,19 @@ end
 
 
 subsection Model settings
-  set Fixed temperature boundary indicators   = 
+  set Fixed temperature boundary indicators   =
   set Prescribed velocity boundary indicators =
   set Tangential velocity boundary indicators = 1
   set Zero velocity boundary indicators       = 0, 2, 3
 end
 
 subsection Postprocess
-  set List of postprocessors = 
+  set List of postprocessors =
 end
 
 subsection Termination criteria
   set Checkpoint on termination = true
-  set Termination criteria      = steady_rms_velocity
+  set Termination criteria      = steady rms velocity
 
   subsection Steady state velocity
     set Maximum relative deviation = 0.05
