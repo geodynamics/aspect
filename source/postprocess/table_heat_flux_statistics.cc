@@ -42,19 +42,19 @@ namespace aspect
       // element is it in fact
       Assert (this->get_fe().n_base_elements() == 3,
               ExcNotImplemented());
-      const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(2).degree+1);
+      const QGauss<dim-1> quadrature (this->get_fe().base_element(2).degree+1);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
-                                        quadrature_formula,
+                                        quadrature,
                                         update_gradients      | update_values |
                                         update_normal_vectors |
                                         update_q_points       | update_JxW_values);
 
-      std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
-      std::vector<double>         temperature_values (quadrature_formula.size());
-      std::vector<double>         pressure_values (quadrature_formula.size());
-      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+      std::vector<Tensor<1,dim> > temperature_gradients (quadrature.size());
+      std::vector<double>         temperature_values (quadrature.size());
+      std::vector<double>         pressure_values (quadrature.size());
+      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature.size()));
       std::vector<double> composition_values_at_q_point (this->n_compositional_fields());
 
 
@@ -64,6 +64,10 @@ namespace aspect
       boundary_indicators
         = this->get_geometry_model().get_used_boundary_indicators ();
       std::map<types::boundary_id, double> local_boundary_fluxes;
+
+      typename MaterialModel::Interface<dim>::MaterialModelInputs in(quadrature.size(),
+          this->n_compositional_fields());
+      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(quadrature.size());
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -87,29 +91,29 @@ namespace aspect
                 fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
                     temperature_gradients);
                 fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                    temperature_values);
+                    in.temperature);
                 fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                                                               pressure_values);
+                                                                                               in.pressure);
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                       composition_values[c]);
 
+                in.position = fe_face_values.get_quadrature_points();
+                in.strain_rate.resize(0); // we do not need the viscosity
+                for (unsigned int i=0;i<quadrature.size();++i)
+                  {
+                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                      in.composition[i][c] = composition_values[c][i];
+                  }
+
+                this->get_material_model().evaluate(in, out);
+
                 double local_normal_flux = 0;
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
-                    this->get_composition_values_at_q_point (composition_values,
-                                                             q,
-                                                             composition_values_at_q_point);
-
-                    const double thermal_conductivity
-                      = this->get_material_model().thermal_conductivity(temperature_values[q],
-                                                                        pressure_values[q],
-                                                                        composition_values_at_q_point,
-                                                                        fe_face_values.quadrature_point(q));
-
                     local_normal_flux
                     +=
-                      -thermal_conductivity *
+                      -out.thermal_conductivities[q] *
                       (temperature_gradients[q] *
                        fe_face_values.normal_vector(q)) *
                       fe_face_values.JxW(q);

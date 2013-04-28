@@ -74,7 +74,7 @@ namespace aspect
         for (unsigned int c=0; c<n_compositional_fields; ++c)
           in.composition[0][c] = compositional_initial_conditions.initial_composition(representative_point, c);
 
-        in.strain_rate[0] = SymmetricTensor<2,dim>(); // adiabat has strain=0.
+        in.strain_rate.resize(0); // we do not need the viscosity
         material_model.evaluate(in, out);
 
         // get the magnitude of gravity. we assume

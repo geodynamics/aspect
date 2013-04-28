@@ -57,20 +57,27 @@ namespace aspect
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
         Assert (uh[0].size() == dim+2+this->n_compositional_fields(), ExcInternalError());
 
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
-          {
-            // extract the primal variables
-            const double pressure    = uh[q][dim];
-            const double temperature = uh[q][dim+1];
-            std::vector<double> composition(this->n_compositional_fields());
-            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              composition[c] = uh[q][dim+2+c];
+        typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_quadrature_points,
+            this->n_compositional_fields());
+        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_quadrature_points);
 
-            computed_quantities[q](0) = this->get_material_model().thermal_expansion_coefficient(temperature,
-                                        pressure,
-                                        composition,
-                                        evaluation_points[q]);
+        in.position = evaluation_points;
+        in.strain_rate.resize(0); // we do not need the viscosity
+        for (unsigned int q=0;q<n_quadrature_points;++q)
+          {
+            //in.strain_rate[q] =
+            in.pressure[q]=uh[q][dim];
+            in.temperature[q]=uh[q][dim+1];
+
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              in.composition[q][c] = uh[q][dim+2+c];
+
           }
+
+        this->get_material_model().evaluate(in, out);
+
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
+          computed_quantities[q](0) = out.thermal_expansion_coefficients[q];
       }
     }
   }

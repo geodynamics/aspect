@@ -656,9 +656,16 @@ namespace aspect
         material_model_inputs.temperature);
     input_finite_element_values[introspection.extractors.pressure].get_function_values(input_solution,
         material_model_inputs.pressure);
+
+    // only the viscosity in the material can depend on the strain_rate
+    // if this is not needed, we can same some time here. By setting the
+    // length of the strain_rate vector to 0, we signal to evaluate()
+    // that we do not need to access the viscosity.
     if (compute_strainrate)
       input_finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients(input_solution,
           material_model_inputs.strain_rate);
+    else
+      material_model_inputs.strain_rate.resize(0);
 
     // the values of the compositional fields are stored as blockvectors for each field
     // we have to extract them in this structure

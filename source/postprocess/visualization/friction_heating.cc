@@ -58,33 +58,38 @@ namespace aspect
         Assert (uh[0].size() == dim+2+this->n_compositional_fields(), ExcInternalError());
         Assert (duh[0].size() == dim+2+this->n_compositional_fields(),ExcInternalError());
 
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
+        typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_quadrature_points,
+            this->n_compositional_fields());
+        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_quadrature_points);
+
+        in.position = evaluation_points;
+        for (unsigned int q=0;q<n_quadrature_points;++q)
           {
-            // extract the primal variables
             Tensor<2,dim> grad_u;
             for (unsigned int d=0; d<dim; ++d)
               grad_u[d] = duh[q][d];
+            in.strain_rate[q] = symmetrize (grad_u);
 
-            const double pressure    = uh[q][dim];
-            const double temperature = uh[q][dim+1];
+            in.pressure[q]=uh[q][dim];
+            in.temperature[q]=uh[q][dim+1];
 
-            const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              in.composition[q][c] = uh[q][dim+2+c];
+
+          }
+
+        this->get_material_model().evaluate(in, out);
+
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
+          {
             const SymmetricTensor<2,dim> compressible_strain_rate
               = (this->get_material_model().is_compressible()
                  ?
-                 strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
+                 in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>()
                  :
-                 strain_rate);
+                 in.strain_rate[q]);
 
-            std::vector<double> composition(this->n_compositional_fields());
-            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              composition[c] = uh[q][dim+2+c];
-
-            computed_quantities[q](0) = 2 * this->get_material_model().viscosity(temperature,
-                                                                                 pressure,
-                                                                                 composition,
-                                                                                 strain_rate,
-                                                                                 evaluation_points[q]) *
+            computed_quantities[q](0) = 2 * out.viscosities[q] *
                                         compressible_strain_rate * compressible_strain_rate;
           }
       }

@@ -44,7 +44,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Simple : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class Simple : public MaterialModel::InterfaceCompatibility<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**

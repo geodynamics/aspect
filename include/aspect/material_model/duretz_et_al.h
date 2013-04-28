@@ -67,7 +67,7 @@ namespace aspect
        * @ingroup MaterialModels
        */
       template <int dim>
-      class SolCx : public MaterialModel::Interface<dim>
+      class SolCx : public MaterialModel::InterfaceCompatibility<dim>
       {
         public:
           /**
@@ -241,7 +241,7 @@ namespace aspect
        * @ingroup MaterialModels
        */
       template <int dim>
-      class SolKz : public MaterialModel::Interface<dim>
+      class SolKz : public MaterialModel::InterfaceCompatibility<dim>
       {
         public:
           /**
@@ -368,7 +368,7 @@ namespace aspect
        * @ingroup MaterialModels
        */
       template <int dim>
-      class Inclusion : public MaterialModel::Interface<dim>
+      class Inclusion : public MaterialModel::InterfaceCompatibility<dim>
       {
         public:
           /**

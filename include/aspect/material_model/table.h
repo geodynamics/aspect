@@ -39,7 +39,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Table: public MaterialModel::Interface<dim>
+    class Table: public MaterialModel::InterfaceCompatibility<dim>
     {
       public:
         /**

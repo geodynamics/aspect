@@ -65,6 +65,9 @@ namespace aspect
       std::vector<std::vector<double> > composition_values (quadrature.size(),
                                                             std::vector<double> (this->n_compositional_fields()));
 
+      typename MaterialModel::Interface<dim>::MaterialModelInputs in(quadrature.size(), this->n_compositional_fields());
+      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(quadrature.size());
+
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
@@ -79,13 +82,18 @@ namespace aspect
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
                   prelim_composition_values[c]);
-            // then we copy these values to exchange the inner and outer vector, because for the material
-            // model we need a vector with values of all the compositional fields for every quadrature point
-            for (unsigned int q=0; q<quadrature.size(); ++q)
-              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                composition_values[q][c] = prelim_composition_values[c][q];
 
             cell->get_dof_indices (local_dof_indices);
+            in.position = fe_values.get_quadrature_points();
+            in.strain_rate.resize(0);// we are not reading the viscosity
+            for (unsigned int i=0;i<quadrature.size();++i)
+              {
+                in.temperature[i] = temperature_values[i];
+                in.pressure[i] = pressure_values[i];
+                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                  in.composition[i][c] = prelim_composition_values[c][i];
+              }
+            this->get_material_model().evaluate(in, out);
 
             // for each temperature dof, write into the output
             // vector the density. note that quadrature points and
@@ -97,15 +105,9 @@ namespace aspect
                                                                                        /*dof index within component=*/i);
 
                 vec_distributed(local_dof_indices[system_local_dof])
-                  = this->get_material_model().density( temperature_values[i],
-                                                        pressure_values[i],
-                                                        composition_values[i],
-                                                        fe_values.quadrature_point(i))
+                  = out.densities[i]
                     * temperature_values[i]
-                    * this->get_material_model().specific_heat(temperature_values[i],
-                                                               pressure_values[i],
-                                                               composition_values[i],
-                                                               fe_values.quadrature_point(i));
+                    * out.specific_heat[i];
               }
           }
 

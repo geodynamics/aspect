@@ -39,7 +39,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class TanGurnis : public MaterialModel::Interface<dim>
+    class TanGurnis : public MaterialModel::InterfaceCompatibility<dim>
     {
       public:
 

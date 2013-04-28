@@ -729,7 +729,7 @@ namespace aspect
   {
     const unsigned int num_slices = 100;
     values.resize(num_slices);
-    std::vector<unsigned int> counts(num_slices);
+    std::vector<double> volume(num_slices);
 
     // this yields 100 quadrature points evenly distributed in the interior of the cell.
     // We avoid points on the faces, as they would be counted more than once.
@@ -743,31 +743,37 @@ namespace aspect
                              quadrature_formula,
                              update_values | update_gradients | update_quadrature_points);
 
-    std::vector<SymmetricTensor<2,dim> > strain_rates(n_q_points);
-    std::vector<double> pressure_values(n_q_points);
-    std::vector<double> temperature_values(n_q_points);
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
-    std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
     endc = dof_handler.end();
 
-    // compute the integral quantities by quadrature
-    unsigned int cell_index = 0;
-    for (; cell!=endc; ++cell,++cell_index)
+    typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
+        parameters.n_compositional_fields);
+    typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points);
+
+    for (; cell!=endc; ++cell)
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
           fe_values[introspection.extractors.pressure].get_function_values (this->solution,
-                                                                            pressure_values);
+                                                                            in.pressure);
           fe_values[introspection.extractors.temperature].get_function_values (this->solution,
-                                                                               temperature_values);
+                                                                               in.temperature);
           fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (this->solution,
-              strain_rates);
+              in.strain_rate);
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
                                                                                             composition_values[c]);
+
+          for (unsigned int i=0;i<n_q_points;++i)
+            {
+              in.position[i] = fe_values.quadrature_point(i);
+              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                in.composition[i][c] = composition_values[c][i];
+            }
+          material_model->evaluate(in, out);
 
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
@@ -775,29 +781,18 @@ namespace aspect
               const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
               Assert(idx<num_slices, ExcInternalError());
 
-              extract_composition_values_at_q_point (composition_values,
-                                                     q,
-                                                     composition_values_at_q_point);
-
-              // TODO: we should use compute_parameters() instead. This should be done
-              // together with merging all the *_average() functions.
-              const double viscosity = material_model->viscosity(temperature_values[q],
-                                                                 pressure_values[q],
-                                                                 composition_values_at_q_point,
-                                                                 strain_rates[q],
-                                                                 fe_values.quadrature_point(q));
-              ++counts[idx];
-              values[idx] += viscosity;
+              values[idx] += out.viscosities[q] * fe_values.JxW(q);
+              volume[idx] += fe_values.JxW(q);
             }
         }
 
     std::vector<double> values_all(num_slices);
-    std::vector<unsigned int> counts_all(num_slices);
-    Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
+    std::vector<double> volume_all(num_slices);
+    Utilities::MPI::sum(volume, MPI_COMM_WORLD, volume_all);
     Utilities::MPI::sum(values, MPI_COMM_WORLD, values_all);
 
     for (unsigned int i=0; i<num_slices; ++i)
-      values[i] = values_all[i] / (static_cast<double>(counts_all[i])+1e-20);
+      values[i] = values_all[i] / (static_cast<double>(volume_all[i])+1e-20);
   }
 
 
