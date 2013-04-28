@@ -9,6 +9,14 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: All parts of the code now use the new MaterialModel::evaluate().
+The individual functions like viscosity() got removed. To get an
+old material model to work, you can either move to the new setup
+or derive from InterfaceCompatibility instead of Interface.
+<br>
+(Timo Heister, 2013/04/28)
+
+<li>
 New: Checking whether the end time has been reached is now a regular
 termination criterion plugin. Unlike other plugins, however, it is
 always active.
