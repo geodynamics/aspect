@@ -1,0 +1,144 @@
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    1
+     Reference gravity (m/s^2):                     1
+     Reference thermal expansion (1/K):             2e-05
+     Temperature contrast accross model domain (K): 1
+     Model domain depth (m):                        1
+     Reference thermal diffusivity (m^2/s):         8e-10
+     Reference viscosity (Pas):                     1
+     Ra number:                                     25000
+     k_value:                                       1e-06
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 8e-10
+
+     Temperature min/avg/max:            -7.2e-17 K, 0.005208 K, 1 K
+     Heat fluxes through boundary parts: -6.648e-19 W, -1.105e-18 W, 2.418e-45 W, -9.6e-05 W
+     RMS, max velocity:                  9.72e-12 m/s, 6.75e-11 m/s
+
+*** Timestep 1:  t=2.31396e+06 seconds
+   Solving temperature system... 47 iterations.
+   Solving Stokes system... 9 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.04311 K, 1 K
+     Heat fluxes through boundary parts: 3.527e-12 W, -4.018e-12 W, 3.578e-15 W, -2.17e-05 W
+     RMS, max velocity:                  3.24e-11 m/s, 8.57e-11 m/s
+
+*** Timestep 2:  t=4.05617e+06 seconds
+   Solving temperature system... 33 iterations.
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.06177 K, 1 K
+     Heat fluxes through boundary parts: 1.209e-11 W, 1.608e-11 W, 9.273e-15 W, -1.04e-05 W
+     RMS, max velocity:                  3.02e-11 m/s, 6.32e-11 m/s
+
+*** Timestep 3:  t=6.52449e+06 seconds
+   Solving temperature system... 36 iterations.
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.08069 K, 1 K
+     Heat fluxes through boundary parts: -4.783e-11 W, -1.152e-11 W, 3.687e-14 W, -7.295e-06 W
+     RMS, max velocity:                  2.26e-11 m/s, 6.45e-11 m/s
+
+*** Timestep 4:  t=8.9178e+06 seconds
+   Solving temperature system... 35 iterations.
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.09499 K, 1 K
+     Heat fluxes through boundary parts: -2.584e-11 W, -1.09e-11 W, 1.399e-13 W, -6.424e-06 W
+     RMS, max velocity:                  2.55e-11 m/s, 6.2e-11 m/s
+
+*** Timestep 5:  t=1.12201e+07 seconds
+   Solving temperature system... 33 iterations.
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1067 K, 1 K
+     Heat fluxes through boundary parts: -3.782e-12 W, -2.833e-12 W, 4.63e-13 W, -5.854e-06 W
+     RMS, max velocity:                  2.23e-11 m/s, 4.35e-11 m/s
+
+Number of active cells: 472 (on 6 levels)
+Number of degrees of freedom: 6,575 (4,032+527+2,016)
+
+*** Timestep 6:  t=1.48115e+07 seconds
+   Solving temperature system... 37 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1228 K, 1 K
+     Heat fluxes through boundary parts: 4.044e-12 W, -1.253e-12 W, 2.779e-12 W, -5.138e-06 W
+     RMS, max velocity:                  3.31e-11 m/s, 1.46e-10 m/s
+
+*** Timestep 7:  t=1.58214e+07 seconds
+   Solving temperature system... 22 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1269 K, 1 K
+     Heat fluxes through boundary parts: -8.753e-13 W, 2.516e-11 W, 4.102e-12 W, -4.979e-06 W
+     RMS, max velocity:                  4.07e-11 m/s, 1.8e-10 m/s
+
+*** Timestep 8:  t=1.6642e+07 seconds
+   Solving temperature system... 17 iterations.
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1302 K, 1 K
+     Heat fluxes through boundary parts: -4.629e-12 W, 4.116e-11 W, 5.53e-12 W, -4.862e-06 W
+     RMS, max velocity:                  3.58e-11 m/s, 1.32e-10 m/s
+
+*** Timestep 9:  t=1.77375e+07 seconds
+   Solving temperature system... 19 iterations.
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1344 K, 1 K
+     Heat fluxes through boundary parts: -9.886e-12 W, 4.666e-11 W, 8.178e-12 W, -4.719e-06 W
+     RMS, max velocity:                  3.37e-11 m/s, 1.35e-10 m/s
+
+*** Timestep 10:  t=1.89012e+07 seconds
+   Solving temperature system... 20 iterations.
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.1387 K, 1 K
+     Heat fluxes through boundary parts: 8.278e-12 W, 1.771e-11 W, 1.231e-11 W, -4.583e-06 W
+     RMS, max velocity:                  2.68e-11 m/s, 9.11e-11 m/s
+
+Number of active cells: 349 (on 6 levels)
+Number of degrees of freedom: 4,965 (3,044+399+1,522)
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      33.1s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |        11 |      2.86s |       8.7% |
+| Assemble temperature system     |        11 |      20.6s |        62% |
+| Build Stokes preconditioner     |         2 |       1.2s |       3.6% |
+| Build temperature preconditioner|        11 |     0.146s |      0.44% |
+| Solve Stokes system             |        11 |     0.302s |      0.91% |
+| Solve temperature system        |        11 |     0.242s |      0.73% |
+| Initialization                  |         2 |    0.0924s |      0.28% |
+| Postprocessing                  |        11 |     0.699s |       2.1% |
+| Refine mesh structure, part 1   |         2 |      5.02s |        15% |
+| Refine mesh structure, part 2   |         2 |     0.013s |     0.039% |
+| Setup dof systems               |         3 |      1.51s |       4.6% |
++---------------------------------+-----------+------------+------------+
+
