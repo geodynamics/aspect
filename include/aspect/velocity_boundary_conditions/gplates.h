@@ -160,7 +160,7 @@ namespace aspect
      * @ingroup VelocityBoundaryConditionsModels
      */
     template <int dim>
-    class GPlates : public Interface<dim>
+    class GPlates : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**

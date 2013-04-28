@@ -65,7 +65,8 @@ namespace aspect
       for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p)
-        dynamic_cast<SimulatorAccess<dim>&>(**p).initialize (simulator);
+        if (dynamic_cast<const SimulatorAccess<dim>*>(p->get()) != 0)
+          dynamic_cast<SimulatorAccess<dim>&>(**p).initialize (simulator);
 
       // also extract the MPI communicator over which this simulator
       // operates so that we can later scale vectors that live on

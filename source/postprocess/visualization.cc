@@ -234,9 +234,12 @@ namespace aspect
         {
           std::string     h5_filename = solution_file_prefix + ".h5";
           std::string     xdmf_filename = this->get_output_directory() + "solution.xdmf";
-          data_out.write_hdf5_parallel((this->get_output_directory()+h5_filename).c_str(), MPI_COMM_WORLD);
-          xdmf_entries.push_back(data_out.create_xdmf_entry(h5_filename.c_str(), this->get_time(), MPI_COMM_WORLD));
-          data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(), MPI_COMM_WORLD);
+          data_out.write_hdf5_parallel((this->get_output_directory()+h5_filename).c_str(),
+                                       this->get_mpi_communicator());
+          xdmf_entries.push_back(data_out.create_xdmf_entry(h5_filename.c_str(), this->get_time(),
+                                                            this->get_mpi_communicator()));
+          data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(),
+                                   this->get_mpi_communicator());
         }
       else if (output_format=="vtu")
         {
@@ -246,7 +249,8 @@ namespace aspect
             {
               AssertThrow(group_files==1, ExcNotImplemented());
               data_out.write_vtu_in_parallel((this->get_output_directory() + solution_file_prefix +
-                                              ".vtu").c_str(), MPI_COMM_WORLD);
+                                              ".vtu").c_str(),
+                                             this->get_mpi_communicator());
 
               if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
                 {

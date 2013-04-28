@@ -241,6 +241,8 @@ namespace aspect
             (p->second,
              prm,
              *geometry_model);
+        if (dynamic_cast<SimulatorAccess<dim>*>(bv) != 0)
+          dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
         velocity_boundary_conditions[p->first].reset (bv);
       }
 
@@ -253,7 +255,7 @@ namespace aspect
     // finally produce a record of the run-time parameters by writing
     // the currently used values into a file
     // Only write the parameter files on the root node to avoid file system conflicts
-    if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+    if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
         std::ofstream prm_out ((parameters.output_directory + "parameters.prm").c_str());
         AssertThrow (prm_out,
@@ -261,7 +263,7 @@ namespace aspect
                                  parameters.output_directory + "parameters.prm>."));
         prm.print_parameters(prm_out, ParameterHandler::Text);
       }
-    if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+    if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
         std::ofstream prm_out ((parameters.output_directory + "parameters.tex").c_str());
         AssertThrow (prm_out,
@@ -682,8 +684,7 @@ namespace aspect
     solution.reinit(introspection.index_sets.system_relevant_partitioning, mpi_communicator);
     old_solution.reinit(introspection.index_sets.system_relevant_partitioning, mpi_communicator);
     old_old_solution.reinit(introspection.index_sets.system_relevant_partitioning, mpi_communicator);
-
-    current_linearization_point.reinit (introspection.index_sets.system_relevant_partitioning, MPI_COMM_WORLD);
+    current_linearization_point.reinit (introspection.index_sets.system_relevant_partitioning, mpi_communicator);
 
     if (material_model->is_compressible())
       pressure_shape_function_integrals.reinit (introspection.index_sets.system_partitioning, mpi_communicator);
@@ -1208,8 +1209,9 @@ namespace aspect
         // This prevents race conditions where some processes will checkpoint and others won't
         if (parameters.checkpoint_time_secs > 0)
           {
-            int global_do_checkpoint = ((std::time(NULL)-last_checkpoint_time) >= parameters.checkpoint_time_secs);
-            MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, MPI_COMM_WORLD);
+            int global_do_checkpoint = ((std::time(NULL)-last_checkpoint_time) >=
+                                        parameters.checkpoint_time_secs);
+            MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, mpi_communicator);
 
             do_checkpoint = (global_do_checkpoint == 1);
           }

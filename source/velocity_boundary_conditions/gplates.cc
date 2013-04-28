@@ -365,7 +365,7 @@ namespace aspect
           time_dependent = false;
 
           // Give warning if first processor
-          if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)==0)
+          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator())==0)
             std::cout << std::endl
                       << "Loading second velocity file did not succeed."
                       << "Assuming constant boundary conditions model." << std::endl
@@ -416,7 +416,7 @@ namespace aspect
                   time_dependent = false;
 
                   // Give warning if first processor
-                  if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)==0)
+                  if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator())==0)
                     std::cout << std::endl << "Loading new velocity file did not succeed." << std::endl
                               << "Assuming constant boundary conditions for rest of model." << std::endl
                               << std::endl;

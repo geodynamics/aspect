@@ -788,8 +788,8 @@ namespace aspect
 
     std::vector<double> values_all(num_slices);
     std::vector<double> volume_all(num_slices);
-    Utilities::MPI::sum(volume, MPI_COMM_WORLD, volume_all);
-    Utilities::MPI::sum(values, MPI_COMM_WORLD, values_all);
+    Utilities::MPI::sum(volume, mpi_communicator, volume_all);
+    Utilities::MPI::sum(values, mpi_communicator, values_all);
 
     for (unsigned int i=0; i<num_slices; ++i)
       values[i] = values_all[i] / (static_cast<double>(volume_all[i])+1e-20);
@@ -840,8 +840,8 @@ namespace aspect
 
     std::vector<double> values_all(num_slices);
     std::vector<unsigned int> counts_all(num_slices);
-    Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
-    Utilities::MPI::sum(values, MPI_COMM_WORLD, values_all);
+    Utilities::MPI::sum(counts, mpi_communicator, counts_all);
+    Utilities::MPI::sum(values, mpi_communicator, values_all);
 
     for (unsigned int i=0; i<num_slices; ++i)
       values[i] = values_all[i] / (static_cast<double>(counts_all[i])+1e-20)*year_in_seconds;
@@ -894,8 +894,8 @@ namespace aspect
         }
     std::vector<double> values_all(num_slices);
     std::vector<unsigned int> counts_all(num_slices);
-    Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
-    Utilities::MPI::sum(values, MPI_COMM_WORLD, values_all);
+    Utilities::MPI::sum(counts, mpi_communicator, counts_all);
+    Utilities::MPI::sum(values, mpi_communicator, values_all);
 
     for (unsigned int i=0; i<num_slices; ++i)
       values[i] = values_all[i] / (static_cast<double>(counts_all[i])+1e-20);
@@ -967,8 +967,8 @@ namespace aspect
         }
     std::vector<double> values_all(num_slices);
     std::vector<unsigned int> counts_all(num_slices);
-    Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
-    Utilities::MPI::sum(values, MPI_COMM_WORLD, values_all);
+    Utilities::MPI::sum(counts, mpi_communicator, counts_all);
+    Utilities::MPI::sum(values, mpi_communicator, values_all);
 
     for (unsigned int i=0; i<num_slices; ++i)
       values[i] = values_all[i] / (static_cast<double>(counts_all[i])+1e-20);
@@ -1040,8 +1040,8 @@ namespace aspect
         }
     std::vector<double> values_all(num_slices);
     std::vector<unsigned int> counts_all(num_slices);
-    Utilities::MPI::sum(counts, MPI_COMM_WORLD, counts_all);
-    Utilities::MPI::sum(values, MPI_COMM_WORLD, values_all);
+    Utilities::MPI::sum(counts, mpi_communicator, counts_all);
+    Utilities::MPI::sum(values, mpi_communicator, values_all);
 
     for (unsigned int i=0; i<num_slices; ++i)
       values[i] = values_all[i] / (static_cast<double>(counts_all[i])+1e-20);

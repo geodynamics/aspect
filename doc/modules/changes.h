@@ -9,6 +9,14 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+Fixed: There were many places where we indiscriminately used MPI_COMM_WORLD,
+rather than the communicator used for the actual simulation. This is not a
+problem almost all the time, except for cases where Aspect is run as part
+of a bigger simulation.
+<br>
+(Wolfgang Bangerth, 2013/04/28)
+
+<li>
 New: All parts of the code now use the new MaterialModel::evaluate().
 The individual functions like viscosity() got removed. To get an
 old material model to work, you can either move to the new setup
