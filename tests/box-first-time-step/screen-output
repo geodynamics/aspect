@@ -21,25 +21,26 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      reference_thermal_diffusivity:                 8e-10
 
      Writing graphical output:           output-box-first-time-step/solution-00000
-     RMS, max velocity:                  9.07e-09 m/s, 3.25e-08 m/s
+     RMS, max velocity:                  9.06e-09 m/s, 3.25e-08 m/s
      Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
      Heat fluxes through boundary parts: 1.668e-07 W, 8.017e-05 W, 2.402e-07 W, 2.402e-07 W
 
+Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      16.2s |            |
+| Total wallclock time elapsed since start    |      5.69s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |      1.55s |       9.6% |
-| Assemble temperature system     |         1 |      4.14s |        26% |
-| Build Stokes preconditioner     |         1 |      1.29s |         8% |
-| Build temperature preconditioner|         1 |    0.0201s |      0.12% |
-| Solve Stokes system             |         1 |     0.274s |       1.7% |
-| Solve temperature system        |         1 |    0.0191s |      0.12% |
-| Initialization                  |         2 |     0.333s |       2.1% |
-| Postprocessing                  |         1 |      5.42s |        34% |
-| Setup dof systems               |         1 |      2.53s |        16% |
+| Assemble Stokes system          |         1 |     0.881s |        15% |
+| Assemble temperature system     |         1 |      1.51s |        26% |
+| Build Stokes preconditioner     |         1 |     0.525s |       9.2% |
+| Build temperature preconditioner|         1 |    0.0257s |      0.45% |
+| Solve Stokes system             |         1 |     0.261s |       4.6% |
+| Solve temperature system        |         1 |    0.0176s |      0.31% |
+| Initialization                  |         2 |     0.155s |       2.7% |
+| Postprocessing                  |         1 |     0.313s |       5.5% |
+| Setup dof systems               |         1 |      1.64s |        29% |
 +---------------------------------+-----------+------------+------------+
 

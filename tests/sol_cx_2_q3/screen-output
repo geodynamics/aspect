@@ -4,26 +4,27 @@ Number of degrees of freedom: 500 (338+81+81)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+4 iterations.
+   Solving Stokes system... 30+5 iterations.
 
    Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 6.425271e-06, 1.103958e-01, 8.407109e-06, 1.110898e-01
+     Errors u_L1, p_L1, u_L2, p_L2: 6.425269e-06, 1.103958e-01, 8.407111e-06, 1.110897e-01
 
+Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      5.09s |            |
+| Total wallclock time elapsed since start    |      1.33s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |     0.978s |        19% |
-| Assemble temperature system     |         1 |      1.48s |        29% |
-| Build Stokes preconditioner     |         1 |     0.973s |        19% |
-| Build temperature preconditioner|         1 |    0.0012s |     0.024% |
-| Solve Stokes system             |         1 |     0.265s |       5.2% |
-| Solve temperature system        |         1 |   0.00132s |     0.026% |
-| Initialization                  |         2 |     0.118s |       2.3% |
-| Postprocessing                  |         1 |     0.572s |        11% |
-| Setup dof systems               |         1 |     0.389s |       7.6% |
+| Assemble Stokes system          |         1 |     0.198s |        15% |
+| Assemble temperature system     |         1 |     0.339s |        26% |
+| Build Stokes preconditioner     |         1 |     0.104s |       7.8% |
+| Build temperature preconditioner|         1 |   0.00167s |      0.13% |
+| Solve Stokes system             |         1 |     0.079s |       5.9% |
+| Solve temperature system        |         1 |   0.00147s |      0.11% |
+| Initialization                  |         2 |     0.122s |       9.2% |
+| Postprocessing                  |         1 |     0.163s |        12% |
+| Setup dof systems               |         1 |     0.239s |        18% |
 +---------------------------------+-----------+------------+------------+
 

@@ -4,26 +4,27 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+7 iterations.
+   Solving Stokes system... 30+8 iterations.
 
    Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 9.024084e-08, 6.588221e-04, 2.330059e-07, 1.068891e-03
+     Errors u_L1, p_L1, u_L2, p_L2: 9.024063e-08, 6.588197e-04, 2.330068e-07, 1.068891e-03
 
+Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      5.83s |            |
+| Total wallclock time elapsed since start    |      2.21s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |     0.913s |        16% |
-| Assemble temperature system     |         1 |      1.19s |        21% |
-| Build Stokes preconditioner     |         1 |     0.523s |         9% |
-| Build temperature preconditioner|         1 |    0.0555s |      0.95% |
-| Solve Stokes system             |         1 |     0.563s |       9.7% |
-| Solve temperature system        |         1 |   0.00499s |     0.086% |
-| Initialization                  |         2 |      0.19s |       3.3% |
-| Postprocessing                  |         1 |     0.537s |       9.2% |
-| Setup dof systems               |         1 |      1.26s |        22% |
+| Assemble Stokes system          |         1 |     0.198s |         9% |
+| Assemble temperature system     |         1 |     0.563s |        26% |
+| Build Stokes preconditioner     |         1 |     0.217s |       9.8% |
+| Build temperature preconditioner|         1 |   0.00731s |      0.33% |
+| Solve Stokes system             |         1 |     0.259s |        12% |
+| Solve temperature system        |         1 |   0.00398s |      0.18% |
+| Initialization                  |         2 |      0.11s |         5% |
+| Postprocessing                  |         1 |      0.27s |        12% |
+| Setup dof systems               |         1 |     0.386s |        17% |
 +---------------------------------+-----------+------------+------------+
 

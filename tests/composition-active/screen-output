@@ -99,7 +99,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 10 iterations.
    Solving composition system 2... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition-active/solution-00005
@@ -308,7 +308,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 9 iterations.
    Solving composition system 2... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition-active/solution-00016
@@ -436,7 +436,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 11 iterations.
    Solving composition system 2... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition-active/solution-00023
@@ -627,7 +627,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Writing graphical output:  output-composition-active/solution-00033
      Temperature min/avg/max:   0 K, 0.526 K, 1 K
-     Compositions min/max/mass: -0.0007384/0.9064/0.4604 // -0.0002252/0.7301/0.4575
+     Compositions min/max/mass: -0.0007382/0.9064/0.4604 // -0.0002252/0.7301/0.4575
 
 *** Timestep 54:  t=3.375 seconds
    Solving temperature system... 9 iterations.
@@ -638,7 +638,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5265 K, 1 K
-     Compositions min/max/mass: -0.0007242/0.9007/0.4604 // -0.0002283/0.7276/0.4575
+     Compositions min/max/mass: -0.000724/0.9007/0.4604 // -0.0002283/0.7276/0.4575
 
 *** Timestep 55:  t=3.4375 seconds
    Solving temperature system... 9 iterations.
@@ -662,7 +662,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Writing graphical output:  output-composition-active/solution-00035
      Temperature min/avg/max:   0 K, 0.5278 K, 1 K
-     Compositions min/max/mass: -0.0007509/0.8893/0.4603 // -0.0002373/0.7256/0.4575
+     Compositions min/max/mass: -0.0007512/0.8893/0.4603 // -0.0002373/0.7256/0.4575
 
 *** Timestep 57:  t=3.5625 seconds
    Solving temperature system... 9 iterations.
@@ -673,7 +673,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5283 K, 1 K
-     Compositions min/max/mass: -0.0007794/0.8836/0.4603 // -0.0002429/0.7248/0.4575
+     Compositions min/max/mass: -0.0007799/0.8836/0.4603 // -0.0002428/0.7248/0.4575
 
 *** Timestep 58:  t=3.625 seconds
    Solving temperature system... 9 iterations.
@@ -685,7 +685,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Writing graphical output:  output-composition-active/solution-00036
      Temperature min/avg/max:   0 K, 0.5287 K, 1 K
-     Compositions min/max/mass: -0.0007824/0.878/0.4603 // -0.000242/0.7242/0.4575
+     Compositions min/max/mass: -0.0007824/0.878/0.4603 // -0.0002419/0.7242/0.4575
 
 *** Timestep 59:  t=3.6875 seconds
    Solving temperature system... 10 iterations.
@@ -696,7 +696,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5292 K, 1 K
-     Compositions min/max/mass: -0.0007756/0.8724/0.4603 // -0.0002691/0.7239/0.4575
+     Compositions min/max/mass: -0.0007756/0.8724/0.4603 // -0.000269/0.7239/0.4575
 
 *** Timestep 60:  t=3.75 seconds
    Solving temperature system... 10 iterations.
@@ -708,7 +708,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Writing graphical output:  output-composition-active/solution-00037
      Temperature min/avg/max:   0 K, 0.5295 K, 1 K
-     Compositions min/max/mass: -0.0007807/0.867/0.4603 // -0.0002982/0.7232/0.4574
+     Compositions min/max/mass: -0.0007808/0.867/0.4603 // -0.0002981/0.7232/0.4574
 
 *** Timestep 61:  t=3.8125 seconds
    Solving temperature system... 9 iterations.
@@ -720,7 +720,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Writing graphical output:  output-composition-active/solution-00038
      Temperature min/avg/max:   0 K, 0.5296 K, 1 K
-     Compositions min/max/mass: -0.0007831/0.8619/0.4603 // -0.0003072/0.7217/0.4574
+     Compositions min/max/mass: -0.0007831/0.8619/0.4603 // -0.0003071/0.7217/0.4574
 
 *** Timestep 62:  t=3.875 seconds
    Solving temperature system... 10 iterations.
@@ -731,38 +731,39 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5301 K, 1 K
-     Compositions min/max/mass: -0.0007789/0.8571/0.4603 // -0.0003729/0.7202/0.4574
+     Compositions min/max/mass: -0.000779/0.8571/0.4603 // -0.0003726/0.7202/0.4574
 
 *** Timestep 63:  t=3.9375 seconds
    Solving temperature system... 10 iterations.
    Solving composition system 1... 10 iterations.
    Solving composition system 2... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition-active/solution-00039
      Temperature min/avg/max:   0 K, 0.5303 K, 1 K
-     Compositions min/max/mass: -0.000768/0.8525/0.4603 // -0.0004683/0.7185/0.4574
+     Compositions min/max/mass: -0.0007681/0.8525/0.4603 // -0.0004681/0.7185/0.4574
 
+Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       164s |            |
+| Total wallclock time elapsed since start    |       102s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        64 |      16.9s |        10% |
-| Assemble composition system     |       128 |      68.8s |        42% |
-| Assemble temperature system     |        64 |      39.6s |        24% |
-| Build Stokes preconditioner     |        64 |      12.6s |       7.7% |
-| Build composition preconditioner|       128 |     0.243s |      0.15% |
-| Build temperature preconditioner|        64 |    0.0934s |     0.057% |
-| Solve Stokes system             |        64 |      3.43s |       2.1% |
-| Solve composition system        |       128 |     0.498s |       0.3% |
-| Solve temperature system        |        64 |     0.223s |      0.14% |
-| Initialization                  |         2 |    0.0718s |     0.044% |
-| Postprocessing                  |        64 |      17.4s |        11% |
-| Setup dof systems               |         1 |     0.225s |      0.14% |
+| Assemble Stokes system          |        64 |      10.3s |        10% |
+| Assemble composition system     |       128 |      46.7s |        46% |
+| Assemble temperature system     |        64 |      24.3s |        24% |
+| Build Stokes preconditioner     |        64 |      8.22s |         8% |
+| Build composition preconditioner|       128 |     0.384s |      0.37% |
+| Build temperature preconditioner|        64 |     0.167s |      0.16% |
+| Solve Stokes system             |        64 |      4.16s |       4.1% |
+| Solve composition system        |       128 |     0.458s |      0.45% |
+| Solve temperature system        |        64 |     0.234s |      0.23% |
+| Initialization                  |         2 |    0.0775s |     0.076% |
+| Postprocessing                  |        64 |      3.38s |       3.3% |
+| Setup dof systems               |         1 |      0.19s |      0.19% |
 +---------------------------------+-----------+------------+------------+
 

@@ -7,23 +7,24 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 1.125997e-06, 2.994144e-03, 1.670008e-06, 9.778442e-03
+     Errors u_L1, p_L1, u_L2, p_L2: 1.125997e-06, 2.994143e-03, 1.670009e-06, 9.778442e-03
 
+Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      7.01s |            |
+| Total wallclock time elapsed since start    |      2.65s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |     0.737s |        11% |
-| Assemble temperature system     |         1 |      1.56s |        22% |
-| Build Stokes preconditioner     |         1 |     0.597s |       8.5% |
-| Build temperature preconditioner|         1 |    0.0352s |       0.5% |
-| Solve Stokes system             |         1 |      1.02s |        15% |
-| Solve temperature system        |         1 |   0.00498s |     0.071% |
-| Initialization                  |         2 |    0.0833s |       1.2% |
-| Postprocessing                  |         1 |      2.07s |        30% |
-| Setup dof systems               |         1 |     0.476s |       6.8% |
+| Assemble Stokes system          |         1 |     0.221s |       8.3% |
+| Assemble temperature system     |         1 |     0.407s |        15% |
+| Build Stokes preconditioner     |         1 |     0.193s |       7.3% |
+| Build temperature preconditioner|         1 |   0.00713s |      0.27% |
+| Solve Stokes system             |         1 |     0.344s |        13% |
+| Solve temperature system        |         1 |   0.00393s |      0.15% |
+| Initialization                  |         2 |      0.12s |       4.5% |
+| Postprocessing                  |         1 |     0.862s |        33% |
+| Setup dof systems               |         1 |     0.338s |        13% |
 +---------------------------------+-----------+------------+------------+
 

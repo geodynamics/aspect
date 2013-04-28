@@ -8,23 +8,24 @@ Number of degrees of freedom: 268 (162+25+81)
 
    Postprocessing:
      Writing graphical output:      output-inclusion_2/solution-00000
-     Errors u_L1, p_L1, u_L2, p_L2: 4.145860e-02, 5.044066e-01, 2.432442e-02, 3.912138e-01
+     Errors u_L1, p_L1, u_L2, p_L2: 4.145861e-02, 5.044069e-01, 2.432442e-02, 3.912139e-01
 
+Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      1.21s |            |
+| Total wallclock time elapsed since start    |     0.753s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |     0.106s |       8.8% |
-| Assemble temperature system     |         1 |     0.403s |        33% |
-| Build Stokes preconditioner     |         1 |     0.188s |        16% |
-| Build temperature preconditioner|         1 |    0.0012s |       0.1% |
-| Solve Stokes system             |         1 |    0.0664s |       5.5% |
-| Solve temperature system        |         1 |   0.00109s |      0.09% |
-| Initialization                  |         2 |    0.0328s |       2.7% |
-| Postprocessing                  |         1 |     0.257s |        21% |
-| Setup dof systems               |         1 |    0.0599s |         5% |
+| Assemble Stokes system          |         1 |    0.0922s |        12% |
+| Assemble temperature system     |         1 |       0.2s |        27% |
+| Build Stokes preconditioner     |         1 |    0.0339s |       4.5% |
+| Build temperature preconditioner|         1 |   0.00169s |      0.22% |
+| Solve Stokes system             |         1 |    0.0559s |       7.4% |
+| Solve temperature system        |         1 |   0.00126s |      0.17% |
+| Initialization                  |         2 |    0.0856s |        11% |
+| Postprocessing                  |         1 |    0.0566s |       7.5% |
+| Setup dof systems               |         1 |     0.126s |        17% |
 +---------------------------------+-----------+------------+------------+
 
