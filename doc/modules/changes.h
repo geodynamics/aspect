@@ -9,6 +9,12 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+Fixed: Writing in any output format other than VTU and HDF5 did not
+yield any output files. This is now fixed.
+<br>
+(Wolfgang Bangerth, 2013/04/28)
+
+<li>
 Fixed: There were many places where we indiscriminately used MPI_COMM_WORLD,
 rather than the communicator used for the actual simulation. This is not a
 problem almost all the time, except for cases where Aspect is run as part
