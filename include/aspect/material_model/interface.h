@@ -571,7 +571,7 @@ namespace aspect
          * For complicated models it is recommended to override this function for
          * performance reasons.
          */
-        virtual void evaluate(const MaterialModelInputs &in, MaterialModelOutputs &out) const=0;
+        virtual void evaluate(const MaterialModelInputs &in, MaterialModelOutputs &out) const = 0;
 
         /**
          * @name Functions used in dealing with run-time parameters
