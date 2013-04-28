@@ -1226,9 +1226,6 @@ namespace aspect
         // is the end of simulation and the termination criteria say to checkpoint
         if (do_checkpoint || (termination.first && termination.second))
           {
-            if (termination.second)
-              pcout << "*** Performing final checkpoint." << std::endl;
-
             create_snapshot();
             // matrices will be regenerated after a resume, so do that here too
             // to be consistent. otherwise we would get different results
