@@ -71,6 +71,11 @@ namespace aspect
         * the function will simply record the time in the current_time
         * member variable, but derived classes that need more elaborate
         * setups for a given time step may overload the function.
+        *
+        * The point of this function is to allow complex boundary velocity
+        * models to do an initialization step once at the beginning of each
+        * time step. An example would be a model that needs to call an
+        * external program to compute positions for a set of plates.
         */
         virtual
         void

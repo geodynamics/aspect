@@ -21,6 +21,12 @@ wasted.
 (Wolfgang Bangerth, 2013/04/22)
 
 <li>
+New: The following plugin subsystems are now documented: mesh refinement
+criteria, termination criteria, and velocity boundary conditions.
+<br>
+(Wolfgang Bangerth, 2013/04/28)
+
+<li>
 Fixed: Entropy exponent stabilization_alpha ("alpha") should be an
 integer, not a double. The recommended setting is the value 2.
 Note that the value 1 is not explained in the ASPECT paper, only
