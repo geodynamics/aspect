@@ -4608,8 +4608,6 @@ order of variables, etc.
 \subsubsection{Material models}
 \label{sec:material-models}
 
-\marginpar{Need to update this given the current state of the plugin}
-
 \index[prmindex]{Model name}
 \index[prmindexfull]{Material model!Model name}
 The material model is responsible for describing the various coefficients in
@@ -4619,38 +4617,15 @@ the \texttt{ASPECT\_REGISTER\_MATERIAL\_MODEL} macro to register your new
 class. The implementation of the new class should be in namespace
 \texttt{aspect::MaterialModel}.
 
-Specifically, your new class needs to implement the basic interface:
+Specifically, your new class needs to implement the following interface:
 \begin{lstlisting}[frame=single,language=C++]
     template <int dim>
     class aspect::MaterialModel::Interface
     {
       public:
         // Physical parameters used in the basic equations
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const = 0;
+        virtual void evaluate(const MaterialModelInputs &in, MaterialModelOutputs &out) const=0;
 
-        virtual double density (const double      temperature,
-                                const double      pressure,
-                                const Point<dim> &position) const = 0;
-
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const Point<dim> &position) const = 0;
-
-        virtual double specific_heat (const double      temperature,
-                                      const double      pressure,
-                                      const Point<dim> &position) const = 0;
-
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const Point<dim> &position) const;
-
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const Point<dim> &position) const
-                                             = 0;
 
         // Qualitative properties one can ask a material model
         virtual bool
@@ -4670,36 +4645,6 @@ Specifically, your new class needs to implement the basic interface:
 
         virtual bool is_compressible () const = 0;
 
-        // Partial derivatives of physical parameters
-        virtual double
-        viscosity_derivative (const double              temperature,
-                              const double              pressure,
-                              const Point<dim>         &position,
-                              const NonlinearDependence::Dependence dependence) const;
-
-        virtual double
-        density_derivative (const double              temperature,
-                            const double              pressure,
-                            const Point<dim>         &position,
-                            const NonlinearDependence::Dependence dependence) const;
-
-        virtual double
-        compressibility_derivative (const double              temperature,
-                                    const double              pressure,
-                                    const Point<dim>         &position,
-                                    const NonlinearDependence::Dependence dependence) const;
-
-        virtual double
-        specific_heat_derivative (const double              temperature,
-                                  const double              pressure,
-                                  const Point<dim>         &position,
-                                  const NonlinearDependence::Dependence dependence) const;
-
-        virtual double
-        thermal_conductivity_derivative (const double              temperature,
-                                         const double              pressure,
-                                         const Point<dim>         &position,
-                                         const NonlinearDependence::Dependence dependence) const;
 
         // Reference quantities
         virtual double reference_viscosity () const = 0;
@@ -4708,20 +4653,25 @@ Specifically, your new class needs to implement the basic interface:
 
         virtual double reference_thermal_expansion_coefficient () const = 0;
 
+        
         // Auxiliary material properties used for postprocessing
-        virtual
-        double
+        virtual double
         seismic_Vp (const double      temperature,
-                    const double      pressure) const;
+                    const double      pressure,
+                    const std::vector<double> &compositional_fields,
+                    const Point<dim> &position) const;
 
-        virtual
-        double
+        virtual double
         seismic_Vs (const double      temperature,
-                    const double      pressure) const;
-        virtual
-        unsigned int
+                    const double      pressure,
+                    const std::vector<double> &compositional_fields,
+                    const Point<dim> &position) const;
+
+        virtual unsigned int
         thermodynamic_phase (const double      temperature,
-                             const double      pressure) const;
+                             const double      pressure,
+                             const std::vector<double> &compositional_fields) const;
+
 
         // Functions used in dealing with run-time parameters
         static
@@ -4731,18 +4681,48 @@ Specifically, your new class needs to implement the basic interface:
         virtual
         void
         parse_parameters (ParameterHandler &prm);
-    };
+
+        
+        // Optional:
+        virtual
+        void initialize ();
+
+        virtual
+        void update();
+}
 \end{lstlisting}
-Here, the first set of functions refer to the coefficients $\eta,C_p,k,\rho$ in
+The main properties of the material are computed in the function
+evaluate() that takes a struct of type MaterialModelInputs and is
+supposed to fill a MaterialModelOutputs structure. For performance
+reasons this function is handling lookups at an arbitrary number
+of positions, so for each variable (for example viscosity), a
+std::vector is returned. The following members of MaterialModelOutputs
+need to be filled:
+\begin{lstlisting}[frame=single,language=C++]
+struct MaterialModelOutputs
+{
+          std::vector<double> viscosities;
+          std::vector<double> densities;
+          std::vector<double> thermal_expansion_coefficients;
+          std::vector<double> specific_heat;
+          std::vector<double> thermal_conductivities;
+          std::vector<double> compressibilities;
+}
+\end{lstlisting}
+The variables refer to the coefficients $\eta,C_p,k,\rho$ in
 equations \eqref{eq:stokes-1}--\eqref{eq:temperature}, each as a function of
-temperature, pressure, position and, in the case of the viscosity, the strain
-rate. Implementations of these methods may of course choose to ignore
-dependencies on any of these arguments. The second set of functions describes
+temperature, pressure, position, compositional fields and, in the case of the viscosity, the strain
+rate (all handed in by MaterialModelInputs). Implementations of evaluate() may of course choose to ignore
+dependencies on any of these arguments.
+
+The block ``qualitative properties'' in the interface description above describes
 the nonlinear dependence of the various coefficients on pressure, temperature,
 or strain rate, and the next block then provides the numerical values of these
 dependencies. This information will be used in future versions of \aspect{} to
 implement a fully nonlinear solution scheme based on, for example, a Newton
-iteration. The remaining functions are used in postprocessing as well as
+iteration.
+
+The remaining functions are used in postprocessing as well as
 handling run-time parameters. The exact meaning of these member functions is
 documented in the
 \href{doc/doxygen/classaspect_1_1MaterialModel_1_1Interface.html}{aspect::MaterialModel::Interface
@@ -4759,8 +4739,19 @@ context, compressibility simply means whether we should solve the contuity
 equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
 or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
 
-The purpose of the last two functions has been discussed in the general
+The purpose of the parameter handling functions has been discussed in the general
 overview of plugins above.
+
+The functions initialize() and update() can be implemented if desired (the default implementation does nothing) and are useful if the material model has internal state. The function
+initialize() is called once during the initialization of \aspect{} and
+can be used to allocate memory, initialize state, or read information from
+an external file. The function update() is called at the beginning of
+every time step.
+
+Older versions of \aspect{} used to have individual functions like viscosity()
+instead of the evaluate() function discussed above. They are now a deprecated
+way of implementing a material model. You can get your old model working
+by deriving from InterfaceCompatibility instead of Interface.
 
 
 
