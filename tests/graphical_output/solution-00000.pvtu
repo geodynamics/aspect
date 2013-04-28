@@ -10,9 +10,6 @@
     <PDataArray type="Float64" Name="T" format="ascii"/>
     <PDataArray type="Float64" Name="viscosity" format="ascii"/>
     <PDataArray type="Float64" Name="nonadiabatic_pressure" format="ascii"/>
-    <PDataArray type="Float64" Name="error_indicator" format="ascii"/>
-    <PDataArray type="Float64" Name="Vs_anomaly" format="ascii"/>
-    <PDataArray type="Float64" Name="Vp_anomaly" format="ascii"/>
     </PPointData>
     <PPoints>
       <PDataArray type="Float64" NumberOfComponents="3"/>
