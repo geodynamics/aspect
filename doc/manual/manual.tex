@@ -5562,7 +5562,11 @@ Specifically, your new class needs to implement the following basic interface:
 \end{lstlisting}
 The first of these functions computes the set of refinement criteria (one per
 cell) and returns it in the given argument. Typical examples can be found in the
-existing implementations in the \texttt{source/mesh\_refinement} directory. The
+existing implementations in the \texttt{source/mesh\_refinement} directory. As usual, your termination
+criterion implementation will likely need to be derived from the 
+\texttt{SimulatorAccess} to get access to the current state of the simulation.
+
+The
 remaining functions are obvious, and are also discussed in the documentation of this interface class at \href{doc/doxygen/classaspect_1_1MeshRefinement_1_1Interface.html}{aspect::MeshRefinement::Interface}.
 The purpose
 of the last two functions has been discussed in the general overview of
@@ -5573,11 +5577,60 @@ plugins above.
 \subsubsection{Criteria for terminating a simulation}
 \label{sec:terminators}
 
+\index[prmindex]{Termination criteria}
+\index[prmindexfull]{Termination criteria}
 
-\index[prmindex]{Mesh refinementxxxxxxxxxxxxxxxxxx}
-\index[prmindexfull]{Mesh refinementxxxxxxxxxxxxxxxxx}
+\aspect{} allows for different ways of terminating a simulation. For example,
+the simulation may have reached a final time specified in the input file.
+However, it also allows for ways to terminate a simulation when it has reached a
+steady state (or, rather, some criterion determines that it is close enough to
+steady state), or by an external action such as placing a specially named file
+in the output directory. With the exception of the end time, the criteria
+determining termination of a simulation are all implemented in plugins. The
+parameters describing these criteria are listed in
+Section~\ref{parameters:Termination_20criteria}.
 
-\marginpar{Write}
+To implement a termination criterion, you
+need to overload the
+\href{doc/doxygen/classaspect_1_1TerminationCriteria_1_1Interface.html}{aspect::TerminationCriteria::Interface}
+class and use
+the \texttt{ASPECT\_REGISTER\_TERMINATION\_CRITERION} macro to register
+your new class. The implementation of the new class should be in namespace
+\texttt{aspect::TerminationCriteria}.
+
+Specifically, your new class needs to implement the following basic interface:
+\begin{lstlisting}[frame=single,language=C++]
+    template <int dim>
+    class aspect::TerminationCriteria::Interface
+    {
+      public:
+        virtual
+        bool
+        execute () const = 0;
+
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+    };
+\end{lstlisting}
+The first of these functions returns a value that indicates whether the
+simulation should be terminated.
+Typical examples can be found in the existing implementations in the
+\texttt{source/termination\_criteria} directory. As usual, your termination
+criterion implementation will likely need to be derived from the 
+\texttt{SimulatorAccess} to get access to the current state of the simulation.
+
+The remaining functions are
+obvious, and are also discussed in the documentation of this interface class at
+\href{doc/doxygen/classaspect_1_1TerminationCriteria_1_1Interface.html}{aspect::TerminationCriteria::Interface}.
+The purpose
+of the last two functions has been discussed in the general overview of
+plugins above.
+
 
 
 \subsection{Extending the basic solver}
