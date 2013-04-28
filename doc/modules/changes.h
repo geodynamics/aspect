@@ -9,6 +9,19 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+New: Checking whether the end time has been reached is now a regular
+termination criterion plugin. Unlike other plugins, however, it is
+always active.
+<br>
+(Wolfgang Bangerth, 2013/04/28)
+
+<li>
+New: The following plugin subsystems are now documented: mesh refinement
+criteria, termination criteria, and velocity boundary conditions.
+<br>
+(Wolfgang Bangerth, 2013/04/28)
+
+<li>
 New: There is now a new top-level parameter, "Number of cheap Stokes
 solver steps" that allows choosing how many iterations the Stokes
 solver should attempt using the "cheap" preconditioner described in
@@ -19,12 +32,6 @@ does not help very much and the time used for this first phase is often
 wasted.
 <br>
 (Wolfgang Bangerth, 2013/04/22)
-
-<li>
-New: The following plugin subsystems are now documented: mesh refinement
-criteria, termination criteria, and velocity boundary conditions.
-<br>
-(Wolfgang Bangerth, 2013/04/28)
 
 <li>
 Fixed: Entropy exponent stabilization_alpha ("alpha") should be an

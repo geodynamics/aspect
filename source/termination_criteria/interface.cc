@@ -180,10 +180,12 @@ namespace aspect
         const std::string pattern_of_names
           = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names (true);
         prm.declare_entry("Termination criteria",
-                          "",
+                          "end time",
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma separated list of termination criteria that will "
                           "determine when the simulation should end. "
+                          "Whether explicitly stated or not, the ``end time'' "
+                          "termination criterion will always be used."
                           "The following termination criteria are available:\n\n"
                           +
                           std_cxx1x::get<dim>(registered_plugins).get_description_string());
@@ -211,6 +213,11 @@ namespace aspect
         do_checkpoint_on_terminate = prm.get_bool("Checkpoint on termination");
 
         plugin_names = Utilities::split_string_list(prm.get("Termination criteria"));
+
+        // as described, the end time plugin is always active
+        if (std::find (plugin_names.begin(), plugin_names.end(), "end time")
+            == plugin_names.end())
+          plugin_names.push_back ("end time");
       }
       prm.leave_subsection();
 

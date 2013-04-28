@@ -61,11 +61,6 @@ namespace aspect
                        "The start time of the simulation. Units: years if the "
                        "'Use years in output instead of seconds' parameter is set; "
                        "seconds otherwise.");
-    prm.declare_entry ("End time", "1e8",
-                       Patterns::Double (),
-                       "The end time of the simulation. Units: years if the "
-                       "'Use years in output instead of seconds' parameter is set; "
-                       "seconds otherwise.");
 
     prm.declare_entry ("Timing output frequency", "100",
                        Patterns::Integer(0),
@@ -487,12 +482,8 @@ namespace aspect
       AssertThrow (false, ExcNotImplemented());
 
     start_time              = prm.get_double ("Start time");
-    end_time                = prm.get_double ("End time");
     if (convert_to_years == true)
-      {
-        start_time *= year_in_seconds;
-        end_time *= year_in_seconds;
-      }
+      start_time *= year_in_seconds;
 
     output_directory        = prm.get ("Output directory");
     if (output_directory.size() == 0)

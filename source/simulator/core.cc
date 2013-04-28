@@ -1198,8 +1198,7 @@ namespace aspect
         // first part of the pair indicates whether to terminate
         // the execution; the second indicates whether to do one
         // more checkpoint
-        std::pair<bool,bool> termination = termination_manager.execute();
-        termination.first |= (time >= parameters.end_time);
+        const std::pair<bool,bool> termination = termination_manager.execute();
 
         // periodically generate snapshots so that we can resume here
         // if the program aborts or is terminated
