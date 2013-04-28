@@ -4674,21 +4674,17 @@ Specifically, your new class needs to implement the following interface:
 
 
         // Functions used in dealing with run-time parameters
-        static
-        void
+        static void
         declare_parameters (ParameterHandler &prm);
 
-        virtual
-        void
+        virtual void
         parse_parameters (ParameterHandler &prm);
 
         
         // Optional:
-        virtual
-        void initialize ();
+        virtual void initialize ();
 
-        virtual
-        void update();
+        virtual void update();
 }
 \end{lstlisting}
 The main properties of the material are computed in the function
