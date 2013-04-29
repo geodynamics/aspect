@@ -756,10 +756,10 @@ namespace aspect
             introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]
     );
 
-    class FunctorFieldAverage
+    class Functor
     {
     public:
-      FunctorFieldAverage(const FEValuesExtractors::Scalar &field)
+      Functor(const FEValuesExtractors::Scalar &field)
     : field_(field) {}
 
       bool need_material_properties()
@@ -782,9 +782,9 @@ namespace aspect
       const FEValuesExtractors::Scalar field_;
     };
 
-    FunctorFieldAverage f(field);
+    Functor f(field);
 
-    compute_depth_average(values, f);
+    compute_depth_average<Functor>(values, f);
       }
 
 
@@ -813,7 +813,7 @@ namespace aspect
 
     Functor f;
 
-    compute_depth_average(values, f);
+    compute_depth_average<Functor>(values, f);
   }
 
 
@@ -853,7 +853,7 @@ namespace aspect
 
     Functor f(introspection.extractors.velocities);
 
-    compute_depth_average(values, f);
+    compute_depth_average<Functor>(values, f);
   }
 
 
@@ -897,7 +897,7 @@ namespace aspect
 
     Functor f(introspection.extractors.velocities, this->gravity_model.get());
 
-    compute_depth_average(values, f);
+    compute_depth_average<Functor>(values, f);
   }
 
 
@@ -936,7 +936,7 @@ namespace aspect
 
     Functor f(this->material_model.get());
 
-    compute_depth_average(values, f);
+    compute_depth_average<Functor>(values, f);
   }
 
   template <int dim>
@@ -973,7 +973,7 @@ namespace aspect
 
     Functor f(this->material_model.get());
 
-    compute_depth_average(values, f);
+    compute_depth_average<Functor>(values, f);
   }
 
 
