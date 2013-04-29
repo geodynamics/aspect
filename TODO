@@ -5,6 +5,7 @@ This file is our internal working list of things to do in the near future
 Create list of publications. Include
 - papers
 - AGU 2011 poster
+- AGU 2012 poster: 2x Eric
 - Eric's XSEDE poster:
      Investigating Mixing and Flow in the Earth's Mantle using Adaptive Mesh
      Finite Element Simulations
@@ -55,8 +56,8 @@ Topics for preview release:
   . make sure the .prm and .xml files we ship match the default values
     of parameters
   . create a tar file
-  . upload tar file
-  . link in on download.html
+  . upload tar file (deal homepage svn in aspect/download)
+  . link in on download.html (same location)
   . announce on
        cig@geodynamics.org
        aspect-devel@geodynamics.org
