@@ -55,7 +55,7 @@ Topics for preview release:
   . check in doc/manual.pdf
   . make sure the .prm and .xml files we ship match the default values
     of parameters
-  . create a tar file
+  . create a tar file: tar czf aspect-0.2.tar.gz aspect-0.2/
   . upload tar file (deal homepage svn in aspect/download)
   . link in on download.html (same location)
   . announce on
