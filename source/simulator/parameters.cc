@@ -413,7 +413,7 @@ namespace aspect
                            "stabilization. (For historical reasons, the name used here is different "
                            "from the one used in the 2012 GJI paper by Kronbichler, "
                            "Heister and Bangerth that describes ASPECT. This parameter corresponds "
-                           "to the factor $\alpha_E$ in the formulas following equation (15) of "
+                           "to the factor $\\alpha_E$ in the formulas following equation (15) of "
                            "the paper. After further experiments, we have also chosen to use a "
                            "different value than described there.) Units: None.");
         prm.declare_entry ("beta", "0.078",
@@ -423,7 +423,7 @@ namespace aspect
                            "and 0.117 for 3d. (For historical reasons, the name used here is different "
                            "from the one used in the 2012 GJI paper by Kronbichler, "
                            "Heister and Bangerth that describes ASPECT. This parameter corresponds "
-                           "to the factor $\alpha_\text{max}$ in the formulas following equation (15) of "
+                           "to the factor $\\alpha_\\text{max}$ in the formulas following equation (15) of "
                            "the paper. After further experiments, we have also chosen to use a "
                            "different value than described there: It can be chosen as stated there for "
                            "uniformly refined meshes, but it needs to be chosen larger if the mesh has "

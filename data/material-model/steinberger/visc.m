@@ -47,4 +47,4 @@ range = (1.0-range)*6371;
 format longeng
 A=[yi(length(yi):-1:1)' range(length(range):-1:1)']
 
-save radial_visc.txt A -ASCII
+save radial-visc.txt A -ASCII

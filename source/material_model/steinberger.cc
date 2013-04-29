@@ -761,10 +761,10 @@ namespace aspect
                              "List with as many components as active"
                              "compositional fields (material data is assumed to"
                              "be in order with the ordering of the fields). ");
-          prm.declare_entry ("Radial viscosity file name", "radial_visc.txt",
+          prm.declare_entry ("Radial viscosity file name", "radial-visc.txt",
                              Patterns::Anything (),
                              "The file name of the radial viscosity data. ");
-          prm.declare_entry ("Lateral viscosity file name", "temp_viscosity_prefactor.txt",
+          prm.declare_entry ("Lateral viscosity file name", "temp-viscosity-prefactor.txt",
                              Patterns::Anything (),
                              "The file name of the lateral viscosity data. ");
           prm.declare_entry ("Bilinear interpolation", "true",

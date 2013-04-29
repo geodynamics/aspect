@@ -188,7 +188,7 @@ namespace aspect
           prm.declare_entry ("Sign", "1",
                              Patterns::Double (),
                              "The sign of the perturbation.");
-          prm.declare_entry ("Filename for initial geotherm table", "initial_geotherm_table",
+          prm.declare_entry ("Filename for initial geotherm table", "initial-geotherm-table",
                              Patterns::FileName(),
                              "The file from which the initial geotherm table is to be read. "
                              "The format of the file is defined by what is read in "

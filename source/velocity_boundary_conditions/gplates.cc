@@ -452,7 +452,7 @@ namespace aspect
           prm.declare_entry ("Data directory", "data/velocity-boundary-conditions/gplates/",
                              Patterns::DirectoryName (),
                              "The path to the model data.");
-          prm.declare_entry ("Velocity file name", "phi_test.%d",
+          prm.declare_entry ("Velocity file name", "phi.%d",
                              Patterns::Anything (),
                              "The file name of the material data. Provide file in format: "
                              "(Velocity file name).%d.gpml where %d is any sprintf integer qualifier, "
