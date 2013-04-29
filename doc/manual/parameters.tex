@@ -69,10 +69,10 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{End time}
 \index[prmindexfull]{End time}
-{\it Value:} 5e6
+{\it Value:} 1e300
 
 
-{\it Default:} 1e8
+{\it Default:} 1e300
 
 
 {\it Description:} The end time of the simulation. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
@@ -90,7 +90,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} 1e-7
 
 
-{\it Description:} A relative tolerance up to which linear systems in each time or nonlinear step should be solved. The absolute tolerance will then be the norm of the right hand side of the equation times this tolerance. A given tolerance value of 1 would mean that a zero solution vector is an acceptable solution since in that case the norm of the residual of the linear system equals the norm of the right hand side. A given tolerance of 0 would mean that the linear system has to be solved exactly, since this is the only way to obtain a zero residual.
+{\it Description:} A relative tolerance up to which the linear Stokes systems in each time or nonlinear step should be solved. The absolute tolerance will then be the norm of the right hand side of the equation times this tolerance. A given tolerance value of 1 would mean that a zero solution vector is an acceptable solution since in that case the norm of the residual of the linear system equals the norm of the right hand side. A given tolerance of 0 would mean that the linear system has to be solved exactly, since this is the only way to obtain a zero residual.
 
 In practice, you should choose the value of this parameter to be so that if you make it smaller the results of your simulation do not change any more (qualitatively) whereas if you make it larger, they do. For most cases, the default value should be sufficient. However, for cases where the static pressure is much larger than the dynamic one, it may be necessary to choose a smaller value.
 
@@ -126,6 +126,21 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 
 {\it Possible values:} [Selection IMPES|iterated IMPES|iterated Stokes ]
+\item {\it Parameter name:} {\tt Number of cheap Stokes solver steps}
+
+
+\index[prmindex]{Number of cheap Stokes solver steps}
+\index[prmindexfull]{Number of cheap Stokes solver steps}
+{\it Value:} 30
+
+
+{\it Default:} 30
+
+
+{\it Description:} As explained in the ASPECT paper (Kronbichler, Heister, and Bangerth, GJI 2012) we first try to solve the Stokes system in every time step using a GMRES iteration with a poor but cheap preconditioner. By default, we try whether we can converge the GMRES solver in 30 such iterations before deciding that we need a better preconditioner. This is sufficient for simple problems with constant viscosity and we never need the second phase with the more expensive preconditioner. On the other hand, for more complex problems, and in particular for problems with strongly varying viscosity, the 30 cheap iterations don't actually do very much good and one might skip this part right away. In that case, this parameter can be set to zero, i.e., we immediately start with the better but more expensive preconditioner.
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
 \item {\it Parameter name:} {\tt Output directory}
 
 
@@ -252,7 +267,7 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Use years in output instead of seconds}
 \index[prmindexfull]{Use years in output instead of seconds}
-{\it Value:} false
+{\it Value:} true
 
 
 {\it Default:} true
@@ -278,7 +293,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Value:} box
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Select one of the following models:
@@ -410,10 +425,10 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Function constants}
 \index[prmindexfull]{Boundary velocity model!Function!Function constants}
-{\it Value:}
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
@@ -525,10 +540,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Velocity file name}
 \index[prmindexfull]{Boundary velocity model!GPlates model!Velocity file name}
-{\it Value:} phi\_test.%d
+{\it Value:} phi.%d
 
 
-{\it Default:} phi\_test.%d
+{\it Default:} phi.%d
 
 
 {\it Description:} The file name of the material data. Provide file in format: (Velocity file name).%d.gpml where %d is any sprintf integer qualifier, specifying the format of the current file number.
@@ -561,7 +576,7 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Steps between checkpoint}
 \index[prmindexfull]{Checkpointing!Steps between checkpoint}
-{\it Value:} 50
+{\it Value:} 0
 
 
 {\it Default:} 0
@@ -597,10 +612,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{List of normalized fields}
 \index[prmindexfull]{Compositional fields!List of normalized fields}
-{\it Value:}
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} A list of integers smaller than or equal to the number of compositional fields. All compositional fields in this list will be normalized before the first timestep. The normalization is implemented in the following way: First, the sum of the fields to be normalized is calculated at every point and the global maximum is determined. Second, the compositional fields to be normalized are divided by this maximum.
@@ -658,10 +673,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Function constants}
 \index[prmindexfull]{Compositional initial conditions!Function!Function constants}
-{\it Value:}
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
@@ -793,10 +808,10 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 2
 
 
-{\it Description:} The exponent $\alpha$ in the entropy viscosity stabilization. Units: None.
+{\it Description:} The exponent $\alpha$ in the entropy viscosity stabilization. Valid options are 1 or 2. The recommended setting is 2. (This parameter does not correspond to any variable in the 2012 GJI paper by Kronbichler, Heister and Bangerth that describes ASPECT. Rather, the paper always uses 2 as the exponent in the definition of the entropy, following eq. (15).).Units: None.
 
 
-{\it Possible values:} [Double 1...2 (inclusive)]
+{\it Possible values:} [Integer range 1...2 (inclusive)]
 \item {\it Parameter name:} {\tt beta}
 
 
@@ -808,7 +823,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 0.078
 
 
-{\it Description:} The $\beta$ factor in the artificial viscosity stabilization. An appropriate value for 2d is 0.078 and 0.117 for 3d. Units: None.
+{\it Description:} The $\beta$ factor in the artificial viscosity stabilization. An appropriate value for 2d is 0.078 and 0.117 for 3d. (For historical reasons, the name used here is different from the one used in the 2012 GJI paper by Kronbichler, Heister and Bangerth that describes ASPECT. This parameter corresponds to the factor $\alpha_\text{max}$ in the formulas following equation (15) of the paper. After further experiments, we have also chosen to use a different value than described there: It can be chosen as stated there for uniformly refined meshes, but it needs to be chosen larger if the mesh has cells that are not squares or cubes.) Units: None.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -817,13 +832,13 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{cR}
 \index[prmindexfull]{Discretization!Stabilization parameters!cR}
-{\it Value:} 0.5
+{\it Value:} 0.33
 
 
 {\it Default:} 0.33
 
 
-{\it Description:} The $c_R$ factor in the entropy viscosity stabilization. Units: None.
+{\it Description:} The $c_R$ factor in the entropy viscosity stabilization. (For historical reasons, the name used here is different from the one used in the 2012 GJI paper by Kronbichler, Heister and Bangerth that describes ASPECT. This parameter corresponds to the factor $\alpha_E$ in the formulas following equation (15) of the paper. After further experiments, we have also chosen to use a different value than described there.) Units: None.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -841,7 +856,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Value:} box
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Select one of the following models:
@@ -865,7 +880,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{X extent}
 \index[prmindexfull]{Geometry model!Box!X extent}
-{\it Value:} 1.2
+{\it Value:} 1
 
 
 {\it Default:} 1
@@ -970,7 +985,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Value:} vertical
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Select one of the following models:
@@ -1041,7 +1056,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Value:} perturbed box
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Select one of the following models:
@@ -1169,10 +1184,10 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 \index[prmindex]{Function constants}
 \index[prmindexfull]{Initial conditions!Adiabatic!Function!Function constants}
-{\it Value:}
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
@@ -1224,10 +1239,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Function constants}
 \index[prmindexfull]{Initial conditions!Function!Function constants}
-{\it Value:}
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
@@ -1309,10 +1324,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Filename for initial geotherm table}
 \index[prmindexfull]{Initial conditions!Spherical gaussian perturbation!Filename for initial geotherm table}
-{\it Value:} initial\_geotherm\_table
+{\it Value:} initial-geotherm-table
 
 
-{\it Default:} initial\_geotherm\_table
+{\it Default:} initial-geotherm-table
 
 
 {\it Description:} The file from which the initial geotherm table is to be read. The format of the file is defined by what is read in source/initial\_conditions/spherical\_shell.cc.
@@ -1378,7 +1393,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Value:} simple
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} Select one of the following models:
@@ -1391,7 +1406,7 @@ If the function you are describing represents a vector-valued function with mult
 
 `simple': A simple material model that has constant values for all coefficients but the density and viscosity. This model uses the formulation that assumes an incompressible medium despite the fact that the density follows the law $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$. The temperature dependency of viscosity is  switched off by default and follows the formula$\eta(T)=\eta_0*e^{\eta_T*\Delta T / T_{\text{ref}})}$.The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Simple model'.
 
-`Steinberger': lookup viscosity from the paper of Steinberger/Calderwood2006 and material data from a database generated by Perplex. The database builds upon the thermodynamic database by Stixrude 2011 and assumes a pyrolitic composition by Ringwood 1988.
+`Steinberger': lookup viscosity from the paper of Steinberger/Calderwood2006 and material data from a database generated by Perplex. The database builds upon the thermodynamic database by Stixrude 2011 and assumes a pyrolitic composition by Ringwood 1988. 
 
 `table': A material model that reads tables of pressure and temperature dependent material coefficients from files. The default values for this model's runtime parameters use a material description taken from the paper \textit{Complex phase distribution and seismic velocity structure of the transition zone: Convection model predictions for a magnesium-endmember olivine-pyroxene mantle} by Michael H.G. Jacobs and Arie P. van den Berg, Physics of the Earth and Planetary Interiors, Volume 186, Issues 1-2, May 2011, Pages 36--48. See \url{http://www.sciencedirect.com/science/article/pii/S0031920111000422}.
 
@@ -1463,7 +1478,7 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Reference density}
 \index[prmindexfull]{Material model!Simple model!Reference density}
-{\it Value:} 1
+{\it Value:} 3300
 
 
 {\it Default:} 3300
@@ -1493,7 +1508,7 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Reference temperature}
 \index[prmindexfull]{Material model!Simple model!Reference temperature}
-{\it Value:} 1
+{\it Value:} 293
 
 
 {\it Default:} 293
@@ -1508,7 +1523,7 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Thermal conductivity}
 \index[prmindexfull]{Material model!Simple model!Thermal conductivity}
-{\it Value:} 1e-6
+{\it Value:} 4.7
 
 
 {\it Default:} 4.7
@@ -1553,7 +1568,7 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Viscosity}
 \index[prmindexfull]{Material model!Simple model!Viscosity}
-{\it Value:} 1
+{\it Value:} 5e24
 
 
 {\it Default:} 5e24
@@ -1631,7 +1646,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} data/material-model/steinberger/
 
 
-{\it Description:} The path to the model data.
+{\it Description:} The path to the model data. 
 
 
 {\it Possible values:} [DirectoryName]
@@ -1655,13 +1670,13 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Lateral viscosity file name}
 \index[prmindexfull]{Material model!Steinberger model!Lateral viscosity file name}
-{\it Value:} temp\_viscosity\_prefactor.txt
+{\it Value:} temp-viscosity-prefactor.txt
 
 
-{\it Default:} temp\_viscosity\_prefactor.txt
+{\it Default:} temp-viscosity-prefactor.txt
 
 
-{\it Description:} The file name of the lateral viscosity data.
+{\it Description:} The file name of the lateral viscosity data. 
 
 
 {\it Possible values:} [Anything]
@@ -1676,7 +1691,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} pyr-ringwood88.txt
 
 
-{\it Description:} The file names of the material data. List with as many components as activecompositional fields (material data is assumed tobe in order with the ordering of the fields).
+{\it Description:} The file names of the material data. List with as many components as activecompositional fields (material data is assumed tobe in order with the ordering of the fields). 
 
 
 {\it Possible values:} [List list of <[Anything]> of length 0...4294967295 (inclusive)]
@@ -1685,13 +1700,13 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Radial viscosity file name}
 \index[prmindexfull]{Material model!Steinberger model!Radial viscosity file name}
-{\it Value:} radial\_visc.txt
+{\it Value:} radial-visc.txt
 
 
-{\it Default:} radial\_visc.txt
+{\it Default:} radial-visc.txt
 
 
-{\it Description:} The file name of the radial viscosity data.
+{\it Description:} The file name of the radial viscosity data. 
 
 
 {\it Possible values:} [Anything]
@@ -1712,7 +1727,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} standard
 
 
-{\it Description:} The Composition of the model.
+{\it Description:} The Composition of the model. 
 
 
 {\it Possible values:} [Anything]
@@ -1727,7 +1742,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} true
 
 
-{\it Description:} whether the model is compressible.
+{\it Description:} whether the model is compressible. 
 
 
 {\it Possible values:} [Bool]
@@ -1742,7 +1757,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} false
 
 
-{\it Description:} whether to compute phases.
+{\it Description:} whether to compute phases. 
 
 
 {\it Possible values:} [Bool]
@@ -1772,7 +1787,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} data/material-model/table/
 
 
-{\it Description:} The path to the model data.
+{\it Description:} The path to the model data. 
 
 
 {\it Possible values:} [DirectoryName]
@@ -2325,10 +2340,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Additional refinement times}
 \index[prmindexfull]{Mesh refinement!Additional refinement times}
-{\it Value:}
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} A list of times so that if the end time of a time step is beyond this time, an additional round of mesh refinement is triggered. This is mostly useful to make sure we can get through the initial transient phase of a simulation on a relatively coarse mesh, and then refine again when we are in a time range that we are interested in and where we would like to use a finer mesh. Units: each element of the list has units years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
@@ -2355,7 +2370,7 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Initial adaptive refinement}
 \index[prmindexfull]{Mesh refinement!Initial adaptive refinement}
-{\it Value:} 1
+{\it Value:} 2
 
 
 {\it Default:} 2
@@ -2370,7 +2385,7 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Initial global refinement}
 \index[prmindexfull]{Mesh refinement!Initial global refinement}
-{\it Value:} 4
+{\it Value:} 2
 
 
 {\it Default:} 2
@@ -2420,13 +2435,13 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Refinement criteria scaling factors}
 \index[prmindexfull]{Mesh refinement!Refinement criteria scaling factors}
-{\it Value:}
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
-{\it Description:} A list of scaling factors by which every individual refinement criterion will be multiplied by. If only a single refinement criterion is selected (using the ``Strategy'' parameter, then this parameter has no particular meaning. On the other hand, if multiple criteria are chosen, then these factors are used to weigh the various indicators relative to each other.
+{\it Description:} A list of scaling factors by which every individual refinement criterion will be multiplied by. If only a single refinement criterion is selected (using the ``Strategy'' parameter, then this parameter has no particular meaning. On the other hand, if multiple criteria are chosen, then these factors are used to weigh the various indicators relative to each other. 
 
 If ``Normalize individual refinement criteria'' is set to true, then the criteria will first be normalized to the interval $[0,1]$ and then multiplied by the factors specified here. You will likely want to choose the factors to be not too far from 1 in that case, say between 1 and 10, to avoid essentially disabling those criteria with small weights. On the other hand, if the criteria are not normalized to $[0,1]$ using the parameter mentioned above, then the factors you specify here need to take into account the relative numerical size of refinement indicators (which in that case carry physical units).
 
@@ -2498,7 +2513,7 @@ The following criteria are available:
 
 \index[prmindex]{Time steps between mesh refinement}
 \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement}
-{\it Value:} 5
+{\it Value:} 10
 
 
 {\it Default:} 10
@@ -2519,10 +2534,10 @@ The following criteria are available:
 
 \index[prmindex]{Fixed temperature boundary indicators}
 \index[prmindexfull]{Model settings!Fixed temperature boundary indicators}
-{\it Value:} 0, 1
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} A comma separated list of integers denoting those boundaries on which the temperature is fixed and described by the boundary temperature object selected in its own section of this input file. All boundary indicators used by the geometry but not explicitly listed here will end up with no-flux (insulating) boundary conditions.
@@ -2551,7 +2566,7 @@ This parameter only describes which boundaries have a fixed temperature, but not
 
 \index[prmindex]{Include shear heating}
 \index[prmindexfull]{Model settings!Include shear heating}
-{\it Value:} false
+{\it Value:} true
 
 
 {\it Default:} true
@@ -2566,10 +2581,10 @@ This parameter only describes which boundaries have a fixed temperature, but not
 
 \index[prmindex]{Prescribed velocity boundary indicators}
 \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators}
-{\it Value:}
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} A comma separated list denoting those boundaries on which the velocity is tangential but prescribed, i.e., where external forces act to prescribe a particular velocity. This is often used to prescribe a velocity that equals that of overlying plates.
@@ -2585,7 +2600,7 @@ Note that the no-slip boundary condition is a special case of the current one wh
 
 \index[prmindex]{Radiogenic heating rate}
 \index[prmindexfull]{Model settings!Radiogenic heating rate}
-{\it Value:} 0
+{\it Value:} 0e0
 
 
 {\it Default:} 0e0
@@ -2600,10 +2615,10 @@ Note that the no-slip boundary condition is a special case of the current one wh
 
 \index[prmindex]{Tangential velocity boundary indicators}
 \index[prmindexfull]{Model settings!Tangential velocity boundary indicators}
-{\it Value:} 1
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is tangential and unrestrained, i.e., free-slip where no external forces act to prescribe a particular tangential velocity (although there is a force that requires the flow to be tangential).
@@ -2615,10 +2630,10 @@ Note that the no-slip boundary condition is a special case of the current one wh
 
 \index[prmindex]{Zero velocity boundary indicators}
 \index[prmindexfull]{Model settings!Zero velocity boundary indicators}
-{\it Value:} 0, 2, 3
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is zero.
@@ -2636,7 +2651,7 @@ Note that the no-slip boundary condition is a special case of the current one wh
 
 \index[prmindex]{List of postprocessors}
 \index[prmindexfull]{Postprocess!List of postprocessors}
-{\it Value:} visualization, velocity statistics, temperature statistics, heat flux statistics
+{\it Value:} 
 
 
 {\it Default:} all
@@ -2770,10 +2785,10 @@ The following postprocessors are available:
 
 \index[prmindex]{List of output variables}
 \index[prmindexfull]{Postprocess!Visualization!List of output variables}
-{\it Value:}
+{\it Value:} 
 
 
-{\it Default:}
+{\it Default:} 
 
 
 {\it Description:} A comma separated list of visualization objects that should be run whenever writing graphical output. By default, the graphical output files will always contain the primary variables velocity, pressure, and temperature. However, one frequently wants to also visualize derived quantities, such as the thermodynamic phase that corresponds to a given temperature-pressure value, or the corresponding seismic wave speeds. The visualization objects do exactly this: they compute such derived quantities and place them into the output file. The current parameter is the place where you decide which of these additional output variables you want to have in your output file.
@@ -2849,7 +2864,7 @@ The following postprocessors are available:
 
 \index[prmindex]{Time between graphical output}
 \index[prmindexfull]{Postprocess!Visualization!Time between graphical output}
-{\it Value:} 0
+{\it Value:} 1e8
 
 
 {\it Default:} 1e8
@@ -2885,20 +2900,22 @@ The following postprocessors are available:
 
 \index[prmindex]{Termination criteria}
 \index[prmindexfull]{Termination criteria!Termination criteria}
-{\it Value:}
+{\it Value:} end time
 
 
-{\it Default:}
+{\it Default:} end time
 
 
-{\it Description:} A comma separated list of termination criteria that will determine when the simulation should end. The following termination criteria are available:
+{\it Description:} A comma separated list of termination criteria that will determine when the simulation should end. Whether explicitly stated or not, the ``end time'' termination criterion will always be used.The following termination criteria are available:
 
-`steady\_rms\_velocity': A criterion that terminates the simulation when the RMS of the velocity field stays within a certain range for a specified period of time.
+`end time': Terminate the simulation once the end time specified in the input file has been reached. Unlike all other termination criteria, this criterion is \textit{always} active, whether it has been explicitly selected or not in the input file (this is done to preserve historical behavior of \aspect{}, but it also likely does not inconvenience anyone since it is what would be selected in most cases anyway).
 
-`user\_request': Terminate the simulation gracefully when a file with a specified name appears in the output directory. This allows the user to gracefully exit the simulation at any time.
+`steady state velocity': A criterion that terminates the simulation when the RMS of the velocity field stays within a certain range for a specified period of time.
+
+`user request': Terminate the simulation gracefully when a file with a specified name appears in the output directory. This allows the user to gracefully exit the simulation at any time by simply creating such a file using, for example, \texttt{touch output/terminate}. The file's location is chosen to be in the output directory, rather than in a generic location such as the Aspect directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
 
 
-{\it Possible values:} [MultipleSelection steady\_rms\_velocity|user\_request|all ]
+{\it Possible values:} [MultipleSelection end time|steady state velocity|user request|all ]
 \end{itemize}
 
 
@@ -2918,7 +2935,7 @@ The following postprocessors are available:
 {\it Default:} 0.05
 
 
-{\it Description:} The maximum relative deviation of the RMS in recent simulation time for the system to be considered in steady state and the simulation terminated.
+{\it Description:} The maximum relative deviation of the RMS in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -2948,10 +2965,13 @@ The following postprocessors are available:
 
 \index[prmindex]{File name}
 \index[prmindexfull]{Termination criteria!User request!File name}
-{\it Value:} terminate\_aspect
+{\it Value:} terminate-aspect
 
 
-{\it Default:} terminate\_aspect
+{\it Default:} terminate-aspect
+
+
+{\it Description:} The name of a file that, if it exists in the output directory (whose name is also specified in the input file) will lead to termination of the simulation. The file's location is chosen to be in the output directory, rather than in a generic location such as the Aspect directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
 
 
 {\it Possible values:} [FileName (Type: input)]
