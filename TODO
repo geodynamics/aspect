@@ -52,8 +52,6 @@ Topics for preview release:
     file and copying output/parameters.tex to doc/manual/parameters.tex
   . run
       cd doc ; make manual.pdf
-    unfortunately, this will yield a number of errors related to underscores
-    in parameters.tex that have to be resolved manually at this time
   . check in doc/manual.pdf
   . make sure the .prm and .xml files we ship match the default values
     of parameters
