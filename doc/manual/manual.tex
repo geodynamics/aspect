@@ -1134,20 +1134,13 @@ prerequisites:
   {\tt{p4est-setup.sh}}; do not use the \pfrst{} stand-alone installation
   instructions.
 
-%\item  \textit{\dealii{}:}
-%  The current version of \aspect{} requires features of \dealii{} that have
-%  been developed after the 7.1 release. Since at the time of writing,
-%  \dealii{} 7.2 has not yet appears, we currently require the development
-%  version of \dealii{}, which can be obtained by running
-%\begin{verbatim}
-% svn checkout https://svn.dealii.org/trunk/deal.II
-%\end{verbatim}
-%  Once \dealii{} 7.2 is available, this will suffice as well.
-
 \item \textit{\dealii{}:}
-  The current version of \aspect{} requires \dealii{} version 7.3.0 or later.
+  The current version of \aspect{} requires \dealii{} version 7.3.
   This version can be downloaded and installed from
-  \url{https://code.google.com/p/dealii/downloads/list}.
+  \url{https://code.google.com/p/dealii/downloads/list}. Note that the
+  build system of \dealii{} has changed completely after release 7.3 and the
+  instructions below will no longer work. For this release of \aspect{}, only
+  \dealii{} version 7.3 is supported.
 
   You may want to set the environment variable\footnote{For bash
     this would be adding the line {\tt{export DEAL\_DIR=/path/to/deal.ii/}} to
@@ -1157,7 +1150,7 @@ prerequisites:
 \item \textit{Configuring and compiling \dealii:} Now it is time to configure
   \dealii.
   To this end, follow the \dealii{}
-  \href{http://www.dealii.org/developer/readme.html}{installation
+  \href{http://www.dealii.org/7.3.0/readme.html}{installation
     instructions}.
   Remember to point the {\tt{./configure}} script to the paths where
   you installed p4est and Trilinos and make sure you use MPI
