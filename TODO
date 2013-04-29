@@ -102,7 +102,6 @@ write a postprocessor that shows temperature minus depth averaged
 
 
 
-write tests for the depth averaging functions (for example, velocitymagnitude is
-  definitely wrong, since it multiplies one factor by JxW but then doesn't
-  divide by the volume)
+write tests for the depth averaging functions (test adaptive refinement,
+averaged composition, non-zero average/sinking velocity)
   
