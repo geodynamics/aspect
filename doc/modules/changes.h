@@ -9,6 +9,14 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+Changed: Some models declared parameters that indicate the names of
+files and that contained underscores. These have been renamed to
+contain dashes instead, to avoid perpetual difficulties in creating
+the manual.
+<br>
+(Timo Heister, 2013/04/28)
+
+<li>
 Fixed: cleanup the various depth_average functions. Fix that
 all quantities got averaged the wrong way if the mesh was
 adaptively refined. Additionally, the velocity_magnitude
