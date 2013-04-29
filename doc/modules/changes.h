@@ -9,6 +9,14 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
+Fixed: cleanup the various depth_average functions. Fix that
+all quantities got averaged the wrong way if the mesh was
+adaptively refined. Additionally, the velocity_magnitude
+and sinking_velocity was computed incorrectly.
+<br>
+(Timo Heister, 2013/04/28)
+
+<li>
 Fixed: Writing in any output format other than VTU and HDF5 did not
 yield any output files. This is now fixed.
 <br>

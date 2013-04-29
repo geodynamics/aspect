@@ -728,6 +728,20 @@ namespace aspect
       void make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector);
 
       /**
+       * Internal routine to compute the depth average of a certain quantitiy.
+       * The functor @p fctr should implement:
+       * 1. bool need_material_properties()
+       * 2. void setup(unsigned int q_points)
+       * 3. double operator()(const MaterialModelInputs & in,
+       *    const MaterialModelOutputs & out,
+       *    FEValues<dim> & fe_values,
+       *    const LinearAlgebra::BlockVector &solution,
+       *    std::vector<double> & output)
+       */
+      template<class FUNCTOR>
+      void compute_depth_average(std::vector<double> &values, FUNCTOR & fctr) const;
+
+      /**
        * Compute a depth average of the current temperature/composition. The function
        * fills a vector that contains average temperatures/compositions over slices of the
        * domain of same depth. The function resizes the output vector to match
