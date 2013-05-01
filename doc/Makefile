@@ -4,7 +4,6 @@
 
 DEAL_DIR?=../../../deal.II
 D = $(DEAL_DIR)
-include $D/common/Make.global_options
 
 
 aspect-files      = $(shell echo ../include/aspect/*.h \
