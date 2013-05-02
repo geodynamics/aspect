@@ -742,24 +742,13 @@ namespace aspect
       values[i] = values_all[i] / (static_cast<double>(volume_all[i])+1e-20);
   }
 
-
-
+namespace
+{
   template <int dim>
-  void Simulator<dim>::compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition,
-      std::vector<double> &values) const
-      {
-    const FEValuesExtractors::Scalar field
-    = (temperature_or_composition.is_temperature()
-        ?
-            introspection.extractors.temperature
-            :
-            introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]
-    );
-
-    class FunctorFieldAverage
+  class FunctorDepthAverageField
     {
     public:
-      FunctorFieldAverage(const FEValuesExtractors::Scalar &field)
+    FunctorDepthAverageField(const FEValuesExtractors::Scalar &field)
     : field_(field) {}
 
       bool need_material_properties()
@@ -781,135 +770,158 @@ namespace aspect
 
       const FEValuesExtractors::Scalar field_;
     };
+}
 
-    FunctorFieldAverage f(field);
+  template <int dim>
+  void Simulator<dim>::compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition,
+      std::vector<double> &values) const
+      {
+    const FEValuesExtractors::Scalar field
+    = (temperature_or_composition.is_temperature()
+        ?
+            introspection.extractors.temperature
+            :
+            introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]
+    );
+
+
+
+    FunctorDepthAverageField<dim> f(field);
 
     compute_depth_average(values, f);
       }
 
+  namespace
+  {
+    template <int dim>
+    class FunctorDepthAverageViscosity
+        {
+        public:
+          bool need_material_properties()
+          {
+            return true;
+          }
+
+          void setup(unsigned int q_points)
+          {}
+
+          void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs & in,
+              const typename MaterialModel::Interface<dim>::MaterialModelOutputs & out,
+              FEValues<dim> & fe_values,
+              const LinearAlgebra::BlockVector &solution, std::vector<double> & output)
+          {
+            output = out.viscosities;
+          }
+        };
+  }
 
   template <int dim>
   void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const
   {
-    class Functor
-    {
-    public:
-      bool need_material_properties()
-      {
-        return true;
-      }
-
-      void setup(unsigned int q_points)
-      {}
-
-      void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs & in,
-          const typename MaterialModel::Interface<dim>::MaterialModelOutputs & out,
-          FEValues<dim> & fe_values,
-          const LinearAlgebra::BlockVector &solution, std::vector<double> & output)
-      {
-        output = out.viscosities;
-      }
-    };
-
-    Functor f;
+    FunctorDepthAverageViscosity<dim> f;
 
     compute_depth_average(values, f);
   }
 
+  namespace
+  {
+    template <int dim>
+    class FunctorDepthAverageVelocityMagnitude
+        {
+        public:
+      FunctorDepthAverageVelocityMagnitude(const FEValuesExtractors::Vector &field)
+        : field_(field) {}
+
+          bool need_material_properties()
+          {
+            return false;
+          }
+
+          void setup(unsigned int q_points)
+          {
+            velocity_values.resize(q_points);
+          }
+
+          void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs & in,
+              const typename MaterialModel::Interface<dim>::MaterialModelOutputs & out,
+              FEValues<dim> & fe_values,
+              const LinearAlgebra::BlockVector &solution, std::vector<double> & output)
+          {
+            fe_values[field_].get_function_values (solution, velocity_values);
+            for (unsigned int q=0;q<output.size();++q)
+              output[q] = velocity_values[q] * velocity_values[q];
+          }
+
+          std::vector<Tensor<1,dim> > velocity_values;
+          const FEValuesExtractors::Vector field_;
+        };
+  }
 
 
   template <int dim>
   void Simulator<dim>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const
   {
-    class Functor
-    {
-    public:
-      Functor(const FEValuesExtractors::Vector &field)
-    : field_(field) {}
-
-      bool need_material_properties()
-      {
-        return false;
-      }
-
-      void setup(unsigned int q_points)
-      {
-        velocity_values.resize(q_points);
-      }
-
-      void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs & in,
-          const typename MaterialModel::Interface<dim>::MaterialModelOutputs & out,
-          FEValues<dim> & fe_values,
-          const LinearAlgebra::BlockVector &solution, std::vector<double> & output)
-      {
-        fe_values[field_].get_function_values (solution, velocity_values);
-        for (unsigned int q=0;q<output.size();++q)
-          output[q] = velocity_values[q] * velocity_values[q];
-      }
-
-      std::vector<Tensor<1,dim> > velocity_values;
-      const FEValuesExtractors::Vector field_;
-    };
-
-    Functor f(introspection.extractors.velocities);
+    FunctorDepthAverageVelocityMagnitude<dim> f(introspection.extractors.velocities);
 
     compute_depth_average(values, f);
   }
 
+  namespace
+  {
+    template <int dim>
+    class FunctorDepthAverageSinkingVelocity
+        {
+        public:
+      FunctorDepthAverageSinkingVelocity(const FEValuesExtractors::Vector &field, GravityModel::Interface<dim> * gravity)
+        : field_(field), gravity_(gravity) {}
+
+          bool need_material_properties()
+          {
+            return false;
+          }
+
+          void setup(unsigned int q_points)
+          {
+            velocity_values.resize(q_points);
+          }
+
+          void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs & in,
+              const typename MaterialModel::Interface<dim>::MaterialModelOutputs & out,
+              FEValues<dim> & fe_values,
+              const LinearAlgebra::BlockVector &solution, std::vector<double> & output)
+          {
+            fe_values[field_].get_function_values (solution, velocity_values);
+            for (unsigned int q=0;q<output.size();++q)
+              {
+                Tensor<1,dim> g = gravity_->gravity_vector(in.position[q]);
+                output[q] = std::fabs(std::min(-1e-16,g*velocity_values[q]/g.norm()))*year_in_seconds;
+              }
+          }
+
+          std::vector<Tensor<1,dim> > velocity_values;
+          const FEValuesExtractors::Vector field_;
+          GravityModel::Interface<dim> * gravity_;
+        };
+  }
 
 
   template <int dim>
   void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const
   {
-    class Functor
-    {
-    public:
-      Functor(const FEValuesExtractors::Vector &field, GravityModel::Interface<dim> * gravity)
-    : field_(field), gravity_(gravity) {}
-
-      bool need_material_properties()
-      {
-        return false;
-      }
-
-      void setup(unsigned int q_points)
-      {
-        velocity_values.resize(q_points);
-      }
-
-      void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs & in,
-          const typename MaterialModel::Interface<dim>::MaterialModelOutputs & out,
-          FEValues<dim> & fe_values,
-          const LinearAlgebra::BlockVector &solution, std::vector<double> & output)
-      {
-        fe_values[field_].get_function_values (solution, velocity_values);
-        for (unsigned int q=0;q<output.size();++q)
-          {
-            Tensor<1,dim> g = gravity_->gravity_vector(in.position[q]);
-            output[q] = std::fabs(std::min(-1e-16,g*velocity_values[q]/g.norm()))*year_in_seconds;
-          }
-      }
-
-      std::vector<Tensor<1,dim> > velocity_values;
-      const FEValuesExtractors::Vector field_;
-      GravityModel::Interface<dim> * gravity_;
-    };
-
-    Functor f(introspection.extractors.velocities, this->gravity_model.get());
+    FunctorDepthAverageSinkingVelocity<dim> f(introspection.extractors.velocities,
+        this->gravity_model.get());
 
     compute_depth_average(values, f);
   }
 
-
-
-  template <int dim>
-  void Simulator<dim>::compute_depth_average_Vs(std::vector<double> &values) const
+  namespace
   {
-    class Functor
+    template <int dim>
+    class FunctorDepthAverageVsVp
     {
     public:
-      Functor(const MaterialModel::Interface<dim> *mm)
-    : material_model(mm)
+      FunctorDepthAverageVsVp(const MaterialModel::Interface<dim> *mm, bool vs)
+    : material_model(mm), vs_(vs)
     {}
 
       bool need_material_properties()
@@ -925,16 +937,28 @@ namespace aspect
           FEValues<dim> & fe_values,
           const LinearAlgebra::BlockVector &solution, std::vector<double> & output)
       {
-        for (unsigned int q=0;q<output.size();++q)
-          output[q] = material_model->seismic_Vs(
-              in.temperature[q], in.pressure[q], in.composition[q],
-              in.position[q]);
+        if (vs_)
+          for (unsigned int q=0;q<output.size();++q)
+            output[q] = material_model->seismic_Vs(
+                in.temperature[q], in.pressure[q], in.composition[q],
+                in.position[q]);
+        else
+          for (unsigned int q=0;q<output.size();++q)
+            output[q] = material_model->seismic_Vp(
+                in.temperature[q], in.pressure[q], in.composition[q],
+                in.position[q]);
       }
 
       const MaterialModel::Interface<dim> * material_model;
+      bool vs_;
     };
 
-    Functor f(this->material_model.get());
+  }
+
+  template <int dim>
+  void Simulator<dim>::compute_depth_average_Vs(std::vector<double> &values) const
+  {
+    FunctorDepthAverageVsVp<dim> f(this->material_model.get(), true /* Vs */);
 
     compute_depth_average(values, f);
   }
@@ -942,36 +966,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const
   {
-    class Functor
-    {
-    public:
-      Functor(const MaterialModel::Interface<dim> *mm)
-    : material_model(mm)
-    {}
-
-      bool need_material_properties()
-      {
-        return true;
-      }
-
-      void setup(unsigned int q_points)
-      {}
-
-      void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs & in,
-          const typename MaterialModel::Interface<dim>::MaterialModelOutputs & out,
-          FEValues<dim> & fe_values,
-          const LinearAlgebra::BlockVector &solution, std::vector<double> & output)
-      {
-        for (unsigned int q=0;q<output.size();++q)
-          output[q] = material_model->seismic_Vp(
-              in.temperature[q], in.pressure[q], in.composition[q],
-              in.position[q]);
-      }
-
-      const MaterialModel::Interface<dim> * material_model;
-    };
-
-    Functor f(this->material_model.get());
+    FunctorDepthAverageVsVp<dim> f(this->material_model.get(), false /* Vp */);
 
     compute_depth_average(values, f);
   }
