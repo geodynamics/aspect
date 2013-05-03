@@ -2,10 +2,6 @@
 # $Id: Makefile 4165 2011-03-28 13:10:33Z bangerth $
 ############################################################
 
-DEAL_DIR?=../../../deal.II
-D = $(DEAL_DIR)
-
-
 aspect-files      = $(shell echo ../include/aspect/*.h \
                             ../include/aspect/*/*h     \
                             ../include/aspect/*/*/*h   \
@@ -24,7 +20,6 @@ aspect.tag: $(aspect-files) options.dox Makefile
 	 fi
 	@echo "=====aspect=================== Generating documentation"
 	@echo '@INCLUDE = options.dox'                                > aspect.dox
-	@echo 'INCLUDE_PATH           = $D/include/deal.II'          >> aspect.dox
 	@echo 'DOT_IMAGE_FORMAT = png'                               >> aspect.dox
 	@echo 'IMAGE_PATH = manual'                                  >> aspect.dox
 	@echo 'PROJECT_NAME = "ASPECT Mantle Convection Simulator"'  >> aspect.dox
