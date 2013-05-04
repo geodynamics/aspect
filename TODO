@@ -59,11 +59,11 @@ Topics for preview release:
   . upload tar file (deal homepage svn in aspect/download)
   . link in on download.html (same location)
   . announce on
-       cig@geodynamics.org
+       cig-all@geodynamics.org
        aspect-devel@geodynamics.org
        cig-mc@geodynamics.org
        cig-cs@geodynamics.org
-       dealii@dealii.org
+       dealii@googlegroups.com
 
 Announcement for 0.2:
 ---------------------
