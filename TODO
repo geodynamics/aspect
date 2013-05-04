@@ -65,6 +65,35 @@ Topics for preview release:
        cig-cs@geodynamics.org
        dealii@dealii.org
 
+Announcement for 0.2:
+---------------------
+We are pleased to announce the release of ASPECT 0.2. ASPECT is the Advanced
+Solver for Problems in Earth ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible and extensible mantle convection solver. ASPECT is
+available from
+
+                    http://aspect.dealii.org/
+
+This release adds a significant number of new features, including:
+   - support for active and passive "compositional" fields (courtesy of
+     Juliane Dannberg)
+   - more flexibility to output only some variables, drastically reducing
+     the amount of data written
+   - support for user-defined mesh refinement criteria
+   - support for GPlates-generated velocity boundary conditions (courtesy
+     of Rene Gassmoeller)
+   - support for passive tracer particles
+   - provision of an "introspection" module as part of the source code
+     to make it easier and less error-prone to write extension code
+In addition, the manual has been significantly expanded, with many new
+cookbooks, and we have fixed a number of bugs. A list of changes is
+available here:
+
+  http://aspect.dealii.org/doc/doxygen/changes_between_0_81_and_0_82.html
+
+Wolfgang Bangerth, Timo Heister, and many other contributors.
+
 
 First release
 -------------
