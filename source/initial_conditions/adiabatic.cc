@@ -65,8 +65,7 @@ namespace aspect
       in.strain_rate[0] = SymmetricTensor<2,dim>(); // adiabat has strain=0.
       this->get_material_model().evaluate(in, out);
 
-      const double kappa = out.thermal_conductivities[0] / out.densities[0]
-                                                         * out.specific_heat[0];
+      const double kappa = out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0]);
 
       // analytical solution for the thermal boundary layer from half-space cooling model
       const double surface_cooling_temperature = age_top > 0.0 ?
