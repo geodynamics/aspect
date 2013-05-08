@@ -36,11 +36,23 @@ namespace aspect
     Box<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-      GridGenerator::hyper_rectangle (coarse_grid,
+      GridGenerator::subdivided_hyper_rectangle (coarse_grid,
+                                      step_sizes,
                                       Point<dim>(),
-                                      extents);
-      for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-        coarse_grid.begin_active()->face(f)->set_boundary_indicator(f);
+                                      extents,
+                                      false);
+
+      for (typename Triangulation<dim>::active_cell_iterator
+                cell = coarse_grid.begin_active();
+                cell != coarse_grid.end(); ++cell)
+        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+    	  for (unsigned int i=0;i<dim;++i)
+    	  {
+    		if(cell->face(f)->center()[i] == 0)                         // left/bottom/front boundary
+    		  cell->face(f)->set_boundary_indicator(2*i);
+    		else if(cell->face(f)->center()[i] == extents[i])           // right/top/back boundary
+    		  cell->face(f)->set_boundary_indicator(2*i+1);
+    	  }
     }
 
 
@@ -130,6 +142,18 @@ namespace aspect
                              Patterns::Double (0),
                              "Extent of the box in z-direction. This value is ignored "
                              "if the simulation is in 2d Units: m.");
+          prm.declare_entry ("subdivisions X", "",
+        		             Patterns::List (Patterns::Double(0)),
+                             "List of lengths of the subdivisions of the box "
+                             "in x-direction. Units: m.");
+          prm.declare_entry ("subdivisions Y", "",
+                             Patterns::List (Patterns::Double(0)),
+                             "List of lengths of the subdivisions of the box "
+                             "in y-direction. Units: m.");
+          prm.declare_entry ("subdivisions Z", "",
+                             Patterns::List (Patterns::Double(0)),
+                             "List of lengths of the subdivisions of the box "
+                             "in z-direction. Units: m.");
         }
         prm.leave_subsection();
       }
@@ -153,6 +177,25 @@ namespace aspect
 
           if (dim >= 3)
             extents[2] = prm.get_double ("Z extent");
+
+          step_sizes.push_back (Utilities::string_to_double
+                               (Utilities::split_string_list(prm.get ("subdivisions X"))));
+          if (dim >= 2)
+            step_sizes.push_back (Utilities::string_to_double
+                                 (Utilities::split_string_list(prm.get ("subdivisions Y"))));
+          if (dim >= 3)
+            step_sizes.push_back (Utilities::string_to_double
+                                 (Utilities::split_string_list(prm.get ("subdivisions Z"))));
+
+          //step sizes must add up to the respective extent
+          for (unsigned int i=0;i<dim;++i)
+          {
+            double sum_of_steps = 0;
+            for(unsigned int j=0;j<step_sizes[i].size();++j)
+        	  sum_of_steps += step_sizes[i][j];
+            if(sum_of_steps != extents[i])
+        	  step_sizes[i].push_back(extents[i]-sum_of_steps);
+          }
         }
         prm.leave_subsection();
       }

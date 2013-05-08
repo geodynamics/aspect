@@ -50,6 +50,7 @@ all-dirs := source \
             source/geometry_model \
             source/gravity_model \
             source/boundary_temperature \
+            source/boundary_composition \
             source/initial_conditions \
             source/compositional_initial_conditions \
             source/material_model \

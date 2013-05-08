@@ -196,6 +196,8 @@ namespace aspect
 
           std::vector<double>         old_pressure;
           std::vector<double>         old_old_pressure;
+          std::vector<Tensor<1,dim> > old_pressure_gradients;
+          std::vector<Tensor<1,dim> > old_old_pressure_gradients;
 
           std::vector<SymmetricTensor<2,dim> > old_strain_rates;
           std::vector<SymmetricTensor<2,dim> > old_old_strain_rates;
@@ -217,6 +219,7 @@ namespace aspect
           std::vector<Tensor<1,dim> > current_velocity_values;
           std::vector<SymmetricTensor<2,dim> > current_strain_rates;
           std::vector<double>         current_pressure_values;
+          std::vector<Tensor<1,dim> > current_pressure_gradients;
           std::vector<std::vector<double> > current_composition_values;
 
           typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs;
@@ -249,6 +252,8 @@ namespace aspect
           old_old_velocity_values (quadrature.size()),
           old_pressure (quadrature.size()),
           old_old_pressure (quadrature.size()),
+          old_pressure_gradients (quadrature.size()),
+          old_old_pressure_gradients (quadrature.size()),
           old_strain_rates (quadrature.size()),
           old_old_strain_rates (quadrature.size()),
           old_temperature_values (quadrature.size()),
@@ -265,6 +270,7 @@ namespace aspect
           current_velocity_values(quadrature.size()),
           current_strain_rates(quadrature.size()),
           current_pressure_values(quadrature.size()),
+          current_pressure_gradients(quadrature.size()),
           current_composition_values(n_compositional_fields,
                                      std::vector<double>(quadrature.size())),
           material_model_inputs(quadrature.size(), n_compositional_fields),
@@ -290,6 +296,8 @@ namespace aspect
           old_old_velocity_values (scratch.old_old_velocity_values),
           old_pressure (scratch.old_pressure),
           old_old_pressure (scratch.old_old_pressure),
+          old_pressure_gradients (scratch.old_pressure_gradients),
+          old_old_pressure_gradients (scratch.old_old_pressure_gradients),
           old_strain_rates (scratch.old_strain_rates),
           old_old_strain_rates (scratch.old_old_strain_rates),
           old_temperature_values (scratch.old_temperature_values),
@@ -304,6 +312,7 @@ namespace aspect
           current_velocity_values(scratch.current_velocity_values),
           current_strain_rates(scratch.current_strain_rates),
           current_pressure_values(scratch.current_pressure_values),
+          current_pressure_gradients(scratch.current_pressure_gradients),
           current_composition_values(scratch.current_composition_values),
           material_model_inputs(scratch.material_model_inputs),
           material_model_outputs(scratch.material_model_outputs),
@@ -920,6 +929,7 @@ namespace aspect
                                     0)
                                )
                                * scratch.finite_element_values.JxW(q);
+
         if (material_model->is_compressible())
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
@@ -1077,6 +1087,7 @@ namespace aspect
     const double current_T = material_model_inputs.temperature[q];
     const SymmetricTensor<2,dim> current_strain_rate = material_model_inputs.strain_rate[q];
     const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+    const Tensor<1,dim> current_grad_p = scratch.current_pressure_gradients[q];
 
     const double alpha                = material_model_outputs.thermal_expansion_coefficients[q];
     const double density              = material_model_outputs.densities[q];
@@ -1086,6 +1097,7 @@ namespace aspect
                                          material_model_outputs.compressibilities[q]
                                          :
                                          std::numeric_limits<double>::quiet_NaN() );
+    const double entropy_gradient     = material_model_outputs.entropy_derivative_pressure[q];
 
     const Tensor<1,dim>
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
@@ -1121,15 +1133,27 @@ namespace aspect
             :
             0)
            +
-           // finally add the term from adiabatic compression heating
+           // add the term from adiabatic compression heating
            //   - drho/dT T (u . g)
            // where we use the definition of
            //   alpha = - 1/rho drho/dT
            (parameters.include_adiabatic_heating
             ?
-            alpha * density * (current_u*gravity) * current_T
+            (current_u * current_grad_p) * alpha * current_T
             :
             0)
+            +
+            // finally add the right-hand side term from latent heating
+            //   DeltaS dLambda/dpi T rho (v . grad p)
+            // DeltaS:      change of entropy across phase transition
+            // dLambda/dpi: derivative of the phase function
+            // pi:          excess pressure (argument of the phase function)
+            // formulation modified after Christensen & Yuen, 1985
+            (parameters.include_latent_heat
+             ?
+             current_T * density * entropy_gradient * (current_u * current_grad_p)
+             :
+             0)
           );
 
     return gamma;
@@ -1181,6 +1205,13 @@ namespace aspect
             scratch.old_pressure);
         scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_old_solution,
             scratch.old_old_pressure);
+
+        scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_solution,
+            scratch.old_pressure_gradients);
+        scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_old_solution,
+            scratch.old_old_pressure_gradients);
+        scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (current_linearization_point,
+            scratch.current_pressure_gradients);
 
         for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
           {
@@ -1272,6 +1303,14 @@ namespace aspect
            scratch.material_model_outputs.thermal_conductivities[q]
            :
            0.0);
+        const double latent_heat_LHS =
+          (parameters.include_latent_heat && temperature_or_composition.is_temperature())
+           ?
+           scratch.material_model_outputs.densities[q] *
+           scratch.material_model_inputs.temperature[q] *
+           scratch.material_model_outputs.entropy_derivative_temperature[q]
+           :
+           0.0;
         const double gamma = compute_heating_term(scratch,
                                                   scratch.material_model_inputs,
                                                   scratch.material_model_outputs,
@@ -1289,7 +1328,7 @@ namespace aspect
              :
              (*scratch.old_field_values)[q])
             *
-            density_c_P;
+            (density_c_P + latent_heat_LHS);
 
 
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
@@ -1313,7 +1352,7 @@ namespace aspect
                       * scratch.grad_phi_field[i] * scratch.grad_phi_field[j])
                      + ((time_step * (current_u * scratch.grad_phi_field[j] * scratch.phi_field[i]))
                         + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
-                     density_c_P
+                     (density_c_P + latent_heat_LHS)
                    )
                    * scratch.finite_element_values.JxW(q);
               }

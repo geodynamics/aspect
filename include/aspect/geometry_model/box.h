@@ -24,6 +24,7 @@
 #define __aspect__geometry_model_box_h
 
 #include <aspect/geometry_model/interface.h>
+#include <aspect/simulator.h>
 
 
 namespace aspect
@@ -103,6 +104,14 @@ namespace aspect
          * Extent of the box in x-, y-, and z-direction (in 3d).
          */
         Point<dim> extents;
+
+        /**
+         * A vector for each dimension, containing a list of step sizes for the
+         * subdivisions. The step sizes have to add up to the respective extent,
+         * however, if that condition is not fulfilled, an additional entry will
+         * be appended in the parse_parameters function.
+         */
+        std::vector<std::vector<double> > step_sizes;
     };
   }
 }

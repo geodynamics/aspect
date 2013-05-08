@@ -294,6 +294,7 @@ namespace aspect
 
     // set the current solution to the same value as the previous solution
     solution = old_solution;
+    old_old_solution = old_solution;
   }
 }
 

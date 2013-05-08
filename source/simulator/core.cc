@@ -99,6 +99,7 @@ namespace aspect
     material_model (MaterialModel::create_material_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     boundary_temperature (BoundaryTemperature::create_boundary_temperature<dim>(prm)),
+    boundary_composition (BoundaryComposition::create_boundary_composition<dim>(prm)),
     compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions (prm,
                                       *geometry_model)),
     adiabatic_conditions(),
@@ -202,6 +203,8 @@ namespace aspect
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*gravity_model))
       sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*boundary_temperature))
+      sim->initialize (*this);
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*boundary_composition))
       sim->initialize (*this);
 
     adiabatic_conditions.reset(new AdiabaticConditions<dim> (*geometry_model,
@@ -670,7 +673,30 @@ namespace aspect
 
         }
 
-      // we do nothing with the compositional fields: homogeneous Neumann boundary conditions
+      // now do the same for the composition variable
+      // obtain the boundary indicators that belong to Dirichlet-type
+      // composition boundary conditions and interpolate the composition
+      // there
+      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+        for (std::set<types::boundary_id>::const_iterator
+             p = parameters.fixed_composition_boundary_indicators.begin();
+             p != parameters.fixed_composition_boundary_indicators.end(); ++p)
+          {
+            Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
+                    ExcInternalError());
+            VectorTools::interpolate_boundary_values (dof_handler,
+                                                      *p,
+                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&BoundaryComposition::Interface<dim>::composition,
+                                                          std_cxx1x::cref(*boundary_composition),
+                                                          std_cxx1x::cref(*geometry_model),
+                                                          *p,
+                                                          std_cxx1x::_1),
+                                                          introspection.component_masks.compositional_fields[c].first_selected_component(),
+                                                          introspection.n_components),
+                                                      constraints,
+                                                      introspection.component_masks.compositional_fields[c]);
+
+          }
 
       constraints.close();
     }
