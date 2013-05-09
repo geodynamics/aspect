@@ -11,7 +11,7 @@ All entries are signed with the names of the author.
 <li>
 Fixed: fix a bug in adiabatic initial conditions introduced in r1599.
 <br>
-(Julianne Dannberg, 2013/05/08)
+(Juliane Dannberg, 2013/05/08)
 
 <li>
 New: The doxygen generated documentation of ASPECT now automatically
