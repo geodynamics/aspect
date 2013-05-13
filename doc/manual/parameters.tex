@@ -1061,7 +1061,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 {\it Description:} Select one of the following models:
 
-`adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers,whose ages are given as input parameters.
+`adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers, whose ages are given as input parameters.
 
 `perturbed box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is chosen in such a way that the initial temperature is constant to one along the entire boundary.
 
@@ -1092,7 +1092,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 0e0
 
 
-{\it Description:} The age of the lower thermal boundary layer, used for the calculationof the half-space cooling model temperature. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+{\it Description:} The age of the lower thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -1107,7 +1107,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 0e0
 
 
-{\it Description:} The age of the upper thermal boundary layer, used for the calculationof the half-space cooling model temperature. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+{\it Description:} The age of the upper thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -1122,7 +1122,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 0e0
 
 
-{\it Description:} The amplitude (in K) of the initial spherical temperature perturbationat the bottom of the model domain. This perturbation will be added tothe adiabatic temperature profile, but not to the bottom thermalboundary layer. Instead, the maximum of the perturbation and the bottomboundary layer temperature will be used.
+{\it Description:} The amplitude (in K) of the initial spherical temperature perturbation at the bottom of the model domain. This perturbation will be added to the adiabatic temperature profile, but not to the bottom thermal boundary layer. Instead, the maximum of the perturbation and the bottom boundary layer temperature will be used.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -1152,7 +1152,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 0e0
 
 
-{\it Description:} The Radius (in m) of the initial spherical temperature perturbationat the bottom of the model domain.
+{\it Description:} The Radius (in m) of the initial spherical temperature perturbation at the bottom of the model domain.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -1167,7 +1167,9 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 0e0
 
 
-{\it Description:} If this value is larger than 0, the initial temperature profile willnot be adiabatic, but subadiabatic. This value gives the maximal deviation from adiabaticity. Set to 0 for an adiabatic temperature profile. Units: K. The function object in the Function subsectionrepresents the compositional fields that will be used as a reference profile for calculating the thermal diffusivity.The function depends only on depth.
+{\it Description:} If this value is larger than 0, the initial temperature profile will not be adiabatic, but subadiabatic. This value gives the maximal deviation from adiabaticity. Set to 0 for an adiabatic temperature profile. Units: K.
+
+The function object in the Function subsection represents the compositional fields that will be used as a reference profile for calculating the thermal diffusivity. The function depends only on depth.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
