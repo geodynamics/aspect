@@ -1,0 +1,31 @@
+Number of active cells: 3,072 (on 6 levels)
+Number of degrees of freedom: 40,836 (25,090+3,201+12,545)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-adiabatic_initial_conditions_subadiabaticity/solution-00000
+     Writing depth average     output-adiabatic_initial_conditions_subadiabaticity/depthaverage.plt
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      34.1s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |      4.02s |        12% |
+| Assemble temperature system     |         1 |         9s |        26% |
+| Build Stokes preconditioner     |         1 |      2.67s |       7.8% |
+| Build temperature preconditioner|         1 |    0.0513s |      0.15% |
+| Solve Stokes system             |         1 |     0.586s |       1.7% |
+| Solve temperature system        |         1 |    0.0201s |     0.059% |
+| Initialization                  |         2 |     0.365s |       1.1% |
+| Postprocessing                  |         1 |      14.3s |        42% |
+| Setup dof systems               |         1 |      2.44s |       7.2% |
++---------------------------------+-----------+------------+------------+
+
