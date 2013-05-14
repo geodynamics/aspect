@@ -281,15 +281,13 @@ namespace aspect
     double initial_residual = 0;
 
     double advection_solver_tolerance = -1;
-    unsigned int block_number = -1;
+    unsigned int block_number = temperature_or_composition.block_index(introspection);
 
-//TODO: use the introspection facilities here to get at the block number
     if (temperature_or_composition.is_temperature())
       {
         computing_timer.enter_section ("   Solve temperature system");
         pcout << "   Solving temperature system... " << std::flush;
         advection_solver_tolerance = parameters.temperature_solver_tolerance;
-        block_number = 2;
       }
     else
       {
@@ -298,7 +296,6 @@ namespace aspect
               << temperature_or_composition.compositional_variable+1
               << "... " << std::flush;
         advection_solver_tolerance = parameters.composition_solver_tolerance;
-        block_number = 3+temperature_or_composition.compositional_variable;
       }
 
     SolverControl solver_control (system_matrix.block(block_number, block_number).m(),

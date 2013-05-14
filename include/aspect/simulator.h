@@ -366,6 +366,12 @@ namespace aspect
          */
         bool
         is_temperature () const;
+
+        /**
+         * Look up the block index for this temperature or compositional field i.
+         * See Introspection::block_indices for more information.
+         */
+        unsigned int block_index(const Introspection<dim> & introspection) const;
       };
 
       /**
