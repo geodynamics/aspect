@@ -102,8 +102,7 @@ namespace aspect
       double c_p = out.specific_heat[0];
 
       return k/(rho*c_p);
-    };
-
+    }
 
 
     template <int dim>
