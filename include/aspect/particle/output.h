@@ -350,7 +350,8 @@ namespace aspect
           // Create the file dataspace descriptions
           local_particle_count = particles.size();
           // TODO: error checking on MPI call
-          MPI_Allreduce(&local_particle_count, &global_particle_count, 1, MPI_UNSIGNED, MPI_SUM, Output<dim, T>::_communicator);
+	  MPI_Comm com = Output<dim, T>::_communicator;
+          MPI_Allreduce(&local_particle_count, &global_particle_count, 1, MPI_UNSIGNED, MPI_SUM, com);
           dims[0] = global_particle_count;
           dims[1] = 3;
           one_dim_ds_id = H5Screate_simple(1, dims, NULL);
