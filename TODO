@@ -130,6 +130,7 @@ write a postprocessor that shows temperature minus depth averaged
   temperature. maybe similar for density (= buoyancy)
 
 
+- change some/all material models to the new system
 
 
 write tests for the depth averaging functions (test adaptive refinement,
