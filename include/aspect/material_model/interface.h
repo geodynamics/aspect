@@ -560,6 +560,8 @@ namespace aspect
           std::vector<double> thermal_conductivities;
           /**
            * Compressibility at the given positions.
+           * The compressibility is given as
+           * $\frac 1\rho \frac{\partial\rho}{\partial p}$.
            */
           std::vector<double> compressibilities;
         };
