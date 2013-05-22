@@ -1008,7 +1008,7 @@ namespace aspect
               ++iteration;
 //TODO: terminate here if the number of iterations is too large and we see no convergence
             }
-          while (iteration < 10);
+          while (iteration < parameters.max_nonlinear_iterations);
 
           break;
         }
@@ -1027,7 +1027,7 @@ namespace aspect
 
           // ...and then iterate the solution
           // of the Stokes system
-          for (int i=0; i<10; ++i)
+          for (unsigned int i=0; i< parameters.max_nonlinear_iterations; ++i)
             {
               // rebuild the matrix if it actually depends on the solution
               // of the previous iteration.

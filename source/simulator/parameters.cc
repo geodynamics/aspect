@@ -56,7 +56,11 @@ namespace aspect
                        "A flag indicating whether the Stokes+Advection equation should be solved "
                        "once per time step (false) or resolved using a fixed-point iteration (true).");
 
-    prm.declare_entry ("Start time", "0",
+    prm.declare_entry ("Max nonlinear iterations", "10",
+                       Patterns::Integer (0),
+                       "The maximal number of nonlinear iterations to be performed.");
+   
+     prm.declare_entry ("Start time", "0",
                        Patterns::Double (),
                        "The start time of the simulation. Units: years if the "
                        "'Use years in output instead of seconds' parameter is set; "
@@ -481,6 +485,7 @@ namespace aspect
     else
       AssertThrow (false, ExcNotImplemented());
 
+    max_nonlinear_iterations = prm.get_integer ("Max nonlinear iterations");
     start_time              = prm.get_double ("Start time");
     if (convert_to_years == true)
       start_time *= year_in_seconds;
