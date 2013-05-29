@@ -330,7 +330,7 @@ namespace aspect
           StokesPreconditioner (const StokesPreconditioner &data);
 
           FullMatrix<double>          local_matrix;
-          std::vector<unsigned int>   local_dof_indices;
+          std::vector<types::global_dof_index>   local_dof_indices;
         };
 
 
@@ -398,7 +398,7 @@ namespace aspect
 
           FullMatrix<double>          local_matrix;
           Vector<double>              local_rhs;
-          std::vector<unsigned int>   local_dof_indices;
+          std::vector<types::global_dof_index>   local_dof_indices;
         };
 
 

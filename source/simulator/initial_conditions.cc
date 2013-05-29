@@ -85,7 +85,7 @@ namespace aspect
                                  support_points,
                                  update_quadrature_points);
 
-        std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
+        std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
 
         for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
              cell != dof_handler.end(); ++cell)
@@ -224,7 +224,7 @@ namespace aspect
         dofs_per_cell = fe_values.dofs_per_cell,
         n_q_points    = fe_values.n_quadrature_points;
 
-        std::vector<unsigned int> local_dof_indices (dofs_per_cell);
+        std::vector<types::global_dof_index> local_dof_indices (dofs_per_cell);
         Vector<double> cell_vector (dofs_per_cell);
         Vector<double> local_projection (dofs_per_cell);
         FullMatrix<double> local_mass_matrix (dofs_per_cell, dofs_per_cell);

@@ -720,10 +720,10 @@ namespace aspect
                                     introspection.system_dofs_per_block,
                                     introspection.components_to_blocks);
     {
-      const unsigned int n_u = introspection.system_dofs_per_block[0],
-                         n_p = introspection.system_dofs_per_block[1],
-                         n_T = introspection.system_dofs_per_block[2];
-      std::vector<unsigned int> n_C (parameters.n_compositional_fields+1);
+      const types::global_dof_index n_u = introspection.system_dofs_per_block[0],
+                                    n_p = introspection.system_dofs_per_block[1],
+                                    n_T = introspection.system_dofs_per_block[2];
+      std::vector<types::global_dof_index> n_C (parameters.n_compositional_fields+1);
       for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
         n_C[c] = introspection.system_dofs_per_block
                  [introspection.block_indices.compositional_fields[c]];

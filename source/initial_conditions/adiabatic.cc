@@ -244,6 +244,6 @@ namespace aspect
                                        "adiabatic",
                                        "Temperature is prescribed as an adiabatic "
                                        "profile with upper and lower thermal boundary layers, "
-                                       "whose ages are given as input parameters.");
+                                       "whose ages are given as input parameters.")
   }
 }

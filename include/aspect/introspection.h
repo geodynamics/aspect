@@ -181,7 +181,7 @@ namespace aspect
        * on the current mesh belong to each of the n_blocks blocks
        * of the finite element.
        */
-      std::vector<unsigned int> system_dofs_per_block;
+      std::vector<types::global_dof_index> system_dofs_per_block;
 
       /**
        * A structure that contains index sets describing which of the

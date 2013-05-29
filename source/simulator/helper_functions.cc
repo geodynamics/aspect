@@ -570,7 +570,7 @@ namespace aspect
         // of freedom on each cell.
         Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(1)) != 0,
                 ExcInternalError());
-        std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
+        std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
         typename DoFHandler<dim>::active_cell_iterator
         cell = dof_handler.begin_active(),
         endc = dof_handler.end();
@@ -625,7 +625,7 @@ namespace aspect
         // of freedom on each cell.
         Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(1)) != 0,
                 ExcInternalError());
-        std::vector<unsigned int> local_dof_indices (finite_element.dofs_per_cell);
+        std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
         typename DoFHandler<dim>::active_cell_iterator
         cell = dof_handler.begin_active(),
         endc = dof_handler.end();
