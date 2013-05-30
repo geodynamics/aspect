@@ -27,8 +27,7 @@ run-parameters  = parameter-file.prm
 
 # Now, this is the last variable you need to set, namely the path to
 # the deal.II toplevel directory:
-#DEAL_DIR?=../../deal.II
-DEAL_DIR=../branch_bigger_global_dof_indices_4/deal.II/installed
+DEAL_DIR?=../../deal.II
 D = $(DEAL_DIR)
 
 

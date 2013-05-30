@@ -1,5 +1,4 @@
-#DEAL_DIR?=../../../deal.II
-DEAL_DIR=/home/bruno/Documents/deal.ii/branch_bigger_global_dof_indices_4/deal.II/installed
+DEAL_DIR?=../../../deal.II
 D = $(DEAL_DIR)
 include $D/common/Make.global_options
 
