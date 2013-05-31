@@ -24,6 +24,8 @@
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
 
+#include <cmath>
+
 namespace aspect
 {
   namespace InitialConditions
@@ -70,12 +72,12 @@ namespace aspect
       // analytical solution for the thermal boundary layer from half-space cooling model
       const double surface_cooling_temperature = age_top > 0.0 ?
                                                  (T_surface - adiabatic_surface_temperature) *
-                                                 std::erfc(this->geometry_model->depth(position) /
+                                                 erfc(this->geometry_model->depth(position) /
                                                            (2 * sqrt(kappa * age_top)))
                                                  : 0.0;
       const double bottom_heating_temperature = age_bottom > 0.0 ?
                                                 (T_bottom - adiabatic_bottom_temperature + subadiabaticity)
-                                                * std::erfc((this->geometry_model->maximal_depth()
+                                                * erfc((this->geometry_model->maximal_depth()
                                                              - this->geometry_model->depth(position)) /
                                                             (2 * sqrt(kappa * age_bottom)))
                                                 : 0.0;
