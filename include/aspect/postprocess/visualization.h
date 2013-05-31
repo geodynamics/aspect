@@ -394,8 +394,8 @@ namespace aspect
          * to a file with the name given in the first argument. The function
          * is run on a separate thread to allow computations to
          * continue even though writing data is still continuing.
-         * The function takes over ownership of the arguments and deletes
-        * them at the end of its work.
+         * The function takes over ownership of these arguments and deletes
+         * them at the end of its work.
          */
         static
         void background_writer (const std::string *filename,
