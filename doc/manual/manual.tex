@@ -1172,9 +1172,9 @@ prerequisites:
   \url{https://code.google.com/p/dealii/downloads/list}.
 
   You may want to set the environment variable\footnote{For bash
-    this would be adding the line {\tt{export DEAL\_DIR=/path/to/deal.ii/}} to
+    this would be adding the line {\tt{export DEAL\_II\_DIR=/path/to/deal.ii/}} to
     the file {\tt{\~{}/.bashrc}}.}
-{\tt{DEAL\_DIR}} to the directory where you checked out \dealii.
+{\tt{DEAL\_II\_DIR}} to the directory where you checked out \dealii.
 
 \item \textit{Configuring and compiling \dealii:} Now it is time to configure
   \dealii.
@@ -1201,7 +1201,7 @@ prerequisites:
 
 \item \textit{Testing your installation:} Test that your installation works
   by running the {\tt{step-32}} example that you can find in
-  {\tt{\$DEAL\_DIR/examples/step-32}}. Compile by running {\tt{make}} and run
+  {\tt{\$DEAL\_II\_DIR/examples/step-32}}. Compile by running {\tt{make}} and run
   with {\tt{mpirun -n 2 ./step-32}}.
 \end{enumerate}
 
@@ -1212,7 +1212,7 @@ The development version of \aspect{} can be downloaded by executing the command
 \begin{verbatim}
  svn checkout https://svn.aspect.dealii.org/trunk/aspect
 \end{verbatim}
-If {\tt{\$DEAL\_DIR}} points to your \dealii{} installation, there is no
+If {\tt{\$DEAL\_II\_DIR}} points to your \dealii{} installation, there is no
 further configuration that needs to be done, otherwise you need to edit
 the {\tt{Makefile}} accordingly.
 

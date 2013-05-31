@@ -9,7 +9,15 @@ All entries are signed with the names of the author.
 
 <ol>
 <li>
-Fixed: fix a bug in adiabatic initial conditions introduced in r1599.
+Changed: To unify spelling, the environment variable that indicates
+the directory in which deal.II is located is now called
+<code>DEAL_II_DIR</code> instead of the old <code>DEAL_DIR</code>. The
+old spelling is still accepted, however.
+<br>
+(Wolfgang Bangerth, 2013/05/31)
+
+<li>
+Fixed: Fix a bug in adiabatic initial conditions introduced in r1599.
 <br>
 (Juliane Dannberg, 2013/05/08)
 

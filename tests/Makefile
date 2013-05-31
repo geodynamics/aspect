@@ -1,5 +1,8 @@
-DEAL_DIR?=../../../deal.II
-D = $(DEAL_DIR)
+# Path to deal.II. Same logic as in ../Makefile
+DEAL_DIR    ?= ../../deal.II
+DEAL_II_DIR ?= $(DEAL_DIR)
+D = $(DEAL_II_DIR)
+
 include $D/common/Make.global_options
 
 tests = $(shell echo *.prm | sed s/.prm//g)

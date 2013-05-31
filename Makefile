@@ -26,9 +26,14 @@ clean-up-files =
 run-parameters  = parameter-file.prm
 
 # Now, this is the last variable you need to set, namely the path to
-# the deal.II toplevel directory:
-DEAL_DIR?=../../deal.II
-D = $(DEAL_DIR)
+# the deal.II toplevel directory. DEAL_DIR is the old way of spelling
+# this variable, please use DEAL_II_DIR instead. If nothing is specified 
+# for either variable, we take ../../deal.II which works for some of
+# us but is not likely to work for everyone who has a different directory
+# layout
+DEAL_DIR    ?= ../../deal.II
+DEAL_II_DIR ?= $(DEAL_DIR)
+D = $(DEAL_II_DIR)
 
 
 
