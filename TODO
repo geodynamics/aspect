@@ -50,7 +50,7 @@ Topics for preview release:
   . create a branch:
     svn cp https://svn.aspect.dealii.org/trunk/aspect https://svn.aspect.dealii.org/branches/releases/aspect-0.2
   . remove TODO on the branch
-  . update the version number on the front page of doc/manual.pdf
+  . update the version number on the front page of doc/manual.pdf (and also on trunk!)
   . remove the various table_* postprocessors
   . update doc/manual/parameters.tex by running aspect-2d with an empty .prm
     file and copying output/parameters.tex to doc/manual/parameters.tex
@@ -59,7 +59,8 @@ Topics for preview release:
   . check in doc/manual.pdf
   . make sure the .prm and .xml files we ship match the default values
     of parameters
-  . create a tar file: tar czf aspect-0.2.tar.gz aspect-0.2/
+  . create a tar file (do svn export): 
+    tar --exclude-vcs -czf aspect-0.3.tar.gz aspect-0.3/
   . upload tar file (deal homepage svn in aspect/download)
   . link in on download.html (same location)
   . announce on
