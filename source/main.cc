@@ -26,6 +26,66 @@
 #include <deal.II/base/mpi.h>
 
 
+
+// extract the dimension in which to run ASPECT from the
+// parameter file. this is something that we need to do
+// before processing the parameter file since we need to
+// know whether to use the dim=2 or dim=3 instantiation
+// of the main classes
+unsigned int
+get_dimension(const std::string &parameter_filename)
+{
+  using namespace dealii;
+
+  unsigned int dim = 2;
+
+  std::ifstream x_file(parameter_filename.c_str());
+  while (x_file)
+    {
+      // get one line and strip spaces at the front and back
+      std::string line;
+      std::getline(x_file, line);
+      while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
+        line.erase(0, 1);
+      while ((line.size() > 0)
+             && (line[line.size() - 1] == ' ' || line[line.size() - 1] == '\t'))
+        line.erase(line.size() - 1, std::string::npos);
+      // now see whether the line starts with 'set' followed by multiple spaces
+      // if now, try next line
+      if (line.size() < 4)
+        continue;
+
+      if ((line[0] != 's') || (line[1] != 'e') || (line[2] != 't')
+          || !(line[3] == ' ' || line[3] == '\t'))
+        continue;
+
+      line.erase(0, 4);
+      while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
+        line.erase(0, 1);
+      // now see whether the next word is "Dimension"
+      if (line.size() < 4)
+        continue;
+
+      if (line.find("Dimension") != 0)
+        continue;
+
+      line.erase(0, 9);
+      while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
+        line.erase(0, 1);
+      // we'd expect an equals size here
+      if ((line.size() < 1) || (line[0] != '='))
+        continue;
+
+      line.erase(0, 1);
+      while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
+        line.erase(0, 1);
+      // the rest should now be an integer
+      dim = Utilities::string_to_int(line);
+    }
+
+  return dim;
+}
+
 int main (int argc, char *argv[])
 {
   using namespace dealii;
@@ -56,53 +116,7 @@ int main (int argc, char *argv[])
       // try to determine the dimension we want to work in. the default
       // is 2, but if we find a line of the kind "set Dimension = ..."
       // then the last such line wins
-      unsigned int dim = 2;
-      {
-        std::ifstream x_file(parameter_filename.c_str());
-        while (x_file)
-          {
-            // get one line and strip spaces at the front and back
-            std::string line;
-            std::getline(x_file, line);
-            while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
-              line.erase(0, 1);
-            while ((line.size() > 0)
-                   && (line[line.size() - 1] == ' '
-                       || line[line.size() - 1] == '\t'))
-              line.erase(line.size() - 1, std::string::npos);
-
-            // now see whether the line starts with 'set' followed by multiple spaces
-            // if now, try next line
-            if (line.size() < 4)
-              continue;
-            if ((line[0] != 's') || (line[1] != 'e') || (line[2] != 't')
-                || !(line[3] == ' ' || line[3] == '\t'))
-              continue;
-
-            line.erase(0, 4);
-            while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
-              line.erase(0, 1);
-
-            // now see whether the next word is "Dimension"
-            if (line.size() < 4)
-              continue;
-            if (line.find("Dimension") != 0)
-              continue;
-            line.erase(0, 9);
-            while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
-              line.erase(0, 1);
-
-            // we'd expect an equals size here
-            if ((line.size() < 1) || (line[0] != '='))
-              continue;
-            line.erase(0, 1);
-            while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
-              line.erase(0, 1);
-
-            // the rest should now be an integer
-            dim = Utilities::string_to_int(line);
-          }
-      }
+      const unsigned int dim = get_dimension(parameter_filename);
 
       // now switch between the templates that code for 2d or 3d. it
       // would be nicer if we didn't have to duplicate code, but the
