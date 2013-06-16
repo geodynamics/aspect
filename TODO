@@ -141,3 +141,6 @@ write a postprocessor that shows temperature minus depth averaged
 write tests for the depth averaging functions (test adaptive refinement,
 averaged composition, non-zero average/sinking velocity)
   
+write tests to verify the possibility of external plugins compiled into
+shared libraries. implement ways to verify that they are compiled against
+the same version of ASPECT that they are running under.
