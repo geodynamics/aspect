@@ -8,6 +8,14 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: If the underlying deal.II version supports this,
+  then VTK or VTU files now contain information about the time
+  and time step number corresponding to each file, and this
+  is then displayed when using Visit as the visualization
+  program.
+  <br>
+  (Wolfgang Bangerth, 2013/06/16)
+
   <li>New: In order to implement extensions, in particular
   new plugins for material models, geometries, etc, it used to
   be necessary to put the new files into the Aspect source

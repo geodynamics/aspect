@@ -247,8 +247,8 @@ namespace aspect
           //code blocks. unify!
           AssertThrow(group_files==1, ExcNotImplemented());
           data_out.write_vtu_in_parallel((this->get_output_directory() + solution_file_prefix +
-              ".vtu").c_str(),
-              this->get_mpi_communicator());
+                                          ".vtu").c_str(),
+                                         this->get_mpi_communicator());
 
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
@@ -256,13 +256,13 @@ namespace aspect
               filenames.push_back (solution_file_prefix + ".vtu");
               const std::string pvtu_master_filename = (solution_file_prefix + ".pvtu");
               std::ofstream pvtu_master ((this->get_output_directory() +
-                  pvtu_master_filename).c_str());
+                                          pvtu_master_filename).c_str());
               data_out.write_pvtu_record (pvtu_master, filenames);
 
               // now also generate a .pvd file that matches simulation
               // time and corresponding .pvtu record
               times_and_pvtu_names.push_back(std::pair<double,std::string>
-              (this->get_time(), pvtu_master_filename));
+                                             (this->get_time(), pvtu_master_filename));
               const std::string
               pvd_master_filename = (this->get_output_directory() + "solution.pvd");
               std::ofstream pvd_master (pvd_master_filename.c_str());
@@ -271,8 +271,8 @@ namespace aspect
               // finally, do the same for Visit via the .visit file
               const std::string
               visit_master_filename = (this->get_output_directory() +
-                  solution_file_prefix +
-                  ".visit");
+                                       solution_file_prefix +
+                                       ".visit");
               std::ofstream visit_master (visit_master_filename.c_str());
               data_out.write_visit_record (visit_master, filenames);
             }
@@ -284,6 +284,16 @@ namespace aspect
           const std::string *file_contents;
           {
             std::ostringstream tmp;
+
+            // if deal.II supports it (after 7.3.x), pass time step number and time as
+            // metadata into the output file
+            DataOutBase::VtkFlags vtk_flags;
+#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 740
+            vtk_flags.cycle = this->get_timestep_number();
+            vtk_flags.time = this->get_time();
+#endif
+            data_out.set_flags (vtk_flags);
+
             data_out.write (tmp, DataOutBase::parse_output_format(output_format));
             file_contents = new std::string (tmp.str());
           }
@@ -295,21 +305,21 @@ namespace aspect
               std::vector<std::string> filenames;
               for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
                 filenames.push_back (solution_file_prefix +
-                    "." +
-                    Utilities::int_to_string(i, 4) +
-                    DataOutBase::default_suffix
-                    (DataOutBase::parse_output_format(output_format)));
+                                     "." +
+                                     Utilities::int_to_string(i, 4) +
+                                     DataOutBase::default_suffix
+                                     (DataOutBase::parse_output_format(output_format)));
               const std::string
               pvtu_master_filename = (solution_file_prefix +
-                  ".pvtu");
+                                      ".pvtu");
               std::ofstream pvtu_master ((this->get_output_directory() +
-                  pvtu_master_filename).c_str());
+                                          pvtu_master_filename).c_str());
               data_out.write_pvtu_record (pvtu_master, filenames);
 
               // now also generate a .pvd file that matches simulation
               // time and corresponding .pvtu record
               times_and_pvtu_names.push_back(std::pair<double,std::string>
-              (this->get_time(), pvtu_master_filename));
+                                             (this->get_time(), pvtu_master_filename));
               const std::string
               pvd_master_filename = (this->get_output_directory() + "solution.pvd");
               std::ofstream pvd_master (pvd_master_filename.c_str());
@@ -318,20 +328,20 @@ namespace aspect
               // finally, do the same for Visit via the .visit file
               const std::string
               visit_master_filename = (this->get_output_directory() +
-                  solution_file_prefix +
-                  ".visit");
+                                       solution_file_prefix +
+                                       ".visit");
               std::ofstream visit_master (visit_master_filename.c_str());
               data_out.write_visit_record (visit_master, filenames);
             }
 
           const std::string *filename
-          = new std::string (this->get_output_directory() +
-              solution_file_prefix +
-              "." +
-              Utilities::int_to_string
-              (this->get_triangulation().locally_owned_subdomain(), 4) +
-              DataOutBase::default_suffix
-              (DataOutBase::parse_output_format(output_format)));
+            = new std::string (this->get_output_directory() +
+                               solution_file_prefix +
+                               "." +
+                               Utilities::int_to_string
+                               (this->get_triangulation().locally_owned_subdomain(), 4) +
+                               DataOutBase::default_suffix
+                               (DataOutBase::parse_output_format(output_format)));
 
           // wait for all previous write operations to finish, should
           // any be still active
@@ -339,8 +349,8 @@ namespace aspect
 
           // then continue with writing our own stuff
           background_thread = Threads::new_thread (&background_writer,
-              filename,
-              file_contents);
+                                                   filename,
+                                                   file_contents);
         }
 
       // record the file base file name in the output file
