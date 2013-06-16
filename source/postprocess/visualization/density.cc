@@ -58,12 +58,12 @@ namespace aspect
         Assert (uh[0].size() == dim+2+this->n_compositional_fields(), ExcInternalError());
 
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_quadrature_points,
-            this->n_compositional_fields());
+                                                                       this->n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_quadrature_points);
 
         in.position = evaluation_points;
         in.strain_rate.resize(0); // we do not need the viscosity
-        for (unsigned int i=0;i<n_quadrature_points;++i)
+        for (unsigned int i=0; i<n_quadrature_points; ++i)
           {
             in.pressure[i]=uh[i][dim];
             in.temperature[i]=uh[i][dim+1];
@@ -75,7 +75,7 @@ namespace aspect
         this->get_material_model().evaluate(in, out);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
-            computed_quantities[q](0) = out.densities[q];
+          computed_quantities[q](0) = out.densities[q];
       }
     }
   }

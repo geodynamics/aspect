@@ -96,8 +96,8 @@ namespace aspect
               // Let the user know which criterion caused the termination
               if (all_terminate == true)
                 this->get_pcout() << "Termination requested by criterion: "
-                << *itn
-                << std::endl;
+                                  << *itn
+                                  << std::endl;
             }
           // plugins that throw exceptions usually do not result in
           // anything good because they result in an unwinding of the stack

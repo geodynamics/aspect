@@ -82,14 +82,14 @@ namespace aspect
                 fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                     in.temperature);
                 fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                    in.pressure);
+                                                                                               in.pressure);
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                       composition_values[c]);
 
                 in.position = fe_face_values.get_quadrature_points();
                 in.strain_rate.resize(0);// we are not reading the viscosity
-                for (unsigned int i=0;i<fe_face_values.n_quadrature_points;++i)
+                for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
                   {
                     for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                       in.composition[i][c] = composition_values[c][i];

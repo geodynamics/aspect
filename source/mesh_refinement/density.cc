@@ -66,7 +66,7 @@ namespace aspect
                                                                    std::vector<double> (quadrature.size()));
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(quadrature.size(),
-          this->n_compositional_fields());
+                                                                     this->n_compositional_fields());
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(quadrature.size());
 
       typename DoFHandler<dim>::active_cell_iterator
@@ -87,7 +87,7 @@ namespace aspect
 
             in.position = fe_values.get_quadrature_points();
             in.strain_rate.resize(0);// we are not reading the viscosity
-            for (unsigned int i=0;i<quadrature.size();++i)
+            for (unsigned int i=0; i<quadrature.size(); ++i)
               {
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   in.composition[i][c] = prelim_composition_values[c][i];
@@ -106,7 +106,7 @@ namespace aspect
                                                                                        /*dof index within component=*/i);
 
                 vec_distributed(local_dof_indices[system_local_dof])
-                = out.densities[i];
+                  = out.densities[i];
               }
           }
 

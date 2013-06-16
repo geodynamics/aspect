@@ -79,9 +79,9 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::thermal_diffusivity (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const
+                                         const double pressure,
+                                         const std::vector<double> &compositional_fields,
+                                         const Point<dim> &position) const
     {
       //TODO: surely this could be done in a more efficient way?
       //      we could move this to helper_functions.compute_thermal_diffusivity()?

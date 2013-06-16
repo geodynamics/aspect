@@ -86,7 +86,7 @@ namespace aspect
             cell->get_dof_indices (local_dof_indices);
             in.position = fe_values.get_quadrature_points();
             in.strain_rate.resize(0);// we are not reading the viscosity
-            for (unsigned int i=0;i<quadrature.size();++i)
+            for (unsigned int i=0; i<quadrature.size(); ++i)
               {
                 in.temperature[i] = temperature_values[i];
                 in.pressure[i] = pressure_values[i];

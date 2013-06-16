@@ -66,7 +66,7 @@ namespace aspect
       std::map<types::boundary_id, double> local_boundary_fluxes;
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(quadrature.size(),
-          this->n_compositional_fields());
+                                                                     this->n_compositional_fields());
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(quadrature.size());
 
       typename DoFHandler<dim>::active_cell_iterator
@@ -100,7 +100,7 @@ namespace aspect
 
                 in.position = fe_face_values.get_quadrature_points();
                 in.strain_rate.resize(0); // we do not need the viscosity
-                for (unsigned int i=0;i<quadrature.size();++i)
+                for (unsigned int i=0; i<quadrature.size(); ++i)
                   {
                     for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                       in.composition[i][c] = composition_values[c][i];

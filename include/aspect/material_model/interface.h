@@ -616,99 +616,99 @@ namespace aspect
     template <int dim>
     class InterfaceCompatibility: public Interface<dim>
     {
-    public:
-      /**
-       * Return the viscosity $\eta$ of the model as a function of temperature,
-       * pressure, composition, strain rate, and position.
-      *
-      * @note The strain rate given as the third argument of this function
-      * is computed as $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u +
-      * \nabla \mathbf u^T)$, regardless of whether the model is
-      * compressible or not. This is relevant since in some other contexts,
-      * the strain rate in the compressible case is computed as
-      * $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u +
-      * \nabla \mathbf u^T) - \frac 13 \nabla \cdot \mathbf u \mathbf 1$.
-       */
-      virtual double viscosity (const double                  temperature,
-                                const double                  pressure,
-                                const std::vector<double>    &compositional_fields,
-                                const SymmetricTensor<2,dim> &strain_rate,
-                                const Point<dim>             &position) const=0;
+      public:
+        /**
+         * Return the viscosity $\eta$ of the model as a function of temperature,
+         * pressure, composition, strain rate, and position.
+        *
+        * @note The strain rate given as the third argument of this function
+        * is computed as $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u +
+        * \nabla \mathbf u^T)$, regardless of whether the model is
+        * compressible or not. This is relevant since in some other contexts,
+        * the strain rate in the compressible case is computed as
+        * $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u +
+        * \nabla \mathbf u^T) - \frac 13 \nabla \cdot \mathbf u \mathbf 1$.
+         */
+        virtual double viscosity (const double                  temperature,
+                                  const double                  pressure,
+                                  const std::vector<double>    &compositional_fields,
+                                  const SymmetricTensor<2,dim> &strain_rate,
+                                  const Point<dim>             &position) const=0;
 
 
-      /**
-       * Return the density $\rho$ of the model as a function of temperature,
-       * pressure and position.
-       */
-      virtual double density (const double      temperature,
-                              const double      pressure,
-                              const std::vector<double> &compositional_fields,
-                              const Point<dim> &position) const=0;
+        /**
+         * Return the density $\rho$ of the model as a function of temperature,
+         * pressure and position.
+         */
+        virtual double density (const double      temperature,
+                                const double      pressure,
+                                const std::vector<double> &compositional_fields,
+                                const Point<dim> &position) const=0;
 
-      /**
-       * Return the compressibility coefficient
-       * $\frac 1\rho \frac{\partial\rho}{\partial p}$ of the model as a
-       * function of temperature, pressure and position.
-       */
-      virtual double compressibility (const double temperature,
-                                      const double pressure,
+        /**
+         * Return the compressibility coefficient
+         * $\frac 1\rho \frac{\partial\rho}{\partial p}$ of the model as a
+         * function of temperature, pressure and position.
+         */
+        virtual double compressibility (const double temperature,
+                                        const double pressure,
+                                        const std::vector<double> &compositional_fields,
+                                        const Point<dim> &position) const=0;
+
+        /**
+         * Return the specific heat $C_p$ of the model as a function of temperature,
+         * pressure and position.
+         */
+        virtual double specific_heat (const double      temperature,
+                                      const double      pressure,
                                       const std::vector<double> &compositional_fields,
                                       const Point<dim> &position) const=0;
 
-      /**
-       * Return the specific heat $C_p$ of the model as a function of temperature,
-       * pressure and position.
-       */
-      virtual double specific_heat (const double      temperature,
-                                    const double      pressure,
-                                    const std::vector<double> &compositional_fields,
-                                    const Point<dim> &position) const=0;
+        /**
+         * Return the thermal expansion coefficient $\alpha$ of the model,
+         * possibly as a function of temperature, pressure and position.
+        * The thermal expansion coefficient is defined as
+        * $\alpha=-\frac{1}{\rho} \frac{d\rho}{dT}$. Since the density
+        * <i>decreases</i> with temperature for almost all models,
+        * $\alpha$ is usually positive.
+        *
+        * This function has a default implementation that computes $\alpha$
+        * through its definition above, using the density() and density_derivative()
+        * functions.
+         */
+        virtual double thermal_expansion_coefficient (const double      temperature,
+                                                      const double      pressure,
+                                                      const std::vector<double> &compositional_fields,
+                                                      const Point<dim> &position) const=0;
 
-      /**
-       * Return the thermal expansion coefficient $\alpha$ of the model,
-       * possibly as a function of temperature, pressure and position.
-      * The thermal expansion coefficient is defined as
-      * $\alpha=-\frac{1}{\rho} \frac{d\rho}{dT}$. Since the density
-      * <i>decreases</i> with temperature for almost all models,
-      * $\alpha$ is usually positive.
-      *
-      * This function has a default implementation that computes $\alpha$
-      * through its definition above, using the density() and density_derivative()
-      * functions.
-       */
-      virtual double thermal_expansion_coefficient (const double      temperature,
-                                                    const double      pressure,
-                                                    const std::vector<double> &compositional_fields,
-                                                    const Point<dim> &position) const=0;
-
-      /**
-       * Return the thermal conductivity $k$ of the model as a function of temperature,
-       * pressure and position. The units of $k$ are $\textrm{W} / \textrm{m} / \textrm{K}$
-       * in 3d, and $\textrm{W} / \textrm{K}$ in 2d. This is easily see by considering that
-       * $k$ is the heat flux density (i.e., Watts per unit area perpendicular to the heat
-       * flux direction) per unit temperature gradient (i.e., Kelvin per meter). The unit
-       * area has units $m^2$ in 3d, but only $m$ in 2d, yielding the stated units for $k$.
-       *
-       * Note that the thermal <i>conductivity</i> $k$ is related to the thermal
-       * <i>diffusivity</i> $\kappa$ as $k = \kappa \rho c_p$. In essence, the conductivity
-       * relates to the question of how thermal energy diffuses whereas the diffusivity
-       * relates to the question of how the temperature diffuses. $\kappa$ has units
-       * $\textrm{m}^2/\textrm{s}$.
-       */
-      virtual double thermal_conductivity (const double temperature,
-                                           const double pressure,
-                                           const std::vector<double> &compositional_fields,
-                                           const Point<dim> &position) const=0;
+        /**
+         * Return the thermal conductivity $k$ of the model as a function of temperature,
+         * pressure and position. The units of $k$ are $\textrm{W} / \textrm{m} / \textrm{K}$
+         * in 3d, and $\textrm{W} / \textrm{K}$ in 2d. This is easily see by considering that
+         * $k$ is the heat flux density (i.e., Watts per unit area perpendicular to the heat
+         * flux direction) per unit temperature gradient (i.e., Kelvin per meter). The unit
+         * area has units $m^2$ in 3d, but only $m$ in 2d, yielding the stated units for $k$.
+         *
+         * Note that the thermal <i>conductivity</i> $k$ is related to the thermal
+         * <i>diffusivity</i> $\kappa$ as $k = \kappa \rho c_p$. In essence, the conductivity
+         * relates to the question of how thermal energy diffuses whereas the diffusivity
+         * relates to the question of how the temperature diffuses. $\kappa$ has units
+         * $\textrm{m}^2/\textrm{s}$.
+         */
+        virtual double thermal_conductivity (const double temperature,
+                                             const double pressure,
+                                             const std::vector<double> &compositional_fields,
+                                             const Point<dim> &position) const=0;
 
 
-      /**
-       * The evaluate() function is implemented to call the individual
-       * functions in this class, so there is no need to implement this
-       * in your material model derived from InterfaceCompatibility.
-       * @param in
-       * @param out
-       */
-      void evaluate(const struct Interface<dim>::MaterialModelInputs &in, struct Interface<dim>::MaterialModelOutputs &out) const;
+        /**
+         * The evaluate() function is implemented to call the individual
+         * functions in this class, so there is no need to implement this
+         * in your material model derived from InterfaceCompatibility.
+         * @param in
+         * @param out
+         */
+        void evaluate(const struct Interface<dim>::MaterialModelInputs &in, struct Interface<dim>::MaterialModelOutputs &out) const;
 
     };
 

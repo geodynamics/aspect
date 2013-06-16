@@ -746,7 +746,7 @@ namespace aspect
        *    std::vector<double> & output)
        */
       template<class FUNCTOR>
-      void compute_depth_average(std::vector<double> &values, FUNCTOR & fctr) const;
+      void compute_depth_average(std::vector<double> &values, FUNCTOR &fctr) const;
 
       /**
        * Compute a depth average of the current temperature/composition. The function

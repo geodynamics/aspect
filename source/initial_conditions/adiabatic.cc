@@ -73,13 +73,13 @@ namespace aspect
       const double surface_cooling_temperature = age_top > 0.0 ?
                                                  (T_surface - adiabatic_surface_temperature) *
                                                  erfc(this->geometry_model->depth(position) /
-                                                           (2 * sqrt(kappa * age_top)))
+                                                      (2 * sqrt(kappa * age_top)))
                                                  : 0.0;
       const double bottom_heating_temperature = age_bottom > 0.0 ?
                                                 (T_bottom - adiabatic_bottom_temperature + subadiabaticity)
                                                 * erfc((this->geometry_model->maximal_depth()
-                                                             - this->geometry_model->depth(position)) /
-                                                            (2 * sqrt(kappa * age_bottom)))
+                                                        - this->geometry_model->depth(position)) /
+                                                       (2 * sqrt(kappa * age_bottom)))
                                                 : 0.0;
 
       // set the initial temperature perturbation

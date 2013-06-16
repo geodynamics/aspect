@@ -75,7 +75,7 @@ namespace aspect
       // If the length of the simulation time covered in the list is shorter than the
       // specified parameter, we must continue the simulation
       const double adjusted_time
-      = time_length * (this->convert_output_to_years() ? year_in_seconds : 1);
+        = time_length * (this->convert_output_to_years() ? year_in_seconds : 1);
       if ((time_rmsvel.size() == 0)
           ||
           (time_rmsvel.back().first - time_rmsvel.front().first < adjusted_time))

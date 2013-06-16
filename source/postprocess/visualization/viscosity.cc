@@ -59,11 +59,11 @@ namespace aspect
         Assert (duh[0].size() == dim+2+this->n_compositional_fields(),ExcInternalError());
 
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_quadrature_points,
-            this->n_compositional_fields());
+                                                                       this->n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_quadrature_points);
 
         in.position = evaluation_points;
-        for (unsigned int q=0;q<n_quadrature_points;++q)
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             Tensor<2,dim> grad_u;
             for (unsigned int d=0; d<dim; ++d)

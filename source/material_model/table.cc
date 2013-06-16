@@ -425,12 +425,12 @@ namespace aspect
 
       const double viscosity_diffusion = std::min(1e22,(1e0/prefactor_diffusion)*
                                                   std::exp((activation_energy_diffusion+
-                                                       activation_volume_diffusion*pressure)/(R*temperature)));
+                                                            activation_volume_diffusion*pressure)/(R*temperature)));
       const double viscosity_dislocation = std::min(1e22,std::pow(prefactor_dislocation,-1e0/stress_exponent)*
                                                     std::pow(strain_rate.norm(),(1e0-stress_exponent)/
                                                              stress_exponent)*
                                                     std::exp((activation_energy_dislocation+
-                                                         activation_volume_dislocation*pressure)/(stress_exponent*R*temperature)));
+                                                              activation_volume_dislocation*pressure)/(stress_exponent*R*temperature)));
 
       return std::max(1e17,viscosity_dislocation)/std::max(1e17,viscosity_diffusion);
     }
