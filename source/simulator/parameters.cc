@@ -44,7 +44,27 @@ namespace aspect
   {
     prm.declare_entry ("Dimension", "2",
                        Patterns::Integer (2,4),
-                       "The number of space dimensions you want to run this program in.");
+                       "The number of space dimensions you want to run this program in. "
+                       "ASPECT can run in 2 and 3 space dimensions.");
+    prm.declare_entry ("Additional shared libraries", "",
+                       Patterns::List (Patterns::FileName()),
+                       "A list of names of additional shared libraries that should be loaded "
+                       "upon starting up the program. The names of these files can contain absolute "
+                       "or relative paths (relative to the directory in which you call ASPECT). "
+                       "In fact, file names that are do not contain any directory "
+                       "information (i.e., only the name of a file such as <myplugin.so> "
+                       "will not be found if they are not located in one of the directories "
+                       "listed in the LD_LIBRARY_PATH environment variable. In order "
+                       "to load a library in the current directory, use <./myplugin.so> "
+                       "instead."
+                       "\n\n"
+                       "The typical use of this parameter is to so that you can implement "
+                       "additional plugins in your own directories, rather than in the ASPECT "
+                       "source directories. You can then simply compile these plugins into a "
+                       "shared library without having to re-compile all of ASPECT. See the "
+                       "section of the manual discussing writing extensions for more "
+                       "information on how to compile additional files into a shared "
+                       "library".");
 
     prm.declare_entry ("Resume computation", "false",
                        Patterns::Bool (),
@@ -59,8 +79,8 @@ namespace aspect
     prm.declare_entry ("Max nonlinear iterations", "10",
                        Patterns::Integer (0),
                        "The maximal number of nonlinear iterations to be performed.");
-   
-     prm.declare_entry ("Start time", "0",
+
+    prm.declare_entry ("Start time", "0",
                        Patterns::Double (),
                        "The start time of the simulation. Units: years if the "
                        "'Use years in output instead of seconds' parameter is set; "

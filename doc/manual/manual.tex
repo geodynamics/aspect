@@ -4301,8 +4301,7 @@ We will discuss the way this is achieved in Sections~\ref{sec:plugins} and
 arguably more involved. We will discuss this in Section
 \ref{sec:extending-solver}.
 
-In either of these two cases, you will need to extend the source code of the
-program. Since \aspect{} is written in C++ using the \dealii{} library, you
+Since \aspect{} is written in C++ using the \dealii{} library, you
 will have to be proficient in C++. You will also likely have
 to familiarize yourself with this library for which there is an extensive
 amount of documentation:
@@ -4326,6 +4325,12 @@ amount of documentation:
   \url{http://www.dealii.org/developer/doxygen/deal.II/step_31.html} and
   \url{http://www.dealii.org/developer/doxygen/deal.II/step_32.html} from
   which \aspect{} directly descends.
+\item An overview of many general approaches to numerical methods, but also
+  a discussion of \dealii{} and tools we use in programming, debugging and
+  visualizing data are given in Wolfgang Bangerth's video lectures. These
+  are linked from the \dealii{} website at \url{http://www.dealii.org/}
+  and directly available at
+  \url{http://www.math.tamu.edu/~bangerth/videos.html}.
 \item The \dealii{} Frequently Asked Questions at
   \url{http://dealii.sourceforge.net/index.php/Deal.II_Questions_and_Answers}
   that also have extensive sections on developing code with \dealii{} as well
@@ -4623,6 +4628,80 @@ has a significant number of variables that can be used in this way, i.e.,
 they provide symbolic names for things one frequently has to do and
 that would otherwise require implicit knowledge of things such as the
 order of variables, etc.
+
+
+\subsection{How to write a plugin}
+
+Before discussing what each kind of plugin actually has to implement (see the
+next subsection), let us briefly go over what you actually have to do when
+implementing a new plugin. Essentially, the following steps are all you need to
+do:
+\begin{itemize}
+  \item Create a file, say \texttt{my\_plugin.cc} that contains the declaration
+  of the class you want to implement. This class must be derived from one of the
+  \texttt{Interface} classes we will discuss below. The file also needs to
+  contain the implementation of all member functions of your class.
+  
+  As discussed above, it is possible -- but not necessary -- to split this file
+  into two: a header file, say \texttt{my\_plugin.h}, and the
+  \texttt{my\_plugin.cc} file. We do this for all the existing plugins in
+  \aspect{} so that the documentation of these plugins shows up in the
+  doxygen-generated documentation. However, for your own plugins, there is
+  typically no need for this split. The only occasion where this would be useful
+  is if some plugin actually makes use of a different plugin (e.g., the
+  implementation of a gravity model of your own may want to query some
+  specifics of a geometry model you also implemented); in that case the
+  \textit{using} plugin needs to be able to see the declaration of the class of
+  the \textit{used} plugin, and for this you will need to put the declaration of
+  the latter into a header file.
+
+  \item At the bottom of the \texttt{my\_plugin.cc} file, put a statement that
+  instantiates the plugin, documents it, and makes it available to the parameter
+  file handlers by registering it. This is always done using one of the
+  \texttt{ASPECT\_REGISTER\_*} macros that will be discussed in the next
+  subsections; take a look at how they are used in the existing plugins in the
+  \aspect{} source files.
+  
+  \item You need to compile the file. There are two ways by which this can be
+  achieved:
+  \begin{itemize}
+    \item Put the \texttt{my\_plugin.cc} into one of the \aspect{} source
+    directories and list it in the \texttt{source/CMakeLists.txt} file to ensure
+    that it actually gets compiled. This approach has the advantage that you do
+    not need to worry much about how the file actually gets compiled. On the
+    other hand, every time you modify the file, calling \texttt{make} requires
+    not only compiling this one file, but also link \aspect{}. Furthermore, when
+    you upgrade from one version of \aspect{} to another, you need to remember
+    to copy the \texttt{my\_plugin.cc} file.
+    
+    \item Put the  \texttt{my\_plugin.cc} file into a directory of your choice
+    and compile it into a shared library yourself. This may be as easy as
+    calling
+    \begin{verbatim}
+ g++ -I/path/to/aspect/headers -I/path/to/deal.II/headers \backslash
+     -fPIC -shared my_plugin.cc -o my_plugin.so
+    \end{verbatim}
+    on Linux, but the command may be different on other systems. Now you only
+    need to tell \aspect{} to load this shared library at startup so that the
+    plugin becomes available at run time and can be selected from the input
+    parameter file. This is done using the \texttt{Additional shared libraries}
+    \index[prmindex]{Additional shared libraries}
+    \index[prmindexfull]{Additional shared libraries}
+    parameter in the input file, see Section~\ref{parameters:global}. This
+    approach has the upside that you can keep all files that define new plugins
+    in your own directories where you also run the simulations, also making it
+    easier to keep around your plugins as you upgrade your \aspect{}
+    installation. On the other hand, compiling the file into a shared library is
+    a bit more that you need to do yourself. Nevertheless, this is the preferred
+    approach.
+  \end{itemize}
+\end{itemize}
+ 
+\note{If you choose to compile your plugins into a shared library yourself, you
+  will need to recompile them everytime you upgrade your \aspect{} installation
+  since we do not guarantee that the \aspect{} application binary interface
+  (ABI) will remain stable, even if it may not be necessary to actually change
+  anything in the \textit{implementation} of your plugin.}
 
 
 \subsection{Materials, geometries, gravitation and other plugin types}
