@@ -64,7 +64,7 @@ namespace aspect
                        "shared library without having to re-compile all of ASPECT. See the "
                        "section of the manual discussing writing extensions for more "
                        "information on how to compile additional files into a shared "
-                       "library".");
+                       "library.");
 
                        prm.declare_entry ("Resume computation", "false",
                        Patterns::Bool (),
