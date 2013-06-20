@@ -1031,11 +1031,15 @@ namespace aspect
         {
           // solve the temperature system once...
           assemble_advection_system (TemperatureOrComposition::temperature());
+          build_advection_preconditioner (TemperatureOrComposition::temperature (),
+                                          T_preconditioner);
           solve_advection(TemperatureOrComposition::temperature());
 
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
               assemble_advection_system (TemperatureOrComposition::composition(c));
+              build_advection_preconditioner (TemperatureOrComposition::composition (c),
+                                              C_preconditioner);
               solve_advection(TemperatureOrComposition::composition(c));
             }
 
