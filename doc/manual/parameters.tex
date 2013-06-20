@@ -3,6 +3,23 @@
 
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Additional shared libraries}
+
+
+\index[prmindex]{Additional shared libraries}
+\index[prmindexfull]{Additional shared libraries}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of names of additional shared libraries that should be loaded upon starting up the program. The names of these files can contain absolute or relative paths (relative to the directory in which you call ASPECT). In fact, file names that are do not contain any directory information (i.e., only the name of a file such as <myplugin.so> will not be found if they are not located in one of the directories listed in the LD\_LIBRARY\_PATH environment variable. In order to load a library in the current directory, use <./myplugin.so> instead.
+
+The typical use of this parameter is to so that you can implement additional plugins in your own directories, rather than in the ASPECT source directories. You can then simply compile these plugins into a shared library without having to re-compile all of ASPECT. See the section of the manual discussing writing extensions for more information on how to compile additional files into a shared library.
+
+
+{\it Possible values:} [List list of <[FileName (Type: input)]> of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Adiabatic surface temperature}
 
 
@@ -30,7 +47,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} 1.0
 
 
-{\it Description:} In computations, the time step $k$ is chosen according to $k = c \min_K \frac{h_K}{\|u\|_{\infty,K} p_T}$ where $h_K$ is the diameter of cell $K$, and the denominator is the maximal magnitude of the velocity on cell $K$ times the polynomial degree $p_T$ of the temperature discretization. The dimensionless constant $c$ is called the CFL number in this program. For time discretizations that have explicit components, $c$ must be less than a constant that depends on the details of the time discretization and that is no larger than one. On the other hand, for implicit discretizations such as the one chosen here, one can choose the time step as large as one wants (in particular, one can choose $c>1$) though a CFL number significantly larger than one will yield rather diffusive solutions. Units: None.
+{\it Description:} In computations, the time step $k$ is chosen according to $k = c \min_K \frac {h_K} {\|u\|_{\infty,K} p_T}$ where $h_K$ is the diameter of cell $K$, and the denominator is the maximal magnitude of the velocity on cell $K$ times the polynomial degree $p_T$ of the temperature discretization. The dimensionless constant $c$ is called the CFL number in this program. For time discretizations that have explicit components, $c$ must be less than a constant that depends on the details of the time discretization and that is no larger than one. On the other hand, for implicit discretizations such as the one chosen here, one can choose the time step as large as one wants (in particular, one can choose $c>1$) though a CFL number significantly larger than one will yield rather diffusive solutions. Units: None.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -60,7 +77,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} 2
 
 
-{\it Description:} The number of space dimensions you want to run this program in.
+{\it Description:} The number of space dimensions you want to run this program in. ASPECT can run in 2 and 3 space dimensions.
 
 
 {\it Possible values:} [Integer range 2...4 (inclusive)]
@@ -96,21 +113,21 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 
 {\it Possible values:} [Double 0...1 (inclusive)]
-\item {\it Parameter name:} {\tt Nonlinear iteration}
+\item {\it Parameter name:} {\tt Max nonlinear iterations}
 
 
-\index[prmindex]{Nonlinear iteration}
-\index[prmindexfull]{Nonlinear iteration}
-{\it Value:} false
+\index[prmindex]{Max nonlinear iterations}
+\index[prmindexfull]{Max nonlinear iterations}
+{\it Value:} 10
 
 
-{\it Default:} false
+{\it Default:} 10
 
 
-{\it Description:} A flag indicating whether the Stokes+Advection equation should be solved once per time step (false) or resolved using a fixed-point iteration (true).
+{\it Description:} The maximal number of nonlinear iterations to be performed.
 
 
-{\it Possible values:} [Bool]
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
 \item {\it Parameter name:} {\tt Nonlinear solver scheme}
 
 
@@ -122,10 +139,10 @@ In practice, you should choose the value of this parameter to be so that if you 
 {\it Default:} IMPES
 
 
-{\it Description:} The kind of scheme used to resolve the nonlinearity in the system. 'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme in which ones solves the temperatures and Stokes equations exactly once per time step, one after the other. The 'iterated IMPES' scheme iterates this decoupled approach by alternating the solution of the temperature and Stokes systems. The 'iterated Stokes' scheme solves the temperature equation once at the beginning of each time step and then iterates out the solution of the Stokes equation.
+{\it Description:} The kind of scheme used to resolve the nonlinearity in the system. 'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme in which ones solves the temperatures and Stokes equations exactly once per time step, one after the other. The 'iterated IMPES' scheme iterates this decoupled approach by alternating the solution of the temperature and Stokes systems. The 'iterated Stokes' scheme solves the temperature equation once at the beginning of each time step and then iterates out the solution of the Stokes equation. The 'Stokes only' scheme only solves the Stokes system and ignores compositions and the temperature equation (careful, the material model must not depend on the temperature; mostly useful for Stokes benchmarks).
 
 
-{\it Possible values:} [Selection IMPES|iterated IMPES|iterated Stokes ]
+{\it Possible values:} [Selection IMPES|iterated IMPES|iterated Stokes|Stokes only ]
 \item {\it Parameter name:} {\tt Number of cheap Stokes solver steps}
 
 
@@ -781,11 +798,11 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Description:} Whether to use a Stokes discretization that is locally conservative at the expense of a larger number of degrees of freedom (true), or to go with a cheaper discretization that does not locally conserve mass, although it is globally conservative (false).
 
-When using a locally conservative discretization, the finite element space for the pressure is discontinuous between cells and is the polynomial space $P_{-q}$ of polynomials of degree $q$ in each variable separately. Here, $q$ is one less than the value given in the parameter ``Stokes velocity polynomial degree''. As a consequence of choosing this element, it can be shown if the medium is considered incompressible that the computed discrete velocity field $\mathbf u_h$ satisfies the property $\int_{\partial K} \mathbf u_h \cdot \mathbf n = 0$ for every cell $K$, i.e., for each cell inflow and outflow exactly balance each other as one would expect for an incompressible medium. In other words, the velocity field is locally conservative.
+When using a locally conservative discretization, the finite element space for the pressure is discontinuous between cells and is the polynomial space $P_ {-q}$ of polynomials of degree $q$ in each variable separately. Here, $q$ is one less than the value given in the parameter ``Stokes velocity polynomial degree''. As a consequence of choosing this element, it can be shown if the medium is considered incompressible that the computed discrete velocity field $\mathbf u_h$ satisfies the property $\int_ {\partial K} \mathbf u_h \cdot \mathbf n = 0$ for every cell $K$, i.e., for each cell inflow and outflow exactly balance each other as one would expect for an incompressible medium. In other words, the velocity field is locally conservative.
 
 On the other hand, if this parameter is set to ``false'', then the finite element space is chosen as $Q_q$. This choice does not yield the local conservation property but has the advantage of requiring fewer degrees of freedom. Furthermore, the error is generally smaller with this choice.
 
-For an in-depth discussion of these issues and a quantitative evaluation of the different choices, see \cite{KHB12}.
+For an in-depth discussion of these issues and a quantitative evaluation of the different choices, see \cite {KHB12} .
 
 
 {\it Possible values:} [Bool]
@@ -823,7 +840,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 0.078
 
 
-{\it Description:} The $\beta$ factor in the artificial viscosity stabilization. An appropriate value for 2d is 0.078 and 0.117 for 3d. (For historical reasons, the name used here is different from the one used in the 2012 GJI paper by Kronbichler, Heister and Bangerth that describes ASPECT. This parameter corresponds to the factor $\alpha_\text{max}$ in the formulas following equation (15) of the paper. After further experiments, we have also chosen to use a different value than described there: It can be chosen as stated there for uniformly refined meshes, but it needs to be chosen larger if the mesh has cells that are not squares or cubes.) Units: None.
+{\it Description:} The $\beta$ factor in the artificial viscosity stabilization. An appropriate value for 2d is 0.078 and 0.117 for 3d. (For historical reasons, the name used here is different from the one used in the 2012 GJI paper by Kronbichler, Heister and Bangerth that describes ASPECT. This parameter corresponds to the factor $\alpha_\text {max}$ in the formulas following equation (15) of the paper. After further experiments, we have also chosen to use a different value than described there: It can be chosen as stated there for uniformly refined meshes, but it needs to be chosen larger if the mesh has cells that are not squares or cubes.) Units: None.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -1414,8 +1431,10 @@ If the function you are describing represents a vector-valued function with mult
 
 `Tan Gurnis': A simple compressible material model based on a benchmark from the paper of Tan/Gurnis (2007). This does not use the temperature equation, but has a hardcoded temperature.
 
+`timo': A simple material model that has constant values for all coefficients but the density and viscosity. This model uses the formulation that assumes an incompressible medium despite the fact that the density follows the law $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$. The temperature dependency of viscosity is  switched off by default and follows the formula$\eta(T)=\eta_0*e^{\eta_T*\Delta T / T_{\text{ref}})}$.The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Simple model'.
 
-{\it Possible values:} [Selection SolCx|SolKz|Inclusion|simple|Steinberger|table|Tan Gurnis ]
+
+{\it Possible values:} [Selection SolCx|SolKz|Inclusion|simple|Steinberger|table|Tan Gurnis|timo ]
 \end{itemize}
 
 
@@ -2333,6 +2352,147 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
 
+\subsection{Parameters in section \tt Material model/Timo model}
+\label{parameters:Material_20model/Timo_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Composition viscosity prefactor}
+
+
+\index[prmindex]{Composition viscosity prefactor}
+\index[prmindexfull]{Material model!Timo model!Composition viscosity prefactor}
+{\it Value:} 1.0
+
+
+{\it Default:} 1.0
+
+
+{\it Description:} A linear dependency of viscosity on composition. Dimensionless prefactor.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Density differential for compositional field 1}
+
+
+\index[prmindex]{Density differential for compositional field 1}
+\index[prmindexfull]{Material model!Timo model!Density differential for compositional field 1}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $kg/m^3/\textrm{unit change in composition}$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference density}
+
+
+\index[prmindex]{Reference density}
+\index[prmindexfull]{Material model!Timo model!Reference density}
+{\it Value:} 3300
+
+
+{\it Default:} 3300
+
+
+{\it Description:} Reference density $\rho_0$. Units: $kg/m^3$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference specific heat}
+
+
+\index[prmindex]{Reference specific heat}
+\index[prmindexfull]{Material model!Timo model!Reference specific heat}
+{\it Value:} 1250
+
+
+{\it Default:} 1250
+
+
+{\it Description:} The value of the specific heat $cp$. Units: $J/kg/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference temperature}
+
+
+\index[prmindex]{Reference temperature}
+\index[prmindexfull]{Material model!Timo model!Reference temperature}
+{\it Value:} 293
+
+
+{\it Default:} 293
+
+
+{\it Description:} The reference temperature $T_0$. Units: $K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal conductivity}
+
+
+\index[prmindex]{Thermal conductivity}
+\index[prmindexfull]{Material model!Timo model!Thermal conductivity}
+{\it Value:} 4.7
+
+
+{\it Default:} 4.7
+
+
+{\it Description:} The value of the thermal conductivity $k$. Units: $W/m/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal expansion coefficient}
+
+
+\index[prmindex]{Thermal expansion coefficient}
+\index[prmindexfull]{Material model!Timo model!Thermal expansion coefficient}
+{\it Value:} 2e-5
+
+
+{\it Default:} 2e-5
+
+
+{\it Description:} The value of the thermal expansion coefficient $\beta$. Units: $1/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal viscosity exponent}
+
+
+\index[prmindex]{Thermal viscosity exponent}
+\index[prmindexfull]{Material model!Timo model!Thermal viscosity exponent}
+{\it Value:} 0.0
+
+
+{\it Default:} 0.0
+
+
+{\it Description:} The temperature dependence of viscosity. Dimensionless exponent.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Viscosity}
+
+
+\index[prmindex]{Viscosity}
+\index[prmindexfull]{Material model!Timo model!Viscosity}
+{\it Value:} 5e24
+
+
+{\it Default:} 5e24
+
+
+{\it Description:} The value of the constant viscosity. Units: $kg/m/s$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
+
 \subsection{Parameters in section \tt Mesh refinement}
 \label{parameters:Mesh_20refinement}
 
@@ -2653,7 +2813,7 @@ Note that the no-slip boundary condition is a special case of the current one wh
 
 \index[prmindex]{List of postprocessors}
 \index[prmindexfull]{Postprocess!List of postprocessors}
-{\it Value:} 
+{\it Value:} all
 
 
 {\it Default:} all

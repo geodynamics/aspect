@@ -52,8 +52,9 @@ Topics for preview release:
   . remove TODO on the branch
   . update the version number on the front page of doc/manual.pdf (and also on trunk!)
   . remove the various table_* postprocessors
-  . update doc/manual/parameters.tex by running aspect-2d with an empty .prm
-    file and copying output/parameters.tex to doc/manual/parameters.tex
+  . update doc/manual/parameters.tex by running aspect with doc/manual/empty.prm
+    and copying output/parameters.tex to doc/manual/parameters.tex
+    and fix things like "tecplot_binary"->"tecplot\_binary"
   . run
       cd doc ; make manual.pdf
   . check in doc/manual.pdf

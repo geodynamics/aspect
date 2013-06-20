@@ -3,7 +3,6 @@ set CFL number                             = 1.0
 set Dimension                              = 2
 set End time                               = 1e12    # default: 1e8
 set Linear solver tolerance                = 1e-7
-set Nonlinear iteration                    = false
 set Nonlinear solver scheme                = IMPES
 set Output directory                       = output
 set Pressure normalization                 = surface
