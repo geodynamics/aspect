@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Added: new initial conditions for the Box geometry
+  to test different shaped inclusions.
+  <br>
+  (Ted Studley, 2013/06/20)
+
   <li>Removed: the parameter "Nonlinear iteration" was
   not used anywhere so it got removed. You might need
   to delete this line from your prm files.
