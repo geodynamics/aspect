@@ -71,11 +71,6 @@ namespace aspect
                        "A flag indicating whether the computation should be resumed from "
                        "a previously saved state (if true) or start from scratch (if false).");
 
-                         prm.declare_entry ("Nonlinear iteration", "false",
-                         Patterns::Bool (),
-                         "A flag indicating whether the Stokes+Advection equation should be solved "
-                         "once per time step (false) or resolved using a fixed-point iteration (true).");
-
                          prm.declare_entry ("Max nonlinear iterations", "10",
                          Patterns::Integer (0),
                          "The maximal number of nonlinear iterations to be performed.");

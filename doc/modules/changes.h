@@ -8,6 +8,12 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Removed: the parameter "Nonlinear iteration" was
+  not used anywhere so it got removed. You might need
+  to delete this line from your prm files.
+  <br>
+  (Timo Heister, 2013/06/20)
+
   <li>New: Nonlinear solver scheme = 'Stokes only' only
   solves the Stokes system and ignores temperature and
   compositional fields.
