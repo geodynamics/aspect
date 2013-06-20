@@ -74,8 +74,8 @@ ylabel('L2 error of u_x');
 xlim([4 256]);
 set(gca,'XTick',[8 16 32 64 128]);
 
-%ylim([5e-10 5e-5]);
-legend()
+ylim([5e-10 5e-5]);
+legend('tala a=0','tala a=2', 'ba')
 
 
 
