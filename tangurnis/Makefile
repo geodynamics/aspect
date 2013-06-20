@@ -7,7 +7,7 @@ tala_c: tala_c/vel_8.dat tala_c/vel_16.dat tala_c/vel_32.dat tala_c/vel_64.dat
 
 #vel: vel_8.dat vel_16.dat vel_32.dat vel_64.dat vel_128.dat
 
-%.dat: ../lib/aspect tan.prm
+%.dat: ../lib/aspect ba/tan.prm tala/tan.prm tala_c/tan.prm
 	@echo "- generating $@"
 	@cp $(*D)/tan.prm $@temp.prm
 	@ref=`echo $@ | tr -cd '[[:digit:]]' | awk '{print log($$1)/log(2)}'` && (echo  "subsection Mesh refinement"; echo "set Initial global refinement = $$ref ";echo "end";echo "set Output directory=tangurnis/$(*D)") >> $@temp.prm

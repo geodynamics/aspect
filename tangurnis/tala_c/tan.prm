@@ -24,6 +24,7 @@ set CFL number                             = 1.0
 set End time                               = 0.0001
 
 set Nonlinear iteration = true
+set Nonlinear solver scheme                = Stokes only
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
@@ -178,7 +179,10 @@ subsection Initial conditions
   # the temperature is perturbed by a single Gaussian added to an otherwise
   # spherically symmetric state. Additional parameters are read from the
   # parameter file in subsection 'Spherical gaussian perturbation'.
-  set Model name = Tan Gurnis
+  set Model name = function
+  subsection Function
+    set Function expression = sin(pi*y)*cos(pi*1*x)
+  end
 
 end
 
