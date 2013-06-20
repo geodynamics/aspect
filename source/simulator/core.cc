@@ -933,12 +933,23 @@ namespace aspect
            // update the Stokes matrix in every time step and so need to set
            // the following flag. if we change the Stokes matrix we also
            // need to update the Stokes preconditioner.
-           if (stokes_matrix_depends_on_solution() == true)
-             rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+           unsigned int iteration = 0;
 
-           assemble_stokes_system();
-           build_stokes_preconditioner();
-           solve_stokes();
+           do
+           {
+               if (stokes_matrix_depends_on_solution() == true)
+                 rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
+               assemble_stokes_system();
+               build_stokes_preconditioner();
+               const double stokes_residual = solve_stokes();
+               current_linearization_point = solution;
+
+               pcout << "stokes residual: " << stokes_residual << std::endl;
+               if (stokes_residual <1e-8)
+                 break;
+           }
+           while (iteration < parameters.max_nonlinear_iterations);
            break;
          }
         case NonlinearSolver::iterated_IMPES:
