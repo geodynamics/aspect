@@ -9,12 +9,16 @@ global beta_;
 
 Ra =-1;
 
+figure(1);clf;
+
+for method={'tala','tala_c', 'ba'}
+
 convx=[];
 convy=[];
 first=1;
 for j=[8 16 32 64 128]
     
-    vv=load(sprintf('vel_%d.dat',j));
+    vv=load(sprintf('%s/vel_%d.csv',method{1},j));
     if (first==1)
         first = 0;
         
@@ -24,6 +28,7 @@ for j=[8 16 32 64 128]
 
         k = vv(1,3)*pi; %1*pi
         a=vv(1,4); % 0 or 2
+        fprintf('computing Di=%i, gamma = %i\n', Di, gamm)
 
         tic
         %variables: u_z u_x eta_zz eta_xz
@@ -32,34 +37,47 @@ for j=[8 16 32 64 128]
         SOL = bvp4c(@myode,@bcfun,solinit, bvpset('RelTol', 1e-12,'AbsTol',1e-12));
         toc
     end
-    vv=vv(2:size(vv,1),:);
+    vv=vv(2:size(vv,1),:); %remove the first line
     
+    %now vv is an array with x,y,u_x,u_y,jxw,p,T
+    
+    %we are looking at u_x:
     dat_calc = vv(:,3);
-    dat_ref = interp1(SOL.x, SOL.y(2,:), vv(:,2)); % interpolate in 1d
+    % interpolate reference solution on points of the solution (in 1d)
+    dat_ref = interp1(SOL.x, SOL.y(2,:), vv(:,2)); 
     dat_ref = dat_ref .* sin(vv(:,1).*k); % and make it 2d
     
+    fprintf('%i,%i %i,%i\n',min(dat_calc),max(dat_calc),min(dat_ref),max(dat_ref))
+    
+    %scatter3(vv(:,1),vv(:,2),dat_ref,[],dat_ref)
+    %scatter3(vv(:,1),vv(:,2),vv(:,3),[],vv(:,3))
+    
+    %compute \sqrt(\int (u-u_ref)^2)
     l2error = sqrt( sum((dat_ref - dat_calc).^2 .* vv(:,5)) );
     
     convx=[convx; j];
     convy=[convy; l2error];
     
 end
+figure(1);
+loglog(convx,convy); hold on;
+convorder=polyfit(log(convx),log(convy),1);
+convorder=convorder(1);
 
-figure(1);clf;
-loglog(convx,convy,'o-');
+display([convx convy]);
+fprintf('convergence order: %f\n',-convorder);
+end
+
+
 xlabel('1/h');
 ylabel('L2 error of u_x');
 xlim([4 256]);
 set(gca,'XTick',[8 16 32 64 128]);
 
-ylim([5e-10 5e-5]);
+%ylim([5e-10 5e-5]);
+legend()
 
-convorder=polyfit(log(convx),log(convy),1);
-convorder=convorder(1);
 
-display([convx convy]);
-
-fprintf('convergence order: %f\n',-convorder);
 
 %  figure(2);clf;
 %  plot(dat_calc);hold on;
