@@ -8,6 +8,12 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: Nonlinear solver scheme = 'Stokes only' only
+  solves the Stokes system and ignores temperature and
+  compositional fields.
+  <br>
+  (Timo Heister, 2013/06/20)
+
   <li>New: If the underlying deal.II version supports this,
   then VTK or VTU files now contain information about the time
   and time step number corresponding to each file, and this

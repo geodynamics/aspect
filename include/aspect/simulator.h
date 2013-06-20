@@ -100,7 +100,8 @@ namespace aspect
         {
           IMPES,
           iterated_IMPES,
-          iterated_Stokes
+          iterated_Stokes,
+          Stokes_only
         };
       };
 

@@ -926,7 +926,21 @@ namespace aspect
 
           break;
         }
+        case NonlinearSolver::Stokes_only:
+         {
+           // the Stokes matrix depends on the viscosity. if the viscosity
+           // depends on other solution variables, then after we need to
+           // update the Stokes matrix in every time step and so need to set
+           // the following flag. if we change the Stokes matrix we also
+           // need to update the Stokes preconditioner.
+           if (stokes_matrix_depends_on_solution() == true)
+             rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
+           assemble_stokes_system();
+           build_stokes_preconditioner();
+           solve_stokes();
+           break;
+         }
         case NonlinearSolver::iterated_IMPES:
         {
           double initial_temperature_residual = 0;

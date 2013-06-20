@@ -127,7 +127,7 @@ namespace aspect
                        "heat conduction in determining the length of each time step.");
 
                        prm.declare_entry ("Nonlinear solver scheme", "IMPES",
-                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes"),
+                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only"),
                        "The kind of scheme used to resolve the nonlinearity in the system. "
                        "'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme "
                        "in which ones solves the temperatures and Stokes equations exactly "
@@ -135,12 +135,13 @@ namespace aspect
                        "iterates this decoupled approach by alternating the solution of the "
                        "temperature and Stokes systems. The 'iterated Stokes' scheme solves "
                        "the temperature equation once at the beginning of each time step "
-                       "and then iterates out the solution of the Stokes equation.");
+                       "and then iterates out the solution of the Stokes equation. The 'Stokes only' "
+                       "scheme only solves the Stokes system and ignores compositions and the "
+                       "temperature equation (careful, the material model must not depend on "
+                       "the temperature; mostly useful for Stokes benchmarks).");
 
                        prm.declare_entry ("Pressure normalization", "surface",
-                       Patterns::Selection ("surface|"
-                       "volume|"
-                       "no"),
+                       Patterns::Selection ("surface|volume|no"),
                        "If and how to normalize the pressure after the solution step. "
                        "This is necessary because depending on boundary conditions, "
                        "in many cases the pressure is only determined by the model "
@@ -502,6 +503,8 @@ namespace aspect
                                                                                                      nonlinear_solver = NonlinearSolver::iterated_IMPES;
                                                                                                      else if (prm.get ("Nonlinear solver scheme") == "iterated Stokes")
                                                                                                      nonlinear_solver = NonlinearSolver::iterated_Stokes;
+                                                                                                     else if (prm.get ("Nonlinear solver scheme") == "Stokes only")
+                                                                                                     nonlinear_solver = NonlinearSolver::Stokes_only;
                                                                                                      else
                                                                                                      AssertThrow (false, ExcNotImplemented());
 
