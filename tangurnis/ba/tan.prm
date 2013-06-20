@@ -23,7 +23,6 @@ set CFL number                             = 1.0
 # instead of seconds' parameter is set; seconds otherwise.
 set End time                               = 0.0001
 
-set Nonlinear iteration = true
 set Nonlinear solver scheme                = Stokes only
 
 # The name of the directory into which all output files should be placed. This
