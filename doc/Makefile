@@ -25,7 +25,7 @@ aspect.tag: $(aspect-files) options.dox Makefile
 	@echo "=====aspect=================== Generating documentation"
 	@echo '@INCLUDE = options.dox'                                > aspect.dox
 	@echo 'DOT_IMAGE_FORMAT = png'                               >> aspect.dox
-	@if wget http://www.dealii.org/developer/doxygen/deal.tag ; then \
+	@if wget -N http://www.dealii.org/developer/doxygen/deal.tag ; then \
 	  echo 'Cross-linking deal.II documentation from the ASPECT documentation' ; \
 	  echo 'TAGFILES = deal.tag=http://www.dealii.org/developer/doxygen/deal.II'          >> aspect.dox ; \
 	 fi
