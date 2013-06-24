@@ -89,8 +89,8 @@ namespace aspect
            * Used to avoid unnecessary copying
            * of values.
            */
-          dealii::Table<2,Tensor<1,2> > * velocity_values;
-          dealii::Table<2,Tensor<1,2> > * old_velocity_values;
+          dealii::Table<2,Tensor<1,2> > *velocity_values;
+          dealii::Table<2,Tensor<1,2> > *old_velocity_values;
 
           /**
            * Distances between adjacent point in the Lat/Lon grid

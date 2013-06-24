@@ -99,7 +99,7 @@ namespace aspect
 
   template <int dim>
   unsigned int
-  Simulator<dim>::TemperatureOrComposition::block_index(const Introspection<dim> & introspection) const
+  Simulator<dim>::TemperatureOrComposition::block_index(const Introspection<dim> &introspection) const
   {
     if (this->is_temperature())
       return introspection.block_indices.temperature;
@@ -772,8 +772,8 @@ namespace aspect
 
         void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
                         const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
-                        FEValues<dim> & fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> & output)
+                        FEValues<dim> &fe_values,
+                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
         {
           fe_values[field_].get_function_values (solution, output);
         }
@@ -817,8 +817,8 @@ namespace aspect
 
         void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
                         const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
-                        FEValues<dim> & fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> & output)
+                        FEValues<dim> &fe_values,
+                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
         {
           output = out.viscosities;
         }
@@ -854,8 +854,8 @@ namespace aspect
 
         void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
                         const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
-                        FEValues<dim> & fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> & output)
+                        FEValues<dim> &fe_values,
+                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
@@ -882,7 +882,7 @@ namespace aspect
     class FunctorDepthAverageSinkingVelocity
     {
       public:
-        FunctorDepthAverageSinkingVelocity(const FEValuesExtractors::Vector &field, GravityModel::Interface<dim> * gravity)
+        FunctorDepthAverageSinkingVelocity(const FEValuesExtractors::Vector &field, GravityModel::Interface<dim> *gravity)
           : field_(field), gravity_(gravity) {}
 
         bool need_material_properties()
@@ -897,8 +897,8 @@ namespace aspect
 
         void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
                         const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
-                        FEValues<dim> & fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> & output)
+                        FEValues<dim> &fe_values,
+                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
@@ -910,7 +910,7 @@ namespace aspect
 
         std::vector<Tensor<1,dim> > velocity_values;
         const FEValuesExtractors::Vector field_;
-        GravityModel::Interface<dim> * gravity_;
+        GravityModel::Interface<dim> *gravity_;
     };
   }
 
@@ -944,8 +944,8 @@ namespace aspect
 
         void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
                         const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
-                        FEValues<dim> & fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> & output)
+                        FEValues<dim> &fe_values,
+                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
         {
           if (vs_)
             for (unsigned int q=0; q<output.size(); ++q)
@@ -959,7 +959,7 @@ namespace aspect
                             in.position[q]);
         }
 
-        const MaterialModel::Interface<dim> * material_model;
+        const MaterialModel::Interface<dim> *material_model;
         bool vs_;
     };
 

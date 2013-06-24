@@ -56,7 +56,7 @@ namespace aspect
     template <int dim>
     double
     TanGurnis<dim>::
-    minimal_temperature (const std::set<types::boundary_id>& fixed_boundary_ids) const
+    minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       return 0;
     }
@@ -66,7 +66,7 @@ namespace aspect
     template <int dim>
     double
     TanGurnis<dim>::
-    maximal_temperature (const std::set<types::boundary_id>& fixed_boundary_ids) const
+    maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       return 1;
     }

@@ -82,7 +82,7 @@ namespace aspect
          * Nusselt number indicating heat flux.
          */
         virtual
-        double minimal_temperature (const std::set<types::boundary_id>& fixed_boundary_ids =
+        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids =
                                       std::set<types::boundary_id>()) const = 0;
 
         /**
@@ -93,7 +93,7 @@ namespace aspect
          * Nusselt number indicating heat flux.
          */
         virtual
-        double maximal_temperature (const std::set<types::boundary_id>& fixed_boundary_ids =
+        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids =
                                       std::set<types::boundary_id>()) const = 0;
 
         /**

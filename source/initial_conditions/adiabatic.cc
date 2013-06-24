@@ -87,7 +87,7 @@ namespace aspect
       Point<dim> mid_point;
       if (perturbation_position == "center")
         {
-          if (const GeometryModel::SphericalShell<dim>*
+          if (const GeometryModel::SphericalShell<dim> *
               geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (this->geometry_model))
             {
               const double pi = 3.14159265;
@@ -108,7 +108,7 @@ namespace aspect
                     mid_point(2) = inner_radius * cos(angle);
                 }
             }
-          else if (const GeometryModel::Box<dim>*
+          else if (const GeometryModel::Box<dim> *
                    geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (this->geometry_model))
             for (unsigned int i=0; i<dim-1; ++i)
               mid_point(i) += 0.5 * geometry_model->get_extents()[i];

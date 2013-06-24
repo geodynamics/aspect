@@ -80,7 +80,7 @@ namespace aspect
         virtual
         double initial_temperature (const Point<dim> &position) const;
     };
-    
+
     /**
      * A class that describes a shaped inclusion initial temperature
      * field for a box geometry.
