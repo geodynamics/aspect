@@ -948,7 +948,7 @@ namespace aspect
               pcout << "stokes residual: " << stokes_residual << std::endl;
               if (stokes_residual <1e-8)
                 break;
-              
+
               ++iteration;
             }
           while (iteration < parameters.max_nonlinear_iterations);
