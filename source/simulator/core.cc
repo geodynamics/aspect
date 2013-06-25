@@ -948,6 +948,8 @@ namespace aspect
               pcout << "stokes residual: " << stokes_residual << std::endl;
               if (stokes_residual <1e-8)
                 break;
+              
+              ++iteration;
             }
           while (iteration < parameters.max_nonlinear_iterations);
           break;
@@ -1045,6 +1047,8 @@ namespace aspect
           build_advection_preconditioner (TemperatureOrComposition::temperature (),
                                           T_preconditioner);
           solve_advection(TemperatureOrComposition::temperature());
+          current_linearization_point.block(introspection.block_indices.temperature)
+            = solution.block(introspection.block_indices.temperature);
 
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
@@ -1052,6 +1056,8 @@ namespace aspect
               build_advection_preconditioner (TemperatureOrComposition::composition (c),
                                               C_preconditioner);
               solve_advection(TemperatureOrComposition::composition(c));
+              current_linearization_point.block(introspection.block_indices.compositional_fields[c])
+                = solution.block(introspection.block_indices.compositional_fields[c]);
             }
 
           // ...and then iterate the solution
@@ -1066,10 +1072,10 @@ namespace aspect
               assemble_stokes_system();
               build_stokes_preconditioner();
               solve_stokes();
-              old_solution = solution;
-
-//TODO: don't we need to set the linearization point here somehow?
-              Assert (false, ExcNotImplemented());
+              current_linearization_point.block(introspection.block_indices.velocities)
+                = solution.block(introspection.block_indices.velocities);
+              current_linearization_point.block(introspection.block_indices.pressure)
+                = solution.block(introspection.block_indices.pressure);
 
               pcout << std::endl;
             }
