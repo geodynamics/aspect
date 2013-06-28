@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -72,6 +72,7 @@ namespace aspect
 
         // base element in the finite element is 2 for temperature (n=0) and 3 for
         // compositional fields (n>0)
+//TODO: can we use introspection here, instead of the hard coded numbers?
         const unsigned int base_element = (n==0 ? 2 : 3);
 
         // get the temperature/composition support points
