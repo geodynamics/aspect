@@ -109,9 +109,9 @@ University based on the following principles:
   defining features of the problem. To name just a few examples:
   \begin{itemize}
   \item Mantle convection is often solved in a spherical shell geometry, but
-    the earth is not a sphere -- its true shape on the longest lengthscales is
+    the earth is not a sphere -- its true shape on the longest length scales is
     dominated by polar oblateness, but deviations from spherical shape
-    relevant to convection patterns may go down to the lengthscales of
+    relevant to convection patterns may go down to the length scales of
     mountain belts, mid-ocean ridges or subduction trenches. Furthermore,
     processes outside the mantle like crustal depression during glaciations
     can change the geometry as well.
@@ -442,7 +442,7 @@ c,\mathbf x)$:} Units $\textrm{Pa}\cdot \textrm{s} =
 
   Simple models assume a radially inward gravity vector of constant magnitude
   (e.g., the surface gravity of Earth, $9.81 \frac{\textrm{m}}{\textrm{s}^2}$),
-  or one that can be computed analytically assuming a homogenous mantle
+  or one that can be computed analytically assuming a homogeneous mantle
   density.
 
   A physically self-consistent model would compute the gravity vector as
@@ -478,7 +478,7 @@ Units $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
   \cite{BRVMFG04}).
 
   As a rule of thumb for its
-  order of magnitude, wikipedia quotes values of
+  order of magnitude, Wikipedia quotes values of
   $1.83$--$2.90\frac{\textrm{W}}{\textrm{m}\cdot\textrm{K}}$ for sandstone and
   $1.73$--$3.98\frac{\textrm{W}}{\textrm{m}\cdot\textrm{K}}$ for granite.%
   \footnote{See \url{http://en.wikipedia.org/wiki/Thermal_conductivity} and
@@ -615,7 +615,7 @@ physical units. On the other hand, there are also downsides:
   retain the numerical stability if the reference values are poorly chosen.
 \end{itemize}
 
-As a consequency of such considerations, most codes in the past have used
+As a consequence of such considerations, most codes in the past have used
 non-dimensionalized models. This was aided by the fact that until recently and
 with notable exceptions, many models had constant coefficients and the
 difficulties associated with variable coefficients were not a concern. On the
@@ -687,7 +687,7 @@ This reformulation has a number of advantages and disadvantages:
   properties) is only the dynamic component, then all of the consumers of this
   information need to convert it into the total pressure when comparing with
   physical experiments. Since any code implementing realistic material models
-  has a great many of these places, there is a large potential for inadvertant
+  has a great many of these places, there is a large potential for inadvertent
   errors and bugs.
 
 \item Finally, the definition of a reference density $\rho(p_s,T_s,\mathbf x)$
@@ -1092,7 +1092,7 @@ equations above in the following, commonly used form:%
   & \textrm{in $\Omega$},
 \end{align}
 where $p_d=p+\rho_0(1+\beta T_0)\varphi$ is the dynamic pressure, as opposed
-to the total pressure $p=p_d+p_s$ that also includes the hydrastatic pressure
+to the total pressure $p=p_d+p_s$ that also includes the hydrostatic pressure
 $p_s=-\rho_0(1+\beta T_0)\varphi$. Note that the right hand side forcing term
 in \eqref{eq:stokes-1-boussinesq-linear} is now only the deviation of the
 gravitational force from the force that would act if the material were at
@@ -1237,7 +1237,7 @@ documentation about the source code. This can be done using the command
   make doc
 \end{verbatim}
 which assumes that you have the \texttt{doxygen} documentation generation tool
-installed. Most linux distributions have packages for \texttt{doxygen}. The
+installed. Most Linux distributions have packages for \texttt{doxygen}. The
 result will be the file \url{doc/doxygen/index.html} that is the starting
 point for exploring the documentation.
 
@@ -1492,7 +1492,7 @@ The purpose of these files is as follows:
 
   The data is written in text format that can be easily displayed by
   e.g. gnuplot. For an example, see Figure \ref{fig:depthaverage}. The plot
-  shows how an initially linear temperatur profile forms upper and lower
+  shows how an initially linear temperature profile forms upper and lower
   boundary layers.
 
 \begin{figure}[tbp]
@@ -1760,7 +1760,7 @@ In order to visualize one time step, follow these steps:%
   looking pictures by selecting the ``Screenshot'' method in this dialog.
 \end{itemize}
 
-More information on all of these topis can be found in the Visit
+More information on all of these topics can be found in the Visit
 documentation, see \url{http://www.llnl.gov/visit/}. We have also recorded
 video lectures demonstrating this process interactively at
 \url{http://www.youtube.com/watch?v=3ChnUxqtt08} for Visit, and at
@@ -1770,7 +1770,7 @@ video lectures demonstrating this process interactively at
 \subsubsection{Visualizing statistical data}
 \label{sec:viz-stat}
 
-In addition to the graphical outputdiscussed above, \aspect{} produces a
+In addition to the graphical output discussed above, \aspect{} produces a
 statistics file that collects information produced during each time step.
 For the remainder of this section, let us assume that we have run \aspect{}
 with the input file discussed in Section~\ref{sec:cookbooks-simple-box},
@@ -1917,7 +1917,7 @@ shown in Fig.~\ref{fig:convection-box-stats} on page \pageref{fig:convection-box
 
 \note{After setting output to a file, \textit{all} following plot commands will
 	want to write to this file. Thus, if you want to create more plots after
-	the one just created, you need to reset output back to the screen. On linux,
+	the one just created, you need to reset output back to the screen. On Linux,
 	this is done using the command \texttt{set terminal X11}. You can then
 	continue experimenting with plots and when you have the next plot ready,
 	switch back to output to a file.}
@@ -1979,7 +1979,7 @@ There are essentially two strategies supported by \aspect{} for this scenario:
   file systems.
 
 \item If your cluster has a slow interconnect, e.g., if it is simply a
-  collection of machines connected via ethernet, then writing data to a
+  collection of machines connected via Ethernet, then writing data to a
   central file server may block the rest of the program for a while. On the
   other hand, if your machines have fast local storage for temporary file
   systems, then \aspect{} can write data first into such a file and then move
@@ -2045,7 +2045,7 @@ Section~\ref{parameters:global}.
   Not all invalid
   combinations are easy to detect, and \aspect{} may not always realize
   immediate what is going on if you change a setting that can't be
-  changed. However, you will almost invariably get non-sensical results after
+  changed. However, you will almost invariably get nonsensical results after
   some time.}
 
 
@@ -2270,7 +2270,7 @@ where $\mathbf g=-g \mathbf e_z$ is the gravity vector in negative
 $z$-direction. While this would be a valid description of the problem, it is not
 what one typically finds in the literature because there the density in the
 temperature equation is chosen as $\rho_0$ rather than $\rho(1-\alpha(T-T_0))$
-as used by \aspect{}. However, we can mimick this by choosing a very small value
+as used by \aspect{}. However, we can mimic this by choosing a very small value
 for $\alpha$ -- small enough to ensure that for all reasonable temperatures,
 the density used here is equal to $\rho_0$ for all practical purposes --, and
 instead making $g$ correspondingly larger.
@@ -2567,7 +2567,7 @@ fact that in this example, assembling linear systems and preconditioners takes
 so much time compared to actually solving them is primarily a reflection of how
 simple the problem is that we solve in this example. This can also be seen in
 the fact that the number of iterations necessary to solve the Stokes and
-temperature equations is so low. For more complex problems with nonconstant
+temperature equations is so low. For more complex problems with non-constant
 coefficients such as the viscosity, as well as in 3d, we have to spend much more
 work solving linear systems whereas the effort to assemble linear systems
 remains the same.
@@ -2710,7 +2710,7 @@ doesn't move and heat is transported from the bottom to the top only through
 heat conduction. This can be explained by considering that the Rayleigh number
 in a box of unit extent is defined as $Ra=\frac{g\alpha}{\eta k}$. A small
 Rayleigh number means that the viscosity is too large (i.e., the buoyancy given
-by the product of the magnitude of gravity times the thermal expension
+by the product of the magnitude of gravity times the thermal expansion
 coefficient is not strong enough to overcome friction forces within the fluid).
 
 On the other hand, if the Rayleigh number is large (i.e., the viscosity is
@@ -4206,7 +4206,7 @@ subsection Postprocess
 end
 \end{lstlisting}
 
-Usig this input file, let us try to evaluate the results of the current
+Using this input file, let us try to evaluate the results of the current
 computations for the settling velocity of the sphere. You can visualize the output in different
 ways, one of it being ParaView and shown in
 Fig.~\ref{fig:stokes-falling-sphere-2d} (an alternative is to use Visit as
@@ -4568,7 +4568,7 @@ through the interface they themselves provide to the core.
 Using this class, if a plugin class \texttt{MyPostprocess} is then not only
 derived from the corresponding \texttt{Interface} class but \textit{also}
 from the \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess} class, then you can write a member
-function of the following kind (a non-sensical but instructive example; see
+function of the following kind (a nonsensical but instructive example; see
 Section~\ref{sec:postprocessors} for more details on what postprocessors do
 and how they are implemented):%
 \footnote{For complicated, technical reasons, in the code below we need to
@@ -4698,7 +4698,7 @@ do:
 \end{itemize}
  
 \note{If you choose to compile your plugins into a shared library yourself, you
-  will need to recompile them everytime you upgrade your \aspect{} installation
+  will need to recompile them every time you upgrade your \aspect{} installation
   since we do not guarantee that the \aspect{} application binary interface
   (ABI) will remain stable, even if it may not be necessary to actually change
   anything in the \textit{implementation} of your plugin.}
@@ -4833,7 +4833,7 @@ material as compressible or not, see Section~\ref{sec:boussinesq} on the
 Boussinesq model. As discussed there, incompressibility as described by this function
 does not necessarily imply that the density is constant; rather, it
 may still depend on temperature or pressure. In the current
-context, compressibility simply means whether we should solve the contuity
+context, compressibility simply means whether we should solve the continuity
 equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
 or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
 
@@ -5580,7 +5580,7 @@ postprocessors do the following:
 \item They derive from
   \href{doc/doxygen/classaspect_1_1Postprocess_1_1VisualizationPostprocessors_1_1Interface.html}{aspect::Postprocess::VisualizationPostprocessors::Interface}. The
   functions of this interface class are all already implemented as doing
-  nothing in the base class but can be overriden in a plugin. Specifically,
+  nothing in the base class but can be overridden in a plugin. Specifically,
   the following functions exist:
   \begin{lstlisting}[frame=single,language=C++]
     class Interface
