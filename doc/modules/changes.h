@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Added: ability to terminate simulation after
+  specified number of steps.
+  <br>
+  (Ted Studley, 2013/07/03)
+
   <li>Added: new initial conditions for the Box geometry
   to test different shaped inclusions.
   <br>
