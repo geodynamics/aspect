@@ -83,7 +83,7 @@ namespace aspect
 
       // Remove old times until we're at the correct time period
       std::list<std::pair<double, double> >::iterator it = time_rmsvel.begin();
-      while (time_rmsvel.back().first - (*it).first > time_length)
+      while (time_rmsvel.back().first - (*it).first > adjusted_time)
         it++;
       time_rmsvel.erase(time_rmsvel.begin(), it);
 
