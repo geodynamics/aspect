@@ -129,7 +129,7 @@ namespace aspect
             {
               perturbation = inclusion_temperature - ambient_temperature;
               for (int d=0; d<dim; ++d)
-                perturbation *= exp(-pow(position[d] - center[d],2) / (2 * pow((radius / 4), 2))) / (2 * radius);
+                perturbation *= exp(-8*pow(position.distance(center)/radius, 2));
             }
           else if (inclusion_gradient == "linear")
             {
