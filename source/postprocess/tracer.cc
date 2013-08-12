@@ -28,13 +28,13 @@ namespace aspect
   {
     template <int dim>
     PassiveTracers<dim>::PassiveTracers ()
-    :
-    initialized(false),
-    next_data_output_time(std::numeric_limits<double>::quiet_NaN())
+      :
+      initialized(false),
+      next_data_output_time(std::numeric_limits<double>::quiet_NaN())
     {}
 
 
-    
+
     template <int dim>
     std::pair<std::string,std::string>
     PassiveTracers<dim>::execute (TableHandler &statistics)
@@ -44,47 +44,36 @@ namespace aspect
 
       if (!initialized)
         {
+//TODO: Use factory methods here
           // Create an output object depending on what the parameters specify
           if (data_output_format == "ascii")
-            {
-              output = new Particle::ASCIIOutput<dim,Particle::BaseParticle<dim> >();
-            }
+            output = new Particle::ASCIIOutput<dim,Particle::BaseParticle<dim> >();
           else if (data_output_format == "vtu")
-            {
-              output = new Particle::VTUOutput<dim,Particle::BaseParticle<dim> >();
-            }
+            output = new Particle::VTUOutput<dim,Particle::BaseParticle<dim> >();
           else if (data_output_format == "hdf5")
-            {
-              output = new Particle::HDF5Output<dim,Particle::BaseParticle<dim> >();
-            }
+            output = new Particle::HDF5Output<dim,Particle::BaseParticle<dim> >();
+          else if (data_output_format == "none")
+            output = new Particle::NullOutput<dim,Particle::BaseParticle<dim> >();
           else
-            {
-              output = new Particle::NullOutput<dim,Particle::BaseParticle<dim> >();
-            }
+            Assert (false, ExcNotImplemented());
 
           // Set the output directory for the particle output to be stored in
           output->set_output_directory(this->get_output_directory());
 
           // Create an integrator object depending on the specified parameter
           if (integration_scheme == "euler")
-            {
-              integrator = new Particle::EulerIntegrator<dim, Particle::BaseParticle<dim> >;
-            }
+            integrator = new Particle::EulerIntegrator<dim, Particle::BaseParticle<dim> >;
           else if (integration_scheme == "rk2")
-            {
-              integrator = new Particle::RK2Integrator<dim, Particle::BaseParticle<dim> >;
-            }
+            integrator = new Particle::RK2Integrator<dim, Particle::BaseParticle<dim> >;
           else if (integration_scheme == "rk4")
-            {
-              integrator = new Particle::RK4Integrator<dim, Particle::BaseParticle<dim> >;
-            }
+            integrator = new Particle::RK4Integrator<dim, Particle::BaseParticle<dim> >;
           else if (integration_scheme == "hybrid")
-            {
-              integrator = new Particle::HybridIntegrator<dim, Particle::BaseParticle<dim> >(&(this->get_triangulation()),
-                                                                                              &(this->get_dof_handler()),
-                                                                                              &(this->get_mapping()),
-                                                                                              &(this->get_solution()));
-            }
+            integrator = new Particle::HybridIntegrator<dim, Particle::BaseParticle<dim> >(&(this->get_triangulation()),
+                                                                                           &(this->get_dof_handler()),
+                                                                                           &(this->get_mapping()),
+                                                                                           &(this->get_solution()));
+          else
+            Assert (false, ExcNotImplemented());
 
           // Set up the particle world with the appropriate simulation objects
           world.set_mapping(&(this->get_mapping()));
@@ -100,7 +89,7 @@ namespace aspect
           next_data_output_time = this->get_time();
 
           // Add the specified number of particles
-          world.global_add_particles(num_initial_tracers);
+          world.global_add_particles(n_initial_tracers);
 
           initialized = true;
         }
@@ -109,13 +98,16 @@ namespace aspect
       if (this->get_time() >= next_data_output_time)
         {
           set_next_data_output_time (this->get_time());
-          data_file_name = output->output_particle_data(world.particles(), this->get_time());
+          data_file_name = output->output_particle_data(world.get_particles(),
+                                                        this->get_time());
           output_data = true;
         }
-      if (output_data) result_string += " Wrote particle data: " + data_file_name + ".";
+      if (output_data)
+        result_string += " Wrote particle data: " + data_file_name + ".";
 
       // Advance the particles in the world by the current timestep
-      world.advance_timestep(this->get_timestep(), this->get_solution());
+      world.advance_timestep (this->get_timestep(),
+                              this->get_solution());
 
       return std::make_pair("Advecting particles...", result_string);
     }
@@ -148,8 +140,11 @@ namespace aspect
         prm.enter_subsection("Tracers");
         {
           prm.declare_entry ("Number of tracers", "1e3",
-                             Patterns::Integer (0),
-                             "Total number of tracers to create (not per processor or per element).");
+                             Patterns::Double (0),
+                             "Total number of tracers to create (not per processor or per element). "
+                             "The number is parsed as a floating point number (so that one can "
+                             "specify, for example, '1e4' particles) but it is interpreted as "
+                             "an integer, of course.");
           prm.declare_entry ("Time between data output", "1e8",
                              Patterns::Double (0),
                              "The time interval between each generation of "
@@ -187,9 +182,9 @@ namespace aspect
       {
         prm.enter_subsection("Tracers");
         {
-          num_initial_tracers = prm.get_double ("Number of tracers");
+          n_initial_tracers    = static_cast<unsigned int>(prm.get_double ("Number of tracers"));
           data_output_interval = prm.get_double ("Time between data output");
-          data_output_format = prm.get("Data output format");
+          data_output_format   = prm.get("Data output format");
 #ifndef DEAL_II_HAVE_HDF5
           AssertThrow (data_output_format != "hdf5",
                        ExcMessage ("deal.ii was not compiled with HDF5 support, "

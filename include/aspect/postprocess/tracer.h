@@ -35,60 +35,60 @@ namespace aspect
     class PassiveTracers : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       private:
-      /**
-       * The world holding the particles
-       */
+        /**
+         * The world holding the particles
+         */
         Particle::World<dim, Particle::BaseParticle<dim> >              world;
 
-      /**
-       * The integrator to use in moving the particles
-       */
+        /**
+         * The integrator to use in moving the particles
+         */
         Particle::Integrator<dim, Particle::BaseParticle<dim> >         *integrator;
 
-      /**
-       * Abstract output object
-       */
+        /**
+         * Abstract output object
+         */
         Particle::Output<dim, Particle::BaseParticle<dim> >             *output;
 
-      /**
-       * Whether this set has been initialized yet or not
-       */
+        /**
+         * Whether this set has been initialized yet or not
+         */
         bool                            initialized;
 
-      /**
-       * Number of initial particles to create
-       */
-        double                    num_initial_tracers;
+        /**
+         * Number of initial particles to create
+         */
+        unsigned int                    n_initial_tracers;
 
-      /**
-       * Interval between output (in years if appropriate
-       * simulation parameter is set, otherwise seconds)
-       */
+        /**
+         * Interval between output (in years if appropriate
+         * simulation parameter is set, otherwise seconds)
+         */
         double                          data_output_interval;
 
-      /**
-       * Output format for particle data
-       */
+        /**
+         * Output format for particle data
+         */
         std::string                     data_output_format;
 
-      /**
-       * Integration scheme to move particles
-       */
+        /**
+         * Integration scheme to move particles
+         */
         std::string                     integration_scheme;
 
-      /**
-       * Records time for next output to occur
-       */
+        /**
+         * Records time for next output to occur
+         */
         double                          next_data_output_time;
 
         void set_next_data_output_time (const double current_time);
 
-      
-    public:
-      /**
-       * Constructor.
-       */
-      PassiveTracers();
+
+      public:
+        /**
+         * Constructor.
+         */
+        PassiveTracers();
 
         /**
          * Execute this postprocessor. Derived classes will implement this function
@@ -106,7 +106,7 @@ namespace aspect
          * and the second contains a numerical value of this data. If there is
          * nothing to print, simply return two empty strings.
          **/
-      virtual std::pair<std::string,std::string> execute (TableHandler &statistics);
+        virtual std::pair<std::string,std::string> execute (TableHandler &statistics);
 
         /**
          * Declare the parameters this class takes through input files.
