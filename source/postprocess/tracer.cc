@@ -191,7 +191,7 @@ namespace aspect
           data_output_interval = prm.get_double ("Time between data output");
           data_output_format = prm.get("Data output format");
 #ifndef DEAL_II_HAVE_HDF5
-          AssertThrow (data_output_format == "hdf5",
+          AssertThrow (data_output_format != "hdf5",
                        ExcMessage ("deal.ii was not compiled with HDF5 support, "
                                    "so HDF5 output is not possible. Please "
                                    "recompile deal.ii with HDF5 support turned on."));
