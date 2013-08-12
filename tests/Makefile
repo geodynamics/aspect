@@ -3,14 +3,12 @@ DEAL_DIR    ?= ../../deal.II
 DEAL_II_DIR ?= $(DEAL_DIR)
 D = $(DEAL_II_DIR)
 
-include $D/common/Make.global_options
-
 tests = $(shell echo *.prm | sed s/.prm//g)
 
 SUBDIR = x-app-aspect
 ID     = `id -un`"@"`hostname`
 DEAL_II_DIFF ?= diff -q
-
+PERL   = perl
 
 all: $(tests) Makefile.dep
 
@@ -47,12 +45,18 @@ $(tests):
 	  exit 1 ; \
 	 fi
 
-# creating the output involves running ../lib/aspect; at first, however,
+# creating the output involves running ../aspect; at first, however,
 # we make sure that we don't care what the parameter file says
 # regarding the output directory, but that we simply set what is
 # appropriate. we do so in a way that creates a temporary parameter
 # file with a fixed output directory and if the two are different
 # overwrite the original one
+#
+# we also have to see if there is a plugin file that we need to
+# compile
+#	if test $(<:%.prm=%).cc ; then \
+#		c++ -I../include -I$(DEAL_II_DIR)/include -c $(<:%.prm=%).cc -shared -o $(<:%.prm=%).so ; \
+#	 fi
 output-%:
 	@echo =====$(SUBDIR)=======================testing============ $<
 	@rm -rf $@
@@ -66,9 +70,9 @@ output-%:
 	 fi
 	@MPI=`grep "MPI:" $< | perl -pi -e 's/.*: *(\d+).*/\1/g;'` ; \
 	    if test -z "$$MPI" ; then \
-		../lib/aspect $< > $@/screen-output ; \
+		../aspect $< > $@/screen-output ; \
 	    else \
-		mpirun -np $$MPI ../lib/aspect $< > $@/screen-output ; \
+		mpirun -np $$MPI ../aspect $< > $@/screen-output ; \
 	    fi
 	@$(PERL) -pi ./normalize.pl $@/*
 	@rm -f $@/log
@@ -107,7 +111,7 @@ clean:
 Makefile.dep: Makefile $(shell echo *.prm)
 	@echo =====$(SUBDIR)========================================== $@
 	@for i in $(tests) ; do \
-		echo "output-$$i: $$i.prm ../lib/aspect" ; \
+		echo "output-$$i: $$i.prm ../aspect" ; \
 		echo "$$i: output-$$i" ; \
 	done > $@
 
