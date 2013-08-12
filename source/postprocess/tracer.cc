@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+ Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -27,85 +27,95 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::string,std::string> PassiveTracers<dim>::execute (TableHandler &statistics)
+    PassiveTracers<dim>::PassiveTracers ()
+    :
+    initialized(false),
+    next_data_output_time(std::numeric_limits<double>::quiet_NaN())
+    {}
+
+
+    
+    template <int dim>
+    std::pair<std::string,std::string>
+    PassiveTracers<dim>::execute (TableHandler &statistics)
     {
       std::string     result_string = "done.", data_file_name;
       bool            output_data = false;
 
-      if (!_initialized)
+      if (!initialized)
         {
           // Create an output object depending on what the parameters specify
-          if (_data_output_format == "ascii")
+          if (data_output_format == "ascii")
             {
-              _output = new Particle::ASCIIOutput<dim,Particle::BaseParticle<dim> >();
+              output = new Particle::ASCIIOutput<dim,Particle::BaseParticle<dim> >();
             }
-          else if (_data_output_format == "vtu")
+          else if (data_output_format == "vtu")
             {
-              _output = new Particle::VTUOutput<dim,Particle::BaseParticle<dim> >();
+              output = new Particle::VTUOutput<dim,Particle::BaseParticle<dim> >();
             }
-          else if (_data_output_format == "hdf5")
+          else if (data_output_format == "hdf5")
             {
-              _output = new Particle::HDF5Output<dim,Particle::BaseParticle<dim> >();
+              output = new Particle::HDF5Output<dim,Particle::BaseParticle<dim> >();
             }
           else
             {
-              _output = new Particle::NullOutput<dim,Particle::BaseParticle<dim> >();
+              output = new Particle::NullOutput<dim,Particle::BaseParticle<dim> >();
             }
 
           // Set the output directory for the particle output to be stored in
-          _output->set_output_directory(this->get_output_directory());
+          output->set_output_directory(this->get_output_directory());
 
           // Create an integrator object depending on the specified parameter
-          if (_integration_scheme == "euler")
+          if (integration_scheme == "euler")
             {
-              _integrator = new Particle::EulerIntegrator<dim, Particle::BaseParticle<dim> >;
+              integrator = new Particle::EulerIntegrator<dim, Particle::BaseParticle<dim> >;
             }
-          else if (_integration_scheme == "rk2")
+          else if (integration_scheme == "rk2")
             {
-              _integrator = new Particle::RK2Integrator<dim, Particle::BaseParticle<dim> >;
+              integrator = new Particle::RK2Integrator<dim, Particle::BaseParticle<dim> >;
             }
-          else if (_integration_scheme == "rk4")
+          else if (integration_scheme == "rk4")
             {
-              _integrator = new Particle::RK4Integrator<dim, Particle::BaseParticle<dim> >;
+              integrator = new Particle::RK4Integrator<dim, Particle::BaseParticle<dim> >;
             }
-          else if (_integration_scheme == "hybrid")
+          else if (integration_scheme == "hybrid")
             {
-              _integrator = new Particle::HybridIntegrator<dim, Particle::BaseParticle<dim> >(&(this->get_triangulation()),
+              integrator = new Particle::HybridIntegrator<dim, Particle::BaseParticle<dim> >(&(this->get_triangulation()),
                                                                                               &(this->get_dof_handler()),
                                                                                               &(this->get_mapping()),
                                                                                               &(this->get_solution()));
             }
 
           // Set up the particle world with the appropriate simulation objects
-          _world.set_mapping(&(this->get_mapping()));
-          _world.set_triangulation(&(this->get_triangulation()));
-          _world.set_dof_handler(&(this->get_dof_handler()));
-          _world.set_integrator(_integrator);
-          _world.set_mpi_comm(this->get_mpi_communicator());
-          _output->set_mpi_comm(this->get_mpi_communicator());
+          world.set_mapping(&(this->get_mapping()));
+          world.set_triangulation(&(this->get_triangulation()));
+          world.set_dof_handler(&(this->get_dof_handler()));
+          world.set_integrator(integrator);
+          world.set_mpi_comm(this->get_mpi_communicator());
+          output->set_mpi_comm(this->get_mpi_communicator());
 
           // And initialize the world
-          _world.init();
+          world.init();
 
-          _next_data_output_time = this->get_time();
+          next_data_output_time = this->get_time();
 
           // Add the specified number of particles
-          _world.global_add_particles(_num_initial_tracers);
+          world.global_add_particles(num_initial_tracers);
 
-          _initialized = true;
+          initialized = true;
         }
 
       // If it's time to generate an output file, call the appropriate functions and reset the timer
-      if (this->get_time() >= _next_data_output_time)
+      if (this->get_time() >= next_data_output_time)
         {
           set_next_data_output_time (this->get_time());
-          data_file_name = _output->output_particle_data(_world.particles(), this->get_time());
+          data_file_name = output->output_particle_data(world.particles(), this->get_time());
           output_data = true;
         }
       if (output_data) result_string += " Wrote particle data: " + data_file_name + ".";
 
       // Advance the particles in the world by the current timestep
-      _world.advance_timestep(this->get_timestep(), this->get_solution());
+      world.advance_timestep(this->get_timestep(), this->get_solution());
 
       return std::make_pair("Advecting particles...", result_string);
     }
@@ -118,14 +128,14 @@ namespace aspect
     {
       // if output_interval is positive, then set the next output interval to
       // a positive multiple.
-      if (_data_output_interval > 0)
+      if (data_output_interval > 0)
         {
           // the current time is always in seconds, so we need to convert the output_interval to the same unit
-          double output_interval_in_s = (this->convert_output_to_years()) ? (_data_output_interval*year_in_seconds) : _data_output_interval;
+          double output_interval_in_s = (this->convert_output_to_years()) ? (data_output_interval*year_in_seconds) : data_output_interval;
 
           // we need to compute the smallest integer that is bigger than current_time/my_output_interval,
           // even if it is a whole number already (otherwise we output twice in a row)
-          _next_data_output_time = (std::floor(current_time/output_interval_in_s)+1.0) * output_interval_in_s;
+          next_data_output_time = (std::floor(current_time/output_interval_in_s)+1.0) * output_interval_in_s;
         }
     }
 
@@ -138,13 +148,13 @@ namespace aspect
         prm.enter_subsection("Tracers");
         {
           prm.declare_entry ("Number of tracers", "1e3",
-                             Patterns::Double (0),
+                             Patterns::Integer (0),
                              "Total number of tracers to create (not per processor or per element).");
           prm.declare_entry ("Time between data output", "1e8",
                              Patterns::Double (0),
                              "The time interval between each generation of "
                              "output files. A value of zero indicates that "
-                             "output should be generated every time step. "
+                             "output should be generated every time step.\n\n"
                              "Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
@@ -177,16 +187,16 @@ namespace aspect
       {
         prm.enter_subsection("Tracers");
         {
-          _num_initial_tracers = prm.get_double ("Number of tracers");
-          _data_output_interval = prm.get_double ("Time between data output");
-          _data_output_format = prm.get("Data output format");
+          num_initial_tracers = prm.get_double ("Number of tracers");
+          data_output_interval = prm.get_double ("Time between data output");
+          data_output_format = prm.get("Data output format");
 #ifndef DEAL_II_HAVE_HDF5
-          AssertThrow (_data_output_format == "hdf5",
+          AssertThrow (data_output_format == "hdf5",
                        ExcMessage ("deal.ii was not compiled with HDF5 support, "
                                    "so HDF5 output is not possible. Please "
                                    "recompile deal.ii with HDF5 support turned on."));
 #endif
-          _integration_scheme = prm.get("Integration scheme");
+          integration_scheme = prm.get("Integration scheme");
         }
         prm.leave_subsection ();
       }

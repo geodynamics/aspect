@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+ Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -35,41 +35,78 @@ namespace aspect
     class PassiveTracers : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       private:
-        // The world holding the particles
-        Particle::World<dim, Particle::BaseParticle<dim> >              _world;
+      /**
+       * The world holding the particles
+       */
+        Particle::World<dim, Particle::BaseParticle<dim> >              world;
 
-        // The integrator to use in moving the particles
-        Particle::Integrator<dim, Particle::BaseParticle<dim> >         *_integrator;
+      /**
+       * The integrator to use in moving the particles
+       */
+        Particle::Integrator<dim, Particle::BaseParticle<dim> >         *integrator;
 
-        // Abstract output object
-        Particle::Output<dim, Particle::BaseParticle<dim> >             *_output;
+      /**
+       * Abstract output object
+       */
+        Particle::Output<dim, Particle::BaseParticle<dim> >             *output;
 
-        // Whether this set has been initialized yet or not
-        bool                            _initialized;
+      /**
+       * Whether this set has been initialized yet or not
+       */
+        bool                            initialized;
 
-        // Number of initial particles to create
-        // Use a double rather than int since doubles can represent up to 2^52
-        double                          _num_initial_tracers;
+      /**
+       * Number of initial particles to create
+       */
+        double                    num_initial_tracers;
 
-        // Interval between output (in years if appropriate
-        // simulation parameter is set, otherwise seconds)
-        double                          _data_output_interval;
+      /**
+       * Interval between output (in years if appropriate
+       * simulation parameter is set, otherwise seconds)
+       */
+        double                          data_output_interval;
 
-        // Output format for particle data
-        std::string                     _data_output_format;
+      /**
+       * Output format for particle data
+       */
+        std::string                     data_output_format;
 
-        // Integration scheme to move particles
-        std::string                     _integration_scheme;
+      /**
+       * Integration scheme to move particles
+       */
+        std::string                     integration_scheme;
 
-        // Records time for next output to occur
-        double                          _next_data_output_time;
-
-      public:
-        PassiveTracers(void) : _initialized(false), _next_data_output_time(std::numeric_limits<double>::quiet_NaN()) {};
-
-        virtual std::pair<std::string,std::string> execute (TableHandler &statistics);
+      /**
+       * Records time for next output to occur
+       */
+        double                          next_data_output_time;
 
         void set_next_data_output_time (const double current_time);
+
+      
+    public:
+      /**
+       * Constructor.
+       */
+      PassiveTracers();
+
+        /**
+         * Execute this postprocessor. Derived classes will implement this function
+         * to do whatever they want to do to evaluate the solution at the current
+         * time step.
+         *
+         * @param[in,out] statistics An object that contains statistics that are collected
+         * throughout the simulation and that will be written to an output file at
+         * the end of each time step. Postprocessors may deposit data in these
+         * tables for later visualization or further processing.
+         *
+         * @return A pair of strings that will be
+         * printed to the screen after running the postprocessor in two columns;
+         * typically the first column contains a description of what the data is
+         * and the second contains a numerical value of this data. If there is
+         * nothing to print, simply return two empty strings.
+         **/
+      virtual std::pair<std::string,std::string> execute (TableHandler &statistics);
 
         /**
          * Declare the parameters this class takes through input files.
