@@ -26,54 +26,68 @@
 #include <aspect/particle/particle.h>
 
 #ifdef DEAL_II_HAVE_HDF5
-#include <hdf5.h>
+#  include <hdf5.h>
 #endif
 
 namespace aspect
 {
   namespace Particle
   {
-    // Abstract class representing particle output
+    /**
+     *  Abstract base class used for classes that generate particle output
+     */
     template <int dim, class T>
     class Output
     {
       protected:
-        // MPI communicator to be used for output synchronization
-        MPI_Comm        _communicator;
+        /**
+         *  MPI communicator to be used for output synchronization
+         */
+        MPI_Comm        communicator;
 
-        // Internal index of file output number, must be incremented by subclasses when they create a new file
-        unsigned int    _file_index;
+        /**
+         *  Internal index of file output number, must be incremented
+         *  by derived classes when they create a new file.
+         */
+        unsigned int    file_index;
+
 
         // Path to directory in which to put particle output files
-        std::string     _output_dir;
+        std::string     output_dir;
 
       public:
-        Output(void)
-        {
-          _file_index = 0;
-        };
-        virtual ~Output(void) {};
+        /**
+         * Constructor.
+         */
+        Output()
+      :
+        file_index (0)
+        {}
 
-        unsigned int self_rank(void)
+        virtual ~Output() {};
+
+        unsigned int self_rank()
         {
-          return Utilities::MPI::this_mpi_process(_communicator);
+          return Utilities::MPI::this_mpi_process(communicator);
         };
 
-        unsigned int world_size(void)
+        unsigned int world_size()
         {
-          return Utilities::MPI::n_mpi_processes(_communicator);
+          return Utilities::MPI::n_mpi_processes(communicator);
         };
 
         void set_mpi_comm(MPI_Comm new_comm_world)
         {
-          _communicator = new_comm_world;
+          communicator = new_comm_world;
         };
 
-        void set_output_directory(std::string new_out_dir)
+        void set_output_directory(const std::string &new_out_dir)
         {
-          _output_dir = new_out_dir;
+          output_dir = new_out_dir;
         };
-        virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles, const double &current_time) = 0;
+
+        virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles,
+                                                 const double &current_time) = 0;
     };
 
     // Blank class to avoid output of data, for example, if particles are used to represent
@@ -92,7 +106,8 @@ namespace aspect
     class ASCIIOutput : public Output<dim, T>
     {
       public:
-        virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles, const double &current_time)
+        virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles,
+                                                 const double &current_time)
         {
           typename std::multimap<LevelInd, T>::const_iterator  it;
           unsigned int                            i;
@@ -101,11 +116,12 @@ namespace aspect
           std::vector<MPIDataInfo>::iterator      dit;
           char                                    *particle_data, *p;
 
-          output_file_prefix = "particle-" + Utilities::int_to_string (Output<dim, T>::_file_index, 5);
-          output_path_prefix = Output<dim, T>::_output_dir + output_file_prefix;
-          full_filename = output_path_prefix + "." + Utilities::int_to_string(Output<dim, T>::self_rank(), 4) + ".txt";
+          output_file_prefix = "particle-" + Utilities::int_to_string (this->file_index, 5);
+          output_path_prefix = this->output_dir + output_file_prefix;
+          full_filename = output_path_prefix + "." + Utilities::int_to_string(this->self_rank(), 4) + ".txt";
           std::ofstream output (full_filename.c_str());
-          if (!output) std::cout << "ERROR: proc " << Output<dim, T>::self_rank() << " could not create " << full_filename << std::endl;
+          if (!output)
+            std::cout << "ERROR: proc " << this->self_rank() << " could not create " << full_filename << std::endl;
 
           // Get the data types
           T::add_mpi_types(data_info);
@@ -147,7 +163,7 @@ namespace aspect
 
           output.close();
 
-          Output<dim, T>::_file_index++;
+          this->file_index++;
 
           return output_path_prefix;
         };
@@ -164,7 +180,9 @@ namespace aspect
          * is done because there is no way to store the simulation
          * time inside the .pvtu or .vtu files).
          */
-        std::vector<std::pair<double,std::string> > times_and_pvtu_names;
+//TODO: This needs to be serialized
+        std::vector<std::pair<double,std::string> > times_and_pvtu_file_names;
+        std::vector<std::string>                    vtu_file_names;
 
       public:
         virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles, const double &current_time)
@@ -174,21 +192,22 @@ namespace aspect
           DataOut<dim>                            data_out;
           std::vector<MPIDataInfo>                data_info;
           std::vector<MPIDataInfo>::iterator      dit;
-          std::string                             output_file_prefix, output_path_prefix;
           unsigned int                            data_offset;
           char                                    *particle_data, *p;
 
-          output_file_prefix = "particle-" + Utilities::int_to_string (Output<dim, T>::_file_index, 5);
-          output_path_prefix = Output<dim, T>::_output_dir + output_file_prefix;
+          const std::string output_file_prefix = "particles-" + Utilities::int_to_string (this->file_index, 5);
+          const std::string output_path_prefix = this->output_dir + output_file_prefix;
 
           const std::string filename = (output_file_prefix +
                                         "." +
-                                        Utilities::int_to_string(Output<dim, T>::self_rank(), 4) +
+                                        Utilities::int_to_string(this->self_rank(), 4) +
                                         ".vtu");
-          const std::string full_filename = (Output<dim, T>::_output_dir + filename);
+          const std::string full_filename = (this->output_dir + filename);
 
           std::ofstream output (full_filename.c_str());
-          if (!output) std::cout << "ERROR: proc " << Output<dim, T>::self_rank() << " could not create " << filename << std::endl;
+          if (!output)
+            std::cout << "ERROR: proc "
+                      << this->self_rank() << " could not create " << filename << std::endl;
 
           num_particles = particles.size();
 
@@ -199,17 +218,16 @@ namespace aspect
           output << "    <Piece NumberOfPoints=\"" << num_particles << "\" NumberOfCells=\"" << num_particles << "\">\n";
 
           // Go through the particles on this domain and print the position of each one
-          // TODO: can we change this to dim-dimensions rather than 3?
           output << "      <Points>\n";
           output << "        <DataArray name=\"Position\" type=\"Float64\" NumberOfComponents=\"3\" Format=\"ascii\">\n";
           for (it=particles.begin(); it!=particles.end(); ++it)
             {
-              output << "          ";
-              for (d=0; d<3; ++d)
-                {
-                  if (d < dim) output << it->second.location()[d] << " ";
-                  else output << "0.0 ";
-                }
+              output << "          " << it->second.location();
+
+              // pad with zeros since VTU format wants x/y/z coordinates
+              for (d=dim; d<3; ++d)
+                output << " 0.0";
+
               output << "\n";
             }
           output << "        </DataArray>\n";
@@ -218,13 +236,16 @@ namespace aspect
           // Write cell related data (empty)
           output << "      <Cells>\n";
           output << "        <DataArray type=\"Int32\" Name=\"connectivity\" Format=\"ascii\">\n";
-          for (i=1; i<=num_particles; ++i) output << "          " << i-1 << "\n";
+          for (i=1; i<=num_particles; ++i)
+            output << "          " << i-1 << "\n";
           output << "        </DataArray>\n";
           output << "        <DataArray type=\"Int32\" Name=\"offsets\" Format=\"ascii\">\n";
-          for (i=1; i<=num_particles; ++i) output << "          " << i << "\n";
+          for (i=1; i<=num_particles; ++i)
+            output << "          " << i << "\n";
           output << "        </DataArray>\n";
           output << "        <DataArray type=\"UInt8\" Name=\"types\" Format=\"ascii\">\n";
-          for (i=1; i<=num_particles; ++i) output << "          1\n";
+          for (i=1; i<=num_particles; ++i)
+            output << "          1\n";
           output << "        </DataArray>\n";
           output << "      </Cells>\n";
 
@@ -252,7 +273,8 @@ namespace aspect
                       output << ((double *)p)[0] << " ";
                       p += sizeof(double);
                     }
-                  if (dit->_num_elems == 2) output << "0 ";
+                  if (dit->_num_elems == 2)
+                    output << "0 ";
                   output << "\n";
                 }
               data_offset += dit->_num_elems*dit->_elem_size_bytes;
@@ -267,8 +289,9 @@ namespace aspect
 
           output.close();
 
+
           // Write the parallel pvtu and pvd files on the root process
-          if (Output<dim, T>::self_rank() == 0)
+          if (this->self_rank() == 0)
             {
               const std::string pvtu_filename = (output_path_prefix + ".pvtu");
 
@@ -288,7 +311,7 @@ namespace aspect
                   pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << dit->_name << "\" NumberOfComponents=\"" << (dit->_num_elems == 2 ? 3 : dit->_num_elems) << "\" format=\"ascii\"/>\n";
                 }
               pvtu_output << "    </PPointData>\n";
-              for (i=0; i<Output<dim, T>::world_size(); ++i)
+              for (i=0; i<this->world_size(); ++i)
                 {
                   pvtu_output << "    <Piece Source=\"" << output_file_prefix << "." << Utilities::int_to_string(i, 4) << ".vtu\"/>\n";
                 }
@@ -296,13 +319,24 @@ namespace aspect
               pvtu_output << "</VTKFile>\n";
               pvtu_output.close();
 
-              times_and_pvtu_names.push_back(std::pair<double,std::string>(current_time, output_file_prefix+".pvtu"));
-              const std::string pvd_master_filename = (Output<dim, T>::_output_dir + "particle.pvd");
+              times_and_pvtu_file_names.push_back(std::make_pair(current_time,
+                                                                 pvtu_filename));
+              vtu_file_names.push_back (full_filename);
+
+              // write .pvd and .visit records
+              const std::string pvd_master_filename = (this->output_dir + "particles.pvd");
               std::ofstream pvd_master (pvd_master_filename.c_str());
-              data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
-              pvd_master.close();
+              data_out.write_pvd_record (pvd_master, times_and_pvtu_file_names);
+
+//TODO: write a global .visit record. this needs a variant of the write_visit_record
+// function
+/*
+              const std::string visit_master_filename = (this->output_dir + "particles.visit");
+              std::ofstream visit_master (visit_master_filename.c_str());
+              data_out.write_visit_record (visit_master, vtu_file_names);
+*/
             }
-          Output<dim, T>::_file_index++;
+          this->file_index++;
 
           return output_path_prefix;
         };
@@ -320,8 +354,8 @@ namespace aspect
           typename std::multimap<LevelInd, T>::const_iterator  it;
           std::string             output_file_prefix, output_path_prefix, full_filename;
 
-          output_file_prefix = "particle-" + Utilities::int_to_string (Output<dim, T>::_file_index, 5);
-          output_path_prefix = Output<dim, T>::_output_dir + output_file_prefix;
+          output_file_prefix = "particle-" + Utilities::int_to_string (this->file_index, 5);
+          output_path_prefix = this->output_dir + output_file_prefix;
 #ifdef DEAL_II_HAVE_HDF5
           // TODO: error checking for H5 calls
           hid_t   h5_file_id;
@@ -341,7 +375,7 @@ namespace aspect
           // Create parallel file access
           plist_id = H5Pcreate(H5P_FILE_ACCESS);
 #ifdef H5_HAVE_PARALLEL
-          H5Pset_fapl_mpio(plist_id, Output<dim, T>::_communicator, MPI_INFO_NULL);
+          H5Pset_fapl_mpio(plist_id, this->communicator, MPI_INFO_NULL);
 #endif
 
           // Create the file
@@ -350,7 +384,7 @@ namespace aspect
           // Create the file dataspace descriptions
           local_particle_count = particles.size();
           // TODO: error checking on MPI call
-          MPI_Comm com = Output<dim, T>::_communicator;
+          MPI_Comm com = this->communicator;
           MPI_Allreduce(&local_particle_count, &global_particle_count, 1, MPI_UNSIGNED, MPI_SUM, com);
           dims[0] = global_particle_count;
           dims[1] = 3;
@@ -385,7 +419,7 @@ namespace aspect
 
           // Count the number of particles on this process and get the offset among all processes
           mpi_count = particles.size();
-          MPI_Scan(&mpi_count, &mpi_offset, 1, MPI_UNSIGNED, MPI_SUM, Output<dim, T>::_communicator);
+          MPI_Scan(&mpi_count, &mpi_offset, 1, MPI_UNSIGNED, MPI_SUM, this->communicator);
           count[0] = mpi_count;
           count[1] = 3;
           offset[0] = mpi_offset-mpi_count;
@@ -451,22 +485,22 @@ namespace aspect
           status = H5Fclose(h5_file_id);
 
           // Record and output XDMF info on root process
-          if (Output<dim, T>::self_rank() == 0)
+          if (this->self_rank() == 0)
             {
               std::string local_h5_filename = output_file_prefix+".h5";
               XDMFEntry   entry(local_h5_filename, current_time, global_particle_count, 0, 3);
               DataOut<dim> data_out;
-              const std::string xdmf_filename = (Output<dim, T>::_output_dir + "particle.xdmf");
+              const std::string xdmf_filename = (this->output_dir + "particle.xdmf");
 
               entry.add_attribute("velocity", 3);
               entry.add_attribute("id", 1);
               xdmf_entries.push_back(entry);
 
-              data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(), Output<dim, T>::_communicator);
+              data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(), this->communicator);
             }
 #endif
 
-          Output<dim, T>::_file_index++;
+          this->file_index++;
 
           return output_path_prefix;
         };
