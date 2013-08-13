@@ -30,76 +30,79 @@ namespace aspect
 {
   namespace Particle
   {
-    /**
-     *  Abstract base class used for classes that generate particle output
-     */
-    template <int dim, class T>
-    class Output
+    namespace Output
     {
-      protected:
-        /**
-         *  MPI communicator to be used for output synchronization
-         */
-        MPI_Comm        communicator;
+      /**
+       *  Abstract base class used for classes that generate particle output
+       */
+      template <int dim, class T>
+      class Interface
+      {
+        protected:
+          /**
+           *  MPI communicator to be used for output synchronization
+           */
+          MPI_Comm        communicator;
 
-        /**
-         *  Internal index of file output number, must be incremented
-         *  by derived classes when they create a new file.
-         */
-        unsigned int    file_index;
-
-
-        // Path to directory in which to put particle output files
-        std::string     output_dir;
-
-      public:
-        /**
-         * Constructor.
-         */
-        Output()
-      :
-        file_index (0)
-        {}
-
-        unsigned int self_rank()
-        {
-          return Utilities::MPI::this_mpi_process(communicator);
-        };
-
-        unsigned int world_size()
-        {
-          return Utilities::MPI::n_mpi_processes(communicator);
-        };
-
-        void set_mpi_comm(MPI_Comm new_comm_world)
-        {
-          communicator = new_comm_world;
-        };
-
-        void set_output_directory(const std::string &new_out_dir)
-        {
-          output_dir = new_out_dir;
-        };
-
-        virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles,
-                                                 const double &current_time) = 0;
-    };
+          /**
+           *  Internal index of file output number, must be incremented
+           *  by derived classes when they create a new file.
+           */
+          unsigned int    file_index;
 
 
-    /**
-     * Create an output object given the specified name.
-     */
-    template <int dim, class T>
-    Output<dim, T> *
-    create_output_object (const std::string &data_format_name);
+          // Path to directory in which to put particle output files
+          std::string     output_dir;
+
+        public:
+          /**
+           * Constructor.
+           */
+          Interface()
+            :
+            file_index (0)
+          {}
+
+          unsigned int self_rank()
+          {
+            return Utilities::MPI::this_mpi_process(communicator);
+          };
+
+          unsigned int world_size()
+          {
+            return Utilities::MPI::n_mpi_processes(communicator);
+          };
+
+          void set_mpi_comm(MPI_Comm new_comm_world)
+          {
+            communicator = new_comm_world;
+          };
+
+          void set_output_directory(const std::string &new_out_dir)
+          {
+            output_dir = new_out_dir;
+          };
+
+          virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles,
+                                                   const double &current_time) = 0;
+      };
 
 
-    /**
-     * Return a list of names (separated by '|') of possible writers of graphical
-     * output formats for particle data.
-     */
-    std::string
-    output_object_names ();
+      /**
+       * Create an output object given the specified name.
+       */
+      template <int dim, class T>
+      Interface<dim, T> *
+      create_output_object (const std::string &data_format_name);
+
+
+      /**
+       * Return a list of names (separated by '|') of possible writers of graphical
+       * output formats for particle data.
+       */
+      std::string
+      output_object_names ();
+    }
   }
 }
 

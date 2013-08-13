@@ -46,9 +46,9 @@ namespace aspect
         Particle::Integrator<dim, Particle::BaseParticle<dim> >         *integrator;
 
         /**
-         * Abstract output object
+         * Pointer to an output object
          */
-        Particle::Output<dim, Particle::BaseParticle<dim> >             *output;
+        Particle::Output::Interface<dim, Particle::BaseParticle<dim> >  *output;
 
         /**
          * Whether this set has been initialized yet or not

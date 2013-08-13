@@ -98,7 +98,7 @@ namespace aspect
           // Create the roulette wheel based on volumes of local cells
           total_volume = 0;
           for (typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-                 it=triangulation->begin_active(); it!=triangulation->end(); ++it)
+               it=triangulation->begin_active(); it!=triangulation->end(); ++it)
             {
               if (it->is_locally_owned())
                 {
@@ -338,7 +338,7 @@ namespace aspect
           // Calculate the number of particles in this domain as a fraction of total volume
           total_volume = local_volume = 0;
           for (typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-                 it=triangulation->begin_active();
+               it=triangulation->begin_active();
                it!=triangulation->end(); ++it)
             {
               double cell_volume = it->measure();

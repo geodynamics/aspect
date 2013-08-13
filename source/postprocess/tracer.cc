@@ -44,7 +44,7 @@ namespace aspect
       if (!initialized)
         {
           // Create an output object depending on what the parameters specify
-          output = Particle::create_output_object<dim,Particle::BaseParticle<dim> > (data_output_format);
+          output = Particle::Output::create_output_object<dim,Particle::BaseParticle<dim> > (data_output_format);
           output->set_output_directory(this->get_output_directory());
 
           //TODO: Use factory methods here
@@ -142,7 +142,7 @@ namespace aspect
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
           prm.declare_entry("Data output format", "none",
-                            Patterns::Selection(Particle::output_object_names()),
+                            Patterns::Selection(Particle::Output::output_object_names()),
                             "File format to output raw particle data in.");
           prm.declare_entry("Integration scheme", "rk2",
                             Patterns::Selection("euler|"
