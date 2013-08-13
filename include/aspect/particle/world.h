@@ -90,7 +90,6 @@ namespace aspect
         {
           unsigned int          i, d, v, num_tries, cur_id;
           double                total_volume, roulette_spin;
-          typename parallel::distributed::Triangulation<dim>::active_cell_iterator  it;
           std::map<double, LevelInd>        roulette_wheel;
           const unsigned int n_vertices_per_cell = GeometryInfo<dim>::vertices_per_cell;
           Point<dim>            pt, max_bounds, min_bounds;
@@ -98,7 +97,8 @@ namespace aspect
 
           // Create the roulette wheel based on volumes of local cells
           total_volume = 0;
-          for (it=triangulation->begin_active(); it!=triangulation->end(); ++it)
+          for (typename parallel::distributed::Triangulation<dim>::active_cell_iterator
+                 it=triangulation->begin_active(); it!=triangulation->end(); ++it)
             {
               if (it->is_locally_owned())
                 {
@@ -116,7 +116,9 @@ namespace aspect
               // Select a cell based on relative volume
               roulette_spin = total_volume*drand48();
               select_cell = roulette_wheel.lower_bound(roulette_spin)->second;
-              it = typename parallel::distributed::Triangulation<dim>::active_cell_iterator(triangulation, select_cell.first, select_cell.second);
+
+              const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
+              it (triangulation, select_cell.first, select_cell.second);
 
               // Get the bounds of the cell defined by the vertices
               for (d=0; d<dim; ++d)
@@ -330,18 +332,21 @@ namespace aspect
         void global_add_particles(const unsigned int total_particles)
         {
           double      total_volume, local_volume, subdomain_fraction, start_fraction, end_fraction;
-          typename parallel::distributed::Triangulation<dim>::active_cell_iterator  it;
 
           global_sum_particles = total_particles;
+
           // Calculate the number of particles in this domain as a fraction of total volume
           total_volume = local_volume = 0;
-          for (it=triangulation->begin_active(); it!=triangulation->end(); ++it)
+          for (typename parallel::distributed::Triangulation<dim>::active_cell_iterator
+                 it=triangulation->begin_active();
+               it!=triangulation->end(); ++it)
             {
               double cell_volume = it->measure();
               AssertThrow (cell_volume != 0, ExcMessage ("Found cell with zero volume."));
-              if (it->is_locally_owned()) local_volume += cell_volume;
-            }
 
+              if (it->is_locally_owned())
+                local_volume += cell_volume;
+            }
           // Sum the local volumes over all nodes
           MPI_Allreduce(&local_volume, &total_volume, 1, MPI_DOUBLE, MPI_SUM, communicator);
 
@@ -359,6 +364,8 @@ namespace aspect
 
           generate_particles_in_subdomain(subdomain_particles, start_id);
         };
+
+
         std::string output_particle_data(const std::string &output_dir);
         void find_all_cells()
         {
