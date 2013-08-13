@@ -1,0 +1,195 @@
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,526 (578+81+289+289+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 1 iterations.
+   Solving composition system 1... 0 iterations.
+   Solving composition system 2... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition-passive-tracers/solution-00000
+     Advecting particles:      done. Writing particle graphical output output-composition-passive-tracers/particles-00000
+
+*** Timestep 1:  t=0.0625 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 10 iterations.
+   Solving composition system 2... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7 iterations.
+
+   Postprocessing:
+     Advecting particles: done
+
+*** Timestep 2:  t=0.125 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 11 iterations.
+   Solving composition system 2... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition-passive-tracers/solution-00001
+     Advecting particles:      done. Writing particle graphical output output-composition-passive-tracers/particles-00001
+
+*** Timestep 3:  t=0.1875 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 12 iterations.
+   Solving composition system 2... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+     Advecting particles: done
+
+*** Timestep 4:  t=0.25 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 11 iterations.
+   Solving composition system 2... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition-passive-tracers/solution-00002
+     Advecting particles:      done. Writing particle graphical output output-composition-passive-tracers/particles-00002
+
+*** Timestep 5:  t=0.3125 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 11 iterations.
+   Solving composition system 2... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition-passive-tracers/solution-00003
+     Advecting particles:      done. Writing particle graphical output output-composition-passive-tracers/particles-00003
+
+*** Timestep 6:  t=0.375 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 11 iterations.
+   Solving composition system 2... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17 iterations.
+
+   Postprocessing:
+     Advecting particles: done
+
+*** Timestep 7:  t=0.4375 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 11 iterations.
+   Solving composition system 2... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition-passive-tracers/solution-00004
+     Advecting particles:      done. Writing particle graphical output output-composition-passive-tracers/particles-00004
+
+*** Timestep 8:  t=0.5 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 10 iterations.
+   Solving composition system 2... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition-passive-tracers/solution-00005
+     Advecting particles:      done. Writing particle graphical output output-composition-passive-tracers/particles-00005
+
+*** Timestep 9:  t=0.5625 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 10 iterations.
+   Solving composition system 2... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17 iterations.
+
+   Postprocessing:
+     Advecting particles: done
+
+*** Timestep 10:  t=0.625 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 10 iterations.
+   Solving composition system 2... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition-passive-tracers/solution-00006
+     Advecting particles:      done. Writing particle graphical output output-composition-passive-tracers/particles-00006
+
+*** Timestep 11:  t=0.6875 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 10 iterations.
+   Solving composition system 2... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+     Advecting particles: done
+
+*** Timestep 12:  t=0.75 seconds
+   Solving temperature system... 11 iterations.
+   Solving composition system 1... 11 iterations.
+   Solving composition system 2... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition-passive-tracers/solution-00007
+     Advecting particles:      done. Writing particle graphical output output-composition-passive-tracers/particles-00007
+
+*** Timestep 13:  t=0.8125 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 10 iterations.
+   Solving composition system 2... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition-passive-tracers/solution-00008
+     Advecting particles:      done. Writing particle graphical output output-composition-passive-tracers/particles-00008
+
+*** Timestep 14:  t=0.875 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 10 iterations.
+   Solving composition system 2... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Advecting particles: done
+
+*** Timestep 15:  t=0.9375 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 10 iterations.
+   Solving composition system 2... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition-passive-tracers/solution-00009
+     Advecting particles:      done. Writing particle graphical output output-composition-passive-tracers/particles-00009
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      36.8s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |        16 |      3.38s |       9.2% |
+| Assemble composition system     |        32 |      13.4s |        37% |
+| Assemble temperature system     |        16 |      6.69s |        18% |
+| Build Stokes preconditioner     |        16 |      1.87s |       5.1% |
+| Build composition preconditioner|        32 |     0.049s |      0.13% |
+| Build temperature preconditioner|        16 |    0.0235s |     0.064% |
+| Solve Stokes system             |        16 |     0.174s |      0.47% |
+| Solve composition system        |        32 |    0.0463s |      0.13% |
+| Solve temperature system        |        16 |     0.022s |      0.06% |
+| Initialization                  |         2 |     0.046s |      0.12% |
+| Postprocessing                  |        16 |      10.6s |        29% |
+| Setup dof systems               |         1 |     0.106s |      0.29% |
++---------------------------------+-----------+------------+------------+
+
