@@ -93,7 +93,7 @@ namespace aspect
           initialized = true;
         }
 
-      std::string     result_string = "done.", data_file_name;
+      std::string     result_string = "done", data_file_name;
 
       // If it's time to generate an output file, call the appropriate functions and reset the timer
       if (this->get_time() >= next_data_output_time)
