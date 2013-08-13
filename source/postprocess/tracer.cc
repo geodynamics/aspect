@@ -39,7 +39,6 @@ namespace aspect
     std::pair<std::string,std::string>
     PassiveTracers<dim>::execute (TableHandler &statistics)
     {
-      std::string     result_string = "done.", data_file_name;
       bool            output_data = false;
 
       if (!initialized)
@@ -94,16 +93,16 @@ namespace aspect
           initialized = true;
         }
 
+      std::string     result_string = "done.", data_file_name;
+
       // If it's time to generate an output file, call the appropriate functions and reset the timer
       if (this->get_time() >= next_data_output_time)
         {
           set_next_data_output_time (this->get_time());
           data_file_name = output->output_particle_data(world.get_particles(),
                                                         this->get_time());
-          output_data = true;
+          result_string += ". Writing particle graphical output " + data_file_name;
         }
-      if (output_data)
-        result_string += " Wrote particle data: " + data_file_name + ".";
 
       // Advance the particles in the world by the current timestep
       world.advance_timestep (this->get_timestep(),
