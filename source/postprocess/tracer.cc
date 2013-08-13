@@ -43,22 +43,11 @@ namespace aspect
 
       if (!initialized)
         {
-//TODO: Use factory methods here
           // Create an output object depending on what the parameters specify
-          if (data_output_format == "ascii")
-            output = new Particle::ASCIIOutput<dim,Particle::BaseParticle<dim> >();
-          else if (data_output_format == "vtu")
-            output = new Particle::VTUOutput<dim,Particle::BaseParticle<dim> >();
-          else if (data_output_format == "hdf5")
-            output = new Particle::HDF5Output<dim,Particle::BaseParticle<dim> >();
-          else if (data_output_format == "none")
-            output = new Particle::NullOutput<dim,Particle::BaseParticle<dim> >();
-          else
-            Assert (false, ExcNotImplemented());
-
-          // Set the output directory for the particle output to be stored in
+          output = Particle::create_output_object<dim,Particle::BaseParticle<dim> > (data_output_format);
           output->set_output_directory(this->get_output_directory());
 
+          //TODO: Use factory methods here
           // Create an integrator object depending on the specified parameter
           if (integration_scheme == "euler")
             integrator = new Particle::EulerIntegrator<dim, Particle::BaseParticle<dim> >;
@@ -153,11 +142,7 @@ namespace aspect
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
           prm.declare_entry("Data output format", "none",
-                            Patterns::Selection("none|"
-                                                "ascii|"
-                                                "vtu|"
-                                                "hdf5"
-                                               ),
+                            Patterns::Selection(Particle::output_object_names()),
                             "File format to output raw particle data in.");
           prm.declare_entry("Integration scheme", "rk2",
                             Patterns::Selection("euler|"
