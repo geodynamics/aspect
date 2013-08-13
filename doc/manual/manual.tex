@@ -3461,7 +3461,6 @@ end
 
 \begin{figure}
   \centering
-  \centering
   \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0000.png}
   \hfill
   \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0001.png}
@@ -3474,7 +3473,7 @@ end
   \hfill
   \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0006.png}
   \caption{Active compositional fields: Temperature fields at $t=0, 2, 4, 8, 12,
-    20$. The black line is the isocontour line $c_1(\vec x,t)=0.5$
+    20$. The black line is the isocontour line $c_1(\mathbf x,t)=0.5$
     delineating the position of the dense material at the bottom.}
   \label{fig:composition-active-temperature}
 \end{figure}
@@ -3512,7 +3511,81 @@ clearly makes no sense at all.
 
 
 \subsubsection{Using tracer particles}
-\marginpar{To be written}
+
+Using compositional fields to trace where material has come from or is going to
+has many advantages from a computational point of view. For example, the
+numerical methods to advect along fields are well developed and we can do so at
+a cost that is equivalent to one temperature solve for each of the compositional
+fields. Unless you have many compositional fields, this cost is therefore
+relatively small compared to the overall cost of a time step. Another advantage
+is that the value of a compositional field is well defined at every point within
+the domain. On the other hand, compositional fields over time diffuse initially
+sharp interfaces, as we have seen in the images of the previous section.
+
+On the other hand, the geodynamics community has a history of using tracers for
+this purpose. Historically, this may have been because it is conceptually
+simpler to advect along individual particles rather than whole fields, since it
+only requires an ODE integrator rather than the stabilization techniques
+necessary to advect fields. They also provide the appearance of no diffusion,
+though this is arguable. Leaving the debate whether fields or particles are the
+way to go aside, \aspect{} supports using tracers.
+
+In order to advect tracer particles along with the flow field, one just needs to
+add the \texttt{tracers} postprocessor to the list of postprocessors and specify
+a few parameters. We do so in the
+\url{cookbooks/compositional-passive-tracers.prm} input file, which is otherwise
+just a minor variation of the \url{cookbooks/compositional-passive.prm} case
+discussed in the previous Section~\ref{sec:cookbooks-composition}. In
+particular, the postprocess section now looks like this:
+
+\index[prmindex]{Number of tracers}
+\index[prmindexfull]{Postprocess!Tracers!Number of tracers}
+
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Postprocess
+  set List of postprocessors = visualization, tracers
+
+  subsection Visualization
+    set Time between graphical output = 0.1
+  end
+
+  subsection Tracers
+    set Number of tracers        = 1000
+    set Time between data output = 0.1
+    set Data output format       = vtu
+  end
+end
+\end{lstlisting}
+
+The 1000 particles we are asking here are initially uniformly distributed
+throughout the domain and are, at the end of each time step, advected along with
+the velocity field just computed. (There are a number of options to decide which
+method to use for advecting particles, see
+Section~\ref{parameters:Postprocess/Tracers}.) We can visualize them by opening
+both the field-based output files and the ones that correspond to particles
+(for example, \texttt{output/solution-00072.visit} and
+\texttt{output/particles-00072.visit}) and using a pseudo-color plot for the
+particles, selecting the ``id'' of particles to color each particle. This
+results in a plot like the one shown in
+Fig.~\ref{fig:composition-passive-tracers}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{cookbooks/composition-passive-tracers/solution-00072.png}
+  \caption{Passively advected quantities visualized through both a compositional
+  field and a set of 1,000 particles, at $t=7.2$.}
+  \label{fig:composition-passive-tracers}
+\end{figure}
+
+The particles shown here are not too impressive in still pictures since they are
+colorized by their particle number, which -- since particles were initially
+randomly distributed -- is essentially a random number. The purpose of using the
+particle id to colorize becomes more apparent if you use it when viewing an
+animation of time steps. There, the different colors of adjacent particles come
+in handy because they allow the eye to follow the motion of a single particle.
+This makes it rather intuitive to understand a flow field, but it can of course
+not be reproduced in a static medium such as this manual.
+
 
 
 \subsection{Geophysical setups}
