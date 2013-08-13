@@ -138,7 +138,7 @@ namespace aspect
       {
         prm.enter_subsection("Tracers");
         {
-          prm.declare_entry ("Number of tracers", "1e3",
+          prm.declare_entry ("Number of tracers", "1000",
                              Patterns::Double (0),
                              "Total number of tracers to create (not per processor or per element). "
                              "The number is parsed as a floating point number (so that one can "
