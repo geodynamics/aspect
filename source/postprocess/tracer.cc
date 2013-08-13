@@ -108,7 +108,7 @@ namespace aspect
       world.advance_timestep (this->get_timestep(),
                               this->get_solution());
 
-      return std::make_pair("Advecting particles...", result_string);
+      return std::make_pair("Advecting particles:", result_string);
     }
 
 
