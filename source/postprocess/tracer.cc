@@ -44,8 +44,10 @@ namespace aspect
       if (!initialized)
         {
           // Create an output object depending on what the parameters specify
-          output = Particle::Output::create_output_object<dim,Particle::BaseParticle<dim> > (data_output_format);
-          output->set_output_directory(this->get_output_directory());
+          output = Particle::Output::create_output_object<dim,Particle::BaseParticle<dim> >
+                   (data_output_format,
+                    this->get_output_directory(),
+                    this->get_mpi_communicator());
 
           //TODO: Use factory methods here
           // Create an integrator object depending on the specified parameter
@@ -69,7 +71,6 @@ namespace aspect
           world.set_dof_handler(&(this->get_dof_handler()));
           world.set_integrator(integrator);
           world.set_mpi_comm(this->get_mpi_communicator());
-          output->set_mpi_comm(this->get_mpi_communicator());
 
           // And initialize the world
           world.init();
@@ -89,7 +90,9 @@ namespace aspect
         {
           set_next_data_output_time (this->get_time());
           data_file_name = output->output_particle_data(world.get_particles(),
-                                                        this->get_time());
+                                                        (this->convert_output_to_years() ?
+                                                            this->get_time() / year_in_seconds :
+                                                            this->get_time()));
           result_string += ". Writing particle graphical output " + data_file_name;
         }
 

@@ -40,7 +40,15 @@ namespace aspect
         MPI_Datatype    _data_type;
         unsigned int    _elem_size_bytes;
 
-        MPIDataInfo(std::string name, unsigned int num_elems, MPI_Datatype data_type, unsigned int elem_size_bytes) : _name(name), _num_elems(num_elems), _data_type(data_type), _elem_size_bytes(elem_size_bytes) {};
+        MPIDataInfo(std::string name,
+                    unsigned int num_elems,
+                    MPI_Datatype data_type,
+                    unsigned int elem_size_bytes)
+        :
+          _name(name),
+          _num_elems(num_elems),
+          _data_type(data_type),
+          _elem_size_bytes(elem_size_bytes) {};
     };
 
     enum ParticleDataFormat
@@ -100,22 +108,31 @@ namespace aspect
                 // Read location data
                 for (i=0; i<dim; ++i)
                   {
-                    _loc(i) = ((double *)p)[0];
+                    double val;
+                    memcpy (&val, p, sizeof(double));
+                    _loc(i) = val;
                     p += sizeof(double);
                   }
                 // Write velocity data
                 for (i=0; i<dim; ++i)
                   {
-                    _vel(i) = ((double *)p)[0];
+                    double val;
+                    memcpy (&val, p, sizeof(double));
+                    _vel(i) = val;
                     p += sizeof(double);
                   }
-                _id = ((double *)p)[0];
+
+                double val;
+                memcpy (&val, p, sizeof(double));
+                _id = val;
                 p += sizeof(double);
+
                 break;
             }
 
           return p;
         };
+
         virtual char *write_data(ParticleDataFormat format, char *data) const
         {
           char          *p = data;
@@ -129,16 +146,20 @@ namespace aspect
                 // Write location data
                 for (i=0; i<dim; ++i)
                   {
-                    ((double *)p)[0] = _loc(i);
+                    double val = _loc(i);
+                    memcpy (p, &val, sizeof(double));
                     p += sizeof(double);
                   }
                 // Write velocity data
                 for (i=0; i<dim; ++i)
                   {
-                    ((double *)p)[0] = _vel(i);
+                    double val = _vel(i);
+                    memcpy (p, &val, sizeof(double));
                     p += sizeof(double);
                   }
-                ((double *)p)[0] = _id;
+
+                double val = _id;
+                memcpy (p, &val, sizeof(double));
                 p += sizeof(double);
                 break;
             }
@@ -203,8 +224,8 @@ namespace aspect
       private:
         double      _val[data_dim];
 
-      public:
-        DataParticle(void)
+      private:
+        DataParticle()
         {
           for (unsigned int i=0; i<data_dim; ++i) _val[i] = 0;
         };
@@ -226,6 +247,7 @@ namespace aspect
             }
           return 0;
         };
+
         virtual char *read_data(ParticleDataFormat format, char *data)
         {
           char          *p = data;
@@ -240,7 +262,9 @@ namespace aspect
               case MPI_DATA:
                 for (i=0; i<data_dim; ++i)
                   {
-                    _val[i] = ((double *)p)[0];
+                    double val;
+                    memcpy (&val, p, sizeof(double));
+                    _val[i] = val;
                     p += sizeof(double);
                   }
                 break;
@@ -250,6 +274,8 @@ namespace aspect
 
           return p;
         };
+
+
         virtual char *write_data(ParticleDataFormat format, char *data) const
         {
           char          *p = data;
@@ -264,7 +290,7 @@ namespace aspect
               case MPI_DATA:
                 for (i=0; i<data_dim; ++i)
                   {
-                    ((double *)p)[0] = _val[i];
+                    memcpy (p, _val[i], sizeof(double));
                     p += sizeof(double);
                   }
                 break;
@@ -280,13 +306,15 @@ namespace aspect
         {
           AssertThrow(data_dim>=dim, std::out_of_range("get_vector"));
           Point<dim>  p;
-          for (unsigned int i=0; i<dim; ++i) p(i) = _val[i];
+          for (unsigned int i=0; i<dim; ++i)
+            p(i) = _val[i];
         };
         // Sets the first dim components of _val to the specified vector value
         void set_vector(Point<dim> new_vec)
         {
           AssertThrow(data_dim>=dim, std::out_of_range("set_vector"));
-          for (unsigned int i=0; i<dim; ++i) _val[i] = new_vec(i);
+          for (unsigned int i=0; i<dim; ++i)
+            _val[i] = new_vec(i);
         };
 
         double &operator[](const unsigned int &ind)

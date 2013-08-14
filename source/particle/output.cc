@@ -20,8 +20,8 @@
 /*  $Id$  */
 
 #include <aspect/particle/output.h>
-#include <deal.II/numerics/data_out.h>
 #include <aspect/particle/particle.h>
+#include <deal.II/numerics/data_out.h>
 
 #ifdef DEAL_II_HAVE_HDF5
 #  include <hdf5.h>
@@ -39,7 +39,37 @@ namespace aspect
       class NullOutput : public Interface<dim, T>
       {
         public:
-          virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles, const double &current_time)
+          /**
+           * Constructor.
+           *
+           * @param[in] The directory into which output files shall be placed.
+           * @param[in] The MPI communicator that describes this simulation.
+           */
+          NullOutput(const std::string &output_directory,
+                     const MPI_Comm     communicator)
+            :
+            Interface<dim,T> (output_directory, communicator)
+          {}
+
+          /**
+           * Write data about the particles specified in the first argument
+           * to a file. If possible, encode the current simulation time
+           * into this file using the data provided in the second argument.
+           *
+           * @param[in] particles The set of particles to generate a graphical
+           *   representation for
+           * @param[in] current_time Current time of the simulation, given as either
+           *   years or seconds, as selected in the input file. In other words,
+           *   output writers do not need to know the units in which time is
+           *   described.
+           * @return The name of the file that was written, or any other
+           *   information that describes what output was produced if for example
+           *   multiple files were created.
+           */
+          virtual
+          std::string
+          output_particle_data(const std::multimap<LevelInd, T> &/*particles*/,
+                               const double &/*current_time*/)
           {
             return "";
           };
@@ -49,8 +79,36 @@ namespace aspect
       class ASCIIOutput : public Interface<dim, T>
       {
         public:
-          virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles,
-                                                   const double &current_time)
+          /**
+           * Constructor.
+           *
+           * @param[in] The directory into which output files shall be placed.
+           * @param[in] The MPI communicator that describes this simulation.
+           */
+          ASCIIOutput(const std::string &output_directory,
+                      const MPI_Comm     communicator)
+            :
+            Interface<dim,T> (output_directory, communicator)
+          {}
+          /**
+           * Write data about the particles specified in the first argument
+           * to a file. If possible, encode the current simulation time
+           * into this file using the data provided in the second argument.
+           *
+           * @param[in] particles The set of particles to generate a graphical
+           *   representation for
+           * @param[in] current_time Current time of the simulation, given as either
+           *   years or seconds, as selected in the input file. In other words,
+           *   output writers do not need to know the units in which time is
+           *   described.
+           * @return The name of the file that was written, or any other
+           *   information that describes what output was produced if for example
+           *   multiple files were created.
+           */
+          virtual
+          std::string
+          output_particle_data(const std::multimap<LevelInd, T> &particles,
+                               const double &current_time)
           {
             typename std::multimap<LevelInd, T>::const_iterator  it;
             unsigned int                            i;
@@ -61,10 +119,10 @@ namespace aspect
 
             output_file_prefix = "particle-" + Utilities::int_to_string (this->file_index, 5);
             output_path_prefix = this->output_dir + output_file_prefix;
-            full_filename = output_path_prefix + "." + Utilities::int_to_string(this->self_rank(), 4) + ".txt";
+            full_filename = output_path_prefix + "." + Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->communicator), 4) + ".txt";
             std::ofstream output (full_filename.c_str());
             if (!output)
-              std::cout << "ERROR: proc " << this->self_rank() << " could not create " << full_filename << std::endl;
+              std::cout << "ERROR: proc " << Utilities::MPI::this_mpi_process(this->communicator) << " could not create " << full_filename << std::endl;
 
             // Get the data types
             T::add_mpi_types(data_info);
@@ -96,7 +154,9 @@ namespace aspect
                     // Currently assumes all data is double, may need to change this
                     for (i=0; i<dit->_num_elems; ++i)
                       {
-                        output << ((double *)p)[0] << " ";
+                        double val;
+                        memcpy (&val, p, sizeof(double));
+                        output << val << " ";
                         p += sizeof(double);
                       }
                   }
@@ -117,6 +177,8 @@ namespace aspect
       template <int dim, class T>
       class VTUOutput : public Interface<dim, T>
       {
+        private:
+
           /**
            * A list of pairs (time, pvtu_filename) that have so far been written
            * and that we will pass to DataOutInterface::write_pvd_record
@@ -127,50 +189,79 @@ namespace aspect
            */
 //TODO: This needs to be serialized
           std::vector<std::pair<double,std::string> > times_and_pvtu_file_names;
+
+          /**
+           * Like the previous variable, but for the .visit file.
+           */
           std::vector<std::string>                    vtu_file_names;
 
         public:
-          virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles, const double &current_time)
+          /**
+           * Constructor.
+           *
+           * @param[in] The directory into which output files shall be placed.
+           * @param[in] The MPI communicator that describes this simulation.
+           */
+          VTUOutput(const std::string &output_directory,
+                    const MPI_Comm     communicator)
+            :
+            Interface<dim,T> (output_directory, communicator)
+          {}
+
+          /**
+           * Write data about the particles specified in the first argument
+           * to a file. If possible, encode the current simulation time
+           * into this file using the data provided in the second argument.
+           *
+           * @param[in] particles The set of particles to generate a graphical
+           *   representation for
+           * @param[in] current_time Current time of the simulation, given as either
+           *   years or seconds, as selected in the input file. In other words,
+           *   output writers do not need to know the units in which time is
+           *   described.
+           * @return The name of the file that was written, or any other
+           *   information that describes what output was produced if for example
+           *   multiple files were created.
+           */
+          virtual
+          std::string
+          output_particle_data(const std::multimap<LevelInd, T> &particles,
+                               const double &current_time)
           {
-            typename std::multimap<LevelInd, T>::const_iterator  it;
-            unsigned int                            d, i, num_particles;
-            DataOut<dim>                            data_out;
             std::vector<MPIDataInfo>                data_info;
-            std::vector<MPIDataInfo>::iterator      dit;
             unsigned int                            data_offset;
-            char                                    *particle_data, *p;
+            char                                    *particle_data;
 
             const std::string output_file_prefix = "particles-" + Utilities::int_to_string (this->file_index, 5);
             const std::string output_path_prefix = this->output_dir + output_file_prefix;
 
             const std::string filename = (output_file_prefix +
                                           "." +
-                                          Utilities::int_to_string(this->self_rank(), 4) +
+                                          Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->communicator), 4) +
                                           ".vtu");
             const std::string full_filename = (this->output_dir + filename);
 
             std::ofstream output (full_filename.c_str());
-            if (!output)
-              std::cout << "ERROR: proc "
-                        << this->self_rank() << " could not create " << filename << std::endl;
+            AssertThrow (output, ExcIO());
 
-            num_particles = particles.size();
+            const unsigned int n_particles = particles.size();
 
             // Write VTU file XML
             output << "<?xml version=\"1.0\"?>\n";
             output << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
             output << "  <UnstructuredGrid>\n";
-            output << "    <Piece NumberOfPoints=\"" << num_particles << "\" NumberOfCells=\"" << num_particles << "\">\n";
+            output << "    <Piece NumberOfPoints=\"" << n_particles << "\" NumberOfCells=\"" << n_particles << "\">\n";
 
             // Go through the particles on this domain and print the position of each one
             output << "      <Points>\n";
             output << "        <DataArray name=\"Position\" type=\"Float64\" NumberOfComponents=\"3\" Format=\"ascii\">\n";
-            for (it=particles.begin(); it!=particles.end(); ++it)
+            for (typename std::multimap<LevelInd, T>::const_iterator
+                 it=particles.begin(); it!=particles.end(); ++it)
               {
                 output << "          " << it->second.location();
 
                 // pad with zeros since VTU format wants x/y/z coordinates
-                for (d=dim; d<3; ++d)
+                for (unsigned int d=dim; d<3; ++d)
                   output << " 0.0";
 
                 output << "\n";
@@ -181,15 +272,15 @@ namespace aspect
             // Write cell related data (empty)
             output << "      <Cells>\n";
             output << "        <DataArray type=\"Int32\" Name=\"connectivity\" Format=\"ascii\">\n";
-            for (i=1; i<=num_particles; ++i)
+            for (unsigned int i=1; i<=n_particles; ++i)
               output << "          " << i-1 << "\n";
             output << "        </DataArray>\n";
             output << "        <DataArray type=\"Int32\" Name=\"offsets\" Format=\"ascii\">\n";
-            for (i=1; i<=num_particles; ++i)
+            for (unsigned int i=1; i<=n_particles; ++i)
               output << "          " << i << "\n";
             output << "        </DataArray>\n";
             output << "        <DataArray type=\"UInt8\" Name=\"types\" Format=\"ascii\">\n";
-            for (i=1; i<=num_particles; ++i)
+            for (unsigned int i=1; i<=n_particles; ++i)
               output << "          1\n";
             output << "        </DataArray>\n";
             output << "      </Cells>\n";
@@ -202,20 +293,24 @@ namespace aspect
 
             // Print the data associated with the particles, skipping the first entry (assumed to be position)
             particle_data = new char[T::data_len(HDF5_DATA)];
-            dit = data_info.begin();
+
+            std::vector<MPIDataInfo>::iterator dit = data_info.begin();
             data_offset = dit->_num_elems*dit->_elem_size_bytes;
             dit++;
             for (; dit!=data_info.end(); ++dit)
               {
                 output << "        <DataArray type=\"Float64\" Name=\"" << dit->_name << "\" NumberOfComponents=\"" << (dit->_num_elems == 2 ? 3 : dit->_num_elems) << "\" Format=\"ascii\">\n";
-                for (it=particles.begin(); it!=particles.end(); ++it)
+                for (typename std::multimap<LevelInd, T>::const_iterator
+                     it=particles.begin(); it!=particles.end(); ++it)
                   {
                     it->second.write_data(HDF5_DATA, particle_data);
-                    p = particle_data+data_offset;
+                    char *p = particle_data+data_offset;
                     output << "          ";
-                    for (d=0; d<dit->_num_elems; ++d)
+                    for (unsigned int d=0; d<dit->_num_elems; ++d)
                       {
-                        output << ((double *)p)[0] << " ";
+                        double val;
+                        memcpy (&val, p, sizeof(double));
+                        output << val << " ";
                         p += sizeof(double);
                       }
                     if (dit->_num_elems == 2)
@@ -236,12 +331,12 @@ namespace aspect
 
 
             // Write the parallel pvtu and pvd files on the root process
-            if (this->self_rank() == 0)
+            if (Utilities::MPI::this_mpi_process(this->communicator) == 0)
               {
                 const std::string pvtu_filename = (output_path_prefix + ".pvtu");
 
                 std::ofstream pvtu_output (pvtu_filename.c_str());
-                if (!pvtu_output) std::cout << "ERROR: Could not create " << filename << std::endl;
+                AssertThrow (pvtu_output, ExcIO());
 
                 pvtu_output << "<?xml version=\"1.0\"?>\n";
                 pvtu_output << "<VTKFile type=\"PUnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
@@ -256,7 +351,7 @@ namespace aspect
                     pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << dit->_name << "\" NumberOfComponents=\"" << (dit->_num_elems == 2 ? 3 : dit->_num_elems) << "\" format=\"ascii\"/>\n";
                   }
                 pvtu_output << "    </PPointData>\n";
-                for (i=0; i<this->world_size(); ++i)
+                for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->communicator); ++i)
                   {
                     pvtu_output << "    <Piece Source=\"" << output_file_prefix << "." << Utilities::int_to_string(i, 4) << ".vtu\"/>\n";
                   }
@@ -271,20 +366,20 @@ namespace aspect
                 // write .pvd and .visit records
                 const std::string pvd_master_filename = (this->output_dir + "particles.pvd");
                 std::ofstream pvd_master (pvd_master_filename.c_str());
-                data_out.write_pvd_record (pvd_master, times_and_pvtu_file_names);
+                DataOut<dim>().write_pvd_record (pvd_master, times_and_pvtu_file_names);
 
 //TODO: write a global .visit record. this needs a variant of the write_visit_record
 // function
                 /*
                               const std::string visit_master_filename = (this->output_dir + "particles.visit");
                               std::ofstream visit_master (visit_master_filename.c_str());
-                              data_out.write_visit_record (visit_master, vtu_file_names);
+                              DataOut<dim>().write_visit_record (visit_master, vtu_file_names);
                 */
               }
             this->file_index++;
 
             return output_path_prefix;
-          };
+          }
       };
 
 
@@ -297,9 +392,38 @@ namespace aspect
           std::vector<XDMFEntry>          xdmf_entries;
 
         public:
-          virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles, const double &current_time)
+          /**
+           * Constructor.
+           *
+           * @param[in] The directory into which output files shall be placed.
+           * @param[in] The MPI communicator that describes this simulation.
+           */
+          HDF5Output(const std::string &output_directory,
+                     const MPI_Comm     communicator)
+            :
+            Interface<dim,T> (output_directory, communicator)
+          {}
+
+          /**
+           * Write data about the particles specified in the first argument
+           * to a file. If possible, encode the current simulation time
+           * into this file using the data provided in the second argument.
+           *
+           * @param[in] particles The set of particles to generate a graphical
+           *   representation for
+           * @param[in] current_time Current time of the simulation, given as either
+           *   years or seconds, as selected in the input file. In other words,
+           *   output writers do not need to know the units in which time is
+           *   described.
+           * @return The name of the file that was written, or any other
+           *   information that describes what output was produced if for example
+           *   multiple files were created.
+           */
+          virtual
+          std::string
+          output_particle_data(const std::multimap<LevelInd, T> &particles,
+                               const double &current_time)
           {
-            typename std::multimap<LevelInd, T>::const_iterator  it;
             std::string             output_file_prefix, output_path_prefix, full_filename;
 
             output_file_prefix = "particle-" + Utilities::int_to_string (this->file_index, 5);
@@ -312,7 +436,6 @@ namespace aspect
             hid_t   dim_dataspace_id, one_dim_ds_id;
             hid_t   dim_mem_ds_id, one_dim_mem_ds_id;
             hid_t   pattr_id;
-            herr_t  status;
             hsize_t dims[2], offset[2], count[2];
             unsigned int  mpi_offset, mpi_count, local_particle_count, global_particle_count, d, i;
 
@@ -381,9 +504,9 @@ namespace aspect
             pid_file_dataspace_id = H5Dget_space(pid_dataset_id);
 
             // And select the hyperslabs from each dataspace
-            status = H5Sselect_hyperslab(pos_file_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);
-            status = H5Sselect_hyperslab(vel_file_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);
-            status = H5Sselect_hyperslab(pid_file_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);
+            H5Sselect_hyperslab(pos_file_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);
+            H5Sselect_hyperslab(vel_file_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);
+            H5Sselect_hyperslab(pid_file_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);
 
             // Create property list for collective dataset write
             xfer_plist_id = H5Pcreate(H5P_DATASET_XFER);
@@ -396,6 +519,7 @@ namespace aspect
             vel_data = new double[3*particles.size()];
             id_data = new double[particles.size()];
 
+            typename std::multimap<LevelInd, T>::const_iterator it;
             for (i=0,it=particles.begin(); it!=particles.end(); ++i,++it)
               {
                 for (d=0; d<dim; ++d)
@@ -420,20 +544,21 @@ namespace aspect
             delete[] pos_data;
             delete[] vel_data;
             delete[] id_data;
-            status = H5Pclose(xfer_plist_id);
-            status = H5Sclose(one_dim_mem_ds_id);
-            status = H5Sclose(dim_mem_ds_id);
-            status = H5Sclose(pos_file_dataspace_id);
-            status = H5Sclose(vel_file_dataspace_id);
-            status = H5Sclose(pid_file_dataspace_id);
-            status = H5Dclose(position_dataset_id);
-            status = H5Dclose(velocity_dataset_id);
-            status = H5Dclose(pid_dataset_id);
-            status = H5Pclose(plist_id);
-            status = H5Fclose(h5_file_id);
+
+            H5Pclose(xfer_plist_id);
+            H5Sclose(one_dim_mem_ds_id);
+            H5Sclose(dim_mem_ds_id);
+            H5Sclose(pos_file_dataspace_id);
+            H5Sclose(vel_file_dataspace_id);
+            H5Sclose(pid_file_dataspace_id);
+            H5Dclose(position_dataset_id);
+            H5Dclose(velocity_dataset_id);
+            H5Dclose(pid_dataset_id);
+            H5Pclose(plist_id);
+            H5Fclose(h5_file_id);
 
             // Record and output XDMF info on root process
-            if (this->self_rank() == 0)
+            if (Utilities::MPI::this_mpi_process(this->communicator) == 0)
               {
                 std::string local_h5_filename = output_file_prefix+".h5";
                 XDMFEntry   entry(local_h5_filename, current_time, global_particle_count, 0, 3);
@@ -451,23 +576,25 @@ namespace aspect
             this->file_index++;
 
             return output_path_prefix;
-          };
+          }
       };
 
 
 
       template <int dim, class T>
       Interface<dim,T> *
-      create_output_object (const std::string &data_output_format)
+      create_output_object (const std::string &data_output_format,
+                            const std::string &output_directory,
+                            const MPI_Comm     communicator)
       {
         if (data_output_format == "ascii")
-          return new ASCIIOutput<dim,T>();
+          return new ASCIIOutput<dim,T>(output_directory, communicator);
         else if (data_output_format == "vtu")
-          return new VTUOutput<dim,T>();
+          return new VTUOutput<dim,T>(output_directory, communicator);
         else if (data_output_format == "hdf5")
-          return new HDF5Output<dim,T>();
+          return new HDF5Output<dim,T>(output_directory, communicator);
         else if (data_output_format == "none")
-          return new NullOutput<dim,T>();
+          return new NullOutput<dim,T>(output_directory, communicator);
         else
           Assert (false, ExcNotImplemented());
 
@@ -488,10 +615,14 @@ namespace aspect
       // explicit instantiations
       template
       Interface<2,Particle::BaseParticle<2> > *
-      create_output_object (const std::string &data_output_format);
+      create_output_object (const std::string &data_output_format,
+                            const std::string &output_directory,
+                            const MPI_Comm     communicator);
       template
       Interface<3,Particle::BaseParticle<3> > *
-      create_output_object (const std::string &data_output_format);
+      create_output_object (const std::string &data_output_format,
+                            const std::string &output_directory,
+                            const MPI_Comm     communicator);
     }
   }
 }

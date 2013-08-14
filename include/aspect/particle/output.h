@@ -40,60 +40,79 @@ namespace aspect
       {
         protected:
           /**
+           *  Path to directory in which to put particle output files
+           */
+          const std::string     output_dir;
+
+          /**
            *  MPI communicator to be used for output synchronization
            */
           MPI_Comm        communicator;
 
+//TODO: This needs to be serialized
           /**
            *  Internal index of file output number, must be incremented
            *  by derived classes when they create a new file.
            */
           unsigned int    file_index;
 
-
-          // Path to directory in which to put particle output files
-          std::string     output_dir;
-
         public:
           /**
            * Constructor.
+           *
+           * @param[in] The directory into which output files shall be placed.
+           * @param[in] The MPI communicator that describes this simulation.
            */
-          Interface()
+          Interface(const std::string &output_directory,
+                    const MPI_Comm     communicator)
             :
+            output_dir (output_dir),
+            communicator (communicator),
             file_index (0)
           {}
-
-          unsigned int self_rank()
-          {
-            return Utilities::MPI::this_mpi_process(communicator);
-          };
-
-          unsigned int world_size()
-          {
-            return Utilities::MPI::n_mpi_processes(communicator);
-          };
 
           void set_mpi_comm(MPI_Comm new_comm_world)
           {
             communicator = new_comm_world;
           };
 
-          void set_output_directory(const std::string &new_out_dir)
-          {
-            output_dir = new_out_dir;
-          };
-
-          virtual std::string output_particle_data(const std::multimap<LevelInd, T> &particles,
-                                                   const double &current_time) = 0;
+          /**
+           * Write data about the particles specified in the first argument
+           * to a file. If possible, encode the current simulation time
+           * into this file using the data provided in the second argument.
+           *
+           * @param [in] particles The set of particles to generate a graphical
+           *   representation for
+           * @param [in] current_time Current time of the simulation, given as either
+           *   years or seconds, as selected in the input file. In other words,
+           *   output writers do not need to know the units in which time is
+           *   described.
+           * @return The name of the file that was written, or any other
+           *   information that describes what output was produced if for example
+           *   multiple files were created.
+           */
+          virtual
+          std::string
+          output_particle_data(const std::multimap<LevelInd, T> &particles,
+                               const double &current_time) = 0;
       };
 
 
       /**
-       * Create an output object given the specified name.
+       * Create an output object.
+       *
+       * @param[in] data_format_name Name of the format in which the created
+       *   output writer should produce its files
+       * @param[in] output_directory Directory into which to put the data files
+       * @param[in] communicator MPI communicator object that describes this
+       *   simulation
+       * @return
        */
       template <int dim, class T>
       Interface<dim, T> *
-      create_output_object (const std::string &data_format_name);
+      create_output_object (const std::string &data_format_name,
+                            const std::string &output_directory,
+                            const MPI_Comm     communicator);
 
 
       /**
