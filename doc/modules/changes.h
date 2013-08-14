@@ -8,8 +8,15 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Extended: The ability to compute with tracers has been completely
+  overhauled. In particular, there is now a cookbook in the manual that
+  describes how to use them.
+  <br>
+  (Wolfgang Bangerth, 2013/08/13)
+
   <li>Added: ability to terminate simulation after
-  specified number of steps.
+  specified number of steps. This is implemented as one of the
+  terminator modules that can be selected from the input file.
   <br>
   (Ted Studley, 2013/07/03)
 
