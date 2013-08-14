@@ -261,8 +261,8 @@ namespace aspect
 
               // now also generate a .pvd file that matches simulation
               // time and corresponding .pvtu record
-              times_and_pvtu_names.push_back(std::pair<double,std::string>
-                                             (this->get_time(), pvtu_master_filename));
+              times_and_pvtu_names.push_back(std::make_pair(this->get_time(),
+                                                            pvtu_master_filename));
               const std::string
               pvd_master_filename = (this->get_output_directory() + "solution.pvd");
               std::ofstream pvd_master (pvd_master_filename.c_str());
