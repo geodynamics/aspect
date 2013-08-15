@@ -297,9 +297,9 @@ namespace aspect
           old_types = new MPI_Datatype[num_entries];
           for (i=0; i<num_entries; ++i)
             {
-              block_lens[i] = data_info[i]._num_elems;
-              indices[i] = (i == 0 ? 0 : indices[i-1]+data_info[i-1]._elem_size_bytes*data_info[i-1]._num_elems);
-              old_types[i] = data_info[i]._data_type;
+              block_lens[i] = data_info[i].n_elements;
+              indices[i] = (i == 0 ? 0 : indices[i-1]+data_info[i-1].size_in_bytes*data_info[i-1].n_elements);
+              old_types[i] = data_info[i].data_type;
             }
 
           // Create and commit the MPI type

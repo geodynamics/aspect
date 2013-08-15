@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+ Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -132,13 +132,13 @@ namespace aspect
             for (dit=data_info.begin(); dit!=data_info.end(); ++dit)
               {
                 // If it's a 1D element, print just the name, otherwise use []
-                if (dit->_num_elems == 1)
+                if (dit->n_elements == 1)
                   {
-                    output << dit->_name << " ";
+                    output << dit->name << " ";
                   }
                 else
                   {
-                    for (i=0; i<dit->_num_elems; ++i) output << dit->_name << "[" << i << "] ";
+                    for (i=0; i<dit->n_elements; ++i) output << dit->name << "[" << i << "] ";
                   }
               }
             output << "\n";
@@ -152,7 +152,7 @@ namespace aspect
                 for (dit=data_info.begin(); dit!=data_info.end(); ++dit)
                   {
                     // Currently assumes all data is double, may need to change this
-                    for (i=0; i<dit->_num_elems; ++i)
+                    for (i=0; i<dit->n_elements; ++i)
                       {
                         double val;
                         memcpy (&val, p, sizeof(double));
@@ -295,29 +295,29 @@ namespace aspect
             particle_data = new char[T::data_len(HDF5_DATA)];
 
             std::vector<MPIDataInfo>::iterator dit = data_info.begin();
-            data_offset = dit->_num_elems*dit->_elem_size_bytes;
+            data_offset = dit->n_elements*dit->size_in_bytes;
             dit++;
             for (; dit!=data_info.end(); ++dit)
               {
-                output << "        <DataArray type=\"Float64\" Name=\"" << dit->_name << "\" NumberOfComponents=\"" << (dit->_num_elems == 2 ? 3 : dit->_num_elems) << "\" Format=\"ascii\">\n";
+                output << "        <DataArray type=\"Float64\" Name=\"" << dit->name << "\" NumberOfComponents=\"" << (dit->n_elements == 2 ? 3 : dit->n_elements) << "\" Format=\"ascii\">\n";
                 for (typename std::multimap<LevelInd, T>::const_iterator
                      it=particles.begin(); it!=particles.end(); ++it)
                   {
                     it->second.write_data(HDF5_DATA, particle_data);
                     char *p = particle_data+data_offset;
                     output << "          ";
-                    for (unsigned int d=0; d<dit->_num_elems; ++d)
+                    for (unsigned int d=0; d<dit->n_elements; ++d)
                       {
                         double val;
                         memcpy (&val, p, sizeof(double));
                         output << val << " ";
                         p += sizeof(double);
                       }
-                    if (dit->_num_elems == 2)
+                    if (dit->n_elements == 2)
                       output << "0 ";
                     output << "\n";
                   }
-                data_offset += dit->_num_elems*dit->_elem_size_bytes;
+                data_offset += dit->n_elements*dit->size_in_bytes;
                 output << "        </DataArray>\n";
               }
             delete[] particle_data;
@@ -348,7 +348,7 @@ namespace aspect
 
                 for (dit=data_info.begin()+1; dit!=data_info.end(); ++dit)
                   {
-                    pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << dit->_name << "\" NumberOfComponents=\"" << (dit->_num_elems == 2 ? 3 : dit->_num_elems) << "\" format=\"ascii\"/>\n";
+                    pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << dit->name << "\" NumberOfComponents=\"" << (dit->n_elements == 2 ? 3 : dit->n_elements) << "\" format=\"ascii\"/>\n";
                   }
                 pvtu_output << "    </PPointData>\n";
                 for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->communicator); ++i)

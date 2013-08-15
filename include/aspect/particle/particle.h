@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+ Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -35,20 +35,20 @@ namespace aspect
     class MPIDataInfo
     {
       public:
-        std::string     _name;
-        unsigned int    _num_elems;
-        MPI_Datatype    _data_type;
-        unsigned int    _elem_size_bytes;
+        std::string     name;
+        unsigned int    n_elements;
+        MPI_Datatype    data_type;
+        unsigned int    size_in_bytes;
 
         MPIDataInfo(std::string name,
                     unsigned int num_elems,
                     MPI_Datatype data_type,
                     unsigned int elem_size_bytes)
         :
-          _name(name),
-          _num_elems(num_elems),
-          _data_type(data_type),
-          _elem_size_bytes(elem_size_bytes) {};
+          name(name),
+          n_elements(num_elems),
+          data_type(data_type),
+          size_in_bytes(elem_size_bytes) {};
     };
 
     enum ParticleDataFormat
