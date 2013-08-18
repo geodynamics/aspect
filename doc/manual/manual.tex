@@ -1137,8 +1137,8 @@ The following steps should guide you through the installation of these
 prerequisites:
 \begin{enumerate}
 \item \textit{Trilinos:} Trilinos can be downloaded from
-  \href{http://trilinos.sandia.gov/download/trilinos-10.12.html}{http://trilinos.sandia.gov/}. At
-  the current time we recommend Trilinos Version 10.12.x.%
+  \href{http://trilinos.sandia.gov/download/}{http://trilinos.sandia.gov/}. At
+  the current time we recommend Trilinos Version 11.4.x.%
   \footnote{Other versions of Trilinos like 10.6.x
   and 10.8.x have bugs that make these versions unusable for our purpose. The
   \dealii{} ReadMe file provides a list of versions that are known to work
@@ -1167,35 +1167,33 @@ prerequisites:
 %  Once \dealii{} 7.2 is available, this will suffice as well.
 
 \item \textit{\dealii{}:}
-  The current version of \aspect{} requires \dealii{} version 7.3.0 or later.
+  The current version of \aspect{} requires \dealii{} version 8.0 or later.
   This version can be downloaded and installed from
   \url{https://code.google.com/p/dealii/downloads/list}.
-
-  You may want to set the environment variable\footnote{For bash
-    this would be adding the line {\tt{export DEAL\_II\_DIR=/path/to/deal.ii/}} to
-    the file {\tt{\~{}/.bashrc}}.}
-{\tt{DEAL\_II\_DIR}} to the directory where you checked out \dealii.
 
 \item \textit{Configuring and compiling \dealii:} Now it is time to configure
   \dealii.
   To this end, follow the \dealii{}
   \href{http://www.dealii.org/developer/readme.html}{installation
-    instructions}.
-  Remember to point the {\tt{./configure}} script to the paths where
-  you installed p4est and Trilinos and make sure you use MPI
-  compilers. A typical command line would look like this:
+    instructions}. Note that \dealii{} recently made the switch to cmake,
+    so the configuration changed. Make sure you enable MPI.
+    A typical command line would look like this:
 \begin{verbatim}
- ./configure CXX=mpicxx --enable-mpi --disable-threads \
-    --with-trilinos=/u/username/bin/trilinos-10.12.2 \
-    --with-p4est=/u/username/bin/p4est-0.3.3.8
+mkdir build
+cd build
+cmake -DDEAL_II_WITH_MPI=ON \
+      -DCMAKE_INSTALL_PREFIX=/u/username/deal-installed/ \
+      -DTRILINOS_DIR=/u/username/trilinos-11.4.1/ \
+      -DP4EST_DIR=/u/username/p4est-0.3.4.1/ \
+      ../deal.II
 \end{verbatim}
   if the Trilinos and \pfrst{} packages have been installed in the
-  subdirectory \texttt{/u/username/bin}.
+  subdirectory \texttt{/u/username/}.
   Make sure the configuration succeeds and detects the MPI compilers
   correctly. For more information see the documentation of \dealii.
 
-  Now you are ready to compile \dealii{} by running {\tt{make all}}. If you
-  have multiple processor cores, feel free to do {\tt{make all -jN}} where
+  Now you are ready to compile \dealii{} by running {\tt{make install}}. If you
+  have multiple processor cores, feel free to do {\tt{make install -jN}} where
   \texttt{N} is the number of processors in your machine to accelerate the
   process.
 
@@ -1203,6 +1201,12 @@ prerequisites:
   by running the {\tt{step-32}} example that you can find in
   {\tt{\$DEAL\_II\_DIR/examples/step-32}}. Compile by running {\tt{make}} and run
   with {\tt{mpirun -n 2 ./step-32}}.
+
+\item  You may now want to set the environment variable\footnote{For bash
+    this would be adding the line {\tt{export DEAL\_II\_DIR=/path/to/deal-installed/}} to
+    the file {\tt{\~{}/.bashrc}}.}
+{\tt{DEAL\_II\_DIR}} to the directory where you \textit{installed} \dealii.
+  
 \end{enumerate}
 
 
@@ -1212,10 +1216,21 @@ The development version of \aspect{} can be downloaded by executing the command
 \begin{verbatim}
  svn checkout https://svn.aspect.dealii.org/trunk/aspect
 \end{verbatim}
-If {\tt{\$DEAL\_II\_DIR}} points to your \dealii{} installation, there is no
-further configuration that needs to be done, otherwise you need to edit
-the {\tt{Makefile}} accordingly.
+If {\tt{\$DEAL\_II\_DIR}} points to your \dealii{} installation, you can configure
+aspect with
+\begin{verbatim}
+ cmake .
+\end{verbatim}
+If you did not set {\tt{\$DEAL\_II\_DIR}} you have to supply cmake with the location:
+\begin{verbatim}
+ cmake -DDEAL_II_DIR=/u/username/deal-installed/ .
+\end{verbatim}
 
+An alternative would be to configure aspect as an out-of-source build. Similar to
+the configuration of \dealii{}, you would need to create a build directory and
+specify an install directory using -DCMAKE\_INSTALL\_PREFIX. The
+instructions in the following sections assume an in-source build, so you need
+to adapt the location of the \aspect{} binary.
 
 \subsection{Compiling \aspect{} and generating documentation}
 \label{sec:compiling}
@@ -1228,9 +1243,7 @@ can compile it by typing
 on the command line (or \texttt{make -jN} if you have multiple processors in
 your machine, where \texttt{N} is the number of processors). This builds the
 \aspect{} executable which will reside in
-the \texttt{lib/} subdirectory and will be named \texttt{lib/aspect-2d} or
-\texttt{lib/aspect-3d}, depending on the space dimension you compile for (see
-Section~\ref{sec:2d-vs-3d} for more information on this). If you intend to
+the main directory and will be named \texttt{./aspect}. If you intend to
 modify \aspect{} for your own experiments, you may want to also generate
 documentation about the source code. This can be done using the command
 \begin{verbatim}
@@ -1249,13 +1262,13 @@ point for exploring the documentation.
 \label{sec:running-overview}
 
 After compiling \aspect{} as described above, you should have an executable
-file in the \texttt{lib/} subdirectory. It can be called as follows:
+file in the main directory. It can be called as follows:
 \begin{verbatim}
-  ./lib/aspect parameter-file.prm
+  ./aspect parameter-file.prm
 \end{verbatim}
 or, if you want to run the program in parallel, using something like
 \begin{verbatim}
-  mpirun -np 32 ./lib/aspect parameter-file.prm
+  mpirun -np 32 ./aspect parameter-file.prm
 \end{verbatim}
 to run with 32 processors. In either case, the argument denotes the (path and)
 name of a file that contains input parameters. When you download \aspect, you
@@ -1642,7 +1655,7 @@ region (see the ``cookbooks'' section, Section~\ref{sec:cookbooks}, and in
 particular Section~\ref{sec:cookbooks-simple-box} for
 the input file for this particular model). We can run the program with 4 processors using
 \begin{verbatim}
-  mpirun -np 4 ./lib/aspect-2d box.prm
+  mpirun -np 4 ./aspect box.prm
 \end{verbatim}
 Letting the program run for a while will result in several output files as
 discussed in Section~\ref{sec:running-overview} above.
@@ -3813,7 +3826,7 @@ Upon running \aspect{} with this input file, you will get output of the
 following kind (obviously with different timings, and details of the output
 may also change as development of the code continues):
 \begin{lstlisting}[frame=single,language=ksh]
-aspect/cookbooks> ../lib/aspect sol_cx.prm
+aspect/cookbooks> ../aspect sol_cx.prm
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
