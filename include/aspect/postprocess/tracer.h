@@ -81,6 +81,11 @@ namespace aspect
          */
         double                          next_data_output_time;
 
+        /**
+         * Compute the next time output should be generated assuming
+         * that output was generated at current_time, and set the result
+         * in the next_data_output_time variable.
+         */
         void set_next_data_output_time (const double current_time);
 
 

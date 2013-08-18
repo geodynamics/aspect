@@ -32,7 +32,7 @@ namespace aspect
                                   const double& new_id)
                                   :
                                   location (new_loc),
-                                  _id (new_id),
+                                  id (new_id),
                                   is_local (true),
                                   check_vel (true)
                                   {
@@ -45,7 +45,7 @@ namespace aspect
     :
     location (),
     velocity (),
-    _id (0),
+    id (0),
     is_local (true),
     check_vel (true)
     {
@@ -96,7 +96,7 @@ namespace aspect
             memcpy (p, &val, sizeof(double));
             p += sizeof(double);
           }
-        double val = _id;
+        double val = id;
         memcpy (p, &val, sizeof(double));
         p += sizeof(double);
         break;
@@ -134,7 +134,7 @@ namespace aspect
           }
         double val;
         memcpy (&val, p, sizeof(double));
-        _id = val;
+        id = val;
         p += sizeof(double);
         break;
       }
@@ -154,6 +154,85 @@ namespace aspect
       }
       return 0;
     }
+
+
+    // Base class of particles - represents a particle with position, velocity, and an ID number
+    template <int dim>
+    Point<dim>
+    BaseParticle<dim>::get_location () const
+    {
+      return location;
+    }
+
+    // Base class of particles - represents a particle with position, velocity, and an ID number
+    template <int dim>
+    void
+    BaseParticle<dim>::set_velocity (Point<dim> new_vel)
+    {
+      velocity = new_vel;
+    }
+
+    // Base class of particles - represents a particle with position, velocity, and an ID number
+    template <int dim>
+    Point<dim>
+    BaseParticle<dim>::get_velocity () const
+    {
+      return velocity;
+    }
+
+    // Base class of particles - represents a particle with position, velocity, and an ID number
+    template <int dim>
+    double
+    BaseParticle<dim>::get_id () const
+    {
+      return id;
+    }
+
+    // Base class of particles - represents a particle with position, velocity, and an ID number
+    template <int dim>
+    bool
+    BaseParticle<dim>::local () const
+    {
+      return is_local;
+    }
+
+    // Base class of particles - represents a particle with position, velocity, and an ID number
+    template <int dim>
+    void
+    BaseParticle<dim>::set_local (bool new_local)
+    {
+      is_local = new_local;
+    }
+
+    // Base class of particles - represents a particle with position, velocity, and an ID number
+    template <int dim>
+    bool
+    BaseParticle<dim>::vel_check () const
+    {
+      return check_vel;
+    }
+
+    // Base class of particles - represents a particle with position, velocity, and an ID number
+    template <int dim>
+    void
+    BaseParticle<dim>::set_vel_check (bool new_vel_check)
+    {
+      check_vel = new_vel_check;
+    }
+
+    // Base class of particles - represents a particle with position, velocity, and an ID number
+    template <int dim>
+    void
+    BaseParticle<dim>::add_mpi_types (std::vector<MPIDataInfo>& data_info)
+    {
+      // Add the position, velocity, ID
+      data_info.push_back (
+          MPIDataInfo ("pos", dim, MPI_DOUBLE, sizeof(double)));
+      data_info.push_back (
+          MPIDataInfo ("velocity", dim, MPI_DOUBLE, sizeof(double)));
+      data_info.push_back (MPIDataInfo ("id", 1, MPI_DOUBLE, sizeof(double)));
+    }
+
 
 
     // explicit instantiation

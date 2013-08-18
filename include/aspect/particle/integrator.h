@@ -122,7 +122,7 @@ namespace aspect
 
           for (it=particles.begin(); it!=particles.end(); ++it)
             {
-              id_num = it->second.id_num();
+              id_num = it->second.get_id();
               loc = it->second.get_location();
               vel = it->second.get_velocity();
               if (_step == 0)
@@ -234,7 +234,7 @@ namespace aspect
 
           for (it=particles.begin(); it!=particles.end(); ++it)
             {
-              id_num = it->second.id_num();
+              id_num = it->second.get_id();
               loc = it->second.get_location();
               vel = it->second.get_velocity();
               if (_step == 0)
@@ -462,13 +462,13 @@ namespace aspect
 
                       cur_scheme = select_scheme(cell_vertices, cell_velocities, dt);
                     }
-                  _scheme[it->second.id_num()] = cur_scheme;
+                  _scheme[it->second.get_id()] = cur_scheme;
                 }
             }
 
           for (it=particles.begin(); it!=particles.end(); ++it)
             {
-              id_num = it->second.id_num();
+              id_num = it->second.get_id();
               loc = it->second.get_location();
               vel = it->second.get_velocity();
               switch (_scheme[id_num])

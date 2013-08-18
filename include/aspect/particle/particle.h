@@ -69,7 +69,8 @@ namespace aspect
         Point<dim>      velocity;
 
         // Globally unique ID of particle
-        double          _id;
+//TODO: make this an unsigned int. but this needs adjustment in data_len, read_data, write_data and all of the places that call write_data and then parse the output...
+        double          id;
 
         // Whether this particle is in the local subdomain or not
         bool            is_local;
@@ -103,50 +104,31 @@ namespace aspect
         void
         set_location (const Point<dim> &new_loc);
 
-        Point<dim> get_location() const
-        {
-          return location;
-        }
+        Point<dim>
+        get_location () const;
 
-        void set_velocity(Point<dim> new_vel)
-        {
-          velocity = new_vel;
-        }
-        Point<dim> get_velocity() const
-        {
-          return velocity;
-        }
+        void
+        set_velocity (Point<dim> new_vel);
+        Point<dim>
+        get_velocity () const;
 
-        double id_num() const
-        {
-          return _id;
-        }
+        double
+        get_id () const;
 
-        bool local() const
-        {
-          return is_local;
-        }
-        void set_local(bool new_local)
-        {
-          is_local = new_local;
-        }
+        bool
+        local () const;
 
-        bool vel_check() const
-        {
-          return check_vel;
-        }
-        void set_vel_check(bool new_vel_check)
-        {
-          check_vel = new_vel_check;
-        }
+        void
+        set_local (bool new_local);
 
-        static void add_mpi_types(std::vector<MPIDataInfo> &data_info)
-        {
-          // Add the position, velocity, ID
-          data_info.push_back(MPIDataInfo("pos", dim, MPI_DOUBLE, sizeof(double)));
-          data_info.push_back(MPIDataInfo("velocity", dim, MPI_DOUBLE, sizeof(double)));
-          data_info.push_back(MPIDataInfo("id", 1, MPI_DOUBLE, sizeof(double)));
-        }
+        bool
+        vel_check () const;
+
+        void
+        set_vel_check (bool new_vel_check);
+
+        static void
+        add_mpi_types (std::vector<MPIDataInfo>& data_info);
     };
 
     // A particle with associated values, such as scalars, vectors or tensors
@@ -278,7 +260,7 @@ namespace aspect
         p (i) = _val[i];
     }
 
-  }
+   }
 }
 
 #endif

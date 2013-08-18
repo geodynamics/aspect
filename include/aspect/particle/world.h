@@ -553,7 +553,7 @@ namespace aspect
           for (i=0,sit=send_particles.begin(); sit!=send_particles.end(); ++sit,++i)
             {
               cur_send_ptr = sit->write_data(MPI_DATA, cur_send_ptr);
-              cur_send_ptr = integrator->write_data(MPI_DATA, sit->id_num(), cur_send_ptr);
+              cur_send_ptr = integrator->write_data(MPI_DATA, sit->get_id(), cur_send_ptr);
             }
 
           // Exchange the particle data between domains
@@ -569,7 +569,7 @@ namespace aspect
               T                   recv_particle;
               LevelInd            found_cell;
               cur_recv_ptr = recv_particle.read_data(MPI_DATA, cur_recv_ptr);
-              cur_recv_ptr = integrator->read_data(MPI_DATA, recv_particle.id_num(), cur_recv_ptr);
+              cur_recv_ptr = integrator->read_data(MPI_DATA, recv_particle.get_id(), cur_recv_ptr);
               found_cell = find_cell(recv_particle, std::make_pair(-1,-1));
               if (recv_particle.local())
                 {

@@ -114,7 +114,9 @@ namespace aspect
       if (data_output_interval > 0)
         {
           // the current time is always in seconds, so we need to convert the output_interval to the same unit
-          double output_interval_in_s = (this->convert_output_to_years()) ? (data_output_interval*year_in_seconds) : data_output_interval;
+          const double output_interval_in_s = (this->convert_output_to_years() ?
+                                               (data_output_interval*year_in_seconds) :
+                                               data_output_interval);
 
           // we need to compute the smallest integer that is bigger than current_time/my_output_interval,
           // even if it is a whole number already (otherwise we output twice in a row)
