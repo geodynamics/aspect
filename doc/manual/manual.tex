@@ -1247,7 +1247,7 @@ the main directory and will be named \texttt{./aspect}. If you intend to
 modify \aspect{} for your own experiments, you may want to also generate
 documentation about the source code. This can be done using the command
 \begin{verbatim}
-  make doc
+  cd doc; make
 \end{verbatim}
 which assumes that you have the \texttt{doxygen} documentation generation tool
 installed. Most Linux distributions have packages for \texttt{doxygen}. The
@@ -1585,10 +1585,19 @@ Section~\ref{sec:cookbooks-simple-box}.
 the source code, and because it is also a way to verify that the compilation
 process worked correctly. If you have verified that the program runs correctly
 with your input parameters, for example by letting it run for the first 10
-time steps, then you can switch to optimized mode by editing the top of the
-\url{Makefile} and following the steps to build and run in
-Section~\ref{sec:compiling}; alternatively, you can just build the entire
-application using the command {\tt{make debug-mode=off}}.
+time steps, then you can switch to optimized mode by compiling \aspect{}
+with the command\footnote{Note that this procedure also changed with the switch to cmake.}
+\begin{verbatim}
+ make release
+\end{verbatim}
+and then compile using
+\begin{verbatim}
+ make
+\end{verbatim}
+To switch back to debug mode type:
+\begin{verbatim}
+ make debug
+\end{verbatim}
 
 \note{It goes without saying that if you make significant modifications to the
   program, you should do the first runs in debug mode to verify that your
