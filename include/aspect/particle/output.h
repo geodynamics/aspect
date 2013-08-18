@@ -66,7 +66,7 @@ namespace aspect
           Interface(const std::string &output_directory,
                     const MPI_Comm     communicator)
             :
-            output_dir (output_dir),
+            output_dir (output_directory),
             communicator (communicator),
             file_index (0)
           {}
