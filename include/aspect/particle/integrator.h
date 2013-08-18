@@ -56,7 +56,7 @@ namespace aspect
 
         // Read integration related data for a particle specified by id_num
         // Returns the data pointer updated to point to the next unwritten byte
-        virtual char *read_data(ParticleDataFormat format, double id_num, char *data) = 0;
+        virtual const char *read_data(ParticleDataFormat format, double id_num, const char *data) = 0;
 
         // Write integration related data for a particle specified by id_num
         // Returns the data pointer updated to point to the next unwritten byte
@@ -76,8 +76,8 @@ namespace aspect
 
           for (it=particles.begin(); it!=particles.end(); ++it)
             {
-              loc = it->second.location();
-              vel = it->second.velocity();
+              loc = it->second.get_location();
+              vel = it->second.get_velocity();
               it->second.set_location(loc + dt*vel);
             }
 
@@ -88,7 +88,7 @@ namespace aspect
         {
           return 0;
         };
-        virtual char *read_data(ParticleDataFormat format, double id_num, char *data)
+        virtual const char *read_data(ParticleDataFormat format, double id_num, const char *data)
         {
           return data;
         };
@@ -123,8 +123,8 @@ namespace aspect
           for (it=particles.begin(); it!=particles.end(); ++it)
             {
               id_num = it->second.id_num();
-              loc = it->second.location();
-              vel = it->second.velocity();
+              loc = it->second.get_location();
+              vel = it->second.get_velocity();
               if (_step == 0)
                 {
                   _loc0[id_num] = loc;
@@ -164,9 +164,9 @@ namespace aspect
           return 0;
         };
 
-        virtual char *read_data(ParticleDataFormat format, double id_num, char *data)
+        virtual const char *read_data(ParticleDataFormat format, double id_num, const char *data)
         {
-          char            *p = data;
+          const char     *p = data;
           unsigned int    i;
 
           switch (format)
@@ -235,8 +235,8 @@ namespace aspect
           for (it=particles.begin(); it!=particles.end(); ++it)
             {
               id_num = it->second.id_num();
-              loc = it->second.location();
-              vel = it->second.velocity();
+              loc = it->second.get_location();
+              vel = it->second.get_velocity();
               if (_step == 0)
                 {
                   _loc0[id_num] = loc;
@@ -297,9 +297,9 @@ namespace aspect
           return 0;
         };
 
-        virtual char *read_data(ParticleDataFormat format, double id_num, char *data)
+        virtual const char *read_data(ParticleDataFormat format, double id_num, const char *data)
         {
-          char            *p = data;
+          const char     *p = data;
           unsigned int    i;
 
           switch (format)
@@ -469,8 +469,8 @@ namespace aspect
           for (it=particles.begin(); it!=particles.end(); ++it)
             {
               id_num = it->second.id_num();
-              loc = it->second.location();
-              vel = it->second.velocity();
+              loc = it->second.get_location();
+              vel = it->second.get_velocity();
               switch (_scheme[id_num])
                 {
                   case SCHEME_EULER:
@@ -556,9 +556,9 @@ namespace aspect
           return 0;
         };
 
-        virtual char *read_data(ParticleDataFormat format, double id_num, char *data)
+        virtual const char *read_data(ParticleDataFormat format, double id_num, const char *data)
         {
-          char            *p = data;
+          const char     *p = data;
           unsigned int    i;
 
           switch (format)

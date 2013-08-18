@@ -180,7 +180,7 @@ namespace aspect
 
           // If the particle is in the specified cell
           found_cell = typename parallel::distributed::Triangulation<dim>::cell_iterator(triangulation, cur_cell.first, cur_cell.second);
-          if (found_cell != triangulation->end() && found_cell->point_inside(particle.location()))
+          if (found_cell != triangulation->end() && found_cell->point_inside(particle.get_location()))
             {
               // If the cell is active, we're at the finest level of refinement and can finish
               if (found_cell->active())
@@ -452,7 +452,7 @@ namespace aspect
           if (!triangulation_changed)
             {
               found_cell = typename parallel::distributed::Triangulation<dim>::cell_iterator(triangulation, cur_cell.first, cur_cell.second);
-              if (found_cell != triangulation->end() && found_cell->point_inside(particle.location()) && found_cell->active())
+              if (found_cell != triangulation->end() && found_cell->point_inside(particle.get_location()) && found_cell->active())
                 {
                   // If the cell is active, we're at the finest level of refinement and can finish
                   particle.set_local(found_cell->is_locally_owned());
@@ -472,7 +472,7 @@ namespace aspect
           // coarse grid
           for (ait=triangulation->begin_active(); ait!=triangulation->end(); ++ait)
             {
-              if (ait->point_inside(particle.location()))
+              if (ait->point_inside(particle.get_location()))
                 {
                   particle.set_local(ait->is_locally_owned());
                   return std::make_pair(ait->level(), ait->index());
@@ -503,7 +503,9 @@ namespace aspect
           unsigned int        rank;
           std::vector<T>      send_particles;
           typename std::vector<T>::const_iterator    sit;
-          char                *send_data, *recv_data, *cur_send_ptr, *cur_recv_ptr;
+          char                *send_data, *cur_send_ptr;
+          char *recv_data;
+          const char *cur_recv_ptr;
           unsigned int        integrator_data_len, particle_data_len;
 
           // Go through the particles and take out those which need to be moved to another processor
@@ -611,7 +613,7 @@ namespace aspect
               i=0;
               while (it != particles.end() && it->first == cur_cell)
                 {
-                  if (it->second.vel_check()) particle_points[i++] = it->second.location();
+                  if (it->second.vel_check()) particle_points[i++] = it->second.get_location();
                   it++;
                 }
               result.resize(i, single_res);

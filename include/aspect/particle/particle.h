@@ -63,150 +63,82 @@ namespace aspect
     {
       private:
         // Current particle location
-        Point<dim>      _loc;
+        Point<dim>      location;
 
         // Current particle velocity
-        Point<dim>      _vel;
+        Point<dim>      velocity;
 
         // Globally unique ID of particle
         double          _id;
 
         // Whether this particle is in the local subdomain or not
-        bool            _local;
+        bool            is_local;
 
         // Whether to check the velocity of this particle
         // This is used for integration schemes which require multiple
         // integration steps for some particles, but not for others
-        bool            _check_vel;
+        bool            check_vel;
 
       public:
-        BaseParticle(void) : _loc(), _vel(), _id(0), _local(true), _check_vel(true) {};
+        BaseParticle ();
 
-        BaseParticle(const Point<dim> &new_loc, const double &new_id) : _loc(new_loc), _id(new_id), _local(true), _check_vel(true) {};
+        BaseParticle (const Point<dim>& new_loc,
+                      const double& new_id);
 
-        virtual ~BaseParticle(void) {};
+        virtual
+        ~BaseParticle ();
 
-        static unsigned int data_len(ParticleDataFormat format)
+        static unsigned int
+        data_len (ParticleDataFormat format);
+
+        virtual const char*
+        read_data (ParticleDataFormat format,
+                   const char* data);
+
+
+        virtual char*
+        write_data (ParticleDataFormat format,
+                    char* data) const;
+
+        void
+        set_location (const Point<dim> &new_loc);
+
+        Point<dim> get_location() const
         {
-          switch (format)
-            {
-              case MPI_DATA:
-              case HDF5_DATA:
-                return (dim+dim+1)*sizeof(double);
-            }
-          return 0;
-        };
-        virtual char *read_data(ParticleDataFormat format, char *data)
-        {
-          char            *p = data;
-          unsigned int    i;
-
-          switch (format)
-            {
-              case MPI_DATA:
-              case HDF5_DATA:
-                // Read location data
-                for (i=0; i<dim; ++i)
-                  {
-                    double val;
-                    memcpy (&val, p, sizeof(double));
-                    _loc(i) = val;
-                    p += sizeof(double);
-                  }
-                // Write velocity data
-                for (i=0; i<dim; ++i)
-                  {
-                    double val;
-                    memcpy (&val, p, sizeof(double));
-                    _vel(i) = val;
-                    p += sizeof(double);
-                  }
-
-                double val;
-                memcpy (&val, p, sizeof(double));
-                _id = val;
-                p += sizeof(double);
-
-                break;
-            }
-
-          return p;
-        };
-
-        virtual char *write_data(ParticleDataFormat format, char *data) const
-        {
-          char          *p = data;
-          unsigned int  i;
-
-          // Then write our data in the appropriate format
-          switch (format)
-            {
-              case MPI_DATA:
-              case HDF5_DATA:
-                // Write location data
-                for (i=0; i<dim; ++i)
-                  {
-                    double val = _loc(i);
-                    memcpy (p, &val, sizeof(double));
-                    p += sizeof(double);
-                  }
-                // Write velocity data
-                for (i=0; i<dim; ++i)
-                  {
-                    double val = _vel(i);
-                    memcpy (p, &val, sizeof(double));
-                    p += sizeof(double);
-                  }
-
-                double val = _id;
-                memcpy (p, &val, sizeof(double));
-                p += sizeof(double);
-                break;
-            }
-
-          return p;
-        };
-
-        void set_location(Point<dim> new_loc)
-        {
-          _loc = new_loc;
-        };
-        Point<dim> location(void) const
-        {
-          return _loc;
-        };
+          return location;
+        }
 
         void set_velocity(Point<dim> new_vel)
         {
-          _vel = new_vel;
-        };
-        Point<dim> velocity(void) const
+          velocity = new_vel;
+        }
+        Point<dim> get_velocity() const
         {
-          return _vel;
-        };
+          return velocity;
+        }
 
-        double id_num(void) const
+        double id_num() const
         {
           return _id;
-        };
+        }
 
-        bool local(void) const
+        bool local() const
         {
-          return _local;
-        };
+          return is_local;
+        }
         void set_local(bool new_local)
         {
-          _local = new_local;
-        };
+          is_local = new_local;
+        }
 
-        bool vel_check(void) const
+        bool vel_check() const
         {
-          return _check_vel;
-        };
+          return check_vel;
+        }
         void set_vel_check(bool new_vel_check)
         {
-          _check_vel = new_vel_check;
-        };
+          check_vel = new_vel_check;
+        }
 
         static void add_mpi_types(std::vector<MPIDataInfo> &data_info)
         {
@@ -214,7 +146,7 @@ namespace aspect
           data_info.push_back(MPIDataInfo("pos", dim, MPI_DOUBLE, sizeof(double)));
           data_info.push_back(MPIDataInfo("velocity", dim, MPI_DOUBLE, sizeof(double)));
           data_info.push_back(MPIDataInfo("id", 1, MPI_DOUBLE, sizeof(double)));
-        };
+        }
     };
 
     // A particle with associated values, such as scalars, vectors or tensors
@@ -248,9 +180,9 @@ namespace aspect
           return 0;
         };
 
-        virtual char *read_data(ParticleDataFormat format, char *data)
+        virtual const char *read_data(ParticleDataFormat format, const char *data)
         {
-          char          *p = data;
+          const char          *p = data;
           unsigned int  i;
 
           // Read the parent data first
@@ -302,31 +234,28 @@ namespace aspect
         };
 
         // Returns a vector from the first dim components of _val
-        Point<dim> get_vector(void) const
-        {
-          AssertThrow(data_dim>=dim, std::out_of_range("get_vector"));
-          Point<dim>  p;
-          for (unsigned int i=0; i<dim; ++i)
-            p(i) = _val[i];
-        };
+        Point<dim>
+        get_vector () const;
+        
         // Sets the first dim components of _val to the specified vector value
         void set_vector(Point<dim> new_vec)
         {
           AssertThrow(data_dim>=dim, std::out_of_range("set_vector"));
           for (unsigned int i=0; i<dim; ++i)
             _val[i] = new_vec(i);
-        };
+        }
 
         double &operator[](const unsigned int &ind)
         {
           AssertThrow(data_dim>ind, std::out_of_range("DataParticle[]"));
           return _val[ind];
-        };
+        }
+
         double operator[](const unsigned int &ind) const
         {
           AssertThrow(data_dim>ind, std::out_of_range("DataParticle[]"));
           return _val[ind];
-        };
+        }
 
         static void add_mpi_types(std::vector<MPIDataInfo> &data_info)
         {
@@ -337,6 +266,18 @@ namespace aspect
           data_info.push_back(MPIDataInfo("data", data_dim, MPI_DOUBLE, sizeof(double)));
         };
     };
+
+    // A particle with associated values, such as scalars, vectors or tensors
+    template <int dim, int data_dim>
+    inline Point<dim>
+    DataParticle<dim,data_dim>::get_vector () const
+    {
+      AssertThrow(data_dim >= dim, std::out_of_range ("get_vector"));
+      Point < dim > p;
+      for (unsigned int i = 0; i < dim; ++i)
+        p (i) = _val[i];
+    }
+
   }
 }
 

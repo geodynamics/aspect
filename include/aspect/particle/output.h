@@ -71,6 +71,12 @@ namespace aspect
             file_index (0)
           {}
 
+          /**
+           * Destructor. Made virtual so that derived classes can be created
+           * and destroyed through pointers to the base class.
+           */
+          virtual ~Interface () {}
+
           void set_mpi_comm(MPI_Comm new_comm_world)
           {
             communicator = new_comm_world;

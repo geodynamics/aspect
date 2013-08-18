@@ -90,6 +90,7 @@ namespace aspect
             :
             Interface<dim,T> (output_directory, communicator)
           {}
+
           /**
            * Write data about the particles specified in the first argument
            * to a file. If possible, encode the current simulation time
@@ -258,7 +259,7 @@ namespace aspect
             for (typename std::multimap<LevelInd, T>::const_iterator
                  it=particles.begin(); it!=particles.end(); ++it)
               {
-                output << "          " << it->second.location();
+                output << "          " << it->second.get_location();
 
                 // pad with zeros since VTU format wants x/y/z coordinates
                 for (unsigned int d=dim; d<3; ++d)
