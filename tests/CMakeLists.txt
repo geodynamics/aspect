@@ -15,7 +15,7 @@ SET_IF_EMPTY(DEAL_II_DIFF "$ENV{DEAL_II_DIFF}")
 SET_IF_EMPTY(DEAL_II_DIFF "numdiff -a 1e-6 -q -s \" \\t\\n:\"")
 
 
-FILE(GLOB _tests plugin.prm)
+FILE(GLOB _tests *.prm)
 FOREACH(_test ${_tests})
   GET_FILENAME_COMPONENT(_test ${_test} NAME_WE) 
 
@@ -52,7 +52,6 @@ FOREACH(_test ${_tests})
   FILE(GLOB _outputs ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/*)
   FOREACH(_output ${_outputs})
     GET_FILENAME_COMPONENT(_output ${_output} NAME_WE) 
-    MESSAGE("***** Adding output-${_test}/${_output}")
 
     # create the output.notime target
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
@@ -66,9 +65,15 @@ FOREACH(_test ${_tests})
     # create the target that compares the .notime with the saved file
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
       COMMAND
-	diff ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
+	if (diff ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
               ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
-            > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
+            > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff) \; then
+          : \;
+        else
+	  mv ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
+             ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed \;
+	  false \;
+        fi
       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
               ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
     )
@@ -82,6 +87,16 @@ FOREACH(_test ${_tests})
   ENDFOREACH()
 
   # add this test to the dependencies of the overall 'tests' target
+  # and declare it to ctest
   ADD_DEPENDENCIES(tests tests.${_test})
+  ADD_TEST(NAME ${_test}
+    COMMAND
+       ${CMAKE_COMMAND}
+	  -DBINARY_DIR=${CMAKE_BINARY_DIR}
+          -DTESTNAME=tests.${_test}
+          -DERROR="Test ${_test} failed"
+          -P ${CMAKE_SOURCE_DIR}/tests/run_test.cmake
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
 ENDFOREACH()
 
