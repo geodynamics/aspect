@@ -1,12 +1,24 @@
-
+################### top matter ################
 FIND_PACKAGE(Perl)
+
+MACRO(SET_IF_EMPTY _variable _value)
+  IF("${${_variable}}" STREQUAL "")
+    SET(${_variable} ${_value})
+  ENDIF()
+ENDMACRO()
+
+############################3
 
 ADD_CUSTOM_TARGET(tests)
 
-FILE(GLOB _tests *.prm)
-FOREACH(_test ${_tests})
+SET_IF_EMPTY(DEAL_II_DIFF "$ENV{DEAL_II_DIFF}")
+SET_IF_EMPTY(DEAL_II_DIFF "numdiff -a 1e-6 -q -s \" \\t\\n:\"")
 
+
+FILE(GLOB _tests plugin.prm)
+FOREACH(_test ${_tests})
   GET_FILENAME_COMPONENT(_test ${_test} NAME_WE) 
+
   IF(EXISTS ${_test}.cc)
     ADD_LIBRARY(${_test} SHARED EXCLUDE_FROM_ALL ${_test}.cc)
     DEAL_II_SETUP_TARGET(${_test})
@@ -15,43 +27,61 @@ FOREACH(_test ${_tests})
     SET(_testdepends)
   ENDIF()
 
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test})
   ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-    COMMAND if test ! -d ${CMAKE_CURRENT_BINARY_DIR}/output-${_test} \; then
-            mkdir ${CMAKE_CURRENT_BINARY_DIR}/output-${_test} \;
-            fi
     COMMAND aspect ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm 
             > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
     COMMAND ${PERL_EXECUTABLE} -pi
-            ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
-            ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
+              ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
+              ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
     DEPENDS aspect ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm ${_testdepends}
     )
 
   ADD_CUSTOM_TARGET(${_test}.run 
     DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
     )
-# numdiff numdiff -a 1e-6 -q -s ' \t\n:'
-  ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/diff-${_test}
-    COMMAND
-      DEAL_II_DIFF=\"diff\" \;
-      for i in ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/* \; do
-        basename=`echo $$i | perl -pi -e 's!.*/!!g\;'` \;
-	cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/$$basename | egrep -v '^\\|' > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/$$basename.notime \;
-	$${DEAL_II_DIFF} ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/$$basename ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/$$basename.notime \;
-	if $$_ \; then 
-          :
-        else 
-          echo "Files ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/$$basename ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/$$basename.notime differ" \; exit 1 \;
-        fi \;
-      done
-    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+
+
+  ADD_CUSTOM_TARGET(tests.${_test})
+
+
+  # for each of the output files saved in the source directory for
+  # this test, create targets that
+  # - create a 'output.notime' file
+  # - diff this file with the saved one and save the result
+  FILE(GLOB _outputs ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/*)
+  FOREACH(_output ${_outputs})
+    GET_FILENAME_COMPONENT(_output ${_output} NAME_WE) 
+    MESSAGE("***** Adding output-${_test}/${_output}")
+
+    # create the output.notime target
+    ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
+      COMMAND
+	cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}
+        | egrep -v '^\\|' 
+        > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
     )
 
-  ADD_CUSTOM_TARGET(${_test}.diff 
-    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/diff-${_test}
+    # create the target that compares the .notime with the saved file
+    ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
+      COMMAND
+	diff ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
+              ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
+            > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
+      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
+              ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
     )
 
-  ADD_DEPENDENCIES(tests ${_test}.diff)
+    # add the target for this output file to the dependencies of this test
+    ADD_CUSTOM_TARGET(${_test}.${_output}.diff 
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
+      )
+    ADD_DEPENDENCIES(tests.${_test} 
+                     ${_test}.${_output}.diff)
+  ENDFOREACH()
 
+  # add this test to the dependencies of the overall 'tests' target
+  ADD_DEPENDENCIES(tests tests.${_test})
 ENDFOREACH()
 
