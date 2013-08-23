@@ -44,7 +44,7 @@ namespace aspect
                     unsigned int num_elems,
                     MPI_Datatype data_type,
                     unsigned int elem_size_bytes)
-        :
+          :
           name(name),
           n_elements(num_elems),
           data_type(data_type),
@@ -83,8 +83,8 @@ namespace aspect
       public:
         BaseParticle ();
 
-        BaseParticle (const Point<dim>& new_loc,
-                      const double& new_id);
+        BaseParticle (const Point<dim> &new_loc,
+                      const double &new_id);
 
         virtual
         ~BaseParticle ();
@@ -92,14 +92,14 @@ namespace aspect
         static unsigned int
         data_len (ParticleDataFormat format);
 
-        virtual const char*
+        virtual const char *
         read_data (ParticleDataFormat format,
-                   const char* data);
+                   const char *data);
 
 
-        virtual char*
+        virtual char *
         write_data (ParticleDataFormat format,
-                    char* data) const;
+                    char *data) const;
 
         void
         set_location (const Point<dim> &new_loc);
@@ -128,7 +128,7 @@ namespace aspect
         set_vel_check (bool new_vel_check);
 
         static void
-        add_mpi_types (std::vector<MPIDataInfo>& data_info);
+        add_mpi_types (std::vector<MPIDataInfo> &data_info);
     };
 
     // A particle with associated values, such as scalars, vectors or tensors
@@ -218,7 +218,7 @@ namespace aspect
         // Returns a vector from the first dim components of _val
         Point<dim>
         get_vector () const;
-        
+
         // Sets the first dim components of _val to the specified vector value
         void set_vector(Point<dim> new_vec)
         {
@@ -260,7 +260,7 @@ namespace aspect
         p (i) = _val[i];
     }
 
-   }
+  }
 }
 
 #endif

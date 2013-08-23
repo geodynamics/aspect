@@ -525,15 +525,15 @@ namespace aspect
               {
                 for (d=0; d<dim; ++d)
                   {
-                    pos_data[i*3+d] = it->second.location()(d);
-                    vel_data[i*3+d] = it->second.velocity()(d);
+                    pos_data[i*3+d] = it->second.get_location()(d);
+                    vel_data[i*3+d] = it->second.get_velocity()(d);
                   }
                 if (dim < 3)
                   {
                     pos_data[i*3+2] = 0;
                     vel_data[i*3+2] = 0;
                   }
-                id_data[i] = it->second.id_num();
+                id_data[i] = it->second.get_id();
               }
 
             // Write particle data to the HDF5 file
