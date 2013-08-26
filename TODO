@@ -39,6 +39,9 @@ Topics for preview release:
 
 
 - Create a task list for a release that includes:
+  *** go over the installation section again and make sure the cmake stuff
+      is in there and correct ***
+
   . go through the list of TODOs in the source code and see what can be done
   . make sure the description of the interfaces that need to be updated
     are up to date in the manual
