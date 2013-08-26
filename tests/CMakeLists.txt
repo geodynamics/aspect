@@ -17,7 +17,8 @@ SET_IF_EMPTY(DEAL_II_DIFF "numdiff -a 1e-6 -q -s \" \\t\\n:\"")
 
 FILE(GLOB _tests *.prm)
 FOREACH(_test ${_tests})
-  GET_FILENAME_COMPONENT(_test ${_test} NAME_WE) 
+  GET_FILENAME_COMPONENT(_test ${_test} NAME) 
+  MESSAGE(STATUS "Adding test ${_test}")
 
   IF(EXISTS ${_test}.cc)
     ADD_LIBRARY(${_test} SHARED EXCLUDE_FROM_ALL ${_test}.cc)
@@ -51,7 +52,7 @@ FOREACH(_test ${_tests})
   # - diff this file with the saved one and save the result
   FILE(GLOB _outputs ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/*)
   FOREACH(_output ${_outputs})
-    GET_FILENAME_COMPONENT(_output ${_output} NAME_WE) 
+    GET_FILENAME_COMPONENT(_output ${_output} NAME) 
 
     # create the output.notime target
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
