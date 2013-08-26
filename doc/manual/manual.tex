@@ -1271,13 +1271,15 @@ or, if you want to run the program in parallel, using something like
   mpirun -np 32 ./aspect parameter-file.prm
 \end{verbatim}
 to run with 32 processors. In either case, the argument denotes the (path and)
-name of a file that contains input parameters. When you download \aspect, you
-should already have a sample input file in the top-level directory that gives
-you an idea of the parameters that can be set. A full description of all
-parameters is given in Section~\ref{sec:parameters}.
+name of a file that contains input parameters. When you download \aspect{},
+there are a number of sample input file in the \texttt{cookbooks} directory,
+corresponding to the examples discussed in Section~\ref{sec:cookbooks}. 
+A full description of all
+parameters one can specify in these files is given in
+Section~\ref{sec:parameters}.
 
-Running the program should produce output that will look something like this
-(numbers will all be different, of course):
+Running \aspect{} with an input file will produce output that will look
+something like this (numbers will all be different, of course):
 \begin{lstlisting}[frame=single,language=ksh]
 Number of active cells: 1,536 (on 5 levels)
 Number of degrees of freedom: 20,756 (12,738+1,649+6,369)
