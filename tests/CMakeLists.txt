@@ -20,7 +20,7 @@ FOREACH(_test ${_tests})
   GET_FILENAME_COMPONENT(_test ${_test} NAME_WE) 
   MESSAGE(STATUS "Adding test ${_test}")
 
-  IF(EXISTS ${_test}.cc)
+  IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.cc)
     ADD_LIBRARY(${_test} SHARED EXCLUDE_FROM_ALL ${_test}.cc)
     DEAL_II_SETUP_TARGET(${_test})
     SET(_testdepends ${_test})
