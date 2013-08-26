@@ -17,7 +17,7 @@ SET_IF_EMPTY(DEAL_II_DIFF "numdiff -a 1e-6 -q -s \" \\t\\n:\"")
 
 FILE(GLOB _tests *.prm)
 FOREACH(_test ${_tests})
-  GET_FILENAME_COMPONENT(_test ${_test} NAME) 
+  GET_FILENAME_COMPONENT(_test ${_test} NAME_WE) 
   MESSAGE(STATUS "Adding test ${_test}")
 
   IF(EXISTS ${_test}.cc)
