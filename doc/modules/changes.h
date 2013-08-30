@@ -8,6 +8,12 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Fixed: The assembly of the temperature and compositional linear systems
+  in each time step used an unnecessarily large number of quadrature points.
+  This is now fixed.
+  <br>
+  (Thomas Geenen, 2013/08/30)
+
   <li>Extended: The ability to compute with tracers has been completely
   overhauled. In particular, there is now a cookbook in the manual that
   describes how to use them.
