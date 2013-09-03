@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: The manual now has a new section discussing ways to make computations
+  go faster.
+  <br>
+  (Wolfgang Bangerth, 2013/09/03)
+
   <li>Fixed: The assembly of the temperature and compositional linear systems
   in each time step used an unnecessarily large number of quadrature points.
   This is now fixed.

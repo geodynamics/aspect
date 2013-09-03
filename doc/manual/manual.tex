@@ -2073,6 +2073,89 @@ Section~\ref{parameters:global}.
   some time.}
 
 
+\subsection{Making \aspect{} run faster}
+
+When developing \aspect{}, we are guided by the principle that the default for
+all settings should be \textit{safe}. In particular, this means that you should
+get errors when something goes wrong, the program should not let you choose an
+input file parameter so that it doesn't make any sense, and we should solve the
+equations to best ability without cutting corners. The goal is that when you
+start working with \aspect{} that we give you the best answer we can. The
+downside is that this also makes \aspect{} run slower than may be possible. This
+section describes ways of making \aspect{} run faster -- assuming that you know
+what you are doing and are making conscious decisions.
+
+\subsubsection{Debug vs.~optimized mode}
+Both \dealii{} and \aspect{} by default have a great deal of internal checking
+to make sure that the code's state is valid. For example, if you write a new
+postprocessing plugin (see Section~\ref{sec:plugins})) in which you need to
+access the solution vector, then \dealii{}'s \texttt{Vector} class will make
+sure that you are only accessing elements of the vector that actually exist and
+are available on the current machine if this is a parallel computation. We do so
+because it turns out that by far the most bugs one introduces in programs are of
+the kind where one tries to do something that obviously doesn't make sense
+(such as accessing vector element 101 when it only has 100 elements). These
+kinds of bugs are more frequent than implementing a wrong algorithm, but they
+are fortunately easy to find if you have a sufficient number of assertions in
+your code. The downside is that assertions cost run time.
+
+As mentioned above, the default is to have all of these assertions in the code
+to catch those places where we may otherwise silently access invalid memory
+locations. However, once you have a plugin running and verified that your input
+file runs without problems, you can switch off all of these checks by switching
+from debug to optimized mode. This means re-compiling \aspect{} and linking
+against a version of the \dealii{} library without all of these internal checks.
+Because this is the first thing you will likely want to do, we have already
+discussed how to do all of this in Section~\ref{sec:debug-mode}.
+
+\subsubsection{Adjusting solver tolerances} At the heart of every time step
+lies the solution of linear systems for the Stokes equations, the temperature
+field, and possibly for compositional fields. In essence, each of these steps
+requires us to solve a linear system of the form $Ax=b$ which we do through
+iterative solvers, i.e., we try to find a sequence of approximations $x^{(k)}$
+where $x^{(k)}\rightarrow x=A^{-1}b$. This iteration is terminated at iteration
+$k$ if the approximation is ``close enough'' to the exact solution. The solvers
+we use this determine this by testing after every iteration whether the
+\textit{residual}, $r^{(k)}=A(x-x^{(k)})=b-Ax^{(k)}$, satisfies
+$\|r^{(k)}\|\le\varepsilon\|r^{(0)}\|$ where $\varepsilon$ is called the
+(relative) \textit{tolerance}. 
+
+Obviously, the smaller we choose $\varepsilon$, the more accurate the
+approximation $x^{(k)}$ will be. On the other hand, it will also take more
+iterations and, consequently, more CPU time to reach the stopping criterion with
+a smaller tolerance. The default value of these tolerances are chosen so that
+the approximation is typically sufficient. You can make \aspect{} run faster if
+you choose these tolerances larger.
+The parameters you can adjust are all listed in
+Section~\ref{parameters:global} and are located at the top level of the input
+file.
+\index[prmindex]{Composition solver tolerance}
+\index[prmindexfull]{Composition solver tolerance}
+\index[prmindex]{Linear solver tolerance}
+\index[prmindexfull]{Linear solver tolerance}
+\index[prmindex]{Temperature solver tolerance}
+\index[prmindexfull]{Temperature solver tolerance}
+
+All this said, it is important to understand the consequences of choosing
+tolerances larger. In particular, if you choose tolerances too large, then the
+difference between the exact solution of a linear system $x$ and the
+approximation $x^{(k)}$ may become so large that you do not get an accurate
+output of your model any more. A rule of thumb in choosing tolerances is to
+start with a small value and then increase the tolerance until you come to a
+point where the output quantities start to change significantly. This is the
+point where you will want to stop.
+
+
+\subsubsection{Switching off pressure normalization}
+
+
+\subsubsection{Using lower order of temperature/compositional discretization}
+
+
+\subsubsection{Limiting postprocessing}
+
+
+
 \section{Run-time input parameters}
 \label{sec:parameters}
 
