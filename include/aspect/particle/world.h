@@ -34,57 +34,66 @@ namespace aspect
     // TODO: in the future, upgrade multimap to ParticleMap typedef
     // with C++11 standard "using" syntax
 
-    // MPI tag for particle transfers
+    /// MPI tag for particle transfers
     const int           PARTICLE_XFER_TAG = 382;
 
     template <int dim, class T>
     class World
     {
       private:
-        // Mapping for the simulation this particle world exists in
+        /// Mapping for the simulation this particle world exists in
         const Mapping<dim>              *mapping;
 
-        // Triangulation for the simulation this particle world exists in
+        /// Triangulation for the simulation this particle world exists in
         const parallel::distributed::Triangulation<dim>   *triangulation;
 
-        // DoFHandler for the simulation this particle world exists in
+        /// DoFHandler for the simulation this particle world exists in
         const DoFHandler<dim>           *dof_handler;
 
-        // Integration scheme for moving particles in this world
+        /// Integration scheme for moving particles in this world
         Integrator<dim, T>              *integrator;
 
-        // MPI communicator to be used for this world
+        /// MPI communicator to be used for this world
         MPI_Comm                        communicator;
 
-        // If the triangulation was changed (e.g. through refinement), in which
-        // case we must treat all recorded particle level/index values as invalid
+        /// Whether the triangulation was changed (e.g. through refinement), in which
+        /// case we must treat all recorded particle level/index values as invalid
         bool                            triangulation_changed;
 
-        // Set of particles currently in the local domain, organized by
-        // the level/index of the cell they are in
+        /// Set of particles currently in the local domain, organized by
+        /// the level/index of the cell they are in
         std::multimap<LevelInd, T>      particles;
 
         // Total number of particles in simulation
         unsigned int                    global_sum_particles;
 
         // MPI related variables
-        // MPI registered datatype encapsulating the MPI_Particle struct
+        /// MPI registered datatype encapsulating the MPI_Particle struct
         MPI_Datatype                    particle_type;
 
-        // Size and rank in the MPI communication world
+        /// Size and rank in the MPI communication world
         unsigned int                    world_size;
         unsigned int                    self_rank;
 
-        // Buffers count, offset, request data for sending and receiving particles
+        /// Buffers indicating how many particles to send/recv to each process
         int                             *num_send, *num_recv;
+        /// Total number of particles to send/recv
         int                             total_send, total_recv;
+        /// Send/recv offset into data buffer for each process
         int                             *send_offset, *recv_offset;
+        /// MPI_Request object buffers to allow for non-blocking communication
         MPI_Request                     *send_reqs, *recv_reqs;
 
-        // Generate a set of particles uniformly distributed within the specified triangulation.
-        // This is done using "roulette wheel" style selection weighted by cell size.
-        // We do cell-by-cell assignment of particles because the decomposition of the mesh may
-        // result in a highly non-rectangular local mesh which makes uniform particle distribution difficult.
+        /**
+         * Generate a set of particles uniformly randomly distributed within the
+         * specified triangulation. This is done using "roulette wheel" style
+         * selection weighted by cell volume. We do cell-by-cell assignment of
+         * particles because the decomposition of the mesh may result in a highly
+         * non-rectangular local mesh which makes uniform particle distribution difficult.
+         *
+         * @param [in] num_particles The number of particles to generate in this subdomain
+         * @param [in] start_id The starting ID to assign to generated particles
+         */
         void generate_particles_in_subdomain (const unsigned int num_particles,
                                               const unsigned int start_id)
         {
@@ -151,7 +160,7 @@ namespace aspect
                   catch (...)
                     {
                       // Debugging output, remove when Q4 mapping 3D sphere problem is resolved
-                      //std::cerr << "ooo eee ooo aaa aaa " << pt << " " << select_cell.first << " " << select_cell.second << std::endl;
+                      //std::cerr << "Pt and cell " << pt << " " << select_cell.first << " " << select_cell.second << std::endl;
                       //for (int z=0;z<8;++z) std::cerr << "V" << z <<": " << it->vertex(z) << ", ";
                       //std::cerr << std::endl;
                       MPI_Abort(communicator, 1);
@@ -168,9 +177,19 @@ namespace aspect
             }
         };
 
-        // Recursively determines which cell the given particle belongs to
-        // Returns true if the particle is in the specified cell and sets the particle
-        // cell information appropriately, false otherwise
+        /**
+         * Recursively determines which cell the given particle belongs to.
+         * Returns true if the particle is in the specified cell and sets
+         * the particle cell information appropriately, false otherwise.
+         *
+         * @param [in,out] particle The particle for which a cell is
+         * being searched for. The particle will be marked to indicate
+         * whether it is in the local subdomain or not.
+         * @param [in] cur_cell The current cell level and index being
+         * investigated as potentially containing the particle.
+         * @return The level and index of the cell the particle was determined
+         * to be in. If no cell was found this returns (-1, -1).
+        */
         LevelInd recursive_find_cell(T &particle,
                                      const LevelInd cur_cell)
         {
@@ -205,12 +224,18 @@ namespace aspect
           return LevelInd(-1, -1);
         };
 
+        /**
+         * Called by listener functions to indicate that the mesh of this subdomain has changed.
+         */
         void mesh_changed()
         {
           triangulation_changed = true;
         };
 
       public:
+        /**
+         * Default World constructor.
+         */
         World()
         {
           triangulation_changed = true;
@@ -224,6 +249,9 @@ namespace aspect
           integrator = NULL;
         };
 
+        /**
+         * Default World destructor, deallocates all relevant arrays and structures.
+         */
         ~World()
         {
           if (world_size) MPI_Type_free(&particle_type);
@@ -236,28 +264,54 @@ namespace aspect
           if (recv_reqs) delete recv_reqs;
         };
 
+        /**
+         * Set the deal.II Mapping associated with this particle world.
+         *
+         * @param [in] new_mapping The new Mapping for this world.
+         */
         void set_mapping(const Mapping<dim> *new_mapping)
         {
           mapping = new_mapping;
         };
 
+        /**
+         * Set the deal.II Triangulation associated with this particle world
+         * and connects relevant listener for mesh changes.
+         *
+         * @param [in] new_tria The new Triangulation for this world.
+         */
         void set_triangulation(const parallel::distributed::Triangulation<dim> *new_tria)
         {
-          //if (triangulation) triangulation.signals.post_refinement.disconnect(std_cxx1x::bind(&World::mesh_changed, std_cxx1x::ref(*this)));
+          //if (triangulation) triangulation->signals.post_refinement.disconnect(std_cxx1x::bind(&World::mesh_changed, std_cxx1x::ref(*this)));
           triangulation = new_tria;
           triangulation->signals.post_refinement.connect(std_cxx1x::bind(&World::mesh_changed, std_cxx1x::ref(*this)));
         };
 
+        /**
+         * Set the deal.II DoFHandler associated with this particle world.
+         *
+         * @param [in] new_dh The new DoFHandler for this world.
+         */
         void set_dof_handler(const DoFHandler<dim> *new_dh)
         {
           dof_handler = new_dh;
         };
 
+        /**
+         * Set the particle Integrator scheme for this particle world.
+         *
+         * @param [in] new_integrator The new Integrator scheme for this world.
+         */
         void set_integrator(Integrator<dim, T> *new_integrator)
         {
           integrator = new_integrator;
         };
 
+        /**
+         * Set the MPI communicator for this world.
+         *
+         * @param [in] new_comm_world The new MPI_Comm object for this world.
+         */
         void set_mpi_comm(const MPI_Comm new_comm_world)
         {
           communicator = new_comm_world;
@@ -272,7 +326,11 @@ namespace aspect
           return particles;
         };
 
-        // TODO: add better error checking to MPI calls
+        /**
+         * Initialize the particle world by creating appropriate MPI
+         * data types for transferring particles, and allocating memory
+         * for MPI related functions.
+         */
         void init()
         {
           int                                   *block_lens;
@@ -282,7 +340,11 @@ namespace aspect
           std::vector<MPIDataInfo>::iterator    it;
           int                                   num_entries, res, i;
 
-          // TODO: Assert that all necessary parameters have been set
+          // Assert that all necessary parameters have been set
+          AssertThrow (triangulation != NULL, ExcMessage ("Particle world triangulation must be set before calling init()."));
+          AssertThrow (mapping != NULL, ExcMessage ("Particle world mapping must be set before calling init()."));
+          AssertThrow (dof_handler != NULL, ExcMessage ("Particle world dof_handler must be set before calling init()."));
+          AssertThrow (integrator != NULL, ExcMessage ("Particle world integrator must be set before calling init()."));
 
           // Construct MPI data type for this particle
           T::add_mpi_types(data_info);
@@ -298,8 +360,8 @@ namespace aspect
           for (i=0; i<num_entries; ++i)
             {
               block_lens[i] = data_info[i].n_elements;
-              indices[i] = (i == 0 ? 0 : indices[i-1]+data_info[i-1].size_in_bytes*data_info[i-1].n_elements);
-              old_types[i] = data_info[i].data_type;
+              indices[i] = (i == 0 ? 0 : indices[i-1]+sizeof(double)*data_info[i-1].n_elements);
+              old_types[i] = MPI_DOUBLE;
             }
 
           // Create and commit the MPI type
@@ -326,7 +388,9 @@ namespace aspect
         // TODO: determine file format, write this function
         void read_particles_from_file(std::string filename);
 
-        // Generate a set of particles in the current triangulation
+        /**
+         * Generate a uniformly randomly distributed set of particles in the current triangulation.
+         */
         // TODO: fix the numbering scheme so we have exactly the right number of particles for all processor configurations
         // TODO: fix the particle system so it works even with processors assigned 0 cells
         void global_add_particles(const unsigned int total_particles)
@@ -358,15 +422,19 @@ namespace aspect
           start_fraction = end_fraction-subdomain_fraction;
 
           // Calculate start and end IDs so there are no gaps
-          const unsigned int  start_id = static_cast<unsigned int>(std::floor(start_fraction*total_particles));
-          const unsigned int  end_id   = static_cast<unsigned int>(std::floor(end_fraction*total_particles));
+          // TODO: this can create gaps for certain processor counts because of
+          // floating point imprecision, figure out how to fix it
+          const unsigned int  start_id = static_cast<unsigned int>(std::ceil(start_fraction*total_particles));
+          const unsigned int  end_id   = static_cast<unsigned int>(fmin(std::ceil(end_fraction*total_particles), total_particles));
           const unsigned int  subdomain_particles = end_id - start_id;
 
           generate_particles_in_subdomain(subdomain_particles, start_id);
         };
 
 
-        std::string output_particle_data(const std::string &output_dir);
+        /**
+         * Calculate the cells containing each particle for all particles.
+         */
         void find_all_cells()
         {
           typename std::multimap<LevelInd, T>::iterator   it;
@@ -388,8 +456,13 @@ namespace aspect
           particles.insert(tmp_map.begin(),tmp_map.end());
         };
 
-        // Advance particles by the specified timestep using the current integration scheme.
-        void advance_timestep(double timestep, const TrilinosWrappers::MPI::BlockVector &solution)
+        /**
+         * Advance particles by the specified timestep using the current integration scheme.
+         *
+         * @param [in] timestep Length of timestep to integrate particle movement
+         * @param [in] solution Current Aspect solution vector
+         */
+        void advance_timestep(const double timestep, const TrilinosWrappers::MPI::BlockVector &solution)
         {
           bool        continue_integrator = true;
 
@@ -434,15 +507,26 @@ namespace aspect
           // TODO: fix this to work with arbitrary meshes
         };
 
-        // Mark all particles to be checked for velocity
+        /**
+         * Mark all particles to be checked for velocity at their current position
+         */
         void mark_particles_for_check()
         {
           typename std::multimap<LevelInd, T>::iterator  it;
           for (it=particles.begin(); it!=particles.end(); ++it) it->second.set_vel_check(true);
         }
 
-        // Finds the cell the particle is contained in and returns the corresponding level/index
-        LevelInd find_cell(T &particle, LevelInd cur_cell)
+        /**
+         * Finds the cell the particle is contained in and returns
+         * the appropriate cell level/index.
+         *
+         * @param [in,out] particle The particle to find the cell for. This particle
+         * will be updated to indicate whether it is in the local subdomain or not.
+         * @param [in] cur_cell The current cell (level and index) being checked.
+         * @return The level and index of the active cell the particle is in.
+         * If no cell was found to contain the particle, return the level/index (-1, -1)
+         */
+        LevelInd find_cell(T &particle, const LevelInd &cur_cell)
         {
           typename parallel::distributed::Triangulation<dim>::cell_iterator         it, found_cell;
           typename parallel::distributed::Triangulation<dim>::active_cell_iterator  ait;
@@ -484,16 +568,18 @@ namespace aspect
           return std::make_pair(-1, -1);
         };
 
-        /*
-         Transfer particles that have crossed domain boundaries to other processors
-         Because domains can change drastically during mesh refinement, particle transfer occurs as follows:
-         - Each domain finds particles that have fallen outside it
-         - If the new particle position is in a known domain (e.g. artificial cells), send the particle only to that domain
-         - If the new particle position is not in a known domain (e.g. due to mesh refinement), send the particle to all domains
-         - The position of each of these particles is broadcast to the specified domains
-         - Each domain determines which of the broadcast particles is in itself, keeps these and deletes the others
-         - TODO: handle particles outside any domain
-         - TODO: if we know the domain of a particle (e.g. bordering domains), send it only to that domain
+        /**
+         * Transfer particles that have crossed subdomain boundaries to other
+         * processors. Because subdomains can change drastically during mesh refinement,
+         * particle transfer occurs as follows:
+         * - Each subdomain finds the particles it owns which have fallen outside it
+         * - For each particle outside the subdomain, send the particle to all
+         *   subdomains and let them determine which one owns it.
+         *   This assumes there is no overlap between subdomains.
+         * - Each process determines which of the received particles is in its
+         *   subdomain, keeps these and deletes the others
+         * - TODO: handle particles outside any domain
+         * - TODO: if we know the domain of a particle (e.g. bordering domains), send it only to that domain
          */
         void send_recv_particles()
         {
@@ -503,10 +589,6 @@ namespace aspect
           unsigned int        rank;
           std::vector<T>      send_particles;
           typename std::vector<T>::const_iterator    sit;
-          char                *send_data, *cur_send_ptr;
-          char *recv_data;
-          const char *cur_recv_ptr;
-          unsigned int        integrator_data_len, particle_data_len;
 
           // Go through the particles and take out those which need to be moved to another processor
           for (it=particles.begin(); it!=particles.end();)
@@ -542,34 +624,36 @@ namespace aspect
             }
 
           // Allocate space for sending and receiving particle data
-          integrator_data_len = integrator->data_len(MPI_DATA);
-          particle_data_len = T::data_len(MPI_DATA);
-          send_data = (char *)malloc(total_send*(integrator_data_len+particle_data_len));
-          recv_data = (char *)malloc(total_recv*(integrator_data_len+particle_data_len));
+          unsigned int        integrator_data_len = integrator->data_len();
+          unsigned int        particle_data_len = T::data_len();
+          std::vector<double> send_data, recv_data;
+
+          // Set up the space for the received particle data
+          recv_data.resize(total_recv*(integrator_data_len+particle_data_len));
 
           // Copy the particle data into the send array
-          // TODO: add integrator data
-          cur_send_ptr = send_data;
           for (i=0,sit=send_particles.begin(); sit!=send_particles.end(); ++sit,++i)
             {
-              cur_send_ptr = sit->write_data(MPI_DATA, cur_send_ptr);
-              cur_send_ptr = integrator->write_data(MPI_DATA, sit->get_id(), cur_send_ptr);
+              sit->write_data(send_data);
+              integrator->write_data(send_data, sit->get_id());
             }
 
           // Exchange the particle data between domains
-          MPI_Alltoallv(send_data, num_send, send_offset, particle_type,
-                        recv_data, num_recv, recv_offset, particle_type,
+          double *recv_data_ptr = &(recv_data[0]);
+          double *send_data_ptr = &(send_data[0]);
+          MPI_Alltoallv(send_data_ptr, num_send, send_offset, particle_type,
+                        recv_data_ptr, num_recv, recv_offset, particle_type,
                         communicator);
 
           int put_in_domain = 0;
+          unsigned int  pos = 0;
           // Put the received particles into the domain if they are in the triangulation
-          cur_recv_ptr = recv_data;
           for (i=0; i<total_recv; ++i)
             {
               T                   recv_particle;
               LevelInd            found_cell;
-              cur_recv_ptr = recv_particle.read_data(MPI_DATA, cur_recv_ptr);
-              cur_recv_ptr = integrator->read_data(MPI_DATA, recv_particle.get_id(), cur_recv_ptr);
+              pos = recv_particle.read_data(recv_data, pos);
+              pos = integrator->read_data(recv_data, pos, recv_particle.get_id());
               found_cell = find_cell(recv_particle, std::make_pair(-1,-1));
               if (recv_particle.local())
                 {
@@ -577,11 +661,15 @@ namespace aspect
                   particles.insert(std::make_pair(found_cell, recv_particle));
                 }
             }
-
-          free(send_data);
-          free(recv_data);
         };
 
+        /**
+         * Calculates the velocities for each particle at its location given
+         * the input solution velocity field. The calculated velocities are
+         * stored in the Particle objects for this world.
+         *
+         * @param [in] solution The current solution vector for this simulation.
+         */
         void get_particle_velocities(const TrilinosWrappers::MPI::BlockVector &solution)
         {
           Vector<double>                single_res(dim+2);
@@ -642,12 +730,22 @@ namespace aspect
             }
         };
 
+        /**
+         * Calculates the global sum of particles over all processes. This is done
+         * to ensure no particles have fallen out of the simulation domain.
+         *
+         * @return Total number of particles in simulation.
+         */
         unsigned int get_global_particle_count()
         {
           return Utilities::MPI::sum (particles.size(), communicator);
         };
 
-        // Ensures that particles are not lost in the simulation
+        /**
+         * Checks that the number of particles in the simulation has not
+         * unexpectedly changed. If the particle count changes then
+         * the simulation will be aborted.
+         */
         void check_particle_count()
         {
           unsigned int    global_particles = get_global_particle_count();

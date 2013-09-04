@@ -25,7 +25,6 @@ namespace aspect
 {
   namespace Particle
   {
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     inline
     BaseParticle<dim>::BaseParticle (const Point<dim>& new_loc,
@@ -38,7 +37,6 @@ namespace aspect
                                   {
                                   }
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     inline
     BaseParticle<dim>::BaseParticle ()
@@ -52,7 +50,6 @@ namespace aspect
     }
 
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     inline
     BaseParticle<dim>::~BaseParticle ()
@@ -60,7 +57,6 @@ namespace aspect
     }
 
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     void
     BaseParticle<dim>::set_location (const Point<dim> &new_loc)
@@ -69,94 +65,50 @@ namespace aspect
     }
 
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
-    char*
-    BaseParticle<dim>::write_data (ParticleDataFormat format,
-                                   char* data) const
+    void
+    BaseParticle<dim>::write_data (std::vector<double> &data) const
     {
-      char* p = data;
-      unsigned int i;
-      // Then write our data in the appropriate format
-      switch (format)
-      {
-      case MPI_DATA:
-      case HDF5_DATA:
+	unsigned int i;
         // Write location data
         for (i = 0; i < dim; ++i)
           {
-            double val = location (i);
-            memcpy (p, &val, sizeof(double));
-            p += sizeof(double);
+		data.push_back(location(i));
           }
         // Write velocity data
         for (i = 0; i < dim; ++i)
           {
-            double val = velocity (i);
-            memcpy (p, &val, sizeof(double));
-            p += sizeof(double);
+		data.push_back(velocity(i));
           }
-        double val = id;
-        memcpy (p, &val, sizeof(double));
-        p += sizeof(double);
-        break;
+        data.push_back(id);
       }
-      return p;
-                                }
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
-    const char*
-    BaseParticle<dim>::read_data (ParticleDataFormat format,
-                               const char* data)
+    unsigned int BaseParticle<dim>::read_data(const std::vector<double> &data, const unsigned int &pos)
     {
-      const char* p = data;
-      unsigned int i;
-      switch (format)
-      {
-      case MPI_DATA:
-      case HDF5_DATA:
+      unsigned int i, p = pos;
         // Read location data
         for (i = 0; i < dim; ++i)
           {
-            double val;
-            memcpy (&val, p, sizeof(double));
-            location (i) = val;
-            p += sizeof(double);
+            location (i) = data[p++];
           }
         // Write velocity data
         for (i = 0; i < dim; ++i)
           {
-            double val;
-            memcpy (&val, p, sizeof(double));
-            velocity (i) = val;
-            p += sizeof(double);
+            velocity (i) = data[p++];
           }
-        double val;
-        memcpy (&val, p, sizeof(double));
-        id = val;
-        p += sizeof(double);
-        break;
-      }
+        id = data[p++];
       return p;
-                               }
+    }
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     unsigned int
-    BaseParticle<dim>::data_len (ParticleDataFormat format)
+    BaseParticle<dim>::data_len ()
     {
-      switch (format)
-      {
-      case MPI_DATA:
-      case HDF5_DATA:
-        return (dim + dim + 1) * sizeof(double);
-      }
-      return 0;
+        return (dim + dim + 1);
     }
 
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     Point<dim>
     BaseParticle<dim>::get_location () const
@@ -164,7 +116,6 @@ namespace aspect
       return location;
     }
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     void
     BaseParticle<dim>::set_velocity (Point<dim> new_vel)
@@ -172,7 +123,6 @@ namespace aspect
       velocity = new_vel;
     }
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     Point<dim>
     BaseParticle<dim>::get_velocity () const
@@ -180,7 +130,6 @@ namespace aspect
       return velocity;
     }
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     double
     BaseParticle<dim>::get_id () const
@@ -188,7 +137,6 @@ namespace aspect
       return id;
     }
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     bool
     BaseParticle<dim>::local () const
@@ -196,7 +144,6 @@ namespace aspect
       return is_local;
     }
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     void
     BaseParticle<dim>::set_local (bool new_local)
@@ -204,7 +151,6 @@ namespace aspect
       is_local = new_local;
     }
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     bool
     BaseParticle<dim>::vel_check () const
@@ -212,7 +158,6 @@ namespace aspect
       return check_vel;
     }
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     void
     BaseParticle<dim>::set_vel_check (bool new_vel_check)
@@ -220,17 +165,16 @@ namespace aspect
       check_vel = new_vel_check;
     }
 
-    // Base class of particles - represents a particle with position, velocity, and an ID number
     template <int dim>
     void
     BaseParticle<dim>::add_mpi_types (std::vector<MPIDataInfo>& data_info)
     {
       // Add the position, velocity, ID
       data_info.push_back (
-          MPIDataInfo ("pos", dim, MPI_DOUBLE, sizeof(double)));
+          MPIDataInfo ("pos", dim));
       data_info.push_back (
-          MPIDataInfo ("velocity", dim, MPI_DOUBLE, sizeof(double)));
-      data_info.push_back (MPIDataInfo ("id", 1, MPI_DOUBLE, sizeof(double)));
+          MPIDataInfo ("velocity", dim));
+      data_info.push_back (MPIDataInfo ("id", 1));
     }
 
 

@@ -116,7 +116,6 @@ namespace aspect
             std::string                             output_file_prefix, output_path_prefix, full_filename;
             std::vector<MPIDataInfo>                data_info;
             std::vector<MPIDataInfo>::iterator      dit;
-            char                                    *particle_data, *p;
 
             output_file_prefix = "particle-" + Utilities::int_to_string (this->file_index, 5);
             output_path_prefix = this->output_dir + output_file_prefix;
@@ -145,25 +144,20 @@ namespace aspect
             output << "\n";
 
             // And print the data for each particle
-            particle_data = new char[T::data_len(HDF5_DATA)];
             for (it=particles.begin(); it!=particles.end(); ++it)
               {
-                it->second.write_data(HDF5_DATA, particle_data);
-                p = particle_data;
+		    std::vector<double>  particle_data;
+		   unsigned int p = 0;
+                it->second.write_data(particle_data);
                 for (dit=data_info.begin(); dit!=data_info.end(); ++dit)
                   {
-                    // Currently assumes all data is double, may need to change this
                     for (i=0; i<dit->n_elements; ++i)
                       {
-                        double val;
-                        memcpy (&val, p, sizeof(double));
-                        output << val << " ";
-                        p += sizeof(double);
+                        output << particle_data[p++] << " ";
                       }
                   }
                 output << "\n";
               }
-            delete[] particle_data;
 
             output.close();
 
@@ -231,7 +225,6 @@ namespace aspect
           {
             std::vector<MPIDataInfo>                data_info;
             unsigned int                            data_offset;
-            char                                    *particle_data;
 
             const std::string output_file_prefix = "particles-" + Utilities::int_to_string (this->file_index, 5);
             const std::string output_path_prefix = this->output_dir + output_file_prefix;
@@ -292,11 +285,10 @@ namespace aspect
             // Write data for each particle (id, velocity, etc)
             output << "      <PointData Scalars=\"scalars\">\n";
 
-            // Print the data associated with the particles, skipping the first entry (assumed to be position)
-            particle_data = new char[T::data_len(HDF5_DATA)];
+            // Print the data associated with the particles, skipping the first entry (position)
 
             std::vector<MPIDataInfo>::iterator dit = data_info.begin();
-            data_offset = dit->n_elements*dit->size_in_bytes;
+            data_offset = dit->n_elements;
             dit++;
             for (; dit!=data_info.end(); ++dit)
               {
@@ -304,24 +296,20 @@ namespace aspect
                 for (typename std::multimap<LevelInd, T>::const_iterator
                      it=particles.begin(); it!=particles.end(); ++it)
                   {
-                    it->second.write_data(HDF5_DATA, particle_data);
-                    char *p = particle_data+data_offset;
+		    std::vector<double> particle_data;
+                    it->second.write_data(particle_data);
                     output << "          ";
                     for (unsigned int d=0; d<dit->n_elements; ++d)
                       {
-                        double val;
-                        memcpy (&val, p, sizeof(double));
-                        output << val << " ";
-                        p += sizeof(double);
+                        output << particle_data[data_offset+d] << " ";
                       }
                     if (dit->n_elements == 2)
                       output << "0 ";
                     output << "\n";
                   }
-                data_offset += dit->n_elements*dit->size_in_bytes;
+                data_offset += dit->n_elements;
                 output << "        </DataArray>\n";
               }
-            delete[] particle_data;
             output << "      </PointData>\n";
 
             output << "    </Piece>\n";
@@ -334,9 +322,10 @@ namespace aspect
             // Write the parallel pvtu and pvd files on the root process
             if (Utilities::MPI::this_mpi_process(this->communicator) == 0)
               {
-                const std::string pvtu_filename = (output_path_prefix + ".pvtu");
+                const std::string pvtu_filename = (output_file_prefix + ".pvtu");
+                const std::string full_pvtu_filename = (this->output_dir + pvtu_filename);
 
-                std::ofstream pvtu_output (pvtu_filename.c_str());
+                std::ofstream pvtu_output (full_pvtu_filename.c_str());
                 AssertThrow (pvtu_output, ExcIO());
 
                 pvtu_output << "<?xml version=\"1.0\"?>\n";

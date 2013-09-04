@@ -29,7 +29,9 @@ namespace aspect
 {
   namespace Particle
   {
-    // Typedef of cell level/index pair
+    /**
+     * Typedef of cell level/index pair
+     */
     typedef std::pair<int, int> LevelInd;
 
     class MPIDataInfo
@@ -37,215 +39,296 @@ namespace aspect
       public:
         std::string     name;
         unsigned int    n_elements;
-        MPI_Datatype    data_type;
-        unsigned int    size_in_bytes;
 
         MPIDataInfo(std::string name,
-                    unsigned int num_elems,
-                    MPI_Datatype data_type,
-                    unsigned int elem_size_bytes)
+                    unsigned int num_elems)
           :
           name(name),
-          n_elements(num_elems),
-          data_type(data_type),
-          size_in_bytes(elem_size_bytes) {};
+          n_elements(num_elems) {};
     };
 
-    enum ParticleDataFormat
-    {
-      MPI_DATA,
-      HDF5_DATA
-    };
-
-    // Base class of particles - represents a particle with position, velocity, and an ID number
+    /**
+     * Base class of particles - represents a particle with position, velocity,
+     * and an ID number. This class can be extended to include data related
+     * to a particle. An example of this is shown in the DataParticle class.
+     */
     template <int dim>
     class BaseParticle
     {
       private:
-        // Current particle location
+        /**
+         * Current particle location
+         */
         Point<dim>      location;
 
-        // Current particle velocity
+        /**
+         * Current particle velocity
+         */
         Point<dim>      velocity;
 
-        // Globally unique ID of particle
-//TODO: make this an unsigned int. but this needs adjustment in data_len, read_data, write_data and all of the places that call write_data and then parse the output...
+        /**
+         * Globally unique ID of particle
+         */
         double          id;
 
-        // Whether this particle is in the local subdomain or not
+        /**
+         * Whether this particle is in the local subdomain or not
+         */
         bool            is_local;
 
-        // Whether to check the velocity of this particle
-        // This is used for integration schemes which require multiple
-        // integration steps for some particles, but not for others
+        /**
+         * Whether to check the velocity of this particle
+         * This is used for integration schemes which require multiple
+         * integration steps for some particles, but not for others
+         */
         bool            check_vel;
 
       public:
+        /**
+               * Empty constructor for BaseParticle, creates a particle at the origin with zero velocity.
+               */
         BaseParticle ();
 
+        /**
+               * Constructor for BaseParticle, creates a particle with the specified ID at the
+               * specified location with zero velocity. Note that Aspect does not check for
+               * duplicate particle IDs so the user must be sure the IDs are unique over all processes.
+               *
+               * @param[in] new_loc Initial location of particle.
+               * @param[in] new_id Globally unique ID number of particle.
+               */
         BaseParticle (const Point<dim> &new_loc,
                       const double &new_id);
 
+        /**
+               * Destructor for BaseParticle
+               */
         virtual
         ~BaseParticle ();
 
+        /**
+               * Get the number of doubles required to represent this particle for communication.
+               *
+               * @return Number of doubles required to represent this particle
+               */
         static unsigned int
-        data_len (ParticleDataFormat format);
+        data_len ();
 
-        virtual const char *
-        read_data (ParticleDataFormat format,
-                   const char *data);
+        /**
+               * Read the particle data from the specified vector of doubles.
+               *
+               * @param [in] data The vector of double data to read from.
+               * @param [in] pos The position in the data vector to start reading from.
+               * @return The position in the vector of the next unread double.
+               */
+        virtual unsigned int read_data(const std::vector<double> &data, const unsigned int &pos);
 
+        /**
+         * Write particle data to a vector of doubles.
+         *
+         * @param [in,out] data The vector of doubles to write integrator data into.
+         */
+        virtual void write_data(std::vector<double> &data) const;
 
-        virtual char *
-        write_data (ParticleDataFormat format,
-                    char *data) const;
-
+        /**
+         * Set the location of this particle. Note that this does not check whether this
+         * is a valid location in the simulation domain.
+         *
+         * @param [in] new_loc The new location for this particle.
+         */
         void
         set_location (const Point<dim> &new_loc);
 
+        /**
+         * Get the location of this particle.
+         *
+         * @return The location of this particle.
+         */
         Point<dim>
         get_location () const;
 
+        /**
+         * Set the velocity of this particle.
+         *
+         * @param [in] new_vel The new velocity for this particle.
+         */
         void
         set_velocity (Point<dim> new_vel);
+
+        /**
+         * Get the velocity of this particle.
+         *
+         * @return The velocity of this particle.
+         */
         Point<dim>
         get_velocity () const;
 
+        /**
+         * Get the ID number of this particle.
+         *
+         * @return The id of this particle.
+         */
         double
         get_id () const;
 
+        /**
+         * Check whether the particle is marked as being local to this subdomain.
+         * Note that this function does not actually perform the check for locality.
+         *
+         * @return Whether the particle is marked as local.
+         */
         bool
         local () const;
 
+        /**
+         * Mark the particle as being local of not. Note that this function does
+         * not perform the check for locality.
+         *
+         * @param[in] new_local Whether to mark the particle as local.
+         */
         void
         set_local (bool new_local);
 
+        /**
+         * Whether to check the particle velocity at its current location. This is
+         * used for integrators where the particle velocity may not need to be
+         * checked every step.
+         *
+         * @return Whether to check the particle velocity
+         */
         bool
         vel_check () const;
 
+        /**
+         * Mark whether to check the particle velocity.
+         *
+         * @param[in] new_vel_check Whether to check the particle velocity.
+         */
         void
         set_vel_check (bool new_vel_check);
 
+        /**
+         * Add the MPI data description for this particle type to the vector.
+         *
+         * @param[in,out] data_info Vector to which MPI data description is appended.
+         */
         static void
         add_mpi_types (std::vector<MPIDataInfo> &data_info);
     };
 
-    // A particle with associated values, such as scalars, vectors or tensors
+    /**
+     * DataParticle provides an example of how to extend the BaseParticle class
+     * to include related particle data. This allows users to attach
+     * scalars/vectors/tensors/etc to particles and ensure they are transmitted
+     * correctly over MPI and written to output files.
+     */
     template <int dim, int data_dim>
     class DataParticle : public BaseParticle<dim>
     {
       private:
-        double      _val[data_dim];
+        double      val[data_dim];
 
       private:
         DataParticle()
         {
-          for (unsigned int i=0; i<data_dim; ++i) _val[i] = 0;
+          for (unsigned int i=0; i<data_dim; ++i) val[i] = 0;
         };
 
         DataParticle(const Point<dim> &new_loc, const double &new_id) : BaseParticle<dim>(new_loc, new_id)
         {
-          for (unsigned int i=0; i<data_dim; ++i) _val[i] = 0;
+          for (unsigned int i=0; i<data_dim; ++i) val[i] = 0;
         };
 
-        static unsigned int data_len(ParticleDataFormat format)
+        static unsigned int data_len()
         {
-          unsigned int        base_size  = BaseParticle<dim>::data_len(format);
-
-          switch (format)
-            {
-              case MPI_DATA:
-              case HDF5_DATA:
-                return base_size + data_dim * sizeof(double);
-            }
-          return 0;
+          return BaseParticle<dim>::data_len() + data_dim;
         };
 
-        virtual const char *read_data(ParticleDataFormat format, const char *data)
+        virtual unsigned int read_data(const std::vector<double> &data, const unsigned int &pos)
         {
-          const char          *p = data;
-          unsigned int  i;
+          unsigned int  p;
 
           // Read the parent data first
-          p = BaseParticle<dim>::read_data(format, data);
+          p = BaseParticle<dim>::read_data(data, pos);
 
-          // Then read our data in the appropriate format
-          switch (format)
+          // Then read the DataParticle data
+          for (i=0; i<data_dim; ++i)
             {
-              case MPI_DATA:
-                for (i=0; i<data_dim; ++i)
-                  {
-                    double val;
-                    memcpy (&val, p, sizeof(double));
-                    _val[i] = val;
-                    p += sizeof(double);
-                  }
-                break;
-              case HDF5_DATA:
-                break;
+              val[i] = data.at(p++);
             }
 
           return p;
         };
 
 
-        virtual char *write_data(ParticleDataFormat format, char *data) const
+        virtual void write_data(std::vector<double> &data) const
         {
-          char          *p = data;
-          unsigned int  i;
-
           // Write the parent data first
-          p = BaseParticle<dim>::write_data(format, data);
+          BaseParticle<dim>::write_data(data);
 
-          // Then write our data in the appropriate format
-          switch (format)
+          // Then write the DataParticle data
+          for (i=0; i<data_dim; ++i)
             {
-              case MPI_DATA:
-                for (i=0; i<data_dim; ++i)
-                  {
-                    memcpy (p, _val[i], sizeof(double));
-                    p += sizeof(double);
-                  }
-                break;
-              case HDF5_DATA:
-                break;
+              data.push_back(val[i]);
             }
-
-          return p;
         };
 
-        // Returns a vector from the first dim components of _val
+        /**
+         * Returns a vector from the first dim components of val
+         *
+         * @return vector representation of first dim components of the particle data
+         */
         Point<dim>
         get_vector () const;
 
-        // Sets the first dim components of _val to the specified vector value
+        /**
+         * Sets the first dim components of val to the specified vector value
+         *
+         * @param [in] new_vec Vector to set the DataParticle data to
+         */
         void set_vector(Point<dim> new_vec)
         {
           AssertThrow(data_dim>=dim, std::out_of_range("set_vector"));
           for (unsigned int i=0; i<dim; ++i)
-            _val[i] = new_vec(i);
+            val[i] = new_vec(i);
         }
 
+        /**
+         * Return a reference to an element of the DataParticle data
+         *
+         * @param [in] ind Index of the data array
+         * @return Reference to double value at the requested index
+         */
         double &operator[](const unsigned int &ind)
         {
           AssertThrow(data_dim>ind, std::out_of_range("DataParticle[]"));
-          return _val[ind];
+          return val[ind];
         }
 
+        /**
+         * Return the value of an element of the DataParticle data
+         *
+         * @param [in] ind Index of the data array
+         * @return Value at the requested index
+         */
         double operator[](const unsigned int &ind) const
         {
           AssertThrow(data_dim>ind, std::out_of_range("DataParticle[]"));
-          return _val[ind];
+          return val[ind];
         }
 
+        /**
+         * Set up the MPI data type information for the DataParticle type
+         *
+         * @param [in,out] data_info Vector to append MPIDataInfo objects to
+         */
         static void add_mpi_types(std::vector<MPIDataInfo> &data_info)
         {
           // Set up the parent types first
           BaseParticle<dim>::add_mpi_types(data_info);
 
           // Then add our own
-          data_info.push_back(MPIDataInfo("data", data_dim, MPI_DOUBLE, sizeof(double)));
+          data_info.push_back(MPIDataInfo("data", data_dim));
         };
     };
 
@@ -257,10 +340,11 @@ namespace aspect
       AssertThrow(data_dim >= dim, std::out_of_range ("get_vector"));
       Point < dim > p;
       for (unsigned int i = 0; i < dim; ++i)
-        p (i) = _val[i];
+        p (i) = val[i];
     }
 
   }
 }
 
 #endif
+
