@@ -2128,7 +2128,9 @@ the approximation is typically sufficient. You can make \aspect{} run faster if
 you choose these tolerances larger.
 The parameters you can adjust are all listed in
 Section~\ref{parameters:global} and are located at the top level of the input
-file.
+file. In particular, the parameters you want to look at are \texttt{Linear
+solver tolerance}, \texttt{Temperature solver tolerance} and
+\texttt{Composition solver tolerance}.
 \index[prmindex]{Composition solver tolerance}
 \index[prmindexfull]{Composition solver tolerance}
 \index[prmindex]{Linear solver tolerance}
@@ -2146,13 +2148,36 @@ point where the output quantities start to change significantly. This is the
 point where you will want to stop.
 
 
-\subsubsection{Switching off pressure normalization}
-
-
 \subsubsection{Using lower order of temperature/compositional discretization}
 
 
 \subsubsection{Limiting postprocessing}
+
+
+\subsubsection{Switching off pressure normalization}
+In most practically relevant cases, the Stokes equations
+\eqref{eq:stokes-1}--\eqref{eq:stokes-2} only determine the pressure up to a
+constant because only the pressure gradient appears in the equations, not the
+actual value of it. However, unlike this ``mathematical'' pressure, we have a
+very specific notion of the ``physical'' pressure: namely a well-defined
+quantity that at the surface of Earth equals the air pressure, which compared to
+the hydrostatic pressure inside Earth is essentially zero. 
+
+As a consequence, the default in \aspect{} is to normalize the computed
+``mathematical'' pressure in such a way that either the mean pressure at the
+surface is zero (where the geometry model describes where the ``surface'' is,
+see Section~\ref{sec:geometry-models}), or that the mean pressure in the domain
+is zero. This normalization is important if your model describes densities,
+viscosities and other quantities in dependence of the pressure -- because you
+almost certainly had the ``physical'' pressure in mind, not some unspecified
+``mathematical'' one. On the other hand, if you have a material model in which
+the pressure does not enter, then you don't need to normalize the pressure at
+all -- simply go with whatever the solver provides. In that case, you can switch
+off pressure normalization by looking at the \texttt{Pressure normalization}
+parameter at the top level of the input file, see
+Section~\ref{parameters:global}.
+\index[prmindex]{Pressure normalization}
+\index[prmindexfull]{Pressure normalization}
 
 
 
