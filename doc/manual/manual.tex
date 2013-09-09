@@ -2152,6 +2152,21 @@ point where you will want to stop.
 
 
 \subsubsection{Limiting postprocessing}
+\aspect{} has a lot of postprocessing capabilities, from generating graphical
+output to computing average temperatures or temperature fluxes. To see what all
+is possible, take a look at the \texttt{List of postprocessors} parameter that
+can be set in the input file, see Section~\ref{parameters:Postprocess}.
+\index[prmindex]{List of postprocessors}
+\index[prmindexfull]{Postprocess!List of postprocessors}
+
+Many of these postprocessors take a non-negligible amount of time. How much they
+collectively use can be inferred from the timing report \aspect{} prints
+periodically among its output, see for example the output shown in
+Section~\ref{sec:cookbooks-simple-box}. So, if your computations take too long,
+consider limiting which postprocessors you run to those you really need. Some
+postprocessors -- for example those that generate graphical output, see
+Section~\ref{parameters:Postprocess/Visualization} -- also allow you to run them
+only once every once in a while, rather than at every time step.
 
 
 \subsubsection{Switching off pressure normalization}
