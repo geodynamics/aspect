@@ -2149,6 +2149,29 @@ point where you will want to stop.
 
 
 \subsubsection{Using lower order of temperature/compositional discretization}
+The default settings of \aspect{} use quadratic finite elements for the
+velocity. Given that the temperature and compositional fields essentially (up
+to material parameters) satisfy advection equations of the kind $\partial_t T +
+\mathbf u \cdot \nabla T = \ldots$, it seems appropriate to also use quadratic
+finite elemen shape functions for the temperature and compositional fields.
+
+However, this is not mandatory. If you do not care about high accuracy in these
+fields and are mostly interested in the velocity or pressure field, you can
+select lower-order finite elements in the input file. The polynomial degrees are
+controlled with the parameters in the \textit{discretization} section of the
+input file, see Section~\ref{parameters:Discretization}, in particular by
+\texttt{Temperature polynomial degree} and
+\texttt{Composition polynomial degree}.
+\index[prmindex]{Temperature polynomial degree}
+\index[prmindexfull]{Discretization!Temperature polynomial degree}
+\index[prmindex]{Composition polynomial degree}
+\index[prmindexfull]{Discretization!Composition polynomial degree}
+
+As with the other parameters discussed above and below, it is worthwhile
+comparing the results you get with different values of these parameters when
+making a decision whether you want to save on accuracy in order to reduce
+compute time.
+
 
 
 \subsubsection{Limiting postprocessing}
