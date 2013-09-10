@@ -69,14 +69,13 @@ namespace aspect
     void
     BaseParticle<dim>::write_data (std::vector<double> &data) const
     {
-	unsigned int i;
-        // Write location data
-        for (i = 0; i < dim; ++i)
+       // Write location data
+        for (unsigned int i = 0; i < dim; ++i)
           {
 		data.push_back(location(i));
           }
         // Write velocity data
-        for (i = 0; i < dim; ++i)
+        for (unsigned int i = 0; i < dim; ++i)
           {
 		data.push_back(velocity(i));
           }
@@ -86,14 +85,14 @@ namespace aspect
     template <int dim>
     unsigned int BaseParticle<dim>::read_data(const std::vector<double> &data, const unsigned int &pos)
     {
-      unsigned int i, p = pos;
+      unsigned int p = pos;
         // Read location data
-        for (i = 0; i < dim; ++i)
+        for (unsigned int i = 0; i < dim; ++i)
           {
             location (i) = data[p++];
           }
         // Write velocity data
-        for (i = 0; i < dim; ++i)
+        for (unsigned int i = 0; i < dim; ++i)
           {
             velocity (i) = data[p++];
           }
