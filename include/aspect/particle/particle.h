@@ -252,7 +252,7 @@ namespace aspect
           p = BaseParticle<dim>::read_data(data, pos);
 
           // Then read the DataParticle data
-          for (i=0; i<data_dim; ++i)
+          for (unsigned i=0; i<data_dim; ++i)
             {
               val[i] = data.at(p++);
             }
@@ -267,7 +267,7 @@ namespace aspect
           BaseParticle<dim>::write_data(data);
 
           // Then write the DataParticle data
-          for (i=0; i<data_dim; ++i)
+          for (unsigned i=0; i<data_dim; ++i)
             {
               data.push_back(val[i]);
             }
