@@ -130,7 +130,7 @@ namespace aspect
               {
                 // evaluate material properties
                 typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, this->n_compositional_fields());
-                typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1);
+                typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, this->n_compositional_fields());
                 in.position[0] = fe_values.quadrature_point(0);
                 in.temperature[0] = temperature_values[0];
                 in.pressure[0] = pressure_values[0];

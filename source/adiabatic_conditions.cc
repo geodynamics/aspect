@@ -64,7 +64,7 @@ namespace aspect
         const Point<dim> representative_point = geometry_model.representative_point (z);
 
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, n_compositional_fields);
-        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1);
+        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, n_compositional_fields);
         in.position[0] = representative_point;
         in.temperature[0] = temperatures[i-1];
         in.pressure[0] = pressures[i-1];
