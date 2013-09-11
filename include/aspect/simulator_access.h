@@ -351,6 +351,21 @@ namespace aspect
       get_boundary_temperature () const;
 
       /**
+       * Return a pointer to the object that describes the temperature initial
+       * values.
+       */
+      const InitialConditions::Interface<dim> &
+      get_initial_conditions () const;
+
+
+      /**
+       * Return a pointer to the object that describes the composition initial
+       * values.
+       */
+      const CompositionalInitialConditions::Interface<dim> &
+      get_compositional_initial_conditions () const;
+
+      /**
        * Return a set of boudary indicators that describes which of the boundaries
        * have a fixed temperature.
        */
