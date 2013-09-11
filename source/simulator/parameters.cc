@@ -335,6 +335,11 @@ namespace aspect
                          Patterns::Double(0,1),
                          "The fraction of cells with the smallest error that "
                          "should be flagged for coarsening.");
+      prm.declare_entry ("Minimum refinement level", "0",
+                         Patterns::Integer (0),
+                         "The minimum refinement level each cell should have, "
+                         "and that can not be exceeded by coarsening. "
+                         "Should be higher than Initial global refinement.");
       prm.declare_entry ("Additional refinement times", "",
                          Patterns::List (Patterns::Double(0)),
                          "A list of times so that if the end time of a time step "
@@ -547,11 +552,15 @@ namespace aspect
       adaptive_refinement_interval= prm.get_integer ("Time steps between mesh refinement");
       refinement_fraction         = prm.get_double ("Refinement fraction");
       coarsening_fraction         = prm.get_double ("Coarsening fraction");
+      min_grid_level              = prm.get_integer ("Minimum refinement level");
 
       AssertThrow(refinement_fraction >= 0 && coarsening_fraction >= 0,
                   ExcMessage("Refinement/coarsening fractions must be positive."));
       AssertThrow(refinement_fraction+coarsening_fraction <= 1,
                   ExcMessage("Refinement and coarsening fractions must be <= 1."));
+      AssertThrow(min_grid_level <= initial_global_refinement,
+                  ExcMessage("Minimum refinement level must not be larger than "
+                		  "Initial global refinement."));
 
       // extract the list of times at which additional refinement is requested
       // then sort it and convert it to seconds

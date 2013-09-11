@@ -858,6 +858,12 @@ namespace aspect
            cell != triangulation.end(); ++cell)
         cell->clear_refine_flag ();
 
+    // limit minimum refinement level
+    for (typename Triangulation<dim>::active_cell_iterator
+         cell = triangulation.begin_active(0);
+         cell != triangulation.end_active(parameters.min_grid_level); ++cell)
+      cell->clear_coarsen_flag ();
+
     std::vector<const LinearAlgebra::BlockVector *> x_system (2);
     x_system[0] = &solution;
     x_system[1] = &old_solution;
