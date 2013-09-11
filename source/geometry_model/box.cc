@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -159,13 +159,13 @@ namespace aspect
                              "if the simulation is in 2d Units: m.");
           prm.declare_entry ("X periodic", "false",
                              Patterns::Bool (),
-                             "set to true to have the box be periodic in X direction");
+                             "Whether the box should be periodic in X direction");
           prm.declare_entry ("Y periodic", "false",
                              Patterns::Bool (),
-                             "set to true to have the box be periodic in Y direction");
+                             "Whether the box should be periodic in Y direction");
           prm.declare_entry ("Z periodic", "false",
                              Patterns::Bool (),
-                             "set to true to have the box be periodic in Z direction");
+                             "Whether the box should be periodic in Z direction");
         }
         prm.leave_subsection();
       }
