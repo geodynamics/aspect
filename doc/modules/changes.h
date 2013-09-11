@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: Aspect now supports periodic domains (recent dev. version of deal.II
+  is required).
+  <br>
+  (Ian Rose, Timo Heister, 2013/09/11)
+
   <li>New: The manual now has a new section discussing ways to make computations
   go faster.
   <br>
