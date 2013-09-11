@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -17,11 +17,11 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
+/*  $Id: temperature.h 1433 2012-12-08 08:24:55Z bangerth $  */
 
 
-#ifndef __aspect__mesh_refinement_composition_h
-#define __aspect__mesh_refinement_composition_h
+#ifndef __aspect__mesh_refinement_nonadiabatic_temperature_h
+#define __aspect__mesh_refinement_nonadiabatic_temperature_h
 
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/simulator_access.h>
@@ -33,21 +33,15 @@ namespace aspect
 
     /**
      * A class that implements a mesh refinement criterion based on
-     * the compositional fields (if available).
+     * the excess temperature (difference between temperature and
+     * adiabatic temperature).
      *
      * @ingroup MeshRefinement
      */
     template <int dim>
-    class Composition : public Interface<dim>,
+    class NonadiabaticTemperature : public Interface<dim>,
       public SimulatorAccess<dim>
     {
-      /**
-       * Initialization function.
-       */
-      virtual
-      void
-      initialize ();
-
       public:
         /**
          * Execute this mesh refinement criterion.
@@ -61,28 +55,6 @@ namespace aspect
         virtual
         void
         execute (Vector<float> &error_indicators) const;
-
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter
-         * file.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-
-      private:
-        /**
-         * The scaling factors that should be applied to the individual
-         * refinement indicators before merging.
-         */
-        std::vector<double> composition_scaling_factors;
     };
   }
 }

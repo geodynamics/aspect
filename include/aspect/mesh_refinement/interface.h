@@ -72,6 +72,13 @@ namespace aspect
         ~Interface ();
 
         /**
+         * Initialization function.
+         */
+        virtual
+        void
+        initialize ();
+
+        /**
          * Execute this mesh refinement criterion.
          *
          * @param[out] error_indicators A vector that for every active

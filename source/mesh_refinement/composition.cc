@@ -31,6 +31,19 @@ namespace aspect
   {
     template <int dim>
     void
+    Composition<dim>::initialize ()
+    {
+      AssertThrow (composition_scaling_factors.size() == this->n_compositional_fields()
+                   ||
+                   composition_scaling_factors.size() == 0,
+                   ExcMessage ("The number of scaling factors given here must either be "
+                               "zero or equal to the number of chosen refinement criteria."));
+      if (composition_scaling_factors.size() == 0)
+        composition_scaling_factors = std::vector<double> (this->n_compositional_fields(), 1.0);
+    }
+
+    template <int dim>
+    void
     Composition<dim>::execute(Vector<float> &indicators) const
     {
       AssertThrow (this->n_compositional_fields() >= 1,
@@ -52,8 +65,56 @@ namespace aspect
                                               0,
                                               0,
                                               this->get_triangulation().locally_owned_subdomain());
+          for (unsigned int i=0; i<indicators.size(); ++i)
+        	this_indicator[i] *= composition_scaling_factors[c];
           indicators += this_indicator;
         }
+    }
+
+    template <int dim>
+    void
+    Composition<dim>::
+    declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Mesh refinement");
+      {
+        prm.enter_subsection("Composition");
+        {
+          prm.declare_entry("Compositional field scaling factors",
+                            "",
+                            Patterns::List (Patterns::Double(0)),
+                            "A list of scaling factors by which every individual compositional "
+                            "field will be multiplied by. If only a single compositional "
+                            "field exists, then this parameter has no particular meaning. "
+                            "On the other hand, if multiple criteria are chosen, then these "
+                            "factors are used to weigh the various indicators relative to "
+                            "each other. "
+                            "\n\n"
+                            "If the list of indicators given in this parameter is empty, then this "
+                            "indicates that they should all be chosen equal to one. If the list "
+                            "is not empty then it needs to have as many entries as there are "
+                            "compositional fields.");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+    template <int dim>
+    void
+    Composition<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Mesh refinement");
+      {
+        prm.enter_subsection("Composition");
+        {
+          composition_scaling_factors
+            = Utilities::string_to_double(
+                Utilities::split_string_list(prm.get("Compositional field scaling factors")));
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
     }
   }
 }

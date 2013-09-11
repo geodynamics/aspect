@@ -22,6 +22,7 @@
 
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/mesh_refinement/composition.h>
 
 #include <typeinfo>
 
@@ -34,6 +35,12 @@ namespace aspect
 
     template <int dim>
     Interface<dim>::~Interface ()
+    {}
+
+
+    template <int dim>
+    void
+    Interface<dim>::initialize ()
     {}
 
 
@@ -65,8 +72,11 @@ namespace aspect
       for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p)
+      {
         if (dynamic_cast<const SimulatorAccess<dim>*>(p->get()) != 0)
           dynamic_cast<SimulatorAccess<dim>&>(**p).initialize (simulator);
+        (*p)->initialize();
+      }
 
       // also extract the MPI communicator over which this simulator
       // operates so that we can later scale vectors that live on
@@ -317,6 +327,7 @@ namespace aspect
       // find out which plugins are requested and the various other
       // parameters we declare here
       std::vector<std::string> plugin_names;
+      std::vector<int> compositional_fields;
       prm.enter_subsection("Mesh refinement");
       {
         plugin_names
@@ -349,11 +360,13 @@ namespace aspect
       AssertThrow (plugin_names.size() >= 1,
                    ExcMessage ("You need to provide at least one mesh refinement criterion in the input file!"));
       for (unsigned int name=0; name<plugin_names.size(); ++name)
+      {
         mesh_refinement_objects.push_back (std_cxx1x::shared_ptr<Interface<dim> >
                                            (std_cxx1x::get<dim>(registered_plugins)
                                             .create_plugin (plugin_names[name],
                                                             "Mesh refinement::Refinement criteria merge operation",
                                                             prm)));
+      }
     }
 
 
