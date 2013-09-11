@@ -145,6 +145,14 @@ namespace aspect
   }
 
   template <int dim>
+  bool
+  SimulatorAccess<dim>::include_latent_heat () const
+  {
+    return simulator->parameters.include_latent_heat;
+  }
+
+
+  template <int dim>
   double
   SimulatorAccess<dim>::get_adiabatic_surface_temperature () const
   {

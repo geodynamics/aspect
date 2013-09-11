@@ -56,7 +56,13 @@ namespace aspect
 
         // last, calculate the percentage of material that has undergone the transition
         // (also in dependence of the phase transition width - this is an input parameter)
-        return 0.5*(1.0 + std::tanh(pressure_deviation / pressure_width));
+    	double phase_func;
+    	// use delta function for width = 0
+    	if(transition_widths[phase]==0)
+    	  (pressure_deviation > 0) ? phase_func = 1 : phase_func = 0;
+    	else
+    	  phase_func = 0.5*(1.0 + std::tanh(pressure_deviation / pressure_width));
+        return phase_func;
       }
       // if we do not have the adiabatic conditions, we have to use the depth instead
       // this is less precise, because we do not have the exact pressure gradient, instead we use pressure/depth
@@ -64,9 +70,21 @@ namespace aspect
       else
       {
     	double depth = this->get_geometry_model().depth(position);
-    	double depth_deviation = depth - transition_depths[phase]
-    	                         - transition_slopes[phase] * (depth / pressure) * (temperature - transition_temperatures[phase]);
-    	return 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[phase]));
+    	double depth_deviation = (pressure > 0
+    			                  ?
+    			                  depth - transition_depths[phase]
+    	                          - transition_slopes[phase] * (depth / pressure) * (temperature - transition_temperatures[phase])
+    	                          :
+    			                  depth - transition_depths[phase]
+    	                          - transition_slopes[phase] / (this->get_gravity_model().gravity_vector(position).norm() * reference_rho)
+    	                          * (temperature - transition_temperatures[phase]));
+    	double phase_func;
+    	// use delta function for width = 0
+    	if(transition_widths[phase]==0)
+    	  (depth_deviation > 0) ? phase_func = 1 : phase_func = 0;
+    	else
+    	  phase_func = 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[phase]));
+    	return phase_func;
       }
   	}
 
@@ -96,8 +114,11 @@ namespace aspect
                                 - transition_slopes[phase] * (temperature - transition_temperatures[phase]);
 
       // last, calculate the analytical derivative of the phase function
-      return 0.5 / pressure_width * (1.0 - std::tanh(pressure_deviation / pressure_width)
-    				                     * std::tanh(pressure_deviation / pressure_width));
+  	  if(transition_widths[phase]==0)
+  	    return 0;
+  	  else
+        return 0.5 / pressure_width * (1.0 - std::tanh(pressure_deviation / pressure_width)
+    				                       * std::tanh(pressure_deviation / pressure_width));
   	}
 
     template <int dim>
@@ -200,9 +221,12 @@ namespace aspect
       // first, calculate temperature dependence of density
 	  double temperature_dependence = 1.0;
 	  if (this->include_adiabatic_heating ())
+	  {
         // temperature dependence is 1 - alpha * (T - T(adiabatic))
-        temperature_dependence -= (temperature - this->get_adiabatic_conditions().temperature(position))
-	    	      * thermal_expansion_coefficient(temperature, pressure, compositional_fields, position);
+	    if (&this->get_adiabatic_conditions())
+          temperature_dependence -= (temperature - this->get_adiabatic_conditions().temperature(position))
+	    	        * thermal_expansion_coefficient(temperature, pressure, compositional_fields, position);
+	  }
 	  else
 		temperature_dependence -= temperature * thermal_expansion_coefficient(temperature, pressure, compositional_fields, position);
 
@@ -295,7 +319,7 @@ namespace aspect
                         const NonlinearDependence::Dependence dependence) const
     {
       double entropy_gradient = 0.0;
-      if (&this->get_adiabatic_conditions())
+      if (&this->get_adiabatic_conditions() && this->include_latent_heat())
         for (unsigned int phase=0;phase<transition_depths.size();++phase)
         {
     	  //calculate derivative of the phase function

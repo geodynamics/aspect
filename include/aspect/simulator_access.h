@@ -174,6 +174,12 @@ namespace aspect
       include_adiabatic_heating () const;
 
       /**
+       * Return whether we use the latent heat term.
+       */
+      bool
+      include_latent_heat () const;
+
+      /**
        * Return the adiabatic surface temperature.
        */
       double
