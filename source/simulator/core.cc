@@ -640,7 +640,7 @@ namespace aspect
                              == parameters.prescribed_velocity_boundary_indicators.end(), 
                   ExcInternalError());
 
-#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 810
+#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
           DoFTools::make_periodicity_constraints(dof_handler, 
                                                  (*p).first.first,  //first boundary id
                                                  (*p).first.second, //second boundary id

@@ -288,7 +288,7 @@ namespace aspect
             // if deal.II supports it (after 7.3.x), pass time step number and time as
             // metadata into the output file
             DataOutBase::VtkFlags vtk_flags;
-#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 740
+#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 704
             vtk_flags.cycle = this->get_timestep_number();
             vtk_flags.time = this->get_time();
 #endif

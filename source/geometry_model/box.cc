@@ -44,7 +44,7 @@ namespace aspect
         coarse_grid.begin_active()->face(f)->set_boundary_indicator(f);
 
       //Tell p4est about the periodicity of the mesh.
-#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 810
+#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
       std::vector<std_cxx1x::tuple< typename parallel::distributed::Triangulation<dim>::cell_iterator, unsigned int,
                                     typename parallel::distributed::Triangulation<dim>::cell_iterator, unsigned int> >
                                    periodicity_vector;
