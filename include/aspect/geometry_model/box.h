@@ -84,6 +84,13 @@ namespace aspect
         get_used_boundary_indicators () const;
 
         /**
+         * Return the set of periodic boundaries
+         */
+        virtual
+        std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >
+        get_periodic_boundary_pairs () const;
+
+        /**
          * Declare the parameters this class takes through input files.
          */
         static
@@ -103,6 +110,11 @@ namespace aspect
          * Extent of the box in x-, y-, and z-direction (in 3d).
          */
         Point<dim> extents;
+
+        /**
+         * Flag whether the box is periodic in the x-, y-, and z-direction.
+         */
+        bool periodic[dim];
     };
   }
 }

@@ -34,8 +34,15 @@ namespace aspect
     {}
 
 
-    template <int dim>
+    template<int dim>
+    std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int > >
+    Interface<dim>::get_periodic_boundary_pairs() const
+    {
+      //return an empty set in the base class
+      return std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int > >();
+    }
 
+    template <int dim>
     void
     Interface<dim>::
     declare_parameters (dealii::ParameterHandler &prm)

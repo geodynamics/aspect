@@ -613,17 +613,51 @@ namespace aspect
       pcout.get_stream().imbue(s);
     }
 
+    //reinit the constraints matrix and make hanging node constraints
+    constraints.clear();
+    constraints.reinit(introspection.index_sets.system_relevant_set);
+    DoFTools::make_hanging_node_constraints (dof_handler,
+                                             constraints);
+    
+    //Now set up the constraints for periodic boundary conditions
+    {
+      typedef std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> > 
+               periodic_boundary_set;
+      periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
+
+      for(periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
+        {
+          //Throw error if we are trying to use the same boundary for more than one boundary condition
+          Assert( is_element( (*p).first.first, parameters.fixed_temperature_boundary_indicators ) == false &&
+                  is_element( (*p).first.second, parameters.fixed_temperature_boundary_indicators ) == false &&
+                  is_element( (*p).first.first, parameters.zero_velocity_boundary_indicators ) == false &&
+                  is_element( (*p).first.second, parameters.zero_velocity_boundary_indicators ) == false &&
+                  is_element( (*p).first.first, parameters.tangential_velocity_boundary_indicators ) == false &&
+                  is_element( (*p).first.second, parameters.tangential_velocity_boundary_indicators ) == false &&
+                  parameters.prescribed_velocity_boundary_indicators.find( (*p).first.first)
+                             == parameters.prescribed_velocity_boundary_indicators.end() &&
+                  parameters.prescribed_velocity_boundary_indicators.find( (*p).first.second)
+                             == parameters.prescribed_velocity_boundary_indicators.end(), 
+                  ExcInternalError());
+
+#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 810
+          DoFTools::make_periodicity_constraints(dof_handler, 
+                                                 (*p).first.first,  //first boundary id
+                                                 (*p).first.second, //second boundary id
+                                                 (*p).second,       //cartesian direction for translational symmetry
+                                                 constraints);
+#endif
+        }
+ 
+
+    }
     // then compute constraints for the velocity. the constraints we compute
     // here are the ones that are the same for all following time steps. in
     // addition, we may be computing constraints from boundary values for the
     // velocity that are different between time steps. these are then put
     // into current_constraints in start_timestep().
     {
-      constraints.clear();
-      constraints.reinit(introspection.index_sets.system_relevant_set);
 
-      DoFTools::make_hanging_node_constraints (dof_handler,
-                                               constraints);
 
       // do the interpolation for zero velocity
       for (std::set<types::boundary_id>::const_iterator
@@ -672,8 +706,8 @@ namespace aspect
 
       // we do nothing with the compositional fields: homogeneous Neumann boundary conditions
 
-      constraints.close();
     }
+    constraints.close();
 
     // finally initialize vectors, matrices, etc.
 

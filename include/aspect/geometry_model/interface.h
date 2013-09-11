@@ -114,6 +114,16 @@ namespace aspect
         get_used_boundary_indicators () const = 0;
 
         /**
+         * Returns a set of periodic boundary pairs.  The elements of the set are
+        a pair of boundary ids and a cartesian unit direction each.  The base class
+        returns an empty set, so this does nothing unless you specifically use a 
+        geometry model with periodic boundary conditions
+        **/
+        virtual
+        std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >
+        get_periodic_boundary_pairs () const;
+
+        /**
          * Declare the parameters this class takes through input files.
          * The default implementation of this function does not describe
          * any parameters. Consequently, derived classes do not have to
