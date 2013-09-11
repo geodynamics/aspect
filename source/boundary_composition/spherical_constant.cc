@@ -38,7 +38,8 @@ namespace aspect
     SphericalConstant<dim>::
     composition (const GeometryModel::Interface<dim> &geometry_model,
                  const unsigned int                   boundary_indicator,
-                 const Point<dim>                    &location) const
+                 const Point<dim>                    &location,
+                 const unsigned int                   compositional_field) const
     {
       // verify that the geometry is in fact a spherical shell since only
       // for this geometry do we know for sure what boundary indicators it

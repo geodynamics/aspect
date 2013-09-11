@@ -58,7 +58,8 @@ namespace aspect
         virtual
         double composition (const GeometryModel::Interface<dim> &geometry_model,
                             const unsigned int                   boundary_indicator,
-                            const Point<dim>                    &location) const;
+                            const Point<dim>                    &location,
+                            const unsigned int                   compositional_field) const;
 
         /**
          * Return the minimal composition on that part of the boundary
