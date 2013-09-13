@@ -253,7 +253,9 @@ namespace aspect
                              "The value of the constant viscosity. Units: $kg/m/s$.");
           prm.declare_entry ("Composition viscosity prefactor", "1.0",
                              Patterns::Double (0),
-                             "A linear dependency of viscosity on composition. Dimensionless prefactor.");
+                             "A linear dependency of viscosity on the first compositional field. "
+                             "Dimensionless prefactor. With a value of 1.0 (the default) the "
+                             "viscosity does not depend on the composition.");
           prm.declare_entry ("Thermal viscosity exponent", "0.0",
                              Patterns::Double (0),
                              "The temperature dependence of viscosity. Dimensionless exponent.");
