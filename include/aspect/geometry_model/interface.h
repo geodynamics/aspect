@@ -92,7 +92,19 @@ namespace aspect
         double depth(const Point<dim> &position) const = 0;
 
         /**
-         * Returns a representative point for a given depth.
+         * Returns a representative point for a given depth. Such a point must lie inside
+         * the domain for sure (assuming the given depth is valid), but it is not important
+         * where exactly in the domain it is. A good choice would be on a middle axis, for
+         * example.
+         *
+         * The function is used, for example, in computing an initial adiabatic profile.
+         * For this, we need to be able to query the density as a function of (adiabatic)
+         * pressure and temperature. However, the functions returning the density from the
+         * material model also depend on location. Since we are interested only in computing
+         * a depth-dependent adiabatic profile without lateral variation, we need to be
+         * able to query the density at "representative points" at given depths, without
+         * caring too much where exactly that is -- but at points that we know for sure
+         * are inside the domain.
          */
         virtual
         Point<dim> representative_point(const double depth) const = 0;
