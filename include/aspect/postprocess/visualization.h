@@ -362,7 +362,7 @@ namespace aspect
         /**
          * Graphical output format.
          */
-        string output_format;
+        std::string output_format;
 
         /**
          * VTU file output supports grouping files from several CPUs
