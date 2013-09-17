@@ -55,7 +55,8 @@ namespace aspect
       coarse_grid.add_periodicity(periodicity_vector);
 #else
       for( unsigned int i=0; i<dim; ++i)
-        AssertThrow(!periodic[i],"please update deal.II to the latest version to get support for periodic domains.");
+        AssertThrow(!periodic[i],
+                    ExcMessage("Please update deal.II to the latest version to get support for periodic domains."));
 #endif
     }
 
