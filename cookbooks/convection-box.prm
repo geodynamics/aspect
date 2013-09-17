@@ -168,14 +168,3 @@ subsection Postprocess
   end
 end
 
-
-
-# things to play with:
-# - discretization
-# - different Ra number
-#subsection Discretization
-#  set Stokes velocity polynomial degree       = 2
-#  set Temperature polynomial degree           = 2
-#end
-
-
