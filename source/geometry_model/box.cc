@@ -48,11 +48,12 @@ namespace aspect
       std::vector<std_cxx1x::tuple< typename parallel::distributed::Triangulation<dim>::cell_iterator, unsigned int,
                                     typename parallel::distributed::Triangulation<dim>::cell_iterator, unsigned int> >
                                    periodicity_vector;
-      for( unsigned int i=0; i<dim; ++i)
+      for (unsigned int i=0; i<dim; ++i)
         if (periodic[i])
           GridTools::identify_periodic_face_pairs(coarse_grid, 2*i, 2*i+1, i, periodicity_vector);
 
-      coarse_grid.add_periodicity(periodicity_vector);
+      if (periodicity_vector.size() > 0)
+        coarse_grid.add_periodicity (periodicity_vector);
 #else
       for( unsigned int i=0; i<dim; ++i)
         AssertThrow(!periodic[i],
