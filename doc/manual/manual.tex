@@ -4912,7 +4912,7 @@ do:
   achieved:
   \begin{itemize}
     \item Put the \texttt{my\_plugin.cc} into one of the \aspect{} source
-    directories and list it in the \texttt{source/CMakeLists.txt} file to ensure
+    directories and call \texttt{cmake .} followed by \texttt{make} to ensure
     that it actually gets compiled. This approach has the advantage that you do
     not need to worry much about how the file actually gets compiled. On the
     other hand, every time you modify the file, calling \texttt{make} requires
