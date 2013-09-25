@@ -65,7 +65,7 @@ namespace aspect
   {
     ASPECT_REGISTER_TERMINATION_CRITERION(EndStep,
                                           "end step",
-                                          "Terminate the simulation once the specified timestep"
+                                          "Terminate the simulation once the specified timestep "
                                           "has been reached. ")
   }
 }
