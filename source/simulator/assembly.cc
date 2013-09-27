@@ -1293,6 +1293,8 @@ namespace aspect
 
 
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+        const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
+                                                  (time_step + old_time_step)) : 1.0;
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           {
@@ -1305,12 +1307,10 @@ namespace aspect
 
             for (unsigned int j=0; j<dofs_per_cell; ++j)
               {
-                const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
-                                                          (time_step + old_time_step)) : 1.0;
                 data.local_matrix(i,j)
                 += (
                      (time_step * (conductivity + nu)
-                      * scratch.grad_phi_field[i] * scratch.grad_phi_field[j])
+                      * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
                      + ((time_step * (current_u * scratch.grad_phi_field[j] * scratch.phi_field[i]))
                         + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
                      density_c_P
