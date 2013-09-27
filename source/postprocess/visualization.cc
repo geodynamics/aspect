@@ -96,6 +96,14 @@ namespace aspect
 
 
     template <int dim>
+    void Visualization<dim>::mesh_changed_signal()
+    {
+      mesh_changed = true;
+    }
+
+
+
+    template <int dim>
     std::pair<std::string,std::string>
     Visualization<dim>::execute (TableHandler &statistics)
     {
@@ -103,7 +111,9 @@ namespace aspect
       // to the current time. this makes sure we always produce data during
       // the first time step
       if (std::isnan(next_output_time))
-        next_output_time = this->get_time();
+        {
+          next_output_time = this->get_time();
+        }
 
       // see if graphical output is requested at this time
       if (this->get_time() < next_output_time)
@@ -230,16 +240,42 @@ namespace aspect
       data_out.build_patches ();
 
       std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);
+      std::string mesh_file_prefix = "mesh-" + Utilities::int_to_string (output_file_number, 5);
       if (output_format=="hdf5")
         {
-          std::string     h5_filename = solution_file_prefix + ".h5";
+          XDMFEntry new_xdmf_entry;
+          std::string     h5_solution_file_name = solution_file_prefix + ".h5";
           std::string     xdmf_filename = this->get_output_directory() + "solution.xdmf";
-          data_out.write_hdf5_parallel((this->get_output_directory()+h5_filename).c_str(),
+
+          // Filter redundant values if the functionality is available in the current
+          // version of deal.II, otherwise use the old data format
+#if DEAL_II_VERSION_MAJOR*100 + DEAL_II_VERSION_MINOR > 800
+          DataOutBase::DataOutFilter   data_filter(DataOutBase::DataOutFilterFlags(true, true));
+
+          // If the mesh changed since the last output, make a new mesh file
+          if (mesh_changed) last_mesh_file_name = mesh_file_prefix + ".h5";
+          data_out.write_filtered_data(data_filter);
+          data_out.write_hdf5_parallel(data_filter,
+                                       mesh_changed,
+                                       (this->get_output_directory()+last_mesh_file_name).c_str(),
+                                       (this->get_output_directory()+h5_solution_file_name).c_str(),
                                        this->get_mpi_communicator());
-          xdmf_entries.push_back(data_out.create_xdmf_entry(h5_filename.c_str(), this->get_time(),
-                                                            this->get_mpi_communicator()));
+          new_xdmf_entry = data_out.create_xdmf_entry(data_filter,
+                                                      last_mesh_file_name.c_str(),
+                                                      h5_solution_file_name.c_str(),
+                                                      this->get_time(),
+                                                      this->get_mpi_communicator());
+#else
+          data_out.write_hdf5_parallel((this->get_output_directory()+h5_solution_file_name).c_str(),
+                                       this->get_mpi_communicator());
+          new_xdmf_entry = data_out.create_xdmf_entry(h5_solution_file_name.c_str(),
+                                                      this->get_time(),
+                                                      this->get_mpi_communicator());
+#endif
+          xdmf_entries.push_back(new_xdmf_entry);
           data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(),
                                    this->get_mpi_communicator());
+          mesh_changed = false;
         }
       else if ((output_format=="vtu") && (group_files!=0))
         {
@@ -583,7 +619,11 @@ namespace aspect
     {
       ar &next_output_time
       & output_file_number
-      & times_and_pvtu_names;
+      & times_and_pvtu_names
+      & mesh_changed
+      & last_mesh_file_name
+      & xdmf_entries
+      ;
     }
 
 
@@ -657,6 +697,10 @@ namespace aspect
         // solution variables to compute what they compute
         if (SimulatorAccess<dim> *x = dynamic_cast<SimulatorAccess<dim>*>(& **p))
           x->initialize (simulator);
+
+      // Also set up a listener to check when the mesh changes
+      mesh_changed = true;
+      this->get_triangulation().signals.post_refinement.connect(std_cxx1x::bind(&Visualization::mesh_changed_signal, std_cxx1x::ref(*this)));
     }
 
 

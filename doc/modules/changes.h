@@ -8,6 +8,17 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: HDF5/XDMF will only output mesh data when the mesh changes,
+  reducing total data output significantly. XDMF serialization is also
+  properly implemented.
+  <br>
+  (Eric Heien, 2013/09/27)
+
+  <li>New: HDF5 output now uses DataOutFilter to remove redundant
+  vertices/values in output data.
+  <br>
+  (Eric Heien, 2013/09/27)
+
   <li>New: Aspect now supports periodic domains (recent dev. version of deal.II
   is required).
   <br>

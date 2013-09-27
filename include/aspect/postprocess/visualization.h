@@ -383,6 +383,23 @@ namespace aspect
         void set_next_output_time (const double current_time);
 
         /**
+         * Record that the mesh changed. This helps some output
+         * writers avoid writing the same mesh multiple times.
+         */
+        void mesh_changed_signal ();
+
+        /**
+         * Whether the mesh changed since the last output.
+         */
+        bool mesh_changed;
+
+        /**
+         * The most recent name of the mesh file, used to avoid
+         * redundant mesh output.
+         */
+        std::string last_mesh_file_name;
+
+        /**
          * Handle to a thread that is used to write data in the
          * background. The background_writer() function runs
          * on this background thread.
