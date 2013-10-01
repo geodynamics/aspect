@@ -1151,6 +1151,14 @@ namespace aspect
     const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
     const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
+    const unsigned int solution_component
+      = (temperature_or_composition.is_temperature()
+        ?
+        introspection.component_indices.temperature
+        :
+        introspection.component_indices.compositional_fields[temperature_or_composition.compositional_variable]
+       );
+
     const FEValuesExtractors::Scalar solution_field
       = (temperature_or_composition.is_temperature()
          ?
@@ -1254,6 +1262,10 @@ namespace aspect
     for (unsigned int q=0; q<n_q_points; ++q)
       {
         for (unsigned int k=0; k<dofs_per_cell; ++k)
+          // We only need to look up values of shape functions if they
+          // belong to 'our' component. They are zero otherwise anyway.
+          // Note that we later only look at the values that we do set here.
+          if (cell->get_fe().system_to_component_index(k).first == solution_component)
           {
             scratch.grad_phi_field[k] = scratch.finite_element_values[solution_field].gradient (k,q);
             scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (k, q);
@@ -1297,6 +1309,7 @@ namespace aspect
                                                   (time_step + old_time_step)) : 1.0;
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
+          if (cell->get_fe().system_to_component_index(i).first == solution_component)
           {
             data.local_rhs(i) += (field_term_for_rhs * scratch.phi_field[i]
                                   + time_step *
@@ -1306,6 +1319,7 @@ namespace aspect
                                  scratch.finite_element_values.JxW(q);
 
             for (unsigned int j=0; j<dofs_per_cell; ++j)
+              if (cell->get_fe().system_to_component_index(j).first == solution_component)
               {
                 data.local_matrix(i,j)
                 += (

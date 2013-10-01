@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Fixed: performance of matrix assembly has been improved significantly,
+  especially in 3d.
+  <br>
+  (Timo Heister, 2013/10/01)
+
   <li>New: HDF5/XDMF will only output mesh data when the mesh changes,
   reducing total data output significantly. XDMF serialization is also
   properly implemented.
