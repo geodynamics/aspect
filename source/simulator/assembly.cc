@@ -841,13 +841,14 @@ namespace aspect
   {
     const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
     const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+    const bool is_compressible = material_model->is_compressible();
 
     scratch.finite_element_values.reinit (cell);
 
     if (rebuild_stokes_matrix)
       data.local_matrix = 0;
     data.local_rhs = 0;
-    if (material_model->is_compressible())
+    if (is_compressible)
       data.local_pressure_shape_function_integrals = 0;
 
     // we only need the strain rates for the viscosity,
@@ -885,7 +886,7 @@ namespace aspect
         gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
         const double compressibility
-          = (material_model->is_compressible()
+          = (is_compressible
              ?
              scratch.material_model_outputs.compressibilities[q]
              :
@@ -896,7 +897,7 @@ namespace aspect
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             for (unsigned int j=0; j<dofs_per_cell; ++j)
               data.local_matrix(i,j) += ( eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
-                                          - (material_model->is_compressible()
+                                          - (is_compressible
                                              ?
                                              eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                              :
@@ -910,7 +911,7 @@ namespace aspect
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           data.local_rhs(i) += (
                                  (density * gravity * scratch.phi_u[i])
-                                 + (material_model->is_compressible()
+                                 + (is_compressible
                                     ?
                                     (pressure_scaling *
                                      compressibility * density *
@@ -920,7 +921,7 @@ namespace aspect
                                     0)
                                )
                                * scratch.finite_element_values.JxW(q);
-        if (material_model->is_compressible())
+        if (is_compressible)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
@@ -1081,7 +1082,8 @@ namespace aspect
     const double alpha                = material_model_outputs.thermal_expansion_coefficients[q];
     const double density              = material_model_outputs.densities[q];
     const double viscosity            = material_model_outputs.viscosities[q];
-    const double compressibility      = (material_model->is_compressible()
+    const bool is_compressible        = material_model->is_compressible();
+    const double compressibility      = (is_compressible
                                          ?
                                          material_model_outputs.compressibilities[q]
                                          :
@@ -1112,7 +1114,7 @@ namespace aspect
           2 * viscosity *
           current_strain_rate * current_strain_rate
           -
-          (material_model->is_compressible()
+          (is_compressible
            ?
            2./3.*viscosity*std::pow(compressibility * density * (current_u * gravity),
                                     2)
@@ -1152,7 +1154,7 @@ namespace aspect
     const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
     const unsigned int solution_component
-      = (temperature_or_composition.is_temperature()
+    = (temperature_or_composition.is_temperature()
         ?
         introspection.component_indices.temperature
         :
