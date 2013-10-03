@@ -44,7 +44,8 @@ namespace aspect
         coarse_grid.begin_active()->face(f)->set_boundary_indicator(f);
 
       //Tell p4est about the periodicity of the mesh.
-#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
+				       //TODO: fix
+/*#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
       std::vector<std_cxx1x::tuple< typename parallel::distributed::Triangulation<dim>::cell_iterator, unsigned int,
                                     typename parallel::distributed::Triangulation<dim>::cell_iterator, unsigned int> >
                                    periodicity_vector;
@@ -54,11 +55,11 @@ namespace aspect
 
       if (periodicity_vector.size() > 0)
         coarse_grid.add_periodicity (periodicity_vector);
-#else
+	#else*/
       for( unsigned int i=0; i<dim; ++i)
         AssertThrow(!periodic[i],
                     ExcMessage("Please update deal.II to the latest version to get support for periodic domains."));
-#endif
+//#endif
     }
 
 
