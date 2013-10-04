@@ -622,7 +622,9 @@ namespace aspect
       & times_and_pvtu_names
       & mesh_changed
       & last_mesh_file_name
+#if DEAL_II_VERSION_MAJOR*100 + DEAL_II_VERSION_MINOR > 800
       & xdmf_entries
+#endif
       ;
     }
 
