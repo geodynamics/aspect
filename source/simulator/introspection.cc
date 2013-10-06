@@ -33,6 +33,15 @@ namespace aspect
   const unsigned int
   Introspection<3>::ComponentIndices::velocities[3] = { 0, 1, 2 };
 
+  template <int dim>
+  const unsigned int
+  Introspection<dim>::ComponentIndices::pressure = dim;
+
+  template <int dim>
+  const unsigned int
+  Introspection<dim>::ComponentIndices::temperature = dim+1;
+
+
   namespace
   {
     template <int dim>
