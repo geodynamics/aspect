@@ -278,8 +278,6 @@ namespace aspect
   template <int dim>
   double Simulator<dim>::solve_advection (const TemperatureOrComposition &temperature_or_composition)
   {
-    double initial_residual = 0;
-
     double advection_solver_tolerance = -1;
     unsigned int block_number = temperature_or_composition.block_index(introspection);
 
@@ -298,32 +296,38 @@ namespace aspect
         advection_solver_tolerance = parameters.composition_solver_tolerance;
       }
 
+    const double tolerance = std::max(1e-50,
+        advection_solver_tolerance*system_rhs.block(block_number).l2_norm());
     SolverControl solver_control (system_matrix.block(block_number, block_number).m(),
-                                  advection_solver_tolerance*system_rhs.block(block_number).l2_norm());
+                                  tolerance);
 
     SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
                                                  SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
 
-//TODO: clean up: why do we copy system_rhs here, then call set_zero when we later
-// overwrite the vector in residual(), then call set_zero again, and then throw away
-// the result
-    LinearAlgebra::BlockVector
-    distributed_solution (system_rhs);
-    current_constraints.set_zero(distributed_solution);
-    // create vector with distribution of system_rhs.
-    LinearAlgebra::Vector block_remap (system_rhs.block (block_number));
-    // copy block of current_linearization_point into it, because
-    // current_linearization is distributed differently.
-    block_remap = current_linearization_point.block (block_number);
-    // (ab)use the distributed solution vector to temporarily put a residual in
-    initial_residual = system_matrix.block(block_number,block_number).residual (distributed_solution.block(block_number),
-                                                                                block_remap,
-                                                                                system_rhs.block(block_number));
-    current_constraints.set_zero(distributed_solution);
+    // Create distributed vector (we need all blocks here even though we only
+    // solve for the current block) because only have a ConstraintMatrix
+    // for the whole system, current_linearization_point contains our initial guess.
+    LinearAlgebra::BlockVector distributed_solution (
+        introspection.index_sets.system_partitioning,
+        mpi_communicator);
+    distributed_solution.block(block_number) = current_linearization_point.block (block_number);
 
-    // then overwrite it again with the current best guess and solve the linear system
-    distributed_solution.block(block_number) = block_remap;
-    solver.solve (system_matrix.block(block_number,block_number), distributed_solution.block(block_number),
+    // Temporary vector to hold the residual, we don't need a BlockVector here.
+    LinearAlgebra::Vector temp (
+        introspection.index_sets.system_partitioning[block_number],
+        mpi_communicator);
+
+    // Compute the residual before we solve and return this at the end.
+    // This is used in the nonlinear solver.
+    double initial_residual = system_matrix.block(block_number,block_number).residual
+        (temp,
+         distributed_solution.block(block_number),
+         system_rhs.block(block_number));
+
+    // solve the linear system:
+    current_constraints.set_zero(distributed_solution);
+    solver.solve (system_matrix.block(block_number,block_number),
+                  distributed_solution.block(block_number),
                   system_rhs.block(block_number),
                   (temperature_or_composition.is_temperature()
                    ?
