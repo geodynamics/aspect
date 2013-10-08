@@ -118,7 +118,7 @@ namespace aspect
               ExcMessage ("This initial condition can only be used if the geometry "
                           "is a box."));
 
-      double perturbation;
+      double perturbation = 0;
       Point<dim> center;
       for (int d=0; d<dim; ++d)
         center[d] = (Point<3>(center_x,center_y,center_z))[d];
