@@ -113,8 +113,8 @@ namespace aspect
         ComponentIndices (const unsigned int n_compositional_fields);
 
         static const unsigned int       velocities[dim];
-        static const unsigned int       pressure;
-        static const unsigned int       temperature;
+        static const unsigned int       pressure    = dim;
+        static const unsigned int       temperature = dim+1;
         const std::vector<unsigned int> compositional_fields;
       };
       /**

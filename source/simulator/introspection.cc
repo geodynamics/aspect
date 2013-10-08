@@ -35,11 +35,11 @@ namespace aspect
 
   template <int dim>
   const unsigned int
-  Introspection<dim>::ComponentIndices::pressure = dim;
+  Introspection<dim>::ComponentIndices::pressure;
 
   template <int dim>
   const unsigned int
-  Introspection<dim>::ComponentIndices::temperature = dim+1;
+  Introspection<dim>::ComponentIndices::temperature;
 
 
   namespace
