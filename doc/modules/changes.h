@@ -8,10 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
-  <li>Fixed: performance of matrix assembly has been improved significantly,
-  especially in 3d.
+  <li>Fixed: Performance of matrix assembly has been improved significantly,
+  especially in 3d: assembly of the temperature system is up to three
+  times faster, assembly of the Stokes system up to 50%.
   <br>
-  (Timo Heister, 2013/10/01)
+  (Timo Heister, Thomas Geenen, Wolfgang Bangerth 2013/10/08)
 
   <li>New: HDF5/XDMF will only output mesh data when the mesh changes,
   reducing total data output significantly. XDMF serialization is also
@@ -24,7 +25,7 @@ All entries are signed with the names of the author.
   <br>
   (Eric Heien, 2013/09/27)
 
-  <li>New: Aspect now supports periodic domains (recent dev. version of deal.II
+  <li>New: Aspect now supports periodic domains (a recent development version of deal.II
   is required).
   <br>
   (Ian Rose, Timo Heister, 2013/09/11)
