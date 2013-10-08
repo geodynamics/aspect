@@ -41,6 +41,14 @@ namespace aspect
   const unsigned int
   Introspection<dim>::ComponentIndices::temperature;
 
+  template <int dim>
+  const unsigned int
+  Introspection<dim>::BlockIndices::pressure;
+
+  template <int dim>
+  const unsigned int
+  Introspection<dim>::BlockIndices::temperature;
+
 
   namespace
   {
