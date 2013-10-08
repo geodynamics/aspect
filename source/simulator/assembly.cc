@@ -595,7 +595,9 @@ namespace aspect
                      const double                        cell_diameter,
                      const TemperatureOrComposition     &temperature_or_composition) const
   {
-    if (global_u_infty == 0 || global_entropy_variation == 0 || global_field_variation == 0)
+    if (std::abs(global_u_infty) < 1e-50
+	|| std::abs(global_entropy_variation) < 1e-50
+	|| std::abs(global_field_variation) < 1e-50)
       return 5e-3 * cell_diameter;
 
     double max_residual = 0;
