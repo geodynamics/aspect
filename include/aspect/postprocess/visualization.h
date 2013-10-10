@@ -435,6 +435,13 @@ namespace aspect
         std::vector<std::pair<double,std::string> > times_and_pvtu_names;
 
         /**
+         * A list of list of filenames, sorted by timestep, that correspond
+         * to what has been created as output. This is used to create a master
+         * .visit file for the entire simulation.
+         */
+        std::vector<std::vector<std::string> > output_file_names_by_timestep;
+
+        /**
          * A set of data related to XDMF file sections describing the HDF5 heavy data
          * files created. These contain things such as the dimensions and names of data
          * written at all steps during the simulation.

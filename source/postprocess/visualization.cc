@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -304,13 +304,21 @@ namespace aspect
               std::ofstream pvd_master (pvd_master_filename.c_str());
               data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
 
-              // finally, do the same for Visit via the .visit file
+              // finally, do the same for Visit via the .visit file for this
+              // time step, as well as for all time steps together
               const std::string
               visit_master_filename = (this->get_output_directory() +
                                        solution_file_prefix +
                                        ".visit");
               std::ofstream visit_master (visit_master_filename.c_str());
               data_out.write_visit_record (visit_master, filenames);
+
+              output_file_names_by_timestep.push_back (filenames);
+#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) > 800
+              std::ofstream global_visit_master ((this->get_output_directory() +
+                                                  "solution.visit").c_str());
+              data_out.write_visit_record (global_visit_master, output_file_names_by_timestep);
+#endif
             }
         }
       else
@@ -361,13 +369,21 @@ namespace aspect
               std::ofstream pvd_master (pvd_master_filename.c_str());
               data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
 
-              // finally, do the same for Visit via the .visit file
+              // finally, do the same for Visit via the .visit file for this
+              // time step, as well as for all time steps together
               const std::string
               visit_master_filename = (this->get_output_directory() +
                                        solution_file_prefix +
                                        ".visit");
               std::ofstream visit_master (visit_master_filename.c_str());
               data_out.write_visit_record (visit_master, filenames);
+
+              output_file_names_by_timestep.push_back (filenames);
+#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) > 800
+              std::ofstream global_visit_master ((this->get_output_directory() +
+                                                  "solution.visit").c_str());
+              data_out.write_visit_record (global_visit_master, output_file_names_by_timestep);
+#endif
             }
 
           const std::string *filename
@@ -620,6 +636,7 @@ namespace aspect
       ar &next_output_time
       & output_file_number
       & times_and_pvtu_names
+      & output_file_names_by_timestep
       & mesh_changed
       & last_mesh_file_name
 #if DEAL_II_VERSION_MAJOR*100 + DEAL_II_VERSION_MINOR > 800

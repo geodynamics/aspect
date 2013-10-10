@@ -8,6 +8,15 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: Aspect now not only generates a <code>solution-NNNNN.visit</code>
+  file for each time step but also a global <code>solution.visit</code> file
+  that Visit can use to visualize the entire time dependent solution. (Both
+  of these work with versions of Visit that support this, including Visit 2.5.0.
+  Unfortunately, versions of Visit between 2.5.1 and the version current at
+  the time of writing this, 2.6.3, have a bug that prevents this.)
+  <br>
+  (Wolfgang Bangerth 2013/10/08)
+
   <li>Fixed: Performance of matrix assembly has been improved significantly,
   especially in 3d: assembly of the temperature system is up to three
   times faster, assembly of the Stokes system up to 50%.
