@@ -1397,6 +1397,7 @@ total 780
 -rw------- 1 b     35 Dec  1 15:13 solution-00001.visit
 ...
 -rw-r--r-- 1 b    997 Dec  1 15:13 solution.pvd
+-rw-r--r-- 1 b    997 Dec  1 15:13 solution.visit
 -rw------- 1 b    924 Dec  1 15:13 statistics
 \end{lstlisting}
 The purpose of these files is as follows:
@@ -1445,21 +1446,27 @@ The purpose of these files is as follows:
   simply creates both kinds of files in each time step in which graphical data
   is produced.
 
-  The final file of this kind, \texttt{solution.pvd} is a file that
-  describes to Paraview which \texttt{solution-xxxx.pvtu} jointly form
-  a complete simulation by listing the \texttt{.pvtu} files of all
-  timesteps together with the simulation time to which they correspond.
+  The final two files of this kind, \texttt{solution.pvd} and
+  \texttt{solution.visit}, are files that
+  describes to Paraview and Visit, respectively, which
+  \texttt{solution-xxxx.pvtu} and \texttt{solution-xxxx.yyyy.vtu} jointly form 
+  a complete simulation. In the former case, the file lists the \texttt{.pvtu}
+  files of all 
+  timesteps together with the simulation time to which they correspond. In the
+  latter case, it actually lists all \texttt{.vtu} that belong to one
+  simulation, grouped by the timestep they correspond to.
   To visualize an entire simulation, not just a single time step, it is
-  therefore simplest to just load this \texttt{solution.pvd} file.
+  therefore simplest to just load one of these files, depending on whether you
+  use Paraview or Visit.%
+  \footnote{At the time of writing this, current versions of Visit (starting
+    with version 2.5.1) actually have a bug that prevents them from
+    successfully reading the \texttt{solution.visit} or
+    \texttt{solution-xxxx.visit} files -- Visit believes that each of these
+    files corresponds to an individual time step, rather than that a whole
+    group of files together form one time step. This bug is not fixed in Visit
+    2.6.3, but may be fixed in later versions.}
 
-  The final file of this kind, \texttt{solution.pvd} is a file that
-  describes to Paraview which \texttt{solution-xxxx.pvtu} jointly form
-  a complete simulation by listing the \texttt{.pvtu} files of all
-  timesteps together with the simulation time to which they correspond.
-  To visualize an entire simulation, not just a single time step, it is
-  therefore simplest to just load this \texttt{solution.pvd} file.
-
-  For more on visualization, see Section~\ref{sec:viz}.
+  For more on visualization, see also Section~\ref{sec:viz}.
 
 \item \textit{A statistics file:} The \texttt{output/statistics} file contains
   statistics collected during each time step, both from within the simulator
