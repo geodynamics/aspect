@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -1464,13 +1464,21 @@ namespace aspect
                           //   temp_deg + stokes_deg/2
                           // rounded up. do so. (note that x/2 rounded up
                           // equals (x+1)/2 using integer division.)
+	                  //
+	                  // (note: we need to get at the advection element in
+	                  // use for the scratch and copy objects below. the
+	                  // base element for the compositional fields exists
+	                  // only once, with multiplicity, so only query
+	                  // introspection.block_indices.compositional_fields[0]
+	                  // instead of subscripting with the correct compositional
+	                  // field index.)
          internal::Assembly::Scratch::
          AdvectionSystem<dim> (finite_element,
                                finite_element.base_element(temperature_or_composition.is_temperature()
                                                            ?
                                                            introspection.block_indices.temperature
                                                            :
-                                                           introspection.block_indices.compositional_fields[temperature_or_composition.compositional_variable]),
+                                                           introspection.block_indices.compositional_fields[0]),
                                mapping,
                                QGauss<dim>((temperature_or_composition.is_temperature()
                                             ?
@@ -1485,7 +1493,7 @@ namespace aspect
                                                     ?
                                                     introspection.block_indices.temperature
                                                     :
-                                                    introspection.block_indices.compositional_fields[temperature_or_composition.compositional_variable])));
+                                                    introspection.block_indices.compositional_fields[0])));
 
     system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);
