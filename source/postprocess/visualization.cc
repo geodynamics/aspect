@@ -33,6 +33,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <unistd.h>
 
 namespace aspect
 {
@@ -426,65 +427,92 @@ namespace aspect
     {
       // write stuff into a (hopefully local) tmp file first. to do so first
       // find out whether $TMPDIR is set and if so put the file in there
-      char tmp_filename[1025], *tmp_filedir;
-      int tmp_file_desc;
-      FILE *out_fp;
-      static bool wrote_warning = false;
-      bool using_bg_tmp = true;
+      std::string tmp_filename;
 
       {
         // Try getting the environment variable for the temporary directory
-        tmp_filedir = getenv("TMPDIR");
+        const char *tmp_filedir = getenv("TMPDIR");
         // If we can't, default to /tmp
-        sprintf(tmp_filename, "%s/tmp.XXXXXX", (tmp_filedir?tmp_filedir:"/tmp"));
-        // Create the temporary file
-        tmp_file_desc = mkstemp(tmp_filename);
+        if (tmp_filedir)
+          tmp_filename = tmp_filedir;
+        else
+          tmp_filename = "/tmp";
+        tmp_filename += "/aspect.tmp.XXXXXX";
+
+        // Create the temporary file; get at the actual filename
+        // by using a C-style string that mkstemp will then overwrite
+        char *tmp_filename_x = new char[tmp_filename.size()+1];
+        std::strcpy(tmp_filename_x, tmp_filename.c_str());
+        const int tmp_file_desc = mkstemp(tmp_filename_x);
+        tmp_filename = tmp_filename_x;
+        delete tmp_filename_x;
 
         // If we failed to create the temp file, just write directly to the target file
         if (tmp_file_desc == -1)
           {
-            if (!wrote_warning)
-              std::cerr << "***** WARNING: could not create temporary file, will "
+            std::cerr << "***** WARNING: could not create temporary file, will "
                         "output directly to final location. This may negatively "
-                        "affect performance." << std::endl;
-            wrote_warning = true;
-
-            // Set the filename to be the specified input name
-            sprintf(tmp_filename, "%s", filename->c_str());
-            out_fp = fopen(tmp_filename, "w");
-            using_bg_tmp = false;
-          }
-        else
-          {
-            out_fp = fdopen(tmp_file_desc, "w");
-          }
-      }
-
-      // write the data into the file
-      {
-        if (!out_fp)
-          {
-            std::cerr << "***** ERROR: could not create " << tmp_filename
-                      << " *****"
+                        "affect performance."
+                        " (On processor "
+                      << Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) << ".)"
                       << std::endl;
-          }
-        else
-          {
-            fprintf(out_fp, "%s", file_contents->c_str());
-            fclose(out_fp);
+
+            tmp_filename = *filename;
           }
       }
 
-      if (using_bg_tmp)
+      // open the file. if we can't open it, abort if this is the "real"
+      // file. re-try with the "real" file if we had tried to write to
+      // a temporary file
+      re_try_with_non_tmp_file:
+      std::cout << "********************** Writing to " << tmp_filename << std::endl;
+      std::ofstream out (tmp_filename.c_str());
+      if (!out)
         {
-          // now move the file to its final destination on the global file system
-          std::string command = std::string("mv ") + tmp_filename + " " + *filename;
-          int error = system(command.c_str());
-          if (error != 0)
+          if (tmp_filename == *filename)
+            AssertThrow (false, ExcMessage(std::string("Trying to write to file <") +
+                                           *filename +
+                                           " but the file can't be opened!"))
+          else
             {
-              std::cerr << "***** ERROR: could not move " << tmp_filename
-                        << " to " << *filename << " *****"
+              tmp_filename = *filename;
+              goto re_try_with_non_tmp_file;
+            }
+        }
+
+      // now write and then move the tmp file to its final destination
+      // if necessary
+      out << file_contents;
+
+      if (tmp_filename != *filename)
+        {
+          std::string command = std::string("mv ") + tmp_filename + " " + *filename;
+
+          bool first_attempt = true;
+
+          re_try:
+          int error = system(command.c_str());
+
+          // if the move failed, and this is the first time, sleep for a second in
+          // hopes that it was just an NFS timeout, then try again. if it fails the
+          // second time around, try writing to the final file directly.
+          if (error != 0)
+            if (first_attempt == true)
+              {
+                first_attempt = false;
+                sleep (1);
+                goto re_try;
+              }
+            else
+            {
+              std::cerr << "***** WARNING: could not move " << tmp_filename
+                        << " to " << *filename << ". Trying again to write directly to "
+                        << *filename
+                        << ". (On processor "
+                        << Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) << ".)"
                         << std::endl;
+              tmp_filename = *filename;
+              goto re_try_with_non_tmp_file;
             }
         }
 
