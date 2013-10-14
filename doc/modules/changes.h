@@ -8,6 +8,13 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Fixed: moved particle generation to a class, changed particle 
+  integration and generation to be factory patterned classes. There
+  should be no effect on the user but this will allow for easier
+  extension of particle functionality in the future.
+  <br>
+  (Eric Heien 2013/10/14)
+
   <li>New: Aspect now not only generates a <code>solution-NNNNN.visit</code>
   file for each time step but also a global <code>solution.visit</code> file
   that Visit can use to visualize the entire time dependent solution. (Both

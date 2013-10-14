@@ -29,11 +29,21 @@ namespace aspect
     template <int dim>
     PassiveTracers<dim>::PassiveTracers ()
       :
+      integrator(NULL),
+      output(NULL),
+      generator(NULL),
       initialized(false),
       next_data_output_time(std::numeric_limits<double>::quiet_NaN())
     {}
 
 
+    template <int dim>
+    PassiveTracers<dim>::~PassiveTracers ()
+    {
+      if (integrator) delete integrator;
+      if (output) delete output;
+      if (generator) delete generator;
+    }
 
     template <int dim>
     std::pair<std::string,std::string>
@@ -43,33 +53,26 @@ namespace aspect
 
       if (!initialized)
         {
+          // Create a generator object using a random uniform distribution
+          generator = Particle::Generator::create_generator_object<dim,Particle::BaseParticle<dim> >
+                      ("random_uniform");
+
           // Create an output object depending on what the parameters specify
           output = Particle::Output::create_output_object<dim,Particle::BaseParticle<dim> >
                    (data_output_format,
                     this->get_output_directory(),
                     this->get_mpi_communicator());
 
-          //TODO: Use factory methods here
           // Create an integrator object depending on the specified parameter
-          if (integration_scheme == "euler")
-            integrator = new Particle::EulerIntegrator<dim, Particle::BaseParticle<dim> >;
-          else if (integration_scheme == "rk2")
-            integrator = new Particle::RK2Integrator<dim, Particle::BaseParticle<dim> >;
-          else if (integration_scheme == "rk4")
-            integrator = new Particle::RK4Integrator<dim, Particle::BaseParticle<dim> >;
-          else if (integration_scheme == "hybrid")
-            integrator = new Particle::HybridIntegrator<dim, Particle::BaseParticle<dim> >(&(this->get_triangulation()),
-                                                                                           &(this->get_dof_handler()),
-                                                                                           &(this->get_mapping()),
-                                                                                           &(this->get_solution()));
-          else
-            Assert (false, ExcNotImplemented());
+          integrator = Particle::Integrator::create_integrator_object<dim,Particle::BaseParticle<dim> >
+                       (integration_scheme);
 
           // Set up the particle world with the appropriate simulation objects
           world.set_mapping(&(this->get_mapping()));
           world.set_triangulation(&(this->get_triangulation()));
           world.set_dof_handler(&(this->get_dof_handler()));
           world.set_integrator(integrator);
+          world.set_solution(&(this->get_solution()));
           world.set_mpi_comm(this->get_mpi_communicator());
 
           // And initialize the world
@@ -78,7 +81,8 @@ namespace aspect
           next_data_output_time = this->get_time();
 
           // Add the specified number of particles
-          world.global_add_particles(n_initial_tracers);
+          generator->generate_particles(world, n_initial_tracers);
+          world.finished_adding_particles();
 
           initialized = true;
         }
@@ -91,8 +95,8 @@ namespace aspect
           set_next_data_output_time (this->get_time());
           data_file_name = output->output_particle_data(world.get_particles(),
                                                         (this->convert_output_to_years() ?
-                                                            this->get_time() / year_in_seconds :
-                                                            this->get_time()));
+                                                         this->get_time() / year_in_seconds :
+                                                         this->get_time()));
           result_string += ". Writing particle graphical output " + data_file_name;
         }
 
@@ -150,11 +154,7 @@ namespace aspect
                             Patterns::Selection(Particle::Output::output_object_names()),
                             "File format to output raw particle data in.");
           prm.declare_entry("Integration scheme", "rk2",
-                            Patterns::Selection("euler|"
-                                                "rk2|"
-                                                "rk4|"
-                                                "hybrid"
-                                               ),
+                            Patterns::Selection(Particle::Integrator::integrator_object_names()),
                             "Integration scheme to move particles.");
         }
         prm.leave_subsection ();

@@ -77,11 +77,6 @@ namespace aspect
            */
           virtual ~Interface () {}
 
-          void set_mpi_comm(MPI_Comm new_comm_world)
-          {
-            communicator = new_comm_world;
-          };
-
           /**
            * Write data about the particles specified in the first argument
            * to a file. If possible, encode the current simulation time
@@ -127,6 +122,17 @@ namespace aspect
        */
       std::string
       output_object_names ();
+
+      /**
+       * Read or write the data of this object for serialization
+       */
+      template <class Archive>
+      void serialize(Archive &ar, const unsigned int version)
+      {
+        ar &file_index
+        ;
+      }
+
     }
   }
 }

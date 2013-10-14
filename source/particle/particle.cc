@@ -27,25 +27,25 @@ namespace aspect
   {
     template <int dim>
     inline
-    BaseParticle<dim>::BaseParticle (const Point<dim>& new_loc,
-                                  const double& new_id)
-                                  :
-                                  location (new_loc),
-                                  id (new_id),
-                                  is_local (true),
-                                  check_vel (true)
-                                  {
-                                  }
+    BaseParticle<dim>::BaseParticle (const Point<dim> &new_loc,
+                                     const double &new_id)
+      :
+      location (new_loc),
+      id (new_id),
+      is_local (true),
+      check_vel (true)
+    {
+    }
 
     template <int dim>
     inline
     BaseParticle<dim>::BaseParticle ()
-    :
-    location (),
-    velocity (),
-    id (0),
-    is_local (true),
-    check_vel (true)
+      :
+      location (),
+      velocity (),
+      id (0),
+      is_local (true),
+      check_vel (true)
     {
     }
 
@@ -69,34 +69,34 @@ namespace aspect
     void
     BaseParticle<dim>::write_data (std::vector<double> &data) const
     {
-       // Write location data
-        for (unsigned int i = 0; i < dim; ++i)
-          {
-		data.push_back(location(i));
-          }
-        // Write velocity data
-        for (unsigned int i = 0; i < dim; ++i)
-          {
-		data.push_back(velocity(i));
-          }
-        data.push_back(id);
-      }
+      // Write location data
+      for (unsigned int i = 0; i < dim; ++i)
+        {
+          data.push_back(location(i));
+        }
+      // Write velocity data
+      for (unsigned int i = 0; i < dim; ++i)
+        {
+          data.push_back(velocity(i));
+        }
+      data.push_back(id);
+    }
 
     template <int dim>
     unsigned int BaseParticle<dim>::read_data(const std::vector<double> &data, const unsigned int &pos)
     {
       unsigned int p = pos;
-        // Read location data
-        for (unsigned int i = 0; i < dim; ++i)
-          {
-            location (i) = data[p++];
-          }
-        // Write velocity data
-        for (unsigned int i = 0; i < dim; ++i)
-          {
-            velocity (i) = data[p++];
-          }
-        id = data[p++];
+      // Read location data
+      for (unsigned int i = 0; i < dim; ++i)
+        {
+          location (i) = data[p++];
+        }
+      // Write velocity data
+      for (unsigned int i = 0; i < dim; ++i)
+        {
+          velocity (i) = data[p++];
+        }
+      id = data[p++];
       return p;
     }
 
@@ -104,7 +104,7 @@ namespace aspect
     unsigned int
     BaseParticle<dim>::data_len ()
     {
-        return (dim + dim + 1);
+      return (dim + dim + 1);
     }
 
 
@@ -166,13 +166,13 @@ namespace aspect
 
     template <int dim>
     void
-    BaseParticle<dim>::add_mpi_types (std::vector<MPIDataInfo>& data_info)
+    BaseParticle<dim>::add_mpi_types (std::vector<MPIDataInfo> &data_info)
     {
       // Add the position, velocity, ID
       data_info.push_back (
-          MPIDataInfo ("pos", dim));
+        MPIDataInfo ("pos", dim));
       data_info.push_back (
-          MPIDataInfo ("velocity", dim));
+        MPIDataInfo ("velocity", dim));
       data_info.push_back (MPIDataInfo ("id", 1));
     }
 

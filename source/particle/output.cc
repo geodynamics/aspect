@@ -146,8 +146,8 @@ namespace aspect
             // And print the data for each particle
             for (it=particles.begin(); it!=particles.end(); ++it)
               {
-		    std::vector<double>  particle_data;
-		   unsigned int p = 0;
+                std::vector<double>  particle_data;
+                unsigned int p = 0;
                 it->second.write_data(particle_data);
                 for (dit=data_info.begin(); dit!=data_info.end(); ++dit)
                   {
@@ -296,7 +296,7 @@ namespace aspect
                 for (typename std::multimap<LevelInd, T>::const_iterator
                      it=particles.begin(); it!=particles.end(); ++it)
                   {
-		    std::vector<double> particle_data;
+                    std::vector<double> particle_data;
                     it->second.write_data(particle_data);
                     output << "          ";
                     for (unsigned int d=0; d<dit->n_elements; ++d)

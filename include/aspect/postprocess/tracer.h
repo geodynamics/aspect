@@ -25,6 +25,8 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/particle/world.h>
 #include <aspect/particle/output.h>
+#include <aspect/particle/generator.h>
+#include <aspect/particle/integrator.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -43,12 +45,17 @@ namespace aspect
         /**
          * The integrator to use in moving the particles
          */
-        Particle::Integrator<dim, Particle::BaseParticle<dim> >         *integrator;
+        Particle::Integrator::Interface<dim, Particle::BaseParticle<dim> >  *integrator;
 
         /**
          * Pointer to an output object
          */
-        Particle::Output::Interface<dim, Particle::BaseParticle<dim> >  *output;
+        Particle::Output::Interface<dim, Particle::BaseParticle<dim> >      *output;
+
+        /**
+         * Pointer to a generator object
+         */
+        Particle::Generator::Interface<dim, Particle::BaseParticle<dim> >   *generator;
 
         /**
          * Whether this set has been initialized yet or not
@@ -94,6 +101,11 @@ namespace aspect
          * Constructor.
          */
         PassiveTracers();
+
+        /**
+         * Destructor.
+         */
+        ~PassiveTracers();
 
         /**
          * Execute this postprocessor. Derived classes will implement this function

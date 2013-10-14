@@ -24,7 +24,6 @@
 
 #include <deal.II/numerics/fe_field_function.h>
 #include <aspect/particle/particle.h>
-#include <aspect/particle/integrator.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -36,6 +35,12 @@ namespace aspect
 
     /// MPI tag for particle transfers
     const int           PARTICLE_XFER_TAG = 382;
+
+    namespace Integrator
+    {
+      template <int dim, class T>
+      class Interface;
+    }
 
     template <int dim, class T>
     class World
@@ -50,8 +55,11 @@ namespace aspect
         /// DoFHandler for the simulation this particle world exists in
         const DoFHandler<dim>           *dof_handler;
 
+        /// DoFHandler for the simulation this particle world exists in
+        const TrilinosWrappers::MPI::BlockVector           *solution;
+
         /// Integration scheme for moving particles in this world
-        Integrator<dim, T>              *integrator;
+        Integrator::Interface<dim, T>   *integrator;
 
         /// MPI communicator to be used for this world
         MPI_Comm                        communicator;
@@ -65,7 +73,7 @@ namespace aspect
         std::multimap<LevelInd, T>      particles;
 
         // Total number of particles in simulation
-        unsigned int                    global_sum_particles;
+        unsigned int                    global_num_particles;
 
         // MPI related variables
         /// MPI registered datatype encapsulating the MPI_Particle struct
@@ -84,98 +92,6 @@ namespace aspect
         /// MPI_Request object buffers to allow for non-blocking communication
         MPI_Request                     *send_reqs, *recv_reqs;
 
-        /**
-         * Generate a set of particles uniformly randomly distributed within the
-         * specified triangulation. This is done using "roulette wheel" style
-         * selection weighted by cell volume. We do cell-by-cell assignment of
-         * particles because the decomposition of the mesh may result in a highly
-         * non-rectangular local mesh which makes uniform particle distribution difficult.
-         *
-         * @param [in] num_particles The number of particles to generate in this subdomain
-         * @param [in] start_id The starting ID to assign to generated particles
-         */
-        void generate_particles_in_subdomain (const unsigned int num_particles,
-                                              const unsigned int start_id)
-        {
-          unsigned int          i, d, v, num_tries, cur_id;
-          double                total_volume, roulette_spin;
-          std::map<double, LevelInd>        roulette_wheel;
-          const unsigned int n_vertices_per_cell = GeometryInfo<dim>::vertices_per_cell;
-          Point<dim>            pt, max_bounds, min_bounds;
-          LevelInd              select_cell;
-
-          // Create the roulette wheel based on volumes of local cells
-          total_volume = 0;
-          for (typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-               it=triangulation->begin_active(); it!=triangulation->end(); ++it)
-            {
-              if (it->is_locally_owned())
-                {
-                  // Assign an index to each active cell for selection purposes
-                  total_volume += it->measure();
-                  // Save the cell index and level for later access
-                  roulette_wheel.insert(std::make_pair(total_volume, std::make_pair(it->level(), it->index())));
-                }
-            }
-
-          // Pick cells and assign particles at random points inside them
-          cur_id = start_id;
-          for (i=0; i<num_particles; ++i)
-            {
-              // Select a cell based on relative volume
-              roulette_spin = total_volume*drand48();
-              select_cell = roulette_wheel.lower_bound(roulette_spin)->second;
-
-              const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-              it (triangulation, select_cell.first, select_cell.second);
-
-              // Get the bounds of the cell defined by the vertices
-              for (d=0; d<dim; ++d)
-                {
-                  min_bounds[d] = INFINITY;
-                  max_bounds[d] = -INFINITY;
-                }
-              for (v=0; v<n_vertices_per_cell; ++v)
-                {
-                  pt = it->vertex(v);
-                  for (d=0; d<dim; ++d)
-                    {
-                      min_bounds[d] = fmin(pt[d], min_bounds[d]);
-                      max_bounds[d] = fmax(pt[d], max_bounds[d]);
-                    }
-                }
-
-              // Generate random points in these bounds until one is within the cell
-              num_tries = 0;
-              while (num_tries < 100)
-                {
-                  for (d=0; d<dim; ++d)
-                    {
-                      pt[d] = drand48()*(max_bounds[d]-min_bounds[d]) + min_bounds[d];
-                    }
-                  try
-                    {
-                      if (it->point_inside(pt)) break;
-                    }
-                  catch (...)
-                    {
-                      // Debugging output, remove when Q4 mapping 3D sphere problem is resolved
-                      //std::cerr << "Pt and cell " << pt << " " << select_cell.first << " " << select_cell.second << std::endl;
-                      //for (int z=0;z<8;++z) std::cerr << "V" << z <<": " << it->vertex(z) << ", ";
-                      //std::cerr << std::endl;
-                      MPI_Abort(communicator, 1);
-                    }
-                  num_tries++;
-                }
-              AssertThrow (num_tries < 100, ExcMessage ("Couldn't generate particle (unusual cell shape?)."));
-
-              // Add the generated particle to the set
-              T new_particle(pt, cur_id);
-              particles.insert(std::make_pair(select_cell, new_particle));
-
-              cur_id++;
-            }
-        };
 
         /**
          * Recursively determines which cell the given particle belongs to.
@@ -246,6 +162,7 @@ namespace aspect
           triangulation = NULL;
           mapping = NULL;
           dof_handler = NULL;
+          solution = NULL;
           integrator = NULL;
         };
 
@@ -262,6 +179,16 @@ namespace aspect
           if (recv_offset) delete recv_offset;
           if (send_reqs) delete send_reqs;
           if (recv_reqs) delete recv_reqs;
+        };
+
+        /**
+         * Get the deal.II Mapping associated with this particle world.
+         *
+         * @return The Mapping for this world.
+         */
+        const Mapping<dim> *get_mapping() const
+        {
+          return mapping;
         };
 
         /**
@@ -288,6 +215,26 @@ namespace aspect
         };
 
         /**
+         * Get the deal.II Triangulation associated with this particle world.
+         *
+         * @return const pointer to associated Triangulation
+         */
+        const parallel::distributed::Triangulation<dim> *get_triangulation()
+        {
+          return triangulation;
+        };
+
+        /**
+         * Get the deal.II DoFHandler associated with this particle world.
+         *
+         * @return The DoFHandler for this world.
+         */
+        const DoFHandler<dim> *get_dof_handler() const
+        {
+          return dof_handler;
+        };
+
+        /**
          * Set the deal.II DoFHandler associated with this particle world.
          *
          * @param [in] new_dh The new DoFHandler for this world.
@@ -298,11 +245,31 @@ namespace aspect
         };
 
         /**
+         * Get the deal.II BlockVector solution associated with this particle world.
+         *
+         * @return The BlockVector solution for this world.
+         */
+        const TrilinosWrappers::MPI::BlockVector *get_solution() const
+        {
+          return solution;
+        };
+
+        /**
+         * Set the deal.II BlockVector solution associated with this particle world.
+         *
+         * @param [in] new_solution The new TrilinosWrappers::MPI::BlockVector solution for this world.
+         */
+        void set_solution(const TrilinosWrappers::MPI::BlockVector *new_solution)
+        {
+          solution = new_solution;
+        };
+
+        /**
          * Set the particle Integrator scheme for this particle world.
          *
          * @param [in] new_integrator The new Integrator scheme for this world.
          */
-        void set_integrator(Integrator<dim, T> *new_integrator)
+        void set_integrator(Integrator::Interface<dim, T> *new_integrator)
         {
           integrator = new_integrator;
         };
@@ -321,7 +288,53 @@ namespace aspect
           self_rank  = Utilities::MPI::this_mpi_process(communicator);
         };
 
-        const std::multimap<LevelInd, T> get_particles() const
+        /**
+         * Get the MPI communicator associated with this particle world.
+         *
+         * @return associated MPI_Comm
+         */
+        MPI_Comm mpi_comm()
+        {
+          return communicator;
+        };
+
+        /**
+         * All processes must call this function when finished adding
+         * particles to the world. This function will determine the
+         * total number of particles.
+         */
+        void finished_adding_particles()
+        {
+          unsigned int local_num_particles = particles.size();
+
+          MPI_Allreduce(&local_num_particles, &global_num_particles, 1, MPI_UNSIGNED, MPI_SUM, communicator);
+        }
+
+        /**
+         * Add a particle to this world. If the specified cell does not
+         * exist in the local subdomain an exception will be thrown.
+         */
+        void add_particle(const T &particle, const LevelInd &cell)
+        {
+          const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it
+          (triangulation, cell.first, cell.second);
+          AssertThrow(it != triangulation->end(),
+                      ExcMessage("Particles may only be added to cells in local subdomain."));
+          particles.insert(std::make_pair(cell, particle));
+        }
+
+        /**
+         * Access to particles in this world.
+         */
+        std::multimap<LevelInd, T> &get_particles()
+        {
+          return particles;
+        };
+
+        /**
+         * Const access to particles in this world.
+         */
+        const std::multimap<LevelInd, T> &get_particles() const
         {
           return particles;
         };
@@ -385,53 +398,6 @@ namespace aspect
           recv_reqs = new MPI_Request[world_size];
         };
 
-        // TODO: determine file format, write this function
-        void read_particles_from_file(std::string filename);
-
-        /**
-         * Generate a uniformly randomly distributed set of particles in the current triangulation.
-         */
-        // TODO: fix the numbering scheme so we have exactly the right number of particles for all processor configurations
-        // TODO: fix the particle system so it works even with processors assigned 0 cells
-        void global_add_particles(const unsigned int total_particles)
-        {
-          double      total_volume, local_volume, subdomain_fraction, start_fraction, end_fraction;
-
-          global_sum_particles = total_particles;
-
-          // Calculate the number of particles in this domain as a fraction of total volume
-          total_volume = local_volume = 0;
-          for (typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-               it=triangulation->begin_active();
-               it!=triangulation->end(); ++it)
-            {
-              double cell_volume = it->measure();
-              AssertThrow (cell_volume != 0, ExcMessage ("Found cell with zero volume."));
-
-              if (it->is_locally_owned())
-                local_volume += cell_volume;
-            }
-          // Sum the local volumes over all nodes
-          MPI_Allreduce(&local_volume, &total_volume, 1, MPI_DOUBLE, MPI_SUM, communicator);
-
-          // Assign this subdomain the appropriate fraction
-          subdomain_fraction = local_volume/total_volume;
-
-          // Sum the subdomain fractions so we don't miss particles from rounding and to create unique IDs
-          MPI_Scan(&subdomain_fraction, &end_fraction, 1, MPI_DOUBLE, MPI_SUM, communicator);
-          start_fraction = end_fraction-subdomain_fraction;
-
-          // Calculate start and end IDs so there are no gaps
-          // TODO: this can create gaps for certain processor counts because of
-          // floating point imprecision, figure out how to fix it
-          const unsigned int  start_id = static_cast<unsigned int>(std::ceil(start_fraction*total_particles));
-          const unsigned int  end_id   = static_cast<unsigned int>(fmin(std::ceil(end_fraction*total_particles), total_particles));
-          const unsigned int  subdomain_particles = end_id - start_id;
-
-          generate_particles_in_subdomain(subdomain_particles, start_id);
-        };
-
-
         /**
          * Calculate the cells containing each particle for all particles.
          */
@@ -486,7 +452,7 @@ namespace aspect
               get_particle_velocities(solution);
 
               // Call the integrator
-              continue_integrator = integrator->integrate_step(particles, timestep);
+              continue_integrator = integrator->integrate_step(this, timestep);
 
               // Find the cells that the particles moved to
               find_all_cells();
@@ -750,9 +716,20 @@ namespace aspect
         {
           unsigned int    global_particles = get_global_particle_count();
 
-          AssertThrow (global_particles==global_sum_particles,
+          AssertThrow (global_particles==global_num_particles,
                        ExcMessage ("Particle count unexpectedly changed."));
         };
+
+        /**
+         * Read or write the data of this object for serialization
+         */
+        template <class Archive>
+        void serialize(Archive &ar, const unsigned int version)
+        {
+          ar &particles
+          &global_num_particles
+          ;
+        }
     };
   }
 }
