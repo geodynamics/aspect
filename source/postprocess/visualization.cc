@@ -451,9 +451,9 @@ namespace aspect
         if (tmp_file_desc == -1)
           {
             std::cerr << "***** WARNING: could not create temporary file, will "
-                        "output directly to final location. This may negatively "
-                        "affect performance."
-                        " (On processor "
+                      "output directly to final location. This may negatively "
+                      "affect performance."
+                      " (On processor "
                       << Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) << ".)"
                       << std::endl;
 
@@ -464,7 +464,7 @@ namespace aspect
       // open the file. if we can't open it, abort if this is the "real"
       // file. re-try with the "real" file if we had tried to write to
       // a temporary file
-      re_try_with_non_tmp_file:
+    re_try_with_non_tmp_file:
       std::cout << "********************** Writing to " << tmp_filename << std::endl;
       std::ofstream out (tmp_filename.c_str());
       if (!out)
@@ -473,11 +473,11 @@ namespace aspect
             AssertThrow (false, ExcMessage(std::string("Trying to write to file <") +
                                            *filename +
                                            " but the file can't be opened!"))
-          else
-            {
-              tmp_filename = *filename;
-              goto re_try_with_non_tmp_file;
-            }
+            else
+              {
+                tmp_filename = *filename;
+                goto re_try_with_non_tmp_file;
+              }
         }
 
       // now write and then move the tmp file to its final destination
@@ -490,29 +490,31 @@ namespace aspect
 
           bool first_attempt = true;
 
-          re_try:
+        re_try:
           int error = system(command.c_str());
 
           // if the move failed, and this is the first time, sleep for a second in
           // hopes that it was just an NFS timeout, then try again. if it fails the
           // second time around, try writing to the final file directly.
           if (error != 0)
-            if (first_attempt == true)
-              {
-                first_attempt = false;
-                sleep (1);
-                goto re_try;
-              }
-            else
             {
-              std::cerr << "***** WARNING: could not move " << tmp_filename
-                        << " to " << *filename << ". Trying again to write directly to "
-                        << *filename
-                        << ". (On processor "
-                        << Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) << ".)"
-                        << std::endl;
-              tmp_filename = *filename;
-              goto re_try_with_non_tmp_file;
+              if (first_attempt == true)
+                {
+                  first_attempt = false;
+                  sleep (1);
+                  goto re_try;
+                }
+              else
+                {
+                  std::cerr << "***** WARNING: could not move " << tmp_filename
+                            << " to " << *filename << ". Trying again to write directly to "
+                            << *filename
+                            << ". (On processor "
+                            << Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) << ".)"
+                            << std::endl;
+                  tmp_filename = *filename;
+                  goto re_try_with_non_tmp_file;
+                }
             }
         }
 
