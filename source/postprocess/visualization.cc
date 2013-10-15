@@ -465,7 +465,6 @@ namespace aspect
       // file. re-try with the "real" file if we had tried to write to
       // a temporary file
     re_try_with_non_tmp_file:
-      std::cout << "********************** Writing to " << tmp_filename << std::endl;
       std::ofstream out (tmp_filename.c_str());
       if (!out)
         {
