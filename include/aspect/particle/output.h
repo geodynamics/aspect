@@ -96,6 +96,16 @@ namespace aspect
           std::string
           output_particle_data(const std::multimap<LevelInd, T> &particles,
                                const double &current_time) = 0;
+
+          /**
+           * Read or write the data of this object for serialization
+           */
+          template <class Archive>
+          void serialize(Archive &ar, const unsigned int version)
+          {
+            ar &file_index
+            ;
+          }
       };
 
 
@@ -122,16 +132,6 @@ namespace aspect
        */
       std::string
       output_object_names ();
-
-      /**
-       * Read or write the data of this object for serialization
-       */
-      template <class Archive>
-      void serialize(Archive &ar, const unsigned int version)
-      {
-        ar &file_index
-        ;
-      }
 
     }
   }
