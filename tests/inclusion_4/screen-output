@@ -1,3 +1,4 @@
+Running with 1 MPI tasks.
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
@@ -8,7 +9,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Writing graphical output:      output-inclusion_4/solution-00000
-     Errors u_L1, p_L1, u_L2, p_L2: 1.101014e-01, 1.242416e+00, 5.763693e-02, 1.475870e+00
+     Errors u_L1, p_L1, u_L2, p_L2: 1.101014e-01, 1.242411e+00, 5.763691e-02, 1.475868e+00
 
 Termination requested by criterion: end time
 

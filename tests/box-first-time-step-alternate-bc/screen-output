@@ -1,10 +1,11 @@
+Running with 1 MPI tasks.
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 21 iterations.
+   Solving Stokes system... 20 iterations.
 
    Postprocessing:
 
@@ -21,7 +22,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      reference_thermal_diffusivity:                 8e-10
 
      Writing graphical output:           output-box-first-time-step-alternate-bc/solution-00000
-     RMS, max velocity:                  9.06e-09 m/s, 3.25e-08 m/s
+     RMS, max velocity:                  9.02e-09 m/s, 3.24e-08 m/s
      Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
      Heat fluxes through boundary parts: 1.668e-07 W, 8.017e-05 W, 2.402e-07 W, 2.402e-07 W
 

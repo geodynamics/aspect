@@ -1,10 +1,11 @@
+Running with 1 MPI tasks.
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 years
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7 iterations.
+   Solving Stokes system... 5 iterations.
 
    Postprocessing:
 
@@ -20,7 +21,7 @@ Number of degrees of freedom: 948 (578+81+289)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 8e-10
 
-     RMS, max velocity: 0.34 m/year, 1.02 m/year
+     RMS, max velocity: 0.362 m/year, 1.02 m/year
 
 Termination requested by criterion: end time
 

@@ -1,8 +1,9 @@
+Running with 1 MPI tasks.
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 0 iterations.
    Solving composition system 1... 0 iterations.
    Solving composition system 2... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -66,7 +67,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Advecting particles:      done. Writing particle graphical output output-composition-passive-tracers/particles-00003
 
 *** Timestep 6:  t=0.375 seconds
-   Solving temperature system... 10 iterations.
+   Solving temperature system... 9 iterations.
    Solving composition system 1... 11 iterations.
    Solving composition system 2... 10 iterations.
    Rebuilding Stokes preconditioner...

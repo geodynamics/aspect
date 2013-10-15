@@ -1,3 +1,4 @@
+Running with 1 MPI tasks.
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 
@@ -5,7 +6,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving temperature system... 0 iterations.
    Solving composition system 1... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+11 iterations.
+   Solving Stokes system... 30+12 iterations.
 
    Postprocessing:
 
@@ -28,7 +29,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      Writing depth average               output-passive_comp/depthaverage.plt
 
 *** Timestep 1:  t=2.81625e+12 seconds
-   Solving temperature system... 17 iterations.
+   Solving temperature system... 20 iterations.
    Solving composition system 1... 18 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
@@ -36,8 +37,8 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution-00001
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
-     Temperature min/avg/max:            0 K, 0.0004308 K, 0.002003 K
-     Heat fluxes through boundary parts: 0.2739 W, 0.8415 W
+     Temperature min/avg/max:            0 K, 0.0004368 K, 0.002387 K
+     Heat fluxes through boundary parts: 0.2941 W, 0.8311 W
      Writing depth average               output-passive_comp/depthaverage.plt
 
 *** Timestep 2:  t=5.6325e+12 seconds
@@ -49,8 +50,8 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution-00002
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
-     Temperature min/avg/max:            0 K, 0.0008465 K, 0.003177 K
-     Heat fluxes through boundary parts: 0.5829 W, 1.872 W
+     Temperature min/avg/max:            0 K, 0.0008561 K, 0.0034 K
+     Heat fluxes through boundary parts: 0.6257 W, 1.959 W
      Writing depth average               output-passive_comp/depthaverage.plt
 
 Termination requested by criterion: end time

@@ -1,18 +1,4 @@
+Running with 1 MPI tasks.
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 500 (338+81+81)
-
-*** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+9 iterations.
-
-   Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 7.274377e-07, 2.219141e-03, 1.423559e-06, 3.234685e-03
-
-Termination requested by criterion: end time
-
-
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
