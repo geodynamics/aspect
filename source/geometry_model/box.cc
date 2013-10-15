@@ -110,8 +110,8 @@ namespace aspect
     {
       const double d = maximal_depth()-position(dim-1);
 
-      Assert (d >= 0, ExcInternalError());
-      Assert (d <= maximal_depth(), ExcInternalError());
+      Assert (d >= -1e-14*std::fabs(maximal_depth()), ExcInternalError());
+      Assert (d <= (1.+1e-14)*maximal_depth(), ExcInternalError());
 
       return d;
     }
