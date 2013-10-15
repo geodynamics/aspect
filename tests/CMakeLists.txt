@@ -73,6 +73,10 @@ FOREACH(_test ${_tests})
         else
 	  mv ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
              ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed \;
+          echo "******* Error during diffing output results for ${_test}/${_output}" \;
+          echo "******* Results are stored in ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed" \;
+          echo "******* Diffs are:" \;
+          cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed \;
 	  false \;
         fi
       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
