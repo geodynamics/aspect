@@ -25,6 +25,17 @@ IF(NOT DEAL_II_WITH_TRILINOS OR NOT DEAL_II_WITH_P4EST)
   MESSAGE(FATAL_ERROR
     "\nAspect requires a deal.II installation built with support for Trilinos and p4est but one or both of these appears to be missing!\n"
     )
+  IF(NOT DEAL_II_WITH_TRILINOS)
+    MESSAGE(FATAL_ERROR
+      "\n-- deal.II was built without support for Trilinos!\n"
+      )
+  ENDIF()
+
+  IF(NOT DEAL_II_WITH_P4EST)
+    MESSAGE(FATAL_ERROR
+      "\n-- deal.II was built without support for p4est!\n"
+      )
+  ENDIF()
 ENDIF()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
