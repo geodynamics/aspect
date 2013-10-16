@@ -1132,11 +1132,11 @@ namespace aspect
   {
     {
       const int n_tasks = Utilities::MPI::n_mpi_processes(mpi_communicator);
-      pcout << "Running with " << n_tasks << " MPI tasks";
+      pcout << "Running with " << n_tasks << " MPI task" << (n_tasks == 1 ? "" : "s");
 #if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
       const int n_threads = multithread_info.n_threads();
       if (n_threads>1)
-        pcout << " using " << n_threads << "each";
+        pcout << " using " << n_threads << " threads " << (n_tasks == 1 ? "" : "each");
 #endif
       pcout << "." << std::endl;
     }

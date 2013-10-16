@@ -185,7 +185,7 @@ namespace aspect
           this->get_pcout()<< "     Reference thermal expansion (1/K):             "
                            << material_model.reference_thermal_expansion_coefficient()
                            << std::endl;
-          this->get_pcout()<< "     Temperature contrast accross model domain (K): "
+          this->get_pcout()<< "     Temperature contrast across model domain (K): "
                            << dT
                            << std::endl;
           this->get_pcout()<< "     Model domain depth (m):                        "
