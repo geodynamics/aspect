@@ -481,7 +481,7 @@ namespace aspect
 
       // now write and then move the tmp file to its final destination
       // if necessary
-      out << file_contents;
+      out << *file_contents;
 
       if (tmp_filename != *filename)
         {
