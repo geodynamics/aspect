@@ -91,7 +91,8 @@ namespace aspect
 		// since we are not reading the viscosity and the viscosity
 		// is the only coefficient that depends on the strain rate,
 		// we need not compute the strain rate. set the corresponding
-		// array to empty, to prevent accidental use
+		// array to empty, to prevent accidental use and skip the
+                // evaluation of the strain rate in evaluate().
                 in.strain_rate.resize(0);
 		
                 for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
