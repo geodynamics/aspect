@@ -708,7 +708,7 @@ namespace aspect
          * @param in
          * @param out
          */
-        void evaluate(const struct Interface<dim>::MaterialModelInputs &in, struct Interface<dim>::MaterialModelOutputs &out) const;
+        void evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const;
 
     };
 
