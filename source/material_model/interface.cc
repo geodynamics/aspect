@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -364,7 +364,8 @@ namespace aspect
 
     template <int dim>
     void
-    InterfaceCompatibility<dim>::evaluate(const struct Interface<dim>::MaterialModelInputs &in, struct Interface<dim>::MaterialModelOutputs &out) const
+    InterfaceCompatibility<dim>::evaluate(const Interface<dim>::MaterialModelInputs &in,
+					  Interface<dim>::MaterialModelOutputs &out) const
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
@@ -376,8 +377,6 @@ namespace aspect
           out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
         }
     }
-
-
   }
 }
 
