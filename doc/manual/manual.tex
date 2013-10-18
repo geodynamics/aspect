@@ -559,7 +559,7 @@ physical units. On the other hand, there are also downsides:
   example, it is clear that we get the same behavior if one increases both the
   viscosity and the thermal expansion coefficient by a factor of two because the
   resulting Rayleigh number; similarly, if we were to increase the size of the
-  domain by 2 and thermal diffusion coefficient by a factor of 8. In both of
+  domain by a factor of 2 and thermal diffusion coefficient by a factor of 8. In both of
   these cases, the non-dimensional equations are exactly the same. On the other
   hand, the equations in their physical unit form are different and one may not
   see that the result of this variations in coefficients will be exactly the
@@ -601,8 +601,8 @@ physical units. On the other hand, there are also downsides:
   temperature and strain rate from non-dimensional to physical units, look up
   the corresponding viscosity in a table, and then convert the viscosity back to
   non-dimensional quantities. Getting this right at every one of the dozens or
-  hundreds of places inside a program, using the correct (but distinct)
-  conversion factors for each of these quantities, is a challenge and a source
+  hundreds of places inside a program and using the correct (but distinct)
+  conversion factors for each of these quantities is both a challenge and a possible source
   of errors.
 
   \item From a mathematical viewpoint, it is typically clear how an equation
@@ -1673,7 +1673,7 @@ region (see the ``cookbooks'' section, Section~\ref{sec:cookbooks}, and in
 particular Section~\ref{sec:cookbooks-simple-box} for
 the input file for this particular model). We can run the program with 4 processors using
 \begin{verbatim}
-  mpirun -np 4 ./aspect box.prm
+  mpirun -np 4 ./aspect cookbooks/convection-box.prm
 \end{verbatim}
 Letting the program run for a while will result in several output files as
 discussed in Section~\ref{sec:running-overview} above.
@@ -4735,8 +4735,8 @@ following two steps:
   can then be selected in an input file. In fact, this is true for
   all of the plugins we have: by and large, they just receive some data
   from the simulator and do something with it (e.g., postprocessors), or they
-  just provide information (e.g., initial meshes, gravity models), but they
-  writing either does not imply that you have even fundamental understanding
+  just provide information (e.g., initial meshes, gravity models), but their
+  writing does not require that you have a fundamental understanding
   of what the core of the program does.
 \end{itemize}
 
@@ -5914,7 +5914,7 @@ problem is that mesh refinement criteria either can refine based on some
 variable such as the temperature, the pressure, the velocity, or a compositional
 field, but that oftentimes this by itself is not quite what one wants. For
 example, we know that Earth has discontinuities, e.g., at 440km and 610km depth.
-In these places, densities and other material properties suddently change. Their
+In these places, densities and other material properties suddenly change. Their
 resolution in computation models is important as we know that they affect
 convection patterns. At the same time, there is only a small effect on the
 primary variables in a computation -- maybe a jump in the second or third
