@@ -7,6 +7,11 @@ MACRO(SET_IF_EMPTY _variable _value)
   ENDIF()
 ENDMACRO()
 
+# set a time limit of 10 minutes per test. this should be long
+# enough even for long-running tests, and short enough to not
+# get into trouble should we have an infinite loop.
+SET_IF_EMPTY(TEST_TIME_LIMIT 600)
+
 ############################3
 
 ADD_CUSTOM_TARGET(tests)
@@ -102,6 +107,9 @@ FOREACH(_test ${_tests})
           -DERROR="Test ${_test} failed"
           -P ${CMAKE_SOURCE_DIR}/tests/run_test.cmake
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
+  SET_TESTS_PROPERTIES(${_test} PROPERTIES
+	TIMEOUT ${TEST_TIME_LIMIT}
     )
 ENDFOREACH()
 
