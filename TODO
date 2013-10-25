@@ -149,3 +149,8 @@ averaged composition, non-zero average/sinking velocity)
 write tests to verify the possibility of external plugins compiled into
 shared libraries. implement ways to verify that they are compiled against
 the same version of ASPECT that they are running under.
+
+
+2013/10/25: active_tracers.prm is broken
+2013/10/25: postprocess visualization error indicator is broken in parallel
+
