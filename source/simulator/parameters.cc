@@ -58,7 +58,7 @@ namespace aspect
                        "to load a library in the current directory, use <./myplugin.so> "
                        "instead."
                        "\n\n"
-                       "The typical use of this parameter is to so that you can implement "
+                       "The typical use of this parameter is so that you can implement "
                        "additional plugins in your own directories, rather than in the ASPECT "
                        "source directories. You can then simply compile these plugins into a "
                        "shared library without having to re-compile all of ASPECT. See the "
