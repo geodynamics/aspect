@@ -202,6 +202,14 @@ namespace aspect
       */
       void
       get_refinement_criteria(Vector<float> &estimated_error_per_cell) const;
+
+      /**
+       * Returns the entropy viscosity on each locally owned cell as it is used
+       * to stabilize the temperature equation.
+       */
+      void
+      get_artificial_viscosity(Vector<float> &viscosity_per_cell) const;
+
       /** @} */
 
 

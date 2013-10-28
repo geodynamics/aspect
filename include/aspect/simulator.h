@@ -736,6 +736,11 @@ namespace aspect
       void make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector);
 
       /**
+       * Fills a vector with the artificial viscosity for the temperature on each local cell
+       */
+      void get_artificial_viscosity (Vector<float> &viscosity_per_cell) const;
+
+      /**
        * Internal routine to compute the depth average of a certain quantitiy.
        * The functor @p fctr should implement:
        * 1. bool need_material_properties()

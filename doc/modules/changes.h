@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: add a visual postprocessor that outputs the artificial
+  viscosity parameter for the temperature equation on each cell.
+  <br>
+  (Timo Heister 2013/10/28)
+
   <li>Fixed: moved particle generation to a class, changed particle 
   integration and generation to be factory patterned classes. There
   should be no effect on the user but this will allow for easier

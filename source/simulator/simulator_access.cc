@@ -158,7 +158,12 @@ namespace aspect
     simulator->mesh_refinement_manager.execute (estimated_error_per_cell);
   }
 
-
+  template <int dim>
+  void
+  SimulatorAccess<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell) const
+  {
+    simulator->get_artificial_viscosity(viscosity_per_cell);
+  }
 
   template <int dim>
   const LinearAlgebra::BlockVector &
