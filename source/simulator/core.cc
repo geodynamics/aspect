@@ -1056,13 +1056,13 @@ namespace aspect
                 }
               else
                 {
-//TODO: make this a parameter in the input file
                   double max = 0.0;
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                     max = std::max(composition_residual[c]/initial_composition_residual[c],max);
-                  if (std::max(std::max(stokes_residual/initial_stokes_residual,
-                                        temperature_residual/initial_temperature_residual),
-                               max) < 1e-3)
+                  max = std::max(stokes_residual/initial_stokes_residual, max);
+                  max = std::max(temperature_residual/initial_temperature_residual, max);
+                  pcout << "      residual: " << max << std::endl;
+                  if (max < parameters.nonlinear_tolerance)
                     break;
                 }
 
@@ -1099,8 +1099,8 @@ namespace aspect
           LinearAlgebra::Vector residual (introspection.index_sets.system_partitioning[0], mpi_communicator);
           LinearAlgebra::Vector tmp (introspection.index_sets.system_partitioning[0], mpi_communicator);
 
-          // ...and then iterate the solution
-          // of the Stokes system
+          // ...and then iterate the solution of the Stokes system
+          double initial_stokes_residual = 0;
           for (unsigned int i=0; i< parameters.max_nonlinear_iterations; ++i)
             {
               // rebuild the matrix if it actually depends on the solution
@@ -1110,15 +1110,18 @@ namespace aspect
 
               assemble_stokes_system();
               build_stokes_preconditioner();
-              solve_stokes();
+              const double stokes_residual = solve_stokes();
 
-              // check for convergence:
-              residual = solution.block(introspection.block_indices.velocities);
-              tmp = current_linearization_point.block(introspection.block_indices.velocities);
-              residual -= tmp; // TODO: why can I not use a ghosted vector to read from?!
-              pcout << "\tresidual: " << residual.l2_norm() << std::endl;
-              if (residual.l2_norm() < parameters.nonlinear_tolerance)
-                break;
+              if (i==0)
+                  initial_stokes_residual = stokes_residual;
+              else
+                {
+                  pcout << "      residual: " << stokes_residual/initial_stokes_residual << std::endl;
+                  if (stokes_residual/initial_stokes_residual < parameters.nonlinear_tolerance)
+                    {
+                      break; // convergence reached, exist nonlinear iteration.
+                    }
+                }
 
               current_linearization_point.block(introspection.block_indices.velocities)
                 = solution.block(introspection.block_indices.velocities);
