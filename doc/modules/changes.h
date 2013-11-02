@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: the "iterated Stokes" nonlinear solver will now stop iterating
+  if the residual is smaller than the new "Nonlinear solver tolerance".
+  <br>
+  (Timo Heister 2013/11/02)
+
   <li>New: add a visual postprocessor that outputs the artificial
   viscosity parameter for the temperature equation on each cell.
   <br>

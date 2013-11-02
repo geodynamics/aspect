@@ -135,6 +135,12 @@ namespace aspect
                        "temperature equation (careful, the material model must not depend on "
                        "the temperature; mostly useful for Stokes benchmarks).");
 
+    prm.declare_entry ("Nonlinear solver tolerance", "1e-9",
+                       Patterns::Double(0,1),
+                       "A relative tolerance up to which the nonlinear solver "
+                       "will iterate. This parameter is only relevant if "
+                       "Nonlinear solver scheme is set to 'iterated Stokes'.");
+
     prm.declare_entry ("Pressure normalization", "surface",
                        Patterns::Selection ("surface|volume|no"),
                        "If and how to normalize the pressure after the solution step. "
@@ -502,6 +508,8 @@ namespace aspect
       nonlinear_solver = NonlinearSolver::Stokes_only;
     else
       AssertThrow (false, ExcNotImplemented());
+
+    nonlinear_tolerance = prm.get_double("Nonlinear solver tolerance");
 
     max_nonlinear_iterations = prm.get_integer ("Max nonlinear iterations");
     start_time              = prm.get_double ("Start time");

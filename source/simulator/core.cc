@@ -1094,6 +1094,11 @@ namespace aspect
                 = solution.block(introspection.block_indices.compositional_fields[c]);
             }
 
+
+          // residual vector (only for the velocity)
+          LinearAlgebra::Vector residual (introspection.index_sets.system_partitioning[0], mpi_communicator);
+          LinearAlgebra::Vector tmp (introspection.index_sets.system_partitioning[0], mpi_communicator);
+
           // ...and then iterate the solution
           // of the Stokes system
           for (unsigned int i=0; i< parameters.max_nonlinear_iterations; ++i)
@@ -1106,10 +1111,20 @@ namespace aspect
               assemble_stokes_system();
               build_stokes_preconditioner();
               solve_stokes();
+
+              // check for convergence:
+              residual = solution.block(introspection.block_indices.velocities);
+              tmp = current_linearization_point.block(introspection.block_indices.velocities);
+              residual -= tmp; // TODO: why can I not use a ghosted vector to read from?!
+              pcout << "\tresidual: " << residual.l2_norm() << std::endl;
+              if (residual.l2_norm() < parameters.nonlinear_tolerance)
+                break;
+
               current_linearization_point.block(introspection.block_indices.velocities)
                 = solution.block(introspection.block_indices.velocities);
               current_linearization_point.block(introspection.block_indices.pressure)
                 = solution.block(introspection.block_indices.pressure);
+
 
               pcout << std::endl;
             }

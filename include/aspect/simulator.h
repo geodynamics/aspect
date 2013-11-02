@@ -158,6 +158,7 @@ namespace aspect
 
         NonlinearSolverKind            nonlinear_solver;
 
+        double                         nonlinear_tolerance;
         bool                           resume_computation;
         double                         start_time;
         double                         CFL_number;
