@@ -1125,7 +1125,7 @@ namespace aspect
       LinearAlgebra::BlockVector                                old_old_solution;
       LinearAlgebra::BlockVector                                system_rhs;
 
-      TrilinosWrappers::MPI::BlockVector                        current_linearization_point;
+      LinearAlgebra::BlockVector                                current_linearization_point;
 
       // only used if is_compressible()
       LinearAlgebra::BlockVector                                pressure_shape_function_integrals;
