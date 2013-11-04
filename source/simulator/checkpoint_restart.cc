@@ -90,9 +90,9 @@ namespace aspect
       triangulation.save ((parameters.output_directory + "restart.mesh").c_str());
     }
 
-    // save general information
-    // This calls the serialization functions on all processes,
-    // but only writes to the restart.resume.z file on process 0
+    // save general information This calls the serialization functions on all
+    // processes (so that they can take additional action, if necessary, see
+    // the manual) but only writes to the restart file on process 0
     {
       std::ostringstream oss;
 
@@ -100,7 +100,7 @@ namespace aspect
       aspect::oarchive oa (oss);
       oa << (*this);
 
-      //compress with zlib and write to file
+      // compress with zlib and write to file on the root processor
       if (my_id == 0)
         {
           uLongf compressed_data_length = compressBound (oss.str().length());
