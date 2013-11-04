@@ -149,6 +149,8 @@ shared libraries. implement ways to verify that they are compiled against
 the same version of ASPECT that they are running under.
 
 
-2013/10/25: active_tracers.prm is broken
-2013/10/25: postprocess visualization error indicator is broken in parallel
-
+2013/11/04 implement "open boundary conditions" as described in "Using open
+sidewalls for modelling self-consistent lithosphere subduction dynamics",
+M. V. Chertova, T. Geenen, A. van den Berg, and W. Spakman see discussion on
+the aspect mailing list "[aspect-devel] strain rate corner values and velocity
+boundary conditions"
