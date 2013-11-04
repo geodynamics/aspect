@@ -5745,6 +5745,45 @@ There are numerous postprocessors already implemented. If you want to
 implement a new one, it would be helpful to look at the existing ones to see
 how they implement their functionality.
 
+\paragraph{Postprocessors and checkpoint/restart.} Postprocessors have
+\texttt{save()} and \texttt{load()} functions that are used to write the data
+a postprocessor has into a checkpoint file, and to load it again upon
+restart. This is important since many postprocessors store some state -- say,
+a temporal average over all the time steps seen so far, or the number of the
+last graphical output file generated so that we know how the next one needs
+to be numbered. 
+
+The typical case is that this state is the same across all processors of a
+parallel computation. Consequently, what \aspect{} writes into the checkpoint
+file is only the state obtained from the postprocessors on processor 0 of a
+parallel computation. On restart, all processors read from the same file and
+the postprocessors on \textit{all} processors will be initialized by what the
+same postprocessor on processor 0 wrote.
+
+There are situations where postprocessors do in fact store complementary
+information on different processors. At the time of writing this, one example
+is the postprocessor that supports advecting passive particles along the
+velocity field: on every processor, it handles only those particles that lie
+inside the part of the domain that is owned by this MPI rank. The
+serialization approach outlined above can not work in this case, for obvious
+reasons. In cases like this, one needs to implement the \texttt{save()} and
+\texttt{load()} differently than usual: one needs to put all variables that
+are common across processors into the maps of string as usual, but one then
+also needs to save all state that is different across processors, from all
+processors. There are two ways: If the amount of data is small, you can use
+MPI communications to send the state of all processors to processor zero, and
+have processor zero store it in the result so that it gets written into the
+checkpoint file; in the \texttt{load()} function, you will then have to
+identify which part of the text written by processor 0 is relevant to the
+current processor. Or, if your postprocessor stores a large amount of data, you
+may want to open a restart file specifically for this postprocessor, use MPI
+I/O or other ways to write into it, and do the reverse operation in
+\texttt{load()}.
+
+Note that this approach requires that \aspect{} actually calls the
+\texttt{save()} function on all processors. This in fact happens -- though
+\aspect{} also discards the result on all but processor zero.
+
 
 \subsubsection{Visualization postprocessors}
 \label{sec:viz-postpostprocessors}
