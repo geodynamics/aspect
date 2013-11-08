@@ -146,7 +146,8 @@ namespace aspect
             parameters.tangential_velocity_boundary_indicators,
             std::set<types::boundary_id>()
           };
-      for (std::map<types::boundary_id,std::string>::const_iterator
+
+      for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
            p = parameters.prescribed_velocity_boundary_indicators.begin();
            p != parameters.prescribed_velocity_boundary_indicators.end();
            ++p)
@@ -187,7 +188,7 @@ namespace aspect
            p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
         AssertThrow (all_boundary_indicators.find (*p)
                      != all_boundary_indicators.end(),
-                     ExcMessage ("One of the boundary indicators listed in the input file "
+                     ExcMessage ("One of the fixed boundary indicators listed in the input file "
                                  "is not used by the geometry model."));
     }
 
@@ -231,14 +232,14 @@ namespace aspect
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
 
-    for (std::map<types::boundary_id,std::string>::const_iterator
+    for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
          p = parameters.prescribed_velocity_boundary_indicators.begin();
          p != parameters.prescribed_velocity_boundary_indicators.end();
          ++p)
       {
         VelocityBoundaryConditions::Interface<dim> *bv
           = VelocityBoundaryConditions::create_velocity_boundary_conditions
-            (p->second,
+            (p->second.second,
              prm,
              *geometry_model);
         if (dynamic_cast<SimulatorAccess<dim>*>(bv) != 0)
@@ -450,11 +451,36 @@ namespace aspect
            std_cxx1x::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,
                             p->second,
                             std_cxx1x::_1));
+
+          // here we create a mask for interpolate_boundary_values out of the 'selector'
+          std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
+          Assert(introspection.component_masks.velocities[0]==true, ExcInternalError()); // in case we ever move the velocity around
+          const std::string & comp = parameters.prescribed_velocity_boundary_indicators[p->first].first;
+
+          if (comp.length()>0)
+            {
+              for (std::string::const_iterator p=comp.begin();p!=comp.end();++p)
+                {
+                  AssertThrow(*p>='x' && *p<='z', ExcMessage("Error in selector of prescribed velocity boundary component"));
+                  AssertThrow(dim==3 || *p!='z', ExcMessage("for dim=2, prescribed velocity component z is invalid"))
+                  mask[*p-'x']=true;
+                }
+              for (unsigned int i=0;i<introspection.component_masks.velocities.size();++i)
+                mask[i] = mask[i] & introspection.component_masks.velocities[i];
+            }
+          else
+            {
+              for (unsigned int i=0;i<introspection.component_masks.velocities.size();++i)
+                  mask[i]=introspection.component_masks.velocities[i];
+
+              Assert(introspection.component_masks.velocities[0]==true, ExcInternalError()); // in case we ever move the velocity down
+            }
+
           VectorTools::interpolate_boundary_values (dof_handler,
                                                     p->first,
                                                     vel,
                                                     current_constraints,
-                                                    introspection.component_masks.velocities);
+                                                    mask);
         }
       current_constraints.close();
     }

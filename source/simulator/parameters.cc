@@ -290,7 +290,7 @@ namespace aspect
                          "velocity (although there is a force that requires the flow to "
                          "be tangential).");
       prm.declare_entry ("Prescribed velocity boundary indicators", "",
-                         Patterns::Map (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max()),
+                         Patterns::Map (Patterns::Anything(),
                                         Patterns::Selection(VelocityBoundaryConditions::get_names<dim>())),
                          "A comma separated list denoting those boundaries "
                          "on which the velocity is tangential but prescribed, i.e., where "
@@ -299,9 +299,14 @@ namespace aspect
                          "overlying plates."
                          "\n\n"
                          "The format of valid entries for this parameter is that of a map "
-                         "given as ``key1: value1, key2: value2, key3: value3, ...'' where "
-                         "each key must be a valid boundary indicator and each value must "
-                         "be one of the currently implemented boundary velocity models."
+                         "given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where "
+                         "each key must be a valid boundary indicator (which is an integer) "
+                         "and each value must be one of the currently implemented boundary "
+                         "velocity models. selector is an optional string given as a subset "
+                         "of the letters 'xyz' that allows you to apply the boundary conditions "
+                         "only to the components listed. As an example, '1 y: function' applies "
+                         "the type 'function' to the y component on boundary 1. Without a selector "
+                         "it will effect all components of the velocity."
                          "\n\n"
                          "Note that the no-slip boundary condition is "
                          "a special case of the current one where the prescribed velocity "
@@ -615,28 +620,39 @@ namespace aspect
       for (std::vector<std::string>::const_iterator p = x_prescribed_velocity_boundary_indicators.begin();
            p != x_prescribed_velocity_boundary_indicators.end(); ++p)
         {
-          // split the pair "key:value"
-          AssertThrow (p->find(":") != std::string::npos,
-                       ExcInternalError());
+          // each entry has the format (white space is optional):
+          // <id> [x][y][z] : <value (might have spaces)>
+          std::string comp = "";
+          std::string value = "";
 
-          std::string key = *p;
-          key.erase (key.find(":"), std::string::npos);
-          while ((key.length() > 0) && (std::isspace (key[key.length()-1])))
-            key.erase (key.length()-1, 1);
-          const types::boundary_id boundary_id = Utilities::string_to_int(key);
+          std::stringstream ss(*p);
+          int b_id;
+          ss >> b_id; // need to read as int, not char
+          types::boundary_id boundary_id = b_id;
 
-          std::string value = *p;
-          value.erase (0, value.find(":")+1);
-          while ((value.length() > 0) && (std::isspace (value[0])))
-            value.erase (0, 1);
+          char c;
+          while (ss.peek()==' ') ss.get(c); // eat spaces
 
+          if (ss.peek()!=':')
+            {
+              std::getline(ss,comp,':');
+              while (comp.length()>0 && *(--comp.end())==' ')
+                comp.erase(comp.length()-1); // remove whitespace at the end
+            }
+          else
+            ss.get(c); // read the ':'
+
+          while (ss.peek()==' ') ss.get(c); // eat spaces
+
+          std::getline(ss,value); // read until the end of the string
 
           AssertThrow (prescribed_velocity_boundary_indicators.find(boundary_id)
                        == prescribed_velocity_boundary_indicators.end(),
-                       ExcMessage ("Boundary indicator <" + key +
+                       ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
                                    "> appears more than once in the list of indicators "
                                    "for nonzero velocity boundaries."));
-          prescribed_velocity_boundary_indicators[boundary_id] = value;
+          prescribed_velocity_boundary_indicators[boundary_id] =
+              std::pair<std::string,std::string>(comp,value);
         }
     }
     prm.leave_subsection ();

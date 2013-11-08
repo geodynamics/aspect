@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: It is now possible to prescribe the velocity only for certain
+  components in the 'Prescribed velocity boundary indicators' parameter.
+  <br>
+  (Timo Heister 2013/11/08)
+
   <li>New: the "iterated Stokes" nonlinear solver will now stop iterating
   if the residual is smaller than the new "Nonlinear solver tolerance".
   <br>
