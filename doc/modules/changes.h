@@ -21,7 +21,7 @@ All entries are signed with the names of the author.
   this correction if there are no open boundaries and no boundaries with a
   prescribed velocity.
   <br>
-  (Timo Heister 2013/11/08)
+  (Wolfgang Bangerth 2013/11/19)
 
   <li>New: It is now possible to prescribe the velocity only for certain
   components in the 'Prescribed velocity boundary indicators' parameter.
