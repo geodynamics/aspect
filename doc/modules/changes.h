@@ -8,6 +8,16 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Fixed: When using compressible models, we fixed up the right hand side
+  vector in a way so that the mean divergence is zero (even though it is of
+  course locally nonzero due to the compressibility). This is necessary to ensure
+  the solvability of the linear system, but it is wrong if the domain has open
+  boundaries through which fluid can escape or enter. We now only perform
+  this correction if there are no open boundaries and no boundaries with a
+  prescribed velocity.
+  <br>
+  (Timo Heister 2013/11/08)
+
   <li>New: It is now possible to prescribe the velocity only for certain
   components in the 'Prescribed velocity boundary indicators' parameter.
   <br>
