@@ -664,10 +664,13 @@ namespace aspect
     if (parameters.use_locally_conservative_discretization)
       AssertThrow(false, ExcNotImplemented());
 
-    const double mean       = vector.block(1).mean_value();
-    const double correction = -mean*vector.block(1).size()/global_volume;
+    if (do_pressure_rhs_compatibility_modification)
+      {
+        const double mean       = vector.block(1).mean_value();
+        const double correction = -mean*vector.block(1).size()/global_volume;
 
-    vector.block(1).add(correction, pressure_shape_function_integrals.block(1));
+        vector.block(1).add(correction, pressure_shape_function_integrals.block(1));
+      }
   }
 
 

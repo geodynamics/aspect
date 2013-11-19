@@ -375,7 +375,8 @@ namespace aspect
         template <int dim>
         struct StokesSystem : public StokesPreconditioner<dim>
         {
-          StokesSystem (const FiniteElement<dim> &finite_element);
+          StokesSystem (const FiniteElement<dim> &finite_element,
+                        const bool                do_pressure_rhs_compatibility_modification);
           StokesSystem (const StokesSystem<dim> &data);
 
           Vector<double> local_rhs;
@@ -386,11 +387,15 @@ namespace aspect
 
         template <int dim>
         StokesSystem<dim>::
-        StokesSystem (const FiniteElement<dim> &finite_element)
+        StokesSystem (const FiniteElement<dim> &finite_element,
+                      const bool                do_pressure_rhs_compatibility_modification)
           :
           StokesPreconditioner<dim> (finite_element),
           local_rhs (finite_element.dofs_per_cell),
-          local_pressure_shape_function_integrals (finite_element.dofs_per_cell)
+          local_pressure_shape_function_integrals (do_pressure_rhs_compatibility_modification ?
+                                                   finite_element.dofs_per_cell
+                                                   :
+                                                   0)
         {}
 
 
@@ -401,7 +406,7 @@ namespace aspect
           :
           StokesPreconditioner<dim> (data),
           local_rhs (data.local_rhs),
-          local_pressure_shape_function_integrals (data.local_pressure_shape_function_integrals)
+          local_pressure_shape_function_integrals (data.local_pressure_shape_function_integrals.size())
         {}
 
 
@@ -1056,7 +1061,7 @@ namespace aspect
     if (rebuild_stokes_matrix)
       data.local_matrix = 0;
     data.local_rhs = 0;
-    if (is_compressible)
+    if (do_pressure_rhs_compatibility_modification)
       data.local_pressure_shape_function_integrals = 0;
 
     // we only need the strain rates for the viscosity,
@@ -1129,7 +1134,7 @@ namespace aspect
                                     0)
                                )
                                * scratch.finite_element_values.JxW(q);
-        if (is_compressible)
+        if (do_pressure_rhs_compatibility_modification)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
@@ -1155,7 +1160,7 @@ namespace aspect
                                                       data.local_dof_indices,
                                                       system_rhs);
 
-    if (material_model->is_compressible())
+    if (do_pressure_rhs_compatibility_modification)
       current_constraints.distribute_local_to_global (data.local_pressure_shape_function_integrals,
                                                       data.local_dof_indices,
                                                       pressure_shape_function_integrals);
@@ -1172,7 +1177,7 @@ namespace aspect
       system_matrix = 0;
 
     system_rhs = 0;
-    if (material_model->is_compressible())
+    if (do_pressure_rhs_compatibility_modification)
       pressure_shape_function_integrals = 0;
 
     const QGauss<dim> quadrature_formula(parameters.stokes_velocity_degree+1);
@@ -1208,12 +1213,13 @@ namespace aspect
                               UpdateFlags(0))),
                             parameters.n_compositional_fields),
          internal::Assembly::CopyData::
-         StokesSystem<dim> (finite_element));
+         StokesSystem<dim> (finite_element,
+                            do_pressure_rhs_compatibility_modification));
 
     system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);
 
-    if (material_model->is_compressible())
+    if (do_pressure_rhs_compatibility_modification)
       pressure_shape_function_integrals.compress(VectorOperation::add);
 
 

@@ -247,7 +247,7 @@ namespace aspect
          */
 
         /**
-         * @name Parameters that have to do with compositional field
+         * @name Parameters that have to do with compositional fields
          * @{
          */
         unsigned int                   n_compositional_fields;
@@ -1100,7 +1100,7 @@ namespace aspect
       double                                                    global_Omega_diameter;
       double                                                    global_volume;
 
-      MeshRefinement::Manager<dim>        mesh_refinement_manager;
+      MeshRefinement::Manager<dim>                              mesh_refinement_manager;
 
       const MappingQ<dim>                                       mapping;
 
@@ -1111,8 +1111,26 @@ namespace aspect
       ConstraintMatrix                                          constraints;
       ConstraintMatrix                                          current_constraints;
 
+      /**
+       * The latest correction computed by normalize_pressure(). We store this so
+       * we can undo the correction in denormalize_pressure().
+       */
       double                                                    pressure_adjustment;
+
+      /**
+       * Scaling factor for the pressure as explained in the Kronbichler/Heister/Bangerth
+       * paper to ensure that the linear system that results from the Stokes equations
+       * is well conditioned.
+       */
       double                                                    pressure_scaling;
+
+      /**
+       * A variable that determines whether we need to do the correction of
+       * the Stokes right hand side vector to ensure that the average divergence
+       * is zero. This is necessary for compressible models, but only if there
+       * are no in/outflow boundaries.
+       */
+      bool                           do_pressure_rhs_compatibility_modification;
 
       /**
        * @}

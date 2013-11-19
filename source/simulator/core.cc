@@ -138,6 +138,7 @@ namespace aspect
     rebuild_stokes_preconditioner (true)
   {
     computing_timer.enter_section("Initialization");
+
     // first do some error checking for the parameters we got
     {
       // make sure velocity boundary indicators don't appear in multiple lists
@@ -247,7 +248,34 @@ namespace aspect
         velocity_boundary_conditions[p->first].reset (bv);
       }
 
+    // determine how to treat the pressure. we have to scale it for the solver
+    // to make velocities and pressures of roughly the same (numerical) size,
+    // and we may have to fix up the right hand side vector before solving for
+    // compressible models if there are no in-/outflow boundaries
     pressure_scaling = material_model->reference_viscosity() / geometry_model->length_scale();
+
+    std::set<types::boundary_id> open_velocity_boundary_indicators
+    = geometry_model->get_used_boundary_indicators();
+    for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
+         p = parameters.prescribed_velocity_boundary_indicators.begin();
+         p != parameters.prescribed_velocity_boundary_indicators.end();
+         ++p)
+      open_velocity_boundary_indicators.erase (p->first);
+    for (std::set<types::boundary_id>::const_iterator
+         p = parameters.zero_velocity_boundary_indicators.begin();
+         p != parameters.zero_velocity_boundary_indicators.end();
+         ++p)
+      open_velocity_boundary_indicators.erase (*p);
+    for (std::set<types::boundary_id>::const_iterator
+         p = parameters.tangential_velocity_boundary_indicators.begin();
+         p != parameters.tangential_velocity_boundary_indicators.end();
+         ++p)
+      open_velocity_boundary_indicators.erase (*p);
+    do_pressure_rhs_compatibility_modification = (material_model->is_compressible()
+                                                  &&
+                                                  (parameters.prescribed_velocity_boundary_indicators.size() == 0)
+                                                  &&
+                                                  (open_velocity_boundary_indicators.size() == 0));
 
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
@@ -746,7 +774,7 @@ namespace aspect
     old_old_solution.reinit(introspection.index_sets.system_relevant_partitioning, mpi_communicator);
     current_linearization_point.reinit (introspection.index_sets.system_relevant_partitioning, mpi_communicator);
 
-    if (material_model->is_compressible())
+    if (do_pressure_rhs_compatibility_modification)
       pressure_shape_function_integrals.reinit (introspection.index_sets.system_partitioning, mpi_communicator);
 
     rebuild_stokes_matrix         = true;
