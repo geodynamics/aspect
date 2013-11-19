@@ -91,6 +91,19 @@ namespace aspect
         bool
         execute () = 0;
 
+         /**
+         * Check for last time step and if so reduce the time step to user 
+         * specified end time
+         *
+         * @return Reduced or current time step size
+         *
+         * @note A reduced time step size will be returned for the
+         * last time step but the current time step size will be
+         * returned otherwise. Also, the default implementation will
+         * always return the full time step size.
+         */
+        virtual double check_for_last_time_step (double time_step) const;
+
         /**
          * Declare the parameters this class takes through input files.
          * Derived classes should overload this function if they actually
@@ -161,6 +174,20 @@ namespace aspect
         virtual
         std::pair<bool,bool>
         execute () const;
+
+         /**
+         * Check all of the termination criteria objects that have
+         * been requested in the input file for criteria regarding
+         * last time step and if so get the minimum of these values.
+         *
+         * @return Reduced or current time step size
+         *
+         * @note A reduced time step size will be returned for the
+         * last time step but the current time step size will be
+         * returned otherwise. The time step will be greater than zero
+         * as well as less than or equal to the inputted time step
+         */
+        double check_for_last_time_step (double time_step) const;
 
         /**
          * Declare the parameters of all known termination criteria plugins, as

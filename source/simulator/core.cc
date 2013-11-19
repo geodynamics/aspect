@@ -1281,6 +1281,7 @@ namespace aspect
         // added to statistics later
         old_time_step = time_step;
         time_step = compute_time_step().first;
+        time_step = termination_manager.check_for_last_time_step(time_step);
 
         if (parameters.convert_to_years == true)
           statistics.add_value("Time step size (years)", time_step / year_in_seconds);

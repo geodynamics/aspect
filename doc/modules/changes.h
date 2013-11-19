@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Changed: When the user selects to terminate by end time, the
+  final time step is adjusted to hit the final time exactly.
+  <br>
+  (Ryan Grove 2013/11/19)
+
   <li>Fixed: When using compressible models, we fixed up the right hand side
   vector in a way so that the mean divergence is zero (even though it is of
   course locally nonzero due to the compressibility). This is necessary to ensure

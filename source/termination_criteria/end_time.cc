@@ -30,7 +30,15 @@ namespace aspect
     bool
     EndTime<dim>::execute()
     {
-      return (this->get_time() >= end_time);
+      return (this->get_time() > end_time);
+    }
+
+    template <int dim>
+    double EndTime<dim>::check_for_last_time_step (double time_step) const
+    {
+      if (this->get_time()<end_time && this->get_time()+time_step > end_time)
+	time_step = end_time - this->get_time();
+      return time_step;
     }
 
     template <int dim>
