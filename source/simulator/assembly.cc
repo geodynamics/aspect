@@ -862,8 +862,8 @@ namespace aspect
                                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const
   {
     const unsigned int n_q_points = material_model_inputs.temperature.size();
-    for (unsigned int q=0; q<n_q_points; ++q)
-      material_model_inputs.position[q] = input_finite_element_values.quadrature_point(q);
+
+    material_model_inputs.position = input_finite_element_values.get_quadrature_points();
 
     input_finite_element_values[introspection.extractors.temperature].get_function_values (input_solution,
         material_model_inputs.temperature);
