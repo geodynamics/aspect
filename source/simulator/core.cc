@@ -1021,10 +1021,15 @@ namespace aspect
         case NonlinearSolver::Stokes_only:
         {
           // the Stokes matrix depends on the viscosity. if the viscosity
-          // depends on other solution variables, then after we need to
+          // depends on other solution variables, then we need to
           // update the Stokes matrix in every time step and so need to set
-          // the following flag. if we change the Stokes matrix we also
+          // the rebuild_stokes_matrix flag. if we change the Stokes matrix we also
           // need to update the Stokes preconditioner.
+          //
+          // there is a similar case where this solver can be used, namely for
+          // compressible models. in that case, the matrix does not depend on
+          // the previous solution, but we still need to iterate since the right
+          // hand side depends on it
           unsigned int iteration = 0;
 
           do
@@ -1037,8 +1042,8 @@ namespace aspect
               const double stokes_residual = solve_stokes();
               current_linearization_point = solution;
 
-              pcout << "stokes residual: " << stokes_residual << std::endl;
-              if (stokes_residual <1e-8)
+              pcout << "      Nonlinear Stokes residual: " << stokes_residual << std::endl;
+              if (stokes_residual < 1e-8)
                 break;
 
               ++iteration;
@@ -1046,6 +1051,8 @@ namespace aspect
           while (iteration < parameters.max_nonlinear_iterations);
           break;
         }
+
+
         case NonlinearSolver::iterated_IMPES:
         {
           double initial_temperature_residual = 0;
@@ -1096,7 +1103,7 @@ namespace aspect
 
               current_linearization_point = solution;
 
-              pcout << "   Nonlinear residuals: " << temperature_residual
+              pcout << "      Nonlinear residuals: " << temperature_residual
                     << ", " << stokes_residual;
 
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
