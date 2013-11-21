@@ -13,7 +13,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      Reference density (kg/m^3):                    3300
      Reference gravity (m/s^2):                     9.80986
      Reference thermal expansion (1/K):             4e-05
-     Temperature contrast accross model domain (K): 0
+     Temperature contrast across model domain (K): 0
      Model domain depth (m):                        2.855e+06
      Reference thermal diffusivity (m^2/s):         1.13939e-06
      Reference viscosity (Pas):                     1e+22
