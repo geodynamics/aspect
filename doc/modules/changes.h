@@ -8,6 +8,12 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Fixed: When using compressible models with nonlinear iterations
+  such as "Stokes", "iterated IMPES" or "iterated Stokes" and prescribed
+  boundary values, there were numerous bugs that should now be fixed.
+  <br>
+  (Wolfgang Bangerth 2013/11/21)
+
   <li>Changed: When the user selects to terminate by end time, the
   final time step is adjusted to hit the final time exactly.
   <br>

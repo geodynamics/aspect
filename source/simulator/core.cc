@@ -1020,22 +1020,30 @@ namespace aspect
         }
         case NonlinearSolver::Stokes_only:
         {
-          // the Stokes matrix depends on the viscosity. if the viscosity
-          // depends on other solution variables, then we need to
-          // update the Stokes matrix in every time step and so need to set
-          // the rebuild_stokes_matrix flag. if we change the Stokes matrix we also
-          // need to update the Stokes preconditioner.
-          //
-          // there is a similar case where this solver can be used, namely for
-          // compressible models. in that case, the matrix does not depend on
-          // the previous solution, but we still need to iterate since the right
-          // hand side depends on it
           unsigned int iteration = 0;
 
           do
             {
+              // the Stokes matrix depends on the viscosity. if the viscosity
+              // depends on other solution variables, then we need to
+              // update the Stokes matrix in every iteration and so need to set
+              // the rebuild_stokes_matrix flag. if we change the Stokes matrix we also
+              // need to update the Stokes preconditioner.
+              //
+              // there is a similar case where this nonlinear solver can be used, namely for
+              // compressible models. in that case, the matrix does not depend on
+              // the previous solution, but we still need to iterate since the right
+              // hand side depends on it. in those cases, the matrix does not change,
+              // but if we have to repeat computing the right hand side, we need to
+              // also rebuild the matrix if we end up with inhomogenous velocity
+              // boundary conditions (i.e., if there are prescribed velocity boundary
+              // indicators)
+              if ((stokes_matrix_depends_on_solution() == true)
+                  ||
+                  (parameters.prescribed_velocity_boundary_indicators.size() > 0))
+                rebuild_stokes_matrix = true;
               if (stokes_matrix_depends_on_solution() == true)
-                rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+                rebuild_stokes_preconditioner = true;
 
               assemble_stokes_system();
               build_stokes_preconditioner();
