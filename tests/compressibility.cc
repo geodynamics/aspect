@@ -49,18 +49,19 @@ namespace aspect
              const std::vector<double> &composition,
              const Point<dim> &position) const
     {
-      return 1.0 + compressibility(temperature,pressure,composition,position) * pressure;
+      return 1.0 + pressure;
     }
 
     template <int dim>
     double
     Compressibility<dim>::
     compressibility (const double ,
-                     const double,
+                     const double pressure,
                      const std::vector<double> &,
                      const Point<dim> &) const
     {
-      return 1.0;
+      // compressibility = 1/rho drho/dp
+      return 1.0 / (1. + pressure);
     }
 
     template <int dim>
@@ -184,7 +185,7 @@ namespace aspect
 	      for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
 	    	top_flux_integral += out.densities[q] * velocity_values[q][1] * fe_face_values.JxW(q);
 	  }
-    
+
       std::ostringstream screen_text1;
       std::ostringstream screen_text2;
       screen_text1.precision(4);

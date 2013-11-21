@@ -3,8 +3,9 @@
 # (0,1) at the bottom boundary, a tangential velocity at the sides
 # and a free boundary at the top.
 #
-# We then have a constant compressibilty that should lead to an
-# exponential density profile. The mass flux (product of density
+# We then choose a density rho=1+p and a compressibility that leads
+# to an exponential density profile rho=e^z, i.e.
+# compressibility=1/rho drho/dp=1/(1+p). The mass flux (product of density
 # and velocity) into the box and out of the box should be the same.
 #
 # We can only tell that the correct mass flux is computed in a
