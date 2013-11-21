@@ -590,6 +590,10 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      // now declare the parameters of each of the registered
+      // visualization postprocessors in turn
+      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -599,6 +603,7 @@ namespace aspect
     {
       Assert (std_cxx1x::get<dim>(registered_plugins).plugins != 0,
               ExcMessage ("No postprocessors registered!?"));
+      std::vector<std::string> viz_names;
 
       prm.enter_subsection("Postprocess");
       {
@@ -609,8 +614,7 @@ namespace aspect
           group_files     = prm.get_integer("Number of grouped files");
 
           // now also see which derived quantities we are to compute
-          std::vector<std::string> viz_names
-            = Utilities::split_string_list(prm.get("List of output variables"));
+          viz_names = Utilities::split_string_list(prm.get("List of output variables"));
 
           // see if 'all' was selected (or is part of the list). if so
           // simply replace the list with one that contains all names
@@ -624,37 +628,37 @@ namespace aspect
                    p != std_cxx1x::get<dim>(registered_plugins).plugins->end(); ++p)
                 viz_names.push_back (std_cxx1x::get<0>(*p));
             }
-
-          // then go through the list, create objects and let them parse
-          // their own parameters
-          for (unsigned int name=0; name<viz_names.size(); ++name)
-            {
-              VisualizationPostprocessors::Interface<dim> *
-              viz_postprocessor = std_cxx1x::get<dim>(registered_plugins)
-                                  .create_plugin (viz_names[name],
-                                                  "Visualization plugins",
-                                                  prm);
-
-              // make sure that the postprocessor is indeed of type
-              // dealii::DataPostprocessor or of type
-              // VisualizationPostprocessors::CellDataVectorCreator
-              Assert ((dynamic_cast<DataPostprocessor<dim>*>(viz_postprocessor)
-                       != 0)
-                      ||
-                      (dynamic_cast<VisualizationPostprocessors::CellDataVectorCreator<dim>*>(viz_postprocessor)
-                       != 0)
-                      ,
-                      ExcMessage ("Can't convert visualization postprocessor to type "
-                                  "dealii::DataPostprocessor or "
-                                  "VisualizationPostprocessors::CellDataVectorCreator!?"));
-
-              postprocessors.push_back (std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> >
-                                        (viz_postprocessor));
-            }
         }
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+	  // then go through the list, create objects and let them parse
+	  // their own parameters
+	  for (unsigned int name=0; name<viz_names.size(); ++name)
+		{
+		  VisualizationPostprocessors::Interface<dim> *
+		  viz_postprocessor = std_cxx1x::get<dim>(registered_plugins)
+							  .create_plugin (viz_names[name],
+											  "Visualization plugins",
+											  prm);
+
+		  // make sure that the postprocessor is indeed of type
+		  // dealii::DataPostprocessor or of type
+		  // VisualizationPostprocessors::CellDataVectorCreator
+		  Assert ((dynamic_cast<DataPostprocessor<dim>*>(viz_postprocessor)
+				   != 0)
+				  ||
+				  (dynamic_cast<VisualizationPostprocessors::CellDataVectorCreator<dim>*>(viz_postprocessor)
+				   != 0)
+				  ,
+				  ExcMessage ("Can't convert visualization postprocessor to type "
+							  "dealii::DataPostprocessor or "
+							  "VisualizationPostprocessors::CellDataVectorCreator!?"));
+
+		  postprocessors.push_back (std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> >
+									(viz_postprocessor));
+		}
     }
 
 
