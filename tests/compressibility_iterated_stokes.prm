@@ -3,7 +3,8 @@
 # fact the first two. The second iteration should have a better guess
 # u^* for the continuity equation,
 #    div u = -1/rho drho/dp u^* . g
-# and so should lead to an upward expansion of the flux.
+# and so should lead to an upward expansion of the flux. The solution we
+# compute only does 2 iterations and so is definitely not correct yet
 
 set Dimension = 2
 set CFL number                             = 1.0
