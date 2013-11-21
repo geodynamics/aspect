@@ -57,7 +57,12 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
    Postprocessing:
 
-Termination requested by criterion: steady state velocity
+*** Timestep 9:  t=1e+07 seconds
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+
 Termination requested by criterion: end time
 *** Snapshot created!
 

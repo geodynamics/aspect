@@ -172,6 +172,17 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output: output-composition-passive-tracers/solution-00009
      Advecting particles:      done. Writing particle graphical output output-composition-passive-tracers/particles-00009
 
+*** Timestep 16:  t=1 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 10 iterations.
+   Solving composition system 2... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-composition-passive-tracers/solution-00010
+     Advecting particles:      done. Writing particle graphical output output-composition-passive-tracers/particles-00010
+
 Termination requested by criterion: end time
 
 

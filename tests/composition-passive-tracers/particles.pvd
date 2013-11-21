@@ -14,5 +14,6 @@
     <DataSet timestep="0.75" group="" part="0" file="particles-00007.pvtu"/>
     <DataSet timestep="0.8125" group="" part="0" file="particles-00008.pvtu"/>
     <DataSet timestep="0.9375" group="" part="0" file="particles-00009.pvtu"/>
+    <DataSet timestep="1" group="" part="0" file="particles-00010.pvtu"/>
   </Collection>
 </VTKFile>

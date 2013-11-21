@@ -119,6 +119,13 @@ Number of degrees of freedom: 268 (162+25+81)
    Postprocessing:
      Writing graphical output: output-no_flow/solution-00015
 
+*** Timestep 16:  t=1 seconds
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-no_flow/solution-00016
+
 Termination requested by criterion: end time
 
 

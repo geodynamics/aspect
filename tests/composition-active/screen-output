@@ -746,6 +746,18 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Temperature min/avg/max:   0 K, 0.5212 K, 1 K
      Compositions min/max/mass: -0.0008421/0.8631/0.4603 // -0.0006946/0.7288/0.4574
 
+*** Timestep 64:  t=4 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 11 iterations.
+   Solving composition system 2... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition-active/solution-00040
+     Temperature min/avg/max:   0 K, 0.5217 K, 1 K
+     Compositions min/max/mass: -0.0008284/0.8585/0.4603 // -0.0006883/0.7274/0.4573
+
 Termination requested by criterion: end time
 
 
