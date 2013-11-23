@@ -16,7 +16,7 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 
 set Nonlinear solver scheme                = Stokes only
-set Max nonlinear iterations               = 2
+set Max nonlinear iterations               = 20
 
 set Additional shared libraries = ./libcompressibility_iterated_stokes.so
 
@@ -56,13 +56,13 @@ end
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
-    set Magnitude = 1.0
+    set Magnitude = 10.0
   end
 end
 
 
 subsection Material model
-  set Model name = compressibility
+  set Model name = compressibility iterated stokes
 
   subsection Simple model
     set Reference density             = 1    # default: 3300
@@ -97,7 +97,7 @@ subsection Boundary velocity model
 end
 
 subsection Postprocess
-  set List of postprocessors = compressibility, visualization
+  set List of postprocessors = compressibility
 
   subsection Visualization
 
