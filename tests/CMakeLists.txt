@@ -41,7 +41,7 @@ FOREACH(_test ${_tests})
   # file appears)
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test})
   ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-    COMMAND rm ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
+    COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
     COMMAND aspect ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
             > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output 2>&1
     COMMAND ${PERL_EXECUTABLE} -pi
