@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -99,6 +99,7 @@ namespace aspect
     material_model (MaterialModel::create_material_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     boundary_temperature (BoundaryTemperature::create_boundary_temperature<dim>(prm)),
+    boundary_composition (BoundaryComposition::create_boundary_composition<dim>(prm)),
     compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions (prm,
                                       *geometry_model)),
     adiabatic_conditions(),
@@ -183,13 +184,21 @@ namespace aspect
                        ExcMessage ("One of the boundary indicators listed in the input file "
                                    "is not used by the geometry model."));
 
-      // now do the same for the fixed temperature indicators
+      // now do the same for the fixed temperature indicators and the
+      // compositional indicators
       for (typename std::set<types::boundary_id>::const_iterator
            p = parameters.fixed_temperature_boundary_indicators.begin();
            p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
         AssertThrow (all_boundary_indicators.find (*p)
                      != all_boundary_indicators.end(),
-                     ExcMessage ("One of the fixed boundary indicators listed in the input file "
+                     ExcMessage ("One of the fixed boundary temperature indicators listed in the input file "
+                                 "is not used by the geometry model."));
+      for (typename std::set<types::boundary_id>::const_iterator
+           p = parameters.fixed_composition_boundary_indicators.begin();
+           p != parameters.fixed_composition_boundary_indicators.end(); ++p)
+        AssertThrow (all_boundary_indicators.find (*p)
+                     != all_boundary_indicators.end(),
+                     ExcMessage ("One of the fixed boundary composition indicators listed in the input file "
                                  "is not used by the geometry model."));
     }
 
@@ -204,6 +213,8 @@ namespace aspect
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*gravity_model))
       sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*boundary_temperature))
+      sim->initialize (*this);
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*boundary_composition))
       sim->initialize (*this);
 
     adiabatic_conditions.reset(new AdiabaticConditions<dim> (*geometry_model,
@@ -676,10 +687,10 @@ namespace aspect
     constraints.reinit(introspection.index_sets.system_relevant_set);
     DoFTools::make_hanging_node_constraints (dof_handler,
                                              constraints);
-    
+
     //Now set up the constraints for periodic boundary conditions
     {
-      typedef std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> > 
+      typedef std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >
                periodic_boundary_set;
       periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
 
@@ -695,18 +706,18 @@ namespace aspect
                   parameters.prescribed_velocity_boundary_indicators.find( (*p).first.first)
                              == parameters.prescribed_velocity_boundary_indicators.end() &&
                   parameters.prescribed_velocity_boundary_indicators.find( (*p).first.second)
-                             == parameters.prescribed_velocity_boundary_indicators.end(), 
+                             == parameters.prescribed_velocity_boundary_indicators.end(),
                   ExcInternalError());
 
 #if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
-          DoFTools::make_periodicity_constraints(dof_handler, 
+          DoFTools::make_periodicity_constraints(dof_handler,
                                                  (*p).first.first,  //first boundary id
                                                  (*p).first.second, //second boundary id
                                                  (*p).second,       //cartesian direction for translational symmetry
                                                  constraints);
 #endif
         }
- 
+
 
     }
     // then compute constraints for the velocity. the constraints we compute
@@ -762,8 +773,29 @@ namespace aspect
 
         }
 
-      // we do nothing with the compositional fields: homogeneous Neumann boundary conditions
-
+      // now do the same for the composition variable:
+      // obtain the boundary indicators that belong to Dirichlet-type
+      // composition boundary conditions and interpolate the composition
+      // there
+      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+        for (std::set<types::boundary_id>::const_iterator
+             p = parameters.fixed_composition_boundary_indicators.begin();
+             p != parameters.fixed_composition_boundary_indicators.end(); ++p)
+          {
+            Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
+                    ExcInternalError());
+            VectorTools::interpolate_boundary_values (dof_handler,
+                                                      *p,
+                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&BoundaryComposition::Interface<dim>::composition,
+                                                          std_cxx1x::cref(*boundary_composition),
+                                                          std_cxx1x::cref(*geometry_model),
+                                                          *p,
+                                                          std_cxx1x::_1),
+                                                          introspection.component_masks.compositional_fields[c].first_selected_component(),
+                                                          introspection.n_components),
+                                                      constraints,
+                                                      introspection.component_masks.compositional_fields[c]);
+	  }
     }
     constraints.close();
 

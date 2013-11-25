@@ -296,6 +296,19 @@ namespace aspect
 
 
     template <int dim>
+    double
+    InterfaceCompatibility<dim>::
+    entropy_derivative (const double temperature,
+                        const double pressure,
+                        const std::vector<double> &compositional_fields,
+                        const Point<dim> &position,
+                        const NonlinearDependence::Dependence dependence) const
+    {
+      return 0.0;
+    }
+
+
+    template <int dim>
     void
     declare_parameters (ParameterHandler &prm)
     {
@@ -344,6 +357,8 @@ namespace aspect
       specific_heat.resize(n_points);
       thermal_conductivities.resize(n_points);
       compressibilities.resize(n_points);
+      entropy_derivative_pressure.resize(n_points);
+      entropy_derivative_temperature.resize(n_points);
     }
 
 
@@ -375,6 +390,8 @@ namespace aspect
           out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
           out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
           out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          out.entropy_derivative_pressure[i]    = entropy_derivative            (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], NonlinearDependence::pressure);
+          out.entropy_derivative_temperature[i] = entropy_derivative            (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], NonlinearDependence::temperature);
         }
     }
   }

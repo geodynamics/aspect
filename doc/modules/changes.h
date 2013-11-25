@@ -8,6 +8,20 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: One can now select in the input file that the model should
+  include latent heat. The generation of latent heat then needs to be
+  described in the material model.
+  <br>
+  (Juliane Dannberg 2013/11/24)
+
+  <li>New: It is now possible to prescribe boundary values for
+  compositional fields in cases where there is inflow through
+  a segment of the boundary. This is implemented through a set
+  of plugins for boundary values in the same way as is done for
+  temperature boundary values.
+  <br>
+  (Juliane Dannberg 2013/11/24)
+
   <li>New: There is now a refinement criterion "topography" that makes sure
   the mesh is always refined at the surface of the domain.
   <br>

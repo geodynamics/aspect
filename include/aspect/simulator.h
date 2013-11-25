@@ -45,6 +45,7 @@
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
+#include <aspect/boundary_composition/interface.h>
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/compositional_initial_conditions/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
@@ -183,8 +184,10 @@ namespace aspect
          */
         bool                           include_shear_heating;
         bool                           include_adiabatic_heating;
+        bool                           include_latent_heat;
         double                         radiogenic_heating_rate;
         std::set<types::boundary_id> fixed_temperature_boundary_indicators;
+        std::set<types::boundary_id> fixed_composition_boundary_indicators;
         std::set<types::boundary_id> zero_velocity_boundary_indicators;
         std::set<types::boundary_id> tangential_velocity_boundary_indicators;
         /**
@@ -1063,6 +1066,7 @@ namespace aspect
       const std::auto_ptr<MaterialModel::Interface<dim> >            material_model;
       const std::auto_ptr<GravityModel::Interface<dim> >             gravity_model;
       const std::auto_ptr<BoundaryTemperature::Interface<dim> >      boundary_temperature;
+      const std::auto_ptr<BoundaryComposition::Interface<dim> >      boundary_composition;
       std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
       std::auto_ptr<const AdiabaticConditions<dim> >                 adiabatic_conditions;
       std::auto_ptr<InitialConditions::Interface<dim> >              initial_conditions;

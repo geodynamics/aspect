@@ -260,6 +260,13 @@ namespace aspect
                          "physical viewpoint, adiabatic heating should always be used but may "
                          "be undesirable when comparing results with known benchmarks that "
                          "do not include this term in the temperature equation.");
+      prm.declare_entry ("Include latent heat", "false",
+                         Patterns::Bool (),
+                         "Whether to include the generation of latent heat at phase transitions "
+                         "into the model or not. From a physical viewpoint, latent heat should "
+                         "always be used but may be undesirable when comparing results with known "
+                         "benchmarks that do not include this term in the temperature equation "
+                         "or when dealing with a model without phase transitions.");
       prm.declare_entry ("Radiogenic heating rate", "0e0",
                          Patterns::Double (),
                          "H0");
@@ -276,6 +283,21 @@ namespace aspect
                          "temperature, but not what temperature should hold on these "
                          "boundaries. The latter piece of information needs to be "
                          "implemented in a plugin in the BoundaryTemperature "
+                         "group, unless an existing implementation in this group "
+                         "already provides what you want.");
+      prm.declare_entry ("Fixed composition boundary indicators", "",
+                         Patterns::List (Patterns::Integer(0)),
+                         "A comma separated list of integers denoting those boundaries "
+                         "on which the composition is fixed and described by the "
+                         "boundary composition object selected in its own section "
+                         "of this input file. All boundary indicators used by the geometry "
+                         "but not explicitly listed here will end up with no-flux "
+                         "(insulating) boundary conditions."
+                         "\n\n"
+                         "This parameter only describes which boundaries have a fixed "
+                         "composition, but not what composition should hold on these "
+                         "boundaries. The latter piece of information needs to be "
+                         "implemented in a plugin in the BoundaryComposition "
                          "group, unless an existing implementation in this group "
                          "already provides what you want.");
       prm.declare_entry ("Zero velocity boundary indicators", "",
@@ -587,6 +609,7 @@ namespace aspect
     {
       include_shear_heating = prm.get_bool ("Include shear heating");
       include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
+      include_latent_heat = prm.get_bool ("Include latent heat");
       radiogenic_heating_rate = prm.get_double ("Radiogenic heating rate");
 
       const std::vector<int> x_fixed_temperature_boundary_indicators
@@ -596,6 +619,14 @@ namespace aspect
       fixed_temperature_boundary_indicators
         = std::set<types::boundary_id> (x_fixed_temperature_boundary_indicators.begin(),
                                         x_fixed_temperature_boundary_indicators.end());
+
+      const std::vector<int> x_fixed_composition_boundary_indicators
+        = Utilities::string_to_int
+          (Utilities::split_string_list
+           (prm.get ("Fixed composition boundary indicators")));
+      fixed_composition_boundary_indicators
+        = std::set<types::boundary_id> (x_fixed_composition_boundary_indicators.begin(),
+                                          x_fixed_composition_boundary_indicators.end());
 
       const std::vector<int> x_zero_velocity_boundary_indicators
         = Utilities::string_to_int
@@ -711,6 +742,7 @@ namespace aspect
     InitialConditions::declare_parameters<dim> (prm);
     CompositionalInitialConditions::declare_parameters<dim> (prm);
     BoundaryTemperature::declare_parameters<dim> (prm);
+    BoundaryComposition::declare_parameters<dim> (prm);
     VelocityBoundaryConditions::declare_parameters<dim> (prm);
   }
 }
