@@ -3,8 +3,13 @@
 # fact the first two. The second iteration should have a better guess
 # u^* for the continuity equation,
 #    div u = -1/rho drho/dp u^* . g
-# and so should lead to an upward expansion of the flux. The solution we
-# compute only does 2 iterations and so is definitely not correct yet
+# and so should lead to an upward expansion of the flux. 
+#
+# with the original testcase, the iteration does not converge. rather,
+# we need a much smaller compressibility to make things converge. we
+# choose a compressibility so that the density is
+#   rho = 10.0/11.0*exp(pressure/100.0)
+# which corresponds to compressibility=0.01
 
 set Dimension = 2
 set CFL number                             = 1.0
