@@ -293,8 +293,9 @@ namespace aspect
     // equals a known and desired value
     normalize_pressure(old_solution);
 
-    // set the current solution to the same value as the previous solution
+    // set all solution vectors to the same value as the previous solution
     solution = old_solution;
+    old_old_solution = old_solution;
   }
 }
 
