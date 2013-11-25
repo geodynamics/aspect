@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: There is now a refinement criterion "topography" that makes sure
+  the mesh is always refined at the surface of the domain.
+  <br>
+  (Juliane Dannberg 2013/11/24)
+
   <li>Fixed: When using compressible models with nonlinear iterations
   such as "Stokes", "iterated IMPES" or "iterated Stokes" and prescribed
   boundary values, there were numerous bugs that should now be fixed.
@@ -44,7 +49,7 @@ All entries are signed with the names of the author.
   <br>
   (Timo Heister 2013/10/28)
 
-  <li>Fixed: moved particle generation to a class, changed particle 
+  <li>Fixed: moved particle generation to a class, changed particle
   integration and generation to be factory patterned classes. There
   should be no effect on the user but this will allow for easier
   extension of particle functionality in the future.
