@@ -132,6 +132,13 @@ IF("${CTEST_SOURCE_DIRECTORY}" STREQUAL "")
   #
   SET(CTEST_SOURCE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
+  # The code above set the source directory of that of the run_testsuite.cmake
+  # script, but we need the directory of aspect, which is simply one level
+  # higher
+  IF ("${CTEST_SOURCE_DIRECTORY}" MATCHES "/tests")
+    SET(CTEST_SOURCE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../)
+  ENDIF()
+
   IF(NOT EXISTS ${CTEST_SOURCE_DIRECTORY}/CMakeLists.txt)
     MESSAGE(FATAL_ERROR "
 Could not find a suitable source directory. Please, set
@@ -501,4 +508,3 @@ IF(NOT "${_svn_WC_REVISION}" STREQUAL "")
 </Update>"
     )
 ENDIF()
-
