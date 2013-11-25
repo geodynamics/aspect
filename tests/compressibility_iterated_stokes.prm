@@ -16,7 +16,7 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 
 set Nonlinear solver scheme                = Stokes only
-set Max nonlinear iterations               = 20
+set Max nonlinear iterations               = 5
 
 set Additional shared libraries = ./libcompressibility_iterated_stokes.so
 

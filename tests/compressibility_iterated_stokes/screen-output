@@ -8,12 +8,17 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 26 iterations.
       Nonlinear Stokes residual: 21.2064
-   Solving Stokes system... 27 iterations.
-      Nonlinear Stokes residual: 5.48482
+   Solving Stokes system... 21 iterations.
+      Nonlinear Stokes residual: 0.293291
+   Solving Stokes system... 16 iterations.
+      Nonlinear Stokes residual: 0.0159069
+   Solving Stokes system... 10 iterations.
+      Nonlinear Stokes residual: 0.000575274
+   Solving Stokes system... 5 iterations.
+      Nonlinear Stokes residual: 1.44305e-05
 
    Postprocessing:
-     Top/bottom flux:          2.718/5.009
-     Writing graphical output: output-compressibility_iterated_stokes/solution-00000
+     Top/bottom flux: 1/1
 
 Termination requested by criterion: end time
 
