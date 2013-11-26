@@ -1210,7 +1210,9 @@ namespace aspect
             {
               // rebuild the matrix if it actually depends on the solution
               // of the previous iteration.
-              if (stokes_matrix_depends_on_solution() == true)
+              if ((stokes_matrix_depends_on_solution() == true)
+                  ||
+                  (parameters.prescribed_velocity_boundary_indicators.size() > 0))
                 rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
               assemble_stokes_system();
