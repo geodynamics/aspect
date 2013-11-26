@@ -82,7 +82,7 @@ namespace aspect
             double peridotite_melt_fraction;
             if (temperature < T_solidus || pressure > 1.3e10)
               peridotite_melt_fraction = 0.0;
-            else if (temperature > T_liquidus)
+            else if (temperature > T_lherz_liquidus)
               peridotite_melt_fraction = 1.0;
             else
               peridotite_melt_fraction = std::pow((temperature - T_solidus) / (T_lherz_liquidus - T_solidus),beta);
@@ -91,7 +91,7 @@ namespace aspect
             const double R_cpx = r1 + r2 * pressure;
             const double F_max = M_cpx / R_cpx;
 
-            if(peridotite_melt_fraction > F_max && peridotite_melt_fraction < 1.0)
+            if(peridotite_melt_fraction > F_max && temperature < T_liquidus)
             {
               const double T_max = std::pow(F_max,1/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
               peridotite_melt_fraction = F_max + (1 - F_max) * (temperature - T_max) / (T_liquidus - T_max);
