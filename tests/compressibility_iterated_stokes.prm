@@ -8,7 +8,7 @@
 # with the original testcase, the iteration does not converge. rather,
 # we need a much smaller compressibility to make things converge. we
 # choose a velocity profile
-#   u_y = 1+z/100
+#   u_z = 1+z/100
 # with corresponding density profile
 #   rho = 1/(1+z/100)
 # so that the continuity equation is satisfied. From the density one
