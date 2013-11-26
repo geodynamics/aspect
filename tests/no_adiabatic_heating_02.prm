@@ -95,7 +95,7 @@ subsection Boundary velocity model
 end
 
 subsection Postprocess
-  set List of postprocessors = temperature statistics
+  set List of postprocessors = temperature statistics, velocity statistics
 
   subsection Visualization
     set Time between graphical output = 0.1
