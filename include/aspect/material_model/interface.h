@@ -333,7 +333,7 @@ namespace aspect
                             const NonlinearDependence::Dependence dependence) const;
 
         /**
-        * Return the partial derivative of the compressibility function on the
+	 * Return the partial derivative of the compressibility function on the
         * variable indicates as last argument.
         *
         * The default implementation of this function returns zero
@@ -657,6 +657,10 @@ namespace aspect
          * Return the compressibility coefficient
          * $\frac 1\rho \frac{\partial\rho}{\partial p}$ of the model as a
          * function of temperature, pressure and position.
+	 *
+	 * The compressibility can equivalently be computed as
+	 * $-\frac 1V \frac{\partial V}{\partial p}$. Note the difference
+	 * in sign.
          */
         virtual double compressibility (const double temperature,
                                         const double pressure,
@@ -679,6 +683,10 @@ namespace aspect
         * $\alpha=-\frac{1}{\rho} \frac{d\rho}{dT}$. Since the density
         * <i>decreases</i> with temperature for almost all models,
         * $\alpha$ is usually positive.
+	*
+	* The thermal expansion coefficient can equivalently be computed as
+	* $\frac 1V \frac{\partial V}{\partial T}$. Note the difference
+	* in sign.
         *
         * This function has a default implementation that computes $\alpha$
         * through its definition above, using the density() and density_derivative()
