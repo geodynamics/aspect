@@ -24,7 +24,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 
      Writing graphical output:           output-passive_comp/solution-00000
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
-     Temperature min/avg/max:            0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max:            0 K, 0 K, 0 K
      Heat fluxes through boundary parts: 0 W, 0 W
      Writing depth average               output-passive_comp/depthaverage.plt
 

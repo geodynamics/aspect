@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -90,7 +90,7 @@ namespace aspect
       std::vector<double> local_min_compositions (this->n_compositional_fields(),
                                                   std::numeric_limits<double>::max());
       std::vector<double> local_max_compositions (this->n_compositional_fields(),
-                                                  std::numeric_limits<double>::min());
+                                                  -std::numeric_limits<double>::max());
 
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         for (unsigned int i=0; i<this->get_solution().block(3+c).local_size(); ++i)
@@ -108,9 +108,9 @@ namespace aspect
       // Utilities::MPI::min function, so negate the argument, take the maximum
       // as well, then negate it all again
       std::vector<double> global_min_compositions (this->n_compositional_fields(),
-                                                   std::numeric_limits<double>::min());
+                                                   std::numeric_limits<double>::max());
       std::vector<double> global_max_compositions (this->n_compositional_fields(),
-                                                   std::numeric_limits<double>::min());
+                                                   -std::numeric_limits<double>::max());
 
       {
         for (unsigned int c=0; c<this->n_compositional_fields(); ++c)

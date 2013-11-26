@@ -8,6 +8,13 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Fixed: The composition and temperature statistics postprocessors
+  incorrectly computed the maximal compositional values and maximal
+  temperature if this maximum was less than or equal to zero. This
+  is now fixed.
+  <br>
+  (Wolfgang Bangerth 2013/11/25)
+
   <li>New: One can now select in the input file that the model should
   include latent heat. The generation of latent heat then needs to be
   described in the material model.

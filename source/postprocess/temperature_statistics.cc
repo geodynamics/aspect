@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -84,7 +84,7 @@ namespace aspect
       // points gives an inaccurate
       // picture of their true values
       double local_min_temperature = std::numeric_limits<double>::max();
-      double local_max_temperature = std::numeric_limits<double>::min();
+      double local_max_temperature = -std::numeric_limits<double>::max();
       for (unsigned int i=0; i<this->get_solution().block(2).local_size(); ++i)
         {
           local_min_temperature

@@ -31,7 +31,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 8e-10
 
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 1:  t=0.0284091 seconds
@@ -48,7 +48,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Nonlinear Stokes residual: 2.21295e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 2:  t=0.0568182 seconds
@@ -65,7 +65,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Nonlinear Stokes residual: 2.21295e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 3:  t=0.0852272 seconds
@@ -82,7 +82,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Nonlinear Stokes residual: 2.21295e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 4:  t=0.113636 seconds
@@ -99,7 +99,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Nonlinear Stokes residual: 2.21295e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 5:  t=0.142045 seconds
@@ -116,7 +116,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Nonlinear Stokes residual: 2.21295e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 6:  t=0.170454 seconds
@@ -133,7 +133,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Nonlinear Stokes residual: 2.21295e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 7:  t=0.198864 seconds
@@ -150,7 +150,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Nonlinear Stokes residual: 2.21295e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 8:  t=0.227273 seconds
@@ -167,7 +167,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Nonlinear Stokes residual: 2.21295e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 9:  t=0.255682 seconds
@@ -184,7 +184,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Nonlinear Stokes residual: 2.21295e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 10:  t=0.284091 seconds
@@ -201,7 +201,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Nonlinear Stokes residual: 2.21295e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 Number of active cells: 64 (on 4 levels)
@@ -221,7 +221,7 @@ Number of degrees of freedom: 948 (578+81+289)
       Nonlinear Stokes residual: 2.23067e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 12:  t=0.369318 seconds
@@ -238,7 +238,7 @@ Number of degrees of freedom: 948 (578+81+289)
       Nonlinear Stokes residual: 4.35213e-07
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 13:  t=0.426136 seconds
@@ -255,7 +255,7 @@ Number of degrees of freedom: 948 (578+81+289)
       Nonlinear Stokes residual: 2.19763e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 14:  t=0.482954 seconds
@@ -272,7 +272,7 @@ Number of degrees of freedom: 948 (578+81+289)
       Nonlinear Stokes residual: 5.41607e-07
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 15:  t=0.539772 seconds
@@ -289,7 +289,7 @@ Number of degrees of freedom: 948 (578+81+289)
       Nonlinear Stokes residual: 2.26842e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 16:  t=0.59659 seconds
@@ -306,7 +306,7 @@ Number of degrees of freedom: 948 (578+81+289)
       Nonlinear Stokes residual: 4.05559e-07
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 17:  t=0.653409 seconds
@@ -323,7 +323,7 @@ Number of degrees of freedom: 948 (578+81+289)
       Nonlinear Stokes residual: 2.34802e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 18:  t=0.710227 seconds
@@ -340,7 +340,7 @@ Number of degrees of freedom: 948 (578+81+289)
       Nonlinear Stokes residual: 5.53662e-07
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 19:  t=0.767045 seconds
@@ -357,7 +357,7 @@ Number of degrees of freedom: 948 (578+81+289)
       Nonlinear Stokes residual: 2.52248e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 20:  t=0.823863 seconds
@@ -374,7 +374,7 @@ Number of degrees of freedom: 948 (578+81+289)
       Nonlinear Stokes residual: 2.38584e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 Number of active cells: 16 (on 3 levels)
@@ -394,7 +394,7 @@ Number of degrees of freedom: 268 (162+25+81)
       Nonlinear Stokes residual: 5.03664e-07
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 22:  t=0.994317 seconds
@@ -411,7 +411,7 @@ Number of degrees of freedom: 268 (162+25+81)
       Nonlinear Stokes residual: 1.48549e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 23:  t=1 seconds
@@ -428,7 +428,7 @@ Number of degrees of freedom: 268 (162+25+81)
       Nonlinear Stokes residual: 1.57585e-06
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0 K, 2.225e-308 K
+     Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 Termination requested by criterion: end time
