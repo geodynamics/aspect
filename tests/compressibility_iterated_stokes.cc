@@ -63,7 +63,6 @@ namespace aspect
     {
       // compressibility = 1/rho drho/dp
       return  0.01;
-;
     }
 
     template <int dim>
