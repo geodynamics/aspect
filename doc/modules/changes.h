@@ -8,6 +8,14 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Fixed: The shear heating term $2\eta \left(\varepsilon(\mathbf u)-
+  \frac 13 (\textrm{div}\; \mathbf u)I\right):\left(\varepsilon(\mathbf u)-
+  \frac 13 (\textrm{div}\; \mathbf u)I\right)$ was computed wrongly for
+  compressible models for which the divergence of the velocity field is
+  nonzero. This is now fixed.
+  <br>
+  (Wolfgang Bangerth 2013/11/25)
+
   <li>Fixed: The composition and temperature statistics postprocessors
   incorrectly computed the maximal compositional values and maximal
   temperature if this maximum was less than or equal to zero. This
