@@ -8,6 +8,12 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: There are now boundary temperature and boundary composition models
+  that simply use the initial temperature and composition as the values
+  that should hold at the boundary for all future times.
+  <br>
+  (Juliane Dannberg 2013/12/02)
+
   <li>New: Material models can now include reactions between compositional
   species.
   <br>
