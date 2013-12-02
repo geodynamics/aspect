@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -109,6 +109,16 @@ namespace aspect
                                                "initial temperature",
                                                "A model in which the temperature at the boundary"
                                                "is chosen to be the same as given in the initial"
-                                               "conditions.")
+                                               "conditions."
+					       "\n\n"
+					       "Because this class simply takes what the initial "
+					       "temperature had described, this class can not "
+					       "know certain pieces of information such as the "
+					       "minimal and maximal temperature on the boundary. "
+					       "For operations that require this, for example in "
+					       "postprocessing, this boundary temperature model "
+					       "must therefore be told what the minimal and "
+					       "maximal values on the boundary are. This is done "
+					       "using parameters set in section ``Boundary temperature model/Initial temperature''.")
   }
 }

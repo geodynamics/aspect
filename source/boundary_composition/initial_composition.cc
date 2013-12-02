@@ -109,6 +109,16 @@ namespace aspect
                                                "initial composition",
                                                "A model in which the composition at the boundary"
                                                "is chosen to be the same as given in the initial"
-                                               "conditions.")
+                                               "conditions."
+					       "\n\n"
+					       "Because this class simply takes what the initial "
+					       "composition had described, this class can not "
+					       "know certain pieces of information such as the "
+					       "minimal and maximal composition on the boundary. "
+					       "For operations that require this, for example in "
+					       "postprocessing, this boundary composition model "
+					       "must therefore be told what the minimal and "
+					       "maximal values on the boundary are. This is done "
+					       "using parameters set in section ``Boundary composition model/Initial composition''.")
   }
 }
