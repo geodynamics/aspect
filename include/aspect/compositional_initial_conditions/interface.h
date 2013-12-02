@@ -66,7 +66,7 @@ namespace aspect
         initialize (const GeometryModel::Interface<dim>       &geometry_model);
 
         /**
-         * Return the initial temperature as a function of position.
+         * Return the initial composition as a function of position.
          */
         virtual
         double initial_composition (const Point<dim> &position, const unsigned int n_comp) const = 0;
