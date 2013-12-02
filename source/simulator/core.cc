@@ -212,15 +212,15 @@ namespace aspect
     // or another in the member initializer list above
 
     // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it:
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*geometry_model))
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(geometry_model.get()))
       sim->initialize (*this);
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*material_model))
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(material_model.get()))
       sim->initialize (*this);
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*gravity_model))
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(gravity_model.get()))
       sim->initialize (*this);
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*boundary_temperature))
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature.get()))
       sim->initialize (*this);
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*boundary_composition))
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
       sim->initialize (*this);
 
     adiabatic_conditions.reset(new AdiabaticConditions<dim> (*geometry_model,
@@ -235,7 +235,7 @@ namespace aspect
                                                                             *geometry_model,
                                                                             *boundary_temperature,
                                                                             *adiabatic_conditions));
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_conditions))
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_conditions.get()))
       sim->initialize (*this);
 
     postprocess_manager.parse_parameters (prm);
