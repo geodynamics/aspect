@@ -1,0 +1,117 @@
+# Like the 'compositional_boundary_values' test, but here we also prescribe
+# boundary values at the neutral bottom boundary where flow is
+# tangential. Because boundary values are prescribed strongly, this leads to a
+# boundary layer one cell wide.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 1.0
+set Output directory                       = output-compositional_boundary_values_02
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = IMPES
+
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+
+# temperature field doesn't matter. set it to zero
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = x
+  end
+end
+
+
+# no gravity. the pressure will equal just the dynamic component
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1    # default: 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1    # default: 293
+    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1    # default: 5e24
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0, 1, 2, 3
+  set Fixed composition boundary indicators   = 0, 2
+  set Tangential velocity boundary indicators = 
+  set Zero velocity boundary indicators       = 
+  set Prescribed velocity boundary indicators = 0: function, 1: function, 2: function, 3: function
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names = x,z
+    set Function expression = z;0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0 ; 1
+  end
+end
+
+subsection Boundary composition model
+  set Model name = box
+  subsection Box
+    set Left composition = 10
+    set Right composition = 20
+    set Bottom composition = 30
+    set Top composition = 40
+  end
+end

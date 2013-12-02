@@ -1,0 +1,184 @@
+Running with 1 MPI task.
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,526 (578+81+289+289+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving composition system 1... 12 iterations.
+   Solving composition system 2... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -5.184e-16/10/0.2083 // 1/10/1.187
+
+*** Timestep 1:  t=0.0625 seconds
+   Solving temperature system... 15 iterations.
+   Solving composition system 1... 16 iterations.
+   Solving composition system 2... 16 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.5346/10/0.4938 // 0.5188/10/1.444
+
+*** Timestep 2:  t=0.125 seconds
+   Solving temperature system... 13 iterations.
+   Solving composition system 1... 14 iterations.
+   Solving composition system 2... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.6738/10/0.7991 // 0.3936/10/1.719
+
+*** Timestep 3:  t=0.1875 seconds
+   Solving temperature system... 12 iterations.
+   Solving composition system 1... 14 iterations.
+   Solving composition system 2... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.6932/10/1.111 // 0.3761/10/2
+
+*** Timestep 4:  t=0.25 seconds
+   Solving temperature system... 11 iterations.
+   Solving composition system 1... 14 iterations.
+   Solving composition system 2... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.7261/10.13/1.426 // 0.3465/10.12/2.283
+
+*** Timestep 5:  t=0.3125 seconds
+   Solving temperature system... 12 iterations.
+   Solving composition system 1... 14 iterations.
+   Solving composition system 2... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.6628/10.22/1.74 // 0.4035/10.2/2.566
+
+*** Timestep 6:  t=0.375 seconds
+   Solving temperature system... 11 iterations.
+   Solving composition system 1... 14 iterations.
+   Solving composition system 2... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.5183/10.34/2.054 // 0.5335/10.3/2.849
+
+*** Timestep 7:  t=0.4375 seconds
+   Solving temperature system... 11 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving composition system 2... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.3084/10.26/2.368 // 0.7224/10.23/3.131
+
+*** Timestep 8:  t=0.5 seconds
+   Solving temperature system... 11 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving composition system 2... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.2433/10.28/2.681 // 0.7811/10.25/3.413
+
+*** Timestep 9:  t=0.5625 seconds
+   Solving temperature system... 11 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving composition system 2... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.2134/10.32/2.994 // 0.808/10.29/3.695
+
+*** Timestep 10:  t=0.625 seconds
+   Solving temperature system... 11 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving composition system 2... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.1871/10.26/3.307 // 0.8316/10.23/3.976
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,526 (578+81+289+289+289)
+
+*** Timestep 11:  t=0.6875 seconds
+   Solving temperature system... 11 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving composition system 2... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.1335/10.31/3.619 // 0.8799/10.28/4.257
+
+*** Timestep 12:  t=0.75 seconds
+   Solving temperature system... 11 iterations.
+   Solving composition system 1... 12 iterations.
+   Solving composition system 2... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.05264/10.29/3.93 // 0.9526/10.26/4.537
+
+*** Timestep 13:  t=0.8125 seconds
+   Solving temperature system... 11 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving composition system 2... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.03362/10.28/4.238 // 0.9697/10.25/4.815
+
+*** Timestep 14:  t=0.875 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 12 iterations.
+   Solving composition system 2... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.03825/10.32/4.542 // 0.9656/10.29/5.088
+
+*** Timestep 15:  t=0.9375 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 12 iterations.
+   Solving composition system 2... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.03166/10.25/4.84 // 0.9715/10.23/5.356
+
+*** Timestep 16:  t=1 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving composition system 2... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -0.009827/10.3/5.127 // 0.9912/10.27/5.614
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
