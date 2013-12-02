@@ -35,9 +35,10 @@ namespace aspect
     InitialComposition<dim>::
     composition (const GeometryModel::Interface<dim> &geometry_model,
                  const unsigned int                   boundary_indicator,
-                 const Point<dim>                    &location) const
+                 const Point<dim>                    &location,
+                 const unsigned int                   compositional_field) const
     {
-      return this->get_compositional_initial_conditions().initial_composition(location, 0);
+      return this->get_compositional_initial_conditions().initial_composition(location, compositional_field);
     }
 
 

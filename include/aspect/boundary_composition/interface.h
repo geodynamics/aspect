@@ -68,11 +68,14 @@ namespace aspect
          *   of the domain on which the point is located at which we are requesting the
          *   composition.
          * @param location The location of the point at which we ask for the composition.
+         * @param compositional_field The number of the compositional field for which we
+         * are requesting the composition.
          **/
         virtual
         double composition (const GeometryModel::Interface<dim> &geometry_model,
                             const unsigned int                   boundary_indicator,
-                            const Point<dim>                    &location) const = 0;
+                            const Point<dim>                    &location,
+                            const unsigned int                   compositional_field) const = 0;
 
         /**
          * Declare the parameters this class takes through input files.
