@@ -311,6 +311,22 @@ namespace aspect
     return *simulator->adiabatic_conditions.get();
   }
 
+
+  template <int dim>
+  const InitialConditions::Interface<dim> &
+  SimulatorAccess<dim>::get_initial_conditions () const
+  {
+    return *simulator->initial_conditions.get();
+  }
+
+
+  template <int dim>
+  const CompositionalInitialConditions::Interface<dim> &
+  SimulatorAccess<dim>::get_compositional_initial_conditions () const
+  {
+    return *simulator->compositional_initial_conditions.get();
+  }
+
   template <int dim>
   void
   SimulatorAccess<dim>::get_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
