@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2012 by the authors of the ASPECT code.
+  Copyright (C) 2012, 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -100,14 +100,20 @@ namespace aspect
                 }
               else if (dim==3)
                 {
-                  mid_point(0) = inner_radius * sin(angle) * cos(angle),
-                  mid_point(1) = inner_radius * sin(angle) * sin(angle);
                   if (geometry_model->opening_angle() == 90)
-                    mid_point(2) = inner_radius * cos(4.0/3.0 * angle);
+            	  {
+            		mid_point(0) = std::sqrt(inner_radius*inner_radius/3),
+            		mid_point(1) = std::sqrt(inner_radius*inner_radius/3),
+            		mid_point(2) = std::sqrt(inner_radius*inner_radius/3);
+            	  }
                   else
+                  {
+                    mid_point(0) = inner_radius * sin(angle) * cos(angle),
+                    mid_point(1) = inner_radius * sin(angle) * sin(angle),
                     mid_point(2) = inner_radius * cos(angle);
-                }
-            }
+		  }
+		}
+	    }
           else if (const GeometryModel::Box<dim> *
                    geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (this->geometry_model))
             for (unsigned int i=0; i<dim-1; ++i)

@@ -8,6 +8,12 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Fixed: When using adiabatic initial conditions with a shell geometry and
+  an opening angle of 90 degrees, the perturbation was not located where it
+  was supposed to be. This is now fixed.
+  <br>
+  (Juliane Dannberg 2013/12/02)
+
   <li>New: There are now boundary temperature and boundary composition models
   that simply use the initial temperature and composition as the values
   that should hold at the boundary for all future times.
