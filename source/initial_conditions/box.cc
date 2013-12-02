@@ -37,9 +37,9 @@ namespace aspect
       // Box. verify that it is indeed
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (this->geometry_model);
-      Assert (geometry != 0,
-              ExcMessage ("This initial condition can only be used if the geometry "
-                          "is a box."));
+      AssertThrow (geometry != 0,
+                   ExcMessage ("This initial condition can only be used if the geometry "
+                               "is a box."));
 
       double perturbation = 1;
       for (unsigned int d=0; d<dim; ++d)
@@ -56,9 +56,9 @@ namespace aspect
       // Box. verify that it is indeed
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (this->geometry_model);
-      Assert (geometry != 0,
-              ExcMessage ("This initial condition can only be used if the geometry "
-                          "is a box."));
+      AssertThrow (geometry != 0,
+                   ExcMessage ("This initial condition can only be used if the geometry "
+                               "is a box."));
 
       Point<dim> temporary1, temporary2;
       for (int d=0; d<dim; ++d)
@@ -79,9 +79,9 @@ namespace aspect
       // box. verify that it is indeed
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (this->geometry_model);
-      Assert (geometry != 0,
-              ExcMessage ("This initial condition can only be used if the geometry "
-                          "is a box."));
+      AssertThrow (geometry != 0,
+                   ExcMessage ("This initial condition can only be used if the geometry "
+                               "is a box."));
 
       double perturbation, ratio;
       Point<dim> center;
@@ -114,9 +114,9 @@ namespace aspect
       // box. verify that it is indeed
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (this->geometry_model);
-      Assert (geometry != 0,
-              ExcMessage ("This initial condition can only be used if the geometry "
-                          "is a box."));
+      AssertThrow (geometry != 0,
+                   ExcMessage ("This initial condition can only be used if the geometry "
+                               "is a box."));
 
       double perturbation = 0;
       Point<dim> center;
