@@ -99,7 +99,13 @@ namespace aspect
     material_model (MaterialModel::create_material_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     boundary_temperature (BoundaryTemperature::create_boundary_temperature<dim>(prm)),
-    boundary_composition (BoundaryComposition::create_boundary_composition<dim>(prm)),
+    // create a boundary composition model, but only if we actually need
+    // it. otherwise, allow the user to simply specify nothing at all
+    boundary_composition (parameters.fixed_composition_boundary_indicators.empty()
+			  ?
+			  0
+			  :
+			  BoundaryComposition::create_boundary_composition<dim>(prm)),
     compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions (prm,
                                       *geometry_model)),
     adiabatic_conditions(),
