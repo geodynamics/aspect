@@ -129,6 +129,6 @@ namespace aspect
                                                "spherical constant",
                                                "A model in which the temperature is chosen constant on "
                                                "the inner and outer boundaries of a spherical shell. "
-                                               "Parameters are read from subsection 'Sherical constant'.")
+                                               "Parameters are read from subsection 'Spherical constant'.")
   }
 }
