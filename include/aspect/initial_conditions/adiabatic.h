@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: function.h 1088 2012-08-02 13:52:16Z bangerth $  */
+/*  $Id$  */
 
 
 #ifndef __aspect__initial_conditions_adiabatic_h

@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: spherical_constant.cc 1538 2013-01-06 03:12:23Z bangerth $  */
+/*  $Id$  */
 
 
 #include <aspect/boundary_temperature/initial_temperature.h>

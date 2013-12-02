@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: box.cc 1545 2013-01-21 16:14:41Z heister $  */
+/*  $Id$  */
 
 
 #include <aspect/boundary_composition/box.h>

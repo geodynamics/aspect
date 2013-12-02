@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: density.cc 1008 2012-05-09 18:46:44Z bangerth $  */
+/*  $Id$  */
 
 
 #include <aspect/postprocess/visualization/thermal_expansivity.h>

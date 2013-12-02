@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: composition.cc 1437 2012-12-08 12:02:49Z bangerth $  */
+/*  $Id$  */
 
 
 #include <aspect/mesh_refinement/topography.h>

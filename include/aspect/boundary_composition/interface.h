@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: interface.h 1538 2013-01-06 03:12:23Z bangerth $  */
+/*  $Id$  */
 
 
 #ifndef __aspect__boundary_composition_interface_h

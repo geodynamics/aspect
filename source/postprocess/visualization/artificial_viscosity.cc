@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: error_indicator.cc 1491 2012-12-11 06:05:16Z bangerth $  */
+/*  $Id$  */
 
 
 #include <aspect/postprocess/visualization/artificial_viscosity.h>

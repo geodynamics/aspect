@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: interface.cc 885 2012-04-03 13:35:03Z bangerth $  */
+/*  $Id$  */
 
 
 #include <aspect/global.h>
