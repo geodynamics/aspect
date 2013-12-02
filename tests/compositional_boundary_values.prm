@@ -79,8 +79,8 @@ end
 subsection Model settings
   set Fixed temperature boundary indicators   = 0, 1, 2, 3
   set Fixed composition boundary indicators   = 0
-  set Tangential velocity boundary indicators = 
-  set Zero velocity boundary indicators       = 
+  set Tangential velocity boundary indicators =
+  set Zero velocity boundary indicators       =
   set Prescribed velocity boundary indicators = 0: function, 1: function, 2: function, 3: function
 end
 
@@ -111,9 +111,9 @@ end
 subsection Boundary composition model
   set Model name = box
   subsection Box
-    set Left composition = 10
-    set Right composition = 20
-    set Bottom composition = 30
-    set Top composition = 40
+    set Left composition = 10, 10
+    set Right composition = 20, 20
+    set Bottom composition = 30, 30
+    set Top composition = 40, 40
   end
 end

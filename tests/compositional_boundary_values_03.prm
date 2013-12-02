@@ -1,7 +1,5 @@
-# Like the 'compositional_boundary_values' test, but here we also prescribe
-# boundary values at the neutral bottom boundary where flow is
-# tangential. Because boundary values are prescribed strongly, this leads to a
-# boundary layer one cell wide.
+# Like the 'compositional_boundary_values_02' test, but use different
+# values for the boundary conditions of different compositional fields.
 
 set Dimension = 2
 set CFL number                             = 1.0
@@ -109,9 +107,9 @@ end
 subsection Boundary composition model
   set Model name = box
   subsection Box
-    set Left composition = 10, 10
-    set Right composition = 20, 20
-    set Bottom composition = 30, 30
-    set Top composition = 40, 40
+    set Left composition = 10, -10
+    set Right composition = 20, -20
+    set Bottom composition = 30, -30
+    set Top composition = 40, -40
   end
 end

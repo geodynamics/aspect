@@ -24,6 +24,7 @@
 #define __aspect__boundary_composition_box_h
 
 #include <aspect/boundary_composition/interface.h>
+#include <aspect/simulator_access.h>
 
 
 namespace aspect
@@ -37,7 +38,8 @@ namespace aspect
      * @ingroup BoundaryCompositions
      */
     template <int dim>
-    class Box : public Interface<dim>
+    class Box : public Interface<dim>,
+                public SimulatorAccess<dim>
     {
       public:
         /**
@@ -75,8 +77,23 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
+        /**
+         * Initialize this class for a given simulator. This function
+         * overloads that of the SimulatorAccess base class. It calls
+         * the respective function of the base class and then performs
+         * some basic sanity checks on the parameter values previously
+         * read from the input file.
+         *
+         * @param simulator A reference to the main simulator object.
+         **/
+        virtual void initialize (const Simulator<dim> &simulator);
+
       private:
-        double composition_[2*dim];
+        /**
+         * The values of the various composition variables on each of the 2*dim
+         * boundaries of the box.
+         */
+        std::vector<double> composition_values[2*dim];
     };
   }
 }
