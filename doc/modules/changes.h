@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: Material models can now include reactions between compositional
+  species.
+  <br>
+  (Juliane Dannberg 2013/12/01)
+
   <li>Fixed: The shear heating term $2\eta \left(\varepsilon(\mathbf u)-
   \frac 13 (\textrm{div}\; \mathbf u)I\right):\left(\varepsilon(\mathbf u)-
   \frac 13 (\textrm{div}\; \mathbf u)I\right)$ was computed wrongly for

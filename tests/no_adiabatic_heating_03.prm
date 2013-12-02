@@ -1,30 +1,35 @@
 # Like 'no_adiabatic_heating_02' but here we actually switch on friction
 # heating and set the viscosity to a non-zero. In this testcase, we have
-#   u_z(z) = 1+z/100
+#   u_z(z) = 1+z/10
 # so in 2d, we have
-#   eps(u) - 1/3 (div u) I = [[-1/300,0], [0,2/300]]
+#   eps(u) - 1/3 (div u) I = [[-1/30,0], [0,2/30]]
 # so the friction heating term is
-#   2*eta*5/9*(1/100)^2
-# Consequently, if we set the thermal diffusivity to zero, then from
-#   DT/Dt = 2*eta*5/9*(1/100)^2
-# we get
-#   T(t)  = 2*eta*5/9*(1/100)^2 * t + T(0)
+#   2*eta*5/9*(1/10)^2
 # From the velocity, we get
-#   z = t*t^2/200
+#   z = t+t^2/20
+# Consequently, if we set the thermal diffusivity to zero and c_P=1, then from
+#   rho(t) DT/Dt = 2*eta*5/9*(1/10)^2
+# we get
+#   T(t)  = \int_0^t 2*eta*5/9*(1/10)^2 / rho(t) dt
+# Now,
+#   rho(t) = rho(z(t)) = rho(t+t^2/20) = 1/(1+u_z(z(t))
+#          = 1/(1+(t+t^2/20)/10)
 # so
-#   T(z)  = 2*eta*5/9*(1/100)^2 * (10*sqrt(100+2z)-100) + T(0)
+#   T(t)  = eta/90 * (t + t^2/20 + t^3/600)
+# We can reformulate this in terms of z as
+#   T(z)  = eta/1350 * [(z+20)*sqrt(25+5z) - 100]
 # Thus, the maximal temperature at the outlet should be
-#   T(1)  = 2*eta*5/9*(1/100)^2 * (10*sqrt(102)-100) + T(0)
+#   T(1)  = 0.011*eta
 # To make all of this work, of course, we need that the density does
 # not depend on the temperature
 #
 # In this testcase, we choose eta=10, so this should lead to
-#   T(1)  = 0.001105
+#   T(1)  = 0.1112
 
 set Dimension = 2
 
 set CFL number                             = 1.0
-set End time                               = 1
+set End time                               = .1
 set Output directory                       = output-no_adiabatic_heating_03
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
@@ -82,11 +87,11 @@ subsection Material model
 
   subsection Simple model
     set Reference density             = 1    # default: 3300
-    set Reference specific heat       = 1250
+    set Reference specific heat       = 1
     set Reference temperature         = 0    # default: 293
     set Thermal conductivity          = 1e-6 # default: 4.7
     set Thermal expansion coefficient = 0
-    set Viscosity                     = 1    # default: 5e24
+    set Viscosity                     = 10
   end
 end
 

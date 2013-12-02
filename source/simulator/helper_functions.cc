@@ -704,7 +704,8 @@ namespace aspect
 
     typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
                                                                    parameters.n_compositional_fields);
-    typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points);
+    typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
+        parameters.n_compositional_fields);
 
     fctr.setup(quadrature_formula.size());
 

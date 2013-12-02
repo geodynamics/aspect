@@ -19,14 +19,6 @@ namespace aspect
 	{
 	  return 0;
 	}
-
-      virtual double viscosity (const double,
-				const double,
-				const std::vector<double> &,
-				const Point<dim> &) const
-	{
-	  return 10;
-	}
     };
 
   }

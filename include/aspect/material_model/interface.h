@@ -536,7 +536,7 @@ namespace aspect
          */
         struct MaterialModelOutputs
         {
-          MaterialModelOutputs(unsigned int n_points);
+          MaterialModelOutputs(unsigned int n_points, unsigned int n_comp);
 
           /**
            * Viscosity $\eta$ values at the given positions.
@@ -572,6 +572,12 @@ namespace aspect
            * Temperature derivative of entropy at the given positions.
            */
           std::vector<double> entropy_derivative_temperature;
+          /**
+           * Change in composition due to chemical reactions at the
+           * given positions. The term reaction_terms[i][c] is the
+           * change in compositional field c at point i.
+           */
+          std::vector<std::vector<double> > reaction_terms;
         };
 
         /**
@@ -716,7 +722,7 @@ namespace aspect
        * $\pi = p - p_0 - \gamma T$, where $p_0$ is the zero-degree
        * transition pressure.
        *
-       * This function has a default implementation that computes sets
+      * This function has a default implementation that sets
        * the entropy gradient to zero (assuming no phase changes).
        */
       virtual double entropy_derivative (const double      temperature,
@@ -725,6 +731,32 @@ namespace aspect
                                          const Point<dim> &position,
                                          const NonlinearDependence::Dependence dependence) const;
 
+      /**
+       * Return the change in the compositional field compositional_variable
+       * due to reactions between different compositional fields.
+      * It is assumed that there is always an equilibrium between the
+      * compositional fields (because the time scale of reactions is
+      * normally much shorter than that of convection), so this is an actual
+      * amount of material, which is added to or substracted from the current
+      * value of the compositional field, and NOT a reaction rate.
+      * The idea is, that in dependence of temperature, pressure, position and
+      * the compositional fields themselves an equilibrium can be calculated,
+      * and the difference between the current value and the equilibrium can
+      * be added to the respective compositional field.
+      *
+      * For mass conservation it should ALWAYS be checked that what is subtracted
+      * from one field is added to another field (and the other way round) and
+      * that it is never more substracted than the actual value of a field (so
+      * it does not get negative).
+      *
+      * This function has a default implementation that sets
+      * the reaction term to zero (assuming no reactions).
+       */
+      virtual double reaction_term (const double      temperature,
+                                    const double      pressure,
+                                    const std::vector<double> &compositional_fields,
+                                    const Point<dim> &position,
+                                    const unsigned int compositional_variable) const;
 
       /**
          * Return the thermal conductivity $k$ of the model as a function of temperature,

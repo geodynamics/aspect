@@ -87,7 +87,7 @@ namespace aspect
       //      we could move this to helper_functions.compute_thermal_diffusivity()?
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, compositional_fields.size());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1);
+      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, compositional_fields.size());
 
       in.position[0] = position;
       in.temperature[0] = temperature;
@@ -296,19 +296,6 @@ namespace aspect
 
 
     template <int dim>
-    double
-    InterfaceCompatibility<dim>::
-    entropy_derivative (const double temperature,
-                        const double pressure,
-                        const std::vector<double> &compositional_fields,
-                        const Point<dim> &position,
-                        const NonlinearDependence::Dependence dependence) const
-    {
-      return 0.0;
-    }
-
-
-    template <int dim>
     void
     declare_parameters (ParameterHandler &prm)
     {
@@ -349,7 +336,7 @@ namespace aspect
     }
 
     template <int dim>
-    Interface<dim>::MaterialModelOutputs::MaterialModelOutputs(unsigned int n_points)
+    Interface<dim>::MaterialModelOutputs::MaterialModelOutputs(unsigned int n_points, unsigned int n_comp)
     {
       viscosities.resize(n_points);
       densities.resize(n_points);
@@ -359,6 +346,9 @@ namespace aspect
       compressibilities.resize(n_points);
       entropy_derivative_pressure.resize(n_points);
       entropy_derivative_temperature.resize(n_points);
+      reaction_terms.resize(n_points);
+      for (unsigned int i=0; i<n_points; ++i)
+        reaction_terms[i].resize(n_comp);
     }
 
 
@@ -378,6 +368,32 @@ namespace aspect
 
 
     template <int dim>
+    double
+    InterfaceCompatibility<dim>::
+    entropy_derivative (const double temperature,
+                        const double pressure,
+                        const std::vector<double> &compositional_fields,
+                        const Point<dim> &position,
+                        const NonlinearDependence::Dependence dependence) const
+    {
+      return 0.0;
+    }
+
+
+    template <int dim>
+    double
+    InterfaceCompatibility<dim>::
+    reaction_term (const double temperature,
+                   const double pressure,
+                   const std::vector<double> &compositional_fields,
+                   const Point<dim> &position,
+                   const unsigned int compositional_variable) const
+    {
+      return 0.0;
+    }
+
+
+    template <int dim>
     void
     InterfaceCompatibility<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
 					  typename Interface<dim>::MaterialModelOutputs &out) const
@@ -392,6 +408,8 @@ namespace aspect
           out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
           out.entropy_derivative_pressure[i]    = entropy_derivative            (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], NonlinearDependence::pressure);
           out.entropy_derivative_temperature[i] = entropy_derivative            (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], NonlinearDependence::temperature);
+          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+        	out.reaction_terms[i][c]            = reaction_term                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], c);
         }
     }
   }

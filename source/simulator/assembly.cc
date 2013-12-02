@@ -87,7 +87,7 @@ namespace aspect
           composition_values(n_compositional_fields,
                              std::vector<double>(quadrature.size())),
           material_model_inputs(quadrature.size(), n_compositional_fields),
-          material_model_outputs(quadrature.size())
+          material_model_outputs(quadrature.size(), n_compositional_fields)
         {}
 
 
@@ -158,7 +158,7 @@ namespace aspect
           composition_values(n_compositional_fields,
                              std::vector<double>(quadrature.size())),
           material_model_inputs(quadrature.size(), n_compositional_fields),
-          material_model_outputs(quadrature.size())
+          material_model_outputs(quadrature.size(), n_compositional_fields)
         {}
 
 
@@ -288,9 +288,9 @@ namespace aspect
           current_composition_values(n_compositional_fields,
                                      std::vector<double>(quadrature.size())),
           material_model_inputs(quadrature.size(), n_compositional_fields),
-          material_model_outputs(quadrature.size()),
+          material_model_outputs(quadrature.size(), n_compositional_fields),
           explicit_material_model_inputs(quadrature.size(), n_compositional_fields),
-          explicit_material_model_outputs(quadrature.size())
+          explicit_material_model_outputs(quadrature.size(), n_compositional_fields)
         {}
 
 
@@ -1496,6 +1496,14 @@ namespace aspect
           }
         material_model->evaluate(scratch.explicit_material_model_inputs,scratch.explicit_material_model_outputs);
       }
+    else
+      {
+        compute_material_model_input_values (old_solution,
+                                             scratch.finite_element_values,
+                                             true,
+                                             scratch.material_model_inputs);
+        material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+      }
 
     // TODO: Compute artificial viscosity once per timestep instead of each time
     // temperature system is assembled (as this might happen more than once per
@@ -1547,6 +1555,12 @@ namespace aspect
                                                   scratch.material_model_outputs,
                                                   temperature_or_composition,
                                                   q);
+        const double reaction_term =
+          ((temperature_or_composition.is_temperature())
+           ?
+           0.0
+           :
+           scratch.material_model_outputs.reaction_terms[q][temperature_or_composition.compositional_variable]);
 
         const double field_term_for_rhs
           = (use_bdf2_scheme ?
@@ -1574,6 +1588,8 @@ namespace aspect
                 += (field_term_for_rhs * scratch.phi_field[i]
                                   + time_step *
                                   gamma
+                                  * scratch.phi_field[i]
+                                  + reaction_term
                                   * scratch.phi_field[i])
                                  *
                                  scratch.finite_element_values.JxW(q);
