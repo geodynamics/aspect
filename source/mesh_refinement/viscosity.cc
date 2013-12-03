@@ -153,7 +153,9 @@ namespace aspect
                                               "viscosity",
                                               "A mesh refinement criterion that computes "
                                               "refinement indicators from a field that describes "
-                                              "the spatial variability of the viscosity, $\\eta$. "
+                                              "the spatial variability of the logarithm of the viscosity, $\\log\\eta$. "
+                                              "(We choose the logarithm of the viscosity because it can vary by "
+                                              "orders of magnitude.)"
                                               "Because this quantity may not be a continuous function ($\\eta$ "
                                               "may be a discontinuous function along discontinuities in the "
                                               "medium, for example due to phase changes), we approximate the "
