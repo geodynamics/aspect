@@ -8,6 +8,12 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: The 'composition' mesh refinement criterion now allows to scale
+  the various compositional fields differently, through parameters given
+  in the input file.
+  <br>
+  (Juliane Dannberg 2013/12/03)
+
   <li>New: There is now a new mesh refinement criterion 'nonadiabatic
   temperature' that refines based on the nonadiabatic part of the temperature
   field.

@@ -42,6 +42,17 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
+      /**
+       * Initialize this class for a given simulator. This function calls
+       * the corresponding object in the SimulatorAccess class and then
+       * initializes the current object by looking up the correct number
+       * of compositional fields through the now initialized SimulatorAccess
+       * class.
+       *
+       * @param simulator A reference to the main simulator object.
+       */
+      virtual void initialize (const Simulator<dim> &simulator);
+
         /**
          * Execute this mesh refinement criterion.
          *
@@ -54,6 +65,28 @@ namespace aspect
         virtual
         void
         execute (Vector<float> &error_indicators) const;
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter
+         * file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+      private:
+        /**
+         * The scaling factors that should be applied to the individual
+         * refinement indicators before merging.
+         */
+        std::vector<double> composition_scaling_factors;
     };
   }
 }
