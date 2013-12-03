@@ -8,6 +8,12 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: There is now a new mesh refinement criterion 'nonadiabatic
+  temperature' that refines based on the nonadiabatic part of the temperature
+  field.
+  <br>
+  (Juliane Dannberg 2013/12/03)
+
   <li>Fixed: When using adiabatic initial conditions with a shell geometry and
   an opening angle of 90 degrees, the perturbation was not located where it
   was supposed to be. This is now fixed.
