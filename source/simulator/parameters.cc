@@ -371,7 +371,7 @@ namespace aspect
                          Patterns::Integer (0),
                          "The minimum refinement level each cell should have, "
                          "and that can not be exceeded by coarsening. "
-                         "Should be higher than Initial global refinement.");
+                         "Should be higher than the 'Initial global refinement' parameter.");
       prm.declare_entry ("Additional refinement times", "",
                          Patterns::List (Patterns::Double(0)),
                          "A list of times so that if the end time of a time step "
@@ -597,7 +597,7 @@ namespace aspect
                   ExcMessage("Refinement and coarsening fractions must be <= 1."));
       AssertThrow(min_grid_level <= initial_global_refinement,
                   ExcMessage("Minimum refinement level must not be larger than "
-                		  "Initial global refinement."));
+                             "Initial global refinement."));
 
       // extract the list of times at which additional refinement is requested
       // then sort it and convert it to seconds
