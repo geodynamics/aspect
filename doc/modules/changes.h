@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: There is now a run time parameter that indices the minimal
+  refinement level of the mesh.
+  <br>
+  (Juliane Dannberg 2013/12/03)
+
   <li>New: The 'composition' mesh refinement criterion now allows to scale
   the various compositional fields differently, through parameters given
   in the input file.
