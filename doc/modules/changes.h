@@ -19,9 +19,10 @@ All entries are signed with the names of the author.
   <br>
   (Juliane Dannberg 2013/12/03)
 
-  <li>New: There is now a new mesh refinement criterion 'nonadiabatic
-  temperature' that refines based on the nonadiabatic part of the temperature
-  field.
+  <li>New: There are now two new mesh refinement criteria: 'nonadiabatic
+  temperature' refines based on the nonadiabatic part of the temperature
+  field; 'viscosity' refines based on the viscosity considered as a spatially
+  variable field.
   <br>
   (Juliane Dannberg 2013/12/03)
 
