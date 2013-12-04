@@ -1,38 +1,56 @@
-#
-# Copyright (C) 2013 by Matthias Maier
-#
-# This file is part of ASPECT.
-#
-# ASPECT is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# ASPECT is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ASPECT; see the file doc/COPYING.  If not see
-# <http://www.gnu.org/licenses/>.
-#
-# $Id$
-
-
-
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
-MESSAGE("-- This is CTest ${CMAKE_VERSION}")
-
+## ---------------------------------------------------------------------
+## $Id$
+##
+## Copyright (C) 2013 by the deal.II authors
+##
+## This file is part of the deal.II library.
+##
+## The deal.II library is free software; you can use it, redistribute
+## it, and/or modify it under the terms of the GNU Lesser General
+## Public License as published by the Free Software Foundation; either
+## version 2.1 of the License, or (at your option) any later version.
+## The full text of the license can be found in the file LICENSE at
+## the top level of the deal.II distribution.
+##
+## ---------------------------------------------------------------------
 
 #
-# And finally submit:
+# Submit existing test results to CDash.
+#
+# Usage:
+#   Invoke this script in a directory with test results already present
+#   under ./Testing, i.e. valid ./Testing/TAG pointing to test results:
+#
+#   ctest -S ../tests/submit_results.cmake
+#
+# You may specify CTEST_SOURCE_DIRECTORY to point to a directory containing
+# CTestConfig.cmake
 #
 
-MESSAGE("-- Running CTEST_SUBMIT()")
-CTEST_SUBMIT(RETURN_VALUE _res)
+IF("${CTEST_SOURCE_DIRECTORY}" STREQUAL "")
+  # Get parent directory:
+  GET_FILENAME_COMPONENT(CTEST_SOURCE_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}" PATH)
 
-IF("${_res}" STREQUAL "0")
-  MESSAGE("-- Submission successful. Goodbye!")
+  IF(NOT EXISTS ${CTEST_SOURCE_DIRECTORY}/CTestConfig.cmake)
+    SET(CTEST_SOURCE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+  ENDIF()
 ENDIF()
 
+MESSAGE("-- CTEST_SOURCE_DIRECTORY: ${CTEST_SOURCE_DIRECTORY}")
+
+SET(CTEST_BINARY_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+MESSAGE("-- CTEST_BINARY_DIRECTORY: ${CTEST_BINARY_DIRECTORY}")
+
+FILE(STRINGS ${CTEST_BINARY_DIRECTORY}/Testing/TAG _tag)
+LIST(GET _tag 1 _track)
+
+IF("${_track}" STREQUAL "")
+  MESSAGE(FATAL_ERROR "
+No test results found. Bailing out.
+"
+    )
+ENDIF()
+
+CTEST_START(Experimental TRACK ${_track} APPEND)
+CTEST_SUBMIT()
