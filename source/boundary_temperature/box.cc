@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -83,7 +83,7 @@ namespace aspect
         return *std::max_element(temperature_, temperature_+2*dim);
       else
         {
-          double max = std::numeric_limits<double>::min();
+          double max = -std::numeric_limits<double>::max();
           for (typename std::set<types::boundary_id>::const_iterator
                p = fixed_boundary_ids.begin();
                p != fixed_boundary_ids.end(); ++p)
