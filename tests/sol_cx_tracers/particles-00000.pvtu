@@ -6,8 +6,8 @@
     </PPoints>
     <PPointData Scalars="scalars">
       <PDataArray type="Float64" Name="velocity" NumberOfComponents="3" format="ascii"/>
-      <PDataArray type="Float64" Name="id" format="ascii"/>
+      <PDataArray type="Float64" Name="id" NumberOfComponents="1" format="ascii"/>
     </PPointData>
-    <Piece Source="particle-00000.0000.vtu"/>
+    <Piece Source="particles-00000.0000.vtu"/>
   </PUnstructuredGrid>
 </VTKFile>
