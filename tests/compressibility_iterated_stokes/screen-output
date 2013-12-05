@@ -13,9 +13,9 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Solving Stokes system... 16 iterations.
       Nonlinear Stokes residual: 0.0159069
    Solving Stokes system... 10 iterations.
-      Nonlinear Stokes residual: 0.000575274
+      Nonlinear Stokes residual: 0.000575275
    Solving Stokes system... 5 iterations.
-      Nonlinear Stokes residual: 1.44305e-05
+      Nonlinear Stokes residual: 1.44328e-05
 
    Postprocessing:
      Top/bottom flux: 1/1
