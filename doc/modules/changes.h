@@ -8,6 +8,20 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>The 'temperature statistics' postprocessor put a column
+  'Average nondimensional temperature (K)' into the statistics file that
+  was computes as the average temperature divided by the maximal temperature
+  at the boundary. This made no sense if the maximal temperature at the
+  boundary was zero or if the minimal temperature was nonzero. In fact,
+  it also made no sense if the temperature at the boundary was not prescribed.
+  This is now fixed: the column is computed as the ratio of the average temperature
+  divided by the <i>difference</i> between maximal and minimal temperature,
+  and it is omitted altogether if the temperature is not prescribed on any
+  part of the boundary or if the difference between minimal and maximal
+  prescribed boundary is zero.
+  <br>
+  (Wolfgang Bangerth 2013/12/05)
+
   <li>New: There is now a run time parameter that indices the minimal
   refinement level of the mesh.
   <br>

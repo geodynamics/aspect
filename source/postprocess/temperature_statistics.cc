@@ -120,22 +120,38 @@ namespace aspect
                             global_temperature_integral / this->get_volume());
       statistics.add_value ("Maximal temperature (K)",
                             global_max_temperature);
-      statistics.add_value ("Average nondimensional temperature (K)",
-                            global_temperature_integral / this->get_volume() /
-                            this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators()));
+      if ((this->get_fixed_temperature_boundary_indicators().size() > 0)
+          &&
+          (this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
+           !=
+           this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())))
+        statistics.add_value ("Average nondimensional temperature (K)",
+                              global_temperature_integral / this->get_volume() /
+                              (this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
+                               -
+                               this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())));
 
       // also make sure that the other columns filled by the this object
       // all show up with sufficient accuracy and in scientific notation
       {
         const char *columns[] = { "Minimal temperature (K)",
                                   "Average temperature (K)",
-                                  "Maximal temperature (K)",
-                                  "Average nondimensional temperature (K)"
+                                  "Maximal temperature (K)"
                                 };
         for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
           {
             statistics.set_precision (columns[i], 8);
             statistics.set_scientific (columns[i], true);
+          }
+
+        if ((this->get_fixed_temperature_boundary_indicators().size() > 0)
+            &&
+            (this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
+             !=
+             this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())))
+          {
+            statistics.set_precision ("Average nondimensional temperature (K)", 8);
+            statistics.set_scientific ("Average nondimensional temperature (K)", true);
           }
       }
 
