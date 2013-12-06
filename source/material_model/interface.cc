@@ -74,37 +74,6 @@ namespace aspect
     }
 
 
-
-
-    template <int dim>
-    double
-    Interface<dim>::thermal_diffusivity (const double temperature,
-                                         const double pressure,
-                                         const std::vector<double> &compositional_fields,
-                                         const Point<dim> &position) const
-    {
-      //TODO: surely this could be done in a more efficient way?
-      //      we could move this to helper_functions.compute_thermal_diffusivity()?
-
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, compositional_fields.size());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, compositional_fields.size());
-
-      in.position[0] = position;
-      in.temperature[0] = temperature;
-      in.pressure[0] = pressure;
-      in.composition[0] = compositional_fields;
-      in.strain_rate.resize(0);// we are not reading the viscosity
-
-      this->evaluate(in, out);
-
-      double k = out.thermal_conductivities[0];
-      double rho = out.densities[0];
-      double c_p = out.specific_heat[0];
-
-      return k/(rho*c_p);
-    }
-
-
     template <int dim>
     double
     Interface<dim>::viscosity_derivative (const double,

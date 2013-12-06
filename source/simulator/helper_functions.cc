@@ -265,6 +265,8 @@ namespace aspect
     FEValues<dim> fe_values (mapping, finite_element, quadrature_formula, update_values | (parameters.use_conduction_timestep ? update_quadrature_points : update_default));
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
     std::vector<double> pressure_values(n_q_points), temperature_values(n_q_points);
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
+    std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
     double new_time_step;
     bool convection_dominant;
@@ -296,18 +298,38 @@ namespace aspect
                                                                                 pressure_values);
               fe_values[introspection.extractors.temperature].get_function_values (solution,
                                                                                    temperature_values);
+              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                  fe_values[introspection.extractors.compositional_fields[c]].get_function_values (solution,
+                      composition_values[c]);
+
+              typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points, parameters.n_compositional_fields);
+              typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points, parameters.n_compositional_fields);
+
+              in.strain_rate.resize(0);// we are not reading the viscosity
+
+              for (unsigned int q=0; q<n_q_points; ++q)
+                {
+                  for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
+                    composition_values_at_q_point[k] = composition_values[k][q];
+
+                  in.position[q] = fe_values.quadrature_point(q);
+                  in.temperature[q] = temperature_values[q];
+                  in.pressure[q] = pressure_values[q];
+                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                    in.composition[q][c] = composition_values_at_q_point[c];
+                }
+
+              material_model->evaluate(in, out);
+
               // In the future we may want to evaluate thermal diffusivity at
               // each point in the mesh, but for now we just use the reference value
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
-                  std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
-                  double      thermal_diffusivity;
+                  double k = out.thermal_conductivities[q];
+                  double rho = out.densities[q];
+                  double c_p = out.specific_heat[q];
 
-                  // TODO: calculate composition field as well
-                  thermal_diffusivity = material_model->thermal_diffusivity(temperature_values[q],
-                                                                            pressure_values[q],
-                                                                            composition_values_at_q_point,
-                                                                            fe_values.quadrature_point(q));
+                  double thermal_diffusivity = k/(rho*c_p);
 
                   min_local_conduction_timestep = std::min(min_local_conduction_timestep,
                                                            parameters.CFL_number*pow(cell->minimum_vertex_distance(),2)
