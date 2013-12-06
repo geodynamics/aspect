@@ -1124,8 +1124,8 @@ namespace aspect
 
               const double temperature_residual = solve_advection(TemperatureOrComposition::temperature());
 
-              current_linearization_point.block(introspection.block_indices.pressure)
-                = solution.block(introspection.block_indices.pressure);
+              current_linearization_point.block(introspection.block_indices.temperature)
+                = solution.block(introspection.block_indices.temperature);
               rebuild_stokes_matrix = true;
               std::vector<double> composition_residual (parameters.n_compositional_fields,0);
 
