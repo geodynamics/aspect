@@ -21,6 +21,7 @@
 
 
 #include <aspect/postprocess/table_heat_flux_statistics.h>
+#include <aspect/material_model/table.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/simulator_access.h>
@@ -37,6 +38,12 @@ namespace aspect
     std::pair<std::string,std::string>
     TableHeatfluxStatistics<dim>::execute (TableHandler &statistics)
     {
+      Assert (dynamic_cast<const MaterialModel::Table<dim> *>(&this->get_material_model())
+              != 0,
+              ExcMessage ("This postprocessor can only be used when using "
+                          "the MaterialModel::Table implementation of the "
+                          "material model interface."));
+
       // create a quadrature formula based on the temperature element alone.
       // be defensive about determining that what we think is the temperature
       // element is it in fact
