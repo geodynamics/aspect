@@ -7,6 +7,29 @@ MACRO(SET_IF_EMPTY _variable _value)
   ENDIF()
 ENDMACRO()
 
+# A function that extracts from a file (presumably a .prm file)
+# the number of MPI processes this test is to be invoked as.
+# This is encoded in .prm files through lines of the form
+#    '# MPI: 4'
+# The result is returned in a variable _mpi_count in the
+# caller's scope.
+FUNCTION(get_mpi_count _filename)
+  FILE(STRINGS ${_filename} _input_lines
+       REGEX "MPI:")
+  IF("${_input_lines}" STREQUAL "")
+    SET(_mpi_count 1 PARENT_SCOPE)
+  ELSE()
+    # go over the (possibly multiple) lines with MPI markers and choose the last
+    FOREACH(_input_line ${_input_lines})
+     SET(_last_line ${_input_line})
+    ENDFOREACH()
+    STRING(REGEX REPLACE "^ *# *MPI: *([0-9]+) *$" "\\1"
+           _mpi_count ${_last_line})
+    SET(_mpi_count "${_mpi_count}" PARENT_SCOPE)
+  endif()
+ENDFUNCTION()
+
+
 # set a time limit of 10 minutes per test. this should be long
 # enough even for long-running tests, and short enough to not
 # get into trouble should we have an infinite loop.
@@ -53,21 +76,40 @@ FOREACH(_test ${_tests})
     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
     )
 
-  # then generate a rule that runs aspect and normalizes
-  # the output files. Before running aspect, delete prior content of the directory
-  # to make sure no dead files are left there (this is one way to trip up the
-  # 'terminate_user_request' test which terminates the program when a certain
-  # file appears)
-  ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-    COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
-    COMMAND aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
-            > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output 2>&1
-    COMMAND ${PERL_EXECUTABLE} -pi
-              ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
-              ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
-    DEPENDS aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm ${_testdepends}
-    )
+  # then generate a rule that runs aspect and normalizes the output
+  # files. Before running aspect, delete prior content of the directory to
+  # make sure no dead files are left there (this is one way to trip up the
+  # 'terminate_user_request' test of Aspect which terminates the program when
+  # a certain file appears)
+  #
+  # the actual run command is a bit complicated because we have to figure out
+  # whether we want the test to run in parallel using MPI or not
+  GET_MPI_COUNT(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
+  IF("${_mpi_count}" STREQUAL "1")
+    ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+      COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
+      COMMAND aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+              > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output 2>&1
+      COMMAND ${PERL_EXECUTABLE} -pi
+                ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
+                ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
+      DEPENDS aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm ${_testdepends}
+      )
+  ELSE()
+    MESSAGE(STATUS "    MPI status: ${_mpi_count} processes")
+    ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+      COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
+      COMMAND mpirun -np ${_mpi_count} ${CMAKE_CURRENT_BINARY_DIR}/../aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+              > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output 2>&1
+      COMMAND ${PERL_EXECUTABLE} -pi
+                ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
+                ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
+      DEPENDS aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm ${_testdepends}
+      )
+  ENDIF()
 
+
+  # The final target for this test
   ADD_CUSTOM_TARGET(${_test}.run
     DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
     )
