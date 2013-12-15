@@ -411,7 +411,7 @@ namespace aspect
     double min_local_field = std::numeric_limits<double>::max(),
            max_local_field = -std::numeric_limits<double>::max();
 
-    if (timestep_number != 0)
+    if (timestep_number > 1)
       {
         typename DoFHandler<dim>::active_cell_iterator
         cell = dof_handler.begin_active(),
