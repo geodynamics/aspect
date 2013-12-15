@@ -7,7 +7,6 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 4
 set Use years in output instead of seconds = false
-set Output directory                       = output-composition-active
 
 
 

@@ -27,7 +27,6 @@ set CFL number                             = 1.0
 
 set End time                               = 0
 
-set Output directory                       = output-sol_cx_4_normalized_pressure_large_static_pressure
 
 set Resume computation                     = false
 

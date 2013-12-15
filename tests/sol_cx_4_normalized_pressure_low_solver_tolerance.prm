@@ -14,7 +14,6 @@ set CFL number                             = 1.0
 
 set End time                               = 0
 
-set Output directory                       = output-sol_cx_4_normalized_pressure_low_solver_tolerance
 
 set Resume computation                     = false
 

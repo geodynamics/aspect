@@ -7,7 +7,6 @@
 set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 0
-set Output directory                       = output-adiabatic_initial_conditions_subadiabaticity
 set Start time                             = 0
 set End time                               = 0
 set Surface pressure                       = 0

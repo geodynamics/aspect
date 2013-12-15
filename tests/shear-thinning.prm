@@ -17,14 +17,12 @@
 set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 0
-set Output directory                       = output-shear-thinning
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme                = IMPES
 
-set Additional shared libraries = ./libshear-thinning.so
 
 
 subsection Boundary temperature model

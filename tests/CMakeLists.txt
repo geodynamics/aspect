@@ -29,25 +29,43 @@ FOREACH(_test ${_tests})
   IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.cc)
     ADD_LIBRARY(${_test} SHARED EXCLUDE_FROM_ALL ${_test}.cc)
     DEAL_II_SETUP_TARGET(${_test})
+    SET(_testlib 'set Additional shared libraries = ${CMAKE_CURRENT_BINARY_DIR}/lib${_test}.so')
     SET(_testdepends ${_test})
   ELSE()
     SET(_testdepends)
+    SET(_testlib)
   ENDIF()
 
-  # Create the output directory, then generate a rule that runs aspect and normalizes
+  # Create the output directory and a rule to generate the input file therein.
+  # This input file is the one found in the source dir, but it has the
+  # correct output directory so that we do not need to specify it by hand
+  # (a common mistake when copying a previous test) and do not need to
+  # specify any additional plugin shared libraries, should they exist
+  # for this test
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test})
+  ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+    COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
+               ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+    COMMAND echo 'set Output directory = output-${_test}'
+               >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+    COMMAND echo '${_testlib}'
+               >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
+    )
+
+  # then generate a rule that runs aspect and normalizes
   # the output files. Before running aspect, delete prior content of the directory
   # to make sure no dead files are left there (this is one way to trip up the
   # 'terminate_user_request' test which terminates the program when a certain
   # file appears)
-  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test})
   ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
     COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
-    COMMAND aspect ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
+    COMMAND aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
             > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output 2>&1
     COMMAND ${PERL_EXECUTABLE} -pi
               ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
               ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
-    DEPENDS aspect ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm ${_testdepends}
+    DEPENDS aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm ${_testdepends}
     )
 
   ADD_CUSTOM_TARGET(${_test}.run

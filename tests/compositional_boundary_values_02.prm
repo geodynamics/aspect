@@ -6,7 +6,6 @@
 set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 1.0
-set Output directory                       = output-compositional_boundary_values_02
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0

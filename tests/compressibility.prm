@@ -34,7 +34,6 @@
 set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 0
-set Output directory                       = output-compressibility
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
@@ -44,7 +43,6 @@ set Nonlinear solver scheme                = Stokes only
 set Max nonlinear iterations               = 1
 
 
-set Additional shared libraries = ./libcompressibility.so
 
 
 subsection Boundary temperature model

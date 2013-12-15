@@ -45,7 +45,6 @@ set End time                               = 2e7
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
-set Output directory                       = output-diffusion-velocity
 
 # A flag indicating whether the computation should be resumed from a
 # previously saved state (if true) or start from scratch (if false).

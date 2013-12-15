@@ -8,7 +8,6 @@ set CFL number                             = 1.0
 
 set End time                               = 0
 
-set Output directory                       = output-sol_cx_2_conservative
 
 set Resume computation                     = false
 

@@ -15,7 +15,6 @@ set Use conduction timestep		   = true
 
 set End time                               = 1
 
-set Output directory                       = output-no_flow
 
 set Resume computation                     = false
 

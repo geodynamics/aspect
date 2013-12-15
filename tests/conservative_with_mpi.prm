@@ -13,7 +13,6 @@ set CFL number                             = 1.0
 
 set End time                               = 0
 
-set Output directory                       = output-conservative_with_mpi
 
 set Resume computation                     = false
 

@@ -6,7 +6,6 @@ set CFL number                             = 1.0
 
 set End time                               = 0
 
-set Output directory                       = output-inclusion_adaptive
 
 set Resume computation                     = false
 

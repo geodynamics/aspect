@@ -2,7 +2,6 @@
 # plugin.cc is indeed run 
 
 
-set Additional shared libraries = ./libplugin.so
 
 
 
@@ -10,7 +9,6 @@ set Dimension = 2
 
 set CFL number                             = 1.0
 set End time                               = 0
-set Output directory                       = output-plugin
 set Resume computation                     = false
 
 set Start time                             = 0

@@ -30,7 +30,6 @@ set Dimension = 2
 
 set CFL number                             = 1.0
 set End time                               = .1
-set Output directory                       = output-no_adiabatic_heating_03
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
@@ -39,7 +38,6 @@ set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme                = iterated Stokes
 set Max nonlinear iterations               = 5
 
-set Additional shared libraries = ./libno_adiabatic_heating_03.so
 
 
 subsection Boundary temperature model

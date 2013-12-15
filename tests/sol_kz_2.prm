@@ -8,7 +8,6 @@ set CFL number                             = 1.0
 
 set End time                               = 0
 
-set Output directory                       = output-sol_kz_2
 
 set Resume computation                     = false
 

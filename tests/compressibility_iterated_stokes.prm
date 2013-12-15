@@ -23,7 +23,6 @@
 set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 0
-set Output directory                       = output-compressibility_iterated_stokes
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
@@ -32,7 +31,6 @@ set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme                = Stokes only
 set Max nonlinear iterations               = 5
 
-set Additional shared libraries = ./libcompressibility_iterated_stokes.so
 
 
 subsection Boundary temperature model
