@@ -65,6 +65,11 @@ FOREACH(_test ${_tests})
   # (a common mistake when copying a previous test) and do not need to
   # specify any additional plugin shared libraries, should they exist
   # for this test
+  #
+  # We also replace all occurrences of @SOURCE_DIR@ by
+  # ${CMAKE_CURRENT_SOURCE_DIR} so that input files can reference
+  # mesh, input files, etc, in the tests/ directory without having
+  # to know where exactly they are run.
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test})
   ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
     COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
@@ -73,6 +78,9 @@ FOREACH(_test ${_tests})
                >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
     COMMAND echo '${_testlib}'
                >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+    COMMAND ${PERL_EXECUTABLE} -pi
+               -e 's!\\@SOURCE_DIR\\@!${CMAKE_CURRENT_SOURCE_DIR}!g;'
+               ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
     )
 
