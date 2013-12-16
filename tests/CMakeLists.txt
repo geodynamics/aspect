@@ -126,11 +126,23 @@ FOREACH(_test ${_tests})
   FOREACH(_output ${_outputs})
     GET_FILENAME_COMPONENT(_output ${_output} NAME)
 
-    # create the output.notime target
+    # create the output.notime targets for each of the output files,
+    # and also create a similar file for all of the input files (this
+    # avoids the need to strip timing information from files we may
+    # copy from tests we have just run to the directory where we save
+    # these files
+    ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
+      COMMAND
+	cat ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
+        | egrep -v '^\\|'
+        > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
+      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
+    )
+
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
       COMMAND
 	cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}
-        | egrep -v '^\\|'
+        | egrep -v '^\\|.*\\|'
         > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
     )
@@ -138,7 +150,7 @@ FOREACH(_test ${_tests})
     # create the target that compares the .notime with the saved file
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
       COMMAND
-	if (diff ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
+	if (diff ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
               ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
             > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff) \; then
           : \;
@@ -151,7 +163,7 @@ FOREACH(_test ${_tests})
           cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed \;
 	  false \;
         fi
-      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
               ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
     )
 
