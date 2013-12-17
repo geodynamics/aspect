@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -429,7 +429,7 @@ namespace aspect
 
     try
       {
-        // if this cheaper solver is not desired, the simply short-cut
+        // if this cheaper solver is not desired, then simply short-cut
         // the attempt at solving with the cheaper preconditioner
         if (parameters.n_cheap_stokes_solver_steps == 0)
           throw SolverControl::NoConvergence(0,0);
