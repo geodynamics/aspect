@@ -445,7 +445,7 @@ namespace aspect
         std::strcpy(tmp_filename_x, tmp_filename.c_str());
         const int tmp_file_desc = mkstemp(tmp_filename_x);
         tmp_filename = tmp_filename_x;
-        delete tmp_filename_x;
+        delete []tmp_filename_x;
 
         // If we failed to create the temp file, just write directly to the target file
         if (tmp_file_desc == -1)
