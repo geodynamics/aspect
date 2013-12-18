@@ -8,9 +8,17 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
-  <li>The 'temperature statistics' postprocessor put a column
+  <li>Fixed: Using the 'density', 'nonadiabatic temperature', 'thermal
+  energy' or 'viscosity' mesh refinement criterion for parallel computations
+  led to meshes that made no sense. This was due to a bug in deal.II, not
+  Aspect, and has been fixed starting with deal.II 8.1. Using this version
+  of deal.II now also fixes the problem in Aspect.
+  <br>
+  (Wolfgang Bangerth 2013/12/18)
+
+  <li>Fixed: The 'temperature statistics' postprocessor put a column
   'Average nondimensional temperature (K)' into the statistics file that
-  was computes as the average temperature divided by the maximal temperature
+  was computed as the average temperature divided by the maximal temperature
   at the boundary. This made no sense if the maximal temperature at the
   boundary was zero or if the minimal temperature was nonzero. In fact,
   it also made no sense if the temperature at the boundary was not prescribed.
