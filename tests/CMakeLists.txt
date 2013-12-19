@@ -153,6 +153,7 @@ FOREACH(_test ${_tests})
         | egrep -v '^\\|.*\\|'
         > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+              ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
     )
 
     # create the target that compares the .notime with the saved file
