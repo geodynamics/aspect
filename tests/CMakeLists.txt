@@ -71,16 +71,16 @@ FOREACH(_test ${_tests})
   # mesh, input files, etc, in the tests/ directory without having
   # to know where exactly they are run.
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test})
-  ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+  ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
     COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
-               ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+               ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
     COMMAND echo 'set Output directory = output-${_test}'
-               >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+               >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
     COMMAND echo '${_testlib}'
-               >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+               >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
     COMMAND ${PERL_EXECUTABLE} -pi
                -e 's!\\@SOURCE_DIR\\@!${CMAKE_CURRENT_SOURCE_DIR}!g;'
-               ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+               ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
     )
 
@@ -96,23 +96,23 @@ FOREACH(_test ${_tests})
   IF("${_mpi_count}" STREQUAL "1")
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
       COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
-      COMMAND aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+      COMMAND aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
               > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output 2>&1
       COMMAND ${PERL_EXECUTABLE} -pi
                 ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
                 ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
-      DEPENDS aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm ${_testdepends}
+      DEPENDS aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
       )
   ELSE()
     MESSAGE(STATUS "    MPI status: ${_mpi_count} processes")
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
       COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
-      COMMAND mpirun -np ${_mpi_count} ${CMAKE_CURRENT_BINARY_DIR}/../aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm
+      COMMAND mpirun -np ${_mpi_count} ${CMAKE_CURRENT_BINARY_DIR}/../aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
               > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output 2>&1
       COMMAND ${PERL_EXECUTABLE} -pi
                 ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
                 ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
-      DEPENDS aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.prm ${_testdepends}
+      DEPENDS aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
       )
   ENDIF()
 
