@@ -215,6 +215,13 @@ namespace aspect
          * i.e., of the system_relevant_set index set.
          */
         std::vector<IndexSet> system_relevant_partitioning;
+
+        /**
+         * A collection of index sets for each vector block of the Stokes
+         * system (velocity and pressure). This variable contains the first
+         * two elements of system_partitioning.
+         */
+        std::vector<IndexSet> stokes_partitioning;
       };
       /**
        * A variable that contains index sets describing which of the

@@ -652,7 +652,7 @@ namespace aspect
 #ifdef USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
         dof_handler.locally_owned_dofs_per_processor(),
-        mpi_communicator, introspection.index_sets.relevant_set);
+        mpi_communicator, introspection.index_sets.system_relevant_set);
 
     sp.compress();
 
@@ -897,6 +897,9 @@ namespace aspect
       introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(0,n_u));
       introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
       introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
+      introspection.index_sets.stokes_partitioning.clear ();
+      introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(0,n_u));
+      introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
 
       DoFTools::extract_locally_relevant_dofs (dof_handler,
                                                introspection.index_sets.system_relevant_set);

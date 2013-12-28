@@ -382,16 +382,10 @@ namespace aspect
     const internal::StokesBlock stokes_block(system_matrix);
 
     // extract Stokes parts of solution vector, without any ghost elements
-    LinearAlgebra::BlockVector distributed_stokes_solution (2);
-    distributed_stokes_solution.block(0).reinit (introspection.index_sets.system_partitioning[0], mpi_communicator);
-    distributed_stokes_solution.block(1).reinit (introspection.index_sets.system_partitioning[1], mpi_communicator);
-    distributed_stokes_solution.collect_sizes();
+    LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
     // create vector with distribution of system_rhs.
-    LinearAlgebra::BlockVector remap (2);
-    remap.block(0).reinit (introspection.index_sets.system_partitioning[0], mpi_communicator);
-    remap.block(1).reinit (introspection.index_sets.system_partitioning[1], mpi_communicator);
-    remap.collect_sizes();
+    LinearAlgebra::BlockVector remap (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
     // copy current_linearization_point into it, because its distribution
     // is different.
@@ -419,10 +413,7 @@ namespace aspect
     distributed_stokes_solution = remap;
 
     // extract Stokes parts of rhs vector
-    LinearAlgebra::BlockVector distributed_stokes_rhs(2);
-    distributed_stokes_rhs.block(0).reinit (introspection.index_sets.system_partitioning[0], mpi_communicator);
-    distributed_stokes_rhs.block(1).reinit (introspection.index_sets.system_partitioning[1], mpi_communicator);
-    distributed_stokes_rhs.collect_sizes();
+    LinearAlgebra::BlockVector distributed_stokes_rhs(introspection.index_sets.stokes_partitioning);
 
     distributed_stokes_rhs.block(0) = system_rhs.block(0);
     distributed_stokes_rhs.block(1) = system_rhs.block(1);

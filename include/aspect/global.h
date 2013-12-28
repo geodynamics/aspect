@@ -117,9 +117,10 @@ namespace aspect
 
     /**
      * Typedef for the Incomplete LU decomposition preconditioner used
-     * for other blocks of the system matrix.
+     * for other blocks of the system matrix. Note that PETSc does not
+     * support a communicating ILU, so we use Jacobi here.
      */
-    typedef PETScWrappers::PreconditionILU PreconditionILU;
+    typedef PETScWrappers::PreconditionJacobi PreconditionILU;
 
     typedef LinearAlgebraPETSc::MPI::CompressedBlockSparsityPattern CompressedBlockSparsityPattern;
 
