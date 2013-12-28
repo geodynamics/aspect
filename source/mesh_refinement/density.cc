@@ -111,6 +111,8 @@ namespace aspect
               }
           }
 
+      vec_distributed.compress(VectorOperation::insert);
+
       // now create a vector with the requisite ghost elements
       // and use it for estimating the gradients
       LinearAlgebra::BlockVector vec (this->introspection().index_sets.system_relevant_partitioning,
