@@ -93,19 +93,17 @@ namespace aspect
                                                   -std::numeric_limits<double>::max());
 
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-        for (unsigned int i=0; i<this->get_solution().block(3+c).local_size(); ++i)
-          {
-#ifdef USE_PETSC
-            AssertThrow(false, ExcNotImplemented());
-#else
-            local_min_compositions[c]
-              = std::min<double> (local_min_compositions[c],
-                                  this->get_solution().block(3+c).trilinos_vector()[0][i]);
-            local_max_compositions[c]
-              = std::max<double> (local_max_compositions[c],
-                                  this->get_solution().block(3+c).trilinos_vector()[0][i]);
-#endif
-          }
+        {
+          unsigned int idx = this->get_solution().block(3+c).local_range().first;
+          for (; idx<this->get_solution().block(3+c).local_range().second; ++idx)
+            {
+              const double val =  this->get_solution().block(3+c)(idx);
+
+              local_min_compositions[c] = std::min<double> (local_min_compositions[c], val);
+              local_max_compositions[c] = std::max<double> (local_max_compositions[c], val);
+            }
+
+        }
 
       // now do the reductions over all processors. we can use Utilities::MPI::max
       // for the maximal values. unfortunately, there is currently no matching

@@ -844,10 +844,10 @@ namespace aspect
     setup_system_preconditioner (introspection.index_sets.system_partitioning);
 
     system_rhs.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
-    solution.reinit(introspection.index_sets.system_relevant_partitioning, mpi_communicator);
-    old_solution.reinit(introspection.index_sets.system_relevant_partitioning, mpi_communicator);
-    old_old_solution.reinit(introspection.index_sets.system_relevant_partitioning, mpi_communicator);
-    current_linearization_point.reinit (introspection.index_sets.system_relevant_partitioning, mpi_communicator);
+    solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
+    old_solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
+    old_old_solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
+    current_linearization_point.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
 
     if (do_pressure_rhs_compatibility_modification)
       pressure_shape_function_integrals.reinit (introspection.index_sets.system_partitioning, mpi_communicator);

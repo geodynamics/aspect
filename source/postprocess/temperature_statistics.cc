@@ -85,18 +85,13 @@ namespace aspect
       // picture of their true values
       double local_min_temperature = std::numeric_limits<double>::max();
       double local_max_temperature = -std::numeric_limits<double>::max();
-      for (unsigned int i=0; i<this->get_solution().block(2).local_size(); ++i)
+      unsigned int idx = this->get_solution().block(2).local_range().first;
+      for (; idx<this->get_solution().block(2).local_range().second; ++idx)
         {
-#ifdef USE_PETSC
-          AssertThrow(false, ExcNotImplemented());
-#else
-          local_min_temperature
-            = std::min<double> (local_min_temperature,
-                                this->get_solution().block(2).trilinos_vector()[0][i]);
-          local_max_temperature
-            = std::max<double> (local_max_temperature,
-                                this->get_solution().block(2).trilinos_vector()[0][i]);
-#endif
+          const double val =  this->get_solution().block(2)(idx);
+
+          local_min_temperature = std::min<double> (local_min_temperature, val);
+          local_max_temperature = std::max<double> (local_max_temperature, val);
         }
 
       const double global_temperature_integral
