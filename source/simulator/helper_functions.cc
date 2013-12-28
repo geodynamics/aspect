@@ -129,12 +129,12 @@ namespace aspect
           << "* Matrix " << system_matrix.memory_consumption()/mb << std::endl
           << "* 5 Vectors " << 5*solution.memory_consumption()/mb << std::endl
           << "* preconditioner " << (system_preconditioner_matrix.memory_consumption()
-                                     + Amg_preconditioner->memory_consumption()
+//                                     + Amg_preconditioner->memory_consumption()
                                      /*+Mp_preconditioner->memory_consumption()
                                                                       +T_preconditioner->memory_consumption()*/)/mb
           << std::endl
           << "  - matrix " << system_preconditioner_matrix.memory_consumption()/mb << std::endl
-          << "  - prec vel " << Amg_preconditioner->memory_consumption()/mb << std::endl
+//          << "  - prec vel " << Amg_preconditioner->memory_consumption()/mb << std::endl
           << "  - prec mass " << 0/*Mp_preconditioner->memory_consumption()/mb*/ << std::endl
           << "  - prec T " << 0/*T_preconditioner->memory_consumption()/mb*/ << std::endl
           << std::endl;

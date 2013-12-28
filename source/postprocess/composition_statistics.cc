@@ -95,12 +95,16 @@ namespace aspect
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         for (unsigned int i=0; i<this->get_solution().block(3+c).local_size(); ++i)
           {
+#ifdef USE_PETSC
+            AssertThrow(false, ExcNotImplemented());
+#else
             local_min_compositions[c]
               = std::min<double> (local_min_compositions[c],
                                   this->get_solution().block(3+c).trilinos_vector()[0][i]);
             local_max_compositions[c]
               = std::max<double> (local_max_compositions[c],
                                   this->get_solution().block(3+c).trilinos_vector()[0][i]);
+#endif
           }
 
       // now do the reductions over all processors. we can use Utilities::MPI::max

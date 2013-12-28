@@ -343,13 +343,13 @@ namespace aspect
             const DoFHandler<dim>                            *dh = world->get_dof_handler();
             const Mapping<dim>                               *mapping = world->get_mapping();
             const parallel::distributed::Triangulation<dim>  *tria = world->get_triangulation();
-            const TrilinosWrappers::MPI::BlockVector         *solution = world->get_solution();
+            const LinearAlgebra::BlockVector         *solution = world->get_solution();
             Point<dim>                                       loc, vel, k4;
             double                                           id_num;
             LevelInd                                         cur_level_ind;
             IntegrationScheme                                cur_scheme;
             typename DoFHandler<dim>::active_cell_iterator   found_cell;
-            Functions::FEFieldFunction<dim, DoFHandler<dim>, TrilinosWrappers::MPI::BlockVector> fe_value(*dh, *solution, *mapping);
+            Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector> fe_value(*dh, *solution, *mapping);
 
             // If this is the first step, go through all the cells and determine
             // which integration scheme the particles in each cell should use

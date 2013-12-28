@@ -836,7 +836,7 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::
-  compute_material_model_input_values (const TrilinosWrappers::MPI::BlockVector                    &input_solution,
+  compute_material_model_input_values (const LinearAlgebra::BlockVector                    &input_solution,
                                        const FEValues<dim>                                         &input_finite_element_values,
                                        const bool                                                   compute_strainrate,
                                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const
@@ -1008,11 +1008,15 @@ namespace aspect
     Amg_preconditioner.reset (new LinearAlgebra::PreconditionAMG());
 
     LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
+#ifdef USE_PETSC
+    Amg_data.symmetric_operator = false;
+#else
     Amg_data.constant_modes = constant_modes;
     Amg_data.elliptic = true;
     Amg_data.higher_order_elements = true;
     Amg_data.smoother_sweeps = 2;
     Amg_data.aggregation_threshold = 0.02;
+#endif
 
     Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1));
     Amg_preconditioner->initialize (system_preconditioner_matrix.block(0,0),
@@ -1220,7 +1224,7 @@ namespace aspect
         {
           computing_timer.enter_section ("   Build temperature preconditioner");
 
-          preconditioner.reset (new TrilinosWrappers::PreconditionILU());
+          preconditioner.reset (new LinearAlgebra::PreconditionILU());
           preconditioner->initialize (system_matrix.block(2,2));
 
           computing_timer.exit_section();
@@ -1234,7 +1238,7 @@ namespace aspect
 
           const unsigned int block_number
             = 3+temperature_or_composition.compositional_variable;
-          preconditioner.reset (new TrilinosWrappers::PreconditionILU());
+          preconditioner.reset (new LinearAlgebra::PreconditionILU());
           preconditioner->initialize (system_matrix.block(block_number,
                                                           block_number));
 

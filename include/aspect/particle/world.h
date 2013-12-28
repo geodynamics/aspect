@@ -56,7 +56,7 @@ namespace aspect
         const DoFHandler<dim>           *dof_handler;
 
         /// DoFHandler for the simulation this particle world exists in
-        const TrilinosWrappers::MPI::BlockVector           *solution;
+        const LinearAlgebra::BlockVector           *solution;
 
         /// Integration scheme for moving particles in this world
         Integrator::Interface<dim, T>   *integrator;
@@ -249,7 +249,7 @@ namespace aspect
          *
          * @return The BlockVector solution for this world.
          */
-        const TrilinosWrappers::MPI::BlockVector *get_solution() const
+        const LinearAlgebra::BlockVector *get_solution() const
         {
           return solution;
         };
@@ -257,9 +257,9 @@ namespace aspect
         /**
          * Set the deal.II BlockVector solution associated with this particle world.
          *
-         * @param [in] new_solution The new TrilinosWrappers::MPI::BlockVector solution for this world.
+         * @param [in] new_solution The new LinearAlgebra::BlockVector solution for this world.
          */
-        void set_solution(const TrilinosWrappers::MPI::BlockVector *new_solution)
+        void set_solution(const LinearAlgebra::BlockVector *new_solution)
         {
           solution = new_solution;
         };
@@ -428,7 +428,7 @@ namespace aspect
          * @param [in] timestep Length of timestep to integrate particle movement
          * @param [in] solution Current Aspect solution vector
          */
-        void advance_timestep(const double timestep, const TrilinosWrappers::MPI::BlockVector &solution)
+        void advance_timestep(const double timestep, const LinearAlgebra::BlockVector &solution)
         {
           bool        continue_integrator = true;
 
@@ -636,7 +636,7 @@ namespace aspect
          *
          * @param [in] solution The current solution vector for this simulation.
          */
-        void get_particle_velocities(const TrilinosWrappers::MPI::BlockVector &solution)
+        void get_particle_velocities(const LinearAlgebra::BlockVector &solution)
         {
           Vector<double>                single_res(dim+2);
           std::vector<Vector<double> >  result;
@@ -648,7 +648,7 @@ namespace aspect
           std::vector<Point<dim> >      particle_points;
 
           // Prepare the field function
-          Functions::FEFieldFunction<dim, DoFHandler<dim>, TrilinosWrappers::MPI::BlockVector> fe_value(*dof_handler, solution, *mapping);
+          Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector> fe_value(*dof_handler, solution, *mapping);
 
           // Get the velocity for each cell at a time so we can take advantage of knowing the active cell
           for (it=particles.begin(); it!=particles.end();)

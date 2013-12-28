@@ -23,13 +23,23 @@
 #ifndef __aspect__global_h
 #define __aspect__global_h
 
+//#define USE_PETSC
 
+#ifdef USE_PETSC
+#include <deal.II/lac/petsc_block_vector.h>
+#include <deal.II/lac/petsc_block_sparse_matrix.h>
+#include <deal.II/lac/petsc_precondition.h>
+#else
 #include <deal.II/lac/trilinos_block_vector.h>
 #include <deal.II/lac/trilinos_block_sparse_matrix.h>
 #include <deal.II/lac/trilinos_precondition.h>
+#endif
+
+#include <deal.II/lac/generic_linear_algebra.h>
 
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
+
 
 
 namespace aspect
@@ -70,7 +80,50 @@ namespace aspect
   {
     using namespace dealii;
 
+#ifdef USE_PETSC
+    /**
+     * Typedef for the vector type used.
+     */
+    typedef PETScWrappers::MPI::Vector Vector;
 
+    /**
+     * Typedef for the type used to describe vectors that
+     * consist of multiple blocks.
+     */
+    typedef PETScWrappers::MPI::BlockVector BlockVector;
+
+    /**
+     * Typedef for the sparse matrix type used.
+     */
+    typedef PETScWrappers::MPI::SparseMatrix SparseMatrix;
+
+    /**
+     * Typedef for the type used to describe sparse matrices that
+     * consist of multiple blocks.
+     */
+    typedef PETScWrappers::MPI::BlockSparseMatrix BlockSparseMatrix;
+
+    /**
+     * Typedef for the AMG preconditioner type used for the
+     * top left block of the Stokes matrix.
+     */
+    typedef PETScWrappers::PreconditionBoomerAMG PreconditionAMG;
+
+    /**
+     * Typedef for the Incomplete Cholesky preconditioner used
+     * for other blocks of the system matrix.
+     */
+    typedef PETScWrappers::PreconditionICC PreconditionIC;
+
+    /**
+     * Typedef for the Incomplete LU decomposition preconditioner used
+     * for other blocks of the system matrix.
+     */
+    typedef PETScWrappers::PreconditionILU PreconditionILU;
+
+    typedef LinearAlgebraPETSc::MPI::CompressedBlockSparsityPattern CompressedBlockSparsityPattern;
+
+#else
     /**
      * Typedef for the vector type used.
      */
@@ -110,6 +163,7 @@ namespace aspect
      * for other blocks of the system matrix.
      */
     typedef TrilinosWrappers::PreconditionILU PreconditionILU;
+#endif
   }
 }
 

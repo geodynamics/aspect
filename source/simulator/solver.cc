@@ -25,7 +25,13 @@
 
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/constraint_matrix.h>
+
+#ifdef USE_PETSC
+#include <deal.II/lac/solver_cg.h>
+#else
 #include <deal.II/lac/trilinos_solver.h>
+#endif
+
 #include <deal.II/lac/pointer_matrix.h>
 
 
@@ -72,9 +78,9 @@ namespace aspect
          * two blocks so that we can put it a global system_rhs vector. The
          * other vectors need to have 2 blocks only.
          */
-        double residual (TrilinosWrappers::MPI::BlockVector       &dst,
-                         const TrilinosWrappers::MPI::BlockVector &x,
-                         const TrilinosWrappers::MPI::BlockVector &b) const;
+        double residual (LinearAlgebra::BlockVector       &dst,
+                         const LinearAlgebra::BlockVector &x,
+                         const LinearAlgebra::BlockVector &b) const;
 
 
       private:
@@ -144,9 +150,9 @@ namespace aspect
 
 
 
-    double StokesBlock::residual (TrilinosWrappers::MPI::BlockVector       &dst,
-                                  const TrilinosWrappers::MPI::BlockVector &x,
-                                  const TrilinosWrappers::MPI::BlockVector &b) const
+    double StokesBlock::residual (LinearAlgebra::BlockVector       &dst,
+                                  const LinearAlgebra::BlockVector &x,
+                                  const LinearAlgebra::BlockVector &b) const
     {
       Assert (x.n_blocks() == 2, ExcInternalError());
       Assert (dst.n_blocks() == 2, ExcInternalError());
@@ -240,8 +246,11 @@ namespace aspect
       {
         SolverControl solver_control(5000, 1e-6 * src.block(1).l2_norm());
 
+#ifdef USE_PETSC
+        SolverCG<LinearAlgebra::Vector> solver(solver_control);
+#else
         TrilinosWrappers::SolverCG solver(solver_control);
-
+#endif
         // Trilinos reports a breakdown
         // in case src=dst=0, even
         // though it should return
@@ -265,7 +274,11 @@ namespace aspect
       if (do_solve_A == true)
         {
           SolverControl solver_control(5000, utmp.l2_norm()*1e-2);
+#ifdef USE_PETSC
+          SolverCG<LinearAlgebra::Vector> solver(solver_control);
+#else
           TrilinosWrappers::SolverCG solver(solver_control);
+#endif
           solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
                        a_preconditioner);
         }

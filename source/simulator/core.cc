@@ -28,6 +28,7 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/lac/constraint_matrix.h>
 #include <deal.II/lac/block_sparsity_pattern.h>
+#include <deal.II/lac/sparsity_tools.h>
 #include <deal.II/grid/grid_tools.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
@@ -555,9 +556,6 @@ namespace aspect
   {
     system_matrix.clear ();
 
-    TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
-                                               mpi_communicator);
-
     Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                           introspection.n_components);
 
@@ -587,14 +585,33 @@ namespace aspect
           = DoFTools::always;
     }
 
+#ifdef USE_PETSC
+    LinearAlgebra::CompressedBlockSparsityPattern sp(introspection.index_sets.system_relevant_partitioning);
+
+#else
+    TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
+                                               mpi_communicator);
+#endif
+
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
                                      constraints, false,
                                      Utilities::MPI::
                                      this_mpi_process(mpi_communicator));
+
+#ifdef USE_PETSC
+    SparsityTools::distribute_sparsity_pattern(sp,
+        dof_handler.locally_owned_dofs_per_processor(),
+        mpi_communicator, introspection.index_sets.system_relevant_set);
+
+    sp.compress();
+
+    system_matrix.reinit (system_partitioning, system_partitioning, sp, mpi_communicator);
+#else
     sp.compress();
 
     system_matrix.reinit (sp);
+#endif
   }
 
 
@@ -610,9 +627,6 @@ namespace aspect
 
     system_preconditioner_matrix.clear ();
 
-    TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
-                                               mpi_communicator);
-
     Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                           introspection.n_components);
     for (unsigned int c=0; c<introspection.n_components; ++c)
@@ -622,14 +636,32 @@ namespace aspect
         else
           coupling[c][d] = DoFTools::none;
 
+
+#ifdef USE_PETSC
+    LinearAlgebra::CompressedBlockSparsityPattern sp(introspection.index_sets.system_relevant_partitioning);
+
+#else
+    TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
+                                               mpi_communicator);
+#endif
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
                                      constraints, false,
                                      Utilities::MPI::
                                      this_mpi_process(mpi_communicator));
+#ifdef USE_PETSC
+    SparsityTools::distribute_sparsity_pattern(sp,
+        dof_handler.locally_owned_dofs_per_processor(),
+        mpi_communicator, introspection.index_sets.relevant_set);
+
+    sp.compress();
+
+    system_preconditioner_matrix.reinit (system_partitioning, system_partitioning, sp, mpi_communicator);
+#else
     sp.compress();
 
     system_preconditioner_matrix.reinit (sp);
+#endif
   }
 
 
