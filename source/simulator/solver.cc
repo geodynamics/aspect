@@ -476,13 +476,13 @@ namespace aspect
     // other constraints
     current_constraints.distribute (distributed_stokes_solution);
 
+    // now rescale the pressure back to real physical units
+    distributed_stokes_solution.block(1) *= pressure_scaling;
+
     // then copy back the solution from the temporary (non-ghosted) vector
     // into the ghosted one with all solution components
     solution.block(0) = distributed_stokes_solution.block(0);
     solution.block(1) = distributed_stokes_solution.block(1);
-
-    // now rescale the pressure back to real physical units
-    solution.block(1) *= pressure_scaling;
 
     normalize_pressure(solution);
 
