@@ -210,13 +210,13 @@ The manual's proper reference is this:
 @Manual{aspectmanual,
         title = 	 {\textsc{ASPECT}: Advanced Solver for Problems in Earth's
           ConvecTion},
-        author = 	 {W. Bangerth and T. Heister},
+        author = 	 {W. Bangerth and T. Heister and others},
         organization = {Texas A\&M University/Computational
                            Infrastructure in Geodynamics},
         year = 	 2013
       }
 \end{lstlisting}
-      
+
 
 \subsection{Acknowledgments}
 
@@ -1206,7 +1206,7 @@ cmake -DDEAL_II_WITH_MPI=ON \
     this would be adding the line {\tt{export DEAL\_II\_DIR=/path/to/deal-installed/}} to
     the file {\tt{\~{}/.bashrc}}.}
 {\tt{DEAL\_II\_DIR}} to the directory where you \textit{installed} \dealii.
-  
+
 \end{enumerate}
 
 
@@ -1273,7 +1273,7 @@ or, if you want to run the program in parallel, using something like
 to run with 32 processors. In either case, the argument denotes the (path and)
 name of a file that contains input parameters. When you download \aspect{},
 there are a number of sample input file in the \texttt{cookbooks} directory,
-corresponding to the examples discussed in Section~\ref{sec:cookbooks}. 
+corresponding to the examples discussed in Section~\ref{sec:cookbooks}.
 A full description of all
 parameters one can specify in these files is given in
 Section~\ref{sec:parameters}.
@@ -1449,9 +1449,9 @@ The purpose of these files is as follows:
   The final two files of this kind, \texttt{solution.pvd} and
   \texttt{solution.visit}, are files that
   describes to Paraview and Visit, respectively, which
-  \texttt{solution-xxxx.pvtu} and \texttt{solution-xxxx.yyyy.vtu} jointly form 
+  \texttt{solution-xxxx.pvtu} and \texttt{solution-xxxx.yyyy.vtu} jointly form
   a complete simulation. In the former case, the file lists the \texttt{.pvtu}
-  files of all 
+  files of all
   timesteps together with the simulation time to which they correspond. In the
   latter case, it actually lists all \texttt{.vtu} that belong to one
   simulation, grouped by the timestep they correspond to.
@@ -2125,7 +2125,7 @@ $k$ if the approximation is ``close enough'' to the exact solution. The solvers
 we use this determine this by testing after every iteration whether the
 \textit{residual}, $r^{(k)}=A(x-x^{(k)})=b-Ax^{(k)}$, satisfies
 $\|r^{(k)}\|\le\varepsilon\|r^{(0)}\|$ where $\varepsilon$ is called the
-(relative) \textit{tolerance}. 
+(relative) \textit{tolerance}.
 
 Obviously, the smaller we choose $\varepsilon$, the more accurate the
 approximation $x^{(k)}$ will be. On the other hand, it will also take more
@@ -2207,7 +2207,7 @@ constant because only the pressure gradient appears in the equations, not the
 actual value of it. However, unlike this ``mathematical'' pressure, we have a
 very specific notion of the ``physical'' pressure: namely a well-defined
 quantity that at the surface of Earth equals the air pressure, which compared to
-the hydrostatic pressure inside Earth is essentially zero. 
+the hydrostatic pressure inside Earth is essentially zero.
 
 As a consequence, the default in \aspect{} is to normalize the computed
 ``mathematical'' pressure in such a way that either the mean pressure at the
@@ -4896,7 +4896,7 @@ do:
   of the class you want to implement. This class must be derived from one of the
   \texttt{Interface} classes we will discuss below. The file also needs to
   contain the implementation of all member functions of your class.
-  
+
   As discussed above, it is possible -- but not necessary -- to split this file
   into two: a header file, say \texttt{my\_plugin.h}, and the
   \texttt{my\_plugin.cc} file. We do this for all the existing plugins in
@@ -4916,7 +4916,7 @@ do:
   \texttt{ASPECT\_REGISTER\_*} macros that will be discussed in the next
   subsections; take a look at how they are used in the existing plugins in the
   \aspect{} source files.
-  
+
   \item You need to compile the file. There are two ways by which this can be
   achieved:
   \begin{itemize}
@@ -4928,7 +4928,7 @@ do:
     not only compiling this one file, but also link \aspect{}. Furthermore, when
     you upgrade from one version of \aspect{} to another, you need to remember
     to copy the \texttt{my\_plugin.cc} file.
-    
+
     \item Put the  \texttt{my\_plugin.cc} file into a directory of your choice
     and compile it into a shared library yourself. This may be as easy as
     calling
@@ -4951,7 +4951,7 @@ do:
     approach.
   \end{itemize}
 \end{itemize}
- 
+
 \note{If you choose to compile your plugins into a shared library yourself, you
   will need to recompile them every time you upgrade your \aspect{} installation
   since we do not guarantee that the \aspect{} application binary interface
@@ -5010,7 +5010,7 @@ Specifically, your new class needs to implement the following interface:
 
         virtual double reference_thermal_expansion_coefficient () const = 0;
 
-        
+
         // Auxiliary material properties used for postprocessing
         virtual double
         seismic_Vp (const double      temperature,
@@ -5037,7 +5037,7 @@ Specifically, your new class needs to implement the following interface:
         virtual void
         parse_parameters (ParameterHandler &prm);
 
-        
+
         // Optional:
         virtual void initialize ();
 
@@ -5753,7 +5753,7 @@ a postprocessor has into a checkpoint file, and to load it again upon
 restart. This is important since many postprocessors store some state -- say,
 a temporal average over all the time steps seen so far, or the number of the
 last graphical output file generated so that we know how the next one needs
-to be numbered. 
+to be numbered.
 
 The typical case is that this state is the same across all processors of a
 parallel computation. Consequently, what \aspect{} writes into the checkpoint
@@ -6008,7 +6008,7 @@ Specifically, your new class needs to implement the following basic interface:
 The first of these functions computes the set of refinement criteria (one per
 cell) and returns it in the given argument. Typical examples can be found in the
 existing implementations in the \texttt{source/mesh\_refinement} directory. As usual, your termination
-criterion implementation will likely need to be derived from the 
+criterion implementation will likely need to be derived from the
 \texttt{SimulatorAccess} to get access to the current state of the simulation.
 
 The
@@ -6066,7 +6066,7 @@ The first of these functions returns a value that indicates whether the
 simulation should be terminated.
 Typical examples can be found in the existing implementations in the
 \texttt{source/termination\_criteria} directory. As usual, your termination
-criterion implementation will likely need to be derived from the 
+criterion implementation will likely need to be derived from the
 \texttt{SimulatorAccess} to get access to the current state of the simulation.
 
 The remaining functions are
