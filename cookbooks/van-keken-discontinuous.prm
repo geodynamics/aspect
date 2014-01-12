@@ -1,6 +1,5 @@
-# van keken benchmark, work in progress
-
-############### Global parameters
+# A description of the van Keken et al. benchmark. See the manual for more
+# information.
 
 set Dimension                              = 2
 set Start time                             = 0
@@ -19,10 +18,11 @@ end
 
 subsection Model settings
   set Include adiabatic heating               = false
-  set Include shear heating                   = false # default: true
-  set Tangential velocity boundary indicators = 0,1
-  set Zero velocity boundary indicators       = 2,3
+  set Include shear heating                   = false
+  set Tangential velocity boundary indicators = 0,1  # left and right
+  set Zero velocity boundary indicators       = 2,3  # bottom and top
 end
+
 
 subsection Material model
   set Model name = simple
@@ -42,6 +42,7 @@ end
 
 
 ############### Parameters describing the temperature field
+# Note: The temperature plays no role in this model
 
 subsection Boundary temperature model
   set Model name = box
@@ -50,14 +51,14 @@ end
 subsection Initial conditions
   set Model name = function
   subsection Function
-    set Variable names      = x,z
-    set Function constants  = pi=3.14159
-    set Function expression = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 0 , 1 )
+    set Function expression = 0
   end
 end
 
 
 ############### Parameters describing the compositional field
+# Note: The compositional field is what drives the flow
+# in this example
 
 subsection Compositional fields
   set Number of fields = 1
@@ -67,7 +68,7 @@ subsection Compositional initial conditions
   set Model name = function
   subsection Function
     set Variable names      = x,z
-    set Function constants  = pi=3.14159
+    set Function constants  = pi=3.1415926
     set Function expression = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 0 , 1 )
   end
 end
@@ -77,6 +78,7 @@ subsection Material model
     set Density differential for compositional field 1 = -10
   end
 end
+
 
 ############### Parameters describing the discretization
 
@@ -90,22 +92,12 @@ subsection Mesh refinement
 end
 
 
-##subsection Discretization
-##  set Composition polynomial degree = 2
-##  subsection Stabilization parameters
-##    set beta  = 0.5
-##    set cR  = 1e15
-##  end
-##  end
 
-
-
-############### Parameters describing the what to do with the solution
+############### Parameters describing what to do with the solution
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, composition statistics
   subsection Visualization
-    set List of output variables = all
     set Output format                 = vtu
     set Time between graphical output = 100
   end

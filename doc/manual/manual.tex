@@ -83,7 +83,8 @@
     Thomas Geenen,
     Eric Heien,
     Martin Kronbichler,
-    Elvira Mulyukova
+    Elvira Mulyukova,
+    Cedric Thieulot
 }
 
 
@@ -3378,7 +3379,7 @@ yields images like the ones shown in Fig.~\ref{fig:platelike}.
   \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0005.png}
   \hfill
   \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/visit0006.png}
-  \caption{Variable velocity boundary conditions: Temperature and velocity
+  \caption{\it Variable velocity boundary conditions: Temperature and velocity
   fields at the initial time (top left) and at various other points in time during the
   simulation.}
   \label{fig:platelike}
@@ -3465,7 +3466,7 @@ the domain we are interested in.}
   \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/visit0012.png}
   \hfill
   \includegraphics[width=0.3\textwidth]{cookbooks/composition-passive/visit0014.png}
-  \caption{Passive compositional fields: The figures show, at
+  \caption{\it Passive compositional fields: The figures show, at
     different times in the simulation, the velocity field along with
     those locations where the first compositional field is larger than
     0.5 (in red, indicating the locations where material from the bottom
@@ -3482,7 +3483,7 @@ the domain we are interested in.}
   \includegraphics[height=0.3\textwidth]{cookbooks/composition-passive/visit0015.png}
   \hfill
   \includegraphics[height=0.3\textwidth]{cookbooks/composition-passive/visit0017.png}
-  \caption{Passive compositional fields: A later image of the simulation
+  \caption{\it Passive compositional fields: A later image of the simulation
     corresponding to the sequence shown in
     Fig.~\ref{fig:compositional-passive} (left) and zoom-in on the
     center, also showing the mesh (right).}
@@ -3518,8 +3519,8 @@ This is an area in which \aspect{} may see improvements in the future.
 \begin{figure}
   \centering
   \includegraphics[width=0.4\textwidth]{cookbooks/composition-passive/mass-composition-1.png}
-  \caption{Passive compositional fields: Minimum and maximum of the first compositional variable
-   over time, as well as the mass $m_1(t)=\int_\Omega c_1(\mathbf x,t)$ stored in this variable.}
+  \caption{\it Passive compositional fields: Minimum and maximum of the first
+  compositional variable over time, as well as the mass $m_1(t)=\int_\Omega c_1(\mathbf x,t)$ stored in this variable.}
   \label{fig:compositional-passive-mass}
 \end{figure}
 
@@ -3628,7 +3629,7 @@ end
   \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0009.png}
   \hfill
   \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0008.png}
-  \caption{Active compositional fields: Compositional field 1 at the time
+  \caption{\it Active compositional fields: Compositional field 1 at the time
     $t=0, 10, 20$. Compared to the results shown in
     Fig.~\ref{fig:compositional-passive} it is clear that the heavy material
     stays at the bottom of the domain now. The effect of the density on the
@@ -3652,8 +3653,8 @@ end
   \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0004.png}
   \hfill
   \includegraphics[width=0.3\textwidth]{cookbooks/composition-active/visit0006.png}
-  \caption{Active compositional fields: Temperature fields at $t=0, 2, 4, 8, 12,
-    20$. The black line is the isocontour line $c_1(\mathbf x,t)=0.5$
+  \caption{\it Active compositional fields: Temperature fields at $t=0, 2, 4, 8,
+  12, 20$. The black line is the isocontour line $c_1(\mathbf x,t)=0.5$
     delineating the position of the dense material at the bottom.}
   \label{fig:composition-active-temperature}
 \end{figure}
@@ -3752,8 +3753,8 @@ Fig.~\ref{fig:composition-passive-tracers}.
 \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{cookbooks/composition-passive-tracers/solution-00072.png}
-  \caption{Passively advected quantities visualized through both a compositional
-  field and a set of 1,000 particles, at $t=7.2$.}
+  \caption{\it Passively advected quantities visualized through both a
+  compositional field and a set of 1,000 particles, at $t=7.2$.}
   \label{fig:composition-passive-tracers}
 \end{figure}
 
@@ -3796,8 +3797,200 @@ compared with, while for others, there are only sets of numbers that are
 approximately known. We have implemented a number of them in \aspect{} to
 convince ourselves (and our users) that \aspect{} indeed works as intended and
 advertised. Some of these benchmarks are discussed below. Numerical results
-for these benchmarks are also presented in \cite{KHB12} in much more detail
-than shown here.
+for several of these benchmarks are also presented in \cite{KHB12} in much more
+detail than shown here.
+
+
+\subsubsection{The van Keken thermochemical composition benchmark}
+\label{sec:benchmark-van-keken}
+
+\textit{This section is a co-production of Cedric Thieulot, Juliane Dannberg,
+Timo Heister and Wolfgang Bangerth.}
+
+One of the most widely used benchmarks for mantle convection codes is the one
+published by van Keken \textit{et al.} in \cite{KKSCND97}.
+The benchmark considers a 2d situation where a lighter fluid underlies a heavier
+one with a non-horizontal interface between the two of them. The instable
+layering causes the lighter fluid to start rising at the point where the
+interface is highest. Fig.~\ref{fig:vk-1} shows a time series of images to
+illustrate this.
+
+\begin{figure}
+  \includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/van-keken/movie0000.png}
+  \hfill
+  \includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/van-keken/movie0003.png}
+  \hfill
+  \includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/van-keken/movie0009.png}
+  \hfill
+  \includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/van-keken/movie0018.png}
+  \caption{\it Van Keken benchmark (using a smoothed out interface, see the main
+  text):
+  Compositional field at times $t=0, 300, 900, 1800$.}
+  \label{fig:vk-1}
+\end{figure}
+
+
+Although van Keken's paper title suggests that the paper is really about
+thermochemical convection, the part we look here can equally be considered as
+thermal or chemical convection: all that is necessary is that we describe the
+fluid's density somehow. We can do that by using an inhomogenous initial
+temperature field, or an inhomogenous initial composition field. We will use the
+input file in \url{cookbooks/van-keken-discontinuous.prm} as input, the central
+piece of which is as follows (go to the actual input file
+to see the remainder of the input parameters):
+\begin{lstlisting}[frame=single,language=prmfile]
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Viscosity                     = 1e2
+    set Thermal expansion coefficient = 0
+    set Density differential for compositional field 1 = -10
+  end
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.14159
+    set Function expression = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 0 , 1 )
+  end
+end
+\end{lstlisting}
+The first part of this selects the \texttt{simple} material model and sets the
+thermal expansion to zero (resulting in a density that does not depend on the
+temperature, making the temperature a passively advected field) and instead
+makes the density depend on the first compositional field. The second section
+prescribes that the first compositional field's
+initial conditions are 0 above a line describes by a cosine and 1 below it.
+Because the dependence of the density on the compositional field is negative,
+this means that a lighter fluid underlies a heavier one.
+
+The dynamics of the resulting flow have already been shown in
+Fig.~\ref{fig:vk-1}. The measure commonly considered in papers comparing
+different methods is the root mean square of the velocity, which we can get
+using the following block in the input file (the actual input file also enables
+other postprocessors):
+\begin{lstlisting}[frame=single,language=prmfile]
+subsection Postprocess
+  set List of postprocessors = velocity statistics
+end
+\end{lstlisting}
+Using this, we can plot the evolution of the fluid's average velocity over time,
+as shown in the left panel of Fig.~\ref{fig:vk-2}. Looking at this graph, we
+find that both the timing and the height of the first peak is already
+well converged on a simple
+$32\times 32$ mesh (5 global refinements) and is very consistent (to better
+than 1\% accuracy) with the results in the van Keken paper.
+
+\begin{figure}
+  \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/van-keken/velocity-discontinuous.png}
+  \hfill
+  \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/van-keken/velocity-smooth.png}
+  \caption{\it Van Keken benchmark with discontinuous (left) and smoothed,
+  continuous (right) initial conditions for the compositional field:
+  Evolution of the root mean square velocity $\left(\frac 1{|\Omega|}\int_\Omega |\mathbf u(\mathbf x,t)|^2 \;
+  dx\right)^{1/2}$ as a function of time for different numbers of global mesh
+  refinements. 5 global refinements correspond to a $32\times 32$ mesh, 9
+  refinements to a $512\times 512$ mesh.}
+  \label{fig:vk-2}
+\end{figure}
+
+That said, it is startling that the second peak does not appear to converge
+despite the fact that the various codes compared in \cite{KKSCND97} show good
+agreement in this comparison. Tracking down the cause for this proved to be a
+lesson in benchmark design; in hindsight, it may also explain why van Keken
+\textit{et al.} stated presciently in their abstract that ``\textit{\ldots good
+agreement is found for the initial rise of the unstable lower layer; however, the timing
+  and location of the later smaller-scale instabilities may differ between
+  methods.}'' 
+To understand what is happening here, note that the first peak in these plots
+corresponds to the plume that rises along the left edge of the domain and whose
+evolution is primarily determined by the large-scale shape of the initial
+interface (i.e., the cosine used to describe the initial conditions in the
+input file). This is a first order deterministic effect, and is obviously
+resolved already on the coarsest mesh shown used. The second peak corresponds to
+the plume that rises along the right edge, and its origin along the interface is
+much harder to trace -- its position and the timing when it starts to rise is
+certainly not obvious from the initial location of the interface. Now recall
+that we are using a finite element field using continuous shape functions for
+the composition that determines the density differences that drive the flow. But
+this interface is neither aligned with the mesh, nor can a discontinuous
+function be represented by continuous shape functions to begin with. In other
+words, we may \textit{input} the initial conditions as a discontinuous functions
+of zero and one in the parameter file, but the initial conditions used in the
+program are in fact different: they are the \textit{interpolated} values of this
+discontinuous function on a finite element mesh. This is shown in
+Fig.~\ref{fig:vk-3}. It is obvious that these initial conditions agree on the
+large scale (the determinant of the first plume), but not in the steps that may
+(and do, in fact) determine when and where the second plume will rise. The
+evolution of the resulting compositional field is shown in Fig.~\ref{fig:vk-4}
+and it is obvious that the second, smaller plume starts to rise from a
+completely different location -- no wonder the second peak in the root mean
+square velocity plot is in a different location and with different height!
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\textwidth]{cookbooks/benchmarks/van-keken/mesh-comparison-initial-conditions.png}
+  \caption{\it Van Keken benchmark with discontinuous initial conditions for the
+  compositional field:
+  Initial compositional field interpolated onto a $32\times 32$ (left) and
+  $64\times 64$ finite element mesh (right).}
+  \label{fig:vk-3}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[height=0.8\textheight]{cookbooks/benchmarks/van-keken/mesh-comparison.png}
+  \caption{\it Van Keken benchmark with discontinuous initial conditions for the
+  compositional field:
+  Evolution of the compositional field over time on a $32\times 32$ (first and
+  third column; left to right and top to bottom) and $64\times 64$ finite
+  element mesh (second and fourth column).}
+  \label{fig:vk-4}
+\end{figure}
+
+The conclusion one can draw from this is that if the outcome of a computational
+experiment depends so critically on very small details like the steps of an
+initial condition, then it's probably not a particularly good measure to look at
+in a benchmark. That said, the benchmark is what it is, and so we should try to
+come up with ways to look at the benchmark in a way that allows us to reproduce
+what van Keken \textit{et al.} had agreed upon. To this end, note that the codes
+compared in that paper use all sorts of different methods, and one can certainly
+agree on the fact that these methods are not identical on small length scales.
+One approach to make the setup more mesh-independent is to replace the original
+discontinuous initial condition with a smoothed out version; of course, we can
+still not represent it exactly on any given mesh, but we can at least get closer
+to it than for discontinuous variables. Consequently, let us use the following
+initial conditions instead (see also the file
+\url{cookbooks/van-keken-smooth.prm}):
+\begin{lstlisting}[frame=single,language=prmfile]
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.14159
+    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
+  end
+end  
+\end{lstlisting}
+This replaces the discontinuous initial conditions with a smoothed out version
+with a half width of around 0.01. Using this, the root mean square plot now
+looks as shown in the right panel of Fig.~\ref{fig:vk-2}. Here, the second peak
+also converges quickly, as hoped for.
+
+The exact location and height of the two peaks is in good agreement with those
+given in the paper by van Keken \textit{et al.}, but not exactly where desired
+(the error is within a couple of per cent for the first peak, and probably
+better for the second, for both the timing and height of the peaks).
+This has to do with the fact that they depend on the exact size of the smoothing
+parameter (the division by 0.02 in the formula for the smoothed initial
+condition). However, for more exact results, one can choose
+this half width parameter proportional to the mesh size and thereby get more
+accurate results. Since the point of the section was to demonstrate the reason
+for the lack of convergence, but we leave this as an experiment to the reader.
+
+
 
 
 \subsubsection{The SolCx Stokes benchmark}
@@ -3842,8 +4035,8 @@ in sign between the implementation and the description in \cite{DMGT11}).
     \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solcx-solution}
     \hfill
     \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solcx-solution-pressure}
-    \caption{SolCx Stokes benchmark. Left: The density perturbation field and
-      overlaid to it some velocity vectors. The viscosity is very large in the
+    \caption{\it SolCx Stokes benchmark. Left: The density perturbation field
+    and overlaid to it some velocity vectors. The viscosity is very large in the
       right hand, leading to a stagnant flow in this region. Right: The
       pressure on a relatively coarse mesh, showing the internal layer along
       the line where the viscosity jumps.}
@@ -4131,8 +4324,8 @@ of global refinement is visualized in Fig.~\ref{fig:solkz}.
     \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solkz-solution}
     \hfill
     \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/solkz-solution-pressure}
-    \caption{SolKz Stokes benchmark. Left: The density perturbation field and
-      overlaid to it some velocity vectors. The viscosity grows exponentially
+    \caption{\it SolKz Stokes benchmark. Left: The density perturbation field
+    and overlaid to it some velocity vectors. The viscosity grows exponentially
       in the vertical direction, leading to small velocities at the top
       despite the large density variations. Right: The
       pressure.}
@@ -4162,7 +4355,7 @@ Fig.~\ref{fig:inclusion}. As before, for details we refer to
     \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/inclusion-solution}
     \hfill
     \includegraphics[width=0.45\textwidth]{cookbooks/benchmarks/inclusion-solution-pressure}
-    \caption{Inclusion Stokes benchmark. Left: The viscosity field
+    \caption{\it Inclusion Stokes benchmark. Left: The viscosity field
       when interpolated onto the mesh (internally, the ``exact'' viscosity
       field -- large inside a circle, small outside -- is used),
       and overlaid to it some velocity vectors. Right: The
@@ -4499,7 +4692,7 @@ than 2\% is a good indication that \aspect{} implements the equations correctly.
     \hfill
     \includegraphics[width=0.44\textwidth]{cookbooks/benchmarks/stokes/stokes-density}
   \end{center}
-  \caption{Stokes benchmark. Both figures show only a 2D slice of the
+  \caption{\it Stokes benchmark. Both figures show only a 2D slice of the
       three-dimensional model.
       Left: The compositional field and overlaid to it some velocity vectors.
       The composition is 1 inside a sphere with the radius of 200 km and 0
@@ -4519,8 +4712,8 @@ than 2\% is a good indication that \aspect{} implements the equations correctly.
     \hfill
     \includegraphics[width=0.3\textwidth]{cookbooks/benchmarks/stokes/velocity}
   \end{center}
-  \caption{Stokes benchmark. Three-dimensional views of the compositional field
-  (left), the adaptively refined mesh (center) and the resulting velocity field
+  \caption{\it Stokes benchmark. Three-dimensional views of the compositional
+  field (left), the adaptively refined mesh (center) and the resulting velocity field
   (right).}
   \label{fig:stokes-falling-sphere-3d}
 \end{figure}

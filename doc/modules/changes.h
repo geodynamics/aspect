@@ -8,6 +8,12 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: There is now a section in the manual that describes how to
+  reproduce the van Keken et al. benchmark.
+  <br>
+  (Cedric Thieulot, Juliane Dannberg,
+   Timo Heister, Wolfgang Bangerth 2014/01/10)
+
   <li>Fixed: Using the 'density', 'nonadiabatic temperature', 'thermal
   energy' or 'viscosity' mesh refinement criterion for parallel computations
   led to meshes that made no sense. This was due to a bug in deal.II, not
