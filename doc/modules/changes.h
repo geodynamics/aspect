@@ -8,6 +8,13 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Fixed: On systems where one needs to link executables statically
+  (for example on big clusters), it is not possible to load additional
+  plugins via external shared libraries. This is now disabled and any
+  attempt to do so will lead to a run-time error.
+  <br>
+  (Rene Gassmoeller, Wolfgang Bangerth 2014/01/10)
+
   <li>New: There is now a section in the manual that describes how to
   reproduce the van Keken et al. benchmark.
   <br>

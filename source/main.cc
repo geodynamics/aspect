@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013, 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -117,6 +117,7 @@ void possibly_load_shared_libs (const std::string &parameter_filename)
                                   "Additional shared libraries");
   if (shared_libs.size() > 0)
     {
+#ifdef ASPECT_USE_SHARED_LIBS
       const std::vector<std::string>
       shared_libs_list = Utilities::split_string_list (shared_libs);
 
@@ -136,6 +137,17 @@ void possibly_load_shared_libs (const std::string &parameter_filename)
         }
 
       std::cout << std::endl;
+#else
+      std::cerr << std::endl << std::endl
+                << "----------------------------------------------------"
+                << std::endl;
+      std::cerr << "You can not load additional shared libraries on " << std::endl
+		<< "systems where you link ASPECT as a static executable."
+		<< std::endl
+                << "----------------------------------------------------"
+                << std::endl;
+      std::exit (1);
+#endif
     }
 }
 

@@ -50,4 +50,23 @@ ENDIF()
 
 MESSAGE("====================================================")
 
+# Depending on whether we link statically or allow for shared libs,
+# we can or can not load plugins via external shared libs. Pass this
+# down during compilation so we can disable it in the code
+IF (DEAL_II_STATIC_EXECUTABLE STREQUAL "ON")
+  MESSAGE(STATUS "Creating a statically linked executable")
+  MESSAGE(STATUS "Disabling dynamic loading of plugins from the input file")
+  FOREACH(_source_file ${TARGET_SRC})
+    SET_PROPERTY(SOURCE ${_source_file}
+      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_SHARED_LIBS=0)
+  ENDFOREACH()
+ELSE()
+  MESSAGE(STATUS "Enabling dynamic loading of plugins from the input file")
+  FOREACH(_source_file ${TARGET_SRC})
+    SET_PROPERTY(SOURCE ${_source_file}
+      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_SHARED_LIBS=1)
+  ENDFOREACH()
+ENDIF()
+
 DEAL_II_INVOKE_AUTOPILOT()
+
