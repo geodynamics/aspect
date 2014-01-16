@@ -117,7 +117,7 @@ void possibly_load_shared_libs (const std::string &parameter_filename)
                                   "Additional shared libraries");
   if (shared_libs.size() > 0)
     {
-#ifdef ASPECT_USE_SHARED_LIBS
+#if ASPECT_USE_SHARED_LIBS==1
       const std::vector<std::string>
       shared_libs_list = Utilities::split_string_list (shared_libs);
 
