@@ -1255,6 +1255,27 @@ installed. Most Linux distributions have packages for \texttt{doxygen}. The
 result will be the file \url{doc/doxygen/index.html} that is the starting
 point for exploring the documentation.
 
+\subsection{Compiling a static \aspect{} executable}
+\aspect{} defaults to a dynamically linked executable, which saves disk space and build time. In some circumstances however, it is preferred to generate a statically linked executable that incorporates all used libraries. This need may arise on large clusters on which libraries and loaded modules/variables on login nodes may be different from the ones available on compute nodes. The general build procedure in such a case equals the above explained instructions with the following differences:
+\begin{enumerate}
+\item \textit{Trilinos}: Add the following lines to your cmake call:
+\begin{verbatim}
+ -DBUILD_SHARED_LIBS=OFF
+ -DTPL_FIND_SHARED_LIBS=OFF
+\end{verbatim}
+\item \textit{\pfrst{}:} Change items "--enable-shared" to "--enable-static" in p4est-setup.sh lines 83 and 97.
+\item \textit{\dealii{}:} Add the following lines to your call to cmake:
+\begin{verbatim}
+ -DDEAL_II_STATIC_EXECUTABLE=ON
+\end{verbatim}
+\item \textit{\aspect{}:} If everything above is set up correctly, there is no need for any configuration change to aspects build procedure. You should see the following cmake output from \aspect{}:
+\begin{verbatim}
+-- Creating a statically linked executable
+-- Disabling dynamic loading of plugins from the input file
+\end{verbatim}
+\end{enumerate}
+
+The here mentioned build was tested on a Cray XC30 cluster, which was set up for default static compiling and linking. On machines that default to dynamic linking additional compiler and/or linker flags may be required (e.g. "-fPIC" / "--static"). In case of questions send an email to the mailing list.
 
 \section{Running \aspect}
 \label{sec:running}
