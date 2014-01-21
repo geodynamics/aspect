@@ -1311,6 +1311,12 @@ namespace aspect
       if (n_threads>1)
         pcout << " using " << n_threads << " threads " << (n_tasks == 1 ? "" : "each");
 #endif
+      pcout << " using ";
+#ifdef USE_PETSC
+      pcout << "PETSc";
+#else
+      pcout << "Trilinos";
+#endif
       pcout << "." << std::endl;
     }
 
