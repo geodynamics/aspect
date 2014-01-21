@@ -8,6 +8,13 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+
+  <li>New: Linear algebra can be done using PETSc instead of Trilinos. For
+  this deal.II needs to be configured with PETSc and the define USE_PETSC
+  needs to be set in global.h. This feature is still experimental.
+  <br>
+  (Timo Heister 2014/01/21)
+
   <li>Fixed: On systems where one needs to link executables statically
   (for example on big clusters), it is not possible to load additional
   plugins via external shared libraries. This is now disabled and any
