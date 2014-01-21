@@ -44,22 +44,27 @@ namespace aspect
         coarse_grid.begin_active()->face(f)->set_boundary_indicator(f);
 
       //Tell p4est about the periodicity of the mesh.
-				       //TODO: fix
-/*#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
-      std::vector<std_cxx1x::tuple< typename parallel::distributed::Triangulation<dim>::cell_iterator, unsigned int,
-                                    typename parallel::distributed::Triangulation<dim>::cell_iterator, unsigned int> >
-                                   periodicity_vector;
-      for (unsigned int i=0; i<dim; ++i)
+#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
+
+      // If this does not compile you are probably using 8.1pre, so please update
+      // to a recent svn version or to the 8.1 release.
+      std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator> >
+                    periodicity_vector;
+      for(int i=0; i<dim; ++i)
         if (periodic[i])
-          GridTools::identify_periodic_face_pairs(coarse_grid, 2*i, 2*i+1, i, periodicity_vector);
+          GridTools::collect_periodic_faces
+          ( coarse_grid, /*b_id1*/ 2*i, /*b_id2*/ 2*i+1,
+              /*direction*/ i, periodicity_vector);
+
+      std::cout << "AAA " << periodicity_vector.size() << std::endl;
 
       if (periodicity_vector.size() > 0)
         coarse_grid.add_periodicity (periodicity_vector);
-	#else*/
+#else
       for( unsigned int i=0; i<dim; ++i)
         AssertThrow(!periodic[i],
                     ExcMessage("Please update deal.II to the latest version to get support for periodic domains."));
-//#endif
+#endif
     }
 
 
