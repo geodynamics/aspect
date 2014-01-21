@@ -23,6 +23,7 @@
 #ifndef __aspect__global_h
 #define __aspect__global_h
 
+// uncomment this to use PETSc for linear algebra
 //#define USE_PETSC
 
 #ifdef USE_PETSC
@@ -120,7 +121,7 @@ namespace aspect
      * for other blocks of the system matrix. Note that PETSc does not
      * support a communicating ILU, so we use Jacobi here.
      */
-    typedef PETScWrappers::PreconditionJacobi PreconditionILU;
+    typedef PETScWrappers::PreconditionBlockJacobi PreconditionILU;
 
     typedef LinearAlgebraPETSc::MPI::CompressedBlockSparsityPattern CompressedBlockSparsityPattern;
 
