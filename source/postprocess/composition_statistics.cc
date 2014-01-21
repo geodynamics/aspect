@@ -94,10 +94,13 @@ namespace aspect
 
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         {
-          unsigned int idx = this->get_solution().block(3+c).local_range().first;
-          for (; idx<this->get_solution().block(3+c).local_range().second; ++idx)
+          double local_min_temperature = std::numeric_limits<double>::max();
+          double local_max_temperature = -std::numeric_limits<double>::max();
+          IndexSet range = this->get_solution().block(3+c).locally_owned_elements();
+          for (unsigned int i=0;i<range.n_elements();++i)
             {
-              const double val =  this->get_solution().block(3+c)(idx);
+              const unsigned int idx = range.nth_index_in_set(i);
+              const double val =  this->get_solution().block(2)(idx);
 
               local_min_compositions[c] = std::min<double> (local_min_compositions[c], val);
               local_max_compositions[c] = std::max<double> (local_max_compositions[c], val);
