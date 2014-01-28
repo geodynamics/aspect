@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013, 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -94,7 +94,7 @@ namespace aspect
 		// array to empty, to prevent accidental use and skip the
                 // evaluation of the strain rate in evaluate().
                 in.strain_rate.resize(0);
-		
+
                 for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
                   {
                     for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
@@ -187,6 +187,12 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(HeatFluxStatistics,
                                   "heat flux statistics",
                                   "A postprocessor that computes some statistics about "
-                                  "the heat flux across boundaries.")
+                                  "the heat flux across boundaries. For each boundary "
+				  "indicator (see your geometry description for which boundary "
+				  "indicators are used), the heat flux is computed in outward "
+				  "direction, i.e., from the domain to the outside. If you "
+				  "are interested in the opposite direction, for example from "
+				  "the core into the mantle when the domain describes the "
+				  "mantle, then you need to multiply the result by -1.")
   }
 }
