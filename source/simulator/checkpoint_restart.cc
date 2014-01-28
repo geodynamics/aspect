@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013, 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -135,6 +135,8 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::resume_from_snapshot()
   {
+    pcout << "*** Resuming from snapshot!" << std::endl << std::endl;
+
     try
       {
         triangulation.load ((parameters.output_directory + "restart.mesh").c_str());
@@ -191,8 +193,6 @@ namespace aspect
 
     // re-initialize the postprocessors with the current object
     postprocess_manager.initialize (*this);
-
-    pcout << "*** Resuming from snapshot!" << std::endl << std::endl;
   }
 
 }
