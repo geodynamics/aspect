@@ -2424,10 +2424,72 @@ The remainder of this section shows a number of applications of
 that show thermal convection (Section~\ref{sec:cookbooks-simple}), setups
 that try to model geophysical situations (Section~\ref{sec:cookbooks-geophysical})
 and setups that are used to benchmark \aspect{} to ensure correctness or to test accuracy
-of our solvers (Section~\ref{sec:cookbooks-benchmarks}).
+of our solvers (Section~\ref{sec:cookbooks-benchmarks}). Before we get there,
+however, we will review how one usually approaches setting up computations in
+Section~\ref{sec:cookbooks-overview}.
 
 \note{The input files discussed in the following sections can generally be
   found in the \texttt{cookbooks/} directory of your \aspect{} installation.}
+
+
+\subsection{How to set up computations}
+\label{sec:cookbooks-overview}
+
+\aspect{}'s computations are controlled by input parameter files such as those
+we will discuss in the following sections.%
+\footnote{You can also extend \aspect{} using plugins -- i.e., pieces of code
+you compile separately and either link into the \aspect{} executable itself, or
+reference from the input file. This is discussed in
+Section~\ref{sec:extending}.}
+Basically, these are just regular text files you can edit with programs like
+\texttt{gedit}, \texttt{kwrite} or \texttt{kate} when working on Linux, or
+something as simple as \texttt{NotePad} on Windows. When setting up these input
+files, you basically have to describe everything that characterizes the
+computation you want to do. In particular, this includes the following:
+\begin{itemize}
+  \item What internal forces act on the medium (the equation)?
+  \item What external forces do we have (the right hand side)
+  \item What is the domain (geometry)?
+  \item What happens at the boundary for each variable involved (boundary
+ conditions)?
+  \item How did it look at the beginning (initial conditions)? 
+\end{itemize}
+For each of these questions, there are one or more input parameters (sometimes
+grouped into sections) that allow you to specify what you want. For example, to
+choose a geometry, you will typically have a block like this in your input file:
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+set Dimension = 2
+subsection Geometry model
+  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
+
+  subsection Box
+    set X extent = 1 % \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
+    set Y extent = 1 % \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
+  end
+end
+\end{lstlisting}
+This indicates that you want to do a computation in 2d, using a rectangular
+geometry (a ``box'') with edge length equal to one in both the $x$- and
+$y$-directions. Of course, there are other geometries you can choose from for
+the \texttt{Model name} parameter, and consequently other subsections that
+specify the details of these geometries.
+
+If you go down the list of questions about the setup above, you have already
+done the majority of the work describing your computation. The remaining
+parameters you will typically want to specify have to do with the computation
+itself. For example, what variables do you want to output and how often? What
+statistics do you want to compute. The following sections will give ample
+examples for all of this, but using the questions above as a guideline is
+already a good first step.
+
+\note{It is of course possible to set up input files for computations
+completely from scratch. However, in practice, it is often simpler to go
+through the list of cookbooks already provided and find one that comes close to
+what you want to do. You would then modify this cookbook until it does what you
+want to do. The advantage is that you can start with something you already know
+works, and you can inspect how each change you make -- changing the
+details of the geometry, changing the material model, or changing what is being
+computed at the end of each time step -- affects what you get.}
 
 
 \subsection{Simple setups}

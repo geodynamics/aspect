@@ -8,10 +8,16 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: The manual has a new subsection at the top of the ``Cookbooks''
+  section providing a bit of an outline of how one sets up situations.
+  <br>
+  (Wolfgang Bangerth 2014/01/29)
 
   <li>New: Linear algebra can be done using PETSc instead of Trilinos. For
-  this deal.II needs to be configured with PETSc and the define USE_PETSC
-  needs to be set in global.h. This feature is still experimental.
+  this, deal.II needs to be configured with PETSc and the preprocessor
+  define <code>USE_PETSC</code>
+  needs to be set in the Aspect file <code>include/aspect/global.h</code> before
+  compiling. This feature is still experimental.
   <br>
   (Timo Heister, Ian Rose 2014/01/21)
 
