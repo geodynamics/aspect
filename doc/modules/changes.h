@@ -8,7 +8,15 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
-  <li>New: The manual has a new subsection at the top of the ``Cookbooks''
+  <li>New: The "Simple setups" section of the manual now has a subsection
+  detailing the generalization of the "Convection in a box" setup to
+  a three-dimensional situation. This includes links to the movies
+  already available http://www.youtube.com/watch?v=_bKqU_P4j48 and
+  http://www.youtube.com/watch?v=CzCKYyR-cmg .
+  <br>
+  (Wolfgang Bangerth 2014/01/29)
+
+  <li>New: The manual has a new subsection at the top of the "Cookbooks"
   section providing a bit of an outline of how one sets up situations.
   <br>
   (Wolfgang Bangerth 2014/01/29)
