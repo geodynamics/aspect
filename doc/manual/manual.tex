@@ -188,7 +188,7 @@ to some part using \aspect{}, you cite the following, canonical reference for
 this software:
 \begin{lstlisting}[frame=single,language=tex]
 @Article{KHB12,
-  author = 	 {Martin Kronbichler and Timo Heister and Wolfgang Bangerth},
+  author = 	 {M. Kronbichler and T. Heister and W. Bangerth},
   title = 	 {High Accuracy Mantle Convection Simulation through Modern Numerical Methods},
   journal = 	 {Geophysics Journal International},
   year = 	 2012,
@@ -2452,7 +2452,7 @@ computation you want to do. In particular, this includes the following:
   \item What is the domain (geometry)?
   \item What happens at the boundary for each variable involved (boundary
  conditions)?
-  \item How did it look at the beginning (initial conditions)? 
+  \item How did it look at the beginning (initial conditions)?
 \end{itemize}
 For each of these questions, there are one or more input parameters (sometimes
 grouped into sections) that allow you to specify what you want. For example, to
@@ -3313,7 +3313,7 @@ does not lead to a simulation that is exactly exciting. Let us choose $Ra=10^6$
 instead (the mesh chosen above with up to 7 refinement levels after some time
 is fine enough to resolve this). We can achieve this in the same way as in the
 previous section by choosing $\alpha=10^{-10}$ and setting
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%] 
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
 subsection Gravity model
   set Model name = vertical % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
 
@@ -3389,11 +3389,11 @@ Number of degrees of freedom: 331,696 (240,624+10,864+80,208)
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21 iterations.
-[...]   
+[...]
 \end{lstlisting}
 \ldots{}but then increases quickly to around 2 million as the solution develops
 some structure and, after time $t=0.003$ where we allow for an additional
-refinement, increases to over 10 million where it then hovers between 8 and 14 
+refinement, increases to over 10 million where it then hovers between 8 and 14
 million with a maximum of 15,147,534. Clearly, even on a reasonably quick
 machine, this will take some time: running this on a machine bought in 2011,
 doing the 10,000 time steps to get to $t=0.0219$ takes approximately 484,000
@@ -4237,7 +4237,7 @@ lesson in benchmark design; in hindsight, it may also explain why van Keken
 \textit{et al.} stated presciently in their abstract that ``\textit{\ldots good
 agreement is found for the initial rise of the unstable lower layer; however, the timing
   and location of the later smaller-scale instabilities may differ between
-  methods.}'' 
+  methods.}''
 To understand what is happening here, note that the first peak in these plots
 corresponds to the plume that rises along the left edge of the domain and whose
 evolution is primarily determined by the large-scale shape of the initial
@@ -4306,7 +4306,7 @@ subsection Compositional initial conditions
     set Function constants  = pi=3.14159
     set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
   end
-end  
+end
 \end{lstlisting}
 This replaces the discontinuous initial conditions with a smoothed out version
 with a half width of around 0.01. Using this, the root mean square plot now
