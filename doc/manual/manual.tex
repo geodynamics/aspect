@@ -3354,7 +3354,11 @@ imposed by a scheduling system), then it can be restarted from such
 checkpointing files (see the parameter {\tt Resume computation}
 in Section~\ref{parameters:global}).
 
-Running with this input file requires a bit of patience since the number of
+Running with this input file requires a bit of patience%
+\footnote{For computations of this size, one should test a few time steps in
+  debug mode but then, of course, switch to running the actual computation in
+  optimized mode -- see Section~\ref{sec:debug-mode}.}
+since the number of
 degrees of freedom is just so large: it starts with a bit over 330,000\ldots
 \begin{lstlisting}[frame=single,language=ksh]
 Running with 64 MPI tasks.
