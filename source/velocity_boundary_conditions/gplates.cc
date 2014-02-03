@@ -104,9 +104,9 @@ namespace aspect
         // populate tree structure pt
         read_xml(filename, pt);
 
-        const int n_points = pt.get_child("gpml:FeatureCollection.gml:featureMember.gpml:VelocityField.gml:domainSet.gml:MultiPoint").size();
-        const int n_phi = static_cast<int>(std::sqrt(2.*n_points));
-        const int n_theta = n_phi /2;
+        const unsigned int n_points = pt.get_child("gpml:FeatureCollection.gml:featureMember.gpml:VelocityField.gml:domainSet.gml:MultiPoint").size();
+        const unsigned int n_theta = static_cast<unsigned int>(0.5 + std::sqrt(0.25 + n_points/2));
+        const unsigned int n_phi = 2 * (n_theta - 1);
 
         if ((delta_theta != 0.0) || (delta_phi != 0.0))
           {
@@ -140,8 +140,8 @@ namespace aspect
             if (in.eof())
               break;
 
-            (*velocity_values)[i%n_theta][i/n_theta][0] = vtheta/cmyr_si;
-            (*velocity_values)[i%n_theta][i/n_theta][1] = vphi/cmyr_si;
+            (*velocity_values)[i/n_phi][i%n_phi][0] = vtheta/cmyr_si;
+            (*velocity_values)[i/n_phi][i%n_phi][1] = vphi/cmyr_si;
 
             i++;
           }
@@ -434,7 +434,7 @@ namespace aspect
     GPlates<dim>::
     boundary_velocity (const Point<dim> &position) const
     {
-      if (current_time > 0.0)
+      if (current_time >= 0.0)
         return lookup->surface_velocity(position,time_weight);
       else
         return Tensor<1,dim> ();
