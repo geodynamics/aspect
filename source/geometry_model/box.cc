@@ -56,8 +56,6 @@ namespace aspect
           ( coarse_grid, /*b_id1*/ 2*i, /*b_id2*/ 2*i+1,
               /*direction*/ i, periodicity_vector);
 
-      std::cout << "AAA " << periodicity_vector.size() << std::endl;
-
       if (periodicity_vector.size() > 0)
         coarse_grid.add_periodicity (periodicity_vector);
 #else
