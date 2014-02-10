@@ -552,7 +552,7 @@ namespace aspect
 
           // now also see about the file format we're supposed to write in
           prm.declare_entry ("Output format", "vtu",
-                             Patterns::Selection (DataOutInterface<dim>::get_output_format_names ()),
+                             Patterns::Selection (DataOutBase::get_output_format_names ()),
                              "The file format to be used for graphical output.");
 
           prm.declare_entry ("Number of grouped files", "0",
