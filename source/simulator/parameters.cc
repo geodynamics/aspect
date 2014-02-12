@@ -719,6 +719,18 @@ namespace aspect
         stabilization_beta  = prm.get_double ("beta");
       }
       prm.leave_subsection ();
+
+      AssertThrow (use_locally_conservative_discretization ||
+                   (stokes_velocity_degree > 1),
+                   ExcMessage ("The polynomial degree for the velocity field "
+                       "specified in the 'Stokes velocity polynomial degree' "
+                       "parameter must be at least 2, unless you are using "
+                       "a locally conservative discretization as specified by the "
+                       "'Use locally conservative discretization' parameter. "
+                       "This is because in the former case, the pressure element "
+                       "is of one degree lower and continuous, and if you selected "
+                       "a linear element for the velocity, you'd need a continuous "
+                       "element of degree zero for the pressure, which does not exist."))
     }
     prm.leave_subsection ();
 
