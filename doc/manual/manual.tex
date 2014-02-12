@@ -4110,11 +4110,61 @@ not be reproduced in a static medium such as this manual.
 
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
-\marginpar{To be written}
 
-Use cookbooks/periodic-box.prm
+Having gone through the ways in which one can set up problems in rectangular
+geometries, let us now move on to situations that are directed more towards the
+kinds of things we want to use \aspect{} for: the simulation of convection in
+the rocky mantles of planets or other celestial bodies.
 
-Include something that uses the GPlates interface
+To this end, we need to go through the list of issues that have to be described
+and that were outlined in Section~\ref{sec:cookbooks-overview}, and address them
+one by one:
+\begin{itemize}
+  \item \textit{What internal forces act on the medium (the equation)?}
+  	This may in fact be the most difficult to answer part of it all. The real
+  	material in Earth's mantle is certainly no Newtonian fluid where the stress
+  	is a linear function of the strain with a proportionality constant (the
+  	viscosity) $\eta$ that only depends on the temperature. Rather, the
+  	real viscosity almost surely also depends on the pressure and the strain
+  	rate. Because the issue is complicated and the exact material model not
+  	entirely clear, for the next few subsections we will therefore ignore the
+  	issue and start with just using the ``simple'' material model where the
+  	viscosity is constant and most other coefficients depend at most on the
+  	temperature.
+  	
+  \item \textit{What external forces do we have (the right hand side)}
+  	There are of course other issues: for example, should the model include terms
+  	that describe shear heating? Should it be compressible? Adiabatic heating due
+  	to compression? Most of the terms that pertain to these questions appear on
+  	the right hand sides of the equations, though some (such as the
+  	compressibility) also affect the differential operators on the left. Either
+  	way, for the moment, let us just go with the simplest models and come back to
+  	the more advanced questions in later examples.
+  	
+  	One right hand side that will certainly be there is that due to gravitational
+  	acceleration. To first order, within the mantle gravity points radially
+  	inward and has a roughly constant magnitude. In reality, of course, the
+  	strength and direction of gravity depends on the distribution and density of
+  	materials in Earth -- and, consequently, on the solution of the model at
+  	every time step. We will discuss some of the associated issues in the
+  	examples below.
+
+  \item \textit{What is the domain (geometry)?}
+  \item \textit{What happens at the boundary for each variable involved
+  (boundary conditions)?}
+  \item \textit{How did it look at the beginning (initial conditions)?}
+\end{itemize}
+
+units
+geometry
+
+\subsubsection{Simple convection in a quarter of an annulus}
+
+
+\subsubsection{Simple convection in a spherical shell}
+
+\marginpar{Use cookbooks/periodic-box.prm}
+\marginpar{Include something that uses the GPlates interface}
 
 \subsection{Benchmarks}
 \label{sec:cookbooks-benchmarks}
