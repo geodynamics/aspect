@@ -124,7 +124,12 @@ namespace aspect
                   f << std::endl;
                   continue;
                 }
-              f << entries[i].time << " "
+              f << (this->convert_output_to_years()
+                    ?
+                    entries[i].time / year_in_seconds
+                    :
+                    entries[i].time)
+                << " "
                 << entries[i].depth;
               for (unsigned int j=0; j<n_statistics; ++j)
                 f << " " << entries[i].values[j];
@@ -228,7 +233,9 @@ namespace aspect
       if (output_interval > 0)
         {
           // the current time is always in seconds, so we need to convert the output_interval to the same unit
-          double output_interval_in_s = (this->convert_output_to_years()) ? (output_interval*year_in_seconds) : output_interval;
+          double output_interval_in_s = (this->convert_output_to_years() ?
+                                         (output_interval*year_in_seconds) :
+                                         output_interval);
 
           // we need to compute the smallest integer that is bigger than current_time/my_output_interval,
           // even if it is a whole number already (otherwise we output twice in a row)
@@ -246,6 +253,8 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(DepthAverage,
                                   "depth average",
-                                  "A postprocessor that computes depth averaged quantities and writes them out.")
+                                  "A postprocessor that computes depth averaged "
+                                  "quantities and writes them into a file named "
+                                  "'depthaverage.plt' in the output directory.")
   }
 }

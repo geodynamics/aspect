@@ -8,6 +8,12 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Fixed: The "depth average" postprocessor did not honor the
+  "Use years in output instead of seconds" parameter in the input
+  file and instead always printed time in seconds. This is now fixed.
+  <br>
+  (Wolfgang Bangerth 2014/02/11)
+
   <li>New: The "Simple setups" section of the manual now has a subsection
   detailing the generalization of the "Convection in a box" setup to
   a three-dimensional situation. This includes links to the movies
