@@ -25,7 +25,6 @@
 #include <aspect/global.h>
 
 #include <deal.II/dofs/dof_tools.h>
-#include <deal.II/numerics/data_out.h>
 
 
 #include <math.h>
@@ -49,7 +48,8 @@ namespace aspect
       output_interval (0),
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
-      next_output_time (std::numeric_limits<double>::quiet_NaN())
+      next_output_time (std::numeric_limits<double>::quiet_NaN()),
+      n_depth_zones (100)
     {}
 
 
@@ -69,21 +69,20 @@ namespace aspect
         return std::pair<std::string,std::string>();
 
       const unsigned int n_statistics = 7+this->n_compositional_fields();
-      std::vector<std::vector<double> > temp(n_statistics);
+      std::vector<std::vector<double> > temp(n_statistics,
+                                             std::vector<double> (n_depth_zones));
       {
-        unsigned int i = 0;
         // add temperature and the compositional fields that follow
         // it immediately
-        this->get_depth_average_temperature(temp[i++]);
+        this->get_depth_average_temperature(temp[0]);
         for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-          this->get_depth_average_composition(c, temp[i++]);
-        this->get_adiabatic_conditions().get_adiabatic_temperature_profile(temp[i++],100);
-        this->get_depth_average_velocity_magnitude(temp[i++]);
-        this->get_depth_average_sinking_velocity(temp[i++]);
-        this->get_depth_average_Vs(temp[i++]);
-        this->get_depth_average_Vp(temp[i++]);
-        this->get_depth_average_viscosity(temp[i++]);
-        AssertThrow(i==n_statistics, ExcInternalError());
+          this->get_depth_average_composition(c, temp[1+c]);
+        this->get_adiabatic_conditions().get_adiabatic_temperature_profile(temp[1+this->n_compositional_fields()]);
+        this->get_depth_average_velocity_magnitude(temp[2+this->n_compositional_fields()]);
+        this->get_depth_average_sinking_velocity(temp[3+this->n_compositional_fields()]);
+        this->get_depth_average_Vs(temp[4+this->n_compositional_fields()]);
+        this->get_depth_average_Vp(temp[5+this->n_compositional_fields()]);
+        this->get_depth_average_viscosity(temp[6+this->n_compositional_fields()]);
       }
 
       const double max_depth = this->get_geometry_model().maximal_depth();
@@ -91,7 +90,7 @@ namespace aspect
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           // store data from the current step
-          for (unsigned int i=0; i<temp[0].size(); ++i)
+          for (unsigned int i=0; i<n_depth_zones; ++i)
             {
               DataPoint data_point;
               data_point.time  = this->get_time();
@@ -163,6 +162,17 @@ namespace aspect
                              "Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
+          prm.declare_entry ("Number of zones", "100",
+                             Patterns::Integer (1),
+                             "The number of zones in depth direction within which we "
+                             "are to compute averages. By default, we subdivide the entire "
+                             "domain into 100 depth zones and compute temperature and other "
+                             "averages within each of these zones. However, if you have a "
+                             "very coarse mesh, it may not make much sense to subdivide "
+                             "the domain into so many zones and you may wish to choose "
+                             "less than this default. It may also make computations slightly "
+                             "faster. On the other hand, if you have an extremely highly "
+                             "resolved mesh, choosing more zones might also make sense.");
         }
         prm.leave_subsection();
       }
@@ -179,6 +189,7 @@ namespace aspect
         prm.enter_subsection("Depth average");
         {
           output_interval = prm.get_double ("Time between graphical output");
+          n_depth_zones = prm.get_integer ("Number of zones");
         }
         prm.leave_subsection();
       }
@@ -254,7 +265,9 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(DepthAverage,
                                   "depth average",
                                   "A postprocessor that computes depth averaged "
-                                  "quantities and writes them into a file named "
-                                  "'depthaverage.plt' in the output directory.")
+                                  "quantities and writes them into a file "
+                                  "in the output directory. A number of parameters influence "
+                                  "this postprocessor, and they can be set in the section "
+                                  "\\texttt{Postprocess/Depth average} in the input file.")
   }
 }

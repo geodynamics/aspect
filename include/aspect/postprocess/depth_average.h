@@ -26,6 +26,8 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 
+#include <deal.II/base/data_out_base.h>
+
 
 namespace aspect
 {
@@ -93,11 +95,11 @@ namespace aspect
          * Interval between the generation of output. This
          * parameter is read from the input file and consequently is not part
          * of the state that needs to be saved and restored.
-        *
-        * For technical reasons, this value is stored as given in the
-        * input file and upon use is either interpreted as seconds or
-        * years, depending on how the global flag in the input parameter
-        * file is set.
+         *
+         * For technical reasons, this value is stored as given in the
+         * input file and upon use is either interpreted as seconds or
+         * years, depending on how the global flag in the input parameter
+         * file is set.
          */
         double output_interval;
 
@@ -106,6 +108,17 @@ namespace aspect
          * graphical output again.
          */
         double next_output_time;
+
+        /**
+         * The format in which to produce graphical output. This also
+         * determines the extension of the file name to which to write.
+         */
+        DataOutBase::OutputFormat output_format;
+
+        /**
+         * Number of zones in depth direction over which we are supposed to average.
+         */
+        unsigned int n_depth_zones;
 
         /**
         * A structure for a single time/depth/value record.

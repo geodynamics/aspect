@@ -8,6 +8,13 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: The "depth average" postprocessor now takes a run-time
+  parameter in the "Postprocess/Depth average" section of the input
+  file that specifies into how many depth slices the domain should
+  be subdivided in computing depth averages.
+  <br>
+  (Wolfgang Bangerth 2014/02/11)
+
   <li>Fixed: The "depth average" postprocessor did not honor the
   "Use years in output instead of seconds" parameter in the input
   file and instead always printed time in seconds. This is now fixed.

@@ -270,10 +270,11 @@ namespace aspect
        * Fill the argument with a set of depth averages of the current
        * temperature field. The function fills a
        * vector that contains average field values over slices of the
-       * domain of same depth. The function resizes the output vector
-       * to match the number of depth slices.
+       * domain of same depth.
        *
        * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void
       get_depth_average_temperature(std::vector<double> &values) const;
@@ -287,36 +288,59 @@ namespace aspect
        * compositional fields in this problem).
        *
        * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void
-      get_depth_average_composition(const unsigned int composition_index, std::vector<double> &values) const;
+      get_depth_average_composition(const unsigned int composition_index,
+                                        std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the current viscosity
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void
       get_depth_average_viscosity(std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the current velocity magnitude
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void
       get_depth_average_velocity_magnitude(std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the current sinking velocity
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void
       get_depth_average_sinking_velocity(std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the seismic shear wave speed: Vs
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void
       get_depth_average_Vs(std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the seismic pressure wave speed: Vp
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void
       get_depth_average_Vp(std::vector<double> &values) const;

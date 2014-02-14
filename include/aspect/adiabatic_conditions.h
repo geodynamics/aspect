@@ -68,9 +68,14 @@ namespace aspect
       double temperature (const Point<dim> &p) const;
 
       /**
-       * Return the adiabatic temperature profile as a vector with n points
+       * Return the adiabatic temperature profile as a vector of values corresponding
+       * to increasing depth.
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
-      void get_adiabatic_temperature_profile(std::vector<double> &values,unsigned int num_slices) const;
+      void get_adiabatic_temperature_profile(std::vector<double> &values) const;
 
       /**
        * Return the adiabatic pressure at a given point of the domain.

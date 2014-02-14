@@ -760,9 +760,14 @@ namespace aspect
        *    FEValues<dim> & fe_values,
        *    const LinearAlgebra::BlockVector &solution,
        *    std::vector<double> & output)
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       template<class FUNCTOR>
-      void compute_depth_average(std::vector<double> &values, FUNCTOR &fctr) const;
+      void compute_depth_average(std::vector<double> &values,
+                                 FUNCTOR &fctr) const;
 
       /**
        * Compute a depth average of the current temperature/composition. The function
@@ -772,6 +777,10 @@ namespace aspect
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition,
                                        std::vector<double> &values) const;
@@ -784,6 +793,10 @@ namespace aspect
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void compute_depth_average_viscosity(std::vector<double> &values) const;
 
@@ -792,6 +805,10 @@ namespace aspect
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void compute_depth_average_velocity_magnitude(std::vector<double> &values) const;
 
@@ -800,6 +817,10 @@ namespace aspect
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void compute_depth_average_sinking_velocity(std::vector<double> &values) const;
 
@@ -808,6 +829,10 @@ namespace aspect
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void compute_depth_average_Vs(std::vector<double> &values) const;
 
@@ -816,6 +841,10 @@ namespace aspect
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void compute_depth_average_Vp(std::vector<double> &values) const;
 
@@ -824,7 +853,11 @@ namespace aspect
        * we compute the anomaly by computing a smoothed (over 200 km or so) laterally averaged
        * temperature profile and associated seismic velocity that is then subtracted from the
        * seismic velocity at the current pressure temperature conditions
-      */
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
+       */
       void compute_Vs_anomaly(Vector<float> &values) const;
 
       /**
@@ -835,6 +868,10 @@ namespace aspect
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
+       *
+       * @param values The output vector of depth averaged values.
+       * The function takes the pre-existing size of this vector
+       * as the number of depth slices.
        */
       void compute_Vp_anomaly(Vector<float> &values) const;
 

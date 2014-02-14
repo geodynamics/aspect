@@ -698,13 +698,13 @@ namespace aspect
 
   template <int dim>
   template<class FUNCTOR>
-  void Simulator<dim>::compute_depth_average(std::vector<double> &values, FUNCTOR &fctr) const
+  void Simulator<dim>::compute_depth_average(std::vector<double> &values,
+                                                   FUNCTOR &fctr) const
   {
-    const unsigned int num_slices = 100;
-    values.resize(num_slices);
+    const unsigned int num_slices = values.size();
     std::vector<double> volume(num_slices);
 
-    // this yields 100 quadrature points evenly distributed in the interior of the cell.
+    // this yields 10^dim quadrature points evenly distributed in the interior of the cell.
     // We avoid points on the faces, as they would be counted more than once.
     const QIterated<dim> quadrature_formula (QMidpoint<1>(),
                                              10);
@@ -820,10 +820,7 @@ namespace aspect
          introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]
         );
 
-
-
     FunctorDepthAverageField<dim> f(field);
-
     compute_depth_average(values, f);
   }
 
@@ -855,9 +852,9 @@ namespace aspect
   void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const
   {
     FunctorDepthAverageViscosity<dim> f;
-
     compute_depth_average(values, f);
   }
+
 
   namespace
   {
