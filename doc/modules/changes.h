@@ -13,11 +13,12 @@ All entries are signed with the names of the author.
   file that specifies into how many depth slices the domain should
   be subdivided in computing depth averages.
   <br>
-  (Wolfgang Bangerth 2014/02/11)
+  (Wolfgang Bangerth 2014/02/14)
 
   <li>Fixed: The "depth average" postprocessor did not honor the
   "Use years in output instead of seconds" parameter in the input
-  file and instead always printed time in seconds. This is now fixed.
+  file and instead always printed time in seconds when generating
+  output. This is now fixed.
   <br>
   (Wolfgang Bangerth 2014/02/11)
 
