@@ -4,6 +4,9 @@
 # advect along a set of tracers and that we do not longer
 # compute temperature statistics and composition statistics
 # as part of postprocessing
+#
+# See the manual for more information about this setup.
+
 
 set Dimension                              = 2
 set Start time                             = 0

@@ -1,3 +1,6 @@
+# A description of convection in a 2d box. See the manual for more information.
+
+
 # At the top, we define the number of space dimensions we would like to
 # work in:
 set Dimension                              = 2

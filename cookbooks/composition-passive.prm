@@ -2,6 +2,9 @@
 # This is a variation of the platelike-boundary.prm file.
 # All settings are exactly the same with the exception
 # of the ones that pertain to compositional fields.
+#
+# See the manual for more information about this setup.
+
 
 set Dimension                              = 2
 set Start time                             = 0

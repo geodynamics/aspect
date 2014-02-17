@@ -1,3 +1,8 @@
+# A description of convection in a rectangular box where we prescribe
+# temporally variable boundary conditions for the velocity along the top
+# boundary. See the manual for more information.
+
+
 ############### Global parameters
 
 set Dimension                              = 2
