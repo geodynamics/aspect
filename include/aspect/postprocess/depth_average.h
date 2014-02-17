@@ -121,12 +121,12 @@ namespace aspect
         unsigned int n_depth_zones;
 
         /**
-        * A structure for a single time/depth/value record.
+        * A structure for a single time step record.
         */
         struct DataPoint
         {
-          double time, depth;
-          std::vector<double> values;
+          double time;
+          std::vector<std::vector<double> > values;
 
           template <class Archive>
           void serialize (Archive &ar, const unsigned int version);

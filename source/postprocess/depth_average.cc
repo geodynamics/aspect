@@ -24,7 +24,11 @@
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
-#include <deal.II/dofs/dof_tools.h>
+#include <deal.II/grid/grid_generator.h>
+#include <deal.II/grid/tria.h>
+#include <deal.II/fe/fe_dgq.h>
+#include <deal.II/dofs/dof_handler.h>
+#include <deal.II/numerics/data_out_stack.h>
 
 
 #include <math.h>
@@ -37,7 +41,7 @@ namespace aspect
     template <class Archive>
     void DepthAverage<dim>::DataPoint::serialize (Archive &ar, const unsigned int version)
     {
-      ar &time &depth &values;
+      ar &time &values;
     }
 
 
@@ -69,71 +73,101 @@ namespace aspect
         return std::pair<std::string,std::string>();
 
       const unsigned int n_statistics = 7+this->n_compositional_fields();
-      std::vector<std::vector<double> > temp(n_statistics,
-                                             std::vector<double> (n_depth_zones));
+
+      DataPoint data_point;
+      data_point.time       = this->get_time();
+      data_point.values.resize(n_statistics, std::vector<double> (n_depth_zones));
+
+      // add temperature and the compositional fields that follow
+      // it immediately
       {
-        // add temperature and the compositional fields that follow
-        // it immediately
-        this->get_depth_average_temperature(temp[0]);
+        this->get_depth_average_temperature(data_point.values[0]);
         for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-          this->get_depth_average_composition(c, temp[1+c]);
-        this->get_adiabatic_conditions().get_adiabatic_temperature_profile(temp[1+this->n_compositional_fields()]);
-        this->get_depth_average_velocity_magnitude(temp[2+this->n_compositional_fields()]);
-        this->get_depth_average_sinking_velocity(temp[3+this->n_compositional_fields()]);
-        this->get_depth_average_Vs(temp[4+this->n_compositional_fields()]);
-        this->get_depth_average_Vp(temp[5+this->n_compositional_fields()]);
-        this->get_depth_average_viscosity(temp[6+this->n_compositional_fields()]);
+          this->get_depth_average_composition(c, data_point.values[1+c]);
+        this->get_adiabatic_conditions().get_adiabatic_temperature_profile(data_point.values[1+this->n_compositional_fields()]);
+        this->get_depth_average_velocity_magnitude(data_point.values[2+this->n_compositional_fields()]);
+        this->get_depth_average_sinking_velocity(data_point.values[3+this->n_compositional_fields()]);
+        this->get_depth_average_Vs(data_point.values[4+this->n_compositional_fields()]);
+        this->get_depth_average_Vp(data_point.values[5+this->n_compositional_fields()]);
+        this->get_depth_average_viscosity(data_point.values[6+this->n_compositional_fields()]);
       }
+      entries.push_back (data_point);
 
       const double max_depth = this->get_geometry_model().maximal_depth();
 
+      // On the root process, write out the file. do this using the DataOutStack
+      // class on a piecewise constant finite element space on
+      // a 1d mesh with the correct subdivisions
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          // store data from the current step
-          for (unsigned int i=0; i<n_depth_zones; ++i)
-            {
-              DataPoint data_point;
-              data_point.time  = this->get_time();
-              data_point.depth = max_depth*i/temp[0].size();
-              data_point.values.resize(n_statistics);
-              for (unsigned int j=0; j<n_statistics; ++j)
-                data_point.values[j]=temp[j][i];
-              entries.push_back(data_point);
-            }
+          Triangulation<1> mesh;
+          GridGenerator::subdivided_hyper_cube(mesh, n_depth_zones, 0, max_depth);
 
-          // leave a marker for the end of this time step. We'll later
-          // use this to leave a blank line in the output file at this
-          // position.
-          DataPoint data_point;
-          entries.push_back(data_point);
+          FE_DGQ<1> fe(0);
+          DoFHandler<1> dof_handler (mesh);
+          dof_handler.distribute_dofs(fe);
+          Assert (dof_handler.n_dofs() == n_depth_zones, ExcInternalError());
 
-          // write out the file
-          const std::string filename = this->get_output_directory() + "depthaverage.plt";
-          std::ofstream f (filename.c_str());
-          f << "# time, depth, avg T";
+          DataOutStack<1> data_out_stack;
+          std::vector<string> variables;
+          variables.push_back ("temperature");
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            f << ", avg C_" << c+1;
-          f << ", adiabatic T, velocity magnitude, avg sinking velocity, avg Vs, avg Vp, avg viscosity" << std::endl;
-          f << std::scientific;
+            variables.push_back(std::string("C_") + Utilities::int_to_string(c));
+          variables.push_back ("adiabatic_temperature");
+          variables.push_back ("velocity_magnitude");
+          variables.push_back ("sinking_velocity");
+          variables.push_back ("Vs");
+          variables.push_back ("Vp");
+          variables.push_back ("viscosity");
+          Assert (variables.size() == n_statistics, ExcInternalError());
+
+          for (unsigned int j=0; j<n_statistics; ++j)
+            data_out_stack.declare_data_vector (variables[j],
+                                                DataOutStack<1>::cell_vector);
 
           for (unsigned int i=0; i<entries.size(); ++i)
             {
-              if (entries[i].values.empty())
-                {
-                  f << std::endl;
-                  continue;
-                }
-              f << (this->convert_output_to_years()
-                    ?
-                    entries[i].time / year_in_seconds
-                    :
-                    entries[i].time)
-                << " "
-                << entries[i].depth;
+              data_out_stack.new_parameter_value ((this->convert_output_to_years()
+                  ?
+                  entries[i].time / year_in_seconds
+                  :
+                  entries[i].time),
+                  // declare the time step, which here is the difference
+                  // between successive output times. we don't have anything
+                  // for the first time step, however. we could do a zero
+                  // delta, but that leads to invisible output. rather, we
+                  // use an artificial value of one tenth of the first interval,
+                  // if available
+                  (i == 0 ?
+                      (entries.size() > 1 ? (entries[1].time - entries[0].time)/10 : 0) :
+                      entries[i].time - entries[i-1].time) /
+                  (this->convert_output_to_years()
+                                      ?
+                                      year_in_seconds
+                                      :
+                                      1));
+
+              data_out_stack.attach_dof_handler (dof_handler);
+
+              Vector<double> tmp(n_depth_zones);
               for (unsigned int j=0; j<n_statistics; ++j)
-                f << " " << entries[i].values[j];
-              f << std::endl;
+                {
+                  std::copy (entries[i].values[j].begin(),
+                             entries[i].values[j].end(),
+                             tmp.begin());
+                  data_out_stack.add_data_vector (tmp,
+                      variables[j]);
+                }
+              data_out_stack.build_patches ();
+              data_out_stack.finish_parameter_value ();
             }
+
+
+          const std::string filename = (this->get_output_directory() +
+                                        "depth_average" +
+                                        DataOutBase::default_suffix(output_format));
+          std::ofstream f (filename.c_str());
+          data_out_stack.write (f, output_format);
         }
 
 
@@ -142,7 +176,9 @@ namespace aspect
       // return what should be printed to the screen. note that we had
       // just incremented the number, so use the previous value
       return std::make_pair (std::string ("Writing depth average"),
-                             this->get_output_directory() + "depthaverage.plt");
+                             this->get_output_directory() +
+                             "depth_average" +
+                             DataOutBase::default_suffix(output_format));
     }
 
 
@@ -173,6 +209,11 @@ namespace aspect
                              "less than this default. It may also make computations slightly "
                              "faster. On the other hand, if you have an extremely highly "
                              "resolved mesh, choosing more zones might also make sense.");
+          prm.declare_entry ("Output format", "gnuplot",
+                             Patterns::Selection(DataOutBase::get_output_format_names()),
+                             "The format in which the output shall be produced. The "
+                             "format in which the output is generated also determiens "
+                             "the extension of the file into which data is written.");
         }
         prm.leave_subsection();
       }
@@ -190,6 +231,7 @@ namespace aspect
         {
           output_interval = prm.get_double ("Time between graphical output");
           n_depth_zones = prm.get_integer ("Number of zones");
+          output_format = DataOutBase::parse_output_format(prm.get("Output format"));
         }
         prm.leave_subsection();
       }
@@ -244,9 +286,9 @@ namespace aspect
       if (output_interval > 0)
         {
           // the current time is always in seconds, so we need to convert the output_interval to the same unit
-          double output_interval_in_s = (this->convert_output_to_years() ?
-                                         (output_interval*year_in_seconds) :
-                                         output_interval);
+          const double output_interval_in_s = (this->convert_output_to_years() ?
+                                               (output_interval*year_in_seconds) :
+                                               output_interval);
 
           // we need to compute the smallest integer that is bigger than current_time/my_output_interval,
           // even if it is a whole number already (otherwise we output twice in a row)
@@ -265,9 +307,11 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(DepthAverage,
                                   "depth average",
                                   "A postprocessor that computes depth averaged "
-                                  "quantities and writes them into a file "
-                                  "in the output directory. A number of parameters influence "
+                                  "quantities and writes them into a file <depth_average.ext> "
+                                  "in the output directory, where the extension of the file "
+                                  "is determined by the output format you select. In addition "
+                                  "to the output format, a number of other parameters also influence "
                                   "this postprocessor, and they can be set in the section "
-                                  "\\texttt{Postprocess/Depth average} in the input file.")
+                                  "\\texttt{Postprocess/Depth average} in the input file. ")
   }
 }
