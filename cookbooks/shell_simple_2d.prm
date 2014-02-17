@@ -2,6 +2,7 @@
 # manual for more information.
 
 
+Set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 1.5e9
 set Output directory                       = output
@@ -37,7 +38,7 @@ subsection Model settings
   set Fixed temperature boundary indicators   = 0,1
 
   set Include shear heating                   = true
-  set Radiogenic heating rate                 = 0e0
+  set Radiogenic heating rate                 = 0
 end
 
 
