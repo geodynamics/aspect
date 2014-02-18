@@ -203,8 +203,8 @@ namespace aspect
       {
         prm.enter_subsection("Spherical shell");
         {
-          R0            = prm.get_double ("Inner radius");
-          R1            = prm.get_double ("Outer radius");
+          R0  = prm.get_double ("Inner radius");
+          R1  = prm.get_double ("Outer radius");
           phi = prm.get_double ("Opening angle");
         }
         prm.leave_subsection();
@@ -223,6 +223,16 @@ namespace aspect
                                    "spherical shell",
                                    "A geometry representing a spherical shell or a pice of it. "
                                    "Inner and outer radii are read from the parameter file "
-                                   "in subsection 'Spherical shell'.")
+                                   "in subsection 'Spherical shell'.\n\n"
+                                   "The model assigns boundary indicators as follows: In 2d, "
+                                   "inner and outer boundaries get boundary indicators zero "
+                                   "and one, and if the opening angle set in the input file "
+                                   "is less than 360, then left and right boundaries are "
+                                   "assigned indicators two and three. In 3d, inner and "
+                                   "outer indicators are treated as in 2d. If the opening "
+                                   "angle is chosen as 90 degrees, i.e., the domain is the "
+                                   "intersection of a spherical shell and the first octant, "
+                                   "then indicator 2 is at the face $x=0$, 3 at $y=0$, "
+                                   "and 4 at $z=0$.")
   }
 }

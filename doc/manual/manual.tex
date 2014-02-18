@@ -4150,21 +4150,350 @@ one by one:
   	examples below.
 
   \item \textit{What is the domain (geometry)?}
+  	This question is easier to answer. To first order, the domains we want to
+  	simulate are spherical shells, and to second order ellipsoid shells that can
+  	be obtained by considering the isopotential surface of the gravity field of
+  	a homogenous, rotating fluid.
+  	A more accurate description is of course the geoid for which several
+  	parameterizations are available. A complication arises if we ask whether we
+  	want to include the mostly rigid crust in the domain and simply assume that
+  	it is part of the convecting mantle, albeit a rather viscous part due to its
+  	low temperature and the low pressure there, or whether we want to truncate
+  	the computation at the asthenosphere.
+  	
   \item \textit{What happens at the boundary for each variable involved
   (boundary conditions)?}
+  	The mantle has two boundaries: at the bottom where it contacts the outer core
+  	and at the top where it either touches the air or, depending on the outcome
+  	of the discussion of the previous question, where it contacts the
+  	lithospheric crust. At the bottom, a very good approximation of what is
+  	happening is certainly to assume that the velocity field is tangential
+  	(i.e., horizontal) and without friction forces due to the very low viscosity
+  	of the liquid metal in the outer core. Similarly, we can assume that the
+  	outer core is well mixed and at a constant temperature. At the top boundary,
+  	the situation is slightly more complex because in reality the boundary is not
+  	fixed but also allows vertical movement. If we ignore this, we can assume
+  	free tangential flow at the surface or, if we want, prescribe the tangential
+  	velocity as inferred from plate motion models. \aspect{} has a plugin that
+  	allows to query this kind of information from the \texttt{GPlates} program.
+  
   \item \textit{How did it look at the beginning (initial conditions)?}
+    This is of course a trick question. Convection in the mantle of earth-like
+    planets did not start with a concrete initial temperature distribution when
+    the mantle was already fully formed. Rather, convection already happened
+    when primordial material was still separating into mantle and core. As a
+    consequence, for models that only simulate convection using mantle-like
+    geometries and materials, no physically reasonable initial conditions are
+    possible that date back to the beginning of Earth. On the other hand, recall
+    that we only need initial conditions for the temperature (and, if
+    necessary, compositional fields). Thus, if we have a temperature profile at
+    a given time, for example one inferred from seismic data at the current
+    time, then we can use these as the starting point of a simulation.
 \end{itemize}
 
-units
-geometry
+This discussion shows that there are in fact many pieces with which one can play
+and for which the answers are in fact not always clear. We will address some of
+them in the cookbooks below. Recall in the descriptions we use in the input
+files that \aspect{} uses physical units, rather than non-dimensionalizing
+everything. The advantage, of course, is that we can immediately compare outputs
+with actual measurements. The disadvantage is that we need to work a bit when
+asked for, say, the Rayleigh number of a simulation.
 
-\subsubsection{Simple convection in a quarter of an annulus}
+
+\subsubsection{Simple convection in a quarter of a 2d annulus}
+
+Let us start this sequence of cookbooks using a simpler situation: convection in
+a quarter of a 2d shell. We choose this setup because 2d domains allow for much
+faster computations (in turn allowing for more experimentation) and because
+using a quarter of a shell avoids a pitfall with boundary conditions we will
+discuss in the next section. Because it's simpler to explain what we want to
+describe in pictures than in words, Fig.~\ref{fig:simple-shell-2d} shows the
+domain and the temperature field at a few time steps. In addition, you can find
+a movie of how the temperature evolves over this time period at
+\url{http://www.youtube.com/watch?v=d4AS1FmdarU}.%
+\footnote{In YouTube, click on the gear symbol at the bottom right of the
+player window to select the highest resolution to see all the details of this
+video.}
+
+\begin{figure}[tb]
+\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/x-movie0000}
+\hfill
+\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/x-movie0008}
+\hfill
+\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/x-movie1000}
+\caption{\it Simple convection in a quarter of an annulus: Snapshots of the
+temperature field at times $t=0$, $t=1.2\cdot 10^7$ years (time step 2135), and
+$t=10^9$ years (time step 25,662). The bottom right part of each figure shows an
+overlay of the mesh used during that time step.}
+\label{fig:simple-shell-2d}
+\end{figure}
+
+Let us just start by showing the input file (which you can find in
+\url{cookbooks/shell_simple_2d.prm}:
+
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%,numbers=left]
+set Dimension                              = 2 % \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
+set Use years in output instead of seconds = true % \index[prmindex]{Use years in output instead of seconds} \index[prmindexfull]{Use years in output instead of seconds} %
+set End time                               = 1.5e9 % \index[prmindex]{End time} \index[prmindexfull]{End time} %
+set Output directory                       = output % \index[prmindex]{Output directory} \index[prmindexfull]{Output directory} %
 
 
-\subsubsection{Simple convection in a spherical shell}
+subsection Material model
+  set Model name = simple % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+
+  subsection Simple model
+    set Thermal expansion coefficient = 4e-5 % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Simple model!Thermal expansion coefficient} %
+    set Viscosity                     = 1e22 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
+
+  subsection Spherical shell
+    set Inner radius  = 3481000 % \index[prmindex]{Inner radius} \index[prmindexfull]{Geometry model!Spherical shell!Inner radius} %
+    set Outer radius  = 6336000 % \index[prmindex]{Outer radius} \index[prmindexfull]{Geometry model!Spherical shell!Outer radius} %
+    set Opening angle = 90 % \index[prmindex]{Opening angle} \index[prmindexfull]{Geometry model!Spherical shell!Opening angle} %
+  end
+end
+
+
+subsection Model settings
+  set Zero velocity boundary indicators       = 0 % \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
+  set Tangential velocity boundary indicators = 1,2,3 % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
+  set Prescribed velocity boundary indicators = % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
+
+  set Fixed temperature boundary indicators   = 0,1 % \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
+
+  set Include shear heating                   = true % \index[prmindex]{Include shear heating} \index[prmindexfull]{Model settings!Include shear heating} %
+end
+
+
+subsection Boundary temperature model
+  set Model name = spherical constant % \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
+  subsection Spherical constant
+    set Inner temperature = 4273 % \index[prmindex]{Inner temperature} \index[prmindexfull]{Boundary temperature model!Spherical constant!Inner temperature} %
+    set Outer temperature = 973 % \index[prmindex]{Outer temperature} \index[prmindexfull]{Boundary temperature model!Spherical constant!Outer temperature} %
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = spherical hexagonal perturbation % \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
+end
+
+
+subsection Gravity model
+  set Model name = radial earth-like % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 5 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
+  set Initial adaptive refinement        = 4 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
+  set Strategy                           = temperature % \index[prmindex]{Strategy} \index[prmindexfull]{Mesh refinement!Strategy} %
+  set Time steps between mesh refinement = 15 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, ...
+                               ... heat flux statistics, depth average % \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
+
+  subsection Visualization
+    set Output format                 = vtu % \index[prmindex]{Output format} \index[prmindexfull]{Postprocess!Visualization!Output format} %
+    set Time between graphical output = 1e6 % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
+    set Number of grouped files       = 0 % \index[prmindex]{Number of grouped files} \index[prmindexfull]{Postprocess!Visualization!Number of grouped files} %
+  end
+
+  subsection Depth average
+    set Time between graphical output = 1e6 % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Depth average!Time between graphical output} %
+  end
+end
+\end{lstlisting}
+
+In the following, let us pick apart this input file:
+\begin{enumerate}
+  \item Lines 1--4 are just global parameters. Since we are interested in
+  geophysically realistic simulations, we will use material parameters that
+  leads to flows so slow that we need to measure time in years, and we will set
+  the end time to 1.5 billion years -- enough to see a significant amount of
+  motion.
+  
+  \item The next block (lines 7--10) describes the material that is convecting
+  (for historical reasons, the remainder of the parameters that describe the
+  equations is in a different section, see the fourth point below). We choose
+  the simplest material model \aspect{} has to offer where the viscosity is
+  constant (here, we set it to $\eta=10^{22} \text{Pa}\;\text{s}$) and so are
+  all other parameters except for the density which we choose to be
+  $\rho(T)=\rho_0(1-\beta (T-T_\text{ref}))$ with $\rho_0=3300
+  \text{kg}\;\text{m}^{-3}$, $\beta=4\cdot 10^{-5} \text{K}^{-1}$ and
+  $T_\text{ref}=293 \text{K}$. The remaining material parameters remain at their
+  default values and you can find their values described in the documentation of
+  the \texttt{simple} material model in
+  Sections~\ref{parameters:Material_20model} and
+  \ref{parameters:Material_20model/Simple_20model}.
+  
+  \item Lines 17--25 then describe the geometry. In this simple case, we will
+  take a quarter of a 2d shell (recall that the dimension had previously been
+  set as a global parameter) with inner and outer radii matching those of a
+  spherical approximation of Earth.
+  
+  \item The second part of the model description and boundary values follows in
+  lines 28--46. There, we describe that we want a model where equation
+  \eqref{eq:temperature} contains the shear heating term $2\eta
+  \varepsilon(\mathbf u):\varepsilon(\mathbf u)$ (noting that the default is to
+  use an incompressible model for which the term $\frac{1}{3}(\nabla \cdot
+  \mathbf u)\mathbf 1$ in the shear heating contribution is zero).
+  
+  The boundary conditions require us to look up how the geometry model
+  we chose (the \texttt{spherical shell} model) assigns boundary indicators to
+  the four sides of the domain. This is described in
+  Section~\ref{parameters:Geometry_20model} where the model announces that
+  boundary indicator zero is the inner boundary of the domain, boundary
+  indicator one is the outer boundary, and the left and right boundaries for a
+  2d model with opening angle of 90 degrees as chosen here get boundary
+  indicators 2 and 3, respectively. In other words, the settings in the input
+  file correspond to a zero velocity at the inner boundary and tangential flow
+  at all other boundaries. We know that this is not realistic at the bottom, but
+  for now there are of course many other parts of the model that are not
+  realistic either and that we will have to address in subsequent cookbooks.
+  Furthermore, the temperature is fixed at the inner and outer boundaries (with
+  the left and right boundaries then chosen so that no heat flows across them,
+  emulating symmetry boundary conditions) and, further down, set to values of
+  700 and 4000 degrees Celsius -- roughly realistic for the bottom of the crust
+  and the core-mantle boundary.
+  
+  \item The description of what we want to model is complete by specifying 
+  that the initial temperature is a perturbation with hexagonal symmetry from a
+  linear interpolation between inner and outer temperatures (see
+  Section~\ref{parameters:Initial_20conditions}), and what kind of gravity model
+  we want to choose (one reminiscent of the one inside the Earth mantle, see
+  Section~\ref{parameters:Gravity_20model}).
+  
+  \item The remainder of the input file consists of a description of how to
+  choose the initial mesh and how to adapt it (lines 59--64) and what to do at
+  the end of each time step with the solution that \aspect{} computes for us.
+  Here, we ask for a variety of statistical quantities and for graphical output
+  in VTU format every million years.
+\end{enumerate}
+
+\note{Having described everything to \aspect{}, you may want to view the video linked
+to above again and compare what you see with what you expect. In fact, this is
+what one should always do having just run a model: compare it with expectations to make
+sure that we have not overlooked anything when setting up the model or that
+the code has produced something that doesn't match what we thought we should
+get. Any such mismatch between expectation and observed result is typically a
+learning opportunity: it either points to a bug in our input file, or it
+provides us with insight about an aspect of reality that we had not foreseen.
+Either way, accepting results uncritically is, more often than not, a way to
+scientifically invalid results.}
+
+The model we have chosen has a number of inadequacies that
+make it not very realistic. Let us discuss these issues in the following.
+
+\paragraph{Dimension.} This is a cheap shot but it is nevertheless true that the
+world is three-dimensional whereas the simulation here is 2d. We will address
+this in the next section.
+
+\paragraph{Incompressibility, adiabaticity and the initial conditions.} This one
+requires a bit more discussion. In the model selected above, we have chosen a
+model that is incompressible in the sense that the density does not depend on
+the pressure and only very slightly depends on the temperature (the Boussinesq
+approximation). In such models, material that rises up does not cool down due to
+expansion resulting from the pressure dropping, and material that is transported
+down does not adiabatically heat up. Consequently, the adiabatic temperature
+profile would be constant with depth, and a well-mixed model with hot inner and
+cold outer boundary would have a constant temperature with thin boundary layers
+at the bottom and top of the mantle. In contrast to this, our initial
+temperature field was a perturbation of a linear temperature profile. 
+
+There are multiple implications of this. First, the temperature difference
+between outer and inner boundary of 3300 K we have chosen in the input file is
+much too large. The temperature difference is what drives the convection, but
+what really counts is of course the difference \textit{in addition} to the
+temperature increase a volume of material would experience if it were to be
+transported adiabatically from the surface to the core-mantle boundary. This
+difference is much smaller in reality than 3300 K, and we can expect convection
+to be significantly less vigorous than in the simulation here.
+
+Second, the initial temperature profile we chose is not realistic -- in fact, it
+is a completely instable one: there is hot material underlying cold one, and
+this is not just the result of boundary layers. Consequently, what happens in
+the simulation is that we first overturn the entire temperature field with the
+hot material in the lower half of the domain swapping places with the colder
+material in the top, to achieve a stable layering except for the boundary
+layers. After this, hot blobs rise from the bottom boundary layer into the cold
+layer at the bottom of the mantle, and cold blobs sink from the top, but their
+motion is impeded about half-way through the mantle once they reach material
+that has roughly the same temperature as the plume material. This impedes
+convection until we reach a state where these plumes have sufficiently mixed the
+mantle to achieve a roughly constant temperature profile.
+
+This effect is visible in the movie linked to above where convection does not
+penetrate the entire depth of the mantle for the first 20 seconds
+(corresponding to roughly the first 800 million years). We can also see this
+effect by plotting the root mean square velocity, see the left panel of
+Fig.~\ref{fig:simple-shell-2d-rms}. There, we can see how the average velocity
+picks up once the stable layering of material that resulted from the initial
+overturning has been mixed sufficiently to allow plumes to rise or sink through
+the entire depth of the mantle.
+
+\begin{figure}[tb]
+\includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/rms}
+\hfill
+\includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/depth_average_temperature}
+\caption{\it Simple convection in a quarter of an annulus. Left: Root mean
+square values of the velocity field. The initial spike (off the scale) is due to
+the overturning of the instable layering of the temperature. Convection is suppressed for the
+first 800 million years due to the stable layering that results from it. The
+maximal velocity encountered follows generally the same trend and is in the
+range of 2--3 cm/year between 100 and 800 million years, and 4--8 cm/year
+following that. Right: Average temperature at various depths for $t=0$,
+$t=800,000$ years, $t=5\cdot 10^8$ years, and $t=10^9$ years.}
+\label{fig:simple-shell-2d-rms}
+\end{figure}
+
+The right panel of Fig.~\ref{fig:simple-shell-2d-rms} shows a different way of
+visualizing this, using the average temperature at various depths of the model
+(this is what the \texttt{depth average} postprocessor computes). The figure
+shows how the initially linear unstable layering almost immediately reverts
+completely, and then slowly equilibrates towards a temperature profile that is
+constant throughout the mantle (which in the incompressible model chosen here
+equates to an adiabatic layering) except for the boundary layers at the inner
+and outer boundaries. (The end points of these temperature profiles do not
+exactly match the boundary values specified in the input file because we
+average temperatures over shells of finite width.)
+
+A conclusion of this discussion is that if we want to evaluate the statistical
+properties of the flow field, e.g., the number of plumes, average velocities or
+maximal velocities, then we need to restrict our efforts to times after
+approximately 800 million years in this simulation to avoid the effects of our
+inappropriately chosen initial conditions. Likewise, we may actually want to
+choose initial conditions more like what we see in the model for later times,
+i.e., constant in depth with the exception of thin boundary layers, if we want
+to stick to incompressible models.
+
+\paragraph{Material model.}
+The model we use here involves viscosity, density, and thermal property
+functions that do not depend on the pressure, and only the density varies
+(slightly) with the temperature. We know that this is not the case in nature.
+
+As mentioned, we will address some of these issues in the following sections.
+However, despite all of this, some things are at least at the right order of
+magnitude, confirming that what \aspect{} is computing is reasonable. For
+example, the maximal velocities encounted in our model (after the 800 million
+year boundary) are in the range of 6--7cm per year, with occasional excursions
+up to 11cm. Clearly, something is going in the right direction.
+
+
+\subsubsection{Simple convection in a spherical 3d shell}
+
 
 \marginpar{Use cookbooks/periodic-box.prm}
 \marginpar{Include something that uses the GPlates interface}
+
 
 \subsection{Benchmarks}
 \label{sec:cookbooks-benchmarks}
