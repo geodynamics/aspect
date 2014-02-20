@@ -4391,7 +4391,10 @@ Either way, accepting results uncritically is, more often than not, a way to
 scientifically invalid results.}
 
 The model we have chosen has a number of inadequacies that
-make it not very realistic. Let us discuss these issues in the following.
+make it not very realistic (some of those happened more as an accident while
+playing with the input file and weren't a purposeful experiment, but we left
+them in because they make for good examples to discuss below).
+Let us discuss these issues in the following.
 
 \paragraph{Dimension.} This is a cheap shot but it is nevertheless true that the
 world is three-dimensional whereas the simulation here is 2d. We will address
@@ -4480,7 +4483,108 @@ The model we use here involves viscosity, density, and thermal property
 functions that do not depend on the pressure, and only the density varies
 (slightly) with the temperature. We know that this is not the case in nature.
 
-As mentioned, we will address some of these issues in the following sections.
+\paragraph{Shear heating.}
+When we set up the input file, we started with a model that includes the
+shear heating term $2\eta \varepsilon(\mathbf u):\varepsilon(\mathbf u)$ in
+eq.~\eqref{eq:temperature}. In hindsight, this may have been the wrong decision,
+but it provides an opportunity to investigate whether we think that the results of our
+computations can possibly be correct. 
+
+We first realized the issue when looking at the heat flux that the
+\texttt{heat flux statistics} postprocessor computes. This is shown in the left
+panel of Fig.~\ref{fig:simple-shell-2d-heatflux}.%
+\footnote{The \texttt{heat flux statistics} postprocessor computes heat fluxes
+through parts of the boundary in \textit{outward} direction, i.e., from the
+mantle to the air and to the core. However, we are typically interested in the
+flux from the core into the mantle, so the figure plots the negative of the
+computed quantity.}
+There are two issues one should notice here.
+The more obvious one is that the flux from the mantle to the air is consistently
+higher than the heat flux from core to mantle. Since we have no radiogenic
+heating switched on (see the \texttt{Radiogenic heating rate}
+\index[prmindex]{Radiogenic heating rate}
+\index[prmindexfull]{Model settings!Radiogenic heating rate}
+parameter in the \texttt{Model settings} section of the input file; see also
+Section~\ref{parameters:Model_20settings}), in the long run the heat output
+of the mantle must equal the input, unless is cools. Our misconception was that
+after the 800 million year transition, we believed that we had reached a steady
+state where the average temperature remains constant and convection simply
+moves heat from the core-mantle boundary the surface. One could also be tempted
+to believe this from the right panel in Fig.~\ref{fig:simple-shell-2d-rms} where
+it looks like the average temperature does at least not change dramatically.
+But, it is easy to convince oneself that that is not the case: the
+\texttt{temperature statistics} postprocessor we had previously selected also
+outputs data about the mean temperature in the model, and it looks like shown in
+the left panel of Fig.~\ref{fig:simple-shell-2d-temperature}. Indeed, the
+average temperature drops over the course of the 1.2 billion years shown here.
+We could now convince ourselves that indeed the loss of thermal
+energy in the mantle due to the drop in average temperature is exactly what
+fuels the persistently imbalanced energy outflow. In essence, what this would
+show is that if we kept the temperature at the boundaries constant, we would
+have chosen a mantle that was initially too hot on average to be sustained by
+the boundary values and that will cool until it will be in energetic balance and
+on longer time scales, in- and outflow of thermal energy would balance each
+other.
+
+
+\begin{figure}[tb]
+  \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d/heat-flux}
+  \hfill
+  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/heat-flux-noshear}
+  \caption{\it Simple convection in a quarter of an annulus. Left: Heat flux
+  through the core-mantle and mantle-air boundaries of the domain for the
+  model with shear heating. Right: Same for a model without shear heating.}
+  \label{fig:simple-shell-2d-heatflux}
+\end{figure}
+
+
+\begin{figure}[tb]
+  \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d/avg-temperature}
+  \hfill
+  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/avg-temperature-noshear}
+  \caption{\it Simple convection in a quarter of an annulus. Left: Average
+  temperature throughout the model for the
+  model with shear heating. Right: Same for a model without shear heating.}
+  \label{fig:simple-shell-2d-temperature}
+\end{figure}
+
+However, there is a bigger problem. Fig.~\ref{fig:simple-shell-2d-heatflux}
+shows that at the very beginning, there is a spike in energy flux through the
+outer boundary. We can explain this away with the imbalanced initial temperature
+field that leads to an overturning and, thus, a lot of hot material rising close
+to the surface that will then lead to a high energy flux towards the cold upper
+boundary. But, worse, there is initially a \textit{negative} heat flux into the
+mantle from the core -- in other words, the mantle is \textit{losing} energy to
+the core. How is this possible? After all, the hottest part of the mantle in our
+initial temperature field is at the core-mantle boundary, no thermal energy
+should be flowing from the colder overlying material towards the hotter material
+at the boundary! A glimpse of the solution can be found in looking at the
+average temperature in Fig.~\ref{fig:simple-shell-2d-temperature}: At the
+beginning, the average temperature \textit{rises}, and apparently there are
+parts of the mantle that become hotter than the 4273 K we have given the core,
+leading to a downward heat flux. This heating can of course only come from the
+shear heating term we have accidentally left in the model: at the beginning, the
+instable layering leads to very large velocities, and large velocities lead to
+large velocity gradients that in turn lead to a lot of shear heating! Once the
+initial overturning has subsided, after say 100 million years (see the mean
+velocity in Fig.~\ref{fig:simple-shell-2d-rms}), the shear heating becomes
+largely irrelevant and the cooling of the mantle indeed begins.
+
+Whether this is really the case is of course easily verified: The right panels
+of Fig.s~\ref{fig:simple-shell-2d-heatflux}
+and \ref{fig:simple-shell-2d-temperature} show heat fluxes and average
+temperatures for a model where we have switched off the shear heating by setting 
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Model settings
+  set Include shear heating                   = false % \index[prmindex]{Include shear heating} \index[prmindexfull]{Model settings!Include shear heating} %
+end
+\end{lstlisting}
+Indeed, doing so leads to a model where the heat flux from core to mantle is
+always positive, and where the average temperature strictly drops!
+
+
+\paragraph{Summary.} As mentioned, we will address some of the issues we have
+identified as unrealistic in the following sections.
 However, despite all of this, some things are at least at the right order of
 magnitude, confirming that what \aspect{} is computing is reasonable. For
 example, the maximal velocities encounted in our model (after the 800 million
