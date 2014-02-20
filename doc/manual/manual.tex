@@ -4229,7 +4229,7 @@ overlay of the mesh used during that time step.}
 \end{figure}
 
 Let us just start by showing the input file (which you can find in
-\url{cookbooks/shell_simple_2d.prm}:
+\url{cookbooks/shell_simple_2d.prm}):
 
 \begin{lstlisting}[frame=single,language=prmfile,escapechar=\%,numbers=left]
 set Dimension                              = 2 % \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
@@ -4317,11 +4317,11 @@ In the following, let us pick apart this input file:
 \begin{enumerate}
   \item Lines 1--4 are just global parameters. Since we are interested in
   geophysically realistic simulations, we will use material parameters that
-  leads to flows so slow that we need to measure time in years, and we will set
+  lead to flows so slow that we need to measure time in years, and we will set
   the end time to 1.5 billion years -- enough to see a significant amount of
   motion.
   
-  \item The next block (lines 7--10) describes the material that is convecting
+  \item The next block (lines 7--14) describes the material that is convecting
   (for historical reasons, the remainder of the parameters that describe the
   equations is in a different section, see the fourth point below). We choose
   the simplest material model \aspect{} has to offer where the viscosity is
