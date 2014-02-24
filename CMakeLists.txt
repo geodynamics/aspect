@@ -60,8 +60,6 @@ IF (DEAL_II_STATIC_EXECUTABLE STREQUAL "ON")
     SET_PROPERTY(SOURCE ${_source_file}
       APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_SHARED_LIBS=0)
   ENDFOREACH()
-  SET_PROPERTY(TARGET aspect
-     APPEND PROPERTY LINK_FLAGS "-static")
 ELSE()
   MESSAGE(STATUS "Enabling dynamic loading of plugins from the input file")
   FOREACH(_source_file ${TARGET_SRC})
