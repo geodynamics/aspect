@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -109,7 +109,7 @@ namespace aspect
           Assert (dof_handler.n_dofs() == n_depth_zones, ExcInternalError());
 
           DataOutStack<1> data_out_stack;
-          std::vector<string> variables;
+          std::vector<std::string> variables;
           variables.push_back ("temperature");
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             variables.push_back(std::string("C_") + Utilities::int_to_string(c));
