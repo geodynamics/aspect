@@ -509,11 +509,11 @@ namespace aspect
 
           if (comp.length()>0)
             {
-              for (std::string::const_iterator p=comp.begin();p!=comp.end();++p)
+              for (std::string::const_iterator direction=comp.begin();direction!=comp.end();++direction)
                 {
-                  AssertThrow(*p>='x' && *p<='z', ExcMessage("Error in selector of prescribed velocity boundary component"));
-                  AssertThrow(dim==3 || *p!='z', ExcMessage("for dim=2, prescribed velocity component z is invalid"))
-                  mask[*p-'x']=true;
+                  AssertThrow(*direction>='x' && *direction<='z', ExcMessage("Error in selector of prescribed velocity boundary component"));
+                  AssertThrow(dim==3 || *direction!='z', ExcMessage("for dim=2, prescribed velocity component z is invalid"))
+                  mask[*direction-'x']=true;
                 }
               for (unsigned int i=0;i<introspection.component_masks.velocities.size();++i)
                 mask[i] = mask[i] & introspection.component_masks.velocities[i];

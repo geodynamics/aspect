@@ -163,8 +163,8 @@ namespace aspect
       dst.block(1).sadd (-1, 1, b.block(1));
 
       // clear blocks we didn't want to fill
-      for (unsigned int b=2; b<dst.n_blocks(); ++b)
-        dst.block(b) = 0;
+      for (unsigned int block=2; block<dst.n_blocks(); ++block)
+        dst.block(block) = 0;
 
       return dst.l2_norm();
     }

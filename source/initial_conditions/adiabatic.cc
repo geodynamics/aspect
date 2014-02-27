@@ -90,10 +90,10 @@ namespace aspect
       if (perturbation_position == "center")
         {
           if (const GeometryModel::SphericalShell<dim> *
-              geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (this->geometry_model))
+              shell_geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (this->geometry_model))
             {
-              const double inner_radius = geometry_model->inner_radius();
-              const double half_opening_angle = numbers::PI/180.0 * 0.5 * geometry_model->opening_angle();
+              const double inner_radius = shell_geometry_model->inner_radius();
+              const double half_opening_angle = numbers::PI/180.0 * 0.5 * shell_geometry_model->opening_angle();
               if (dim==2)
                 {
                   // choose the center of the perturbation at half angle along the inner radius
@@ -105,7 +105,7 @@ namespace aspect
                   // if the opening angle is 90 degrees (an eighth of a full spherical
                   // shell, then choose the point on the inner surface along the first
                   // diagonal
-                  if (geometry_model->opening_angle() == 90)
+                  if (shell_geometry_model->opening_angle() == 90)
             	  {
             		mid_point(0) = inner_radius*std::sqrt(1./3),
             		mid_point(1) = inner_radius*std::sqrt(1./3),
@@ -121,12 +121,12 @@ namespace aspect
 		}
 	    }
           else if (const GeometryModel::Box<dim> *
-                   geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (this->geometry_model))
+                   box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (this->geometry_model))
             // for the box geometry, choose a point at the center of the bottom face.
             // (note that the loop only runs over the first dim-1 coordinates, leaving
             // the depth variable at zero)
             for (unsigned int i=0; i<dim-1; ++i)
-              mid_point(i) += 0.5 * geometry_model->get_extents()[i];
+              mid_point(i) += 0.5 * box_geometry_model->get_extents()[i];
           else
             AssertThrow (false,
                          ExcMessage ("Not a valid geometry model for the initial conditions model"

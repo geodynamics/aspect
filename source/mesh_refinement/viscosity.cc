@@ -132,11 +132,8 @@ namespace aspect
       // will yield convergence of the error indicators to zero as h->0)
       const double power = 1.0 + dim/2.0;
       {
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = this->get_dof_handler().begin_active(),
-        endc = this->get_dof_handler().end();
         unsigned int i=0;
-        for (; cell!=endc; ++cell, ++i)
+        for (cell = this->get_dof_handler().begin_active(); cell!=endc; ++cell, ++i)
           if (cell->is_locally_owned())
             indicators(i) *= std::pow(cell->diameter(), power);
       }

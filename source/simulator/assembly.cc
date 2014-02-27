@@ -53,6 +53,8 @@ namespace aspect
                                 const unsigned int        n_compositional_fields);
           StokesPreconditioner (const StokesPreconditioner &data);
 
+          virtual ~StokesPreconditioner ();
+
           FEValues<dim>               finite_element_values;
 
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
@@ -108,6 +110,12 @@ namespace aspect
           composition_values(scratch.composition_values),
           material_model_inputs(scratch.material_model_inputs),
           material_model_outputs(scratch.material_model_outputs)
+        {}
+
+
+        template <int dim>
+        StokesPreconditioner<dim>::
+        ~StokesPreconditioner ()
         {}
 
 
@@ -354,6 +362,8 @@ namespace aspect
           StokesPreconditioner (const FiniteElement<dim> &finite_element);
           StokesPreconditioner (const StokesPreconditioner &data);
 
+          virtual ~StokesPreconditioner ();
+
           FullMatrix<double>          local_matrix;
           std::vector<types::global_dof_index>   local_dof_indices;
         };
@@ -377,6 +387,12 @@ namespace aspect
           :
           local_matrix (data.local_matrix),
           local_dof_indices (data.local_dof_indices)
+        {}
+
+
+        template <int dim>
+        StokesPreconditioner<dim>::
+        ~StokesPreconditioner ()
         {}
 
 

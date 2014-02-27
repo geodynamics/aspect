@@ -183,10 +183,10 @@ namespace aspect
       uncompress((Bytef *)&uncompressed[0], &uncompressed_size, (Bytef *)&compressed[0], compression_header[3]);
 
       {
-        std::stringstream ifs;
+        std::stringstream ss;
         // this puts the data of uncompressed into the stringstream
         ifs.rdbuf()->pubsetbuf(&uncompressed[0], uncompressed_size);
-        aspect::iarchive ia (ifs);
+        aspect::iarchive ia (ss);
         ia >> (*this);
       }
     }
