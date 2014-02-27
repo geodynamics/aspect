@@ -155,10 +155,11 @@ void possibly_load_shared_libs (const std::string &parameter_filename)
 int main (int argc, char *argv[])
 {
   using namespace dealii;
+
+  // disable the use of thread. if that is not what you want,
   // use numbers::invalid_unsigned_int instead of 1 to use as many threads
   // as deemed useful by TBB
-  unsigned int n_threads = 1;
-  Utilities::MPI::MPI_InitFinalize mpi_initialization(argc, argv, n_threads);
+  Utilities::MPI::MPI_InitFinalize mpi_initialization(argc, argv, /*n_threads =*/ 1);
 
   try
     {
