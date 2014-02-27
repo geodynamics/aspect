@@ -332,7 +332,7 @@ namespace aspect
 
     // Compute the residual before we solve and return this at the end.
     // This is used in the nonlinear solver.
-    double initial_residual = system_matrix.block(block_number,block_number).residual
+    const double initial_residual = system_matrix.block(block_number,block_number).residual
         (temp,
          distributed_solution.block(block_number),
          system_rhs.block(block_number));
