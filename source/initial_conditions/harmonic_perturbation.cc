@@ -53,7 +53,7 @@ namespace aspect
       double lateral_perturbation = 0.0;
 
       if (const GeometryModel::SphericalShell<dim> *
-          geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (this->geometry_model))
+          spherical_geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (this->geometry_model))
         {
           // In case of spherical shell calculate spherical coordinates
           const Tensor<1,dim> scoord = spherical_surface_coordinates(position);
@@ -62,7 +62,7 @@ namespace aspect
             {
               // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
               // This way the perturbation is alway 0 at the model boundaries.
-              const double opening_angle = geometry_model->opening_angle()*numbers::PI/180.0;
+              const double opening_angle = spherical_geometry_model->opening_angle()*numbers::PI/180.0;
               lateral_perturbation = std::sin(lateral_wave_number_1*scoord[1]*numbers::PI/opening_angle);
             }
 
@@ -81,12 +81,12 @@ namespace aspect
             }
         }
       else if (const GeometryModel::Box<dim> *
-               geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (this->geometry_model))
+               box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (this->geometry_model))
         {
           // In case of Box model use a sine as lateral perturbation
           // that is scaled to the extent of the geometry.
           // This way the perturbation is alway 0 at the model borders.
-          const Point<dim> extent = geometry_model->get_extents();
+          const Point<dim> extent = box_geometry_model->get_extents();
 
           if (dim==2)
             {
