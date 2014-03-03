@@ -1120,6 +1120,7 @@ community, where the acronym stands for \textit{Im}plicit \textit{P}ressure,
 
 
 \section{Installation}
+\label{sec:installation}
 
 This is a brief explanation of how to install all the required software and
 \aspect{} itself.
@@ -5990,8 +5991,9 @@ do:
 
   As discussed above, it is possible -- but not necessary -- to split this file
   into two: a header file, say \texttt{my\_plugin.h}, and the
-  \texttt{my\_plugin.cc} file. We do this for all the existing plugins in
-  \aspect{} so that the documentation of these plugins shows up in the
+  \texttt{my\_plugin.cc} file (or, if you prefer, into multiple source files).
+  We do this for all the existing plugins in \aspect{} so that the documentation
+  of these plugins shows up in the
   doxygen-generated documentation. However, for your own plugins, there is
   typically no need for this split. The only occasion where this would be useful
   is if some plugin actually makes use of a different plugin (e.g., the
@@ -6040,8 +6042,60 @@ do:
     installation. On the other hand, compiling the file into a shared library is
     a bit more that you need to do yourself. Nevertheless, this is the preferred
     approach.
+    
+    In practice, the compiler line above can become tedious because it includes
+    paths to the \aspect{} and \dealii{} header files, but possibly also other
+    things such as Trilinos headers, etc. Having to remember all of these pieces
+    is a hassle, and a much easier way is in fact to set up a mini-CMake project
+    for this. To this end, simply copy the file \url{doc/plugin-CMakeLists.txt}
+    to the directory where you have your plugin source files and rename it to
+    \texttt{CMakeLists.txt}. In essence, this file just has the following
+    content:
+    \begin{lstlisting}[frame=single]
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
+
+FIND_PACKAGE(Aspect REQUIRED HINTS ${ASPECT_DIR} ../ $ENV{ASPECT_DIR})
+DEAL_II_INITIALIZE_CACHED_VARIABLES()
+
+PROJECT(my_plugin)
+ADD_LIBRARY(my_plugin SHARED source_1.cc source_2.cc)
+ASPECT_SETUP_PLUGIN(my_plugin)
+    \end{lstlisting}
   \end{itemize}
+  You can then just run the commands
+    \begin{verbatim}
+ cmake -DASPECT_DIR=/path/to/aspect .
+ make
+    \end{verbatim}
+    and it should compile your plugin files into a shared library
+    \texttt{my\_plugin.so}. Of course, you may want to choose different names
+    for the source files \texttt{source\_1.cc}, \texttt{source\_2.cc} or the name of
+    the plugin \texttt{my\_plugin}.
+    
+    In essence, what these few lines do is that they find an \aspect{}
+    installation (i.e., the directory where you configured and compiled it,
+    which may be the same directory as where you keep your sources, or a
+    different one, as discussed in Section~\ref{sec:installation}) in either the
+    directory explicitly specified in the \texttt{ASPECT\_DIR} variable passed
+    to \texttt{cmake}, the shell environment, or just one directory up. It then
+    sets up compiler paths and similar, and the following lines simply define
+    the name of a plugin, list the source files for it, and define everything
+    that's necessary to compile them into a shared library. Calling
+    \texttt{make} on the command line then simply compiles everything.
 \end{itemize}
+
+\note{Complex projects built on \aspect{} often require plugins of more than
+just one kind. For example, they may have plugins for the geometry, the
+material model, and for postprocessing. In such cases, you can either define
+multiple shared libraries by repeating the calls to \texttt{PROJECT},
+\texttt{ADD\_LIBRARY} and \texttt{ASPECT\_SETUP\_PLUGIN} for each shared
+library in your
+\texttt{CMakeLists.txt} file above, or you can just compile all of your source
+files into a single shared library. In the latter case, you only need to list a
+single library in your input file, but each plugin will still be selectable in
+the various sections of your input file as long as each of your classes has a
+corresponding \texttt{ASPECT\_REGISTER\_*} statement somewhere in the file
+where you have its definition.}
 
 \note{If you choose to compile your plugins into a shared library yourself, you
   will need to recompile them every time you upgrade your \aspect{} installation

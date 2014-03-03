@@ -1,0 +1,40 @@
+# Copyright (C) 2014 by the authors of the ASPECT code.
+#
+# This file is part of ASPECT.
+#
+# ASPECT is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# ASPECT is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ASPECT; see the file doc/COPYING.  If not see
+# <http://www.gnu.org/licenses/>.
+
+#  $Id$
+
+
+# -----------------------------------------------------------------
+# This file is a sample CMakeLists.txt file that plugins can use to
+# configure and build a shared library that can then be loaded via
+# the input file. For more information, see the manual.
+#
+# For actual use, you may want to use a different name than
+# <my_plugin> for the project, and for the names of the source files
+# below.
+# -----------------------------------------------------------------
+
+
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
+
+FIND_PACKAGE(Aspect REQUIRED HINTS ${ASPECT_DIR} ../ $ENV{ASPECT_DIR})
+DEAL_II_INITIALIZE_CACHED_VARIABLES()
+
+PROJECT(my_plugin)
+ADD_LIBRARY(my_plugin SHARED source_1.cc source_2.cc)
+ASPECT_SETUP_PLUGIN(my_plugin)
