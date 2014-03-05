@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013, 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -447,16 +447,22 @@ namespace aspect
         tmp_filename = tmp_filename_x;
         delete []tmp_filename_x;
 
-        // If we failed to create the temp file, just write directly to the target file
+        // If we failed to create the temp file, just write directly to the target file.
+	// We also provide a warning about this fact. There are places where
+	// this fails *on every node*, so we will get a lot of warning messages
+	// into the output; in these cases, just writing multiple pieces to
+	// std::cerr will produce an unreadable mass of text; rather, first
+	// assemble the error message completely, and then output it atomically
         if (tmp_file_desc == -1)
           {
-            std::cerr << "***** WARNING: could not create temporary file, will "
-                      "output directly to final location. This may negatively "
-                      "affect performance."
-                      " (On processor "
-                      << Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) << ".)"
-                      << std::endl;
+	    std::string x ("***** WARNING: could not create temporary file, will "
+			   "output directly to final location. This may negatively "
+			   "affect performance."
+			   " (On processor ");
+	    x += Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) + ".)\n";
 
+	    std::cerr << x << std::flush;
+	    
             tmp_filename = *filename;
           }
       }
