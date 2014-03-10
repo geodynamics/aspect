@@ -136,16 +136,20 @@ void possibly_load_shared_libs (const std::string &parameter_filename)
                                    + dlerror() + ">."));
         }
 
-      std::cout << std::endl;
+      if (Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+	std::cout << std::endl;
 #else
-      std::cerr << std::endl << std::endl
-                << "----------------------------------------------------"
-                << std::endl;
-      std::cerr << "You can not load additional shared libraries on " << std::endl
-		<< "systems where you link ASPECT as a static executable."
-		<< std::endl
-                << "----------------------------------------------------"
-                << std::endl;
+      if (Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+	{
+	  std::cerr << std::endl << std::endl
+		    << "----------------------------------------------------"
+		    << std::endl;
+	  std::cerr << "You can not load additional shared libraries on " << std::endl
+		    << "systems where you link ASPECT as a static executable."
+		    << std::endl
+		    << "----------------------------------------------------"
+		    << std::endl;
+	}
       std::exit (1);
 #endif
     }
