@@ -145,9 +145,17 @@ namespace aspect
       if (nondimesional_depth > 0)
         subadiabatic_T = -subadiabaticity * nondimesional_depth * nondimesional_depth;
 
+      // If adiabatic heating is disabled, apply all perturbations to
+      // constant adiabatic surface temperature instead of adiabatic profile.
+      const double temperature_profile = (this->include_adiabatic_heating()) 
+                      ? 
+                      this->adiabatic_conditions->temperature(position) 
+                      :
+                      adiabatic_surface_temperature;
+
       // return sum of the adiabatic profile, the boundary layer temperatures and the initial
-      // temperature perturbation
-      return this->adiabatic_conditions->temperature(position) + surface_cooling_temperature
+      // temperature perturbation. 
+      return temperature_profile + surface_cooling_temperature
              + (perturbation > 0.0 ? std::max(bottom_heating_temperature + subadiabatic_T,perturbation)
                 : bottom_heating_temperature + subadiabatic_T);
     }
