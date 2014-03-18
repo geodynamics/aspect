@@ -247,10 +247,10 @@ namespace aspect
       {
         Tensor<1,3> scoord;
 
-        scoord[0] = std::acos(position[2]/std::sqrt(position.norm_square())); // Theta
+        scoord[0] = std::acos(position[2]/position.norm()); // Theta
         scoord[1] = std::atan2(position[1],position[0]); // Phi
         if (scoord[1] < 0.0) scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
-        scoord[2] = std::sqrt(position.norm_square()); // R
+        scoord[2] = position.norm(); // R
         return scoord;
       }
 
@@ -259,8 +259,8 @@ namespace aspect
       {
         Tensor<1,3> ccoord;
 
-        ccoord[0] = std::sin(sposition[0] * std::cos(sposition[1])); // X
-        ccoord[1] = std::sin(sposition[0] * std::sin(sposition[1])); // Y
+        ccoord[0] = std::sin(sposition[0]) * std::cos(sposition[1]); // X
+        ccoord[1] = std::sin(sposition[0]) * std::sin(sposition[1]); // Y
         ccoord[2] = std::cos(sposition[0]); // Z
         return ccoord;
       }
