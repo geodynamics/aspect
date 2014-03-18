@@ -51,7 +51,15 @@ namespace aspect
            * Initialize all members and the two pointers referring to the actual velocities.
            * Also calculates any necessary rotation parameters for a 2D model.
            */
-          GPlatesLookup(const Tensor<1,2> &pointone, const Tensor<1,2> &pointtwo);
+          GPlatesLookup(const Tensor<1,2> &pointone, const Tensor<1,2> &pointtwo, const unsigned int width);
+
+          /**
+           * Outputs the GPlates module information at model start. Need to be separated from Constructor
+           * because at construction time the SimulatorAccess is not initialized and only Rank 0 should
+           * give the screen output.
+           */
+          template <int dim>
+          void screen_output(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two) const;
 
           /**
            * Check whether a file named filename exists.
@@ -62,7 +70,7 @@ namespace aspect
            * Loads a gplates .gpml velocity file. Throws an exception if
            * the file does not exist.
            */
-          void load_file(const std::string &filename);
+          void load_file(const std::string &filename, const bool screen_output);
 
           /**
            * Returns the computed surface velocity in cartesian coordinates. Takes
@@ -81,16 +89,21 @@ namespace aspect
           /**
            * Tables which contain the velocities
            */
-          dealii::Table<2,Tensor<1,2> > velocity_vals;
-          dealii::Table<2,Tensor<1,2> > old_velocity_vals;
+          dealii::Table<2,Tensor<1,3> > velocity_vals;
+          dealii::Table<2,Tensor<1,3> > old_velocity_vals;
+
+          /**
+           * Table for the data point positions.
+           */
+          dealii::Table<2,Tensor<1,3> > velocity_positions;
 
           /**
            * Pointers to the actual tables.
            * Used to avoid unnecessary copying
            * of values.
            */
-          dealii::Table<2,Tensor<1,2> > *velocity_values;
-          dealii::Table<2,Tensor<1,2> > *old_velocity_values;
+          dealii::Table<2,Tensor<1,3> > *velocity_values;
+          dealii::Table<2,Tensor<1,3> > *old_velocity_values;
 
           /**
            * Distances between adjacent point in the Lat/Lon grid
@@ -105,6 +118,14 @@ namespace aspect
           Tensor<1,3> rotation_axis;
           double rotation_angle;
 
+          /**
+           * Determines the width of the velocity interpolation zone around the current point.
+           * Currently equals the arc distance between evaluation point and velocity data point that
+           * is still included in the interpolation. The weighting of the points currently only accounts
+           * for the surface area a single data point is covering ('moving window' interpolation without
+           * distance weighting).
+           */
+          unsigned int interpolation_width;
 
           /**
            * A function that returns the rotated vector r' that results out of a
@@ -131,25 +152,78 @@ namespace aspect
            * defined by theta (polar angle. not geographical latitude) and phi.
            */
           Tensor<1,3>
-          cartesian_surface_coordinates(const Tensor<1,2> &sposition) const;
+          cartesian_surface_coordinates(const Tensor<1,3> &sposition) const;
 
           /**
            * Returns cartesian velocities calculated from surface velocities and position in spherical coordinates
            *
-           * @param s_velocities Surface velocities in spherical coordinates (theta, phi) @param s_position Position
-           * in spherical coordinates (theta,phi,radius)
+           * @param s_velocities Surface velocities in spherical coordinates (theta, phi)
+           * @param s_position Position in spherical coordinates (theta,phi,radius)
            */
-          Tensor<1,3> sphere_to_cart_velocity(const Tensor<1,2> &s_velocities, const Tensor<1,3> &s_position) const;
+          Tensor<1,3> sphere_to_cart_velocity(const Tensor<1,2> &s_velocities,
+              const Tensor<1,3> &s_position) const;
 
           /**
-           * calculates the phi-index given a certain phi
+           * calculates the index given a certain position
+           *
+           * @param index Reference to the index field, which is modified.
+           * @param position Input position, which is converted to spatial index
            */
-          double get_idphi(const double phi_) const;
+          void
+          calculate_spatial_index(int* index, const Tensor<1,3> position) const;
 
           /**
-           * calculates the theta-index given a certain polar angle
+           * This function adds a certain data point to the interpolated
+           * surface velocity at this evaluation point. This includes
+           * calculating the interpolation weight and the rotation of the
+           * velocity to the evaluation point position (the velocity
+           * need to be tangential to the surface).
            */
-          double get_idtheta(const double theta_) const;
+          double
+          add_interpolation_point(Tensor<1,3>& surf_vel,
+                                  const Tensor<1,3> position,
+                                  const int spatial_index[2],
+                                  const double time_weight,
+                                  const bool check_termination) const;
+
+          /**
+           * Returns a velocity vector that is rotated to be tangential to the sphere surface at point position
+           *
+           * @param data_position Position of the velocity data point
+           * @param point_position Position of the current evaluation point to which the velocity will be rotated
+           * @param data_velocity Unrotated velocity vector
+           */
+          Tensor<1,3>
+          rotate_grid_velocity(const Tensor<1,3> data_position, const Tensor<1,3> point_position, const Tensor<1,3> data_velocity) const;
+
+          /**
+           * Returns the position (cartesian or spherical depending on last argument)
+           * of a data point with a given theta,phi index.
+           */
+          Tensor<1,3>
+          get_grid_point_position(const unsigned int theta_index,
+              const unsigned int phi_index,
+              const bool cartesian) const;
+
+          /**
+           * Returns the arc distance of two points on a sphere surface.
+           */
+          double
+          arc_distance(const Tensor<1,3> position_1, const Tensor<1,3> position_2) const;
+
+          /**
+           * Handles the actual multidimensional interpolation from velocity input to evaluation point position.
+           */
+          Tensor<1,3>
+          interpolate ( const Tensor<1,3> position,
+              const double time_weight) const;
+
+          /**
+           * Bounds the theta and phi indices to the right sizes.
+           * Handles periodicity in phi and theta.
+           */
+          void
+          reformat_indices (int idx[2]) const;
       };
     }
 
@@ -177,8 +251,7 @@ namespace aspect
 
         /**
          * Initialization function. This function is called once at the beginning
-         * of the program and loads the first set of GPlates files describing initial
-         * conditions at the start time.
+         * of the program. Parses the user input and checks for valid geometry model.
          */
         void
         initialize (const GeometryModel::Interface<dim> &geometry_model);
@@ -219,7 +292,7 @@ namespace aspect
          * A variable that stores the currently used velocity file of a series.
          * It gets updated if necessary by set_current_time.
          */
-        unsigned int  current_time_step;
+        int  current_time_step;
 
         /**
          * Time at which the velocity file with number 0 shall be loaded.
@@ -266,9 +339,38 @@ namespace aspect
         std::string point2;
 
         /**
+         * Parsed user input of point1 and point2
+         */
+        Tensor<1,2> pointone;
+        Tensor<1,2> pointtwo;
+
+        /**
+         * Determines the width of the velocity interpolation zone around the current point.
+         * Currently equals the arc distance between evaluation point and velocity data point that
+         * is still included in the interpolation. The weighting of the points currently only accounts
+         * for the surface area a single data point is covering ('moving window' interpolation without
+         * distance weighting).
+         */
+        unsigned int interpolation_width;
+
+        /**
          * Pointer to an object that reads and processes data we get from gplates files.
          */
         std_cxx1x::shared_ptr<internal::GPlatesLookup> lookup;
+
+        /**
+         * Handles the update of the velocity data in lookup.
+         */
+        void
+        update_velocity_data (const bool first_process);
+
+        /**
+         * Handles settings and user notification in case the
+         * time-dependent part of the boundary condition is over.
+         */
+        void
+        end_time_dependence (const int timestep,
+            const bool first_process);
 
         /**
          * Create a filename out of the name template.

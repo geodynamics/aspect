@@ -16,7 +16,7 @@
   You should have received a copy of the GNU General Public License
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
-*/
+ */
 /*  $Id$  */
 
 
@@ -28,6 +28,7 @@
 #include <deal.II/base/table.h>
 #include <fstream>
 #include <iostream>
+#include <cmath>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/lexical_cast.hpp>
@@ -39,7 +40,7 @@ namespace aspect
   {
     namespace internal
     {
-      GPlatesLookup::GPlatesLookup(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two)
+      GPlatesLookup::GPlatesLookup(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two, const unsigned int width)
       {
         velocity_vals.reinit(0,0);
         old_velocity_vals.reinit(0,0);
@@ -50,11 +51,13 @@ namespace aspect
         delta_phi = 0.0;
         delta_theta = 0.0;
 
+        interpolation_width = width;
+
         // get the cartesian coordinates of the points the 2D model shall lie in
         // this computation is done also for 3D since it is not expensive and the
         // template dim is currently not used here. Could be changed.
-        const Tensor<1,3> point_one = cartesian_surface_coordinates(surface_point_one);
-        const Tensor<1,3> point_two = cartesian_surface_coordinates(surface_point_two);
+        const Tensor<1,3> point_one = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_one));
+        const Tensor<1,3> point_two = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_two));
 
         //Set up the normal vector of an unrotated 2D spherical shell
         // that by default lies in the x-y plane.
@@ -67,15 +70,47 @@ namespace aspect
         cross_product(rotated_normal_vector,point_one,point_two);
         rotated_normal_vector /= rotated_normal_vector.norm();
 
-        // Calculate the crossing line of the two normals,
-        // which will be the rotation axis to transform the
-        // into each other
-        cross_product(rotation_axis,unrotated_normal_vector,rotated_normal_vector);
-        rotation_axis /= rotation_axis.norm();
+        if ((rotated_normal_vector - unrotated_normal_vector).norm() > 1e-3)
+          {
+            // Calculate the crossing line of the two normals,
+            // which will be the rotation axis to transform the
+            // into each other
+            cross_product(rotation_axis,unrotated_normal_vector,rotated_normal_vector);
+            rotation_axis /= rotation_axis.norm();
 
-        // Calculate the rotation angle from the inner product rule
-        rotation_angle = std::acos(rotated_normal_vector*unrotated_normal_vector);
+            // Calculate the rotation angle from the inner product rule
+            rotation_angle = std::acos(rotated_normal_vector*unrotated_normal_vector);
+          }
+        else
+          {
+            rotation_axis = unrotated_normal_vector;
+            rotation_angle = 0.0;
+          }
+      }
 
+      template <int dim>
+      void GPlatesLookup::screen_output(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two) const
+      {
+        const Tensor<1,3> point_one = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_one));
+        const Tensor<1,3> point_two = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_two));
+
+        std::cout << std::setprecision (3) << std::setw(3) << std::fixed << std::endl
+                  << "   Set up GPlates boundary velocity module."  << std::endl
+                  << std::endl;
+        if (dim == 2)
+          {
+            std::cout << "   Input point 1 spherical coordinates: " << surface_point_one << std::endl
+                      << "   Input point 1 Cartesian output coordinates: " << rotate(point_one,rotation_axis,-rotation_angle)  << std::endl
+                      << "   Input point 2 spherical coordinates: " << surface_point_two << std::endl
+                      << "   Input point 2 Cartesian output coordinates: " << rotate(point_two,rotation_axis,-rotation_angle)  << std::endl
+                      << std::endl <<  std::setprecision(2)
+                      << "   Model will be rotated by " << rotation_angle*180/numbers::PI
+                      << " degrees around axis " << rotation_axis << std::endl
+                      << std::endl;
+          }
+
+        std::cout << std::setprecision(6);
+        std::cout.unsetf(std::ios_base::floatfield);
       }
 
       bool
@@ -86,8 +121,11 @@ namespace aspect
       }
 
       void
-      GPlatesLookup::load_file(const std::string &filename)
+      GPlatesLookup::load_file(const std::string &filename, const bool screen_output)
       {
+        if (screen_output)
+          std::cout << std::endl << "   Loading GPlates boundary velocity file "
+                    << filename << "." << std::endl << std::endl;
         using boost::property_tree::ptree;
         ptree pt;
 
@@ -105,6 +143,11 @@ namespace aspect
         read_xml(filename, pt);
 
         const unsigned int n_points = pt.get_child("gpml:FeatureCollection.gml:featureMember.gpml:VelocityField.gml:domainSet.gml:MultiPoint").size();
+
+        // These formulas look magic, but they are the proper solution to the equation:
+        // n_points = n_theta * n_phi with n_phi = 2 * (n_theta - 1)
+        // From the XML information we only know n_points, but need n_theta
+        // and n_phi to properly size the arrays and get the grip point positions
         const unsigned int n_theta = static_cast<unsigned int>(0.5 + std::sqrt(0.25 + n_points/2));
         const unsigned int n_phi = 2 * (n_theta - 1);
 
@@ -122,6 +165,7 @@ namespace aspect
         std::swap( velocity_values, old_velocity_values);
 
         (*velocity_values).reinit(n_theta,n_phi);
+        velocity_positions.reinit(n_theta,n_phi);
 
         std::string velos = pt.get<std::string>("gpml:FeatureCollection.gml:featureMember.gpml:VelocityField.gml:rangeSet.gml:DataBlock.gml:tupleList");
         std::stringstream in(velos, std::ios::in);
@@ -132,104 +176,258 @@ namespace aspect
         char sep;
         while (!in.eof())
           {
-            double vtheta, vphi;
+            Tensor<1,2> spherical_velocities;
             const double cmyr_si = 3.1557e9;
 
-            in >> vtheta >> sep >> vphi;
+            in >> spherical_velocities[0] >> sep >> spherical_velocities[1];
 
             if (in.eof())
               break;
 
-            (*velocity_values)[i/n_phi][i%n_phi][0] = vtheta/cmyr_si;
-            (*velocity_values)[i/n_phi][i%n_phi][1] = vphi/cmyr_si;
+            // Currently it would not be necessary to update the grid positions at every timestep
+            // since they are not allowed to change. In case we allow this later, do it anyway.
+            const Tensor<1,3> spherical_position = get_grid_point_position(i/n_phi,i%n_phi,false);
+            velocity_positions[i/n_phi][i%n_phi] = cartesian_surface_coordinates(spherical_position);
+            (*velocity_values)[i/n_phi][i%n_phi] = sphere_to_cart_velocity(spherical_velocities,spherical_position)
+                                                   / cmyr_si;
 
             i++;
           }
+
+        AssertThrow(i == n_points,
+                    ExcMessage (std::string("Number of read in points does not match number of points in file. File corrupted?")));
       }
 
       template <int dim>
       Tensor<1,dim>
       GPlatesLookup::surface_velocity(const Point<dim> &position_, const double time_weight) const
       {
-
         Tensor<1,dim> tensor_position;
         for (unsigned int i = 0 ; i < dim; i++) tensor_position[i] = position_[i];
 
-        Tensor<1,3> position;
+        Tensor<1,3> internal_position;
         if (dim == 2)
+          internal_position = rotate(convert_tensor<dim,3>(tensor_position),rotation_axis,rotation_angle);
+        else
+          internal_position = convert_tensor<dim,3>(tensor_position);
+
+        // Main work, interpolate velocity at this point
+        const Tensor<1,3> interpolated_velocity = interpolate(internal_position,time_weight);
+
+        Tensor<1,dim> output_boundary_velocity;
+
+        if (dim == 2)
+          // convert_tensor conveniently also handles the projection to the 2D plane by
+          // omitting the z-component of velocity (since the 2D model lies in the x-y plane).
+          output_boundary_velocity = convert_tensor<3,dim>(rotate(interpolated_velocity,rotation_axis,-1.0*rotation_angle));
+        else
+          output_boundary_velocity = convert_tensor<3,dim>(interpolated_velocity);
+
+        return output_boundary_velocity;
+      }
+
+      Tensor<1,3>
+      GPlatesLookup::interpolate (const Tensor<1,3> position, const double time_weight) const
+      {
+        Tensor<1,3> surf_vel;
+
+        int spatial_index[2] = {0,0};
+        calculate_spatial_index(spatial_index,position);
+
+        // always use closest point, ensured by the check_termination = false setting
+        double n_interpolation_weight = add_interpolation_point(surf_vel,position,spatial_index,time_weight,false);
+
+        // If interpolation is requested, loop over points in theta, phi direction until we exit a circle of
+        // interpolation_width radius around the evaluation point position
+        if (interpolation_width > 0)
           {
-            position = rotate(convert_tensor<dim,3>(tensor_position),rotation_axis,rotation_angle);
+            unsigned int i = 0;
+            unsigned int j = 1;
+            do
+              {
+                do
+                  {
+                    const int idx[2][2] = {{spatial_index[0]+i,spatial_index[1]+j},
+                      {spatial_index[0]-i,spatial_index[1]-j}
+                    };
+
+                    const double weight_1 = add_interpolation_point(surf_vel,position,idx[0],time_weight,true);
+                    const double weight_2 = add_interpolation_point(surf_vel,position,idx[1],time_weight,true);
+
+                    // termination criterion, our interpolation points are outside of the defined circle
+                    if ((std::abs(weight_1 + 1) < 1e-14) || (std::abs(weight_2 + 1) < 1e-14))
+                      {
+                        if (j == 0)
+                          {
+                            // If we are outside of the interpolation circle even without extending phi (j), we have
+                            // visited all possible interpolation points. Return current surf_vel.
+                            const double residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
+
+                            // TODO: Debug hack, can be removed
+                            if (!(residual_normal_velocity < 1e-12))
+                              {
+                                std::cout << residual_normal_velocity;
+                              }
+
+                            AssertThrow(residual_normal_velocity < 1e-12,
+                                        ExcMessage("Error in velocity boundary module interpolation. "
+                                                   "Radial component of velocity should be zero, but is not."));
+
+                            return surf_vel / n_interpolation_weight;
+                          }
+                        else
+                          {
+                            // We are outside of the interpolation circle, but resetting j to 0 (phi to original index)
+                            // and moving forward in theta direction (i) might show us more interpolation points.
+                            break;
+                          }
+                      }
+
+                    n_interpolation_weight += weight_1;
+                    n_interpolation_weight += weight_2;
+
+                    j++;
+                  }
+                while (j < velocity_values->n_cols() / 2);
+                j = 0;
+                i++;
+              }
+            while (i < velocity_values->n_rows() / 2);
           }
+
+        const double residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
+
+        //TODO: Debug hack. Can be removed
+        if (!(residual_normal_velocity < 1e-12))
+          {
+            std::cout << residual_normal_velocity;
+          }
+
+        AssertThrow( residual_normal_velocity < 1e-12,
+                     ExcMessage("Error in velocity boundary module interpolation. "
+                                "Radial component of velocity should be zero, but is not."));
+
+        // We have interpolated over the whole dataset of the provided velocities, which is ok.
+        // Velocity will be constant for all evaluation points in this case.
+        return surf_vel / n_interpolation_weight;
+      }
+
+      double
+      GPlatesLookup::add_interpolation_point(Tensor<1,3>& surf_vel,
+                                             const Tensor<1,3> position,
+                                             const int spatial_index[2],
+                                             const double time_weight,
+                                             const bool check_termination) const
+      {
+        // If the point is extended over the poles, do not use it. It will be found
+        // by the check in phi direction.
+        if ((spatial_index[0] < 0) || (spatial_index[0] >= static_cast<int>(velocity_values->n_rows())))
+          return 0.0;
+
+        int idx[2] = {spatial_index[0],spatial_index[1]};
+        reformat_indices(idx);
+
+        const Tensor<1,3> spherical_point = get_grid_point_position(idx[0],idx[1],false);
+        const Tensor<1,3> cartesian_point = cartesian_surface_coordinates(spherical_point);
+
+        const double arc_dis = arc_distance(position,position.norm() * cartesian_point);
+
+        // termination criterion, our interpolation points are outside of the defined circle
+        if (check_termination && (arc_dis > interpolation_width))
+          {
+            return -1;
+          }
+
+        // sin(theta) accounts for the different area covered by grid points at varying latitudes
+        // the minimal value is chosen to weight points at the poles according to their number and area
+        const double point_weight = std::max(std::sin(spherical_point[0]),std::sin(delta_theta/2)/velocity_values->n_cols());
+
+        const Tensor<1,3> normalized_position = position / position.norm();
+
+        const Tensor<1,3> velocity = (*velocity_values)[idx[0]][idx[1]];
+        const Tensor<1,3> old_velocity = (*old_velocity_values)[idx[0]][idx[1]];
+
+        surf_vel += point_weight * time_weight * rotate_grid_velocity(cartesian_point,normalized_position,velocity);
+        if (time_weight < 1.0 - 1e-7)
+          surf_vel += point_weight * (1-time_weight) * rotate_grid_velocity(cartesian_point,normalized_position,old_velocity);
+
+        return point_weight;
+      }
+
+      Tensor<1,3>
+      GPlatesLookup::rotate_grid_velocity(const Tensor<1,3> data_position, const Tensor<1,3> point_position, const Tensor<1,3> data_velocity) const
+      {
+
+        if ((point_position-data_position).norm()/point_position.norm() < 1e-7)
+          return data_velocity;
         else
-          position = convert_tensor<dim,3>(tensor_position);
+          {
+            Tensor<1,3> local_rotation_axis;
+            cross_product(local_rotation_axis,data_position,point_position);
+            local_rotation_axis /= local_rotation_axis.norm();
 
-        const Tensor<1,3> scoord = spherical_surface_coordinates(position);
+            // Calculate the rotation angle from the inner product rule
+            const double local_rotation_angle = std::acos(data_position*point_position);
 
-        const double idtheta = get_idtheta(scoord[0]);
-        const unsigned int idxtheta = static_cast<unsigned int>(idtheta);
-        const unsigned int nexttheta = idxtheta + 1;
+            const Tensor<1,3> point_velocity = rotate(data_velocity,local_rotation_axis,-local_rotation_angle);
 
-
-        const double idphi = get_idphi(scoord[1]);
-        const unsigned int idxphi = static_cast<unsigned int>(idphi);
-        const unsigned int nextphi = (idxphi+1) % velocity_values->n_cols();
-
-
-        Assert(idxtheta<velocity_values->n_rows(), ExcMessage("not in range"));
-        Assert(idxphi  <velocity_values->n_cols(), ExcMessage("not in range"));
-
-        Assert(nexttheta<velocity_values->n_rows(), ExcMessage("not in range"));
-        Assert(nextphi  <velocity_values->n_cols(), ExcMessage("not in range"));
-
-        // compute the coordinates of this point in the
-        // reference cell between the data points
-        const double xi = idtheta-static_cast<double>(idxtheta);
-        const double eta = idphi-static_cast<double>(idxphi);
-
-        Assert ((0 <= xi) && (xi <= 1), ExcInternalError());
-        Assert ((0 <= eta) && (eta <= 1), ExcInternalError());
-        Assert ((0 <= time_weight) && (time_weight <= 1), ExcInternalError());
-
-        // use xi, eta and time_weight for a trilinear interpolation
-        // TODO: interpolation in cartesian probably more accurate
+            return point_velocity;
+          }
+      }
 
 
-        Tensor<1,2> surf_vel;
+      Tensor<1,3>
+      GPlatesLookup::get_grid_point_position(const unsigned int theta_index, const unsigned int phi_index, const bool cartesian) const
+      {
+        Tensor<1,3> spherical_position;
+        spherical_position[0] = theta_index * delta_theta;
+        spherical_position[1] = phi_index * delta_phi;
+        spherical_position[2] = 1.0;
 
-        surf_vel[0] = time_weight *
-                      ((1-xi)*(1-eta)*(*velocity_values)[idxtheta][idxphi][0] +
-                       xi    *(1-eta)*(*velocity_values)[nexttheta][idxphi][0] +
-                       (1-xi)*eta    *(*velocity_values)[idxtheta][nextphi][0] +
-                       xi    *eta    *(*velocity_values)[nexttheta][nextphi][0]);
-
-        surf_vel[1] = time_weight *
-                      ((1-xi)*(1-eta)*(*velocity_values)[idxtheta][idxphi][1] +
-                       xi    *(1-eta)*(*velocity_values)[nexttheta][idxphi][1] +
-                       (1-xi)*eta    *(*velocity_values)[idxtheta][nextphi][1] +
-                       xi    *eta    *(*velocity_values)[nexttheta][nextphi][1]);
-
-
-        surf_vel[0] += (1-time_weight) *
-                       ((1-xi)*(1-eta)*(*old_velocity_values)[idxtheta][idxphi][0] +
-                        xi    *(1-eta)*(*old_velocity_values)[nexttheta][idxphi][0] +
-                        (1-xi)*eta    *(*old_velocity_values)[idxtheta][nextphi][0] +
-                        xi    *eta    *(*old_velocity_values)[nexttheta][nextphi][0]);
-
-        surf_vel[1] += (1-time_weight) *
-                       ((1-xi)*(1-eta)*(*old_velocity_values)[idxtheta][idxphi][1] +
-                        xi    *(1-eta)*(*old_velocity_values)[nexttheta][idxphi][1] +
-                        (1-xi)*eta    *(*old_velocity_values)[idxtheta][nextphi][1] +
-                        xi    *eta    *(*old_velocity_values)[nexttheta][nextphi][1]);
-
-        const Tensor<1,3> cart_velo = sphere_to_cart_velocity(surf_vel,scoord);
-        Tensor<1,dim> velos;
-
-        if (dim == 2)
-          velos = convert_tensor<3,dim>(rotate(cart_velo,rotation_axis,-1.0*rotation_angle));
+        if (cartesian)
+          return cartesian_surface_coordinates(spherical_position);
         else
-          velos = convert_tensor<3,dim>(cart_velo);
+          return spherical_position;
+      }
 
-        return velos;
+      double
+      GPlatesLookup::arc_distance(const Tensor<1,3> position_1, const Tensor<1,3> position_2) const
+      {
+        const double cartesian_distance = (position_1-position_2).norm();
+
+        Assert((position_1.norm() - position_2.norm())/position_1.norm() < 1e-14,
+               ExcMessage("Error in velocity boundary module interpolation. "
+                          "Radius of different surface points is not equal."));
+
+        const double average_radius = (position_1.norm() + position_2.norm())/2;
+        const double arc_distance =  average_radius * 2.0 * std::asin(cartesian_distance/(2*average_radius));
+        return arc_distance;
+      }
+
+      void
+      GPlatesLookup::reformat_indices (int idx[2]) const
+      {
+        int reformatted_idxtheta = idx[0];
+        int reformatted_idxphi = idx[1] % velocity_values->n_cols();
+
+        if (reformatted_idxphi < 0)
+          reformatted_idxphi += velocity_values->n_cols();
+
+        if (idx[0] >  static_cast<int>(velocity_values->n_rows())-1)
+          {
+            reformatted_idxtheta = 2*(velocity_values->n_rows()-1) - idx[0];
+            reformatted_idxphi += velocity_values->n_cols()/2;
+            reformatted_idxphi = reformatted_idxphi % velocity_values->n_cols();
+          }
+        if (idx[0] < 0)
+          {
+            reformatted_idxtheta = -1 * idx[0];
+            reformatted_idxphi += velocity_values->n_cols()/2;
+            reformatted_idxphi = reformatted_idxphi % velocity_values->n_cols();
+          }
+
+        idx[0] = reformatted_idxtheta;
+        idx[1] = reformatted_idxphi;
       }
 
       Tensor<1,3>
@@ -237,8 +435,8 @@ namespace aspect
       {
         Tensor<1,3> cross;
         cross_product(cross,position,rotation_axis);
-        Tensor<1,3> newpos = (1-std::cos(angle)) * rotation_axis*(rotation_axis*position) +
-                             std::cos(angle) * position + std::sin(angle) * cross;
+        const Tensor<1,3> newpos = (1-std::cos(angle)) * rotation_axis*(rotation_axis*position) +
+                                   std::cos(angle) * position + std::sin(angle) * cross;
         return newpos;
       }
 
@@ -255,7 +453,7 @@ namespace aspect
       }
 
       Tensor<1,3>
-      GPlatesLookup::cartesian_surface_coordinates(const Tensor<1,2> &sposition) const
+      GPlatesLookup::cartesian_surface_coordinates(const Tensor<1,3> &sposition) const
       {
         Tensor<1,3> ccoord;
 
@@ -288,24 +486,13 @@ namespace aspect
         return new_tensor;
       }
 
-      double
-      GPlatesLookup::get_idphi(const double phi_) const
+      void
+      GPlatesLookup::calculate_spatial_index(int *index, const Tensor<1,3> position) const
       {
-        const double phi = std::max(std::min(phi_,2*numbers::PI-1e-7),0.0);
-
-        Assert(phi>=0, ExcMessage("not in range"));
-        Assert(phi<=2*numbers::PI, ExcMessage("not in range"));
-        return phi/delta_phi;
-      }
-
-      double
-      GPlatesLookup::get_idtheta(const double theta_) const
-      {
-        double theta = std::max(std::min(theta_,numbers::PI-1e-7),0.0);
-
-        Assert(theta>=0, ExcMessage("not in range"));
-        Assert(theta<=numbers::PI, ExcMessage("not in range"));
-        return theta/delta_theta;
+        const Tensor<1,3> scoord = spherical_surface_coordinates(position);
+        index[0] = lround(scoord[0]/delta_theta);
+        index[1] = lround(scoord[1]/delta_phi);
+        reformat_indices(index);
       }
     }
 
@@ -313,7 +500,7 @@ namespace aspect
     GPlates<dim>::GPlates ()
       :
       current_time(0.0),
-      current_time_step(0),
+      current_time_step(-2),
       time_step(0.0),
       time_weight(0.0),
       time_dependent(true),
@@ -327,8 +514,6 @@ namespace aspect
     void
     GPlates<dim>::initialize (const GeometryModel::Interface<dim> &geometry_model)
     {
-      Tensor<1,2> pointone;
-      Tensor<1,2> pointtwo;
       char sep;
 
       std::stringstream streampoint(point1);
@@ -337,40 +522,17 @@ namespace aspect
       std::stringstream streampoint2(point2);
       streampoint2 >> pointtwo[0] >> sep >> pointtwo[1];
 
-      lookup.reset(new internal::GPlatesLookup(pointone,pointtwo));
+      if (dim == 2)
+        Assert (pointone != pointtwo,
+                ExcMessage ("To define a plane for the 2D model the two assigned points "
+                            "may not be equal."));
+
+      lookup.reset(new internal::GPlatesLookup(pointone,pointtwo,interpolation_width));
 
       Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model) != 0,
               ExcMessage ("This boundary condition can only be used if the geometry "
                           "is a spherical shell."));
       Assert((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model))->opening_angle()==360, ExcMessage("gplates velocity model just works for opening angle == 360"));
-
-      // TODO: Move the loading of files into set_current_time would remove
-      // some double effort if the Start time != 0
-
-      // Load first velocity file
-      lookup->load_file(create_filename(current_time_step));
-
-      // Load next velocity file for interpolation
-      try
-        {
-          lookup->load_file(create_filename(current_time_step+1));
-          time_dependent = true;
-        }
-      catch (...)
-        // if loading the next time step's file failed, then simply
-        // take the last one a second time
-        {
-          // Next velocity file not found --> Constant velocities
-          lookup->load_file(create_filename(current_time_step));
-          time_dependent = false;
-
-          // Give warning if first processor
-          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator())==0)
-            std::cout << std::endl
-                      << "Loading second velocity file did not succeed."
-                      << "Assuming constant boundary conditions model." << std::endl
-                      << std::endl;
-        }
     }
 
     template <int dim>
@@ -378,56 +540,131 @@ namespace aspect
     GPlates<dim>::create_filename (const int timestep) const
     {
       std::string templ = data_directory+velocity_file_name;
-
-      char filename[150];
-      snprintf (filename, 150, templ.c_str(), timestep);
-      return std::string (filename);
+      const int size = templ.length();
+      char *filename = (char *) (malloc ((size + 10) * sizeof(char)));
+      snprintf (filename, size + 10, templ.c_str (), timestep);
+      std::string str_filename (filename);
+      free (filename);
+      return str_filename;
     }
 
     template <int dim>
     void
     GPlates<dim>::set_current_time (const double time)
     {
-      current_time = time-velocity_file_start_time;
-      if (time_dependent && (current_time > 0.0))
+      current_time = time - velocity_file_start_time;
+      const bool first_process = (Utilities::MPI::this_mpi_process (
+                                    this->get_mpi_communicator ())
+                                  == 0);
+
+      // If the boundary condition is constant, switch off time_dependence end leave function.
+      // This also sets time_weight to 1.0
+      if ((create_filename (current_time_step) == create_filename (current_time_step+1)) && time_dependent)
         {
-          const unsigned int old_time_step = current_time_step;
+          if (first_process)
+            lookup->screen_output<dim> (pointone, pointtwo);
 
-          if (static_cast<unsigned int>(current_time / time_step) > current_time_step)
+          lookup->load_file (create_filename (current_time_step),
+                             first_process);
+          end_time_dependence (current_time_step, first_process);
+          return;
+        }
+
+      if (time_dependent && (current_time >= 0.0))
+        {
+          if ((current_time_step < 0) && (first_process) && (dim == 2))
+            lookup->screen_output<dim> (pointone, pointtwo);
+
+          if (static_cast<int> (current_time / time_step) > current_time_step)
             {
-              current_time_step = static_cast<unsigned int>(current_time / time_step);
-              // Load next velocity file for interpolation
-              try
-                {
-                  // If the time step was large enough to move forward more
-                  // then one velocity file, we need to load both current files
-                  // to stay accurate in interpolation
-                  if (current_time_step > old_time_step + 1)
-                    lookup->load_file(create_filename(current_time_step));
-
-                  lookup->load_file(create_filename(current_time_step+1));
-                }
-              catch (...)
-                // if loading failed, simply take the previous file a second time
-                {
-                  // Next velocity file not found --> Constant velocities
-                  lookup->load_file(create_filename(old_time_step));
-                  // no longer consider the problem time dependent from here on out
-                  time_dependent = false;
-
-                  // Give warning if first processor
-                  if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator())==0)
-                    std::cout << std::endl << "Loading new velocity file did not succeed." << std::endl
-                              << "Assuming constant boundary conditions for rest of model." << std::endl
-                              << std::endl;
-                }
+              update_velocity_data(first_process);
             }
-          time_weight = current_time/time_step - current_time_step;
+
+          time_weight = current_time / time_step - current_time_step;
+
           Assert ((0 <= time_weight) && (time_weight <= 1),
-                  ExcMessage("Error in set_current_time. Time_weight has to be in [0,1]"));
+                  ExcMessage (
+                    "Error in set_current_time. Time_weight has to be in [0,1]"));
         }
     }
 
+    template <int dim>
+    void
+    GPlates<dim>::update_velocity_data (const bool first_process)
+    {
+
+      const int old_time_step = current_time_step;
+      current_time_step =
+        static_cast<unsigned int> (current_time / time_step);
+      // Load next velocity file for interpolation
+      // If the time step was large enough to move forward more
+      // then one velocity file, we need to load both current files
+      // to stay accurate in interpolation
+      if (current_time_step > old_time_step + 1)
+        try
+          {
+            lookup->load_file (create_filename (current_time_step),
+                               first_process);
+          }
+        catch (...)
+          // If loading current_time_step failed, end time dependent part with old_time_step.
+          {
+            try
+              {
+                end_time_dependence (old_time_step, first_process);
+              }
+            catch (...)
+              {
+                // If loading the old file fails (e.g. there was no old file), cancel the model run.
+                // We might get here, if the time step is so large that step t is before the whole boundary condition
+                // while step t+1 is already behind all files in time.
+                AssertThrow (false,
+                             ExcMessage (
+                               "Loading new and old velocity file did not succeed. "
+                               "Maybe the time step was so large we jumped over all files "
+                               "or the files were removed during the model run. "
+                               "Cancelling calculation."));
+              }
+          }
+
+      // Now load the next velocity file. This part is the main purpose of this function.
+      try
+        {
+          lookup->load_file (create_filename (current_time_step + 1),
+                             first_process);
+        }
+
+      // If loading current_time_step + 1 failed, end time dependent part with current_time_step.
+      // We do not need to check for success here, because current_time_step was guaranteed to be
+      // at least tried to be loaded before, and if it fails, it should have done before (except from
+      // hard drive errors, in which case the exception is the right thing to be thrown).
+
+      catch (...)
+        {
+          end_time_dependence (current_time_step, first_process);
+        }
+    }
+
+    template <int dim>
+    void
+    GPlates<dim>::end_time_dependence (const int timestep,
+                                       const bool first_process)
+    {
+      // Next velocity file not found --> Constant velocities
+      // by simply loading the old file twice
+      lookup->load_file (create_filename (timestep), first_process);
+      // no longer consider the problem time dependent from here on out
+      // this cancels all attempts to read files at the next time steps
+      time_dependent = false;
+      // this cancels the time interpolation in lookup
+      time_weight = 1.0;
+      // Give warning if first processor
+      if (first_process)
+        std::cout << std::endl
+                  << "   Loading new velocity file did not succeed." << std::endl
+                  << "   Assuming constant boundary conditions for rest of model run."
+                  << std::endl << std::endl;
+    }
 
     template <int dim>
     Tensor<1,dim>
@@ -440,41 +677,39 @@ namespace aspect
         return Tensor<1,dim> ();
     }
 
-
     template <int dim>
     void
     GPlates<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Boundary velocity model");
+      prm.enter_subsection ("Boundary velocity model");
       {
-        prm.enter_subsection("GPlates model");
+        prm.enter_subsection ("GPlates model");
         {
-          prm.declare_entry ("Data directory", "data/velocity-boundary-conditions/gplates/",
-                             Patterns::DirectoryName (),
-                             "The path to the model data.");
+          prm.declare_entry ("Data directory",
+                             "data/velocity-boundary-conditions/gplates/",
+                             Patterns::DirectoryName (), "The path to the model data.");
           prm.declare_entry ("Velocity file name", "phi.%d",
                              Patterns::Anything (),
-                             "The file name of the material data. Provide file in format: "
-                             "(Velocity file name).%d.gpml where %d is any sprintf integer qualifier, "
-                             "specifying the format of the current file number.");
+                             "The file name of the material data. Provide file in format: (Velocity file name).%d.gpml where %d is any sprintf integer qualifier, specifying the format of the current file number.");
           prm.declare_entry ("Time step", "3.1558e13",
-                             Patterns::Anything (),
-                             "Time step between following velocity files."
-                             " Default is one million years expressed in SI units.");
+                             Patterns::Double (0),
+                             "Time step between following velocity files. Default is one million years expressed in SI units.");
           prm.declare_entry ("Velocity file start time", "0.0",
                              Patterns::Anything (),
-                             "Time at which the velocity file with number 0 shall be loaded."
-                             "Previous to this time, a no-slip boundary condition is assumed.");
+                             "Time at which the velocity file with number 0 shall be loaded.Previous to this time, a no-slip boundary condition is assumed.");
           prm.declare_entry ("Point one", "1.570796,0.0",
                              Patterns::Anything (),
-                             "Point that determines the plane in which a 2D model lies in."
-                             " Has to be in the format 'a,b' where a and b are theta (polar angle) "
-                             " and phi in radians.");
+                             "Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.");
           prm.declare_entry ("Point two", "1.570796,1.570796",
                              Patterns::Anything (),
-                             "Point that determines the plane in which a 2D model lies in."
-                             " Has to be in the format 'a,b' where a and b are theta (polar angle) "
-                             " and phi in radians.");
+                             "Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.");
+          prm.declare_entry ("Interpolation width", "2",
+                             Patterns::Integer (0),
+                             " Determines the width of the velocity interpolation zone around the current point."
+                             " Currently equals the arc distance between evaluation point and velocity data point that"
+                             " is still included in the interpolation. The weighting of the points currently only accounts"
+                             " for the surface area a single data point is covering ('moving window' interpolation without"
+                             " distance weighting).");
         }
         prm.leave_subsection();
       }
@@ -492,6 +727,7 @@ namespace aspect
           data_directory        = prm.get ("Data directory");
           velocity_file_name    = prm.get ("Velocity file name");
           time_step             = prm.get_double ("Time step");
+          interpolation_width   = prm.get_integer("Interpolation width");
           velocity_file_start_time = prm.get_double ("Velocity file start time");
           point1                = prm.get("Point one");
           point2                = prm.get("Point two");
