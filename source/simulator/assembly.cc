@@ -1536,7 +1536,7 @@ namespace aspect
         const double latent_heat_LHS =
           (parameters.include_latent_heat && temperature_or_composition.is_temperature())
            ?
-           scratch.material_model_outputs.densities[q] *
+           - scratch.material_model_outputs.densities[q] *
            scratch.material_model_inputs.temperature[q] *
            scratch.material_model_outputs.entropy_derivative_temperature[q]
            :

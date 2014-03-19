@@ -554,11 +554,17 @@ namespace aspect
            */
           std::vector<double> compressibilities;
           /**
-           * Pressure derivative of entropy at the given positions.
+           * The product of the change of entropy $\Delta S$ at a
+           * phase transition and the derivative of the phase function
+           * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to pressure
+           * at the given positions.
            */
           std::vector<double> entropy_derivative_pressure;
           /**
-           * Temperature derivative of entropy at the given positions.
+           * The product of (minus) the change of entropy $-\Delta S$ at a
+           * phase transition and the derivative of the phase function
+           * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to temperature
+           * at the given positions. 
            */
           std::vector<double> entropy_derivative_temperature;
           /**
