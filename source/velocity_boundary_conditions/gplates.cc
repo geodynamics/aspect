@@ -40,18 +40,17 @@ namespace aspect
   {
     namespace internal
     {
-      GPlatesLookup::GPlatesLookup(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two, const unsigned int width)
+      GPlatesLookup::GPlatesLookup(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two, const double interpolation_width_)
+      :
+          velocity_vals(0,0),
+          old_velocity_vals(0,0),
+          velocity_positions(0,0),
+          velocity_values (&velocity_vals),
+          old_velocity_values (&old_velocity_vals),
+          delta_phi(0.0),
+          delta_theta(0.0),
+          interpolation_width(interpolation_width_)
       {
-        velocity_vals.reinit(0,0);
-        old_velocity_vals.reinit(0,0);
-
-        velocity_values = &velocity_vals;
-        old_velocity_values = &old_velocity_vals;
-
-        delta_phi = 0.0;
-        delta_theta = 0.0;
-
-        interpolation_width = width;
 
         // get the cartesian coordinates of the points the 2D model shall lie in
         // this computation is done also for 3D since it is not expensive and the
@@ -73,7 +72,7 @@ namespace aspect
         if ((rotated_normal_vector - unrotated_normal_vector).norm() > 1e-3)
           {
             // Calculate the crossing line of the two normals,
-            // which will be the rotation axis to transform the
+            // which will be the rotation axis to transform them
             // into each other
             cross_product(rotation_axis,unrotated_normal_vector,rotated_normal_vector);
             rotation_axis /= rotation_axis.norm();
@@ -489,11 +488,13 @@ namespace aspect
       :
       current_time(0.0),
       current_time_step(-2),
+      velocity_file_start_time(0.0),
       time_step(0.0),
       time_weight(0.0),
       time_dependent(true),
       point1("0.0,0.0"),
       point2("0.0,0.0"),
+      interpolation_width(0.0),
       lookup()
     {}
 
@@ -683,7 +684,7 @@ namespace aspect
                              Patterns::Double (0),
                              "Time step between following velocity files. Default is one million years expressed in SI units.");
           prm.declare_entry ("Velocity file start time", "0.0",
-                             Patterns::Anything (),
+                             Patterns::Double (0),
                              "Time at which the velocity file with number 0 shall be loaded.Previous to this time, a no-slip boundary condition is assumed.");
           prm.declare_entry ("Point one", "1.570796,0.0",
                              Patterns::Anything (),
@@ -691,8 +692,8 @@ namespace aspect
           prm.declare_entry ("Point two", "1.570796,1.570796",
                              Patterns::Anything (),
                              "Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.");
-          prm.declare_entry ("Interpolation width", "2",
-                             Patterns::Integer (0),
+          prm.declare_entry ("Interpolation width", "0",
+                             Patterns::Double (0),
                              " Determines the width of the velocity interpolation zone around the current point."
                              " Currently equals the arc distance between evaluation point and velocity data point that"
                              " is still included in the interpolation. The weighting of the points currently only accounts"
@@ -715,10 +716,10 @@ namespace aspect
           data_directory        = prm.get ("Data directory");
           velocity_file_name    = prm.get ("Velocity file name");
           time_step             = prm.get_double ("Time step");
-          interpolation_width   = prm.get_integer("Interpolation width");
+          interpolation_width   = prm.get_double ("Interpolation width");
           velocity_file_start_time = prm.get_double ("Velocity file start time");
-          point1                = prm.get("Point one");
-          point2                = prm.get("Point two");
+          point1                = prm.get ("Point one");
+          point2                = prm.get ("Point two");
         }
         prm.leave_subsection();
       }

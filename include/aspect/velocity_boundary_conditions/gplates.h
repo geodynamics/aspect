@@ -51,7 +51,7 @@ namespace aspect
            * Initialize all members and the two pointers referring to the actual velocities.
            * Also calculates any necessary rotation parameters for a 2D model.
            */
-          GPlatesLookup(const Tensor<1,2> &pointone, const Tensor<1,2> &pointtwo, const unsigned int width);
+          GPlatesLookup(const Tensor<1,2> &pointone, const Tensor<1,2> &pointtwo, const double interpolation_width_);
 
           /**
            * Outputs the GPlates module information at model start. Need to be separated from Constructor
@@ -125,7 +125,7 @@ namespace aspect
            * for the surface area a single data point is covering ('moving window' interpolation without
            * distance weighting).
            */
-          unsigned int interpolation_width;
+          const double interpolation_width;
 
           /**
            * A function that returns the rotated vector r' that results out of a
@@ -351,7 +351,7 @@ namespace aspect
          * for the surface area a single data point is covering ('moving window' interpolation without
          * distance weighting).
          */
-        unsigned int interpolation_width;
+        double interpolation_width;
 
         /**
          * Pointer to an object that reads and processes data we get from gplates files.
