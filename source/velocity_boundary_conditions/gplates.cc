@@ -263,13 +263,7 @@ namespace aspect
                             // visited all possible interpolation points. Return current surf_vel.
                             const double residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
 
-                            // TODO: Debug hack, can be removed
-                            if (!(residual_normal_velocity < 1e-12))
-                              {
-                                std::cout << residual_normal_velocity;
-                              }
-
-                            AssertThrow(residual_normal_velocity < 1e-12,
+                            AssertThrow(residual_normal_velocity < 1e-11,
                                         ExcMessage("Error in velocity boundary module interpolation. "
                                                    "Radial component of velocity should be zero, but is not."));
 
@@ -297,13 +291,7 @@ namespace aspect
 
         const double residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
 
-        //TODO: Debug hack. Can be removed
-        if (!(residual_normal_velocity < 1e-12))
-          {
-            std::cout << residual_normal_velocity;
-          }
-
-        AssertThrow( residual_normal_velocity < 1e-12,
+        AssertThrow( residual_normal_velocity < 1e-11,
                      ExcMessage("Error in velocity boundary module interpolation. "
                                 "Radial component of velocity should be zero, but is not."));
 
