@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: There is now a postprocess that computes a measure of
+  dynamic topography, based on the vertical component of the stress.
+  <br>
+  (Wolfgang Bangerth, Jacqueline Austermann 2014/03/03)
+
   <li>New: Aspect now installs a file <code>AspectConfig.cmake</code>
   into the same directory as the executable that can be used by
   plugins to set up compiler flags, include paths, etc, to compile
