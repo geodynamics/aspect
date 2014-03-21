@@ -8,10 +8,16 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
-  <li>New: There is now a postprocess that computes a measure of
+  <li>Fixed: Restarting from a previously checkpointed solution
+  did not work when using the Intel compiler and its standard library.
+  This is now fixed.
+  <br>
+  (Wolfgang Bangerth, Jacqueline Austermann 2014/03/21)
+
+  <li>New: There is now a postprocessor that computes a measure of
   dynamic topography, based on the vertical component of the stress.
   <br>
-  (Wolfgang Bangerth, Jacqueline Austermann 2014/03/03)
+  (Wolfgang Bangerth, Jacqueline Austermann 2014/03/20)
 
   <li>New: Aspect now installs a file <code>AspectConfig.cmake</code>
   into the same directory as the executable that can be used by
