@@ -16,6 +16,9 @@ All entries are signed with the names of the author.
 
   <li>New: There is now a postprocessor that computes a measure of
   dynamic topography, based on the vertical component of the stress.
+  There is also a visualization postprocessor that allows to write this
+  information into the visualization files to generate graphical
+  representations of the data.
   <br>
   (Wolfgang Bangerth, Jacqueline Austermann 2014/03/20)
 
