@@ -39,21 +39,19 @@ namespace aspect
 
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
-                                        quadrature_formula,
-                                        update_values |
-                                        update_gradients |
-                                        update_q_points);
+                               quadrature_formula,
+                               update_values |
+                               update_gradients |
+                               update_q_points);
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_values.n_quadrature_points, this->n_compositional_fields());
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
-      std::string filename = this->get_output_directory() +
-                             "surface_topography." +
-                             Utilities::int_to_string
-                             (this->get_triangulation().locally_owned_subdomain(), 4);
-      std::ofstream output (filename.c_str());
+      // have a stream into which we write the data. the text stream is then
+      // later sent to processor 0
+      std::ostringstream output;
 
       // loop over all of the surface cells and if one less than h/2 away from
       // the top surface, evaluate the stress at its center
@@ -71,18 +69,18 @@ namespace aspect
               // get the various components of the solution, then
               // evaluate the material properties there
               fe_values[this->introspection().extractors.temperature]
-                        .get_function_values (this->get_solution(), in.temperature);
+              .get_function_values (this->get_solution(), in.temperature);
               fe_values[this->introspection().extractors.pressure]
-                        .get_function_values (this->get_solution(), in.pressure);
+              .get_function_values (this->get_solution(), in.pressure);
               fe_values[this->introspection().extractors.velocities]
-                        .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
+              .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
 
               in.position = fe_values.get_quadrature_points();
 
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                 fe_values[this->introspection().extractors.compositional_fields[c]]
-                               .get_function_values(this->get_solution(),
-                                   composition_values[c]);
+                .get_function_values(this->get_solution(),
+                                     composition_values[c]);
               for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
                 {
                   for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
@@ -110,15 +108,63 @@ namespace aspect
                   const double dynamic_topography = sigma_rr / gravity.norm() / density;
 
                   output << location
-                      << ' '
-                      << dynamic_topography
-                      << std::endl;
+                         << ' '
+                         << dynamic_topography
+                         << std::endl;
                 }
-              }
+            }
 
-      return std::pair<std::string,std::string>("Writing surface topography...",
+      const std::string filename = this->get_output_directory() +
+                                   "dynamic_topography." +
+                                   Utilities::int_to_string(this->get_timestep_number(), 5);
+
+      const unsigned int max_data_length = Utilities::MPI::max (output.str().size()+1,
+                                                                this->get_mpi_communicator());
+      const unsigned int mpi_tag = 123;
+
+      // on processor 0, collect all of the data the individual processors send
+      // and concatenate them into one file
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          std::ofstream file (filename.c_str());
+
+          // first write out the data we have created locally
+          file << output.str();
+
+          std::string tmp;
+          tmp.resize (max_data_length, '\0');
+
+          // then loop through all of the other processors and collect
+          // data, then write it to the file
+          for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
+            {
+              MPI_Status status;
+              // get the data. note that MPI says that an MPI_Recv may receive
+              // less data than the length specified here. since we have already
+              // determined the maximal message length, we use this feature here
+              // rather than trying to find out the exact message length with
+              // a call to MPI_Probe.
+              MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
+                        this->get_mpi_communicator(), &status);
+
+              // output the string. note that 'tmp' has length max_data_length,
+              // but we only wrote a certain piece of it in the MPI_Recv, ended
+              // by a \0 character. write only this part by outputting it as a
+              // C string object, rather than as a std::string
+              file << tmp.c_str();
+            }
+        }
+      else
+        // on other processors, send the data to processor zero. include the \0
+        // character at the end of the string
+        {
+          MPI_Send (&output.str()[0], output.str().size()+1, MPI_CHAR, 0, mpi_tag,
+                    this->get_mpi_communicator());
+        }
+
+      return std::pair<std::string,std::string>("Writing dynamic topography:",
                                                 filename);
-   }
+    }
   }
 }
 
@@ -130,8 +176,10 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(DynamicTopography,
                                   "dynamic topography",
-                                  "A postprocessor that computes a measure of dynamic topograph "
-                                  "based on the stress at the surface."
+                                  "A postprocessor that computes a measure of dynamic topography "
+                                  "based on the stress at the surface. The data is writte into a "
+                                  "file named 'dynamic_topography.NNNNN' in the output directory, "
+                                  "where NNNNN is the number of the time step."
                                   "\n\n"
                                   "The exact approach works as follows: At the centers of all cells "
                                   "that sit along the top surface, we evaluate the stress and "
