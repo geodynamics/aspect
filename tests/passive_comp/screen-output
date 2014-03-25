@@ -26,7 +26,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0 K, 0 K
      Heat fluxes through boundary parts: 0 W, 0 W
-     Writing depth average               output-passive_comp/depthaverage.plt
+     Writing depth average               output-passive_comp/depthaverage.gnuplot
 
 *** Timestep 1:  t=2.81625e+12 seconds
    Solving temperature system... 20 iterations.
