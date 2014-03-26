@@ -6,7 +6,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving temperature system... 0 iterations.
    Solving composition system 1... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+12 iterations.
+   Solving Stokes system... 30+11 iterations.
 
    Postprocessing:
 
@@ -26,7 +26,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0 K, 0 K
      Heat fluxes through boundary parts: 0 W, 0 W
-     Writing depth average               output-passive_comp/depthaverage.gnuplot
+     Writing depth average               output-passive_comp/depth_average.gnuplot
 
 *** Timestep 1:  t=2.81625e+12 seconds
    Solving temperature system... 20 iterations.
@@ -39,7 +39,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0.0004368 K, 0.002387 K
      Heat fluxes through boundary parts: 0.2941 W, 0.8311 W
-     Writing depth average               output-passive_comp/depthaverage.plt
+     Writing depth average               output-passive_comp/depth_average.gnuplot
 
 *** Timestep 2:  t=5.6325e+12 seconds
    Solving temperature system... 12 iterations.
@@ -52,7 +52,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0.0008561 K, 0.0034 K
      Heat fluxes through boundary parts: 0.6257 W, 1.959 W
-     Writing depth average               output-passive_comp/depthaverage.plt
+     Writing depth average               output-passive_comp/depth_average.gnuplot
 
 *** Timestep 3:  t=8e+12 seconds
    Solving temperature system... 10 iterations.
@@ -65,7 +65,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0.001194 K, 0.004084 K
      Heat fluxes through boundary parts: 0.8824 W, 2.83 W
-     Writing depth average               output-passive_comp/depthaverage.plt
+     Writing depth average               output-passive_comp/depth_average.gnuplot
 
 Termination requested by criterion: end time
 
