@@ -8,8 +8,8 @@ Number of degrees of freedom: 3,770 (2,187+125+729+729)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18 iterations.
 
-Number of active cells: 78 (on 4 levels)
-Number of degrees of freedom: 4,853 (2,817+158+939+939)
+Number of active cells: 85 (on 4 levels)
+Number of degrees of freedom: 5,337 (3,099+172+1,033+1,033)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
@@ -17,8 +17,8 @@ Number of degrees of freedom: 4,853 (2,817+158+939+939)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18 iterations.
 
-Number of active cells: 92 (on 4 levels)
-Number of degrees of freedom: 5,904 (3,429+189+1,143+1,143)
+Number of active cells: 99 (on 4 levels)
+Number of degrees of freedom: 6,289 (3,654+199+1,218+1,218)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
@@ -41,7 +41,7 @@ Number of degrees of freedom: 5,904 (3,429+189+1,143+1,143)
      reference_thermal_diffusivity:                 1.13939e-06
 
      Writing graphical output: output-stokes/solution-00000
-     RMS, max velocity:        3.55e-11 m/s, 5.78e-10 m/s
+     RMS, max velocity:        3.24e-11 m/s, 5.41e-10 m/s
 
 Termination requested by criterion: end time
 
