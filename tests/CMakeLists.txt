@@ -113,7 +113,12 @@ FOREACH(_test ${_tests})
   ELSE()
     MESSAGE(STATUS "    MPI status: ${_mpi_count} processes")
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-      COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
+      COMMAND
+	for i in ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/* \; do
+	  if echo \$i | grep -q -v .cmp.notime \; then
+	    rm -f \$i \;
+	  fi \;
+	done
       COMMAND mpirun -np ${_mpi_count} ${CMAKE_CURRENT_BINARY_DIR}/../aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
               > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output 2>&1
       COMMAND ${PERL_EXECUTABLE} -pi
