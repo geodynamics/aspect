@@ -8,7 +8,7 @@ Number of degrees of freedom: 4,035 (2,178+768+1,089)
    Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 1.120287e-06, 1.097680e-01, 1.662153e-06, 1.097686e-01
+     Errors u_L1, p_L1, u_L2, p_L2: 1.120286e-06, 1.097680e-01, 1.662153e-06, 1.097686e-01
 
 Termination requested by criterion: end time
 
