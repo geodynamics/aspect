@@ -88,14 +88,21 @@ FOREACH(_test ${_tests})
   # files. Before running aspect, delete prior content of the directory to
   # make sure no dead files are left there (this is one way to trip up the
   # 'terminate_user_request' test of Aspect which terminates the program when
-  # a certain file appears)
+  # a certain file appears). we have to take care of not deleting those
+  # files that have been placed there on purpose, however, which are all
+  # of the .cmp.notime files.
   #
   # the actual run command is a bit complicated because we have to figure out
   # whether we want the test to run in parallel using MPI or not
   GET_MPI_COUNT(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
   IF("${_mpi_count}" STREQUAL "1")
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-      COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
+      COMMAND
+	for i in ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/* \; do
+	  if echo \$i | grep -q -v .cmp.notime \; then
+	    rm -f \$i \;
+	  fi \;
+	done
       COMMAND aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
               > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output 2>&1
       COMMAND ${PERL_EXECUTABLE} -pi
