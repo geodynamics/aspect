@@ -19,11 +19,11 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10 iterations.
-      residual: 4.59632e-05
+      residual: 4.59637e-05
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5 iterations.
-      residual: 2.11768e-06
+      residual: 2.11765e-06
 
    Postprocessing:
 
@@ -50,19 +50,19 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-      residual: 0.206119
+      residual: 0.206557
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-      residual: 0.206119
+      residual: 0.206557
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-      residual: 0.206119
+      residual: 0.206557
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-      residual: 0.206119
+      residual: 0.206557
 
 
    Postprocessing:
@@ -76,19 +76,19 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-      residual: 0.149931
+      residual: 0.149268
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-      residual: 0.149931
+      residual: 0.149268
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-      residual: 0.149931
+      residual: 0.149268
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-      residual: 0.149931
+      residual: 0.149268
 
 
    Postprocessing:
@@ -128,19 +128,19 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-      residual: 0.697422
+      residual: 0.696779
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-      residual: 0.697422
+      residual: 0.696779
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-      residual: 0.697422
+      residual: 0.696779
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-      residual: 0.697422
+      residual: 0.696779
 
 
    Postprocessing:

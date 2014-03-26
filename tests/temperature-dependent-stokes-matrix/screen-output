@@ -24,7 +24,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Writing graphical output: output-temperature-dependent-stokes-matrix/solution-00000
      RMS, max velocity:        9.02e-09 m/s, 3.14e-08 m/s
 
-*** Timestep 1:  t=495540 seconds
+*** Timestep 1:  t=495583 seconds
    Solving temperature system... 20 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9 iterations.
@@ -32,7 +32,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      RMS, max velocity: 1.56e-08 m/s, 5.8e-08 m/s
 
-*** Timestep 2:  t=764413 seconds
+*** Timestep 2:  t=764432 seconds
    Solving temperature system... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5 iterations.
@@ -40,7 +40,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      RMS, max velocity: 1.83e-08 m/s, 6.81e-08 m/s
 
-*** Timestep 3:  t=993793 seconds
+*** Timestep 3:  t=993798 seconds
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5 iterations.
