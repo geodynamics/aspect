@@ -5,7 +5,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+4 iterations.
+   Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
      Advecting particles: done. Writing particle graphical output output-sol_cx_tracers/particles-00000
