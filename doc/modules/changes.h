@@ -8,6 +8,10 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Fixed: Correct computation of min/max composition statistics.
+  <br>
+  (Timo Heister, 2014/03/26)
+
   <li>Fixed: Corrected calculation of non-dimensional temperature.
   <br>
   (Eric Heien, 2014/03/24)
