@@ -180,7 +180,7 @@ FOREACH(_test ${_tests})
              ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed \;
           echo "******* Error during diffing output results for ${_test}/${_output}" \;
           echo "******* Results are stored in ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed" \;
-          echo "******* Check: ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output} ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}" \;
+          echo "******* Check: ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output} ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output} ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}" \;
           echo "******* Diffs are:" \;
           cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed \;
 	  false \;
