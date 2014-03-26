@@ -87,6 +87,9 @@
 #   MAKEOPTS
 #     - Additional options that will be passed directly to make (or ninja).
 #
+#   SUBMIT
+#     - default OFF, set to ON to submit to our cdash instance
+#
 # Furthermore, the following variables controlling the testsuite can be set
 # and will be automatically handed down to cmake:
 #
@@ -509,9 +512,13 @@ IF(NOT "${_svn_WC_REVISION}" STREQUAL "")
     )
 ENDIF()
 
+IF("${submit}")
 MESSAGE("-- Running CTEST_SUBMIT()")
 CTEST_SUBMIT(RETURN_VALUE _res)
 
 IF("${_res}" STREQUAL "0")
   MESSAGE("-- Submission successful. Goodbye!")
+ENDIF()
+ELSE()
+MESSAGE("-- Submission skipped. Run with submit=ON")
 ENDIF()
