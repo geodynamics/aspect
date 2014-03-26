@@ -7,4 +7,4 @@
 # 7: Iterations for Stokes solver
 # 8: Time step size (seconds)
 # 9: Visualization file name
-0 0.0000e+00 3072 28291 12545 0 29 1.6995e-06 output-adiabatic_initial_conditions_subadiabaticity/solution-00000 
+0 0.0000e+00 3072 28291 12545 0 30 1.6996e-06 output-adiabatic_initial_conditions_subadiabaticity/solution-00000 
