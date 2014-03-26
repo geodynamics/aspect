@@ -508,3 +508,10 @@ IF(NOT "${_svn_WC_REVISION}" STREQUAL "")
 </Update>"
     )
 ENDIF()
+
+MESSAGE("-- Running CTEST_SUBMIT()")
+CTEST_SUBMIT(RETURN_VALUE _res)
+
+IF("${_res}" STREQUAL "0")
+  MESSAGE("-- Submission successful. Goodbye!")
+ENDIF()
