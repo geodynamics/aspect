@@ -114,10 +114,11 @@ namespace aspect
         global_max_temperature = global_values[1];
       }
 
+      double global_mean_temperature = global_temperature_integral / this->get_volume();
       statistics.add_value ("Minimal temperature (K)",
                             global_min_temperature);
       statistics.add_value ("Average temperature (K)",
-                            global_temperature_integral / this->get_volume());
+                            global_mean_temperature);
       statistics.add_value ("Maximal temperature (K)",
                             global_max_temperature);
       if ((this->get_fixed_temperature_boundary_indicators().size() > 0)
@@ -126,7 +127,7 @@ namespace aspect
            !=
            this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())))
         statistics.add_value ("Average nondimensional temperature (K)",
-                              global_temperature_integral / this->get_volume() /
+                              (global_mean_temperature - global_min_temperature) /
                               (this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
                                -
                                this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())));

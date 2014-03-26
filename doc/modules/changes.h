@@ -8,6 +8,10 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Fixed: Corrected calculation of non-dimensional temperature.
+  <br>
+  (Eric Heien, 2014/03/24)
+
   <li>Fixed: Restarting from a previously checkpointed solution
   did not work when using the Intel compiler and its standard library.
   This is now fixed.
