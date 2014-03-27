@@ -10,7 +10,6 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      Temperature min/avg/max:            -6.784e-17 K, 0.005208 K, 1 K
      Heat fluxes through boundary parts: -4.762e-20 W, -8.314e-20 W, -4.288e-45 W, -9.6e-05 W
-     Writing graphical output:           output-diffusion/solution-00000
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 1:  t=2.27593e+06 seconds
@@ -20,7 +19,6 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.04276 K, 1 K
      Heat fluxes through boundary parts: 6.082e-12 W, -4.262e-12 W, 2.97e-15 W, -2.186e-05 W
-     Writing graphical output:           output-diffusion/solution-00001
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 2:  t=4.68781e+06 seconds
@@ -30,7 +28,6 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.06726 K, 1 K
      Heat fluxes through boundary parts: 3.699e-11 W, 1.144e-11 W, 1.331e-14 W, -8.525e-06 W
-     Writing graphical output:           output-diffusion/solution-00002
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 3:  t=6.44851e+06 seconds
@@ -40,7 +37,6 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.08002 K, 1 K
      Heat fluxes through boundary parts: -4.662e-11 W, -1.542e-11 W, 3.377e-14 W, -7.502e-06 W
-     Writing graphical output:           output-diffusion/solution-00003
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 4:  t=9.65717e+06 seconds
@@ -50,7 +46,6 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.09893 K, 1 K
      Heat fluxes through boundary parts: -1.496e-12 W, -5.178e-12 W, 2.414e-13 W, -6.259e-06 W
-     Writing graphical output:           output-diffusion/solution-00004
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 5:  t=1.13041e+07 seconds
@@ -60,7 +55,6 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1071 K, 1 K
      Heat fluxes through boundary parts: -5.481e-12 W, -1.678e-12 W, 5.3e-13 W, -5.846e-06 W
-     Writing graphical output:           output-diffusion/solution-00005
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 Number of active cells: 475 (on 6 levels)
@@ -74,7 +68,6 @@ Number of degrees of freedom: 6,604 (4,050+529+2,025)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1124 K, 1 K
      Heat fluxes through boundary parts: 1.134e-11 W, -1.274e-11 W, 7.293e-13 W, -5.613e-06 W
-     Writing graphical output:           output-diffusion/solution-00006
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 7:  t=1.32538e+07 seconds
@@ -84,7 +77,6 @@ Number of degrees of freedom: 6,604 (4,050+529+2,025)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.116 K, 1 K
      Heat fluxes through boundary parts: 1.417e-11 W, -1.713e-11 W, 1.022e-12 W, -5.46e-06 W
-     Writing graphical output:           output-diffusion/solution-00007
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 8:  t=1.42523e+07 seconds
@@ -94,7 +86,6 @@ Number of degrees of freedom: 6,604 (4,050+529+2,025)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1204 K, 1 K
      Heat fluxes through boundary parts: 1.648e-11 W, -2.337e-11 W, 1.537e-12 W, -5.285e-06 W
-     Writing graphical output:           output-diffusion/solution-00008
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 9:  t=1.56207e+07 seconds
@@ -104,7 +95,6 @@ Number of degrees of freedom: 6,604 (4,050+529+2,025)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1261 K, 1 K
      Heat fluxes through boundary parts: -1.676e-12 W, -9.409e-12 W, 2.691e-12 W, -5.061e-06 W
-     Writing graphical output:           output-diffusion/solution-00009
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 10:  t=1.67822e+07 seconds
@@ -114,7 +104,6 @@ Number of degrees of freedom: 6,604 (4,050+529+2,025)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1306 K, 1 K
      Heat fluxes through boundary parts: 8.943e-12 W, -1.071e-11 W, 4.281e-12 W, -4.895e-06 W
-     Writing graphical output:           output-diffusion/solution-00010
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 Number of active cells: 340 (on 6 levels)
@@ -128,7 +117,6 @@ Number of degrees of freedom: 4,838 (2,966+389+1,483)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1368 K, 1 K
      Heat fluxes through boundary parts: -7.314e-12 W, 1.181e-11 W, -1.421e-12 W, -4.67e-06 W
-     Writing graphical output:           output-diffusion/solution-00011
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 12:  t=1.89999e+07 seconds
@@ -138,7 +126,6 @@ Number of degrees of freedom: 4,838 (2,966+389+1,483)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1391 K, 1 K
      Heat fluxes through boundary parts: -9.08e-12 W, 1.65e-11 W, -1.131e-12 W, -4.585e-06 W
-     Writing graphical output:           output-diffusion/solution-00012
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 13:  t=1.9466e+07 seconds
@@ -148,7 +135,6 @@ Number of degrees of freedom: 4,838 (2,966+389+1,483)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1409 K, 1 K
      Heat fluxes through boundary parts: -9.192e-12 W, 1.952e-11 W, -7.828e-13 W, -4.523e-06 W
-     Writing graphical output:           output-diffusion/solution-00013
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 14:  t=1.9817e+07 seconds
@@ -158,7 +144,6 @@ Number of degrees of freedom: 4,838 (2,966+389+1,483)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1422 K, 1 K
      Heat fluxes through boundary parts: 5.895e-12 W, 1.944e-11 W, -5.169e-13 W, -4.475e-06 W
-     Writing graphical output:           output-diffusion/solution-00014
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 15:  t=2.02077e+07 seconds
@@ -168,7 +153,6 @@ Number of degrees of freedom: 4,838 (2,966+389+1,483)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1437 K, 1 K
      Heat fluxes through boundary parts: -2.284e-11 W, -3.476e-11 W, -1.939e-13 W, -4.429e-06 W
-     Writing graphical output:           output-diffusion/solution-00015
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 Number of active cells: 304 (on 6 levels)
@@ -182,7 +166,6 @@ Number of degrees of freedom: 4,355 (2,670+350+1,335)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1454 K, 1 K
      Heat fluxes through boundary parts: -1.652e-11 W, -5.407e-11 W, -3.231e-10 W, -4.377e-06 W
-     Writing graphical output:           output-diffusion/solution-00016
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 17:  t=2.11236e+07 seconds
@@ -192,7 +175,6 @@ Number of degrees of freedom: 4,355 (2,670+350+1,335)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.147 K, 1 K
      Heat fluxes through boundary parts: -7.957e-12 W, -7.103e-11 W, -4.673e-10 W, -4.33e-06 W
-     Writing graphical output:           output-diffusion/solution-00017
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 18:  t=2.16773e+07 seconds
@@ -202,7 +184,6 @@ Number of degrees of freedom: 4,355 (2,670+350+1,335)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1488 K, 1 K
      Heat fluxes through boundary parts: -5.333e-11 W, -3.871e-11 W, -6.293e-10 W, -4.286e-06 W
-     Writing graphical output:           output-diffusion/solution-00018
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 19:  t=2.2449e+07 seconds
@@ -212,7 +193,6 @@ Number of degrees of freedom: 4,355 (2,670+350+1,335)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1514 K, 1 K
      Heat fluxes through boundary parts: 6.269e-11 W, 1.455e-10 W, -8.056e-10 W, -4.213e-06 W
-     Writing graphical output:           output-diffusion/solution-00019
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 20:  t=2.27138e+07 seconds
@@ -222,7 +202,6 @@ Number of degrees of freedom: 4,355 (2,670+350+1,335)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1523 K, 1 K
      Heat fluxes through boundary parts: 8.893e-11 W, 1.417e-10 W, -8.553e-10 W, -4.182e-06 W
-     Writing graphical output:           output-diffusion/solution-00020
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 Number of active cells: 352 (on 6 levels)
@@ -236,7 +215,6 @@ Number of degrees of freedom: 4,986 (3,058+399+1,529)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1552 K, 1 K
      Heat fluxes through boundary parts: -1.155e-10 W, -1.078e-11 W, -1.014e-09 W, -4.123e-06 W
-     Writing graphical output:           output-diffusion/solution-00021
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 22:  t=2.42726e+07 seconds
@@ -246,7 +224,6 @@ Number of degrees of freedom: 4,986 (3,058+399+1,529)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1573 K, 1 K
      Heat fluxes through boundary parts: -4.122e-12 W, -3.709e-11 W, -1.093e-09 W, -4.072e-06 W
-     Writing graphical output:           output-diffusion/solution-00022
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 23:  t=2.46134e+07 seconds
@@ -256,7 +233,6 @@ Number of degrees of freedom: 4,986 (3,058+399+1,529)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1584 K, 1 K
      Heat fluxes through boundary parts: 3.48e-11 W, -5.408e-11 W, -1.129e-09 W, -4.043e-06 W
-     Writing graphical output:           output-diffusion/solution-00023
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 24:  t=2.48865e+07 seconds
@@ -266,7 +242,6 @@ Number of degrees of freedom: 4,986 (3,058+399+1,529)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1593 K, 1 K
      Heat fluxes through boundary parts: 5.714e-11 W, -6.542e-11 W, -1.156e-09 W, -4.02e-06 W
-     Writing graphical output:           output-diffusion/solution-00024
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 25:  t=2.51558e+07 seconds
@@ -276,7 +251,6 @@ Number of degrees of freedom: 4,986 (3,058+399+1,529)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1601 K, 1 K
      Heat fluxes through boundary parts: 2.217e-11 W, -1.254e-11 W, -1.183e-09 W, -4.001e-06 W
-     Writing graphical output:           output-diffusion/solution-00025
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 Number of active cells: 388 (on 6 levels)
@@ -290,7 +264,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1613 K, 1 K
      Heat fluxes through boundary parts: -7.033e-13 W, 2.761e-11 W, -7.585e-10 W, -3.975e-06 W
-     Writing graphical output:           output-diffusion/solution-00026
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 27:  t=2.61542e+07 seconds
@@ -300,7 +273,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1631 K, 1 K
      Heat fluxes through boundary parts: -6.344e-11 W, 4.615e-11 W, -1.641e-10 W, -3.931e-06 W
-     Writing graphical output:           output-diffusion/solution-00027
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 28:  t=2.66628e+07 seconds
@@ -310,7 +282,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1647 K, 1 K
      Heat fluxes through boundary parts: -4.138e-11 W, 1.493e-11 W, 1.087e-10 W, -3.89e-06 W
-     Writing graphical output:           output-diffusion/solution-00028
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 29:  t=2.70311e+07 seconds
@@ -320,7 +291,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1659 K, 1 K
      Heat fluxes through boundary parts: -4.044e-11 W, 1.622e-11 W, 1.766e-10 W, -3.858e-06 W
-     Writing graphical output:           output-diffusion/solution-00029
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 30:  t=2.73206e+07 seconds
@@ -330,7 +300,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1669 K, 1 K
      Heat fluxes through boundary parts: -4.32e-11 W, 2.119e-11 W, 1.651e-10 W, -3.833e-06 W
-     Writing graphical output:           output-diffusion/solution-00030
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 Number of active cells: 388 (on 6 levels)
@@ -344,7 +313,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1679 K, 1 K
      Heat fluxes through boundary parts: -9.197e-12 W, 1.385e-11 W, 9.897e-11 W, -3.806e-06 W
-     Writing graphical output:           output-diffusion/solution-00031
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 32:  t=2.8128e+07 seconds
@@ -354,7 +322,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1694 K, 1 K
      Heat fluxes through boundary parts: 3.44e-12 W, 8.769e-12 W, -6.067e-11 W, -3.769e-06 W
-     Writing graphical output:           output-diffusion/solution-00032
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 33:  t=2.86346e+07 seconds
@@ -364,7 +331,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.171 K, 1 K
      Heat fluxes through boundary parts: 1.387e-11 W, 3.173e-12 W, -2.814e-10 W, -3.732e-06 W
-     Writing graphical output:           output-diffusion/solution-00033
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 34:  t=2.92721e+07 seconds
@@ -374,7 +340,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1729 K, 1 K
      Heat fluxes through boundary parts: 4.015e-11 W, -8.425e-12 W, -5.924e-10 W, -3.687e-06 W
-     Writing graphical output:           output-diffusion/solution-00034
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 35:  t=2.9867e+07 seconds
@@ -384,7 +349,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1747 K, 1 K
      Heat fluxes through boundary parts: 3.148e-11 W, -1.425e-11 W, -8.921e-10 W, -3.647e-06 W
-     Writing graphical output:           output-diffusion/solution-00035
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 Number of active cells: 388 (on 6 levels)
@@ -398,7 +362,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1762 K, 1 K
      Heat fluxes through boundary parts: 2.712e-11 W, -1.896e-11 W, -1.142e-09 W, -3.614e-06 W
-     Writing graphical output:           output-diffusion/solution-00036
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 37:  t=3.07607e+07 seconds
@@ -408,7 +371,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1773 K, 1 K
      Heat fluxes through boundary parts: 2.628e-11 W, -2.295e-11 W, -1.331e-09 W, -3.589e-06 W
-     Writing graphical output:           output-diffusion/solution-00037
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 38:  t=3.10876e+07 seconds
@@ -418,7 +380,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1783 K, 1 K
      Heat fluxes through boundary parts: 2.62e-11 W, -2.664e-11 W, -1.484e-09 W, -3.569e-06 W
-     Writing graphical output:           output-diffusion/solution-00038
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 39:  t=3.13746e+07 seconds
@@ -428,7 +389,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1791 K, 1 K
      Heat fluxes through boundary parts: 2.633e-11 W, -2.959e-11 W, -1.614e-09 W, -3.552e-06 W
-     Writing graphical output:           output-diffusion/solution-00039
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 40:  t=3.17446e+07 seconds
@@ -438,7 +398,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1802 K, 1 K
      Heat fluxes through boundary parts: 4.496e-11 W, -2.525e-11 W, -1.777e-09 W, -3.529e-06 W
-     Writing graphical output:           output-diffusion/solution-00040
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 Number of active cells: 388 (on 6 levels)
@@ -452,7 +411,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1814 K, 1 K
      Heat fluxes through boundary parts: 3.869e-11 W, -1.463e-11 W, -1.948e-09 W, -3.505e-06 W
-     Writing graphical output:           output-diffusion/solution-00041
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 42:  t=3.24648e+07 seconds
@@ -462,7 +420,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1824 K, 1 K
      Heat fluxes through boundary parts: 2.926e-11 W, -6.035e-12 W, -2.077e-09 W, -3.486e-06 W
-     Writing graphical output:           output-diffusion/solution-00042
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 43:  t=3.26905e+07 seconds
@@ -472,7 +429,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1831 K, 1 K
      Heat fluxes through boundary parts: 2.118e-11 W, -2.589e-13 W, -2.166e-09 W, -3.473e-06 W
-     Writing graphical output:           output-diffusion/solution-00043
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 44:  t=3.33835e+07 seconds
@@ -482,7 +438,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1848 K, 1 K
      Heat fluxes through boundary parts: -3.719e-11 W, -3.412e-11 W, -2.425e-09 W, -3.446e-06 W
-     Writing graphical output:           output-diffusion/solution-00044
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 45:  t=3.37723e+07 seconds
@@ -492,7 +447,6 @@ Number of degrees of freedom: 5,468 (3,354+437+1,677)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1858 K, 1 K
      Heat fluxes through boundary parts: -3.809e-11 W, -2.153e-11 W, -2.563e-09 W, -3.429e-06 W
-     Writing graphical output:           output-diffusion/solution-00045
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 Number of active cells: 436 (on 6 levels)
@@ -506,7 +460,6 @@ Number of degrees of freedom: 6,099 (3,742+486+1,871)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1868 K, 1 K
      Heat fluxes through boundary parts: -1.38e-11 W, -7.072e-12 W, -2.702e-09 W, -3.409e-06 W
-     Writing graphical output:           output-diffusion/solution-00046
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 47:  t=3.46338e+07 seconds
@@ -516,7 +469,6 @@ Number of degrees of freedom: 6,099 (3,742+486+1,871)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1881 K, 1 K
      Heat fluxes through boundary parts: 1.908e-11 W, 1.596e-11 W, -2.853e-09 W, -3.387e-06 W
-     Writing graphical output:           output-diffusion/solution-00047
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 48:  t=3.52225e+07 seconds
@@ -526,7 +478,6 @@ Number of degrees of freedom: 6,099 (3,742+486+1,871)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1898 K, 1 K
      Heat fluxes through boundary parts: 1.766e-11 W, -3.79e-11 W, -3.037e-09 W, -3.358e-06 W
-     Writing graphical output:           output-diffusion/solution-00048
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 49:  t=3.57667e+07 seconds
@@ -536,7 +487,6 @@ Number of degrees of freedom: 6,099 (3,742+486+1,871)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1913 K, 1 K
      Heat fluxes through boundary parts: -2.191e-12 W, -3.039e-11 W, -3.195e-09 W, -3.333e-06 W
-     Writing graphical output:           output-diffusion/solution-00049
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Snapshot created!
@@ -549,7 +499,6 @@ Number of degrees of freedom: 6,099 (3,742+486+1,871)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1924 K, 1 K
      Heat fluxes through boundary parts: -2.525e-11 W, -2.956e-11 W, -3.301e-09 W, -3.315e-06 W
-     Writing graphical output:           output-diffusion/solution-00050
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 Number of active cells: 427 (on 6 levels)
@@ -563,7 +512,6 @@ Number of degrees of freedom: 5,985 (3,672+477+1,836)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1935 K, 1 K
      Heat fluxes through boundary parts: -2.886e-11 W, -6.39e-11 W, -3.414e-09 W, -3.295e-06 W
-     Writing graphical output:           output-diffusion/solution-00051
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 52:  t=3.70126e+07 seconds
@@ -573,7 +521,6 @@ Number of degrees of freedom: 5,985 (3,672+477+1,836)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1945 K, 1 K
      Heat fluxes through boundary parts: -9.605e-12 W, 1.477e-11 W, -3.504e-09 W, -3.279e-06 W
-     Writing graphical output:           output-diffusion/solution-00052
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 53:  t=3.75328e+07 seconds
@@ -583,7 +530,6 @@ Number of degrees of freedom: 5,985 (3,672+477+1,836)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1958 K, 1 K
      Heat fluxes through boundary parts: 1.543e-11 W, 3.443e-11 W, -3.618e-09 W, -3.255e-06 W
-     Writing graphical output:           output-diffusion/solution-00053
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 54:  t=3.78645e+07 seconds
@@ -593,7 +539,6 @@ Number of degrees of freedom: 5,985 (3,672+477+1,836)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1968 K, 1 K
      Heat fluxes through boundary parts: 1.095e-11 W, 1.775e-11 W, -3.687e-09 W, -3.238e-06 W
-     Writing graphical output:           output-diffusion/solution-00054
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 55:  t=3.82799e+07 seconds
@@ -603,7 +548,6 @@ Number of degrees of freedom: 5,985 (3,672+477+1,836)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1979 K, 1 K
      Heat fluxes through boundary parts: -7.676e-13 W, -1.338e-11 W, -3.767e-09 W, -3.22e-06 W
-     Writing graphical output:           output-diffusion/solution-00055
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 Number of active cells: 424 (on 6 levels)
@@ -617,7 +561,6 @@ Number of degrees of freedom: 5,956 (3,654+475+1,827)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.2015 K, 1 K
      Heat fluxes through boundary parts: -4.177e-11 W, -4.606e-11 W, -3.987e-09 W, -3.165e-06 W
-     Writing graphical output:           output-diffusion/solution-00056
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 *** Timestep 57:  t=4e+07 seconds
@@ -627,7 +570,6 @@ Number of degrees of freedom: 5,956 (3,654+475+1,827)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.202 K, 1 K
      Heat fluxes through boundary parts: -4.521e-11 W, -6.424e-11 W, -4.007e-09 W, -3.158e-06 W
-     Writing graphical output:           output-diffusion/solution-00057
      Writing depth average               output-diffusion/depth_average.gnuplot
 
 Termination requested by criterion: end time
