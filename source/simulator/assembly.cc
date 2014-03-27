@@ -1507,6 +1507,7 @@ namespace aspect
                            global_entropy_variation,
                            cell->diameter(),
                            temperature_or_composition);
+    Assert (nu >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
@@ -1527,6 +1528,8 @@ namespace aspect
            scratch.material_model_outputs.specific_heat[q]
            :
            1.0);
+        Assert (density_c_P >= 0, ExcMessage ("The product of density and c_P needs to be a non-negative quantity."));
+
         const double conductivity =
           ((temperature_or_composition.is_temperature())
            ?
@@ -1534,13 +1537,16 @@ namespace aspect
            :
            0.0);
         const double latent_heat_LHS =
-          (parameters.include_latent_heat && temperature_or_composition.is_temperature())
+          ((parameters.include_latent_heat && temperature_or_composition.is_temperature())
            ?
            - scratch.material_model_outputs.densities[q] *
            scratch.material_model_inputs.temperature[q] *
            scratch.material_model_outputs.entropy_derivative_temperature[q]
            :
-           0.0;
+           0.0);
+        Assert (density_c_P + latent_heat_LHS >= 0,
+            ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                "to the left hand side needs to be a non-negative quantity."));
         const double gamma = compute_heating_term(scratch,
                                                   scratch.material_model_inputs,
                                                   scratch.material_model_outputs,
