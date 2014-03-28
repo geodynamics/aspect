@@ -318,19 +318,19 @@ terms of this equation correspond to
   case the variation of the total pressure can be expressed by gravity and
   density.
 \end{itemize}
-In addition, the equation does include phase change terms that correspond to 
-the latent heat generated or consumed in this process. The latent heat release 
-is proportional to changes in the fraction of material $X$ that has already 
-undergone the phase transition (also called phase function) and the change 
-of entropy $\Delta S$. Here, $\Delta S$ is positive for exothermic phase 
-transitions. As the phase of the material, for a given composition, depends 
+In addition, the equation does include phase change terms that correspond to
+the latent heat generated or consumed in this process. The latent heat release
+is proportional to changes in the fraction of material $X$ that has already
+undergone the phase transition (also called phase function) and the change
+of entropy $\Delta S$. Here, $\Delta S$ is positive for exothermic phase
+transitions. As the phase of the material, for a given composition, depends
 on the temperature and pressure, the latent heat term can be reformulated:
 
 \begin{gather*}
 \frac{DX}{Dt} = \frac{\partial X}{\partial T} \frac{DT}{Dt} + \frac{\partial X}{\partial p} \mathbf u\cdot\nabla p
 \end{gather*}
 
-These terms apply both to solid-state phase transitions and to melting/solidification. 
+These terms apply both to solid-state phase transitions and to melting/solidification.
 
 The final set equations, \eqref{eq:compositional}, describes the motion of
 a set of advected quantities $c_i(\mathbf x,t),i=1\ldots C$. We call these
@@ -510,26 +510,26 @@ Units $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
   temperature, but may depend on the location due to different chemical
   composition of material in the earth mantle. The literature suggests a value
   of $\gamma=7.4\cdot 10^{-12}\frac{\textrm{W}}{\textrm{kg}}$.
-  
-\item \textit{The change of entropy $\Delta S$ at a 
-  phase transition together with the derivatives of the phase function 
-  $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to temperature and pressure:} Units 
-  $\frac{\textrm{J}}{\textrm{kg}\textrm{K}^2}$ ($-\Delta S \frac{\partial X}{\partial T}$) and 
+
+\item \textit{The change of entropy $\Delta S$ at a
+  phase transition together with the derivatives of the phase function
+  $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to temperature and pressure:} Units
+  $\frac{\textrm{J}}{\textrm{kg}\textrm{K}^2}$ ($-\Delta S \frac{\partial X}{\partial T}$) and
   $\frac{\textrm{m}^3}{\textrm{kg}\textrm{K}}$ ($\Delta S \frac{\partial X}{\partial p}$).
 
   When material undergoes a phase transition, the entropy changes due to
   release or consumption of latent heat. However, phase transitions occur
-  gradually and for a given chemical composition it depends on temperature 
-  and pressure which phase prevails. Thus, the latent heat release can 
-  be calculated from the change of entropy $\Delta S$ and the derivatives 
-  of the phase function $\frac{\partial X}{\partial T}$ and 
-  $\frac{\partial X}{\partial p}$. These values have to be provided by 
-  the material model, separately for the coefficient 
-  $-\Delta S \frac{\partial X}{\partial T}$ on the left-hand side and 
-  $\Delta S \frac{\partial X}{\partial p}$ on the right-hand side of the 
-  temperature equation. However, they may be either approximated with the help 
-  of an analytic phase function, employing data from a thermodynamic database 
-  or in any other way that seems appropriate to the user. 
+  gradually and for a given chemical composition it depends on temperature
+  and pressure which phase prevails. Thus, the latent heat release can
+  be calculated from the change of entropy $\Delta S$ and the derivatives
+  of the phase function $\frac{\partial X}{\partial T}$ and
+  $\frac{\partial X}{\partial p}$. These values have to be provided by
+  the material model, separately for the coefficient
+  $-\Delta S \frac{\partial X}{\partial T}$ on the left-hand side and
+  $\Delta S \frac{\partial X}{\partial p}$ on the right-hand side of the
+  temperature equation. However, they may be either approximated with the help
+  of an analytic phase function, employing data from a thermodynamic database
+  or in any other way that seems appropriate to the user.
 \end{itemize}
 
 
@@ -1579,8 +1579,8 @@ The purpose of these files is as follows:
 \begin{figure}[tbp]
   \centering
   \includegraphics[width=0.6\textwidth]{depthaverage2}
-  \caption{\it Example output for depth average statistics. On the left axis are 13 time 
-  steps, on the right is the depth (from the top at 0 to the bottom of the mantle on the 
+  \caption{\it Example output for depth average statistics. On the left axis are 13 time
+  steps, on the right is the depth (from the top at 0 to the bottom of the mantle on the
   far right), and the upwards pointing axis is the average temperature. This
   plot is generated by gnuplot, but the depth averages can be written in many
   other output formats as well, if preferred (see
@@ -4173,7 +4173,7 @@ one by one:
   	issue and start with just using the ``simple'' material model where the
   	viscosity is constant and most other coefficients depend at most on the
   	temperature.
-  	
+
   \item \textit{What external forces do we have (the right hand side)}
   	There are of course other issues: for example, should the model include terms
   	that describe shear heating? Should it be compressible? Adiabatic heating due
@@ -4182,7 +4182,7 @@ one by one:
   	compressibility) also affect the differential operators on the left. Either
   	way, for the moment, let us just go with the simplest models and come back to
   	the more advanced questions in later examples.
-  	
+
   	One right hand side that will certainly be there is that due to gravitational
   	acceleration. To first order, within the mantle gravity points radially
   	inward and has a roughly constant magnitude. In reality, of course, the
@@ -4202,7 +4202,7 @@ one by one:
   	it is part of the convecting mantle, albeit a rather viscous part due to its
   	low temperature and the low pressure there, or whether we want to truncate
   	the computation at the asthenosphere.
-  	
+
   \item \textit{What happens at the boundary for each variable involved
   (boundary conditions)?}
   	The mantle has two boundaries: at the bottom where it contacts the outer core
@@ -4218,7 +4218,7 @@ one by one:
   	free tangential flow at the surface or, if we want, prescribe the tangential
   	velocity as inferred from plate motion models. \aspect{} has a plugin that
   	allows to query this kind of information from the \texttt{GPlates} program.
-  
+
   \item \textit{How did it look at the beginning (initial conditions)?}
     This is of course a trick question. Convection in the mantle of earth-like
     planets did not start with a concrete initial temperature distribution when
@@ -4362,7 +4362,7 @@ In the following, let us pick apart this input file:
   lead to flows so slow that we need to measure time in years, and we will set
   the end time to 1.5 billion years -- enough to see a significant amount of
   motion.
-  
+
   \item The next block (lines 7--14) describes the material that is convecting
   (for historical reasons, the remainder of the parameters that describe the
   equations is in a different section, see the fourth point below). We choose
@@ -4376,19 +4376,19 @@ In the following, let us pick apart this input file:
   the \texttt{simple} material model in
   Sections~\ref{parameters:Material_20model} and
   \ref{parameters:Material_20model/Simple_20model}.
-  
+
   \item Lines 17--25 then describe the geometry. In this simple case, we will
   take a quarter of a 2d shell (recall that the dimension had previously been
   set as a global parameter) with inner and outer radii matching those of a
   spherical approximation of Earth.
-  
+
   \item The second part of the model description and boundary values follows in
   lines 28--45. There, we describe that we want a model where equation
   \eqref{eq:temperature} contains the shear heating term $2\eta
   \varepsilon(\mathbf u):\varepsilon(\mathbf u)$ (noting that the default is to
   use an incompressible model for which the term $\frac{1}{3}(\nabla \cdot
   \mathbf u)\mathbf 1$ in the shear heating contribution is zero).
-  
+
   The boundary conditions require us to look up how the geometry model
   we chose (the \texttt{spherical shell} model) assigns boundary indicators to
   the four sides of the domain. This is described in
@@ -4406,14 +4406,14 @@ In the following, let us pick apart this input file:
   emulating symmetry boundary conditions) and, further down, set to values of
   700 and 4000 degrees Celsius -- roughly realistic for the bottom of the crust
   and the core-mantle boundary.
-  
-  \item The description of what we want to model is complete by specifying 
+
+  \item The description of what we want to model is complete by specifying
   that the initial temperature is a perturbation with hexagonal symmetry from a
   linear interpolation between inner and outer temperatures (see
   Section~\ref{parameters:Initial_20conditions}), and what kind of gravity model
   we want to choose (one reminiscent of the one inside the Earth mantle, see
   Section~\ref{parameters:Gravity_20model}).
-  
+
   \item The remainder of the input file consists of a description of how to
   choose the initial mesh and how to adapt it (lines 58--63) and what to do at
   the end of each time step with the solution that \aspect{} computes for us (lines 66--79).
@@ -4452,7 +4452,7 @@ down does not adiabatically heat up. Consequently, the adiabatic temperature
 profile would be constant with depth, and a well-mixed model with hot inner and
 cold outer boundary would have a constant temperature with thin boundary layers
 at the bottom and top of the mantle. In contrast to this, our initial
-temperature field was a perturbation of a linear temperature profile. 
+temperature field was a perturbation of a linear temperature profile.
 
 There are multiple implications of this. First, the temperature difference
 between outer and inner boundary of 3300 K we have chosen in the input file is
@@ -4473,7 +4473,7 @@ $$
   \frac{10 \text{m}\,\text{s}^{-2} \; 4\cdot 10^{-5}\text{K}^{-1} \; 3300
   \text{K} \; 3300 \text{kg}\,\text{m}^{-2} \; (2.86 \cdot 10^6
   \text{m})^3}{10^{22}
-  \text{kg}\,\text{m}^{-1}\,\text{s}^{-1}}. 
+  \text{kg}\,\text{m}^{-1}\,\text{s}^{-1}}.
 $$
 
 Second, the initial temperature profile we chose is not realistic -- in fact, it
@@ -4543,7 +4543,7 @@ When we set up the input file, we started with a model that includes the
 shear heating term $2\eta \varepsilon(\mathbf u):\varepsilon(\mathbf u)$ in
 eq.~\eqref{eq:temperature}. In hindsight, this may have been the wrong decision,
 but it provides an opportunity to investigate whether we think that the results of our
-computations can possibly be correct. 
+computations can possibly be correct.
 
 We first realized the issue when looking at the heat flux that the
 \texttt{heat flux statistics} postprocessor computes. This is shown in the left
@@ -4628,7 +4628,7 @@ largely irrelevant and the cooling of the mantle indeed begins.
 Whether this is really the case is of course easily verified: The right panels
 of Fig.s~\ref{fig:simple-shell-2d-heatflux}
 and \ref{fig:simple-shell-2d-temperature} show heat fluxes and average
-temperatures for a model where we have switched off the shear heating by setting 
+temperatures for a model where we have switched off the shear heating by setting
 \begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
 subsection Model settings
   set Include shear heating                   = false % \index[prmindex]{Include shear heating} \index[prmindexfull]{Model settings!Include shear heating} %
@@ -4653,7 +4653,8 @@ The setup from the previous section can of course be extended to 3d shell
 geometries as well -- though at significant computational cost. In fact, the
 number of modifications necessary is relatively small, as we will discuss below.
 To show an example up front, a picture of the temperature field one gets from
-such a simulation is shown in Fig.~\ref{fig:simple-shell-3d}.
+such a simulation is shown in Fig.~\ref{fig:simple-shell-3d}. The
+corresponding movie can be found at \url{http://youtu.be/j63MkEc0RRw}.
 
 \begin{figure}[tb]
 \centering
@@ -4689,12 +4690,12 @@ In a number of model setups one may want to include a surface velocity boundary 
 
 \paragraph{Acquiring plate reconstruction.}
 
-The plate reconstruction that is used in this cookbook is included in \aspect{}'s data folders. For a new model setup however, the user eventually needs to create their own data files, therefore we will shortly discuss the process of acquiring a usable plate reconstruction and transferring it into a format usable by ASPECT. 
+The plate reconstruction that is used in this cookbook is included in \aspect{}'s data folders. For a new model setup however, the user eventually needs to create their own data files, therefore we will shortly discuss the process of acquiring a usable plate reconstruction and transferring it into a format usable by ASPECT.
 Both the necessary software and data are provided by the GPlates project. GPlates is an open-source software for interactive visualization of plate tectonics. It is developed by the EarthByte Project in the School of Geosciences at the University of Sydney, the Division of Geological and Planetary Sciences (GPS) at CalTech and the Center for Geodynamics at the Norwegian Geological Survey (NGU). For extensive documentation and support we refer to the GPlates website (\url{http://www.gplates.org}). Apart from the software one needs the actual plate reconstruction that consists of closed polygons covering the complete model domain. For our case we will use the provided data by \cite{GTZDSMBSMB12} that is available from the GPlates website under "Download $\rightarrow$ Download GPlates-compatible data $\rightarrow$ Global reconstructions with continuously closing plates from 140 Ma to the present". The data is provided under a Creative Commons Attribution 3.0 Unported License (\url{http://creativecommons.org/licenses/by/3.0/}). After loading the data files into GPlates (*.gpml for plate polygons, *.rot for plate rotations over time) the user needs to convert the GPlates data to readable velocity information for \aspect{}.
 
 \paragraph{Converting GPlates data to \aspect{} input.}
 
-With loaded plate polygon and rotation information the conversion from GPlates data to \aspect{} readable velocity files is straightforward. First the user needs to generate (or import) so-called "velocity domain points", which are discrete sets of points at which GPlates will calculate individual velocity information. This is done using the "Features $\rightarrow$ Generate Velocity Domain Points $\rightarrow$ Latitude Longitude" Menu option. Because \aspect{} is using an adaptive mesh it is not possible for GPlates to generate velocity information at the precise surface node positions like for CitcomS or Terra (the other currently available interfaces). Instead GPlates will output the information on a general Latitude/Longitude grid with nodes on all crossing points. \aspect{} then internally interpolates this information to the current node locations during the model run. This poses the challenge to the user to decide for a sensible resolution of the GPlates output, which can be adjusted in the "Generate Latitude/Longitude Velocity Domain Points" dialog of GPlates. In general a resolution that resolves the important features is necessary, while a resolution that is higher than the maximal resolution for the \aspect{} model is unnecessary and only increases the computational cost and memory consumption of the model. After creating the Velocity Domain Points the user should see the created points and their velocities indicated as points and arrows in GPlates. To export the calculated velocities one would use the "Reconstruction $\rightarrow$ Export" menu. In this dialog the user may specify the time instant or range at which the velocities shall be exported. The only necessary option is to include the "Velocities" data type in the "Add Export" sub-dialog. The velocities need to be exported in the native GPlates *.gpml format, which is based on XML and can be read by \aspect{}. In case of a time-range the user need to add a pattern specifier to the name to create a series of files. The \%u flag is especially suited for the interaction with \aspect{}, since it can easily be replaced by a calculated file index (see also \ref{sec:time-dependent-gplates-velocities}). 
+With loaded plate polygon and rotation information the conversion from GPlates data to \aspect{} readable velocity files is straightforward. First the user needs to generate (or import) so-called "velocity domain points", which are discrete sets of points at which GPlates will calculate individual velocity information. This is done using the "Features $\rightarrow$ Generate Velocity Domain Points $\rightarrow$ Latitude Longitude" Menu option. Because \aspect{} is using an adaptive mesh it is not possible for GPlates to generate velocity information at the precise surface node positions like for CitcomS or Terra (the other currently available interfaces). Instead GPlates will output the information on a general Latitude/Longitude grid with nodes on all crossing points. \aspect{} then internally interpolates this information to the current node locations during the model run. This poses the challenge to the user to decide for a sensible resolution of the GPlates output, which can be adjusted in the "Generate Latitude/Longitude Velocity Domain Points" dialog of GPlates. In general a resolution that resolves the important features is necessary, while a resolution that is higher than the maximal resolution for the \aspect{} model is unnecessary and only increases the computational cost and memory consumption of the model. After creating the Velocity Domain Points the user should see the created points and their velocities indicated as points and arrows in GPlates. To export the calculated velocities one would use the "Reconstruction $\rightarrow$ Export" menu. In this dialog the user may specify the time instant or range at which the velocities shall be exported. The only necessary option is to include the "Velocities" data type in the "Add Export" sub-dialog. The velocities need to be exported in the native GPlates *.gpml format, which is based on XML and can be read by \aspect{}. In case of a time-range the user need to add a pattern specifier to the name to create a series of files. The \%u flag is especially suited for the interaction with \aspect{}, since it can easily be replaced by a calculated file index (see also \ref{sec:time-dependent-gplates-velocities}).
 
 \paragraph{Setting up the \aspect{} model.}
 
@@ -4734,7 +4735,7 @@ To be finished. Aspect outputs the necessary rotation information for visualizat
 
 \paragraph{Time-dependent boundary conditions.}
 \label{sec:time-dependent-gplates-velocities}
-The above presented example uses a constant velocity boundary conditions that equals the present day plate movements. For a number of purposes one may want to use a prescribed velocity boundary condition that changes over time, e.g. to investigate the effect of trench migration on subduction. Therefore \aspect{}'s GPlates plugin is able to read in two velocity files and interpolate between them to the current model time. For this purpose the user needs to add a \textit{\%d} flag into the velocity file name, which represents the current velocity file index (e.g. \url{time_dependent.\%d.gpml}). This index is calculated by dividing the current model time by the user-defined time step between velocity files (see parameter file above). As the model time progresses the plugin will update the interpolation accordingly and if necessary read in new velocity files. In case it can not read the next velocity file, it assumes the last velocity file to be the constant boundary condition until the end of the model run. The user may test this behaviour with the provided data files \url{data/velocity_boundary_conditions/gplates/time_dependent.\%d.gpml} with d ranging from 0 to 3 and representing the plate movements of the last 3 million years according to the same plate reconstruction as used above. 
+The above presented example uses a constant velocity boundary conditions that equals the present day plate movements. For a number of purposes one may want to use a prescribed velocity boundary condition that changes over time, e.g. to investigate the effect of trench migration on subduction. Therefore \aspect{}'s GPlates plugin is able to read in two velocity files and interpolate between them to the current model time. For this purpose the user needs to add a \textit{\%d} flag into the velocity file name, which represents the current velocity file index (e.g. \url{time_dependent.\%d.gpml}). This index is calculated by dividing the current model time by the user-defined time step between velocity files (see parameter file above). As the model time progresses the plugin will update the interpolation accordingly and if necessary read in new velocity files. In case it can not read the next velocity file, it assumes the last velocity file to be the constant boundary condition until the end of the model run. The user may test this behaviour with the provided data files \url{data/velocity_boundary_conditions/gplates/time_dependent.\%d.gpml} with d ranging from 0 to 3 and representing the plate movements of the last 3 million years according to the same plate reconstruction as used above.
 
 \subsection{Benchmarks}
 \label{sec:cookbooks-benchmarks}
@@ -5684,7 +5685,7 @@ than 2\% is a good indication that \aspect{} implements the equations correctly.
 
 \textit{This section was contributed by Juliane Dannberg.}
 
-The setup of this benchmark is taken from Schubert, Turcotte and Olson \cite{STO01} (part 1, p. 194) and is illustrated in Fig.~\ref{fig:latent-heat-benchmark}. 
+The setup of this benchmark is taken from Schubert, Turcotte and Olson \cite{STO01} (part 1, p. 194) and is illustrated in Fig.~\ref{fig:latent-heat-benchmark}.
 \begin{figure}
   \begin{center}
     \includegraphics[width=0.52\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-setup}
@@ -5692,17 +5693,17 @@ The setup of this benchmark is taken from Schubert, Turcotte and Olson \cite{STO
     \includegraphics[width=0.47\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-temperature}
   \end{center}
   \caption{\it Latent heat benchmark. Both figures show the 2D box model domain.
-      Left: Setup of the benchmark together with a sketch of the expected 
-      temperature profile across the phase transition. The dashed line marks 
-      the phase transition. Material flows in with a prescribed temperature and 
-      velocity at the top, crosses the phase transition in the center and flows 
-      out at the bottom. The predicted bottom temperature is $T_2 = 1109.08 \, \text{K}$. 
-      Right: Temperature distribution of the model together with the associated 
-      temperature profile across the phase transition. The modelled bottom 
+      Left: Setup of the benchmark together with a sketch of the expected
+      temperature profile across the phase transition. The dashed line marks
+      the phase transition. Material flows in with a prescribed temperature and
+      velocity at the top, crosses the phase transition in the center and flows
+      out at the bottom. The predicted bottom temperature is $T_2 = 1109.08 \, \text{K}$.
+      Right: Temperature distribution of the model together with the associated
+      temperature profile across the phase transition. The modelled bottom
       temperature is $T_2 = 1107.39 \, \text{K}$.}
   \label{fig:latent-heat-benchmark}
-\end{figure} 
-It tests if the latent heat production when material crosses a phase transition is calculated correctly according to the laws of thermodynamics. The material model defines two phases in the model domain with the phase transition approximately in the center. The material flows in from the top due to a prescribed downward velocity, and crosses the phase transition before it leaves the model domain on the bottom. As initial condition, the model uses a uniform temperature field, however, upon the phase change, latent heat is released. This leads to a characteristic temperature profile across the phase transition with a higher temperature in the bottom half of the domain. For steady-state one-dimensional downward flow, we have to solve the equation 
+\end{figure}
+It tests if the latent heat production when material crosses a phase transition is calculated correctly according to the laws of thermodynamics. The material model defines two phases in the model domain with the phase transition approximately in the center. The material flows in from the top due to a prescribed downward velocity, and crosses the phase transition before it leaves the model domain on the bottom. As initial condition, the model uses a uniform temperature field, however, upon the phase change, latent heat is released. This leads to a characteristic temperature profile across the phase transition with a higher temperature in the bottom half of the domain. For steady-state one-dimensional downward flow, we have to solve the equation
 
 \begin{gather*}
 \frac{\partial T}{\partial y} = T \frac{\Delta S}{c_p} \frac{\partial X}{\partial y} + \frac{\kappa}{v_y} \frac{\partial^2 T}{\partial y^2}
@@ -5711,7 +5712,7 @@ It tests if the latent heat production when material crosses a phase transition 
 The first term on the right-hand side of the equation describes the latent heat produced at the phase transition: It is proportional to the temperature T, the entropy change $\Delta S$ across the phase transition divided by the specific heat capacity and the derivative of the phase function X. If the velocity is smaller than a critical value, and under the assumption of a discontinuous phase transition (i.e. with a step function as phase function), this latent heating term will be zero everywhere except for the one point $y_{tr}$ where the phase transition takes place. This means, we have a region above the phase transition with only phase 1, and below a certain depth a jump to a region with only phase 2. inside of these one-phase regions, we can solve the equation above (using the boundary conditions $T=T_1$ for $y \rightarrow \infty $ and $T=T_2$ for $y \rightarrow -\infty $) and get
 
 \begin{align*}
-T(y) =\begin{cases} 
+T(y) =\begin{cases}
 T_1 + (T_2-T_1) e^\frac{v_y (y-y_{tr})}{\kappa}, & y>y_{tr}\\
 T_2, & y<y_{tr}
 \end{cases}
@@ -5731,9 +5732,9 @@ T_2 = \frac{T_1}{1 - (1+\frac{\Delta \rho}{2 \rho_0}) \frac{\Delta S}{c_p}}
 
 In addition, we have tested the approach exactly as it is described in \cite{STO01} by setting the entropy change to a specific value and in spite of that using a constant density. However, this is physically inconsistent, as the entropy change is proportional to the density change across the phase transition. With this method, we could reproduce the analytic results from \cite{STO01}.
 
-The exact values of the parameters used for this benchmark can be found in Fig.~\ref{fig:latent-heat-benchmark}. They result in a predicted value of $T_2 = 1109.08 \, \text{K}$ for the temperature in the bottom half of the model. 
+The exact values of the parameters used for this benchmark can be found in Fig.~\ref{fig:latent-heat-benchmark}. They result in a predicted value of $T_2 = 1109.08 \, \text{K}$ for the temperature in the bottom half of the model.
 
-To run this benchmark, we need to set up an input file that describes the situation. In principle, what we need to do is to describe the position and entropy change of the phase transition in addition to the previously outlined boundary and initial conditions. For this purpose, we use the ``latent heat'' material model that allows us to set the density change $\Delta\rho$ and Clapeyron slope $\gamma$ (which both determine the entropy change via $\Delta S = \gamma \frac{\Delta\rho}{\rho^2}$) as well as the depth of the phase transition as input parameters. 
+To run this benchmark, we need to set up an input file that describes the situation. In principle, what we need to do is to describe the position and entropy change of the phase transition in addition to the previously outlined boundary and initial conditions. For this purpose, we use the ``latent heat'' material model that allows us to set the density change $\Delta\rho$ and Clapeyron slope $\gamma$ (which both determine the entropy change via $\Delta S = \gamma \frac{\Delta\rho}{\rho^2}$) as well as the depth of the phase transition as input parameters.
 
 All of this setup is then described by the input file \url{cookbooks/latent-heat.prm}. The following section shows the central part of this file:
 
@@ -5748,38 +5749,38 @@ subsection Material model
     set Phase transition density jumps                 = 115.6
     set Corresponding phase for density jump           = 0
 
-    # If the temperature is equal to the phase transition temperature, the 
-    # phase transition will occur at the phase transition depth. However, 
-    # if the temperature deviates from this value, the Clapeyron slope 
+    # If the temperature is equal to the phase transition temperature, the
+    # phase transition will occur at the phase transition depth. However,
+    # if the temperature deviates from this value, the Clapeyron slope
     # determines how much the pressure (and depth) of the phase boundary
     # changes. Here, the phase transition will be in the middle of the box
-    # for T=T1. 
+    # for T=T1.
     set Phase transition depths                        = 500000
     set Phase transition temperatures                  = 1000
     set Phase transition Clapeyron slopes              = 1e7
 
-    # We set the width of the phase transition to 5 km. You may want to 
+    # We set the width of the phase transition to 5 km. You may want to
     # change this parameter to see how latent heating depends on the width
-    # of the phase transition. 
+    # of the phase transition.
     set Phase transition widths                        = 5000
 
-    set Reference density                              = 3400                                                                 
-    set Reference specific heat                        = 1000                                                                 
+    set Reference density                              = 3400
+    set Reference specific heat                        = 1000
     set Reference temperature                          = 1000
     set Thermal conductivity                           = 2.38
 
-    # We set the thermal expansion amd the compressibility to zero, so that 
-    # all temperature (and density) changes are caused by advection, diffusion 
-    # and latent heating. 
+    # We set the thermal expansion amd the compressibility to zero, so that
+    # all temperature (and density) changes are caused by advection, diffusion
+    # and latent heating.
     set Thermal expansion coefficient                  = 0.0
     set Compressibility                                = 0.0
 
-    # Viscosity is constant. 
+    # Viscosity is constant.
     set Thermal viscosity exponent                     = 0.0
-    set Viscosity                                      = 8.44e21                                                              
+    set Viscosity                                      = 8.44e21
     set Viscosity prefactors                           = 1.0, 1.0
     set Composition viscosity prefactor                = 1.0
-    set Activation enthalpies                          = 3.9473e-3, 3.9473e-3 
+    set Activation enthalpies                          = 3.9473e-3, 3.9473e-3
   end
 end
 \end{lstlisting}
@@ -5793,17 +5794,17 @@ end
     \includegraphics[width=0.49\textwidth]{cookbooks/benchmarks/latent-heat/latent-heat-results-2}
   \end{center}
   \caption{\it Results of the latent heat benchmark. Both figures show the modelled temperature $T_2$ at the bottom of the model domain.
-      Left: $T_2$ in dependence of resolution using a constant phase transition width of 20\,km. With an increasing number of global refinements of the mesh, the bottom temperature converges against a value of $T_2 = 1105.27 \, \text{K}$. 
+      Left: $T_2$ in dependence of resolution using a constant phase transition width of 20\,km. With an increasing number of global refinements of the mesh, the bottom temperature converges against a value of $T_2 = 1105.27 \, \text{K}$.
       Right: $T_2$ in dependence of phase transition width. The model resolution is chosen proportional to the phase transition width, starting with 5 global refinements for a width of 20\,km. With decreasing phase transition width, $T_2$ approaches the theoretical value of $1109.08 \, \text{K}$}
   \label{fig:latent-heat-benchmark-results}
-\end{figure} 
+\end{figure}
 
 Using this input file, let us try to evaluate the results of the current
-computations. It is to note that it takes some time for the model to reach a steady state and only then the bottom temperature is to reach the theoretical value. Therefore, we use the last output step to compare predicted and computed values. 
+computations. It is to note that it takes some time for the model to reach a steady state and only then the bottom temperature is to reach the theoretical value. Therefore, we use the last output step to compare predicted and computed values.
 You can visualize the output in different ways, one of it being ParaView and shown in
 Fig.~\ref{fig:latent-heat-benchmark} on the right side (an alternative is to use Visit as
-described in Section~\ref{sec:viz}). In ParaView, you can plot the temperature profile 
-using the filter ``Plot Over Line'' (Point1: 500000,0,0; Point2: 500000,1000000,0, then go to the ``Display'' tab and select ``T'' as only variable in the ``Line series'' section) or ``Calculator'' (as seen in Fig.~\ref{fig:latent-heat-benchmark}). In Fig.~\ref{fig:latent-heat-benchmark-results} (left) we can see that with increasing resolution, the value for the bottom temperature converges to a value of $T_2 = 1105.27 \, \text{K}$. However, this is not what the analytic solution predicted. The reason for this difference is the width of the phase transition. Our analytical approach is only valid if the phase transition is discontinuous and constrained to one specific depth $y=y_{tr}$. However, as the latent heat production is proportional to the spatial derivative of the phase function, we can not simulate such a phase transition in our numerical model: We had to choose a step function as phase function and its derivative would be infinite. In addition, for the Earth's mantle we also expect phase transitions that are distributed over a certain depth range. Because of this, we chose a hyperbolic tangent as our phase function. Moreover, Fig.~\ref{fig:latent-heat-benchmark-results} (right) illustrates what happens to the temperature at the bottom when we vary the width of the phase transition: The smaller the width, the closer the temperature gets to the predicted value of $T_2 = 1109.08 \, \text{K}$. 
+described in Section~\ref{sec:viz}). In ParaView, you can plot the temperature profile
+using the filter ``Plot Over Line'' (Point1: 500000,0,0; Point2: 500000,1000000,0, then go to the ``Display'' tab and select ``T'' as only variable in the ``Line series'' section) or ``Calculator'' (as seen in Fig.~\ref{fig:latent-heat-benchmark}). In Fig.~\ref{fig:latent-heat-benchmark-results} (left) we can see that with increasing resolution, the value for the bottom temperature converges to a value of $T_2 = 1105.27 \, \text{K}$. However, this is not what the analytic solution predicted. The reason for this difference is the width of the phase transition. Our analytical approach is only valid if the phase transition is discontinuous and constrained to one specific depth $y=y_{tr}$. However, as the latent heat production is proportional to the spatial derivative of the phase function, we can not simulate such a phase transition in our numerical model: We had to choose a step function as phase function and its derivative would be infinite. In addition, for the Earth's mantle we also expect phase transitions that are distributed over a certain depth range. Because of this, we chose a hyperbolic tangent as our phase function. Moreover, Fig.~\ref{fig:latent-heat-benchmark-results} (right) illustrates what happens to the temperature at the bottom when we vary the width of the phase transition: The smaller the width, the closer the temperature gets to the predicted value of $T_2 = 1109.08 \, \text{K}$.
 
 
 \section{Extending \aspect}
@@ -6228,7 +6229,7 @@ do:
     installation. On the other hand, compiling the file into a shared library is
     a bit more that you need to do yourself. Nevertheless, this is the preferred
     approach.
-    
+
     In practice, the compiler line above can become tedious because it includes
     paths to the \aspect{} and \dealii{} header files, but possibly also other
     things such as Trilinos headers, etc. Having to remember all of these pieces
@@ -6257,7 +6258,7 @@ ASPECT_SETUP_PLUGIN(my_plugin)
     \texttt{my\_plugin.so}. Of course, you may want to choose different names
     for the source files \texttt{source\_1.cc}, \texttt{source\_2.cc} or the name of
     the plugin \texttt{my\_plugin}.
-    
+
     In essence, what these few lines do is that they find an \aspect{}
     installation (i.e., the directory where you configured and compiled it,
     which may be the same directory as where you keep your sources, or a
