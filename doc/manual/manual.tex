@@ -4649,6 +4649,26 @@ up to 11cm. Clearly, something is going in the right direction.
 
 \subsubsection{Simple convection in a spherical 3d shell}
 
+The setup from the previous section can of course be extended to 3d shell
+geometries as well -- though at significant computational cost. In fact, the
+number of modifications necessary is relatively small, as we will discuss below.
+To show an example up front, a picture of the temperature field one gets from
+such a simulation is shown in Fig.~\ref{fig:simple-shell-3d}.
+
+\begin{figure}[tb]
+\centering
+\includegraphics[width=0.8\textwidth]{cookbooks/shell_simple_2d/x-movie0000}
+\caption{\it Convection in a spherical shell: Snapshot of
+isosurfaces of the temperature field at time $t=0$ with a quarter of the
+geometry cut away. The surface shows vectors indicating the flow velocity and
+direction.}
+\label{fig:simple-shell-3d}
+\end{figure}
+
+Compared to the input file discussed in the previous section, we only need to
+change the following things (the full input file can be found in
+\url{cookbooks/shell_simple_2d.prm}):
+
 Heat balance:
 
 Radioactive decay provides $7.4\cdot 10^{-12} W/kg$ times 3300 kg/m3 times
