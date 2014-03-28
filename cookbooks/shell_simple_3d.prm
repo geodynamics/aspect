@@ -57,7 +57,7 @@ subsection Boundary temperature model
 
   subsection Spherical constant
     # Temperature at the inner boundary (core mantle boundary). Units: K.
-    set Inner temperature = 4273
+    set Inner temperature = 1973
 
     # Temperature at the outer boundary (lithosphere water/air). Units: K.
     set Outer temperature = 973
@@ -107,18 +107,11 @@ subsection Geometry model
   # `box': A
   # box geometry parallel to the coordinate directions. The extent of the box
   # in each coordinate direction is set in the parameter file.
-  set Model name = spherical shell
+  set Model name = function
 
-
-
-  subsection Spherical shell
-    # Inner radius of the spherical shell. Units: m.
-    set Inner radius  = 3481000
-
-    # Outer radius of the spherical shell. Units: m.
-    set Outer radius  = 6336000
+  subsection Function
+    set Function expression = 1473
   end
-
 end
 
 
@@ -280,7 +273,7 @@ subsection Model settings
   # viewpoint, shear heating should always be used but may be undesirable when
   # comparing results with known benchmarks that do not include this term in
   # the temperature equation.
-  set Include shear heating                   = true
+  set Include shear heating                   = false
 
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is tangential but prescribed, i.e., where external forces act to
@@ -339,8 +332,9 @@ subsection Postprocess
 
 
   subsection Visualization
+    set List of output variables      = dynamic topography
 
-    set Number of grouped files       = 0
+    set Number of grouped files       = 1
 
     # The file format to be used for graphical output.
     set Output format                 = vtu
@@ -363,5 +357,5 @@ subsection Checkpointing
   # The number of timesteps between performing checkpoints. If 0 and time
   # between checkpoint is not specified, checkpointing will not be performed.
   # Units: None.
-  set Steps between checkpoint = 10
+  set Steps between checkpoint = 50
 end
