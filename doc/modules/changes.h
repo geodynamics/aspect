@@ -8,6 +8,13 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Changed: The 'radial constant' gravity model had a default of
+  $30 m/s^2$ for the magnitude of the gravity. This value makes no
+  sense. It has therefore been changed to the value we have at
+  Earth's surface: $9.81 m/s^2$.
+  <br>
+  (Wolfgang Bangerth, 2014/03/29)
+
   <li>Fixed: Correct computation of min/max composition statistics.
   <br>
   (Timo Heister, 2014/03/26)
