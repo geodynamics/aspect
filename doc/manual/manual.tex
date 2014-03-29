@@ -2094,6 +2094,7 @@ There are essentially two strategies supported by \aspect{} for this scenario:
   extended periods of time.}
 
 \subsection{Checkpoint/restart support}
+\label{sec:checkpoint-restart}
 
 If you do long runs, especially when using parallel computations, there are a
 number of reasons to periodically save the state of the program:
@@ -4658,17 +4659,161 @@ corresponding movie can be found at \url{http://youtu.be/j63MkEc0RRw}.
 
 \begin{figure}[tb]
 \centering
-\includegraphics[width=0.8\textwidth]{cookbooks/shell_simple_2d/x-movie0000}
+\includegraphics[width=0.7\textwidth]{cookbooks/shell_simple_3d/x-movie0700}
 \caption{\it Convection in a spherical shell: Snapshot of
-isosurfaces of the temperature field at time $t=0$ with a quarter of the
-geometry cut away. The surface shows vectors indicating the flow velocity and
-direction.}
+isosurfaces of the temperature field at time $t\approx 1.06\cdot 10^9$ years
+with a quarter of the geometry cut away. The surface shows
+vectors indicating the flow velocity and direction.}
 \label{fig:simple-shell-3d}
 \end{figure}
 
-Compared to the input file discussed in the previous section, we only need to
-change the following things (the full input file can be found in
-\url{cookbooks/shell_simple_2d.prm}):
+Compared to the input file discussed in the previous section, the number of
+changes is relatively small. However, when taking into account the various
+discussions about which parts of the model were or were not realistic, they go
+throughout the input file, so we reproduce it here in its entirety, interspersed
+with comments (the full input file can also be found in
+\url{cookbooks/shell_simple_2d.prm}). Let us start from the top where everything
+looks the same except that we set the dimension to 3:
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+set Dimension                              = 3 % \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
+set Use years in output instead of seconds = true % \index[prmindex]{Use years in output instead of seconds} \index[prmindexfull]{Use years in output instead of seconds} %
+set End time                               = 1.5e9 % \index[prmindex]{End time} \index[prmindexfull]{End time} %
+set Output directory                       = output % \index[prmindex]{Output directory} \index[prmindexfull]{Output directory} %
+
+
+subsection Material model
+  set Model name = simple % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+
+  subsection Simple model
+    set Thermal expansion coefficient = 4e-5 % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Simple model!Thermal expansion coefficient} %
+    set Viscosity                     = 1e22 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
+  end
+end
+\end{lstlisting}
+
+The next section concerns the geometry. The geometry model remains unchanged at
+``spherical shell'' but we omit the opening angle of 90 degrees as we would like
+to get a complete spherical shell. Such a shell of course also only has two
+boundaries (the inner one has indicator zero, the outer one indicator one) and
+consequently these are the only ones we need to list in the ``Model settings''
+section:
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+ subsection Geometry model set Model name = spherical shell % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
+
+  subsection Spherical shell
+    set Inner radius  = 3481000 % \index[prmindex]{Inner radius} \index[prmindexfull]{Geometry model!Spherical shell!Inner radius} %
+    set Outer radius  = 6336000 % \index[prmindex]{Outer radius} \index[prmindexfull]{Geometry model!Spherical shell!Outer radius} %
+  end
+end
+
+
+subsection Model settings
+  set Zero velocity boundary indicators       = 0 % \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
+  set Tangential velocity boundary indicators = 1 % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
+  set Prescribed velocity boundary indicators = % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
+
+  set Fixed temperature boundary indicators   = 0,1 % \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
+
+  set Include shear heating                   = false % \index[prmindex]{Include shear heating} \index[prmindexfull]{Model settings!Include shear heating} %
+end
+\end{lstlisting}
+
+Next, since we convinced ourselves that the temperature range from 973 to 4273
+was too large given that we do not take into account adiabatic effects in this
+model, we reduce the temperature at the inner edge of the mantle to 1973. One
+can think of this as an approximation to the real temperature there minus the
+amount of adiabatic heating material would experience as it is transported from
+the surface to the core-mantle boundary. This is, in effect, the temperature
+difference that drives the convection (because a completely adiabatic
+temperature profile is stable despite the fact that it is much hotter at the
+core mantle boundary than at the surface). What the real value for this
+temperature difference is, is unclear from current research, but it is thought
+to be around 1000 Kelvin, so let us choose these values.
+
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Boundary temperature model
+  set Model name = spherical constant % \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
+  subsection Spherical constant
+    set Inner temperature = 1973 % \index[prmindex]{Inner temperature} \index[prmindexfull]{Boundary temperature model!Spherical constant!Inner temperature} %
+    set Outer temperature = 973 % \index[prmindex]{Outer temperature} \index[prmindexfull]{Boundary temperature model!Spherical constant!Outer temperature} %
+  end
+end
+\end{lstlisting}
+
+The second component to this is that we found that without adiabatic effects, an
+initial temperature profile that decreases the temperature from the inner to the
+outer boundary makes no sense. Rather, we expected a more or less constant
+temperature with boundary layers at both ends. We could describe such an initial
+temperature field, but since any initial temperature is mostly arbitrary anyway,
+we opt to just assume a constant temperature in the middle between the inner and
+outer temperature boundary values and let the simulation find the exact shape of
+the boundary layers itself:
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Initial conditions
+  set Model name = function % \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
+  subsection Function
+    set Function expression = 1473 % \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial earth-like % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
+end
+\end{lstlisting}
+
+As before, we need to determine how many mesh refinement steps we want. In 3d,
+it is simply not possible to have as much mesh refinement as in 2d, so we choose
+the following values that lead to meshes that have, after an initial transitory
+phase, between 1.5 and 2.2 million cells and 50--75 million unknowns:
+
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Mesh refinement
+  set Initial global refinement          = 2 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
+  set Initial adaptive refinement        = 3 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
+  set Strategy                           = temperature % \index[prmindex]{Strategy} \index[prmindexfull]{Mesh refinement!Strategy} %
+  set Time steps between mesh refinement = 15 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
+end
+\end{lstlisting}
+
+Second to last, we specify what we want \aspect{} to do with the solutions it
+computes. Here, we compute the same statistics as before, and we again generate
+graphical output every million years. Computations of this size typically run
+with ~1000 MPI processes, and it is not efficient to let every one of them write
+their own file to disk every time we generate graphical output; rather, we group
+all of these into a single file to keep file systems reasonably happy. Likewise,
+to accomodate the large amount of data, we output depth averaged fields in VTU
+format since it is easier to visualize:
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, ...
+              ... temperature statistics, heat flux statistics, depth average % \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
+
+  subsection Visualization
+    set Output format                 = vtu % \index[prmindex]{Output format} \index[prmindexfull]{Postprocess!Visualization!Output format} %
+    set Time between graphical output = 1e6 % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
+    set Number of grouped files       = 1 % \index[prmindex]{Number of grouped files} \index[prmindexfull]{Postprocess!Visualization!Number of grouped files} %
+  end
+
+  subsection Depth average
+    set Time between graphical output = 1.5e6 % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Depth average!Time between graphical output} %
+    set Output format                 = vtu % \index[prmindex]{Output format} \index[prmindexfull]{Postprocess!Depth average!Output format} %
+  end
+end
+\end{lstlisting}
+
+Finally, we realize that when we run very large parallel computations, nodes go
+down or the scheduler aborts programs because they ran out of time. With
+computations this big, we cannot afford to just lose the results, so we
+checkpoint the computations every 50 time steps and can then resume it at the
+last saved state if necessary (see Section~\ref{sec:checkpoint-restart}):
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Checkpointing
+  set Steps between checkpoint = 50 % \index[prmindex]{Steps between checkpoint} \index[prmindexfull]{Checkpointing!Steps between checkpoint} %
+end
+\end{lstlisting}
+
+
 
 Heat balance:
 
