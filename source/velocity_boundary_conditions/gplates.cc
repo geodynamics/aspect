@@ -246,9 +246,8 @@ namespace aspect
               {
                 do
                   {
-                    const int idx[2][2] = {{spatial_index[0]+i,spatial_index[1]+j},
-                      {spatial_index[0]-i,spatial_index[1]-j}
-                    };
+                    const int idx[2][2] = { {(int)(spatial_index[0]+i), (int)(spatial_index[1]+j)},
+                      {(int)(spatial_index[0]-i), (int)(spatial_index[1]-j)} };
 
                     const double weight_1 = add_interpolation_point(surf_vel,position,idx[0],time_weight,true);
                     const double weight_2 = add_interpolation_point(surf_vel,position,idx[1],time_weight,true);
