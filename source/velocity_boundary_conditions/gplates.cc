@@ -675,7 +675,14 @@ namespace aspect
         {
           prm.declare_entry ("Data directory",
                              "data/velocity-boundary-conditions/gplates/",
-                             Patterns::DirectoryName (), "The path to the model data.");
+                             Patterns::DirectoryName (),
+                             "The name of a directory that contains the model data. This path "
+                             "may either be absolute (if starting with a '/') or relative to "
+                             "the current directory. The path may also include the special "
+                             "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                             "in which the ASPECT source files were located when ASPECT was "
+                             "compiled. This interpretation allows, for example, to reference "
+                             "files located in the 'data/' subdirectory of ASPECT.");
           prm.declare_entry ("Velocity file name", "phi.%d",
                              Patterns::Anything (),
                              "The file name of the material data. Provide file in format: (Velocity file name).%d.gpml where %d is any sprintf integer qualifier, specifying the format of the current file number.");
@@ -713,7 +720,19 @@ namespace aspect
       {
         prm.enter_subsection("GPlates model");
         {
+          // Get the path to the data files. If it contains a reference
+          // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
+          // as a #define
           data_directory        = prm.get ("Data directory");
+          {
+            const std::string      subst_text = "$ASPECT_SOURCE_DIR";
+            std::string::size_type position;
+            while (position = data_directory.find (subst_text),  position!=std::string::npos)
+              data_directory.replace (data_directory.begin()+position,
+                  data_directory.begin()+position+subst_text.size(),
+                  ASPECT_SOURCE_DIR);
+          }
+
           velocity_file_name    = prm.get ("Velocity file name");
           time_step             = prm.get_double ("Time step");
           interpolation_width   = prm.get_double ("Interpolation width");
