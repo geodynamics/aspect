@@ -42,7 +42,6 @@ namespace aspect
        * the boundary values at one particular time are interpolated between the two currently
        * loaded data sets.
        */
-
       class GPlatesLookup
       {
         public:

@@ -682,10 +682,11 @@ namespace aspect
                              "The file name of the material data. Provide file in format: (Velocity file name).%d.gpml where %d is any sprintf integer qualifier, specifying the format of the current file number.");
           prm.declare_entry ("Time step", "3.1558e13",
                              Patterns::Double (0),
-                             "Time step between following velocity files. Default is one million years expressed in SI units.");
+                             "Time step between following velocity files. Default is one million "
+                             "years expressed in SI units, which equates to 3.1558e13 seconds.");
           prm.declare_entry ("Velocity file start time", "0.0",
                              Patterns::Double (0),
-                             "Time at which the velocity file with number 0 shall be loaded.Previous to this time, a no-slip boundary condition is assumed.");
+                             "Time at which the velocity file with number 0 shall be loaded. Previous to this time, a no-slip boundary condition is assumed.");
           prm.declare_entry ("Point one", "1.570796,0.0",
                              Patterns::Anything (),
                              "Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.");
@@ -694,11 +695,11 @@ namespace aspect
                              "Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.");
           prm.declare_entry ("Interpolation width", "0",
                              Patterns::Double (0),
-                             " Determines the width of the velocity interpolation zone around the current point."
-                             " Currently equals the arc distance between evaluation point and velocity data point that"
-                             " is still included in the interpolation. The weighting of the points currently only accounts"
-                             " for the surface area a single data point is covering ('moving window' interpolation without"
-                             " distance weighting).");
+                             "Determines the width of the velocity interpolation zone around the current point. "
+                             "Currently equals the arc distance between evaluation point and velocity data point that "
+                             "is still included in the interpolation. The weighting of the points currently only accounts "
+                             "for the surface area a single data point is covering ('moving window' interpolation without "
+                             "distance weighting).");
         }
         prm.leave_subsection();
       }
@@ -737,6 +738,7 @@ namespace aspect
     ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(GPlates,
                                                  "gplates",
                                                  "Implementation of a model in which the boundary "
-                                                 "velocity is derived from GPlates.")
+                                                 "velocity is derived from files that are generated "
+                                                 "by the GPlates program.")
   }
 }
