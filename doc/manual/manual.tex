@@ -4244,6 +4244,7 @@ asked for, say, the Rayleigh number of a simulation.
 
 
 \subsubsection{Simple convection in a quarter of a 2d annulus}
+\label{sec:shell-simple-2d}
 
 Let us start this sequence of cookbooks using a simpler situation: convection in
 a quarter of a 2d shell. We choose this setup because 2d domains allow for much
@@ -4649,6 +4650,7 @@ up to 11cm. Clearly, something is going in the right direction.
 
 
 \subsubsection{Simple convection in a spherical 3d shell}
+\label{sec:shell-simple-3d}
 
 The setup from the previous section can of course be extended to 3d shell
 geometries as well -- though at significant computational cost. In fact, the
@@ -4961,9 +4963,8 @@ replaced by a calculated file index (see also
 \paragraph{Setting up the \aspect{} model.}
 
 For this cookbook we will use the parameter file provided in
-\url{cookbooks/gplates_2d.prm}. The relevant section controlling the behavior
-of the upper velocity boundary condition is listed below, for the other
-parameters we refer the reader to the actual file. \aspect{}'s GPlates plugin
+\url{cookbooks/gplates_2d.prm} which uses the 2d shell geometry previously
+discussed in Section~\ref{sec:shell-simple-3d}. \aspect{}'s GPlates plugin
 allows for the use of two- and three-dimensional models incorporating the
 GPlates velocities. Since the output by GPlates is threedimensional in any case,
 \aspect{} internally handles the 2D model by rotating the model plane to the
