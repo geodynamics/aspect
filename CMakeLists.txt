@@ -63,6 +63,15 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 PROJECT(${TARGET})
 
 
+# Pass down the source directory to the sources. This can be used
+# to hard-code the location of data files, such as in
+# $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/gplates/*
+FOREACH(_source_file ${TARGET_SRC})
+  SET_PROPERTY(SOURCE ${_source_file}
+    APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+ENDFOREACH()
+
+
 # Configure a cmake fragment that plugins can use to
 # set up compiler flags, include paths, etc to compile an
 # Aspect plugin
