@@ -5000,11 +5000,26 @@ end
 \end{lstlisting}
 
 \paragraph{Comparing and visualizing 2D models.}
+
+The approach of identifying two points on the surface of the Earth along with
+its center allows to run computations on arbitrary two-dimensional slices
+through the Earth with realistic boundary conditions. Fig.~\ref{fig:gv-1} shows an example
+of three such computations the results of which are plotted simultaneously in a
+single three-dimensional figure.
+
 \begin{figure}
   \includegraphics[width=0.48\textwidth]{cookbooks/gplates/gplates-comparison.png}
   \hfill
  % \includegraphics[width=0.48\textwidth]{cookbooks/gplates/gplates-3d.png}
-  \caption{\it Three rotated 2D models (slices) with prescribed surface velocities (white arrows) compared to 3D surface velocities (red arrows). The model surface velocities are projections of global velocities to their respective model plane. The view is centered on Eurasia's east coast with Japan being near the center of the figure (coastlines provided by NGU and GPlates project).}
+  \caption{\it Using GPlates for 2d boundary conditions: The figure shows
+  the results of three independent computations on two-dimensional slices
+  through Earth. The boundary conditions for each of these slices (white
+  arrows) are tangential to the slices and are projections of the
+  three-dimensional velocity vectors computed by GPlates into the two-dimensional plane
+  occupied by the slice. For comparison, the figure also shows the full
+  three-dimensional surface velocities provided by GPlates (red arrows).
+  The view is centered on Eurasia's east coast with Japan being near the center of
+  the figure (coastlines provided by NGU and the GPlates project).}
   \label{fig:gv-1}
 \end{figure}
 
