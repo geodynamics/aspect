@@ -3,8 +3,9 @@
 
 set Dimension                              = 2
 set Use years in output instead of seconds = true
-set End time                               = 1e8
+set End time                               = 3e8
 set Output directory                       = output
+set Adiabatic surface temperature          = 1600
 
 
 subsection Material model
@@ -12,7 +13,7 @@ subsection Material model
 
   subsection Simple model
     set Viscosity                     = 1e22
-    set Thermal viscosity exponent    = 10.0
+    set Thermal viscosity exponent    = 5.0
     set Reference temperature         = 1600
   end
 end
@@ -46,6 +47,7 @@ subsection Boundary velocity model
     set Time step = 1e6
     set Point one = 1.5708,4.87
     set Point two = 1.5708,5.24
+    set Interpolation width = 2000000
   end
 end
 
@@ -60,10 +62,10 @@ end
 
 
 subsection Initial conditions
-  set Model name = function
+  set Model name = adiabatic
 
   subsection Function
-    set Function expression = 1600.0
+    set Age top boundary layer = 5e7
   end
 end
 
