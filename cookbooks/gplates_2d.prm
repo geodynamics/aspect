@@ -2,22 +2,10 @@
 # manual for more information.
 
 set Dimension                              = 2
-set End time                               = 3e16
-set Use years in output instead of seconds = false
+set Use years in output instead of seconds = true
+set End time                               = 1e8
 set Output directory                       = output
 
-subsection Geometry model
-  set Model name = spherical shell
-end
-
-subsection Gravity model
-  set Model name = radial constant
-
-  subsection Radial constant
-    set Magnitude = 10
-  end
-
-end
 
 subsection Material model
   set Model name = simple
@@ -27,8 +15,67 @@ subsection Material model
     set Thermal viscosity exponent    = 10.0
     set Reference temperature         = 1600
   end
-
 end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+  end
+end
+
+
+subsection Model settings
+  set Prescribed velocity boundary indicators = 1:gplates
+  set Tangential velocity boundary indicators = 0
+  set Prescribed velocity boundary indicators =
+
+  set Fixed temperature boundary indicators   = 0,1
+
+  set Include shear heating                   = false
+end
+
+
+subsection Boundary velocity model
+  subsection GPlates model
+    set Data directory = $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/gplates/
+    set Velocity file name = current_day.gpml
+    set Time step = 1e6
+    set Point one = 1.5708,4.87
+    set Point two = 1.5708,5.24
+  end
+end
+
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 2600 
+    set Outer temperature = 273 
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1600.0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 1
@@ -37,51 +84,17 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 2
 end
 
-subsection Model settings
-  set Prescribed velocity boundary indicators = 1:gplates
-  set Tangential velocity boundary indicators = 0
-
-  set Fixed temperature boundary indicators   = 0,1
-  set Include shear heating                   = false
-end
-
-subsection Boundary velocity model
-
-  subsection GPlates model
-    set Data directory = $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/gplates/
-    set Velocity file name = current_day.gpml
-    set Time step = 3.3116e13
-    set Point one = 1.5708,4.87
-    set Point two = 1.5708,5.24
-  end
-
-end
-
-subsection Initial conditions
-  set Model name = function
-
-  subsection Function
-    set Function expression = 1600.0
-  end
-
-end
-
-subsection Boundary temperature model
-  set Model name = spherical constant 
-
-  subsection Spherical constant
-    set Inner temperature = 2600 
-    set Outer temperature = 273 
-  end
-
-end
 
 subsection Postprocess
-  set List of postprocessors = visualization
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
 
   subsection Visualization
-    set Time between graphical output = 3.1558e13
-    set List of output variables      = viscosity
+    set Output format                 = vtu
+    set Time between graphical output = 1e6
+    set Number of grouped files       = 0
+  end
 
+  subsection Depth average
+    set Time between graphical output = 1e6
   end
 end
