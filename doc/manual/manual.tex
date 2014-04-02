@@ -266,7 +266,6 @@ $c_i$ that we call \textit{compositional fields}:
   \\
   \label{eq:temperature}
   \rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
-  - \rho T \Delta S \frac{DX}{Dt}
   - \nabla\cdot k\nabla T
   &=
   \rho H
@@ -282,6 +281,9 @@ $c_i$ that we call \textit{compositional fields}:
   &\quad
   +\frac{\partial \rho}{\partial T} T \mathbf u \cdot \mathbf g
   \notag
+  \\
+  &\quad
+  + \rho T \Delta S \left(\frac{\partial X}{\partial t} + \mathbf u\cdot\nabla X\right)
   & \quad
   & \textrm{in $\Omega$},
   \notag
@@ -322,18 +324,59 @@ In addition, the equation does include phase change terms that correspond to
 the latent heat generated or consumed in this process. The latent heat release
 is proportional to changes in the fraction of material $X$ that has already
 undergone the phase transition (also called phase function) and the change
-of entropy $\Delta S$. Here, $\Delta S$ is positive for exothermic phase
+of entropy $\Delta S$. This process applies both
+to solid-state phase transitions and to melting/solidification.
+Here, $\Delta S$ is positive for exothermic phase
 transitions. As the phase of the material, for a given composition, depends
 on the temperature and pressure, the latent heat term can be reformulated:
-
 \begin{gather*}
-\frac{DX}{Dt} = \frac{\partial X}{\partial T} \frac{DT}{Dt} + \frac{\partial X}{\partial p} \mathbf u\cdot\nabla p
+\frac{\partial X}{\partial t} + \mathbf u\cdot\nabla X
+=
+\frac{DX}{Dt} 
+= 
+\frac{\partial X}{\partial T} \frac{DT}{Dt}
+ + \frac{\partial X}{\partial p} \frac{Dp}{Dt}
+= 
+\frac{\partial X}{\partial T} 
+\left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T
+\right)
+ + \frac{\partial X}{\partial p} \mathbf u\cdot\nabla p.
 \end{gather*}
+The last transformation results from the assumption that the flow field is
+always in equilibrium and consequently $\partial p/\partial t=0$ (this is the
+same assumption that underlies the fact that equation \eqref{eq:stokes-1}
+does not have a term $\partial \mathbf u / \partial t$). With this
+reformulation, we can rewrite \eqref{eq:temperature} in the following way in
+which it is in fact implemented:
+\begin{align}
+  \label{eq:temperature-reformulated}
+  \left(\rho C_p - \rho T \Delta S \frac{\partial X}{\partial T}\right) 
+  \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla
+  T\right) - \nabla\cdot k\nabla T
+  &=
+  \rho H
+  \notag
+  \\
+  &\quad
+  +
+  2\eta
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  :
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  \\
+  &\quad
+  +\frac{\partial \rho}{\partial T} T \mathbf u \cdot \mathbf g
+  \notag
+  \\
+  &\quad
+  + \rho T \Delta S \frac{\partial X}{\partial p} \mathbf u\cdot\nabla p
+  & \quad & \textrm{in $\Omega$},
+  \notag
+\end{align}
 
-These terms apply both to solid-state phase transitions and to melting/solidification.
-
-The final set equations, \eqref{eq:compositional}, describes the motion of
-a set of advected quantities $c_i(\mathbf x,t),i=1\ldots C$. We call these
+Having discussed \eqref{eq:temperature}, let us come to the last one of the
+original set of equations, \eqref{eq:compositional}. It describes the
+motion of a set of advected quantities $c_i(\mathbf x,t),i=1\ldots C$. We call these
 \textit{compositional fields} because we think of them as spatially and
 temporally varying concentrations of different elements, minerals, or other
 constituents of the composition of the material that convects. As such, these
@@ -6024,12 +6067,16 @@ prescribed downward velocity, and crosses the phase transition before it leaves
 the model domain at the bottom. As initial condition, the model uses a uniform
 temperature field, however, upon the phase change, latent heat is released. This
 leads to a characteristic temperature profile across the phase transition with a
-higher temperature in the bottom half of the domain. For steady-state
-one-dimensional downward flow, we have to solve the equation
+higher temperature in the bottom half of the domain. To compute it, we have to solve 
+equation \eqref{eq:temperature} or its reformulation
+\eqref{eq:temperature-reformulated}. For
+steady-state one-dimensional downward flow with vertical velocity $v_y$, it
+simplifies to the following:
 \begin{gather*}
+v_y
 \frac{\partial T}{\partial y} = 
-T \frac{\Delta S}{c_p} \frac{\partial X}{\partial y} 
-+ \frac{\kappa}{v_y}
+T \frac{\Delta S}{C_p} v_y \frac{\partial X}{\partial y} 
++ \kappa
 \frac{\partial^2 T}{\partial y^2}.
 \end{gather*}
 The first term on the right-hand side of the equation describes the latent heat produced at the phase transition: It is proportional to the temperature T, the entropy change $\Delta S$ across the phase transition divided by the specific heat capacity and the derivative of the phase function X. If the velocity is smaller than a critical value, and under the assumption of a discontinuous phase transition (i.e. with a step function as phase function), this latent heating term will be zero everywhere except for the one point $y_{tr}$ where the phase transition takes place. This means, we have a region above the phase transition with only phase 1, and below a certain depth a jump to a region with only phase 2. inside of these one-phase regions, we can solve the equation above (using the boundary conditions $T=T_1$ for $y \rightarrow \infty $ and $T=T_2$ for $y \rightarrow -\infty $) and get
