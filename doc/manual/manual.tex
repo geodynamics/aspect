@@ -6016,14 +6016,23 @@ The setup of this benchmark is taken from Schubert, Turcotte and Olson \cite{STO
       temperature is $T_2 = 1107.39 \, \text{K}$.}
   \label{fig:latent-heat-benchmark}
 \end{figure}
-It tests if the latent heat production when material crosses a phase transition is calculated correctly according to the laws of thermodynamics. The material model defines two phases in the model domain with the phase transition approximately in the center. The material flows in from the top due to a prescribed downward velocity, and crosses the phase transition before it leaves the model domain on the bottom. As initial condition, the model uses a uniform temperature field, however, upon the phase change, latent heat is released. This leads to a characteristic temperature profile across the phase transition with a higher temperature in the bottom half of the domain. For steady-state one-dimensional downward flow, we have to solve the equation
-
+It tests whether the latent heat production when material crosses a phase
+transition is calculated correctly according to the laws of thermodynamics. The material
+model defines two phases in the model domain with the phase transition
+approximately in the center. The material flows in from the top due to a
+prescribed downward velocity, and crosses the phase transition before it leaves
+the model domain at the bottom. As initial condition, the model uses a uniform
+temperature field, however, upon the phase change, latent heat is released. This
+leads to a characteristic temperature profile across the phase transition with a
+higher temperature in the bottom half of the domain. For steady-state
+one-dimensional downward flow, we have to solve the equation
 \begin{gather*}
-\frac{\partial T}{\partial y} = T \frac{\Delta S}{c_p} \frac{\partial X}{\partial y} + \frac{\kappa}{v_y} \frac{\partial^2 T}{\partial y^2}
+\frac{\partial T}{\partial y} = 
+T \frac{\Delta S}{c_p} \frac{\partial X}{\partial y} 
++ \frac{\kappa}{v_y}
+\frac{\partial^2 T}{\partial y^2}.
 \end{gather*}
-
 The first term on the right-hand side of the equation describes the latent heat produced at the phase transition: It is proportional to the temperature T, the entropy change $\Delta S$ across the phase transition divided by the specific heat capacity and the derivative of the phase function X. If the velocity is smaller than a critical value, and under the assumption of a discontinuous phase transition (i.e. with a step function as phase function), this latent heating term will be zero everywhere except for the one point $y_{tr}$ where the phase transition takes place. This means, we have a region above the phase transition with only phase 1, and below a certain depth a jump to a region with only phase 2. inside of these one-phase regions, we can solve the equation above (using the boundary conditions $T=T_1$ for $y \rightarrow \infty $ and $T=T_2$ for $y \rightarrow -\infty $) and get
-
 \begin{align*}
 T(y) =\begin{cases}
 T_1 + (T_2-T_1) e^\frac{v_y (y-y_{tr})}{\kappa}, & y>y_{tr}\\
@@ -6045,60 +6054,83 @@ T_2 = \frac{T_1}{1 - (1+\frac{\Delta \rho}{2 \rho_0}) \frac{\Delta S}{c_p}}
 
 In addition, we have tested the approach exactly as it is described in \cite{STO01} by setting the entropy change to a specific value and in spite of that using a constant density. However, this is physically inconsistent, as the entropy change is proportional to the density change across the phase transition. With this method, we could reproduce the analytic results from \cite{STO01}.
 
-The exact values of the parameters used for this benchmark can be found in Fig.~\ref{fig:latent-heat-benchmark}. They result in a predicted value of $T_2 = 1109.08 \, \text{K}$ for the temperature in the bottom half of the model.
+The exact values of the parameters used for this benchmark can be found in
+Fig.~\ref{fig:latent-heat-benchmark}. They result in a predicted value of $T_2 =
+1109.08 \, \text{K}$ for the temperature in the bottom half of the model, and
+we will demonstrate below that we can match this value in our numerical
+computations. However, it is not as simple as suggested above. In actual
+numerical computations, we can not exactly reproduce the behavior of Dirac delta
+functions as would result from taking the derivative $\frac{\partial
+X}{\partial y}$ of a discontinuous function $X(y)$. Rather, we have to model
+$X(y)$ as a function that has a smooth transition from one value to another,
+over a depth region of a certain width. In the material model plugin we will use
+below, this depth is an input parameter and we will play with it in the
+numerical results shown after the input file.
 
-To run this benchmark, we need to set up an input file that describes the situation. In principle, what we need to do is to describe the position and entropy change of the phase transition in addition to the previously outlined boundary and initial conditions. For this purpose, we use the ``latent heat'' material model that allows us to set the density change $\Delta\rho$ and Clapeyron slope $\gamma$ (which both determine the entropy change via $\Delta S = \gamma \frac{\Delta\rho}{\rho^2}$) as well as the depth of the phase transition as input parameters.
+To run this benchmark, we need to set up an input file that describes the
+situation. In principle, what we need to do is to describe the position and
+entropy change of the phase transition in addition to the previously outlined
+boundary and initial conditions. For this purpose, we use the ``latent heat''
+material model that allows us to set the density change $\Delta\rho$ and
+Clapeyron slope $\gamma$ (which together determine the entropy change via
+$\Delta S = \gamma \frac{\Delta\rho}{\rho^2}$) as well as the depth of the phase
+transition as input parameters.
 
-All of this setup is then described by the input file \url{cookbooks/latent-heat.prm}. The following section shows the central part of this file:
+All of this setup is then described by the input file
+\url{cookbooks/latent-heat.prm} that models flow in a box of $10^6$ meters of
+height and width, and a fixed downward velocity. The following section shows the
+central part of this file:
 
-
-\begin{lstlisting}[frame=single,language=prmfile]
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
 subsection Material model
-  set Model name = latent heat
+  set Model name = latent heat % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
   subsection Latent heat
 
     # The change of density across the phase transition. Together with the
     # Clapeyron slope, this is what determines the entropy change.
-    set Phase transition density jumps                 = 115.6
-    set Corresponding phase for density jump           = 0
+    set Phase transition density jumps                 = 115.6 % \index[prmindex]{Phase transition density jumps} \index[prmindexfull]{Material model!Latent heat!Phase transition density jumps} %
+    set Corresponding phase for density jump           = 0 % \index[prmindex]{Corresponding phase for density jump} \index[prmindexfull]{Material model!Latent heat!Corresponding phase for density jump} %
 
-    # If the temperature is equal to the phase transition temperature, the
-    # phase transition will occur at the phase transition depth. However,
-    # if the temperature deviates from this value, the Clapeyron slope
+    # If the temperature is equal to the phase transition temperature, the 
+    # phase transition will occur at the phase transition depth. However, 
+    # if the temperature deviates from this value, the Clapeyron slope 
     # determines how much the pressure (and depth) of the phase boundary
     # changes. Here, the phase transition will be in the middle of the box
-    # for T=T1.
-    set Phase transition depths                        = 500000
-    set Phase transition temperatures                  = 1000
-    set Phase transition Clapeyron slopes              = 1e7
+    # for T=T1. 
+    set Phase transition depths                        = 500000 % \index[prmindex]{Phase transition depths} \index[prmindexfull]{Material model!Latent heat!Phase transition depths} %
+    set Phase transition temperatures                  = 1000 % \index[prmindex]{Phase transition temperatures} \index[prmindexfull]{Material model!Latent heat!Phase transition temperatures} %
+    set Phase transition Clapeyron slopes              = 1e7 % \index[prmindex]{Phase transition Clapeyron slopes} \index[prmindexfull]{Material model!Latent heat!Phase transition Clapeyron slopes} %
 
-    # We set the width of the phase transition to 5 km. You may want to
+    # We set the width of the phase transition to 5 km. You may want to 
     # change this parameter to see how latent heating depends on the width
-    # of the phase transition.
-    set Phase transition widths                        = 5000
+    # of the phase transition. 
+    set Phase transition widths                        = 5000 % \index[prmindex]{Phase transition widths} \index[prmindexfull]{Material model!Latent heat!Phase transition widths} %
 
-    set Reference density                              = 3400
-    set Reference specific heat                        = 1000
-    set Reference temperature                          = 1000
-    set Thermal conductivity                           = 2.38
+    set Reference density                              = 3400 % \index[prmindex]{Reference density} \index[prmindexfull]{Material model!Latent heat!Reference density} %
+    set Reference specific heat                        = 1000 % \index[prmindex]{Reference specific heat} \index[prmindexfull]{Material model!Latent heat!Reference specific heat} %
+    set Reference temperature                          = 1000 % \index[prmindex]{Reference temperature} \index[prmindexfull]{Material model!Latent heat!Reference temperature} %
+    set Thermal conductivity                           = 2.38 % \index[prmindex]{Thermal conductivity} \index[prmindexfull]{Material model!Latent heat!Thermal conductivity} %
 
-    # We set the thermal expansion amd the compressibility to zero, so that
-    # all temperature (and density) changes are caused by advection, diffusion
-    # and latent heating.
-    set Thermal expansion coefficient                  = 0.0
-    set Compressibility                                = 0.0
+    # We set the thermal expansion amd the compressibility to zero, so that 
+    # all temperature (and density) changes are caused by advection, diffusion 
+    # and latent heating. 
+    set Thermal expansion coefficient                  = 0.0 % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Latent heat!Thermal expansion coefficient} %
+    set Compressibility                                = 0.0 % \index[prmindex]{Compressibility} \index[prmindexfull]{Material model!Latent heat!Compressibility} %
 
-    # Viscosity is constant.
-    set Thermal viscosity exponent                     = 0.0
-    set Viscosity                                      = 8.44e21
-    set Viscosity prefactors                           = 1.0, 1.0
-    set Composition viscosity prefactor                = 1.0
-    set Activation enthalpies                          = 3.9473e-3, 3.9473e-3
+    # Viscosity is constant. 
+    set Thermal viscosity exponent                     = 0.0 % \index[prmindex]{Thermal viscosity exponent} \index[prmindexfull]{Material model!Latent heat!Thermal viscosity exponent} %
+    set Viscosity                                      = 8.44e21 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Latent heat!Viscosity} %
+    set Viscosity prefactors                           = 1.0, 1.0 % \index[prmindex]{Viscosity prefactors} \index[prmindexfull]{Material model!Latent heat!Viscosity prefactors} %
+    set Composition viscosity prefactor                = 1.0 % \index[prmindex]{Composition viscosity prefactor} \index[prmindexfull]{Material model!Latent heat!Composition viscosity prefactor} %
+    set Activation enthalpies                          = 3.9473e-3, 3.9473e-3  % \index[prmindex]{Activation enthalpies} \index[prmindexfull]{Material model!Latent heat!Activation enthalpies} %
   end
 end
 \end{lstlisting}
 
-(For your first runs you will probably want to reduce the number of mesh refinement steps to make things run more quickly. Later on, you might also want to change the phase transition width to look how this influences the result.)
+The complete input file referenced above also sets the number of mesh refinement
+steps. For your first runs you will probably want to reduce the number of mesh
+refinement steps to make things run more quickly. Later on, you might also want
+to change the phase transition width to look how this influences the result.
 
 \begin{figure}
   \begin{center}
@@ -6113,11 +6145,37 @@ end
 \end{figure}
 
 Using this input file, let us try to evaluate the results of the current
-computations. It is to note that it takes some time for the model to reach a steady state and only then the bottom temperature is to reach the theoretical value. Therefore, we use the last output step to compare predicted and computed values.
+computations. We note that it takes some time for the model to reach a steady
+state and only then does the bottom temperature reach the theoretical value.
+Therefore, we use the last output step to compare predicted and computed values.
 You can visualize the output in different ways, one of it being ParaView and shown in
 Fig.~\ref{fig:latent-heat-benchmark} on the right side (an alternative is to use Visit as
 described in Section~\ref{sec:viz}). In ParaView, you can plot the temperature profile
-using the filter ``Plot Over Line'' (Point1: 500000,0,0; Point2: 500000,1000000,0, then go to the ``Display'' tab and select ``T'' as only variable in the ``Line series'' section) or ``Calculator'' (as seen in Fig.~\ref{fig:latent-heat-benchmark}). In Fig.~\ref{fig:latent-heat-benchmark-results} (left) we can see that with increasing resolution, the value for the bottom temperature converges to a value of $T_2 = 1105.27 \, \text{K}$. However, this is not what the analytic solution predicted. The reason for this difference is the width of the phase transition. Our analytical approach is only valid if the phase transition is discontinuous and constrained to one specific depth $y=y_{tr}$. However, as the latent heat production is proportional to the spatial derivative of the phase function, we can not simulate such a phase transition in our numerical model: We had to choose a step function as phase function and its derivative would be infinite. In addition, for the Earth's mantle we also expect phase transitions that are distributed over a certain depth range. Because of this, we chose a hyperbolic tangent as our phase function. Moreover, Fig.~\ref{fig:latent-heat-benchmark-results} (right) illustrates what happens to the temperature at the bottom when we vary the width of the phase transition: The smaller the width, the closer the temperature gets to the predicted value of $T_2 = 1109.08 \, \text{K}$.
+using the filter ``Plot Over Line'' (Point1: 500000,0,0; Point2:
+500000,1000000,0, then go to the ``Display'' tab and select ``T'' as only
+variable in the ``Line series'' section) or ``Calculator'' (as seen in
+Fig.~\ref{fig:latent-heat-benchmark}). In
+Fig.~\ref{fig:latent-heat-benchmark-results} (left) we can see that with
+increasing resolution, the value for the bottom temperature converges to a value
+of $T_2 = 1105.27 \, \text{K}$. 
+
+However, this is not what the analytic solution
+predicted. The reason for this difference is the width of the phase transition
+with which we smooth out the Dirac delta function that results from
+differentiating the $X(y)$ we would have liked to use in an ideal world.
+(In reality, however, for the Earth's mantle we also expect phase transitions
+that are distributed over a certain depth range and so the smoothed out
+approach may not be a bad approximation.)
+Of course, the results shown above result from an the analytical approach that
+is only correct if the phase transition is discontinuous and constrained to one
+specific depth $y=y_{tr}$. Instead, we chose a hyperbolic
+tangent as our phase function. Moreover,
+Fig.~\ref{fig:latent-heat-benchmark-results} (right) illustrates what happens to
+the temperature at the bottom when we vary the width of the phase transition:
+The smaller the width, the closer the temperature gets to the predicted value of
+$T_2 = 1109.08 \, \text{K}$, demonstrating that we converge to the correct
+solution.
+
 
 
 \section{Extending \aspect}
