@@ -6079,15 +6079,33 @@ T \frac{\Delta S}{C_p} v_y \frac{\partial X}{\partial y}
 + \kappa
 \frac{\partial^2 T}{\partial y^2}.
 \end{gather*}
-The first term on the right-hand side of the equation describes the latent heat produced at the phase transition: It is proportional to the temperature T, the entropy change $\Delta S$ across the phase transition divided by the specific heat capacity and the derivative of the phase function X. If the velocity is smaller than a critical value, and under the assumption of a discontinuous phase transition (i.e. with a step function as phase function), this latent heating term will be zero everywhere except for the one point $y_{tr}$ where the phase transition takes place. This means, we have a region above the phase transition with only phase 1, and below a certain depth a jump to a region with only phase 2. inside of these one-phase regions, we can solve the equation above (using the boundary conditions $T=T_1$ for $y \rightarrow \infty $ and $T=T_2$ for $y \rightarrow -\infty $) and get
+The first term on the right-hand side of the equation describes the latent heat
+produced at the phase transition: It is proportional to the temperature T, the
+entropy change $\Delta S$ across the phase transition divided by the specific
+heat capacity and the derivative of the phase function X. If the velocity is
+smaller than a critical value, and under the assumption of a discontinuous phase
+transition (i.e. with a step function as phase function), this latent heating
+term will be zero everywhere except for the one point $y_{tr}$ where the phase
+transition takes place. This means, we have a region above the phase transition
+with only phase 1, and below a certain depth a jump to a region with only phase
+2. Inside of these one-phase regions, we can solve the equation above (using the
+boundary conditions $T=T_1$ for $y \rightarrow \infty $ and $T=T_2$ for $y
+\rightarrow -\infty $) and get
 \begin{align*}
 T(y) =\begin{cases}
 T_1 + (T_2-T_1) e^\frac{v_y (y-y_{tr})}{\kappa}, & y>y_{tr}\\
 T_2, & y<y_{tr}
 \end{cases}
 \end{align*}
-
-We also know the amount of heat that is produced at the phase boundary, and as we consider only steady-state, the same amount of heat is conducted upwards from the transition:
+While it is not entirely obvious while this equation for $T(y)$ should be
+correct (in particular why it should be asymmetric), it is not difficult to
+verify that it indeed satisfies the equatoin stated above for both $y<y_{tr}$
+and $y>y_{tr}$. Furthermore, it indeed satisfies the jump condition we get by
+evaluating the equation at $y=y_{tr}$.
+Indeed, the jump condition can be reinterpreted as a balance of heat conduction:
+We know the amount of heat that is produced at the phase boundary, and as
+we consider only steady-state, the same amount of heat is conducted upwards from
+the transition:
 
 \begin{gather*}
 \underbrace{\rho v_y T \Delta S}_{\text{latent heat release}} = \underbrace{\frac{\kappa}{\rho_0 c_p} \frac{\partial T}{\partial y} \vert_{y=y_{tr^-}} = \frac{v_y}{\rho_0 c_p} (T_2-T_1)}_{\text{heat conduction}}
