@@ -77,7 +77,7 @@ namespace aspect
 
     prm.declare_entry ("Start time", "0",
                        Patterns::Double (),
-                       "The start time of the simulation. Units: years if the "
+                       "The start time of the simulation. Units: Years if the "
                        "'Use years in output instead of seconds' parameter is set; "
                        "seconds otherwise.");
 
@@ -174,7 +174,7 @@ namespace aspect
                        "of the mantle below the lithosphere, in which case the surface "
                        "pressure should be the lithostatic pressure at the bottom "
                        "of the lithosphere."
-                       "\n"
+                       "\n\n"
                        "For more information, see the section in the manual that discusses "
                        "the general mathematical model.");
 
@@ -189,7 +189,7 @@ namespace aspect
                        "posed at this point. Rather, the boundary condition may differ "
                        "significantly from the adiabatic value, and then typically "
                        "induce a thermal boundary layer."
-                       "\n"
+                       "\n\n"
                        "For more information, see the section in the manual that discusses "
                        "the general mathematical model.");
 
@@ -269,7 +269,10 @@ namespace aspect
                          "or when dealing with a model without phase transitions.");
       prm.declare_entry ("Radiogenic heating rate", "0e0",
                          Patterns::Double (),
-                         "H0");
+                         "The rate of heating due to radioactive decay (or other bulk sources "
+                         "you may want to describe). This parameter corresponds to the variable "
+                         "$H$ in the temperature equation stated in the manual, and the heating "
+                         "term is $\rho H$. Units: W/kg.");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Integer(0)),
                          "A comma separated list of integers denoting those boundaries "
@@ -380,7 +383,7 @@ namespace aspect
                          "can get through the initial transient phase of a simulation "
                          "on a relatively coarse mesh, and then refine again when we "
                          "are in a time range that we are interested in and where "
-                         "we would like to use a finer mesh. Units: each element of the "
+                         "we would like to use a finer mesh. Units: Each element of the "
                          "list has units years if the "
                          "'Use years in output instead of seconds' parameter is set; "
                          "seconds otherwise.");
@@ -433,7 +436,8 @@ namespace aspect
                          "conservative at the expense of a larger number of degrees "
                          "of freedom (true), or to go with a cheaper discretization "
                          "that does not locally conserve mass, although it is "
-                         "globally conservative (false).\n\n"
+                         "globally conservative (false)."
+                         "\n\n"
                          "When using a locally "
                          "conservative discretization, the finite element space for "
                          "the pressure is discontinuous between cells and is the "
@@ -447,12 +451,14 @@ namespace aspect
                          "\\cdot \\mathbf n = 0$ for every cell $K$, i.e., for each cell inflow and "
                          "outflow exactly balance each other as one would expect for an "
                          "incompressible medium. In other words, the velocity field is locally "
-                         "conservative.\n\n"
+                         "conservative."
+                         "\n\n"
                          "On the other hand, if this parameter is "
                          "set to ``false'', then the finite element space is chosen as $Q_q$. "
                          "This choice does not yield the local conservation property but "
                          "has the advantage of requiring fewer degrees of freedom. Furthermore, "
-                         "the error is generally smaller with this choice.\n\n"
+                         "the error is generally smaller with this choice."
+                         "\n\n"
                          "For an in-depth discussion of these issues and a quantitative evaluation "
                          "of the different choices, see \\cite {KHB12} .");
 
