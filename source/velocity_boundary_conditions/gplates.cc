@@ -722,6 +722,14 @@ namespace aspect
     void
     GPlates<dim>::parse_parameters (ParameterHandler &prm)
     {
+      // Query the unit system for time since we may have to convert below.
+      // Note that we can't use this->convert_output_to_years() since this
+      // requires the SimulatorAccess base object to have been initialized,
+      // but this hasn't happened yet when we get into this function.
+      const bool
+      use_years_instead_of_seconds
+        = prm.get_bool ("Use years in output instead of seconds");
+
       prm.enter_subsection("Boundary velocity model");
       {
         prm.enter_subsection("GPlates model");
@@ -746,7 +754,7 @@ namespace aspect
 
           time_step             = prm.get_double ("Time step");
           velocity_file_start_time = prm.get_double ("Velocity file start time");
-          if (this->convert_output_to_years())
+          if (use_years_instead_of_seconds == true)
             {
               time_step                *= year_in_seconds;
               velocity_file_start_time *= year_in_seconds;
