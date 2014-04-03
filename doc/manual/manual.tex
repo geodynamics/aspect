@@ -545,6 +545,9 @@ Units $\frac{\textrm{J}}{\textrm{kg}\cdot\textrm{K}} =
   transport through convection is several orders of magnitude more important
   than through thermal conduction.
 
+  The thermal conductivity $k$ is often expressed in terms of the
+  \textit{thermal diffusivity} $\kappa$ using the relation $k = \rho C_p \kappa$.
+
 \item \textit{The intrinsic specific heat production $H=H(\mathbf x)$:} Units
   $\frac{\textrm{W}}{\textrm{kg}}=\frac{\textrm{m}^2}{\textrm{s}^3}$.
 
@@ -6073,12 +6076,15 @@ equation \eqref{eq:temperature} or its reformulation
 steady-state one-dimensional downward flow with vertical velocity $v_y$, it
 simplifies to the following:
 \begin{gather*}
+\rho C_p
 v_y
 \frac{\partial T}{\partial y} = 
-T \frac{\Delta S}{C_p} v_y \frac{\partial X}{\partial y} 
-+ \kappa
+\rho T \Delta S v_y \frac{\partial X}{\partial y} 
++ \rho C_p \kappa
 \frac{\partial^2 T}{\partial y^2}.
 \end{gather*}
+Here, $\rho C_p \kappa = k$ with $k$ the thermal conductivity and $\kappa$ the
+thermal diffusivity.
 The first term on the right-hand side of the equation describes the latent heat
 produced at the phase transition: It is proportional to the temperature T, the
 entropy change $\Delta S$ across the phase transition divided by the specific
