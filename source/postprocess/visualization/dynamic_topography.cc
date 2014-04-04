@@ -91,6 +91,7 @@ namespace aspect
             const double viscosity = out.viscosities[q];
             const double density   = out.densities[q];
 
+//TODO: We need to subtract 2/3*div(u) from the stress here in the compressible case
             const SymmetricTensor<2,dim> stress = 2 * viscosity * in.strain_rate[q];
 
             const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
