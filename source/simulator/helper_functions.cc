@@ -469,6 +469,40 @@ namespace aspect
   }
 
 
+  template <int dim>
+  void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
+      LinearAlgebra::Vector &vec)
+  {
+    ConstraintMatrix hanging_constraints(introspection.index_sets.system_relevant_set);
+    DoFTools::make_hanging_node_constraints(dof_handler, hanging_constraints);
+    hanging_constraints.close();
+
+    Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
+    const std::vector<Point<dim> > mesh_support_points = finite_element.base_element(0).get_unit_support_points();
+    FEValues<dim> mesh_points (mapping, finite_element, mesh_support_points, update_quadrature_points);
+    std::vector<unsigned int> cell_dof_indices (finite_element.dofs_per_cell);
+
+    typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
+                                                   endc = dof_handler.end();
+    for(; cell != endc; ++cell)
+      if(cell->is_locally_owned())
+      {
+        mesh_points.reinit(cell);
+        cell->get_dof_indices (cell_dof_indices);
+        for(unsigned int j=0; j<finite_element.base_element(0).dofs_per_cell; ++j)
+          for(unsigned int dir=0; dir<dim; ++dir)
+          {
+            unsigned int support_point_index
+              = finite_element.component_to_system_index(/*velocity component=*/ introspection.component_indices.velocities[dir],
+                                                         /*dof index within component=*/ j);
+            Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
+            vec[cell_dof_indices[support_point_index]] = func.value(mesh_points.quadrature_point(j))[dir];
+          }
+      }
+
+    vec.compress(VectorOperation::insert);
+    hanging_constraints.distribute(vec);
+  }
 
   /*
    * normalize the pressure by calculating the surface integral of the pressure on the outer
@@ -1038,7 +1072,8 @@ namespace aspect
   template void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const; \
   template void Simulator<dim>::output_program_stats(); \
   template void Simulator<dim>::output_statistics(); \
-  template bool Simulator<dim>::stokes_matrix_depends_on_solution() const;
+  template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
+  template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

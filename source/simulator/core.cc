@@ -1035,6 +1035,8 @@ namespace aspect
       old_solution = old_distributed_system;
     }
 
+    setup_nullspace_removal();
+
     computing_timer.exit_section();
   }
 
