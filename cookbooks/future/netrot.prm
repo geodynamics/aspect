@@ -39,7 +39,7 @@ subsection Model settings
   set Include shear heating                   = true
 
   # net rotation|net translation|angular momentum|translational momentum
-  set Remove nullspace = net translation,translational momentum
+  set Remove nullspace = net rotation
 end
 
 
