@@ -930,9 +930,24 @@ namespace aspect
       void setup_nullspace_removal();
 
       /**
-       * Eliminate the nullspace of the velocity in the given vector @p vector.
+       * Eliminate the nullspace of the velocity in the given vector. Both vectors
+       * are expected to contain the up to date data.
+       *
+       * @param relevant_dst locally relevant vector for the whole FE, will be filled at the end.
+       * @param tmp_distributed_stokes only contains velocity and pressure.
        */
-      void remove_nullspace(LinearAlgebra::BlockVector &vector);
+      void remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
+          LinearAlgebra::BlockVector &tmp_distributed_stokes);
+
+      /**
+       * Remove the angular momentum of the given vector
+       */
+      void remove_net_angular_momentum( LinearAlgebra::BlockVector &relevant_dst, LinearAlgebra::BlockVector &tmp_distributed_stokes);
+
+      /**
+       * Remove the linear momentum of the given vector
+       */
+      void remove_net_linear_momentum( LinearAlgebra::BlockVector &relevant_dst, LinearAlgebra::BlockVector &tmp_distributed_stokes);
 
       /**
        * Compute the maximal velocity throughout the domain. This is needed
@@ -1147,7 +1162,6 @@ namespace aspect
       /**
       * @}
       */
-
       /**
        * @name Variables that describe the time discretization
        * @{

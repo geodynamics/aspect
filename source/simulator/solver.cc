@@ -479,12 +479,12 @@ namespace aspect
     // now rescale the pressure back to real physical units
     distributed_stokes_solution.block(1) *= pressure_scaling;
 
-    remove_nullspace(distributed_stokes_solution);
-
     // then copy back the solution from the temporary (non-ghosted) vector
     // into the ghosted one with all solution components
     solution.block(0) = distributed_stokes_solution.block(0);
     solution.block(1) = distributed_stokes_solution.block(1);
+
+    remove_nullspace(solution, distributed_stokes_solution);
 
     normalize_pressure(solution);
 

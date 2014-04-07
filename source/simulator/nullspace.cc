@@ -35,6 +35,9 @@
 #include <deal.II/lac/pointer_matrix.h>
 #include <deal.II/base/tensor_function.h>
 
+#include <deal.II/base/quadrature_lib.h>
+#include <deal.II/fe/fe_values.h>
+
 namespace aspect
 {
   namespace internal
@@ -68,8 +71,6 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::setup_nullspace_removal()
   {
-    if (parameters.nullspace_removal & NullspaceRemoval::angular_momentum)
-        AssertThrow(false, ExcNotImplemented());
     if (parameters.nullspace_removal & NullspaceRemoval::translational_momentum)
         AssertThrow(false, ExcNotImplemented());
 
@@ -110,7 +111,7 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &vector)
+  void Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &relevant_dst, LinearAlgebra::BlockVector &tmp_distributed_stokes)
   {
     if (parameters.nullspace_removal & NullspaceRemoval::net_rotation ||
         parameters.nullspace_removal & NullspaceRemoval::net_translation)
@@ -118,13 +119,102 @@ namespace aspect
         for(unsigned int i=0; i<net_rotations_translations.size(); ++i)
         {
            double power = net_rotations_translations[i]
-                          * vector.block(introspection.block_indices.velocities);
-           vector.block(introspection.block_indices.velocities).sadd(1.0,
+                          * tmp_distributed_stokes.block(introspection.block_indices.velocities);
+           tmp_distributed_stokes.block(introspection.block_indices.velocities).sadd(1.0,
                      -1.0*power,
                      net_rotations_translations[i]);
-           pcout << "removing NULLSPACE " << i << " power: " << power << std::endl;
         }
+        relevant_dst.block(0) = tmp_distributed_stokes.block(0);
       }
+    if (parameters.nullspace_removal & NullspaceRemoval::angular_momentum)
+      {
+        remove_net_angular_momentum( relevant_dst, tmp_distributed_stokes);
+      }
+  }
+
+  template <>
+  void
+  Simulator<3>::remove_net_angular_momentum( LinearAlgebra::BlockVector &relevant_dst, LinearAlgebra::BlockVector &tmp_distributed_stokes )
+  {
+    AssertThrow(false, ExcNotImplemented());
+  }
+
+  template <>
+  void
+  Simulator<2>::remove_net_angular_momentum( LinearAlgebra::BlockVector &relevant_dst, LinearAlgebra::BlockVector &tmp_distributed_stokes )
+  {
+
+    // compute and remove angular momentum from velocity field, by computing
+    // int rho V \cdot r_orth = omega  * int rho x^2
+    const unsigned int dim=2;
+
+    QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
+    FEValues<dim> fe(mapping, finite_element, quadrature,
+                              UpdateFlags(update_quadrature_points | update_JxW_values | update_values));
+
+    typename DoFHandler<dim>::active_cell_iterator cell;
+    std::vector<Point<dim> > q_points(quadrature.size());
+    std::vector<Vector<double> > fe_vals(quadrature.size(), Vector<double>(finite_element.n_components()));
+
+    //analogues to the moment of inertia and angular momentum for 2D
+    double local_scalar_moment = 0;
+    double local_scalar_angular_momentum = 0;
+
+    //loop over all local cells
+    for (cell = dof_handler.begin_active(); cell != dof_handler.end(); ++cell)
+      if (cell->is_locally_owned())
+      {
+        fe.reinit (cell);
+        q_points = fe.get_quadrature_points();
+        fe.get_function_values(relevant_dst, fe_vals);
+
+        //get the density at each quadrature point
+        typename MaterialModel::Interface<dim>::MaterialModelInputs in(q_points.size(), parameters.n_compositional_fields);
+        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(q_points.size(), parameters.n_compositional_fields);
+        for(unsigned int i=0; i< q_points.size(); i++)
+        {
+           in.pressure[i] = fe_vals[i][dim];
+           in.temperature[i] = fe_vals[i][dim+1];
+           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+             in.composition[i][c] = fe_vals[i][dim+2+c];
+           in.position[i] = q_points[i];
+
+        }
+        material_model->evaluate(in, out);
+
+        Point<dim> r_vec;
+        Tensor<1,dim> velocity;
+
+        //actually compute the moment of inertia and angular momentum
+        for (unsigned int k=0; k< quadrature.size(); ++k)
+          {
+            //get the position and velocity at this quadrature point
+            r_vec = q_points[k];
+            for (unsigned int i=0; i<dim; ++i) velocity[i] = fe_vals[k][i];
+            //Get the velocity perpendicular to the position vector
+            Tensor<1,dim> r_perp;
+            cross_product(r_perp, r_vec);
+            Tensor<1,dim> v_perp = velocity - (velocity*r_vec)*r_vec/(r_vec.norm_square());
+
+            //calculate a signed scalar angular momentum
+            local_scalar_angular_momentum += fe.JxW(k) * velocity*r_perp * out.densities[k];
+            //calculate a scalar moment of inertia
+            local_scalar_moment += fe.JxW(k) * r_vec.norm_square() * out.densities[k];
+          }
+        }
+      
+    double scalar_moment = Utilities::MPI::sum( local_scalar_moment, mpi_communicator);      
+    double scalar_angular_momentum = Utilities::MPI::sum( local_scalar_angular_momentum, mpi_communicator);      
+
+    double rotation_rate = scalar_angular_momentum/scalar_moment;  //solve for the rotation rate to cancel the angular momentum
+
+    //Now construct a rotation vector with the desired rate and subtract it from our vector
+    LinearAlgebra::Vector correction(tmp_distributed_stokes.block(introspection.block_indices.velocities));
+    internal::Rotation<dim> rot(0);
+    interpolate_onto_velocity_system(rot, correction);
+    tmp_distributed_stokes.block(introspection.block_indices.velocities).sadd(1.0, -1.0*rotation_rate,correction);
+
+    relevant_dst.block(0) = tmp_distributed_stokes.block(0);
   }
 
 }
@@ -138,7 +228,7 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::setup_nullspace_removal (); \
-  template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &vector);
+  template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &vector);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }
