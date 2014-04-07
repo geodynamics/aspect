@@ -11,7 +11,7 @@ Number of degrees of freedom: 347 (210+32+105)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+9 iterations.
+   Solving Stokes system... 13 iterations.
 
    Postprocessing:
      Writing graphical output: output-box-repetitions/solution-00000
@@ -20,18 +20,18 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |    0.0929s |            |
+| Total wallclock time elapsed since start    |    0.0851s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |    0.0139s |        15% |
-| Assemble temperature system     |         1 |    0.0156s |        17% |
-| Build Stokes preconditioner     |         1 |    0.0121s |        13% |
-| Build temperature preconditioner|         1 |  0.000216s |      0.23% |
-| Solve Stokes system             |         1 |   0.00904s |       9.7% |
-| Solve temperature system        |         1 |   0.00027s |      0.29% |
-| Initialization                  |         2 |    0.0181s |        19% |
-| Postprocessing                  |         1 |   0.00183s |         2% |
-| Setup dof systems               |         1 |    0.0173s |        19% |
+| Assemble Stokes system          |         1 |    0.0141s |        17% |
+| Assemble temperature system     |         1 |    0.0151s |        18% |
+| Build Stokes preconditioner     |         1 |    0.0121s |        14% |
+| Build temperature preconditioner|         1 |  0.000215s |      0.25% |
+| Solve Stokes system             |         1 |   0.00259s |         3% |
+| Solve temperature system        |         1 |  0.000268s |      0.31% |
+| Initialization                  |         2 |    0.0169s |        20% |
+| Postprocessing                  |         1 |   0.00199s |       2.3% |
+| Setup dof systems               |         1 |    0.0173s |        20% |
 +---------------------------------+-----------+------------+------------+
 
