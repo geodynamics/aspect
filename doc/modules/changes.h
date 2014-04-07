@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: New options to remove rotational/translational modes
+  from the solution.
+  <br>
+  (Ian Rose, Timo Heister, 2014/04/07)
+
   <li>New: The box geometry allows you to specify a repetition
   argument in each coordinate direction.
   <br>
