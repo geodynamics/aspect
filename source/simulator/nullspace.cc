@@ -53,6 +53,16 @@ namespace aspect
           virtual Tensor<1,dim> value (const Point<dim> &p) const { Tensor<1,dim> vel; if( dim == 2) cross_product(vel, p); else cross_product(vel, axis, p); return vel;}
       };
 
+    template <int dim>
+    class Translation : public TensorFunction<1,dim>
+    {
+      private:
+        const unsigned int direction;
+      public:
+        Translation(const unsigned int d) : direction(d) {}
+        virtual Tensor<1,dim> value(const Point<dim> &) const { return Tensor<1,dim>(Point<dim>::unit_vector(direction)); }
+    };
+
   }
 
   template <int dim>
@@ -62,19 +72,26 @@ namespace aspect
         AssertThrow(false, ExcNotImplemented());
     if (parameters.nullspace_removal & NullspaceRemoval::translational_momentum)
         AssertThrow(false, ExcNotImplemented());
-    if (parameters.nullspace_removal & NullspaceRemoval::net_translation)
-        AssertThrow(false, ExcNotImplemented());
+
+    std::vector<std_cxx1x::shared_ptr<TensorFunction<1,dim> > > funcs;
 
     if (parameters.nullspace_removal & NullspaceRemoval::net_rotation)
       {
-        std::vector<std_cxx1x::shared_ptr<TensorFunction<1,dim> > > funcs;
-
         if (dim==2)
           funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Rotation<dim>(0)));
         if (dim==3)
           for(unsigned int a=0; a<dim; ++a)
             funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Rotation<dim>(a)));
+      }
 
+    if (parameters.nullspace_removal & NullspaceRemoval::net_translation)
+      {
+          for(unsigned int a=0; a<dim; ++a)
+            funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(a)));
+      }
+
+    if (funcs.size()>0)
+      {
         net_rotations_translations.resize(funcs.size());
         for (unsigned int i=0;i<funcs.size();++i)
           net_rotations_translations[i].reinit(
@@ -95,7 +112,8 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &vector)
   {
-    if (parameters.nullspace_removal & NullspaceRemoval::net_rotation)
+    if (parameters.nullspace_removal & NullspaceRemoval::net_rotation ||
+        parameters.nullspace_removal & NullspaceRemoval::net_translation)
       {
         for(unsigned int i=0; i<net_rotations_translations.size(); ++i)
         {
