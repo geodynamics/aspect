@@ -2,7 +2,7 @@
 # manual for more information.
 
 
-set Dimension                              = 3
+set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 1.5e9
 set Output directory                       = output
@@ -39,7 +39,7 @@ subsection Model settings
   set Include shear heating                   = true
 
   # net rotation|net translation|angular momentum|translational momentum
-  set Remove nullspace = #net rotation
+  set Remove nullspace = net rotation
 end
 
 
@@ -63,8 +63,8 @@ end
 
 
 subsection Mesh refinement
-  set Initial global refinement          = 0
-  set Initial adaptive refinement        = 2
+  set Initial global refinement          = 4
+  set Initial adaptive refinement        = 0
   set Strategy                           = temperature
   set Time steps between mesh refinement = 5
 end
