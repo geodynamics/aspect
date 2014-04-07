@@ -8,6 +8,11 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: The box geometry allows you to specify a repetition
+  argument in each coordinate direction.
+  <br>
+  (Timo Heister, 2014/04/07)
+
   <li>New: On startup, ASPECT now prints out whether it is
   running in debug or optimized mode. This is now part of a general
   status message at the top of every run.

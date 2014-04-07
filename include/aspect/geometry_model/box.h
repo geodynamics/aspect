@@ -115,6 +115,12 @@ namespace aspect
          * Flag whether the box is periodic in the x-, y-, and z-direction.
          */
         bool periodic[dim];
+
+        /**
+         * The number of cells in each coordinate direction
+         */
+        unsigned int repetitions[dim];
+
     };
   }
 }

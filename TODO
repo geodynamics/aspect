@@ -15,7 +15,6 @@ Create list of publications. Include
 
 Topics for preview release:
 ---------------------------
-- provide the possibility of subdividing the box geometry
 - unify readme.html in aspect/ and from the webpage again
 - make run-time parameters lower-case in the .prm file
 - temperature equation must contain adiabatic terms in the compressible case
