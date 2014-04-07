@@ -674,18 +674,30 @@ namespace aspect
         prm.enter_subsection ("GPlates model");
         {
           prm.declare_entry ("Data directory",
-                             "data/velocity-boundary-conditions/gplates/",
-                             Patterns::DirectoryName (), "The path to the model data.");
+                             "$ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/gplates/",
+                             Patterns::DirectoryName (),
+                             "The name of a directory that contains the model data. This path "
+                             "may either be absolute (if starting with a '/') or relative to "
+                             "the current directory. The path may also include the special "
+                             "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                             "in which the ASPECT source files were located when ASPECT was "
+                             "compiled. This interpretation allows, for example, to reference "
+                             "files located in the 'data/' subdirectory of ASPECT.");
           prm.declare_entry ("Velocity file name", "phi.%d",
                              Patterns::Anything (),
                              "The file name of the material data. Provide file in format: (Velocity file name).%d.gpml where %d is any sprintf integer qualifier, specifying the format of the current file number.");
-          prm.declare_entry ("Time step", "3.1558e13",
+          prm.declare_entry ("Time step", "1e6",
                              Patterns::Double (0),
-                             "Time step between following velocity files. Default is one million "
-                             "years expressed in SI units, which equates to 3.1558e13 seconds.");
+                             "Time step between following velocity files. "
+                             "Depending on the setting of the global 'Use years in output instead of seconds' flag "
+                             "in the input file, this number is either interpreted as seconds or as years. "
+                             "The default is one million, i.e., either one million seconds or one million years.");
           prm.declare_entry ("Velocity file start time", "0.0",
                              Patterns::Double (0),
-                             "Time at which the velocity file with number 0 shall be loaded. Previous to this time, a no-slip boundary condition is assumed.");
+                             "Time at which the velocity file with number 0 shall be loaded. Previous to this "
+                             "time, a no-slip boundary condition is assumed. "
+                             "Depending on the setting of the global 'Use years in output instead of seconds' flag "
+                             "in the input file, this number is either interpreted as seconds or as years.");
           prm.declare_entry ("Point one", "1.570796,0.0",
                              Patterns::Anything (),
                              "Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.");
@@ -705,21 +717,48 @@ namespace aspect
       prm.leave_subsection();
     }
 
+
     template <int dim>
     void
     GPlates<dim>::parse_parameters (ParameterHandler &prm)
     {
+      // Query the unit system for time since we may have to convert below.
+      // Note that we can't use this->convert_output_to_years() since this
+      // requires the SimulatorAccess base object to have been initialized,
+      // but this hasn't happened yet when we get into this function.
+      const bool
+      use_years_instead_of_seconds
+        = prm.get_bool ("Use years in output instead of seconds");
+
       prm.enter_subsection("Boundary velocity model");
       {
         prm.enter_subsection("GPlates model");
         {
+          // Get the path to the data files. If it contains a reference
+          // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
+          // as a #define
           data_directory        = prm.get ("Data directory");
+          {
+            const std::string      subst_text = "$ASPECT_SOURCE_DIR";
+            std::string::size_type position;
+            while (position = data_directory.find (subst_text),  position!=std::string::npos)
+              data_directory.replace (data_directory.begin()+position,
+                  data_directory.begin()+position+subst_text.size(),
+                  ASPECT_SOURCE_DIR);
+          }
+
           velocity_file_name    = prm.get ("Velocity file name");
-          time_step             = prm.get_double ("Time step");
           interpolation_width   = prm.get_double ("Interpolation width");
-          velocity_file_start_time = prm.get_double ("Velocity file start time");
           point1                = prm.get ("Point one");
           point2                = prm.get ("Point two");
+
+          time_step             = prm.get_double ("Time step");
+          velocity_file_start_time = prm.get_double ("Velocity file start time");
+          if (use_years_instead_of_seconds == true)
+            {
+              time_step                *= year_in_seconds;
+              velocity_file_start_time *= year_in_seconds;
+            }
         }
         prm.leave_subsection();
       }

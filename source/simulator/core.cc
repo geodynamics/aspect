@@ -855,6 +855,8 @@ namespace aspect
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
 
+    setup_nullspace_removal();
+
     computing_timer.exit_section();
   }
 

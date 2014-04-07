@@ -62,13 +62,14 @@ namespace aspect
     // need to write into it and we can not
     // write into vectors with ghost elements
     LinearAlgebra::BlockVector initial_solution;
-    bool normalize_composition = false;
     double max_sum_comp = 0.0;
-    double global_max = 0.0;
+
+    // we need to track whether we need to normalize the totality of fields
+    bool normalize_composition = false;
 
     for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
       {
-        initial_solution.reinit(system_rhs,false);
+        initial_solution.reinit(system_rhs, false);
 
         // base element in the finite element is 2 for temperature (n=0) and 3 for
         // compositional fields (n>0)
@@ -103,10 +104,12 @@ namespace aspect
                     = finite_element.component_to_system_index(/*temperature/composition component=*/dim+1+n,
                         /*dof index within component=*/i);
 
-                  double value =
-                    (base_element == 2 ?
+                  const double value =
+                    (base_element == 2
+                        ?
                      initial_conditions->initial_temperature(fe_values.quadrature_point(i))
-                     : compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n-1));
+                     :
+                     compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n-1));
                   initial_solution(local_dof_indices[system_local_dof]) = value;
 
                   if (base_element != 2)
@@ -122,7 +125,7 @@ namespace aspect
                         sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),parameters.normalized_fields[m]);
                       if (abs(sum) > 1.0+1e-6)
                         {
-                          max_sum_comp = std::max(sum,max_sum_comp);
+                          max_sum_comp = std::max(sum, max_sum_comp);
                           normalize_composition = true;
                         }
                     }
@@ -141,15 +144,20 @@ namespace aspect
 
         // if at least one processor decides that it needs
         // to normalize, do the same on all processors.
-        int my_normalize_decision = normalize_composition;
-        int global_dec = Utilities::MPI::max (my_normalize_decision, mpi_communicator);
-
-        if (global_dec>0)
+        if (Utilities::MPI::max (normalize_composition ? 1 : 0,
+                                 mpi_communicator)
+            == 1)
           {
-            global_max = Utilities::MPI::max (max_sum_comp, mpi_communicator);
-            if (n==1) pcout << "Sum of compositional fields is not one, fields will be normalized" << std::endl;
+            const double global_max
+              = Utilities::MPI::max (max_sum_comp, mpi_communicator);
+
+            if (n==1)
+              pcout << "Sum of compositional fields is not one, fields will be normalized"
+                    << std::endl;
+
             for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
-              if (n-1==parameters.normalized_fields[m]) initial_solution/=global_max;
+              if (n-1==parameters.normalized_fields[m])
+                initial_solution /= global_max;
           }
 
         // then apply constraints and copy the

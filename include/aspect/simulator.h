@@ -38,6 +38,7 @@
 
 #include <deal.II/fe/fe_system.h>
 #include <deal.II/fe/mapping_q.h>
+#include <deal.II/base/tensor_function.h>
 
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
@@ -104,6 +105,18 @@ namespace aspect
           iterated_Stokes,
           Stokes_only
         };
+      };
+
+      struct NullspaceRemoval
+      {
+          enum Kind
+          {
+            none = 0,
+            net_rotation = 0x1,
+            net_translation = 0x2,
+            angular_momentum = 0x4,
+            translational_momentum = 0x8
+          };
       };
 
     public:
@@ -196,6 +209,11 @@ namespace aspect
          * is mapped to one of the plugins of velocity boundary conditions (e.g. "function")
          */
         std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_velocity_boundary_indicators;
+        /**
+         * Selection of operations to perform to remove nullspace from
+         * velocity field.
+         */
+        typename NullspaceRemoval::Kind nullspace_removal;
         /**
          * @}
          */
@@ -899,6 +917,38 @@ namespace aspect
        */
       void denormalize_pressure(LinearAlgebra::BlockVector &vector);
 
+
+      /**
+       * interpolates the given function onto the velocity FE space and write it into the given vector.
+       */
+      void interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
+          LinearAlgebra::Vector &vec);
+
+      /**
+       * Aets up data structures for null space removal. Called after every mesh refinement.
+       */
+      void setup_nullspace_removal();
+
+      /**
+       * Eliminate the nullspace of the velocity in the given vector. Both vectors
+       * are expected to contain the up to date data.
+       *
+       * @param relevant_dst locally relevant vector for the whole FE, will be filled at the end.
+       * @param tmp_distributed_stokes only contains velocity and pressure.
+       */
+      void remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
+          LinearAlgebra::BlockVector &tmp_distributed_stokes);
+
+      /**
+       * Remove the angular momentum of the given vector
+       */
+      void remove_net_angular_momentum( LinearAlgebra::BlockVector &relevant_dst, LinearAlgebra::BlockVector &tmp_distributed_stokes);
+
+      /**
+       * Remove the linear momentum of the given vector
+       */
+      void remove_net_linear_momentum( LinearAlgebra::BlockVector &relevant_dst, LinearAlgebra::BlockVector &tmp_distributed_stokes);
+
       /**
        * Compute the maximal velocity throughout the domain. This is needed
        * to compute the size of the time step.
@@ -1112,7 +1162,6 @@ namespace aspect
       /**
       * @}
       */
-
       /**
        * @name Variables that describe the time discretization
        * @{
@@ -1206,6 +1255,8 @@ namespace aspect
 
       bool                                                      rebuild_stokes_matrix;
       bool                                                      rebuild_stokes_preconditioner;
+
+      std::vector<LinearAlgebra::Vector> net_rotations_translations;
       /**
        * @}
        */

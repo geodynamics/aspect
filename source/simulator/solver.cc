@@ -484,6 +484,8 @@ namespace aspect
     solution.block(0) = distributed_stokes_solution.block(0);
     solution.block(1) = distributed_stokes_solution.block(1);
 
+    remove_nullspace(solution, distributed_stokes_solution);
+
     normalize_pressure(solution);
 
     // print the number of iterations to screen and record it in the

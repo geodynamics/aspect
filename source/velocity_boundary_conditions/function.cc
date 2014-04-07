@@ -52,7 +52,7 @@ namespace aspect
       // means "5 meters/year" and we need to convert it to the Aspect
       // time system by dividing by the number of seconds per year
       // to get MKS units
-      if (use_years_instead_of_seconds)
+      if (this->convert_output_to_years())
         return velocity / year_in_seconds;
       else
         return velocity;
@@ -65,7 +65,7 @@ namespace aspect
     {
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
-      if (use_years_instead_of_seconds)
+      if (this->convert_output_to_years())
         boundary_velocity_function.set_time (time / year_in_seconds);
       else
         boundary_velocity_function.set_time (time);
@@ -101,10 +101,6 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
-
-      // also query the unit system for time
-      use_years_instead_of_seconds
-        = prm.get_bool ("Use years in output instead of seconds");
     }
 
   }

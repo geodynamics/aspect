@@ -90,8 +90,9 @@ subsection Model settings
   set Radiogenic heating rate                 = 0
   set Fixed temperature boundary indicators   = 2,3
   set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 
-  set Zero velocity boundary indicators       = 2,3
+  set Tangential velocity boundary indicators = 2,3
+  set Zero velocity boundary indicators       = 
+  set Remove nullspace = net translation
 end
 
 subsection Postprocess
@@ -100,6 +101,6 @@ subsection Postprocess
     set List of output variables = 
     set Number of grouped files       = 1
     set Output format                 = vtu
-    set Time between graphical output = 1.e5
+    set Time between graphical output = 1.e3
   end
 end

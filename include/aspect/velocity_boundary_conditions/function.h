@@ -24,6 +24,7 @@
 #define __aspect__velocity_boundary_conditions_function_h
 
 #include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -40,7 +41,7 @@ namespace aspect
      * @ingroup VelocityBoundaryConditionsModels
      */
     template <int dim>
-    class Function : public Interface<dim>
+    class Function : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -92,11 +93,6 @@ namespace aspect
          * A function object representing the components of the velocity.
          */
         Functions::ParsedFunction<dim> boundary_velocity_function;
-
-        /**
-         * Whether to interpret time in years or seconds.
-         */
-        bool use_years_instead_of_seconds;
     };
   }
 }

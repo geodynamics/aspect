@@ -8,6 +8,22 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Changed: The GPlates plugin for surface velocities always
+  interpreted the start time of the model and the time increment
+  between individual input files in seconds. It now honors the
+  'Use years in output instead of seconds' flag in the input file.
+  <br>
+  (Wolfgang Bangerth, Rene Gassmoeller, 2014/04/1)
+
+  <li>New: CMake now passes down a preprocessor defined string constant
+  called <code>ASPECT_SOURCE_DIR</code> that is set to the (top level)
+  directory in which the ASPECT sources are located. This can be used
+  by plugins to locate where data files are (e.g., in the <code>data/</code>
+  directory of the source tree) independent of where the executable is
+  finally called.
+  <br>
+  (Wolfgang Bangerth, 2014/03/31)
+
   <li>Changed: The 'radial constant' gravity model had a default of
   $30 m/s^2$ for the magnitude of the gravity. This value makes no
   sense. It has therefore been changed to the value we have at
@@ -19,7 +35,8 @@ All entries are signed with the names of the author.
   <br>
   (Timo Heister, 2014/03/26)
 
-  <li>Fixed: Corrected calculation of non-dimensional temperature.
+  <li>Fixed: Corrected calculation of non-dimensional temperature in the
+  temperature statistics postprocessor plugin.
   <br>
   (Eric Heien, 2014/03/24)
 

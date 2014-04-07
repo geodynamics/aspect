@@ -99,7 +99,8 @@ namespace aspect
                   const double viscosity = out.viscosities[q];
                   const double density   = out.densities[q];
 
-                  const SymmetricTensor<2,dim> stress = viscosity * in.strain_rate[q];
+//TODO: We need to subtract 2/3*div(u) from the stress here in the compressible case
+                  const SymmetricTensor<2,dim> stress = 2 * viscosity * in.strain_rate[q];
 
                   const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
                   const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
@@ -185,7 +186,7 @@ namespace aspect
                                   "that sit along the top surface, we evaluate the stress and "
                                   "evaluate the component of it in the direction in which "
                                   "gravity acts. In other words, we compute "
-                                  "$\\sigma_{rr}={\\hat g}^T(\\eta \\varepsilon(\\mathbf u))\\hat g$ "
+                                  "$\\sigma_{rr}={\\hat g}^T(2 \\eta \\varepsilon(\\mathbf u))\\hat g$ "
                                   "where $\\hat g = \\mathbf g/\\|\\mathbf g\\|$ is the direction of "
                                   "the gravity vector $\\mathbf g$. From this, the dynamic "
                                   "topography is computed using the formula "
