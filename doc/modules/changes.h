@@ -8,12 +8,18 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: On startup, ASPECT now prints out whether it is
+  running in debug or optimized mode. This is now part of a general
+  status message at the top of every run.
+  <br>
+  (Wolfgang Bangerth, Juliane Dannberg, 2014/04/7)
+
   <li>Changed: The GPlates plugin for surface velocities always
   interpreted the start time of the model and the time increment
   between individual input files in seconds. It now honors the
   'Use years in output instead of seconds' flag in the input file.
   <br>
-  (Wolfgang Bangerth, Rene Gassmoeller, 2014/04/1)
+  (Wolfgang Bangerth, Rene Gassmoeller, 2014/04/01)
 
   <li>New: CMake now passes down a preprocessor defined string constant
   called <code>ASPECT_SOURCE_DIR</code> that is set to the (top level)

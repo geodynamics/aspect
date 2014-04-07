@@ -1,4 +1,5 @@
-Running with 1 MPI task using Trilinos.
+-- Running with 1 MPI task using Trilinos.
+
 Number of active cells: 3,072 (on 6 levels)
 Number of degrees of freedom: 40,836 (25,090+3,201+12,545)
 
