@@ -1,4 +1,5 @@
-Running with 1 MPI task using Trilinos.
+-- Running with 1 MPI task using Trilinos.
+
 Number of active cells: 64 (on 3 levels)
 Number of degrees of freedom: 3,770 (2,187+125+729+729)
 
@@ -41,7 +42,7 @@ Number of degrees of freedom: 6,289 (3,654+199+1,218+1,218)
      reference_thermal_diffusivity:                 1.13939e-06
 
      Writing graphical output: output-stokes/solution-00000
-     RMS, max velocity:        3.24e-11 m/s, 5.41e-10 m/s
+     RMS, max velocity:        4.22e-11 m/s, 5.66e-10 m/s
 
 Termination requested by criterion: end time
 

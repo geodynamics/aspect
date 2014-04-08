@@ -155,10 +155,14 @@ FOREACH(_test ${_tests})
     # avoids the need to strip timing information from files we may
     # copy from tests we have just run to the directory where we save
     # these files
+    #
+    # do the same with the second egrep command to strip out the status
+    # message at the top of the run
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
       COMMAND
 	cat ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
         | egrep -v '^\\|'
+	| egrep -v '^--'
         > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
     )
@@ -167,6 +171,7 @@ FOREACH(_test ${_tests})
       COMMAND
 	cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}
         | egrep -v '^\\|.*\\|'
+	| egrep -v '^--'
         > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
               ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime

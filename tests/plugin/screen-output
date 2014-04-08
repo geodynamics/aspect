@@ -1,7 +1,7 @@
+
 Loading shared library <./libplugin.so>
 N6dealii13TriangulationILi2ELi2EEE N6aspect9SimulatorILi2EEE
 
-Running with 1 MPI task using Trilinos.
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 

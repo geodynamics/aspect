@@ -37,11 +37,12 @@ namespace aspect
     Box<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-      GridGenerator::hyper_rectangle (coarse_grid,
-                                      Point<dim>(),
-                                      extents);
-      for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-        coarse_grid.begin_active()->face(f)->set_boundary_indicator(f);
+      std::vector<unsigned int> rep_vec(repetitions, repetitions+dim);
+      GridGenerator::subdivided_hyper_rectangle (coarse_grid,
+          rep_vec,
+          Point<dim>(),
+          extents,
+          true);
 
       //Tell p4est about the periodicity of the mesh.
 #if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
@@ -173,6 +174,17 @@ namespace aspect
                              Patterns::Double (0),
                              "Extent of the box in z-direction. This value is ignored "
                              "if the simulation is in 2d Units: m.");
+
+          prm.declare_entry ("X repetitions", "1",
+                             Patterns::Integer (1),
+                             "Number of cells in X direction.");
+          prm.declare_entry ("Y repetitions", "1",
+                             Patterns::Integer (1),
+                             "Number of cells in Y direction.");
+          prm.declare_entry ("Z repetitions", "1",
+                             Patterns::Integer (1),
+                             "Number of cells in Z direction.");
+
           prm.declare_entry ("X periodic", "false",
                              Patterns::Bool (),
                              "Whether the box should be periodic in X direction");
@@ -182,6 +194,7 @@ namespace aspect
           prm.declare_entry ("Z periodic", "false",
                              Patterns::Bool (),
                              "Whether the box should be periodic in Z direction");
+
         }
         prm.leave_subsection();
       }
@@ -200,17 +213,20 @@ namespace aspect
         {
           extents[0] = prm.get_double ("X extent");
           periodic[0] = prm.get_bool ("X periodic");
+          repetitions[0] = prm.get_integer ("X repetitions");
 
           if (dim >= 2)
             {
               extents[1] = prm.get_double ("Y extent");
               periodic[1] = prm.get_bool ("Y periodic");
+              repetitions[1] = prm.get_integer ("Y repetitions");
             }
 
           if (dim >= 3)
             {
               extents[2] = prm.get_double ("Z extent");
               periodic[2] = prm.get_bool ("Z periodic");
+              repetitions[2] = prm.get_integer ("Z repetitions");
             }
         }
         prm.leave_subsection();

@@ -1,6 +1,6 @@
+
 Loading shared library <./libno_adiabatic_heating.so>
 
-Running with 1 MPI task using Trilinos.
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 

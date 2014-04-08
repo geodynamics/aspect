@@ -1,6 +1,12 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Simulator for Problems in Earth's ConvecTion.
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
 Loading shared library <./libcompressibility_iterated_stokes.so>
 
-Running with 1 MPI task using Trilinos.
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 

@@ -1,6 +1,6 @@
+
 Loading shared library <./libshear-thinning.so>
 
-Running with 1 MPI task using Trilinos.
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
