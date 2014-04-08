@@ -2,46 +2,8 @@ This file is our internal working list of things to do in the near future
 =========================================================================
 
 
-Create list of publications. Include
-- papers
-- AGU 2011 poster
-- AGU 2012 poster: 2x Eric
-- Eric's XSEDE poster:
-     Investigating Mixing and Flow in the Earth's Mantle using Adaptive Mesh
-     Finite Element Simulations
-  Heien, Bangerth, Heister, Kellogg
-
-
-
-Topics for preview release:
----------------------------
-- unify readme.html in aspect/ and from the webpage again
-- make run-time parameters lower-case in the .prm file
-- temperature equation must contain adiabatic terms in the compressible case
-- Refinement criterion in 3d? rescale to the average, not to the max
-- Use extrapolated solution for grid refinement
-- minimal mesh size (shortest edge divided by order)
-- make initial conditions class say whether it implements a temperature
-  or a temperature perturbation
-- name the material model better than "table"
-- re-write the geometry section since information on the boundary components
-  is no longer there
-- describe in the manual how to set boundary conditions
-- allow for arbitrary tangential boundary conditions (via Eh Tan, e.g. from
-  gplates)
-- add an easter egg
-- make the default for parameters.include_shear_heating true after
-  testing that the model works correctly
-- provide an option to store not only the last snapshot but many
-- move the adiabatic heating term (the last one in the temperature equation)
-  to the left hand side and make it implicit
-- methods to compute dynamic topography from the dynamic part of the pressure
-
 
 - Create a task list for a release that includes:
-  *** go over the installation section again and make sure the cmake stuff
-      is in there and correct ***
-
   . go through the list of TODOs in the source code and see what can be done
   . make sure the description of the interfaces that need to be updated
     are up to date in the manual
@@ -103,54 +65,3 @@ available here:
 Wolfgang Bangerth, Timo Heister, and many other contributors.
 
 
-First release
--------------
-- Nonlinearity
-- Real 3d
-- Better 3d coarse mesh?
-- Participate in Shijie's benchmarking effort, see email of 12/16/2011
-
-For later (from the Berkeley discussion, 9/26/2012)
----------------------------------------------------
-- compositional fields or tracers (John Naliboff and Eric Heien have
-  		       	  	   initial tracers; Juliane Dannberg
-				   is working on fields)
-- rheology and nonlinear iteration
-- free surfaces (Ian Rose has something initial)
-- self gravity (Ian Rose has something initial)
-- compressibility
-- prescribed heat flux
-
-- document variable velocity boundary conditions
-
-- improve compositional tracking:
-  . if a field is binary 0/1, use a higher order entropy viscosity
-  . if several fields together sum to one, do something else
-
-
-
-
-tests for the various refinement criteria
-fix regression in cookbooks/composition-active in r1370
-write a testcase for friction heating (Poiseulle flow) and
-  adiabatic heating (constant downward velocity)
-write a postprocessor that shows temperature minus depth averaged
-  temperature. maybe similar for density (= buoyancy)
-
-
-- change some/all material models to the new system
-
-
-write tests for the depth averaging functions (test adaptive refinement,
-averaged composition, non-zero average/sinking velocity)
-  
-write tests to verify the possibility of external plugins compiled into
-shared libraries. implement ways to verify that they are compiled against
-the same version of ASPECT that they are running under.
-
-
-2013/11/04 implement "open boundary conditions" as described in "Using open
-sidewalls for modelling self-consistent lithosphere subduction dynamics",
-M. V. Chertova, T. Geenen, A. van den Berg, and W. Spakman see discussion on
-the aspect mailing list "[aspect-devel] strain rate corner values and velocity
-boundary conditions"
