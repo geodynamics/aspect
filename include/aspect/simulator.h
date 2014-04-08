@@ -925,7 +925,7 @@ namespace aspect
           LinearAlgebra::Vector &vec);
 
       /**
-       * Aets up data structures for null space removal. Called after every mesh refinement.
+       * Sets up data structures for null space removal. Called after every mesh refinement.
        */
       void setup_nullspace_removal();
 
