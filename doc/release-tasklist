@@ -1,8 +1,3 @@
-This file is our internal working list of things to do in the near future
-=========================================================================
-
-
-
 - Create a task list for a release that includes:
   . go through the list of TODOs in the source code and see what can be done
   . make sure the description of the interfaces that need to be updated
