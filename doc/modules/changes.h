@@ -8,6 +8,13 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>Fixed: the simple material model now ignores negative
+  compositional values that can occur from numerical undershoots
+  and even interpolation onto the FE space. This makes the
+  cookbook/composition-active.prm work again.
+  <br>
+  (Timo Heister, 2014/04/08)
+
   <li>New: New options to remove rotational/translational modes
   from the solution.
   <br>
