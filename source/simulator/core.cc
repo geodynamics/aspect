@@ -1010,15 +1010,25 @@ namespace aspect
          cell != triangulation.end_active(parameters.min_grid_level); ++cell)
       cell->clear_coarsen_flag ();
 
-    std::vector<const LinearAlgebra::BlockVector *> x_system (2);
+    std::vector<const LinearAlgebra::BlockVector *> x_system (4);
     x_system[0] = &solution;
     x_system[1] = &old_solution;
+    x_system[2] = &mesh_velocity;
+    x_system[3] = &old_mesh_velocity;
 
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
+    std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
+    x_fs_system[0] = &mesh_vertices;
+
+    parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
+        freesurface_trans(free_surface_dof_handler);
+
+
     triangulation.prepare_coarsening_and_refinement();
     system_trans.prepare_for_coarsening_and_refinement(x_system);
+    freesurface_trans.prepare_for_coarsening_and_refinement(x_fs_system);
 
     triangulation.execute_coarsening_and_refinement ();
     global_volume = GridTools::volume (triangulation, mapping);
@@ -1033,13 +1043,33 @@ namespace aspect
       distributed_system (system_rhs);
       LinearAlgebra::BlockVector
       old_distributed_system (system_rhs);
-      std::vector<LinearAlgebra::BlockVector *> system_tmp (2);
+      LinearAlgebra::BlockVector
+      distributed_mesh_velocity (system_rhs);
+      LinearAlgebra::BlockVector
+      old_distributed_mesh_velocity (system_rhs);
+
+      std::vector<LinearAlgebra::BlockVector *> system_tmp (4);
       system_tmp[0] = &(distributed_system);
       system_tmp[1] = &(old_distributed_system);
+      system_tmp[2] = &(distributed_mesh_velocity);
+      system_tmp[3] = &(old_distributed_mesh_velocity);
 
       system_trans.interpolate (system_tmp);
       solution     = distributed_system;
       old_solution = old_distributed_system;
+      mesh_velocity = distributed_mesh_velocity;
+      old_mesh_velocity = old_distributed_mesh_velocity;
+    }
+
+    {
+      LinearAlgebra::Vector
+       distributed_mesh_vertices;
+      distributed_mesh_vertices.reinit(mesh_locally_owned, mpi_communicator);
+
+      std::vector<LinearAlgebra::Vector *> system_tmp (1);
+       system_tmp[0] = &(distributed_mesh_vertices);
+       freesurface_trans.interpolate (system_tmp);
+       mesh_vertices     = distributed_mesh_vertices;
     }
 
     computing_timer.exit_section();

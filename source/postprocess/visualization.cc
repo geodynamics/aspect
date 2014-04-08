@@ -149,6 +149,9 @@ namespace aspect
                                 DataOut<dim>::type_dof_data,
                                 interpretation);
 
+
+//      data_out.add_data_vector(free_surface_dof_handler, mesh_vertices, "meshvertices");
+
       // then for each additional selected output variable
       // add the computed quantity as well. keep a list of
       // pointers to data vectors created by cell data visualization

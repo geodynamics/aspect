@@ -90,7 +90,7 @@ end
 subsection Mesh refinement
   set Additional refinement times        =
   set Initial adaptive refinement        = 2
-  set Initial global refinement          = 5  
+  set Initial global refinement          = 3
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.05
   set Strategy                           = density,composition
@@ -139,6 +139,6 @@ subsection Postprocess
     set List of output variables = viscosity,density
     set Number of grouped files       = 1
     set Output format                 = vtu
-    set Time between graphical output = 1.e6
+    set Time between graphical output = 0
   end
 end

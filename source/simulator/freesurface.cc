@@ -25,6 +25,7 @@
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/dofs/dof_tools.h>
+#include <deal.II/fe/fe_values.h>
 
 
 using namespace dealii;
@@ -47,6 +48,7 @@ void Simulator<dim>::free_surface_execute()
 
 
 
+  free_surface_displace_mesh();
 }
 
 template <int dim>
@@ -76,6 +78,8 @@ void Simulator<dim>::free_surface_setup_dofs()
 
   free_surface_dof_handler.distribute_dofs(free_surface_fe);
 
+  pcout << "FS: n_dofs = " << free_surface_dof_handler.n_dofs() << std::endl;
+
   // Renumber the DoFs hierarchical so that we get the
   // same numbering if we resume the computation. This
   // is because the numbering depends on the order the
@@ -91,6 +95,40 @@ void Simulator<dim>::free_surface_setup_dofs()
       mesh_locally_relevant);
 
   mesh_vertices.reinit(mesh_locally_owned, mesh_locally_relevant, mpi_communicator);
+  //if we are just starting, we need to initialize mesh_vertices
+   if(this->timestep_number == 0)
+   {
+       pcout << "FS: get initial mesh vertices" << std::endl;
+
+     LinearAlgebra::Vector distributed_mesh_vertices;
+     distributed_mesh_vertices.reinit(mesh_locally_owned, mpi_communicator);
+
+     const std::vector<Point<dim> > mesh_support_points
+       = free_surface_fe.base_element(0).get_unit_support_points();
+     FEValues<dim> mesh_points (mapping, free_surface_fe,
+         mesh_support_points, update_quadrature_points);
+     std::vector<unsigned int> cell_dof_indices (free_surface_fe.dofs_per_cell);
+
+     typename DoFHandler<dim>::active_cell_iterator cell = free_surface_dof_handler.begin_active(),
+                                                    endc = free_surface_dof_handler.end();
+     for(; cell != endc; ++cell)
+       if(cell->is_locally_owned())
+       {
+         mesh_points.reinit(cell);
+         cell->get_dof_indices (cell_dof_indices);
+         for(unsigned int j=0; j<free_surface_fe.base_element(0).dofs_per_cell; ++j)
+           for(unsigned int dir=0; dir<dim; ++dir)
+           {
+              unsigned int support_point_index
+                 = free_surface_fe.component_to_system_index(/*velocity component=*/ dir,
+                                                            /*dof index within component=*/ j);
+             distributed_mesh_vertices[cell_dof_indices[support_point_index]] = mesh_points.quadrature_point(j)[dir];
+           }
+       }
+
+     distributed_mesh_vertices.compress(VectorOperation::insert);
+     mesh_vertices = distributed_mesh_vertices;
+   }
 
   free_surface_make_constraints();
 
@@ -140,8 +178,24 @@ void Simulator<dim>::free_surface_setup_dofs()
 template <int dim>
 void Simulator<dim>::free_surface_displace_mesh()
 {
+  pcout << "FS: free_surface_displace_mesh()" << std::endl;
+
+  typename DoFHandler<dim>::active_cell_iterator  cell = free_surface_dof_handler.begin_active(),
+                                                     endc = free_surface_dof_handler.end();
+
+     for(cell = free_surface_dof_handler.begin_active(); cell != endc; ++cell)
+       if(cell->is_artificial() == false)
+         for(unsigned int vertex_no = 0; vertex_no < GeometryInfo<dim>::vertices_per_cell; ++vertex_no)
+         {
+           Point<dim> &v=cell->vertex(vertex_no);
+           for (unsigned int dir=0; dir<dim; ++dir)
+             v(dir) = mesh_vertices(
+                 cell->vertex_dof_index(vertex_no, dir)
+                     ); //enforce the vertex position
+         }
 
 }
+
 }
 
 
