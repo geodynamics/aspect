@@ -4,9 +4,15 @@
 <h3>Extensions we'd like to implement</h3>
  
 <ol>
-  <li>Mark compositional fields as either binary 0/1, or fields that sum up to 1.
-  If a field is binary 0/1, use a higher order entropy viscosity.
-  If several fields together sum to one, do something else.
+  <li>Mark compositional fields as to their meaning. This may include:
+  <ol>
+    <li>concentration: $0 \leq c \leq 1$
+    <li>binary: $c \in \{0,1\}$
+    <li>positive: $c \geq 0$
+    <li>level set: $c \in \mathbb{R}$
+    <li>arbitrary: $c \in \mathbb{R}$
+  </ol>
+  Depending on the meaning of a field, we may want to use different artificial viscosity approaches, compression, etc. We may also want to project back into the feasible set when passing compositional values to material models.
 
   <li>Implement "open boundary conditions" as described in "Using open
   sidewalls for modelling self-consistent lithosphere subduction dynamics",
