@@ -36,6 +36,8 @@ namespace aspect
 template <int dim>
 void Simulator<dim>::free_surface_execute()
 {
+  if (!parameters.free_surface_enabled)
+    return;
   pcout << "FS: free_surface_execute()" << std::endl;
 
 
@@ -50,6 +52,8 @@ void Simulator<dim>::free_surface_execute()
 template <int dim>
 void Simulator<dim>::free_surface_make_constraints()
 {
+  if (!parameters.free_surface_enabled)
+    return;
   pcout << "FS: free_surface_make_constraints()" << std::endl;
 
 mesh_constraints.clear();
@@ -61,6 +65,8 @@ mesh_constraints.clear();
 template <int dim>
 void Simulator<dim>::free_surface_setup_dofs()
 {
+  if (!parameters.free_surface_enabled)
+    return;
   pcout << "FS: free_surface_setup_dofs()" << std::endl;
 
   // these live in the same FE as the velocity variable:

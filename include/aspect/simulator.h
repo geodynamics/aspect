@@ -277,6 +277,17 @@ namespace aspect
         /**
          * @}
          */
+
+        /**
+         * @name Parameters that have to do with free surface
+         * @{
+         */
+        bool                           free_surface_enabled;
+        std::set<types::boundary_id> free_surface_boundary_indicators;
+        double free_surface_theta;
+        /**
+         * @}
+         */
       };
 
       /**
