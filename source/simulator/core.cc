@@ -143,7 +143,10 @@ namespace aspect
     dof_handler (triangulation),
 
     rebuild_stokes_matrix (true),
-    rebuild_stokes_preconditioner (true)
+    rebuild_stokes_preconditioner (true),
+    free_surface_fe (FE_Q<dim>(1),dim),
+    free_surface_dof_handler (triangulation)
+
   {
     computing_timer.enter_section("Initialization");
 
@@ -838,6 +841,8 @@ namespace aspect
     }
     constraints.close();
 
+    free_surface_setup_dofs();
+
     // finally initialize vectors, matrices, etc.
 
     setup_system_matrix (introspection.index_sets.system_partitioning);
@@ -1080,6 +1085,7 @@ namespace aspect
               assemble_advection_system (TemperatureOrComposition::composition(c));
               build_advection_preconditioner(TemperatureOrComposition::composition(c),
                                              C_preconditioner);
+
               solve_advection(TemperatureOrComposition::composition(c)); // this is correct, 0 would be temperature
               current_linearization_point.block(introspection.block_indices.compositional_fields[c])
                 = solution.block(introspection.block_indices.compositional_fields[c]);
@@ -1097,6 +1103,8 @@ namespace aspect
           assemble_stokes_system();
           build_stokes_preconditioner();
           solve_stokes();
+
+          free_surface_execute ();
 
           break;
         }

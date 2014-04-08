@@ -1261,6 +1261,33 @@ namespace aspect
        * @}
        */
 
+      void free_surface_execute();
+
+      void free_surface_setup_dofs();
+
+      void free_surface_displace_mesh();
+
+
+      // internal functions:
+      void free_surface_make_constraints();
+
+
+      const FESystem<dim>                                       free_surface_fe;
+
+      DoFHandler<dim>                                           free_surface_dof_handler;
+
+      LinearAlgebra::BlockVector mesh_velocity;
+      LinearAlgebra::BlockVector old_mesh_velocity;
+
+      LinearAlgebra::Vector mesh_vertices;
+      LinearAlgebra::SparseMatrix mesh_matrix;
+      LinearAlgebra::Vector mesh_rhs;
+
+      IndexSet mesh_locally_owned;
+      IndexSet mesh_locally_relevant;
+
+      ConstraintMatrix mesh_constraints;
+
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;
   };
