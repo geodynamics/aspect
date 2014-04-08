@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: solver.cc 2325 2014-02-27 23:21:30Z bangerth $  */
+/*  $Id$  */
 
 
 #include <aspect/simulator.h>
