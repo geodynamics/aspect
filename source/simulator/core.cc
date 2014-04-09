@@ -1072,6 +1072,8 @@ namespace aspect
        mesh_vertices     = distributed_mesh_vertices;
     }
 
+    free_surface_displace_mesh ();
+
     computing_timer.exit_section();
   }
 

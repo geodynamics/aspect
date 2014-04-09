@@ -489,6 +489,8 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::free_surface_displace_mesh()
   {
+    if (!parameters.free_surface_enabled)
+      return;
     pcout << "FS: free_surface_displace_mesh()" << std::endl;
 
     typename DoFHandler<dim>::active_cell_iterator  cell = free_surface_dof_handler.begin_active(),
