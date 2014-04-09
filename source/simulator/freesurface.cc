@@ -49,6 +49,8 @@ namespace aspect
     free_surface_calculate_mesh_displacement();
 
     free_surface_displace_mesh();
+
+    rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
   }
 
   template <int dim>
