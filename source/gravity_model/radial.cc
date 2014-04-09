@@ -129,13 +129,7 @@ namespace aspect
       }
       prm.leave_subsection ();
     }
- 
-    //Need to do this in order to get the depth from the gravity model.
-    template <int dim>
-    void RadialLinear<dim>::initialize(const Simulator<dim> &simulation)
-    {
-      SimulatorAccess<dim>::initialize(simulation);
-    }
+
   }
 }
 

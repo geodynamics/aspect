@@ -122,12 +122,6 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
- 
-        /**
-         * Initialize the SimulatorAccess so this can have access
-         * to the geometry model
-         */
-        virtual void initialize(const Simulator<dim> &);
 
       private:
         /**
