@@ -236,6 +236,8 @@ namespace aspect
 
           std::vector<double>         current_temperature_values;
           std::vector<Tensor<1,dim> > current_velocity_values;
+          std::vector<Tensor<1,dim> > mesh_velocity_values;
+
           std::vector<SymmetricTensor<2,dim> > current_strain_rates;
           std::vector<double>         current_pressure_values;
           std::vector<Tensor<1,dim> > current_pressure_gradients;
@@ -290,6 +292,7 @@ namespace aspect
                                      std::vector<double>(quadrature.size())),
           current_temperature_values(quadrature.size()),
           current_velocity_values(quadrature.size()),
+          mesh_velocity_values(quadrature.size()),
           current_strain_rates(quadrature.size()),
           current_pressure_values(quadrature.size()),
           current_pressure_gradients(quadrature.size()),
@@ -334,6 +337,7 @@ namespace aspect
           old_old_composition_values(scratch.old_old_composition_values),
           current_temperature_values(scratch.current_temperature_values),
           current_velocity_values(scratch.current_velocity_values),
+          mesh_velocity_values(scratch.mesh_velocity_values),
           current_strain_rates(scratch.current_strain_rates),
           current_pressure_values(scratch.current_pressure_values),
           current_pressure_gradients(scratch.current_pressure_gradients),
@@ -1035,8 +1039,12 @@ namespace aspect
 #endif
 
     Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1));
-    Amg_preconditioner->initialize (system_preconditioner_matrix.block(0,0),
+    if (parameters.free_surface_enabled)
+      Amg_preconditioner->initialize (system_matrix.block(0,0),
                                     Amg_data);
+    else
+      Amg_preconditioner->initialize (system_preconditioner_matrix.block(0,0),
+          Amg_data);
 
     rebuild_stokes_preconditioner = false;
 
@@ -1139,6 +1147,7 @@ namespace aspect
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
 
+    free_surface_apply_stabilization(cell, data.local_matrix);
     cell->get_dof_indices (data.local_dof_indices);
   }
 
@@ -1453,6 +1462,9 @@ namespace aspect
         scratch.old_old_velocity_values);
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.current_velocity_values);
+    if (parameters.free_surface_enabled)
+      scratch.finite_element_values[introspection.extractors.velocities].get_function_values(mesh_velocity,
+          scratch.mesh_velocity_values);
 
 
     scratch.old_field_values = ((temperature_or_composition.is_temperature()) ? &scratch.old_temperature_values : &scratch.old_composition_values[temperature_or_composition.compositional_variable]);
@@ -1573,7 +1585,10 @@ namespace aspect
             (density_c_P + latent_heat_LHS);
 
 
-        const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+        Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+        if (parameters.free_surface_enabled)
+          current_u -= scratch.mesh_velocity_values[q];
+
         const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
                                                   (time_step + old_time_step)) : 1.0;
 

@@ -325,7 +325,53 @@ namespace aspect
 
     mesh_vertices = distributed_mesh_vertices;
 
-    // TODO: calculate mesh_velocity
+
+    // calculate mesh_velocity from mesh_vertex_velocity:
+
+    LinearAlgebra::BlockVector distributed_mesh_velocity;
+    distributed_mesh_velocity.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
+
+    const std::vector<Point<dim> > support_points
+      = finite_element.base_element(introspection.component_indices.velocities[0]).get_unit_support_points();
+
+    pcout << "support points: " << support_points.size() << std::endl;
+
+    Quadrature<dim> quad(support_points);
+    UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values);
+    FEValues<dim> fs_fe_values (mapping, free_surface_fe, quad, update_flags);
+    FEValues<dim> fe_values (mapping, finite_element, quad, update_flags);
+    const unsigned int n_q_points = fe_values.n_quadrature_points,
+                       dofs_per_cell = fe_values.dofs_per_cell;
+
+    std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+    FEValuesExtractors::Vector extract_vel(0);
+    std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = dof_handler.begin_active(), endc= dof_handler.end();
+    typename DoFHandler<dim>::active_cell_iterator
+    fscell = free_surface_dof_handler.begin_active();
+
+    for (; cell!=endc; ++cell, ++fscell)
+      if (cell->at_boundary() && cell->is_locally_owned())
+        {
+          cell->get_dof_indices (cell_dof_indices);
+
+          fe_values.reinit (cell);
+          fs_fe_values.reinit (fscell);
+          fs_fe_values[extract_vel].get_function_values(mesh_vertex_velocity, velocity_values);
+          for (unsigned int j=0; j<n_q_points; ++j)
+            for(unsigned int dir=0; dir<dim; ++dir)
+              {
+                unsigned int support_point_index
+                = finite_element.component_to_system_index(/*velocity component=*/ introspection.component_indices.velocities[dir],
+                    /*dof index within component=*/ j);
+                distributed_mesh_velocity[cell_dof_indices[support_point_index]] = velocity_values[j][dir];
+              }
+          }
+
+    distributed_mesh_velocity.compress(VectorOperation::insert);
+    mesh_velocity = distributed_mesh_velocity;
   }
 
 
@@ -462,6 +508,67 @@ namespace aspect
           }
 
   }
+
+  template <int dim>
+  void Simulator<dim>::free_surface_apply_stabilization(
+      const typename DoFHandler<dim>::active_cell_iterator &cell,
+      FullMatrix<double> &local_matrix)
+  {
+    QGauss<dim-1> quadrature(parameters.stokes_velocity_degree+1);
+    UpdateFlags update_flags = UpdateFlags(update_values | update_normal_vectors |
+                                           update_quadrature_points | update_JxW_values);
+    FEFaceValues<dim> fe_face_values (mapping, finite_element, quadrature, update_flags);
+    const unsigned int n_face_q_points = fe_face_values.n_quadrature_points,
+                       dofs_per_cell = fe_face_values.dofs_per_cell;
+
+    const FEValuesExtractors::Vector velocities (0);
+
+    //only apply on free surface faces
+    if(cell->at_boundary() && cell->is_locally_owned())
+      for(unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+        if( cell->face(face_no)->at_boundary() &&
+            parameters.free_surface_boundary_indicators.find(cell->face(face_no)->boundary_indicator())!= parameters.free_surface_boundary_indicators.end())
+        {
+          fe_face_values.reinit(cell, face_no);
+
+          //come up with the density contrast across the free surface
+          std::vector<Point<dim> > quad_points = fe_face_values.get_quadrature_points();
+
+          for(unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
+            for(unsigned int i=0; i< fe_face_values.dofs_per_cell; ++i)
+              for(unsigned int j=0; j< fe_face_values.dofs_per_cell; ++j)
+              {
+               //see Kaus et al 2010 for details
+
+               const Tensor<1,dim> gravity = gravity_model->gravity_vector(quad_points[q_point]);
+               double g_norm = gravity.norm();
+
+               //construct the relevant vectors
+               const Tensor<1,dim> v =     fe_face_values[velocities].value(j, q_point);
+               const Tensor<1,dim> n_hat = fe_face_values.normal_vector(q_point);
+               const Tensor<1,dim> w =     fe_face_values[velocities].value(i, q_point);
+               const Tensor<1,dim> g_hat = gravity/g_norm;
+
+               //make a symmetrized ones in case we want to preserve symmetry
+//               Tensor<1,dim> sym = (n_hat*g_hat < 0.0 ? (n_hat-g_hat) : (n_hat+g_hat)); sym = sym/sym.norm();
+//               Tensor<1,dim> g_sym = (n_hat*g_hat < 0.0 ? -sym : sym);
+//               Tensor<1,dim> n_sym = sym;
+
+//               const Tensor<1,dim> r_hat = quad_points[q_point]/quad_points[q_point].norm();
+
+               double pressure_perturbation = std::abs(material_model->reference_density()/*-free_surface_density*/)*
+                                              this->time_step*parameters.free_surface_theta*g_norm;
+
+               const double stress_value = -pressure_perturbation*
+                                            (w*g_hat) * (v*n_hat)
+                                           *fe_face_values.JxW(q_point);
+
+               local_matrix(i,j) += stress_value;
+            }
+        }
+
+  }
+
 
 }
 

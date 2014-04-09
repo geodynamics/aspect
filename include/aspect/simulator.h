@@ -1284,7 +1284,8 @@ namespace aspect
       void free_surface_project_normal_velocity_onto_boundary (LinearAlgebra::Vector &output);
       void free_surface_solve_elliptic_problem ();
       void free_surface_calculate_mesh_displacement ();
-
+      void free_surface_apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
+            FullMatrix<double> &local_matrix);
 
       const FESystem<dim>                                       free_surface_fe;
 
