@@ -1281,6 +1281,7 @@ namespace aspect
 
       // internal functions:
       void free_surface_make_constraints();
+      void free_surface_project_normal_velocity_onto_boundary(LinearAlgebra::Vector &output);
 
 
       const FESystem<dim>                                       free_surface_fe;

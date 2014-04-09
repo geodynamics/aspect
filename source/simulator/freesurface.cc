@@ -26,6 +26,7 @@
 #include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/fe/fe_values.h>
+#include <deal.II/numerics/vector_tools.h>
 
 
 using namespace dealii;
@@ -41,10 +42,10 @@ namespace aspect
       return;
     pcout << "FS: free_surface_execute()" << std::endl;
 
+    free_surface_make_constraints();
 
-
-
-
+//    free_surface_solve_elliptic_problem();
+//    free_surface_calculate_mesh_displacement();
 
 
 
@@ -59,10 +60,176 @@ namespace aspect
     pcout << "FS: free_surface_make_constraints()" << std::endl;
 
     mesh_constraints.clear();
+    mesh_constraints.reinit(mesh_locally_relevant);
+    DoFTools::make_hanging_node_constraints(free_surface_dof_handler, mesh_constraints);
 
-//Assert(we need a free surface)
+    //Add the vanilla periodic boundary constraints
+    typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
+    periodic_boundary_pairs pbp = geometry_model->get_periodic_boundary_pairs();
+    for(periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
+      DoFTools::make_periodicity_constraints(free_surface_dof_handler, (*p).first.first, (*p).first.second, (*p).second, mesh_constraints);
 
+
+    //Zero out the displacement for the zero-velocity boundary indicators
+    for (std::set<types::boundary_id>::const_iterator p = parameters.zero_velocity_boundary_indicators.begin();
+         p != parameters.zero_velocity_boundary_indicators.end(); ++p)
+      VectorTools::interpolate_boundary_values (free_surface_dof_handler, *p,
+      ZeroFunction<dim>(dim), mesh_constraints);
+
+    //make the tangential boundary indicators no displacement normal to the boundary
+    VectorTools::compute_no_normal_flux_constraints (free_surface_dof_handler,
+                                                     /* first_vector_component= */
+                                                     0,
+                                                     parameters.tangential_velocity_boundary_indicators,
+                                                     mesh_constraints, mapping);
+
+    //make the periodic boundary indicators no displacement normal to the boundary
+    std::set< types::boundary_id > periodic_boundaries;
+    for(periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
+    {
+      periodic_boundaries.insert((*p).first.first);
+      periodic_boundaries.insert((*p).first.second);
+    }
+    VectorTools::compute_no_normal_flux_constraints (free_surface_dof_handler,
+                                                     /* first_vector_component= */
+                                                     0,
+                                                     periodic_boundaries,
+                                                     mesh_constraints, mapping);
+
+    //For the free surface indicators we constrain the displacement to be v.n
+    LinearAlgebra::Vector boundary_normal_velocity;
+    boundary_normal_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, mpi_communicator);
+    free_surface_project_normal_velocity_onto_boundary( boundary_normal_velocity );
+
+    //now insert the relevant part of the solution into the mesh constraints
+    IndexSet constrained_dofs;
+    DoFTools::extract_boundary_dofs(free_surface_dof_handler, ComponentMask(dim, true),
+                                    constrained_dofs, parameters.free_surface_boundary_indicators);
+    for( unsigned int i = 0; i < constrained_dofs.n_elements();  ++i)
+    {
+      types::global_dof_index index = constrained_dofs.nth_index_in_set(i);
+      if (mesh_constraints.can_store_line(index))
+        if(mesh_constraints.is_constrained(index)==false)
+        {
+          mesh_constraints.add_line(index);
+          mesh_constraints.set_inhomogeneity(index, boundary_normal_velocity[index]);
+        }
+    }
+
+    mesh_constraints.close();
+    mesh_constraints.print(std::cout);
   }
+
+
+  template <int dim>
+  void Simulator<dim>::free_surface_project_normal_velocity_onto_boundary(LinearAlgebra::Vector &output)
+  {
+    // TODO: should we use the extrapolated solution?
+    pcout << "FS: free_surface_project_normal_velocity_onto_boundary()" << std::endl;
+
+
+
+//    std::pair<double, Point<dim> > corrections = free_surface_determine_mesh_corrections();
+//     double patch = corrections.first;
+//     Point<dim> centroid = corrections.second;
+
+     //stuff for iterating over the mesh
+     QGauss<dim-1> face_quadrature(2);
+     UpdateFlags update_flags = UpdateFlags(update_values | update_normal_vectors | update_JxW_values);
+     FEFaceValues<dim> fs_fe_face_values (mapping, free_surface_fe, face_quadrature, update_flags);
+     FEFaceValues<dim> fe_face_values (mapping, finite_element, face_quadrature, update_flags);
+     const unsigned int n_face_q_points = fe_face_values.n_quadrature_points,
+                        dofs_per_cell = fs_fe_face_values.dofs_per_cell;
+
+     //stuff for assembling system
+     std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+     Vector<double> cell_vector (dofs_per_cell);
+     FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
+
+     //stuff for getting the velocity values
+     std::vector<Tensor<1,dim> > velocity_values(n_face_q_points);
+
+     //set up constraints
+     ConstraintMatrix mass_matrix_constraints(mesh_locally_relevant);
+     DoFTools::make_hanging_node_constraints(free_surface_dof_handler, mass_matrix_constraints);
+
+     typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
+     periodic_boundary_pairs pbp = geometry_model->get_periodic_boundary_pairs();
+     for(periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
+       DoFTools::make_periodicity_constraints(free_surface_dof_handler,
+           (*p).first.first, (*p).first.second, (*p).second, mass_matrix_constraints);
+
+     mass_matrix_constraints.close();
+
+     //set up the matrix
+     LinearAlgebra::SparseMatrix mass_matrix;
+     TrilinosWrappers::SparsityPattern sp (mesh_locally_owned, mesh_locally_owned, mpi_communicator);
+     DoFTools::make_sparsity_pattern (free_surface_dof_handler, sp, mass_matrix_constraints, false,
+                                      Utilities::MPI::this_mpi_process(mpi_communicator));
+     sp.compress();
+     mass_matrix.reinit (sp);
+
+     FEValuesExtractors::Vector extract_vel(0);
+
+     //make distributed vectors.
+     LinearAlgebra::Vector rhs, dist_solution;
+     rhs.reinit(mesh_locally_owned, mpi_communicator);
+     dist_solution.reinit(mesh_locally_owned, mpi_communicator);
+
+     typename DoFHandler<dim>::active_cell_iterator
+     cell = dof_handler.begin_active(), endc= dof_handler.end();
+     typename DoFHandler<dim>::active_cell_iterator
+     fscell = free_surface_dof_handler.begin_active();
+
+     for (; cell!=endc; ++cell, ++fscell)
+       if (cell->at_boundary() && cell->is_locally_owned())
+         for(unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+           if( cell->face(face_no)->at_boundary() &&
+             ((parameters.free_surface_boundary_indicators.find(cell->face(face_no)->boundary_indicator())
+                != parameters.free_surface_boundary_indicators.end())))
+           {
+             fscell->get_dof_indices (cell_dof_indices);
+             fs_fe_face_values.reinit (fscell, face_no);
+             fe_face_values.reinit (cell, face_no);
+             fe_face_values[introspection.extractors.velocities].get_function_values(solution, velocity_values);
+
+             cell_vector = 0;
+             cell_matrix = 0;
+             for (unsigned int point=0; point<n_face_q_points; ++point)
+               for (unsigned int i=0; i<dofs_per_cell; ++i)
+               {
+                 for (unsigned int j=0; j<dofs_per_cell; ++j)
+                 {
+                       cell_matrix(j,i) += (fs_fe_face_values[extract_vel].value(i,point) *
+                           fs_fe_face_values[extract_vel].value(j,point) ) *
+                           fs_fe_face_values.JxW(point);
+                 }
+
+                 cell_vector(i) += (fs_fe_face_values[extract_vel].value(i,point) *
+                     fs_fe_face_values.normal_vector(point) ) *
+                                   (velocity_values[point]*fs_fe_face_values.normal_vector(point)) *
+                                   fs_fe_face_values.JxW(point);
+               }
+
+             mass_matrix_constraints.distribute_local_to_global (cell_matrix, cell_vector,
+                                                          cell_dof_indices, mass_matrix, rhs, false);
+           }
+
+     rhs.compress (VectorOperation::add);
+     mass_matrix.compress(VectorOperation::add);
+
+     TrilinosWrappers::PreconditionJacobi preconditioner_mass;
+     preconditioner_mass.initialize(mass_matrix);
+
+     SolverControl solver_control(5*rhs.size(), 1e-7*rhs.l2_norm());
+     SolverCG<LinearAlgebra::Vector> cg(solver_control);
+     cg.solve (mass_matrix, dist_solution, rhs, preconditioner_mass);
+     pcout << "\t\tsolved, its = " << solver_control.last_step() << std::endl;
+
+     mass_matrix_constraints.distribute (dist_solution);
+     output = dist_solution;
+  }
+
 
   template <int dim>
   void Simulator<dim>::free_surface_setup_dofs()

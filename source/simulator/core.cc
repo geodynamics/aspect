@@ -123,7 +123,7 @@ namespace aspect
                     Triangulation<dim>::smoothing_on_coarsening),
                    parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning),
 
-    mapping (4),
+    mapping (parameters.free_surface_enabled?1:4),
 
     finite_element(FE_Q<dim>(parameters.stokes_velocity_degree),
                    dim,
@@ -841,7 +841,6 @@ namespace aspect
     }
     constraints.close();
 
-    free_surface_setup_dofs();
 
     // finally initialize vectors, matrices, etc.
 
@@ -860,6 +859,7 @@ namespace aspect
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
 
+    free_surface_setup_dofs();
     setup_nullspace_removal();
 
     computing_timer.exit_section();
