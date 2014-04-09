@@ -8,8 +8,8 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
-  <li>Fixed: the simple material model now ignores negative
-  compositional values that can occur from numerical undershoots
+  <li>Fixed: The simple material model now ignores negative
+  compositional values that can occur from numerical undershots
   and even interpolation onto the FE space. This makes the
   cookbook/composition-active.prm work again.
   <br>
@@ -19,6 +19,12 @@ All entries are signed with the names of the author.
   from the solution.
   <br>
   (Ian Rose, Timo Heister, 2014/04/07)
+
+  <li>New: A geometry model implementing a full sphere. There is also
+  a corresponding gravity model where gravity increases linearly as you
+  move outward.
+  <br>
+  (Ian Rose, 2014/04/07)
 
   <li>New: The box geometry allows you to specify a repetition
   argument in each coordinate direction.
