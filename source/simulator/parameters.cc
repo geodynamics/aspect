@@ -343,14 +343,13 @@ namespace aspect
                          "the parameter ``Zero velocity boundary indicator'' in the "
                          "current parameter section.");
 
-      prm.declare_entry ("Remove nullspace", "",
-          Patterns::MultipleSelection("net rotation|net translation|angular momentum|translational momentum"),
-          "A selection of operations to remove certain parts of the nullspace from "
-          "the velocity after solving. For some geometries and certain boundary conditions "
-          "the velocity field is not uniquely determined but contains free translations "
-          "and or rotations.\n"
-          "Note that while more than operation can be selected it only makes sense to "
-          "pick one rotational and one translational operation.");
+      prm.declare_entry ("Remove nullspace", "none",
+          Patterns::Selection("none|net rotation|net translation|angular momentum|translational momentum"),
+              "A selection of operations to remove certain parts of the nullspace from "
+              "the velocity after solving. For some geometries and certain boundary conditions "
+              "the velocity field is not uniquely determined but contains free translations "
+              "and or rotations. Depending on what you specify here, these non-determined "
+              "modes will be removed from the velocity field at the end of the Stokes solve step.");
     }
     prm.leave_subsection ();
 
@@ -712,27 +711,19 @@ namespace aspect
 
       {
         nullspace_removal = NullspaceRemoval::none;
-        std::vector<std::string> nullspace_names =
-            Utilities::split_string_list(prm.get("Remove nullspace"));
-        for (unsigned int i=0;i<nullspace_names.size();++i)
-          {
-            if (nullspace_names[i]=="net rotation")
-              nullspace_removal = typename NullspaceRemoval::Kind(
-                  nullspace_removal | NullspaceRemoval::net_rotation);
-            else if (nullspace_names[i]=="net translation")
-            nullspace_removal = typename NullspaceRemoval::Kind(
-                nullspace_removal | NullspaceRemoval::net_translation);
-            else if (nullspace_names[i]=="angular momentum")
-              nullspace_removal = typename NullspaceRemoval::Kind(
-                  nullspace_removal | NullspaceRemoval::angular_momentum);
-            else if (nullspace_names[i]=="translational momentum")
-              nullspace_removal = typename       NullspaceRemoval::Kind(
-                  nullspace_removal | NullspaceRemoval::translational_momentum);
-            else
-              AssertThrow(false, ExcInternalError());
-          }
+        const std::string nullspace_name = prm.get("Remove nullspace");
+        if (nullspace_name=="net rotation")
+          nullspace_removal = NullspaceRemoval::net_rotation;
+        else if (nullspace_name=="net translation")
+          nullspace_removal = NullspaceRemoval::net_translation;
+        else if (nullspace_name=="angular momentum")
+          nullspace_removal = NullspaceRemoval::angular_momentum;
+        else if (nullspace_name=="translational momentum")
+          nullspace_removal = NullspaceRemoval::translational_momentum;
+        else
+          // ParameterHandler should have already caught this case:
+          AssertThrow (false, ExcInternalError());
       }
-
     }
     prm.leave_subsection ();
 
