@@ -96,7 +96,7 @@ subsection Mesh refinement
   set Strategy                           = density,composition
   set Refinement criteria scaling factors =
   set Refinement criteria merge operation = plus
-  set Time steps between mesh refinement = 5
+  set Time steps between mesh refinement = 0
 end
 
 
@@ -107,7 +107,7 @@ subsection Model settings
   set Fixed temperature boundary indicators   = 2,3
   set Prescribed velocity boundary indicators =
   set Tangential velocity boundary indicators = 0,1
-  set Zero velocity boundary indicators       = 2,
+  set Zero velocity boundary indicators       = 2
 end
 
 subsection Free surface
