@@ -1,0 +1,39 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Simulator for Problems in Earth's ConvecTion.
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-constant_temperature_boundary_conditions/solution-00000
+     Temperature min/avg/max:            -2.3e-16 K, 0.03098 K, 3 K
+     Heat fluxes through boundary parts: 2.083e-06 W, -7.792e-05 W, -0.000228 W, -0.000342 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.603s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |     0.119s |        20% |
+| Assemble temperature system     |         1 |    0.0574s |       9.5% |
+| Build Stokes preconditioner     |         1 |     0.131s |        22% |
+| Build temperature preconditioner|         1 |   0.00454s |      0.75% |
+| Solve Stokes system             |         1 |    0.0185s |       3.1% |
+| Solve temperature system        |         1 |   0.00474s |      0.79% |
+| Initialization                  |         2 |    0.0184s |         3% |
+| Postprocessing                  |         1 |     0.127s |        21% |
+| Setup dof systems               |         1 |    0.0866s |        14% |
++---------------------------------+-----------+------------+------------+
+
