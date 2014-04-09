@@ -2,6 +2,7 @@
   . go through the list of TODOs in the source code and see what can be done
   . make sure the description of the interfaces that need to be updated
     are up to date in the manual
+  . apply astyle formatting, see doc/astyle.rc
   . update copyright years of all files
   . update changes.h in doc/modules:
     1. svn cp changes.h <oldversion>-<newversion>.h
