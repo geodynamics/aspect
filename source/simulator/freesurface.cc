@@ -40,6 +40,8 @@ namespace aspect
   {
     if (!parameters.free_surface_enabled)
       return;
+    computing_timer.enter_section("FreeSurface");
+
     pcout << "FS: free_surface_execute()" << std::endl;
 
     free_surface_make_constraints();
@@ -51,6 +53,7 @@ namespace aspect
     free_surface_displace_mesh();
 
     rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+    computing_timer.exit_section("FreeSurface");
   }
 
   template <int dim>
@@ -58,7 +61,6 @@ namespace aspect
   {
     if (!parameters.free_surface_enabled)
       return;
-    pcout << "FS: free_surface_make_constraints()" << std::endl;
 
     mesh_constraints.clear();
     mesh_constraints.reinit(mesh_locally_relevant);
@@ -125,8 +127,6 @@ namespace aspect
   void Simulator<dim>::free_surface_project_normal_velocity_onto_boundary(LinearAlgebra::Vector &output)
   {
     // TODO: should we use the extrapolated solution?
-    pcout << "FS: free_surface_project_normal_velocity_onto_boundary()" << std::endl;
-
 
 
 //    std::pair<double, Point<dim> > corrections = free_surface_determine_mesh_corrections();
@@ -326,15 +326,13 @@ namespace aspect
     mesh_vertices = distributed_mesh_vertices;
 
 
-    // calculate mesh_velocity from mesh_vertex_velocity:
+    // calculate mesh_velocity from mesh_vertex_velocity
 
     LinearAlgebra::BlockVector distributed_mesh_velocity;
     distributed_mesh_velocity.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
 
     const std::vector<Point<dim> > support_points
       = finite_element.base_element(introspection.component_indices.velocities[0]).get_unit_support_points();
-
-    pcout << "support points: " << support_points.size() << std::endl;
 
     Quadrature<dim> quad(support_points);
     UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values);
