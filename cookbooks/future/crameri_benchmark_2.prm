@@ -63,16 +63,17 @@ end
 
 
 subsection Material model
-  set Model name = simple
-  subsection Simple model
+  set Model name = multicomponent
+  subsection Multicomponent
     set Reference density             = 3300
     set Reference specific heat       = 1250
     set Reference temperature         = 0.0
     set Thermal conductivity          = 4.7
     set Thermal expansion coefficient = 4e-5
     set Viscosity                     = 1.e21
-    set Density differential for compositional field 1 =-100.0
-    set Composition viscosity prefactor = 0.1
+    set Density differential for compositional fields = -100.0, 0
+    set Compositional viscosity prefactors = 0.1, 100.0
+    set Viscosity averaging scheme = Maximum composition
   end
 #  subsection Layered
 #    set Reference density             = 3300
@@ -90,13 +91,13 @@ end
 subsection Mesh refinement
   set Additional refinement times        =
   set Initial adaptive refinement        = 2
-  set Initial global refinement          = 3
+  set Initial global refinement          = 5
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.05
   set Strategy                           = density,composition
   set Refinement criteria scaling factors =
   set Refinement criteria merge operation = plus
-  set Time steps between mesh refinement = 0
+  set Time steps between mesh refinement = 5
 end
 
 
@@ -139,6 +140,6 @@ subsection Postprocess
     set List of output variables = viscosity,density
     set Number of grouped files       = 1
     set Output format                 = vtu
-    set Time between graphical output = 0
+    set Time between graphical output = 1e6
   end
 end
