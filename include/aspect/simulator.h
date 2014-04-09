@@ -1280,8 +1280,10 @@ namespace aspect
 
 
       // internal functions:
-      void free_surface_make_constraints();
-      void free_surface_project_normal_velocity_onto_boundary(LinearAlgebra::Vector &output);
+      void free_surface_make_constraints ();
+      void free_surface_project_normal_velocity_onto_boundary (LinearAlgebra::Vector &output);
+      void free_surface_solve_elliptic_problem ();
+      void free_surface_calculate_mesh_displacement ();
 
 
       const FESystem<dim>                                       free_surface_fe;
@@ -1292,6 +1294,7 @@ namespace aspect
       LinearAlgebra::BlockVector old_mesh_velocity;
 
       LinearAlgebra::Vector mesh_vertices;
+      LinearAlgebra::Vector mesh_vertex_velocity;
       LinearAlgebra::SparseMatrix mesh_matrix;
       LinearAlgebra::Vector mesh_rhs;
 

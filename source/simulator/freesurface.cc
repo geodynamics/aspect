@@ -44,10 +44,9 @@ namespace aspect
 
     free_surface_make_constraints();
 
-//    free_surface_solve_elliptic_problem();
-//    free_surface_calculate_mesh_displacement();
+    free_surface_solve_elliptic_problem();
 
-
+    free_surface_calculate_mesh_displacement();
 
     free_surface_displace_mesh();
   }
@@ -117,7 +116,6 @@ namespace aspect
     }
 
     mesh_constraints.close();
-    mesh_constraints.print(std::cout);
   }
 
 
@@ -200,8 +198,8 @@ namespace aspect
                {
                  for (unsigned int j=0; j<dofs_per_cell; ++j)
                  {
-                       cell_matrix(j,i) += (fs_fe_face_values[extract_vel].value(i,point) *
-                           fs_fe_face_values[extract_vel].value(j,point) ) *
+                       cell_matrix(i,j) += (fs_fe_face_values[extract_vel].value(j,point) *
+                           fs_fe_face_values[extract_vel].value(i,point) ) *
                            fs_fe_face_values.JxW(point);
                  }
 
@@ -228,6 +226,104 @@ namespace aspect
 
      mass_matrix_constraints.distribute (dist_solution);
      output = dist_solution;
+  }
+
+
+  template <int dim>
+  void Simulator<dim>::free_surface_solve_elliptic_problem()
+  {
+    pcout << "FS: free_surface_solve_elliptic_problem()" << std::endl;
+    QGauss<dim> quadrature(1+1);
+    UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values | update_gradients);
+    FEValues<dim> fe_values (mapping, free_surface_fe, quadrature, update_flags);
+
+    const unsigned int dofs_per_cell = fe_values.dofs_per_cell,
+                       dofs_per_face = finite_element.dofs_per_face,
+                       n_q_points    = fe_values.n_quadrature_points;
+
+    std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+    std::vector<unsigned int> face_dof_indices (dofs_per_face);
+    Vector<double> cell_vector (dofs_per_cell);
+    FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
+
+    mesh_matrix = 0;
+
+    //carry out the solution
+    FEValuesExtractors::Vector extract_vel(0);
+
+    LinearAlgebra::Vector rhs, poisson_solution;
+    rhs.reinit(mesh_locally_owned, mpi_communicator);
+    poisson_solution.reinit(mesh_locally_owned, mpi_communicator);
+
+    typename DoFHandler<dim>::active_cell_iterator cell = free_surface_dof_handler.begin_active(),
+        endc= free_surface_dof_handler.end();
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+      {
+        cell->get_dof_indices (cell_dof_indices);
+        fe_values.reinit (cell);
+
+        cell_vector = 0;
+        cell_matrix = 0;
+        for (unsigned int point=0; point<n_q_points; ++point)
+          for (unsigned int i=0; i<dofs_per_cell; ++i)
+          {
+            for (unsigned int j=0; j<dofs_per_cell; ++j)
+              cell_matrix(i,j) += scalar_product( fe_values[extract_vel].gradient(j,point),
+                                    fe_values[extract_vel].gradient(i,point) ) *
+                                    fe_values.JxW(point);
+          }
+
+        mesh_constraints.distribute_local_to_global (cell_matrix, cell_vector,
+                                                     cell_dof_indices, mesh_matrix, rhs, false);
+      }
+
+    rhs.compress (VectorOperation::add);
+    mesh_matrix.compress (VectorOperation::add);
+
+    //Make the AMG preconditioner
+    std::vector<std::vector<bool> > constant_modes;
+    DoFTools::extract_constant_modes (free_surface_dof_handler,
+                                      ComponentMask(dim, true),
+                                      constant_modes);
+    // TODO: think about keeping object between time steps
+    LinearAlgebra::PreconditionAMG preconditioner_stiffness;
+    LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
+    Amg_data.constant_modes = constant_modes;
+    Amg_data.elliptic = true;
+    Amg_data.higher_order_elements = false;
+    Amg_data.smoother_sweeps = 2;
+    Amg_data.aggregation_threshold = 0.02;
+    preconditioner_stiffness.initialize(mesh_matrix);
+
+    SolverControl solver_control(5*rhs.size(), parameters.linear_stokes_solver_tolerance*rhs.l2_norm());
+    SolverCG<LinearAlgebra::Vector> cg(solver_control);
+
+    cg.solve (mesh_matrix, poisson_solution, rhs, preconditioner_stiffness);
+    pcout << "\t\tsolved, its = " << solver_control.last_step() << std::endl;
+
+    mesh_constraints.distribute (poisson_solution);
+    mesh_vertex_velocity = poisson_solution;
+  }
+
+
+  template <int dim>
+  void Simulator<dim>::free_surface_calculate_mesh_displacement()
+  {
+    LinearAlgebra::Vector distributed_mesh_vertices(mesh_locally_owned, mpi_communicator);
+    LinearAlgebra::Vector distributed_mesh_vertex_velocity(mesh_locally_owned, mpi_communicator);
+
+    distributed_mesh_vertices = mesh_vertices;
+    distributed_mesh_vertex_velocity = mesh_vertex_velocity;
+
+    pcout << "FS: mesh velocity: " << distributed_mesh_vertex_velocity.l2_norm() << std::endl;
+
+    //actually do the ALE thing
+    distributed_mesh_vertices.sadd(1.0, time_step, distributed_mesh_vertex_velocity);
+
+    mesh_vertices = distributed_mesh_vertices;
+
+    // TODO: calculate mesh_velocity
   }
 
 
@@ -262,6 +358,8 @@ namespace aspect
                                              mesh_locally_relevant);
 
     mesh_vertices.reinit(mesh_locally_owned, mesh_locally_relevant, mpi_communicator);
+    mesh_vertex_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, mpi_communicator);
+
     //if we are just starting, we need to initialize mesh_vertices
     if (this->timestep_number == 0)
       {
