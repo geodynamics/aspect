@@ -458,11 +458,13 @@ namespace aspect
 	// assemble the error message completely, and then output it atomically
         if (tmp_file_desc == -1)
           {
-	    std::string x ("***** WARNING: could not create temporary file, will "
-			   "output directly to final location. This may negatively "
-			   "affect performance."
-			   " (On processor ");
-	    x += Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) + ".)\n";
+	    std::string x = std::string(
+	      "***** WARNING: could not create temporary file, will "
+	      "output directly to final location. This may negatively "
+	      "affect performance. (On processor ")
+			    + Utilities::int_to_string(
+			      Utilities::MPI::this_mpi_process (MPI_COMM_WORLD))
+			    + ".)\n";
 
 	    std::cerr << x << std::flush;
 	    

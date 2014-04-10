@@ -142,7 +142,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template class Introspection<dim>;\
+  template struct Introspection<dim>;\
    
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

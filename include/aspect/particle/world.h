@@ -173,12 +173,12 @@ namespace aspect
         {
           if (world_size) MPI_Type_free(&particle_type);
 
-          if (num_send) delete num_send;
-          if (num_recv) delete num_recv;
-          if (send_offset) delete send_offset;
-          if (recv_offset) delete recv_offset;
-          if (send_reqs) delete send_reqs;
-          if (recv_reqs) delete recv_reqs;
+          if (num_send) delete [] num_send;
+          if (num_recv) delete [] num_recv;
+          if (send_offset) delete [] send_offset;
+          if (recv_offset) delete [] recv_offset;
+          if (send_reqs) delete [] send_reqs;
+          if (recv_reqs) delete [] recv_reqs;
         };
 
         /**
@@ -385,9 +385,9 @@ namespace aspect
           if (res != MPI_SUCCESS) exit(-1);
 
           // Delete temporary arrays
-          delete old_types;
-          delete indices;
-          delete block_lens;
+          delete [] old_types;
+          delete [] indices;
+          delete [] block_lens;
 
           // Initialize send/recv structures appropriately
           num_send = new int[world_size];
