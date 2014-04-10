@@ -351,7 +351,7 @@ namespace aspect
     fscell = free_surface_dof_handler.begin_active();
 
     for (; cell!=endc; ++cell, ++fscell)
-      if (cell->at_boundary() && cell->is_locally_owned())
+      if (cell->is_locally_owned())
         {
           cell->get_dof_indices (cell_dof_indices);
 
