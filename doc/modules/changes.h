@@ -8,8 +8,8 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
-  <li>Fixed: the simple material model now ignores negative
-  compositional values that can occur from numerical undershoots
+  <li>Fixed: The simple material model now ignores negative
+  compositional values that can occur from numerical undershots
   and even interpolation onto the FE space. This makes the
   cookbook/composition-active.prm work again.
   <br>
@@ -19,6 +19,12 @@ All entries are signed with the names of the author.
   from the solution.
   <br>
   (Ian Rose, Timo Heister, 2014/04/07)
+
+  <li>New: A geometry model implementing a full sphere. There is also
+  a corresponding gravity model where gravity increases linearly as you
+  move outward.
+  <br>
+  (Ian Rose, 2014/04/07)
 
   <li>New: The box geometry allows you to specify a repetition
   argument in each coordinate direction.
@@ -46,6 +52,12 @@ All entries are signed with the names of the author.
   finally called.
   <br>
   (Wolfgang Bangerth, 2014/03/31)
+
+  <li>New: The manual now contains a cookbook section that discussed a
+  model running in a 3d spherical shell. Movies for this model can
+  be found at https://www.youtube.com/channel/UCDTTQ068ablZ8k9J31wNk_Q .
+  <br>
+  (Wolfgang Bangerth 2014/03/30)
 
   <li>Changed: The 'radial constant' gravity model had a default of
   $30 m/s^2$ for the magnitude of the gravity. This value makes no
@@ -279,7 +291,7 @@ All entries are signed with the names of the author.
   <br>
   (Timo Heister 2013/10/28)
 
-  <li>Fixed: moved particle generation to a class, changed particle
+  <li>Fixed: Moved particle generation to a class, changed particle
   integration and generation to be factory patterned classes. There
   should be no effect on the user but this will allow for easier
   extension of particle functionality in the future.
@@ -345,7 +357,7 @@ All entries are signed with the names of the author.
   <br>
   (Ted Studley, 2013/06/20)
 
-  <li>Removed: the parameter "Nonlinear iteration" was
+  <li>Removed: The parameter "Nonlinear iteration" was
   not used anywhere so it got removed. You might need
   to delete this line from your prm files.
   <br>

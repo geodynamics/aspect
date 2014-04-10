@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/gravity_model/radial.h>
@@ -83,6 +82,54 @@ namespace aspect
       return -(1.245e-6 * r + 7.714e13/r/r) * p / r;
     }
 
+
+// ----------------------------- RadialLinear ----------------------
+    template <int dim>
+    Tensor<1,dim>
+    RadialLinear<dim>::gravity_vector (const Point<dim> &p) const
+    {
+      if(p.norm() == 0.0) return Tensor<1,dim>();
+
+      double depth = this->get_geometry_model().depth(p);
+      Tensor<1,dim> grav =  -magnitude_at_surface * p/p.norm() *
+                            (1.0 - depth/this->get_geometry_model().maximal_depth());
+      return grav;
+    }
+
+    template <int dim>
+    void
+    RadialLinear<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Gravity model");
+      {
+        prm.enter_subsection("Radial linear");
+        {
+          prm.declare_entry ("Magnitude at surface", "9.8",
+                             Patterns::Double (0),
+                             "Magnitude of the radial gravity vector"
+                             "at the surface of the domain, m/s^2");
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+
+
+    template <int dim>
+    void
+    RadialLinear<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Gravity model");
+      {
+        prm.enter_subsection("Radial linear");
+        {
+          magnitude_at_surface = prm.get_double ("Magnitude at surface");
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+
   }
 }
 
@@ -104,5 +151,11 @@ namespace aspect
                                   "the core-mantle boundary as well as at the surface and "
                                   "in between is physically correct under the assumption "
                                   "of a constant density.")
+
+    ASPECT_REGISTER_GRAVITY_MODEL(RadialLinear,
+                                  "radial linear",
+                                  "A gravity model which is radially inward, where the magnitude"
+                                  "decreases linearly with depth, as you would get with a constant"
+                                  "density spherical domain.")
   }
 }

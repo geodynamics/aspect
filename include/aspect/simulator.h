@@ -930,13 +930,19 @@ namespace aspect
 
 
       /**
-       * interpolates the given function onto the velocity FE space and write it into the given vector.
+       * Interpolate the given function onto the velocity FE space and write it into the given vector.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
        */
       void interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
           LinearAlgebra::Vector &vec);
 
       /**
-       * Sets up data structures for null space removal. Called after every mesh refinement.
+       * Set up data structures for null space removal. Called after every mesh refinement.
+       *
+       * This function is implemented in
+       * <code>source/simulator/nullspace.cc</code>.
        */
       void setup_nullspace_removal();
 
@@ -946,6 +952,9 @@ namespace aspect
        *
        * @param relevant_dst locally relevant vector for the whole FE, will be filled at the end.
        * @param tmp_distributed_stokes only contains velocity and pressure.
+       *
+       * This function is implemented in
+       * <code>source/simulator/nullspace.cc</code>.
        */
       void remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
           LinearAlgebra::BlockVector &tmp_distributed_stokes);

@@ -1,5 +1,5 @@
 /**
- * @page TODO TODOs -- Things that eventually will need to be addressed
+ * @page TODO TODOs -- things that will eventually need to be addressed
 
 <h3>Extensions we'd like to implement</h3>
  

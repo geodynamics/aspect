@@ -1,6 +1,6 @@
 # astyle 2.02 indentation style for the Aspect program
 # Run astyle in a command like
-#    astyle --options=doc/astyle.rc source/*cc source/*/*cc include/aspect/*h
+#    astyle --options=doc/astyle.rc `find include source | egrep '\.(h|cc)$'`
 
 --style=gnu
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,6 +23,7 @@
 #ifndef __aspect__gravity_model_radial_h
 #define __aspect__gravity_model_radial_h
 
+#include <aspect/simulator.h>
 #include <aspect/gravity_model/interface.h>
 
 namespace aspect
@@ -91,6 +92,44 @@ namespace aspect
         virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const;
     };
 
+    /**
+     * A class that describes gravity as a radial vector of linearly
+     * decreasing magnitude with depth.  Meant for use in the Sphere
+     * geometry model, where you expect that kind of field.
+     *
+     * @ingroup GravityModels
+     */
+    template <int dim>
+    class RadialLinear : public Interface<dim>, public virtual SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * Return the gravity vector as a function of position.
+         */
+        virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const;
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter
+         * file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+      private:
+        /**
+         * Magnitude of the gravity vector at the surface, m/s^2
+         */
+        double magnitude_at_surface;
+
+    };
   }
 }
 

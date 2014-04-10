@@ -345,10 +345,11 @@ namespace aspect
 
       prm.declare_entry ("Remove nullspace", "",
           Patterns::MultipleSelection("net rotation|net translation|angular momentum|translational momentum"),
-          "A selection of operations to remove certain parts of the nullspace from "
-          "the velocity after solving. For some geometries and certain boundary conditions "
-          "the velocity field is not uniquely determined but contains free translations "
-          "and or rotations.\n"
+              "A selection of operations to remove certain parts of the nullspace from "
+              "the velocity after solving. For some geometries and certain boundary conditions "
+              "the velocity field is not uniquely determined but contains free translations "
+              "and or rotations. Depending on what you specify here, these non-determined "
+              "modes will be removed from the velocity field at the end of the Stokes solve step.\n"
           "Note that while more than operation can be selected it only makes sense to "
           "pick one rotational and one translational operation.");
     }
@@ -744,7 +745,6 @@ namespace aspect
               AssertThrow(false, ExcInternalError());
           }
       }
-
     }
     prm.leave_subsection ();
 
