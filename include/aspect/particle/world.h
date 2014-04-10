@@ -385,9 +385,9 @@ namespace aspect
           if (res != MPI_SUCCESS) exit(-1);
 
           // Delete temporary arrays
-          delete old_types;
-          delete indices;
-          delete block_lens;
+          delete [] old_types;
+          delete [] indices;
+          delete [] block_lens;
 
           // Initialize send/recv structures appropriately
           num_send = new int[world_size];
