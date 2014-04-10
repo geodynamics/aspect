@@ -1,5 +1,5 @@
 set Dimension = 2
-set CFL number                             = 0.4
+set CFL number                             = 0.04
 set End time                               = 2e7
 set Output directory                       = output
 set Resume computation                     = false
@@ -75,16 +75,6 @@ subsection Material model
     set Compositional viscosity prefactors = 0.1, 100.0
     set Viscosity averaging scheme = Maximum composition
   end
-#  subsection Layered
-#    set Reference density             = 3300
-#    set Reference specific heat       = 1250
-#    set Reference temperature         = 0.0
-#    set Thermal conductivity          = 4.7
-#    set Thermal expansion coefficient = 4e-5
-#    set Viscosity                     = 1.e21
-#    set Density differential for compositional fields = -100.0,.00
-#    set Composition viscosity prefactors = 0.1,100.0
-#  end
 end
 
 
