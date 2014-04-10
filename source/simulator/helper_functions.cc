@@ -1057,7 +1057,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template class Simulator<dim>::TemperatureOrComposition; \
+  template struct Simulator<dim>::TemperatureOrComposition; \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
