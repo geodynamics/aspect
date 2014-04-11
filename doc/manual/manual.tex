@@ -5014,17 +5014,18 @@ discussed in Section~\ref{sec:shell-simple-2d}. \aspect{}'s GPlates plugin
 allows for the use of two- and three-dimensional models incorporating the
 GPlates velocities. Since the output by GPlates is threedimensional in any case,
 \aspect{} internally handles the 2D model by rotating the model plane to the
-specified orientation and projecting the plate velocities into this plane. The
+orientation specified by the user and projecting the plate velocities into this plane. The
 user specifies the orientation of the model plane by prescribing two points that
 define a plane together with the coordinate origin (i.e. in the current
 formulation only great-circle slices are allowed). The coordinates need to be in
 spherical coordinates $\theta$ and $\phi$ with $\theta$ being the colatitude (0
 at north pole) and $\phi$ being the longitude (0 at Greenwich meridian, positive
 eastwards) both given in radians.
+The approach of identifying two points on the surface of the Earth along with
+its center allows to run computations on arbitrary two-dimensional slices
+through the Earth with realistic boundary conditions.
 
-The relevant section of the input file is then as follows (you will need
-to adjust the first part of the \texttt{Data directory} below to where your
-\aspect{} installation is located):
+The relevant section of the input file is then as follows:
 \begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
 subsection Model settings
   set Prescribed velocity boundary indicators = 1:gplates % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
@@ -5036,43 +5037,92 @@ end
 
 subsection Boundary velocity model
   subsection GPlates model
-    set Data directory = .../data/velocity-boundary-conditions/gplates/ % \index[prmindex]{Data directory} \index[prmindexfull]{Boundary velocity model!GPlates model!Data directory} %
+    set Data directory = $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/gplates/ % \index[prmindex]{Data directory} \index[prmindexfull]{Boundary velocity model!GPlates model!Data directory} %
     set Velocity file name = current_day.gpml % \index[prmindex]{Velocity file name} \index[prmindexfull]{Boundary velocity model!GPlates model!Velocity file name} %
     set Time step = 1e6 % \index[prmindex]{Time step} \index[prmindexfull]{Boundary velocity model!GPlates model!Time step} %
     set Point one = 1.5708,4.87 % \index[prmindex]{Point one} \index[prmindexfull]{Boundary velocity model!GPlates model!Point one} %
     set Point two = 1.5708,5.24 % \index[prmindex]{Point two} \index[prmindexfull]{Boundary velocity model!GPlates model!Point two} %
+    set Interpolation width = 2000000 % \index[prmindex]{Interpolation width} \index[prmindexfull]{Boundary velocity model!GPlates model!Interpolation width} %
   end
 end
 \end{lstlisting}
 
-\paragraph{Comparing and visualizing 2D models.}
+In the model settings subsection the user prescribes the boundary that is supposed to 
+use the GPlates plugin. Although currently nothing forbids the user to use GPlates plugin for other
+boundaries than the surface, its current usage and the provided sample data only make sense
+for the surface of a spherical shell (boundary number 1 in the above provided parameter file). 
+In case you are familiar with this kind of modelling and the plugin you could however also use it to prescribe mantle
+movements \textit{below} a lithosphere model. All plugin specific options may be set in 
+section~\ref{parameters:Boundary_20velocity_20model}. Possible options include the data directory
+and file name of the velocity file/files, the time step (in model units, mostly seconds or years depending on the 
+``\texttt{Use years in output instead of seconds}'' flag) and the points that define the 2D plane.
+The parameter ``\texttt{Interpolation width}'' is used to smooth the provided velocity files by
+a moving average filter. All velocity data points within this distance are averaged to determine the
+actual boundary velocity at a certain mesh point. This parameter is usually set to 0 (no interpolation, use
+nearest velocity point data) and is only needed in case the original setting is unstable or slowly converging.
 
-The approach of identifying two points on the surface of the Earth along with
-its center allows to run computations on arbitrary two-dimensional slices
-through the Earth with realistic boundary conditions. Fig.~\ref{fig:gv-1} shows an example
-of three such computations the results of which are plotted simultaneously in a
-single three-dimensional figure.
+\paragraph{Comparing and visualizing 2D and 3D models.}
+
+The implementation of plate velocities in both two- and three-dimensional model
+setups allows for an easy comparison and test for common sources of error
+in the interpretation of model results. The left top figure in Fig.~\ref{fig:gv-1} 
+shows a modification of the above presented parameter file by setting 
+``\texttt{Dimension = 3}'' and ``\texttt{Initial global refinement = 3}''. 
+The top right plot of Fig.~\ref{fig:gv-1} shows an example of three independent 
+two-dimensional computations of the same reduced resolution. The models were prescribed 
+to be orthogonal slices by setting:
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+    set Point one = 3.1416,0.0 % \index[prmindex]{Point one} \index[prmindexfull]{Boundary velocity model!GPlates model!Point one} %
+    set Point two = 1.5708,0.0 % \index[prmindex]{Point two} \index[prmindexfull]{Boundary velocity model!GPlates model!Point two} %
+\end{lstlisting}
+and
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+    set Point one = 3.1416,1.5708 % \index[prmindex]{Point one} \index[prmindexfull]{Boundary velocity model!GPlates model!Point one} %
+    set Point two = 1.5708,1.5708 % \index[prmindex]{Point two} \index[prmindexfull]{Boundary velocity model!GPlates model!Point two} %
+\end{lstlisting}
+
+The results of these models are plotted simultaneously in a single three-dimensional figure
+in their respective model planes. The necessary information 
+to rotate the 2D models to their respective planes (rotation axis and angle) is provided by the 
+GPlates plugin in the beginning of the model output.  The bottom plot 
+of Fig.~\ref{fig:gv-1} finally shows the results of the original \url{cookbooks/gplates-2d.prm} 
+also in the three mentioned planes. 
+
+Now that we have model output for otherwise identical 2D and 3D models with equal resolution and additional 2D output
+for a higher resolution an interesting question to ask would be: What additional information can be created by
+either using three-dimensional geometry or higher resolution in mantle convection models with prescribed boundary velocities.
+As one can see in the comparison between the top right and bottom plot in Fig.~\ref{fig:gv-1} additional resolution clearly
+improves the geometry of small scale features like the shape of up- and downwellings as well as the maximal temperature
+deviation from the background mantle. However, the limitation to two dimensions leads to inconsistencies, 
+that are especially apparent at the cutting lines of the individual 2D models. 
+Note for example that the Nacza slab of the South American subduction zone is only
+present in the equatorial model plane and is not captured in the polar model plane west 
+of the South American coastline. The (coarse) three-dimensional model on the other hand
+shows the same location of up- and downwellings but additionally provides a consistent solution
+that is different from the two dimensional setups. Note that the Nazca slab is subducting eastward,
+while all 2D models (even in high resolution) predict a westward subduction.
+
+Finally we would like to emphasize that these models (especially the used material model)
+are way too simplified to draw any scientific conclusion out of it. Rather it is thought
+as a proof-of-concept what is possible with the dimension independent approach of
+\aspect{} and its plugins.
 
 \begin{figure}
-  \includegraphics[width=0.48\textwidth]{cookbooks/gplates/gplates-comparison.png}
+  \includegraphics[width=\textwidth]{cookbooks/gplates/gplates-comparison.png}
   \hfill
- % \includegraphics[width=0.48\textwidth]{cookbooks/gplates/gplates-3d.png}
-  \caption{\it Using GPlates for 2d boundary conditions: The figure shows
-  the results of three independent computations on two-dimensional slices
-  through Earth. The boundary conditions for each of these slices (white
+  \caption{\it Using GPlates for velocity boundary conditions: The top left figure shows
+  the results of a three-dimensional model using the present day plate velocities
+  provided by GPlates as surface boundary condition. 
+  The top right figure shows three independent computations 
+  on two-dimensional slices through Earth. The boundary conditions for each of these slices (white
   arrows) are tangential to the slices and are projections of the
-  three-dimensional velocity vectors computed by GPlates into the two-dimensional plane
-  occupied by the slice. For comparison, the figure also shows the full
-  three-dimensional surface velocities provided by GPlates (red arrows).
-  The view is centered on Eurasia's east coast with Japan being near the center of
+  three-dimensional velocity vectors into the two-dimensional plane
+  occupied by the slice. While the two top models are created with the same mesh resolution
+  the bottom figure shows three independent two-dimensional models using a higher resolution. 
+  The view is centered on South America with Antarctica being near the bottom of
   the figure (coastlines provided by NGU and the GPlates project).}
   \label{fig:gv-1}
 \end{figure}
-
-\marginpar{To be finished. Aspect outputs the necessary rotation information for
-visualization. Compare the 2D models with cuts of a 3D model of the same setup.
-3D model not yet stable, bug in implementation or model setup?}
-
 
 \paragraph{Time-dependent boundary conditions.}
 \label{sec:time-dependent-gplates-velocities}
@@ -5080,7 +5130,7 @@ The example presented above uses a constant velocity boundary field that
 equals the present day plate movements. For a number of purposes one may want to
 use a prescribed velocity boundary condition that changes over time, for example
 to investigate the effect of trench migration on subduction. Therefore \aspect{}'s
-GPlates plugin is able to read in multiple velocity files and interpolate
+GPlates plugin is able to read in multiple velocity files and linearly interpolate
 between pairs of files to the current model time. To achieve this, one needs
 to use the \texttt{\%d} wildcard in the velocity file name, which represents the current
 velocity file index (e.g. \texttt{time\_dependent.\%d.gpml}). This index is
@@ -5093,7 +5143,10 @@ the model run. One can test this behavior with the provided data files
 \texttt{data/velocity\_boundary\_conditions/gplates/time\_dependent.\%d.gpml}
 with the index \texttt{d} ranging from 0 to 3 and representing the plate movements of
 the last 3 million years corresponding to the same plate reconstruction as used
-above.
+above. Additionally, the parameter \texttt{Velocity file start time} allows for
+a period of no-slip boundary conditions before starting the use of the GPlates plugin.
+This is a comfort implementation, which could also be achieved by using the checkpointing
+possibility described in section~\ref{sec:checkpoint-restart}. 
 
 
 \subsection{Benchmarks}

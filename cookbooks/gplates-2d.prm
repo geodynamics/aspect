@@ -64,7 +64,7 @@ end
 subsection Initial conditions
   set Model name = adiabatic
 
-  subsection Function
+  subsection Adiabatic
     set Age top boundary layer = 5e7
   end
 end

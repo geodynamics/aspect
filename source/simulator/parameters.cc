@@ -112,6 +112,14 @@ namespace aspect
                        "here, one can choose the time step as large as one wants (in particular, "
                        "one can choose $c>1$) though a CFL number significantly larger than "
                        "one will yield rather diffusive solutions. Units: None.");
+    prm.declare_entry ("Maximum time step", "0.0",
+                       Patterns::Double (0),
+                       "Set a maximum time step size for the solver to use. Generally the time step "
+                       "based on the CFL number should be sufficient, but for complicated models "
+                       "or benchmarking it may be useful to limit the time step to some value. "
+                       "Maximum time step should be in years or seconds, depending on the ``Use years "
+                       "in output instead of seconds'' parameter.  Set zero for this parameter "
+                       "to have no maximum time step.");
 
     prm.declare_entry ("Use conduction timestep", "false",
                        Patterns::Bool (),
@@ -558,6 +566,11 @@ namespace aspect
     use_conduction_timestep = prm.get_bool ("Use conduction timestep");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
     timing_output_frequency = prm.get_integer ("Timing output frequency");
+
+    maximum_time_step       = prm.get_double("Maximum time step");
+    if(convert_to_years == true)
+      maximum_time_step *= year_in_seconds;
+    
 
     if (prm.get ("Nonlinear solver scheme") == "IMPES")
       nonlinear_solver = NonlinearSolver::IMPES;

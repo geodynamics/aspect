@@ -103,7 +103,7 @@ namespace aspect
                       << "   Input point 2 spherical coordinates: " << surface_point_two << std::endl
                       << "   Input point 2 Cartesian output coordinates: " << rotate(point_two,rotation_axis,-rotation_angle)  << std::endl
                       << std::endl <<  std::setprecision(2)
-                      << "   Model will be rotated by " << rotation_angle*180/numbers::PI
+                      << "   Model will be rotated by " << -rotation_angle*180/numbers::PI
                       << " degrees around axis " << rotation_axis << std::endl
                       << std::endl;
           }
