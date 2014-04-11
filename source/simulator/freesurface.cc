@@ -134,7 +134,7 @@ namespace aspect
 //     Point<dim> centroid = corrections.second;
 
      //stuff for iterating over the mesh
-     QGauss<dim-1> face_quadrature(2);
+     QGauss<dim-1> face_quadrature(free_surface_fe.degree+1);
      UpdateFlags update_flags = UpdateFlags(update_values | update_normal_vectors | update_JxW_values);
      FEFaceValues<dim> fs_fe_face_values (mapping, free_surface_fe, face_quadrature, update_flags);
      FEFaceValues<dim> fe_face_values (mapping, finite_element, face_quadrature, update_flags);
@@ -235,7 +235,7 @@ namespace aspect
   void Simulator<dim>::free_surface_solve_elliptic_problem()
   {
     pcout << "FS: free_surface_solve_elliptic_problem()" << std::endl;
-    QGauss<dim> quadrature(1+1);
+    QGauss<dim> quadrature(free_surface_fe.degree + 1);
     UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values | update_gradients);
     FEValues<dim> fe_values (mapping, free_surface_fe, quadrature, update_flags);
 

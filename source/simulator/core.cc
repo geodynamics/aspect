@@ -144,7 +144,7 @@ namespace aspect
 
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true),
-    free_surface_fe (FE_Q<dim>(1),dim),
+    free_surface_fe (FE_Q<dim>(2),dim),
     free_surface_dof_handler (triangulation)
 
   {
