@@ -38,10 +38,10 @@ namespace aspect
     Topography<dim>::execute (TableHandler &statistics)
     {
 
-      double reference_height;
-      bool vertical_gravity;
+      double reference_height = 0.0;
+      bool vertical_gravity = false;
       double time = this->get_time();
-      types::boundary_id relevant_boundary;
+      types::boundary_id relevant_boundary = 0;
 
       if(GeometryModel::Box<dim> *gm = dynamic_cast<GeometryModel::Box<dim> *>
                                              (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
