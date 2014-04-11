@@ -5052,8 +5052,8 @@ use the GPlates plugin. Although currently nothing forbids the user to use GPlat
 boundaries than the surface, its current usage and the provided sample data only make sense
 for the surface of a spherical shell (boundary number 1 in the above provided parameter file). 
 In case you are familiar with this kind of modelling and the plugin you could however also use it to prescribe mantle
-movements \textit{below} a lithosphere model. All plugin specific options may be set in the 
-section~\ref{parameters:parameters:Boundary_20velocity_20model}. Possible options include the data directory
+movements \textit{below} a lithosphere model. All plugin specific options may be set in 
+section~\ref{parameters:Boundary_20velocity_20model}. Possible options include the data directory
 and file name of the velocity file/files, the time step (in model units, mostly seconds or years depending on the 
 ``\texttt{Use years in output instead of seconds}'' flag) and the points that define the 2D plane.
 The parameter ``\texttt{Interpolation width}'' is used to smooth the provided velocity files by
@@ -5066,7 +5066,7 @@ nearest velocity point data) and is only needed in case the original setting is 
 The implementation of plate velocities in both two- and three-dimensional model
 setups allows for an easy comparison and test for common sources of error
 in the interpretation of model results. The left top figure in Fig.~\ref{fig:gv-1} 
-shows an modification of the above presented parameter file by setting 
+shows a modification of the above presented parameter file by setting 
 ``\texttt{Dimension = 3}'' and ``\texttt{Initial global refinement = 3}''. 
 The top right plot of Fig.~\ref{fig:gv-1} shows an example of three independent 
 two-dimensional computations of the same reduced resolution. The models were prescribed 
@@ -5075,7 +5075,7 @@ to be orthogonal slices by setting:
     set Point one = 3.1416,0.0 % \index[prmindex]{Point one} \index[prmindexfull]{Boundary velocity model!GPlates model!Point one} %
     set Point two = 1.5708,0.0 % \index[prmindex]{Point two} \index[prmindexfull]{Boundary velocity model!GPlates model!Point two} %
 \end{lstlisting}
-and:
+and
 \begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
     set Point one = 3.1416,1.5708 % \index[prmindex]{Point one} \index[prmindexfull]{Boundary velocity model!GPlates model!Point one} %
     set Point two = 1.5708,1.5708 % \index[prmindex]{Point two} \index[prmindexfull]{Boundary velocity model!GPlates model!Point two} %
