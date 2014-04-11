@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/topography.h>
 
+#include <aspect/geometry_model/rebound.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/spherical_shell.h>
@@ -44,6 +45,14 @@ namespace aspect
       types::boundary_id relevant_boundary = 0;
 
       if(GeometryModel::Box<dim> *gm = dynamic_cast<GeometryModel::Box<dim> *>
+                                             (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
+      {
+        Point<dim> extents = gm->get_extents();
+        reference_height = extents[dim-1];
+        vertical_gravity = true;
+        relevant_boundary = (dim == 2 ? 3 : 5);
+      }
+      else if(GeometryModel::ReboundBox<dim> *gm = dynamic_cast<GeometryModel::ReboundBox<dim> *>
                                              (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
       {
         Point<dim> extents = gm->get_extents();
