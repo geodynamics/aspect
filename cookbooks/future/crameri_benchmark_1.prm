@@ -7,11 +7,10 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization = no
-set Linear solver tolerance = 1.e-6
+set Linear solver tolerance = 1.e-7
 set Number of cheap Stokes solver steps    = 0 
 set Timing output frequency                = 5
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = Free surface
 
 subsection Boundary temperature model
   set Model name = box
@@ -85,7 +84,7 @@ subsection Mesh refinement
   set Refinement fraction                = 0.0
   set Coarsening fraction                = 0.00
   set Strategy                           = composition
-  set Time steps between mesh refinement = 100000                     # default: 10
+  set Time steps between mesh refinement = 0                     # default: 10
 end
 
 
@@ -100,10 +99,8 @@ subsection Model settings
 end
 
 subsection Free surface
-  set Free surface stabilization algorithm = true
   set Free surface stabilization theta = 0.5
   set Free surface boundary indicators = 3
-  set Free surface density contrasts = 0
 end
 
 subsection Compositional fields
