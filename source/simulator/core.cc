@@ -1104,6 +1104,8 @@ namespace aspect
       {
         case NonlinearSolver::IMPES:
         {
+          free_surface_execute ();
+
           assemble_advection_system (TemperatureOrComposition::temperature());
           build_advection_preconditioner(TemperatureOrComposition::temperature(),
                                          T_preconditioner);
@@ -1135,8 +1137,6 @@ namespace aspect
           assemble_stokes_system();
           build_stokes_preconditioner();
           solve_stokes();
-
-          free_surface_execute ();
 
           break;
         }
