@@ -176,6 +176,7 @@ namespace aspect
         bool                           resume_computation;
         double                         start_time;
         double                         CFL_number;
+        double                         maximum_time_step;
         bool                           use_conduction_timestep;
         bool                           convert_to_years;
         std::string                    output_directory;
