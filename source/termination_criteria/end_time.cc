@@ -21,6 +21,8 @@
 
 
 #include <aspect/termination_criteria/end_time.h>
+#include <boost/lexical_cast.hpp>
+
 
 namespace aspect
 {
@@ -48,7 +50,9 @@ namespace aspect
     void
     EndTime<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.declare_entry ("End time", "1e300",
+      prm.declare_entry ("End time",
+                         boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
+                                                          year_in_seconds),
                          Patterns::Double (),
                          "The end time of the simulation. The default value is a number "
                          "so that when converted from years to seconds it is approximately "
