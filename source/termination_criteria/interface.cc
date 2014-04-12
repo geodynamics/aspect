@@ -42,7 +42,7 @@ namespace aspect
     {}
 
     template <int dim>
-    double Interface<dim>::check_for_last_time_step (double time_step) const
+    double Interface<dim>::check_for_last_time_step (const double time_step) const
     {
       return time_step;
     }

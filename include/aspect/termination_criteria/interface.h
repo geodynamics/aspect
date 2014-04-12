@@ -97,12 +97,13 @@ namespace aspect
          *
          * @return Reduced or current time step size
          *
-         * @note A reduced time step size will be returned for the
-         * last time step but the current time step size will be
-         * returned otherwise. Also, the default implementation will
-         * always return the full time step size.
+         * @note A reduced time step size may be returned for the
+         * last time step. For all other time steps, the current time step size
+         * (provided as argument) will be returned. The returned time step size
+         * will be greater than zero, and less than or equal to the given argument
+         * put into this function.
          */
-        virtual double check_for_last_time_step (double time_step) const;
+        virtual double check_for_last_time_step (const double time_step) const;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -182,12 +183,13 @@ namespace aspect
          *
          * @return Reduced or current time step size
          *
-         * @note A reduced time step size will be returned for the
-         * last time step but the current time step size will be
-         * returned otherwise. The time step will be greater than zero
-         * as well as less than or equal to the inputted time step
+         * @note A reduced time step size may be returned for the
+         * last time step. For all other time steps, the current time step size
+         * (provided as argument) will be returned. The returned time step size
+         * will be greater than zero, and less than or equal to the given argument
+         * put into this function.
          */
-        double check_for_last_time_step (double time_step) const;
+        double check_for_last_time_step (const double time_step) const;
 
         /**
          * Declare the parameters of all known termination criteria plugins, as

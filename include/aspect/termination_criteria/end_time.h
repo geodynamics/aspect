@@ -45,7 +45,7 @@ namespace aspect
         /**
          * Check this termination criterion and possibly reduce time step size
          */
-        double check_for_last_time_step (double time_step) const;
+        double check_for_last_time_step (const double time_step) const;
 
         /**
          * Evaluate this termination criterion.
