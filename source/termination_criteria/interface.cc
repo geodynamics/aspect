@@ -83,7 +83,7 @@ namespace aspect
 	      AssertThrow (current_time_step <= new_time_step,
 	        ExcMessage("Current time step must be less than or equal to time step entered into function."));
 
-	      new_time_step = std::min(current_time_step, new_timestep);
+	      new_time_step = std::min(current_time_step, new_time_step);
 	   }
       return new_time_step;
     }
