@@ -1367,10 +1367,8 @@ namespace aspect
         // returned by compute_time_step is unused, will be
         // added to statistics later
         old_time_step = time_step;
-        time_step = compute_time_step().first;
-        time_step = ( (parameters.maximum_time_step > 0.0 && 
-                       time_step > parameters.maximum_time_step) ? 
-                      parameters.maximum_time_step : time_step);
+        time_step = std::min (compute_time_step().first,
+                              parameters.maximum_time_step);
         time_step = termination_manager.check_for_last_time_step(time_step);
 
         if (parameters.convert_to_years == true)

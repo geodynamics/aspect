@@ -24,6 +24,7 @@
 #include <aspect/global.h>
 
 #include <deal.II/base/parameter_handler.h>
+#include <boost/lexical_cast.hpp>
 
 #include <dirent.h>
 
@@ -112,14 +113,18 @@ namespace aspect
                        "here, one can choose the time step as large as one wants (in particular, "
                        "one can choose $c>1$) though a CFL number significantly larger than "
                        "one will yield rather diffusive solutions. Units: None.");
-    prm.declare_entry ("Maximum time step", "0.0",
+    prm.declare_entry ("Maximum time step",
+                       boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
+                                                        year_in_seconds),
                        Patterns::Double (0),
                        "Set a maximum time step size for the solver to use. Generally the time step "
                        "based on the CFL number should be sufficient, but for complicated models "
                        "or benchmarking it may be useful to limit the time step to some value. "
-                       "Maximum time step should be in years or seconds, depending on the ``Use years "
-                       "in output instead of seconds'' parameter.  Set zero for this parameter "
-                       "to have no maximum time step.");
+                       "The default value is a value so that when converted from years into seconds "
+                       "it equals the largest number representable by a floating "
+                       "point number, implying an unlimited time step."
+                       "Units: Years or seconds, depending on the ``Use years "
+                       "in output instead of seconds'' parameter.");
 
     prm.declare_entry ("Use conduction timestep", "false",
                        Patterns::Bool (),
