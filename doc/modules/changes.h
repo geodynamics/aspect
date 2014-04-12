@@ -8,6 +8,15 @@ All entries are signed with the names of the author.
 </p>
 
 <ol>
+  <li>New: There is now a cookbook describing the
+  usage of the GPlates plugin and possible applications.
+  The internal velocity representation in the plugin was
+  changed to cartesian and a smoothing algorithm was
+  introduced.
+  <br>
+  (Rene Gassmoeller, Wolfgang Bangerth, 2014/04/12)
+
+<ol>
   <li>New: A global parameter ``Maximum time step''
   allows the user to select the largest time step that
   a simulation can take.  This may be useful for
