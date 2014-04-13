@@ -88,10 +88,10 @@ namespace aspect
 
                 in.position = fe_face_values.get_quadrature_points();
 
-		// since we are not reading the viscosity and the viscosity
-		// is the only coefficient that depends on the strain rate,
-		// we need not compute the strain rate. set the corresponding
-		// array to empty, to prevent accidental use and skip the
+                // since we are not reading the viscosity and the viscosity
+                // is the only coefficient that depends on the strain rate,
+                // we need not compute the strain rate. set the corresponding
+                // array to empty, to prevent accidental use and skip the
                 // evaluation of the strain rate in evaluate().
                 in.strain_rate.resize(0);
 
@@ -188,21 +188,21 @@ namespace aspect
                                   "heat flux statistics",
                                   "A postprocessor that computes some statistics about "
                                   "the (conductive) heat flux across boundaries. For each boundary "
-				  "indicator (see your geometry description for which boundary "
-				  "indicators are used), the heat flux is computed in outward "
-				  "direction, i.e., from the domain to the outside, using the "
-				  "formula $\\int_{\\Gamma_i} k \\nabla T \\cdot \\mathbf n$ "
-				  "where $\\Gamma_i$ is the part of the boundary with indicator $i$, "
-				  "$k$ is the thermal conductivity as reported by the material model, "
-				  "$T$ is the temperature, and $\\mathbf n$ is the outward normal. "
-				  "Note that the quantity so computed does not include any energy "
-				  "transported across the boundary by material transport in cases "
-				  "where $\\mathbf u \\cdot \\mathbf n \\neq 0$."
-				  "\n\n"
-				  "As stated, this postprocessor computes the \\textit{outbound} heat "
-				  "flux. If you "
-				  "are interested in the opposite direction, for example from "
-				  "the core into the mantle when the domain describes the "
-				  "mantle, then you need to multiply the result by -1.")
+                                  "indicator (see your geometry description for which boundary "
+                                  "indicators are used), the heat flux is computed in outward "
+                                  "direction, i.e., from the domain to the outside, using the "
+                                  "formula $\\int_{\\Gamma_i} k \\nabla T \\cdot \\mathbf n$ "
+                                  "where $\\Gamma_i$ is the part of the boundary with indicator $i$, "
+                                  "$k$ is the thermal conductivity as reported by the material model, "
+                                  "$T$ is the temperature, and $\\mathbf n$ is the outward normal. "
+                                  "Note that the quantity so computed does not include any energy "
+                                  "transported across the boundary by material transport in cases "
+                                  "where $\\mathbf u \\cdot \\mathbf n \\neq 0$."
+                                  "\n\n"
+                                  "As stated, this postprocessor computes the \\textit{outbound} heat "
+                                  "flux. If you "
+                                  "are interested in the opposite direction, for example from "
+                                  "the core into the mantle when the domain describes the "
+                                  "mantle, then you need to multiply the result by -1.")
   }
 }

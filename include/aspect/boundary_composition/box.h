@@ -39,7 +39,7 @@ namespace aspect
      */
     template <int dim>
     class Box : public Interface<dim>,
-                public SimulatorAccess<dim>
+      public SimulatorAccess<dim>
     {
       public:
         /**

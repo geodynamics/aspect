@@ -106,7 +106,7 @@ namespace aspect
 
                   const double value =
                     (base_element == 2
-                        ?
+                     ?
                      initial_conditions->initial_temperature(fe_values.quadrature_point(i))
                      :
                      compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n-1));

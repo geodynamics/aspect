@@ -106,20 +106,20 @@ namespace aspect
                   // shell, then choose the point on the inner surface along the first
                   // diagonal
                   if (shell_geometry_model->opening_angle() == 90)
-            	  {
-            		mid_point(0) = inner_radius*std::sqrt(1./3),
-            		mid_point(1) = inner_radius*std::sqrt(1./3),
-            		mid_point(2) = inner_radius*std::sqrt(1./3);
-            	  }
+                    {
+                      mid_point(0) = inner_radius*std::sqrt(1./3),
+                      mid_point(1) = inner_radius*std::sqrt(1./3),
+                      mid_point(2) = inner_radius*std::sqrt(1./3);
+                    }
                   else
-                  {
-                    // otherwise do the same as in 2d
-                    mid_point(0) = inner_radius * std::sin(half_opening_angle) * std::cos(half_opening_angle),
-                    mid_point(1) = inner_radius * std::sin(half_opening_angle) * std::sin(half_opening_angle),
-                    mid_point(2) = inner_radius * std::cos(half_opening_angle);
-		  }
-		}
-	    }
+                    {
+                      // otherwise do the same as in 2d
+                      mid_point(0) = inner_radius * std::sin(half_opening_angle) * std::cos(half_opening_angle),
+                      mid_point(1) = inner_radius * std::sin(half_opening_angle) * std::sin(half_opening_angle),
+                      mid_point(2) = inner_radius * std::cos(half_opening_angle);
+                    }
+                }
+            }
           else if (const GeometryModel::Box<dim> *
                    box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (this->geometry_model))
             // for the box geometry, choose a point at the center of the bottom face.
@@ -147,14 +147,14 @@ namespace aspect
 
       // If adiabatic heating is disabled, apply all perturbations to
       // constant adiabatic surface temperature instead of adiabatic profile.
-      const double temperature_profile = (this->include_adiabatic_heating()) 
-                      ? 
-                      this->adiabatic_conditions->temperature(position) 
-                      :
-                      adiabatic_surface_temperature;
+      const double temperature_profile = (this->include_adiabatic_heating())
+                                         ?
+                                         this->adiabatic_conditions->temperature(position)
+                                         :
+                                         adiabatic_surface_temperature;
 
       // return sum of the adiabatic profile, the boundary layer temperatures and the initial
-      // temperature perturbation. 
+      // temperature perturbation.
       return temperature_profile + surface_cooling_temperature
              + (perturbation > 0.0 ? std::max(bottom_heating_temperature + subadiabatic_T,perturbation)
                 : bottom_heating_temperature + subadiabatic_T);

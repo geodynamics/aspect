@@ -128,7 +128,7 @@ namespace aspect
         /**
          * Returns a set of periodic boundary pairs.  The elements of the set are
         a pair of boundary ids and a cartesian unit direction each.  The base class
-        returns an empty set, so this does nothing unless you specifically use a 
+        returns an empty set, so this does nothing unless you specifically use a
         geometry model with periodic boundary conditions
         **/
         virtual

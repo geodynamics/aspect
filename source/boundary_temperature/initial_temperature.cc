@@ -44,7 +44,7 @@ namespace aspect
     template <int dim>
     double
     InitialTemperature<dim>::
-    minimal_temperature (const std::set<types::boundary_id>& fixed_boundary_ids) const
+    minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       return min_temperature;
     }
@@ -54,7 +54,7 @@ namespace aspect
     template <int dim>
     double
     InitialTemperature<dim>::
-    maximal_temperature (const std::set<types::boundary_id>& fixed_boundary_ids) const
+    maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       return max_temperature;
     }
@@ -110,15 +110,15 @@ namespace aspect
                                                "A model in which the temperature at the boundary"
                                                "is chosen to be the same as given in the initial"
                                                "conditions."
-					       "\n\n"
-					       "Because this class simply takes what the initial "
-					       "temperature had described, this class can not "
-					       "know certain pieces of information such as the "
-					       "minimal and maximal temperature on the boundary. "
-					       "For operations that require this, for example in "
-					       "postprocessing, this boundary temperature model "
-					       "must therefore be told what the minimal and "
-					       "maximal values on the boundary are. This is done "
-					       "using parameters set in section ``Boundary temperature model/Initial temperature''.")
+                                               "\n\n"
+                                               "Because this class simply takes what the initial "
+                                               "temperature had described, this class can not "
+                                               "know certain pieces of information such as the "
+                                               "minimal and maximal temperature on the boundary. "
+                                               "For operations that require this, for example in "
+                                               "postprocessing, this boundary temperature model "
+                                               "must therefore be told what the minimal and "
+                                               "maximal values on the boundary are. This is done "
+                                               "using parameters set in section ``Boundary temperature model/Initial temperature''.")
   }
 }

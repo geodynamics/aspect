@@ -109,14 +109,14 @@ namespace aspect
 
       struct NullspaceRemoval
       {
-          enum Kind
-          {
-            none = 0,
-            net_rotation = 0x1,
-            net_translation = 0x2,
-            angular_momentum = 0x4,
-            translational_momentum = 0x8
-          };
+        enum Kind
+        {
+          none = 0,
+          net_rotation = 0x1,
+          net_translation = 0x2,
+          angular_momentum = 0x4,
+          translational_momentum = 0x8
+        };
       };
 
     public:
@@ -926,7 +926,7 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
-          LinearAlgebra::Vector &vec);
+                                            LinearAlgebra::Vector &vec);
 
       /**
        * Set up data structures for null space removal. Called after every mesh refinement.
@@ -947,7 +947,7 @@ namespace aspect
        * <code>source/simulator/nullspace.cc</code>.
        */
       void remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
-          LinearAlgebra::BlockVector &tmp_distributed_stokes);
+                            LinearAlgebra::BlockVector &tmp_distributed_stokes);
 
       /**
        * Remove the angular momentum of the given vector

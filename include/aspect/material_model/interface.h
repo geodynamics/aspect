@@ -322,7 +322,7 @@ namespace aspect
                             const NonlinearDependence::Dependence dependence) const;
 
         /**
-	 * Return the partial derivative of the compressibility function on the
+        * Return the partial derivative of the compressibility function on the
         * variable indicates as last argument.
         *
         * The default implementation of this function returns zero
@@ -564,7 +564,7 @@ namespace aspect
            * The product of (minus) the change of entropy $-\Delta S$ at a
            * phase transition and the derivative of the phase function
            * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to temperature
-           * at the given positions. 
+           * at the given positions.
            */
           std::vector<double> entropy_derivative_temperature;
           /**
@@ -658,10 +658,10 @@ namespace aspect
          * Return the compressibility coefficient
          * $\frac 1\rho \frac{\partial\rho}{\partial p}$ of the model as a
          * function of temperature, pressure and position.
-	 *
-	 * The compressibility can equivalently be computed as
-	 * $-\frac 1V \frac{\partial V}{\partial p}$. Note the difference
-	 * in sign.
+        *
+        * The compressibility can equivalently be computed as
+        * $-\frac 1V \frac{\partial V}{\partial p}$. Note the difference
+        * in sign.
          */
         virtual double compressibility (const double temperature,
                                         const double pressure,
@@ -684,89 +684,92 @@ namespace aspect
         * $\alpha=-\frac{1}{\rho} \frac{d\rho}{dT}$. Since the density
         * <i>decreases</i> with temperature for almost all models,
         * $\alpha$ is usually positive.
-	*
-	* The thermal expansion coefficient can equivalently be computed as
-	* $\frac 1V \frac{\partial V}{\partial T}$. Note the difference
-	* in sign.
+        *
+        * The thermal expansion coefficient can equivalently be computed as
+        * $\frac 1V \frac{\partial V}{\partial T}$. Note the difference
+        * in sign.
         *
         * This function has a default implementation that computes $\alpha$
-        * through its definition above, using the density() and density_derivative()
-        * functions.
+        * through its definition above, using the density() and
+        * density_derivative() functions.
          */
         virtual double thermal_expansion_coefficient (const double      temperature,
                                                       const double      pressure,
                                                       const std::vector<double> &compositional_fields,
                                                       const Point<dim> &position) const=0;
 
-      /**
-       * Return the product of the change in entropy across phase
-       * transitions, the pressure derivative of the phase function
-       * (if this is the pressure derivative) or the product of the
-       * former two and the Clapeyron slope (if this is the
-       * temperature derivative).
-       * The entropy change across a phase transition can be calculated
-       * as $\frac{\gamma \Delta\rho}{\rho_\text{light} \rho_\text{heavy}}$.
-       * $\gamma$ is the Clapeyron slope of the phase transition,
-       * $\Delta\rho$ is the density jump across the phase transition,
-       * $\rho_\text{light}$ is the density of the light material
-       * (above the phase transition) and $\rho_\text{heavy}$ the
-       * density of the heavy material (below the phase transition).
-       * The phase function hat values ranging from 0 to 1 indicating
-       * which percentage of the material has already undergone the phase
-       * transition. Its argument is usually the excess pressure
-       * $\pi = p - p_0 - \gamma T$, where $p_0$ is the zero-degree
-       * transition pressure.
-       *
-      * This function has a default implementation that sets
-       * the entropy gradient to zero (assuming no phase changes).
-       */
-      virtual double entropy_derivative (const double      temperature,
-                                         const double      pressure,
-                                         const std::vector<double> &compositional_fields,
-                                         const Point<dim> &position,
-                                         const NonlinearDependence::Dependence dependence) const;
-
-      /**
-       * Return the change in the compositional field compositional_variable
-       * due to reactions between different compositional fields.
-      * It is assumed that there is always an equilibrium between the
-      * compositional fields (because the time scale of reactions is
-      * normally much shorter than that of convection), so this is an actual
-      * amount of material, which is added to or substracted from the current
-      * value of the compositional field, and NOT a reaction rate.
-      * The idea is, that in dependence of temperature, pressure, position and
-      * the compositional fields themselves an equilibrium can be calculated,
-      * and the difference between the current value and the equilibrium can
-      * be added to the respective compositional field.
-      *
-      * For mass conservation it should ALWAYS be checked that what is subtracted
-      * from one field is added to another field (and the other way round) and
-      * that it is never more substracted than the actual value of a field (so
-      * it does not get negative).
-      *
-      * This function has a default implementation that sets
-      * the reaction term to zero (assuming no reactions).
-       */
-      virtual double reaction_term (const double      temperature,
-                                    const double      pressure,
-                                    const std::vector<double> &compositional_fields,
-                                    const Point<dim> &position,
-                                    const unsigned int compositional_variable) const;
-
-      /**
-         * Return the thermal conductivity $k$ of the model as a function of temperature,
-         * pressure and position. The units of $k$ are $\textrm{W} / \textrm{m} / \textrm{K}$
-         * in 3d, and $\textrm{W} / \textrm{K}$ in 2d. This is easily see by considering that
-         * $k$ is the heat flux density (i.e., Watts per unit area perpendicular to the heat
-         * flux direction) per unit temperature gradient (i.e., Kelvin per meter). The unit
-         * area has units $m^2$ in 3d, but only $m$ in 2d, yielding the stated units for $k$.
+        /**
+         * Return the product of the change in entropy across phase
+         * transitions, the pressure derivative of the phase function
+         * (if this is the pressure derivative) or the product of the
+         * former two and the Clapeyron slope (if this is the
+         * temperature derivative).
+         * The entropy change across a phase transition can be calculated
+         * as $\frac{\gamma \Delta\rho}{\rho_\text{light} \rho_\text{heavy}}$.
+         * $\gamma$ is the Clapeyron slope of the phase transition,
+         * $\Delta\rho$ is the density jump across the phase transition,
+         * $\rho_\text{light}$ is the density of the light material
+         * (above the phase transition) and $\rho_\text{heavy}$ the
+         * density of the heavy material (below the phase transition).
+         * The phase function hat values ranging from 0 to 1 indicating
+         * which percentage of the material has already undergone the phase
+         * transition. Its argument is usually the excess pressure
+         * $\pi = p - p_0 - \gamma T$, where $p_0$ is the zero-degree
+         * transition pressure.
          *
-         * Note that the thermal <i>conductivity</i> $k$ is related to the thermal
-         * <i>diffusivity</i> $\kappa$ as $k = \kappa \rho c_p$. In essence, the conductivity
-         * relates to the question of how thermal energy diffuses whereas the diffusivity
-         * relates to the question of how the temperature diffuses. $\kappa$ has units
-         * $\textrm{m}^2/\textrm{s}$.
+        * This function has a default implementation that sets
+         * the entropy gradient to zero (assuming no phase changes).
          */
+        virtual double entropy_derivative (const double      temperature,
+                                           const double      pressure,
+                                           const std::vector<double> &compositional_fields,
+                                           const Point<dim> &position,
+                                           const NonlinearDependence::Dependence dependence) const;
+
+        /**
+         * Return the change in the compositional field compositional_variable
+         * due to reactions between different compositional fields.
+        * It is assumed that there is always an equilibrium between the
+        * compositional fields (because the time scale of reactions is
+        * normally much shorter than that of convection), so this is an actual
+        * amount of material, which is added to or substracted from the current
+        * value of the compositional field, and NOT a reaction rate.
+        * The idea is, that in dependence of temperature, pressure, position and
+        * the compositional fields themselves an equilibrium can be calculated,
+        * and the difference between the current value and the equilibrium can
+        * be added to the respective compositional field.
+        *
+        * For mass conservation it should ALWAYS be checked that what is subtracted
+        * from one field is added to another field (and the other way round) and
+        * that it is never more substracted than the actual value of a field (so
+        * it does not get negative).
+        *
+        * This function has a default implementation that sets
+        * the reaction term to zero (assuming no reactions).
+         */
+        virtual double reaction_term (const double      temperature,
+                                      const double      pressure,
+                                      const std::vector<double> &compositional_fields,
+                                      const Point<dim> &position,
+                                      const unsigned int compositional_variable) const;
+
+        /**
+	 * Return the thermal conductivity $k$ of the model as a function of
+	 * temperature, pressure and position. The units of $k$ are
+	 * $\textrm{W} / \textrm{m} / \textrm{K}$ in 3d, and $\textrm{W} /
+	 * \textrm{K}$ in 2d. This is easily see by considering that $k$ is
+	 * the heat flux density (i.e., Watts per unit area perpendicular to
+	 * the heat flux direction) per unit temperature gradient (i.e.,
+	 * Kelvin per meter). The unit area has units $m^2$ in 3d, but only
+	 * $m$ in 2d, yielding the stated units for $k$.
+	 *
+	 * Note that the thermal <i>conductivity</i> $k$ is related to the
+	 * thermal <i>diffusivity</i> $\kappa$ as $k = \kappa \rho c_p$. In
+	 * essence, the conductivity relates to the question of how thermal
+	 * energy diffuses whereas the diffusivity relates to the question of
+	 * how the temperature diffuses. $\kappa$ has units
+	 * $\textrm{m}^2/\textrm{s}$.
+	 */
         virtual double thermal_conductivity (const double temperature,
                                              const double pressure,
                                              const std::vector<double> &compositional_fields,
@@ -781,7 +784,7 @@ namespace aspect
          * @param out
          */
         void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-		      typename Interface<dim>::MaterialModelOutputs &out) const;
+                      typename Interface<dim>::MaterialModelOutputs &out) const;
     };
 
 

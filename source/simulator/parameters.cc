@@ -357,14 +357,14 @@ namespace aspect
                          "current parameter section.");
 
       prm.declare_entry ("Remove nullspace", "",
-          Patterns::MultipleSelection("net rotation|net translation|angular momentum|translational momentum"),
-              "A selection of operations to remove certain parts of the nullspace from "
-              "the velocity after solving. For some geometries and certain boundary conditions "
-              "the velocity field is not uniquely determined but contains free translations "
-              "and or rotations. Depending on what you specify here, these non-determined "
-              "modes will be removed from the velocity field at the end of the Stokes solve step.\n"
-          "Note that while more than operation can be selected it only makes sense to "
-          "pick one rotational and one translational operation.");
+                         Patterns::MultipleSelection("net rotation|net translation|angular momentum|translational momentum"),
+                         "A selection of operations to remove certain parts of the nullspace from "
+                         "the velocity after solving. For some geometries and certain boundary conditions "
+                         "the velocity field is not uniquely determined but contains free translations "
+                         "and or rotations. Depending on what you specify here, these non-determined "
+                         "modes will be removed from the velocity field at the end of the Stokes solve step.\n"
+                         "Note that while more than operation can be selected it only makes sense to "
+                         "pick one rotational and one translational operation.");
     }
     prm.leave_subsection ();
 
@@ -561,9 +561,9 @@ namespace aspect
     timing_output_frequency = prm.get_integer ("Timing output frequency");
 
     maximum_time_step       = prm.get_double("Maximum time step");
-    if(convert_to_years == true)
+    if (convert_to_years == true)
       maximum_time_step *= year_in_seconds;
-    
+
 
     if (prm.get ("Nonlinear solver scheme") == "IMPES")
       nonlinear_solver = NonlinearSolver::IMPES;
@@ -669,7 +669,7 @@ namespace aspect
            (prm.get ("Fixed composition boundary indicators")));
       fixed_composition_boundary_indicators
         = std::set<types::boundary_id> (x_fixed_composition_boundary_indicators.begin(),
-                                          x_fixed_composition_boundary_indicators.end());
+                                        x_fixed_composition_boundary_indicators.end());
 
       const std::vector<int> x_zero_velocity_boundary_indicators
         = Utilities::string_to_int
@@ -726,27 +726,27 @@ namespace aspect
                                    "> appears more than once in the list of indicators "
                                    "for nonzero velocity boundaries."));
           prescribed_velocity_boundary_indicators[boundary_id] =
-              std::pair<std::string,std::string>(comp,value);
+            std::pair<std::string,std::string>(comp,value);
         }
 
       {
         nullspace_removal = NullspaceRemoval::none;
         std::vector<std::string> nullspace_names =
-            Utilities::split_string_list(prm.get("Remove nullspace"));
-        for (unsigned int i=0;i<nullspace_names.size();++i)
+          Utilities::split_string_list(prm.get("Remove nullspace"));
+        for (unsigned int i=0; i<nullspace_names.size(); ++i)
           {
             if (nullspace_names[i]=="net rotation")
               nullspace_removal = typename NullspaceRemoval::Kind(
-                  nullspace_removal | NullspaceRemoval::net_rotation);
+                                    nullspace_removal | NullspaceRemoval::net_rotation);
             else if (nullspace_names[i]=="net translation")
-            nullspace_removal = typename NullspaceRemoval::Kind(
-                nullspace_removal | NullspaceRemoval::net_translation);
+              nullspace_removal = typename NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::net_translation);
             else if (nullspace_names[i]=="angular momentum")
               nullspace_removal = typename NullspaceRemoval::Kind(
-                  nullspace_removal | NullspaceRemoval::angular_momentum);
+                                    nullspace_removal | NullspaceRemoval::angular_momentum);
             else if (nullspace_names[i]=="translational momentum")
               nullspace_removal = typename       NullspaceRemoval::Kind(
-                  nullspace_removal | NullspaceRemoval::translational_momentum);
+                                    nullspace_removal | NullspaceRemoval::translational_momentum);
             else
               AssertThrow(false, ExcInternalError());
           }
@@ -780,14 +780,14 @@ namespace aspect
       AssertThrow (use_locally_conservative_discretization ||
                    (stokes_velocity_degree > 1),
                    ExcMessage ("The polynomial degree for the velocity field "
-                       "specified in the 'Stokes velocity polynomial degree' "
-                       "parameter must be at least 2, unless you are using "
-                       "a locally conservative discretization as specified by the "
-                       "'Use locally conservative discretization' parameter. "
-                       "This is because in the former case, the pressure element "
-                       "is of one degree lower and continuous, and if you selected "
-                       "a linear element for the velocity, you'd need a continuous "
-                       "element of degree zero for the pressure, which does not exist."))
+                               "specified in the 'Stokes velocity polynomial degree' "
+                               "parameter must be at least 2, unless you are using "
+                               "a locally conservative discretization as specified by the "
+                               "'Use locally conservative discretization' parameter. "
+                               "This is because in the former case, the pressure element "
+                               "is of one degree lower and continuous, and if you selected "
+                               "a linear element for the velocity, you'd need a continuous "
+                               "element of degree zero for the pressure, which does not exist."))
     }
     prm.leave_subsection ();
 

@@ -91,18 +91,18 @@ namespace aspect
         bool
         execute () = 0;
 
-         /**
-         * Check for last time step and if so reduce the time step to user 
-         * specified end time
-         *
-         * @return Reduced or current time step size
-         *
-         * @note A reduced time step size may be returned for the
-         * last time step. For all other time steps, the current time step size
-         * (provided as argument) will be returned. The returned time step size
-         * will be greater than zero, and less than or equal to the given argument
-         * put into this function.
-         */
+        /**
+        * Check for last time step and if so reduce the time step to user
+        * specified end time
+        *
+        * @return Reduced or current time step size
+        *
+        * @note A reduced time step size may be returned for the
+        * last time step. For all other time steps, the current time step size
+        * (provided as argument) will be returned. The returned time step size
+        * will be greater than zero, and less than or equal to the given argument
+        * put into this function.
+        */
         virtual double check_for_last_time_step (const double time_step) const;
 
         /**
@@ -176,19 +176,19 @@ namespace aspect
         std::pair<bool,bool>
         execute () const;
 
-         /**
-         * Check all of the termination criteria objects that have
-         * been requested in the input file for criteria regarding
-         * last time step and if so get the minimum of these values.
-         *
-         * @return Reduced or current time step size
-         *
-         * @note A reduced time step size may be returned for the
-         * last time step. For all other time steps, the current time step size
-         * (provided as argument) will be returned. The returned time step size
-         * will be greater than zero, and less than or equal to the given argument
-         * put into this function.
-         */
+        /**
+        * Check all of the termination criteria objects that have
+        * been requested in the input file for criteria regarding
+        * last time step and if so get the minimum of these values.
+        *
+        * @return Reduced or current time step size
+        *
+        * @note A reduced time step size may be returned for the
+        * last time step. For all other time steps, the current time step size
+        * (provided as argument) will be returned. The returned time step size
+        * will be greater than zero, and less than or equal to the given argument
+        * put into this function.
+        */
         double check_for_last_time_step (const double time_step) const;
 
         /**

@@ -69,7 +69,7 @@ namespace aspect
          * Nusselt number indicating heat flux.
          */
         virtual
-        double minimal_composition (const std::set<types::boundary_id>& fixed_boundary_ids) const;
+        double minimal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
          * Return the maximal composition on that part of the boundary
@@ -79,7 +79,7 @@ namespace aspect
          * Nusselt number indicating heat flux.
          */
         virtual
-        double maximal_composition (const std::set<types::boundary_id>& fixed_boundary_ids) const;
+        double maximal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
          * Declare the parameters this class takes through input files.

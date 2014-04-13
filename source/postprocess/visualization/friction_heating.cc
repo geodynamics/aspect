@@ -48,7 +48,7 @@ namespace aspect
       compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
                                          const std::vector<std::vector<Tensor<1,dim> > > &duh,
                                          const std::vector<std::vector<Tensor<2,dim> > > &,
-                                         const std::vector<Point<dim> >                  &,
+                                         const std::vector<Point<dim> > &,
                                          const std::vector<Point<dim> >                  &evaluation_points,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
@@ -61,7 +61,7 @@ namespace aspect
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_quadrature_points,
                                                                        this->n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_quadrature_points,
-            this->n_compositional_fields());
+                                                                         this->n_compositional_fields());
 
         in.position = evaluation_points;
         for (unsigned int q=0; q<n_quadrature_points; ++q)

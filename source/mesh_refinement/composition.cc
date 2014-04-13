@@ -70,7 +70,7 @@ namespace aspect
                                               0,
                                               this->get_triangulation().locally_owned_subdomain());
           for (unsigned int i=0; i<indicators.size(); ++i)
-        	this_indicator[i] *= composition_scaling_factors[c];
+            this_indicator[i] *= composition_scaling_factors[c];
           indicators += this_indicator;
         }
     }

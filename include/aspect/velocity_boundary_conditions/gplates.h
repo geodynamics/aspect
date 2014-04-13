@@ -160,7 +160,7 @@ namespace aspect
            * @param s_position Position in spherical coordinates (theta,phi,radius)
            */
           Tensor<1,3> sphere_to_cart_velocity(const Tensor<1,2> &s_velocities,
-              const Tensor<1,3> &s_position) const;
+                                              const Tensor<1,3> &s_position) const;
 
           /**
            * calculates the index given a certain position
@@ -169,7 +169,7 @@ namespace aspect
            * @param position Input position, which is converted to spatial index
            */
           void
-          calculate_spatial_index(int* index, const Tensor<1,3> position) const;
+          calculate_spatial_index(int *index, const Tensor<1,3> position) const;
 
           /**
            * This function adds a certain data point to the interpolated
@@ -179,7 +179,7 @@ namespace aspect
            * need to be tangential to the surface).
            */
           double
-          add_interpolation_point(Tensor<1,3>& surf_vel,
+          add_interpolation_point(Tensor<1,3> &surf_vel,
                                   const Tensor<1,3> position,
                                   const int spatial_index[2],
                                   const double time_weight,
@@ -201,8 +201,8 @@ namespace aspect
            */
           Tensor<1,3>
           get_grid_point_position(const unsigned int theta_index,
-              const unsigned int phi_index,
-              const bool cartesian) const;
+                                  const unsigned int phi_index,
+                                  const bool cartesian) const;
 
           /**
            * Returns the arc distance of two points on a sphere surface.
@@ -215,7 +215,7 @@ namespace aspect
            */
           Tensor<1,3>
           interpolate ( const Tensor<1,3> position,
-              const double time_weight) const;
+                        const double time_weight) const;
 
           /**
            * Bounds the theta and phi indices to the right sizes.
@@ -369,7 +369,7 @@ namespace aspect
          */
         void
         end_time_dependence (const int timestep,
-            const bool first_process);
+                             const bool first_process);
 
         /**
          * Create a filename out of the name template.

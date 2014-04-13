@@ -42,16 +42,16 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-      /**
-       * Initialize this class for a given simulator. This function calls
-       * the corresponding object in the SimulatorAccess class and then
-       * initializes the current object by looking up the correct number
-       * of compositional fields through the now initialized SimulatorAccess
-       * class.
-       *
-       * @param simulator A reference to the main simulator object.
-       */
-      virtual void initialize (const Simulator<dim> &simulator);
+        /**
+         * Initialize this class for a given simulator. This function calls
+         * the corresponding object in the SimulatorAccess class and then
+         * initializes the current object by looking up the correct number
+         * of compositional fields through the now initialized SimulatorAccess
+         * class.
+         *
+         * @param simulator A reference to the main simulator object.
+         */
+        virtual void initialize (const Simulator<dim> &simulator);
 
         /**
          * Execute this mesh refinement criterion.

@@ -293,7 +293,7 @@ namespace aspect
        */
       void
       get_depth_average_composition(const unsigned int composition_index,
-                                        std::vector<double> &values) const;
+                                    std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the current viscosity

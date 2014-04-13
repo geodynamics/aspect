@@ -32,21 +32,21 @@ namespace aspect
   {
     using namespace dealii;
 
-   /**
-     * A material model that implements a standard approximation
-     * of the latent heat terms following Christensen \& Yuen, 1986.
-     * The change of entropy is calculated as
-     * $Delta S = \gamma \frac{\Delta\rho}{\rho^2}$ with the
-     * Clapeyron slope $\gamma$ and the density change $\Delta\rho$
-     * of the phase transition being input parameters.
-     * This model employs an analytic phase function in the form
-     * $X=0.5 \left( 1 + \tanh \left( \frac{\Delta p}{\Delta p_0} \right) \right)$
-     * with $\Delta p = p - p_transition - \gamma \left( T - T_transition \right)$
-     * and $\Delta p_0$ being the pressure difference over the width
-     * of the phase transition (specified as input parameter).
-     *
-     * @ingroup MaterialModels
-     */
+    /**
+      * A material model that implements a standard approximation
+      * of the latent heat terms following Christensen \& Yuen, 1986.
+      * The change of entropy is calculated as
+      * $Delta S = \gamma \frac{\Delta\rho}{\rho^2}$ with the
+      * Clapeyron slope $\gamma$ and the density change $\Delta\rho$
+      * of the phase transition being input parameters.
+      * This model employs an analytic phase function in the form
+      * $X=0.5 \left( 1 + \tanh \left( \frac{\Delta p}{\Delta p_0} \right) \right)$
+      * with $\Delta p = p - p_transition - \gamma \left( T - T_transition \right)$
+      * and $\Delta p_0$ being the pressure difference over the width
+      * of the phase transition (specified as input parameter).
+      *
+      * @ingroup MaterialModels
+      */
     template <int dim>
     class LatentHeat : public MaterialModel::InterfaceCompatibility<dim>, public ::aspect::SimulatorAccess<dim>
     {
@@ -213,9 +213,9 @@ namespace aspect
         virtual
         double
         phase_function (const Point<dim> &position,
-		                const double temperature,
-        		        const double pressure,
-        		        const int phase) const;
+                        const double temperature,
+                        const double pressure,
+                        const int phase) const;
 
         /**
          * Derivative of the phase function (argument is the
@@ -224,9 +224,9 @@ namespace aspect
         virtual
         double
         phase_function_derivative (const Point<dim> &position,
-		                           const double temperature,
-        		                   const double pressure,
-        		                   const int phase) const;
+                                   const double temperature,
+                                   const double pressure,
+                                   const int phase) const;
 
         // list of depth, width and Clapeyron slopes for the different phase
         // transitions

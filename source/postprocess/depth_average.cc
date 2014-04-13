@@ -128,24 +128,24 @@ namespace aspect
           for (unsigned int i=0; i<entries.size(); ++i)
             {
               data_out_stack.new_parameter_value ((this->convert_output_to_years()
-                  ?
-                  entries[i].time / year_in_seconds
-                  :
-                  entries[i].time),
-                  // declare the time step, which here is the difference
-                  // between successive output times. we don't have anything
-                  // for the first time step, however. we could do a zero
-                  // delta, but that leads to invisible output. rather, we
-                  // use an artificial value of one tenth of the first interval,
-                  // if available
-                  (i == 0 ?
-                      (entries.size() > 1 ? (entries[1].time - entries[0].time)/10 : 0) :
-                      entries[i].time - entries[i-1].time) /
-                  (this->convert_output_to_years()
-                                      ?
-                                      year_in_seconds
-                                      :
-                                      1));
+                                                   ?
+                                                   entries[i].time / year_in_seconds
+                                                   :
+                                                   entries[i].time),
+                                                  // declare the time step, which here is the difference
+                                                  // between successive output times. we don't have anything
+                                                  // for the first time step, however. we could do a zero
+                                                  // delta, but that leads to invisible output. rather, we
+                                                  // use an artificial value of one tenth of the first interval,
+                                                  // if available
+                                                  (i == 0 ?
+                                                   (entries.size() > 1 ? (entries[1].time - entries[0].time)/10 : 0) :
+                                                   entries[i].time - entries[i-1].time) /
+                                                  (this->convert_output_to_years()
+                                                   ?
+                                                   year_in_seconds
+                                                   :
+                                                   1));
 
               data_out_stack.attach_dof_handler (dof_handler);
 
@@ -156,7 +156,7 @@ namespace aspect
                              entries[i].values[j].end(),
                              tmp.begin());
                   data_out_stack.add_data_vector (tmp,
-                      variables[j]);
+                                                  variables[j]);
                 }
               data_out_stack.build_patches ();
               data_out_stack.finish_parameter_value ();

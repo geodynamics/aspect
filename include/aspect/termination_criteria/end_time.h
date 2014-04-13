@@ -41,7 +41,7 @@ namespace aspect
     class EndTime : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-       
+
         /**
          * Check this termination criterion and possibly reduce time step size
          */

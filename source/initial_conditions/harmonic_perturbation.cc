@@ -69,7 +69,7 @@ namespace aspect
           else if (dim==3)
             {
               // Spherical harmonics are only defined for order <= degree
-        	  // and degree >= 0. Verify that it is indeed.
+              // and degree >= 0. Verify that it is indeed.
               Assert ( std::abs(lateral_wave_number_2) <= lateral_wave_number_1,
                        ExcMessage ("Spherical harmonics can only be computed for "
                                    "order <= degree."));

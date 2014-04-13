@@ -57,7 +57,7 @@ namespace aspect
                                update_quadrature_points | update_values);
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(quadrature.size(),
-          this->n_compositional_fields());
+                                                                     this->n_compositional_fields());
 
       // the values of the compositional fields are stored as blockvectors for each field
       // we have to extract them in this structure
@@ -82,10 +82,10 @@ namespace aspect
               {
                 const unsigned int system_local_dof
                   = this->get_fe().component_to_system_index(/*temperature component=*/dim+1,
-                                                             /*dof index within component=*/i);
+                                                                                       /*dof index within component=*/i);
 
                 vec_distributed(local_dof_indices[system_local_dof])
-                = in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]);
+                  = in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]);
               }
           }
 
@@ -99,7 +99,7 @@ namespace aspect
                                                       this->get_dof_handler(),
                                                       vec,
                                                       indicators,
-  //TODO: replace by the appropriate component mask
+                                                      //TODO: replace by the appropriate component mask
                                                       dim+1);
 
       // Scale gradient in each cell with the correct power of h. Otherwise,

@@ -75,16 +75,16 @@ namespace aspect
       for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
            p = termination_objects.begin();
            p != termination_objects.end(); ++p)
-	   {
-              double current_time_step = (*p)->check_for_last_time_step (new_time_step);
+        {
+          double current_time_step = (*p)->check_for_last_time_step (new_time_step);
 
-	      AssertThrow (current_time_step > 0,
-	        ExcMessage("Time step must be greater than 0."));
-	      AssertThrow (current_time_step <= new_time_step,
-	        ExcMessage("Current time step must be less than or equal to time step entered into function."));
+          AssertThrow (current_time_step > 0,
+                       ExcMessage("Time step must be greater than 0."));
+          AssertThrow (current_time_step <= new_time_step,
+                       ExcMessage("Current time step must be less than or equal to time step entered into function."));
 
-	      new_time_step = std::min(current_time_step, new_time_step);
-	   }
+          new_time_step = std::min(current_time_step, new_time_step);
+        }
       return new_time_step;
     }
 

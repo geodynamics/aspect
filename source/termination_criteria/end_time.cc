@@ -41,7 +41,7 @@ namespace aspect
       if ((this->get_time()<end_time)
           &&
           (this->get_time()+time_step > end_time))
-	return end_time - this->get_time();
+        return end_time - this->get_time();
       else
         return time_step;
     }
