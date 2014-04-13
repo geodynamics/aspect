@@ -33,11 +33,9 @@ Number of degrees of freedom: 10,436 (6,402+833+3,201)
      Heat fluxes through boundary parts: -0.129 W, -0.2469 W, -4.669e-06 W, -4.669e-06 W
      Writing depth average               output-refine_vel/depth_average.gnuplot
 
-AAA 3
 Number of active cells: 837 (on 6 levels)
 Number of degrees of freedom: 11,660 (7,154+929+3,577)
 
-AAA 3
 Number of active cells: 912 (on 6 levels)
 Number of degrees of freedom: 12,904 (7,916+1,030+3,958)
 
@@ -64,7 +62,6 @@ Number of degrees of freedom: 12,904 (7,916+1,030+3,958)
      Heat fluxes through boundary parts: -0.1229 W, -0.2444 W, -1.313e-06 W, -8.754e-06 W
      Writing depth average               output-refine_vel/depth_average.gnuplot
 
-AAA 3
 Number of active cells: 990 (on 6 levels)
 Number of degrees of freedom: 14,115 (8,658+1,128+4,329)
 
@@ -91,7 +88,6 @@ Number of degrees of freedom: 14,115 (8,658+1,128+4,329)
      Heat fluxes through boundary parts: -0.1178 W, -0.2424 W, 1.713e-07 W, -1.151e-05 W
      Writing depth average               output-refine_vel/depth_average.gnuplot
 
-AAA 3
 Number of active cells: 1,092 (on 6 levels)
 Number of degrees of freedom: 15,598 (9,568+1,246+4,784)
 
@@ -118,7 +114,6 @@ Number of degrees of freedom: 15,598 (9,568+1,246+4,784)
      Heat fluxes through boundary parts: -0.1147 W, -0.2403 W, 1.338e-06 W, -1.428e-05 W
      Writing depth average               output-refine_vel/depth_average.gnuplot
 
-AAA 3
 Number of active cells: 1,209 (on 6 levels)
 Number of degrees of freedom: 17,345 (10,640+1,385+5,320)
 
@@ -145,7 +140,6 @@ Number of degrees of freedom: 17,345 (10,640+1,385+5,320)
      Heat fluxes through boundary parts: -0.1136 W, -0.2386 W, 5.164e-07 W, 5.954e-06 W
      Writing depth average               output-refine_vel/depth_average.gnuplot
 
-AAA 3
 Number of active cells: 1,356 (on 7 levels)
 Number of degrees of freedom: 19,477 (11,950+1,552+5,975)
 
@@ -172,7 +166,6 @@ Number of degrees of freedom: 19,477 (11,950+1,552+5,975)
      Heat fluxes through boundary parts: -0.1144 W, -0.2371 W, 1.18e-06 W, 6.828e-06 W
      Writing depth average               output-refine_vel/depth_average.gnuplot
 
-AAA 3
 Number of active cells: 1,512 (on 7 levels)
 Number of degrees of freedom: 21,843 (13,406+1,734+6,703)
 
