@@ -164,7 +164,7 @@ namespace aspect
          * @}
          */
 
-	
+
         /**
          * @name Functions used in dealing with run-time parameters
          * @{
