@@ -169,6 +169,11 @@ namespace aspect
          * @}
          */
 
+	
+        /**
+         * @name Functions used in dealing with run-time parameters
+         * @{
+         */
         /**
          * Declare the parameters this class takes through input files.
          */
