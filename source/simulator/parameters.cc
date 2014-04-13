@@ -24,7 +24,6 @@
 #include <aspect/global.h>
 
 #include <deal.II/base/parameter_handler.h>
-#include <boost/lexical_cast.hpp>
 
 #include <dirent.h>
 
@@ -114,8 +113,8 @@ namespace aspect
                        "one can choose $c>1$) though a CFL number significantly larger than "
                        "one will yield rather diffusive solutions. Units: None.");
     prm.declare_entry ("Maximum time step",
-                       boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
-                                                        year_in_seconds),
+                       /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
+                                                           year_in_seconds) = */ "5.69e+300",
                        Patterns::Double (0),
                        "Set a maximum time step size for the solver to use. Generally the time step "
                        "based on the CFL number should be sufficient, but for complicated models "
