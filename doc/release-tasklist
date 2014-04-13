@@ -2,6 +2,10 @@
   . go through the list of TODOs in the source code and see what can be done
   . make sure the description of the interfaces that need to be updated
     are up to date in the manual
+  . fix doxygen errors:
+    find include -name "*h" -print | xargs -n 1 deal-trunk/tests/scripts/checkdoxygen.py
+  . fix formatting:
+    find . -name "*h" -print | while read file;do deal.II/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
   . apply astyle formatting, see doc/astyle.rc
   . update copyright years of all files
   . update changes.h in doc/modules:
