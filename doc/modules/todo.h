@@ -13,10 +13,10 @@
  * <li>arbitrary: $c \in \mathbb{R}$
  * </ol>
  *
- * Depending on the meaning of a
- * field, we may want to use different artificial viscosity approaches,
- * compression, etc. We may also want to project back into the feasible set
- * when passing compositional values to material models.
+ * Depending on the meaning of a field, we may want to use different
+ * artificial viscosity approaches, compression, etc. We may also want to
+ * project back into the feasible set when passing compositional values to
+ * material models.
  *
  * <li>Implement "open boundary conditions" as described in "Using open
  * sidewalls for modelling self-consistent lithosphere subduction dynamics",
