@@ -4,12 +4,16 @@
  * <h3>Extensions we'd like to implement</h3>
  *
  * <ol>
- * <li>Mark compositional fields as to their meaning. This may include: <ol>
+ * <li>Mark compositional fields as to their meaning. This may include:
+ * <ol>
  * <li>concentration: $0 \leq c \leq 1$
  * <li>binary: $c \in \{0,1\}$
  * <li>positive: $c \geq 0$
  * <li>level set: $c \in \mathbb{R}$
- * <li>arbitrary: $c \in \mathbb{R}$ </ol> Depending on the meaning of a
+ * <li>arbitrary: $c \in \mathbb{R}$
+ * </ol>
+ *
+ * Depending on the meaning of a
  * field, we may want to use different artificial viscosity approaches,
  * compression, etc. We may also want to project back into the feasible set
  * when passing compositional values to material models.
@@ -32,7 +36,8 @@
  * <li>Free surfaces (Ian Rose has something initial)
  * <li>Self gravity (Ian Rose has something initial)
  * <li>We need a scheme to verify that plugins are compiled against the same
- * version of ASPECT that they are running under. </ol>
+ * version of ASPECT that they are running under.
+ * </ol>
  *
  *
  * <h3>Bugs we know of</h3>
@@ -54,7 +59,9 @@
  * <li>write a testcase for friction heating (Poiseulle flow) and adiabatic
  * heating (constant downward velocity)
  * <li>write tests for the depth averaging functions (test adaptive
- * refinement, averaged composition, non-zero average/sinking velocity) </ol>
+ * refinement, averaged composition, non-zero average/sinking velocity)
+ *
+ * </ol>
  *
  *
  * <h3>Other issues to address</h3>
