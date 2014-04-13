@@ -88,7 +88,7 @@ namespace aspect
     Tensor<1,dim>
     RadialLinear<dim>::gravity_vector (const Point<dim> &p) const
     {
-      if(p.norm() == 0.0) return Tensor<1,dim>();
+      if (p.norm() == 0.0) return Tensor<1,dim>();
 
       double depth = this->get_geometry_model().depth(p);
       Tensor<1,dim> grav =  -magnitude_at_surface * p/p.norm() *
@@ -106,8 +106,8 @@ namespace aspect
         {
           prm.declare_entry ("Magnitude at surface", "9.8",
                              Patterns::Double (0),
-                             "Magnitude of the radial gravity vector"
-                             "at the surface of the domain, m/s^2");
+                             "Magnitude of the radial gravity vector "
+                             "at the surface of the domain, $m/s^2$");
         }
         prm.leave_subsection ();
       }
