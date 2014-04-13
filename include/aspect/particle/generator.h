@@ -33,7 +33,7 @@ namespace aspect
     namespace Generator
     {
       /**
-       *  Abstract base class used for classes that generate particles
+       * Abstract base class used for classes that generate particles
        */
       template <int dim, class T>
       class Interface
@@ -52,13 +52,14 @@ namespace aspect
 
           /**
            * Generate a specified number of particles in the specified world
-           * using the type of generation function implemented by this Generator.
+           * using the type of generation function implemented by this
+           * Generator.
            *
            * @param [in] world The particle world the particles will exist in
-           * @param [in] total_num_particles Total number of particles to generate.
-           * The actual number of generated particles may differ, for example if
-           * the generator reads particles from a file this parameter may be ignored.
-           * @return
+           * @param [in] total_num_particles Total number of particles to
+           * generate. The actual number of generated particles may differ,
+           * for example if the generator reads particles from a file this
+           * parameter may be ignored. @return
            */
           virtual
           void
@@ -79,7 +80,8 @@ namespace aspect
 
 
       /**
-       * Return a list of names (separated by '|') of possible particle generators.
+       * Return a list of names (separated by '|') of possible particle
+       * generators.
        */
       std::string
       generator_object_names ();

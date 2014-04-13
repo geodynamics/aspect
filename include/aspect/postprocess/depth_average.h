@@ -35,8 +35,8 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that generates depth average output in periodic intervals
-     * or every time step.
+     * A postprocessor that generates depth average output in periodic
+     * intervals or every time step.
      *
      * @ingroup Postprocessing
      */
@@ -64,8 +64,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void
@@ -84,22 +83,22 @@ namespace aspect
         void load (const std::map<std::string, std::string> &status_strings);
 
         /**
-         * Serialize the contents of this class as far as they are not
-         * read from input parameter files.
+         * Serialize the contents of this class as far as they are not read
+         * from input parameter files.
          */
         template <class Archive>
         void serialize (Archive &ar, const unsigned int version);
 
       private:
         /**
-         * Interval between the generation of output. This
-         * parameter is read from the input file and consequently is not part
-         * of the state that needs to be saved and restored.
+         * Interval between the generation of output. This parameter is read
+         * from the input file and consequently is not part of the state that
+         * needs to be saved and restored.
          *
-         * For technical reasons, this value is stored as given in the
-         * input file and upon use is either interpreted as seconds or
-         * years, depending on how the global flag in the input parameter
-         * file is set.
+         * For technical reasons, this value is stored as given in the input
+         * file and upon use is either interpreted as seconds or years,
+         * depending on how the global flag in the input parameter file is
+         * set.
          */
         double output_interval;
 
@@ -116,13 +115,14 @@ namespace aspect
         DataOutBase::OutputFormat output_format;
 
         /**
-         * Number of zones in depth direction over which we are supposed to average.
+         * Number of zones in depth direction over which we are supposed to
+         * average.
          */
         unsigned int n_depth_zones;
 
         /**
-        * A structure for a single time step record.
-        */
+         * A structure for a single time step record.
+         */
         struct DataPoint
         {
           double time;
@@ -138,11 +138,10 @@ namespace aspect
         std::vector<DataPoint> entries;
 
         /**
-         * Compute the next output time from the current one. In
-         * the simplest case, this is simply the previous
-         * next output time plus the interval, but in general
-         * we'd like to ensure that it is larger than the current
-         * time to avoid falling behind with next_output_time and
+         * Compute the next output time from the current one. In the simplest
+         * case, this is simply the previous next output time plus the
+         * interval, but in general we'd like to ensure that it is larger than
+         * the current time to avoid falling behind with next_output_time and
          * having to catch up once the time step becomes larger.
          */
         void set_next_output_time (const double current_time);

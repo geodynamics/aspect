@@ -32,9 +32,9 @@ namespace aspect
   {
 
     /**
-     * A class that terminates the simulation when a specified file
-     * appears in the working directory. This allows the user to
-     * gracefully exit the simulation at any time.
+     * A class that terminates the simulation when a specified file appears in
+     * the working directory. This allows the user to gracefully exit the
+     * simulation at any time.
      *
      * @ingroup TerminationCriteria
      */
@@ -45,7 +45,8 @@ namespace aspect
         /**
          * Evaluate this termination criterion.
          *
-         * @return Whether to terminate the simulation (true) or continue (false).
+         * @return Whether to terminate the simulation (true) or continue
+         * (false).
          */
         virtual
         bool
@@ -59,8 +60,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void

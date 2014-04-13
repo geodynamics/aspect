@@ -43,8 +43,9 @@ namespace aspect
     {
       public:
         /**
-         * Evaluate the solution for some temperature statistics for the Table model.
-         **/
+         * Evaluate the solution for some temperature statistics for the Table
+         * model.
+         */
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);

@@ -43,7 +43,7 @@ namespace aspect
       public:
         /**
          * Evaluate the solution for the dynamic topography.
-         **/
+         */
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);

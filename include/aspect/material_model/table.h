@@ -87,51 +87,53 @@ namespace aspect
          */
 
         /**
-        * Return true if the viscosity() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
+         * Return true if the viscosity() function returns something that may
+         * depend on the variable identifies by the argument.
+         */
         virtual bool
         viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-        * Return true if the density() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
+         * Return true if the density() function returns something that may
+         * depend on the variable identifies by the argument.
+         */
         virtual bool
         density_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-        * Return true if the compressibility() function returns something that
-        * may depend on the variable identifies by the argument.
-        *
-        * This function must return false for all possible arguments if the
-        * is_compressible() function returns false.
-        */
+         * Return true if the compressibility() function returns something
+         * that may depend on the variable identifies by the argument.
+         *
+         * This function must return false for all possible arguments if the
+         * is_compressible() function returns false.
+         */
         virtual bool
         compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-        * Return true if the specific_heat() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
+         * Return true if the specific_heat() function returns something that
+         * may depend on the variable identifies by the argument.
+         */
         virtual bool
         specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-        * Return true if the thermal_conductivity() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
+         * Return true if the thermal_conductivity() function returns
+         * something that may depend on the variable identifies by the
+         * argument.
+         */
         virtual bool
         thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
          * Return whether the model is compressible or not.  Incompressibility
          * does not necessarily imply that the density is constant; rather, it
-         * may still depend on temperature or pressure but is only interpreted as such in the rhs of the Stokes equation.
-         * This is consistent with the so called Bousinesq formulation.
-         * In the current context, compressibility means whether we should solve the contuity
-         * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
-         * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
+         * may still depend on temperature or pressure but is only interpreted
+         * as such in the rhs of the Stokes equation. This is consistent with
+         * the so called Bousinesq formulation. In the current context,
+         * compressibility means whether we should solve the contuity equation
+         * as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes) or as
+         * $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
         virtual bool is_compressible () const;
         /**
@@ -144,30 +146,27 @@ namespace aspect
          */
 
         /**
-        * A reference viscosity
-        *
-        * The value here is not used in the computation of things but only in
-        * postprocessing the solution when we want dimension-less
-        * quantities.
-        */
+         * A reference viscosity
+         *
+         * The value here is not used in the computation of things but only in
+         * postprocessing the solution when we want dimension-less quantities.
+         */
         virtual double reference_viscosity () const;
 
         /**
          * A reference density
          *
          * The value here is not used in the computation of things but only in
-         * postprocessing the solution when we want dimension-less
-         * quantities.
+         * postprocessing the solution when we want dimension-less quantities.
          */
         virtual double reference_density () const;
 
         /**
-         * A reference thermal diffusivity $\kappa$. $\kappa$ is related to the thermal
-         * conductivity $k$ as $\kappa = k/(rho c_p)$.
+         * A reference thermal diffusivity $\kappa$. $\kappa$ is related to
+         * the thermal conductivity $k$ as $\kappa = k/(rho c_p)$.
          *
          * The value here is not used in the computation of things but only in
-         * postprocessing the solution when we want dimension-less
-         * quantities.
+         * postprocessing the solution when we want dimension-less quantities.
          */
         double reference_thermal_diffusivity () const;
 
@@ -175,8 +174,7 @@ namespace aspect
          * A reference thermal expansion coefficient $\alpha$.
          *
          * The value here is not used in the computation of things but only in
-         * postprocessing the solution when we want dimension-less
-         * quantities.
+         * postprocessing the solution when we want dimension-less quantities.
          */
         double reference_thermal_expansion_coefficient () const;
 
@@ -190,12 +188,11 @@ namespace aspect
                                                       const Point<dim> &position) const;
 
         /**
-        * A reference thermal specific heat $c_p$.
-        *
-        * The value here is not used in the computation of things but only in
-        * postprocessing the solution when we want dimension-less
-        * quantities.
-        */
+         * A reference thermal specific heat $c_p$.
+         *
+         * The value here is not used in the computation of things but only in
+         * postprocessing the solution when we want dimension-less quantities.
+         */
         double reference_cp () const;
         /**
          * @}
@@ -210,8 +207,7 @@ namespace aspect
          * the seismic pressure wave speed
          *
          * The value here is not used in the computation of things but only in
-         * postprocessing the solution when we want dimension-less
-         * quantities.
+         * postprocessing the solution when we want dimension-less quantities.
          */
         virtual double seismic_Vp (const double temperature,
                                    const double pressure,
@@ -221,21 +217,19 @@ namespace aspect
          * the seismic shear wave speed
          *
          * The value here is not used in the computation of things but only in
-         * postprocessing the solution when we want dimension-less
-         * quantities.
+         * postprocessing the solution when we want dimension-less quantities.
          */
         virtual double seismic_Vs (const double temperature,
                                    const double pressure,
                                    const std::vector<double> &compositional_fields) const;
 
         /**
-         * the phase of the composition at given pressure and temperature
-         * this returns an integer value that is associated with a specific phase
+         * the phase of the composition at given pressure and temperature this
+         * returns an integer value that is associated with a specific phase
          * for instance Majorite of PostPerovskite
          *
          * The value here is not used in the computation of things but only in
-         * postprocessing the solution when we want dimension-less
-         * quantities.
+         * postprocessing the solution when we want dimension-less quantities.
          */
         virtual unsigned int thermodynamic_phase (const double temperature,
                                                   const double pressure,
@@ -258,8 +252,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void

@@ -36,12 +36,12 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       /**
-       * A class derived from DataPostprocessor that takes an output vector and
-       * computes a variable that represents the melt fraction
-       * at every point.
+       * A class derived from DataPostprocessor that takes an output vector
+       * and computes a variable that represents the melt fraction at every
+       * point.
        *
-       * The member functions are all implementations of those declared in the base
-       * class. See there for their meaning.
+       * The member functions are all implementations of those declared in the
+       * base class. See there for their meaning.
        */
       template <int dim>
       class MeltFraction
@@ -69,8 +69,7 @@ namespace aspect
           declare_parameters (ParameterHandler &prm);
 
           /**
-           * Read the parameters this class declares from the parameter
-           * file.
+           * Read the parameters this class declares from the parameter file.
            */
           virtual
           void

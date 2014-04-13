@@ -33,8 +33,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that describes a perturbed initial temperature field for
-     * the spherical shell.
+     * A class that describes a perturbed initial temperature field for the
+     * spherical shell.
      *
      * @ingroup InitialConditionsModels
      */
@@ -51,8 +51,8 @@ namespace aspect
 
 
     /**
-     * A class that describes a perturbed initial temperature field for
-     * the spherical shell.
+     * A class that describes a perturbed initial temperature field for the
+     * spherical shell.
      *
      * @ingroup InitialConditionsModels
      */
@@ -62,8 +62,8 @@ namespace aspect
       public:
 
         /**
-        * Constructor.
-        */
+         * Constructor.
+         */
         SphericalGaussianPerturbation<dim>();
 
         /**
@@ -80,8 +80,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void

@@ -51,31 +51,30 @@ namespace aspect
   extern const double year_in_seconds;
 
   /**
-   * A variable that denotes whether we should periodically
-   * output statistics about memory consumption, run times, etc
-   * via the Simulator::output_statistics() function or other
-   * means.
+   * A variable that denotes whether we should periodically output statistics
+   * about memory consumption, run times, etc via the
+   * Simulator::output_statistics() function or other means.
    */
   extern const bool output_parallel_statistics;
 
 
   /**
-   * A typedef that denotes the BOOST stream type for reading data
-   * during serialization. The type chosen here is a binary archive
-   * which we subsequently will have to un-compress.
+   * A typedef that denotes the BOOST stream type for reading data during
+   * serialization. The type chosen here is a binary archive which we
+   * subsequently will have to un-compress.
    */
   typedef boost::archive::binary_iarchive iarchive;
 
   /**
-   * A typedef that denotes the BOOST stream type for writing data
-   * during serialization. The type chosen here is a binary archive
-   * which we compress before writing it into a file.
+   * A typedef that denotes the BOOST stream type for writing data during
+   * serialization. The type chosen here is a binary archive which we compress
+   * before writing it into a file.
    */
   typedef boost::archive::binary_oarchive oarchive;
 
   /**
-   * A namespace that contains typedefs for classes used in
-   * the linear algebra description.
+   * A namespace that contains typedefs for classes used in the linear algebra
+   * description.
    */
   namespace LinearAlgebra
   {
@@ -88,8 +87,8 @@ namespace aspect
     typedef PETScWrappers::MPI::Vector Vector;
 
     /**
-     * Typedef for the type used to describe vectors that
-     * consist of multiple blocks.
+     * Typedef for the type used to describe vectors that consist of multiple
+     * blocks.
      */
     typedef PETScWrappers::MPI::BlockVector BlockVector;
 
@@ -99,27 +98,27 @@ namespace aspect
     typedef PETScWrappers::MPI::SparseMatrix SparseMatrix;
 
     /**
-     * Typedef for the type used to describe sparse matrices that
-     * consist of multiple blocks.
+     * Typedef for the type used to describe sparse matrices that consist of
+     * multiple blocks.
      */
     typedef PETScWrappers::MPI::BlockSparseMatrix BlockSparseMatrix;
 
     /**
-     * Typedef for the AMG preconditioner type used for the
-     * top left block of the Stokes matrix.
+     * Typedef for the AMG preconditioner type used for the top left block of
+     * the Stokes matrix.
      */
     typedef PETScWrappers::PreconditionBoomerAMG PreconditionAMG;
 
     /**
-     * Typedef for the Incomplete Cholesky preconditioner used
-     * for other blocks of the system matrix.
+     * Typedef for the Incomplete Cholesky preconditioner used for other
+     * blocks of the system matrix.
      */
     typedef PETScWrappers::PreconditionICC PreconditionIC;
 
     /**
-     * Typedef for the Incomplete LU decomposition preconditioner used
-     * for other blocks of the system matrix. Note that PETSc does not
-     * support a communicating ILU, so we use Jacobi here.
+     * Typedef for the Incomplete LU decomposition preconditioner used for
+     * other blocks of the system matrix. Note that PETSc does not support a
+     * communicating ILU, so we use Jacobi here.
      */
     typedef PETScWrappers::PreconditionBlockJacobi PreconditionILU;
 
@@ -132,8 +131,8 @@ namespace aspect
     typedef TrilinosWrappers::MPI::Vector Vector;
 
     /**
-     * Typedef for the type used to describe vectors that
-     * consist of multiple blocks.
+     * Typedef for the type used to describe vectors that consist of multiple
+     * blocks.
      */
     typedef TrilinosWrappers::MPI::BlockVector BlockVector;
 
@@ -143,26 +142,26 @@ namespace aspect
     typedef TrilinosWrappers::SparseMatrix SparseMatrix;
 
     /**
-     * Typedef for the type used to describe sparse matrices that
-     * consist of multiple blocks.
+     * Typedef for the type used to describe sparse matrices that consist of
+     * multiple blocks.
      */
     typedef TrilinosWrappers::BlockSparseMatrix BlockSparseMatrix;
 
     /**
-     * Typedef for the AMG preconditioner type used for the
-     * top left block of the Stokes matrix.
+     * Typedef for the AMG preconditioner type used for the top left block of
+     * the Stokes matrix.
      */
     typedef TrilinosWrappers::PreconditionAMG PreconditionAMG;
 
     /**
-     * Typedef for the Incomplete Cholesky preconditioner used
-     * for other blocks of the system matrix.
+     * Typedef for the Incomplete Cholesky preconditioner used for other
+     * blocks of the system matrix.
      */
     typedef TrilinosWrappers::PreconditionIC PreconditionIC;
 
     /**
-     * Typedef for the Incomplete LU decomposition preconditioner used
-     * for other blocks of the system matrix.
+     * Typedef for the Incomplete LU decomposition preconditioner used for
+     * other blocks of the system matrix.
      */
     typedef TrilinosWrappers::PreconditionILU PreconditionILU;
 #endif
@@ -171,10 +170,10 @@ namespace aspect
 
 
 /**
- * A macro that is used in instantiating the ASPECT classes and functions
- * for both 2d and 3d. Call this macro with the name of another macro that
- * when called with a single integer argument instantiates the respective
- * classes in the given space dimension.
+ * A macro that is used in instantiating the ASPECT classes and functions for
+ * both 2d and 3d. Call this macro with the name of another macro that when
+ * called with a single integer argument instantiates the respective classes
+ * in the given space dimension.
  */
 #define ASPECT_INSTANTIATE(INSTANTIATIONS) \
   INSTANTIATIONS(2) \

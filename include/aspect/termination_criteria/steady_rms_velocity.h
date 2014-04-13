@@ -32,8 +32,8 @@ namespace aspect
   {
 
     /**
-     * A class that implements a termination criterion based on
-     * steady state of the root mean square of the velocity field.
+     * A class that implements a termination criterion based on steady state
+     * of the root mean square of the velocity field.
      *
      * @ingroup TerminationCriteria
      */
@@ -44,7 +44,8 @@ namespace aspect
         /**
          * Evaluate this termination criterion.
          *
-         * @return Whether to terminate the simulation (true) or continue (false).
+         * @return Whether to terminate the simulation (true) or continue
+         * (false).
          */
         virtual
         bool
@@ -58,8 +59,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void
@@ -70,9 +70,9 @@ namespace aspect
         double                                  relative_deviation;
 
         /**
-         * A list of pairs (time, rms_velocity) that we have
-         * computed at previous time steps. This is used to determine
-         * when we have reached steady state.
+         * A list of pairs (time, rms_velocity) that we have computed at
+         * previous time steps. This is used to determine when we have reached
+         * steady state.
          */
         std::list<std::pair<double, double> >   time_rmsvel;
 

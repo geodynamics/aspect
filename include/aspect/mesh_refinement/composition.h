@@ -32,8 +32,8 @@ namespace aspect
   {
 
     /**
-     * A class that implements a mesh refinement criterion based on
-     * the compositional fields (if available).
+     * A class that implements a mesh refinement criterion based on the
+     * compositional fields (if available).
      *
      * @ingroup MeshRefinement
      */
@@ -45,8 +45,8 @@ namespace aspect
         /**
          * Initialize this class for a given simulator. This function calls
          * the corresponding object in the SimulatorAccess class and then
-         * initializes the current object by looking up the correct number
-         * of compositional fields through the now initialized SimulatorAccess
+         * initializes the current object by looking up the correct number of
+         * compositional fields through the now initialized SimulatorAccess
          * class.
          *
          * @param simulator A reference to the main simulator object.
@@ -56,11 +56,10 @@ namespace aspect
         /**
          * Execute this mesh refinement criterion.
          *
-         * @param[out] error_indicators A vector that for every active
-         * cell of the current mesh
-         * (which may be a partition of a distributed mesh) provides an error
-         * indicator. This vector will already have the correct size when the
-         * function is called.
+         * @param[out] error_indicators A vector that for every active cell of
+         * the current mesh (which may be a partition of a distributed mesh)
+         * provides an error indicator. This vector will already have the
+         * correct size when the function is called.
          */
         virtual
         void
@@ -74,8 +73,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void

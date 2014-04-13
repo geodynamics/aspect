@@ -68,8 +68,8 @@ namespace aspect
         unsigned int                    n_initial_tracers;
 
         /**
-         * Interval between output (in years if appropriate
-         * simulation parameter is set, otherwise seconds)
+         * Interval between output (in years if appropriate simulation
+         * parameter is set, otherwise seconds)
          */
         double                          data_output_interval;
 
@@ -89,9 +89,9 @@ namespace aspect
         double                          next_data_output_time;
 
         /**
-         * Compute the next time output should be generated assuming
-         * that output was generated at current_time, and set the result
-         * in the next_data_output_time variable.
+         * Compute the next time output should be generated assuming that
+         * output was generated at current_time, and set the result in the
+         * next_data_output_time variable.
          */
         void set_next_data_output_time (const double current_time);
 
@@ -108,21 +108,22 @@ namespace aspect
         ~PassiveTracers();
 
         /**
-         * Execute this postprocessor. Derived classes will implement this function
-         * to do whatever they want to do to evaluate the solution at the current
-         * time step.
+         * Execute this postprocessor. Derived classes will implement this
+         * function to do whatever they want to do to evaluate the solution at
+         * the current time step.
          *
-         * @param[in,out] statistics An object that contains statistics that are collected
-         * throughout the simulation and that will be written to an output file at
-         * the end of each time step. Postprocessors may deposit data in these
-         * tables for later visualization or further processing.
+         * @param[in,out] statistics An object that contains statistics that
+         * are collected throughout the simulation and that will be written to
+         * an output file at the end of each time step. Postprocessors may
+         * deposit data in these tables for later visualization or further
+         * processing.
          *
-         * @return A pair of strings that will be
-         * printed to the screen after running the postprocessor in two columns;
-         * typically the first column contains a description of what the data is
-         * and the second contains a numerical value of this data. If there is
-         * nothing to print, simply return two empty strings.
-         **/
+         * @return A pair of strings that will be printed to the screen after
+         * running the postprocessor in two columns; typically the first
+         * column contains a description of what the data is and the second
+         * contains a numerical value of this data. If there is nothing to
+         * print, simply return two empty strings.
+         */
         virtual std::pair<std::string,std::string> execute (TableHandler &statistics);
 
         /**
@@ -133,8 +134,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void

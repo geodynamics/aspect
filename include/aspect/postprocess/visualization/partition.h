@@ -36,12 +36,12 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       /**
-       * A class derived from DataPostprocessor that takes puts the
-       * number of the parallel process (i.e., the partition number) for
-       * each cell into the output file.
+       * A class derived from DataPostprocessor that takes puts the number of
+       * the parallel process (i.e., the partition number) for each cell into
+       * the output file.
        *
-       * The member functions are all implementations of those declared in the base
-       * class. See there for their meaning.
+       * The member functions are all implementations of those declared in the
+       * base class. See there for their meaning.
        */
       template <int dim>
       class Partition

@@ -32,8 +32,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that describes gravity as a vector of constant
-     * magnitude pointing vertically down.
+     * A class that describes gravity as a vector of constant magnitude
+     * pointing vertically down.
      *
      * @ingroup GravityModels
      */
@@ -54,8 +54,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void

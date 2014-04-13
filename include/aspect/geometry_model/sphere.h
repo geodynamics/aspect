@@ -40,11 +40,11 @@ namespace aspect
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const;
 
         /**
-         * Return the typical length scale one would expect of features in this geometry,
-         * assuming realistic parameters.
+         * Return the typical length scale one would expect of features in
+         * this geometry, assuming realistic parameters.
          *
-         * As discussed in the step-32 tutorial program, an appropriate length scale for
-         * this geometry is 10km, so we return $10^4$ here.
+         * As discussed in the step-32 tutorial program, an appropriate length
+         * scale for this geometry is 10km, so we return $10^4$ here.
          */
         virtual
         double length_scale () const;
@@ -59,12 +59,12 @@ namespace aspect
         double maximal_depth() const;
 
         /**
-               * Return the set of boundary indicators that are used by this model. This
-         * information is used to determine what boundary indicators can be used in
-         * the input file.
+         * Return the set of boundary indicators that are used by this model.
+         * This information is used to determine what boundary indicators can
+         * be used in the input file.
          *
          * The sphere model only has one boundary, with indicator zero.
-               */
+         */
         virtual
         std::set<types::boundary_id>
         get_used_boundary_indicators () const;

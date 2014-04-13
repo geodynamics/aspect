@@ -35,10 +35,9 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements adiabatic initial conditions
-     * for the temperature field and, optional, upper and
-     * lower thermal boundary layers calculated
-     * using the half-space cooling model. The age of the
+     * A class that implements adiabatic initial conditions for the
+     * temperature field and, optional, upper and lower thermal boundary
+     * layers calculated using the half-space cooling model. The age of the
      * boundary layers are input parameters.
      *
      * @ingroup InitialConditionsModels
@@ -61,8 +60,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void
@@ -70,22 +68,22 @@ namespace aspect
 
       private:
         /**
-         * Age of the upper thermal boundary layer at the
-         * surface of the model. If set to zero,
-         * no boundary layer will be present in the model.
+         * Age of the upper thermal boundary layer at the surface of the
+         * model. If set to zero, no boundary layer will be present in the
+         * model.
          */
         double age_top_boundary_layer;
         /* Age of the lower thermal boundary layer. */
         double age_bottom_boundary_layer;
 
         /**
-         * Radius (in m) of the initial temperature perturbation
-         * at the bottom of the model domain.
+         * Radius (in m) of the initial temperature perturbation at the bottom
+         * of the model domain.
          */
         double radius;
         /**
-         * Amplitude (in K) of the initial temperature
-         * perturbation at the bottom of the model domain.
+         * Amplitude (in K) of the initial temperature perturbation at the
+         * bottom of the model domain.
          */
         double amplitude;
         /*
@@ -102,10 +100,9 @@ namespace aspect
         double subadiabaticity;
 
         /**
-         * A function object representing the compositional fields
-         * that will be used as a reference profile for calculating
-         * the thermal diffusivity.
-         * The function depends only on depth.
+         * A function object representing the compositional fields that will
+         * be used as a reference profile for calculating the thermal
+         * diffusivity. The function depends only on depth.
          */
         std::auto_ptr<Functions::ParsedFunction<1> > function;
     };

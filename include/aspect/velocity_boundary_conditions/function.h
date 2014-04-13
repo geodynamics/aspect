@@ -59,30 +59,30 @@ namespace aspect
         boundary_velocity (const Point<dim> &position) const;
 
         /**
-        * A function that is called at the beginning of each time step
-        * to indicate what the model time is for which the boundary
-        * values will next be evaluated. For the current class, the
-        * function passes to the parsed function what the current time is.
-        */
+         * A function that is called at the beginning of each time step to
+         * indicate what the model time is for which the boundary values will
+         * next be evaluated. For the current class, the function passes to
+         * the parsed function what the current time is.
+         */
         virtual
         void
         set_current_time (const double time);
 
         /**
-         * Declare the parameters this class takes through input files.
-         * The default implementation of this function does not describe
-         * any parameters. Consequently, derived classes do not have to
-         * overload this function if they do not take any runtime parameters.
+         * Declare the parameters this class takes through input files. The
+         * default implementation of this function does not describe any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
          */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file. The default implementation of this function does not read
-         * any parameters. Consequently, derived classes do not have to
-         * overload this function if they do not take any runtime parameters.
+         * Read the parameters this class declares from the parameter file.
+         * The default implementation of this function does not read any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
          */
         virtual
         void
