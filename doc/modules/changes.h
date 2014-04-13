@@ -16,7 +16,6 @@ All entries are signed with the names of the author.
   <br>
   (Rene Gassmoeller, Wolfgang Bangerth, 2014/04/12)
 
-<ol>
   <li>New: A global parameter ``Maximum time step''
   allows the user to select the largest time step that
   a simulation can take.  This may be useful for
@@ -24,7 +23,6 @@ All entries are signed with the names of the author.
   <br>
   (Ian Rose, Wolfgang Bangerth, 2014/04/12)
 
-<ol>
   <li>Fixed: The simple material model now ignores negative
   compositional values that can occur from numerical undershots
   and even interpolation onto the FE space. This makes the
