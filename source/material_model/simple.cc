@@ -128,11 +128,11 @@ namespace aspect
              const Point<dim> &) const
     {
       const double c = compositional_fields.size()>0?
-               std::max(0.0, compositional_fields[0])
-               :
-               0.0;
+                       std::max(0.0, compositional_fields[0])
+                       :
+                       0.0;
       return reference_rho * (1 - thermal_alpha * (temperature - reference_T))
-              + compositional_delta_rho * c;
+             + compositional_delta_rho * c;
     }
 
 

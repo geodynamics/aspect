@@ -43,7 +43,7 @@ namespace aspect
       public:
         /**
          * Evaluate the solution for some heat_flux statistics.
-         **/
+         */
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);

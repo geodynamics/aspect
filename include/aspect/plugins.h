@@ -36,9 +36,8 @@ namespace aspect
   namespace internal
   {
     /**
-     * A namespace for the definition of classes
-     * that have to do with the plugin architecture
-     * of Aspect.
+     * A namespace for the definition of classes that have to do with the
+     * plugin architecture of Aspect.
      */
     namespace Plugins
     {
@@ -47,22 +46,21 @@ namespace aspect
       /**
        * An internal class that is used in the definition of the
        * ASPECT_REGISTER_* macros. Given a registration function, a classname,
-       * a description of what it does, and a name for the parameter file,
-       * it registers the model with the proper authorities.
+       * a description of what it does, and a name for the parameter file, it
+       * registers the model with the proper authorities.
        *
        * The registration happens in the constructor. The typical use case of
        * this function is thus the creation of a dummy object in some
        * otherwise unused namespace.
        */
       template <typename InterfaceClass,
-               typename ModelClass>
+                typename ModelClass>
       struct RegisterHelper
       {
         /**
-         * Constructor. Given a pointer to a registration function
-         * and name and description of the class, this
-         * constructor registers the class passed as second
-         * template argument.
+         * Constructor. Given a pointer to a registration function and name
+         * and description of the class, this constructor registers the class
+         * passed as second template argument.
          */
         RegisterHelper (void (*register_function) (const std::string &,
                                                    const std::string &,
@@ -78,8 +76,8 @@ namespace aspect
         }
 
         /**
-         * A factory object that just creates object of the type registered
-         * by this class.
+         * A factory object that just creates object of the type registered by
+         * this class.
          */
         static
         InterfaceClass *factory ()
@@ -90,29 +88,20 @@ namespace aspect
 
 
       /**
-       * A class that stores a list of registered
-       * plugins for the given interface type.
+       * A class that stores a list of registered plugins for the given
+       * interface type.
        */
       template <typename InterfaceClass>
       struct PluginList
       {
         /**
-         * A type describing everything
-         * we need to know about a plugin.
+         * A type describing everything we need to know about a plugin.
          *
-         * The entries in the tuple are:
-         * - The name by which it can be
-         *   selected.
-         * - A description of this plugin
-         *   that will show up in the
-         *   documentation in the
-         *   parameter file.
-         * - A function that can declare
-         *   the run-time parameters this
-         *   plugin takes from the parameter
-         *   file.
-         * - A function that can produce
-         *   objects of this plugin type.
+         * The entries in the tuple are: - The name by which it can be
+         * selected. - A description of this plugin that will show up in the
+         * documentation in the parameter file. - A function that can declare
+         * the run-time parameters this plugin takes from the parameter file.
+         * - A function that can produce objects of this plugin type.
          */
         typedef
         std_cxx1x::tuple<std::string,
@@ -122,33 +111,16 @@ namespace aspect
                   PluginInfo;
 
         /**
-         * A pointer to a list of
-         * all registered plugins.
+         * A pointer to a list of all registered plugins.
          *
-         * The object is a pointer
-         * rather than an object
-         * for the following
-         * reason: objects with
-         * static initializers
-         * (such as =0) are
-         * initialized before any
-         * objects for which one
-         * needs to run
-         * constructors.
-         * consequently, we can be
-         * sure that this pointer
-         * is set to zero before we
-         * ever try to register a
-         * postprocessor, and
-         * consequently whenever we
-         * run
-         * Manager::register_postprocessor,
-         * we need not worry
-         * whether we try to add
-         * something to this list
-         * before the lists's
-         * constructor has
-         * successfully run
+         * The object is a pointer rather than an object for the following
+         * reason: objects with static initializers (such as =0) are
+         * initialized before any objects for which one needs to run
+         * constructors. consequently, we can be sure that this pointer is set
+         * to zero before we ever try to register a postprocessor, and
+         * consequently whenever we run Manager::register_postprocessor, we
+         * need not worry whether we try to add something to this list before
+         * the lists's constructor has successfully run
          */
         static std::list<PluginInfo> *plugins;
 
@@ -158,10 +130,9 @@ namespace aspect
         ~PluginList ();
 
         /**
-         * Register a plugin by name, description, parameter
-         * declaration function, and factory function. See the
-         * discussion for the PluginInfo type above for more
-         * information on their meaning.
+         * Register a plugin by name, description, parameter declaration
+         * function, and factory function. See the discussion for the
+         * PluginInfo type above for more information on their meaning.
          */
         static
         void register_plugin (const std::string &name,
@@ -170,20 +141,18 @@ namespace aspect
                               InterfaceClass * (*factory_function) ());
 
         /**
-         * Generate a list of names of the registered plugins
-         * separated by '|' so that they can be taken as the input for
-         * Patterns::Selection. If the argument is true, then add
-         * "|all" to the list, i.e. allow a user to select all plugins
-         * at the same time.
+         * Generate a list of names of the registered plugins separated by '|'
+         * so that they can be taken as the input for Patterns::Selection. If
+         * the argument is true, then add "|all" to the list, i.e. allow a
+         * user to select all plugins at the same time.
          */
         static
         std::string get_pattern_of_names (const bool allow_all = false);
 
         /**
-        * Return a string that describes all registered plugins
-        * using the descriptions that have been provided at the
-        * time of registration.
-        */
+         * Return a string that describes all registered plugins using the
+         * descriptions that have been provided at the time of registration.
+         */
         static
         std::string get_description_string ();
 
@@ -194,13 +163,13 @@ namespace aspect
         void declare_parameters (ParameterHandler &prm);
 
         /**
-         * Given the name of one plugin, create a corresponding object
-         * and return a pointer to it. The second argument provides a
-         * hint where this function was called from, to be printed
-         * in case there is an error.
+         * Given the name of one plugin, create a corresponding object and
+         * return a pointer to it. The second argument provides a hint where
+         * this function was called from, to be printed in case there is an
+         * error.
          *
-         * Ownership of the object is handed over to the caller of
-         * this function.
+         * Ownership of the object is handed over to the caller of this
+         * function.
          */
         static
         InterfaceClass *
@@ -208,15 +177,14 @@ namespace aspect
                        const std::string &documentation);
 
         /**
-         * Given the name of one plugin, create a corresponding object
-         * and return a pointer to it. The second argument provides a
-         * hint where this function was called from, to be printed
-         * in case there is an error. Before returning, let the newly
-         * created object read its run-time parameters from the
-         * parameter object.
+         * Given the name of one plugin, create a corresponding object and
+         * return a pointer to it. The second argument provides a hint where
+         * this function was called from, to be printed in case there is an
+         * error. Before returning, let the newly created object read its run-
+         * time parameters from the parameter object.
          *
-         * Ownership of the object is handed over to the caller of
-         * this function.
+         * Ownership of the object is handed over to the caller of this
+         * function.
          */
         static
         InterfaceClass *

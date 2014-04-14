@@ -86,7 +86,7 @@ namespace aspect
       double local_min_temperature = std::numeric_limits<double>::max();
       double local_max_temperature = -std::numeric_limits<double>::max();
       IndexSet range = this->get_solution().block(2).locally_owned_elements();
-      for (unsigned int i=0;i<range.n_elements();++i)
+      for (unsigned int i=0; i<range.n_elements(); ++i)
         {
           const unsigned int idx = range.nth_index_in_set(i);
           const double val =  this->get_solution().block(2)(idx);

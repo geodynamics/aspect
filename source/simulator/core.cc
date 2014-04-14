@@ -103,10 +103,10 @@ namespace aspect
     // create a boundary composition model, but only if we actually need
     // it. otherwise, allow the user to simply specify nothing at all
     boundary_composition (parameters.fixed_composition_boundary_indicators.empty()
-			  ?
-			  0
-			  :
-			  BoundaryComposition::create_boundary_composition<dim>(prm)),
+                          ?
+                          0
+                          :
+                          BoundaryComposition::create_boundary_composition<dim>(prm)),
     compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions (prm,
                                       *geometry_model)),
     adiabatic_conditions(),
@@ -276,7 +276,7 @@ namespace aspect
     pressure_scaling = material_model->reference_viscosity() / geometry_model->length_scale();
 
     std::set<types::boundary_id> open_velocity_boundary_indicators
-    = geometry_model->get_used_boundary_indicators();
+      = geometry_model->get_used_boundary_indicators();
     for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
          p = parameters.prescribed_velocity_boundary_indicators.begin();
          p != parameters.prescribed_velocity_boundary_indicators.end();
@@ -508,23 +508,23 @@ namespace aspect
           // here we create a mask for interpolate_boundary_values out of the 'selector'
           std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
           Assert(introspection.component_masks.velocities[0]==true, ExcInternalError()); // in case we ever move the velocity around
-          const std::string & comp = parameters.prescribed_velocity_boundary_indicators[p->first].first;
+          const std::string &comp = parameters.prescribed_velocity_boundary_indicators[p->first].first;
 
           if (comp.length()>0)
             {
-              for (std::string::const_iterator direction=comp.begin();direction!=comp.end();++direction)
+              for (std::string::const_iterator direction=comp.begin(); direction!=comp.end(); ++direction)
                 {
                   AssertThrow(*direction>='x' && *direction<='z', ExcMessage("Error in selector of prescribed velocity boundary component"));
                   AssertThrow(dim==3 || *direction!='z', ExcMessage("for dim=2, prescribed velocity component z is invalid"))
                   mask[*direction-'x']=true;
                 }
-              for (unsigned int i=0;i<introspection.component_masks.velocities.size();++i)
+              for (unsigned int i=0; i<introspection.component_masks.velocities.size(); ++i)
                 mask[i] = mask[i] & introspection.component_masks.velocities[i];
             }
           else
             {
-              for (unsigned int i=0;i<introspection.component_masks.velocities.size();++i)
-                  mask[i]=introspection.component_masks.velocities[i];
+              for (unsigned int i=0; i<introspection.component_masks.velocities.size(); ++i)
+                mask[i]=introspection.component_masks.velocities[i];
 
               Assert(introspection.component_masks.velocities[0]==true, ExcInternalError()); // in case we ever move the velocity down
             }
@@ -604,8 +604,8 @@ namespace aspect
 
 #ifdef USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
-        dof_handler.locally_owned_dofs_per_processor(),
-        mpi_communicator, introspection.index_sets.system_relevant_set);
+                                               dof_handler.locally_owned_dofs_per_processor(),
+                                               mpi_communicator, introspection.index_sets.system_relevant_set);
 
     sp.compress();
 
@@ -654,8 +654,8 @@ namespace aspect
                                      this_mpi_process(mpi_communicator));
 #ifdef USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
-        dof_handler.locally_owned_dofs_per_processor(),
-        mpi_communicator, introspection.index_sets.system_relevant_set);
+                                               dof_handler.locally_owned_dofs_per_processor(),
+                                               mpi_communicator, introspection.index_sets.system_relevant_set);
 
     sp.compress();
 
@@ -732,10 +732,10 @@ namespace aspect
     //Now set up the constraints for periodic boundary conditions
     {
       typedef std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >
-               periodic_boundary_set;
+      periodic_boundary_set;
       periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
 
-      for(periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
+      for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
         {
           //Throw error if we are trying to use the same boundary for more than one boundary condition
           Assert( is_element( (*p).first.first, parameters.fixed_temperature_boundary_indicators ) == false &&
@@ -745,9 +745,9 @@ namespace aspect
                   is_element( (*p).first.first, parameters.tangential_velocity_boundary_indicators ) == false &&
                   is_element( (*p).first.second, parameters.tangential_velocity_boundary_indicators ) == false &&
                   parameters.prescribed_velocity_boundary_indicators.find( (*p).first.first)
-                             == parameters.prescribed_velocity_boundary_indicators.end() &&
+                  == parameters.prescribed_velocity_boundary_indicators.end() &&
                   parameters.prescribed_velocity_boundary_indicators.find( (*p).first.second)
-                             == parameters.prescribed_velocity_boundary_indicators.end(),
+                  == parameters.prescribed_velocity_boundary_indicators.end(),
                   ExcInternalError());
 
 #if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
@@ -837,7 +837,7 @@ namespace aspect
                                                           introspection.n_components),
                                                       constraints,
                                                       introspection.component_masks.compositional_fields[c]);
-	  }
+          }
     }
     constraints.close();
 
@@ -1310,7 +1310,7 @@ namespace aspect
               const double stokes_residual = solve_stokes();
 
               if (i==0)
-                  initial_stokes_residual = stokes_residual;
+                initial_stokes_residual = stokes_residual;
               else
                 {
                   pcout << "      residual: " << stokes_residual/initial_stokes_residual << std::endl;
@@ -1407,10 +1407,8 @@ namespace aspect
         // returned by compute_time_step is unused, will be
         // added to statistics later
         old_time_step = time_step;
-        time_step = compute_time_step().first;
-        time_step = ( (parameters.maximum_time_step > 0.0 && 
-                       time_step > parameters.maximum_time_step) ? 
-                      parameters.maximum_time_step : time_step);
+        time_step = std::min (compute_time_step().first,
+                              parameters.maximum_time_step);
         time_step = termination_manager.check_for_last_time_step(time_step);
 
         if (parameters.convert_to_years == true)

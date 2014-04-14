@@ -40,23 +40,24 @@ namespace aspect
 
 
   /**
-   * A namespace for everything to do with the decision on how to refine
-   * the mesh every few time steps.
+   * A namespace for everything to do with the decision on how to refine the
+   * mesh every few time steps.
    *
    * @ingroup MeshRefinement
-   **/
+   */
   namespace MeshRefinement
   {
 
     /**
-     * This class declares the public interface of mesh refinement plugins. These plugins
-     * must implement a function that can be called between time steps to refine
-     * the mesh based on the solution and/or the location of a cell.
+     * This class declares the public interface of mesh refinement plugins.
+     * These plugins must implement a function that can be called between time
+     * steps to refine the mesh based on the solution and/or the location of a
+     * cell.
      *
-     * Access to the data of the simulator is granted by the @p protected member functions
-     * of the SimulatorAccess class, i.e., classes implementing this interface will
-     * in general want to derive from both this Interface class as well as from the
-     * SimulatorAccess class.
+     * Access to the data of the simulator is granted by the @p protected
+     * member functions of the SimulatorAccess class, i.e., classes
+     * implementing this interface will in general want to derive from both
+     * this Interface class as well as from the SimulatorAccess class.
      *
      * @ingroup MeshRefinement
      */
@@ -67,18 +68,17 @@ namespace aspect
         /**
          * Destructor. Does nothing but is virtual so that derived classes
          * destructors are also virtual.
-         **/
+         */
         virtual
         ~Interface ();
 
         /**
          * Execute this mesh refinement criterion.
          *
-         * @param[out] error_indicators A vector that for every active
-         * cell of the current mesh
-         * (which may be a partition of a distributed mesh) provides an error
-         * indicator. This vector will already have the correct size when the
-         * function is called.
+         * @param[out] error_indicators A vector that for every active cell of
+         * the current mesh (which may be a partition of a distributed mesh)
+         * provides an error indicator. This vector will already have the
+         * correct size when the function is called.
          */
         virtual
         void
@@ -86,26 +86,26 @@ namespace aspect
 
         /**
          * Declare the parameters this class takes through input files.
-         * Derived classes should overload this function if they actually
-         * do take parameters; this class declares a fall-back function
-         * that does nothing, so that postprocessor classes that do not
-         * take any parameters do not have to do anything at all.
+         * Derived classes should overload this function if they actually do
+         * take parameters; this class declares a fall-back function that does
+         * nothing, so that postprocessor classes that do not take any
+         * parameters do not have to do anything at all.
          *
-         * This function is static (and needs to be static in derived
-         * classes) so that it can be called without creating actual
-         * objects (because declaring parameters happens before we read
-         * the input file and thus at a time when we don't even know yet
-         * which postprocessor objects we need).
+         * This function is static (and needs to be static in derived classes)
+         * so that it can be called without creating actual objects (because
+         * declaring parameters happens before we read the input file and thus
+         * at a time when we don't even know yet which postprocessor objects
+         * we need).
          */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file. The default implementation in this class does nothing,
-         * so that derived classes that do not need any parameters do
-         * not need to implement it.
+         * Read the parameters this class declares from the parameter file.
+         * The default implementation in this class does nothing, so that
+         * derived classes that do not need any parameters do not need to
+         * implement it.
          */
         virtual
         void
@@ -118,7 +118,8 @@ namespace aspect
 
 
     /**
-     * A class that manages all objects that provide functionality to refine meshes.
+     * A class that manages all objects that provide functionality to refine
+     * meshes.
      *
      * @ingroup MeshRefinement
      */
@@ -127,24 +128,26 @@ namespace aspect
     {
       public:
         /**
-         * Destructor. Made virtual since this class has virtual member functions.
+         * Destructor. Made virtual since this class has virtual member
+         * functions.
          */
         virtual ~Manager ();
 
         /**
-         * Initialize the plugins handled by this object for a given simulator.
+         * Initialize the plugins handled by this object for a given
+         * simulator.
          *
-         * @param simulator A reference to the main simulator object to which the
-         * postprocessor implemented in the derived class should be applied.
-         **/
+         * @param simulator A reference to the main simulator object to which
+         * the postprocessor implemented in the derived class should be
+         * applied.
+         */
         void initialize (const Simulator<dim> &simulator);
 
         /**
-         * Execute all of the mesh refinement objects that have been
-         * requested in the input file. The error indicators are then
-         * each individually normalized and merged according to the operation
-         * specified in the input file (e.g., via a plus, a maximum operation,
-         * etc).
+         * Execute all of the mesh refinement objects that have been requested
+         * in the input file. The error indicators are then each individually
+         * normalized and merged according to the operation specified in the
+         * input file (e.g., via a plus, a maximum operation, etc).
          */
         virtual
         void
@@ -159,32 +162,30 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file. This determines which mesh refinement objects will be
-         * created; then let these objects read their parameters as
-         * well.
+         * Read the parameters this class declares from the parameter file.
+         * This determines which mesh refinement objects will be created; then
+         * let these objects read their parameters as well.
          */
         void
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * A function that is used to register mesh refinement objects
-         * in such a way that the Manager can deal with all of them
-         * without having to know them by name. This allows the files
-         * in which individual plugins are implement to register
-         * these plugins, rather than also having to modify the
-         * Manager class by adding the new mesh refinement class.
+         * A function that is used to register mesh refinement objects in such
+         * a way that the Manager can deal with all of them without having to
+         * know them by name. This allows the files in which individual
+         * plugins are implement to register these plugins, rather than also
+         * having to modify the Manager class by adding the new mesh
+         * refinement class.
          *
-         * @param name The name under which this plugin is to
-         * be called in parameter files.
-        * @param description A text description of what this model
-        * does and that will be listed in the documentation of
-        * the parameter file.
-         * @param declare_parameters_function A pointer to a function
-         * that declares the parameters for this plugin.
-         * @param factory_function A pointer to a function that creates
-         * such a mesh refinement object and returns a pointer to it.
-         **/
+         * @param name The name under which this plugin is to be called in
+         * parameter files.
+         * @param description A text description of what this model does and
+         * that will be listed in the documentation of the parameter file.
+         * @param declare_parameters_function A pointer to a function that
+         * declares the parameters for this plugin.
+         * @param factory_function A pointer to a function that creates such a
+         * mesh refinement object and returns a pointer to it.
+         */
         static
         void
         register_mesh_refinement_criterion (const std::string &name,
@@ -202,8 +203,8 @@ namespace aspect
                         << "> among the names of registered mesh refinement objects.");
       private:
         /**
-         * An enum that describes the different ways in which we can
-         * merge the results of multiple mesh refinement criteria.
+         * An enum that describes the different ways in which we can merge the
+         * results of multiple mesh refinement criteria.
          */
         enum MergeOperation
         { plus, max };
@@ -214,8 +215,8 @@ namespace aspect
         MergeOperation merge_operation;
 
         /**
-         * Whether to normalize the individual refinement indicators
-         * to the range $[0,1]$ before merging.
+         * Whether to normalize the individual refinement indicators to the
+         * range $[0,1]$ before merging.
          */
         bool normalize_criteria;
 
@@ -226,14 +227,14 @@ namespace aspect
         std::vector<double> scaling_factors;
 
         /**
-         * A list of mesh refinement objects that have been requested
-         * in the parameter file.
+         * A list of mesh refinement objects that have been requested in the
+         * parameter file.
          */
         std::list<std_cxx1x::shared_ptr<Interface<dim> > > mesh_refinement_objects;
 
         /**
-         * An MPI communicator that spans the set of processors on
-         * which the simulator object lives.
+         * An MPI communicator that spans the set of processors on which the
+         * simulator object lives.
          */
         MPI_Comm mpi_communicator;
     };
@@ -241,9 +242,9 @@ namespace aspect
 
 
     /**
-     * Given a class name, a name, and a description for the parameter file for a mesh
-     * refinement object, register it with
-     * the aspect::MeshRefinement::Manager class.
+     * Given a class name, a name, and a description for the parameter file
+     * for a mesh refinement object, register it with the
+     * aspect::MeshRefinement::Manager class.
      *
      * @ingroup MeshRefinement
      */

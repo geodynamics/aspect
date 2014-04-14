@@ -39,25 +39,26 @@ namespace aspect
 
 
   /**
-   * A namespace for everything to do with determining criteria for terminating
-   * the simulation gracefully. This does not include termination due to errors.
+   * A namespace for everything to do with determining criteria for
+   * terminating the simulation gracefully. This does not include termination
+   * due to errors.
    *
    * @ingroup TerminationCriteria
-   **/
+   */
   namespace TerminationCriteria
   {
 
     /**
-     * This class declares the public interface of termination criteria plugins.
-     * These plugins must implement a function that can be called each time step
-     * to determine if specific criteria have been met that mean the simulation
-     * should be ended gracefully.
+     * This class declares the public interface of termination criteria
+     * plugins. These plugins must implement a function that can be called
+     * each time step to determine if specific criteria have been met that
+     * mean the simulation should be ended gracefully.
      *
-     * Access to the data of the simulator is granted by the @p protected member functions
-     * of the SimulatorAccess class, i.e., classes implementing this interface will
-     * in general want to derive from both this Interface class as well as from the
-     * SimulatorAccess class if they need to find out about the state of the
-     * simulation.
+     * Access to the data of the simulator is granted by the @p protected
+     * member functions of the SimulatorAccess class, i.e., classes
+     * implementing this interface will in general want to derive from both
+     * this Interface class as well as from the SimulatorAccess class if they
+     * need to find out about the state of the simulation.
      *
      * @ingroup TerminationCriteria
      */
@@ -75,57 +76,59 @@ namespace aspect
         /**
          * Execute evaluation of the termination criterion.
          *
-         * @return Whether to terminate the simulation (true) or continue (false).
+         * @return Whether to terminate the simulation (true) or continue
+         * (false).
          *
-         * @note For some kinds of termination plugins, it may be difficult
-         * to ensure that all processors come to the same conclusion. An
-         * example is one that terminates the simulation after a certain
-         * amount of CPU time has expired, and this may be different
-         * from MPI process to MPI process. To avoid difficult to deal with
-         * situations, the plugin manager only requires that a single
-         * processor returns <code>true</code> for a given plugin to
-         * record that the plugin wants to terminate the simulation, even if
-         * the other processors return false.
+         * @note For some kinds of termination plugins, it may be difficult to
+         * ensure that all processors come to the same conclusion. An example
+         * is one that terminates the simulation after a certain amount of CPU
+         * time has expired, and this may be different from MPI process to MPI
+         * process. To avoid difficult to deal with situations, the plugin
+         * manager only requires that a single processor returns
+         * <code>true</code> for a given plugin to record that the plugin
+         * wants to terminate the simulation, even if the other processors
+         * return false.
          */
         virtual
         bool
         execute () = 0;
 
-         /**
-         * Check for last time step and if so reduce the time step to user 
+        /**
+         * Check for last time step and if so reduce the time step to user
          * specified end time
          *
          * @return Reduced or current time step size
          *
-         * @note A reduced time step size will be returned for the
-         * last time step but the current time step size will be
-         * returned otherwise. Also, the default implementation will
-         * always return the full time step size.
+         * @note A reduced time step size may be returned for the last time
+         * step. For all other time steps, the current time step size
+         * (provided as argument) will be returned. The returned time step
+         * size will be greater than zero, and less than or equal to the given
+         * argument put into this function.
          */
-        virtual double check_for_last_time_step (double time_step) const;
+        virtual double check_for_last_time_step (const double time_step) const;
 
         /**
          * Declare the parameters this class takes through input files.
-         * Derived classes should overload this function if they actually
-         * do take parameters; this class declares a fall-back function
-         * that does nothing, so that classes that do not
-         * take any parameters do not have to do anything at all.
+         * Derived classes should overload this function if they actually do
+         * take parameters; this class declares a fall-back function that does
+         * nothing, so that classes that do not take any parameters do not
+         * have to do anything at all.
          *
-         * This function is static (and needs to be static in derived
-         * classes) so that it can be called without creating actual
-         * objects (because declaring parameters happens before we read
-         * the input file and thus at a time when we don't even know yet
-         * which plugin objects we need).
+         * This function is static (and needs to be static in derived classes)
+         * so that it can be called without creating actual objects (because
+         * declaring parameters happens before we read the input file and thus
+         * at a time when we don't even know yet which plugin objects we
+         * need).
          */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file. The default implementation in this class does nothing,
-         * so that derived classes that do not need any parameters do
-         * not need to implement it.
+         * Read the parameters this class declares from the parameter file.
+         * The default implementation in this class does nothing, so that
+         * derived classes that do not need any parameters do not need to
+         * implement it.
          */
         virtual
         void
@@ -138,8 +141,8 @@ namespace aspect
 
 
     /**
-     * A class that manages all objects that provide functionality to
-     * specify termination criteria.
+     * A class that manages all objects that provide functionality to specify
+     * termination criteria.
      *
      * @ingroup TerminationCriteria
      */
@@ -148,11 +151,13 @@ namespace aspect
     {
       public:
         /**
-         * Initialize the plugins handled by this object for a given simulator.
+         * Initialize the plugins handled by this object for a given
+         * simulator.
          *
-         * @param simulator A reference to the main simulator object to which the
-         * postprocessor implemented in the derived class should be applied.
-         **/
+         * @param simulator A reference to the main simulator object to which
+         * the postprocessor implemented in the derived class should be
+         * applied.
+         */
         void initialize (const Simulator<dim> &simulator);
 
         /**
@@ -164,66 +169,64 @@ namespace aspect
          * terminated. The second part indicates whether a final checkpoint
          * should be performed.
          *
-         * To avoid undefined situations, this function only requires that
-         * a single processor's termination request comes back positive
-         * for a given plugin. In other words, for each plugin selected,
-         * not all processors need to return the same value: if only
-         * one of the says that the simulation should be terminated, then
-         * this is enough.
+         * To avoid undefined situations, this function only requires that a
+         * single processor's termination request comes back positive for a
+         * given plugin. In other words, for each plugin selected, not all
+         * processors need to return the same value: if only one of the says
+         * that the simulation should be terminated, then this is enough.
          */
         virtual
         std::pair<bool,bool>
         execute () const;
 
-         /**
-         * Check all of the termination criteria objects that have
-         * been requested in the input file for criteria regarding
-         * last time step and if so get the minimum of these values.
+        /**
+         * Check all of the termination criteria objects that have been
+         * requested in the input file for criteria regarding last time step
+         * and if so get the minimum of these values.
          *
          * @return Reduced or current time step size
          *
-         * @note A reduced time step size will be returned for the
-         * last time step but the current time step size will be
-         * returned otherwise. The time step will be greater than zero
-         * as well as less than or equal to the inputted time step
+         * @note A reduced time step size may be returned for the last time
+         * step. For all other time steps, the current time step size
+         * (provided as argument) will be returned. The returned time step
+         * size will be greater than zero, and less than or equal to the given
+         * argument put into this function.
          */
-        double check_for_last_time_step (double time_step) const;
+        double check_for_last_time_step (const double time_step) const;
 
         /**
-         * Declare the parameters of all known termination criteria plugins, as
-         * well as of ones this class has itself.
+         * Declare the parameters of all known termination criteria plugins,
+         * as well as of ones this class has itself.
          */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file. This determines which termination criteria objects
-         * will be created; then let these objects read their parameters as
-         * well.
+         * Read the parameters this class declares from the parameter file.
+         * This determines which termination criteria objects will be created;
+         * then let these objects read their parameters as well.
          */
         void
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * A function that is used to register termination criteria objects
-         * in such a way that the Manager can deal with all of them
-         * without having to know them by name. This allows the files
-         * in which individual plugins are implement to register
-         * these plugins, rather than also having to modify the
-         * Manager class by adding the new termination criteria class.
+         * A function that is used to register termination criteria objects in
+         * such a way that the Manager can deal with all of them without
+         * having to know them by name. This allows the files in which
+         * individual plugins are implement to register these plugins, rather
+         * than also having to modify the Manager class by adding the new
+         * termination criteria class.
          *
-         * @param name The name under which this plugin is to
-         * be called in parameter files.
-        * @param description A text description of what this model
-        * does and that will be listed in the documentation of
-        * the parameter file.
-         * @param declare_parameters_function A pointer to a function
-         * that declares the parameters for this plugin.
-         * @param factory_function A pointer to a function that creates
-         * such a termination criterion object and returns a pointer to it.
-         **/
+         * @param name The name under which this plugin is to be called in
+         * parameter files.
+         * @param description A text description of what this model does and
+         * that will be listed in the documentation of the parameter file.
+         * @param declare_parameters_function A pointer to a function that
+         * declares the parameters for this plugin.
+         * @param factory_function A pointer to a function that creates such a
+         * termination criterion object and returns a pointer to it.
+         */
         static
         void
         register_termination_criterion (const std::string &name,
@@ -241,8 +244,8 @@ namespace aspect
                         << "> among the names of registered termination criteria objects.");
       private:
         /**
-         * A list of termination criterion objects that have been requested
-         * in the parameter file.
+         * A list of termination criterion objects that have been requested in
+         * the parameter file.
          */
         std::list<std_cxx1x::shared_ptr<Interface<dim> > > termination_objects;
 
@@ -253,17 +256,18 @@ namespace aspect
         std::list<std::string>                              termination_obj_names;
 
         /**
-         * Whether to do a final checkpoint before termination. This is specified in the parameters.
-        */
+         * Whether to do a final checkpoint before termination. This is
+         * specified in the parameters.
+         */
         bool do_checkpoint_on_terminate;
     };
 
 
 
     /**
-     * Given a class name, a name, and a description for the parameter file for a
-     * termination criterion object, register it with
-     * the aspect::TerminationCriteria::Manager class.
+     * Given a class name, a name, and a description for the parameter file
+     * for a termination criterion object, register it with the
+     * aspect::TerminationCriteria::Manager class.
      *
      * @ingroup TerminationCriteria
      */

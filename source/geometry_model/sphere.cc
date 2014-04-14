@@ -35,8 +35,8 @@ namespace aspect
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
       GridGenerator::hyper_ball (coarse_grid,
-                                  Point<dim>(),
-                                  R);
+                                 Point<dim>(),
+                                 R);
       static const HyperBallBoundary<dim> boundary_ball(Point<dim>(), R);
       coarse_grid.set_boundary (0, boundary_ball);
     }
@@ -110,7 +110,7 @@ namespace aspect
       {
         prm.enter_subsection("Sphere");
         {
-          prm.declare_entry ("Radius", "6371000", 
+          prm.declare_entry ("Radius", "6371000",
                              Patterns::Double (0),
                              "Radius of the sphere. Units: m.");
         }

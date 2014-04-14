@@ -95,7 +95,7 @@ namespace aspect
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         {
           IndexSet range = this->get_solution().block(this->introspection().block_indices.compositional_fields[c]).locally_owned_elements();
-          for (unsigned int i=0;i<range.n_elements();++i)
+          for (unsigned int i=0; i<range.n_elements(); ++i)
             {
               const unsigned int idx = range.nth_index_in_set(i);
               const double val =  this->get_solution().block(this->introspection().block_indices.compositional_fields[c])(idx);

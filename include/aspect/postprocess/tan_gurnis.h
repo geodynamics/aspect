@@ -31,11 +31,11 @@ namespace aspect
   namespace Postprocess
   {
     /**
-     * A postprocessor that evaluates the accuracy of the solution of
-     * the aspect::MaterialModel::TanGurnis material model.
+     * A postprocessor that evaluates the accuracy of the solution of the
+     * aspect::MaterialModel::TanGurnis material model.
      *
-     * The implementation writes out the solution to be read in by a matlab script.
-     * The benchmark is from the article
+     * The implementation writes out the solution to be read in by a matlab
+     * script. The benchmark is from the article
      * @code
      *  @article{tan2007compressible,
      *    title={Compressible thermochemical convection and application to lower mantle structures},

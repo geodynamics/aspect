@@ -32,7 +32,8 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes some statistics about the compositional fields, if any.
+     * A postprocessor that computes some statistics about the compositional
+     * fields, if any.
      *
      * @ingroup Postprocessing
      */
@@ -42,7 +43,7 @@ namespace aspect
       public:
         /**
          * Evaluate the solution for some temperature statistics.
-         **/
+         */
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);

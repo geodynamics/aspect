@@ -32,8 +32,8 @@ namespace aspect
   {
 
     /**
-     * A class that terminates the simulation when a specified end time
-     * is reached.
+     * A class that terminates the simulation when a specified end time is
+     * reached.
      *
      * @ingroup TerminationCriteria
      */
@@ -41,16 +41,17 @@ namespace aspect
     class EndTime : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-       
+
         /**
          * Check this termination criterion and possibly reduce time step size
          */
-        double check_for_last_time_step (double time_step) const;
+        double check_for_last_time_step (const double time_step) const;
 
         /**
          * Evaluate this termination criterion.
          *
-         * @return Whether to terminate the simulation (true) or continue (false).
+         * @return Whether to terminate the simulation (true) or continue
+         * (false).
          */
         virtual
         bool
@@ -64,8 +65,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void

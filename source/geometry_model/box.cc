@@ -39,10 +39,10 @@ namespace aspect
     {
       std::vector<unsigned int> rep_vec(repetitions, repetitions+dim);
       GridGenerator::subdivided_hyper_rectangle (coarse_grid,
-          rep_vec,
-          Point<dim>(),
-          extents,
-          true);
+                                                 rep_vec,
+                                                 Point<dim>(),
+                                                 extents,
+                                                 true);
 
       //Tell p4est about the periodicity of the mesh.
 #if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
@@ -50,17 +50,17 @@ namespace aspect
       // If this does not compile you are probably using 8.1pre, so please update
       // to a recent svn version or to the 8.1 release.
       std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator> >
-                    periodicity_vector;
-      for(int i=0; i<dim; ++i)
+      periodicity_vector;
+      for (int i=0; i<dim; ++i)
         if (periodic[i])
           GridTools::collect_periodic_faces
           ( coarse_grid, /*b_id1*/ 2*i, /*b_id2*/ 2*i+1,
-              /*direction*/ i, periodicity_vector);
+            /*direction*/ i, periodicity_vector);
 
       if (periodicity_vector.size() > 0)
         coarse_grid.add_periodicity (periodicity_vector);
 #else
-      for( unsigned int i=0; i<dim; ++i)
+      for ( unsigned int i=0; i<dim; ++i)
         AssertThrow(!periodic[i],
                     ExcMessage("Please update deal.II to the latest version to get support for periodic domains."));
 #endif
@@ -85,7 +85,7 @@ namespace aspect
     get_periodic_boundary_pairs () const
     {
       std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundaries;
-      for( unsigned int i=0; i<dim; ++i)
+      for ( unsigned int i=0; i<dim; ++i)
         if (periodic[i])
           periodic_boundaries.insert( std::make_pair( std::pair<types::boundary_id, types::boundary_id>(2*i, 2*i+1), i) );
       return periodic_boundaries;

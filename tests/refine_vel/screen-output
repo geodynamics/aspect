@@ -1,0 +1,195 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Simulator for Problems in Earth's ConvecTion.
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 768 (on 5 levels)
+Number of degrees of freedom: 10,436 (6,402+833+3,201)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+3 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     9.81
+     Reference thermal expansion (1/K):             2e-05
+     Temperature contrast across model domain (K): 0
+     Model domain depth (m):                        2.89e+06
+     Reference thermal diffusivity (m^2/s):         2.42424e-13
+     Reference viscosity (Pas):                     1e+22
+     Ra number:                                     0
+     k_value:                                       1e-06
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 2.42424e-13
+
+     Writing graphical output:           output-refine_vel/solution-00000
+     RMS, max velocity:                  1.21e-09 m/s, 3.64e-09 m/s
+     Temperature min/avg/max:            0 K, 101.4 K, 1613 K
+     Heat fluxes through boundary parts: -0.129 W, -0.2469 W, -4.669e-06 W, -4.669e-06 W
+     Writing depth average               output-refine_vel/depth_average.gnuplot
+
+Number of active cells: 837 (on 6 levels)
+Number of degrees of freedom: 11,660 (7,154+929+3,577)
+
+Number of active cells: 912 (on 6 levels)
+Number of degrees of freedom: 12,904 (7,916+1,030+3,958)
+
+*** Timestep 1:  t=1.56836e+13 seconds
+   Solving temperature system... 19 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-refine_vel/solution-00001
+     RMS, max velocity:                  1.26e-09 m/s, 3.75e-09 m/s
+     Temperature min/avg/max:            -202.2 K, 102.8 K, 1613 K
+     Heat fluxes through boundary parts: -0.1256 W, -0.2457 W, -2.204e-06 W, -6.235e-06 W
+     Writing depth average               output-refine_vel/depth_average.gnuplot
+
+*** Timestep 2:  t=2.32729e+13 seconds
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 20 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-refine_vel/solution-00002
+     RMS, max velocity:                  1.29e-09 m/s, 3.8e-09 m/s
+     Temperature min/avg/max:            -202.4 K, 103.8 K, 1613 K
+     Heat fluxes through boundary parts: -0.1229 W, -0.2444 W, -1.313e-06 W, -8.754e-06 W
+     Writing depth average               output-refine_vel/depth_average.gnuplot
+
+Number of active cells: 990 (on 6 levels)
+Number of degrees of freedom: 14,115 (8,658+1,128+4,329)
+
+*** Timestep 3:  t=3.07665e+13 seconds
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-refine_vel/solution-00003
+     RMS, max velocity:                  1.32e-09 m/s, 3.85e-09 m/s
+     Temperature min/avg/max:            -202.6 K, 104.7 K, 1613 K
+     Heat fluxes through boundary parts: -0.1202 W, -0.2435 W, -3.309e-07 W, -1.015e-05 W
+     Writing depth average               output-refine_vel/depth_average.gnuplot
+
+*** Timestep 4:  t=3.81707e+13 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 19 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-refine_vel/solution-00004
+     RMS, max velocity:                  1.35e-09 m/s, 3.89e-09 m/s
+     Temperature min/avg/max:            -202.9 K, 105.6 K, 1613 K
+     Heat fluxes through boundary parts: -0.1178 W, -0.2424 W, 1.713e-07 W, -1.151e-05 W
+     Writing depth average               output-refine_vel/depth_average.gnuplot
+
+Number of active cells: 1,092 (on 6 levels)
+Number of degrees of freedom: 15,598 (9,568+1,246+4,784)
+
+*** Timestep 5:  t=4.54881e+13 seconds
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-refine_vel/solution-00005
+     RMS, max velocity:                  1.38e-09 m/s, 3.94e-09 m/s
+     Temperature min/avg/max:            -202.9 K, 106.4 K, 1613 K
+     Heat fluxes through boundary parts: -0.116 W, -0.2413 W, 1.648e-06 W, -1.207e-05 W
+     Writing depth average               output-refine_vel/depth_average.gnuplot
+
+*** Timestep 6:  t=5.27266e+13 seconds
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 20 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-refine_vel/solution-00006
+     RMS, max velocity:                  1.41e-09 m/s, 3.98e-09 m/s
+     Temperature min/avg/max:            -202.6 K, 107 K, 1613 K
+     Heat fluxes through boundary parts: -0.1147 W, -0.2403 W, 1.338e-06 W, -1.428e-05 W
+     Writing depth average               output-refine_vel/depth_average.gnuplot
+
+Number of active cells: 1,209 (on 6 levels)
+Number of degrees of freedom: 17,345 (10,640+1,385+5,320)
+
+*** Timestep 7:  t=5.9889e+13 seconds
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 19 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-refine_vel/solution-00007
+     RMS, max velocity:                  1.44e-09 m/s, 4.01e-09 m/s
+     Temperature min/avg/max:            -202.4 K, 107.6 K, 1613 K
+     Heat fluxes through boundary parts: -0.1138 W, -0.2394 W, 6.598e-07 W, -4.841e-06 W
+     Writing depth average               output-refine_vel/depth_average.gnuplot
+
+*** Timestep 8:  t=6.6987e+13 seconds
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-refine_vel/solution-00008
+     RMS, max velocity:                  1.47e-09 m/s, 4.05e-09 m/s
+     Temperature min/avg/max:            -202.1 K, 108.1 K, 1613 K
+     Heat fluxes through boundary parts: -0.1136 W, -0.2386 W, 5.164e-07 W, 5.954e-06 W
+     Writing depth average               output-refine_vel/depth_average.gnuplot
+
+Number of active cells: 1,356 (on 7 levels)
+Number of degrees of freedom: 19,477 (11,950+1,552+5,975)
+
+*** Timestep 9:  t=7.40219e+13 seconds
+   Solving temperature system... 15 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-refine_vel/solution-00009
+     RMS, max velocity:                  1.5e-09 m/s, 4.08e-09 m/s
+     Temperature min/avg/max:            -201.9 K, 108.5 K, 1613 K
+     Heat fluxes through boundary parts: -0.1138 W, -0.2378 W, 5.627e-07 W, 7.65e-06 W
+     Writing depth average               output-refine_vel/depth_average.gnuplot
+
+*** Timestep 10:  t=8.10056e+13 seconds
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 19 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-refine_vel/solution-00010
+     RMS, max velocity:                  1.53e-09 m/s, 4.11e-09 m/s
+     Temperature min/avg/max:            -201.7 K, 108.9 K, 1613 K
+     Heat fluxes through boundary parts: -0.1144 W, -0.2371 W, 1.18e-06 W, 6.828e-06 W
+     Writing depth average               output-refine_vel/depth_average.gnuplot
+
+Number of active cells: 1,512 (on 7 levels)
+Number of degrees of freedom: 21,843 (13,406+1,734+6,703)
+
+Termination requested by criterion: end step
+*** Snapshot created!
+
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |        19s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |        11 |      1.16s |       6.1% |
+| Assemble temperature system     |        11 |      2.38s |        12% |
+| Build Stokes preconditioner     |         6 |      1.27s |       6.7% |
+| Build temperature preconditioner|        11 |    0.0921s |      0.48% |
+| Solve Stokes system             |        11 |     0.693s |       3.6% |
+| Solve temperature system        |        11 |    0.0691s |      0.36% |
+| Create snapshot                 |         1 |    0.0481s |      0.25% |
+| Initialization                  |         2 |    0.0224s |      0.12% |
+| Postprocessing                  |        11 |      11.4s |        60% |
+| Refine mesh structure, part 1   |         7 |     0.865s |       4.5% |
+| Refine mesh structure, part 2   |         7 |    0.0268s |      0.14% |
+| Setup dof systems               |         8 |     0.941s |       4.9% |
++---------------------------------+-----------+------------+------------+
+

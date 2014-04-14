@@ -274,18 +274,18 @@ namespace aspect
         const std::string pattern_of_names
           = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
         try
-        {
+          {
             prm.declare_entry ("Model name", "",
                                Patterns::Selection (pattern_of_names),
                                "Select one of the following models:\n\n"
                                +
                                std_cxx1x::get<dim>(registered_plugins).get_description_string());
-        }
+          }
         catch (const ParameterHandler::ExcValueDoesNotMatchPattern &)
-        {
+          {
             // ignore the fact that the default value for this parameter
             // does not match the pattern
-        }
+          }
       }
       prm.leave_subsection ();
 
@@ -365,7 +365,7 @@ namespace aspect
     template <int dim>
     void
     InterfaceCompatibility<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-					  typename Interface<dim>::MaterialModelOutputs &out) const
+                                          typename Interface<dim>::MaterialModelOutputs &out) const
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
@@ -378,7 +378,7 @@ namespace aspect
           out.entropy_derivative_pressure[i]    = entropy_derivative            (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], NonlinearDependence::pressure);
           out.entropy_derivative_temperature[i] = entropy_derivative            (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], NonlinearDependence::temperature);
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
-        	out.reaction_terms[i][c]            = reaction_term                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], c);
+            out.reaction_terms[i][c]            = reaction_term                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], c);
         }
     }
   }

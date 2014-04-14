@@ -31,9 +31,9 @@ namespace aspect
   namespace BoundaryTemperature
   {
     /**
-     * A class that implements a temperature boundary condition for an arbitrary
-     * geometry in which the temperature at the boundaries are the same as in the
-     * initial conditions.
+     * A class that implements a temperature boundary condition for an
+     * arbitrary geometry in which the temperature at the boundaries are the
+     * same as in the initial conditions.
      *
      * @ingroup BoundaryTemperatures
      */
@@ -42,54 +42,55 @@ namespace aspect
     {
       public:
         /**
-         * Return the temperature that is to hold at a particular location on the
-         * boundary of the domain. This function returns the constant temperatures
-         * read from the parameter file for the inner and outer boundaries.
+         * Return the temperature that is to hold at a particular location on
+         * the boundary of the domain. This function returns the constant
+         * temperatures read from the parameter file for the inner and outer
+         * boundaries.
          *
-         * @param geometry_model The geometry model that describes the domain. This may
-         *   be used to determine whether the boundary temperature model is implemented
-         *   for this geometry.
-         * @param boundary_indicator The boundary indicator of the part of the boundary
-         *   of the domain on which the point is located at which we are requesting the
-         *   temperature.
-         * @param location The location of the point at which we ask for the temperature.
-         **/
+         * @param geometry_model The geometry model that describes the domain.
+         * This may be used to determine whether the boundary temperature
+         * model is implemented for this geometry.
+         * @param boundary_indicator The boundary indicator of the part of the
+         * boundary of the domain on which the point is located at which we
+         * are requesting the temperature.
+         * @param location The location of the point at which we ask for the
+         * temperature.
+         */
         virtual
         double temperature (const GeometryModel::Interface<dim> &geometry_model,
                             const unsigned int                   boundary_indicator,
                             const Point<dim>                    &location) const;
 
         /**
-         * Return the minimal the temperature on that part of the boundary
-         * on which Dirichlet conditions are posed.
+         * Return the minimal the temperature on that part of the boundary on
+         * which Dirichlet conditions are posed.
          *
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
         virtual
-        double minimal_temperature (const std::set<types::boundary_id>& fixed_boundary_ids) const;
+        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
-         * Return the maximal the temperature on that part of the boundary
-         * on which Dirichlet conditions are posed.
+         * Return the maximal the temperature on that part of the boundary on
+         * which Dirichlet conditions are posed.
          *
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
         virtual
-        double maximal_temperature (const std::set<types::boundary_id>& fixed_boundary_ids) const;
+        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
-         * Declare the parameters this class takes through input files.
-         * This class declares the inner and outer boundary temperatures.
+         * Declare the parameters this class takes through input files. This
+         * class declares the inner and outer boundary temperatures.
          */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void

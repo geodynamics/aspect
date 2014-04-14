@@ -65,18 +65,18 @@ namespace aspect
         initialize (const GeometryModel::Interface<dim> &geometry_model);
 
         /**
-        * A function that is called at the beginning of each time step
-        * to indicate what the model time is for which the boundary
-        * values will next be evaluated. The default implementation of
-        * the function will simply record the time in the current_time
-        * member variable, but derived classes that need more elaborate
-        * setups for a given time step may overload the function.
-        *
-        * The point of this function is to allow complex boundary velocity
-        * models to do an initialization step once at the beginning of each
-        * time step. An example would be a model that needs to call an
-        * external program to compute positions for a set of plates.
-        */
+         * A function that is called at the beginning of each time step to
+         * indicate what the model time is for which the boundary values will
+         * next be evaluated. The default implementation of the function will
+         * simply record the time in the current_time member variable, but
+         * derived classes that need more elaborate setups for a given time
+         * step may overload the function.
+         *
+         * The point of this function is to allow complex boundary velocity
+         * models to do an initialization step once at the beginning of each
+         * time step. An example would be a model that needs to call an
+         * external program to compute positions for a set of plates.
+         */
         virtual
         void
         set_current_time (const double time);
@@ -89,20 +89,20 @@ namespace aspect
         boundary_velocity (const Point<dim> &position) const = 0;
 
         /**
-         * Declare the parameters this class takes through input files.
-         * The default implementation of this function does not describe
-         * any parameters. Consequently, derived classes do not have to
-         * overload this function if they do not take any runtime parameters.
+         * Declare the parameters this class takes through input files. The
+         * default implementation of this function does not describe any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
          */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file. The default implementation of this function does not read
-         * any parameters. Consequently, derived classes do not have to
-         * overload this function if they do not take any runtime parameters.
+         * Read the parameters this class declares from the parameter file.
+         * The default implementation of this function does not read any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
          */
         virtual
         void
@@ -115,10 +115,10 @@ namespace aspect
         const GeometryModel::Interface<dim> *geometry_model;
 
         /**
-        * A variable that stores the current time of the simulation. Derived
-        * classes can query this variable. It is set at the beginning of each
-        * time step.
-        */
+         * A variable that stores the current time of the simulation. Derived
+         * classes can query this variable. It is set at the beginning of each
+         * time step.
+         */
         double current_time;
     };
 
@@ -130,13 +130,14 @@ namespace aspect
      * selected from the parameter file.
      *
      * @param name A string that identifies the velocity boundary conditions
-     * model @param description A text description of what this model does and
-     * that will be listed in the documentation of the parameter file.  @param
-     * declare_parameters_function A pointer to a function that can be used to
-     * declare the parameters that this velocity boundary conditions model
-     * wants to read from input files.  @param factory_function A pointer to a
-     * function that can create an object of this velocity boundary conditions
-     * model.
+     * model
+     * @param description A text description of what this model does and that
+     * will be listed in the documentation of the parameter file.
+     * @param declare_parameters_function A pointer to a function that can be
+     * used to declare the parameters that this velocity boundary conditions
+     * model wants to read from input files.
+     * @param factory_function A pointer to a function that can create an
+     * object of this velocity boundary conditions model.
      *
      * @ingroup VelocityBoundaryConditionsModels
      */
@@ -148,12 +149,13 @@ namespace aspect
                                                  Interface<dim> *(*factory_function) ());
 
     /**
-     * A function that given the name of a model returns a pointer to an object
-     * that describes it. Ownership of the pointer is transferred to the caller.
+     * A function that given the name of a model returns a pointer to an
+     * object that describes it. Ownership of the pointer is transferred to
+     * the caller.
      *
-     * This function makes the newly created object read its parameters from the
-     * input parameter object, and then initializes it with the given geometry
-     * model.
+     * This function makes the newly created object read its parameters from
+     * the input parameter object, and then initializes it with the given
+     * geometry model.
      *
      * @ingroup VelocityBoundaryConditionsModels
      */

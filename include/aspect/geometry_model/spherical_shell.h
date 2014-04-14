@@ -34,13 +34,13 @@ namespace aspect
 
     /**
      * A class that describes the geometry as a spherical shell. To be more
-     * precise, at least in 2d this class can also simulate just a sector
-     * of the spherical shell geometry, in particular a half ring and a
-     * quarter ring.
+     * precise, at least in 2d this class can also simulate just a sector of
+     * the spherical shell geometry, in particular a half ring and a quarter
+     * ring.
      *
-     * The parameters that describe this geometry and that are read from
-     * the input file are the inner and outer radii of the shell and the
-     * opening angle of the section of the shell we want to build.
+     * The parameters that describe this geometry and that are read from the
+     * input file are the inner and outer radii of the shell and the opening
+     * angle of the section of the shell we want to build.
      */
     template <int dim>
     class SphericalShell : public Interface<dim>
@@ -53,11 +53,11 @@ namespace aspect
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const;
 
         /**
-         * Return the typical length scale one would expect of features in this geometry,
-         * assuming realistic parameters.
+         * Return the typical length scale one would expect of features in
+         * this geometry, assuming realistic parameters.
          *
-         * As discussed in the step-32 tutorial program, an appropriate length scale for
-         * this geometry is 10km, so we return $10^4$ here.
+         * As discussed in the step-32 tutorial program, an appropriate length
+         * scale for this geometry is 10km, so we return $10^4$ here.
          */
         virtual
         double length_scale () const;
@@ -71,34 +71,35 @@ namespace aspect
         virtual
         double maximal_depth() const;
         /**
-               * Return the set of boundary indicators that are used by this model. This
-         * information is used to determine what boundary indicators can be used in
-         * the input file.
+         * Return the set of boundary indicators that are used by this model.
+         * This information is used to determine what boundary indicators can
+         * be used in the input file.
          *
-         * The spherical shell model uses boundary indicators zero and one, with zero
-         * corresponding to the inner surface and one corresponding to the outer
-         * surface. In 2d, if the geomery is only a slice of the shell, boundary
-         * indicators 2 and 3 indicate the left and right radial bounding lines.
-               */
+         * The spherical shell model uses boundary indicators zero and one,
+         * with zero corresponding to the inner surface and one corresponding
+         * to the outer surface. In 2d, if the geomery is only a slice of the
+         * shell, boundary indicators 2 and 3 indicate the left and right
+         * radial bounding lines.
+         */
         virtual
         std::set<types::boundary_id>
         get_used_boundary_indicators () const;
 
         /**
-         * Declare the parameters this class takes through input files.
-         * The default implementation of this function does not describe
-         * any parameters. Consequently, derived classes do not have to
-         * overload this function if they do not take any runtime parameters.
+         * Declare the parameters this class takes through input files. The
+         * default implementation of this function does not describe any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
          */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file. The default implementation of this function does not read
-         * any parameters. Consequently, derived classes do not have to
-         * overload this function if they do not take any runtime parameters.
+         * Read the parameters this class declares from the parameter file.
+         * The default implementation of this function does not read any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
          */
         virtual
         void

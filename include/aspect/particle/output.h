@@ -33,26 +33,26 @@ namespace aspect
     namespace Output
     {
       /**
-       *  Abstract base class used for classes that generate particle output
+       * Abstract base class used for classes that generate particle output
        */
       template <int dim, class T>
       class Interface
       {
         protected:
           /**
-           *  Path to directory in which to put particle output files
+           * Path to directory in which to put particle output files
            */
           const std::string     output_dir;
 
           /**
-           *  MPI communicator to be used for output synchronization
+           * MPI communicator to be used for output synchronization
            */
           MPI_Comm        communicator;
 
 //TODO: This needs to be serialized
           /**
-           *  Internal index of file output number, must be incremented
-           *  by derived classes when they create a new file.
+           * Internal index of file output number, must be incremented by
+           * derived classes when they create a new file.
            */
           unsigned int    file_index;
 
@@ -78,19 +78,18 @@ namespace aspect
           virtual ~Interface () {}
 
           /**
-           * Write data about the particles specified in the first argument
-           * to a file. If possible, encode the current simulation time
-           * into this file using the data provided in the second argument.
+           * Write data about the particles specified in the first argument to
+           * a file. If possible, encode the current simulation time into this
+           * file using the data provided in the second argument.
            *
-           * @param [in] particles The set of particles to generate a graphical
-           *   representation for
-           * @param [in] current_time Current time of the simulation, given as either
-           *   years or seconds, as selected in the input file. In other words,
-           *   output writers do not need to know the units in which time is
-           *   described.
-           * @return The name of the file that was written, or any other
-           *   information that describes what output was produced if for example
-           *   multiple files were created.
+           * @param [in] particles The set of particles to generate a
+           * graphical representation for
+           * @param [in] current_time Current time of the simulation, given as
+           * either years or seconds, as selected in the input file. In other
+           * words, output writers do not need to know the units in which time
+           * is described. @return The name of the file that was written, or
+           * any other information that describes what output was produced if
+           * for example multiple files were created.
            */
           virtual
           std::string
@@ -113,11 +112,11 @@ namespace aspect
        * Create an output object.
        *
        * @param[in] data_format_name Name of the format in which the created
-       *   output writer should produce its files
-       * @param[in] output_directory Directory into which to put the data files
+       * output writer should produce its files
+       * @param[in] output_directory Directory into which to put the data
+       * files
        * @param[in] communicator MPI communicator object that describes this
-       *   simulation
-       * @return
+       * simulation @return
        */
       template <int dim, class T>
       Interface<dim, T> *
@@ -127,8 +126,8 @@ namespace aspect
 
 
       /**
-       * Return a list of names (separated by '|') of possible writers of graphical
-       * output formats for particle data.
+       * Return a list of names (separated by '|') of possible writers of
+       * graphical output formats for particle data.
        */
       std::string
       output_object_names ();

@@ -65,7 +65,7 @@ namespace aspect
     template <int dim>
     double
     SphericalConstant<dim>::
-    minimal_composition (const std::set<types::boundary_id>& fixed_boundary_ids) const
+    minimal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       return std::min (inner_composition, outer_composition);
     }
@@ -75,7 +75,7 @@ namespace aspect
     template <int dim>
     double
     SphericalConstant<dim>::
-    maximal_composition (const std::set<types::boundary_id>& fixed_boundary_ids) const
+    maximal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       return std::max (inner_composition, outer_composition);
     }

@@ -43,8 +43,8 @@ namespace aspect
         return it->second;
       else
         {
-            Assert (false, ExcMessage ("Unknown boundary indicator."));
-            return std::numeric_limits<double>::quiet_NaN();
+          Assert (false, ExcMessage ("Unknown boundary indicator."));
+          return std::numeric_limits<double>::quiet_NaN();
         }
     }
 
@@ -58,7 +58,7 @@ namespace aspect
       double min = it->second;
       ++it;
 
-      for( ; it != boundary_temperatures.end(); ++it)
+      for ( ; it != boundary_temperatures.end(); ++it)
         if ( it->second < min )
           min = it->second;
 
@@ -76,10 +76,10 @@ namespace aspect
       double max = it->second;
       ++it;
 
-      for( ; it != boundary_temperatures.end(); ++it)
+      for ( ; it != boundary_temperatures.end(); ++it)
         if ( it->second > max )
           max = it->second;
-      
+
       return max;
     }
 
@@ -94,14 +94,14 @@ namespace aspect
         prm.enter_subsection("Constant");
         {
           prm.declare_entry ("Boundary indicator to temperature mappings", "",
-                         Patterns::Map (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max()),
-                                        Patterns::Double()),
-                                        "A comma separated list of mappings between boundary "
-                                        "indicators and the temperature associated with the "
-                                        "boundary indicators. The format for this list is "
-                                        "``indicator1 : value1, indicator2 : value2, ...'', "
-                                        "where each indicator is a valid boundary indicator "
-                                        "and each value is the temperature of that boundary." );
+                             Patterns::Map (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max()),
+                                            Patterns::Double()),
+                             "A comma separated list of mappings between boundary "
+                             "indicators and the temperature associated with the "
+                             "boundary indicators. The format for this list is "
+                             "``indicator1 : value1, indicator2 : value2, ...'', "
+                             "where each indicator is a valid boundary indicator "
+                             "and each value is the temperature of that boundary." );
         }
         prm.leave_subsection ();
       }
@@ -139,10 +139,10 @@ namespace aspect
               while (ss.peek()==' ') ss.get(c); // eat spaces
 
               if (ss.peek() != ':')
-              {
+                {
                   Assert(false, ExcMessage("Cannot parse boundary temperature list, format"
                                            "``boundary_id : value'' appears to be missing"));
-              }
+                }
               else
                 ss.get(c); // read the ':'
 
@@ -150,9 +150,9 @@ namespace aspect
               std::getline(ss,value); // read until the end of the string
 
               AssertThrow (boundary_temperatures.find(boundary_id) == boundary_temperatures.end(),
-                            ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
-                                        "> appears more than once in the list of indicators "
-                                        "for constant temperature boundary conditions."));
+                           ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
+                                       "> appears more than once in the list of indicators "
+                                       "for constant temperature boundary conditions."));
 
               boundary_temperatures[boundary_id] = Utilities::string_to_double(value);
             }

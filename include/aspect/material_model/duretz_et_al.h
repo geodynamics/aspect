@@ -46,23 +46,24 @@ namespace aspect
      *    pages =        {Q07004/1--26}}
      * @endcode
      *
-     * @note While this paper summarizes the benchmarks used here, some
-     * of the benchmarks actually originate in earlier papers. For the original
+     * @note While this paper summarizes the benchmarks used here, some of the
+     * benchmarks actually originate in earlier papers. For the original
      * references, see the bibliography of the paper above.
      */
     namespace DuretzEtAl
     {
       /**
-       * A material model that describes the <i>SolCx</i> benchmark of the paper
-       * cited in the documentation of the DuretzEtAl namespace.
+       * A material model that describes the <i>SolCx</i> benchmark of the
+       * paper cited in the documentation of the DuretzEtAl namespace.
        *
        * @note The SolCx benchmark only talks about the flow field, not about
        * a temperature field. All quantities related to the temperature are
        * therefore set to zero in the implementation of this class.
        *
        * @note The analytic solution of this benchmark is implemented in the
-       * "SolCx error" postprocessor in aspect::Postprocessor::DuretzEtAl::SolCx
-       * class and can be used to assess the accuracy of the computed solution.
+       * "SolCx error" postprocessor in
+       * aspect::Postprocessor::DuretzEtAl::SolCx class and can be used to
+       * assess the accuracy of the computed solution.
        *
        * @ingroup MaterialModels
        */
@@ -114,50 +115,52 @@ namespace aspect
            */
 
           /**
-          * Return true if the viscosity() function returns something that
-          * may depend on the variable identifies by the argument.
-          */
+           * Return true if the viscosity() function returns something that
+           * may depend on the variable identifies by the argument.
+           */
           virtual bool
           viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-          * Return true if the density() function returns something that
-          * may depend on the variable identifies by the argument.
-          */
+           * Return true if the density() function returns something that may
+           * depend on the variable identifies by the argument.
+           */
           virtual bool
           density_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-          * Return true if the compressibility() function returns something that
-          * may depend on the variable identifies by the argument.
-          *
-          * This function must return false for all possible arguments if the
-          * is_compressible() function returns false.
-          */
+           * Return true if the compressibility() function returns something
+           * that may depend on the variable identifies by the argument.
+           *
+           * This function must return false for all possible arguments if the
+           * is_compressible() function returns false.
+           */
           virtual bool
           compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-          * Return true if the specific_heat() function returns something that
-          * may depend on the variable identifies by the argument.
-          */
+           * Return true if the specific_heat() function returns something
+           * that may depend on the variable identifies by the argument.
+           */
           virtual bool
           specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-          * Return true if the thermal_conductivity() function returns something that
-          * may depend on the variable identifies by the argument.
-          */
+           * Return true if the thermal_conductivity() function returns
+           * something that may depend on the variable identifies by the
+           * argument.
+           */
           virtual bool
           thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-           * Return whether the model is compressible or not.  Incompressibility
-           * does not necessarily imply that the density is constant; rather, it
-           * may still depend on temperature or pressure. In the current
-           * context, compressibility means whether we should solve the contuity
-           * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
-           * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
+           * Return whether the model is compressible or not.
+           * Incompressibility does not necessarily imply that the density is
+           * constant; rather, it may still depend on temperature or pressure.
+           * In the current context, compressibility means whether we should
+           * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
+           * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
+           * (incompressible Stokes).
            */
           virtual bool is_compressible () const;
           /**
@@ -173,8 +176,7 @@ namespace aspect
           declare_parameters (ParameterHandler &prm);
 
           /**
-           * Read the parameters this class declares from the parameter
-           * file.
+           * Read the parameters this class declares from the parameter file.
            */
           virtual
           void
@@ -200,39 +202,40 @@ namespace aspect
            */
 
           /**
-            * Returns the viscosity value on the right half of the domain, typically 1 or 1e6
-            */
+           * Returns the viscosity value on the right half of the domain,
+           * typically 1 or 1e6
+           */
           double get_eta_B() const;
 
           /**
-            * Returns the background density of this model. See the corresponding
-            * member variable of this class for more information.
-            */
+           * Returns the background density of this model. See the
+           * corresponding member variable of this class for more information.
+           */
           double get_background_density() const;
 
         private:
           /**
-            * Viscosity value on the right half of the domain, typically 1 or 1e6
-            */
+           * Viscosity value on the right half of the domain, typically 1 or
+           * 1e6
+           */
           double eta_B;
 
           /**
-           * A constant background density over which the density
-           * variations are overlaid. This constant density has no
-           * effect on the dynamic pressure and consequently on
-           * the flow field, but it contributes to the total pressure
-           * via the adiabatic pressure. We use this field to support
-           * our claim in the first ASPECT paper that the accuracy
-           * of the solutions is guaranteed even if we don't
-           * subtract the adiabatic pressure in our computations.
+           * A constant background density over which the density variations
+           * are overlaid. This constant density has no effect on the dynamic
+           * pressure and consequently on the flow field, but it contributes
+           * to the total pressure via the adiabatic pressure. We use this
+           * field to support our claim in the first ASPECT paper that the
+           * accuracy of the solutions is guaranteed even if we don't subtract
+           * the adiabatic pressure in our computations.
            */
           double background_density;
       };
 
 
       /**
-       * A material model that describes the <i>SolKz</i> benchmark of the paper
-       * cited in the documentation of the DuretzEtAl namespace.
+       * A material model that describes the <i>SolKz</i> benchmark of the
+       * paper cited in the documentation of the DuretzEtAl namespace.
        *
        * @note The SolKz benchmark only talks about the flow field, not about
        * a temperature field. All quantities related to the temperature are
@@ -288,50 +291,52 @@ namespace aspect
            */
 
           /**
-          * Return true if the viscosity() function returns something that
-          * may depend on the variable identifies by the argument.
-          */
+           * Return true if the viscosity() function returns something that
+           * may depend on the variable identifies by the argument.
+           */
           virtual bool
           viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-          * Return true if the density() function returns something that
-          * may depend on the variable identifies by the argument.
-          */
+           * Return true if the density() function returns something that may
+           * depend on the variable identifies by the argument.
+           */
           virtual bool
           density_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-          * Return true if the compressibility() function returns something that
-          * may depend on the variable identifies by the argument.
-          *
-          * This function must return false for all possible arguments if the
-          * is_compressible() function returns false.
-          */
+           * Return true if the compressibility() function returns something
+           * that may depend on the variable identifies by the argument.
+           *
+           * This function must return false for all possible arguments if the
+           * is_compressible() function returns false.
+           */
           virtual bool
           compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-          * Return true if the specific_heat() function returns something that
-          * may depend on the variable identifies by the argument.
-          */
+           * Return true if the specific_heat() function returns something
+           * that may depend on the variable identifies by the argument.
+           */
           virtual bool
           specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-          * Return true if the thermal_conductivity() function returns something that
-          * may depend on the variable identifies by the argument.
-          */
+           * Return true if the thermal_conductivity() function returns
+           * something that may depend on the variable identifies by the
+           * argument.
+           */
           virtual bool
           thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-           * Return whether the model is compressible or not.  Incompressibility
-           * does not necessarily imply that the density is constant; rather, it
-           * may still depend on temperature or pressure. In the current
-           * context, compressibility means whether we should solve the contuity
-           * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
-           * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
+           * Return whether the model is compressible or not.
+           * Incompressibility does not necessarily imply that the density is
+           * constant; rather, it may still depend on temperature or pressure.
+           * In the current context, compressibility means whether we should
+           * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
+           * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
+           * (incompressible Stokes).
            */
           virtual bool is_compressible () const;
           /**
@@ -358,11 +363,11 @@ namespace aspect
       };
 
       /**
-       * A material model that describes the "Pure shear/Inclusion" benchmark of the paper
-       * cited in the documentation of the DuretzEtAl namespace.
+       * A material model that describes the "Pure shear/Inclusion" benchmark
+       * of the paper cited in the documentation of the DuretzEtAl namespace.
        *
-       * @note This benchmark only talks about the flow field, not about
-       * a temperature field. All quantities related to the temperature are
+       * @note This benchmark only talks about the flow field, not about a
+       * temperature field. All quantities related to the temperature are
        * therefore set to zero in the implementation of this class.
        *
        * @ingroup MaterialModels
@@ -415,50 +420,52 @@ namespace aspect
            */
 
           /**
-          * Return true if the viscosity() function returns something that
-          * may depend on the variable identifies by the argument.
-          */
+           * Return true if the viscosity() function returns something that
+           * may depend on the variable identifies by the argument.
+           */
           virtual bool
           viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-          * Return true if the density() function returns something that
-          * may depend on the variable identifies by the argument.
-          */
+           * Return true if the density() function returns something that may
+           * depend on the variable identifies by the argument.
+           */
           virtual bool
           density_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-          * Return true if the compressibility() function returns something that
-          * may depend on the variable identifies by the argument.
-          *
-          * This function must return false for all possible arguments if the
-          * is_compressible() function returns false.
-          */
+           * Return true if the compressibility() function returns something
+           * that may depend on the variable identifies by the argument.
+           *
+           * This function must return false for all possible arguments if the
+           * is_compressible() function returns false.
+           */
           virtual bool
           compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-          * Return true if the specific_heat() function returns something that
-          * may depend on the variable identifies by the argument.
-          */
+           * Return true if the specific_heat() function returns something
+           * that may depend on the variable identifies by the argument.
+           */
           virtual bool
           specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-          * Return true if the thermal_conductivity() function returns something that
-          * may depend on the variable identifies by the argument.
-          */
+           * Return true if the thermal_conductivity() function returns
+           * something that may depend on the variable identifies by the
+           * argument.
+           */
           virtual bool
           thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
           /**
-           * Return whether the model is compressible or not.  Incompressibility
-           * does not necessarily imply that the density is constant; rather, it
-           * may still depend on temperature or pressure. In the current
-           * context, compressibility means whether we should solve the contuity
-           * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
-           * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
+           * Return whether the model is compressible or not.
+           * Incompressibility does not necessarily imply that the density is
+           * constant; rather, it may still depend on temperature or pressure.
+           * In the current context, compressibility means whether we should
+           * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
+           * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
+           * (incompressible Stokes).
            */
           virtual bool is_compressible () const;
           /**
@@ -472,8 +479,7 @@ namespace aspect
           declare_parameters (ParameterHandler &prm);
 
           /**
-           * Read the parameters this class declares from the parameter
-           * file.
+           * Read the parameters this class declares from the parameter file.
            */
           virtual
           void
@@ -499,14 +505,14 @@ namespace aspect
            * @}
            */
           /**
-            * Returns the viscosity value in the inclusion
-            */
+           * Returns the viscosity value in the inclusion
+           */
           double get_eta_B() const;
 
         private:
           /**
-            * viscosity value in the inclusion
-            */
+           * viscosity value in the inclusion
+           */
           double eta_B;
       };
     }

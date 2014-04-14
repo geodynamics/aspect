@@ -32,8 +32,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that describes a perturbed initial temperature field for
-     * a box geometry.
+     * A class that describes a perturbed initial temperature field for a box
+     * geometry.
      *
      * @ingroup InitialConditionsModels
      */
@@ -49,8 +49,8 @@ namespace aspect
     };
 
     /**
-     * A class that describes an opposing poles initial temperature
-     * field for a box geometry.
+     * A class that describes an opposing poles initial temperature field for
+     * a box geometry.
      *
      * @ingroup InitialConditionsModels
      */
@@ -82,8 +82,8 @@ namespace aspect
     };
 
     /**
-     * A class that describes a shaped inclusion initial temperature
-     * field for a box geometry.
+     * A class that describes a shaped inclusion initial temperature field for
+     * a box geometry.
      *
      * @ingroup InitialConditionsModels
      */
@@ -105,8 +105,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file
+         * Read the parameters this class declares from the parameter file
          */
         virtual
         void

@@ -451,23 +451,23 @@ namespace aspect
         delete []tmp_filename_x;
 
         // If we failed to create the temp file, just write directly to the target file.
-	// We also provide a warning about this fact. There are places where
-	// this fails *on every node*, so we will get a lot of warning messages
-	// into the output; in these cases, just writing multiple pieces to
-	// std::cerr will produce an unreadable mass of text; rather, first
-	// assemble the error message completely, and then output it atomically
+        // We also provide a warning about this fact. There are places where
+        // this fails *on every node*, so we will get a lot of warning messages
+        // into the output; in these cases, just writing multiple pieces to
+        // std::cerr will produce an unreadable mass of text; rather, first
+        // assemble the error message completely, and then output it atomically
         if (tmp_file_desc == -1)
           {
-	    std::string x = std::string(
-	      "***** WARNING: could not create temporary file, will "
-	      "output directly to final location. This may negatively "
-	      "affect performance. (On processor ")
-			    + Utilities::int_to_string(
-			      Utilities::MPI::this_mpi_process (MPI_COMM_WORLD))
-			    + ".)\n";
+            std::string x = std::string(
+                              "***** WARNING: could not create temporary file, will "
+                              "output directly to final location. This may negatively "
+                              "affect performance. (On processor ")
+                            + Utilities::int_to_string(
+                              Utilities::MPI::this_mpi_process (MPI_COMM_WORLD))
+                            + ".)\n";
 
-	    std::cerr << x << std::flush;
-	    
+            std::cerr << x << std::flush;
+
             tmp_filename = *filename;
           }
       }
@@ -644,32 +644,32 @@ namespace aspect
       }
       prm.leave_subsection();
 
-	  // then go through the list, create objects and let them parse
-	  // their own parameters
-	  for (unsigned int name=0; name<viz_names.size(); ++name)
-		{
-		  VisualizationPostprocessors::Interface<dim> *
-		  viz_postprocessor = std_cxx1x::get<dim>(registered_plugins)
-							  .create_plugin (viz_names[name],
-											  "Visualization plugins",
-											  prm);
+      // then go through the list, create objects and let them parse
+      // their own parameters
+      for (unsigned int name=0; name<viz_names.size(); ++name)
+        {
+          VisualizationPostprocessors::Interface<dim> *
+          viz_postprocessor = std_cxx1x::get<dim>(registered_plugins)
+                              .create_plugin (viz_names[name],
+                                              "Visualization plugins",
+                                              prm);
 
-		  // make sure that the postprocessor is indeed of type
-		  // dealii::DataPostprocessor or of type
-		  // VisualizationPostprocessors::CellDataVectorCreator
-		  Assert ((dynamic_cast<DataPostprocessor<dim>*>(viz_postprocessor)
-				   != 0)
-				  ||
-				  (dynamic_cast<VisualizationPostprocessors::CellDataVectorCreator<dim>*>(viz_postprocessor)
-				   != 0)
-				  ,
-				  ExcMessage ("Can't convert visualization postprocessor to type "
-							  "dealii::DataPostprocessor or "
-							  "VisualizationPostprocessors::CellDataVectorCreator!?"));
+          // make sure that the postprocessor is indeed of type
+          // dealii::DataPostprocessor or of type
+          // VisualizationPostprocessors::CellDataVectorCreator
+          Assert ((dynamic_cast<DataPostprocessor<dim>*>(viz_postprocessor)
+                   != 0)
+                  ||
+                  (dynamic_cast<VisualizationPostprocessors::CellDataVectorCreator<dim>*>(viz_postprocessor)
+                   != 0)
+                  ,
+                  ExcMessage ("Can't convert visualization postprocessor to type "
+                              "dealii::DataPostprocessor or "
+                              "VisualizationPostprocessors::CellDataVectorCreator!?"));
 
-		  postprocessors.push_back (std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> >
-									(viz_postprocessor));
-		}
+          postprocessors.push_back (std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> >
+                                    (viz_postprocessor));
+        }
     }
 
 

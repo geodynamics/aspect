@@ -310,7 +310,7 @@ namespace aspect
       }
 
     const double tolerance = std::max(1e-50,
-        advection_solver_tolerance*system_rhs.block(block_number).l2_norm());
+                                      advection_solver_tolerance*system_rhs.block(block_number).l2_norm());
     SolverControl solver_control (system_matrix.block(block_number, block_number).m(),
                                   tolerance);
 
@@ -321,21 +321,21 @@ namespace aspect
     // solve for the current block) because only have a ConstraintMatrix
     // for the whole system, current_linearization_point contains our initial guess.
     LinearAlgebra::BlockVector distributed_solution (
-        introspection.index_sets.system_partitioning,
-        mpi_communicator);
+      introspection.index_sets.system_partitioning,
+      mpi_communicator);
     distributed_solution.block(block_number) = current_linearization_point.block (block_number);
 
     // Temporary vector to hold the residual, we don't need a BlockVector here.
     LinearAlgebra::Vector temp (
-        introspection.index_sets.system_partitioning[block_number],
-        mpi_communicator);
+      introspection.index_sets.system_partitioning[block_number],
+      mpi_communicator);
 
     // Compute the residual before we solve and return this at the end.
     // This is used in the nonlinear solver.
     const double initial_residual = system_matrix.block(block_number,block_number).residual
-        (temp,
-         distributed_solution.block(block_number),
-         system_rhs.block(block_number));
+                                    (temp,
+                                     distributed_solution.block(block_number),
+                                     system_rhs.block(block_number));
 
     // solve the linear system:
     current_constraints.set_zero(distributed_solution);

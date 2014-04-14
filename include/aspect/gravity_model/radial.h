@@ -55,8 +55,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void
@@ -72,11 +71,11 @@ namespace aspect
 
     /**
      * A class that describes gravity as a radial vector with a magnitude that
-     * is physically correct for an earth in which there are different densities
-     * for the earth core and mantle. Specifically, at the core-mantle boundary,
-     * gravity is assumed to be equal to 10.7 m/s^2 and it is 9.8 at the earth
-     * surface; in between, it follows the behavior one would expect for a mantle
-     * of constant density.
+     * is physically correct for an earth in which there are different
+     * densities for the earth core and mantle. Specifically, at the core-
+     * mantle boundary, gravity is assumed to be equal to 10.7 m/s^2 and it is
+     * 9.8 at the earth surface; in between, it follows the behavior one would
+     * expect for a mantle of constant density.
      *
      * This is the model used and discussed in the step-32 tutorial program.
      *
@@ -94,8 +93,8 @@ namespace aspect
 
     /**
      * A class that describes gravity as a radial vector of linearly
-     * decreasing magnitude with depth.  Meant for use in the Sphere
-     * geometry model, where you expect that kind of field.
+     * decreasing magnitude with depth.  Meant for use in the Sphere geometry
+     * model, where you expect that kind of field.
      *
      * @ingroup GravityModels
      */
@@ -116,8 +115,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void

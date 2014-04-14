@@ -53,24 +53,24 @@ namespace aspect
     template<int dim>
     class Rotation : public TensorFunction<1,dim>
     {
-    private:
-      Tensor<1,dim> axis;
+      private:
+        Tensor<1,dim> axis;
 
-    public:
-      Rotation(const unsigned int a)
-    :
-      axis(Tensor<1,dim>(Point<dim>::unit_vector(a)))
-    {}
+      public:
+        Rotation(const unsigned int a)
+          :
+          axis(Tensor<1,dim>(Point<dim>::unit_vector(a)))
+        {}
 
-      virtual Tensor<1,dim> value (const Point<dim> &p) const
-                  {
-        Tensor<1,dim> vel;
-        if( dim == 2)
-          cross_product(vel, p);
-        else
-          cross_product(vel, axis, p);
-        return vel;
-                  }
+        virtual Tensor<1,dim> value (const Point<dim> &p) const
+        {
+          Tensor<1,dim> vel;
+          if ( dim == 2)
+            cross_product(vel, p);
+          else
+            cross_product(vel, axis, p);
+          return vel;
+        }
     };
 
 
@@ -81,19 +81,19 @@ namespace aspect
     template <int dim>
     class Translation : public TensorFunction<1,dim>
     {
-    private:
-      const unsigned int direction;
+      private:
+        const unsigned int direction;
 
-    public:
-      Translation(const unsigned int d)
-    :
-      direction(d)
-    {}
+      public:
+        Translation(const unsigned int d)
+          :
+          direction(d)
+        {}
 
-      virtual Tensor<1,dim> value(const Point<dim> &) const
-                {
-        return Point<dim>::unit_vector(direction);
-                }
+        virtual Tensor<1,dim> value(const Point<dim> &) const
+        {
+          return Point<dim>::unit_vector(direction);
+        }
     };
 
   }
@@ -102,7 +102,7 @@ namespace aspect
   void Simulator<dim>::setup_nullspace_removal()
   {
     if (parameters.nullspace_removal & NullspaceRemoval::translational_momentum)
-        AssertThrow(false, ExcNotImplemented());
+      AssertThrow(false, ExcNotImplemented());
 
     std::vector<std_cxx1x::shared_ptr<TensorFunction<1,dim> > > funcs;
 
@@ -111,29 +111,29 @@ namespace aspect
         if (dim==2)
           funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Rotation<dim>(0)));
         if (dim==3)
-          for(unsigned int a=0; a<dim; ++a)
+          for (unsigned int a=0; a<dim; ++a)
             funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Rotation<dim>(a)));
       }
 
     if (parameters.nullspace_removal & NullspaceRemoval::net_translation)
       {
-          for(unsigned int a=0; a<dim; ++a)
-            funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(a)));
+        for (unsigned int a=0; a<dim; ++a)
+          funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(a)));
       }
 
     if (funcs.size()>0)
       {
         net_rotations_translations.resize(funcs.size());
-        for (unsigned int i=0;i<funcs.size();++i)
+        for (unsigned int i=0; i<funcs.size(); ++i)
           {
             // for each of the null space dimensions, set up
             // a vector, fill it with an element of the null space,
             // and normalize it
             net_rotations_translations[i].reinit(
-                introspection.index_sets.system_partitioning[introspection.block_indices.velocities],
-                mpi_communicator);
+              introspection.index_sets.system_partitioning[introspection.block_indices.velocities],
+              mpi_communicator);
             interpolate_onto_velocity_system(*funcs[i],
-                net_rotations_translations[i]);
+                                             net_rotations_translations[i]);
             net_rotations_translations[i] /= net_rotations_translations[i].l2_norm();
           }
 
@@ -148,16 +148,16 @@ namespace aspect
     if (parameters.nullspace_removal & NullspaceRemoval::net_rotation ||
         parameters.nullspace_removal & NullspaceRemoval::net_translation)
       {
-        for(unsigned int i=0; i<net_rotations_translations.size(); ++i)
-        {
+        for (unsigned int i=0; i<net_rotations_translations.size(); ++i)
+          {
             // compute the magnitude of the solution vector in direction
             // of this null space vector and subtract the corresponding multiple
-           const double power = net_rotations_translations[i]
-                          * tmp_distributed_stokes.block(introspection.block_indices.velocities);
-           tmp_distributed_stokes.block(introspection.block_indices.velocities).sadd(1.0,
-                     -1.0*power,
-                     net_rotations_translations[i]);
-        }
+            const double power = net_rotations_translations[i]
+                                 * tmp_distributed_stokes.block(introspection.block_indices.velocities);
+            tmp_distributed_stokes.block(introspection.block_indices.velocities).sadd(1.0,
+                                                                                      -1.0*power,
+                                                                                      net_rotations_translations[i]);
+          }
         relevant_dst.block(0) = tmp_distributed_stokes.block(0);
       }
     if (parameters.nullspace_removal & NullspaceRemoval::angular_momentum)
@@ -188,7 +188,7 @@ namespace aspect
 
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     FEValues<dim> fe(mapping, finite_element, quadrature,
-                              UpdateFlags(update_quadrature_points | update_JxW_values | update_values));
+                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values));
 
     typename DoFHandler<dim>::active_cell_iterator cell;
     std::vector<Point<dim> > q_points(quadrature.size());
@@ -201,46 +201,46 @@ namespace aspect
     //loop over all local cells
     for (cell = dof_handler.begin_active(); cell != dof_handler.end(); ++cell)
       if (cell->is_locally_owned())
-      {
-        fe.reinit (cell);
-        q_points = fe.get_quadrature_points();
-        fe.get_function_values(relevant_dst, fe_vals);
-
-        // get the density at each quadrature point
-        typename MaterialModel::Interface<dim>::MaterialModelInputs in(q_points.size(), parameters.n_compositional_fields);
-        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(q_points.size(), parameters.n_compositional_fields);
-        for(unsigned int i=0; i< q_points.size(); i++)
         {
-           in.pressure[i] = fe_vals[i][dim];
-           in.temperature[i] = fe_vals[i][dim+1];
-           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-             in.composition[i][c] = fe_vals[i][dim+2+c];
-           in.position[i] = q_points[i];
+          fe.reinit (cell);
+          q_points = fe.get_quadrature_points();
+          fe.get_function_values(relevant_dst, fe_vals);
 
+          // get the density at each quadrature point
+          typename MaterialModel::Interface<dim>::MaterialModelInputs in(q_points.size(), parameters.n_compositional_fields);
+          typename MaterialModel::Interface<dim>::MaterialModelOutputs out(q_points.size(), parameters.n_compositional_fields);
+          for (unsigned int i=0; i< q_points.size(); i++)
+            {
+              in.pressure[i] = fe_vals[i][dim];
+              in.temperature[i] = fe_vals[i][dim+1];
+              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                in.composition[i][c] = fe_vals[i][dim+2+c];
+              in.position[i] = q_points[i];
+
+            }
+          material_model->evaluate(in, out);
+
+          Point<dim> r_vec;
+          Tensor<1,dim> velocity;
+
+          // actually compute the moment of inertia and angular momentum
+          for (unsigned int k=0; k< quadrature.size(); ++k)
+            {
+              // get the position and velocity at this quadrature point
+              r_vec = q_points[k];
+              for (unsigned int i=0; i<dim; ++i) velocity[i] = fe_vals[k][i];
+              // Get the velocity perpendicular to the position vector
+              Tensor<1,dim> r_perp;
+              cross_product(r_perp, r_vec);
+              Tensor<1,dim> v_perp = velocity - (velocity*r_vec)*r_vec/(r_vec.norm_square());
+
+              // calculate a signed scalar angular momentum
+              local_scalar_angular_momentum += fe.JxW(k) * velocity*r_perp * out.densities[k];
+              // calculate a scalar moment of inertia
+              local_scalar_moment += fe.JxW(k) * r_vec.norm_square() * out.densities[k];
+            }
         }
-        material_model->evaluate(in, out);
 
-        Point<dim> r_vec;
-        Tensor<1,dim> velocity;
-
-        // actually compute the moment of inertia and angular momentum
-        for (unsigned int k=0; k< quadrature.size(); ++k)
-          {
-            // get the position and velocity at this quadrature point
-            r_vec = q_points[k];
-            for (unsigned int i=0; i<dim; ++i) velocity[i] = fe_vals[k][i];
-            // Get the velocity perpendicular to the position vector
-            Tensor<1,dim> r_perp;
-            cross_product(r_perp, r_vec);
-            Tensor<1,dim> v_perp = velocity - (velocity*r_vec)*r_vec/(r_vec.norm_square());
-
-            // calculate a signed scalar angular momentum
-            local_scalar_angular_momentum += fe.JxW(k) * velocity*r_perp * out.densities[k];
-            // calculate a scalar moment of inertia
-            local_scalar_moment += fe.JxW(k) * r_vec.norm_square() * out.densities[k];
-          }
-        }
-      
     const double scalar_moment = Utilities::MPI::sum( local_scalar_moment, mpi_communicator);
     const double scalar_angular_momentum = Utilities::MPI::sum( local_scalar_angular_momentum, mpi_communicator);
 

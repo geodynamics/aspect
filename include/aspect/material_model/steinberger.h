@@ -39,12 +39,12 @@ namespace aspect
       class RadialViscosityLookup;
     }
     /**
-     * A variable viscosity material model that reads the essential values of coefficients from
-     * tables in input files.
+     * A variable viscosity material model that reads the essential values of
+     * coefficients from tables in input files.
      *
-     * This model is based on the paper Steinberger/Calderwood 2006:
-     * "Models of large-scale viscous flow in the Earth's mantle with
-     * contraints from mineral physics and surface observations"
+     * This model is based on the paper Steinberger/Calderwood 2006: "Models
+     * of large-scale viscous flow in the Earth's mantle with contraints from
+     * mineral physics and surface observations"
      *
      * @ingroup MaterialModels
      */
@@ -54,15 +54,16 @@ namespace aspect
       public:
 
         /**
-         * Initialization function. Loads the material data and sets up pointers.
+         * Initialization function. Loads the material data and sets up
+         * pointers.
          */
         void
         initialize ();
 
         /**
-          * Called at the beginning of each time step and allows the material model
-          * to update internal data structures.
-          */
+         * Called at the beginning of each time step and allows the material
+         * model to update internal data structures.
+         */
         virtual void update();
         /**
          * @name Physical parameters used in the basic equations
@@ -118,40 +119,41 @@ namespace aspect
          */
 
         /**
-        * Return true if the viscosity() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
+         * Return true if the viscosity() function returns something that may
+         * depend on the variable identifies by the argument.
+         */
         virtual bool
         viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-        * Return true if the density() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
+         * Return true if the density() function returns something that may
+         * depend on the variable identifies by the argument.
+         */
         virtual bool
         density_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-        * Return true if the compressibility() function returns something that
-        * may depend on the variable identifies by the argument.
-        *
-        * This function must return false for all possible arguments if the
-        * is_compressible() function returns false.
-        */
+         * Return true if the compressibility() function returns something
+         * that may depend on the variable identifies by the argument.
+         *
+         * This function must return false for all possible arguments if the
+         * is_compressible() function returns false.
+         */
         virtual bool
         compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-        * Return true if the specific_heat() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
+         * Return true if the specific_heat() function returns something that
+         * may depend on the variable identifies by the argument.
+         */
         virtual bool
         specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-        * Return true if the thermal_conductivity() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
+         * Return true if the thermal_conductivity() function returns
+         * something that may depend on the variable identifies by the
+         * argument.
+         */
         virtual bool
         thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
@@ -182,15 +184,18 @@ namespace aspect
          */
 
         /**
-          * Declare the parameters this class takes through input files.
-          */
+         * @name Functions used in dealing with run-time parameters
+         * @{
+         */
+        /**
+         * Declare the parameters this class takes through input files.
+         */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void
@@ -211,20 +216,21 @@ namespace aspect
         virtual double get_deltat (const Point<dim> &position) const;
 
         /**
-         * Pointer to an object that reads and processes data we get from Perplex files.
+         * Pointer to an object that reads and processes data we get from
+         * Perplex files.
          */
         std::vector<std_cxx1x::shared_ptr<internal::MaterialLookup> > material_lookup;
         //std_cxx1x::shared_ptr<internal::MaterialLookup> material_lookup;
 
         /**
-         * Pointer to an object that reads and processes data for the lateral temperature
-         * dependency of viscosity.
+         * Pointer to an object that reads and processes data for the lateral
+         * temperature dependency of viscosity.
          */
         std_cxx1x::shared_ptr<internal::LateralViscosityLookup> lateral_viscosity_lookup;
 
         /**
-         * Pointer to an object that reads and processes data for the radial viscosity
-         * profile.
+         * Pointer to an object that reads and processes data for the radial
+         * viscosity profile.
          */
         std_cxx1x::shared_ptr<internal::RadialViscosityLookup> radial_viscosity_lookup;
 

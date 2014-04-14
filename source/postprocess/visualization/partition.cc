@@ -48,11 +48,11 @@ namespace aspect
       template <int dim>
       void
       Partition<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &,
+      compute_derived_quantities_vector (const std::vector<Vector<double> > &,
                                          const std::vector<std::vector<Tensor<1,dim> > > &,
                                          const std::vector<std::vector<Tensor<2,dim> > > &,
-                                         const std::vector<Point<dim> >                  &,
-                                         const std::vector<Point<dim> >                  &,
+                                         const std::vector<Point<dim> > &,
+                                         const std::vector<Point<dim> > &,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
         Assert (computed_quantities[0].size() == 1, ExcInternalError());

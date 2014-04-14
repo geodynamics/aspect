@@ -36,14 +36,14 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       /**
-       * A class derived from DataPostprocessor that takes an output vector and
-       * computes a variable that represents the strain rate at every point. The
-       * scalar strain rate is defined as $\sqrt{
-       *    (\varepsilon - \tfrac 13 \textrm{trace}\ \varepsilon \mathbf 1)
-       *  : \varepsilon - \tfrac 13 \textrm{trace}\ \varepsilon \mathbf 1}$.
+       * A class derived from DataPostprocessor that takes an output vector
+       * and computes a variable that represents the strain rate at every
+       * point. The scalar strain rate is defined as $\sqrt{ (\varepsilon -
+       * \tfrac 13 \textrm{trace}\ \varepsilon \mathbf 1) : \varepsilon -
+       * \tfrac 13 \textrm{trace}\ \varepsilon \mathbf 1}$.
        *
-       * The member functions are all implementations of those declared in the base
-       * class. See there for their meaning.
+       * The member functions are all implementations of those declared in the
+       * base class. See there for their meaning.
        */
       template <int dim>
       class StrainRate

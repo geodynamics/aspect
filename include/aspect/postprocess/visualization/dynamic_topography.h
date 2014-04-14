@@ -36,14 +36,15 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       /**
-       * A class derived from DataPostprocessor that takes an output vector and
-       * computes a variable that represents the dynamic topography. This quantity,
-       * strictly speaking, only makes sense at the surface of the domain, but it
-       * can be computed everywhere and computing it everywhere makes it compatible
-       * with the machinery that generates graphical output.
+       * A class derived from DataPostprocessor that takes an output vector
+       * and computes a variable that represents the dynamic topography. This
+       * quantity, strictly speaking, only makes sense at the surface of the
+       * domain, but it can be computed everywhere and computing it everywhere
+       * makes it compatible with the machinery that generates graphical
+       * output.
        *
-       * The member functions are all implementations of those declared in the base
-       * class. See there for their meaning.
+       * The member functions are all implementations of those declared in the
+       * base class. See there for their meaning.
        */
       template <int dim>
       class DynamicTopography

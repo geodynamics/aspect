@@ -61,12 +61,12 @@ namespace aspect
       unsigned int i=0;
       for (; cell!=endc; ++cell, ++i)
         if (cell->is_locally_owned())
-        {
-          fe_values.reinit (cell);
-          const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(0));
-          if (cell->at_boundary() && depth < cell->diameter())
-            indicators(i) = 1.0;
-        }
+          {
+            fe_values.reinit (cell);
+            const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(0));
+            if (cell->at_boundary() && depth < cell->diameter())
+              indicators(i) = 1.0;
+          }
     }
   }
 }
@@ -80,12 +80,12 @@ namespace aspect
                                               "topography",
                                               "A class that implements a mesh refinement criterion, which "
                                               "always flags all cells in the uppermost layer for refinement. "
-					      "This is useful to provide high accuracy for processes at or "
-					      "close to the surface."
-					      "\n\n"
-					      "To use this refinement criterion, you may want to combine "
-					      "it with other refinement criteria, setting the 'Normalize "
-					      "individual refinement criteria' flag and using the 'max' "
-					      "setting for 'Refinement criteria merge operation'.")
+                                              "This is useful to provide high accuracy for processes at or "
+                                              "close to the surface."
+                                              "\n\n"
+                                              "To use this refinement criterion, you may want to combine "
+                                              "it with other refinement criteria, setting the 'Normalize "
+                                              "individual refinement criteria' flag and using the 'max' "
+                                              "setting for 'Refinement criteria merge operation'.")
   }
 }

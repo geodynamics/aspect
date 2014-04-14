@@ -41,15 +41,15 @@ namespace aspect
     namespace internal
     {
       GPlatesLookup::GPlatesLookup(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two, const double interpolation_width_)
-      :
-          velocity_vals(0,0),
-          old_velocity_vals(0,0),
-          velocity_positions(0,0),
-          velocity_values (&velocity_vals),
-          old_velocity_values (&old_velocity_vals),
-          delta_phi(0.0),
-          delta_theta(0.0),
-          interpolation_width(interpolation_width_)
+        :
+        velocity_vals(0,0),
+        old_velocity_vals(0,0),
+        velocity_positions(0,0),
+        velocity_values (&velocity_vals),
+        old_velocity_values (&old_velocity_vals),
+        delta_phi(0.0),
+        delta_theta(0.0),
+        interpolation_width(interpolation_width_)
       {
 
         // get the cartesian coordinates of the points the 2D model shall lie in
@@ -247,7 +247,8 @@ namespace aspect
                 do
                   {
                     const int idx[2][2] = { {(int)(spatial_index[0]+i), (int)(spatial_index[1]+j)},
-                      {(int)(spatial_index[0]-i), (int)(spatial_index[1]-j)} };
+                      {(int)(spatial_index[0]-i), (int)(spatial_index[1]-j)}
+                    };
 
                     const double weight_1 = add_interpolation_point(surf_vel,position,idx[0],time_weight,true);
                     const double weight_2 = add_interpolation_point(surf_vel,position,idx[1],time_weight,true);
@@ -299,7 +300,7 @@ namespace aspect
       }
 
       double
-      GPlatesLookup::add_interpolation_point(Tensor<1,3>& surf_vel,
+      GPlatesLookup::add_interpolation_point(Tensor<1,3> &surf_vel,
                                              const Tensor<1,3> position,
                                              const int spatial_index[2],
                                              const double time_weight,
@@ -743,8 +744,8 @@ namespace aspect
             std::string::size_type position;
             while (position = data_directory.find (subst_text),  position!=std::string::npos)
               data_directory.replace (data_directory.begin()+position,
-                  data_directory.begin()+position+subst_text.size(),
-                  ASPECT_SOURCE_DIR);
+                                      data_directory.begin()+position+subst_text.size(),
+                                      ASPECT_SOURCE_DIR);
           }
 
           velocity_file_name    = prm.get ("Velocity file name");

@@ -53,22 +53,23 @@ namespace aspect
 
 
   /**
-   * SimulatorAccess is base class for different plugins like postprocessors. It provides access to
-   * the various variables of the main class that plugins may want to use
-   * in their evaluations, such as solution vectors, the current time, time step
-   * sizes, material models, or the triangulations and DoFHandlers that correspond to solutions.
+   * SimulatorAccess is base class for different plugins like postprocessors.
+   * It provides access to the various variables of the main class that
+   * plugins may want to use in their evaluations, such as solution vectors,
+   * the current time, time step sizes, material models, or the triangulations
+   * and DoFHandlers that correspond to solutions.
    *
-   * This class is the interface between plugins and the main simulator
-   * class. Using this insulation layer, the plugins need not know anything
-   * about the internal details of the simulation class.
+   * This class is the interface between plugins and the main simulator class.
+   * Using this insulation layer, the plugins need not know anything about the
+   * internal details of the simulation class.
    *
-   * Every Postprocessor is required to derive from SimulatorAccess. It is optional
-   * for other plugins like MaterialModel, GravityModel, etc..
+   * Every Postprocessor is required to derive from SimulatorAccess. It is
+   * optional for other plugins like MaterialModel, GravityModel, etc..
    *
    * Since the functions providing access to details of the simulator class
-   * are meant to be used only by derived classes of this class (rather
-   * than becoming part of the public interface of these classes), the
-   * functions of this class are made @p protected.
+   * are meant to be used only by derived classes of this class (rather than
+   * becoming part of the public interface of these classes), the functions of
+   * this class are made @p protected.
    *
    * @ingroup Simulator
    */
@@ -79,19 +80,19 @@ namespace aspect
       /**
        * Destructor. Does nothing but is virtual so that derived classes
        * destructors are also virtual.
-       **/
+       */
       virtual
       ~SimulatorAccess ();
 
       /**
-       * Initialize this class for a given simulator. This function
-       * is marked as virtual so that derived classes can do something
-       * upon initialization as well, for example look up and cache
-       * data; derived classes should call this function from the base
-       * class as well, however.
+       * Initialize this class for a given simulator. This function is marked
+       * as virtual so that derived classes can do something upon
+       * initialization as well, for example look up and cache data; derived
+       * classes should call this function from the base class as well,
+       * however.
        *
        * @param simulator A reference to the main simulator object.
-       **/
+       */
       virtual void initialize (const Simulator<dim> &simulator);
 
     protected:
@@ -99,11 +100,11 @@ namespace aspect
       /** @{ */
 
       /**
-       * Return a reference to an introspection object that describes
-       * overall properties of the simulator. In particular, it provides
-       * symbolic names for extractors and component masks for each variable,
-       * etc, and thereby reduces the need for implicit knowledge throughout
-       * the code base.
+       * Return a reference to an introspection object that describes overall
+       * properties of the simulator. In particular, it provides symbolic
+       * names for extractors and component masks for each variable, etc, and
+       * thereby reduces the need for implicit knowledge throughout the code
+       * base.
        */
       const Introspection<dim> &
       introspection () const;
@@ -115,9 +116,9 @@ namespace aspect
       get_mpi_communicator () const;
 
       /**
-       * Return a reference to the stream object that only outputs something on one
-      * processor in a parallel program and simply ignores output put into it on
-      * all other processors.
+       * Return a reference to the stream object that only outputs something
+       * on one processor in a parallel program and simply ignores output put
+       * into it on all other processors.
        */
       const ConditionalOStream &
       get_pcout () const;
@@ -153,16 +154,16 @@ namespace aspect
       get_volume () const;
 
       /**
-       * Return a reference to the mapping used to describe the boundary
-      * of the domain.
+       * Return a reference to the mapping used to describe the boundary of
+       * the domain.
        */
       const Mapping<dim> &
       get_mapping () const;
 
       /**
-       * Return the directory specified in the input parameter file to be
-       * the place where output files are to be placed. The string is
-       * terminated by a directory separator (i.e., '/').
+       * Return the directory specified in the input parameter file to be the
+       * place where output files are to be placed. The string is terminated
+       * by a directory separator (i.e., '/').
        */
       std::string
       get_output_directory () const;
@@ -186,32 +187,32 @@ namespace aspect
       get_adiabatic_surface_temperature () const;
 
       /**
-      * Return whether things like velocities should be converted from
-      * the seconds in the MKS system to years. The value of this flag
-      * is set by the corresponding entry in the input parameter file.
-      */
+       * Return whether things like velocities should be converted from the
+       * seconds in the MKS system to years. The value of this flag is set by
+       * the corresponding entry in the input parameter file.
+       */
       bool
       convert_output_to_years () const;
 
       /**
-      * Return the number of compositional fields specified in the input
-      * parameter file that will be advected along with the flow field.
-      */
+       * Return the number of compositional fields specified in the input
+       * parameter file that will be advected along with the flow field.
+       */
       unsigned int
       n_compositional_fields () const;
 
       /**
-      * Compute the error indicators in the same way they are normally used
-      * for mesh refinement. The mesh is not refined when doing so, but the
-      * indicators can be used when generating graphical output to check
-      * why mesh refinement is proceeding as it is.
-      */
+       * Compute the error indicators in the same way they are normally used
+       * for mesh refinement. The mesh is not refined when doing so, but the
+       * indicators can be used when generating graphical output to check why
+       * mesh refinement is proceeding as it is.
+       */
       void
       get_refinement_criteria(Vector<float> &estimated_error_per_cell) const;
 
       /**
-       * Returns the entropy viscosity on each locally owned cell as it is used
-       * to stabilize the temperature equation.
+       * Returns the entropy viscosity on each locally owned cell as it is
+       * used to stabilize the temperature equation.
        */
       void
       get_artificial_viscosity(Vector<float> &viscosity_per_cell) const;
@@ -224,11 +225,10 @@ namespace aspect
 
 
       /**
-       * Return a reference to the vector that has the current
-       * solution of the entire system, i.e. the velocity and
-       * pressure variables as well as the temperature.  This vector
-       * is associated with the DoFHandler object returned by
-       * get_dof_handler().
+       * Return a reference to the vector that has the current solution of the
+       * entire system, i.e. the velocity and pressure variables as well as
+       * the temperature.  This vector is associated with the DoFHandler
+       * object returned by get_dof_handler().
        *
        * @note In general the vector is a distributed vector; however, it
        * contains ghost elements for all locally relevant degrees of freedom.
@@ -237,10 +237,9 @@ namespace aspect
       get_solution () const;
 
       /**
-       * Return a reference to the vector that has the solution
-       * of the entire system at the previous time step.
-       * This vector is associated with the DoFHandler object returned by
-       * get_stokes_dof_handler().
+       * Return a reference to the vector that has the solution of the entire
+       * system at the previous time step. This vector is associated with the
+       * DoFHandler object returned by get_stokes_dof_handler().
        *
        * @note In general the vector is a distributed vector; however, it
        * contains ghost elements for all locally relevant degrees of freedom.
@@ -249,32 +248,31 @@ namespace aspect
       get_old_solution () const;
 
       /**
-       * Return a reference to the DoFHandler that is used to discretize
-       * the variables at the current time step.
+       * Return a reference to the DoFHandler that is used to discretize the
+       * variables at the current time step.
        */
       const DoFHandler<dim> &
       get_dof_handler () const;
 
       /**
-       * Return a reference to the finite element that the DoFHandler that
-       * is used to discretize the variables at the current time step is built
+       * Return a reference to the finite element that the DoFHandler that is
+       * used to discretize the variables at the current time step is built
        * on. This is the finite element for the entire, couple problem, i.e.,
-       * it contains sub-elements for velocity, pressure, temperature
-       * and all other variables in this problem (e.g., compositional variables,
-       * if used in this simulation).
+       * it contains sub-elements for velocity, pressure, temperature and all
+       * other variables in this problem (e.g., compositional variables, if
+       * used in this simulation).
        */
       const FiniteElement<dim> &
       get_fe () const;
 
       /**
        * Fill the argument with a set of depth averages of the current
-       * temperature field. The function fills a
-       * vector that contains average field values over slices of the
-       * domain of same depth.
+       * temperature field. The function fills a vector that contains average
+       * field values over slices of the domain of same depth.
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void
       get_depth_average_temperature(std::vector<double> &values) const;
@@ -287,20 +285,20 @@ namespace aspect
        * matrix we want to assemble (0 <= composition_index < number of
        * compositional fields in this problem).
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void
       get_depth_average_composition(const unsigned int composition_index,
-                                        std::vector<double> &values) const;
+                                    std::vector<double> &values) const;
 
       /**
        * Compute a depth average of the current viscosity
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void
       get_depth_average_viscosity(std::vector<double> &values) const;
@@ -308,9 +306,9 @@ namespace aspect
       /**
        * Compute a depth average of the current velocity magnitude
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void
       get_depth_average_velocity_magnitude(std::vector<double> &values) const;
@@ -318,9 +316,9 @@ namespace aspect
       /**
        * Compute a depth average of the current sinking velocity
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void
       get_depth_average_sinking_velocity(std::vector<double> &values) const;
@@ -328,9 +326,9 @@ namespace aspect
       /**
        * Compute a depth average of the seismic shear wave speed: Vs
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void
       get_depth_average_Vs(std::vector<double> &values) const;
@@ -338,9 +336,9 @@ namespace aspect
       /**
        * Compute a depth average of the seismic pressure wave speed: Vp
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void
       get_depth_average_Vp(std::vector<double> &values) const;
@@ -351,7 +349,8 @@ namespace aspect
       /** @{ */
 
       /**
-       * Return a pointer to the material model to access functions like density().
+       * Return a pointer to the material model to access functions like
+       * density().
        */
       const MaterialModel::Interface<dim> &
       get_material_model () const;
@@ -370,14 +369,15 @@ namespace aspect
 
 
       /**
-       * Return a pointer to the object that describes the adiabatic conditions.
+       * Return a pointer to the object that describes the adiabatic
+       * conditions.
        */
       const AdiabaticConditions<dim> &
       get_adiabatic_conditions () const;
 
       /**
-       * Return a pointer to the object that describes the temperature boundary
-       * values.
+       * Return a pointer to the object that describes the temperature
+       * boundary values.
        */
       const BoundaryTemperature::Interface<dim> &
       get_boundary_temperature () const;
@@ -398,18 +398,17 @@ namespace aspect
       get_compositional_initial_conditions () const;
 
       /**
-       * Return a set of boudary indicators that describes which of the boundaries
-       * have a fixed temperature.
+       * Return a set of boudary indicators that describes which of the
+       * boundaries have a fixed temperature.
        */
       const std::set<types::boundary_id> &
       get_fixed_temperature_boundary_indicators () const;
 
 
       /**
-       * A convenience function that copies
-       * the values of the compositional fields at the quadrature point
-       * q given as input parameter to the output vector
-       * composition_values_at_q_point.
+       * A convenience function that copies the values of the compositional
+       * fields at the quadrature point q given as input parameter to the
+       * output vector composition_values_at_q_point.
        */
       static
       void
@@ -421,8 +420,7 @@ namespace aspect
 
     private:
       /**
-       * A pointer to the simulator object to which we want to
-       * get access.
+       * A pointer to the simulator object to which we want to get access.
        */
       const Simulator<dim> *simulator;
   };

@@ -45,7 +45,7 @@ namespace aspect
     template <int dim>
     double
     InitialComposition<dim>::
-    minimal_composition (const std::set<types::boundary_id>& fixed_boundary_ids) const
+    minimal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       return min_composition;
     }
@@ -55,7 +55,7 @@ namespace aspect
     template <int dim>
     double
     InitialComposition<dim>::
-    maximal_composition (const std::set<types::boundary_id>& fixed_boundary_ids) const
+    maximal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       return max_composition;
     }
@@ -111,15 +111,15 @@ namespace aspect
                                                "A model in which the composition at the boundary"
                                                "is chosen to be the same as given in the initial"
                                                "conditions."
-					       "\n\n"
-					       "Because this class simply takes what the initial "
-					       "composition had described, this class can not "
-					       "know certain pieces of information such as the "
-					       "minimal and maximal composition on the boundary. "
-					       "For operations that require this, for example in "
-					       "postprocessing, this boundary composition model "
-					       "must therefore be told what the minimal and "
-					       "maximal values on the boundary are. This is done "
-					       "using parameters set in section ``Boundary composition model/Initial composition''.")
+                                               "\n\n"
+                                               "Because this class simply takes what the initial "
+                                               "composition had described, this class can not "
+                                               "know certain pieces of information such as the "
+                                               "minimal and maximal composition on the boundary. "
+                                               "For operations that require this, for example in "
+                                               "postprocessing, this boundary composition model "
+                                               "must therefore be told what the minimal and "
+                                               "maximal values on the boundary are. This is done "
+                                               "using parameters set in section ``Boundary composition model/Initial composition''.")
   }
 }

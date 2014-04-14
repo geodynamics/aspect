@@ -299,8 +299,8 @@ namespace aspect
               fe_values[introspection.extractors.temperature].get_function_values (solution,
                                                                                    temperature_values);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                  fe_values[introspection.extractors.compositional_fields[c]].get_function_values (solution,
-                      composition_values[c]);
+                fe_values[introspection.extractors.compositional_fields[c]].get_function_values (solution,
+                    composition_values[c]);
 
               typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points, parameters.n_compositional_fields);
               typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points, parameters.n_compositional_fields);
@@ -471,7 +471,7 @@ namespace aspect
 
   template <int dim>
   void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
-      LinearAlgebra::Vector &vec)
+                                                        LinearAlgebra::Vector &vec)
   {
     ConstraintMatrix hanging_constraints(introspection.index_sets.system_relevant_set);
     DoFTools::make_hanging_node_constraints(dof_handler, hanging_constraints);
@@ -484,21 +484,21 @@ namespace aspect
 
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
                                                    endc = dof_handler.end();
-    for(; cell != endc; ++cell)
-      if(cell->is_locally_owned())
-      {
-        mesh_points.reinit(cell);
-        cell->get_dof_indices (cell_dof_indices);
-        for(unsigned int j=0; j<finite_element.base_element(0).dofs_per_cell; ++j)
-          for(unsigned int dir=0; dir<dim; ++dir)
-          {
-            unsigned int support_point_index
-              = finite_element.component_to_system_index(/*velocity component=*/ introspection.component_indices.velocities[dir],
-                                                         /*dof index within component=*/ j);
-            Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
-            vec[cell_dof_indices[support_point_index]] = func.value(mesh_points.quadrature_point(j))[dir];
-          }
-      }
+    for (; cell != endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          mesh_points.reinit(cell);
+          cell->get_dof_indices (cell_dof_indices);
+          for (unsigned int j=0; j<finite_element.base_element(0).dofs_per_cell; ++j)
+            for (unsigned int dir=0; dir<dim; ++dir)
+              {
+                unsigned int support_point_index
+                  = finite_element.component_to_system_index(/*velocity component=*/ introspection.component_indices.velocities[dir],
+                                                                                     /*dof index within component=*/ j);
+                Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
+                vec[cell_dof_indices[support_point_index]] = func.value(mesh_points.quadrature_point(j))[dir];
+              }
+        }
 
     vec.compress(VectorOperation::insert);
     hanging_constraints.distribute(vec);
@@ -733,7 +733,7 @@ namespace aspect
   template <int dim>
   template<class FUNCTOR>
   void Simulator<dim>::compute_depth_average(std::vector<double> &values,
-                                                   FUNCTOR &fctr) const
+                                             FUNCTOR &fctr) const
   {
     const unsigned int num_slices = values.size();
     std::vector<double> volume(num_slices);
@@ -761,7 +761,7 @@ namespace aspect
     typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
                                                                    parameters.n_compositional_fields);
     typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
-        parameters.n_compositional_fields);
+                                                                     parameters.n_compositional_fields);
 
     fctr.setup(quadrature_formula.size());
 

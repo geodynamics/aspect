@@ -48,7 +48,7 @@ namespace aspect
       compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
                                          const std::vector<std::vector<Tensor<1,dim> > > &duh,
                                          const std::vector<std::vector<Tensor<2,dim> > > &,
-                                         const std::vector<Point<dim> >                  &,
+                                         const std::vector<Point<dim> > &,
                                          const std::vector<Point<dim> >                  &evaluation_points,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
@@ -61,7 +61,7 @@ namespace aspect
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_quadrature_points,
                                                                        this->n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_quadrature_points,
-            this->n_compositional_fields());
+                                                                         this->n_compositional_fields());
 
         // fill the various fields necessary to evaluate the material
         // properties
@@ -98,7 +98,7 @@ namespace aspect
             const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
 
             const double sigma_rr           = gravity_direction * (stress * gravity_direction);
-            const double dynamic_topography = sigma_rr / gravity.norm() / density;
+            const double dynamic_topography = -sigma_rr / gravity.norm() / density;
 
             computed_quantities[q](0) = dynamic_topography;
           }

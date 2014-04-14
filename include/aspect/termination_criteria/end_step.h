@@ -30,8 +30,8 @@ namespace aspect
   {
 
     /**
-     * A class that terminates the simulation when a specified end timestep
-     * is reached.
+     * A class that terminates the simulation when a specified end timestep is
+     * reached.
      *
      * @ingroup TerminationCriteria
      */
@@ -42,7 +42,8 @@ namespace aspect
         /**
          * Evaluate this termination criterion.
          *
-         * @return Whether to terminate the simulation (true) or continue (false).
+         * @return Whether to terminate the simulation (true) or continue
+         * (false).
          */
         virtual
         bool
@@ -56,8 +57,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void

@@ -198,44 +198,44 @@ namespace aspect
 
     // read zlib compressed resume.z
     try
-    {
-      std::ifstream ifs ((parameters.output_directory + "restart.resume.z").c_str());
-      AssertThrow(ifs.is_open(),
-		  ExcMessage("Cannot open snapshot resume file."));
-
-      uint32_t compression_header[4];
-      ifs.read((char *)compression_header, 4 * sizeof(compression_header[0]));
-      Assert(compression_header[0]==1, ExcInternalError());
-
-      std::vector<char> compressed(compression_header[3]);
-      std::vector<char> uncompressed(compression_header[1]);
-      ifs.read(&compressed[0],compression_header[3]);
-      uLongf uncompressed_size = compression_header[1];
-
-      const int err = uncompress((Bytef *)&uncompressed[0], &uncompressed_size, 
-				 (Bytef *)&compressed[0], compression_header[3]);
-      AssertThrow (err == Z_OK,
-		   ExcMessage (std::string("Uncompressing the data buffer resulted in an error with code <")
-			       +
-			       Utilities::int_to_string(err)));
-
       {
-        std::istringstream ss;
-	ss.str(std::string (&uncompressed[0], uncompressed_size));
-        aspect::iarchive ia (ss);
-        ia >> (*this);
+        std::ifstream ifs ((parameters.output_directory + "restart.resume.z").c_str());
+        AssertThrow(ifs.is_open(),
+                    ExcMessage("Cannot open snapshot resume file."));
+
+        uint32_t compression_header[4];
+        ifs.read((char *)compression_header, 4 * sizeof(compression_header[0]));
+        Assert(compression_header[0]==1, ExcInternalError());
+
+        std::vector<char> compressed(compression_header[3]);
+        std::vector<char> uncompressed(compression_header[1]);
+        ifs.read(&compressed[0],compression_header[3]);
+        uLongf uncompressed_size = compression_header[1];
+
+        const int err = uncompress((Bytef *)&uncompressed[0], &uncompressed_size,
+                                   (Bytef *)&compressed[0], compression_header[3]);
+        AssertThrow (err == Z_OK,
+                     ExcMessage (std::string("Uncompressing the data buffer resulted in an error with code <")
+                                 +
+                                 Utilities::int_to_string(err)));
+
+        {
+          std::istringstream ss;
+          ss.str(std::string (&uncompressed[0], uncompressed_size));
+          aspect::iarchive ia (ss);
+          ia >> (*this);
+        }
       }
-    }
     catch (std::exception &e)
       {
-	AssertThrow (false, 
-		     ExcMessage (std::string("Cannot seem to deserialize the data previously stored!\n")
-				 +
-				 "Some part of the machinery generated an exception that says <"
-				 +
-				 e.what()
-				 +
-				 ">"));
+        AssertThrow (false,
+                     ExcMessage (std::string("Cannot seem to deserialize the data previously stored!\n")
+                                 +
+                                 "Some part of the machinery generated an exception that says <"
+                                 +
+                                 e.what()
+                                 +
+                                 ">"));
       }
 
     // re-initialize the postprocessors with the current object

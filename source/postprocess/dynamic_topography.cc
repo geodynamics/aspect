@@ -106,7 +106,7 @@ namespace aspect
                   const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
 
                   const double sigma_rr           = gravity_direction * (stress * gravity_direction);
-                  const double dynamic_topography = sigma_rr / gravity.norm() / density;
+                  const double dynamic_topography = -sigma_rr / gravity.norm() / density;
 
                   output << location
                          << ' '

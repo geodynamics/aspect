@@ -37,13 +37,14 @@ namespace aspect
 
 
   /**
-   * A class that represents adiabatic conditions, i.e. that starts at the top of
-   * the domain and integrates pressure and temperature as we go down into depth.
+   * A class that represents adiabatic conditions, i.e. that starts at the top
+   * of the domain and integrates pressure and temperature as we go down into
+   * depth.
    *
-   * @note The implementation has numerous deficiencies indicated in the .cc file
-   * and may not quite compute what we want. Specifically, it doesn't currently
-   * take into account all the physical parameters it needs, and it also doesn't
-   * get gravity right with the exception of the simplest cases.
+   * @note The implementation has numerous deficiencies indicated in the .cc
+   * file and may not quite compute what we want. Specifically, it doesn't
+   * currently take into account all the physical parameters it needs, and it
+   * also doesn't get gravity right with the exception of the simplest cases.
    */
   template <int dim>
   class AdiabaticConditions
@@ -51,8 +52,8 @@ namespace aspect
     public:
       /**
        * Constructor. Compute the adiabatic conditions along a vertical
-       * transect of the geometry based on the given material model
-       * and other quantities.
+       * transect of the geometry based on the given material model and other
+       * quantities.
        */
       AdiabaticConditions (const GeometryModel::Interface<dim> &geometry_model,
                            const GravityModel::Interface<dim>  &gravity_model,
@@ -68,12 +69,12 @@ namespace aspect
       double temperature (const Point<dim> &p) const;
 
       /**
-       * Return the adiabatic temperature profile as a vector of values corresponding
-       * to increasing depth.
+       * Return the adiabatic temperature profile as a vector of values
+       * corresponding to increasing depth.
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void get_adiabatic_temperature_profile(std::vector<double> &values) const;
 
@@ -90,8 +91,8 @@ namespace aspect
 
       /**
        * Vectors of values of temperatures and pressures on a transect into
-       * depth at which we have computed them. The public member functions
-       * of this class interpolate linearly between these points.
+       * depth at which we have computed them. The public member functions of
+       * this class interpolate linearly between these points.
        */
       std::vector<double> temperatures, pressures;
 
@@ -103,9 +104,8 @@ namespace aspect
 
       /**
        * A reference to the geometry model which we need when converting
-       * between arbitrary points at which temperature and pressure
-       * are interpolated and the depth coordinate we use to pre-compute
-       * values.
+       * between arbitrary points at which temperature and pressure are
+       * interpolated and the depth coordinate we use to pre-compute values.
        */
       const GeometryModel::Interface<dim> &geometry_model;
   };

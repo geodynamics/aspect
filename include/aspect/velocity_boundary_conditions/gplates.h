@@ -36,26 +36,29 @@ namespace aspect
     namespace internal
     {
       /**
-       * GPlatesLookup handles all kinds of tasks around looking up a certain velocity boundary
-       * condition from a gplates .gpml file. This class keeps around the contents of two sets
-       * of files, corresponding to two instances in time where GPlates provides us with data;
-       * the boundary values at one particular time are interpolated between the two currently
-       * loaded data sets.
+       * GPlatesLookup handles all kinds of tasks around looking up a certain
+       * velocity boundary condition from a gplates .gpml file. This class
+       * keeps around the contents of two sets of files, corresponding to two
+       * instances in time where GPlates provides us with data; the boundary
+       * values at one particular time are interpolated between the two
+       * currently loaded data sets.
        */
       class GPlatesLookup
       {
         public:
 
           /**
-           * Initialize all members and the two pointers referring to the actual velocities.
-           * Also calculates any necessary rotation parameters for a 2D model.
+           * Initialize all members and the two pointers referring to the
+           * actual velocities. Also calculates any necessary rotation
+           * parameters for a 2D model.
            */
           GPlatesLookup(const Tensor<1,2> &pointone, const Tensor<1,2> &pointtwo, const double interpolation_width_);
 
           /**
-           * Outputs the GPlates module information at model start. Need to be separated from Constructor
-           * because at construction time the SimulatorAccess is not initialized and only Rank 0 should
-           * give the screen output.
+           * Outputs the GPlates module information at model start. Need to be
+           * separated from Constructor because at construction time the
+           * SimulatorAccess is not initialized and only Rank 0 should give
+           * the screen output.
            */
           template <int dim>
           void screen_output(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two) const;
@@ -66,18 +69,18 @@ namespace aspect
           bool fexists(const std::string &filename) const;
 
           /**
-           * Loads a gplates .gpml velocity file. Throws an exception if
-           * the file does not exist.
+           * Loads a gplates .gpml velocity file. Throws an exception if the
+           * file does not exist.
            */
           void load_file(const std::string &filename, const bool screen_output);
 
           /**
-           * Returns the computed surface velocity in cartesian coordinates. Takes
-           * as input the position and current time weight.
+           * Returns the computed surface velocity in cartesian coordinates.
+           * Takes as input the position and current time weight.
            *
            * @param position The current position to compute velocity
-           * @param time_weight A weighting between
-           * the two current timesteps n and n+1
+           * @param time_weight A weighting between the two current timesteps
+           * n and n+1
            */
           template <int dim>
           Tensor<1,dim> surface_velocity(const Point<dim> &position,
@@ -97,8 +100,7 @@ namespace aspect
           dealii::Table<2,Tensor<1,3> > velocity_positions;
 
           /**
-           * Pointers to the actual tables.
-           * Used to avoid unnecessary copying
+           * Pointers to the actual tables. Used to avoid unnecessary copying
            * of values.
            */
           dealii::Table<2,Tensor<1,3> > *velocity_values;
@@ -110,33 +112,35 @@ namespace aspect
           double delta_phi,delta_theta;
 
           /**
-           * The rotation axis and angle around which a 2D model needs to be rotated to
-           * be transformed to a plane that contains the origin and the two
-           * user prescribed points. Is not used for 3D.
+           * The rotation axis and angle around which a 2D model needs to be
+           * rotated to be transformed to a plane that contains the origin and
+           * the two user prescribed points. Is not used for 3D.
            */
           Tensor<1,3> rotation_axis;
           double rotation_angle;
 
           /**
-           * Determines the width of the velocity interpolation zone around the current point.
-           * Currently equals the arc distance between evaluation point and velocity data point that
-           * is still included in the interpolation. The weighting of the points currently only accounts
-           * for the surface area a single data point is covering ('moving window' interpolation without
-           * distance weighting).
+           * Determines the width of the velocity interpolation zone around
+           * the current point. Currently equals the arc distance between
+           * evaluation point and velocity data point that is still included
+           * in the interpolation. The weighting of the points currently only
+           * accounts for the surface area a single data point is covering
+           * ('moving window' interpolation without distance weighting).
            */
           const double interpolation_width;
 
           /**
-           * A function that returns the rotated vector r' that results out of a
-           * rotation from vector r around a specified rotation_axis by an defined angle
+           * A function that returns the rotated vector r' that results out of
+           * a rotation from vector r around a specified rotation_axis by an
+           * defined angle
            */
           Tensor<1,3>
           rotate (const Tensor<1,3> &position,const Tensor<1,3> &rotation_axis, const double angle) const;
 
           /**
-           * Convert a tensor of rank 1 and dimension in to rank 1 and dimension out.
-           * If $out < in$ the last elements will be discarded, if $out > in$ zeroes will
-           * be appended to fill the tensor.
+           * Convert a tensor of rank 1 and dimension in to rank 1 and
+           * dimension out. If $out < in$ the last elements will be discarded,
+           * if $out > in$ zeroes will be appended to fill the tensor.
            */
           template <int in, int out>
           Tensor<1,out> convert_tensor (Tensor<1,in> old_tensor) const;
@@ -148,61 +152,68 @@ namespace aspect
 
           /**
            * Return the cartesian coordinates of a spherical surface position
-           * defined by theta (polar angle. not geographical latitude) and phi.
+           * defined by theta (polar angle. not geographical latitude) and
+           * phi.
            */
           Tensor<1,3>
           cartesian_surface_coordinates(const Tensor<1,3> &sposition) const;
 
           /**
-           * Returns cartesian velocities calculated from surface velocities and position in spherical coordinates
+           * Returns cartesian velocities calculated from surface velocities
+           * and position in spherical coordinates
            *
-           * @param s_velocities Surface velocities in spherical coordinates (theta, phi)
-           * @param s_position Position in spherical coordinates (theta,phi,radius)
+           * @param s_velocities Surface velocities in spherical coordinates
+           * (theta, phi)
+           * @param s_position Position in spherical coordinates
+           * (theta,phi,radius)
            */
           Tensor<1,3> sphere_to_cart_velocity(const Tensor<1,2> &s_velocities,
-              const Tensor<1,3> &s_position) const;
+                                              const Tensor<1,3> &s_position) const;
 
           /**
            * calculates the index given a certain position
            *
            * @param index Reference to the index field, which is modified.
-           * @param position Input position, which is converted to spatial index
+           * @param position Input position, which is converted to spatial
+           * index
            */
           void
-          calculate_spatial_index(int* index, const Tensor<1,3> position) const;
+          calculate_spatial_index(int *index, const Tensor<1,3> position) const;
 
           /**
            * This function adds a certain data point to the interpolated
            * surface velocity at this evaluation point. This includes
            * calculating the interpolation weight and the rotation of the
-           * velocity to the evaluation point position (the velocity
-           * need to be tangential to the surface).
+           * velocity to the evaluation point position (the velocity need to
+           * be tangential to the surface).
            */
           double
-          add_interpolation_point(Tensor<1,3>& surf_vel,
+          add_interpolation_point(Tensor<1,3> &surf_vel,
                                   const Tensor<1,3> position,
                                   const int spatial_index[2],
                                   const double time_weight,
                                   const bool check_termination) const;
 
           /**
-           * Returns a velocity vector that is rotated to be tangential to the sphere surface at point position
+           * Returns a velocity vector that is rotated to be tangential to the
+           * sphere surface at point position
            *
            * @param data_position Position of the velocity data point
-           * @param point_position Position of the current evaluation point to which the velocity will be rotated
+           * @param point_position Position of the current evaluation point to
+           * which the velocity will be rotated
            * @param data_velocity Unrotated velocity vector
            */
           Tensor<1,3>
           rotate_grid_velocity(const Tensor<1,3> data_position, const Tensor<1,3> point_position, const Tensor<1,3> data_velocity) const;
 
           /**
-           * Returns the position (cartesian or spherical depending on last argument)
-           * of a data point with a given theta,phi index.
+           * Returns the position (cartesian or spherical depending on last
+           * argument) of a data point with a given theta,phi index.
            */
           Tensor<1,3>
           get_grid_point_position(const unsigned int theta_index,
-              const unsigned int phi_index,
-              const bool cartesian) const;
+                                  const unsigned int phi_index,
+                                  const bool cartesian) const;
 
           /**
            * Returns the arc distance of two points on a sphere surface.
@@ -211,15 +222,16 @@ namespace aspect
           arc_distance(const Tensor<1,3> position_1, const Tensor<1,3> position_2) const;
 
           /**
-           * Handles the actual multidimensional interpolation from velocity input to evaluation point position.
+           * Handles the actual multidimensional interpolation from velocity
+           * input to evaluation point position.
            */
           Tensor<1,3>
           interpolate ( const Tensor<1,3> position,
-              const double time_weight) const;
+                        const double time_weight) const;
 
           /**
-           * Bounds the theta and phi indices to the right sizes.
-           * Handles periodicity in phi and theta.
+           * Bounds the theta and phi indices to the right sizes. Handles
+           * periodicity in phi and theta.
            */
           void
           reformat_indices (int idx[2]) const;
@@ -249,47 +261,47 @@ namespace aspect
         boundary_velocity (const Point<dim> &position) const;
 
         /**
-         * Initialization function. This function is called once at the beginning
-         * of the program. Parses the user input and checks for valid geometry model.
+         * Initialization function. This function is called once at the
+         * beginning of the program. Parses the user input and checks for
+         * valid geometry model.
          */
         void
         initialize (const GeometryModel::Interface<dim> &geometry_model);
 
         /**
-        * A function that is called at the beginning of each time step
-        * to indicate what the model time is for which the boundary
-        * values will next be evaluated. Also loads the next velocity
-        * files if necessary and outputs a warning if the end of the set of
-        * velocity files if reached.
-        */
+         * A function that is called at the beginning of each time step to
+         * indicate what the model time is for which the boundary values will
+         * next be evaluated. Also loads the next velocity files if necessary
+         * and outputs a warning if the end of the set of velocity files if
+         * reached.
+         */
         void
         set_current_time (const double time);
 
         /**
-        * Declare the parameters this class takes through input files.
-        */
+         * Declare the parameters this class takes through input files.
+         */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         void
         parse_parameters (ParameterHandler &prm);
 
       private:
         /**
-        * A variable that stores the current time of the simulation. Derived
-        * classes can query this variable. It is set at the beginning of each
-        * time step.
-        */
+         * A variable that stores the current time of the simulation. Derived
+         * classes can query this variable. It is set at the beginning of each
+         * time step.
+         */
         double current_time;
 
         /**
-         * A variable that stores the currently used velocity file of a series.
-         * It gets updated if necessary by set_current_time.
+         * A variable that stores the currently used velocity file of a
+         * series. It gets updated if necessary by set_current_time.
          */
         int  current_time_step;
 
@@ -305,34 +317,37 @@ namespace aspect
         std::string data_directory;
 
         /**
-         * First part of filename of velocity files. The files have to have the pattern
-         * velocity_file_name.n.gpml where n is the number of the current timestep (starts
-         * from 0).
+         * First part of filename of velocity files. The files have to have
+         * the pattern velocity_file_name.n.gpml where n is the number of the
+         * current timestep (starts from 0).
          */
         std::string velocity_file_name;
 
         /**
-         * Time in model units (depends on other model inputs) between two velocity files.
+         * Time in model units (depends on other model inputs) between two
+         * velocity files.
          */
         double time_step;
 
         /**
-         * Weight between velocity file n and n+1 while the current time is between the
-         * two values t(n) and t(n+1).
+         * Weight between velocity file n and n+1 while the current time is
+         * between the two values t(n) and t(n+1).
          */
         double time_weight;
 
         /**
-         * State whether we have time_dependent boundary conditions. Switched off after
-         * finding no more velocity files to suppress attempts to read in new files.
+         * State whether we have time_dependent boundary conditions. Switched
+         * off after finding no more velocity files to suppress attempts to
+         * read in new files.
          */
         bool time_dependent;
 
         /**
-         * Two user defined points that prescribe the plane from which the 2D model takes
-         * the velocity boundary condition. One can think of this, as if the model is lying
-         * in this plane although no actual model coordinate is changed. The strings need to
-         * have the format "a,b" where a and b are doubles and define theta and phi on a sphere.
+         * Two user defined points that prescribe the plane from which the 2D
+         * model takes the velocity boundary condition. One can think of this,
+         * as if the model is lying in this plane although no actual model
+         * coordinate is changed. The strings need to have the format "a,b"
+         * where a and b are doubles and define theta and phi on a sphere.
          */
         std::string point1;
         std::string point2;
@@ -344,16 +359,18 @@ namespace aspect
         Tensor<1,2> pointtwo;
 
         /**
-         * Determines the width of the velocity interpolation zone around the current point.
-         * Currently equals the arc distance between evaluation point and velocity data point that
-         * is still included in the interpolation. The weighting of the points currently only accounts
-         * for the surface area a single data point is covering ('moving window' interpolation without
-         * distance weighting).
+         * Determines the width of the velocity interpolation zone around the
+         * current point. Currently equals the arc distance between evaluation
+         * point and velocity data point that is still included in the
+         * interpolation. The weighting of the points currently only accounts
+         * for the surface area a single data point is covering ('moving
+         * window' interpolation without distance weighting).
          */
         double interpolation_width;
 
         /**
-         * Pointer to an object that reads and processes data we get from gplates files.
+         * Pointer to an object that reads and processes data we get from
+         * gplates files.
          */
         std_cxx1x::shared_ptr<internal::GPlatesLookup> lookup;
 
@@ -364,12 +381,12 @@ namespace aspect
         update_velocity_data (const bool first_process);
 
         /**
-         * Handles settings and user notification in case the
-         * time-dependent part of the boundary condition is over.
+         * Handles settings and user notification in case the time-dependent
+         * part of the boundary condition is over.
          */
         void
         end_time_dependence (const int timestep,
-            const bool first_process);
+                             const bool first_process);
 
         /**
          * Create a filename out of the name template.

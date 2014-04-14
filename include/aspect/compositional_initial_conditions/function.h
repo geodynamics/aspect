@@ -35,9 +35,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements initial conditions for the
-     * compositional fields based on a
-     * functional description provided in the input file.
+     * A class that implements initial conditions for the compositional fields
+     * based on a functional description provided in the input file.
      *
      * @ingroup CompositionalInitialConditionsModels
      */
@@ -51,26 +50,27 @@ namespace aspect
          */
 
         /**
-         * Return the initial composition as a function of position and number of compositional field.
+         * Return the initial composition as a function of position and number
+         * of compositional field.
          */
         virtual
         double initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
 
         /**
-         * Declare the parameters this class takes through input files.
-         * The default implementation of this function does not describe
-         * any parameters. Consequently, derived classes do not have to
-         * overload this function if they do not take any runtime parameters.
+         * Declare the parameters this class takes through input files. The
+         * default implementation of this function does not describe any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
          */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file. The default implementation of this function does not read
-         * any parameters. Consequently, derived classes do not have to
-         * overload this function if they do not take any runtime parameters.
+         * Read the parameters this class declares from the parameter file.
+         * The default implementation of this function does not read any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
          */
         virtual
         void

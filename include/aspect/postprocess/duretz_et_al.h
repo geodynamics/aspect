@@ -31,11 +31,11 @@ namespace aspect
   namespace Postprocess
   {
     /**
-     * A postprocessor that evaluates the accuracy of the solution of
-     * the aspect::MaterialModel::DuretzEtAl::* material models.
+     * A postprocessor that evaluates the accuracy of the solution of the
+     * aspect::MaterialModel::DuretzEtAl::* material models.
      *
-     * The implementation of error evaluators that correspond
-     * to the benchmarks defined in the following paper:
+     * The implementation of error evaluators that correspond to the
+     * benchmarks defined in the following paper:
      * @code
      *  @Article{DMGT11,
      *    author =       {T. Duretz and D. A. May and T. V. Gerya and P. J. Tackley},
@@ -48,8 +48,8 @@ namespace aspect
      *    pages =        {Q07004/1--26}}
      * @endcode
      *
-     * @note While this paper summarizes the benchmarks used here, some
-     * of the benchmarks actually originate in earlier papers. For the original
+     * @note While this paper summarizes the benchmarks used here, some of the
+     * benchmarks actually originate in earlier papers. For the original
      * references, see the bibliography of the paper above.
      * @ingroup Postprocessing
      */

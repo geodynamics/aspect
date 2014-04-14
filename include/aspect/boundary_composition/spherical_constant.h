@@ -31,10 +31,10 @@ namespace aspect
   namespace BoundaryComposition
   {
     /**
-     * A class that implements a composition boundary condition for a spherical
-     * shell geometry in which the composition at the inner and outer surfaces
-     * (i.e. at the core-mantle and the mantle-lithosphere/atmosphere boundaries)
-     * are constant.
+     * A class that implements a composition boundary condition for a
+     * spherical shell geometry in which the composition at the inner and
+     * outer surfaces (i.e. at the core-mantle and the mantle-
+     * lithosphere/atmosphere boundaries) are constant.
      *
      * @ingroup BoundaryCompositions
      */
@@ -43,18 +43,20 @@ namespace aspect
     {
       public:
         /**
-         * Return the composition that is to hold at a particular location on the
-         * boundary of the domain. This function returns the constant compositions
-         * read from the parameter file for the inner and outer boundaries.
+         * Return the composition that is to hold at a particular location on
+         * the boundary of the domain. This function returns the constant
+         * compositions read from the parameter file for the inner and outer
+         * boundaries.
          *
-         * @param geometry_model The geometry model that describes the domain. This may
-         *   be used to determine whether the boundary composition model is implemented
-         *   for this geometry.
-         * @param boundary_indicator The boundary indicator of the part of the boundary
-         *   of the domain on which the point is located at which we are requesting the
-         *   composition.
-         * @param location The location of the point at which we ask for the composition.
-         **/
+         * @param geometry_model The geometry model that describes the domain.
+         * This may be used to determine whether the boundary composition
+         * model is implemented for this geometry.
+         * @param boundary_indicator The boundary indicator of the part of the
+         * boundary of the domain on which the point is located at which we
+         * are requesting the composition.
+         * @param location The location of the point at which we ask for the
+         * composition.
+         */
         virtual
         double composition (const GeometryModel::Interface<dim> &geometry_model,
                             const unsigned int                   boundary_indicator,
@@ -62,36 +64,35 @@ namespace aspect
                             const unsigned int                   compositional_field) const;
 
         /**
-         * Return the minimal composition on that part of the boundary
-         * on which Dirichlet conditions are posed.
+         * Return the minimal composition on that part of the boundary on
+         * which Dirichlet conditions are posed.
          *
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
         virtual
-        double minimal_composition (const std::set<types::boundary_id>& fixed_boundary_ids) const;
+        double minimal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
-         * Return the maximal composition on that part of the boundary
-         * on which Dirichlet conditions are posed.
+         * Return the maximal composition on that part of the boundary on
+         * which Dirichlet conditions are posed.
          *
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
         virtual
-        double maximal_composition (const std::set<types::boundary_id>& fixed_boundary_ids) const;
+        double maximal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
-         * Declare the parameters this class takes through input files.
-         * This class declares the inner and outer boundary compositions.
+         * Declare the parameters this class takes through input files. This
+         * class declares the inner and outer boundary compositions.
          */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void

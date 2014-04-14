@@ -61,7 +61,8 @@ namespace aspect
         /**
          * Initialization function. Take references to the geometry model, the
          * object that describes the temperature boundary values, and the
-         * adiabatic conditions and store them so that derived classes can access them.
+         * adiabatic conditions and store them so that derived classes can
+         * access them.
          */
         void
         initialize (const GeometryModel::Interface<dim>       &geometry_model,
@@ -76,20 +77,20 @@ namespace aspect
 
 
         /**
-         * Declare the parameters this class takes through input files.
-         * The default implementation of this function does not describe
-         * any parameters. Consequently, derived classes do not have to
-         * overload this function if they do not take any runtime parameters.
+         * Declare the parameters this class takes through input files. The
+         * default implementation of this function does not describe any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
          */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file. The default implementation of this function does not read
-         * any parameters. Consequently, derived classes do not have to
-         * overload this function if they do not take any runtime parameters.
+         * Read the parameters this class declares from the parameter file.
+         * The default implementation of this function does not read any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
          */
         virtual
         void
@@ -102,8 +103,8 @@ namespace aspect
         const GeometryModel::Interface<dim>       *geometry_model;
 
         /**
-         * Pointer to an object that described the boundary values
-         * for the temperature field.
+         * Pointer to an object that described the boundary values for the
+         * temperature field.
          */
         const BoundaryTemperature::Interface<dim> *boundary_temperature;
 
@@ -117,16 +118,17 @@ namespace aspect
 
 
     /**
-     * Register an initial conditions model so that it can be selected from the parameter file.
+     * Register an initial conditions model so that it can be selected from
+     * the parameter file.
      *
      * @param name A string that identifies the initial conditions model
-     * @param description A text description of what this model
-     * does and that will be listed in the documentation of
-     * the parameter file.
-     * @param declare_parameters_function A pointer to a function that can be used to
-     *   declare the parameters that this initial conditions model wants to read from input files.
-     * @param factory_function A pointer to a function that can create an object of
-     *   this initial conditions model.
+     * @param description A text description of what this model does and that
+     * will be listed in the documentation of the parameter file.
+     * @param declare_parameters_function A pointer to a function that can be
+     * used to declare the parameters that this initial conditions model wants
+     * to read from input files.
+     * @param factory_function A pointer to a function that can create an
+     * object of this initial conditions model.
      *
      * @ingroup InitialConditionsModels
      */
@@ -138,12 +140,14 @@ namespace aspect
                                        Interface<dim> *(*factory_function) ());
 
     /**
-     * A function that given the name of a model returns a pointer to an object
-     * that describes it. Ownership of the pointer is transferred to the caller.
+     * A function that given the name of a model returns a pointer to an
+     * object that describes it. Ownership of the pointer is transferred to
+     * the caller.
      *
-     * This function makes the newly created object read its parameters from the
-     * input parameter object, and then initializes it with the given geometry
-     * model, boundary values object, and adiabatic conditions object.
+     * This function makes the newly created object read its parameters from
+     * the input parameter object, and then initializes it with the given
+     * geometry model, boundary values object, and adiabatic conditions
+     * object.
      *
      * @ingroup InitialConditionsModels
      */
@@ -156,7 +160,8 @@ namespace aspect
 
 
     /**
-     * Declare the runtime parameters of the registered initial conditions models.
+     * Declare the runtime parameters of the registered initial conditions
+     * models.
      *
      * @ingroup InitialConditionsModels
      */
@@ -167,8 +172,9 @@ namespace aspect
 
 
     /**
-     * Given a class name, a name, and a description for the parameter file for a initial conditions model, register it with
-     * the functions that can declare their parameters and create these objects.
+     * Given a class name, a name, and a description for the parameter file
+     * for a initial conditions model, register it with the functions that can
+     * declare their parameters and create these objects.
      *
      * @ingroup InitialConditionsModels
      */

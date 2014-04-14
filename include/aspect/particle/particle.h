@@ -48,9 +48,10 @@ namespace aspect
     };
 
     /**
-     * Base class of particles - represents a particle with position, velocity,
-     * and an ID number. This class can be extended to include data related
-     * to a particle. An example of this is shown in the DataParticle class.
+     * Base class of particles - represents a particle with position,
+     * velocity, and an ID number. This class can be extended to include data
+     * related to a particle. An example of this is shown in the DataParticle
+     * class.
      */
     template <int dim>
     class BaseParticle
@@ -77,62 +78,66 @@ namespace aspect
         bool            is_local;
 
         /**
-         * Whether to check the velocity of this particle
-         * This is used for integration schemes which require multiple
-         * integration steps for some particles, but not for others
+         * Whether to check the velocity of this particle This is used for
+         * integration schemes which require multiple integration steps for
+         * some particles, but not for others
          */
         bool            check_vel;
 
       public:
         /**
-               * Empty constructor for BaseParticle, creates a particle at the origin with zero velocity.
-               */
+         * Empty constructor for BaseParticle, creates a particle at the
+         * origin with zero velocity.
+         */
         BaseParticle ();
 
         /**
-               * Constructor for BaseParticle, creates a particle with the specified ID at the
-               * specified location with zero velocity. Note that Aspect does not check for
-               * duplicate particle IDs so the user must be sure the IDs are unique over all processes.
-               *
-               * @param[in] new_loc Initial location of particle.
-               * @param[in] new_id Globally unique ID number of particle.
-               */
+         * Constructor for BaseParticle, creates a particle with the specified
+         * ID at the specified location with zero velocity. Note that Aspect
+         * does not check for duplicate particle IDs so the user must be sure
+         * the IDs are unique over all processes.
+         *
+         * @param[in] new_loc Initial location of particle.
+         * @param[in] new_id Globally unique ID number of particle.
+         */
         BaseParticle (const Point<dim> &new_loc,
                       const double &new_id);
 
         /**
-               * Destructor for BaseParticle
-               */
+         * Destructor for BaseParticle
+         */
         virtual
         ~BaseParticle ();
 
         /**
-               * Get the number of doubles required to represent this particle for communication.
-               *
-               * @return Number of doubles required to represent this particle
-               */
+         * Get the number of doubles required to represent this particle for
+         * communication.
+         *
+         * @return Number of doubles required to represent this particle
+         */
         static unsigned int
         data_len ();
 
         /**
-               * Read the particle data from the specified vector of doubles.
-               *
-               * @param [in] data The vector of double data to read from.
-               * @param [in] pos The position in the data vector to start reading from.
-               * @return The position in the vector of the next unread double.
-               */
+         * Read the particle data from the specified vector of doubles.
+         *
+         * @param [in] data The vector of double data to read from.
+         * @param [in] pos The position in the data vector to start reading
+         * from. @return The position in the vector of the next unread double.
+         */
         virtual unsigned int read_data(const std::vector<double> &data, const unsigned int &pos);
 
         /**
          * Write particle data to a vector of doubles.
          *
-         * @param [in,out] data The vector of doubles to write integrator data into.
+         * @param [in,out] data The vector of doubles to write integrator data
+         * into.
          */
         virtual void write_data(std::vector<double> &data) const;
 
         /**
-         * Set the location of this particle. Note that this does not check whether this
-         * is a valid location in the simulation domain.
+         * Set the location of this particle. Note that this does not check
+         * whether this is a valid location in the simulation domain.
          *
          * @param [in] new_loc The new location for this particle.
          */
@@ -172,8 +177,9 @@ namespace aspect
         get_id () const;
 
         /**
-         * Check whether the particle is marked as being local to this subdomain.
-         * Note that this function does not actually perform the check for locality.
+         * Check whether the particle is marked as being local to this
+         * subdomain. Note that this function does not actually perform the
+         * check for locality.
          *
          * @return Whether the particle is marked as local.
          */
@@ -181,8 +187,8 @@ namespace aspect
         local () const;
 
         /**
-         * Mark the particle as being local of not. Note that this function does
-         * not perform the check for locality.
+         * Mark the particle as being local of not. Note that this function
+         * does not perform the check for locality.
          *
          * @param[in] new_local Whether to mark the particle as local.
          */
@@ -190,9 +196,9 @@ namespace aspect
         set_local (bool new_local);
 
         /**
-         * Whether to check the particle velocity at its current location. This is
-         * used for integrators where the particle velocity may not need to be
-         * checked every step.
+         * Whether to check the particle velocity at its current location.
+         * This is used for integrators where the particle velocity may not
+         * need to be checked every step.
          *
          * @return Whether to check the particle velocity
          */
@@ -210,17 +216,18 @@ namespace aspect
         /**
          * Add the MPI data description for this particle type to the vector.
          *
-         * @param[in,out] data_info Vector to which MPI data description is appended.
+         * @param[in,out] data_info Vector to which MPI data description is
+         * appended.
          */
         static void
         add_mpi_types (std::vector<MPIDataInfo> &data_info);
     };
 
     /**
-     * DataParticle provides an example of how to extend the BaseParticle class
-     * to include related particle data. This allows users to attach
-     * scalars/vectors/tensors/etc to particles and ensure they are transmitted
-     * correctly over MPI and written to output files.
+     * DataParticle provides an example of how to extend the BaseParticle
+     * class to include related particle data. This allows users to attach
+     * scalars/vectors/tensors/etc to particles and ensure they are
+     * transmitted correctly over MPI and written to output files.
      */
     template <int dim, int data_dim>
     class DataParticle : public BaseParticle<dim>
@@ -276,7 +283,8 @@ namespace aspect
         /**
          * Returns a vector from the first dim components of val
          *
-         * @return vector representation of first dim components of the particle data
+         * @return vector representation of first dim components of the
+         * particle data
          */
         Point<dim>
         get_vector () const;
@@ -296,8 +304,8 @@ namespace aspect
         /**
          * Return a reference to an element of the DataParticle data
          *
-         * @param [in] ind Index of the data array
-         * @return Reference to double value at the requested index
+         * @param [in] ind Index of the data array @return Reference to double
+         * value at the requested index
          */
         double &operator[](const unsigned int &ind)
         {
@@ -308,8 +316,8 @@ namespace aspect
         /**
          * Return the value of an element of the DataParticle data
          *
-         * @param [in] ind Index of the data array
-         * @return Value at the requested index
+         * @param [in] ind Index of the data array @return Value at the
+         * requested index
          */
         double operator[](const unsigned int &ind) const
         {

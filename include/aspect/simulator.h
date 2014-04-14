@@ -94,7 +94,8 @@ namespace aspect
   {
     private:
       /**
-       * A structure that contains enum values that identify the nonlinear solver in use.
+       * A structure that contains enum values that identify the nonlinear
+       * solver in use.
        */
       struct NonlinearSolver
       {
@@ -109,14 +110,14 @@ namespace aspect
 
       struct NullspaceRemoval
       {
-          enum Kind
-          {
-            none = 0,
-            net_rotation = 0x1,
-            net_translation = 0x2,
-            angular_momentum = 0x4,
-            translational_momentum = 0x8
-          };
+        enum Kind
+        {
+          none = 0,
+          net_rotation = 0x1,
+          net_translation = 0x2,
+          angular_momentum = 0x4,
+          translational_momentum = 0x8
+        };
       };
 
     public:
@@ -128,40 +129,39 @@ namespace aspect
        * Each of the member variables of this class corresponds to a parameter
        * declared for the ParameterHandler class. Rather than duplicating the
        * documentation of each of these parameters for the member variables
-       * here, please refer to the documentation of run-time parameters in
-       * the ASPECT manual for more information.
+       * here, please refer to the documentation of run-time parameters in the
+       * ASPECT manual for more information.
        *
        * @ingroup Simulator
        */
       struct Parameters
       {
         /**
-         * Constructor. Fills the values of member functions from the
-         * given parameter object.
+         * Constructor. Fills the values of member functions from the given
+         * parameter object.
          *
          * @param prm The parameter object that has previously been filled
          * with content by reading an input file.
-         **/
+         */
         Parameters (ParameterHandler &prm);
 
         /**
-         * Declare the run-time parameters this class takes,
-         * and call the respective <code>declare_parameters</code>
-         * functions of the namespaces that describe geometries,
-         * material models, etc.
+         * Declare the run-time parameters this class takes, and call the
+         * respective <code>declare_parameters</code> functions of the
+         * namespaces that describe geometries, material models, etc.
          *
-         * @param prm The object in which the run-time parameters
-         * are to be declared.
-         **/
+         * @param prm The object in which the run-time parameters are to be
+         * declared.
+         */
         static
         void declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read run-time parameters from an object that has previously
-         * parsed an input file.
+         * Read run-time parameters from an object that has previously parsed
+         * an input file.
          *
          * @param prm The object from which to obtain the run-time parameters.
-         **/
+         */
         void parse_parameters (ParameterHandler &prm);
 
         /**
@@ -205,9 +205,10 @@ namespace aspect
         std::set<types::boundary_id> zero_velocity_boundary_indicators;
         std::set<types::boundary_id> tangential_velocity_boundary_indicators;
         /**
-         * map from boundary id to a pair "components", "velocity boundary type",
-         * where components is of the format "[x][y][z]" and the velocity type
-         * is mapped to one of the plugins of velocity boundary conditions (e.g. "function")
+         * map from boundary id to a pair "components", "velocity boundary
+         * type", where components is of the format "[x][y][z]" and the
+         * velocity type is mapped to one of the plugins of velocity boundary
+         * conditions (e.g. "function")
          */
         std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_velocity_boundary_indicators;
         /**
@@ -236,7 +237,8 @@ namespace aspect
          */
 
         /**
-         * @name Parameters that have to do with the stabilization of transport equations
+         * @name Parameters that have to do with the stabilization of
+         * transport equations
          * @{
          */
         unsigned int                   stabilization_alpha;
@@ -294,10 +296,9 @@ namespace aspect
       /**
        * Constructor.
        *
-       * @param mpi_communicator The MPI communicator on which this
-       * class is to work. The class creates a clone of the actual
-       * communicator to make its communications private from the
-       * rest of the world.
+       * @param mpi_communicator The MPI communicator on which this class is
+       * to work. The class creates a clone of the actual communicator to make
+       * its communications private from the rest of the world.
        *
        * @param prm The run-time parameter object from which this class
        * obtains its settings.
@@ -309,20 +310,18 @@ namespace aspect
                  ParameterHandler &prm);
 
       /**
-       * Destructor. Destroy what needs to be destroyed after waiting
-       * for all threads that may still be doing something in the
-       * background.
+       * Destructor. Destroy what needs to be destroyed after waiting for all
+       * threads that may still be doing something in the background.
        */
       ~Simulator ();
 
       /**
-       * Declare the run-time parameters this class takes,
-       * and call the respective <code>declare_parameters</code>
-       * functions of the namespaces that describe geometries,
-       * material models, etc.
+       * Declare the run-time parameters this class takes, and call the
+       * respective <code>declare_parameters</code> functions of the
+       * namespaces that describe geometries, material models, etc.
        *
-       * @param prm The object in which the run-time parameters
-       * are to be declared.
+       * @param prm The object in which the run-time parameters are to be
+       * declared.
        *
        * This function is implemented in
        * <code>source/simulator/parameters.cc</code>.
@@ -331,10 +330,9 @@ namespace aspect
       void declare_parameters (ParameterHandler &prm);
 
       /**
-       * The function that runs the overall algorithm. It
-       * contains the loop over all time steps as well as the logic
-       * of what to do when before the loop starts and within the time
-       * loop.
+       * The function that runs the overall algorithm. It contains the loop
+       * over all time steps as well as the logic of what to do when before
+       * the loop starts and within the time loop.
        *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
@@ -344,10 +342,10 @@ namespace aspect
     private:
 
       /**
-       * A structure that is used as an argument to functions that can
-       * work on both the temperature and the compositional variables
-       * and that need to be told which one of the two, as well as on
-       * which of the compositional variables.
+       * A structure that is used as an argument to functions that can work on
+       * both the temperature and the compositional variables and that need to
+       * be told which one of the two, as well as on which of the
+       * compositional variables.
        */
       struct TemperatureOrComposition
       {
@@ -365,18 +363,18 @@ namespace aspect
 
         /**
          * A variable identifying which of the compositional fields is
-         * selected. This variable is meaningless if the temperature
-         * is selected.
+         * selected. This variable is meaningless if the temperature is
+         * selected.
          */
         const unsigned int compositional_variable;
 
         /**
          * Constructor.
          * @param field_type Determines whether this variable should select
-         *   the temperature field or a compositional field.
+         * the temperature field or a compositional field.
          * @param compositional_variable The number of the compositional field
-         *   if the first argument in fact chooses a compositional variable.
-         *   Meaningless if the first argument equals temperature.
+         * if the first argument in fact chooses a compositional variable.
+         * Meaningless if the first argument equals temperature.
          *
          * This function is implemented in
          * <code>source/simulator/helper_functions.cc</code>.
@@ -385,7 +383,8 @@ namespace aspect
                                   const unsigned int compositional_variable = numbers::invalid_unsigned_int);
 
         /**
-         * A static function that creates an object identifying the temperature.
+         * A static function that creates an object identifying the
+         * temperature.
          *
          * This function is implemented in
          * <code>source/simulator/helper_functions.cc</code>.
@@ -410,14 +409,15 @@ namespace aspect
         is_temperature () const;
 
         /**
-         * Look up the block index for this temperature or compositional field i.
-         * See Introspection::block_indices for more information.
+         * Look up the block index for this temperature or compositional field
+         * i. See Introspection::block_indices for more information.
          */
         unsigned int block_index(const Introspection<dim> &introspection) const;
       };
 
       /**
-       * @name Top-level functions in the overall flow of the numerical algorithm
+       * @name Top-level functions in the overall flow of the numerical
+       * algorithm
        * @{
        */
 
@@ -442,11 +442,12 @@ namespace aspect
       void setup_introspection ();
 
       /**
-       * A function that is responsible for initializing the temperature/compositional
-       * field before the first time step. The temperature field then serves as the
-       * temperature from which the velocity is computed during the first time
-       * step, and is subsequently overwritten by the temperature field one gets
-       * by advancing by one time step.
+       * A function that is responsible for initializing the
+       * temperature/compositional field before the first time step. The
+       * temperature field then serves as the temperature from which the
+       * velocity is computed during the first time step, and is subsequently
+       * overwritten by the temperature field one gets by advancing by one
+       * time step.
        *
        * This function is implemented in
        * <code>source/simulator/initial_conditions.cc</code>.
@@ -455,15 +456,15 @@ namespace aspect
 
       /**
        * A function that initializes the pressure variable before the first
-       * time step. It does so by either interpolating (for continuous pressure
-       * finite elements) or projecting (for discontinuous elements) the adiabatic
-       * pressure computed from the material model.
+       * time step. It does so by either interpolating (for continuous
+       * pressure finite elements) or projecting (for discontinuous elements)
+       * the adiabatic pressure computed from the material model.
        *
        * Note that the pressure so set is overwritten by the pressure in fact
-       * computed during the first time step. We need this function, however, so
-       * that the evaluation of pressure-dependent coefficients (e.g. pressure
-       * dependent densities or thermal coefficients) during the first
-       * time step has some useful pressure to start with.
+       * computed during the first time step. We need this function, however,
+       * so that the evaluation of pressure-dependent coefficients (e.g.
+       * pressure dependent densities or thermal coefficients) during the
+       * first time step has some useful pressure to start with.
        *
        * This function is implemented in
        * <code>source/simulator/initial_conditions.cc</code>.
@@ -471,12 +472,12 @@ namespace aspect
       void compute_initial_pressure_field ();
 
       /**
-       * Do some housekeeping at the beginning of each time step. This includes
-       * generating some screen output, adding some information to the statistics
-       * file, and interpolating time-dependent boundary conditions specific to
-       * this particular time step (the time independent boundary conditions, for
-       * example for hanging nodes or for tangential flow, are computed only
-       * once per mesh in setup_dofs()).
+       * Do some housekeeping at the beginning of each time step. This
+       * includes generating some screen output, adding some information to
+       * the statistics file, and interpolating time-dependent boundary
+       * conditions specific to this particular time step (the time
+       * independent boundary conditions, for example for hanging nodes or for
+       * tangential flow, are computed only once per mesh in setup_dofs()).
        *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
@@ -494,8 +495,8 @@ namespace aspect
 
       /**
        * Initiate the assembly of the Stokes preconditioner matrix via
-       * assemble_stokes_preconditoner(), then set up the data structures
-       * to actually build a preconditioner from this matrix.
+       * assemble_stokes_preconditoner(), then set up the data structures to
+       * actually build a preconditioner from this matrix.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -503,8 +504,8 @@ namespace aspect
       void build_stokes_preconditioner ();
 
       /**
-       * Initialize the preconditioner for the advection equation of
-       * field index.
+       * Initialize the preconditioner for the advection equation of field
+       * index.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -521,8 +522,8 @@ namespace aspect
       void assemble_stokes_system ();
 
       /**
-       * Initiate the assembly of one advection matrix and right hand side
-       * and build a preconditioner for the matrix.
+       * Initiate the assembly of one advection matrix and right hand side and
+       * build a preconditioner for the matrix.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -530,10 +531,11 @@ namespace aspect
       void assemble_advection_system (const TemperatureOrComposition &temperature_or_composition);
 
       /**
-       * Solve one block of the the temperature/composition linear system. Return the initial
-       * nonlinear residual, i.e., if the linear system to be solved is $Ax=b$, then
-       * return $\|Ax_0-b\|$ where $x_0$ is the initial guess for the solution variable
-       * and is taken from the current_linearization_point member variable.
+       * Solve one block of the the temperature/composition linear system.
+       * Return the initial nonlinear residual, i.e., if the linear system to
+       * be solved is $Ax=b$, then return $\|Ax_0-b\|$ where $x_0$ is the
+       * initial guess for the solution variable and is taken from the
+       * current_linearization_point member variable.
        *
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
@@ -541,10 +543,11 @@ namespace aspect
       double solve_advection (const TemperatureOrComposition &temperature_or_composition);
 
       /**
-       * Solve the Stokes linear system. Return the initial nonlinear residual,
-       * i.e., if the linear system to be solved is $Ax=b$, then return $\|Ax_0-b\|$
-       * where $x_0$ is the initial guess for the solution variable and is taken from
-       * the current_linearization_point member variable.
+       * Solve the Stokes linear system. Return the initial nonlinear
+       * residual, i.e., if the linear system to be solved is $Ax=b$, then
+       * return $\|Ax_0-b\|$ where $x_0$ is the initial guess for the solution
+       * variable and is taken from the current_linearization_point member
+       * variable.
        *
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
@@ -552,10 +555,10 @@ namespace aspect
       double solve_stokes ();
 
       /**
-       * This function is called at the end of every time step. It
-       * runs all the postprocessors that have been listed in the input
-       * parameter file (see the manual) in turn. In particular, this
-       * usually includes generating graphical output every few time steps.
+       * This function is called at the end of every time step. It runs all
+       * the postprocessors that have been listed in the input parameter file
+       * (see the manual) in turn. In particular, this usually includes
+       * generating graphical output every few time steps.
        *
        * The function also updates the statistics output file at the end of
        * each time step.
@@ -581,7 +584,8 @@ namespace aspect
        */
 
       /**
-       * @name Functions used in saving the state of the program and restarting from a saved state
+       * @name Functions used in saving the state of the program and
+       * restarting from a saved state
        * @{
        */
       /**
@@ -604,8 +608,8 @@ namespace aspect
        * either be re-generated (matrices, DoFHandler objects, etc) or are
        * read from the input parameter file. See the manual for more
        * information. This function only restores those variables that can
-       * neither be re-generated from other information nor are read from
-       * the input parameter file.
+       * neither be re-generated from other information nor are read from the
+       * input parameter file.
        *
        * This function is implemented in
        * <code>source/simulator/checkpoint_restart.cc</code>.
@@ -664,8 +668,8 @@ namespace aspect
       void assemble_stokes_preconditioner ();
 
       /**
-       * Compute the integrals for the preconditioner for the Stokes system
-       * on a single cell.
+       * Compute the integrals for the preconditioner for the Stokes system on
+       * a single cell.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -686,8 +690,8 @@ namespace aspect
       copy_local_to_global_stokes_preconditioner (const internal::Assembly::CopyData::StokesPreconditioner<dim> &data);
 
       /**
-       * Compute the integrals for the Stokes matrix and right hand side
-       * on a single cell.
+       * Compute the integrals for the Stokes matrix and right hand side on a
+       * single cell.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -698,8 +702,8 @@ namespace aspect
                                     internal::Assembly::CopyData::StokesSystem<dim> &data);
 
       /**
-       * Copy the contribution to the Stokes system
-       * from a single cell into the global matrix that stores these elements.
+       * Copy the contribution to the Stokes system from a single cell into
+       * the global matrix that stores these elements.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -708,12 +712,12 @@ namespace aspect
       copy_local_to_global_stokes_system (const internal::Assembly::CopyData::StokesSystem<dim> &data);
 
       /**
-        * Compute the integrals for one advection matrix and right hand side
-        * on a single cell.
-        *
-        * This function is implemented in
-        * <code>source/simulator/assembly.cc</code>.
-        */
+       * Compute the integrals for one advection matrix and right hand side on
+       * a single cell.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
       void
       local_assemble_advection_system (const TemperatureOrComposition &temperature_or_composition,
                                        const std::pair<double,double> global_field_range,
@@ -724,10 +728,10 @@ namespace aspect
                                        internal::Assembly::CopyData::AdvectionSystem<dim> &data);
 
       /**
-       * Compute the heating term for the advection system index.
-       * Currently the heating term is 0
-       * for compositional fields, but this can be changed in the
-       * future to allow for interactions between compositional fields.
+       * Compute the heating term for the advection system index. Currently
+       * the heating term is 0 for compositional fields, but this can be
+       * changed in the future to allow for interactions between compositional
+       * fields.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -740,8 +744,8 @@ namespace aspect
 
 
       /**
-       * Copy the contribution to the advection system
-       * from a single cell into the global matrix that stores these elements.
+       * Copy the contribution to the advection system from a single cell into
+       * the global matrix that stores these elements.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -760,15 +764,15 @@ namespace aspect
       /**
        * This routine adjusts the second block of the right hand side of a
        * Stokes system  (containing the term that comes from compressibility,
-       * so that the system becomes
-       * compatible: $0=\int div u = \int g$. The vector to adjust is given as the
-       * argument of this function. This function makes use of the
-       * helper vector pressure_shape_function_integrals that contains
-       * $h_i=(q_i,1)$ with the pressure functions $q_i$
-       * and we adjust the right hand side $g$ by $h_i \int g / |\Omega|$.
+       * so that the system becomes compatible: $0=\int div u = \int g$. The
+       * vector to adjust is given as the argument of this function. This
+       * function makes use of the helper vector
+       * pressure_shape_function_integrals that contains $h_i=(q_i,1)$ with
+       * the pressure functions $q_i$ and we adjust the right hand side $g$ by
+       * $h_i \int g / |\Omega|$.
        *
-       * The purpose of this function is described in the second paper on
-       * the numerical methods in Aspect.
+       * The purpose of this function is described in the second paper on the
+       * numerical methods in Aspect.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
@@ -776,41 +780,40 @@ namespace aspect
       void make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector);
 
       /**
-       * Fills a vector with the artificial viscosity for the temperature on each local cell
+       * Fills a vector with the artificial viscosity for the temperature on
+       * each local cell
        */
       void get_artificial_viscosity (Vector<float> &viscosity_per_cell) const;
 
       /**
        * Internal routine to compute the depth average of a certain quantitiy.
-       * The functor @p fctr should implement:
-       * 1. bool need_material_properties()
-       * 2. void setup(unsigned int q_points)
-       * 3. double operator()(const MaterialModelInputs & in,
-       *    const MaterialModelOutputs & out,
-       *    FEValues<dim> & fe_values,
-       *    const LinearAlgebra::BlockVector &solution,
-       *    std::vector<double> & output)
+       * The functor @p fctr should implement: 1. bool
+       * need_material_properties() 2. void setup(unsigned int q_points) 3.
+       * double operator()(const MaterialModelInputs & in, const
+       * MaterialModelOutputs & out, FEValues<dim> & fe_values, const
+       * LinearAlgebra::BlockVector &solution, std::vector<double> & output)
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       template<class FUNCTOR>
       void compute_depth_average(std::vector<double> &values,
                                  FUNCTOR &fctr) const;
 
       /**
-       * Compute a depth average of the current temperature/composition. The function
-       * fills a vector that contains average temperatures/compositions over slices of the
-       * domain of same depth. The function resizes the output vector to match
-       * the number of depth slices.
+       * Compute a depth average of the current temperature/composition. The
+       * function fills a vector that contains average
+       * temperatures/compositions over slices of the domain of same depth.
+       * The function resizes the output vector to match the number of depth
+       * slices.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition,
                                        std::vector<double> &values) const;
@@ -824,9 +827,9 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void compute_depth_average_viscosity(std::vector<double> &values) const;
 
@@ -836,9 +839,9 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void compute_depth_average_velocity_magnitude(std::vector<double> &values) const;
 
@@ -848,9 +851,9 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void compute_depth_average_sinking_velocity(std::vector<double> &values) const;
 
@@ -860,9 +863,9 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void compute_depth_average_Vs(std::vector<double> &values) const;
 
@@ -872,49 +875,51 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void compute_depth_average_Vp(std::vector<double> &values) const;
 
       /**
-       * Compute the seismic shear wave speed, Vs anomaly per element.
-       * we compute the anomaly by computing a smoothed (over 200 km or so) laterally averaged
-       * temperature profile and associated seismic velocity that is then subtracted from the
-       * seismic velocity at the current pressure temperature conditions
+       * Compute the seismic shear wave speed, Vs anomaly per element. we
+       * compute the anomaly by computing a smoothed (over 200 km or so)
+       * laterally averaged temperature profile and associated seismic
+       * velocity that is then subtracted from the seismic velocity at the
+       * current pressure temperature conditions
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void compute_Vs_anomaly(Vector<float> &values) const;
 
       /**
-       * Compute the seismic pressure wave speed, Vp anomaly per element.
-       * we compute the anomaly by computing a smoothed (over 200 km or so) laterally averaged
-       * temperature profile and associated seismic velocity that is then subtracted from the
-       * seismic velocity at the current pressure temperature conditions
+       * Compute the seismic pressure wave speed, Vp anomaly per element. we
+       * compute the anomaly by computing a smoothed (over 200 km or so)
+       * laterally averaged temperature profile and associated seismic
+       * velocity that is then subtracted from the seismic velocity at the
+       * current pressure temperature conditions
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        *
-       * @param values The output vector of depth averaged values.
-       * The function takes the pre-existing size of this vector
-       * as the number of depth slices.
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
        */
       void compute_Vp_anomaly(Vector<float> &values) const;
 
       /**
-       * Adjust the pressure variable
-       * (which is only determined up to a constant) by adding a constant to it
-       * in such a way that the pressure on the surface has a known average value.
-       * Whether a face is part of the surface is determined by asking whether its
-       * depth of its midpoint (as determined by the geometry model) is less than
-       * 1/3*1/sqrt(dim-1)*diameter of the face. For reasonably curved boundaries,
-       * this rules out side faces that are perpendicular ot the surface boundary
-       * but includes those faces that are along the boundary even if the real
-       * boundary is curved.
+       * Adjust the pressure variable (which is only determined up to a
+       * constant) by adding a constant to it in such a way that the pressure
+       * on the surface has a known average value. Whether a face is part of
+       * the surface is determined by asking whether its depth of its midpoint
+       * (as determined by the geometry model) is less than
+       * 1/3*1/sqrt(dim-1)*diameter of the face. For reasonably curved
+       * boundaries, this rules out side faces that are perpendicular ot the
+       * surface boundary but includes those faces that are along the boundary
+       * even if the real boundary is curved.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
@@ -931,16 +936,18 @@ namespace aspect
 
 
       /**
-       * Interpolate the given function onto the velocity FE space and write it into the given vector.
+       * Interpolate the given function onto the velocity FE space and write
+       * it into the given vector.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
-          LinearAlgebra::Vector &vec);
+                                            LinearAlgebra::Vector &vec);
 
       /**
-       * Set up data structures for null space removal. Called after every mesh refinement.
+       * Set up data structures for null space removal. Called after every
+       * mesh refinement.
        *
        * This function is implemented in
        * <code>source/simulator/nullspace.cc</code>.
@@ -948,17 +955,18 @@ namespace aspect
       void setup_nullspace_removal();
 
       /**
-       * Eliminate the nullspace of the velocity in the given vector. Both vectors
-       * are expected to contain the up to date data.
+       * Eliminate the nullspace of the velocity in the given vector. Both
+       * vectors are expected to contain the up to date data.
        *
-       * @param relevant_dst locally relevant vector for the whole FE, will be filled at the end.
+       * @param relevant_dst locally relevant vector for the whole FE, will be
+       * filled at the end.
        * @param tmp_distributed_stokes only contains velocity and pressure.
        *
        * This function is implemented in
        * <code>source/simulator/nullspace.cc</code>.
        */
       void remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
-          LinearAlgebra::BlockVector &tmp_distributed_stokes);
+                            LinearAlgebra::BlockVector &tmp_distributed_stokes);
 
       /**
        * Remove the angular momentum of the given vector
@@ -971,8 +979,8 @@ namespace aspect
       void remove_net_linear_momentum( LinearAlgebra::BlockVector &relevant_dst, LinearAlgebra::BlockVector &tmp_distributed_stokes);
 
       /**
-       * Compute the maximal velocity throughout the domain. This is needed
-       * to compute the size of the time step.
+       * Compute the maximal velocity throughout the domain. This is needed to
+       * compute the size of the time step.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
@@ -982,8 +990,8 @@ namespace aspect
       /**
        * Compute the variation (i.e., the difference between maximal and
        * minimal value) of the entropy $(T-\bar T)^2$ where $\bar T$ is the
-       * average temperature throughout the domain given as argument to
-       * this function.
+       * average temperature throughout the domain given as argument to this
+       * function.
        *
        * This function is used in computing the artificial diffusion
        * stabilization term.
@@ -995,9 +1003,9 @@ namespace aspect
                                     const TemperatureOrComposition &temperature_or_composition) const;
 
       /**
-       * Compute the minimal and maximal temperature througout the domain from a
-       * solution vector extrapolated from the previous time steps. This is needed
-       * to compute the artificial diffusion stabilization terms.
+       * Compute the minimal and maximal temperature througout the domain from
+       * a solution vector extrapolated from the previous time steps. This is
+       * needed to compute the artificial diffusion stabilization terms.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
@@ -1006,13 +1014,12 @@ namespace aspect
       get_extrapolated_temperature_or_composition_range (const TemperatureOrComposition &temperature_or_composition) const;
 
       /**
-       * Compute the size of the next time step from the mesh size and
-       * the velocity on each cell. The computed time step has to satisfy
-       * the CFL number chosen in the input parameter file on each cell
-       * of the mesh. If specified in the parameter file, the time step
-       * will be the minimum of the convection *and* conduction time
-       * steps. Also returns whether the timestep is dominated by
-       * convection (true) or conduction (false).
+       * Compute the size of the next time step from the mesh size and the
+       * velocity on each cell. The computed time step has to satisfy the CFL
+       * number chosen in the input parameter file on each cell of the mesh.
+       * If specified in the parameter file, the time step will be the minimum
+       * of the convection *and* conduction time steps. Also returns whether
+       * the timestep is dominated by convection (true) or conduction (false).
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
@@ -1020,9 +1027,8 @@ namespace aspect
       std::pair<double,bool> compute_time_step () const;
 
       /**
-       * Compute the artificial diffusion coefficient value on a cell
-       * given the values and gradients of the solution passed as
-       * arguments.
+       * Compute the artificial diffusion coefficient value on a cell given
+       * the values and gradients of the solution passed as arguments.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -1037,10 +1043,9 @@ namespace aspect
                         const TemperatureOrComposition     &temperature_or_composition) const;
 
       /**
-       * Compute the residual of one advection equation to be used
-       * for the artificial diffusion coefficient value on a cell
-       * given the values and gradients of the solution
-       * passed as arguments.
+       * Compute the residual of one advection equation to be used for the
+       * artificial diffusion coefficient value on a cell given the values and
+       * gradients of the solution passed as arguments.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -1055,27 +1060,26 @@ namespace aspect
                                         double                             &max_specific_heat) const;
 
       /**
-       * Extract the values of temperature, pressure, composition and
-       * optional strain rate for the current linearization point.
-       * These values are stored as input arguments for the material
-       * model. The compositional fields are extracted with the
-       * individual compositional fields as outer vectors and the values
-       * at each quadrature point as inner vectors, but the material
-       * model needs it the other way round. Hence, this vector of vectors
-       * is transposed.
+       * Extract the values of temperature, pressure, composition and optional
+       * strain rate for the current linearization point. These values are
+       * stored as input arguments for the material model. The compositional
+       * fields are extracted with the individual compositional fields as
+       * outer vectors and the values at each quadrature point as inner
+       * vectors, but the material model needs it the other way round. Hence,
+       * this vector of vectors is transposed.
        *
-       * @param[in] input_solution A solution vector (or linear combination
-       *   of such vectors) with as many entries as there are degrees of
-       *   freedom in the mesh. It will be evaluated on the cell with which
-       *   the FEValues object was last re-initialized.
+       * @param[in] input_solution A solution vector (or linear combination of
+       * such vectors) with as many entries as there are degrees of freedom in
+       * the mesh. It will be evaluated on the cell with which the FEValues
+       * object was last re-initialized.
        * @param[in] input_finite_element_values The FEValues object that
-       *   describes the finite element
-       *   space in use and that is used to evaluate the solution values
-       *   at the quadrature points of the current cell.
+       * describes the finite element space in use and that is used to
+       * evaluate the solution values at the quadrature points of the current
+       * cell.
        * @param[in] compute_strainrate A flag determining whether the strain
-       *   rate should be computed or not in the output structure.
+       * rate should be computed or not in the output structure.
        * @param[out] material_model_inputs The output structure that contains
-       *   the solution values evaluated at the quadrature points.
+       * the solution values evaluated at the quadrature points.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -1089,15 +1093,14 @@ namespace aspect
 
       /**
        * Return whether the Stokes matrix depends on the values of the
-       * solution at the previous time step. This is the case is
-       * the coefficients that appear in the matrix (i.e., the
-       * viscosity and, in the case of a compressible model, the
-       * density) depend on the solution.
+       * solution at the previous time step. This is the case is the
+       * coefficients that appear in the matrix (i.e., the viscosity and, in
+       * the case of a compressible model, the density) depend on the
+       * solution.
        *
-       * This function exists to ensure that the Stokes matrix is
-       * rebuilt in time steps where it may have changed, while we
-       * want to save the effort of rebuilding it whenever we don't
-       * need to.
+       * This function exists to ensure that the Stokes matrix is rebuilt in
+       * time steps where it may have changed, while we want to save the
+       * effort of rebuilding it whenever we don't need to.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
@@ -1106,9 +1109,9 @@ namespace aspect
       stokes_matrix_depends_on_solution () const;
 
       /**
-       * Generate and output some statistics like timing information and memory consumption.
-       * Whether this function does anything or not is controlled through the
-       * variable aspect::output_parallel_statistics.
+       * Generate and output some statistics like timing information and
+       * memory consumption. Whether this function does anything or not is
+       * controlled through the variable aspect::output_parallel_statistics.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
@@ -1117,9 +1120,9 @@ namespace aspect
 
       /**
        * This function is called at the end of each time step and writes the
-       * statistics object that contains data like the current time, the number
-       * of linear solver iterations, and whatever the postprocessors have
-       * generated, to disk.
+       * statistics object that contains data like the current time, the
+       * number of linear solver iterations, and whatever the postprocessors
+       * have generated, to disk.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
@@ -1130,8 +1133,8 @@ namespace aspect
        */
 
       /**
-       * @name Variables that have to do with input, output, parallel communication
-       * and interfacing with other parts of the program.
+       * @name Variables that have to do with input, output, parallel
+       * communication and interfacing with other parts of the program.
        * @{
        */
       Parameters                          parameters;
@@ -1143,9 +1146,9 @@ namespace aspect
 
       /**
        * An object that stores a bunch of statistics such as the number of
-       * linear solver iterations, the time corresponding to each time
-       * step, etc, as well as whatever the various postprocessors want
-       * to put into it.
+       * linear solver iterations, the time corresponding to each time step,
+       * etc, as well as whatever the various postprocessors want to put into
+       * it.
        *
        * This variable is written to disk after every time step, by the
        * Simulator::output_statistics() function.
@@ -1157,10 +1160,10 @@ namespace aspect
 
       /**
        * In output_statistics(), where we output the statistics object above,
-       * we do the actual writing on a separate thread. This variable is
-       * the handle we get for this thread so that we can wait for it
-       * to finish, either if we want to write the statistics object for
-       * the next thread, or if we want to terminate altogether.
+       * we do the actual writing on a separate thread. This variable is the
+       * handle we get for this thread so that we can wait for it to finish,
+       * either if we want to write the statistics object for the next thread,
+       * or if we want to terminate altogether.
        */
       Threads::Thread<>                   output_statistics_thread;
       /**
@@ -1181,8 +1184,8 @@ namespace aspect
       std::auto_ptr<InitialConditions::Interface<dim> >              initial_conditions;
       std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       /**
-      * @}
-      */
+       * @}
+       */
       /**
        * @name Variables that describe the time discretization
        * @{
@@ -1224,23 +1227,23 @@ namespace aspect
       ConstraintMatrix                                          current_constraints;
 
       /**
-       * The latest correction computed by normalize_pressure(). We store this so
-       * we can undo the correction in denormalize_pressure().
+       * The latest correction computed by normalize_pressure(). We store this
+       * so we can undo the correction in denormalize_pressure().
        */
       double                                                    pressure_adjustment;
 
       /**
-       * Scaling factor for the pressure as explained in the Kronbichler/Heister/Bangerth
-       * paper to ensure that the linear system that results from the Stokes equations
-       * is well conditioned.
+       * Scaling factor for the pressure as explained in the
+       * Kronbichler/Heister/Bangerth paper to ensure that the linear system
+       * that results from the Stokes equations is well conditioned.
        */
       double                                                    pressure_scaling;
 
       /**
        * A variable that determines whether we need to do the correction of
-       * the Stokes right hand side vector to ensure that the average divergence
-       * is zero. This is necessary for compressible models, but only if there
-       * are no in/outflow boundaries.
+       * the Stokes right hand side vector to ensure that the average
+       * divergence is zero. This is necessary for compressible models, but
+       * only if there are no in/outflow boundaries.
        */
       bool                           do_pressure_rhs_compatibility_modification;
 

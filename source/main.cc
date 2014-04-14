@@ -138,19 +138,19 @@ void possibly_load_shared_libs (const std::string &parameter_filename)
         }
 
       if (Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
-	std::cout << std::endl;
+        std::cout << std::endl;
 #else
       if (Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
-	{
-	  std::cerr << std::endl << std::endl
-		    << "----------------------------------------------------"
-		    << std::endl;
-	  std::cerr << "You can not load additional shared libraries on " << std::endl
-		    << "systems where you link ASPECT as a static executable."
-		    << std::endl
-		    << "----------------------------------------------------"
-		    << std::endl;
-	}
+        {
+          std::cerr << std::endl << std::endl
+                    << "----------------------------------------------------"
+                    << std::endl;
+          std::cerr << "You can not load additional shared libraries on " << std::endl
+                    << "systems where you link ASPECT as a static executable."
+                    << std::endl
+                    << "----------------------------------------------------"
+                    << std::endl;
+        }
       std::exit (1);
 #endif
     }
@@ -172,30 +172,30 @@ int main (int argc, char *argv[])
 
       // print some status messages at the top
       if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
-      {
-        const int n_tasks = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
+        {
+          const int n_tasks = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 
-        std::cout << "-----------------------------------------------------------------------------\n"
-              << "-- This is ASPECT, the Advanced Simulator for Problems in Earth's ConvecTion.\n"
+          std::cout << "-----------------------------------------------------------------------------\n"
+                    << "-- This is ASPECT, the Advanced Simulator for Problems in Earth's ConvecTion.\n"
 #ifdef DEBUG
-              << "--     . running in DEBUG mode\n"
+                    << "--     . running in DEBUG mode\n"
 #else
-              << "--     . running in OPTIMIZED mode\n"
+                    << "--     . running in OPTIMIZED mode\n"
 #endif
-              << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
+                    << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
 #if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
-        const int n_threads = multithread_info.n_threads();
-        if (n_threads>1)
-          std::cout << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
+          const int n_threads = multithread_info.n_threads();
+          if (n_threads>1)
+            std::cout << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
 #endif
 #ifdef USE_PETSC
-        std::cout << "--     . using PETSc\n";
+          std::cout << "--     . using PETSc\n";
 #else
-        std::cout << "--     . using Trilinos\n";
+          std::cout << "--     . using Trilinos\n";
 #endif
-        std::cout << "-----------------------------------------------------------------------------\n"
-            << std::endl;
-      }
+          std::cout << "-----------------------------------------------------------------------------\n"
+                    << std::endl;
+        }
 
 
       // see which parameter file to use

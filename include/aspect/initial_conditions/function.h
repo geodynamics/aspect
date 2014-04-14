@@ -55,20 +55,20 @@ namespace aspect
         double initial_temperature (const Point<dim> &position) const;
 
         /**
-         * Declare the parameters this class takes through input files.
-         * The default implementation of this function does not describe
-         * any parameters. Consequently, derived classes do not have to
-         * overload this function if they do not take any runtime parameters.
+         * Declare the parameters this class takes through input files. The
+         * default implementation of this function does not describe any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
          */
         static
         void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file. The default implementation of this function does not read
-         * any parameters. Consequently, derived classes do not have to
-         * overload this function if they do not take any runtime parameters.
+         * Read the parameters this class declares from the parameter file.
+         * The default implementation of this function does not read any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
          */
         virtual
         void

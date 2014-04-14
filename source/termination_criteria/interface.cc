@@ -42,7 +42,7 @@ namespace aspect
     {}
 
     template <int dim>
-    double Interface<dim>::check_for_last_time_step (double time_step) const
+    double Interface<dim>::check_for_last_time_step (const double time_step) const
     {
       return time_step;
     }
@@ -69,23 +69,23 @@ namespace aspect
     }
 
     template <int dim>
-    double Manager<dim>::check_for_last_time_step (double time_step) const
+    double Manager<dim>::check_for_last_time_step (const double time_step) const
     {
+      double new_time_step = time_step;
       for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
            p = termination_objects.begin();
            p != termination_objects.end(); ++p)
-	   {
-              double current_time_step = (*p)->check_for_last_time_step (time_step);
+        {
+          double current_time_step = (*p)->check_for_last_time_step (new_time_step);
 
-	      AssertThrow (current_time_step > 0,
-	        ExcMessage("Time step must be greater than 0."));
-	      AssertThrow (current_time_step <= time_step,
-	        ExcMessage("Current time step must be less than or equal to time step entered into function."));
+          AssertThrow (current_time_step > 0,
+                       ExcMessage("Time step must be greater than 0."));
+          AssertThrow (current_time_step <= new_time_step,
+                       ExcMessage("Current time step must be less than or equal to time step entered into function."));
 
-              if (current_time_step < time_step)
-                time_step = current_time_step;
-	   }
-      return time_step;
+          new_time_step = std::min(current_time_step, new_time_step);
+        }
+      return new_time_step;
     }
 
     template <int dim>

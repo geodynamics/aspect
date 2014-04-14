@@ -38,8 +38,8 @@ namespace aspect
      * temperature.
      *
      * The model is considered incompressible, following the definition
-     * described in Interface::is_compressible. This is essentially
-     * the material model used in the step-32 tutorial program.
+     * described in Interface::is_compressible. This is essentially the
+     * material model used in the step-32 tutorial program.
      *
      * @ingroup MaterialModels
      */
@@ -91,40 +91,41 @@ namespace aspect
          */
 
         /**
-        * Return true if the viscosity() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
+         * Return true if the viscosity() function returns something that may
+         * depend on the variable identifies by the argument.
+         */
         virtual bool
         viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-        * Return true if the density() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
+         * Return true if the density() function returns something that may
+         * depend on the variable identifies by the argument.
+         */
         virtual bool
         density_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-        * Return true if the compressibility() function returns something that
-        * may depend on the variable identifies by the argument.
-        *
-        * This function must return false for all possible arguments if the
-        * is_compressible() function returns false.
-        */
+         * Return true if the compressibility() function returns something
+         * that may depend on the variable identifies by the argument.
+         *
+         * This function must return false for all possible arguments if the
+         * is_compressible() function returns false.
+         */
         virtual bool
         compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-        * Return true if the specific_heat() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
+         * Return true if the specific_heat() function returns something that
+         * may depend on the variable identifies by the argument.
+         */
         virtual bool
         specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-        * Return true if the thermal_conductivity() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
+         * Return true if the thermal_conductivity() function returns
+         * something that may depend on the variable identifies by the
+         * argument.
+         */
         virtual bool
         thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
@@ -160,6 +161,10 @@ namespace aspect
          */
 
         /**
+         * @name Functions used in dealing with run-time parameters
+         * @{
+         */
+        /**
          * Declare the parameters this class takes through input files.
          */
         static
@@ -167,8 +172,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void

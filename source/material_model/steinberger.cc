@@ -217,7 +217,7 @@ namespace aspect
           value (const double temperature,
                  const double pressure,
                  const dealii::Table<2,
-                 double>& values,
+                 double> &values,
                  bool interpol) const
           {
             const double nT = get_nT(temperature);
