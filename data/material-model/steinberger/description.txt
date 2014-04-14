@@ -1,0 +1,20 @@
+
+viscosity = vis_lateral * vis_radial
+
+vis_radial:
+radial-visc.txt (lookup with depth)
+
+vis_lateral:
+temp-viscosity-prefactor.txt (with depth)
+-> value / adiabatic_temperature * (horizontal_avg-temperature) / (temperature)
+
+(steinberger/calderwood, Formula (6)) 
+
+thermal_expansivity:
+
+specific heat: constant
+
+density:
+?
+
+
