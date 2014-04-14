@@ -176,7 +176,7 @@ int main (int argc, char *argv[])
           const int n_tasks = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 
           std::cout << "-----------------------------------------------------------------------------\n"
-                    << "-- This is ASPECT, the Advanced Simulator for Problems in Earth's ConvecTion.\n"
+                    << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
 #ifdef DEBUG
                     << "--     . running in DEBUG mode\n"
 #else
