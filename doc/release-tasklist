@@ -48,15 +48,16 @@ available from
 
                    http://aspect.dealii.org/
 
-This release contains a large number of changes from about one year of work:
+This release contains a large number of changes, incorporating about one year
+of work of the main authors and many contributors:
 - a lot of new documentation
 - new examples (2d/3d shells, GPlates, ...)
 - option to remove rotational/translational modes
-- big performance improvments
-- compositional fields: reactions, boundary conditions, ...
+- big performance improvements
+- compositional fields: reactions, boundary conditions
 - support for periodic meshes
 - output of dynamic topography
-- latent heat
+- incorporation of latent heat
 - experimental PETSc support
 
 Wolfgang Bangerth, Timo Heister, and many other contributors.
