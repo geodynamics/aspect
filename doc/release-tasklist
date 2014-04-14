@@ -5,9 +5,10 @@
   . fix doxygen errors:
     find include -name "*h" -print | xargs -n 1 deal-trunk/tests/scripts/checkdoxygen.py
   . fix formatting:
-    find . -name "*h" -print | while read file;do deal.II/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
+    find . -name "*.h" -print | while read file;do deal.II/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
   . apply astyle formatting, see doc/astyle.rc
   . update copyright years of all files
+    find . -name "*.h" -o -name "*.cc" -print | while read file;do sed -i 's/^.*Copyright.*/  Copyright (C) 2011 - 2014 by the authors of the ASPECT code./' $file; done
   . update changes.h in doc/modules:
     1. svn cp changes.h <oldversion>-<newversion>.h
     2. remove entries from changes.h
