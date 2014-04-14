@@ -24,16 +24,62 @@
   . check in doc/manual.pdf
   . make sure the .prm and .xml files we ship match the default values
     of parameters
-  . create a tar file (do svn export): 
-    tar --exclude-vcs -czf aspect-0.3.tar.gz aspect-0.3/
+  . create a tar file: 
+    svn co https://svn.aspect.dealii.org/branches/releases/aspect-0.3 aspect-0.3
+    tar -czf aspect-0.3.tar.gz aspect-0.3/
   . upload tar file (deal homepage svn in aspect/download)
-  . link in on download.html (same location)
+  . link it on download.html (same location)
   . announce on
        cig-all@geodynamics.org
        aspect-devel@geodynamics.org
        cig-mc@geodynamics.org
        cig-cs@geodynamics.org
        dealii@googlegroups.com
+
+
+Announcement for 1.0:
+---------------------
+We are pleased to announce the release of ASPECT 1.0. ASPECT is the Advanced
+Solver for Problems in Earth ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible and extensible mantle convection solver. ASPECT is
+available from
+
+                   http://aspect.dealii.org/
+
+This release contains a large number of changes from about one year of work:
+- a lot of new documentation
+- new examples (2d/3d shells, GPlates, ...)
+- option to remove rotational/translational modes
+- big performance improvments
+- compositional fields: reactions, boundary conditions, ...
+- support for periodic meshes
+- output of dynamic topography
+- latent heat
+- experimental PETSc support
+
+Wolfgang Bangerth, Timo Heister, and many other contributors.
+
+
+
+
+
+Announcement for 0.3:
+---------------------
+We are pleased to announce the release of ASPECT 0.3. ASPECT is the Advanced
+Solver for Problems in Earth ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible and extensible mantle convection solver. ASPECT is
+available from
+
+                   http://aspect.dealii.org/
+
+This is primarily a bug fix release. It fixes a bug in the computation of adiabatic initial temperature conditions when specifying inner or outer boundary layers (thanks to Juliane Dannberg for finding and fixing it). The doxygen-generated documentation now also automatically cross-links to deal.II classes wherever they are referenced in ASPECT.
+
+Wolfgang Bangerth, Timo Heister.
+
+
+
 
 Announcement for 0.2:
 ---------------------
