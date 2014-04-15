@@ -197,13 +197,14 @@ int main (int argc, char *argv[])
                     << std::endl;
         }
 
+      if (argc < 2)
+        {
+          std::cout << "\tUsage: ./aspect <parameter_file.prm>" << std::endl;
+          return 0;
+        }
 
       // see which parameter file to use
-      std::string parameter_filename;
-      if (argc >= 2)
-        parameter_filename = argv[1];
-      else
-        parameter_filename = "box.prm";
+      std::string parameter_filename = argv[1];
 
       // verify that it can be opened
       {
