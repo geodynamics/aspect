@@ -33,8 +33,8 @@
   . make sure the .prm and .xml files we ship match the default values
     of parameters
   . create a tar file: 
-    svn export https://svn.aspect.dealii.org/branches/releases/aspect-0.3 aspect-0.3
-    tar -czf aspect-0.3.tar.gz aspect-0.3/
+    svn export https://svn.aspect.dealii.org/branches/releases/aspect-1.0 aspect-1.0
+    tar -czf aspect-1.0.tar.gz aspect-1.0/
   . upload tar file (deal homepage svn in aspect/download)
   . link it on download.html (same location)
   . announce on
