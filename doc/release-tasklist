@@ -2,6 +2,7 @@
   . go through the list of TODOs in the source code and see what can be done
   . make sure the description of the interfaces that need to be updated
     are up to date in the manual
+  . check that readme.html is okay  and the links to the mailinglists are working (also in manual.pdf)
   . fix doxygen errors:
     find include -name "*h" -print | xargs -n 1 deal-trunk/tests/scripts/checkdoxygen.py
   . fix formatting:
@@ -36,8 +37,8 @@
   . create a tar file: 
     svn export https://svn.aspect.dealii.org/branches/releases/aspect-1.0 aspect-1.0
     tar -czf aspect-1.0.tar.gz aspect-1.0/
-  . upload tar file (deal homepage svn in aspect/download)
-  . link it on download.html (same location)
+  . upload tar file
+  . link it on download.html, update version info etc.
   . announce on
        cig-all@geodynamics.org
        aspect-devel@geodynamics.org
