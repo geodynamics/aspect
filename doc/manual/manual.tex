@@ -3,6 +3,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{subfigure}
+\usepackage{textpos}
 
 % use a larger page size; otherwise, it is difficult to have complete
 % code listings and output on a single page
@@ -51,43 +52,114 @@
 
 \begin{document}
 
-\thispagestyle{empty}
-\vspace*{.2\textheight}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% START OF CIG MANUAL COVER TEMPLATE %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This should be pasted at the start of manuals and appropriate strings entered at locations indicated with FILL.
+% Be sure the TeX file includes the following packages.
+% \usepackage{graphicx}
+% \usepackage{times}
+% \usepackage{textpos}
 
-\begin{centering}
-  \parindent0pt
-  \includegraphics[width=0.55\textwidth]{mesh-2d.png}
+\definecolor{dark_grey}{gray}{0.3}
+\definecolor{aspect_blue}{rgb}{0.3125,0.6875,0.9375}
 
-  \vfill
+%LINE 1%
+{
+\renewcommand{\familydefault}{\sfdefault}
 
-  {\huge \aspect{}}
-  \\[.3cm]
-  {\Large
-    Advanced Solver for Problems in Earth's
-    ConvecTion}
-  \\[.5cm]
-  {\large Preview release, version 0.4.pre\\
-   (generated from subversion: $Revision$)}
-  \\[1cm]
-  {\large
-    Wolfgang Bangerth\\
-    Timo Heister\\[24pt]
-  }
-\end{centering}
-{\parindent0pt
- \large
+\pagenumbering{gobble}
+\begin{center}
+\resizebox{\textwidth}{!}{\textcolor{dark_grey}{\fontfamily{\sfdefault}\selectfont
+COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
+}}
+
+\hrule
+
+%LINE 2%
+\color{dark_grey}
+\rule{\textwidth}{2pt}
+
+%LINE 3%
+\color{dark_grey}
+% FILL: additional organizations
+% e.g.: {\Large Organization 1\\Organization 2}
+{\Large }
+\end{center}
+
+%COLOR AND CODENAME BLOCK%
+\begin{center}
+\resizebox{\textwidth}{!}{\colorbox
+% FILL: color of code name text box
+% e.g. blue
+{aspect_blue}{\fontfamily{\rmdefault}\selectfont \textcolor{white} {
+% FILL: name of the code
+% You may want to add \hspace to both sides of the codename to better center it, such as:
+% \newcommand{\codename}{\hspace{0.1in}CodeName\hspace{0.1in}}
+\hspace{0.1in}\aspect{}\hspace{0.1in}
+}}}
+\\[12pt]
+{\Large Advanced Solver for Problems in Earth's ConvecTion}
+\end{center}
+
+%MAIN PICTURE%
+\begin{textblock*}{0in}(1.5in,0.3in)
+% FILL: image height
+% e.g. height=6.5in
+\begin{center}
+\vspace{.5in}
+\includegraphics[height=3.5in]
+% FILL: image file name
+% e.g. cover_image.png
+{mesh-2d.png}
+\end{center}
+\end{textblock*}
+
+%USER MANUAL%
+\color{dark_grey}
+\hfill{\Huge \fontfamily{\sfdefault}\selectfont User Manual \\
+% FILL: manual version
+% e.g. 1.0
+\raggedleft \huge \fontfamily{\sfdefault}\selectfont Version {1.1.pre}\\\large(generated from subversion: $Revision$)\\}
+
+%AUTHOR(S) & WEBSITE%
+\null
+\vfill
+\color{dark_grey}
+\Large \hfill {\raggedleft \fontfamily{\sfdefault}\selectfont
+% FILL: author list
+% e.g. Author One\\Author Two\\Author Three\\
+% be sure to have a newline (\\) after the final author
+Wolfgang Bangerth\\Timo Heister\\
+\large
     with contributions by:\\
     Markus B{\"u}rg,
     Juliane Dannberg,
     Ren{\'e} Ga{\ss}m{\"o}ller,
     Thomas Geenen,
+    Ryan Grove,\\
     Eric Heien,
     Martin Kronbichler,
     Elvira Mulyukova,
-    Cedric Thieulot
+    Ian Rose,
+    Cedric Thieulot\\
 }
 
+{\fontfamily{\sfdefault}\selectfont \href{http://geodynamics.org}{geodynamics.org}}
 
+
+%LINE%
+\color{dark_grey}
+\rule{\textwidth}{2pt}
+
+}
+
+\pagebreak
+\pagenumbering{arabic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   END OF CIG MANUAL COVER TEMPLATE    %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \pagebreak
 
@@ -177,7 +249,7 @@ geodynamics community and beyond!
   feedback from the community on things that are missing or necessary for what
   you want to do. Let us know by personal email to the developers, or the
   mantle convection or \texttt{aspect-devel} mailing lists hosted at
-  \url{http://geodynamics.org/cgi-bin/mailman/listinfo/aspect-devel}!}
+  \url{http://lists.geodynamics.org/cgi-bin/mailman/listinfo/aspect-devel}!}
 
 \subsection{Referencing \aspect{}}
 
@@ -8053,13 +8125,11 @@ introduction:
 \section{Finding answers to more questions}
 
 If you have questions that go beyond this manual, there are a number of
-resouces:
+resources:
 \begin{itemize}
 \item For questions on the source code of \aspect{}, portability, installation,
   etc., use the \aspect{} development mailing list at
-  \url{aspect-devel@geodynamics.org}. Information about this mailing
-  list is provided at
-  \url{http://geodynamics.org/cgi-bin/mailman/listinfo/aspect-devel}. This
+  \url{http://lists.geodynamics.org/cgi-bin/mailman/listinfo/aspect-devel}. This
   mailing list is where the \aspect{} developers all hang out.
 
 \item \aspect{} is primarily based on the deal.II library (the dependency
@@ -8070,9 +8140,8 @@ resouces:
 
 \item In case of more general questions about mantle convection, you can
   contact the CIG mantle
-  convection mailing lists at \url{cig-mc@geodynamics.org}. Information
-  about this mailing list is
-  provided at \url{http://geodynamics.org/cgi-bin/mailman/listinfo/cig-MC}.
+  convection mailing lists at 
+  \url{http://lists.geodynamics.org/cgi-bin/mailman/listinfo/cig-MC}.
 
 \item If you have specific questions about \aspect{} that are not suitable
   for public and archived mailing lists, you can contact the
@@ -8081,7 +8150,7 @@ resouces:
   \item Wolfgang
     Bangerth: \url{bangerth@math.tamu.edu}.
   \item Timo
-    Heister: \url{heister@math.tamu.edu}.
+    Heister: \url{heister@clemson.edu}.
   \end{itemize}
 \end{itemize}
 

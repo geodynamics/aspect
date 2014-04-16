@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2013, 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -176,7 +176,7 @@ int main (int argc, char *argv[])
           const int n_tasks = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 
           std::cout << "-----------------------------------------------------------------------------\n"
-                    << "-- This is ASPECT, the Advanced Simulator for Problems in Earth's ConvecTion.\n"
+                    << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
 #ifdef DEBUG
                     << "--     . running in DEBUG mode\n"
 #else
@@ -197,13 +197,14 @@ int main (int argc, char *argv[])
                     << std::endl;
         }
 
+      if (argc < 2)
+        {
+          std::cout << "\tUsage: ./aspect <parameter_file.prm>" << std::endl;
+          return 0;
+        }
 
       // see which parameter file to use
-      std::string parameter_filename;
-      if (argc >= 2)
-        parameter_filename = argv[1];
-      else
-        parameter_filename = "box.prm";
+      std::string parameter_filename = argv[1];
 
       // verify that it can be opened
       {
