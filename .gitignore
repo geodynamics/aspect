@@ -11,7 +11,7 @@
 /.cproject
 /.settings
 *.cmake
-./aspect
+/aspect
 detailed.log
 
 # /doc/
