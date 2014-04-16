@@ -1,0 +1,82 @@
+
+# /
+/CMakeCache.txt
+/CMakeFiles
+/Makefile
+/tests/Makefile
+/.kdev*
+/*.kdev*
+/output*
+/.project
+/.cproject
+/.settings
+
+# /doc/
+/doc/aspect.dox
+/doc/aspect.tag
+/doc/deal.tag
+/doc/doxygen
+
+# /doc/manual/
+/doc/manual/*.aux
+/doc/manual/*.blg
+/doc/manual/*.toc
+/doc/manual/*.log
+/doc/manual/*.out
+/doc/manual/*.bbl
+/doc/manual/prmindex*
+/doc/manual/manual.pdf
+
+# /include/aspect/postprocess/visualization/
+/include/aspect/postprocess/visualization/Makefile.dep
+
+# /source/
+/source/Makefile.dep
+/source/.kdev_include_paths
+
+# /source/boundary_temperature/
+/source/boundary_temperature/Makefile.dep
+/source/boundary_temperature/.kdev_include_paths
+
+# /source/compositional_initial_conditions/
+/source/compositional_initial_conditions/Makefile.dep
+
+# /source/geometry_model/
+/source/geometry_model/Makefile.dep
+/source/geometry_model/.kdev_include_paths
+
+# /source/gravity_model/
+/source/gravity_model/Makefile.dep
+/source/gravity_model/.kdev_include_paths
+
+# /source/initial_conditions/
+/source/initial_conditions/Makefile.dep
+/source/initial_conditions/.kdev_include_paths
+
+# /source/material_model/
+/source/material_model/Makefile.dep
+/source/material_model/.kdev_include_paths
+
+# /source/mesh_refinement/
+/source/mesh_refinement/Makefile.dep
+
+# /source/postprocess/
+/source/postprocess/Makefile.dep
+/source/postprocess/.kdev_include_paths
+
+# /source/postprocess/visualization/
+/source/postprocess/visualization/Makefile.dep
+
+# /source/simulator/
+/source/simulator/Makefile.dep
+/source/simulator/.kdev_include_paths
+
+# /source/termination_criteria/
+/source/termination_criteria/Makefile.dep
+
+# /source/velocity_boundary_conditions/
+/source/velocity_boundary_conditions/Makefile.dep
+/source/velocity_boundary_conditions/.kdev_include_paths
+
+# /tests/
+/tests/
