@@ -10,6 +10,9 @@
 /.project
 /.cproject
 /.settings
+*.cmake
+./aspect
+detailed.log
 
 # /doc/
 /doc/aspect.dox
