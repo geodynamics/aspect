@@ -547,14 +547,7 @@ namespace aspect
                const Tensor<1,dim> v =     fe_face_values[velocities].value(j, q_point);
                const Tensor<1,dim> n_hat = fe_face_values.normal_vector(q_point);
                const Tensor<1,dim> w =     fe_face_values[velocities].value(i, q_point);
-               const Tensor<1,dim> g_hat = gravity/g_norm;
-
-               //make a symmetrized ones in case we want to preserve symmetry
-//               Tensor<1,dim> sym = (n_hat*g_hat < 0.0 ? (n_hat-g_hat) : (n_hat+g_hat)); sym = sym/sym.norm();
-//               Tensor<1,dim> g_sym = (n_hat*g_hat < 0.0 ? -sym : sym);
-//               Tensor<1,dim> n_sym = sym;
-
-//               const Tensor<1,dim> r_hat = quad_points[q_point]/quad_points[q_point].norm();
+               const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
 
                double pressure_perturbation = std::abs(material_model->reference_density()/*-free_surface_density*/)*
                                               this->time_step*parameters.free_surface_theta*g_norm;
