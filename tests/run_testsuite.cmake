@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 by Matthias Maier
+# Copyright (C) 2013, 2014 by Matthias Maier
 #
 # This file is part of ASPECT.
 #
@@ -240,7 +240,7 @@ ENDIF()
 MESSAGE("-- CTEST_SITE:             ${CTEST_SITE}")
 
 IF( "${TRACK}" STREQUAL "Regression Tests"
-    AND NOT CTEST_SITE MATCHES "c0541" )
+    AND NOT CTEST_SITE MATCHES "tester" )
   MESSAGE(FATAL_ERROR "
 I'm sorry ${CTEST_SITE}, I'm afraid I can't do that.
 The TRACK \"Regression Tests\" is not for you.
