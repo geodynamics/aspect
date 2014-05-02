@@ -275,9 +275,9 @@ namespace aspect
       if (is_compressible() && &this->get_adiabatic_conditions())
         {
           const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
-          const double adiabatic_pressure = this->get_adiabatic_conditions().pressure(surface_point);
+          const double adiabatic_surface_pressure = this->get_adiabatic_conditions().pressure(surface_point);
           const double kappa = compressibility(temperature,pressure,compositional_fields,position);
-          pressure_dependence = kappa * (pressure - adiabatic_pressure);
+          pressure_dependence = kappa * (pressure - adiabatic_surface_pressure);
         }
 
       // in the end, all the influences are added up
