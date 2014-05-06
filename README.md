@@ -5,7 +5,8 @@ ASPECT - Advanced Solver for Problems in Earth's ConvecTion
 About
 -----
 
-ASPECT is a code to simulate problems in thermal convection.
+ASPECT is a code to simulate problems in thermal convection. The project is
+supported by CIG (http://geodynamics.org).
 
 
 
@@ -13,8 +14,8 @@ More information
 ----------------
 
 For more information see:
- - readme.html
- - the manual under doc/manual.pdf
+ - [readme](readme.html)
+ - [the manual under doc/manual.pdf](doc/manual.pdf)
  - the official website at http://aspect.dealii.org
 
 
