@@ -347,7 +347,7 @@ STRING(REGEX REPLACE "^\"([^ ]+) ([^ ]+) ([^\"]+)\""
          "\\3" _git_WC_AUTHOR "${_git_WC_INFO}")
 
 EXECUTE_PROCESS(
-   COMMAND ${GIT_EXECUTABLE} name-rev ${_git_WC_REV} --name-only
+   COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref ${_git_WC_REV}
    WORKING_DIRECTORY ${CTEST_SOURCE_DIRECTORY}
    OUTPUT_VARIABLE _git_WC_NAME
    RESULT_VARIABLE _result
