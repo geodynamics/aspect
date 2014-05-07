@@ -1,4 +1,10 @@
-- Create a task list for a release that includes:
+
+TODO: this needs to be updated to use git.
+
+Make sure we create a branch "aspect-x.y" and that we tag the release.
+
+
+- Tasklist:
   . go through the list of TODOs in the source code and see what can be done
   . make sure the description of the interfaces that need to be updated
     are up to date in the manual
