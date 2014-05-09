@@ -84,18 +84,21 @@ namespace aspect
 
 
 // ----------------------------- RadialLinear ----------------------
+
+    
     template <int dim>
     Tensor<1,dim>
     RadialLinear<dim>::gravity_vector (const Point<dim> &p) const
     {
-      if (p.norm() == 0.0) return Tensor<1,dim>();
+      if (p.norm() == 0.0)
+	return Tensor<1,dim>();
 
-      double depth = this->get_geometry_model().depth(p);
-      Tensor<1,dim> grav =  -magnitude_at_surface * p/p.norm() *
-                            (1.0 - depth/this->get_geometry_model().maximal_depth());
-      return grav;
+      const double depth = this->get_geometry_model().depth(p);
+      return  (-magnitude_at_surface * p/p.norm() *
+	       (1.0 - depth/this->get_geometry_model().maximal_depth()));
     }
 
+    
     template <int dim>
     void
     RadialLinear<dim>::declare_parameters (ParameterHandler &prm)
@@ -107,7 +110,7 @@ namespace aspect
           prm.declare_entry ("Magnitude at surface", "9.8",
                              Patterns::Double (0),
                              "Magnitude of the radial gravity vector "
-                             "at the surface of the domain, $m/s^2$");
+                             "at the surface of the domain. Units: $m/s^2$");
         }
         prm.leave_subsection ();
       }
@@ -155,7 +158,11 @@ namespace aspect
     ASPECT_REGISTER_GRAVITY_MODEL(RadialLinear,
                                   "radial linear",
                                   "A gravity model which is radially inward, where the magnitude"
-                                  "decreases linearly with depth, as you would get with a constant"
-                                  "density spherical domain.")
+                                  "decreases linearly with depth down to zero at the maximal depth "
+				  "the geometry returns, as you would get with a constant"
+                                  "density spherical domain. (Note that this would be for a full "
+				  "sphere, not a spherical shell.) The magnitude of gravity at the "
+				  "surface is read from the input file in a section "
+				  "``Gravity model/Radial linear''.")
   }
 }
