@@ -242,9 +242,9 @@ namespace aspect
 
       std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);
       std::string mesh_file_prefix = "mesh-" + Utilities::int_to_string (output_file_number, 5);
-      double current_time = (this->convert_output_to_years() ?
-                             this->get_time() / year_in_seconds :
-                             this->get_time());
+      const double time_in_years_or_seconds = (this->convert_output_to_years() ?
+                                               this->get_time() / year_in_seconds :
+                                               this->get_time());
       if (output_format=="hdf5")
         {
           XDMFEntry new_xdmf_entry;
@@ -267,13 +267,13 @@ namespace aspect
           new_xdmf_entry = data_out.create_xdmf_entry(data_filter,
                                                       last_mesh_file_name.c_str(),
                                                       h5_solution_file_name.c_str(),
-                                                      current_time,
+                                                      time_in_years_or_seconds,
                                                       this->get_mpi_communicator());
 #else
           data_out.write_hdf5_parallel((this->get_output_directory()+h5_solution_file_name).c_str(),
                                        this->get_mpi_communicator());
           new_xdmf_entry = data_out.create_xdmf_entry(h5_solution_file_name.c_str(),
-                                                      current_time,
+                                                      time_in_years_or_seconds,
                                                       this->get_mpi_communicator());
 #endif
           xdmf_entries.push_back(new_xdmf_entry);
@@ -301,7 +301,7 @@ namespace aspect
 
               // now also generate a .pvd file that matches simulation
               // time and corresponding .pvtu record
-              times_and_pvtu_names.push_back(std::make_pair(current_time,
+              times_and_pvtu_names.push_back(std::make_pair(time_in_years_or_seconds,
                                                             pvtu_master_filename));
               const std::string
               pvd_master_filename = (this->get_output_directory() + "solution.pvd");
@@ -338,7 +338,7 @@ namespace aspect
             DataOutBase::VtkFlags vtk_flags;
 #if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 704
             vtk_flags.cycle = this->get_timestep_number();
-            vtk_flags.time = current_time;
+            vtk_flags.time = time_in_years_or_seconds;
 #endif
             data_out.set_flags (vtk_flags);
 
@@ -367,7 +367,7 @@ namespace aspect
               // now also generate a .pvd file that matches simulation
               // time and corresponding .pvtu record
               times_and_pvtu_names.push_back(std::pair<double,std::string>
-                                             (current_time, pvtu_master_filename));
+                                             (time_in_years_or_seconds, pvtu_master_filename));
               const std::string
               pvd_master_filename = (this->get_output_directory() + "solution.pvd");
               std::ofstream pvd_master (pvd_master_filename.c_str());
