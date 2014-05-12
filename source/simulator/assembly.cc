@@ -1689,11 +1689,12 @@ namespace aspect
          // field index.)
          internal::Assembly::Scratch::
          AdvectionSystem<dim> (finite_element,
+//TODO: Give TemperatureOrComposition a way to return the base element index
                                finite_element.base_element(temperature_or_composition.is_temperature()
                                                            ?
-                                                           introspection.block_indices.temperature
+                                                           introspection.base_elements.temperature
                                                            :
-                                                           introspection.block_indices.compositional_fields[0]),
+                                                           introspection.base_elements.compositional_fields),
                                mapping,
                                QGauss<dim>((temperature_or_composition.is_temperature()
                                             ?
@@ -1704,11 +1705,12 @@ namespace aspect
                                            (parameters.stokes_velocity_degree+1)/2),
                                parameters.n_compositional_fields),
          internal::Assembly::CopyData::
+//TODO: Give TemperatureOrComposition a way to return the base element index
          AdvectionSystem<dim> (finite_element.base_element(temperature_or_composition.is_temperature()
                                                            ?
-                                                           introspection.block_indices.temperature
+                                                           introspection.base_elements.temperature
                                                            :
-                                                           introspection.block_indices.compositional_fields[0])));
+                                                           introspection.base_elements.compositional_fields)));
 
     system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);
