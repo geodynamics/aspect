@@ -478,7 +478,7 @@ namespace aspect
     hanging_constraints.close();
 
     Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
-    const std::vector<Point<dim> > mesh_support_points = finite_element.base_element(0).get_unit_support_points();
+    const std::vector<Point<dim> > mesh_support_points = finite_element.base_element(introspection.base_elements.velocities).get_unit_support_points();
     FEValues<dim> mesh_points (mapping, finite_element, mesh_support_points, update_quadrature_points);
     std::vector<unsigned int> cell_dof_indices (finite_element.dofs_per_cell);
 
@@ -489,7 +489,7 @@ namespace aspect
         {
           mesh_points.reinit(cell);
           cell->get_dof_indices (cell_dof_indices);
-          for (unsigned int j=0; j<finite_element.base_element(0).dofs_per_cell; ++j)
+          for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.velocities).dofs_per_cell; ++j)
             for (unsigned int dir=0; dir<dim; ++dir)
               {
                 unsigned int support_point_index
@@ -624,7 +624,7 @@ namespace aspect
         // consequently, adding the adjustment to the global function is
         // achieved by adding the adjustment to the first pressure degree
         // of freedom on each cell.
-        Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(1)) != 0,
+        Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(introspection.base_elements.pressure)) != 0,
                 ExcInternalError());
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
         typename DoFHandler<dim>::active_cell_iterator
@@ -679,7 +679,7 @@ namespace aspect
         // consequently, adding the adjustment to the global function is
         // achieved by adding the adjustment to the first pressure degree
         // of freedom on each cell.
-        Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(1)) != 0,
+        Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(introspection.base_elements.pressure)) != 0,
                 ExcInternalError());
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
         typename DoFHandler<dim>::active_cell_iterator

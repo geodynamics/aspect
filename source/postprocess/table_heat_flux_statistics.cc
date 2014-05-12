@@ -49,7 +49,7 @@ namespace aspect
       // element is it in fact
       Assert (this->get_fe().n_base_elements() == 3,
               ExcNotImplemented());
-      const QGauss<dim-1> quadrature (this->get_fe().base_element(2).degree+1);
+      const QGauss<dim-1> quadrature (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),

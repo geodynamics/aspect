@@ -215,7 +215,7 @@ namespace aspect
         // implement the local projection for the discontinuous pressure
         // element. this is only going to work if, indeed, the element
         // is discontinuous
-        const FiniteElement<dim> &system_pressure_fe = finite_element.base_element(1);
+        const FiniteElement<dim> &system_pressure_fe = finite_element.base_element(introspection.base_elements.pressure);
         Assert (system_pressure_fe.dofs_per_face == 0,
                 ExcNotImplemented());
 
