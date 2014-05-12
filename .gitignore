@@ -10,3 +10,9 @@
 /doc/manual/prmindexfull.idx
 /doc/manual/prmindexfull.ilg
 /doc/manual/prmindexfull.ind
+.cproject
+.project
+.settings
+output/
+build/
+aspect

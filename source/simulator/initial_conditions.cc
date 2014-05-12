@@ -67,16 +67,18 @@ namespace aspect
     // we need to track whether we need to normalize the totality of fields
     bool normalize_composition = false;
 
+//TODO: The code here is confusing. We should be using something
+// like the TemperatureOrComposition class instead of just a single
+// integer 'n'
     for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
       {
         TemperatureOrComposition torc = (n==0) ? TemperatureOrComposition::temperature()
         : TemperatureOrComposition::composition(n-1);
         initial_solution.reinit(system_rhs, false);
 
-        // base element in the finite element is 2 for temperature and 3 for
-        // compositional fields
-//TODO: can we use introspection here, instead of the hard coded numbers?
-        const unsigned int base_element = torc.is_temperature() ? 2 : 3;
+        const unsigned int base_element = (torc.is_temperature() ?
+                                           introspection.base_elements.temperature :
+                                           introspection.base_elements.compositional_fields);
 
         // get the temperature/composition support points
         const std::vector<Point<dim> > support_points
@@ -102,6 +104,7 @@ namespace aspect
               cell->get_dof_indices (local_dof_indices);
               for (unsigned int i=0; i<finite_element.base_element(base_element).dofs_per_cell; ++i)
                 {
+//TODO: Use introspection here
                   const unsigned int system_local_dof
                     = finite_element.component_to_system_index(torc.component_index(introspection),
                         /*dof index within component=*/i);
@@ -125,7 +128,7 @@ namespace aspect
                       double sum = 0;
                       for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
                         sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),parameters.normalized_fields[m]);
-                      if (abs(sum) > 1.0+1e-6)
+                      if (std::abs(sum) > 1.0+1e-6)
                         {
                           max_sum_comp = std::max(sum, max_sum_comp);
                           normalize_composition = true;
@@ -220,7 +223,7 @@ namespace aspect
         // implement the local projection for the discontinuous pressure
         // element. this is only going to work if, indeed, the element
         // is discontinuous
-        const FiniteElement<dim> &system_pressure_fe = finite_element.base_element(1);
+        const FiniteElement<dim> &system_pressure_fe = finite_element.base_element(introspection.base_elements.pressure);
         Assert (system_pressure_fe.dofs_per_face == 0,
                 ExcNotImplemented());
 
