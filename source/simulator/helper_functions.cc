@@ -535,6 +535,10 @@ namespace aspect
     if (parameters.pressure_normalization == "no")
       return;
 
+    // TODO: I need to think about how to implement this. Choose "no" for now.
+    Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
+        ExcNotImplemented());
+
     double my_pressure = 0.0;
     double my_area = 0.0;
     if (parameters.pressure_normalization == "surface")
