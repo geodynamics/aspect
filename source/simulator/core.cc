@@ -474,14 +474,16 @@ namespace aspect
     statistics.add_value("Number of mesh cells",
                          triangulation.n_global_active_cells());
 
-    statistics.add_value("Number of Stokes degrees of freedom",
-                         introspection.system_dofs_per_block[0] +
-                         introspection.system_dofs_per_block[1]);
+    unsigned int n_stokes_dofs = introspection.system_dofs_per_block[0];
+    if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+      n_stokes_dofs += introspection.system_dofs_per_block[introspection.block_indices.pressure];
+
+    statistics.add_value("Number of Stokes degrees of freedom", n_stokes_dofs);
     statistics.add_value("Number of temperature degrees of freedom",
-                         introspection.system_dofs_per_block[2]);
+                         introspection.system_dofs_per_block[introspection.block_indices.temperature]);
     if (parameters.n_compositional_fields > 0)
       statistics.add_value("Number of composition degrees of freedom",
-                           introspection.system_dofs_per_block[3]);
+                           introspection.system_dofs_per_block[introspection.block_indices.compositional_fields[0]]);
 
 
     // then interpolate the current boundary velocities. this adds to
@@ -887,10 +889,19 @@ namespace aspect
                                     introspection.system_dofs_per_block,
                                     introspection.components_to_blocks);
     {
-      const types::global_dof_index n_u = introspection.system_dofs_per_block[0],
-                                    n_p = introspection.system_dofs_per_block[1],
-                                    n_T = introspection.system_dofs_per_block[2];
-      std::vector<types::global_dof_index> n_C (parameters.n_compositional_fields+1);
+      types::global_dof_index n_u = introspection.system_dofs_per_block[0],
+          n_p = introspection.system_dofs_per_block[introspection.block_indices.pressure],
+          n_T = introspection.system_dofs_per_block[introspection.block_indices.temperature];
+
+      Assert(!parameters.direct_stokes_solver ||
+          (introspection.block_indices.velocities == introspection.block_indices.pressure),
+          ExcInternalError());
+
+      // only count pressure once if they are in the same block
+      if (parameters.direct_stokes_solver)
+        n_p = 0;
+
+      std::vector<types::global_dof_index> n_C (parameters.n_compositional_fields);
       for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
         n_C[c] = introspection.system_dofs_per_block
                  [introspection.block_indices.compositional_fields[c]];
@@ -908,6 +919,7 @@ namespace aspect
           introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
         }
       introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
+
       introspection.index_sets.stokes_partitioning.clear ();
       if (parameters.direct_stokes_solver)
         {
