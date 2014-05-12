@@ -1253,7 +1253,6 @@ namespace aspect
       }
 
     unsigned int blockidx = temperature_or_composition.block_index(introspection);
-    system_matrix.block(blockidx, blockidx) = 0;
     preconditioner.reset (new LinearAlgebra::PreconditionILU());
     preconditioner->initialize (system_matrix.block(blockidx, blockidx));
     computing_timer.exit_section();
