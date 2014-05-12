@@ -1007,6 +1007,9 @@ namespace aspect
     if (rebuild_stokes_preconditioner == false)
       return;
 
+    if (parameters.direct_stokes_solver)
+      return;
+
     computing_timer.enter_section ("   Build Stokes preconditioner");
     pcout << "   Rebuilding Stokes preconditioner..." << std::flush;
 
@@ -1623,6 +1626,9 @@ namespace aspect
     unsigned int blockidx = temperature_or_composition.block_index(introspection);
     system_matrix.block(blockidx, blockidx) = 0;
     system_rhs = 0;
+
+    pcout << "assemble block: " << blockidx << std::endl;
+
 
     const std::pair<double,double>
     global_field_range = get_extrapolated_temperature_or_composition_range (temperature_or_composition);
