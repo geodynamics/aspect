@@ -69,12 +69,14 @@ namespace aspect
 
     for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
       {
+        TemperatureOrComposition torc = (n==0) ? TemperatureOrComposition::temperature()
+        : TemperatureOrComposition::composition(n-1);
         initial_solution.reinit(system_rhs, false);
 
-        // base element in the finite element is 2 for temperature (n=0) and 3 for
-        // compositional fields (n>0)
+        // base element in the finite element is 2 for temperature and 3 for
+        // compositional fields
 //TODO: can we use introspection here, instead of the hard coded numbers?
-        const unsigned int base_element = (n==0 ? 2 : 3);
+        const unsigned int base_element = torc.is_temperature() ? 2 : 3;
 
         // get the temperature/composition support points
         const std::vector<Point<dim> > support_points
@@ -101,18 +103,18 @@ namespace aspect
               for (unsigned int i=0; i<finite_element.base_element(base_element).dofs_per_cell; ++i)
                 {
                   const unsigned int system_local_dof
-                    = finite_element.component_to_system_index(/*temperature/composition component=*/dim+1+n,
+                    = finite_element.component_to_system_index(torc.component_index(introspection),
                         /*dof index within component=*/i);
 
                   const double value =
-                    (base_element == 2
+                    (torc.is_temperature()
                      ?
                      initial_conditions->initial_temperature(fe_values.quadrature_point(i))
                      :
                      compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n-1));
                   initial_solution(local_dof_indices[system_local_dof]) = value;
 
-                  if (base_element != 2)
+                  if (!torc.is_temperature())
                     Assert (value >= 0,
                             ExcMessage("Invalid initial conditions: Composition is negative"));
 
@@ -138,10 +140,12 @@ namespace aspect
         // we should not have written at all into any of the blocks with
         // the exception of the current temperature or composition block
         for (unsigned int b=0; b<initial_solution.n_blocks(); ++b)
-          if (b != 2+n)
+          {
+            std:cout << b << " " << torc.block_index(introspection) << std::endl;
+          if (b != torc.block_index(introspection))
             Assert (initial_solution.block(b).l2_norm() == 0,
                     ExcInternalError());
-
+          }
         // if at least one processor decides that it needs
         // to normalize, do the same on all processors.
         if (Utilities::MPI::max (normalize_composition ? 1 : 0,
@@ -165,9 +169,10 @@ namespace aspect
         constraints.distribute(initial_solution);
 
         // copy temperature/composition block only
-        solution.block(2+n) = initial_solution.block(2+n);
-        old_solution.block(2+n) = initial_solution.block(2+n);
-        old_old_solution.block(2+n) = initial_solution.block(2+n);
+        const unsigned int blockidx = torc.block_index(introspection);
+        solution.block(blockidx) = initial_solution.block(blockidx);
+        old_solution.block(blockidx) = initial_solution.block(blockidx);
+        old_old_solution.block(blockidx) = initial_solution.block(blockidx);
       }
   }
 
