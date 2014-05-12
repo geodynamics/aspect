@@ -388,7 +388,8 @@ namespace aspect
         current_constraints.distribute (distributed_stokes_solution);
 
         // now rescale the pressure back to real physical units
-        distributed_stokes_solution.block(1) *= pressure_scaling;
+        // we use pressure_scaling = 1.0 with a direct solver
+        // distributed_stokes_solution.block(1) *= pressure_scaling;
 
         // then copy back the solution from the temporary (non-ghosted) vector
         // into the ghosted one with all solution components

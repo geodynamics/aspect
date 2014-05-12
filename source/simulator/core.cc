@@ -272,7 +272,10 @@ namespace aspect
     // to make velocities and pressures of roughly the same (numerical) size,
     // and we may have to fix up the right hand side vector before solving for
     // compressible models if there are no in-/outflow boundaries
-    pressure_scaling = material_model->reference_viscosity() / geometry_model->length_scale();
+    if (parameters.direct_stokes_solver)
+      pressure_scaling = 1.0;
+    else
+      pressure_scaling = material_model->reference_viscosity() / geometry_model->length_scale();
 
     std::set<types::boundary_id> open_velocity_boundary_indicators
       = geometry_model->get_used_boundary_indicators();
