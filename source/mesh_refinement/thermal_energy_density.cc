@@ -49,7 +49,7 @@ namespace aspect
       LinearAlgebra::BlockVector vec_distributed (this->introspection().index_sets.system_partitioning,
                                                   this->get_mpi_communicator());
 
-      const Quadrature<dim> quadrature(this->get_fe().base_element(2).get_unit_support_points());
+      const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.temperature).get_unit_support_points());
       std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
@@ -98,7 +98,7 @@ namespace aspect
             // for each temperature dof, write into the output
             // vector the density. note that quadrature points and
             // dofs are enumerated in the same order
-            for (unsigned int i=0; i<this->get_fe().base_element(2).dofs_per_cell; ++i)
+            for (unsigned int i=0; i<this->get_fe().base_element(this->introspection().base_elements.temperature).dofs_per_cell; ++i)
               {
                 const unsigned int system_local_dof
                   = this->get_fe().component_to_system_index(/*temperature component=*/dim+1,

@@ -399,9 +399,16 @@ namespace aspect
 
         /**
          * Look up the block index for this temperature or compositional field
-         * i. See Introspection::block_indices for more information.
+         * See Introspection::block_indices for more information.
          */
         unsigned int block_index(const Introspection<dim> &introspection) const;
+
+        /**
+         * Look up the base element within the larger composite finite element we used
+         * for everything, for this temperature or compositional field
+         * See Introspection::base_elements for more information.
+         */
+        unsigned int base_element(const Introspection<dim> &introspection) const;
       };
 
       /**

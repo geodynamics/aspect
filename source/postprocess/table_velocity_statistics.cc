@@ -51,7 +51,7 @@ namespace aspect
         = dynamic_cast<const MaterialModel::Table<dim> &>(this->get_material_model());
 
       const QGauss<dim> quadrature_formula (this->get_fe()
-                                            .base_element(0).degree+1);
+                                            .base_element(this->introspection().base_elements.velocities).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
