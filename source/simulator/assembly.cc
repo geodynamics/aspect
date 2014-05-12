@@ -1627,9 +1627,6 @@ namespace aspect
     system_matrix.block(blockidx, blockidx) = 0;
     system_rhs = 0;
 
-    pcout << "assemble block: " << blockidx << std::endl;
-
-
     const std::pair<double,double>
     global_field_range = get_extrapolated_temperature_or_composition_range (temperature_or_composition);
 
