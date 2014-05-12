@@ -143,12 +143,10 @@ namespace aspect
         // we should not have written at all into any of the blocks with
         // the exception of the current temperature or composition block
         for (unsigned int b=0; b<initial_solution.n_blocks(); ++b)
-          {
-            std:cout << b << " " << torc.block_index(introspection) << std::endl;
           if (b != torc.block_index(introspection))
             Assert (initial_solution.block(b).l2_norm() == 0,
                     ExcInternalError());
-          }
+
         // if at least one processor decides that it needs
         // to normalize, do the same on all processors.
         if (Utilities::MPI::max (normalize_composition ? 1 : 0,
