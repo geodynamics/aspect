@@ -43,11 +43,28 @@ namespace aspect
 
   template <int dim>
   const unsigned int
+  Introspection<dim>::BlockIndices::velocities;
+
+  template <int dim>
+  const unsigned int
   Introspection<dim>::BlockIndices::pressure;
 
   template <int dim>
   const unsigned int
   Introspection<dim>::BlockIndices::temperature;
+
+
+  template <int dim>
+  const unsigned int
+  Introspection<dim>::BaseElements::velocities;
+
+  template <int dim>
+  const unsigned int
+  Introspection<dim>::BaseElements::pressure;
+
+  template <int dim>
+  const unsigned int
+  Introspection<dim>::BaseElements::temperature;
 
 
   namespace
