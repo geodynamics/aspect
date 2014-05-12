@@ -97,6 +97,7 @@ namespace aspect
     return (field_type == temperature_field);
   }
 
+
   template <int dim>
   unsigned int
   Simulator<dim>::TemperatureOrComposition::block_index(const Introspection<dim> &introspection) const
@@ -105,6 +106,17 @@ namespace aspect
       return introspection.block_indices.temperature;
     else
       return introspection.block_indices.compositional_fields[compositional_variable];
+  }
+
+
+  template <int dim>
+  unsigned int
+  Simulator<dim>::TemperatureOrComposition::base_element(const Introspection<dim> &introspection) const
+  {
+    if (this->is_temperature())
+      return introspection.base_elements.temperature;
+    else
+      return introspection.base_elements.compositional_fields;
   }
 
 
