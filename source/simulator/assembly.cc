@@ -1239,33 +1239,24 @@ namespace aspect
         case TemperatureOrComposition::temperature_field:
         {
           computing_timer.enter_section ("   Build temperature preconditioner");
-
-          preconditioner.reset (new LinearAlgebra::PreconditionILU());
-          preconditioner->initialize (system_matrix.block(2,2));
-
-          computing_timer.exit_section();
-
           break;
         }
 
         case TemperatureOrComposition::compositional_field:
         {
           computing_timer.enter_section ("   Build composition preconditioner");
-
-          const unsigned int block_number
-            = 3+temperature_or_composition.compositional_variable;
-          preconditioner.reset (new LinearAlgebra::PreconditionILU());
-          preconditioner->initialize (system_matrix.block(block_number,
-                                                          block_number));
-
-          computing_timer.exit_section();
-
           break;
         }
 
         default:
           Assert (false, ExcNotImplemented());
       }
+
+    unsigned int blockidx = temperature_or_composition.block_index(introspection);
+    system_matrix.block(blockidx, blockidx) = 0;
+    preconditioner.reset (new LinearAlgebra::PreconditionILU());
+    preconditioner->initialize (system_matrix.block(blockidx, blockidx));
+    computing_timer.exit_section();
   }
 
 
@@ -1627,16 +1618,11 @@ namespace aspect
   void Simulator<dim>::assemble_advection_system (const TemperatureOrComposition &temperature_or_composition)
   {
     if (temperature_or_composition.is_temperature())
-      {
         computing_timer.enter_section ("   Assemble temperature system");
-        system_matrix.block (2,2) = 0;
-      }
     else
-      {
         computing_timer.enter_section ("   Assemble composition system");
-        system_matrix.block(3+temperature_or_composition.compositional_variable,
-                            3+temperature_or_composition.compositional_variable) = 0;
-      }
+    unsigned int blockidx = temperature_or_composition.block_index(introspection);
+    system_matrix.block(blockidx, blockidx) = 0;
     system_rhs = 0;
 
     const std::pair<double,double>
