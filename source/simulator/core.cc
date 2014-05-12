@@ -86,7 +86,7 @@ namespace aspect
                              ParameterHandler &prm)
     :
     parameters (prm),
-    introspection (parameters.n_compositional_fields),
+    introspection (parameters.n_compositional_fields, !parameters.direct_stokes_solver),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     pcout (std::cout,
            (Utilities::MPI::
@@ -896,20 +896,42 @@ namespace aspect
 
       IndexSet system_index_set = dof_handler.locally_owned_dofs();
       introspection.index_sets.system_partitioning.clear ();
-      introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(0,n_u));
-      introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
+      if (parameters.direct_stokes_solver)
+        {
+          introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(0,n_u+n_p));
+        }
+      else
+        {
+          introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(0,n_u));
+          introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
+        }
       introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
       introspection.index_sets.stokes_partitioning.clear ();
-      introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(0,n_u));
-      introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
+      if (parameters.direct_stokes_solver)
+        {
+          introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(0,n_u+n_p));
+        }
+      else
+        {
+          introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(0,n_u));
+          introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
+        }
 
       DoFTools::extract_locally_relevant_dofs (dof_handler,
                                                introspection.index_sets.system_relevant_set);
       introspection.index_sets.system_relevant_partitioning.clear ();
-      introspection.index_sets.system_relevant_partitioning
+      if (parameters.direct_stokes_solver)
+        {
+          introspection.index_sets.system_relevant_partitioning
+        .push_back(introspection.index_sets.system_relevant_set.get_view(n_u,n_u+n_p));
+        }
+      else
+        {
+          introspection.index_sets.system_relevant_partitioning
       .push_back(introspection.index_sets.system_relevant_set.get_view(0,n_u));
-      introspection.index_sets.system_relevant_partitioning
+          introspection.index_sets.system_relevant_partitioning
       .push_back(introspection.index_sets.system_relevant_set.get_view(n_u,n_u+n_p));
+        }
       introspection.index_sets.system_relevant_partitioning
       .push_back(introspection.index_sets.system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
 

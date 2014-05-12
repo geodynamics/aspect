@@ -41,15 +41,6 @@ namespace aspect
   const unsigned int
   Introspection<dim>::ComponentIndices::temperature;
 
-  template <int dim>
-  const unsigned int
-  Introspection<dim>::BlockIndices::pressure;
-
-  template <int dim>
-  const unsigned int
-  Introspection<dim>::BlockIndices::temperature;
-
-
   namespace
   {
     template <int dim>
@@ -71,13 +62,14 @@ namespace aspect
 
 
   template <int dim>
-  Introspection<dim>::Introspection(const unsigned int n_compositional_fields)
+  Introspection<dim>::Introspection(const unsigned int n_compositional_fields,
+      const bool split_vel_pressure)
     :
     n_components (dim+2+n_compositional_fields),
     n_blocks (3+n_compositional_fields),
     extractors (n_compositional_fields),
     component_indices (n_compositional_fields),
-    block_indices (n_compositional_fields),
+    block_indices (n_compositional_fields, split_vel_pressure),
     components_to_blocks (component_to_block_mapping<dim>(n_components)),
     system_dofs_per_block (n_blocks)
   {}
@@ -107,8 +99,12 @@ namespace aspect
 
   template <int dim>
   Introspection<dim>::BlockIndices::
-  BlockIndices (const unsigned int n_compositional_fields)
+  BlockIndices (const unsigned int n_compositional_fields,
+      const bool split_vel_pressure)
     :
+    velocities(0),
+    pressure (split_vel_pressure?1:0),
+    temperature (split_vel_pressure?2:1),
     compositional_fields (half_open_sequence(3, 3+n_compositional_fields))
   {}
 

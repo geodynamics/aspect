@@ -377,6 +377,32 @@ namespace aspect
   {
     computing_timer.enter_section ("   Solve Stokes system");
 
+    if (parameters.direct_stokes_solver)
+      {
+        LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
+
+        SolverControl cn;
+        TrilinosWrappers::SolverDirect solver(cn);
+        solver.solve(system_matrix.block(0,0), distributed_stokes_solution.block(0), system_rhs.block(0));
+
+        current_constraints.distribute (distributed_stokes_solution);
+
+        // now rescale the pressure back to real physical units
+        distributed_stokes_solution.block(1) *= pressure_scaling;
+
+        // then copy back the solution from the temporary (non-ghosted) vector
+        // into the ghosted one with all solution components
+        solution.block(0) = distributed_stokes_solution.block(0);
+
+        remove_nullspace(solution, distributed_stokes_solution);
+
+        normalize_pressure(solution);
+
+        computing_timer.exit_section();
+
+        return 0;
+      }
+
     pcout << "   Solving Stokes system... " << std::flush;
 
     const internal::StokesBlock stokes_block(system_matrix);

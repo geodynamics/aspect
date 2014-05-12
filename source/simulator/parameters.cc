@@ -547,6 +547,7 @@ namespace aspect
   Simulator<dim>::Parameters::
   parse_parameters (ParameterHandler &prm)
   {
+    direct_stokes_solver = false;
     // first, make sure that the ParameterHandler parser agrees
     // with the code in main() about the meaning of the "Dimension"
     // parameter
