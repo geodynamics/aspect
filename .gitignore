@@ -13,3 +13,6 @@
 .cproject
 .project
 .settings
+output/
+build/
+aspect
