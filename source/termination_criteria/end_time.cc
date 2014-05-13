@@ -50,8 +50,8 @@ namespace aspect
     EndTime<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.declare_entry ("End time",
-                        /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
-                                             year_in_seconds) = */ "5.69e+300",
+                         /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
+                                              year_in_seconds) = */ "5.69e+300",
                          Patterns::Double (),
                          "The end time of the simulation. The default value is a number "
                          "so that when converted from years to seconds it is approximately "

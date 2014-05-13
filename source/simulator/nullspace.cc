@@ -144,7 +144,7 @@ namespace aspect
 
   template <int dim>
   void Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
-					LinearAlgebra::BlockVector &tmp_distributed_stokes)
+                                        LinearAlgebra::BlockVector &tmp_distributed_stokes)
   {
     if (parameters.nullspace_removal & NullspaceRemoval::net_rotation ||
         parameters.nullspace_removal & NullspaceRemoval::net_translation)
@@ -209,9 +209,9 @@ namespace aspect
 
           // get the density at each quadrature point
           MaterialModel::Interface<dim>::MaterialModelInputs in(q_points.size(),
-								parameters.n_compositional_fields);
+                                                                parameters.n_compositional_fields);
           MaterialModel::Interface<dim>::MaterialModelOutputs out(q_points.size(),
-								  parameters.n_compositional_fields);
+                                                                  parameters.n_compositional_fields);
           for (unsigned int i=0; i< q_points.size(); i++)
             {
               in.pressure[i] = fe_vals[i][dim];
