@@ -143,7 +143,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &relevant_dst, LinearAlgebra::BlockVector &tmp_distributed_stokes)
+  void Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
+                                        LinearAlgebra::BlockVector &tmp_distributed_stokes)
   {
     if (parameters.nullspace_removal & NullspaceRemoval::net_rotation ||
         parameters.nullspace_removal & NullspaceRemoval::net_translation)
@@ -190,7 +191,7 @@ namespace aspect
     FEValues<dim> fe(mapping, finite_element, quadrature,
                      UpdateFlags(update_quadrature_points | update_JxW_values | update_values));
 
-    typename DoFHandler<dim>::active_cell_iterator cell;
+    DoFHandler<dim>::active_cell_iterator cell;
     std::vector<Point<dim> > q_points(quadrature.size());
     std::vector<Vector<double> > fe_vals(quadrature.size(), Vector<double>(finite_element.n_components()));
 
@@ -207,8 +208,10 @@ namespace aspect
           fe.get_function_values(relevant_dst, fe_vals);
 
           // get the density at each quadrature point
-          typename MaterialModel::Interface<dim>::MaterialModelInputs in(q_points.size(), parameters.n_compositional_fields);
-          typename MaterialModel::Interface<dim>::MaterialModelOutputs out(q_points.size(), parameters.n_compositional_fields);
+          MaterialModel::Interface<dim>::MaterialModelInputs in(q_points.size(),
+                                                                parameters.n_compositional_fields);
+          MaterialModel::Interface<dim>::MaterialModelOutputs out(q_points.size(),
+                                                                  parameters.n_compositional_fields);
           for (unsigned int i=0; i< q_points.size(); i++)
             {
               in.pressure[i] = fe_vals[i][dim];

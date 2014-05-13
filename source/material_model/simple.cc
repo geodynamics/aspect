@@ -330,8 +330,8 @@ namespace aspect
                                    " medium despite the fact that the density follows the law "
                                    "$\\rho(T)=\\rho_0(1-\\beta(T-T_{\\text{ref}})$. "
                                    "The temperature dependency of viscosity is "
-                                   " switched off by default and follows the formula"
-                                   "$\\eta(T)=\\eta_0*e^{\\eta_T*\\Delta T / T_{\\text{ref}})}$."
+                                   " switched off by default and follows the formula "
+                                   "$\\eta(T)=\\eta_0 e^{\\eta_T \\cdot \\Delta T / T_{\\text{ref}})}$."
                                    "The value for the components of this formula and additional "
                                    "parameters are read from the parameter file in subsection "
                                    "'Simple model'.")

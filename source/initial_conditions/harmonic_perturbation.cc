@@ -30,6 +30,12 @@ namespace aspect
 {
   namespace InitialConditions
   {
+    // NOTE: this module uses the Boost spherical harmonics package which is not designed
+    // for very high order (> 100) spherical harmonics computation. If you use harmonic
+    // perturbations of a high order be sure to confirm the accuracy first.
+    // For more information, see:
+    // http://www.boost.org/doc/libs/1_49_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_poly/sph_harm.html
+    //
     template <int dim>
     double
     HarmonicPerturbation<dim>::

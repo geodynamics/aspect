@@ -42,11 +42,11 @@ namespace aspect
         return std::pair<std::string,std::string>();
 
       // create a quadrature formula based on the compositional element alone.
-      // be defensive about determining that what we think is the temperature
-      // element is it in fact
-      Assert (this->get_fe().n_base_elements() == 4,
-              ExcNotImplemented());
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(3).degree+1);
+      // be defensive about determining that a compositional field actually exists
+      AssertThrow (this->introspection().base_elements.compositional_fields
+                   != numbers::invalid_unsigned_int,
+                   ExcMessage("This postprocessor cannot be used without compositional fields."));
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.compositional_fields).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),

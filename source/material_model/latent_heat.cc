@@ -275,9 +275,9 @@ namespace aspect
       if (is_compressible() && &this->get_adiabatic_conditions())
         {
           const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
-          const double adiabatic_pressure = this->get_adiabatic_conditions().pressure(surface_point);
+          const double adiabatic_surface_pressure = this->get_adiabatic_conditions().pressure(surface_point);
           const double kappa = compressibility(temperature,pressure,compositional_fields,position);
-          pressure_dependence = kappa * (pressure - adiabatic_pressure);
+          pressure_dependence = kappa * (pressure - adiabatic_surface_pressure);
         }
 
       // in the end, all the influences are added up
@@ -613,7 +613,7 @@ namespace aspect
                                    "of the phase transition being input parameters. "
                                    "The model employs an analytic phase function in the form "
                                    "$X=0.5 \\left( 1 + \\tanh \\left( \\frac{\\Delta p}{\\Delta p_0} \\right) \\right)$ "
-                                   "with $\\Delta p = p - p_transition - \\gamma \\left( T - T_transition \\right)$ "
+                                   "with $\\Delta p = p - p_{transition} - \\gamma \\left( T - T_{transition} \\right)$ "
                                    "and $\\Delta p_0$ being the pressure difference over the width "
                                    "of the phase transition (specified as input parameter).")
   }

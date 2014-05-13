@@ -139,6 +139,31 @@ namespace aspect
        */
       BlockIndices block_indices;
 
+      /**
+       * A structure that enumerates the base elements of the finite element
+       * that correspond to each of the variables in this problem.
+       *
+       * If there are compositional fields, they are all discretized with the
+       * same base element and, consequently, we only need a single index. If
+       * a variable does not exist in the problem (e.g., we do not have
+       * compositional fields), then the corresponding index is set to an invalid
+       * number.
+       */
+      struct BaseElements
+      {
+        BaseElements (const unsigned int n_compositional_fields);
+
+        static const unsigned int       velocities  = 0;
+        static const unsigned int       pressure    = 1;
+        static const unsigned int       temperature = 2;
+        const unsigned int              compositional_fields;
+      };
+      /**
+       * A variable that enumerates the base elements of the finite element
+       * that correspond to each of the variables in this problem.
+       */
+      BaseElements base_elements;
+
 
       /**
        * A structure that contains component masks for each of the variables

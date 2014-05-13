@@ -1,0 +1,2 @@
+This directory contains the "pure shear/inclusion" benchmark defined in Duretz et al 2011
+The results were published in Kronbichler,Heister,Bangerth,2012

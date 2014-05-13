@@ -125,6 +125,8 @@ namespace aspect
 
     mapping (parameters.free_surface_enabled?1:4),
 
+    // define the finite element. obviously, what we do here needs
+    // to match the data we provide in the Introspection class
     finite_element(FE_Q<dim>(parameters.stokes_velocity_degree),
                    dim,
                    (parameters.use_locally_conservative_discretization

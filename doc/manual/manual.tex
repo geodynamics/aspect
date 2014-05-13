@@ -120,7 +120,7 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
 \hfill{\Huge \fontfamily{\sfdefault}\selectfont User Manual \\
 % FILL: manual version
 % e.g. 1.0
-\raggedleft \huge \fontfamily{\sfdefault}\selectfont Version {1.1.pre}\\\large(generated from subversion: $Revision$)\\}
+\raggedleft \huge \fontfamily{\sfdefault}\selectfont Version {1.1.pre}\\\large(generated \today)\\}
 
 %AUTHOR(S) & WEBSITE%
 \null
@@ -1367,7 +1367,7 @@ cmake -DDEAL_II_WITH_MPI=ON \
 
 The development version of \aspect{} can be downloaded by executing the command
 \begin{verbatim}
- svn checkout https://svn.aspect.dealii.org/trunk/aspect
+ git clone https://github.com/geodynamics/aspect.git
 \end{verbatim}
 If {\tt{\$DEAL\_II\_DIR}} points to your \dealii{} installation, you can configure
 aspect with
@@ -2758,8 +2758,8 @@ set Output directory                       = output % \index[prmindex]{Output di
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain (for the current geometry, the
 # surface is defined as the top boundary).
-set Linear solver tolerance                = 1e-15 % \index[prmindex]{Linear solver tolerance} \index[prmindexfull]{Linear solver tolerance} %
-set Temperature solver tolerance           = 1e-15 % \index[prmindex]{Temperature solver tolerance} \index[prmindexfull]{Temperature solver tolerance} %
+set Linear solver tolerance                = 1e-10 % \index[prmindex]{Linear solver tolerance} \index[prmindexfull]{Linear solver tolerance} %
+set Temperature solver tolerance           = 1e-10 % \index[prmindex]{Temperature solver tolerance} \index[prmindexfull]{Temperature solver tolerance} %
 
 set Pressure normalization                 = surface % \index[prmindex]{Pressure normalization} \index[prmindexfull]{Pressure normalization} %
 set Surface pressure                       = 0 % \index[prmindex]{Surface pressure} \index[prmindexfull]{Surface pressure} %

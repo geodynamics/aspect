@@ -62,7 +62,7 @@ namespace aspect
       f << std::scientific;
 
 
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(0).degree+2);
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
 
       const unsigned int n_q_points =  quadrature_formula.size();
       FEValues<dim> fe_values (this->get_mapping(), this->get_fe(),  quadrature_formula,

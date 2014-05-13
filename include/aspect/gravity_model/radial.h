@@ -77,7 +77,8 @@ namespace aspect
      * 9.8 at the earth surface; in between, it follows the behavior one would
      * expect for a mantle of constant density.
      *
-     * This is the model used and discussed in the step-32 tutorial program.
+     * This is the model used and discussed in the step-32 tutorial program of
+     * deal.II.
      *
      * @ingroup GravityModels
      */
@@ -91,10 +92,12 @@ namespace aspect
         virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const;
     };
 
+
     /**
      * A class that describes gravity as a radial vector of linearly
      * decreasing magnitude with depth.  Meant for use in the Sphere geometry
-     * model, where you expect that kind of field.
+     * model, where you expect that kind of field if one assumed a constant
+     * density of Earth.
      *
      * @ingroup GravityModels
      */

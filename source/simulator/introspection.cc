@@ -43,11 +43,28 @@ namespace aspect
 
   template <int dim>
   const unsigned int
+  Introspection<dim>::BlockIndices::velocities;
+
+  template <int dim>
+  const unsigned int
   Introspection<dim>::BlockIndices::pressure;
 
   template <int dim>
   const unsigned int
   Introspection<dim>::BlockIndices::temperature;
+
+
+  template <int dim>
+  const unsigned int
+  Introspection<dim>::BaseElements::velocities;
+
+  template <int dim>
+  const unsigned int
+  Introspection<dim>::BaseElements::pressure;
+
+  template <int dim>
+  const unsigned int
+  Introspection<dim>::BaseElements::temperature;
 
 
   namespace
@@ -78,6 +95,7 @@ namespace aspect
     extractors (n_compositional_fields),
     component_indices (n_compositional_fields),
     block_indices (n_compositional_fields),
+    base_elements (n_compositional_fields),
     components_to_blocks (component_to_block_mapping<dim>(n_components)),
     system_dofs_per_block (n_blocks)
   {}
@@ -110,6 +128,14 @@ namespace aspect
   BlockIndices (const unsigned int n_compositional_fields)
     :
     compositional_fields (half_open_sequence(3, 3+n_compositional_fields))
+  {}
+
+
+  template <int dim>
+  Introspection<dim>::BaseElements::
+  BaseElements (const unsigned int n_compositional_fields)
+    :
+    compositional_fields (n_compositional_fields > 0 ? 3 : numbers::invalid_unsigned_int)
   {}
 
 
