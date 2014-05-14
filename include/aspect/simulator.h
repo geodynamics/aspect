@@ -551,7 +551,9 @@ namespace aspect
        * residual, i.e., if the linear system to be solved is $Ax=b$, then
        * return $\|Ax_0-b\|$ where $x_0$ is the initial guess for the solution
        * variable and is taken from the current_linearization_point member
-       * variable.
+       * variable. For the purpose of this function, this residual is computed
+       * only the velocity and pressure equations (i.e., for the 2x2 block
+       * system involving the velocity and pressure variables).
        *
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
