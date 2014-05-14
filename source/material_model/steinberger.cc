@@ -214,10 +214,19 @@ namespace aspect
           }
 
           double
+          dRhodp (const double temperature,
+                  const double pressure) const
+          {
+            const double rho = value(temperature,pressure,density_values,interpolation);
+            const double drho = value(temperature,pressure+delta_press,density_values,interpolation);
+            return (drho - rho) / delta_press;
+          }
+
+          double
           value (const double temperature,
                  const double pressure,
                  const dealii::Table<2,
-                 double> &values,
+                 double>& values,
                  bool interpol) const
           {
             const double nT = get_nT(temperature);
@@ -557,10 +566,17 @@ namespace aspect
                          " Fields. This can not be intended."));
       double rho = 0.0;
       if (n_material_data == 1)
-        rho = material_lookup[0]->density(temperature+get_deltat(position),pressure);
+        {
+          // TODO: This is wrong for the incompressible case: The pressure in this case is not
+          // the real pressure necessary to look the density up in a material table (due to the
+          // missing depth dependency of density). Should use the adiabatic pressure instead, or
+          // even better the adiabatic pressure + the deviation of pressure from the lateral pressure
+          rho = material_lookup[0]->density(temperature+get_deltat(position),pressure);
+        }
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
+            // TODO: Wrong. See above.
             rho += compositional_fields[i] * material_lookup[i]->density(temperature+get_deltat(position),pressure);
         }
       return rho;
@@ -583,10 +599,12 @@ namespace aspect
       if (!latent_heat)
         {
           if (n_material_data == 1)
+            // TODO: Wrong. See above
             alpha = material_lookup[0]->thermal_expansivity(temperature+get_deltat(position),pressure);
           else
             {
               for (unsigned i = 0; i < n_material_data; i++)
+                // TODO: Wrong. See above
                 alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature+get_deltat(position),pressure);
             }
         }
@@ -776,6 +794,10 @@ namespace aspect
                              "whether to include latent heat effects in the"
                              "calculation of thermal expansivity and specific heat."
                              "Following the approach of Nakagawa et al. 2009.");
+          prm.declare_entry ("Compressible", "false",
+                             Patterns::Bool (),
+                             "whether to include a compressible material description."
+                             "For a description see the manual section.");
           prm.leave_subsection();
         }
         prm.leave_subsection();
