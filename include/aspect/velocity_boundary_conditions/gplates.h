@@ -188,11 +188,11 @@ namespace aspect
            * be tangential to the surface).
            */
           double
-          add_interpolation_point(Tensor<1,3> &surf_vel,
-                                  const Tensor<1,3> position,
-                                  const int spatial_index[2],
-                                  const double time_weight,
-                                  const bool check_termination) const;
+          add_interpolation_point(Tensor<1,3>       &surf_vel,
+                                  const Tensor<1,3> &position,
+                                  const int          spatial_index[2],
+                                  const double       time_weight,
+                                  const bool         check_termination) const;
 
           /**
            * Returns a velocity vector that is rotated to be tangential to the
@@ -204,7 +204,9 @@ namespace aspect
            * @param data_velocity Unrotated velocity vector
            */
           Tensor<1,3>
-          rotate_grid_velocity(const Tensor<1,3> data_position, const Tensor<1,3> point_position, const Tensor<1,3> data_velocity) const;
+          rotate_grid_velocity(const Tensor<1,3> &data_position,
+                               const Tensor<1,3> &point_position,
+                               const Tensor<1,3> &data_velocity) const;
 
           /**
            * Returns the position (cartesian or spherical depending on last

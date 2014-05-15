@@ -300,11 +300,11 @@ namespace aspect
       }
 
       double
-      GPlatesLookup::add_interpolation_point(Tensor<1,3> &surf_vel,
-                                             const Tensor<1,3> position,
-                                             const int spatial_index[2],
-                                             const double time_weight,
-                                             const bool check_termination) const
+      GPlatesLookup::add_interpolation_point(Tensor<1,3>       &surf_vel,
+                                             const Tensor<1,3> &position,
+                                             const int          spatial_index[2],
+                                             const double       time_weight,
+                                             const bool         check_termination) const
       {
         // If the point is extended over the poles, do not use it. It will be found
         // by the check in phi direction.
@@ -342,7 +342,9 @@ namespace aspect
       }
 
       Tensor<1,3>
-      GPlatesLookup::rotate_grid_velocity(const Tensor<1,3> data_position, const Tensor<1,3> point_position, const Tensor<1,3> data_velocity) const
+      GPlatesLookup::rotate_grid_velocity(const Tensor<1,3> &data_position,
+                                          const Tensor<1,3> &point_position,
+                                          const Tensor<1,3> &data_velocity) const
       {
 
         if ((point_position-data_position).norm()/point_position.norm() < 1e-7)
