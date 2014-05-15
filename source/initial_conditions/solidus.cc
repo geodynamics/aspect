@@ -101,7 +101,6 @@ namespace aspect
 		double Depth=this->geometry_model->depth(position);
 		static melting::Melting_curve Solidus_curve(solidus_filename);
 
-		const melting::Melting_curve& Solidus_curve=material_model->Data_Melt.Solidus;
 		AssertThrow(Solidus_curve.is_radius==true,ExcMessage("The solidus curve has to be depth dependent."));
 		AssertThrow(Solidus_curve.Num_points!=0,ExcMessage("Error eading solidus file."));
         AssertThrow(dynamic_cast< const GeometryModel::SphericalShell<dim> *>( &this->get_geometry_model() )!=0,
