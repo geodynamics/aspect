@@ -635,7 +635,7 @@ namespace aspect
     distributed_vector = vector;
 
     if (parameters.use_locally_conservative_discretization == false)
-      distributed_vector.block(1).add(pressure_adjustment);
+      distributed_vector.block(introspection.block_indices.pressure).add(pressure_adjustment);
     else
       {
         // this case is a bit more complicated: if the condition above is false
@@ -747,10 +747,10 @@ namespace aspect
 
     if (do_pressure_rhs_compatibility_modification)
       {
-        const double mean       = vector.block(1).mean_value();
-        const double correction = -mean*vector.block(1).size()/global_volume;
+        const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
+        const double correction = -mean*vector.block(introspection.block_indices.pressure).size()/global_volume;
 
-        vector.block(1).add(correction, pressure_shape_function_integrals.block(1));
+        vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
       }
   }
 

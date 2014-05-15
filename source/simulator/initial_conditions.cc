@@ -214,7 +214,7 @@ namespace aspect
         // we may have hanging nodes, so apply constraints
         constraints.distribute (system_tmp);
 
-        old_solution.block(1) = system_tmp.block(1);
+        old_solution.block(introspection.block_indices.pressure) = system_tmp.block(introspection.block_indices.pressure);
       }
     else
       {
@@ -300,7 +300,7 @@ namespace aspect
               cell->set_dof_values (local_projection, system_tmp);
             }
 
-        old_solution.block(1) = system_tmp.block(1);
+        old_solution.block(introspection.block_indices.pressure) = system_tmp.block(introspection.block_indices.pressure);
       }
 
     // normalize the pressure in such a way that the surface pressure

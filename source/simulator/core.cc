@@ -940,7 +940,7 @@ namespace aspect
       if (parameters.direct_stokes_solver)
         {
           introspection.index_sets.system_relevant_partitioning
-        .push_back(introspection.index_sets.system_relevant_set.get_view(n_u,n_u+n_p));
+        .push_back(introspection.index_sets.system_relevant_set.get_view(0,n_u+n_p));
         }
       else
         {
