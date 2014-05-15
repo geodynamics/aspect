@@ -419,6 +419,7 @@ namespace aspect
                                   (new internal::MaterialLookup(datadirectory+material_file_names[i],interpolation)));
       lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(datadirectory+lateral_viscosity_file_name));
       radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name));
+      avg_temp.resize(1000);
     }
 
 
@@ -443,13 +444,22 @@ namespace aspect
                const Point<dim> &position) const
     {
       const double depth = this->get_geometry_model().depth(position);
-      const unsigned int idx = static_cast<unsigned int>(avg_temp.size() * depth / this->get_geometry_model().maximal_depth());
-      const double delta_temp = temperature-avg_temp[idx];
-      const double adia_temp = this->get_adiabatic_conditions().temperature(position);
 
-      const double vis_lateral_exp = -1.0*lateral_viscosity_lookup->lateral_viscosity(depth)*delta_temp/(temperature*adia_temp);
+      double vis_lateral;
 
-      const double vis_lateral = std::max(std::min(std::exp(vis_lateral_exp),1e2),1e-2);
+      if (&this->get_adiabatic_conditions())
+        {
+          const unsigned int idx = static_cast<unsigned int>(avg_temp.size() * depth / this->get_geometry_model().maximal_depth());
+          const double delta_temp = temperature-avg_temp[idx];
+          const double adia_temp = this->get_adiabatic_conditions().temperature(position);
+          const double vis_lateral_exp = -1.0*lateral_viscosity_lookup->lateral_viscosity(depth)*delta_temp/(temperature*adia_temp);
+          vis_lateral = std::max(std::min(std::exp(vis_lateral_exp),1e2),1e-2);
+        }
+      else
+        // The adiabatic conditions are not there yet. This means we are currently creating them.
+        // Assume we are at an adiabatic temperature.
+        vis_lateral = 1;
+
       const double vis_radial = radial_viscosity_lookup->radial_viscosity(depth);
 
       return std::max(std::min(vis_lateral * vis_radial,1e23),1e19);
