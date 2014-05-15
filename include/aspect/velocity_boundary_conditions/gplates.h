@@ -52,7 +52,9 @@ namespace aspect
            * actual velocities. Also calculates any necessary rotation
            * parameters for a 2D model.
            */
-          GPlatesLookup(const Tensor<1,2> &pointone, const Tensor<1,2> &pointtwo, const double interpolation_width_);
+          GPlatesLookup(const Tensor<1,2> &pointone,
+                        const Tensor<1,2> &pointtwo,
+                        const double interpolation_width_);
 
           /**
            * Outputs the GPlates module information at model start. Need to be
@@ -61,10 +63,11 @@ namespace aspect
            * the screen output.
            */
           template <int dim>
-          void screen_output(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two) const;
+          void screen_output(const Tensor<1,2> &surface_point_one,
+                             const Tensor<1,2> &surface_point_two) const;
 
           /**
-           * Check whether a file named filename exists.
+           * Check whether a file named @p filename exists.
            */
           bool fexists(const std::string &filename) const;
 
@@ -72,7 +75,8 @@ namespace aspect
            * Loads a gplates .gpml velocity file. Throws an exception if the
            * file does not exist.
            */
-          void load_file(const std::string &filename, const bool screen_output);
+          void load_file(const std::string &filename,
+                         const bool screen_output);
 
           /**
            * Returns the computed surface velocity in cartesian coordinates.
