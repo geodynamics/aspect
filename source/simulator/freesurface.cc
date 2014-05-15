@@ -25,7 +25,11 @@
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/dofs/dof_tools.h>
+
 #include <deal.II/fe/fe_values.h>
+
+#include <deal.II/lac/sparsity_tools.h>
+
 #include <deal.II/numerics/vector_tools.h>
 
 
@@ -163,11 +167,34 @@ namespace aspect
 
      //set up the matrix
      LinearAlgebra::SparseMatrix mass_matrix;
-     TrilinosWrappers::SparsityPattern sp (mesh_locally_owned, mesh_locally_owned, mpi_communicator);
+//     TrilinosWrappers::SparsityPattern sp (mesh_locally_owned, mesh_locally_owned, mpi_communicator);
+//     DoFTools::make_sparsity_pattern (free_surface_dof_handler, sp, mass_matrix_constraints, false,
+//                                      Utilities::MPI::this_mpi_process(mpi_communicator));
+//     sp.compress();
+//     mass_matrix.reinit (sp);
+#ifdef USE_PETSC
+      CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
+
+#else
+      TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,mesh_locally_owned,
+                                            mpi_communicator);
+#endif
      DoFTools::make_sparsity_pattern (free_surface_dof_handler, sp, mass_matrix_constraints, false,
                                       Utilities::MPI::this_mpi_process(mpi_communicator));
-     sp.compress();
-     mass_matrix.reinit (sp);
+#ifdef USE_PETSC
+      SparsityTools::distribute_sparsity_pattern(sp,
+                                                 free_surface_dof_handler.n_locally_owned_dofs_per_processor(),
+                                                 mpi_communicator, mesh_locally_relevant);
+
+      sp.compress();
+
+      mass_matrix.reinit (mesh_locally_owned, mesh_locally_owned, sp, mpi_communicator);
+#else
+      sp.compress();
+
+      mass_matrix.reinit (sp);
+#endif
+
 
      FEValuesExtractors::Vector extract_vel(0);
 
@@ -218,7 +245,7 @@ namespace aspect
      rhs.compress (VectorOperation::add);
      mass_matrix.compress(VectorOperation::add);
 
-     TrilinosWrappers::PreconditionJacobi preconditioner_mass;
+     LinearAlgebra::PreconditionILU preconditioner_mass;
      preconditioner_mass.initialize(mass_matrix);
 
      SolverControl solver_control(5*rhs.size(), 1e-7*rhs.l2_norm());
@@ -291,11 +318,15 @@ namespace aspect
     // TODO: think about keeping object between time steps
     LinearAlgebra::PreconditionAMG preconditioner_stiffness;
     LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
+#ifdef USE_PETSC
+    Amg_data.symmetric_operator = false;
+#else
     Amg_data.constant_modes = constant_modes;
     Amg_data.elliptic = true;
     Amg_data.higher_order_elements = false;
     Amg_data.smoother_sweeps = 2;
     Amg_data.aggregation_threshold = 0.02;
+#endif
     preconditioner_stiffness.initialize(mesh_matrix);
 
     SolverControl solver_control(5*rhs.size(), parameters.linear_stokes_solver_tolerance*rhs.l2_norm());
@@ -454,7 +485,7 @@ namespace aspect
         coupling[c][c] = DoFTools::always;
 
 #ifdef USE_PETSC
-      LinearAlgebra::CompressedSparsityPattern sp(error);
+      CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
 
 #else
       TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,mesh_locally_owned,
@@ -469,7 +500,7 @@ namespace aspect
 
 #ifdef USE_PETSC
       SparsityTools::distribute_sparsity_pattern(sp,
-                                                 free_surface_dof_handler.locally_owned_dofs_per_processor(),
+                                                 free_surface_dof_handler.n_locally_owned_dofs_per_processor(),
                                                  mpi_communicator, mesh_locally_relevant);
 
       sp.compress();
