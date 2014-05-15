@@ -44,7 +44,7 @@ namespace aspect
         /**
          * Constructor.
          */
-        Solidus (const std::string &filename);
+        Solidus ();
 
         /**
          * Return the initial temperature as a function of position.
@@ -89,7 +89,7 @@ namespace aspect
 		class Melting_curve
 		{
   		public:
-   			Melting_curve();
+   			Melting_curve(const std::string &filename);
 			void read(const std::string &filename);
     		double T(const double p, const double radius) const;
 			bool is_radius;
