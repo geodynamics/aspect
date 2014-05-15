@@ -103,7 +103,7 @@ namespace aspect
         if(dim==3)
             Phi=atan2(position(0),position(2));
         else
-            Phi=atan2(1,0);
+            Phi=M_PI;
         double T_solidus,T_perturbation;
         double litho_thick_theta;
         double Depth=this->geometry_model->depth(position);
