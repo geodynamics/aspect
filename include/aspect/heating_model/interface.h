@@ -57,12 +57,11 @@ namespace aspect
         virtual ~Interface();
 
         /**
-         * Initialization function. Takes a reference to the geometry model so
-         * that derived classes can access them.
+         * Initialization function.
          */
         virtual
         void
-        initialize (const GeometryModel::Interface<dim> &geometry_model);
+        initialize ();
 
         /**
          * A function that is called at the beginning of each time step to
@@ -163,9 +162,7 @@ namespace aspect
      */
     template <int dim>
     Interface<dim> *
-    create_heating_model (const std::string &name,
-                          ParameterHandler &prm,
-                          const GeometryModel::Interface<dim> &geometry_model);
+    create_heating_model (ParameterHandler &prm);
 
     /**
      * Return a list of names of all implemented heating models,
@@ -201,10 +198,10 @@ namespace aspect
   namespace ASPECT_REGISTER_HEATING_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::HeatingModels::register_heating_model<2>, \
+    dummy_ ## classname ## _2d (&aspect::HeatingModel::register_heating_model<2>, \
                                 name, description); \
     aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::HeatingModels::register_heating_model<3>, \
+    dummy_ ## classname ## _3d (&aspect::HeatingModel::register_heating_model<3>, \
                                 name, description); \
   }
   }

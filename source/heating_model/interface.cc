@@ -40,10 +40,8 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::initialize (const GeometryModel::Interface<dim> &geometry_model_)
-    {
-      geometry_model = &geometry_model_;
-    }
+    Interface<dim>::initialize ()
+    {}
 
 
 
@@ -99,14 +97,19 @@ namespace aspect
 
     template <int dim>
     Interface<dim> *
-    create_heating_model (const std::string &name,
-                                         ParameterHandler &prm,
-                                         const GeometryModel::Interface<dim> &geometry_model)
+    create_heating_model (ParameterHandler &prm)
     {
-      Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
-                                                                                      "Heating model",
+      std::string model_name;
+      prm.enter_subsection ("Heating model");
+      {
+        model_name = prm.get ("Model name");
+      }
+      prm.leave_subsection ();
+
+      Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
+                                                                                      "Heating model::Model name",
                                                                                       prm);
-      plugin->initialize (geometry_model);
+      plugin->initialize();
       return plugin;
     }
 
@@ -167,9 +170,7 @@ namespace aspect
   \
   template \
   Interface<dim> * \
-  create_heating_model<dim> (const std::string &, \
-                                            ParameterHandler &prm, \
-                                            const GeometryModel::Interface<dim> &geometry_model);
+  create_heating_model<dim> (ParameterHandler &prm); \
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
