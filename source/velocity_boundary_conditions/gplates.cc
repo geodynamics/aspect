@@ -199,19 +199,17 @@ namespace aspect
 
       template <int dim>
       Tensor<1,dim>
-      GPlatesLookup::surface_velocity(const Point<dim> &position_, const double time_weight) const
+      GPlatesLookup::surface_velocity(const Point<dim> &position,
+                                      const double time_weight) const
       {
-        Tensor<1,dim> tensor_position;
-        for (unsigned int i = 0 ; i < dim; i++) tensor_position[i] = position_[i];
-
         Tensor<1,3> internal_position;
         if (dim == 2)
-          internal_position = rotate(convert_tensor<dim,3>(tensor_position),rotation_axis,rotation_angle);
+          internal_position = rotate(convert_tensor<dim,3>(position),rotation_axis,rotation_angle);
         else
-          internal_position = convert_tensor<dim,3>(tensor_position);
+          internal_position = convert_tensor<dim,3>(position);
 
         // Main work, interpolate velocity at this point
-        const Tensor<1,3> interpolated_velocity = interpolate(internal_position,time_weight);
+        const Tensor<1,3> interpolated_velocity = interpolate(internal_position, time_weight);
 
         Tensor<1,dim> output_boundary_velocity;
 
@@ -465,7 +463,7 @@ namespace aspect
 
       template <int in, int out>
       Tensor<1,out>
-      GPlatesLookup::convert_tensor (Tensor<1,in> old_tensor) const
+      GPlatesLookup::convert_tensor (const Tensor<1,in> &old_tensor) const
       {
         Tensor<1,out> new_tensor;
         for (unsigned int i = 0; i < out; i++)
@@ -476,7 +474,8 @@ namespace aspect
       }
 
       void
-      GPlatesLookup::calculate_spatial_index(int *index, const Tensor<1,3> position) const
+      GPlatesLookup::calculate_spatial_index(int *index,
+                                             const Tensor<1,3> &position) const
       {
         const Tensor<1,3> scoord = spherical_surface_coordinates(position);
         index[0] = lround(scoord[0]/delta_theta);

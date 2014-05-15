@@ -135,7 +135,9 @@ namespace aspect
            * defined angle
            */
           Tensor<1,3>
-          rotate (const Tensor<1,3> &position,const Tensor<1,3> &rotation_axis, const double angle) const;
+          rotate (const Tensor<1,3> &position,
+                  const Tensor<1,3> &rotation_axis,
+                  const double angle) const;
 
           /**
            * Convert a tensor of rank 1 and dimension in to rank 1 and
@@ -143,7 +145,7 @@ namespace aspect
            * if $out > in$ zeroes will be appended to fill the tensor.
            */
           template <int in, int out>
-          Tensor<1,out> convert_tensor (Tensor<1,in> old_tensor) const;
+          Tensor<1,out> convert_tensor (const Tensor<1,in> &old_tensor) const;
 
           /**
            * Returns spherical coordinates of a cartesian position.
@@ -178,7 +180,8 @@ namespace aspect
            * index
            */
           void
-          calculate_spatial_index(int *index, const Tensor<1,3> position) const;
+          calculate_spatial_index(int *index,
+                                  const Tensor<1,3> &position) const;
 
           /**
            * This function adds a certain data point to the interpolated
