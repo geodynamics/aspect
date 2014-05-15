@@ -18,10 +18,9 @@ set Timing output frequency                = 5
 set Use years in output instead of seconds = true
 
 subsection Boundary temperature model
-  set Model name = box
-  subsection Box
-    set Top temperature = 0.0
-    set Bottom temperature = 0.0
+  set Model name = constant
+  subsection Constant
+    set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
   end
 end
 
