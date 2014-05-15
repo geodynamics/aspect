@@ -40,7 +40,9 @@ namespace aspect
   {
     namespace internal
     {
-      GPlatesLookup::GPlatesLookup(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two, const double interpolation_width_)
+      GPlatesLookup::GPlatesLookup(const Tensor<1,2> &surface_point_one,
+                                   const Tensor<1,2> &surface_point_two,
+                                   const double interpolation_width_)
         :
         velocity_vals(0,0),
         old_velocity_vals(0,0),
@@ -51,8 +53,7 @@ namespace aspect
         delta_theta(0.0),
         interpolation_width(interpolation_width_)
       {
-
-        // get the cartesian coordinates of the points the 2D model shall lie in
+        // get the Cartesian coordinates of the points the 2D model shall lie in
         // this computation is done also for 3D since it is not expensive and the
         // template dim is currently not used here. Could be changed.
         const Tensor<1,3> point_one = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_one));
@@ -161,7 +162,7 @@ namespace aspect
 
         // swap pointers to old and new values, we overwrite the old ones
         // and the new ones become the old ones
-        std::swap( velocity_values, old_velocity_values);
+        std::swap (velocity_values, old_velocity_values);
 
         (*velocity_values).reinit(n_theta,n_phi);
         velocity_positions.reinit(n_theta,n_phi);
@@ -325,7 +326,8 @@ namespace aspect
 
         // sin(theta) accounts for the different area covered by grid points at varying latitudes
         // the minimal value is chosen to weight points at the poles according to their number and area
-        const double point_weight = std::max(std::sin(spherical_point[0]),std::sin(delta_theta/2)/velocity_values->n_cols());
+        const double point_weight = std::max(std::sin(spherical_point[0]),
+                                             std::sin(delta_theta/2)/velocity_values->n_cols());
 
         const Tensor<1,3> normalized_position = position / position.norm();
 

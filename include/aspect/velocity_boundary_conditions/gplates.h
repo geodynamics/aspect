@@ -105,15 +105,16 @@ namespace aspect
 
           /**
            * Pointers to the actual tables. Used to avoid unnecessary copying
-           * of values.
+           * of values. These pointers point to either velocity_vals or
+           * old_velocity_vals.
            */
           dealii::Table<2,Tensor<1,3> > *velocity_values;
           dealii::Table<2,Tensor<1,3> > *old_velocity_values;
 
           /**
-           * Distances between adjacent point in the Lat/Lon grid
+           * Distances between adjacent point in the Lat/Long grid
            */
-          double delta_phi,delta_theta;
+          double delta_phi, delta_theta;
 
           /**
            * The rotation axis and angle around which a 2D model needs to be
