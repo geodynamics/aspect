@@ -305,7 +305,8 @@ namespace aspect
     }
 
     template <int dim>
-    Interface<dim>::MaterialModelOutputs::MaterialModelOutputs(unsigned int n_points, unsigned int n_comp)
+    Interface<dim>::MaterialModelOutputs::MaterialModelOutputs(const unsigned int n_points,
+                                                               const unsigned int n_comp)
     {
       viscosities.resize(n_points);
       densities.resize(n_points);
