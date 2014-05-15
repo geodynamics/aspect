@@ -44,7 +44,7 @@ namespace aspect
         /**
          * Constructor.
          */
-        Solidus ();
+        Solidus (const std::string &filename);
 
         /**
          * Return the initial temperature as a function of position.
