@@ -29,13 +29,16 @@ namespace aspect
 {
 	namespace melting
 	{
-		Melting_curve::Melting_curve(){}
+		Melting_curve::Melting_curve(const std::string &filename)
+		{
+			read(filename);
+		}
 		void Melting_curve::read(const std::string &filename)
 		{
 			std::ifstream in(filename.c_str(), std::ios::in);
 			char temp[256];
 			std::string T_Unit,P_Unit;
-          	Num_points=0;
+          	        Num_points=0;
 			if(in.fail())return;
 			in.getline(temp,256);
 			in>>T_Unit>>P_Unit;
@@ -103,7 +106,7 @@ namespace aspect
 
 		AssertThrow(Solidus_curve.is_radius==true,ExcMessage("The solidus curve has to be depth dependent."));
 		AssertThrow(Solidus_curve.Num_points!=0,ExcMessage("Error eading solidus file."));
-        AssertThrow(dynamic_cast< const GeometryModel::SphericalShell<dim> *>( &this->get_geometry_model() )!=0,
+                AssertThrow(dynamic_cast< const GeometryModel::SphericalShell<dim> *>( &this->get_geometry_model() )!=0,
 				ExcMessage("This initial condition can only be work with sphereical shell geometry model."));
         R1=(dynamic_cast< const GeometryModel::SphericalShell<dim> &>(this->get_geometry_model())).R1;
 		T_min=(this->get_boundary_temperature()).minimal_temperature();
