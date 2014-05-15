@@ -474,6 +474,11 @@ namespace aspect
     {
       if (!(&this->get_adiabatic_conditions()))
         return 0.0;
+
+      // We do not need a temperature correction in the compressible case
+      if (compressible)
+        return 0.0;
+
       static const bool a = this->include_adiabatic_heating();
       return a ? 0.0 : (this->get_adiabatic_conditions().temperature(position)
                         - this->get_adiabatic_surface_temperature());
@@ -692,7 +697,19 @@ namespace aspect
                      const std::vector<double> &compositional_fields,
                      const Point<dim> &position) const
     {
-      return 0.0;
+      Assert ((n_material_data <= compositional_fields.size()) || (n_material_data == 1),
+              ExcMessage("There are more material files provided than compositional"
+                         " Fields. This can not be intended."));
+      double dRhodp = 0.0;
+      if (n_material_data == 1)
+        dRhodp += material_lookup[0]->dRhodp(temperature+get_deltat(position),pressure);
+      else
+        {
+          for (unsigned i = 0; i < n_material_data; i++)
+            dRhodp += compositional_fields[i] * material_lookup[i]->dRhodp(temperature+get_deltat(position),pressure);
+        }
+      const double rho = density(temperature,pressure,compositional_fields,position);
+      return (1/rho)*dRhodp;
     }
 
     template <int dim>
@@ -728,9 +745,16 @@ namespace aspect
     template <int dim>
     bool
     Steinberger<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
+    compressibility_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      return false;
+      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
+        return true;
+      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
+        return true;
+      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
+        return true;
+      else
+        return false;
     }
 
 
@@ -767,7 +791,7 @@ namespace aspect
     Steinberger<dim>::
     is_compressible () const
     {
-      return false;
+      return compressible;
     }
 
 
@@ -831,6 +855,8 @@ namespace aspect
           lateral_viscosity_file_name   = prm.get ("Lateral viscosity file name");
           interpolation        = prm.get_bool ("Bilinear interpolation");
           latent_heat          = prm.get_bool ("Latent heat");
+          compressible          = prm.get_bool ("Compressible");
+
 
           prm.leave_subsection();
         }

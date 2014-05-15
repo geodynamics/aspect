@@ -207,6 +207,7 @@ namespace aspect
       private:
         bool interpolation;
         bool latent_heat;
+        bool compressible;
         std::vector<double> avg_temp;
         std::string datadirectory;
         std::vector<std::string> material_file_names;
