@@ -1147,7 +1147,8 @@ namespace aspect
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
 
-    free_surface_apply_stabilization(cell, data.local_matrix);
+    if(parameters.free_surface_enabled);
+      free_surface->apply_stabilization(cell, data.local_matrix);
     cell->get_dof_indices (data.local_dof_indices);
   }
 
@@ -1463,7 +1464,7 @@ namespace aspect
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.current_velocity_values);
     if (parameters.free_surface_enabled)
-      scratch.finite_element_values[introspection.extractors.velocities].get_function_values(mesh_velocity,
+      scratch.finite_element_values[introspection.extractors.velocities].get_function_values(free_surface->mesh_velocity,
           scratch.mesh_velocity_values);
 
 

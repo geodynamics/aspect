@@ -1292,40 +1292,49 @@ namespace aspect
        * @}
        */
 
-      void free_surface_execute();
+      class FreeSurfaceHandler
+      {
+        public: 
+          FreeSurfaceHandler( const Simulator<dim> &);
+          void execute();
+          void setup_dofs();
+          void displace_mesh();
+          void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                FullMatrix<double> &local_matrix);
+          const LinearAlgebra::BlockVector& get_mesh_velocity() const;
 
-      void free_surface_setup_dofs();
+        private:
+          void make_constraints ();
+          void project_normal_velocity_onto_boundary (LinearAlgebra::Vector &output);
+          void solve_elliptic_problem ();
+          void calculate_mesh_displacement ();
 
-      void free_surface_displace_mesh();
+          const Simulator<dim> &sim;
+
+          const FESystem<dim>                                       free_surface_fe;
+          DoFHandler<dim>                                           free_surface_dof_handler;
+
+          LinearAlgebra::BlockVector mesh_velocity;
+          LinearAlgebra::BlockVector old_mesh_velocity;
+
+          LinearAlgebra::Vector mesh_vertices;
+          LinearAlgebra::Vector mesh_vertex_velocity;
+          LinearAlgebra::SparseMatrix mesh_matrix;
+          LinearAlgebra::Vector mesh_rhs;
+
+          IndexSet mesh_locally_owned;
+          IndexSet mesh_locally_relevant;
+
+          ConstraintMatrix mesh_constraints;
 
 
-      // internal functions:
-      void free_surface_make_constraints ();
-      void free_surface_project_normal_velocity_onto_boundary (LinearAlgebra::Vector &output);
-      void free_surface_solve_elliptic_problem ();
-      void free_surface_calculate_mesh_displacement ();
-      void free_surface_apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
-            FullMatrix<double> &local_matrix);
-
-      const FESystem<dim>                                       free_surface_fe;
-
-      DoFHandler<dim>                                           free_surface_dof_handler;
-
-      LinearAlgebra::BlockVector mesh_velocity;
-      LinearAlgebra::BlockVector old_mesh_velocity;
-
-      LinearAlgebra::Vector mesh_vertices;
-      LinearAlgebra::Vector mesh_vertex_velocity;
-      LinearAlgebra::SparseMatrix mesh_matrix;
-      LinearAlgebra::Vector mesh_rhs;
-
-      IndexSet mesh_locally_owned;
-      IndexSet mesh_locally_relevant;
-
-      ConstraintMatrix mesh_constraints;
+          friend class Simulator<dim>;
+      };
+      std_cxx1x::shared_ptr<FreeSurfaceHandler> free_surface;
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;
+      friend class FreeSurfaceHandler;
   };
 }
 

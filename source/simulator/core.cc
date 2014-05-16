@@ -145,9 +145,7 @@ namespace aspect
     dof_handler (triangulation),
 
     rebuild_stokes_matrix (true),
-    rebuild_stokes_preconditioner (true),
-    free_surface_fe (FE_Q<dim>(1),dim),
-    free_surface_dof_handler (triangulation)
+    rebuild_stokes_preconditioner (true)
 
   {
     computing_timer.enter_section("Initialization");
@@ -228,6 +226,10 @@ namespace aspect
       sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
       sim->initialize (*this);
+
+    //Initialize the free surface handler if appropriate
+    if( parameters.free_surface_enabled )
+      free_surface = std::shared_ptr<FreeSurfaceHandler>( new FreeSurfaceHandler( *this ) );
 
     adiabatic_conditions.reset(new AdiabaticConditions<dim> (*geometry_model,
                                                              *gravity_model,
@@ -861,7 +863,7 @@ namespace aspect
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
 
-    free_surface_setup_dofs();
+    free_surface->setup_dofs();
     setup_nullspace_removal();
 
     computing_timer.exit_section();
@@ -1015,17 +1017,18 @@ namespace aspect
     std::vector<const LinearAlgebra::BlockVector *> x_system (4);
     x_system[0] = &solution;
     x_system[1] = &old_solution;
-    x_system[2] = &mesh_velocity;
-    x_system[3] = &old_mesh_velocity;
+
+    x_system[2] = &free_surface->mesh_velocity;
+    x_system[3] = &free_surface->old_mesh_velocity;
 
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
     std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
-    x_fs_system[0] = &mesh_vertices;
+    x_fs_system[0] = &(free_surface->mesh_vertices);
 
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
-        freesurface_trans(free_surface_dof_handler);
+        freesurface_trans(free_surface->free_surface_dof_handler);
 
 
     triangulation.prepare_coarsening_and_refinement();
@@ -1059,22 +1062,22 @@ namespace aspect
       system_trans.interpolate (system_tmp);
       solution     = distributed_system;
       old_solution = old_distributed_system;
-      mesh_velocity = distributed_mesh_velocity;
-      old_mesh_velocity = old_distributed_mesh_velocity;
+      free_surface->mesh_velocity = distributed_mesh_velocity;
+      free_surface->old_mesh_velocity = old_distributed_mesh_velocity;
     }
 
     {
       LinearAlgebra::Vector
        distributed_mesh_vertices;
-      distributed_mesh_vertices.reinit(mesh_locally_owned, mpi_communicator);
+      distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned, mpi_communicator);
 
       std::vector<LinearAlgebra::Vector *> system_tmp (1);
        system_tmp[0] = &(distributed_mesh_vertices);
        freesurface_trans.interpolate (system_tmp);
-       mesh_vertices     = distributed_mesh_vertices;
+       free_surface->mesh_vertices     = distributed_mesh_vertices;
     }
 
-    free_surface_displace_mesh ();
+    free_surface->displace_mesh ();
 
     computing_timer.exit_section();
   }
@@ -1106,7 +1109,7 @@ namespace aspect
       {
         case NonlinearSolver::IMPES:
         {
-          free_surface_execute ();
+          free_surface->execute ();
 
           assemble_advection_system (TemperatureOrComposition::temperature());
           build_advection_preconditioner(TemperatureOrComposition::temperature(),

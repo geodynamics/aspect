@@ -24,7 +24,7 @@
 #define __aspect__global_h
 
 // uncomment this to use PETSc for linear algebra
-//#define USE_PETSC
+#define USE_PETSC
 
 #ifdef USE_PETSC
 #include <deal.II/lac/petsc_block_vector.h>
