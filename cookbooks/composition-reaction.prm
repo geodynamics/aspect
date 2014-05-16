@@ -53,10 +53,6 @@ subsection Boundary temperature model
   end
 end
 
-subsection Boundary composition model
-  set Model name = box
-end
-
 
 # The velocity along the top boundary models a spreading
 # center that is moving left and right:
@@ -125,7 +121,7 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 0.1
-    set List of output variables = density, viscosity
+    set List of output variables = density
   end
 end
 
