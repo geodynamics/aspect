@@ -24,7 +24,6 @@
 #define __aspect__heating_model_interface_h
 
 #include <aspect/plugins.h>
-#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
@@ -107,12 +106,6 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
-
-      protected:
-        /**
-         * Pointer to the geometry object in use.
-         */
-        const GeometryModel::Interface<dim> *geometry_model;
     };
 
 
