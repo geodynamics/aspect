@@ -1294,25 +1294,41 @@ namespace aspect
       class FreeSurfaceHandler
       {
         public: 
+          //initialize the FreeSurfaceHandler
           FreeSurfaceHandler(Simulator<dim> &, ParameterHandler &prm);
+          
+          //The main execution step for free surface stuff.  Calls most of the private member functions
           void execute();
+
+          //Setting up degrees of freedom for the free surface stuff.  Does nothing if there is no free surface
           void setup_dofs();
+
+          //Enforce the mesh displacement.  Called in execute(), and also called after redistributing mesh
           void displace_mesh();
+
+          //Apply stabilization to a cell of the system matrix.  Called during assemly of the system
           void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
                 FullMatrix<double> &local_matrix);
-          const LinearAlgebra::BlockVector& get_mesh_velocity() const;
 
+          //Declare parameters and parse parameters for free surface handling
           static
           void declare_parameters (ParameterHandler &prm);
           void parse_parameters (ParameterHandler &prm);
 
         private:
+          //Setup boundary conditions and mesh constraints for the solution of the elliptic problem
           void make_constraints ();
+
+          //Project the velocity solution onto the free surface.  Called by make_constraints()
           void project_normal_velocity_onto_boundary (LinearAlgebra::Vector &output);
+           
+          //Actually do the solution of the elliptic problem
           void solve_elliptic_problem ();
+
+          //Determine the actual mesh motion required by the solution of solve_elliptic_problem()
           void calculate_mesh_displacement ();
 
-          Simulator<dim> &sim;
+          Simulator<dim> &sim;  //reference to the simulator class to which the handler belongs
 
           const FESystem<dim>                                       free_surface_fe;
           DoFHandler<dim>                                           free_surface_dof_handler;
