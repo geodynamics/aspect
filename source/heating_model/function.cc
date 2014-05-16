@@ -49,8 +49,9 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::set_current_time (const double time)
+    Function<dim>::update ()
     {
+      const double time = this->get_time();
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
       if (this->convert_output_to_years())

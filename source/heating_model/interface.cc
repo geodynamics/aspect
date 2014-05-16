@@ -47,10 +47,8 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::set_current_time (const double time)
-    {
-      current_time = time;
-    }
+    Interface<dim>::update ()
+    {}
 
 
 

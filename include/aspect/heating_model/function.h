@@ -50,7 +50,8 @@ namespace aspect
         Function ();
 
         /**
-         * Return the specific heating rate.
+         * Return the specific heating rate as calculated by the
+         * function object.
          */
         virtual
         double
@@ -61,19 +62,15 @@ namespace aspect
 
         /**
          * A function that is called at the beginning of each time step to
-         * indicate what the model time is for which the heating rate will
-         * next be evaluated. For the current class, the function passes to
-         * the parsed function what the current time is.
+         * allow the model to do whatever necessary. In this case the time
+         * of the function object is updated.
          */
         virtual
         void
-        set_current_time (const double time);
+        update ();
 
         /**
-         * Declare the parameters this class takes through input files. The
-         * default implementation of this function does not describe any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
+         * Declare the parameters this class takes through input files.
          */
         static
         void
@@ -81,9 +78,6 @@ namespace aspect
 
         /**
          * Read the parameters this class declares from the parameter file.
-         * The default implementation of this function does not read any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
          */
         virtual
         void
