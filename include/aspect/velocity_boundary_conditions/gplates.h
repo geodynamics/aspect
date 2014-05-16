@@ -303,11 +303,10 @@ namespace aspect
 
       private:
         /**
-         * A variable that stores the current time of the simulation. Derived
-         * classes can query this variable. It is set at the beginning of each
-         * time step.
+         * A variable that stores the current time of the simulation, but relative
+         * to the velocity_file_start_time.
          */
-        double current_time;
+        double time_relative_to_vel_file_start_time;
 
         /**
          * A variable that stores the currently used velocity file of a
