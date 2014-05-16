@@ -4197,9 +4197,9 @@ clearly makes no sense at all.
 
 \paragraph{The active case with reactions.}
 
-\textit{This section was contributed by Juliane Dannberg.}
+\textit{This section was contributed by Juliane Dannberg and Ren{\'e} Ga{\ss}m{\"o}ller}.
 
-In addition, there are setups where one wants the compositional fields to interact with each other. One example would be material upwelling at a mid-ocean ridge and changing the composition to that of oceanic crust when it reaches a certain depth. In this cookbook, we will describe how this kind of behaviour can be achieved by using the \textttt{composition reaction} function of the material model. 
+In addition, there are setups where one wants the compositional fields to interact with each other. One example would be material upwelling at a mid-ocean ridge and changing the composition to that of oceanic crust when it reaches a certain depth. In this cookbook, we will describe how this kind of behaviour can be achieved by using the \texttt{composition reaction} function of the material model. 
 
 We will consider the exact same setup as in the previous paragraphs, except for the initial conditions and properties of the two compositional fields. There is one material that initially fills the bottom half of the domain and is less dense than the material above. In addition, there is another material that only gets created when the first material reaches the uppermost 20\% of the domain, and that has a higher density. This should cause the first material to move upwards, get partially converted to the second material, which then sinks down again. This means we want to change the initial conditions for the compositional fields: 
 
@@ -4214,7 +4214,7 @@ subsection Compositional initial conditions
 end
 \end{lstlisting}
 
-Moreover, instead of the \textttt{simple} material model, we will use the \textttt{composition reaction} material model, which basically behaves in the same way, but can handle two active compositional fields and a reaction between those two fields. In the input file, the user defines a depth and above this \textttt{reaction depth} the first compositional fields is converted to the second field. This can be done by changing the following section (the complete input file can be found in \url{cookbooks/composition-reaction.prm}. 
+Moreover, instead of the \texttt{simple} material model, we will use the \texttt{composition reaction} material model, which basically behaves in the same way, but can handle two active compositional field and a reaction between those two fields. In the input file, the user defines a depth and above this \texttt{reaction depth} the first compositional fields is converted to the second field. This can be done by changing the following section (the complete input file can be found in \url{cookbooks/composition-reaction.prm}). 
 
 \begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
 subsection Material model
