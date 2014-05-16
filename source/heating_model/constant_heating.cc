@@ -47,10 +47,12 @@ namespace aspect
       {
         prm.enter_subsection("Constant heating");
         {
-          prm.declare_entry ("Radiogenic heating rate", "0",
+          prm.declare_entry ("Radiogenic heating rate", "0e0",
                              Patterns::Double (0),
-                             "The value of the specific radiogenic heating rate. "
-                             "Units: $W/kg$.");
+                             "The specific rate of heating due to radioactive decay (or other bulk sources "
+                             "you may want to describe). This parameter corresponds to the variable "
+                             "$H$ in the temperature equation stated in the manual, and the heating "
+                             "term is $\rho H$. Units: W/kg.");
         }
         prm.leave_subsection();
       }
