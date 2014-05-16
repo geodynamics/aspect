@@ -116,7 +116,7 @@ namespace aspect
         R1=(dynamic_cast< const GeometryModel::SphericalShell<dim> &>(this->get_geometry_model())).R1;
         T_min=(this->get_boundary_temperature()).minimal_temperature();
 
-        litho_thick_theta=litho_thick-Magnitude_lith*sin(n*Theta);
+        litho_thick_theta=litho_thick-Magnitude_lith*cos(n*Theta)*cos(n*Phi);
         T_litho=Solidus_curve.T(0,R1-litho_thick_theta)+deltaT;
         
         if(litho_thick_theta>0 && Depth<litho_thick_theta)
@@ -124,7 +124,7 @@ namespace aspect
         else
             T_solidus=Solidus_curve.T(0,sqrt(position.square()))+deltaT;
 
-        T_perturbation=Depth/( this->geometry_model->maximal_depth() )*Magnitude_T*sin(n*Theta)*cos(n*Phi);
+        T_perturbation=Depth/( this->geometry_model->maximal_depth() )*Magnitude_T*cos(n*Theta)*cos(n*Phi);
         return T_solidus+T_perturbation;
     }
 
