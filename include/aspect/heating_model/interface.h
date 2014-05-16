@@ -64,11 +64,10 @@ namespace aspect
         initialize ();
 
         /**
-         * A function that is called at the beginning of each time step to
-         * indicate what the model time is for which the boundary values will
-         * next be evaluated. The default implementation of the function will
-         * do nothing, but derived classes that need more elaborate setups
-         * for a given time step may overload the function.
+         * A function that is called at the beginning of each time step.
+         * The default implementation of the function does nothing, but
+         * derived classes that need more elaborate setups for a given time
+         * step may overload the function.
          *
          * The point of this function is to allow complex heating
          * models to do an initialization step once at the beginning of each
