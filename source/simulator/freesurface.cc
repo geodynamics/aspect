@@ -634,7 +634,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template class Simulator<dim>;
+  template class Simulator<dim>::FreeSurfaceHandler;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }
