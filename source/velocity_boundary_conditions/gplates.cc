@@ -40,7 +40,9 @@ namespace aspect
   {
     namespace internal
     {
-      GPlatesLookup::GPlatesLookup(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two, const double interpolation_width_)
+      GPlatesLookup::GPlatesLookup(const Tensor<1,2> &surface_point_one,
+                                   const Tensor<1,2> &surface_point_two,
+                                   const double interpolation_width_)
         :
         velocity_vals(0,0),
         old_velocity_vals(0,0),
@@ -51,8 +53,7 @@ namespace aspect
         delta_theta(0.0),
         interpolation_width(interpolation_width_)
       {
-
-        // get the cartesian coordinates of the points the 2D model shall lie in
+        // get the Cartesian coordinates of the points the 2D model shall lie in
         // this computation is done also for 3D since it is not expensive and the
         // template dim is currently not used here. Could be changed.
         const Tensor<1,3> point_one = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_one));
@@ -161,7 +162,7 @@ namespace aspect
 
         // swap pointers to old and new values, we overwrite the old ones
         // and the new ones become the old ones
-        std::swap( velocity_values, old_velocity_values);
+        std::swap (velocity_values, old_velocity_values);
 
         (*velocity_values).reinit(n_theta,n_phi);
         velocity_positions.reinit(n_theta,n_phi);
@@ -199,19 +200,17 @@ namespace aspect
 
       template <int dim>
       Tensor<1,dim>
-      GPlatesLookup::surface_velocity(const Point<dim> &position_, const double time_weight) const
+      GPlatesLookup::surface_velocity(const Point<dim> &position,
+                                      const double time_weight) const
       {
-        Tensor<1,dim> tensor_position;
-        for (unsigned int i = 0 ; i < dim; i++) tensor_position[i] = position_[i];
-
         Tensor<1,3> internal_position;
         if (dim == 2)
-          internal_position = rotate(convert_tensor<dim,3>(tensor_position),rotation_axis,rotation_angle);
+          internal_position = rotate(convert_tensor<dim,3>(position),rotation_axis,rotation_angle);
         else
-          internal_position = convert_tensor<dim,3>(tensor_position);
+          internal_position = convert_tensor<dim,3>(position);
 
         // Main work, interpolate velocity at this point
-        const Tensor<1,3> interpolated_velocity = interpolate(internal_position,time_weight);
+        const Tensor<1,3> interpolated_velocity = interpolate(internal_position, time_weight);
 
         Tensor<1,dim> output_boundary_velocity;
 
@@ -300,11 +299,11 @@ namespace aspect
       }
 
       double
-      GPlatesLookup::add_interpolation_point(Tensor<1,3> &surf_vel,
-                                             const Tensor<1,3> position,
-                                             const int spatial_index[2],
-                                             const double time_weight,
-                                             const bool check_termination) const
+      GPlatesLookup::add_interpolation_point(Tensor<1,3>       &surf_vel,
+                                             const Tensor<1,3> &position,
+                                             const int          spatial_index[2],
+                                             const double       time_weight,
+                                             const bool         check_termination) const
       {
         // If the point is extended over the poles, do not use it. It will be found
         // by the check in phi direction.
@@ -327,7 +326,8 @@ namespace aspect
 
         // sin(theta) accounts for the different area covered by grid points at varying latitudes
         // the minimal value is chosen to weight points at the poles according to their number and area
-        const double point_weight = std::max(std::sin(spherical_point[0]),std::sin(delta_theta/2)/velocity_values->n_cols());
+        const double point_weight = std::max(std::sin(spherical_point[0]),
+                                             std::sin(delta_theta/2)/velocity_values->n_cols());
 
         const Tensor<1,3> normalized_position = position / position.norm();
 
@@ -342,7 +342,9 @@ namespace aspect
       }
 
       Tensor<1,3>
-      GPlatesLookup::rotate_grid_velocity(const Tensor<1,3> data_position, const Tensor<1,3> point_position, const Tensor<1,3> data_velocity) const
+      GPlatesLookup::rotate_grid_velocity(const Tensor<1,3> &data_position,
+                                          const Tensor<1,3> &point_position,
+                                          const Tensor<1,3> &data_velocity) const
       {
 
         if ((point_position-data_position).norm()/point_position.norm() < 1e-7)
@@ -463,7 +465,7 @@ namespace aspect
 
       template <int in, int out>
       Tensor<1,out>
-      GPlatesLookup::convert_tensor (Tensor<1,in> old_tensor) const
+      GPlatesLookup::convert_tensor (const Tensor<1,in> &old_tensor) const
       {
         Tensor<1,out> new_tensor;
         for (unsigned int i = 0; i < out; i++)
@@ -474,7 +476,8 @@ namespace aspect
       }
 
       void
-      GPlatesLookup::calculate_spatial_index(int *index, const Tensor<1,3> position) const
+      GPlatesLookup::calculate_spatial_index(int *index,
+                                             const Tensor<1,3> &position) const
       {
         const Tensor<1,3> scoord = spherical_surface_coordinates(position);
         index[0] = lround(scoord[0]/delta_theta);

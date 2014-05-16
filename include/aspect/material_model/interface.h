@@ -530,7 +530,8 @@ namespace aspect
          */
         struct MaterialModelOutputs
         {
-          MaterialModelOutputs(unsigned int n_points, unsigned int n_comp);
+          MaterialModelOutputs (const unsigned int n_points,
+                                const unsigned int n_comp);
 
           /**
            * Viscosity $\eta$ values at the given positions.

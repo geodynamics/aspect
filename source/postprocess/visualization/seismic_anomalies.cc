@@ -84,8 +84,8 @@ namespace aspect
                       new Vector<float>(this->get_triangulation().n_active_cells()));
 
 
-        const int npoints = 2; // npoint in running average half-width of window
-        std::vector<double> Vs_depth_average;
+        const unsigned int npoints = 2; // window in running average half-width of window
+        std::vector<double> Vs_depth_average(50);
 
         this->get_depth_average_Vs(Vs_depth_average);
         compute_running_average(Vs_depth_average, npoints);
@@ -156,8 +156,8 @@ namespace aspect
                       new Vector<float>(this->get_triangulation().n_active_cells()));
 
 
-        const int npoints = 2; // npoint in running average half-width of window
-        std::vector<double> Vp_depth_average;
+        const unsigned int npoints = 2; // window in running average half-width of window
+        std::vector<double> Vp_depth_average(50);
 
         this->get_depth_average_Vp(Vp_depth_average);
         compute_running_average(Vp_depth_average, npoints);
