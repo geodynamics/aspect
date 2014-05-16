@@ -24,6 +24,7 @@
 #include <aspect/initial_conditions/solidus.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/boundary_temperature/interface.h>
+#include <boost/math/special_functions/spherical_harmonic.hpp>
 
 namespace aspect
 {
@@ -97,35 +98,68 @@ namespace aspect
     Solidus<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-        double R1,T_min,T_litho;
-        double Theta=atan2(position(0),position(1));
-        double Phi;
-        if(dim==3)
-            Phi=atan2(position(0),position(2));
-        else
-            Phi=0.;
+        double T_min,T_litho;
         double T_solidus,T_perturbation;
         double litho_thick_theta;
+		double lateral_perturbation;
         double Depth=this->geometry_model->depth(position);
         static melting::Melting_curve Solidus_curve(solidus_filename);
 
         AssertThrow(Solidus_curve.is_radius==true,ExcMessage("The solidus curve has to be depth dependent."));
         AssertThrow(Solidus_curve.Num_points!=0,ExcMessage("Error eading solidus file."));
-                AssertThrow(dynamic_cast< const GeometryModel::SphericalShell<dim> *>( &this->get_geometry_model() )!=0,
+        const GeometryModel::SphericalShell<dim> *spherical_geometry_model=
+			dynamic_cast< const GeometryModel::SphericalShell<dim> *>(this->geometry_model);
+		AssertThrow(spherical_geometry_model!=0,
                 ExcMessage("This initial condition can only be work with sphereical shell geometry model."));
-        R1=(dynamic_cast< const GeometryModel::SphericalShell<dim> &>(this->get_geometry_model())).R1;
         T_min=(this->get_boundary_temperature()).minimal_temperature();
 
-        litho_thick_theta=litho_thick-Magnitude_lith*cos(n*Theta)*cos(n*Phi);
-        T_litho=Solidus_curve.T(0,R1-litho_thick_theta)+deltaT;
+        // In case of spherical shell calculate spherical coordinates
+		const Tensor<1,dim> scoord = spherical_surface_coordinates(position);
+		if(dim==2)
+		{
+           // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
+           // This way the perturbation is alway 0 at the model boundaries.
+           const double opening_angle = spherical_geometry_model->opening_angle()*numbers::PI/180.0;
+           lateral_perturbation = std::sin(lateral_wave_number_1*scoord[1]*numbers::PI/opening_angle);	
+		}
+		else if(dim==3)
+		{
+			// Spherical harmonics are only defined for order <= degree
+            // and degree >= 0. Verify that it is indeed.
+			Assert ( std::abs(lateral_wave_number_2) <= lateral_wave_number_1,
+                       ExcMessage ("Spherical harmonics can only be computed for "
+                                   "order <= degree."));
+            Assert ( lateral_wave_number_1 >= 0,
+                       ExcMessage ("Spherical harmonics can only be computed for "
+                                   "degree >= 0."));
+            // use a spherical harmonic function as lateral perturbation
+            lateral_perturbation = boost::math::spherical_harmonic_r(lateral_wave_number_1,lateral_wave_number_2,scoord[2],scoord[1]);
+		}
+        litho_thick_theta=litho_thick-Magnitude_lith*lateral_perturbation;
+        T_litho=Solidus_curve.T(0,spherical_geometry_model->R1-litho_thick_theta)+deltaT;
         
         if(litho_thick_theta>0 && Depth<litho_thick_theta)
             T_solidus=T_min+(T_litho-T_min)*(Depth/litho_thick_theta);
         else
             T_solidus=Solidus_curve.T(0,sqrt(position.square()))+deltaT;
 
-        T_perturbation=Depth/( this->geometry_model->maximal_depth() )*Magnitude_T*cos(n*Theta)*cos(n*Phi);
+        T_perturbation=Depth/( this->geometry_model->maximal_depth() )*Magnitude_T*lateral_perturbation;
         return T_solidus+T_perturbation;
+    }
+    template <int dim>
+    const Tensor<1,dim>
+    Solidus<dim>::
+    spherical_surface_coordinates(const Tensor<1,dim> &position) const
+    {
+      Tensor<1,dim> scoord;
+
+      scoord[0] = std::sqrt(position.norm_square()); // R
+      scoord[1] = std::atan2(position[1],position[0]); // Phi
+      if (scoord[1] < 0.0) scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
+      if (dim==3)
+        scoord[2] = std::acos(position[2]/std::sqrt(position.norm_square())); // Theta
+
+      return scoord;
     }
 
     template <int dim>
@@ -148,9 +182,21 @@ namespace aspect
             prm.declare_entry ("Lithosphere thickness amplitude", "0e0",
                                Patterns::Double (),
                                "The amplitude of the initial lithosphere thickness perturbation in (m)");
-            prm.declare_entry ("Degree","1",
-                               Patterns::Integer(0),
-                               "The degree of the perturbation.");
+            prm.declare_entry ("Lateral wave number one","3",
+                               Patterns::Integer(),
+                               "Doubled first lateral wave number of the harmonic perturbation. "
+                               "Equals the spherical harmonic degree in 3D spherical shells. "
+                               "In all other cases one equals half of a sine period over "
+                               "the model domain. This allows for single up-/downswings. "
+                               "Negative numbers reverse the sign of the perturbation but are "
+                               "not allowed for the spherical harmonic case.");
+            prm.declare_entry ("Lateral wave number two", "2",
+                               Patterns::Integer (),
+                               "Doubled second lateral wave number of the harmonic perturbation. "
+                               "Equals the spherical harmonic order in 3D spherical shells. "
+                               "In all other cases one equals half of a sine period over "
+                               "the model domain. This allows for single up-/downswings. "
+                               "Negative numbers reverse the sign of the perturbation.");
         }
         prm.leave_subsection();
         prm.enter_subsection ("Data");
@@ -177,8 +223,8 @@ namespace aspect
         {
             Magnitude_T    = prm.get_double("Temperature amplitude");
             Magnitude_lith = prm.get_double("Lithosphere thickness amplitude");
-            n              = prm.get_integer("Degree");
-
+            lateral_wave_number_1 = prm.get_integer ("Lateral wave number one");
+            lateral_wave_number_2 = prm.get_integer ("Lateral wave number two");
         }
         prm.leave_subsection();
         prm.enter_subsection("Data");
