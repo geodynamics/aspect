@@ -46,7 +46,6 @@ subsection Model settings
   set Include adiabatic heating               = false
   set Include latent heat                     = false
   set Include shear heating                   = false
-  set Radiogenic heating rate                 = 1e5
 
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. To guarantuee a steady downward flow, we fix the velocity
