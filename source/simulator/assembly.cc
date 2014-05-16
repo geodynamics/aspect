@@ -1007,7 +1007,7 @@ namespace aspect
     if (rebuild_stokes_preconditioner == false)
       return;
 
-    if (parameters.direct_stokes_solver)
+    if (parameters.use_direct_stokes_solver)
       return;
 
     computing_timer.enter_section ("   Build Stokes preconditioner");

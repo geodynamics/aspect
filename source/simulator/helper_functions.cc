@@ -535,7 +535,8 @@ namespace aspect
     if (parameters.pressure_normalization == "no")
       return;
 
-    // TODO: I need to think about how to implement this. Choose "no" for now.
+    // TODO: pressure normalization currently does not work if velocity and
+    // pressure are in the same block.
     Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
         ExcNotImplemented());
 

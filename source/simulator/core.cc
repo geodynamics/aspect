@@ -86,7 +86,7 @@ namespace aspect
                              ParameterHandler &prm)
     :
     parameters (prm),
-    introspection (parameters.n_compositional_fields, !parameters.direct_stokes_solver),
+    introspection (parameters.n_compositional_fields, !parameters.use_direct_stokes_solver),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     pcout (std::cout,
            (Utilities::MPI::
@@ -272,7 +272,7 @@ namespace aspect
     // to make velocities and pressures of roughly the same (numerical) size,
     // and we may have to fix up the right hand side vector before solving for
     // compressible models if there are no in-/outflow boundaries
-    if (parameters.direct_stokes_solver)
+    if (parameters.use_direct_stokes_solver)
       pressure_scaling = 1.0;
     else
       pressure_scaling = material_model->reference_viscosity() / geometry_model->length_scale();
@@ -896,12 +896,12 @@ namespace aspect
           n_p = introspection.system_dofs_per_block[introspection.block_indices.pressure],
           n_T = introspection.system_dofs_per_block[introspection.block_indices.temperature];
 
-      Assert(!parameters.direct_stokes_solver ||
+      Assert(!parameters.use_direct_stokes_solver ||
           (introspection.block_indices.velocities == introspection.block_indices.pressure),
           ExcInternalError());
 
       // only count pressure once if they are in the same block
-      if (parameters.direct_stokes_solver)
+      if (introspection.block_indices.velocities == introspection.block_indices.pressure)
         n_p = 0;
 
       std::vector<types::global_dof_index> n_C (parameters.n_compositional_fields);
@@ -912,40 +912,27 @@ namespace aspect
 
       IndexSet system_index_set = dof_handler.locally_owned_dofs();
       introspection.index_sets.system_partitioning.clear ();
-      if (parameters.direct_stokes_solver)
+      introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(0,n_u));
+      if (n_p != 0)
         {
-          introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(0,n_u+n_p));
-        }
-      else
-        {
-          introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(0,n_u));
           introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
         }
       introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
 
       introspection.index_sets.stokes_partitioning.clear ();
-      if (parameters.direct_stokes_solver)
+      introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(0,n_u));
+      if (n_p != 0)
         {
-          introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(0,n_u+n_p));
-        }
-      else
-        {
-          introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(0,n_u));
           introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
         }
 
       DoFTools::extract_locally_relevant_dofs (dof_handler,
                                                introspection.index_sets.system_relevant_set);
       introspection.index_sets.system_relevant_partitioning.clear ();
-      if (parameters.direct_stokes_solver)
+      introspection.index_sets.system_relevant_partitioning
+  .push_back(introspection.index_sets.system_relevant_set.get_view(0,n_u));
+      if (n_p != 0)
         {
-          introspection.index_sets.system_relevant_partitioning
-        .push_back(introspection.index_sets.system_relevant_set.get_view(0,n_u+n_p));
-        }
-      else
-        {
-          introspection.index_sets.system_relevant_partitioning
-      .push_back(introspection.index_sets.system_relevant_set.get_view(0,n_u));
           introspection.index_sets.system_relevant_partitioning
       .push_back(introspection.index_sets.system_relevant_set.get_view(n_u,n_u+n_p));
         }

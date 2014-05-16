@@ -377,7 +377,7 @@ namespace aspect
   {
     computing_timer.enter_section ("   Solve Stokes system");
 
-    if (parameters.direct_stokes_solver)
+    if (parameters.use_direct_stokes_solver)
       {
         LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
