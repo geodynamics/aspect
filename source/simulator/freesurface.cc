@@ -40,7 +40,7 @@ namespace aspect
 {
 
   template <int dim>
-  Simulator<dim>::FreeSurfaceHandler::FreeSurfaceHandler( const Simulator<dim> &simulator) 
+  Simulator<dim>::FreeSurfaceHandler::FreeSurfaceHandler( Simulator<dim> &simulator) 
   : sim(simulator),
     free_surface_fe (FE_Q<dim>(1),dim),
     free_surface_dof_handler (sim.triangulation)
@@ -52,7 +52,7 @@ namespace aspect
   {
     if (!sim.parameters.free_surface_enabled)
       return;
-//    sim.computing_timer.enter_section("FreeSurface");
+    sim.computing_timer.enter_section("FreeSurface");
 
     sim.pcout << "FS: free_surface_execute()" << std::endl;
 
@@ -64,8 +64,8 @@ namespace aspect
 
     displace_mesh();
 
-//    sim.rebuild_stokes_matrix = sim.rebuild_stokes_preconditioner = true;
-//    sim.computing_timer.exit_section("FreeSurface");
+    sim.rebuild_stokes_matrix = sim.rebuild_stokes_preconditioner = true;
+    sim.computing_timer.exit_section("FreeSurface");
   }
 
   template <int dim>

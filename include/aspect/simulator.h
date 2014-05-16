@@ -1295,7 +1295,7 @@ namespace aspect
       class FreeSurfaceHandler
       {
         public: 
-          FreeSurfaceHandler( const Simulator<dim> &);
+          FreeSurfaceHandler(Simulator<dim> &);
           void execute();
           void setup_dofs();
           void displace_mesh();
@@ -1309,7 +1309,7 @@ namespace aspect
           void solve_elliptic_problem ();
           void calculate_mesh_displacement ();
 
-          const Simulator<dim> &sim;
+          Simulator<dim> &sim;
 
           const FESystem<dim>                                       free_surface_fe;
           DoFHandler<dim>                                           free_surface_dof_handler;
