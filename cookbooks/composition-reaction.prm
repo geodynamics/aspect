@@ -115,7 +115,7 @@ end
 # mesh is refined and what to do with the solution once computed
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 4
+  set Initial global refinement          = 5
   set Time steps between mesh refinement = 0
 end
 
