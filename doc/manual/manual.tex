@@ -12,9 +12,9 @@
 % have an index. we use the imakeidx' replacement of the 'multind' package so
 % that we can have an index of all run-time parameters separate from other
 % items (if we ever wanted one)
-%\usepackage{imakeidx}
-%\makeindex[name=prmindex, title=Index of run-time parameter entries]
-%\makeindex[name=prmindexfull, title=Index of run-time parameters with %section names]
+\usepackage{imakeidx}
+\makeindex[name=prmindex, title=Index of run-time parameter entries]
+\makeindex[name=prmindexfull, title=Index of run-time parameters with section names]
 
 % be able to use \note environments with a box around the text
 \usepackage{fancybox}
@@ -324,9 +324,6 @@ material in Schubert, Turcotte and Olson \cite{STO01}.
 Specifically, we consider the following set of equations for velocity $\mathbf
 u$, pressure $p$ and temperature $T$, as well as a set of advected quantities
 $c_i$ that we call \textit{compositional fields}:
-\marginpar{To be finished}
-\marginpar{Wouldn't the last term need to have a minus sign? drho/dT
-  is negative...}
 \begin{align}
   \label{eq:stokes-1}
   -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u)
@@ -356,7 +353,7 @@ $c_i$ that we call \textit{compositional fields}:
   \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
   \\
   &\quad
-  +\alpha T \left( \mathbf u \cdot \nabla \mathbf p \right)
+  +\alpha T \left( \mathbf u \cdot \nabla p \right)
   \notag
   \\
   &\quad
@@ -392,13 +389,11 @@ terms of this equation correspond to
 \item internal heat production for example due to radioactive
   decay;
 \item friction heating;
-\item adiabatic compression of material; as written, this term assumes that
-  the the overall pressure is dominated by the hydrostatic pressure, in which
-  case the variation of the total pressure can be expressed by gravity and
-  density.
+\item adiabatic compression of material;
+\item phase change.
 \end{itemize}
-In addition, the equation does include phase change terms that correspond to
-the latent heat generated or consumed in this process. The latent heat release
+The last term corresponds to
+the latent heat generated or consumed in the process of phase change of material. The latent heat release
 is proportional to changes in the fraction of material $X$ that has already
 undergone the phase transition (also called phase function) and the change
 of entropy $\Delta S$. This process applies both
@@ -442,24 +437,20 @@ which it is in fact implemented:
   \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
   \\
   &\quad
-  +\alpha T \left( \mathbf u \cdot \nabla \mathbf p \right)
+  +\alpha T \left( \mathbf u \cdot \nabla p \right)
   \notag
   \\
   &\quad
   + \rho T \Delta S \frac{\partial X}{\partial p} \mathbf u\cdot\nabla p
-  & \quad & \textrm{in $\Omega$},
+  & \quad & \textrm{in $\Omega$}.
   \notag
 \end{align}
 
 \subsubsection{Comment on adiabatic heating}
-In other codes and texts there is sometimes a simplification in the previous equation. If the pressure gradient is in the vertical direction, then $ -\rho \mathbf g \approx \nabla \mathbf{p} $, and we have the following relation
+In other codes and texts there is sometimes a simplification made to the adiabatic heating term in the previous equation. If you assume the pressure gradient is assumed to be small in the vertical direction, then $ -\rho \mathbf g \approx \nabla \mathbf{p} $, and we have the following relation (the negative sign is due to $\mathbf g$ pointing downwards)
 \begin{align}
 \alpha T \left( \mathbf u \cdot \nabla \mathbf p \right)
-  & \approx \alpha \rho T \mathbf u \cdot \mathbf g 
-  \notag
-  \\
-  &=
-  - \alpha T \rho \mathbf g \cdot \mathbf u 
+  & \approx -\alpha \rho T \mathbf u \cdot \mathbf g.
   \notag
 \end{align}
 
@@ -1190,6 +1181,7 @@ Section~\ref{parameters:Material_20model} also gives an answer which of the
 models already implemented uses the approximation or considers the material
 sufficiently compressible to go with the fully compressible continuity equation.}
 
+
 \subsubsection{Almost linear models}
 
 A further simplification can be obtained if one assumes that all coefficients
@@ -1282,21 +1274,24 @@ to as \textit{IMPES} methods (they originate in the porous media flow
 community, where the acronym stands for \textit{Im}plicit \textit{P}ressure,
 \textit{E}xplicit \textit{S}aturation). For details see \cite{KHB12}.
 
-\note{In \aspect{} 1.0, using the IMPES scheme is the only available
-  option. However, in later versions we will implement a fully nonlinear
-  scheme that treats the equations as coupled, and one will be able to choose
-  between the two variants using a run-time parameter.}
+
 
 \subsubsection{Compressible formula}
-In the compressible case, we have in the convergence of mass formula that $\nabla \cdot \left( \rho \textbf{u} \right)= 0$ instead of $\nabla \cdot \textbf{u} = 0$, which implies nonlinear and nonsymmetric (which makes preconditioning really difficult).  The following explanation describes what is done in \aspect{} for the linear solver to work.  Dividing by $\rho$, then:
+In the compressible case, the conservation of mass equation becomes $\nabla \cdot \left( \rho \textbf{u} \right)= 0$ instead of $\nabla \cdot \textbf{u} = 0$, which is nonlinear and nonsymmetric (which makes preconditioning difficult). The following explanation describes what is done in \aspect{} for the linear solver to work.  Dividing by $\rho$ gives:
 \begin{equation*}
-\frac{1}{\rho} \nabla \cdot \left( \rho \textbf{u} \right) = \nabla \cdot \textbf{u} + \frac{1}{\rho} \nabla \rho \cdot  \textbf{u} 
+\frac{1}{\rho} \nabla \cdot \left( \rho \textbf{u} \right) = \nabla \cdot \textbf{u} + \frac{1}{\rho} \nabla \rho \cdot  \textbf{u}.
 \end{equation*}
-Simplifying the second term on the right hand side of the above equality yields:
+Then we assume the change in density is dominated by the change in static pressure, which can be written as
+$\nabla p \approx \nabla p_s \approx \rho \textbf{g}$.
+This finally allows us to write
 \begin{equation*}
 \frac{1}{\rho} \nabla \rho \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p_s \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u} 
 \end{equation*}
-where compressibility is $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ and static pressure is used to get $\nabla p \approx \nabla p_s \approx \rho \textbf{g}$.
+so we get
+\begin{equation*}
+\nabla \cdot \textbf{u} = \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u}
+\end{equation*}
+where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the compressibility and $\rho$ and $\mathbf u$ are taken from the last time step.
 
 \section{Installation}
 \label{sec:installation}
