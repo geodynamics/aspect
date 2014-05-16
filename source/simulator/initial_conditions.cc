@@ -76,9 +76,8 @@ namespace aspect
         : TemperatureOrComposition::composition(n-1);
         initial_solution.reinit(system_rhs, false);
 
-        const unsigned int base_element = (torc.is_temperature() ?
-                                           introspection.base_elements.temperature :
-                                           introspection.base_elements.compositional_fields);
+        const unsigned int base_element = torc.base_element(introspection);
+
 
         // get the temperature/composition support points
         const std::vector<Point<dim> > support_points
