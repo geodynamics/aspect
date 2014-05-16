@@ -13,7 +13,6 @@ subsection Heating model
   set Model name = constant heating
 
   subsection Constant heating
-    set Radiogenic heating rate = 1
   end
 end
 
