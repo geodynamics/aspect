@@ -74,13 +74,17 @@ namespace aspect
 
       private:
         /**
-         * A function object representing the temperature.
+         * Returns spherical coordinates of a cartesian position.
          */
+        const Tensor<1,dim>
+        spherical_surface_coordinates(const Tensor<1,dim> &position) const;
+
 		double       litho_thick;
 		double       Magnitude_T;
 		double       Magnitude_lith;
 		double       deltaT;
-		int          n;
+		int          lateral_wave_number_1;
+		int          lateral_wave_number_2;
 		std::string  solidus_filename;
     };
   }
