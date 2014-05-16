@@ -7388,7 +7388,7 @@ Specifically, your new class needs to implement the following basic interface:
 
         virtual
         void
-        set_current_time (const double time);
+        update ();
 
         static
         void
@@ -7406,7 +7406,9 @@ beginning of the program or at the beginning of each time step. Examples are
 models that need to call an external program to obtain plate velocities for the
 current time, or from historical records, in which case it is far cheaper to do
 so only once at the beginning of the time step than for every boundary point
-separately.
+separately. See, for example, the 
+\href{doc/doxygen/classaspect_1_1VelocityBoundaryConditions_1_1GPlates.html}{aspect::VelocityBoundaryConditions::GPlates}
+class.
 
 The remaining functions are obvious, and are also
 discussed in the documentation of this interface class at

@@ -527,6 +527,8 @@ namespace aspect
       Assert((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model))->opening_angle()==360, ExcMessage("gplates velocity model just works for opening angle == 360"));
     }
 
+
+
     template <int dim>
     std::string
     GPlates<dim>::create_filename (const int timestep) const
@@ -540,13 +542,14 @@ namespace aspect
       return str_filename;
     }
 
+
     template <int dim>
     void
-    GPlates<dim>::set_current_time (const double time)
+    GPlates<dim>::update ()
     {
-      Interface<dim>::set_current_time(time);
+      Interface<dim>::update ();
 
-      time_relative_to_vel_file_start_time = time - velocity_file_start_time;
+      time_relative_to_vel_file_start_time = this->get_time() - velocity_file_start_time;
       const bool first_process = (Utilities::MPI::this_mpi_process (this->get_mpi_communicator ())
                                   == 0);
 

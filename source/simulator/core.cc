@@ -497,7 +497,7 @@ namespace aspect
            p = velocity_boundary_conditions.begin();
            p != velocity_boundary_conditions.end(); ++p)
         {
-          p->second->set_current_time (time);
+          p->second->update ();
           VectorFunctionFromVelocityFunctionObject<dim> vel
           (parameters.n_compositional_fields,
            std_cxx1x::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,

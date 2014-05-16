@@ -66,7 +66,7 @@ namespace aspect
          */
         virtual
         void
-        set_current_time (const double time);
+        update ();
 
         /**
          * Declare the parameters this class takes through input files. The
