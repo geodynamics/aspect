@@ -1147,8 +1147,7 @@ namespace aspect
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
 
-    if(parameters.free_surface_enabled);
-      free_surface->apply_stabilization(cell, data.local_matrix);
+    free_surface->apply_stabilization(cell, data.local_matrix);
     cell->get_dof_indices (data.local_dof_indices);
   }
 

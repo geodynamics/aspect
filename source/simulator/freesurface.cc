@@ -40,11 +40,37 @@ namespace aspect
 {
 
   template <int dim>
-  Simulator<dim>::FreeSurfaceHandler::FreeSurfaceHandler( Simulator<dim> &simulator) 
+  Simulator<dim>::FreeSurfaceHandler::FreeSurfaceHandler( Simulator<dim> &simulator,
+                                                          ParameterHandler &prm) 
   : sim(simulator),
     free_surface_fe (FE_Q<dim>(1),dim),
     free_surface_dof_handler (sim.triangulation)
-  {}
+  {
+    parse_parameters(prm);
+  }
+
+  template <int dim>
+  void Simulator<dim>::FreeSurfaceHandler::declare_parameters(ParameterHandler &prm) 
+  {
+    prm.enter_subsection ("Free surface");
+    {
+      prm.declare_entry("Free surface stabilization theta", "0.5",
+                         Patterns::Double(0,1),
+                         "Theta from Kaus et al 2010");
+    }
+    prm.leave_subsection ();
+  }
+
+  template <int dim>
+  void Simulator<dim>::FreeSurfaceHandler::parse_parameters(ParameterHandler &prm) 
+  {
+    prm.enter_subsection ("Free surface");
+    {
+      free_surface_theta = prm.get_double("Free surface stabilization theta");
+    }
+    prm.leave_subsection ();
+  }
+ 
 
 
   template <int dim>
@@ -548,6 +574,9 @@ namespace aspect
       const typename DoFHandler<dim>::active_cell_iterator &cell,
       FullMatrix<double> &local_matrix)
   {
+    if (!sim.parameters.free_surface_enabled)
+      return;
+
     QGauss<dim-1> quadrature(sim.parameters.stokes_velocity_degree+1);
     UpdateFlags update_flags = UpdateFlags(update_values | update_normal_vectors |
                                            update_quadrature_points | update_JxW_values);
@@ -585,7 +614,7 @@ namespace aspect
                const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
 
                double pressure_perturbation = std::abs(sim.material_model->reference_density()/*-free_surface_density*/)*
-                                              sim.time_step*sim.parameters.free_surface_theta*g_norm;
+                                              sim.time_step*free_surface_theta*g_norm;
 
                const double stress_value = -pressure_perturbation*
                                             (w*g_hat) * (v*n_hat)

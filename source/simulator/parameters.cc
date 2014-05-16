@@ -545,11 +545,9 @@ namespace aspect
                               Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max())),
                               "A comma separated list of integers denoting those boundaries "
                               "where there is a free surface. Set to nothing to disable all free surface computations.");
-      prm.declare_entry("Free surface stabilization theta", "0.5",
-                               Patterns::Double(0,1),
-                               "Theta from Kaus et al 2010");
-     }
+    }
     prm.leave_subsection ();
+    FreeSurfaceHandler::declare_parameters( prm );
   }
 
 
@@ -826,10 +824,8 @@ namespace aspect
                                               x_free_surface_boundary_indicators.end());
 
           free_surface_enabled = !free_surface_boundary_indicators.empty();
-
-          free_surface_theta = prm.get_double("Free surface stabilization theta");
         }
-        prm.leave_subsection ();
+    prm.leave_subsection ();
   }
 
 

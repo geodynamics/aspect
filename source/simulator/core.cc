@@ -227,9 +227,8 @@ namespace aspect
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
       sim->initialize (*this);
 
-    //Initialize the free surface handler if appropriate
-    if( parameters.free_surface_enabled )
-      free_surface = std::shared_ptr<FreeSurfaceHandler>( new FreeSurfaceHandler( *this ) );
+    //Initialize the free surface handler 
+    free_surface = std::shared_ptr<FreeSurfaceHandler>( new FreeSurfaceHandler( *this, prm ) );
 
     adiabatic_conditions.reset(new AdiabaticConditions<dim> (*geometry_model,
                                                              *gravity_model,

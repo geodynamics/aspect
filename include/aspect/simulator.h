@@ -280,17 +280,16 @@ namespace aspect
         /**
          * @}
          */
-
         /**
          * @name Parameters that have to do with free surface
          * @{
          */
         bool                           free_surface_enabled;
         std::set<types::boundary_id> free_surface_boundary_indicators;
-        double free_surface_theta;
         /**
          * @}
          */
+
       };
 
       /**
@@ -1295,13 +1294,17 @@ namespace aspect
       class FreeSurfaceHandler
       {
         public: 
-          FreeSurfaceHandler(Simulator<dim> &);
+          FreeSurfaceHandler(Simulator<dim> &, ParameterHandler &prm);
           void execute();
           void setup_dofs();
           void displace_mesh();
           void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
                 FullMatrix<double> &local_matrix);
           const LinearAlgebra::BlockVector& get_mesh_velocity() const;
+
+          static
+          void declare_parameters (ParameterHandler &prm);
+          void parse_parameters (ParameterHandler &prm);
 
         private:
           void make_constraints ();
@@ -1313,6 +1316,9 @@ namespace aspect
 
           const FESystem<dim>                                       free_surface_fe;
           DoFHandler<dim>                                           free_surface_dof_handler;
+
+          double free_surface_theta;
+
 
           LinearAlgebra::BlockVector mesh_velocity;
           LinearAlgebra::BlockVector old_mesh_velocity;
