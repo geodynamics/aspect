@@ -1028,14 +1028,11 @@ namespace aspect
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
+    std::vector<const LinearAlgebra::Vector *> x_fs_system (1);  //Outside of if statement for scoping reasons
+    parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
+      freesurface_trans(free_surface->free_surface_dof_handler);
     if(parameters.free_surface_enabled)
-      {
-        std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
-        x_fs_system[0] = &(free_surface->mesh_vertices);
-
-        parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
-          freesurface_trans(free_surface->free_surface_dof_handler);
-      }
+      x_fs_system[0] = &(free_surface->mesh_vertices);
 
 
     triangulation.prepare_coarsening_and_refinement();
