@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 2.8)
+
+SET(TARGET "source")
+FIND_PACKAGE(deal.II 8.0 QUIET
+  HINTS ${deal.II_DIR} ${DEAL_II_DIR} ../ ../../ $ENV{DEAL_II_DIR}
+  )
+
+DEAL_II_INITIALIZE_CACHED_VARIABLES()
+INCLUDE_DIRECTORIES(../../include)
+
+ADD_LIBRARY(${TARGET} SHARED  source.cc)
+DEAL_II_SETUP_TARGET(${TARGET})
