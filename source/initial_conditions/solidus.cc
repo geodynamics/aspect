@@ -103,7 +103,7 @@ namespace aspect
         if(dim==3)
             Phi=atan2(position(0),position(2));
         else
-            Phi=M_PI;
+            Phi=0.;
         double T_solidus,T_perturbation;
         double litho_thick_theta;
         double Depth=this->geometry_model->depth(position);
@@ -124,7 +124,7 @@ namespace aspect
         else
             T_solidus=Solidus_curve.T(0,sqrt(position.square()))+deltaT;
 
-        T_perturbation=Depth/( this->geometry_model->maximal_depth() )*Magnitude_T*sin(n*Theta)*sin(n*Phi);
+        T_perturbation=Depth/( this->geometry_model->maximal_depth() )*Magnitude_T*sin(n*Theta)*cos(n*Phi);
         return T_solidus+T_perturbation;
     }
 
