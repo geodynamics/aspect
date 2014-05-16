@@ -747,6 +747,9 @@ namespace aspect
   void Simulator<dim>::compute_depth_average(std::vector<double> &values,
                                              FUNCTOR &fctr) const
   {
+    Assert (values.size() > 0,
+            ExcMessage ("To call this function, you need to request a positive "
+                        "number of depth slices."));
     const unsigned int num_slices = values.size();
     std::vector<double> volume(num_slices);
 

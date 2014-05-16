@@ -52,7 +52,9 @@ namespace aspect
            * actual velocities. Also calculates any necessary rotation
            * parameters for a 2D model.
            */
-          GPlatesLookup(const Tensor<1,2> &pointone, const Tensor<1,2> &pointtwo, const double interpolation_width_);
+          GPlatesLookup(const Tensor<1,2> &pointone,
+                        const Tensor<1,2> &pointtwo,
+                        const double interpolation_width_);
 
           /**
            * Outputs the GPlates module information at model start. Need to be
@@ -61,10 +63,11 @@ namespace aspect
            * the screen output.
            */
           template <int dim>
-          void screen_output(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two) const;
+          void screen_output(const Tensor<1,2> &surface_point_one,
+                             const Tensor<1,2> &surface_point_two) const;
 
           /**
-           * Check whether a file named filename exists.
+           * Check whether a file named @p filename exists.
            */
           bool fexists(const std::string &filename) const;
 
@@ -72,7 +75,8 @@ namespace aspect
            * Loads a gplates .gpml velocity file. Throws an exception if the
            * file does not exist.
            */
-          void load_file(const std::string &filename, const bool screen_output);
+          void load_file(const std::string &filename,
+                         const bool screen_output);
 
           /**
            * Returns the computed surface velocity in cartesian coordinates.
@@ -101,15 +105,16 @@ namespace aspect
 
           /**
            * Pointers to the actual tables. Used to avoid unnecessary copying
-           * of values.
+           * of values. These pointers point to either velocity_vals or
+           * old_velocity_vals.
            */
           dealii::Table<2,Tensor<1,3> > *velocity_values;
           dealii::Table<2,Tensor<1,3> > *old_velocity_values;
 
           /**
-           * Distances between adjacent point in the Lat/Lon grid
+           * Distances between adjacent point in the Lat/Long grid
            */
-          double delta_phi,delta_theta;
+          double delta_phi, delta_theta;
 
           /**
            * The rotation axis and angle around which a 2D model needs to be
@@ -135,7 +140,9 @@ namespace aspect
            * defined angle
            */
           Tensor<1,3>
-          rotate (const Tensor<1,3> &position,const Tensor<1,3> &rotation_axis, const double angle) const;
+          rotate (const Tensor<1,3> &position,
+                  const Tensor<1,3> &rotation_axis,
+                  const double angle) const;
 
           /**
            * Convert a tensor of rank 1 and dimension in to rank 1 and
@@ -143,7 +150,7 @@ namespace aspect
            * if $out > in$ zeroes will be appended to fill the tensor.
            */
           template <int in, int out>
-          Tensor<1,out> convert_tensor (Tensor<1,in> old_tensor) const;
+          Tensor<1,out> convert_tensor (const Tensor<1,in> &old_tensor) const;
 
           /**
            * Returns spherical coordinates of a cartesian position.
@@ -178,7 +185,8 @@ namespace aspect
            * index
            */
           void
-          calculate_spatial_index(int *index, const Tensor<1,3> position) const;
+          calculate_spatial_index(int *index,
+                                  const Tensor<1,3> &position) const;
 
           /**
            * This function adds a certain data point to the interpolated
@@ -188,11 +196,11 @@ namespace aspect
            * be tangential to the surface).
            */
           double
-          add_interpolation_point(Tensor<1,3> &surf_vel,
-                                  const Tensor<1,3> position,
-                                  const int spatial_index[2],
-                                  const double time_weight,
-                                  const bool check_termination) const;
+          add_interpolation_point(Tensor<1,3>       &surf_vel,
+                                  const Tensor<1,3> &position,
+                                  const int          spatial_index[2],
+                                  const double       time_weight,
+                                  const bool         check_termination) const;
 
           /**
            * Returns a velocity vector that is rotated to be tangential to the
@@ -204,7 +212,9 @@ namespace aspect
            * @param data_velocity Unrotated velocity vector
            */
           Tensor<1,3>
-          rotate_grid_velocity(const Tensor<1,3> data_position, const Tensor<1,3> point_position, const Tensor<1,3> data_velocity) const;
+          rotate_grid_velocity(const Tensor<1,3> &data_position,
+                               const Tensor<1,3> &point_position,
+                               const Tensor<1,3> &data_velocity) const;
 
           /**
            * Returns the position (cartesian or spherical depending on last
@@ -293,11 +303,10 @@ namespace aspect
 
       private:
         /**
-         * A variable that stores the current time of the simulation. Derived
-         * classes can query this variable. It is set at the beginning of each
-         * time step.
+         * A variable that stores the current time of the simulation, but relative
+         * to the velocity_file_start_time.
          */
-        double current_time;
+        double time_relative_to_vel_file_start_time;
 
         /**
          * A variable that stores the currently used velocity file of a
