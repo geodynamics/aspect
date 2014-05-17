@@ -1420,9 +1420,15 @@ namespace aspect
         else
           // see if this is a time step where regular refinement is necessary, but only
           // if the previous rule wasn't triggered
-          if ((parameters.adaptive_refinement_interval > 0)
+          if (
+              (timestep_number > 0
+              &&
+              (parameters.adaptive_refinement_interval > 0)
               &&
               (timestep_number % parameters.adaptive_refinement_interval == 0))
+              ||
+              (timestep_number==0 && parameters.adaptive_refinement_interval == 1)
+              )
             refine_mesh (max_refinement_level);
 
         // every n time steps output a summary of the current
