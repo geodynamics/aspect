@@ -315,7 +315,6 @@ subsection Model settings
   set Prescribed velocity boundary indicators =
 
   # H0
-  set Radiogenic heating rate                 = 0e0
 
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is tangential and unrestrained, i.e., where no external forces
