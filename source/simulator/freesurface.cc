@@ -166,124 +166,117 @@ namespace aspect
   {
     // TODO: should we use the extrapolated solution?
 
-
-//    std::pair<double, Point<dim> > corrections = free_surface_determine_mesh_corrections();
-//     double patch = corrections.first;
-//     Point<dim> centroid = corrections.second;
-
-     //stuff for iterating over the mesh
-     QGauss<dim-1> face_quadrature(free_surface_fe.degree+1);
-     UpdateFlags update_flags = UpdateFlags(update_values | update_normal_vectors | update_JxW_values);
-     FEFaceValues<dim> fs_fe_face_values (sim.mapping, free_surface_fe, face_quadrature, update_flags);
-     FEFaceValues<dim> fe_face_values (sim.mapping, sim.finite_element, face_quadrature, update_flags);
-     const unsigned int n_face_q_points = fe_face_values.n_quadrature_points,
+    //stuff for iterating over the mesh
+    QGauss<dim-1> face_quadrature(free_surface_fe.degree+1);
+    UpdateFlags update_flags = UpdateFlags(update_values | update_normal_vectors | update_JxW_values);
+    FEFaceValues<dim> fs_fe_face_values (sim.mapping, free_surface_fe, face_quadrature, update_flags);
+    FEFaceValues<dim> fe_face_values (sim.mapping, sim.finite_element, face_quadrature, update_flags);
+    const unsigned int n_face_q_points = fe_face_values.n_quadrature_points,
                         dofs_per_cell = fs_fe_face_values.dofs_per_cell;
 
-     //stuff for assembling system
-     std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
-     Vector<double> cell_vector (dofs_per_cell);
-     FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
+    //stuff for assembling system
+    std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+    Vector<double> cell_vector (dofs_per_cell);
+    FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
-     //stuff for getting the velocity values
-     std::vector<Tensor<1,dim> > velocity_values(n_face_q_points);
+    //stuff for getting the velocity values
+    std::vector<Tensor<1,dim> > velocity_values(n_face_q_points);
 
-     //set up constraints
-     ConstraintMatrix mass_matrix_constraints(mesh_locally_relevant);
-     DoFTools::make_hanging_node_constraints(free_surface_dof_handler, mass_matrix_constraints);
+    //set up constraints
+    ConstraintMatrix mass_matrix_constraints(mesh_locally_relevant);
+    DoFTools::make_hanging_node_constraints(free_surface_dof_handler, mass_matrix_constraints);
 
-     typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
-     periodic_boundary_pairs pbp = sim.geometry_model->get_periodic_boundary_pairs();
-     for(periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
-       DoFTools::make_periodicity_constraints(free_surface_dof_handler,
-           (*p).first.first, (*p).first.second, (*p).second, mass_matrix_constraints);
+    typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
+    periodic_boundary_pairs pbp = sim.geometry_model->get_periodic_boundary_pairs();
+    for(periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
+      DoFTools::make_periodicity_constraints(free_surface_dof_handler,
+          (*p).first.first, (*p).first.second, (*p).second, mass_matrix_constraints);
 
-     mass_matrix_constraints.close();
+    mass_matrix_constraints.close();
 
-     //set up the matrix
-     LinearAlgebra::SparseMatrix mass_matrix;
+    //set up the matrix
+    LinearAlgebra::SparseMatrix mass_matrix;
 #ifdef USE_PETSC
-      CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
+    CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
 
 #else
-      TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,mesh_locally_owned,
+    TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,mesh_locally_owned,
                                             sim.mpi_communicator);
 #endif
-     DoFTools::make_sparsity_pattern (free_surface_dof_handler, sp, mass_matrix_constraints, false,
+    DoFTools::make_sparsity_pattern (free_surface_dof_handler, sp, mass_matrix_constraints, false,
                                       Utilities::MPI::this_mpi_process(sim.mpi_communicator));
 #ifdef USE_PETSC
-      SparsityTools::distribute_sparsity_pattern(sp,
-                                                 free_surface_dof_handler.n_locally_owned_dofs_per_processor(),
-                                                 sim.mpi_communicator, mesh_locally_relevant);
+    SparsityTools::distribute_sparsity_pattern(sp,
+                                               free_surface_dof_handler.n_locally_owned_dofs_per_processor(),
+                                               sim.mpi_communicator, mesh_locally_relevant);
 
-      sp.compress();
-
-      mass_matrix.reinit (mesh_locally_owned, mesh_locally_owned, sp, sim.mpi_communicator);
+    sp.compress();
+    mass_matrix.reinit (mesh_locally_owned, mesh_locally_owned, sp, sim.mpi_communicator);
 #else
-      sp.compress();
-
-      mass_matrix.reinit (sp);
+    sp.compress();
+    mass_matrix.reinit (sp);
 #endif
 
 
-     FEValuesExtractors::Vector extract_vel(0);
+    FEValuesExtractors::Vector extract_vel(0);
 
-     //make distributed vectors.
-     LinearAlgebra::Vector rhs, dist_solution;
-     rhs.reinit(mesh_locally_owned, sim.mpi_communicator);
-     dist_solution.reinit(mesh_locally_owned, sim.mpi_communicator);
+    //make distributed vectors.
+    LinearAlgebra::Vector rhs, dist_solution;
+    rhs.reinit(mesh_locally_owned, sim.mpi_communicator);
+    dist_solution.reinit(mesh_locally_owned, sim.mpi_communicator);
 
-     typename DoFHandler<dim>::active_cell_iterator
-     cell = sim.dof_handler.begin_active(), endc= sim.dof_handler.end();
-     typename DoFHandler<dim>::active_cell_iterator
-     fscell = free_surface_dof_handler.begin_active();
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = sim.dof_handler.begin_active(), endc= sim.dof_handler.end();
+    typename DoFHandler<dim>::active_cell_iterator
+    fscell = free_surface_dof_handler.begin_active();
 
-     for (; cell!=endc; ++cell, ++fscell)
-       if (cell->at_boundary() && cell->is_locally_owned())
-         for(unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
-           if( cell->face(face_no)->at_boundary() &&
-             ((sim.parameters.free_surface_boundary_indicators.find(cell->face(face_no)->boundary_indicator())
-                != sim.parameters.free_surface_boundary_indicators.end())))
-           {
-             fscell->get_dof_indices (cell_dof_indices);
-             fs_fe_face_values.reinit (fscell, face_no);
-             fe_face_values.reinit (cell, face_no);
-             fe_face_values[sim.introspection.extractors.velocities].get_function_values(sim.solution, velocity_values);
+    for (; cell!=endc; ++cell, ++fscell)
+      if (cell->at_boundary() && cell->is_locally_owned())
+        for(unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+          if( cell->face(face_no)->at_boundary() &&
+            ((sim.parameters.free_surface_boundary_indicators.find(cell->face(face_no)->boundary_indicator())
+               != sim.parameters.free_surface_boundary_indicators.end())))
+          {
+            fscell->get_dof_indices (cell_dof_indices);
+            fs_fe_face_values.reinit (fscell, face_no);
+            fe_face_values.reinit (cell, face_no);
+            fe_face_values[sim.introspection.extractors.velocities].get_function_values(sim.solution, velocity_values);
 
-             cell_vector = 0;
-             cell_matrix = 0;
-             for (unsigned int point=0; point<n_face_q_points; ++point)
-               for (unsigned int i=0; i<dofs_per_cell; ++i)
-               {
-                 for (unsigned int j=0; j<dofs_per_cell; ++j)
-                 {
-                       cell_matrix(i,j) += (fs_fe_face_values[extract_vel].value(j,point) *
-                           fs_fe_face_values[extract_vel].value(i,point) ) *
-                           fs_fe_face_values.JxW(point);
-                 }
+            cell_vector = 0;
+            cell_matrix = 0;
+            for (unsigned int point=0; point<n_face_q_points; ++point)
+              for (unsigned int i=0; i<dofs_per_cell; ++i)
+              {
+                for (unsigned int j=0; j<dofs_per_cell; ++j)
+                {
+                   cell_matrix(i,j) += (fs_fe_face_values[extract_vel].value(j,point) *
+                       fs_fe_face_values[extract_vel].value(i,point) ) *
+                       fs_fe_face_values.JxW(point);
+                }
 
-                 cell_vector(i) += (fs_fe_face_values[extract_vel].value(i,point) *
-                     fs_fe_face_values.normal_vector(point) ) *
-                                   (velocity_values[point]*fs_fe_face_values.normal_vector(point)) *
-                                   fs_fe_face_values.JxW(point);
-               }
+                cell_vector(i) += (fs_fe_face_values[extract_vel].value(i,point) *
+                    fs_fe_face_values.normal_vector(point) ) *
+                                 (velocity_values[point]*fs_fe_face_values.normal_vector(point)) *
+                                 fs_fe_face_values.JxW(point);
+              }
 
-             mass_matrix_constraints.distribute_local_to_global (cell_matrix, cell_vector,
-                                                          cell_dof_indices, mass_matrix, rhs, false);
-           }
+            mass_matrix_constraints.distribute_local_to_global (cell_matrix, cell_vector,
+                                                         cell_dof_indices, mass_matrix, rhs, false);
+          }
 
-     rhs.compress (VectorOperation::add);
-     mass_matrix.compress(VectorOperation::add);
+    rhs.compress (VectorOperation::add);
+    mass_matrix.compress(VectorOperation::add);
 
-     LinearAlgebra::PreconditionILU preconditioner_mass;
-     preconditioner_mass.initialize(mass_matrix);
+    LinearAlgebra::PreconditionILU preconditioner_mass;
+    preconditioner_mass.initialize(mass_matrix);
 
-     SolverControl solver_control(5*rhs.size(), 1e-7*rhs.l2_norm());
-     SolverCG<LinearAlgebra::Vector> cg(solver_control);
-     cg.solve (mass_matrix, dist_solution, rhs, preconditioner_mass);
-     sim.pcout << "\t\tsolved, its = " << solver_control.last_step() << std::endl;
+    SolverControl solver_control(5*rhs.size(), 1e-7*rhs.l2_norm());
+    SolverCG<LinearAlgebra::Vector> cg(solver_control);
+    cg.solve (mass_matrix, dist_solution, rhs, preconditioner_mass);
+    sim.pcout << "\t\tsolved, its = " << solver_control.last_step() << std::endl;
 
-     mass_matrix_constraints.distribute (dist_solution);
-     output = dist_solution;
+    mass_matrix_constraints.distribute (dist_solution);
+    output = dist_solution;
   }
 
 
