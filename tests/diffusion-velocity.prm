@@ -304,7 +304,6 @@ subsection Model settings
   set Include shear heating                   = false # default: true
 
   # H0
-  set Radiogenic heating rate                 = 0
 
   # A comma separated list of integers denoting those boundaries on which the
   # temperature is fixed and described by the boundary temperature object

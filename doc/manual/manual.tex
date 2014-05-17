@@ -2872,7 +2872,6 @@ subsection Model settings
   # want to use any of these options here:
   set Include adiabatic heating               = false % \index[prmindex]{Include adiabatic heating} \index[prmindexfull]{Model settings!Include adiabatic heating} %
   set Include shear heating                   = false % \index[prmindex]{Include shear heating} \index[prmindexfull]{Model settings!Include shear heating} %
-  set Radiogenic heating rate                 = 0 % \index[prmindex]{Radiogenic heating rate} \index[prmindexfull]{Model settings!Radiogenic heating rate} %
 end
 
 
@@ -4761,11 +4760,11 @@ computed quantity.}
 There are two issues one should notice here.
 The more obvious one is that the flux from the mantle to the air is consistently
 higher than the heat flux from core to mantle. Since we have no radiogenic
-heating switched on (see the \texttt{Radiogenic heating rate}
-\index[prmindex]{Radiogenic heating rate}
-\index[prmindexfull]{Model settings!Radiogenic heating rate}
-parameter in the \texttt{Model settings} section of the input file; see also
-Section~\ref{parameters:Model_20settings}), in the long run the heat output
+heating model selected (see the \texttt{Model name}
+\index[prmindex]{Model name}
+\index[prmindexfull]{Heating model!Model name}
+parameter in the \texttt{Heating model} section of the input file; see also
+Section~\ref{parameters:Heating_20model}), in the long run the heat output
 of the mantle must equal the input, unless is cools. Our misconception was that
 after the 800 million year transition, we believed that we had reached a steady
 state where the average temperature remains constant and convection simply
@@ -5044,9 +5043,9 @@ release of heat due to radioactive decay is $7.4\cdot 10^{-12}$ W/kg. Taking a
 density of $3300\; \text{kg}/\text{m}^3$ and a volume of $10^{12}\; \text{m}^3$
 would yield roughly $2.4\cdot 10^{13}$ W of heat produced. This back of the
 envelope calculation lies within the uncertain range stated above.}
-Our model does not include radiogenic heating (though \aspect{} has a parameter
-\texttt{Radiogenic heating rate} to switch this on, see
-Section~\ref{parameters:Model_20settings}) but we can compare what the model
+Our model does not include radiogenic heating (though \aspect{} has a number of 
+\texttt{Heating models} to switch this on, see 
+Section~\ref{parameters:Heating_20model}) but we can compare what the model
 gives us in terms of heat flux through the inner and outer boundaries of our
 shell geometry. This is shown in the left panel of
 Fig.~\ref{fig:shell-simple-3d-eval} where we plot the heat flux through
@@ -7090,6 +7089,11 @@ instead of the evaluate() function discussed above. They are now a deprecated
 way of implementing a material model. You can get your old model working
 by deriving from InterfaceCompatibility instead of Interface.
 
+\subsubsection{Heating models}
+\label{sec:heating-models}
+
+
+\marginpar{To be written}
 
 
 \subsubsection{Geometry models}

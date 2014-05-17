@@ -98,6 +98,7 @@ namespace aspect
 
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
     material_model (MaterialModel::create_material_model<dim>(prm)),
+    heating_model (HeatingModel::create_heating_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     boundary_temperature (BoundaryTemperature::create_boundary_temperature<dim>(prm)),
     // create a boundary composition model, but only if we actually need
@@ -218,6 +219,8 @@ namespace aspect
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(geometry_model.get()))
       sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(material_model.get()))
+      sim->initialize (*this);
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(heating_model.get()))
       sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(gravity_model.get()))
       sim->initialize (*this);
@@ -547,6 +550,7 @@ namespace aspect
     // notify different system components that we started the next time step
     material_model->update();
     gravity_model->update();
+    heating_model->update();
   }
 
 
