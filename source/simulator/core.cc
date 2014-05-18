@@ -233,7 +233,7 @@ namespace aspect
       {
         AssertThrow( parameters.nonlinear_solver == NonlinearSolver::IMPES,
                      ExcMessage("The free surface scheme is only implemented for the IMPES solver") );
-        free_surface = std_cxx1x::shared_ptr<FreeSurfaceHandler>( new FreeSurfaceHandler( *this, prm ) );
+        free_surface.reset( new FreeSurfaceHandler( *this, prm ) );
       }
 
     adiabatic_conditions.reset(new AdiabaticConditions<dim> (*geometry_model,
