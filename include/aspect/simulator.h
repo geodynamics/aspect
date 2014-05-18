@@ -1293,72 +1293,173 @@ namespace aspect
        * @}
        */
 
+      /**
+       * A member class that isolates the functions and variables that deal with the
+       * free surface implementation.  If there are no free surface boundary indicators,
+       * then there is no instantiation of this class at all.
+       */
       class FreeSurfaceHandler
       {
         public: 
-          //initialize the FreeSurfaceHandler
+          /**
+           * Initialize the free surface handler, allowing it to read in relevant parameters
+           * as well as giving it a reference to the Simulator that owns it, since it needs
+           * to make fairly extensive changes to the internals of the simulator.
+           */
           FreeSurfaceHandler(Simulator<dim> &, ParameterHandler &prm);
           
-          //The main execution step for free surface stuff.  Calls most of the private member functions
+          /**
+           * The main execution step for the free surface implementation.  This computes the 
+           * motion of the free surface, moves the boundary nodes accordingly, redistributes
+           * the internal nodes in order to preserve mesh regularity, and calculates the
+           * Arbitrary-Lagrangian-Eulerian correction terms for advected quantities.
+           */
           void execute();
 
-          //Setting up degrees of freedom for the free surface stuff.  Does nothing if there is no free surface
+          /**
+           * Allocates and sets up the members of the FreeSurfaceHandler.  This is called
+           * by Simulator<dim>::setup_dofs()
+           */
           void setup_dofs();
 
-          //Enforce the mesh displacement.  Called in execute(), and also called after redistributing mesh
+          /**
+           * Loop over all the mesh vertices and move them so that they are in the positions
+           * determined by the free surface implementation.  Called in execute(), 
+           * and also called after redistributing mesh so that the other processes know
+           * what has happened to that part of the mesh.
+           */
           void displace_mesh();
 
-          //Apply stabilization to a cell of the system matrix.  Called during assemly of the system
+          /**
+           * Apply stabilization to a cell of the system matrix.  The stabilization is only
+           * added to cells on a free surface.  The scheme is based on that of Kaus et. al.,
+           * 2010.  Called during assemly of the system matrix.
+           */
           void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
                 FullMatrix<double> &local_matrix);
 
-          //Declare parameters and parse parameters for free surface handling
+          /**
+           * Declare parameters for the free surface handling.
+           */
           static
           void declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Parse parameters for the free surface handling.
+           */
           void parse_parameters (ParameterHandler &prm);
 
         private:
-          //Setup boundary conditions and mesh constraints for the solution of the elliptic problem
+          /**
+           * Set the boundary conditions for the solution of the elliptic problem, which
+           * computes the displacements of the internal vertices so that the mesh does
+           * not become too distored due to motion of the free surface.  Velocities of
+           * vertices on the free surface are set to be the normal of the Stokes velocity 
+           * solution projected onto that surface.  Velocities of vertices on free-slip
+           * boundaries are constrained to be tangential to those boundaries.  Velocities
+           * of vertices on no-slip boundaries are set to be zero.  
+           */
           void make_constraints ();
 
-          //Project the velocity solution onto the free surface.  Called by make_constraints()
+          /**
+           * Project the normal part of the Stokes velocity solution onto the free surface.
+           * Called by make_constraints()
+           */
           void project_normal_velocity_onto_boundary (LinearAlgebra::Vector &output);
            
-          //Actually do the solution of the elliptic problem
+          /**
+           * Actually solve the elliptic problem for the mesh velocitiy.  Just solves a
+           * vector Laplacian equation.
+           */
           void solve_elliptic_problem ();
 
-          //Determine the actual mesh motion required by the solution of solve_elliptic_problem()
+          /**
+           * From the mesh velocity called in FreeSurfaceHandler::solve_elliptic_problem()
+           * we calculate the mesh displacement with mesh_velocity*time_step.  This function
+           * also interpolates the mesh velocity onto the finite element space of the 
+           * Stokes velocity system so that it can be used for ALE corrections.
+           */
           void calculate_mesh_displacement ();
 
-          Simulator<dim> &sim;  //reference to the simulator class to which the handler belongs
+          /**
+           * Reference to the Simulator object to which a FreeSurfaceHandler instance belongs
+           */
+          Simulator<dim> &sim; 
 
+          /**
+           * Finite element for the free surface implementation.  Should be Q1
+           */
           const FESystem<dim>                                       free_surface_fe;
+
+          /**
+           * DoFHanlder for the free surface implementation
+           */
           DoFHandler<dim>                                           free_surface_dof_handler;
 
+          /**
+           * Stabilization parameter for the free surface.  Should be between zero and one.
+           * A value of zero means no stabilization.  See Kaus et. al. 2010 for more details.  
+           */
           double free_surface_theta;
 
-
+          /**
+           * BlockVector which stores the mesh velocity interpolated onto the Stokes velocity
+           * finite element space.  This is used for ALE corrections.
+           */
           LinearAlgebra::BlockVector mesh_velocity;
+
+          /**
+           * BlockVector which stores the old mesh velocity interpolated onto the Stokes velocity
+           * finite element space.
+           */
           LinearAlgebra::BlockVector old_mesh_velocity;
 
+          /**
+           * Vector for storing the positions of the mesh vertices.  This vector is updated
+           * by FreeSurfaceHandler::calculate_mesh_displacement(), and is quite important
+           * for making sure the mesh stays the same shape upon redistribution of the system.
+           */
           LinearAlgebra::Vector mesh_vertices;
-          LinearAlgebra::Vector mesh_vertex_velocity;
-          LinearAlgebra::SparseMatrix mesh_matrix;
-          LinearAlgebra::Vector mesh_rhs;
 
+          /**
+           * The solution of FreeSurfaceHandler::solve_elliptic_problem().  
+           */
+          LinearAlgebra::Vector mesh_vertex_velocity;
+
+          /**
+           * The matrix for solving the elliptic problem for moving the internal vertices.
+           */
+          LinearAlgebra::SparseMatrix mesh_matrix;
+
+          /**
+           * IndexSet for the locally owned DoFs for the mesh system
+           */
           IndexSet mesh_locally_owned;
+
+          /**
+           * IndexSet for the locally relevant DoFs for the mesh system
+           */
           IndexSet mesh_locally_relevant;
 
+          /**
+           * Storage for the mesh constraints for solving the elliptic problem
+           */
           ConstraintMatrix mesh_constraints;
 
 
           friend class Simulator<dim>;
       };
+
+      /**
+       * Shared pointer for an instance of the FreeSurfaceHandler.
+       * this way, if we do not need the machinery for doing free
+       * surface stuff, we do not even allocate it.
+       */
       std_cxx1x::shared_ptr<FreeSurfaceHandler> free_surface;
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;
-      friend class FreeSurfaceHandler;
+      friend class FreeSurfaceHandler;  //FreeSurfaceHandler needs access to the internals of the Simulator
   };
 }
 
