@@ -32,7 +32,6 @@ end
 subsection Model settings
   set Prescribed velocity boundary indicators = 1:gplates
   set Tangential velocity boundary indicators = 0
-  set Prescribed velocity boundary indicators =
 
   set Fixed temperature boundary indicators   = 0,1
 
