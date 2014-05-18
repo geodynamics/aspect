@@ -154,9 +154,10 @@ namespace aspect
     // first do some error checking for the parameters we got
     {
       // make sure velocity boundary indicators don't appear in multiple lists
-      std::set<types::boundary_id> boundary_indicator_lists[3]
+      std::set<types::boundary_id> boundary_indicator_lists[4]
         = { parameters.zero_velocity_boundary_indicators,
             parameters.tangential_velocity_boundary_indicators,
+            parameters.free_surface_boundary_indicators,
             std::set<types::boundary_id>()
           };
 
@@ -164,7 +165,7 @@ namespace aspect
            p = parameters.prescribed_velocity_boundary_indicators.begin();
            p != parameters.prescribed_velocity_boundary_indicators.end();
            ++p)
-        boundary_indicator_lists[2].insert (p->first);
+        boundary_indicator_lists[3].insert (p->first);
 
       // for each combination of boundary indicator lists, make sure that the
       // intersection is empty
