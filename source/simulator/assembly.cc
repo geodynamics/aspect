@@ -1039,6 +1039,13 @@ namespace aspect
 #endif
 
     Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1));
+    /*  The stabilization term for the free surface (Kaus et. al., 2010)
+     *  makes changes to the system matrix which are of the same form as
+     *  boundary stresses.  If these stresses are not also added to the
+     *  system_preconditioner_matrix, then  if fails to be very good as a 
+     *  preconditioner.  Instead, we just pass the system_matrix to the
+     *  AMG precondition initialization so that it builds the preconditioner
+     *  directly from that. */
     if (parameters.free_surface_enabled)
       Amg_preconditioner->initialize (system_matrix.block(0,0),
                                     Amg_data);
