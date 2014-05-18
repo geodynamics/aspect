@@ -267,7 +267,7 @@ namespace aspect
     rhs.compress (VectorOperation::add);
     mass_matrix.compress(VectorOperation::add);
 
-    LinearAlgebra::PreconditionILU preconditioner_mass;
+    LinearAlgebra::PreconditionJacobi preconditioner_mass;
     preconditioner_mass.initialize(mass_matrix);
 
     SolverControl solver_control(5*rhs.size(), 1e-7*rhs.l2_norm());

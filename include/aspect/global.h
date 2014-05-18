@@ -122,6 +122,12 @@ namespace aspect
      */
     typedef PETScWrappers::PreconditionBlockJacobi PreconditionILU;
 
+    /**
+     * Typedef for the Jacobi preconditioner used for free surface
+     * velocity projection.
+     */
+    typedef PETScWrappers::PreconditionJacobi PreconditionJacobi;
+
     typedef LinearAlgebraPETSc::MPI::CompressedBlockSparsityPattern CompressedBlockSparsityPattern;
 
 #else
@@ -164,6 +170,13 @@ namespace aspect
      * other blocks of the system matrix.
      */
     typedef TrilinosWrappers::PreconditionILU PreconditionILU;
+
+    /**
+     * Typedef for the Jacobi preconditioner used for free surface
+     * velocity projection.
+     */
+    typedef TrilinosWrappers::PreconditionJacobi PreconditionJacobi;
+    
 #endif
   }
 }
