@@ -279,14 +279,13 @@ namespace aspect
         initialize (const GeometryModel::Interface<dim> &geometry_model);
 
         /**
-         * A function that is called at the beginning of each time step to
-         * indicate what the model time is for which the boundary values will
-         * next be evaluated. Also loads the next velocity files if necessary
-         * and outputs a warning if the end of the set of velocity files if
+         * A function that is called at the beginning of each time step.
+         * For the current plugin, this function loads the next velocity files if necessary
+         * and outputs a warning if the end of the set of velocity files is
          * reached.
          */
         void
-        set_current_time (const double time);
+        update ();
 
         /**
          * Declare the parameters this class takes through input files.

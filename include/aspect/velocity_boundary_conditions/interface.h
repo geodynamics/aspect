@@ -65,10 +65,8 @@ namespace aspect
         initialize (const GeometryModel::Interface<dim> &geometry_model);
 
         /**
-         * A function that is called at the beginning of each time step to
-         * indicate what the model time is for which the boundary values will
-         * next be evaluated. The default implementation of the function will
-         * simply record the time in the current_time member variable, but
+         * A function that is called at the beginning of each time step.
+         * The default implementation of the function does nothing, but
          * derived classes that need more elaborate setups for a given time
          * step may overload the function.
          *
@@ -79,7 +77,7 @@ namespace aspect
          */
         virtual
         void
-        set_current_time (const double time);
+        update ();
 
         /**
          * Return the boundary velocity as a function of position.
@@ -113,13 +111,6 @@ namespace aspect
          * Pointer to the geometry object in use.
          */
         const GeometryModel::Interface<dim> *geometry_model;
-
-        /**
-         * A variable that stores the current time of the simulation. Derived
-         * classes can query this variable. It is set at the beginning of each
-         * time step.
-         */
-        double current_time;
     };
 
 
