@@ -850,7 +850,6 @@ namespace aspect
     }
     constraints.close();
 
-
     // finally initialize vectors, matrices, etc.
 
     setup_system_matrix (introspection.index_sets.system_partitioning);
