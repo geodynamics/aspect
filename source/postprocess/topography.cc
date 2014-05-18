@@ -52,14 +52,6 @@ namespace aspect
         vertical_gravity = true;
         relevant_boundary = (dim == 2 ? 3 : 5);
       }
-      else if(GeometryModel::ReboundBox<dim> *gm = dynamic_cast<GeometryModel::ReboundBox<dim> *>
-                                             (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
-      {
-        Point<dim> extents = gm->get_extents();
-        reference_height = extents[dim-1];
-        vertical_gravity = true;
-        relevant_boundary = (dim == 2 ? 3 : 5);
-      }
       else if(GeometryModel::Sphere<dim> *gm = dynamic_cast<GeometryModel::Sphere<dim> *>
                                              (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
       {
@@ -79,11 +71,6 @@ namespace aspect
         Assert(false, ExcMessage("The topography postprocessor does not recognize the geometry model."
                                  "Consider using a box, a spherical shell, or a sphere.") );
       }
-
-      //some additional output which we will not use
-      //const std::string file_name = this->get_output_directory()+"topography.txt";
-      //std::ofstream topo_file (file_name.c_str(), std::ofstream::app);
-
 
       //get maximum surface topography
       typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = this->get_triangulation().begin_active(), 
@@ -106,10 +93,7 @@ namespace aspect
                 if ( topography < local_min_height)
                   local_min_height = topography;
 
-//                topo_file<<std::setprecision(15)<<this->get_timestep_number()<<"\t"<<cell->face(face_no)->vertex(v)<<"\t"<<topography<<std::endl;
               }
-
-//      topo_file.close();
 
       double max_topography = Utilities::MPI::max(local_max_height, this->get_mpi_communicator());
       double min_topography = -Utilities::MPI::max(-local_min_height, this->get_mpi_communicator());
