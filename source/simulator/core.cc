@@ -98,6 +98,7 @@ namespace aspect
 
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
     material_model (MaterialModel::create_material_model<dim>(prm)),
+    heating_model (HeatingModel::create_heating_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     boundary_temperature (BoundaryTemperature::create_boundary_temperature<dim>(prm)),
     // create a boundary composition model, but only if we actually need
@@ -221,6 +222,8 @@ namespace aspect
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(geometry_model.get()))
       sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(material_model.get()))
+      sim->initialize (*this);
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(heating_model.get()))
       sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(gravity_model.get()))
       sim->initialize (*this);
@@ -558,6 +561,7 @@ namespace aspect
     // notify different system components that we started the next time step
     material_model->update();
     gravity_model->update();
+    heating_model->update();
   }
 
 
@@ -1479,13 +1483,16 @@ namespace aspect
         else
           // see if this is a time step where regular refinement is necessary, but only
           // if the previous rule wasn't triggered
-          if ((timestep_number > 0)
+          if (
+              (timestep_number > 0
               &&
               (parameters.adaptive_refinement_interval > 0)
               &&
               (timestep_number % parameters.adaptive_refinement_interval == 0))
+              ||
+              (timestep_number==0 && parameters.adaptive_refinement_interval == 1)
+              )
             refine_mesh (max_refinement_level);
-
 
         // every n time steps output a summary of the current
         // timing information
