@@ -123,7 +123,9 @@ namespace aspect
                     Triangulation<dim>::smoothing_on_coarsening),
                    parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning),
 
-    mapping (parameters.free_surface_enabled?1:4),
+    //Fourth order mapping doesn't really make sense for free surface calculations, since we detatch the
+    //boundary indicators anyways.
+    mapping (parameters.free_surface_enabled?1:4),   
 
     // define the finite element. obviously, what we do here needs
     // to match the data we provide in the Introspection class
@@ -146,7 +148,6 @@ namespace aspect
 
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true)
-
   {
     computing_timer.enter_section("Initialization");
 
