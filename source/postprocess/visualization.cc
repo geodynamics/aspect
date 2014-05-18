@@ -150,7 +150,6 @@ namespace aspect
                                 interpretation);
 
 
-
       // then for each additional selected output variable
       // add the computed quantity as well. keep a list of
       // pointers to data vectors created by cell data visualization
