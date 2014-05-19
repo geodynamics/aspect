@@ -333,33 +333,33 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of densities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If one value is given, then all use the same value");
+                             "If only one value is given, then all use the same value.  Units: $kg / m^3$");
           prm.declare_entry ("Viscosities", "1.e21",
                              Patterns::List(Patterns::Double(0)),
                              "List of viscosities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If one value is given, then all use the same value");
+                             "If only one value is given, then all use the same value. Units: $Pa s$");
           prm.declare_entry ("Thermal expansivities", "4.e-5",
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal expansivities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If one value is given, then all use the same value");
+                             "If only one value is given, then all use the same value. Units: $1/K$");
           prm.declare_entry ("Specific heats", "1250.",
                              Patterns::List(Patterns::Double(0)),
                              "List of specific heats for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If one value is given, then all use the same value");
+                             "If only one value is given, then all use the same value. Units: $J /kg /K$");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal conductivities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If one value is given, then all use the same value");
+                             "If only one value is given, then all use the same value. Units: $W/m/K$ ");
           prm.declare_entry("Viscosity averaging scheme", "Harmonic",
                              Patterns::Selection("Arithmetic|Harmonic|Geometric|Maximum composition"),
                              "When more than one compositional field is present at a point "
                              "with different viscosities, we need to come up with an average "
                              "viscosity at that point.  Select a weighted harmonic, arithmetic, "
-                             "geometric, or maximum composition");
+                             "geometric, or maximum composition.");
         }
         prm.leave_subsection();
       }
