@@ -403,7 +403,12 @@ namespace aspect
        */
       const std::set<types::boundary_id> &
       get_fixed_temperature_boundary_indicators () const;
-
+      
+      /**
+       * Return a pointer to the heating model.
+       */
+      const HeatingModel::Interface<dim> &
+      get_heating_model () const;
 
       /**
        * A convenience function that copies the values of the compositional
