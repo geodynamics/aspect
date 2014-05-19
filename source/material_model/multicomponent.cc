@@ -79,7 +79,7 @@ namespace aspect
       std::vector<double> volume_fractions(this->n_compositional_fields() + 1);
       compute_volume_fractions( composition, volume_fractions);
 
-      switch (ViscosityAveraging)
+      switch (viscosity_averaging)
         {
           case arithmetic:
             {
@@ -389,13 +389,13 @@ namespace aspect
           reference_T                = prm.get_double ("Reference temperature");
  
           if (prm.get ("Viscosity averaging scheme") == "Harmonic")
-            ViscosityAveraging = harmonic; 
+            viscosity_averaging = harmonic; 
           else if (prm.get ("Viscosity averaging scheme") == "Arithmetic")
-            ViscosityAveraging = arithmetic; 
+            viscosity_averaging = arithmetic; 
           else if (prm.get ("Viscosity averaging scheme") == "Geometric")
-            ViscosityAveraging = geometric; 
+            viscosity_averaging = geometric; 
           else if (prm.get ("Viscosity averaging scheme") == "Maximum composition")
-            ViscosityAveraging = maximum_composition; 
+            viscosity_averaging = maximum_composition; 
 
           std::vector<double> x_values;
 

@@ -188,7 +188,7 @@ namespace aspect
             arithmetic,
             geometric,
             maximum_composition
-        } ViscosityAveraging;
+        } viscosity_averaging;
 
         /**
          * Vector for field densities.
