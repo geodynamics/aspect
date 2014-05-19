@@ -237,6 +237,8 @@ namespace aspect
       {
         AssertThrow( parameters.nonlinear_solver == NonlinearSolver::IMPES,
                      ExcMessage("The free surface scheme is only implemented for the IMPES solver") );
+        //Pressure normalization doesn't really make sense with a free surface, and if we do
+        //use it, we can run into problems with geometry_model->depth().
         AssertThrow ( parameters.pressure_normalization == "no", 
                       ExcMessage("The free surface scheme can only be used with no pressure normalization") );
         free_surface.reset( new FreeSurfaceHandler( *this, prm ) );
@@ -1137,6 +1139,10 @@ namespace aspect
       {
         case NonlinearSolver::IMPES:
         {
+          //We do the free surface execution at the beginning of the timestep for a specific reason.
+          //The time step size is calculated AFTER the whole solve_timestep() function.  If we call
+          //free_surface_execute() after the Stokes solve, it will be before we know what the appropriate
+          //time step to take is, and we will timestep the boundary incorrectly.
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 
