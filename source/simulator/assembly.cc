@@ -1568,6 +1568,7 @@ namespace aspect
             *
             (density_c_P + latent_heat_LHS);
 
+        AssertThrow(density_c_P + latent_heat_LHS, ExcMessage("mass matrix must be positive"));
 
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
         const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
