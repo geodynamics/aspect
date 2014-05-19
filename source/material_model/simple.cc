@@ -35,7 +35,7 @@ namespace aspect
     Simple<dim>::
     viscosity (const double temperature,
                const double,
-               const std::vector<double> &composition,       /*composition*/
+               const std::vector<double> &composition,
                const SymmetricTensor<2,dim> &,
                const Point<dim> &) const
     {
