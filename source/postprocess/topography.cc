@@ -21,7 +21,6 @@
 
 #include <aspect/postprocess/topography.h>
 
-#include <aspect/geometry_model/rebound.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/spherical_shell.h>
