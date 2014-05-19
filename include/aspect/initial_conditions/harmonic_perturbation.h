@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: spherical_shell.h 853 2012-03-24 21:52:36Z bangerth $  */
 
 
 #ifndef __aspect__initial_conditions_harmonic_perturbation_h

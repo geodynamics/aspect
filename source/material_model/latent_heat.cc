@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: simple.cc 1328 2012-10-25 13:24:16Z bangerth $  */
 
 
 #include <aspect/material_model/latent_heat.h>
