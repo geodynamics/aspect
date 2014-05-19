@@ -191,27 +191,27 @@ namespace aspect
         } viscosity_averaging;
 
         /**
-         * Vector for field densities.
+         * Vector for field densities, read from parameter file .
          */
         std::vector<double> densities;
 
         /**
-         * Vector for field viscosities.
+         * Vector for field viscosities, read from parameter file.
          */
         std::vector<double> viscosities;
 
         /**
-         * Vector for field thermal expnsivities.
+         * Vector for field thermal expnsivities, read from parameter file.
          */
         std::vector<double> thermal_expansivities;
 
         /**
-         * Vector for field thermal conductivities.
+         * Vector for field thermal conductivities, read from parameter file.
          */
         std::vector<double> thermal_conductivities;
 
         /**
-         * Vector for field specific heats.
+         * Vector for field specific heats, read from parameter file.
          */
         std::vector<double> specific_heats;
     };
