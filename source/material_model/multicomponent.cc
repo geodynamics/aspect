@@ -406,7 +406,7 @@ namespace aspect
           if(x_values.size() == 1) 
             densities.assign( n_fields , x_values[0]);
           else
-            densities.assign(x_values.begin(), x_values.end());
+            densities = x_values;
 
           //Parse viscosities
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Viscosities")));
@@ -415,7 +415,7 @@ namespace aspect
           if(x_values.size() == 1) 
             viscosities.assign( n_fields , x_values[0]);
           else
-            viscosities.assign(x_values.begin(), x_values.end());
+            viscosities = x_values;
 
           //Parse thermal conductivities
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Thermal conductivities")));
@@ -424,7 +424,7 @@ namespace aspect
           if(x_values.size() == 1) 
             thermal_conductivities.assign( n_fields , x_values[0]);
           else
-            thermal_conductivities.assign(x_values.begin(), x_values.end());
+            thermal_conductivities = x_values;
  
           //Parse thermal expansivities
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Thermal expansivities")));
@@ -433,7 +433,7 @@ namespace aspect
           if(x_values.size() == 1) 
             thermal_expansivities.assign( n_fields , x_values[0]);
           else
-            thermal_expansivities.assign(x_values.begin(), x_values.end());
+            thermal_expansivities = x_values;
 
           //Parse specific heats
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Specific heats")));
@@ -442,7 +442,7 @@ namespace aspect
           if(x_values.size() == 1) 
             specific_heats.assign( n_fields , x_values[0]);
           else
-            specific_heats.assign(x_values.begin(), x_values.end());
+            specific_heats = x_values;
         }
         prm.leave_subsection();
       }
@@ -458,8 +458,8 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(Multicomponent,
                                    "multicomponent",
-                                   "'Multicomponent model'.  This model is for use with an arbitrary number of"
-                                   "compositional fields, where each field may have completely different material"
+                                   "This model is for use with an arbitrary number of compositional"
+                                   "fields, where each field may have completely different material"
                                    "parameters.  Within each field, however, the material behaviour is very simple,"
                                    "with constant material coefficients.  When more than one field is present, the"
                                    "material properties are averaged arithmetically.  An exception is the viscosity,"
