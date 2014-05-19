@@ -458,12 +458,14 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(Multicomponent,
                                    "multicomponent",
-                                   "This model is for use with an arbitrary number of compositional"
-                                   "fields, where each field may have completely different material"
-                                   "parameters.  Within each field, however, the material behaviour is very simple,"
-                                   "with constant material coefficients.  When more than one field is present, the"
-                                   "material properties are averaged arithmetically.  An exception is the viscosity,"
-                                   "where the averaging should make more of a difference.  For this, the user selects"
-                                   "between arithmetic, harmonic, geometric, or maximum composition averaging.")
+                                   "This model is for use with an arbitrary number of compositional fields, where each field"
+                                   " represents a rock type which can have completely different properties from the others."
+                                   " However, each rock type itself has constant material properties.  The value of the "
+                                   " compositional field is interpreed as a volume fraction. If the sum of the fields is"
+                                   " greater than one, they are renormalized.  If it is less than one, material properties "
+                                   " for ``background mantle'' make up the rest. When more than one field is present, the"
+                                   " material properties are averaged arithmetically.  An exception is the viscosity,"
+                                   " where the averaging should make more of a difference.  For this, the user selects"
+                                   " between arithmetic, harmonic, geometric, or maximum composition averaging.")
   }
 }
