@@ -54,7 +54,7 @@ namespace aspect
                        "In fact, file names that are do not contain any directory "
                        "information (i.e., only the name of a file such as <myplugin.so> "
                        "will not be found if they are not located in one of the directories "
-                       "listed in the LD_LIBRARY_PATH environment variable. In order "
+                       "listed in the \\texttt{LD\\_LIBRARY\\_PATH} environment variable. In order "
                        "to load a library in the current directory, use <./myplugin.so> "
                        "instead."
                        "\n\n"
