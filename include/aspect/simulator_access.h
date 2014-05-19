@@ -187,6 +187,12 @@ namespace aspect
       get_adiabatic_surface_temperature () const;
 
       /**
+       * Return the adiabatic surface pressure.
+       */
+      double
+      get_surface_pressure () const;
+
+      /**
        * Return whether things like velocities should be converted from the
        * seconds in the MKS system to years. The value of this flag is set by
        * the corresponding entry in the input parameter file.
