@@ -5,7 +5,6 @@
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 1.5e-9
-set Output directory                       = output
 set Adiabatic surface temperature          = 1200
 
 
@@ -25,7 +24,6 @@ subsection Geometry model
   subsection Spherical shell
     set Inner radius  = 1700000
     set Outer radius  = 3385000
-    #set Opening angle = 90
   end
 end
 
