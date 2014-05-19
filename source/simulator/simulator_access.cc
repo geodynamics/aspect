@@ -160,6 +160,13 @@ namespace aspect
   }
 
   template <int dim>
+  double
+  SimulatorAccess<dim>::get_surface_pressure () const
+  {
+    return simulator->parameters.surface_pressure;
+  }
+
+  template <int dim>
   void
   SimulatorAccess<dim>::get_refinement_criteria (Vector<float> &estimated_error_per_cell) const
   {
