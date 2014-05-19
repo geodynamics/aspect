@@ -67,7 +67,7 @@ namespace aspect
       }
       else
       {
-        Assert(false, ExcMessage("The topography postprocessor does not recognize the geometry model."
+        AssertThrow(false, ExcMessage("The topography postprocessor does not recognize the geometry model."
                                  "Consider using a box, a spherical shell, or a sphere.") );
       }
 
