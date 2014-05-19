@@ -5,6 +5,12 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li>New: There is now a mesh refinement criterium that checks the mesh
+ * always has a minimum refinement level determined by a function given in the
+ * input file. 
+ * <br>
+ * (Juliane Dannberg, 2014/05/19)
+ *
  * <li>New: There is a new plugin architecture for heating models that
  * allows for plugins defining the radiogenic heating rate in dependency
  * of temperature, pressure, composition, position and time. This introduces
