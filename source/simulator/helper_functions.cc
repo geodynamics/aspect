@@ -535,11 +535,6 @@ namespace aspect
     if (parameters.pressure_normalization == "no")
       return;
 
-    // TODO: pressure normalization currently does not work if velocity and
-    // pressure are in the same block.
-    Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-        ExcNotImplemented());
-
     double my_pressure = 0.0;
     double my_area = 0.0;
     if (parameters.pressure_normalization == "surface")
@@ -636,7 +631,42 @@ namespace aspect
     distributed_vector = vector;
 
     if (parameters.use_locally_conservative_discretization == false)
-      distributed_vector.block(introspection.block_indices.pressure).add(pressure_adjustment);
+      {
+        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+          distributed_vector.block(introspection.block_indices.pressure).add(pressure_adjustment);
+        else
+          {
+            // velocity and pressure are in the same block, so we have to modify the values manually
+            std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+            typename DoFHandler<dim>::active_cell_iterator
+            cell = dof_handler.begin_active(),
+            endc = dof_handler.end();
+            for (; cell != endc; ++cell)
+              if (cell->is_locally_owned())
+                {
+                  // identify the first pressure dof
+                  cell->get_dof_indices (local_dof_indices);
+                  for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
+                  {
+                      unsigned int support_point_index
+                          = finite_element.component_to_system_index(introspection.component_indices.pressure,
+                                                                                             /*dof index within component=*/ j);
+
+                  // make sure that this DoF is really owned by the current processor
+                  // and that it is in fact a pressure dof
+                  Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[support_point_index]),
+                          ExcInternalError());
+
+                  Assert (introspection.block_indices.velocities == introspection.block_indices.pressure
+                      || local_dof_indices[support_point_index] >= vector.block(0).size(),
+                          ExcInternalError());
+
+                  // then adjust its value
+                  distributed_vector(local_dof_indices[support_point_index]) += pressure_adjustment;
+                  }
+                }
+          }
+      }
     else
       {
         // this case is a bit more complicated: if the condition above is false
@@ -668,7 +698,9 @@ namespace aspect
               // and that it is in fact a pressure dof
               Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[first_pressure_dof]),
                       ExcInternalError());
-              Assert (local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
+
+              Assert (introspection.block_indices.velocities == introspection.block_indices.pressure
+                  || local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
                       ExcInternalError());
 
               // then adjust its value
