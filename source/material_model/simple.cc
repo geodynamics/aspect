@@ -40,10 +40,13 @@ namespace aspect
                const Point<dim> &) const
     {
       const double delta_temp = temperature-reference_T;
-      double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
-
-      if (std::isnan(temperature_dependence))
-        temperature_dependence = 1.0;
+      const double temperature_dependence = (reference_T > 0
+                                             ?
+                                             std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),
+                                                               1e2),
+                                                      1e-2)
+                                             :
+                                             1.0);
 
       double composition_dependence = 1.0;
       if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
@@ -324,9 +327,15 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(Simple,
                                    "simple",
-                                   "A simple material model that has constant values "
-                                   "for all coefficients but the density and viscosity. "
-                                   "This model uses the formulation that assumes an incompressible"
+                                   "A material model that has constant values "
+                                   "for all coefficients but the density and viscosity. The defaults for all "
+                                   "coefficients are chosen to be similar to what is believed to be correct "
+                                   "for Earth's mantle."
+                                   "\n\n"
+                                   "This model uses the following set of coefficients: "
+                                   "\\begin{align}"
+                                   "\\end{align}"
+                                   "This model uses the formulation that assumes an incompressible "
                                    " medium despite the fact that the density follows the law "
                                    "$\\rho(T)=\\rho_0(1-\\beta(T-T_{\\text{ref}})$. "
                                    "The temperature dependency of viscosity is "
