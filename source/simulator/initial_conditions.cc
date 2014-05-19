@@ -180,6 +180,9 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::compute_initial_pressure_field ()
   {
+    // Note that this code will overwrite the velocity solution with 0 if
+    // velocity and pressure are in the same block.
+
     // we'd like to interpolate the initial pressure onto the pressure
     // variable but that's a bit involved because the pressure may either
     // be an FE_Q (for which we can interpolate) or an FE_DGP (for which
@@ -207,7 +210,7 @@ namespace aspect
                                                                                std_cxx1x::cref (*adiabatic_conditions),
                                                                                std_cxx1x::_1),
                                                                                dim,
-                                                                               dim+2+parameters.n_compositional_fields),
+                                                                               introspection.n_components),
                                   system_tmp);
 
         // we may have hanging nodes, so apply constraints
@@ -281,9 +284,9 @@ namespace aspect
                     // for all other variables so that the whole thing remains
                     // invertible
                     for (unsigned int j=0; j<dofs_per_cell; ++j)
-                      if ((finite_element.system_to_component_index(i).first == dim)
+                      if ((finite_element.system_to_component_index(i).first == introspection.component_indices.pressure)
                           &&
-                          (finite_element.system_to_component_index(j).first == dim))
+                          (finite_element.system_to_component_index(j).first == introspection.component_indices.pressure))
                         local_mass_matrix(j,i) += (fe_values[introspection.extractors.pressure].value(i,point) *
                                                    fe_values[introspection.extractors.pressure].value(j,point) *
                                                    fe_values.JxW(point));

@@ -1308,9 +1308,9 @@ namespace aspect
 
               current_linearization_point.block(introspection.block_indices.velocities)
                 = solution.block(introspection.block_indices.velocities);
-              current_linearization_point.block(introspection.block_indices.pressure)
-                = solution.block(introspection.block_indices.pressure);
-
+              if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+                current_linearization_point.block(introspection.block_indices.pressure)
+                  = solution.block(introspection.block_indices.pressure);
 
               pcout << std::endl;
             }
