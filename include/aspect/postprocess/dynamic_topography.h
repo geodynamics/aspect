@@ -52,25 +52,25 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-         static
-         void
-         declare_parameters (ParameterHandler &prm);
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
 
-          /**
-           * Read the parameters this class declares from the parameter file. 
-           */
-          virtual
-          void
-          parse_parameters (ParameterHandler &prm);
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
 
-        private:
-          /**
-           * Parameters for anhydrous melting of peridotite after Katz, 2003
-           */
+      private:
+        /**
+         * Parameters for anhydrous melting of peridotite after Katz, 2003
+         */
 
-           //for the solidus temperature
-           bool Subtract_mean_DT;   // °C
-          
+        //for the solidus temperature
+        bool Subtract_mean_DT;   // °C
+
     };
   }
 }

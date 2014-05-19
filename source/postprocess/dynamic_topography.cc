@@ -51,7 +51,7 @@ namespace aspect
       // have a stream into which we write the data. the text stream is then
       // later sent to processor 0
       std::ostringstream output;
- 
+
       double integrated_topography = 0;
       double integrated_surface_area = 0;
 
@@ -65,22 +65,22 @@ namespace aspect
 
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
-           if (cell->at_boundary())            
+          if (cell->at_boundary())
+            {
+              // see if the cell is at the *top* boundary, not just any boundary
               {
-               // see if the cell is at the *top* boundary, not just any boundary
-               {
-               bool is_at_top = false;
-               for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                 if (cell->at_boundary(f))
-                   if (this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
-                     {
-                       is_at_top = true;
-                       break;
-                     }
+                bool is_at_top = false;
+                for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                  if (cell->at_boundary(f))
+                    if (this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
+                      {
+                        is_at_top = true;
+                        break;
+                      }
 
-               if (is_at_top == false)
-                 continue;
-               }  
+                if (is_at_top == false)
+                  continue;
+              }
               fe_values.reinit (cell);
 
               // get the various components of the solution, then
@@ -117,24 +117,24 @@ namespace aspect
                   const double viscosity = out.viscosities[q];
                   const double density   = out.densities[q];
 
-		  const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
-	          const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
+                  const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
+                  const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
 
-		  const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
+                  const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
                   const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
 
                   // Subtract the dynamic pressure
                   const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
                   const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
                   const double dynamic_topography = - sigma_rr / gravity.norm() / density;
-			
-		  integrated_topography += dynamic_topography * fe_values.JxW(q);
-		  integrated_surface_area += fe_values.JxW(q);
 
-		  stored_values.push_back (std::make_pair(location, dynamic_topography));
-                 }
+                  integrated_topography += dynamic_topography * fe_values.JxW(q);
+                  integrated_surface_area += fe_values.JxW(q);
+
+                  stored_values.push_back (std::make_pair(location, dynamic_topography));
+                }
             }
-         
+
       const double average_topography = Utilities::MPI::sum (integrated_topography,this->get_mpi_communicator()) / Utilities::MPI::sum (integrated_surface_area,this->get_mpi_communicator());
 
 
@@ -142,17 +142,17 @@ namespace aspect
       // if (DT_mean_switch == true) subtract the average dynamic topography,
       // otherwise leave as is
       for (unsigned int i=0; i<stored_values.size(); ++i)
-        { 
-     	   output << stored_values[i].first
-                  << ' '
-	          << stored_values[i].second - 
-                     (Subtract_mean_DT
-                      ?
-                      average_topography
-                      : 
-                      0.)
-	          << std::endl;
-         }
+        {
+          output << stored_values[i].first
+                 << ' '
+                 << stored_values[i].second -
+                 (Subtract_mean_DT
+                  ?
+                  average_topography
+                  :
+                  0.)
+                 << std::endl;
+        }
 
 
       const std::string filename = this->get_output_directory() +
@@ -206,9 +206,9 @@ namespace aspect
       return std::pair<std::string,std::string>("Writing dynamic topography:",
                                                 filename);
     }
-      
+
     template <int dim>
-    void 
+    void
     DynamicTopography<dim>::
     declare_parameters (ParameterHandler &prm)
     {
@@ -216,12 +216,12 @@ namespace aspect
       {
         prm.enter_subsection("Dynamic Topography");
         {
-           prm.declare_entry ("Subtract mean of dynamic topography", "false",
-                               Patterns::Bool (),
-                               "Option to remove the mean dynamic topography "
-                               "in the outputted data file (not visualization). "
-                               "'true' subtracts the mean, 'false' leaves "
-                               "the calculated dynamic topography as is. ");
+          prm.declare_entry ("Subtract mean of dynamic topography", "false",
+                             Patterns::Bool (),
+                             "Option to remove the mean dynamic topography "
+                             "in the outputted data file (not visualization). "
+                             "'true' subtracts the mean, 'false' leaves "
+                             "the calculated dynamic topography as is. ");
 
         }
         prm.leave_subsection();
@@ -230,20 +230,20 @@ namespace aspect
     }
 
     template <int dim>
-    void 
+    void
     DynamicTopography<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Dynamic Topography");
         {
-           Subtract_mean_DT              = prm.get_bool("Subtract mean of dynamic topography");
+          Subtract_mean_DT              = prm.get_bool("Subtract mean of dynamic topography");
         }
         prm.leave_subsection();
       }
       prm.leave_subsection();
     }
-    
+
   }
 }
 
