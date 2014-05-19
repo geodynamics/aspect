@@ -72,7 +72,7 @@ subsection Material model
     set Thermal conductivities = 4.7
     set Thermal expansivities = 4e-5
     set Viscosities = 1.e21, 1.e20, 1.e23, 1.e22
-    set Viscosity averaging scheme = Harmonic
+    set Viscosity averaging scheme = harmonic
   end
 end
 

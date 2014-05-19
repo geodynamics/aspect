@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/multicomponent.h>
+#include <aspect/simulator.h>
 #include <deal.II/base/parameter_handler.h>
 
 #include <numeric>
@@ -104,10 +105,15 @@ namespace aspect
             }
           case maximum_composition:
             {
-              unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(), 
-                                                              volume_fractions.end() )
-                                            - volume_fractions.begin());
+              const unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(), 
+                                      volume_fractions.end() )
+                                      - volume_fractions.begin());
               visc = viscosities[i];
+              break;
+            }
+          default:
+            {
+              AssertThrow( false, ExcNotImplemented() );
               break;
             }
         }
@@ -354,8 +360,8 @@ namespace aspect
                              "List of thermal conductivities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value. Units: $W/m/K$ ");
-          prm.declare_entry("Viscosity averaging scheme", "Harmonic",
-                             Patterns::Selection("Arithmetic|Harmonic|Geometric|Maximum composition"),
+          prm.declare_entry("Viscosity averaging scheme", "harmonic",
+                             Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
                              "When more than one compositional field is present at a point "
                              "with different viscosities, we need to come up with an average "
                              "viscosity at that point.  Select a weighted harmonic, arithmetic, "
