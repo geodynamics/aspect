@@ -123,6 +123,9 @@ namespace aspect
 
     if (funcs.size()>0)
       {
+        Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
+            ExcNotImplemented());
+
         net_rotations_translations.resize(funcs.size());
         for (unsigned int i=0; i<funcs.size(); ++i)
           {
@@ -149,7 +152,10 @@ namespace aspect
     if (parameters.nullspace_removal & NullspaceRemoval::net_rotation ||
         parameters.nullspace_removal & NullspaceRemoval::net_translation)
       {
-        for (unsigned int i=0; i<net_rotations_translations.size(); ++i)
+        Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
+            ExcNotImplemented());
+
+       for (unsigned int i=0; i<net_rotations_translations.size(); ++i)
           {
             // compute the magnitude of the solution vector in direction
             // of this null space vector and subtract the corresponding multiple
