@@ -1,0 +1,76 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 4,096 (on 6 levels)
+Number of degrees of freedom: 104,487 (33,410+4,257+16,705+16,705+16,705+16,705)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving composition system 1... 0 iterations.
+   Solving composition system 2... 0 iterations.
+   Solving composition system 3... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+6 iterations.
+
+Number of active cells: 1,204 (on 7 levels)
+Number of degrees of freedom: 32,247 (10,306+1,329+5,153+5,153+5,153+5,153)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving composition system 1... 0 iterations.
+   Solving composition system 2... 0 iterations.
+   Solving composition system 3... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+6 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-multicomponent_arithmetic/solution-00000
+
+*** Timestep 1:  t=59823.9 years
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 11 iterations.
+   Solving composition system 2... 15 iterations.
+   Solving composition system 3... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+
+*** Timestep 2:  t=124411 years
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 11 iterations.
+   Solving composition system 2... 11 iterations.
+   Solving composition system 3... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+3 iterations.
+
+   Postprocessing:
+
+Termination requested by criterion: end step
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      11.6s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         4 |      2.79s |        24% |
+| Assemble composition system     |        12 |      1.78s |        15% |
+| Assemble temperature system     |         4 |     0.731s |       6.3% |
+| Build Stokes preconditioner     |         4 |      2.74s |        24% |
+| Build composition preconditioner|        12 |     0.102s |      0.88% |
+| Build temperature preconditioner|         4 |    0.0329s |      0.28% |
+| Solve Stokes system             |         4 |      1.39s |        12% |
+| Solve composition system        |        12 |     0.055s |      0.48% |
+| Solve temperature system        |         4 |    0.0158s |      0.14% |
+| Initialization                  |         3 |     0.139s |       1.2% |
+| Postprocessing                  |         3 |      0.11s |      0.95% |
+| Refine mesh structure, part 1   |         1 |     0.714s |       6.2% |
+| Refine mesh structure, part 2   |         1 |   0.00474s |     0.041% |
+| Setup dof systems               |         2 |     0.802s |       6.9% |
++---------------------------------+-----------+------------+------------+
+
