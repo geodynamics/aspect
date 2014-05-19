@@ -5,6 +5,13 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li>New: The dynamic topography postprocessors now take into account
+ * (i) the dynamic pressure, (ii) effects due to compressibility, (iii)
+ * they now have the option to subtract the mean topography to ensure that
+ * the topography is, on average, zero.
+ * <br>
+ * (Jacqueline Austermann, 2014/05/19)
+ *
  * <li>New: There is a new plugin architecture for heating models that
  * allows for plugins defining the radiogenic heating rate in dependency
  * of temperature, pressure, composition, position and time. This introduces
