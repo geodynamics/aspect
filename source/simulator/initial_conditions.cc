@@ -209,7 +209,7 @@ namespace aspect
                                   VectorFunctionFromScalarFunctionObject<dim> (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
                                                                                std_cxx1x::cref (*adiabatic_conditions),
                                                                                std_cxx1x::_1),
-                                                                               dim,
+                                                                               introspection.component_indices.pressure,
                                                                                introspection.n_components),
                                   system_tmp);
 
