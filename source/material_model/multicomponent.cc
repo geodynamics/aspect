@@ -374,7 +374,7 @@ namespace aspect
     {
       //not pretty, but we need to get the number of compositional fields before
       //simulatoraccess has been initialized here...
-      int n_fields;
+      unsigned int n_fields;
       prm.enter_subsection ("Compositional fields");
         {
           n_fields = prm.get_integer ("Number of fields");
