@@ -98,7 +98,7 @@ namespace aspect
             const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
             const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
 
-            // Subtract the dynamic presure
+            // subtract the dynamic pressure
             const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
             const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
             const double dynamic_topography = -sigma_rr / gravity.norm() / density;
@@ -125,9 +125,12 @@ namespace aspect
                                                   "dynamic topography requires us to compute the stress tensor and "
                                                   "evaluate the component of it in the direction in which "
                                                   "gravity acts. In other words, we compute "
-                                                  "$\\sigma_{rr}={\\hat g}^T(2 * \\eta \\varepsilon(\\mathbf u))\\hat g - \\p$ "
+                                                  "$\\sigma_{rr}={\\hat g}^T(2 \\eta \\varepsilon(\\mathbf u)-\frac 13 (\\textrm{div}\;\\mathbf u)I)\\hat g - p_d$ "
                                                   "where $\\hat g = \\mathbf g/\\|\\mathbf g\\|$ is the direction of "
-                                                  "the gravity vector $\\mathbf g$. From this, the dynamic "
+                                                  "the gravity vector $\\mathbf g$ and $p_d=p-p_a$ is the dynamic "
+                                                  "pressure computed by subtracting the adiabatic pressure $p_a$ "
+                                                  "from the total pressure $p$ computed as part of the Stokes "
+                                                  "solve. From this, the dynamic "
                                                   "topography is computed using the formula "
                                                   "$h=\\frac{\\sigma_{rr}}{\\|\\mathbf g\\| \\rho}$ where $\\rho$ "
                                                   "is the density at the cell center."

@@ -138,8 +138,8 @@ namespace aspect
       const double average_topography = Utilities::MPI::sum (integrated_topography,this->get_mpi_communicator()) / Utilities::MPI::sum (integrated_surface_area,this->get_mpi_communicator());
 
 
-      // Write the solution in output file
-      // if (DT_mean_switch == true) susbtract the average dynamic topography,
+      // Write the solution to an output file
+      // if (DT_mean_switch == true) subtract the average dynamic topography,
       // otherwise leave as is
       for (unsigned int i=0; i<stored_values.size(); ++i)
         { 
@@ -256,17 +256,20 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(DynamicTopography,
                                   "dynamic topography",
                                   "A postprocessor that computes a measure of dynamic topography "
-                                  "based on the stress at the surface. The data is writte into a "
-                                  "file named 'dynamic_topography.NNNNN' in the output directory, "
+                                  "based on the stress at the surface. The data is written into a "
+                                  "file named 'dynamic\\_topography.NNNNN' in the output directory, "
                                   "where NNNNN is the number of the time step."
                                   "\n\n"
                                   "The exact approach works as follows: At the centers of all cells "
                                   "that sit along the top surface, we evaluate the stress and "
                                   "evaluate the component of it in the direction in which "
                                   "gravity acts. In other words, we compute "
-                                  "$\\sigma_{rr}={\\hat g}^T(2 \\eta \\varepsilon(\\mathbf u))\\hat g$ - \\p "
+                                  "$\\sigma_{rr}={\\hat g}^T(2 \\eta \\varepsilon(\\mathbf u)-\frac 13 (\\textrm{div}\;\\mathbf u)I)\\hat g - p_d$ "
                                   "where $\\hat g = \\mathbf g/\\|\\mathbf g\\|$ is the direction of "
-                                  "the gravity vector $\\mathbf g$. From this, the dynamic "
+                                  "the gravity vector $\\mathbf g$ and $p_d=p-p_a$ is the dynamic "
+                                  "pressure computed by subtracting the adiabatic pressure $p_a$ "
+                                  "from the total pressure $p$ computed as part of the Stokes "
+                                  "solve. From this, the dynamic "
                                   "topography is computed using the formula "
                                   "$h=\\frac{\\sigma_{rr}}{\\|\\mathbf g\\| \\rho}$ where $\\rho$ "
                                   "is the density at the cell center."
