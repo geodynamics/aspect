@@ -722,6 +722,11 @@ namespace aspect
     if (parameters.pressure_normalization == "no")
       return;
 
+    // TODO: pressure normalization currently does not work if velocity and
+    // pressure are in the same block.
+    Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
+        ExcNotImplemented());
+
     if (parameters.use_locally_conservative_discretization == false)
       vector.block (1).add (-1.0 * pressure_adjustment);
     else
@@ -777,6 +782,11 @@ namespace aspect
   {
     if (parameters.use_locally_conservative_discretization)
       AssertThrow(false, ExcNotImplemented());
+
+    // TODO: currently does not work if velocity and
+    // pressure are in the same block.
+    Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
+        ExcNotImplemented());
 
     if (do_pressure_rhs_compatibility_modification)
       {
