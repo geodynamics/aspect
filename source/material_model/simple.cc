@@ -249,18 +249,25 @@ namespace aspect
                              "Reference density $\\rho_0$. Units: $kg/m^3$.");
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
-                             "The reference temperature $T_0$. Units: $K$.");
+                             "The reference temperature $T_0$. The reference temperature is used "
+                             "in both the density and viscosity formulas. Units: $K$.");
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0),
-                             "The value of the constant viscosity. Units: $kg/m/s$.");
+                             "The value of the constant viscosity $\\eta_0$. This viscosity may be "
+                             "modified by both temperature and compositional dependencies. Units: $kg/m/s$.");
           prm.declare_entry ("Composition viscosity prefactor", "1.0",
                              Patterns::Double (0),
                              "A linear dependency of viscosity on the first compositional field. "
                              "Dimensionless prefactor. With a value of 1.0 (the default) the "
-                             "viscosity does not depend on the composition.");
+                             "viscosity does not depend on the composition. See the general documentation "
+                             "of this model for a formula that states the dependence of the "
+                             "viscosity on this factor, which is called $\\xi$ there.");
           prm.declare_entry ("Thermal viscosity exponent", "0.0",
                              Patterns::Double (0),
-                             "The temperature dependence of viscosity. Dimensionless exponent.");
+                             "The temperature dependence of viscosity. Dimensionless exponent. "
+                             "See the general documentation "
+                             "of this model for a formula that states the dependence of the "
+                             "viscosity on this factor, which is called $\\beta$ there.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
@@ -330,19 +337,48 @@ namespace aspect
                                    "A material model that has constant values "
                                    "for all coefficients but the density and viscosity. The defaults for all "
                                    "coefficients are chosen to be similar to what is believed to be correct "
-                                   "for Earth's mantle."
+                                   "for Earth's mantle. All of the values that define this model are read "
+                                   "from a section ``Material model/Simple model'' in the input file, see "
+                                   "Section~\\ref{parameters:Material_20model/Simple_20model}."
                                    "\n\n"
-                                   "This model uses the following set of coefficients: "
+                                   "This model uses the following set of equations for the two coefficients that "
+                                   "are non-constant: "
                                    "\\begin{align}"
+                                   "  \\eta(p,T,\\mathfrak c) &= \\tau(T) \\zeta(\\mathfrak c) \\eta_0, \\\\"
+                                   "  \\rho(p,T,\\mathfrak c) &= \\left(1-\\alpha (T-T_0)\\right)\\rho_0 + \\Delta\rho \\; c_0,"
                                    "\\end{align}"
-                                   "This model uses the formulation that assumes an incompressible "
-                                   " medium despite the fact that the density follows the law "
-                                   "$\\rho(T)=\\rho_0(1-\\beta(T-T_{\\text{ref}})$. "
-                                   "The temperature dependency of viscosity is "
-                                   " switched off by default and follows the formula "
-                                   "$\\eta(T)=\\eta_0 e^{\\eta_T \\cdot \\Delta T / T_{\\text{ref}})}$."
-                                   "The value for the components of this formula and additional "
-                                   "parameters are read from the parameter file in subsection "
-                                   "'Simple model'.")
+                                   "where $c_0$ is the first component of the compositional vector "
+                                   "$\\mathfrak c$ if the model uses compositional fields, or zero otherwise. "
+                                   "\n\n"
+                                   "The temperature pre-factor for the viscosity formula above is "
+                                   "defined as "
+                                   "\\begin{align}"
+                                   "  \\tau(T) &= H\\left(e^{\\beta (T-T_0)/T_0}\\right),"
+                                   "  \\qquad\\qquad H(x) = \\left\\{"
+                                   "                         \\begin{cases}"
+                                   "                            10^{-2} & \\text{if}\\; x<10^{-2}, \\\\"
+                                   "                            x & \\text{if}\\; 10^{-2}\\le x \\le 10^2, \\\\"
+                                   "                            10^{2} & \\text{if}\\; x>10^{2}, \\\\"
+                                   "                         \\end{cases}"
+                                   "                       \\right."
+                                   "\\end{align} "
+                                   "where $\\beta$ corresponds to the input parameter ``Thermal viscosity exponent'' "
+                                   "and $T_0$ to the parameter ``Reference temperature''. If you set $T_0=0$ "
+                                   "in the input file, the thermal pre-factor $\\tau(T)=1$."
+                                   "\n\n"
+                                   "The compositional pre-factor for the viscosity is defined as "
+                                   "\\begin{align}"
+                                   "  \\zeta(\\mathfrak c) &= \\xi^{c_0}"
+                                   "\\end{align} "
+                                   "if the model has compositional fields and equals one otherwise. $\\xi$ "
+                                   "corresponds to the parameter ``Composition viscosity prefactor'' in the "
+                                   "input file."
+                                   "\n\n"
+                                   "Finally, in the formula for the density, $\\Delta\\rho$ "
+                                   "corresponds to the parameter ``Density differential for compositional field 1''."
+                                   "\n\n"
+                                   "Note that this model uses the formulation that assumes an incompressible "
+                                   "medium despite the fact that the density follows the law "
+                                   "$\\rho(T)=\\rho_0(1-\\beta(T-T_{\\text{ref}})$. ")
   }
 }
