@@ -217,7 +217,7 @@ namespace aspect
       compute_volume_fractions( composition, volume_fractions);
       for(unsigned int i=0; i< volume_fractions.size(); ++i)
       {
-        //TODO not strictly correct if thermal expansivities are different, since we are interpreting
+        //not strictly correct if thermal expansivities are different, since we are interpreting
         //these compositions as volume fractions, but the error introduced should not be too bad.
         const double temperature_factor= (1.0 - thermal_expansivities[i] * (temperature - reference_T));
         rho += volume_fractions[i]*densities[i]*temperature_factor;
