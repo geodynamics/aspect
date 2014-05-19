@@ -146,7 +146,7 @@ namespace aspect
           output << stored_values[i].first
                  << ' '
                  << stored_values[i].second -
-                 (Subtract_mean_DT
+                 (subtract_mean_dyn_topography
                   ?
                   average_topography
                   :
@@ -237,7 +237,7 @@ namespace aspect
       {
         prm.enter_subsection("Dynamic Topography");
         {
-          Subtract_mean_DT              = prm.get_bool("Subtract mean of dynamic topography");
+          subtract_mean_dyn_topography              = prm.get_bool("Subtract mean of dynamic topography");
         }
         prm.leave_subsection();
       }
@@ -264,7 +264,7 @@ namespace aspect
                                   "that sit along the top surface, we evaluate the stress and "
                                   "evaluate the component of it in the direction in which "
                                   "gravity acts. In other words, we compute "
-                                  "$\\sigma_{rr}={\\hat g}^T(2 \\eta \\varepsilon(\\mathbf u)-\frac 13 (\\textrm{div}\;\\mathbf u)I)\\hat g - p_d$ "
+                                  "$\\sigma_{rr}={\\hat g}^T(2 \\eta \\varepsilon(\\mathbf u)-\frac 13 (\\textrm{div}\\;\\mathbf u)I)\\hat g - p_d$ "
                                   "where $\\hat g = \\mathbf g/\\|\\mathbf g\\|$ is the direction of "
                                   "the gravity vector $\\mathbf g$ and $p_d=p-p_a$ is the dynamic "
                                   "pressure computed by subtracting the adiabatic pressure $p_a$ "

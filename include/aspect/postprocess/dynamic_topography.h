@@ -65,12 +65,10 @@ namespace aspect
 
       private:
         /**
-         * Parameters for anhydrous melting of peridotite after Katz, 2003
+         * A parameter that we read from the input file that denotes
+         * whether we should subtract the mean topography or not.
          */
-
-        //for the solidus temperature
-        bool Subtract_mean_DT;   // °C
-
+        bool subtract_mean_dyn_topography;
     };
   }
 }
