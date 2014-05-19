@@ -5,6 +5,15 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> New: there is a new material model for having an arbitrary
+ * number of compositional fields with different material properties.
+ * Within each compositional field the material properties are constant,
+ * and when more than one field is present, arithmetic averaging is 
+ * employed.  For viscosity, the averaging may also be geometric,
+ * harmonic, or selecting the viscosity of the maximum composition.
+ * <br>
+ * (Ian Rose, 2014/05/19)
+ *
  * <li>New: There is a new plugin architecture for heating models that
  * allows for plugins defining the radiogenic heating rate in dependency
  * of temperature, pressure, composition, position and time. This introduces
