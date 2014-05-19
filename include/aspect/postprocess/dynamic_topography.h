@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
+/*  $Id: dynamic_topography.h 2505 2014-04-13 14:49:25Z heister $  */
 
 
 #ifndef __aspect__postprocess_surface_topography_h
@@ -47,6 +47,30 @@ namespace aspect
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
+
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+         static
+         void
+         declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file. 
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
+
+        private:
+          /**
+           * Parameters for anhydrous melting of peridotite after Katz, 2003
+           */
+
+           //for the solidus temperature
+           bool Subtract_mean_DT;   // °C
+          
     };
   }
 }

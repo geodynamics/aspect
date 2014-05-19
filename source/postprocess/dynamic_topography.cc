@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
+/*  $Id: dynamic_topography.cc 2515 2014-04-14 14:54:56Z heister $  */
 
 
 #include <aspect/postprocess/dynamic_topography.h>
@@ -25,7 +25,6 @@
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
-
 
 namespace aspect
 {
@@ -52,6 +51,11 @@ namespace aspect
       // have a stream into which we write the data. the text stream is then
       // later sent to processor 0
       std::ostringstream output;
+ 
+      double integrated_topography = 0;
+      double integrated_surface_area = 0;
+
+      std::vector<std::pair<Point<dim>,double> > stored_values;
 
       // loop over all of the surface cells and if one less than h/2 away from
       // the top surface, evaluate the stress at its center
@@ -61,9 +65,22 @@ namespace aspect
 
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
-          if (cell->at_boundary() &&
-              (this->get_geometry_model().depth (cell->center()) < cell->diameter()/2))
-            {
+           if (cell->at_boundary())            
+              {
+               // see if the cell is at the *top* boundary, not just any boundary
+               {
+               bool is_at_top = false;
+               for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                 if (cell->at_boundary(f))
+                   if (this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
+                     {
+                       is_at_top = true;
+                       break;
+                     }
+
+               if (is_at_top == false)
+                 continue;
+               }  
               fe_values.reinit (cell);
 
               // get the various components of the solution, then
@@ -74,6 +91,7 @@ namespace aspect
               .get_function_values (this->get_solution(), in.pressure);
               fe_values[this->introspection().extractors.velocities]
               .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
+
 
               in.position = fe_values.get_quadrature_points();
 
@@ -99,21 +117,43 @@ namespace aspect
                   const double viscosity = out.viscosities[q];
                   const double density   = out.densities[q];
 
-//TODO: We need to subtract 2/3*div(u) from the stress here in the compressible case
-                  const SymmetricTensor<2,dim> stress = 2 * viscosity * in.strain_rate[q];
+		  const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
+	          const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
 
-                  const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
+		  const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
                   const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
 
-                  const double sigma_rr           = gravity_direction * (stress * gravity_direction);
-                  const double dynamic_topography = -sigma_rr / gravity.norm() / density;
+                  // Subtract the dynamic pressure
+                  const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
+                  const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
+                  const double dynamic_topography = - sigma_rr / gravity.norm() / density;
+			
+		  integrated_topography += dynamic_topography * fe_values.JxW(q);
+		  integrated_surface_area += fe_values.JxW(q);
 
-                  output << location
-                         << ' '
-                         << dynamic_topography
-                         << std::endl;
-                }
+		  stored_values.push_back (std::make_pair(location, dynamic_topography));
+                 }
             }
+         
+      const double average_topography = Utilities::MPI::sum (integrated_topography,this->get_mpi_communicator()) / Utilities::MPI::sum (integrated_surface_area,this->get_mpi_communicator());
+
+
+      // Write the solution in output file
+      // if (DT_mean_switch == true) susbtract the average dynamic topography,
+      // otherwise leave as is
+      for (unsigned int i=0; i<stored_values.size(); ++i)
+        { 
+     	   output << stored_values[i].first
+                  << ' '
+	          << stored_values[i].second - 
+                     (Subtract_mean_DT
+                      ?
+                      average_topography
+                      : 
+                      0.)
+	          << std::endl;
+         }
+
 
       const std::string filename = this->get_output_directory() +
                                    "dynamic_topography." +
@@ -166,6 +206,44 @@ namespace aspect
       return std::pair<std::string,std::string>("Writing dynamic topography:",
                                                 filename);
     }
+      
+    template <int dim>
+    void 
+    DynamicTopography<dim>::
+    declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Dynamic Topography");
+        {
+           prm.declare_entry ("Subtract mean of dynamic topography", "false",
+                               Patterns::Bool (),
+                               "Option to remove the mean dynamic topography "
+                               "in the outputted data file (not visualization). "
+                               "'true' subtracts the mean, 'false' leaves "
+                               "the calculated dynamic topography as is. ");
+
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+    template <int dim>
+    void 
+    DynamicTopography<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Dynamic Topography");
+        {
+           Subtract_mean_DT              = prm.get_bool("Subtract mean of dynamic topography");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+    
   }
 }
 
@@ -186,7 +264,7 @@ namespace aspect
                                   "that sit along the top surface, we evaluate the stress and "
                                   "evaluate the component of it in the direction in which "
                                   "gravity acts. In other words, we compute "
-                                  "$\\sigma_{rr}={\\hat g}^T(2 \\eta \\varepsilon(\\mathbf u))\\hat g$ "
+                                  "$\\sigma_{rr}={\\hat g}^T(2 \\eta \\varepsilon(\\mathbf u))\\hat g$ - \\p "
                                   "where $\\hat g = \\mathbf g/\\|\\mathbf g\\|$ is the direction of "
                                   "the gravity vector $\\mathbf g$. From this, the dynamic "
                                   "topography is computed using the formula "
