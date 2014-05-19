@@ -32,15 +32,22 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A material model which is intended for use with multiple compositional fields.
-     * For each material parameter the user supplies a comma delimited list of length N+1,
+     * A material model which is intended for use with multiple compositional fields. 
+     * Each compositional field is meant to be a single rock type, where the value of the
+     * field at a point is interpreted to be a volume fraction of that rock type.  If the sum
+     * of the compositional field volume fractions is less than one, then the remainder of
+     * the volume is assumed to be ``background mantle''.  If the sum of the compositional
+     * field volume fractions is greater than one, then they are renormalized to sum to one 
+     * and there is no background mantle.
+     *
+     * For each material parameter the user supplies a comma delimited list of length N+1, where
      * N is the number of compositional fields.  The additional field corresponds to the value
      * for background mantle.  They should be ordered ``background, composition1, composition2...''
      *
      * If a single value is given, then all the compositional fields are given that value. 
      * Other lengths of lists are not allowed.  For a given compositional field the material 
      * parameters are treated as constant, except density, which varies linearly with temperature
-     * according to the thermal expansivity.. 
+     * according to the thermal expansivity.
      *
      * When more than one field is present at a point, they are averaged arithmetically.
      * An exception is viscosity, which may be averaged arithmetically, harmonically, geometrically,
