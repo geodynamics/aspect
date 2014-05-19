@@ -401,7 +401,7 @@ namespace aspect
 
           //Parse densities
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Densities")));
-          AssertThrow(x_values.size() == 1 || (x_values.size() == n_fields), 
+          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields), 
                       ExcMessage("Length of list must be either one, or n_compositional_fields+1"));
           if(x_values.size() == 1) 
             densities.assign( n_fields , x_values[0]);
@@ -410,7 +410,7 @@ namespace aspect
 
           //Parse viscosities
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Viscosities")));
-          AssertThrow(x_values.size() == 1 || (x_values.size() == n_fields), 
+          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields), 
                       ExcMessage("Length of list must be either one, or n_compositional_fields+1"));
           if(x_values.size() == 1) 
             viscosities.assign( n_fields , x_values[0]);
@@ -419,7 +419,7 @@ namespace aspect
 
           //Parse thermal conductivities
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Thermal conductivities")));
-          AssertThrow(x_values.size() == 1 || (x_values.size() == n_fields), 
+          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields), 
                       ExcMessage("Length of list must be either one, or n_compositional_fields+1"));
           if(x_values.size() == 1) 
             thermal_conductivities.assign( n_fields , x_values[0]);
@@ -428,7 +428,7 @@ namespace aspect
  
           //Parse thermal expansivities
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Thermal expansivities")));
-          AssertThrow(x_values.size() == 1 || (x_values.size() == n_fields), 
+          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields), 
                       ExcMessage("Length of list must be either one, or n_compositional_fields+1"));
           if(x_values.size() == 1) 
             thermal_expansivities.assign( n_fields , x_values[0]);
@@ -437,7 +437,7 @@ namespace aspect
 
           //Parse specific heats
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Specific heats")));
-          AssertThrow(x_values.size() == 1 || (x_values.size() == n_fields), 
+          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields), 
                       ExcMessage("Length of list must be either one, or n_compositional_fields+1"));
           if(x_values.size() == 1) 
             specific_heats.assign( n_fields , x_values[0]);
