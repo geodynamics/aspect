@@ -86,12 +86,13 @@ namespace aspect
                                                    fe_values.JxW(q);
               }
           }
-
+      // compute the global sums
       const double global_rad_velocity_square_integral
         = Utilities::MPI::sum (local_rad_velocity_square_integral, this->get_mpi_communicator());
       const double global_tan_velocity_square_integral
         = Utilities::MPI::sum (local_tan_velocity_square_integral, this->get_mpi_communicator());
 
+      // compute the final output by dividing by the volume over which we integrated
       const double rad_vrms = std::sqrt(global_rad_velocity_square_integral) /
                               std::sqrt(this->get_volume());
       const double tan_vrms = std::sqrt(global_tan_velocity_square_integral) /
