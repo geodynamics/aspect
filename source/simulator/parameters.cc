@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/simulator.h>
@@ -54,7 +53,7 @@ namespace aspect
                        "In fact, file names that are do not contain any directory "
                        "information (i.e., only the name of a file such as <myplugin.so> "
                        "will not be found if they are not located in one of the directories "
-                       "listed in the LD_LIBRARY_PATH environment variable. In order "
+                       "listed in the \\texttt{LD_LIBRARY_PATH} environment variable. In order "
                        "to load a library in the current directory, use <./myplugin.so> "
                        "instead."
                        "\n\n"
@@ -286,12 +285,6 @@ namespace aspect
                          "always be used but may be undesirable when comparing results with known "
                          "benchmarks that do not include this term in the temperature equation "
                          "or when dealing with a model without phase transitions.");
-      prm.declare_entry ("Radiogenic heating rate", "0e0",
-                         Patterns::Double (),
-                         "The rate of heating due to radioactive decay (or other bulk sources "
-                         "you may want to describe). This parameter corresponds to the variable "
-                         "$H$ in the temperature equation stated in the manual, and the heating "
-                         "term is $\rho H$. Units: W/kg.");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Integer(0)),
                          "A comma separated list of integers denoting those boundaries "
@@ -660,7 +653,6 @@ namespace aspect
       include_shear_heating = prm.get_bool ("Include shear heating");
       include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
       include_latent_heat = prm.get_bool ("Include latent heat");
-      radiogenic_heating_rate = prm.get_double ("Radiogenic heating rate");
 
       const std::vector<int> x_fixed_temperature_boundary_indicators
         = Utilities::string_to_int
@@ -822,6 +814,7 @@ namespace aspect
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);
     MaterialModel::declare_parameters<dim> (prm);
+    HeatingModel::declare_parameters<dim> (prm);
     GeometryModel::declare_parameters <dim>(prm);
     GravityModel::declare_parameters<dim> (prm);
     InitialConditions::declare_parameters<dim> (prm);

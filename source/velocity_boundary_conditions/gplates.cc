@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
  */
-/*  $Id$  */
 
 
 #include <aspect/global.h>
@@ -117,7 +116,7 @@ namespace aspect
       GPlatesLookup::fexists(const std::string &filename) const
       {
         std::ifstream ifile(filename.c_str());
-        return ifile;
+        return !(!ifile); // only in c++11 you can convert to bool directly
       }
 
       void
@@ -489,7 +488,7 @@ namespace aspect
     template <int dim>
     GPlates<dim>::GPlates ()
       :
-      current_time(0.0),
+      time_relative_to_vel_file_start_time(0.0),
       current_time_step(-2),
       velocity_file_start_time(0.0),
       time_step(0.0),
@@ -527,6 +526,8 @@ namespace aspect
       Assert((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model))->opening_angle()==360, ExcMessage("gplates velocity model just works for opening angle == 360"));
     }
 
+
+
     template <int dim>
     std::string
     GPlates<dim>::create_filename (const int timestep) const
@@ -540,13 +541,15 @@ namespace aspect
       return str_filename;
     }
 
+
     template <int dim>
     void
-    GPlates<dim>::set_current_time (const double time)
+    GPlates<dim>::update ()
     {
-      current_time = time - velocity_file_start_time;
-      const bool first_process = (Utilities::MPI::this_mpi_process (
-                                    this->get_mpi_communicator ())
+      Interface<dim>::update ();
+
+      time_relative_to_vel_file_start_time = this->get_time() - velocity_file_start_time;
+      const bool first_process = (Utilities::MPI::this_mpi_process (this->get_mpi_communicator ())
                                   == 0);
 
       // If the boundary condition is constant, switch off time_dependence end leave function.
@@ -562,17 +565,17 @@ namespace aspect
           return;
         }
 
-      if (time_dependent && (current_time >= 0.0))
+      if (time_dependent && (time_relative_to_vel_file_start_time >= 0.0))
         {
           if ((current_time_step < 0) && (first_process) && (dim == 2))
             lookup->screen_output<dim> (pointone, pointtwo);
 
-          if (static_cast<int> (current_time / time_step) > current_time_step)
+          if (static_cast<int> (time_relative_to_vel_file_start_time / time_step) > current_time_step)
             {
               update_velocity_data(first_process);
             }
 
-          time_weight = current_time / time_step - current_time_step;
+          time_weight = time_relative_to_vel_file_start_time / time_step - current_time_step;
 
           Assert ((0 <= time_weight) && (time_weight <= 1),
                   ExcMessage (
@@ -587,7 +590,7 @@ namespace aspect
 
       const int old_time_step = current_time_step;
       current_time_step =
-        static_cast<unsigned int> (current_time / time_step);
+        static_cast<unsigned int> (time_relative_to_vel_file_start_time / time_step);
       // Load next velocity file for interpolation
       // If the time step was large enough to move forward more
       // then one velocity file, we need to load both current files
@@ -663,7 +666,7 @@ namespace aspect
     GPlates<dim>::
     boundary_velocity (const Point<dim> &position) const
     {
-      if (current_time >= 0.0)
+      if (time_relative_to_vel_file_start_time >= 0.0)
         return lookup->surface_velocity(position,time_weight);
       else
         return Tensor<1,dim> ();

@@ -115,7 +115,6 @@ subsection Model settings
   set Include adiabatic heating               = false
   set Include shear heating                   = true
   set Prescribed velocity boundary indicators = 
-  set Radiogenic heating rate                 = 0e0
   set Tangential velocity boundary indicators = 1,2,3 # default: 
   set Zero velocity boundary indicators       = 0     # default: 
 end

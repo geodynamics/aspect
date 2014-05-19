@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: error_indicator.h 1491 2012-12-11 06:05:16Z bangerth $  */
 
 
 #ifndef __aspect__postprocess_visualization_artificial_viscosity_h

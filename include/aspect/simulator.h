@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #ifndef __aspect__simulator_h
@@ -43,6 +42,7 @@
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/heating_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
@@ -1182,6 +1182,7 @@ namespace aspect
        */
       const std::auto_ptr<GeometryModel::Interface<dim> >            geometry_model;
       const std::auto_ptr<MaterialModel::Interface<dim> >            material_model;
+      const std::auto_ptr<HeatingModel::Interface<dim> >             heating_model;
       const std::auto_ptr<GravityModel::Interface<dim> >             gravity_model;
       const std::auto_ptr<BoundaryTemperature::Interface<dim> >      boundary_temperature;
       const std::auto_ptr<BoundaryComposition::Interface<dim> >      boundary_composition;

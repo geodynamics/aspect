@@ -39,8 +39,43 @@ SET_IF_EMPTY(TEST_TIME_LIMIT 600)
 
 ADD_CUSTOM_TARGET(tests)
 
-SET_IF_EMPTY(DEAL_II_DIFF "$ENV{DEAL_II_DIFF}")
-SET_IF_EMPTY(DEAL_II_DIFF "numdiff -a 1e-6 -q -s \" \\t\\n:\"")
+#
+# We need a diff tool, preferably numdiff:
+#
+
+FIND_PROGRAM(DIFF_EXECUTABLE
+  NAMES diff
+  HINTS ${DIFF_DIR}
+  PATH_SUFFIXES bin
+  )
+
+FIND_PROGRAM(NUMDIFF_EXECUTABLE
+  NAMES numdiff
+  HINTS ${NUMDIFF_DIR}
+  PATH_SUFFIXES bin
+  )
+
+MARK_AS_ADVANCED(DIFF_EXECUTABLE NUMDIFF_EXECUTABLE)
+
+IF("${TEST_DIFF}" STREQUAL "")
+  #
+  # No TEST_DIFF is set, specify one:
+  #
+
+  IF(NOT NUMDIFF_EXECUTABLE MATCHES "-NOTFOUND")
+    SET(TEST_DIFF ${NUMDIFF_EXECUTABLE} -a 1e-6 -r 1e-8 -s ' \\t\\n:')
+    IF(DIFF_EXECUTABLE MATCHES "-NOTFOUND")
+      SET(DIFF_EXECUTABLE ${NUMDIFF_EXECUTABLE})
+    ENDIF()
+  ELSEIF(NOT DIFF_EXECUTABLE MATCHES "-NOTFOUND")
+    SET(TEST_DIFF ${DIFF_EXECUTABLE})
+  ELSE()
+    MESSAGE(FATAL_ERROR
+      "Could not find diff or numdiff. One of those are required for running the testsuite.\n"
+      "Please specify TEST_DIFF by hand."
+      )
+  ENDIF()
+ENDIF()
 
 
 FILE(GLOB _tests *.prm)
@@ -180,7 +215,7 @@ FOREACH(_test ${_tests})
     # create the target that compares the .notime with the saved file
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
       COMMAND
-	if (diff ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
+	if (${TEST_DIFF} ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
               ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
             > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff) \; then
           : \;

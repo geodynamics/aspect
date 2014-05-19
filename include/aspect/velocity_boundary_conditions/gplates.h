@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #ifndef __aspect__velocity_boundary_conditions_gplates_h
@@ -279,14 +278,13 @@ namespace aspect
         initialize (const GeometryModel::Interface<dim> &geometry_model);
 
         /**
-         * A function that is called at the beginning of each time step to
-         * indicate what the model time is for which the boundary values will
-         * next be evaluated. Also loads the next velocity files if necessary
-         * and outputs a warning if the end of the set of velocity files if
+         * A function that is called at the beginning of each time step.
+         * For the current plugin, this function loads the next velocity files if necessary
+         * and outputs a warning if the end of the set of velocity files is
          * reached.
          */
         void
-        set_current_time (const double time);
+        update ();
 
         /**
          * Declare the parameters this class takes through input files.
@@ -303,11 +301,10 @@ namespace aspect
 
       private:
         /**
-         * A variable that stores the current time of the simulation. Derived
-         * classes can query this variable. It is set at the beginning of each
-         * time step.
+         * A variable that stores the current time of the simulation, but relative
+         * to the velocity_file_start_time.
          */
-        double current_time;
+        double time_relative_to_vel_file_start_time;
 
         /**
          * A variable that stores the currently used velocity file of a

@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/simulator.h>
@@ -1283,6 +1282,10 @@ namespace aspect
     const double density              = material_model_outputs.densities[q];
     const double viscosity            = material_model_outputs.viscosities[q];
     const bool is_compressible        = material_model->is_compressible();
+    const double specific_radiogenic_heating_rate = heating_model->specific_heating_rate(material_model_inputs.temperature[q],
+                                                                                    material_model_inputs.pressure[q],
+                                                                                    material_model_inputs.composition[q],
+                                                                                    material_model_inputs.position[q]);
     const double compressibility      = (is_compressible
                                          ?
                                          material_model_outputs.compressibilities[q]
@@ -1294,7 +1297,7 @@ namespace aspect
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
     const double gamma
-      = (parameters.radiogenic_heating_rate * density
+      = (specific_radiogenic_heating_rate * density
          +
          // add the term 2*eta*(eps - 1/3*(tr eps)1):(eps - 1/3*(tr eps)1)
          //

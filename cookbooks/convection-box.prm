@@ -17,7 +17,7 @@ set Output directory                       = output
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain (for the current geometry, the
 # surface is defined as the top boundary).
-set Linear solver tolerance                = 1e-10
+set Linear solver tolerance                = 1e-15
 set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
@@ -108,7 +108,6 @@ subsection Model settings
   # want to use any of these options here:
   set Include adiabatic heating               = false
   set Include shear heating                   = false
-  set Radiogenic heating rate                 = 0
 end
 
 
