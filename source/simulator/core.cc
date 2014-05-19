@@ -998,6 +998,9 @@ namespace aspect
                                        parameters.refinement_fraction,
                                        parameters.coarsening_fraction);
 
+    mesh_refinement_manager.tag_additional_cells (max_grid_level);
+    
+    
     // limit maximum refinement level
     if (triangulation.n_levels() > max_grid_level)
       for (typename Triangulation<dim>::active_cell_iterator
