@@ -469,18 +469,58 @@ namespace aspect
     template <int dim>
     double
     Steinberger<dim>::
-    get_deltat (const Point<dim> &position) const
+    get_corrected_temperature (const double temperature,
+                               const double pressure,
+                               const Point<dim> &position) const
     {
-      if (!(&this->get_adiabatic_conditions()))
-        return 0.0;
+      if (!(&this->get_adiabatic_conditions())
+          || this->include_adiabatic_heating()
+          || compressible)
+        return temperature;
 
-      // We do not need a temperature correction in the compressible case
-      if (compressible)
-        return 0.0;
+      return temperature
+          + this->get_adiabatic_conditions().temperature(position)
+          - this->get_adiabatic_surface_temperature();
+    }
 
-      static const bool a = this->include_adiabatic_heating();
-      return a ? 0.0 : (this->get_adiabatic_conditions().temperature(position)
-                        - this->get_adiabatic_surface_temperature());
+
+
+    template <int dim>
+    double
+    Steinberger<dim>::
+    get_corrected_pressure (const double temperature,
+                            const double pressure,
+                            const Point<dim> &position) const
+    {
+      if (!(&this->get_adiabatic_conditions())
+          || compressible)
+        return pressure;
+
+      return this->get_adiabatic_conditions().pressure(position);
+    }
+
+    template <int dim>
+    double
+    Steinberger<dim>::
+    get_corrected_density (const double temperature,
+                           const double pressure,
+                           const std::vector<double> &compositional_fields,
+                           const Point<dim> &position) const
+    {
+      const double rho = get_density(temperature,pressure,compositional_fields,position);
+
+      const double depth_rho = get_density(this->get_adiabatic_conditions().temperature(position),
+                                           pressure,
+                                           compositional_fields,
+                                           position);
+
+      const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
+      const double surface_temperature = this->get_adiabatic_surface_temperature();
+      const double surface_pressure = this->get_surface_pressure();
+      const double surface_rho = get_density(surface_temperature,surface_pressure,compositional_fields,surface_point);
+
+      //Return the density scaled to an incompressible profile
+      return (rho / depth_rho) * surface_rho;
     }
 
 
@@ -524,28 +564,25 @@ namespace aspect
                    const std::vector<double> &compositional_fields,
                    const Point<dim> &position) const
     {
-      Assert ((n_material_data <= compositional_fields.size()) || (n_material_data == 1),
-              ExcMessage("There are more material files provided than compositional"
-                         " Fields. This can not be intended."));
       double cp = 0.0;
       if (!latent_heat)
         {
           if (n_material_data == 1)
-            cp = material_lookup[0]->specific_heat(temperature+get_deltat(position),pressure);
+            cp = material_lookup[0]->specific_heat(temperature,pressure);
           else
             {
               for (unsigned i = 0; i < n_material_data; i++)
-                cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature+get_deltat(position),pressure);
+                cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature,pressure);
             }
         }
       else
         {
           if (n_material_data == 1)
-            cp = material_lookup[0]->dHdT(temperature+get_deltat(position),pressure);
+            cp = material_lookup[0]->dHdT(temperature,pressure);
           else
             {
               for (unsigned i = 0; i < n_material_data; i++)
-                cp += compositional_fields[i] * material_lookup[i]->dHdT(temperature+get_deltat(position),pressure);
+                cp += compositional_fields[i] * material_lookup[i]->dHdT(temperature,pressure);
               cp = std::max(std::min(cp,6000.0),500.0);
             }
         }
@@ -570,30 +607,38 @@ namespace aspect
     template <int dim>
     double
     Steinberger<dim>::
+    get_density (const double temperature,
+             const double pressure,
+             const std::vector<double> &compositional_fields,
+             const Point<dim> &position) const
+    {
+      double rho = 0.0;
+      if (n_material_data == 1)
+        {
+          rho = material_lookup[0]->density(temperature,pressure);
+        }
+      else
+        {
+          for (unsigned i = 0; i < n_material_data; i++)
+            rho += compositional_fields[i] * material_lookup[i]->density(temperature,pressure);
+        }
+
+      return rho;
+    }
+
+    template <int dim>
+    double
+    Steinberger<dim>::
     density (const double temperature,
              const double pressure,
              const std::vector<double> &compositional_fields,
              const Point<dim> &position) const
     {
-      Assert ((n_material_data <= compositional_fields.size()) || (n_material_data == 1),
-              ExcMessage("There are more material files provided than compositional"
-                         " Fields. This can not be intended."));
-      double rho = 0.0;
-      if (n_material_data == 1)
-        {
-          // TODO: This is wrong for the incompressible case: The pressure in this case is not
-          // the real pressure necessary to look the density up in a material table (due to the
-          // missing depth dependency of density). Should use the adiabatic pressure instead, or
-          // even better the adiabatic pressure + the deviation of pressure from the lateral pressure
-          rho = material_lookup[0]->density(temperature+get_deltat(position),pressure);
-        }
+      if (compressible
+          || !(&this->get_adiabatic_conditions()))
+          return get_density(temperature,pressure,compositional_fields,position);
       else
-        {
-          for (unsigned i = 0; i < n_material_data; i++)
-            // TODO: Wrong. See above.
-            rho += compositional_fields[i] * material_lookup[i]->density(temperature+get_deltat(position),pressure);
-        }
-      return rho;
+        return get_corrected_density(temperature,pressure,compositional_fields,position);
     }
 
 
@@ -606,31 +651,26 @@ namespace aspect
                                    const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const
     {
-      Assert ((n_material_data <= compositional_fields.size()) || (n_material_data == 1),
-              ExcMessage("There are more material files provided than compositional"
-                         " Fields. This can not be intended."));
       double alpha = 0.0;
       if (!latent_heat)
         {
           if (n_material_data == 1)
-            // TODO: Wrong. See above
-            alpha = material_lookup[0]->thermal_expansivity(temperature+get_deltat(position),pressure);
+            alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
           else
             {
               for (unsigned i = 0; i < n_material_data; i++)
-                // TODO: Wrong. See above
-                alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature+get_deltat(position),pressure);
+                alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
             }
         }
       else
         {
           double dHdp = 0.0;
           if (n_material_data == 1)
-            dHdp += material_lookup[0]->dHdp(temperature+get_deltat(position),pressure);
+            dHdp += material_lookup[0]->dHdp(temperature,pressure);
           else
             {
               for (unsigned i = 0; i < n_material_data; i++)
-                dHdp += compositional_fields[i] * material_lookup[i]->dHdp(temperature+get_deltat(position),pressure);
+                dHdp += compositional_fields[i] * material_lookup[i]->dHdp(temperature,pressure);
             }
           alpha = (1 - density(temperature,pressure,compositional_fields,position) * dHdp) / temperature;
           alpha = std::max(std::min(alpha,1e-3),1e-5);
@@ -648,16 +688,18 @@ namespace aspect
                 const std::vector<double> &compositional_fields,
                 const Point<dim> &position) const
     {
-      Assert ((n_material_data <= compositional_fields.size()) || (n_material_data == 1),
-              ExcMessage("There are more material files provided than compositional"
-                         " Fields. This can not be intended."));
+      //this function is not called from evaluate() so we need to care about
+      //corrections for temperature and pressure
+      const double corrected_temperature = get_corrected_temperature(temperature,pressure,position);
+      const double corrected_pressure = get_corrected_pressure(temperature,pressure,position);
+
       double vp = 0.0;
       if (n_material_data == 1)
-        vp += material_lookup[0]->seismic_Vp(temperature+get_deltat(position),pressure);
+        vp += material_lookup[0]->seismic_Vp(corrected_temperature,corrected_pressure);
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
-            vp += compositional_fields[i] * material_lookup[i]->seismic_Vp(temperature+get_deltat(position),pressure);
+            vp += compositional_fields[i] * material_lookup[i]->seismic_Vp(corrected_temperature,corrected_pressure);
         }
       return vp;
     }
@@ -672,16 +714,19 @@ namespace aspect
                 const std::vector<double> &compositional_fields,
                 const Point<dim> &position) const
     {
-      Assert ((n_material_data <= compositional_fields.size()) || (n_material_data == 1),
-              ExcMessage("There are more material files provided than compositional"
-                         " Fields. This can not be intended."));
+      //this function is not called from evaluate() so we need to care about
+      //corrections for temperature and pressure
+      const double corrected_temperature = get_corrected_temperature(temperature,pressure,position);
+      const double corrected_pressure = get_corrected_pressure(temperature,pressure,position);
+
+
       double vs = 0.0;
       if (n_material_data == 1)
-        vs += material_lookup[0]->seismic_Vs(temperature+get_deltat(position),pressure);
+        vs += material_lookup[0]->seismic_Vs(corrected_temperature,corrected_pressure);
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
-            vs += compositional_fields[i] * material_lookup[i]->seismic_Vs(temperature+get_deltat(position),pressure);
+            vs += compositional_fields[i] * material_lookup[i]->seismic_Vs(corrected_temperature,corrected_pressure);
         }
       return vs;
     }
@@ -696,16 +741,16 @@ namespace aspect
                      const std::vector<double> &compositional_fields,
                      const Point<dim> &position) const
     {
-      Assert ((n_material_data <= compositional_fields.size()) || (n_material_data == 1),
-              ExcMessage("There are more material files provided than compositional"
-                         " Fields. This can not be intended."));
+      if (!compressible)
+        return 0.0;
+
       double dRhodp = 0.0;
       if (n_material_data == 1)
-        dRhodp += material_lookup[0]->dRhodp(temperature+get_deltat(position),pressure);
+        dRhodp += material_lookup[0]->dRhodp(temperature,pressure);
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
-            dRhodp += compositional_fields[i] * material_lookup[i]->dRhodp(temperature+get_deltat(position),pressure);
+            dRhodp += compositional_fields[i] * material_lookup[i]->dRhodp(temperature,pressure);
         }
       const double rho = density(temperature,pressure,compositional_fields,position);
       return (1/rho)*dRhodp;
@@ -793,6 +838,44 @@ namespace aspect
       return compressible;
     }
 
+    template <int dim>
+    void
+    Steinberger<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+                               typename Interface<dim>::MaterialModelOutputs &out) const
+    {
+
+      Assert ((n_material_data <= in.composition[0].size()) || (n_material_data == 1),
+              ExcMessage("There are more material files provided than compositional"
+                         " Fields. This can not be intended."));
+
+      for (unsigned int i=0; i < in.temperature.size(); ++i)
+        {
+          const double temperature = get_corrected_temperature(in.temperature[i],
+                                                  in.pressure[i],
+                                                  in.position[i]);
+          const double pressure    = get_corrected_pressure(in.temperature[i],
+                                               in.pressure[i],
+                                               in.position[i]);
+
+          /* We are only asked to give viscosities if strain_rate.size() > 0
+           * and we can only calculate it if adiabatic_conditions are available.
+           * Note that the used viscosity formulation needs the not
+           * corrected temperatures.
+           */
+          if (&this->get_adiabatic_conditions() && in.strain_rate.size())
+            out.viscosities[i]                    = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
+
+          out.densities[i]                      = density                       (temperature, pressure, in.composition[i], in.position[i]);
+          out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (temperature, pressure, in.composition[i], in.position[i]);
+          out.specific_heat[i]                  = specific_heat                 (temperature, pressure, in.composition[i], in.position[i]);
+          out.thermal_conductivities[i]         = thermal_conductivity          (temperature, pressure, in.composition[i], in.position[i]);
+          out.compressibilities[i]              = compressibility               (temperature, pressure, in.composition[i], in.position[i]);
+          out.entropy_derivative_pressure[i]    = 0;
+          out.entropy_derivative_temperature[i] = 0;
+          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+            out.reaction_terms[i][c]            = 0;
+        }
+    }
 
 
     template <int dim>

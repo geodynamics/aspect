@@ -48,7 +48,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Steinberger: public MaterialModel::InterfaceCompatibility<dim>, public ::aspect::SimulatorAccess<dim>
+    class Steinberger: public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
 
@@ -183,6 +183,16 @@ namespace aspect
          */
 
         /**
+         * Function to compute the material properties in @p out given the
+         * inputs in @p in. If MaterialModelInputs.strain_rate has the length
+         * 0, then the viscosity does not need to be computed.
+         */
+        virtual
+        void
+        evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+                 typename Interface<dim>::MaterialModelOutputs &out) const;
+
+        /**
          * @name Functions used in dealing with run-time parameters
          * @{
          */
@@ -213,7 +223,20 @@ namespace aspect
         unsigned int n_material_data;
         std::string radial_viscosity_file_name;
         std::string lateral_viscosity_file_name;
-        virtual double get_deltat (const Point<dim> &position) const;
+        virtual double get_corrected_temperature (const double temperature,
+                                                  const double pressure,
+                                                  const Point<dim> &position) const;
+        virtual double get_corrected_pressure (const double temperature,
+                                               const double pressure,
+                                               const Point<dim> &position) const;
+        virtual double get_density (const double temperature,
+                                               const double pressure,
+                                               const std::vector<double> &compositional_fields,
+                                               const Point<dim> &position) const;
+        virtual double get_corrected_density (const double temperature,
+                                               const double pressure,
+                                               const std::vector<double> &compositional_fields,
+                                               const Point<dim> &position) const;
 
         /**
          * Pointer to an object that reads and processes data we get from
