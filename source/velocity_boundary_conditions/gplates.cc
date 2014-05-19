@@ -117,7 +117,7 @@ namespace aspect
       GPlatesLookup::fexists(const std::string &filename) const
       {
         std::ifstream ifile(filename.c_str());
-        return ifile;
+        return !(!ifile); // only in c++11 you can convert to bool directly
       }
 
       void
