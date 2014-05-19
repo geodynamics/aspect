@@ -1038,8 +1038,11 @@ namespace aspect
     system_trans(dof_handler);
 
     std::vector<const LinearAlgebra::Vector *> x_fs_system (1);  //Outside of if statement for scoping reasons
+    //Hack alert: we need freesurface_trans in the function scope, but cannot pass it the free_surface_dof_handler
+    //if it is not allocated.  So if the free surface is not enabled, just pass the normal system dof_handler,
+    //but then never use this SolutionTransfer object.
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
-      freesurface_trans(free_surface->free_surface_dof_handler);
+      freesurface_trans(parameters.free_surface_enabled ? free_surface->free_surface_dof_handler : dof_handler);
     if(parameters.free_surface_enabled)
       x_fs_system[0] = &(free_surface->mesh_vertices);
 
