@@ -17,9 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-
-#include <aspect/geometry_model/rebound.h>
-
+#include <aspect/geometry_model/box.h>
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/tria_accessor.h>
@@ -31,6 +29,56 @@ namespace aspect
 {
   namespace GeometryModel
   {
+    /**
+     * A class deriving from Box<dim>, which changes the upper boundary 
+       with a sinusoidal perturbation of a given order and amplitude
+     */
+    template <int dim>
+    class ReboundBox : public Box<dim>
+    {
+      public:
+        /**
+         * Generate a coarse mesh for the geometry described by this class.
+         * Makes perturbs the top boundary of the box with a function
+         * of the form z' = amplitude * cos(order * x )
+         */
+        virtual
+        void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const;
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter
+         * file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+        /**
+         * Give the depth of a point.
+         */
+        virtual
+        double depth( const Point<dim> &position) const;
+
+        /**
+         * Give the maximal depth of a point.
+         */
+        virtual
+        double maximal_depth() const;
+
+      private:
+
+        unsigned int order;  //Order of the perturbation
+        double amplitude;  //amplitude of the perturbation
+
+    };
+
     template <int dim>
     void
     ReboundBox<dim>::
