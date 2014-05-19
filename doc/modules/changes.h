@@ -5,12 +5,15 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
- * <li> New: there is a new material model for having an arbitrary
- * number of compositional fields with different material properties.
- * Within each compositional field the material properties are constant,
- * and when more than one field is present, arithmetic averaging is 
- * employed.  For viscosity, the averaging may also be geometric,
- * harmonic, or selecting the viscosity of the maximum composition.
+ * <li> New: There is a new material model called multicomponent for 
+ * having an arbitrary number of compositional fields with different
+ * material properties, where each compositional field represents a rock
+ * type. Within each rock type the material properties are assumed to
+ * be constant.  When more than one rock type is present, the material
+ * model averages their properties with a weighted arithmetic average. 
+ * An exception is viscosity, where the user may specify a harmonic,
+ * geometric, or arithmetic averaging, or selecting the viscosity of
+ * the maximum composition.
  * <br>
  * (Ian Rose, 2014/05/19)
  *
