@@ -500,7 +500,8 @@ namespace aspect
     {
       const double rho = get_density(temperature,pressure,compositional_fields,position);
 
-      const double depth_rho = get_density(this->get_adiabatic_conditions().temperature(position),
+      const double adiabatic_temperature = this->get_adiabatic_conditions().temperature(position);
+      const double adiabatic_rho = get_density(adiabatic_temperature,
                                            pressure,
                                            compositional_fields,
                                            position);
@@ -511,7 +512,8 @@ namespace aspect
       const double surface_rho = get_density(surface_temperature,surface_pressure,compositional_fields,surface_point);
 
       //Return the density scaled to an incompressible profile
-      return (rho / depth_rho) * surface_rho;
+      const double scaled_density = (rho / adiabatic_rho) * surface_rho;
+      return scaled_density;
     }
 
 
