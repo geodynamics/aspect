@@ -50,21 +50,21 @@ namespace aspect
         Point<dim> extents = gm->get_extents();
         reference_height = extents[dim-1];
         vertical_gravity = true;
-        relevant_boundary = (dim == 2 ? 3 : 5);
+        relevant_boundary = (dim == 2 ? 3 : 5); //select top boundary
       }
       else if(GeometryModel::Sphere<dim> *gm = dynamic_cast<GeometryModel::Sphere<dim> *>
                                              (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
       {
         reference_height = gm->radius();
         vertical_gravity = false;
-        relevant_boundary = 0;
+        relevant_boundary = 0;  //select top boundary
       }
       else if(GeometryModel::SphericalShell<dim> *gm = dynamic_cast<GeometryModel::SphericalShell<dim> *>
                                              (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
       {
         reference_height = gm->outer_radius();
         vertical_gravity = false;
-        relevant_boundary = 1;
+        relevant_boundary = 1;  //select top boundary
       }
       else
       {
