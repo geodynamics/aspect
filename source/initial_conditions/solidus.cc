@@ -110,7 +110,7 @@ namespace aspect
         const GeometryModel::SphericalShell<dim> *spherical_geometry_model=
 			dynamic_cast< const GeometryModel::SphericalShell<dim> *>(this->geometry_model);
 		AssertThrow(spherical_geometry_model!=0,
-                ExcMessage("This initial condition can only be work with sphereical shell geometry model."));
+                ExcMessage("This initial condition can only be work with spherical shell geometry model."));
         T_min=(this->get_boundary_temperature()).minimal_temperature();
 
         // In case of spherical shell calculate spherical coordinates
