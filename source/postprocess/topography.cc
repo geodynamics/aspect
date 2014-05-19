@@ -28,6 +28,7 @@
 #include <aspect/global.h>
 
 #include <cmath>
+#include <limits>
 
 namespace aspect
 {
@@ -75,9 +76,9 @@ namespace aspect
       typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = this->get_triangulation().begin_active(), 
                                                                                  endc = this->get_triangulation().end();
 
-      //Choose stupid values for initialization
-      double local_max_height = -1.e50;
-      double local_min_height = 1.e50;
+      //Choose stupidly large values for initialization
+      double local_max_height = -std::numeric_limits<double>::max();
+      double local_min_height = std::numeric_limits<double>::max();
 
       for(; cell != endc; ++cell)
         if(cell->is_locally_owned() && cell->at_boundary())
@@ -124,7 +125,6 @@ namespace aspect
 }
 
 
-// explicit instantiations
 namespace aspect
 {
   namespace Postprocess
@@ -135,6 +135,6 @@ namespace aspect
                                   "it loops over all the vertices on the top surface and determines the "
                                   "maximum and minimum topography relative to a reference datum (initial "
                                   "box height for a box geometry model or initial radius for a sphere/"
-                                  "spherical shell geometry model).")
+                                  "spherical shell geometry model).  Outputs topography in meters")
   }
 }
