@@ -22,6 +22,7 @@
 
 #include <aspect/postprocess/spherical_velocity_statistics.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/sphere.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
@@ -40,9 +41,10 @@ namespace aspect
     std::pair<std::string,std::string>
     SphericalVelocityStatistics<dim>::execute (TableHandler &statistics)
     {
-      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0,
+      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0 ||
+              dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()) != 0,
               ExcMessage ("This postprocessor can only be used if the geometry "
-                          "is a spherical shell."));
+                          "is a sphere or spherical shell."));
 
       const QGauss<dim> quadrature_formula (this->get_fe()
                                             .base_element(this->introspection().base_elements.velocities).degree+1);
@@ -55,7 +57,6 @@ namespace aspect
                                update_quadrature_points |
                                update_JxW_values);
       std::vector<Tensor<1,dim> > velocity_values(n_q_points);
-      std::vector<Point<dim> > position_point(n_q_points);
 
       double local_rad_velocity_square_integral = 0;
       double local_tan_velocity_square_integral = 0;
@@ -69,23 +70,19 @@ namespace aspect
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
                                                                                         velocity_values);
-            position_point = fe_values.get_quadrature_points();
+            const std::vector<Point<dim> > &position_point = fe_values.get_quadrature_points();
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
                 // create unit vector in radial direction
-                Tensor<1,dim> position;
-//                for (unsigned int i = 0; i<dim; ++i)
-//                position[i] = position_point[q][i];
-                position = position_point[q];
-                position /= position.norm();
-                // compute the radial velocity by multiplying with the unit vector in the radial direction twice
-                Tensor<1,dim> vel = (velocity_values[q] * position) * position;
-                local_rad_velocity_square_integral += (vel * vel) *
+                const Tensor<1,dim> radial_unit_vector = position_point[q] / position_point[q].norm();
+ 
+                // compute the radial velocity by multiplying with the radial unit vector
+                const double radial_vel = (velocity_values[q] * radial_unit_vector);
+                local_rad_velocity_square_integral += (radial_vel * radial_vel) *
                                                    fe_values.JxW(q);
                 // compute the tangential velocity by subtracting the radial velocity from the velocity
-                vel /= -1;
-                vel += velocity_values[q];
-                local_tan_velocity_square_integral += (vel * vel) *
+                const Tensor<1,dim> tangential_vel = velocity_values[q] -  radial_vel * radial_unit_vector;
+                local_tan_velocity_square_integral += (tangential_vel * tangential_vel) *
                                                    fe_values.JxW(q);
               }
           }
@@ -96,9 +93,9 @@ namespace aspect
         = Utilities::MPI::sum (local_tan_velocity_square_integral, this->get_mpi_communicator());
 
       const double rad_vrms = std::sqrt(global_rad_velocity_square_integral) /
-                          std::sqrt(this->get_volume());
+                              std::sqrt(this->get_volume());
       const double tan_vrms = std::sqrt(global_tan_velocity_square_integral) /
-                          std::sqrt(this->get_volume());
+                              std::sqrt(this->get_volume());
       const double vrms = std::sqrt(rad_vrms*rad_vrms + tan_vrms*tan_vrms);
 
       if (this->convert_output_to_years() == true)
