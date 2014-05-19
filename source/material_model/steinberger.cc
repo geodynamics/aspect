@@ -265,7 +265,7 @@ namespace aspect
 
           double get_nT(double temperature) const
           {
-            temperature=std::max(min_temp+delta_temp, temperature);
+            temperature=std::max(min_temp, temperature);
             temperature=std::min(temperature, max_temp-delta_temp);
             Assert(temperature>=min_temp, ExcMessage("not in range"));
             Assert(temperature<=max_temp, ExcMessage("not in range"));
@@ -274,7 +274,7 @@ namespace aspect
 
           double get_np(double pressure) const
           {
-            pressure=std::max(min_press+delta_press, pressure);
+            pressure=std::max(min_press, pressure);
             pressure=std::min(pressure, max_press-delta_press);
             Assert(pressure>=min_press, ExcMessage("not in range"));
             Assert(pressure<=max_press, ExcMessage("not in range"));
