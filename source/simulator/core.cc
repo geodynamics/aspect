@@ -237,6 +237,8 @@ namespace aspect
       {
         AssertThrow( parameters.nonlinear_solver == NonlinearSolver::IMPES,
                      ExcMessage("The free surface scheme is only implemented for the IMPES solver") );
+        AssertThrow ( parameters.pressure_normalization == "no", 
+                      ExcMessage("The free surface scheme can only be used with no pressure normalization") );
         free_surface.reset( new FreeSurfaceHandler( *this, prm ) );
       }
 
