@@ -93,7 +93,7 @@ namespace aspect
             if (peridotite_melt_fraction > F_max && temperature < T_liquidus)
               {
                 const double T_max = std::pow(F_max,1/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
-                peridotite_melt_fraction = F_max + (1 - F_max) * (temperature - T_max) / (T_liquidus - T_max);
+                peridotite_melt_fraction = F_max + (1 - F_max) * pow((temperature - T_max) / (T_liquidus - T_max),beta);
               }
 
             // melting of pyroxenite after Sobolev et al., 2011
@@ -193,7 +193,7 @@ namespace aspect
                                  "in the quadratic function that approximates "
                                  "the liquidus of peridotite. "
                                  "Units: $°C/(Pa^2)$.");
-              prm.declare_entry ("r1", "0.4",
+			  prm.declare_entry ("r1", "0.5",
                                  Patterns::Double (),
                                  "Constant in the linear function that "
                                  "approximates the clinopyroxene reaction "
@@ -210,7 +210,7 @@ namespace aspect
                                  "Exponent of the melting temperature in "
                                  "the melt fraction calculation. "
                                  "Units: non-dimensional.");
-              prm.declare_entry ("Mass fraction cpx", "0.3",
+			  prm.declare_entry ("Mass fraction cpx", "0.15",
                                  Patterns::Double (),
                                  "Mass fraction of clinopyroxene in the "
                                  "peridotite to be molten. "
@@ -233,7 +233,7 @@ namespace aspect
                                  "in the quadratic function that approximates "
                                  "the solidus of pyroxenite. "
                                  "Units: $°C/(Pa^2)$.");
-              prm.declare_entry ("E1", "633.8",
+			  prm.declare_entry ("E1", "663.8",
                                  Patterns::Double (),
                                  "Prefactor of the linear depletion term "
                                  "in the quadratic function that approximates "
@@ -301,7 +301,7 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(MeltFraction,
-                                                  "melt fraction",
+                                                  "melt fraction", // TODO write down equations here
                                                   "A visualization output object that generates output "
                                                   "for the melt fraction at the temperature and "
                                                   "pressure of the current point (batch melting). "
