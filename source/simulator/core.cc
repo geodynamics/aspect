@@ -361,13 +361,11 @@ namespace aspect
          * convert this into an object that matches the Function@<dim@>
          * interface.
          *
-        * @param n_comp_fields The number of compositional fields used in
-        *        this vector-valued problem. Needed to determine
-        *        the total size of the output vectors.
+        * @param total number of components of the finite element system.
          * @param function_object The scalar function that will form one component
          *     of the resulting Function object.
          */
-        VectorFunctionFromVelocityFunctionObject (const unsigned int n_comp_fields,
+        VectorFunctionFromVelocityFunctionObject (const unsigned int n_components,
                                                   const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
 
         /**
@@ -404,10 +402,10 @@ namespace aspect
     template <int dim>
     VectorFunctionFromVelocityFunctionObject<dim>::
     VectorFunctionFromVelocityFunctionObject
-    (const unsigned int n_comp_fields,
+    (const unsigned int n_components,
      const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
       :
-      Function<dim>(dim+2+n_comp_fields),
+      Function<dim>(n_components),
       function_object (function_object)
     {
     }
@@ -504,7 +502,7 @@ namespace aspect
         {
           p->second->set_current_time (time);
           VectorFunctionFromVelocityFunctionObject<dim> vel
-          (parameters.n_compositional_fields,
+          (introspection.n_components,
            std_cxx1x::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,
                             p->second,
                             std_cxx1x::_1));
