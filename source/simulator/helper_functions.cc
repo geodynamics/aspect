@@ -783,13 +783,13 @@ namespace aspect
     if (parameters.use_locally_conservative_discretization)
       AssertThrow(false, ExcNotImplemented());
 
-    // TODO: currently does not work if velocity and
-    // pressure are in the same block.
-    Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-        ExcNotImplemented());
-
     if (do_pressure_rhs_compatibility_modification)
       {
+        // TODO: currently does not work if velocity and
+        // pressure are in the same block.
+        Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
+            ExcNotImplemented());
+
         const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
         const double correction = -mean*vector.block(introspection.block_indices.pressure).size()/global_volume;
 
