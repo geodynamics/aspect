@@ -36,7 +36,7 @@ namespace aspect
     VelocityBoundaryStatistics<dim>::execute (TableHandler &statistics)
     {
       // create a quadrature formula for the velocity.
-      const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(0).degree+1);
+      const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
@@ -81,9 +81,10 @@ namespace aspect
                 double local_min = std::numeric_limits<double>::max();
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
-                   local_max = std::max(std::sqrt(velocities[q]*velocities[q]),
+                   const double vel_mag = velocities[q].norm();
+                   local_max = std::max(vel_mag,
                                         local_max);
-                   local_min = std::min(std::sqrt(velocities[q]*velocities[q]),
+                   local_min = std::min(vel_mag,
                                         local_min);
                   }
 		local_max_vel[cell->face(f)->boundary_indicator()] = std::max(local_max,
@@ -175,12 +176,12 @@ namespace aspect
           screen_text.precision(4);
           if (this->convert_output_to_years() == true)
           {
-           screen_text << p->second*year_in_seconds << " m/yr" << a->second*year_in_seconds << " m/yr"
+           screen_text << p->second*year_in_seconds << " m/yr, " << a->second*year_in_seconds << " m/yr"
                        << (index == global_max_vel.size()-1 ? "" : ", ");
           }
           else
           {
-           screen_text << p->second << " m/s" << a->second << " m/s"
+           screen_text << p->second << " m/s, " << a->second << " m/s"
                        << (index == global_max_vel.size()-1 ? "" : ", ");
           }
 
