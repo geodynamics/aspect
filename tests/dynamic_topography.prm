@@ -2,7 +2,7 @@
 
 set Dimension                              = 2
 set CFL number                             = 1.0
-set End time                               = 1e12
+set End time                               = 0
 set Start time                             = 0
 set Adiabatic surface temperature          = 1600
 set Pressure normalization                 = surface
