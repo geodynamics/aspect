@@ -381,15 +381,25 @@ namespace aspect
       {
         LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
+        Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
+
+        if (material_model->is_compressible ())
+          make_pressure_rhs_compatible(system_rhs);
+
         SolverControl cn;
         TrilinosWrappers::SolverDirect solver(cn);
         solver.solve(system_matrix.block(0,0), distributed_stokes_solution.block(0), system_rhs.block(0));
 
         current_constraints.distribute (distributed_stokes_solution);
 
-        // now rescale the pressure back to real physical units
-        // we use pressure_scaling = 1.0 with a direct solver
-        // distributed_stokes_solution.block(1) *= pressure_scaling;
+        // now rescale the pressure back to real physical units:
+        for (unsigned int i=0;i< introspection.index_sets.locally_owned_pressure.n_elements(); ++i)
+          {
+            types::global_dof_index idx = introspection.index_sets.locally_owned_pressure.nth_index_in_set(i);
+
+            distributed_stokes_solution(idx) *= pressure_scaling;
+          }
+        distributed_stokes_solution.compress(VectorOperation::insert);
 
         // then copy back the solution from the temporary (non-ghosted) vector
         // into the ghosted one with all solution components

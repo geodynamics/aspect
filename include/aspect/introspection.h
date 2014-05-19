@@ -249,6 +249,12 @@ namespace aspect
          * two elements of system_partitioning.
          */
         std::vector<IndexSet> stokes_partitioning;
+
+        /**
+         * Pressure unknowns that are locally owned. This IndexSet is needed
+         * if velocity and pressure end up in the same block.
+         */
+        IndexSet locally_owned_pressure;
       };
       /**
        * A variable that contains index sets describing which of the globally
