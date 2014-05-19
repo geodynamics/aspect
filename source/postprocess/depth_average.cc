@@ -307,7 +307,7 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(DepthAverage,
                                   "depth average",
                                   "A postprocessor that computes depth averaged "
-                                  "quantities and writes them into a file <depth\\_average.ext> "
+                                  "quantities and writes them into a file <depth_average.ext> "
                                   "in the output directory, where the extension of the file "
                                   "is determined by the output format you select. In addition "
                                   "to the output format, a number of other parameters also influence "
