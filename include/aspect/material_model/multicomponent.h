@@ -179,15 +179,15 @@ namespace aspect
 
         /**
          * Enumeration for selecting which viscosity averaging scheme to use.  Select
-         * between Harmonic, Arithmetic, Geometric, and MaximumComposition.  The 
+         * between harmonic, arithmetic, geometric, and maximum_composition.  The 
          * max composition scheme simply uses the viscosity of whichever field has 
          * the highes volume fraction.
          */
         enum {
-            Harmonic,
-            Arithmetic,
-            Geometric,
-            MaximumComposition
+            harmonic,
+            arithmetic,
+            geometric,
+            maximum_composition
         } ViscosityAveraging;
 
         /**

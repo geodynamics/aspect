@@ -81,20 +81,20 @@ namespace aspect
 
       switch (ViscosityAveraging)
         {
-          case Arithmetic:
+          case arithmetic:
             {
               for(unsigned int i=0; i< volume_fractions.size(); ++i)
                   visc += volume_fractions[i]*viscosities[i];
               break;
             }
-          case Harmonic:
+          case harmonic:
             {
               for(unsigned int i=0; i< volume_fractions.size(); ++i)
                 visc += volume_fractions[i]/(viscosities[i]);
               visc = 1.0/visc;
               break;
             }
-          case Geometric:
+          case geometric:
             {
               double geometric_mean = 0.0;
               for(unsigned int i=0; i < volume_fractions.size(); ++i)
@@ -102,7 +102,7 @@ namespace aspect
               visc = std::exp(visc);
               break;
             }
-          case MaximumComposition:
+          case maximum_composition:
             {
               unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(), 
                                                               volume_fractions.end() )
@@ -389,13 +389,13 @@ namespace aspect
           reference_T                = prm.get_double ("Reference temperature");
  
           if (prm.get ("Viscosity averaging scheme") == "Harmonic")
-            ViscosityAveraging = Harmonic; 
+            ViscosityAveraging = harmonic; 
           else if (prm.get ("Viscosity averaging scheme") == "Arithmetic")
-            ViscosityAveraging = Arithmetic; 
+            ViscosityAveraging = arithmetic; 
           else if (prm.get ("Viscosity averaging scheme") == "Geometric")
-            ViscosityAveraging = Geometric; 
+            ViscosityAveraging = geometric; 
           else if (prm.get ("Viscosity averaging scheme") == "Maximum composition")
-            ViscosityAveraging = MaximumComposition; 
+            ViscosityAveraging = maximum_composition; 
 
           std::vector<double> x_values;
 
