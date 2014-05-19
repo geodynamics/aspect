@@ -267,6 +267,8 @@ namespace aspect
     rhs.compress (VectorOperation::add);
     mass_matrix.compress(VectorOperation::add);
 
+    //Jacobi seems to be fine here.  Other preconditioners (ILU, IC) run into troubles
+    //because the matrrix is mostly empty, since we don't touch internal vertices.
     LinearAlgebra::PreconditionJacobi preconditioner_mass;
     preconditioner_mass.initialize(mass_matrix);
 
