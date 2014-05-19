@@ -33,13 +33,11 @@ namespace aspect
   {
 
     template <int dim>
-    void
+    const std::vector<double>
     Multicomponent<dim>::
-    compute_volume_fractions( const std::vector<double> &compositional_fields, 
-                                    std::vector<double> &fractions) const
+    compute_volume_fractions( const std::vector<double> &compositional_fields) const
     {
-      Assert( compositional_fields.size()+1 == fractions.size(), 
-              ExcMessage("Size mismatch") );
+       std::vector<double> volume_fractions( compositional_fields.size()+1);
 
       //clip the compositional fields so they are between zero and one
       std::vector<double> x_comp = compositional_fields;
@@ -53,16 +51,17 @@ namespace aspect
       
       if(sum_composition >= 1.0)
         {
-          fractions[0] = 0.0;  //background mantle
+          volume_fractions[0] = 0.0;  //background mantle
           for ( unsigned int i=1; i <= x_comp.size(); ++i)
-            fractions[i] = x_comp[i-1]/sum_composition;
+            volume_fractions[i] = x_comp[i-1]/sum_composition;
         }
       else
         {
-          fractions[0] = 1.0 - sum_composition; //background mantle
+          volume_fractions[0] = 1.0 - sum_composition; //background mantle
           for ( unsigned int i=1; i <= x_comp.size(); ++i)
-            fractions[i] = x_comp[i-1];
+            volume_fractions[i] = x_comp[i-1];
         }
+      return volume_fractions;
     }    
           
     
@@ -77,8 +76,7 @@ namespace aspect
                const Point<dim> &p) const
     {
       double visc = 0.0;
-      std::vector<double> volume_fractions(this->n_compositional_fields() + 1);
-      compute_volume_fractions( composition, volume_fractions);
+      std::vector<double> volume_fractions = compute_volume_fractions(composition);
 
       switch (viscosity_averaging)
         {
@@ -156,8 +154,7 @@ namespace aspect
       double cp = 0.0;
 
       //Arithmetic averaging of specific heats
-      std::vector<double> volume_fractions(this->n_compositional_fields() + 1);
-      compute_volume_fractions( composition, volume_fractions);
+      std::vector<double> volume_fractions = compute_volume_fractions(composition);
       for(unsigned int i=0; i< volume_fractions.size(); ++i)
         cp += volume_fractions[i]*specific_heats[i];
   
@@ -186,8 +183,7 @@ namespace aspect
       //This may not be strictly the most reasonable thing,
       //but for most Earth materials we hope that they do
       //not vary so much that it is a big problem.
-      std::vector<double> volume_fractions(this->n_compositional_fields() + 1);
-      compute_volume_fractions( composition, volume_fractions);
+      std::vector<double> volume_fractions = compute_volume_fractions(composition);
       for(unsigned int i=0; i< volume_fractions.size(); ++i)
         k += volume_fractions[i]*thermal_conductivities[i];
 
@@ -213,8 +209,7 @@ namespace aspect
       double rho = 0.0;
 
       //Arithmetic averaging of densities
-      std::vector<double> volume_fractions(this->n_compositional_fields() + 1);
-      compute_volume_fractions( composition, volume_fractions);
+      std::vector<double> volume_fractions = compute_volume_fractions(composition);
       for(unsigned int i=0; i< volume_fractions.size(); ++i)
       {
         //not strictly correct if thermal expansivities are different, since we are interpreting
@@ -238,8 +233,7 @@ namespace aspect
       double alpha = 0.0;
 
       //Arithmetic averaging of thermal expansivities
-      std::vector<double> volume_fractions(this->n_compositional_fields() + 1);
-      compute_volume_fractions( composition, volume_fractions);
+      std::vector<double> volume_fractions = compute_volume_fractions(composition);
       for(unsigned int i=0; i< volume_fractions.size(); ++i)
         alpha += volume_fractions[i]*thermal_expansivities[i];
 
