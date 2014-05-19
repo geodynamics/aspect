@@ -7,8 +7,8 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization = no
-set Linear solver tolerance = 1.e-6
-set Number of cheap Stokes solver steps    = 0 
+set Linear solver tolerance = 1.e-7
+set Number of cheap Stokes solver steps    = 30
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = IMPES
 
@@ -36,8 +36,6 @@ end
 subsection Geometry model
   set Model name = box
   subsection Box
-#    set Order=1.0
-#    set Amplitude = 0.0
     set X extent = 28.e5 
     set Y extent = 7.e5
     set X repetitions = 4
@@ -65,12 +63,12 @@ end
 subsection Material model
   set Model name = multicomponent
   subsection Multicomponent
-    set Reference temperature         = 0.0
-    set Densities             = 3300, 3200, 3300
-    set Specific heats       = 1250
-    set Thermal conductivities          = 4.7
+    set Reference temperature = 0.0
+    set Densities = 3300, 3200, 3300
+    set Specific heats = 1250
+    set Thermal conductivities = 4.7
     set Thermal expansivities = 4e-5
-    set Viscosities                     = 1.e21, 1.e20, 1.e23
+    set Viscosities = 1.e21, 1.e20, 1.e23
     set Viscosity averaging scheme = Harmonic
   end
 end
@@ -78,11 +76,11 @@ end
 
 subsection Mesh refinement
   set Additional refinement times        =
-  set Initial adaptive refinement        = 2
-  set Initial global refinement          = 5
+  set Initial adaptive refinement        = 3
+  set Initial global refinement          = 6
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.05
-  set Strategy                           = composition#density,composition
+  set Strategy                           = density,composition
   set Refinement criteria scaling factors =
   set Refinement criteria merge operation = plus
   set Time steps between mesh refinement = 5
@@ -92,9 +90,8 @@ end
 subsection Model settings
   set Include adiabatic heating               = false
   set Include shear heating                   = false
-  set Radiogenic heating rate                 = 0
   set Fixed temperature boundary indicators   = 2,3
-  set Prescribed velocity boundary indicators =
+  set Prescribed velocity boundary indicators = 
   set Tangential velocity boundary indicators = 0,1
   set Zero velocity boundary indicators       = 2
 end
@@ -123,7 +120,7 @@ subsection Compositional initial conditions
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization#,topography
+  set List of postprocessors = visualization,topography
   subsection Visualization
     set List of output variables = viscosity,density
     set Number of grouped files       = 1
