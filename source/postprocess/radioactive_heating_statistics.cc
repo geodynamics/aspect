@@ -38,13 +38,10 @@ namespace aspect
     std::pair<std::string,std::string>
     Radioactive_Heating_Statistics<dim>::execute (TableHandler &statistics)
     {
-        const HeatingModel &heating_model=this->get_heating_model();
+        const HeatingModel::Interface<dim> &heating_model=this->get_heating_model();
 
       // create a quadrature formula based on the compositional element alone.
       // be defensive about determining that a compositional field actually exists
-      AssertThrow (this->introspection().base_elements.compositional_fields
-                   != numbers::invalid_unsigned_int,
-                   ExcMessage("This postprocessor cannot be used without compositional fields."));
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
 
@@ -59,7 +56,7 @@ namespace aspect
       std::vector<double>               pressure_values (n_q_points);
       std::vector<std::vector<double> > compositional_values (this->n_compositional_fields(),std::vector<double> (n_q_points));
       std::vector<double>               composition_values_at_q_point (this->n_compositional_fields());
-      std::vector<Point<dim>>           quadrature_points(n_q_points);
+      std::vector<Point<dim> >          quadrature_points(n_q_points);
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -73,21 +70,20 @@ namespace aspect
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
-            for(unsigned int c=0;c<
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                     temperature_values);
             fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
                     pressure_values);
             for(unsigned c=0;c<this->n_compositional_fields();c++)
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
-                        compositional_values);
+                        compositional_values[c]);
             quadrature_points=fe_values.get_quadrature_points();
 
             for (unsigned int q=0; q<n_q_points; ++q)
             {
                   for(unsigned c=0;this->n_compositional_fields();c++)
                         composition_values_at_q_point[c]=compositional_values[c][q];
-                  local_radioactive_heating_integrals += (heating_model.specific_heating_rate(temperature_values[q],
+                  local_radioactive_heating_integrals += heating_model.specific_heating_rate(temperature_values[q],
                                                                                               pressure_values[q],
                                                                                               composition_values_at_q_point,
                                                                                               quadrature_points[q])*fe_values.JxW(q);
@@ -95,17 +91,18 @@ namespace aspect
             }
           }
       // compute the sum over all processors
-      double global_radioactive_heating_integrals;
-      double global_volume;
-      Utilities::MPI::sum (local_radioactive_heating_integrals,
+      std::vector<double> local_value;
+      std::vector<double> global_value;
+      local_value.push_back(local_radioactive_heating_integrals);
+      local_value.push_back(local_volume);
+      Utilities::MPI::sum (local_value,
                            this->get_mpi_communicator(),
-                           global_radioactive_heating_integrals);
-      Utilities::MPI::sum (local_volume,
-                           this->get_mpi_communicator(),
-                           global_volume);
+                           global_value);
+      double global_radioactive_heating_integrals=global_value[0];
+      double global_volume=global_value[1];
 
       // finally produce something for the statistics file
-      const std:string name="Average radioactive heating rate (W/kg) ";
+      const std::string name("Average radioactive heating rate (W/kg) ");
       statistics.add_value (name, global_radioactive_heating_integrals/global_volume);
 
       // also make sure that the other columns filled by the this object
@@ -116,9 +113,7 @@ namespace aspect
 
       std::ostringstream output;
       output.precision(4);
-          output << global_radioactive_heating_integrals/global_volume
-          output << " (W//kg) ";
-        }
+          output << global_radioactive_heating_integrals/global_volume << " (W//kg) ";
 
       return std::pair<std::string, std::string> ("Average radioactive heating rate: ",
                                                   output.str());
