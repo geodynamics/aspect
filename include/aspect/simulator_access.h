@@ -40,6 +40,7 @@
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/postprocess/interface.h>
+#include <aspect/heating_model/interface.h>
 #include <aspect/adiabatic_conditions.h>
 
 
