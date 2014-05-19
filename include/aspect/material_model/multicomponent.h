@@ -111,7 +111,7 @@ namespace aspect
         thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-         * returns false
+         * This model is not compressible, so this returns false.
          */
         virtual bool is_compressible () const;
         /**
@@ -154,11 +154,28 @@ namespace aspect
          */
 
       private:
+        /**
+         * From a list of compositional fields of length N, we come up with an N+1
+         * length list that which also includes the fraction of ``background mantle''.
+         * This list should sum to one, and is interpreted as volume fractions.  If
+         * the sum of the compositional_fields is greater than one, we assume that there
+         * is no background mantle (i.e., that field value is zero).  Otherwise, the
+         * difference between the sum of the compositional fields and 1.0 is assumed to
+         * be the amount of background mantle.
+         */
         void compute_volume_fractions( const std::vector<double> &compositional_fields, 
                                              std::vector<double> &fractions) const;
- 
+        /**
+         * Reference temperature for thermal expansion.  All components use the same reference_T.
+         */ 
         double reference_T;
 
+        /**
+         * Enumeration for selecting which viscosity averaging scheme to use.  Select
+         * between Harmonic, Arithmetic, Geometric, and MaximumComposition.  The 
+         * max composition scheme simply uses the viscosity of whichever field has 
+         * the highes volume fraction.
+         */
         enum {
             Harmonic,
             Arithmetic,
@@ -166,10 +183,29 @@ namespace aspect
             MaximumComposition
         } ViscosityAveraging;
 
+        /**
+         * Vector for field densities.
+         */
         std::vector<double> densities;
+
+        /**
+         * Vector for field viscosities.
+         */
         std::vector<double> viscosities;
+
+        /**
+         * Vector for field thermal expnsivities.
+         */
         std::vector<double> thermal_expansivities;
+
+        /**
+         * Vector for field thermal conductivities.
+         */
         std::vector<double> thermal_conductivities;
+
+        /**
+         * Vector for field specific heats.
+         */
         std::vector<double> specific_heats;
     };
 

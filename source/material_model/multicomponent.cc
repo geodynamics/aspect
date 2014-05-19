@@ -52,13 +52,13 @@ namespace aspect
       
       if(sum_composition >= 1.0)
         {
-          fractions[0] = 0.0;  //background
+          fractions[0] = 0.0;  //background mantle
           for ( unsigned int i=1; i <= x_comp.size(); ++i)
             fractions[i] = x_comp[i-1]/sum_composition;
         }
       else
         {
-          fractions[0] = 1.0 - sum_composition;
+          fractions[0] = 1.0 - sum_composition; //background mantle
           for ( unsigned int i=1; i <= x_comp.size(); ++i)
             fractions[i] = x_comp[i-1];
         }
@@ -120,15 +120,15 @@ namespace aspect
     Multicomponent<dim>::
     reference_viscosity () const
     {
-      return viscosities[0];
+      return viscosities[0]; //background
     }
 
     template <int dim>
     double
     Multicomponent<dim>::
     reference_density () const
-    {
-      return densities[0];
+    { 
+      return densities[0];  //background
     }
 
     template <int dim>
@@ -136,7 +136,7 @@ namespace aspect
     Multicomponent<dim>::
     reference_thermal_expansion_coefficient () const
     {
-      return thermal_expansivities[0];
+      return thermal_expansivities[0]; //background
     }
 
     template <int dim>
@@ -149,6 +149,7 @@ namespace aspect
     {
       double cp = 0.0;
 
+      //Arithmetic averaging of specific heats
       std::vector<double> volume_fractions(this->n_compositional_fields() + 1);
       compute_volume_fractions( composition, volume_fractions);
       for(unsigned int i=0; i< volume_fractions.size(); ++i)
@@ -162,7 +163,7 @@ namespace aspect
     Multicomponent<dim>::
     reference_cp () const
     {
-      return specific_heats[0];
+      return specific_heats[0]; //background
     }
 
     template <int dim>
@@ -175,6 +176,10 @@ namespace aspect
     {
       double k = 0.0;
 
+      //Arithmetic averaging of thermal conductivities
+      //This may not be strictly the most reasonable thing,
+      //but for most Earth materials we hope that they do
+      //not vary so much that it is a big problem.
       std::vector<double> volume_fractions(this->n_compositional_fields() + 1);
       compute_volume_fractions( composition, volume_fractions);
       for(unsigned int i=0; i< volume_fractions.size(); ++i)
@@ -188,7 +193,7 @@ namespace aspect
     Multicomponent<dim>::
     reference_thermal_diffusivity () const
     {
-      return thermal_conductivities[0] /( densities[0]* specific_heats[0] );
+      return thermal_conductivities[0] /( densities[0]* specific_heats[0] ); //background
     }
 
     template <int dim>
@@ -201,6 +206,7 @@ namespace aspect
     {
       double rho = 0.0;
 
+      //Arithmetic averaging of densities
       std::vector<double> volume_fractions(this->n_compositional_fields() + 1);
       compute_volume_fractions( composition, volume_fractions);
       for(unsigned int i=0; i< volume_fractions.size(); ++i)
@@ -225,6 +231,7 @@ namespace aspect
     {
       double alpha = 0.0;
 
+      //Arithmetic averaging of thermal expansivities
       std::vector<double> volume_fractions(this->n_compositional_fields() + 1);
       compute_volume_fractions( composition, volume_fractions);
       for(unsigned int i=0; i< volume_fractions.size(); ++i)
@@ -242,7 +249,7 @@ namespace aspect
                      const std::vector<double> &, /*composition*/
                      const Point<dim> &) const
     {
-      return 0.0;
+      return 0.0; //incompressible
     }
 
     template <int dim>
@@ -262,7 +269,6 @@ namespace aspect
     Multicomponent<dim>::
     density_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      // to see the dependencies
       if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none))
         return true;
       else if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none))
@@ -452,6 +458,12 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(Multicomponent,
                                    "multicomponent",
-                                   "'Multicomponent model'.")
+                                   "'Multicomponent model'.  This model is for use with an arbitrary number of"
+                                   "compositional fields, where each field may have completely different material"
+                                   "parameters.  Within each field, however, the material behaviour is very simple,"
+                                   "with constant material coefficients.  When more than one field is present, the"
+                                   "material properties are averaged arithmetically.  An exception is the viscosity,"
+                                   "where the averaging should make more of a difference.  For this, the user selects"
+                                   "between arithmetic, harmonic, geometric, or maximum composition averaging.")
   }
 }
