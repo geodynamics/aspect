@@ -5,6 +5,7 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ *
  * <li> New: There is a new material model called multicomponent for 
  * having an arbitrary number of compositional fields with different
  * material properties, where each compositional field represents a rock
@@ -16,6 +17,13 @@
  * the maximum composition.
  * <br>
  * (Ian Rose, 2014/05/19)
+ *
+ * <li>New: The dynamic topography postprocessors now take into account
+ * (i) the dynamic pressure, (ii) effects due to compressibility, (iii)
+ * they now have the option to subtract the mean topography to ensure that
+ * the topography is, on average, zero.
+ * <br>
+ * (Jacqueline Austermann, 2014/05/19)
  *
  * <li>New: There is a new plugin architecture for heating models that
  * allows for plugins defining the radiogenic heating rate in dependency
