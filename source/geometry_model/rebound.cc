@@ -56,6 +56,20 @@ namespace aspect
 
     }
 
+    template <int dim>
+    double
+    ReboundBox<dim>::maximal_depth() const
+    {
+      return Box<dim>::maximal_depth()+amplitude;
+    }
+
+    template <int dim>
+    double
+    ReboundBox<dim>::depth(const Point<dim> &position) const
+    {
+      double d = maximal_depth()-position(dim-1);
+      return d;
+    }
 
     template <int dim>
     void

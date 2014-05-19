@@ -63,6 +63,18 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
+        /**
+         * Give the depth of a point.
+         */
+        virtual
+        double depth( const Point<dim> &position) const;
+
+        /**
+         * Give the maximal depth of a point.
+         */
+        virtual
+        double maximal_depth() const;
+
       private:
 
         unsigned int order;  //Order of the perturbation
