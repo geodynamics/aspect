@@ -136,6 +136,12 @@ namespace aspect
       VectorTools::interpolate_boundary_values (free_surface_dof_handler, *p,
       ZeroFunction<dim>(dim), mesh_constraints);
 
+    //Zero out the displacement for the prescribed velocity 
+    for (std::map<types::boundary_id, std::pair<std::string, std::string> >::const_iterator p = sim.parameters.prescribed_velocity_boundary_indicators.begin();
+         p != sim.parameters.prescribed_velocity_boundary_indicators.end(); ++p)
+      VectorTools::interpolate_boundary_values (free_surface_dof_handler, p->first,
+      ZeroFunction<dim>(dim), mesh_constraints);
+
     //make the tangential boundary indicators no displacement normal to the boundary
     VectorTools::compute_no_normal_flux_constraints (free_surface_dof_handler,
                                                      /* first_vector_component= */
