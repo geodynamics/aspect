@@ -85,7 +85,8 @@ namespace aspect
                              ParameterHandler &prm)
     :
     parameters (prm),
-    introspection (parameters.n_compositional_fields, !parameters.use_direct_stokes_solver),
+    introspection (!parameters.use_direct_stokes_solver,
+        parameters.names_of_compositional_fields),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     pcout (std::cout,
            (Utilities::MPI::

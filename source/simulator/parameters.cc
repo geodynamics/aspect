@@ -526,6 +526,9 @@ namespace aspect
                          Patterns::Integer (0),
                          "The number of fields that will be advected along with the flow field, excluding "
                          "velocity, pressure and temperature.");
+      prm.declare_entry ("Names of fields", "",
+                         Patterns::List(Patterns::Anything()),
+                         "A user-defined name for each of the compositional fields requested."));
       prm.declare_entry ("List of normalized fields", "",
                          Patterns::List (Patterns::Integer(0)),
                          "A list of integers smaller than or equal to the number of "
@@ -793,6 +796,15 @@ namespace aspect
     prm.enter_subsection ("Compositional fields");
     {
       n_compositional_fields = prm.get_integer ("Number of fields");
+
+      names_of_compositional_fields = Utilities::split_string_list (prm.get("Names of fields"));
+      AssertThrow ((names_of_compositional_fields.size() == 0) ||
+          (names_of_compositional_fields.size() == n_compositional_fields),
+          ExcMessage ("The length of the list of names for the compositional "
+              "fields needs to either be empty or have length equal to "
+              "the number of compositional fields."));
+//TODO: verify that names can only contain [a-zA-Z][a-zA-Z0-9_]*
+
       const std::vector<int> n_normalized_fields = Utilities::string_to_int
                                                    (Utilities::split_string_list(prm.get ("List of normalized fields")));
       normalized_fields = std::vector<unsigned int> (n_normalized_fields.begin(),

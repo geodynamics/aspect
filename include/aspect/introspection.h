@@ -60,8 +60,8 @@ namespace aspect
        * @param split_vel_pressure Set to true if velocity and pressure should
        * be in separate blocks.
        */
-      Introspection (const unsigned int n_compositional_fields,
-          const bool split_vel_pressure);
+      Introspection (const bool split_vel_pressure,
+                     const std::vector<std::string> &composition_names);
 
       /**
        * @name Things that are independent of the current mesh
@@ -265,6 +265,18 @@ namespace aspect
       /**
        * @}
        */
+
+      unsigned int
+      compositional_index_for_name (const std::string &name) const;
+
+      std::string
+      name_for_compositional_index (const unsigned int index) const;
+
+      bool
+      compositional_name_exists (const std::string &name) const;
+
+    private:
+      ...;
   };
 }
 
