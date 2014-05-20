@@ -30,13 +30,13 @@ namespace aspect
 {
     namespace InitialConditions
     {
-        void Melting_curve::read(const std::string &filename)
+        void MeltingCurve::read(const std::string &filename)
         {
             data_filename=filename;
             std::ifstream in(data_filename.c_str(), std::ios::in);
             char temp[256];
             std::string T_Unit,P_Unit;
-            Num_points=0;
+            n_points=0;
             if(in.fail())return;
             in.getline(temp,256);
             in>>T_Unit>>P_Unit;
@@ -65,7 +65,7 @@ namespace aspect
                         p*=1.e9;                        // GPa to Pa
                     else 
                     {
-                        is_radius=true;                 // Second column in radius instead of pressure
+                        is_radius=true;                 // Second column is radius instead of pressure
                         if(P_Unit=="km")
                             p*=1.e3;                    // km to meters
                         else if(P_Unit!="m")
@@ -73,8 +73,8 @@ namespace aspect
                                                             "has to be one of the following: Pa/Gpa/km/m."))
                     }
                     T_array.push_back(T);
-                    P_array.push_back(p);
-                    Num_points++;
+                    P_or_R_array.push_back(p);
+                    n_points++;
                 }
                 in.getline(temp,256);
             }
@@ -82,17 +82,17 @@ namespace aspect
         
         
         
-        double Melting_curve::T(const double p, const double radius) const
+        double MeltingCurve::T(const double p, const double radius) const
         {
-            double T_value,P_value=is_radius?radius:p;
+            double T_value,P_or_R_value=is_radius?radius:p;
             if(T_array.size()==0)return(0);
-            for(unsigned i=1;i<Num_points;i++)
+            for(unsigned i=1;i<n_points;i++)
             {
-                if(     (i==Num_points-1) || 
-                        (is_radius && P_value>P_array[i]) ||
-                        (!is_radius && P_value<P_array[i]) )
+                if(     (i==n_points-1) || 
+                        (is_radius && P_or_R_value>P_or_R_array[i]) ||
+                        (!is_radius && P_or_R_value<P_or_R_array[i]) )
                 {
-                    T_value=T_array[i-1]+(T_array[i]-T_array[i-1])/(P_array[i]-P_array[i-1])*(P_value-P_array[i-1]);
+                    T_value=T_array[i-1]+(T_array[i]-T_array[i-1])/(P_or_R_array[i]-P_or_R_array[i-1])*(P_or_R_value-P_or_R_array[i-1]);
                     return(T_value);
                 }
             }
@@ -121,11 +121,11 @@ namespace aspect
         double Depth=this->geometry_model->depth(position);
 
         AssertThrow(solidus_curve.is_radius==true,ExcMessage("The solidus curve has to be radius dependent."));
-        AssertThrow(solidus_curve.Num_points!=0,ExcMessage("Error eading solidus file."));
+        AssertThrow(solidus_curve.n_points!=0,ExcMessage("Error eading solidus file."));
         const GeometryModel::SphericalShell<dim> *spherical_geometry_model=
                 dynamic_cast< const GeometryModel::SphericalShell<dim> *>(this->geometry_model);
         AssertThrow(spherical_geometry_model!=0,
-                ExcMessage("This initial condition can only be work with spherical shell geometry model."));
+                ExcMessage("This initial condition can only be used with spherical shell geometry model."));
         T_min=(this->get_boundary_temperature()).minimal_temperature();
 
         // In case of spherical shell calculate spherical coordinates
@@ -192,13 +192,13 @@ namespace aspect
         {
             prm.declare_entry ("Supersolidus","0e0",
                                Patterns::Double (),
-                               "The difference from solidus, use this number to generate initial conditons "
+                               "The difference from solidus, use this number to generate initial conditions "
                                "that close to solidus instead of exactly at solidus. Use small negative number"
                                " in this parameter to prevent large melting generation at the beginning. "
-                               "  Uints: K ");
+                               "  Units: K ");
             prm.declare_entry ("Lithosphere thickness","0",
                                Patterns::Double (0),
-                               "The thickness of lithosphere thickness. Unit: m");
+                               "The thickness of lithosphere thickness. Units: m");
             prm.enter_subsection("Perturbation");
             {
                 prm.declare_entry ("Temperature amplitude", "0e0",
@@ -290,11 +290,13 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_CONDITIONS(Solidus,
                                        "solidus",
                                        "This is a temperature initial condition that "
-                                       "start the model close to solidus, it also contants "
+                                       "starts the model close to solidus, it also contants "
                                        "a user defined lithoshpere thickness and with perturbations "
                                        " in both lithosphere thickness and temperature with "
                                        "shpere harmonic functions. It was used as the initial conditons "
                                        "of early Mars that the planet is just freeze up from magma ocean, "
-                                       "using the solidus from Parmentier et al. (2007)");
+                                       "using the solidus from Parmentier, E.M., L. Elkins-Tanton, and S. Schoepfer, "
+                                       "Melt_solid segregation, Fractional magma ocean solidification, and implications for "
+                                       "longterm planetary evolution. Luna and Planetary Science, 2007.");
   }
 }

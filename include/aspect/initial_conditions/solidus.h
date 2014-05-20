@@ -35,7 +35,7 @@ namespace aspect
     /**
      * Data class to handle the melting curve.
      */
-    class Melting_curve
+    class MeltingCurve
     {
     public:
 
@@ -58,7 +58,7 @@ namespace aspect
         /**
          * Number of data points in the melting curve data.
          */
-        unsigned int Num_points;
+        unsigned int n_points;
     private:
         /**
          * Data array for temperature.
@@ -68,7 +68,7 @@ namespace aspect
         /**
          * Data array for pressure/radius.
          */
-        std::vector<double> P_array;
+        std::vector<double> P_or_R_array;
         
         /**
          * Name of the data file.
@@ -161,7 +161,7 @@ namespace aspect
         /**
          * Data class for melting curve
          */
-         Melting_curve solidus_curve;
+         MeltingCurve solidus_curve;
     };
   }
 }
