@@ -2499,8 +2499,8 @@ thing to the left of the equals sign) and a content (what's to the right).
 
 All parameters you can list in this input file have been \textit{declared} in
 \aspect. What this means is that you can't just list anything in the input
-file with entries that are unknown simply being ignored. Rather, if your input
-file contains a line setting a parameter that is unknown to something, you
+file, and expect that entries that are unknown are simply ignored.
+Rather, if your input file contains a line setting a parameter that is unknown, you
 will get an error message. Likewise, all declared parameters have a
 description of possible values associated with them -- for example, some
 parameters must be non-negative integers (the number of initial refinement
@@ -2513,6 +2513,12 @@ has taken the time to also implement some error checking at this location).
 Finally, because parameters have been declared, you do not \textit{need} to
 specify a parameter in the input file: if a parameter isn't listed, then the
 program will simply use the default provided when declaring the parameter.
+
+\note{In cases where a parameter requires a significant amount of text, you can
+end a line in the input file with a backslash. This indicates that the
+following line will simply continue to be part of the text of the current line,
+in the same way as the C/C++ preprocessor expands lines that end in
+backslashes.}
 
 \subsubsection{Categories of parameters}
 
@@ -2551,8 +2557,9 @@ categorized into the following groups:
   plugins), and one can then specify the specifics of this model in a
   sub-subsection dedicated to this particular model.
 
-  A number of components of \aspect{} are implemented via plugins. These are,
-  together with the sections in which their parameters are declared:
+  A number of components of \aspect{} are implemented via plugins. Some of
+  these, together with the sections in which their parameters are declared, are
+  the following:
   \begin{itemize}
   \item The material model:
     Sections~\ref{parameters:Material_20model} and following.
