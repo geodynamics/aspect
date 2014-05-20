@@ -1468,6 +1468,8 @@ namespace aspect
         scratch.old_old_velocity_values);
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.current_velocity_values);
+    
+    //get the mesh velocity, as we need to subtract it off of the advection systems
     if (parameters.free_surface_enabled)
       scratch.finite_element_values[introspection.extractors.velocities].get_function_values(free_surface->mesh_velocity,
           scratch.mesh_velocity_values);
@@ -1593,6 +1595,7 @@ namespace aspect
         AssertThrow(density_c_P + latent_heat_LHS, ExcMessage("mass matrix must be positive"));
 
         Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+        //Subtract off the mesh velocity for ALE corrections if necessary
         if (parameters.free_surface_enabled)
           current_u -= scratch.mesh_velocity_values[q];
 
