@@ -271,6 +271,7 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_CONDITIONS(Solidus,
                                        "solidus",
                                        "Temperature initial condition as solidus," 
-                                       "with perturbation as sin() funciton.");
+                                       "with lithosphere thickness and perturbation "
+                                       "in shpere harmonic functions.");
   }
 }
