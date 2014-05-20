@@ -11,8 +11,25 @@
 #include <deal.II/numerics/vector_tools.h>
 
 
+
 namespace aspect
 {
+  /**
+   * This is the "Pure shear/Inclusion" benchmark defined in the following paper:
+   * @code
+   *  @Article{DMGT11,
+   *    author =       {T. Duretz and D. A. May and T. V. Gerya and P. J. Tackley},
+   *    title =        {Discretization errors and free surface stabilization in the
+   *                  finite difference and marker-in-cell method for applied
+   *                  geodynamics: {A} numerical study},
+   *    journal =      {Geochemistry Geophysics Geosystems},
+   *    year =         2011,
+   *    volume =       12,
+   *    pages =        {Q07004/1--26}}
+   * @endcode
+   *
+   * The results are published in Kronbichler, Heister and Bangerth paper.
+   */
   namespace InclusionBenchmark
   {
     using namespace dealii;
@@ -132,9 +149,6 @@ namespace aspect
 
 
     /**
-     * A material model that describes the "Pure shear/Inclusion" benchmark
-     * of the paper cited in the documentation of the DuretzEtAl namespace.
-     *
      * @note This benchmark only talks about the flow field, not about a
      * temperature field. All quantities related to the temperature are
      * therefore set to zero in the implementation of this class.
@@ -492,27 +506,10 @@ namespace aspect
 
 
     /**
-      * A postprocessor that evaluates the accuracy of the solution of the
-      * aspect::MaterialModel::DuretzEtAl::Inclusion material models.
+      * A postprocessor that evaluates the accuracy of the solution.
       *
       * The implementation of error evaluators that correspond to the
-      * benchmarks defined in the following paper:
-      * @code
-      *  @Article{DMGT11,
-      *    author =       {T. Duretz and D. A. May and T. V. Gerya and P. J. Tackley},
-      *    title =        {Discretization errors and free surface stabilization in the
-      *                  finite difference and marker-in-cell method for applied
-      *                  geodynamics: {A} numerical study},
-      *    journal =      {Geochemistry Geophysics Geosystems},
-      *    year =         2011,
-      *    volume =       12,
-      *    pages =        {Q07004/1--26}}
-      * @endcode
-      *
-      * @note While this paper summarizes the benchmarks used here, some of the
-      * benchmarks actually originate in earlier papers. For the original
-      * references, see the bibliography of the paper above.
-      * @ingroup Postprocessing
+      * benchmarks defined in the paper Duretz et al. reference above.
       */
     template <int dim>
     class InclusionPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
