@@ -400,13 +400,13 @@ namespace aspect
         is_temperature () const;
 
         /**
-         * Look up the component index for this temperature or compositional field
-         * i. See Introspection::component_indices for more information.
+         * Look up the component index for this temperature or compositional field.
+         * See Introspection::component_indices for more information.
          */
         unsigned int component_index(const Introspection<dim> &introspection) const;
 
         /**
-         * Look up the block index for this temperature or compositional field
+         * Look up the block index for this temperature or compositional field.
          * See Introspection::block_indices for more information.
          */
         unsigned int block_index(const Introspection<dim> &introspection) const;

@@ -360,7 +360,7 @@ namespace aspect
          * convert this into an object that matches the Function@<dim@>
          * interface.
          *
-        * @param total number of components of the finite element system.
+         * @param n_components total number of components of the finite element system.
          * @param function_object The scalar function that will form one component
          *     of the resulting Function object.
          */
