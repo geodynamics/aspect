@@ -28,12 +28,57 @@
 
 namespace aspect
 {
+
+
   namespace InitialConditions
   {
+    /**
+     * Data class to handle the melting curve.
+     */
+    class Melting_curve
+    {
+    public:
+
+        /**
+         * Read the data file into the class.
+         */
+        void read(const std::string &filename);
+        
+        /**
+         * Get the melting temperature.
+         */
+        double T(const double p, const double radius) const;
+        
+        /**
+         * Is the melting curve denpendent on radius.
+         * The melting curve can be dependent on radius or pressure.
+         */
+        bool is_radius;
+        
+        /**
+         * Number of data points in the melting curve data.
+         */
+        unsigned int Num_points;
+    private:
+        /**
+         * Data array for temperature.
+         */
+        std::vector<double> T_array;
+        
+        /**
+         * Data array for pressure/radius.
+         */
+        std::vector<double> P_array;
+        
+        /**
+         * Name of the data file.
+         */
+        std::string data_filename;
+    };
+
 
     /**
-     * A class that implements temperature initial conditions based on a
-     * functional description provided in the input file.
+     * A class that implements temperature initial conditions based on solidus provided by a data file.
      *
      * @ingroup InitialConditionsModels
      */
@@ -79,31 +124,50 @@ namespace aspect
         const Tensor<1,dim>
         spherical_surface_coordinates(const Tensor<1,dim> &position) const;
 
-		double       litho_thick;
-		double       Magnitude_T;
-		double       Magnitude_lith;
-		double       deltaT;
-		int          lateral_wave_number_1;
-		int          lateral_wave_number_2;
-		std::string  solidus_filename;
+        /**
+         * Lithosphere thickness.
+         */
+        double       litho_thick;
+        
+        /**
+         * Magnitude of temperature perturbation.
+         */
+        double       magnitude_T;
+        
+        /**
+         * Magnitude of lithosphere thickness perturbation.
+         */
+        double       magnitude_lith;
+        
+        /**
+         * Temperature difference from solidus, so the initial condition can be super-solidus or sub-solidus.
+         */
+        double       deltaT;
+
+        /**
+         * The lateral wave number  of the harmonic perturbation in the first
+         * dimension. This is the only lateral wave number in 2D and equals
+         * the degree of the spherical harmonics in a 3D spherical shell.
+         */
+        int          lateral_wave_number_1; 
+        
+        /**
+         * The lateral wave number of the harmonic perturbation in the second
+         * dimension. This is not used in 2D and equals the order of the
+         * spherical harmonics in a 3D spherical shell.
+         */
+        int          lateral_wave_number_2;
+        
+        /**
+         * The data file name for solidus data. 
+         */
+        std::string  solidus_filename;
+        
+        /**
+         * Data class for melting curve
+         */
+         Melting_curve solidus_curve;
     };
-  }
-  namespace melting
-  {
-		class Melting_curve
-		{
-  		public:
-   			Melting_curve(const std::string &filename);
-			void read(const std::string &filename);
-    		double T(const double p, const double radius) const;
-			bool is_radius;
-			unsigned int Num_points;
-  		private:
-    		//unsigned int Num_points;
-    		std::vector<double> T_array;
-    		std::vector<double> P_array;
-    		//bool is_radius;
-		};
   }
 }
 
