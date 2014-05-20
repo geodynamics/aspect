@@ -223,10 +223,6 @@ namespace aspect
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
                              "Reference density $\\rho_0$. Units: $kg/m^3$.");
-          prm.declare_entry ("Reference temperature", "293",
-                             Patterns::Double (0),
-                             "The reference temperature $T_0$. The reference temperature is used "
-                             "in both the density and viscosity formulas. Units: $K$.");
           prm.declare_entry ("Viscosity", "1e21",
                              Patterns::Double (0),
                              "The value of the constant viscosity $\\eta_0$. Units: $kg/m/s$.");
@@ -263,13 +259,11 @@ namespace aspect
         prm.enter_subsection("Simple compressible model");
         {
           reference_rho              = prm.get_double ("Reference density");
-          reference_T                = prm.get_double ("Reference temperature");
           eta                        = prm.get_double ("Viscosity");
           k_value                    = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
           reference_compressibility  = prm.get_double ("Reference compressibility");
-
         }
         prm.leave_subsection();
       }

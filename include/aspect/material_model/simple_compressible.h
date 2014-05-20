@@ -180,15 +180,33 @@ namespace aspect
          */
 
       private:
+        /**
+         * The reference surface temperature
+         */
         double reference_rho;
-        double reference_T;
+
+        /**
+         * The constant viscosity
+         */
         double eta;
+
+        /**
+         * The constant thermal expansivity
+         */
         double thermal_alpha;
+
+        /**
+         * The constant specific heat
+         */
         double reference_specific_heat;
+
+        /**
+         * The constant compressibility.
+         */
         double reference_compressibility;
 
         /**
-         * The thermal conductivity.
+         * The constant thermal conductivity.
          */
         double k_value;
 
