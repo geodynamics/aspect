@@ -1630,16 +1630,11 @@ namespace aspect
   void Simulator<dim>::assemble_advection_system (const AdvectionField &advection_field)
   {
     if (advection_field.is_temperature())
-      {
-        computing_timer.enter_section ("   Assemble temperature system");
-        system_matrix.block (2,2) = 0;
-      }
+      computing_timer.enter_section ("   Assemble temperature system");
     else
-      {
-        computing_timer.enter_section ("   Assemble composition system");
-        system_matrix.block(3+advection_field.compositional_variable,
-                            3+advection_field.compositional_variable) = 0;
-      }
+      computing_timer.enter_section ("   Assemble composition system");
+
+    system_matrix.block (advection_field.block_index(introspection),advection_field.block_index(introspection)) = 0;
     system_rhs = 0;
 
     const std::pair<double,double>

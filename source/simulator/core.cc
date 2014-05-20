@@ -1085,7 +1085,7 @@ namespace aspect
               assemble_advection_system (AdvectionField::composition(c));
               build_advection_preconditioner(AdvectionField::composition(c),
                                              C_preconditioner);
-              solve_advection(AdvectionField::composition(c)); // this is correct, 0 would be temperature
+              solve_advection(AdvectionField::composition(c));
               current_linearization_point.block(introspection.block_indices.compositional_fields[c])
                 = solution.block(introspection.block_indices.compositional_fields[c]);
             }
