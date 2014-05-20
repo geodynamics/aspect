@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: density.cc 1624 2013-04-28 21:15:28Z heister $  */
 
 
 #include <aspect/mesh_refinement/viscosity.h>

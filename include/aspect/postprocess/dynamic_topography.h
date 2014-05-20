@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: dynamic_topography.h 2505 2014-04-13 14:49:25Z heister $  */
 
 
 #ifndef __aspect__postprocess_surface_topography_h

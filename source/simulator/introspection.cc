@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/introspection.h>
@@ -43,19 +42,6 @@ namespace aspect
 
   template <int dim>
   const unsigned int
-  Introspection<dim>::BlockIndices::velocities;
-
-  template <int dim>
-  const unsigned int
-  Introspection<dim>::BlockIndices::pressure;
-
-  template <int dim>
-  const unsigned int
-  Introspection<dim>::BlockIndices::temperature;
-
-
-  template <int dim>
-  const unsigned int
   Introspection<dim>::BaseElements::velocities;
 
   template <int dim>
@@ -71,16 +57,28 @@ namespace aspect
   {
     template <int dim>
     std::vector<unsigned int>
-    component_to_block_mapping (const unsigned int n_components)
+    component_to_block_mapping (const unsigned int n_components,
+        const bool split_vel_pressure)
     {
       // set up a mapping between vector components to the blocks they
-      // correspond to. each variable has its own block except
-      // for the velocities which are all mapped into block 0
+      // correspond to.
       std::vector<unsigned int> components_to_blocks (n_components, 0U);
-      components_to_blocks[dim] = 1;
-      components_to_blocks[dim+1] = 2;
-      for (unsigned int i=dim+2; i<n_components; ++i)
-        components_to_blocks[i] = i-dim+1;
+      if (split_vel_pressure)
+        {
+          // each variable has its own block except
+          // for the velocities which are all mapped into block 0
+          components_to_blocks[dim] = 1;
+          components_to_blocks[dim+1] = 2;
+          for (unsigned int i=dim+2; i<n_components; ++i)
+            components_to_blocks[i] = i-dim+1;
+        }
+      else
+        {
+          // here velocity and pressure is block 0:
+          components_to_blocks[dim+1] = 1;
+          for (unsigned int i=dim+2; i<n_components; ++i)
+            components_to_blocks[i] = i-dim;
+        }
 
       return components_to_blocks;
     }
@@ -88,15 +86,16 @@ namespace aspect
 
 
   template <int dim>
-  Introspection<dim>::Introspection(const unsigned int n_compositional_fields)
+  Introspection<dim>::Introspection(const unsigned int n_compositional_fields,
+      const bool split_vel_pressure)
     :
     n_components (dim+2+n_compositional_fields),
-    n_blocks (3+n_compositional_fields),
+    n_blocks (((split_vel_pressure)?3:2)+n_compositional_fields),
     extractors (n_compositional_fields),
     component_indices (n_compositional_fields),
-    block_indices (n_compositional_fields),
+    block_indices (n_compositional_fields, split_vel_pressure),
     base_elements (n_compositional_fields),
-    components_to_blocks (component_to_block_mapping<dim>(n_components)),
+    components_to_blocks (component_to_block_mapping<dim>(n_components, split_vel_pressure)),
     system_dofs_per_block (n_blocks)
   {}
 
@@ -125,9 +124,15 @@ namespace aspect
 
   template <int dim>
   Introspection<dim>::BlockIndices::
-  BlockIndices (const unsigned int n_compositional_fields)
+  BlockIndices (const unsigned int n_compositional_fields,
+      const bool split_vel_pressure)
     :
-    compositional_fields (half_open_sequence(3, 3+n_compositional_fields))
+    velocities(0),
+    pressure (split_vel_pressure?1:0),
+    temperature (split_vel_pressure?2:1),
+    compositional_fields (half_open_sequence(
+        (split_vel_pressure?3:2),
+        (split_vel_pressure?3:2)+n_compositional_fields))
   {}
 
 

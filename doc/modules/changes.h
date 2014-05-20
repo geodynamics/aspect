@@ -6,6 +6,11 @@
  *
  * <ol>
  *
+ * <li> New: Input files can now contain lines ending in backslashes
+ * to concatenate subsequent lines.
+ * <br>
+ * (Menno Fraters, 2014/05/19)
+ *
  * <li> New: There is a new material model called multicomponent for 
  * having an arbitrary number of compositional fields with different
  * material properties, where each compositional field represents a rock

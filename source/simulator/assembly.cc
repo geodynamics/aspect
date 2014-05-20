@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/simulator.h>
@@ -1007,6 +1006,9 @@ namespace aspect
     if (rebuild_stokes_preconditioner == false)
       return;
 
+    if (parameters.use_direct_stokes_solver)
+      return;
+
     computing_timer.enter_section ("   Build Stokes preconditioner");
     pcout << "   Rebuilding Stokes preconditioner..." << std::flush;
 
@@ -1239,33 +1241,23 @@ namespace aspect
         case TemperatureOrComposition::temperature_field:
         {
           computing_timer.enter_section ("   Build temperature preconditioner");
-
-          preconditioner.reset (new LinearAlgebra::PreconditionILU());
-          preconditioner->initialize (system_matrix.block(2,2));
-
-          computing_timer.exit_section();
-
           break;
         }
 
         case TemperatureOrComposition::compositional_field:
         {
           computing_timer.enter_section ("   Build composition preconditioner");
-
-          const unsigned int block_number
-            = 3+temperature_or_composition.compositional_variable;
-          preconditioner.reset (new LinearAlgebra::PreconditionILU());
-          preconditioner->initialize (system_matrix.block(block_number,
-                                                          block_number));
-
-          computing_timer.exit_section();
-
           break;
         }
 
         default:
           Assert (false, ExcNotImplemented());
       }
+
+    const unsigned int block_idx = temperature_or_composition.block_index(introspection);
+    preconditioner.reset (new LinearAlgebra::PreconditionILU());
+    preconditioner->initialize (system_matrix.block(block_idx, block_idx));
+    computing_timer.exit_section();
   }
 
 
@@ -1631,16 +1623,11 @@ namespace aspect
   void Simulator<dim>::assemble_advection_system (const TemperatureOrComposition &temperature_or_composition)
   {
     if (temperature_or_composition.is_temperature())
-      {
         computing_timer.enter_section ("   Assemble temperature system");
-        system_matrix.block (2,2) = 0;
-      }
     else
-      {
         computing_timer.enter_section ("   Assemble composition system");
-        system_matrix.block(3+temperature_or_composition.compositional_variable,
-                            3+temperature_or_composition.compositional_variable) = 0;
-      }
+    const unsigned int block_idx = temperature_or_composition.block_index(introspection);
+    system_matrix.block(block_idx, block_idx) = 0;
     system_rhs = 0;
 
     const std::pair<double,double>
