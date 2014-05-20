@@ -1,6 +1,6 @@
 ############### Global parameters
 
-set Additional shared libraries            = benchmark/inclusion/libplugin.so
+set Additional shared libraries            = ./libplugin.so
 
 
 set Dimension                              = 2
