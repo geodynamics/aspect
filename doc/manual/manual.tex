@@ -1299,10 +1299,10 @@ In reality the boundary conditions of a convecting Earth are not no-slip or
 free slip (i.e. no normal velocity).  Instead, we expect that a free surface
 is a more realistic approximation, since air and water should not prevent the
 flow of rock upward or downward.  This means that we require zero stress on the 
-boundary, or $\sigma \cdot \textbf{n} = 0$. In general there will be flow across 
-the boundary with this boundary condition.  To conserve mass we must then advect 
-the boundary of the domain in the direction of fluid flow.  Thus using a free 
-surface necessitates that the mesh be dynamically deformable.  
+boundary, or $\sigma \cdot \textbf{n} = 0$, where $\sigma = 2 \eta \varepsilon (\textbf{u})$. 
+In general there will be flow across the boundary with this boundary condition.  
+To conserve mass we must then advect the boundary of the domain in the direction 
+of fluid flow.  Thus using a free surface necessitates that the mesh be dynamically deformable.  
 
 \subsubsection{Arbitrary Lagrangian-Eulerian implementation}
 
@@ -1311,7 +1311,7 @@ challenging.  Eulerian meshes are well behaved, but they do not move with the
 fluid motions, which makes them difficult for use with free surfaces. 
 Lagrangian meshes do move with the fluid, but they quickly become so 
 distorted that remeshing is required. \aspect{} implements an Arbitrary 
-Lagrangian-Eulerian framework for handling motion of the mesh.  The ALE 
+Lagrangian-Eulerian (ALE) framework for handling motion of the mesh.  The ALE 
 approach tries to retain the benefits of both the Lagrangian and the Eulerian
 approaches by allowing the mesh motion $\textbf{u}_m$ to be largely independent of 
 the fluid. The mass conservation condition requires that 
@@ -1323,7 +1323,7 @@ to keep the mesh as well behaved as possible.
 velocity is calculated by solving
 
 \begin{align}
-\nabla^2 \textbf{u}_m &= 0 & \qquad & \textrm{in } \Omega \\ 
+-\Delta \textbf{u}_m &= 0 & \qquad & \textrm{in } \Omega \\ 
 \textbf{u}_m &= \left( \textbf{u} \cdot \textbf{n} \right) \textbf{n} & \qquad & \textrm{on } \partial \Omega_{\textrm{free surface}} \\
 \textbf{u}_m \cdot \textbf{n} &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{free slip}} \\
 \textbf{u}_m &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{no slip}} \\
