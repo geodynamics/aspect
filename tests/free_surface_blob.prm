@@ -78,8 +78,8 @@ end
 
 subsection Mesh refinement
   set Additional refinement times        =
-  set Initial adaptive refinement        = 5                       # default: 2
-  set Initial global refinement          = 1                      # default: 2
+  set Initial adaptive refinement        = 1                       # default: 2
+  set Initial global refinement          = 3                      # default: 2
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.00
   set Strategy                           = temperature
@@ -103,9 +103,9 @@ end
 
 subsection Termination criteria
   set Termination criteria = end step
-  set End step = 20
+  set End step = 10
 end
 
 subsection Postprocess
-  set List of postprocessors = topography,velocity statistics
+  set List of postprocessors = topography,velocity statistics,
 end

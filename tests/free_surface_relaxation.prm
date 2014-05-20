@@ -108,15 +108,9 @@ end
 
 subsection Termination criteria
   set Termination criteria = end step
-  set End step = 20
+  set End step = 10
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization,topography,velocity statistics
-  subsection Visualization
-    set List of output variables = 
-    set Number of grouped files       = 1
-    set Output format                 = vtu
-    set Time between graphical output = 1.e4
-  end
+  set List of postprocessors = topography,velocity statistics
 end

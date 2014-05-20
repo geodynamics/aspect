@@ -10,17 +10,9 @@ Loading shared library <./libfree_surface_relaxation.so>
 Number of active cells: 1,000 (on 1 levels)
 Number of degrees of freedom: 13,494 (8,282+1,071+4,141)
 
-FS: setup_dofs()
-FS: n_dofs = 2142
-FS: get initial mesh vertices
-		solved, its = 0
+Number of free surface degrees of freedom: 2142
 *** Timestep 0:  t=0 years
-FS: free_surface_execute()
-		solved, its = 0
-FS: solve_elliptic_problem()
-		solved, its = 0
-FS: mesh velocity: 0
-FS: displace_mesh()
+   Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
@@ -39,17 +31,11 @@ FS: displace_mesh()
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     Writing graphical output: output-free_surface_relaxation/solution-00000
-     Topography min/max:       -1.5e+04 m, 1.5e+04 m, 
-     RMS, max velocity:        0.0623 m/year, 0.201 m/year
+     Topography min/max: -1.5e+04 m, 1.5e+04 m, 
+     RMS, max velocity:  0.0623 m/year, 0.201 m/year
 
 *** Timestep 1:  t=245.098 years
-FS: free_surface_execute()
-		solved, its = 10
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.84908e-08
-FS: displace_mesh()
+   Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+8 iterations.
@@ -59,12 +45,7 @@ FS: displace_mesh()
      RMS, max velocity:  0.062 m/year, 0.2 m/year
 
 *** Timestep 2:  t=491.632 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.82457e-08
-FS: displace_mesh()
+   Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+6 iterations.
@@ -74,12 +55,7 @@ FS: displace_mesh()
      RMS, max velocity:  0.0618 m/year, 0.199 m/year
 
 *** Timestep 3:  t=739.215 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.80777e-08
-FS: displace_mesh()
+   Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+3 iterations.
@@ -89,12 +65,7 @@ FS: displace_mesh()
      RMS, max velocity:  0.0616 m/year, 0.198 m/year
 
 *** Timestep 4:  t=987.856 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.79097e-08
-FS: displace_mesh()
+   Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+3 iterations.
@@ -104,12 +75,7 @@ FS: displace_mesh()
      RMS, max velocity:  0.0614 m/year, 0.198 m/year
 
 *** Timestep 5:  t=1237.56 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.77416e-08
-FS: displace_mesh()
+   Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+3 iterations.
@@ -121,29 +87,24 @@ FS: displace_mesh()
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       3.9s |            |
+| Total wallclock time elapsed since start    |      3.95s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         6 |      1.16s |        30% |
-| Assemble temperature system     |         6 |     0.795s |        20% |
-| Build Stokes preconditioner     |         6 |     0.845s |        22% |
-| Build temperature preconditioner|         6 |    0.0248s |      0.64% |
-| Solve Stokes system             |         6 |     0.575s |        15% |
-| Solve temperature system        |         6 |   0.00399s |       0.1% |
-| FreeSurface                     |         6 |     0.242s |       6.2% |
-| Initialization                  |         2 |    0.0279s |      0.72% |
-| Postprocessing                  |         6 |     0.104s |       2.7% |
-| Setup dof systems               |         1 |     0.102s |       2.6% |
+| Assemble Stokes system          |         6 |       1.2s |        30% |
+| Assemble temperature system     |         6 |     0.808s |        20% |
+| Build Stokes preconditioner     |         6 |     0.871s |        22% |
+| Build temperature preconditioner|         6 |    0.0254s |      0.64% |
+| Solve Stokes system             |         6 |     0.611s |        15% |
+| Solve temperature system        |         6 |   0.00425s |      0.11% |
+| FreeSurface                     |         6 |     0.255s |       6.4% |
+| Initialization                  |         2 |    0.0281s |      0.71% |
+| Postprocessing                  |         6 |    0.0285s |      0.72% |
+| Setup dof systems               |         1 |       0.1s |       2.5% |
 +---------------------------------+-----------+------------+------------+
 
 *** Timestep 6:  t=1488.34 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.75733e-08
-FS: displace_mesh()
+   Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+3 iterations.
@@ -153,12 +114,7 @@ FS: displace_mesh()
      RMS, max velocity:  0.061 m/year, 0.196 m/year
 
 *** Timestep 7:  t=1740.21 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.7405e-08
-FS: displace_mesh()
+   Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+3 iterations.
@@ -168,12 +124,7 @@ FS: displace_mesh()
      RMS, max velocity:  0.0608 m/year, 0.196 m/year
 
 *** Timestep 8:  t=1993.17 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.72366e-08
-FS: displace_mesh()
+   Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+3 iterations.
@@ -183,12 +134,7 @@ FS: displace_mesh()
      RMS, max velocity:  0.0606 m/year, 0.195 m/year
 
 *** Timestep 9:  t=2247.23 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.70681e-08
-FS: displace_mesh()
+   Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+3 iterations.
@@ -198,12 +144,7 @@ FS: displace_mesh()
      RMS, max velocity:  0.0604 m/year, 0.194 m/year
 
 *** Timestep 10:  t=2502.4 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.68995e-08
-FS: displace_mesh()
+   Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+3 iterations.
@@ -215,227 +156,39 @@ FS: displace_mesh()
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       6.8s |            |
+| Total wallclock time elapsed since start    |      6.98s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        11 |      2.13s |        31% |
-| Assemble temperature system     |        11 |      1.46s |        21% |
-| Build Stokes preconditioner     |        11 |      1.55s |        23% |
-| Build temperature preconditioner|        11 |    0.0458s |      0.67% |
-| Solve Stokes system             |        11 |     0.878s |        13% |
-| Solve temperature system        |        11 |   0.00726s |      0.11% |
-| FreeSurface                     |        11 |     0.445s |       6.5% |
-| Initialization                  |         2 |    0.0279s |      0.41% |
-| Postprocessing                  |        11 |     0.126s |       1.8% |
-| Setup dof systems               |         1 |     0.102s |       1.5% |
-+---------------------------------+-----------+------------+------------+
-
-*** Timestep 11:  t=2758.34 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.67308e-08
-FS: displace_mesh()
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
-
-   Postprocessing:
-     Topography min/max: -1.448e+04 m, 1.446e+04 m, 
-     RMS, max velocity:  0.06 m/year, 0.193 m/year
-
-*** Timestep 12:  t=3014.9 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.65623e-08
-FS: displace_mesh()
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
-
-   Postprocessing:
-     Topography min/max: -1.443e+04 m, 1.441e+04 m, 
-     RMS, max velocity:  0.0598 m/year, 0.192 m/year
-
-*** Timestep 13:  t=3272.09 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.63941e-08
-FS: displace_mesh()
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
-
-   Postprocessing:
-     Topography min/max: -1.439e+04 m, 1.436e+04 m, 
-     RMS, max velocity:  0.0596 m/year, 0.192 m/year
-
-*** Timestep 14:  t=3529.9 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.62262e-08
-FS: displace_mesh()
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
-
-   Postprocessing:
-     Topography min/max: -1.434e+04 m, 1.431e+04 m, 
-     RMS, max velocity:  0.0594 m/year, 0.191 m/year
-
-*** Timestep 15:  t=3788.34 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.60584e-08
-FS: displace_mesh()
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
-
-   Postprocessing:
-     Topography min/max: -1.429e+04 m, 1.426e+04 m, 
-     RMS, max velocity:  0.0592 m/year, 0.19 m/year
-
-
-
-+---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       9.7s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
-+---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        16 |       3.1s |        32% |
-| Assemble temperature system     |        16 |      2.13s |        22% |
-| Build Stokes preconditioner     |        16 |      2.25s |        23% |
-| Build temperature preconditioner|        16 |    0.0662s |      0.68% |
-| Solve Stokes system             |        16 |      1.17s |        12% |
-| Solve temperature system        |        16 |    0.0105s |      0.11% |
-| FreeSurface                     |        16 |      0.65s |       6.7% |
-| Initialization                  |         2 |    0.0279s |      0.29% |
-| Postprocessing                  |        16 |     0.148s |       1.5% |
-| Setup dof systems               |         1 |     0.102s |       1.1% |
-+---------------------------------+-----------+------------+------------+
-
-*** Timestep 16:  t=4047.42 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.58909e-08
-FS: displace_mesh()
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
-
-   Postprocessing:
-     Topography min/max: -1.425e+04 m, 1.421e+04 m, 
-     RMS, max velocity:  0.059 m/year, 0.19 m/year
-
-*** Timestep 17:  t=4307.14 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.57236e-08
-FS: displace_mesh()
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
-
-   Postprocessing:
-     Topography min/max: -1.42e+04 m, 1.416e+04 m, 
-     RMS, max velocity:  0.0588 m/year, 0.189 m/year
-
-*** Timestep 18:  t=4567.51 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.55566e-08
-FS: displace_mesh()
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
-
-   Postprocessing:
-     Topography min/max: -1.415e+04 m, 1.411e+04 m, 
-     RMS, max velocity:  0.0586 m/year, 0.188 m/year
-
-*** Timestep 19:  t=4828.52 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.53898e-08
-FS: displace_mesh()
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
-
-   Postprocessing:
-     Topography min/max: -1.41e+04 m, 1.406e+04 m, 
-     RMS, max velocity:  0.0584 m/year, 0.188 m/year
-
-*** Timestep 20:  t=5090.19 years
-FS: free_surface_execute()
-		solved, its = 9
-FS: solve_elliptic_problem()
-		solved, its = 7
-FS: mesh velocity: 4.52232e-08
-FS: displace_mesh()
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
-
-   Postprocessing:
-     Topography min/max: -1.406e+04 m, 1.401e+04 m, 
-     RMS, max velocity:  0.0582 m/year, 0.187 m/year
-
-
-
-+---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      12.6s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
-+---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        21 |      4.07s |        32% |
-| Assemble temperature system     |        21 |      2.79s |        22% |
-| Build Stokes preconditioner     |        21 |      2.98s |        24% |
-| Build temperature preconditioner|        21 |    0.0859s |      0.68% |
-| Solve Stokes system             |        21 |      1.47s |        12% |
-| Solve temperature system        |        21 |    0.0137s |      0.11% |
-| FreeSurface                     |        21 |     0.855s |       6.8% |
-| Initialization                  |         2 |    0.0279s |      0.22% |
-| Postprocessing                  |        21 |      0.17s |       1.3% |
-| Setup dof systems               |         1 |     0.102s |      0.81% |
+| Assemble Stokes system          |        11 |      2.21s |        32% |
+| Assemble temperature system     |        11 |      1.49s |        21% |
+| Build Stokes preconditioner     |        11 |      1.61s |        23% |
+| Build temperature preconditioner|        11 |    0.0465s |      0.67% |
+| Solve Stokes system             |        11 |     0.928s |        13% |
+| Solve temperature system        |        11 |   0.00762s |      0.11% |
+| FreeSurface                     |        11 |      0.47s |       6.7% |
+| Initialization                  |         2 |    0.0281s |       0.4% |
+| Postprocessing                  |        11 |    0.0509s |      0.73% |
+| Setup dof systems               |         1 |       0.1s |       1.4% |
 +---------------------------------+-----------+------------+------------+
 
 Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      12.6s |            |
+| Total wallclock time elapsed since start    |      6.98s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        21 |      4.07s |        32% |
-| Assemble temperature system     |        21 |      2.79s |        22% |
-| Build Stokes preconditioner     |        21 |      2.98s |        24% |
-| Build temperature preconditioner|        21 |    0.0859s |      0.68% |
-| Solve Stokes system             |        21 |      1.47s |        12% |
-| Solve temperature system        |        21 |    0.0137s |      0.11% |
-| FreeSurface                     |        21 |     0.855s |       6.8% |
-| Initialization                  |         2 |    0.0279s |      0.22% |
-| Postprocessing                  |        21 |      0.17s |       1.3% |
-| Setup dof systems               |         1 |     0.102s |      0.81% |
+| Assemble Stokes system          |        11 |      2.21s |        32% |
+| Assemble temperature system     |        11 |      1.49s |        21% |
+| Build Stokes preconditioner     |        11 |      1.61s |        23% |
+| Build temperature preconditioner|        11 |    0.0465s |      0.67% |
+| Solve Stokes system             |        11 |     0.928s |        13% |
+| Solve temperature system        |        11 |   0.00762s |      0.11% |
+| FreeSurface                     |        11 |      0.47s |       6.7% |
+| Initialization                  |         2 |    0.0281s |       0.4% |
+| Postprocessing                  |        11 |    0.0509s |      0.73% |
+| Setup dof systems               |         1 |       0.1s |       1.4% |
 +---------------------------------+-----------+------------+------------+
 
