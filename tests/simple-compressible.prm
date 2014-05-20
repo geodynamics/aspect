@@ -43,7 +43,6 @@ subsection Material model
     set Reference temperature = 1600
     set Thermal expansion coefficient = 3e-5
     set Viscosity = 1e21
-
     set Reference compressibility = 2.5e-12
   end
 
