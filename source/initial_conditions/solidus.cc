@@ -297,6 +297,6 @@ namespace aspect
                                        "of early Mars that the planet is just freeze up from magma ocean, "
                                        "using the solidus from Parmentier et al., "
                                        "Melt_solid segregation, Fractional magma ocean solidification, and implications for "
-                                       "longterm planetary evolution. Luna and Planetary Science, 2007.");
+                                       "longterm planetary evolution. Luna and Planetary Science, 2007.")
   }
 }
