@@ -157,7 +157,10 @@ void possibly_load_shared_libs (const std::string &parameter_filename)
 
 
 /**
- *  Look up break line sign (\\) at the end of a line and merge this line with the next one
+ *  Look up break line sign (\\) at the end of a line and merge this line with the next one.
+ *  Return the result as a string in which all lines of the input file are
+ *  separated by \n characters, unless the corresponding lines ended
+ *  in backslashes.
  */
 std::string
 expand_backslashes (const std::string &filename)
@@ -169,28 +172,40 @@ expand_backslashes (const std::string &filename)
   std::ifstream input (filename.c_str());
   while (input)
     {
-      // get one line and strip spaces at the front and back
+      // get one line and strip spaces at the back
       std::string line;
       std::getline(input, line);
       while ((line.size() > 0)
              && (line[line.size() - 1] == ' ' || line[line.size() - 1] == '\t'))
         line.erase(line.size() - 1, std::string::npos);
 
+      // if the line ends in a backslash, add it without the backslash to
+      // the buffer and increase the counter for the number of lines we have
+      // just concatenated
       if ((line.size() > 0) && (line[line.size()-1] == '\\'))
         {
           result += line.substr(0, line.size()-2);
           ++need_empty_lines;
         }
       else
+        // if it doesn't end in a newline, concatenate the current line
+        // with what we have in the buffer and add the \n character
         {
           result += line;
           result += '\n';
 
+          // if we have just added a line (not ending in a backslash)
+          // to something that was obtained by addressing backslashes,
+          // then add some empty lines to make sure that the line
+          // counter is still correct at least for all lines that don't
+          // end in a backslash (so that we can ensure that errors
+          // message propagating out of ParameterHandler)
           for (; need_empty_lines>0; --need_empty_lines)
             result += '\n';
         }
     }
 
+  // finally return whatever we have in the buffer
   return result;
 }
 
