@@ -482,9 +482,9 @@ namespace aspect
     statistics.add_value("Number of temperature degrees of freedom",
                          introspection.system_dofs_per_block[introspection.block_indices.temperature]);
     if (parameters.n_compositional_fields > 0)
-      statistics.add_value("Number of composition degrees of freedom",
-                           introspection.system_dofs_per_block[introspection.block_indices.compositional_fields[0]]);
-
+      statistics.add_value("Number of degrees of freedom for all compositions",
+          parameters.n_compositional_fields
+          * introspection.system_dofs_per_block[introspection.block_indices.compositional_fields[0]]);
 
     // then interpolate the current boundary velocities. this adds to
     // the current_constraints object we already have
