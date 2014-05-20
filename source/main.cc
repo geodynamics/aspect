@@ -184,7 +184,7 @@ expand_backslashes (const std::string &filename)
       // just concatenated
       if ((line.size() > 0) && (line[line.size()-1] == '\\'))
         {
-          result += line.substr(0, line.size()-2);
+          result += line.substr(0, line.size()-1);
           ++need_empty_lines;
         }
       else

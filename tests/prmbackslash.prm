@@ -1,11 +1,11 @@
-# a test that tests \\
+# a test that tests \
 #
-\\
+\
 
 set Dimension = 2
 set CFL number                             = 1.0
-set End \\
-time                               = \\
+set End \
+time                               = \
 1e7
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
@@ -18,8 +18,8 @@ subsection Boundary temperature model
   set Model name = box
 end
 
-# \\ test
-# \\
+# \ test
+# \
 bla
 
 
@@ -28,7 +28,7 @@ subsection Gravity model
 end
 
 
-subsection Geometry \\
+subsection Geometry \
 model
   set Model name = box
 
