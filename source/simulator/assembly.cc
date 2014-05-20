@@ -1254,9 +1254,9 @@ namespace aspect
           Assert (false, ExcNotImplemented());
       }
 
-    unsigned int blockidx = temperature_or_composition.block_index(introspection);
+    const unsigned int block_idx = temperature_or_composition.block_index(introspection);
     preconditioner.reset (new LinearAlgebra::PreconditionILU());
-    preconditioner->initialize (system_matrix.block(blockidx, blockidx));
+    preconditioner->initialize (system_matrix.block(block_idx, block_idx));
     computing_timer.exit_section();
   }
 
@@ -1626,8 +1626,8 @@ namespace aspect
         computing_timer.enter_section ("   Assemble temperature system");
     else
         computing_timer.enter_section ("   Assemble composition system");
-    unsigned int blockidx = temperature_or_composition.block_index(introspection);
-    system_matrix.block(blockidx, blockidx) = 0;
+    const unsigned int block_idx = temperature_or_composition.block_index(introspection);
+    system_matrix.block(block_idx, block_idx) = 0;
     system_rhs = 0;
 
     const std::pair<double,double>
