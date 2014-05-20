@@ -573,6 +573,12 @@ namespace aspect
        * on this new mesh, and interpolate the old solutions onto the new
        * mesh.
        *
+       * @param[in] max_grid_level The maximum refinement level of the
+       * mesh. This is the sum of the initial global refinement and the
+       * initial adaptive refinement (as provided by the user in the input
+       * file) and in addition it gets increased by one at each additional
+       * refinement time.
+       *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
        */

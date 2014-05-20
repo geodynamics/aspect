@@ -49,12 +49,10 @@ namespace aspect
          * After cells have been marked for coarsening/refinement, apply
          * additional criteria independent of the error estimate.
          *
-         * @param[in] max_grid_level The maximum refinement level of the
-         * mesh
          */
         virtual
         void
-        tag_additional_cells (unsigned int max_grid_level) const;
+        tag_additional_cells () const;
 
         /**
          * Declare the parameters this class takes through input files.

@@ -73,7 +73,8 @@ namespace aspect
         ~Interface ();
 
         /**
-         * Execute this mesh refinement criterion.
+         * Execute this mesh refinement criterion. The default implementation
+         * sets all the error indicators to zero.
          *
          * @param[out] error_indicators A vector that for every active cell of
          * the current mesh (which may be a partition of a distributed mesh)
@@ -86,14 +87,12 @@ namespace aspect
 
         /**
          * After cells have been marked for coarsening/refinement, apply
-         * additional criteria independent of the error estimate.
-         *
-         * @param[in] max_grid_level The maximum refinement level of the
-         * mesh
+         * additional criteria independent of the error estimate. The
+         * default implementation does nothing.
          */
         virtual
         void
-        tag_additional_cells (unsigned int max_grid_level) const;
+        tag_additional_cells () const;
       
         /**
          * Declare the parameters this class takes through input files.
@@ -171,7 +170,7 @@ namespace aspect
          */
         virtual
         void
-        tag_additional_cells (unsigned int max_grid_level) const;
+        tag_additional_cells () const;
 
         /**
          * Declare the parameters of all known mesh refinement plugins, as

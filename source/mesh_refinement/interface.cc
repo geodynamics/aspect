@@ -48,7 +48,7 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::tag_additional_cells (unsigned int) const
+    Interface<dim>::tag_additional_cells () const
     {}
 
 
@@ -213,7 +213,7 @@ namespace aspect
 
     template <int dim>
     void
-    Manager<dim>::tag_additional_cells (unsigned int max_grid_level) const
+    Manager<dim>::tag_additional_cells () const
     {
       Assert (mesh_refinement_objects.size() > 0, ExcInternalError());
 
@@ -226,7 +226,7 @@ namespace aspect
         {
           try
             {
-              (*p)->tag_additional_cells (max_grid_level);
+              (*p)->tag_additional_cells ();
             }
 
           // plugins that throw exceptions usually do not result in
