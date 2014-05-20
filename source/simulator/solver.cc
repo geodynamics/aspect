@@ -537,7 +537,7 @@ namespace aspect
       pcout << solver_control_cheap.last_step() << '+'
             << solver_control_expensive.last_step() << " iterations.";
 	//time_t timediff = ; 
-	pcout << " Time: " << std::time(NULL)-starttime << "s."; // calculate and output the time it took to solve the stokes of this the nonlinear itteration
+	pcout << " Solve time: " << std::time(NULL)-starttime << " seconds."; // calculate and output the time it took to solve the stokes of this the nonlinear itteration
     pcout << std::endl;
 
     statistics.add_value("Iterations for Stokes solver",
