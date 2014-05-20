@@ -56,7 +56,15 @@ namespace aspect
     {
       prm.declare_entry("Free surface stabilization theta", "0.5",
                          Patterns::Double(0,1),
-                         "Theta from Kaus et al 2010");
+                         "Theta parameter described in Kaus et. al. 2010. "
+                         "An unstabilized free surface can overshoot its "
+                         "equilibrium position quite easily and generate "
+                         "unphysical results.  One solution is to use a "
+                         "quasi-implicit correction term to the forces near the "
+                         "free surface.  This parameter describes how much "
+                         "the free surface is stabilized with this term, "
+                         "where zero is no stabilization, and one is fully "
+                         "implicit.");
     }
     prm.leave_subsection ();
   }
