@@ -20,8 +20,8 @@
 /*  $Id$  */
 
 
-#ifndef __aspect__postprocess_radioactive_heating_statistics_h
-#define __aspect__postprocess_radioactive_heating_statistics_h
+#ifndef __aspect__postprocess_internal_heating_statistics_h
+#define __aspect__postprocess_internal_heating_statistics_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
@@ -32,16 +32,16 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes some statistics about the radioactive heating.
+     * A postprocessor that computes some statistics about the internal heating rate.
      *
      * @ingroup Postprocessing
      */
     template <int dim>
-    class Radioactive_Heating_Statistics : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class InternalHeatingStatistics : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
-         * Evaluate the solution for some radioactive heating statistics.
+         * Evaluate the solution for some internal heating rate statistics.
          */
         virtual
         std::pair<std::string,std::string>

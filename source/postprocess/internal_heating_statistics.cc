@@ -20,7 +20,7 @@
 /*  $Id$  */
 
 
-#include <aspect/postprocess/radioactive_heating_statistics.h>
+#include <aspect/postprocess/internal_heating_statistics.h>
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -36,7 +36,7 @@ namespace aspect
   {
     template <int dim>
     std::pair<std::string,std::string>
-    Radioactive_Heating_Statistics<dim>::execute (TableHandler &statistics)
+    InternalHeatingStatistics<dim>::execute (TableHandler &statistics)
     {
         const HeatingModel::Interface<dim> &heating_model=this->get_heating_model();
 
@@ -127,9 +127,9 @@ namespace aspect
 {
   namespace Postprocess
   {
-    ASPECT_REGISTER_POSTPROCESSOR(Radioactive_Heating_Statistics,
-                                  "radioactive heating statistics",
+    ASPECT_REGISTER_POSTPROCESSOR(InternalHeatingStatistics,
+                                  "internal heating statistics",
                                   "A postprocessor that computes some statistics about "
-                                  "radioactive heating, averaged by volume. ")
+                                  "internal heating, averaged by volume. ")
   }
 }
