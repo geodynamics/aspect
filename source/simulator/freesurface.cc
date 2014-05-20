@@ -625,9 +625,11 @@ namespace aspect
                const Tensor<1,dim> w =     fe_face_values[velocities].value(i, q_point);
                const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
 
-               double pressure_perturbation = std::abs(sim.material_model->reference_density()/*-free_surface_density*/)*
+               //TODO we should use the actual density, not the reference density here.
+               double pressure_perturbation = std::abs(sim.material_model->reference_density())*
                                               sim.time_step*free_surface_theta*g_norm;
 
+               //The fictive stabilization stress is (w.g)*(v.n)
                const double stress_value = -pressure_perturbation*
                                             (w*g_hat) * (v*n_hat)
                                            *fe_face_values.JxW(q_point);
