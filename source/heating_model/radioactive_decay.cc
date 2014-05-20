@@ -43,19 +43,19 @@ namespace aspect
         const Point<dim> &position) const
     {
         double timedependent_radioactive_heating_rate=0;
-        if(num_radio_heating_elements!=0)
+        if(n_radio_heating_elements!=0)
         {
             double crust_percent=0;
             if(is_crust_defined_by_composition)
             {
-                AssertThow(crust_composition_num<composition.size(),ExcMessage("The composition number of crust is "
+                AssertThrow(crust_composition_num < composition.size(), ExcMessage("The composition number of crust is "
                                 " larger than number of composition fields."));
                 crust_percent=composition[crust_composition_num];
                 if(crust_percent<0)crust_percent=0;
                 if(crust_percent>1)crust_percent=1;
             }
             else
-                if(this->geometry_model->depth(position) < crust_depth)
+                if((this->get_geometry_model).depth(position) < crust_depth)
                     crust_percent=1.;
                     
             for(unsigned i_radio=0;i_radio<num_radio_heating_elements;i_radio++)
@@ -129,32 +129,32 @@ namespace aspect
         prm.enter_subsection("Radioactive decay");
         {
         
-            num_radio_heating_elements= prm.get_integer ("Number of elements");
+            n_radio_heating_elements= prm.get_integer ("Number of elements");
             radioactive_heating_rate=Utilities::string_to_double
                 (Utilities::split_string_list
                 (prm.get("Heating rate")));
-            AssertThrow(radioactive_heating_rate.size()==num_radio_heating_elements,
+            AssertThrow(radioactive_heating_rate.size()==n_radio_heating_elements,
                 ExcMessage("Number of heating rate entities does not match "
                            "the number of radioactive elements."));
                            
             half_decay_time=Utilities::string_to_double
                 (Utilities::split_string_list
                  (prm.get("Half decay time")));
-            AssertThrow(half_decay_time.size()==num_radio_heating_elements,
+            AssertThrow(half_decay_time.size()==n_radio_heating_elements,
                 ExcMessage("Number of half decay time entities does not match "
                            "the number of radioactive elements."));
                            
             radioactive_initial_consentration_crust=Utilities::string_to_double
                 (Utilities::split_string_list
                 (prm.get("Initial consentration crust")));
-            AssertThrow(radioactive_initial_consentration_crust.size()==num_radio_heating_elements,
+            AssertThrow(radioactive_initial_consentration_crust.size()==n_radio_heating_elements,
                 ExcMessage("Number of initial consentration entities does not match "
                            "the number of radioactive elements."));
                            
             radioactive_initial_consentration_mantle=Utilities::string_to_double
                 (Utilities::split_string_list
                 (prm.get("Initial consentration mantle")));
-            AssertThrow(radioactive_initial_consentration_mantle.size()==num_radio_heating_elements,
+            AssertThrow(radioactive_initial_consentration_mantle.size()==n_radio_heating_elements,
                 ExcMessage("Number of initial consentration entities does not match "
                            "the number of radioactive elements."));
 
