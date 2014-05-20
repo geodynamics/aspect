@@ -458,10 +458,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<VisualizationPostprocessors::Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::VisualizationPostprocessors::Interface<2>,classname<2> > \
     dummy_ ## classname ## _2d (&aspect::Postprocess::Visualization<2>::register_visualization_postprocessor, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<VisualizationPostprocessors::Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::VisualizationPostprocessors::Interface<3>,classname<3> > \
     dummy_ ## classname ## _3d (&aspect::Postprocess::Visualization<3>::register_visualization_postprocessor, \
                                 name, description); \
   }
