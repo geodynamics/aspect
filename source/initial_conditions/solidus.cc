@@ -192,7 +192,8 @@ namespace aspect
         {
             prm.declare_entry ("Supersolidus","0e0",
                                Patterns::Double (),
-                               "The difference from solidus.");
+                               "The difference from solidus, that can make the initial temperatuer "
+                               "super-solidus or sub-solidus.  Uints: K");
             prm.declare_entry ("Lithosphere thickness","0",
                                Patterns::Double (0),
                                "The thickness of lithosphere thickness. Unit: m");        
@@ -225,7 +226,7 @@ namespace aspect
             {
                 prm.declare_entry ("Solidus filename", "",
                                    Patterns::Anything(),
-                                   "The solidus filename.");
+                                   "The solidus data filename.");
             }
             prm.leave_subsection();
         }
