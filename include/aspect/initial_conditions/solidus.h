@@ -37,39 +37,39 @@ namespace aspect
      */
     class MeltingCurve
     {
-    public:
+      public:
 
         /**
          * Read the data file into the class.
          */
         void read(const std::string &filename);
-        
+
         /**
          * Get the melting temperature.
          */
         double T(const double p, const double radius) const;
-        
+
         /**
          * Is the melting curve denpendent on radius.
          * The melting curve can be dependent on radius or pressure.
          */
         bool is_radius;
-        
+
         /**
          * Number of data points in the melting curve data.
          */
         unsigned int n_points;
-    private:
+      private:
         /**
          * Data array for temperature.
          */
         std::vector<double> T_array;
-        
+
         /**
          * Data array for pressure/radius.
          */
         std::vector<double> P_or_R_array;
-        
+
         /**
          * Name of the data file.
          */
@@ -106,7 +106,7 @@ namespace aspect
 
         /**
          * Read the parameters this class declares from the parameter
-         * file. 
+         * file.
          */
         virtual
         void
@@ -123,17 +123,17 @@ namespace aspect
          * Lithosphere thickness.
          */
         double       litho_thick;
-        
+
         /**
          * Magnitude of temperature perturbation.
          */
         double       magnitude_T;
-        
+
         /**
          * Magnitude of lithosphere thickness perturbation.
          */
         double       magnitude_lith;
-        
+
         /**
          * Temperature difference from solidus, so the initial condition can be super-solidus or sub-solidus.
          */
@@ -144,24 +144,24 @@ namespace aspect
          * dimension. This is the only lateral wave number in 2D and equals
          * the degree of the spherical harmonics in a 3D spherical shell.
          */
-        int          lateral_wave_number_1; 
-        
+        int          lateral_wave_number_1;
+
         /**
          * The lateral wave number of the harmonic perturbation in the second
          * dimension. This is not used in 2D and equals the order of the
          * spherical harmonics in a 3D spherical shell.
          */
         int          lateral_wave_number_2;
-        
+
         /**
-         * The data file name for solidus data. 
+         * The data file name for solidus data.
          */
         std::string  solidus_filename;
-        
+
         /**
          * Data class for melting curve
          */
-         MeltingCurve solidus_curve;
+        MeltingCurve solidus_curve;
     };
   }
 }
