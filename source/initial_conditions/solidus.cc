@@ -28,7 +28,7 @@
 
 namespace aspect
 {
-    namespace melting
+    namespace InitialConditions
     {
         void Melting_curve::read(const std::string &filename)
         {
@@ -71,6 +71,7 @@ namespace aspect
                         else if(P_Unit!="m")
                             AssertThrow(false,ExcMessage ("Unit of the second column of melting curve data "
                                                             "has to be one of the following: Pa/Gpa/km/m."))
+                    }
                     T_array.push_back(T);
                     P_array.push_back(p);
                     Num_points++;
@@ -104,7 +105,7 @@ namespace aspect
   namespace InitialConditions
   {
     template <int dim>
-    Solidus<dim>::Solidus ()
+    Solidus<dim>::Solidus ():
     solidus_curve()
     {}
 
@@ -187,42 +188,46 @@ namespace aspect
     {
       prm.enter_subsection("Initial conditions");
       {
-        prm.declare_entry ("Supersolidus","0e0",
-                           Patterns::Double (),
-                           "The difference from solidus.");
-        prm.declare_entry ("Lithosphere thickness","0",
-                           Patterns::Double (0),
-                           "The thickness of lithosphere thickness. Unit: m");        
-        prm.enter_subsection("Perturbation");
+        prm.enter_subsection("Solidus");
         {
-            prm.declare_entry ("Temperature amplitude", "0e0",
-                               Patterns::Double (0),
-                               "The amplitude of the initial spherical temperature perturbation in (K)");
-            prm.declare_entry ("Lithosphere thickness amplitude", "0e0",
+            prm.declare_entry ("Supersolidus","0e0",
                                Patterns::Double (),
-                               "The amplitude of the initial lithosphere thickness perturbation in (m)");
-            prm.declare_entry ("Lateral wave number one","3",
-                               Patterns::Integer(),
-                               "Doubled first lateral wave number of the harmonic perturbation. "
-                               "Equals the spherical harmonic degree in 3D spherical shells. "
-                               "In all other cases one equals half of a sine period over "
-                               "the model domain. This allows for single up-/downswings. "
-                               "Negative numbers reverse the sign of the perturbation but are "
-                               "not allowed for the spherical harmonic case.");
-            prm.declare_entry ("Lateral wave number two", "2",
-                               Patterns::Integer (),
-                               "Doubled second lateral wave number of the harmonic perturbation. "
-                               "Equals the spherical harmonic order in 3D spherical shells. "
-                               "In all other cases one equals half of a sine period over "
-                               "the model domain. This allows for single up-/downswings. "
-                               "Negative numbers reverse the sign of the perturbation.");
-        }
-        prm.leave_subsection();
-        prm.enter_subsection ("Data");
-        {
-            prm.declare_entry ("Solidus filename", "",
-                               Patterns::Anything(),
-                               "The solidus filename.");
+                               "The difference from solidus.");
+            prm.declare_entry ("Lithosphere thickness","0",
+                               Patterns::Double (0),
+                               "The thickness of lithosphere thickness. Unit: m");        
+            prm.enter_subsection("Perturbation");
+            {
+                prm.declare_entry ("Temperature amplitude", "0e0",
+                                   Patterns::Double (0),
+                                   "The amplitude of the initial spherical temperature perturbation in (K)");
+                prm.declare_entry ("Lithosphere thickness amplitude", "0e0",
+                                   Patterns::Double (),
+                                   "The amplitude of the initial lithosphere thickness perturbation in (m)");
+                prm.declare_entry ("Lateral wave number one","3",
+                                   Patterns::Integer(),
+                                   "Doubled first lateral wave number of the harmonic perturbation. "
+                                   "Equals the spherical harmonic degree in 3D spherical shells. "
+                                   "In all other cases one equals half of a sine period over "
+                                   "the model domain. This allows for single up-/downswings. "
+                                   "Negative numbers reverse the sign of the perturbation but are "
+                                   "not allowed for the spherical harmonic case.");
+                prm.declare_entry ("Lateral wave number two", "2",
+                                   Patterns::Integer (),
+                                   "Doubled second lateral wave number of the harmonic perturbation. "
+                                   "Equals the spherical harmonic order in 3D spherical shells. "
+                                   "In all other cases one equals half of a sine period over "
+                                   "the model domain. This allows for single up-/downswings. "
+                                   "Negative numbers reverse the sign of the perturbation.");
+            }
+            prm.leave_subsection();
+            prm.enter_subsection ("Data");
+            {
+                prm.declare_entry ("Solidus filename", "",
+                                   Patterns::Anything(),
+                                   "The solidus filename.");
+            }
+            prm.leave_subsection();
         }
         prm.leave_subsection();
       }
@@ -237,20 +242,23 @@ namespace aspect
     {
       prm.enter_subsection("Initial conditions");
       {
-        deltaT=prm.get_double("Supersolidus");
-        litho_thick=prm.get_double("Lithosphere thickness");
-        prm.enter_subsection("Perturbation");
-        {
-            magnitude_T    = prm.get_double("Temperature amplitude");
-            magnitude_lith = prm.get_double("Lithosphere thickness amplitude");
-            lateral_wave_number_1 = prm.get_integer ("Lateral wave number one");
-            lateral_wave_number_2 = prm.get_integer ("Lateral wave number two");
-        }
-        prm.leave_subsection();
-        prm.enter_subsection("Data");
-        {
-            solidus_filename=prm.get ("Solidus filename");
-            solidus_curve.read(solidus_filename);
+        prm.enter_subsection("Solidus");
+            deltaT=prm.get_double("Supersolidus");
+            litho_thick=prm.get_double("Lithosphere thickness");
+            prm.enter_subsection("Perturbation");
+            {
+                magnitude_T    = prm.get_double("Temperature amplitude");
+                magnitude_lith = prm.get_double("Lithosphere thickness amplitude");
+                lateral_wave_number_1 = prm.get_integer ("Lateral wave number one");
+                lateral_wave_number_2 = prm.get_integer ("Lateral wave number two");
+            }
+            prm.leave_subsection();
+            prm.enter_subsection("Data");
+            {
+                solidus_filename=prm.get ("Solidus filename");
+                solidus_curve.read(solidus_filename);
+            }
+            prm.leave_subsection();
         }
         prm.leave_subsection();
       }
