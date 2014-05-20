@@ -35,8 +35,7 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements a heating model based on a
-     * functional description provided in the input file.
+     * A class that implements a heating model based on radioactive decay.
      *
      * @ingroup HeatingModels
      */
@@ -50,8 +49,8 @@ namespace aspect
         Radioactive_decay ();
 
         /**
-         * Return the specific heating rate as calculated by the
-         * function object.
+         * Return the specific heating rate as calculated by 
+         * radioactive decay.
          */
         virtual
         double
@@ -85,13 +84,49 @@ namespace aspect
 
       private:
         /**
-         * Parameters for decaying radioactive heating.
+         * The time to be used for calculate radioactive decay.
          */
         double                         time;
-        unsigned int                   num_radio_heating_elements;
+        
+        /**
+         * Number of radio active heating elements.
+         */
+        unsigned int                   n_radio_heating_elements;
+        
+        /**
+         * Store the half life of different elements.
+         */
         std::vector<double>            half_decay_time;
+        
+        /**
+         * Store the unit heating rate of different elements.
+         */
         std::vector<double>            radioactive_heating_rate;
-        std::vector<double>            radioactive_initial_consentration;
+        
+        /**
+         * Store the initial consentration in the crust.
+         */
+        std::vector<double>            radioactive_initial_consentration_crust;
+        
+        /**
+         * Store the initial consentration in the mantle.
+         */
+        std::vector<double>            radioactive_initial_consentration_mantle;
+        
+        /**
+         * Whether crust defined by composition or depth
+         */
+        bool                           is_crust_defined_by_composition;
+        
+        /**
+         * Depth of the crust.
+         */
+        double                         crust_depth;
+        
+        /**
+         * Composition number of crust.
+         */
+        unsigned int                   crust_composition_num;
     };
   }
 }

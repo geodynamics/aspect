@@ -21,6 +21,7 @@
 
 
 #include <aspect/heating_model/radioactive_decay.h>
+#include <aspect/geometry_model/interface.h>
 #include <aspect/global.h>
 
 namespace aspect
@@ -38,16 +39,32 @@ namespace aspect
     Radioactive_decay<dim>::
     specific_heating_rate (const double,
         const double,
-        const std::vector<double> &,
-        const Point<dim> &p) const
+        const std::vector<double> &composition,
+        const Point<dim> &position) const
     {
         double timedependent_radioactive_heating_rate=0;
         if(num_radio_heating_elements!=0)
+        {
+            double crust_percent=0;
+            if(is_crust_defined_by_composition)
+            {
+                AssertThow(crust_composition_num<composition.size(),ExcMessage("The composition number of crust is "
+                                " larger than number of composition fields."));
+                crust_percent=composition[crust_composition_num];
+                if(crust_percent<0)crust_percent=0;
+                if(crust_percent>1)crust_percent=1;
+            }
+            else
+                if(this->geometry_model->depth(position) < crust_depth)
+                    crust_percent=1.;
+                    
             for(unsigned i_radio=0;i_radio<num_radio_heating_elements;i_radio++)
                 timedependent_radioactive_heating_rate+=
                     radioactive_heating_rate[i_radio]
-                    *radioactive_initial_consentration[i_radio]*1e-6
+                    *(radioactive_initial_consentration_mantle[i_radio]*(1-crust_percent)
+                      +radioactive_initial_consentration_crust[i_radio]*crust_percent)*1e-6
                     *std::pow(0.5,time/half_decay_time[i_radio]);
+        }
         return (timedependent_radioactive_heating_rate);
     }
 
@@ -81,9 +98,21 @@ namespace aspect
             prm.declare_entry("Half decay time","",
                                 Patterns::List (Patterns::Double (0)),
                                 "Half decay time. Units: (Seconds), or (Years) if set 'use years instead of seconds'.");
-            prm.declare_entry("Initial consentration","",
+            prm.declare_entry("Initial consentration crust","",
                                 Patterns::List (Patterns::Double (0)),
                                 "Initial consentration of different elments (ppm)");
+            prm.declare_entry("Initial consentration mantle","",
+                                Patterns::List (Patterns::Double (0)),
+                                "Initial consentration of different elments (ppm)");
+            prm.declare_entry("Crust defined by composition","false",
+                                Patterns::Bool(),
+                                "Whether crust defined by composition or depth");
+            prm.declare_entry("Crust depth","0",
+                                Patterns::Double(),
+                                "Depth of the crust when crust if defined by depth.");
+            prm.declare_entry("Crust composition number","0",
+                                Patterns::Integer(0),
+                                "Which composition field should be treated as crust");
         }
         prm.leave_subsection();
       }
@@ -107,18 +136,31 @@ namespace aspect
             AssertThrow(radioactive_heating_rate.size()==num_radio_heating_elements,
                 ExcMessage("Number of heating rate entities does not match "
                            "the number of radioactive elements."));
-            radioactive_initial_consentration=Utilities::string_to_double
-                (Utilities::split_string_list
-                (prm.get("Initial consentration")));
-            AssertThrow(radioactive_initial_consentration.size()==num_radio_heating_elements,
-                ExcMessage("Number of initial consentration entities does not match "
-                           "the number of radioactive elements."));
+                           
             half_decay_time=Utilities::string_to_double
                 (Utilities::split_string_list
                  (prm.get("Half decay time")));
             AssertThrow(half_decay_time.size()==num_radio_heating_elements,
                 ExcMessage("Number of half decay time entities does not match "
                            "the number of radioactive elements."));
+                           
+            radioactive_initial_consentration_crust=Utilities::string_to_double
+                (Utilities::split_string_list
+                (prm.get("Initial consentration crust")));
+            AssertThrow(radioactive_initial_consentration_crust.size()==num_radio_heating_elements,
+                ExcMessage("Number of initial consentration entities does not match "
+                           "the number of radioactive elements."));
+                           
+            radioactive_initial_consentration_mantle=Utilities::string_to_double
+                (Utilities::split_string_list
+                (prm.get("Initial consentration mantle")));
+            AssertThrow(radioactive_initial_consentration_mantle.size()==num_radio_heating_elements,
+                ExcMessage("Number of initial consentration entities does not match "
+                           "the number of radioactive elements."));
+
+            is_crust_defined_by_composition = prm.get_bool    ("Crust defined by composition");
+            crust_depth                     = prm.get_double  ("Crust depth");
+            crust_composition_num           = prm.get_integer ("Crust composition number");
         }
         prm.leave_subsection();
       }
@@ -136,17 +178,9 @@ namespace aspect
     ASPECT_REGISTER_HEATING_MODEL(Radioactive_decay,
                                                  "radioactive decay",
                                                  "Implementation of a model in which the heating "
-                                                 "rate is given in terms of an explicit formula "
-                                                 "that is elaborated in the parameters in section "
-                                                 "``Heating model|Function''. "
-                                                 "\n\n"
+                                                 "rate is decaying exponetially over time \n"
                                                  "The formula is interpreted as having units "
                                                  "W/kg."
-                                                 "\n\n"
-                                                 "Since the symbol $t$ indicating time "
-                                                 "may appear in the formulas for the heating rate"
-                                                 ", it is interpreted as having units "
-                                                 "seconds unless the global parameter ``Use "
-                                                 "years in output instead of seconds'' is set.")
+                                                 "\n\n")
   }
 }
