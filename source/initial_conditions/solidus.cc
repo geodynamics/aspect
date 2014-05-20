@@ -236,7 +236,14 @@ namespace aspect
                                "Line 2:  Unit of temperature (C/K)        "
                                "Unit of pressure (GPa/kbar) or radius (km/m) \n"
                                "Line 3~: Column of solidus temperature    Column of radius/pressure \n"
-                               "See data/initial_temperature/solidus.Mars as an example.");
+                               "See data/initial_temperature/solidus.Mars as an example."
+                               "\n\n"
+                               "In order to facilitate placing input files in locations relative "
+                               "to the ASPECT source directory, the file name may also include the special "
+                               "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                               "in which the ASPECT source files were located when ASPECT was "
+                               "compiled. This interpretation allows, for example, to reference "
+                               "files located in the 'data/' subdirectory of ASPECT.");
           }
           prm.leave_subsection();
         }
