@@ -5,9 +5,23 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li>New: There is now a new initial temperature condition plugin that can read in
+ * solidus temperatures from a file and add perturbations to it. There is also
+ * a corresponding data file for initial conditions for Mars from Permentier
+ * et al. in <code>data/initial-temperature/solidus.Mars</code>.
+ * <br>
+ * (Siqi Zhang, 2014/05/20)
+ *
+ * <li>New: There is now a new postprocessor "spherical velocity statistics"
+ * that computes statistics about the radial and tangential velocity field.
+ * <br>
+ * (Anne Glerum, 2014/05/20)
+ *
  * <li>New: There is now a mesh refinement criterium that checks the mesh
  * always has a minimum refinement level determined by a function given in the
  * input file.
+ * <br>
+ * (Juliane Dannberg, 2014/05/20)
  *
  * <li> New: Input files can now contain lines ending in backslashes
  * to concatenate subsequent lines.

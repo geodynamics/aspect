@@ -1596,12 +1596,11 @@ namespace aspect
             *
             (density_c_P + latent_heat_LHS);
 
-        AssertThrow(density_c_P + latent_heat_LHS, ExcMessage("mass matrix must be positive"));
-
-        Tensor<1,dim> current_u = scratch.current_velocity_values[q];
         //Subtract off the mesh velocity for ALE corrections if necessary
-        if (parameters.free_surface_enabled)
-          current_u -= scratch.mesh_velocity_values[q];
+        const Tensor<1,dim> current_u = scratch.current_velocity_values[q] - 
+                                        (parameters.free_surface_enabled ?
+                                         scratch.mesh_velocity_values[q] :
+                                         0.0);
 
         const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
                                                   (time_step + old_time_step)) : 1.0;
