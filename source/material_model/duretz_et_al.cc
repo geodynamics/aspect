@@ -647,10 +647,6 @@ namespace aspect
                                      "SolKz",
                                      "A material model that corresponds to the 'SolKz' benchmark "
                                      "defined in Duretz et al., G-Cubed, 2011.")
-      ASPECT_REGISTER_MATERIAL_MODEL(Inclusion,
-                                     "Inclusion",
-                                     "A material model that corresponds to the 'Inclusion' benchmark "
-                                     "defined in Duretz et al., G-Cubed, 2011.")
     }
   }
 }
