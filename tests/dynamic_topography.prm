@@ -115,10 +115,13 @@ subsection Postprocess
     set Subtract mean of dynamic topography = true
   end
  
-#  subsection Visualization
-#    set Time between graphical output = 0
-#    set List of output variables = density, viscosity, nonadiabatic temperature, dynamic topography
-#  end
+  subsection Visualization
+    set Time between graphical output = 0
+    set List of output variables = dynamic topography
+    subsection Dynamic Topography
+      set Subtract mean of dynamic topography = true
+    end 
+  end
 
 end
 
