@@ -1352,8 +1352,9 @@ quasi-implicit free surface integration scheme described in \cite{KMM2010}.
 This scheme enters the governing equations as a small stabilizing surface
 traction that prevents the free surface advection from overshooting its
 true position at the next time step.  \aspect{} implements this stabilization,
-the details of which may be found in \cite{KMM2010}.
+the details of which may be found in \cite{KMM2010}
 
+An example of a simple model which uses a free surface may be found in section \ref{sec:cookbooks-freesurface}.
 
 \section{Installation}
 \label{sec:installation}
@@ -4423,6 +4424,7 @@ not be reproduced in a static medium such as this manual.
 
 
 \subsubsection{Using a free surface}
+\label{sec:cookbooks-freesurface}
 
 Free surfaces are numerically challenging but can be useful for self consistently
 tracking dynamic topography and may be quite important as a boundary condition
