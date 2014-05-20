@@ -1298,21 +1298,23 @@ where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the compressibility a
 In reality the boundary conditions of a convecting Earth are not no-slip or 
 free slip (i.e. no normal velocity).  Instead, we expect that a free surface
 is a more realistic approximation, since air and water should not prevent the
-flow of mantle material upward or downward.  The free suface boundary condition
-prescribes zero stress on the boundary, or $\sigma \cdot \textbf{n} = 0$. 
-Of course, with this boundary condition, there may be flow through the boundary.
+flow of rock upward or downward.  This means that we require zero stress on the 
+boundary, or $\sigma \cdot \textbf{n} = 0$. Of course, with this boundary 
+condition, we expect that in general there will be flow across the boundary.  
 To conserve mass we must then advect the boundary of the domain in the
 direction of fluid flow.  Thus using a free surface necessitates that the mesh
 be dynamically deformable.  
 
-\subsubsection{Arbitrary-Lagrangian-Eulerian implementation}
+\subsubsection{Arbitrary Lagrangian-Eulerian implementation}
 
-\aspect{} allows for convection models with a free surface using an 
-Arbitrary-Lagrangian-Eulerian (ALE) framework.  Eulerian meshes are well behaved,
-but they do not move with the fluid motions, which makes free surface models 
-challenging. Lagrangian meshes do move with the fluid, but they quickly become so 
-distorted that remeshing is required.  The ALE approach tries to retain the
-benefits of both, allowing the mesh motion $\textbf{u}_m$ to be independent of 
+The question of how to handle the motion of the mesh with a free surface is
+challenging.  Eulerian meshes are well behaved, but they do not move with the 
+fluid motions, which makes them difficult for use with free surfaces. 
+Lagrangian meshes do move with the fluid, but they quickly become so 
+distorted that remeshing is required. \aspect{} implements an Arbitrary 
+Lagrangian-Eulerian framework for handling motion of the mesh.  The ALE 
+approach tries to retain the benefits of both the Lagrangian and the Eulerian
+approaches by allowing the mesh motion $\textbf{u}_m$ to be largely independent of 
 the fluid. The mass conservation condition requires that 
 $\textbf{u}_m \cdot \textbf{n} = \textbf{u} \cdot \textbf{n}$ on the free 
 surface, but otherwise the mesh motion is unconstrained, and should be chosen
@@ -1328,7 +1330,7 @@ velocity is calculated by solving
 \textbf{u}_m &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{no slip}} \\
 \end{align}
 
-After this mesh velocity is calculated, the mesh vertices are timestepped explicitly.
+After this mesh velocity is calculated, the mesh vertices are time-stepped explicitly.
 This scheme has the effect of choosing a minimally distorting perturbation to the mesh.
 Because the mesh velocity is no longer zero in the ALE approach, we must then correct
 the Eulerian advection terms in the advection system with the mesh velocity (see, e.g.
