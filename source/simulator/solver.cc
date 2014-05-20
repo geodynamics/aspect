@@ -410,6 +410,8 @@ namespace aspect
 
         normalize_pressure(solution);
 
+        pcout << "done." << std::endl;
+
         computing_timer.exit_section();
 
         return 0;
