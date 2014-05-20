@@ -491,8 +491,6 @@ namespace aspect
 
 
 
-
-
     /**
       * A postprocessor that evaluates the accuracy of the solution of the
       * aspect::MaterialModel::DuretzEtAl::Inclusion material models.
@@ -599,16 +597,8 @@ namespace aspect
       return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
     }
 
-
-
-
   }
 }
-
-
-
-
-
 
 
 
