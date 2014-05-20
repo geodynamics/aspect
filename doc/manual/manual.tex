@@ -1293,6 +1293,30 @@ so we get
 \end{equation*}
 where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the compressibility and $\rho$ and $\mathbf u$ are taken from the last time step.
 
+\subsection{Free surface calculations}
+
+In reality the boundary conditions of a convecting Earth are not no-slip or 
+free slip (i.e. no normal velocity).  Instead, we expect that a free surface
+is a more realistic approximation, since air and water should not prevent the
+flow of mantle material upward or downward.  The free suface boundary condition
+prescribes zero stress on the boundary, or $\sigma \cdot \textbf{n} = 0$. 
+Of course, with this boundary condition, there may be flow through the boundary.
+To conserve mass we must then advect the boundary of the domain in the
+direction of fluid flow.  Thus using a free surface necessitates that the mesh
+be dynamically deformable.  
+
+\aspect{} allows for convection models with a free surface using an 
+Arbitrary-Lagrangian-Eulerian (ALE) framework.  Eulerian meshes are well behaved,
+but they do not move with the fluid motions, which makes free surface models 
+challenging. Lagrangian meshes do move with the fluid, but they quickly become so 
+distorted that remeshing is required.  The ALE approach tries to retain the
+benefits of both, allowing the mesh motion $\textbf{u}_m$ to be independent of 
+the fluid. The mass conservation condition requires that 
+$\textbf{u}_m \cdot \textbf{n} = \textbf{u} \cdot {n}$ on the free surface,
+but otherwise the mesh motion is unconstrained.
+
+
+
 \section{Installation}
 \label{sec:installation}
 
