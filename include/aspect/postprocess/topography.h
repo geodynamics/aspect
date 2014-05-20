@@ -43,7 +43,7 @@ namespace aspect
     {
       public:
         /**
-         * Calculate the max/min topography [m]
+         * Calculate the maximum and minimum topography [m]
          */
         virtual
         std::pair<std::string,std::string>
