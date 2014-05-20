@@ -24,6 +24,7 @@
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
+#include <math.h>
 
 namespace aspect
 {
@@ -53,9 +54,9 @@ namespace aspect
         	fe_values.reinit(cell);
         	const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(0));
         	const Point<1> point(depth);
-          	if (cell->level() <= std::rint(min_refinement_level.value(point)))
+          	if (cell->level() <= rint(min_refinement_level.value(point)))
               cell->clear_coarsen_flag ();
-          	if (cell->level() <  std::rint(min_refinement_level.value(point)))
+          	if (cell->level() <  rint(min_refinement_level.value(point)))
               cell->set_refine_flag ();
           }
         }
