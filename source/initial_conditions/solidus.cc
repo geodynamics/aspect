@@ -295,7 +295,7 @@ namespace aspect
                                        " in both lithosphere thickness and temperature with "
                                        "shpere harmonic functions. It was used as the initial conditons "
                                        "of early Mars that the planet is just freeze up from magma ocean, "
-                                       "using the solidus from Parmentier, E.M., L. Elkins-Tanton, and S. Schoepfer, "
+                                       "using the solidus from Parmentier et al., "
                                        "Melt_solid segregation, Fractional magma ocean solidification, and implications for "
                                        "longterm planetary evolution. Luna and Planetary Science, 2007.");
   }
