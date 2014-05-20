@@ -1,3 +1,10 @@
+# This is a relatively realistic compressible model setup.
+# There is no simple analytical solution to it, it is rather
+# intended to serve as a comparison for more complicated
+# material models, which should be able to reproduce it.
+# The material model used here is already tested by
+# simple_compressibility_iterated_stokes.
+
 set CFL number                             = 1.0
 set End time                               = 1e6
 set Adiabatic surface temperature          = 1600.0
