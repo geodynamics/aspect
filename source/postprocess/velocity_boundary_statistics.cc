@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2013, 2014 by the authors of the ASPECT code.
+  Copyright (C) 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -87,6 +87,7 @@ namespace aspect
                    local_min = std::min(vel_mag,
                                         local_min);
                   }
+                // then merge them with the min/max velocities we found for other faces with the same boundary indicator
 		local_max_vel[cell->face(f)->boundary_indicator()] = std::max(local_max,
                                                                      local_max_vel[cell->face(f)->boundary_indicator()]);
 		local_min_vel[cell->face(f)->boundary_indicator()] = std::min(local_min,
@@ -129,7 +130,7 @@ namespace aspect
          } 
       }
 
-      // now add all of the computed heat fluxes to the statistics object
+      // now add the computed max and min velocities to the statistics object
       // and create a single string that can be output to the screen
       std::ostringstream screen_text;
       unsigned int index = 0;
@@ -204,7 +205,6 @@ namespace aspect
                                   "A postprocessor that computes some statistics about "
                                   "the velocity along the boundaries. For each boundary "
 				  "indicator (see your geometry description for which boundary "
-				  "indicators are used), the min and max velocity magnitude is computed "
-				  ".")
+				  "indicators are used), the min and max velocity magnitude is computed.")
   }
 }

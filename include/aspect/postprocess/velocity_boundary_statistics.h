@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,7 +33,7 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes some statistics about the velocity_boundary.
+     * A postprocessor that computes some statistics about the velocity at different parts of the boundary.
      *
      * @ingroup Postprocessing
      */
