@@ -1,4 +1,4 @@
-# A simple setup for convection in a quarter of a 2d shell. See the
+# A simple setup for initial conditon close to solidus of Mars in a 2d shell with perturbations. See the
 # manual for more information.
 
 
@@ -49,18 +49,19 @@ end
 
 
 subsection Initial conditions
-  #set Model name = spherical hexagonal perturbation
-  set Model name            = solidus
-  set Supersolidus          = -50
-  set Lithosphere thickness = 500e3
-  subsection Perturbation
-     set Temperature amplitude           = 100  
-  	 set Lithosphere thickness amplitude = 250e3
-	 set Lateral wave number one         = 12
-	 set Lateral wave number two         = 6
-  end
-  subsection Data
-    set Solidus filename = data/initial temperature/solidus.Mars
+  set Model name              = solidus
+  subsection Solidus
+    set Supersolidus          = -50
+    set Lithosphere thickness = 500e3
+    subsection Perturbation
+      set Temperature amplitude           = 100  
+  	  set Lithosphere thickness amplitude = 250e3
+	  set Lateral wave number one         = 12
+	  set Lateral wave number two         = 6
+    end
+    subsection Data
+      set Solidus filename = data/initial temperature/solidus.Mars
+    end
   end
 end
 
