@@ -386,6 +386,7 @@ namespace aspect
           make_pressure_rhs_compatible(system_rhs);
 
         SolverControl cn;
+        // TODO: can we re-use the direct solver?
         TrilinosWrappers::SolverDirect solver(cn);
         solver.solve(system_matrix.block(0,0), distributed_stokes_solution.block(0), system_rhs.block(0));
 
