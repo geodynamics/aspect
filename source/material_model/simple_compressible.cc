@@ -231,7 +231,7 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\beta$. "
                              "Units: $1/K$.");
-          prm.declare_entry ("Reference compressibility", "0",
+          prm.declare_entry ("Reference compressibility", "4e-12",
                              Patterns::Double (0),
                              "The value of the reference compressibility. "
                              "Units: $1/Pa$.");
