@@ -72,7 +72,7 @@ end
 
 
 subsection Material model
-  set Model name = Inclusion
+  set Model name = InclusionMaterial
 end
 
 
@@ -91,7 +91,7 @@ subsection Model settings
 
   set Fixed temperature boundary indicators   = 0, 1
 
-  set Prescribed velocity boundary indicators = 0: inclusion, 1: inclusion, 2: inclusion, 3: inclusion
+  set Prescribed velocity boundary indicators = 0: InclusionBoundary, 1: InclusionBoundary, 2: InclusionBoundary, 3: InclusionBoundary
 
   set Tangential velocity boundary indicators =
 
