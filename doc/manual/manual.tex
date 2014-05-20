@@ -4422,6 +4422,76 @@ This makes it rather intuitive to understand a flow field, but it can of course
 not be reproduced in a static medium such as this manual.
 
 
+\subsubsection{Using a free surface}
+
+Free surfaces are numerically challenging but can be useful for self consistently
+tracking dynamic topography and may be quite important as a boundary condition
+for tectonic processes like subduction.  The parameter file \url{cookbooks/free-surface.prm} 
+provides a simple example of how to set up a model with a free surface, as well 
+as demonstrates some of the challenges associated with doing so.
+
+\aspect{} supports models with a free surface using an Arbitrary Lagrangian-Eulerian 
+framework.  Most of this is done internally, so you do not need to worry about the
+details to run this cookbook.  Here we demonstrate the evolution of surface topography 
+that results when blob of hot material rises in the mantle, pushing up the free
+surface as it does.  Usually the amplitude of free surface topography 
+will be small enough that it is difficult to see with the naked eye in visualizations,
+but the \texttt{topography} postprocessor can help by outputting the maximum and minumum 
+topography on the free surface at every time step. 
+
+The bulk of the parameter file for this cookbook is similar to previous ones in this section.
+The main addition is the \texttt{Free surface} subsection.  There are two
+parameters that need to be set here.  First, you need to give \aspect{} a comma 
+separated list of the free surface boundary indicators.  In this case, we are 
+dealing with the top boundary of a box in 2D, corresponding to boundary indicator
+3.  Second, we need to specify the value for the stabilization parameter ``theta''.
+If this parameter is zero, then there is no stabilization, and you are likely to
+see instabilities develop in the free surface.  If this parameter is one then it
+will do a good job of stabilizing the free surface, but it may overly damp its 
+motions.  The default value is 0.5.
+
+Also worth mentioning is the change to the CFL number. Stability concerns typically 
+mean that when making a model with a free surface you will want to take smaller 
+time steps.  In general just how much smaller will depend on the problem at hand
+as well as the desired accuracy.  
+
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+set CFL number                             = 0.1
+
+subsection Free surface
+  set Free surface boundary indicators = 3
+  set Free surface stabilization theta = 0.5
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization,topography,velocity statistics,
+  subsection Visualization
+    set Time between graphical output = 1.e6
+  end
+end
+\end{lstlisting}
+
+After running the cookbook, you may modify it in a number of ways:
+\begin{itemize}
+\item Add a more complicated initial temperature field to see how that affects topography.
+\item Add a high-viscosity lithosphere to the top using a compositional field to tamp down on topography.
+\item Explore different values for the stabilization theta and the CFL number to understand the nature of when and why stabilization is necessary.
+\item Try a model in a different geometry, such as spherical shells.
+\end{itemize}
+
+\begin{figure}
+  \centering
+  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface/free_surface_blob.png}
+  \hfill
+  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface/free_surface_topography.png}
+  \caption{\it Evolution of surface topography due to a rising blob.  On the left is a 
+           snapshot of the model setup.  The right shows the value of the highest 
+           topography in the domain over 18 Myr of model time.  The topography peaks
+           at 165 meters after 5.2 Myr.  This cookbook may be run with the
+           \url{cookbooks/free-surface.prm} input file.}
+  \label{fig:free_surface}
+\end{figure}
+
 
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
