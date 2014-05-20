@@ -1305,6 +1305,8 @@ To conserve mass we must then advect the boundary of the domain in the
 direction of fluid flow.  Thus using a free surface necessitates that the mesh
 be dynamically deformable.  
 
+\subsubsection{Arbitrary-Lagrangian-Eulerian implementation}
+
 \aspect{} allows for convection models with a free surface using an 
 Arbitrary-Lagrangian-Eulerian (ALE) framework.  Eulerian meshes are well behaved,
 but they do not move with the fluid motions, which makes free surface models 
@@ -1316,7 +1318,7 @@ $\textbf{u}_m \cdot \textbf{n} = \textbf{u} \cdot \textbf{n}$ on the free
 surface, but otherwise the mesh motion is unconstrained, and should be chosen
 to keep the mesh as well behaved as possible.
 
-\aspect{} a Laplacian scheme for calculating the mesh velocity.  The mesh
+\aspect{} uses a Laplacian scheme for calculating the mesh velocity.  The mesh
 velocity is calculated by solving
 
 \begin{align}
@@ -1326,6 +1328,31 @@ velocity is calculated by solving
 \textbf{u}_m &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{no slip}} \\
 \end{align}
 
+After this mesh velocity is calculated, the mesh vertices are timestepped explicitly.
+This scheme has the effect of choosing a minimally distorting perturbation to the mesh.
+Because the mesh velocity is no longer zero in the ALE approach, we must then correct
+the Eulerian advection terms in the advection system with the mesh velocity (see, e.g.
+\cite{DHPR2004}).  For instance, the temperature equation \ref{eq:temperature-boussinesq-linear}
+becomes
+
+\begin{equation*}
+  \label{eq:temperature-boussinesq-linear}
+  \rho C_p \left(\frac{\partial T}{\partial t} + \left(\mathbf u - \mathbf u_m \right) \cdot\nabla T\right)
+  - \nabla\cdot k\nabla T
+  =
+  \rho H
+   \quad
+   \textrm{in $\Omega$},
+\end{equation*}
+
+\subsubsection{Stabilization}
+
+Small disequilibria in the location of a free surface can cause instabilities in
+the surface position that grow arbitrarily.  This may be countered with a
+quasi-implicit free surface integration scheme described in \cite{KMM2010}.
+This scheme enters the governing equations as a small stabilizing surface
+traction that prevents the free surface advection from overshooting its
+true position at the next time step.
 
 \section{Installation}
 \label{sec:installation}
