@@ -88,8 +88,6 @@ namespace aspect
       return;
     sim.computing_timer.enter_section("FreeSurface");
 
-    sim.pcout << "FS: free_surface_execute()" << std::endl;
-
     //Make the constraints for the elliptic problem.  On the free surface, we
     //constrain mesh velocity to be v.n, on free slip it is constrainted to
     //be tangential, and on no slip boundaries it is zero.
@@ -296,7 +294,6 @@ namespace aspect
     SolverControl solver_control(5*rhs.size(), 1e-7*rhs.l2_norm());
     SolverCG<LinearAlgebra::Vector> cg(solver_control);
     cg.solve (mass_matrix, dist_solution, rhs, preconditioner_mass);
-    sim.pcout << "\t\tsolved, its = " << solver_control.last_step() << std::endl;
 
     mass_matrix_constraints.distribute (dist_solution);
     output = dist_solution;
@@ -306,7 +303,6 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::FreeSurfaceHandler::solve_elliptic_problem()
   {
-    sim.pcout << "FS: solve_elliptic_problem()" << std::endl;
     QGauss<dim> quadrature(free_surface_fe.degree + 1);
     UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values | update_gradients);
     FEValues<dim> fe_values (sim.mapping, free_surface_fe, quadrature, update_flags);
@@ -378,7 +374,7 @@ namespace aspect
     SolverCG<LinearAlgebra::Vector> cg(solver_control);
 
     cg.solve (mesh_matrix, poisson_solution, rhs, preconditioner_stiffness);
-    sim.pcout << "\t\tsolved, its = " << solver_control.last_step() << std::endl;
+    sim.pcout << "   Solving mesh velocity system... " << solver_control.last_step() <<" iterations."<< std::endl;
 
     mesh_constraints.distribute (poisson_solution);
     mesh_vertex_velocity = poisson_solution;
@@ -393,8 +389,6 @@ namespace aspect
 
     distributed_mesh_vertices = mesh_vertices;
     distributed_mesh_vertex_velocity = mesh_vertex_velocity;
-
-    sim.pcout << "FS: mesh velocity: " << distributed_mesh_vertex_velocity.l2_norm() << std::endl;
 
     //actually do the ALE thing
     distributed_mesh_vertices.sadd(1.0, sim.time_step, distributed_mesh_vertex_velocity);
@@ -453,7 +447,6 @@ namespace aspect
   {
     if (!sim.parameters.free_surface_enabled)
       return;
-    sim.pcout << "FS: setup_dofs()" << std::endl;
 
     // these live in the same FE as the velocity variable:
     mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning, sim.introspection.index_sets.system_relevant_partitioning, sim.mpi_communicator);
@@ -461,7 +454,7 @@ namespace aspect
 
     free_surface_dof_handler.distribute_dofs(free_surface_fe);
 
-    sim.pcout << "FS: n_dofs = " << free_surface_dof_handler.n_dofs() << std::endl;
+    sim.pcout << "Number of free surface degrees of freedom: " << free_surface_dof_handler.n_dofs() << std::endl;
 
     // Renumber the DoFs hierarchical so that we get the
     // same numbering if we resume the computation. This
@@ -481,8 +474,6 @@ namespace aspect
     //if we are just starting, we need to initialize mesh_vertices
     if (sim.timestep_number == 0)
       {
-        sim.pcout << "FS: get initial mesh vertices" << std::endl;
-
         LinearAlgebra::Vector distributed_mesh_vertices;
         distributed_mesh_vertices.reinit(mesh_locally_owned, sim.mpi_communicator);
 
@@ -563,7 +554,6 @@ namespace aspect
   {
     if (!sim.parameters.free_surface_enabled)
       return;
-    sim.pcout << "FS: displace_mesh()" << std::endl;
 
     typename DoFHandler<dim>::active_cell_iterator  cell = free_surface_dof_handler.begin_active(),
                                                     endc = free_surface_dof_handler.end();
