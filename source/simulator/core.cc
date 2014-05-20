@@ -234,6 +234,8 @@ namespace aspect
     //Initialize the free surface handler 
     if(parameters.free_surface_enabled)
       {
+        //It should be possible to make the free surface work with any of a number of nonlinear
+        //schemes, but I do not see a way to do it in generality --IR
         AssertThrow( parameters.nonlinear_solver == NonlinearSolver::IMPES,
                      ExcMessage("The free surface scheme is only implemented for the IMPES solver") );
         //Pressure normalization doesn't really make sense with a free surface, and if we do
@@ -1151,9 +1153,7 @@ namespace aspect
     x_system[1] = &old_solution;
 
     if(parameters.free_surface_enabled)
-      {
-        x_system.push_back( &free_surface->mesh_velocity );
-      }
+      x_system.push_back( &free_surface->mesh_velocity );
 
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
@@ -1197,17 +1197,13 @@ namespace aspect
       system_tmp[1] = &(old_distributed_system);
       
       if(parameters.free_surface_enabled)
-        {
-          system_tmp[2] = &(distributed_mesh_velocity);
-        } 
+        system_tmp[2] = &(distributed_mesh_velocity);
 
       system_trans.interpolate (system_tmp);
       solution     = distributed_system;
       old_solution = old_distributed_system;
       if(parameters.free_surface_enabled)
-        {
-          free_surface->mesh_velocity = distributed_mesh_velocity;
-        }
+        free_surface->mesh_velocity = distributed_mesh_velocity;
     }
 
     if (parameters.free_surface_enabled)
