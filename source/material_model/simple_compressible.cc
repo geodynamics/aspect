@@ -162,14 +162,10 @@ namespace aspect
     {
       // compare this with the implementation of the density() function
       // to see the dependencies
-      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-          &&
-          (thermal_alpha != 0))
-        return true;
-      else if (((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-               &&
-               (reference_compressibility != 0))
-        return true;
+      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
+        return (thermal_alpha != 0);
+      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
+        return (reference_compressibility != 0);
       else
         return false;
     }
@@ -204,10 +200,7 @@ namespace aspect
     SimpleCompressible<dim>::
     is_compressible () const
     {
-      if (reference_compressibility)
-        return true;
-      else
-        return false;
+      return (reference_compressibility != 0);
     }
 
 
@@ -288,8 +281,9 @@ namespace aspect
                                    "\n\n"
                                    "This model uses the following equations for the density: "
                                    "\\begin{align}"
-                                   "  \\rho(p,T) &= \\left(1-\\alpha (T-T_0)\\right) "
-                                   "             &= * \\left(1+\\kappa (P-P_0)\\right) \\rho_0"
+                                   "  \\rho(p,T) = &rho_0"
+                                   "             * &\\left(1-\\alpha (T-T_a)\\right) "
+                                   "             * &\\exp{\\beta (P-P_0))}"
                                    "\\end{align}")
   }
 }
