@@ -1156,6 +1156,7 @@ namespace aspect
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
 
+    //Add stabilization terms if necessary.
     if(parameters.free_surface_enabled)
       free_surface->apply_stabilization(cell, data.local_matrix);
 
