@@ -60,7 +60,7 @@ subsection Initial conditions
 	  set Lateral wave number two         = 6
     end
     subsection Data
-      set Solidus filename = data/initial-temperature/solidus.Mars
+      set Solidus filename = $ASPECT_SOURCE_DIR/data/initial-temperature/solidus.Mars
     end
   end
 end
