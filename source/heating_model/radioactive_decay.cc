@@ -55,10 +55,10 @@ namespace aspect
                 if(crust_percent>1)crust_percent=1;
             }
             else
-                if((this->get_geometry_model).depth(position) < crust_depth)
+                if((this->get_geometry_model()).depth(position) < crust_depth)
                     crust_percent=1.;
                     
-            for(unsigned i_radio=0;i_radio<num_radio_heating_elements;i_radio++)
+            for(unsigned i_radio=0;i_radio<n_radio_heating_elements;i_radio++)
                 timedependent_radioactive_heating_rate+=
                     radioactive_heating_rate[i_radio]
                     *(radioactive_initial_consentration_mantle[i_radio]*(1-crust_percent)
