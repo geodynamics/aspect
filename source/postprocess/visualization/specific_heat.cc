@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/postprocess/visualization/specific_heat.h>
@@ -64,13 +63,13 @@ namespace aspect
 
         in.position = evaluation_points;
         in.strain_rate.resize(0); // we do not need the viscosity
-        for (unsigned int i=0; i<n_quadrature_points; ++i)
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            in.pressure[i]=uh[i][dim];
-            in.temperature[i]=uh[i][dim+1];
+            in.pressure[q]=uh[q][dim];
+            in.temperature[q]=uh[q][dim+1];
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              in.composition[i][c] = uh[i][dim+2+c];
+              in.composition[q][c] = uh[q][dim+2+c];
           }
 
         this->get_material_model().evaluate(in, out);

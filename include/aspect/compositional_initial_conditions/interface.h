@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #ifndef __aspect__compositional_initial_conditions_interface_h
@@ -25,7 +24,6 @@
 
 #include <aspect/plugins.h>
 #include <aspect/geometry_model/interface.h>
-#include <aspect/boundary_temperature/interface.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>

@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: dynamic_topography.cc 2515 2014-04-14 14:54:56Z heister $  */
 
 
 #include <aspect/postprocess/dynamic_topography.h>
@@ -57,7 +56,7 @@ namespace aspect
 
       std::vector<std::pair<Point<dim>,double> > stored_values;
 
-      // loop over all of the surface cells and if one less than h/2 away from
+      // loop over all of the surface cells and if one less than h/3 away from
       // the top surface, evaluate the stress at its center
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),

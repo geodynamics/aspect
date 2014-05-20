@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/simulator.h>
@@ -157,6 +156,60 @@ void possibly_load_shared_libs (const std::string &parameter_filename)
 }
 
 
+/**
+ *  Look up break line sign (\\) at the end of a line and merge this line with the next one.
+ *  Return the result as a string in which all lines of the input file are
+ *  separated by \n characters, unless the corresponding lines ended
+ *  in backslashes.
+ */
+std::string
+expand_backslashes (const std::string &filename)
+{
+  std::string result;
+
+  unsigned int need_empty_lines = 0;
+
+  std::ifstream input (filename.c_str());
+  while (input)
+    {
+      // get one line and strip spaces at the back
+      std::string line;
+      std::getline(input, line);
+      while ((line.size() > 0)
+             && (line[line.size() - 1] == ' ' || line[line.size() - 1] == '\t'))
+        line.erase(line.size() - 1, std::string::npos);
+
+      // if the line ends in a backslash, add it without the backslash to
+      // the buffer and increase the counter for the number of lines we have
+      // just concatenated
+      if ((line.size() > 0) && (line[line.size()-1] == '\\'))
+        {
+          result += line.substr(0, line.size()-1);
+          ++need_empty_lines;
+        }
+      else
+        // if it doesn't end in a newline, concatenate the current line
+        // with what we have in the buffer and add the \n character
+        {
+          result += line;
+          result += '\n';
+
+          // if we have just added a line (not ending in a backslash)
+          // to something that was obtained by addressing backslashes,
+          // then add some empty lines to make sure that the line
+          // counter is still correct at least for all lines that don't
+          // end in a backslash (so that we can ensure that errors
+          // message propagating out of ParameterHandler)
+          for (; need_empty_lines>0; --need_empty_lines)
+            result += '\n';
+        }
+    }
+
+  // finally return whatever we have in the buffer
+  return result;
+}
+
+
 int main (int argc, char *argv[])
 {
   using namespace dealii;
@@ -236,14 +289,14 @@ int main (int argc, char *argv[])
       // is only read at run-time
       ParameterHandler prm;
 
-      std::ifstream parameter_file(parameter_filename.c_str());
+      const std::string input_file = expand_backslashes (parameter_filename);
       switch (dim)
         {
           case 2:
           {
             aspect::Simulator<2>::declare_parameters(prm);
 
-            const bool success = prm.read_input(parameter_file);
+            const bool success = prm.read_input_from_string(input_file.c_str());
             AssertThrow(success, ExcMessage ("Invalid input parameter file."));
 
             aspect::Simulator<2> flow_problem(MPI_COMM_WORLD, prm);
@@ -256,7 +309,7 @@ int main (int argc, char *argv[])
           {
             aspect::Simulator<3>::declare_parameters(prm);
 
-            const bool success = prm.read_input(parameter_file);
+            const bool success = prm.read_input_from_string(input_file.c_str());
             AssertThrow(success, ExcMessage ("Invalid input parameter file."));
 
             aspect::Simulator<3> flow_problem(MPI_COMM_WORLD, prm);

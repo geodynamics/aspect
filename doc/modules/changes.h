@@ -5,6 +5,14 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li>New: There is now a mesh refinement criterium that checks the mesh
+ * always has a minimum refinement level determined by a function given in the
+ * input file.
+ *
+ * <li> New: Input files can now contain lines ending in backslashes
+ * to concatenate subsequent lines.
+ * <br>
+ * (Menno Fraters, 2014/05/19)
  *
  * <li> New: There is a new material model called multicomponent for 
  * having an arbitrary number of compositional fields with different
