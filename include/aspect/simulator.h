@@ -183,11 +183,13 @@ namespace aspect
         double                         surface_pressure;
         double                         adiabatic_surface_temperature;
         unsigned int                   timing_output_frequency;
+        bool                           use_direct_stokes_solver;
         double                         linear_stokes_solver_tolerance;
         unsigned int                   max_nonlinear_iterations;
         unsigned int                   n_cheap_stokes_solver_steps;
         double                         temperature_solver_tolerance;
         double                         composition_solver_tolerance;
+
         /**
          * @}
          */
@@ -398,7 +400,13 @@ namespace aspect
         is_temperature () const;
 
         /**
-         * Look up the block index for this temperature or compositional field
+         * Look up the component index for this temperature or compositional field.
+         * See Introspection::component_indices for more information.
+         */
+        unsigned int component_index(const Introspection<dim> &introspection) const;
+
+        /**
+         * Look up the block index for this temperature or compositional field.
          * See Introspection::block_indices for more information.
          */
         unsigned int block_index(const Introspection<dim> &introspection) const;
