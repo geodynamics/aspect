@@ -68,15 +68,8 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement              = 13
-  set Initial global refinement                = 3
-
-  set Strategy = velocity#viscosity
-  set Run postprocessors on initial refinement = true
-  set Coarsening fraction                      = 0.0
-  set Refinement fraction                      = 0.5
-
-
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 0
 end
 
 
@@ -84,12 +77,4 @@ end
 
 subsection Postprocess
   set List of postprocessors = InclusionPostprocessor, visualization
-
-
-
-  subsection Visualization
-    set List of output variables = viscosity
-    set Time between graphical output = 0
-  end
-
 end
