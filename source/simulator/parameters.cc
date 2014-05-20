@@ -609,7 +609,7 @@ namespace aspect
     adiabatic_surface_temperature = prm.get_double ("Adiabatic surface temperature");
     pressure_normalization        = prm.get("Pressure normalization");
 
-    use_direct_stokes_solver      = prm.get_bool("Use Stokes direct solver");
+    use_direct_stokes_solver      = prm.get_bool("Use direct solver for Stokes system");
     linear_stokes_solver_tolerance= prm.get_double ("Linear solver tolerance");
     n_cheap_stokes_solver_steps   = prm.get_integer ("Number of cheap Stokes solver steps");
     temperature_solver_tolerance  = prm.get_double ("Temperature solver tolerance");
