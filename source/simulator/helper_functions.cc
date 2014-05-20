@@ -109,7 +109,7 @@ namespace aspect
 
   template <int dim>
   unsigned int
-  Simulator<dim>::TemperatureOrComposition::component_index(const Introspection<dim> &introspection) const
+  Simulator<dim>::AdvectionField::component_index(const Introspection<dim> &introspection) const
   {
     if (this->is_temperature())
       return introspection.component_indices.temperature;

@@ -71,8 +71,8 @@ namespace aspect
 // integer 'n'
     for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
       {
-        TemperatureOrComposition torc = (n==0) ? TemperatureOrComposition::temperature()
-        : TemperatureOrComposition::composition(n-1);
+        AdvectionField torc = (n==0) ? AdvectionField::temperature()
+        : AdvectionField::composition(n-1);
         initial_solution.reinit(system_rhs, false);
 
         const unsigned int base_element = torc.base_element(introspection);
