@@ -24,7 +24,6 @@
 
 #include <aspect/plugins.h>
 #include <aspect/geometry_model/interface.h>
-#include <aspect/boundary_temperature/interface.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>

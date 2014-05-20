@@ -72,7 +72,8 @@ namespace aspect
         ~Interface ();
 
         /**
-         * Execute this mesh refinement criterion.
+         * Execute this mesh refinement criterion. The default implementation
+         * sets all the error indicators to zero.
          *
          * @param[out] error_indicators A vector that for every active cell of
          * the current mesh (which may be a partition of a distributed mesh)
@@ -81,8 +82,17 @@ namespace aspect
          */
         virtual
         void
-        execute (Vector<float> &error_indicators) const = 0;
+        execute (Vector<float> &error_indicators) const;
 
+        /**
+         * After cells have been marked for coarsening/refinement, apply
+         * additional criteria independent of the error estimate. The
+         * default implementation does nothing.
+         */
+        virtual
+        void
+        tag_additional_cells () const;
+      
         /**
          * Declare the parameters this class takes through input files.
          * Derived classes should overload this function if they actually do
@@ -151,6 +161,15 @@ namespace aspect
         virtual
         void
         execute (Vector<float> &error_indicators) const;
+
+        /**
+         * Apply additional refinement criteria independent of the error
+         * estimate for all of the mesh refinement objects that have been
+         * requested in the input file.
+         */
+        virtual
+        void
+        tag_additional_cells () const;
 
         /**
          * Declare the parameters of all known mesh refinement plugins, as
