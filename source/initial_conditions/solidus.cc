@@ -192,11 +192,13 @@ namespace aspect
         {
             prm.declare_entry ("Supersolidus","0e0",
                                Patterns::Double (),
-                               "The difference from solidus, that can make the initial temperatuer "
-                               "super-solidus or sub-solidus.  Uints: K");
+                               "The difference from solidus, use this number to generate initial conditons "
+                               "that close to solidus instead of exactly at solidus. Use small negative number"
+                               " in this parameter to prevent large melting generation at the beginning. "
+                               "  Uints: K ");
             prm.declare_entry ("Lithosphere thickness","0",
                                Patterns::Double (0),
-                               "The thickness of lithosphere thickness. Unit: m");        
+                               "The thickness of lithosphere thickness. Unit: m");
             prm.enter_subsection("Perturbation");
             {
                 prm.declare_entry ("Temperature amplitude", "0e0",
@@ -226,7 +228,13 @@ namespace aspect
             {
                 prm.declare_entry ("Solidus filename", "",
                                    Patterns::Anything(),
-                                   "The solidus data filename.");
+                                   "The solidus data filename. It is a function of radius or pressure "
+                                   "in the following format: \n"
+                                   "Line 1:  Header \n"
+                                   "Line 2:  Unit of temperature (C/K)        "
+                                            "Unit of pressure (GPa/kbar) or radius (km/m) \n"
+                                   "Line 3~: Column of solidus temperature    Column of radius/pressure \n"
+                                   "See data/initial_temperature/solidus.Mars as an example.");
             }
             prm.leave_subsection();
         }
@@ -281,8 +289,12 @@ namespace aspect
   {
     ASPECT_REGISTER_INITIAL_CONDITIONS(Solidus,
                                        "solidus",
-                                       "Temperature initial condition as solidus," 
-                                       "with lithosphere thickness and perturbation "
-                                       "in shpere harmonic functions.");
+                                       "This is a temperature initial condition that "
+                                       "start the model close to solidus, it also contants "
+                                       "a user defined lithoshpere thickness and with perturbations "
+                                       " in both lithosphere thickness and temperature with "
+                                       "shpere harmonic functions. It was used as the initial conditons "
+                                       "of early Mars that the planet is just freeze up from magma ocean, "
+                                       "using the solidus from Parmentier et al. (2007)");
   }
 }
