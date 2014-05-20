@@ -92,14 +92,15 @@ namespace aspect
       const double global_tan_velocity_square_integral
         = Utilities::MPI::sum (local_tan_velocity_square_integral, this->get_mpi_communicator());
 
-      // compute the final output by dividing by the volume over which we integrated and taking the sqrt
+      // compute the final output by dividing by the volume over which
+      // we integrated and taking the sqrt
       const double rad_vrms = std::sqrt(global_rad_velocity_square_integral / this->get_volume());
       const double tan_vrms = std::sqrt(global_tan_velocity_square_integral / this->get_volume());
       const double vrms = std::sqrt(rad_vrms*rad_vrms + tan_vrms*tan_vrms);
 
       if (this->convert_output_to_years() == true)
         {
-          // make sure that the columns filled by the this object
+          // make sure that the columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
             const char *columns[] = { "Radial RMS velocity (m/yr)",
                                       "Tangential RMS velocity (m/yr)",
@@ -116,11 +117,9 @@ namespace aspect
                 statistics.set_precision (columns[i], 8);
                 statistics.set_scientific (columns[i], true);
               }
-
         }
       else
         {
-
           // make sure that the columns filled by the this object
           // all show up with sufficient accuracy and in scientific notation
             const char *columns[] = { "Radial RMS velocity (m/s)",
@@ -135,7 +134,6 @@ namespace aspect
                 statistics.set_precision (columns[i], 8);
                 statistics.set_scientific (columns[i], true);
               }
-          
         }
 
       std::ostringstream output;
