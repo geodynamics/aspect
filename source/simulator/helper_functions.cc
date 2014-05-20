@@ -58,7 +58,7 @@ namespace aspect
   template <int dim>
   Simulator<dim>::AdvectionField::
   AdvectionField (const FieldType field_type,
-                            const unsigned int compositional_variable)
+                  const unsigned int compositional_variable)
     :
     field_type (field_type),
     compositional_variable (compositional_variable)
@@ -85,7 +85,7 @@ namespace aspect
   Simulator<dim>::AdvectionField::composition (const unsigned int compositional_variable)
   {
     return AdvectionField(compositional_field,
-                                    compositional_variable);
+                          compositional_variable);
   }
 
 

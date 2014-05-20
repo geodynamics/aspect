@@ -369,7 +369,7 @@ namespace aspect
          * <code>source/simulator/helper_functions.cc</code>.
          */
         AdvectionField (const FieldType field_type,
-                                  const unsigned int compositional_variable = numbers::invalid_unsigned_int);
+                        const unsigned int compositional_variable = numbers::invalid_unsigned_int);
 
         /**
          * A static function that creates an object identifying the

@@ -1290,9 +1290,9 @@ namespace aspect
     const double viscosity            = material_model_outputs.viscosities[q];
     const bool is_compressible        = material_model->is_compressible();
     const double specific_radiogenic_heating_rate = heating_model->specific_heating_rate(material_model_inputs.temperature[q],
-                                                                                    material_model_inputs.pressure[q],
-                                                                                    material_model_inputs.composition[q],
-                                                                                    material_model_inputs.position[q]);
+                                                    material_model_inputs.pressure[q],
+                                                    material_model_inputs.composition[q],
+                                                    material_model_inputs.position[q]);
     const double compressibility      = (is_compressible
                                          ?
                                          material_model_outputs.compressibilities[q]
