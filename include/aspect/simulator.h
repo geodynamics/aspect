@@ -336,7 +336,7 @@ namespace aspect
        * be told which one of the two, as well as on which of the
        * compositional variables.
        */
-      struct TemperatureOrComposition
+      struct AdvectionField
       {
         /**
          * An enum indicating whether the identified variable is the
@@ -368,7 +368,7 @@ namespace aspect
          * This function is implemented in
          * <code>source/simulator/helper_functions.cc</code>.
          */
-        TemperatureOrComposition (const FieldType field_type,
+        AdvectionField (const FieldType field_type,
                                   const unsigned int compositional_variable = numbers::invalid_unsigned_int);
 
         /**
@@ -379,7 +379,7 @@ namespace aspect
          * <code>source/simulator/helper_functions.cc</code>.
          */
         static
-        TemperatureOrComposition temperature ();
+        AdvectionField temperature ();
 
         /**
          * A static function that creates an object identifying given
@@ -389,7 +389,7 @@ namespace aspect
          * <code>source/simulator/helper_functions.cc</code>.
          */
         static
-        TemperatureOrComposition composition (const unsigned int compositional_variable);
+        AdvectionField composition (const unsigned int compositional_variable);
 
         /**
          * Return whether this object refers to the temperature field.
@@ -506,7 +506,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      void build_advection_preconditioner (const TemperatureOrComposition &temperature_or_composition,
+      void build_advection_preconditioner (const AdvectionField &advection_field,
                                            std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner);
 
       /**
@@ -524,7 +524,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      void assemble_advection_system (const TemperatureOrComposition &temperature_or_composition);
+      void assemble_advection_system (const AdvectionField &advection_field);
 
       /**
        * Solve one block of the the temperature/composition linear system.
@@ -536,7 +536,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
        */
-      double solve_advection (const TemperatureOrComposition &temperature_or_composition);
+      double solve_advection (const AdvectionField &advection_field);
 
       /**
        * Solve the Stokes linear system. Return the initial nonlinear
@@ -717,7 +717,7 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void
-      local_assemble_advection_system (const TemperatureOrComposition &temperature_or_composition,
+      local_assemble_advection_system (const AdvectionField &advection_field,
                                        const std::pair<double,double> global_field_range,
                                        const double                   global_max_velocity,
                                        const double                   global_entropy_variation,
@@ -737,7 +737,7 @@ namespace aspect
       double compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                   typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                                   typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                                  const TemperatureOrComposition &temperature_or_composition,
+                                  const AdvectionField &advection_field,
                                   const unsigned int q) const;
 
 
@@ -813,7 +813,7 @@ namespace aspect
        * function takes the pre-existing size of this vector as the number of
        * depth slices.
        */
-      void compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition,
+      void compute_depth_average_field(const AdvectionField &advection_field,
                                        std::vector<double> &values) const;
 
       /**
@@ -998,7 +998,7 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       double get_entropy_variation (const double average_value,
-                                    const TemperatureOrComposition &temperature_or_composition) const;
+                                    const AdvectionField &advection_field) const;
 
       /**
        * Compute the minimal and maximal temperature througout the domain from
@@ -1009,7 +1009,7 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       std::pair<double,double>
-      get_extrapolated_temperature_or_composition_range (const TemperatureOrComposition &temperature_or_composition) const;
+      get_extrapolated_advection_field_range (const AdvectionField &advection_field) const;
 
       /**
        * Compute the size of the next time step from the mesh size and the
@@ -1038,7 +1038,7 @@ namespace aspect
                         const double                        average_temperature,
                         const double                        global_entropy_variation,
                         const double                        cell_diameter,
-                        const TemperatureOrComposition     &temperature_or_composition) const;
+                        const AdvectionField     &advection_field) const;
 
       /**
        * Compute the residual of one advection equation to be used for the
@@ -1051,7 +1051,7 @@ namespace aspect
       void
       compute_advection_system_residual(internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
                                         const double                        average_field,
-                                        const TemperatureOrComposition     &temperature_or_composition,
+                                        const AdvectionField     &advection_field,
                                         double                             &max_residual,
                                         double                             &max_velocity,
                                         double                             &max_density,
