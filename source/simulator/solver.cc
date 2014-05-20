@@ -376,8 +376,6 @@ namespace aspect
   {
     computing_timer.enter_section ("   Solve Stokes system");
     pcout << "   Solving Stokes system... " << std::flush;
-	
-	time_t starttime=std::time(NULL); // start timer for the stokes solve
 
     if (parameters.use_direct_stokes_solver)
       {
@@ -536,8 +534,6 @@ namespace aspect
     else
       pcout << solver_control_cheap.last_step() << '+'
             << solver_control_expensive.last_step() << " iterations.";
-	//time_t timediff = ; 
-	pcout << " Solve time: " << std::time(NULL)-starttime << " seconds."; // calculate and output the time it took to solve the stokes of this the nonlinear itteration
     pcout << std::endl;
 
     statistics.add_value("Iterations for Stokes solver",
