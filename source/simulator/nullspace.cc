@@ -188,6 +188,9 @@ namespace aspect
   Simulator<2>::remove_net_angular_momentum( LinearAlgebra::BlockVector &relevant_dst,
                                              LinearAlgebra::BlockVector &tmp_distributed_stokes )
   {
+    Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
+        ExcNotImplemented());
+
     // compute and remove angular momentum from velocity field, by computing
     // int rho V \cdot r_orth = omega  * int rho x^2
     const unsigned int dim=2;
