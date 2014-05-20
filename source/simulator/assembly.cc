@@ -1600,7 +1600,7 @@ namespace aspect
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q] - 
                                         (parameters.free_surface_enabled ?
                                          scratch.mesh_velocity_values[q] :
-                                         0.0);
+                                         Tensor<1,dim>());
 
         const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
                                                   (time_step + old_time_step)) : 1.0;
