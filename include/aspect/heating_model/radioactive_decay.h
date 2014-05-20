@@ -56,8 +56,8 @@ namespace aspect
         double
         specific_heating_rate (const double,
                                const double,
-                               const std::vector<double> &,
-                               const Point<dim> &) const;
+                               const std::vector<double> &composition,
+                               const Point<dim> &position) const;
 
         /**
          * A function that is called at the beginning of each time step to
