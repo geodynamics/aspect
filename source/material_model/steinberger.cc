@@ -523,7 +523,7 @@ namespace aspect
     Steinberger<dim>::
     reference_viscosity () const
     {
-      const double reference_eta    = 1e23;
+      //const double reference_eta    = 1e23;
       return reference_eta;
     }
 
@@ -907,6 +907,10 @@ namespace aspect
                              Patterns::Bool (),
                              "whether to include a compressible material description."
                              "For a description see the manual section.");
+          prm.declare_entry ("Reference viscosity", "1e21",
+                             Patterns::Double(0),
+                             "whether to include a compressible material description."
+                             "For a description see the manual section.");
           prm.leave_subsection();
         }
         prm.leave_subsection();
@@ -939,6 +943,7 @@ namespace aspect
           interpolation        = prm.get_bool ("Bilinear interpolation");
           latent_heat          = prm.get_bool ("Latent heat");
           compressible          = prm.get_bool ("Compressible");
+          reference_eta          = prm.get_double ("Reference viscosity");
 
 
           prm.leave_subsection();
