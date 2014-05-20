@@ -85,7 +85,7 @@ namespace aspect
                              ParameterHandler &prm)
     :
     parameters (prm),
-    introspection (parameters.n_compositional_fields),
+    introspection (parameters.n_compositional_fields, !parameters.use_direct_stokes_solver),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     pcout (std::cout,
            (Utilities::MPI::
@@ -360,13 +360,11 @@ namespace aspect
          * convert this into an object that matches the Function@<dim@>
          * interface.
          *
-        * @param n_comp_fields The number of compositional fields used in
-        *        this vector-valued problem. Needed to determine
-        *        the total size of the output vectors.
+         * @param n_components total number of components of the finite element system.
          * @param function_object The scalar function that will form one component
          *     of the resulting Function object.
          */
-        VectorFunctionFromVelocityFunctionObject (const unsigned int n_comp_fields,
+        VectorFunctionFromVelocityFunctionObject (const unsigned int n_components,
                                                   const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
 
         /**
@@ -403,10 +401,10 @@ namespace aspect
     template <int dim>
     VectorFunctionFromVelocityFunctionObject<dim>::
     VectorFunctionFromVelocityFunctionObject
-    (const unsigned int n_comp_fields,
+    (const unsigned int n_components,
      const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
       :
-      Function<dim>(dim+2+n_comp_fields),
+      Function<dim>(n_components),
       function_object (function_object)
     {
     }
@@ -476,15 +474,17 @@ namespace aspect
     statistics.add_value("Number of mesh cells",
                          triangulation.n_global_active_cells());
 
-    statistics.add_value("Number of Stokes degrees of freedom",
-                         introspection.system_dofs_per_block[0] +
-                         introspection.system_dofs_per_block[1]);
-    statistics.add_value("Number of temperature degrees of freedom",
-                         introspection.system_dofs_per_block[2]);
-    if (parameters.n_compositional_fields > 0)
-      statistics.add_value("Number of composition degrees of freedom",
-                           introspection.system_dofs_per_block[3]);
+    unsigned int n_stokes_dofs = introspection.system_dofs_per_block[0];
+    if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+      n_stokes_dofs += introspection.system_dofs_per_block[introspection.block_indices.pressure];
 
+    statistics.add_value("Number of Stokes degrees of freedom", n_stokes_dofs);
+    statistics.add_value("Number of temperature degrees of freedom",
+                         introspection.system_dofs_per_block[introspection.block_indices.temperature]);
+    if (parameters.n_compositional_fields > 0)
+      statistics.add_value("Number of degrees of freedom for all compositions",
+          parameters.n_compositional_fields
+          * introspection.system_dofs_per_block[introspection.block_indices.compositional_fields[0]]);
 
     // then interpolate the current boundary velocities. this adds to
     // the current_constraints object we already have
@@ -501,7 +501,7 @@ namespace aspect
         {
           p->second->update ();
           VectorFunctionFromVelocityFunctionObject<dim> vel
-          (parameters.n_compositional_fields,
+          (introspection.n_components,
            std_cxx1x::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,
                             p->second,
                             std_cxx1x::_1));
@@ -866,6 +866,97 @@ namespace aspect
   }
 
 
+  /**
+   * This is an internal deal.II function stolen from dof_tools.cc
+   */
+  template <int dim, int spacedim>
+  std::vector<unsigned char>
+  get_local_component_association (const FiniteElement<dim,spacedim>  &fe,
+                                   const ComponentMask        &component_mask)
+  {
+    std::vector<unsigned char> local_component_association (fe.dofs_per_cell,
+                                                            (unsigned char)(-1));
+
+    // compute the component each local dof belongs to.
+    // if the shape function is primitive, then this
+    // is simple and we can just associate it with
+    // what system_to_component_index gives us
+    for (unsigned int i=0; i<fe.dofs_per_cell; ++i)
+      if (fe.is_primitive(i))
+        local_component_association[i] =
+          fe.system_to_component_index(i).first;
+      else
+        // if the shape function is not primitive, then either use the
+        // component of the first nonzero component corresponding
+        // to this shape function (if the component is not specified
+        // in the component_mask), or the first component of this block
+        // that is listed in the component_mask (if the block this
+        // component corresponds to is indeed specified in the component
+        // mask)
+        {
+          const unsigned int first_comp =
+            fe.get_nonzero_components(i).first_selected_component();
+
+          if ((fe.get_nonzero_components(i)
+               &
+               component_mask).n_selected_components(fe.n_components()) == 0)
+            local_component_association[i] = first_comp;
+          else
+            // pick the component selected. we know from the previous 'if'
+            // that within the components that are nonzero for this
+            // shape function there must be at least one for which the
+            // mask is true, so we will for sure run into the break()
+            // at one point
+            for (unsigned int c=first_comp; c<fe.n_components(); ++c)
+              if (component_mask[c] == true)
+                {
+                  local_component_association[i] = c;
+                  break;
+                }
+        }
+
+    Assert (std::find (local_component_association.begin(),
+                       local_component_association.end(),
+                       (unsigned char)(-1))
+            ==
+            local_component_association.end(),
+            ExcInternalError());
+
+    return local_component_association;
+  }
+
+  /**
+   * Returns an IndexSet that contains all locally active DoFs that belong to
+   * the given component_mask.
+   *
+   * This function should be moved into deal.II at some point.
+   */
+  template <int dim>
+  IndexSet extract_component_subset(DoFHandler<dim> & dof_handler, const ComponentMask & component_mask)
+  {
+    std::vector<unsigned char> local_asoc =
+      get_local_component_association (dof_handler.get_fe(),
+                                       ComponentMask(dof_handler.get_fe().n_components(), true));
+
+    IndexSet ret(dof_handler.n_dofs());
+
+    unsigned int dofs_per_cell = dof_handler.get_fe().dofs_per_cell;
+    std::vector<types::global_dof_index> indices(dofs_per_cell);
+    for (typename DoFHandler<dim>::active_cell_iterator cell=dof_handler.begin_active();
+         cell!=dof_handler.end(); ++cell)
+      if (cell->is_locally_owned())
+        {
+          cell->get_dof_indices(indices);
+          for (unsigned int i=0; i<dofs_per_cell; ++i)
+            if (component_mask[local_asoc[i]])
+              ret.add_index(indices[i]);
+        }
+
+    return ret;
+  }
+
+
+
   template <int dim>
   void Simulator<dim>::setup_introspection ()
   {
@@ -890,10 +981,20 @@ namespace aspect
                                     introspection.system_dofs_per_block,
                                     introspection.components_to_blocks);
     {
-      const types::global_dof_index n_u = introspection.system_dofs_per_block[0],
-                                    n_p = introspection.system_dofs_per_block[1],
-                                    n_T = introspection.system_dofs_per_block[2];
-      std::vector<types::global_dof_index> n_C (parameters.n_compositional_fields+1);
+      types::global_dof_index n_u = introspection.system_dofs_per_block[0],
+          n_p = introspection.system_dofs_per_block[introspection.block_indices.pressure],
+          n_T = introspection.system_dofs_per_block[introspection.block_indices.temperature];
+
+      Assert(!parameters.use_direct_stokes_solver ||
+          (introspection.block_indices.velocities == introspection.block_indices.pressure),
+          ExcInternalError());
+
+      // only count pressure once if velocity and pressure are in the same block,
+      // i.e., direct solver is used.
+      if (introspection.block_indices.velocities == introspection.block_indices.pressure)
+        n_p = 0;
+
+      std::vector<types::global_dof_index> n_C (parameters.n_compositional_fields);
       for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
         n_C[c] = introspection.system_dofs_per_block
                  [introspection.block_indices.compositional_fields[c]];
@@ -902,19 +1003,34 @@ namespace aspect
       IndexSet system_index_set = dof_handler.locally_owned_dofs();
       introspection.index_sets.system_partitioning.clear ();
       introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(0,n_u));
-      introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
+      if (n_p != 0)
+        {
+          introspection.index_sets.locally_owned_pressure_dofs = system_index_set.get_view(n_u,n_u+n_p);
+          introspection.index_sets.system_partitioning.push_back(introspection.index_sets.locally_owned_pressure_dofs);
+        }
+      else
+        {
+          introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
+        }
       introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
+
       introspection.index_sets.stokes_partitioning.clear ();
       introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(0,n_u));
-      introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
+      if (n_p != 0)
+        {
+          introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
+        }
 
       DoFTools::extract_locally_relevant_dofs (dof_handler,
                                                introspection.index_sets.system_relevant_set);
       introspection.index_sets.system_relevant_partitioning.clear ();
       introspection.index_sets.system_relevant_partitioning
-      .push_back(introspection.index_sets.system_relevant_set.get_view(0,n_u));
-      introspection.index_sets.system_relevant_partitioning
+  .push_back(introspection.index_sets.system_relevant_set.get_view(0,n_u));
+      if (n_p != 0)
+        {
+          introspection.index_sets.system_relevant_partitioning
       .push_back(introspection.index_sets.system_relevant_set.get_view(n_u,n_u+n_p));
+        }
       introspection.index_sets.system_relevant_partitioning
       .push_back(introspection.index_sets.system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
 
@@ -996,6 +1112,9 @@ namespace aspect
                                        estimated_error_per_cell,
                                        parameters.refinement_fraction,
                                        parameters.coarsening_fraction);
+
+    mesh_refinement_manager.tag_additional_cells ();
+
 
     // limit maximum refinement level
     if (triangulation.n_levels() > max_grid_level)
@@ -1287,9 +1406,9 @@ namespace aspect
 
               current_linearization_point.block(introspection.block_indices.velocities)
                 = solution.block(introspection.block_indices.velocities);
-              current_linearization_point.block(introspection.block_indices.pressure)
-                = solution.block(introspection.block_indices.pressure);
-
+              if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+                current_linearization_point.block(introspection.block_indices.pressure)
+                  = solution.block(introspection.block_indices.pressure);
 
               pcout << std::endl;
             }

@@ -209,6 +209,13 @@ namespace aspect
                        "The name of the directory into which all output files should be "
                        "placed. This may be an absolute or a relative path.");
 
+    prm.declare_entry ("Use direct solver for Stokes system", "false",
+                       Patterns::Bool(),
+                       "If set to true the linear system for the Stokes equation will "
+                       "be solved using Trilinos klu, otherwise an iterative Schur "
+                       "complement solver is used. The direct solver is only efficient "
+                       "for small problems.");
+
     prm.declare_entry ("Linear solver tolerance", "1e-7",
                        Patterns::Double(0,1),
                        "A relative tolerance up to which the linear Stokes systems in each "
@@ -602,6 +609,7 @@ namespace aspect
     adiabatic_surface_temperature = prm.get_double ("Adiabatic surface temperature");
     pressure_normalization        = prm.get("Pressure normalization");
 
+    use_direct_stokes_solver      = prm.get_bool("Use direct solver for Stokes system");
     linear_stokes_solver_tolerance= prm.get_double ("Linear solver tolerance");
     n_cheap_stokes_solver_steps   = prm.get_integer ("Number of cheap Stokes solver steps");
     temperature_solver_tolerance  = prm.get_double ("Temperature solver tolerance");

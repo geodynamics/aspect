@@ -1006,6 +1006,9 @@ namespace aspect
     if (rebuild_stokes_preconditioner == false)
       return;
 
+    if (parameters.use_direct_stokes_solver)
+      return;
+
     computing_timer.enter_section ("   Build Stokes preconditioner");
     pcout << "   Rebuilding Stokes preconditioner..." << std::flush;
 
@@ -1238,33 +1241,23 @@ namespace aspect
         case AdvectionField::temperature_field:
         {
           computing_timer.enter_section ("   Build temperature preconditioner");
-
-          preconditioner.reset (new LinearAlgebra::PreconditionILU());
-          preconditioner->initialize (system_matrix.block(2,2));
-
-          computing_timer.exit_section();
-
           break;
         }
 
         case AdvectionField::compositional_field:
         {
           computing_timer.enter_section ("   Build composition preconditioner");
-
-          const unsigned int block_number
-            = 3+advection_field.compositional_variable;
-          preconditioner.reset (new LinearAlgebra::PreconditionILU());
-          preconditioner->initialize (system_matrix.block(block_number,
-                                                          block_number));
-
-          computing_timer.exit_section();
-
           break;
         }
 
         default:
           Assert (false, ExcNotImplemented());
       }
+
+    const unsigned int block_idx = advection_field.block_index(introspection);
+    preconditioner.reset (new LinearAlgebra::PreconditionILU());
+    preconditioner->initialize (system_matrix.block(block_idx, block_idx));
+    computing_timer.exit_section();
   }
 
 
@@ -1575,6 +1568,7 @@ namespace aspect
             *
             (density_c_P + latent_heat_LHS);
 
+        AssertThrow(density_c_P + latent_heat_LHS, ExcMessage("mass matrix must be positive"));
 
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
         const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
@@ -1633,8 +1627,8 @@ namespace aspect
       computing_timer.enter_section ("   Assemble temperature system");
     else
       computing_timer.enter_section ("   Assemble composition system");
-
-    system_matrix.block (advection_field.block_index(introspection),advection_field.block_index(introspection)) = 0;
+    const unsigned int block_idx = advection_field.block_index(introspection);
+    system_matrix.block(block_idx, block_idx) = 0;
     system_rhs = 0;
 
     const std::pair<double,double>

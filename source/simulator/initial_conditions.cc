@@ -71,13 +71,12 @@ namespace aspect
 // integer 'n'
     for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
       {
+        TemperatureOrComposition torc = (n==0) ? TemperatureOrComposition::temperature()
+        : TemperatureOrComposition::composition(n-1);
         initial_solution.reinit(system_rhs, false);
 
-        // base element in the finite element is 2 for temperature (n=0) and 3 for
-        // compositional fields (n>0)
-        const unsigned int base_element = (n==0 ?
-                                           introspection.base_elements.temperature :
-                                           introspection.base_elements.compositional_fields);
+        const unsigned int base_element = torc.base_element(introspection);
+
 
         // get the temperature/composition support points
         const std::vector<Point<dim> > support_points
@@ -105,18 +104,18 @@ namespace aspect
                 {
 //TODO: Use introspection here
                   const unsigned int system_local_dof
-                    = finite_element.component_to_system_index(/*temperature/composition component=*/dim+1+n,
+                    = finite_element.component_to_system_index(torc.component_index(introspection),
                         /*dof index within component=*/i);
 
                   const double value =
-                    (n == 0
+                    (torc.is_temperature()
                      ?
                      initial_conditions->initial_temperature(fe_values.quadrature_point(i))
                      :
                      compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n-1));
                   initial_solution(local_dof_indices[system_local_dof]) = value;
 
-                  if (n > 0)
+                  if (!torc.is_temperature())
                     Assert (value >= 0,
                             ExcMessage("Invalid initial conditions: Composition is negative"));
 
@@ -142,7 +141,7 @@ namespace aspect
         // we should not have written at all into any of the blocks with
         // the exception of the current temperature or composition block
         for (unsigned int b=0; b<initial_solution.n_blocks(); ++b)
-          if (b != 2+n)
+          if (b != torc.block_index(introspection))
             Assert (initial_solution.block(b).l2_norm() == 0,
                     ExcInternalError());
 
@@ -169,9 +168,10 @@ namespace aspect
         constraints.distribute(initial_solution);
 
         // copy temperature/composition block only
-        solution.block(2+n) = initial_solution.block(2+n);
-        old_solution.block(2+n) = initial_solution.block(2+n);
-        old_old_solution.block(2+n) = initial_solution.block(2+n);
+        const unsigned int blockidx = torc.block_index(introspection);
+        solution.block(blockidx) = initial_solution.block(blockidx);
+        old_solution.block(blockidx) = initial_solution.block(blockidx);
+        old_old_solution.block(blockidx) = initial_solution.block(blockidx);
       }
   }
 
@@ -179,6 +179,11 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::compute_initial_pressure_field ()
   {
+    // Note that this code will overwrite the velocity solution with 0 if
+    // velocity and pressure are in the same block (i.e., direct solver is
+    // used). As the velocity is all zero anyway, this is currently not a
+    // problem.
+
     // we'd like to interpolate the initial pressure onto the pressure
     // variable but that's a bit involved because the pressure may either
     // be an FE_Q (for which we can interpolate) or an FE_DGP (for which
@@ -205,14 +210,14 @@ namespace aspect
                                   VectorFunctionFromScalarFunctionObject<dim> (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
                                                                                std_cxx1x::cref (*adiabatic_conditions),
                                                                                std_cxx1x::_1),
-                                                                               dim,
-                                                                               dim+2+parameters.n_compositional_fields),
+                                                                               introspection.component_indices.pressure,
+                                                                               introspection.n_components),
                                   system_tmp);
 
         // we may have hanging nodes, so apply constraints
         constraints.distribute (system_tmp);
 
-        old_solution.block(1) = system_tmp.block(1);
+        old_solution.block(introspection.block_indices.pressure) = system_tmp.block(introspection.block_indices.pressure);
       }
     else
       {
@@ -280,9 +285,9 @@ namespace aspect
                     // for all other variables so that the whole thing remains
                     // invertible
                     for (unsigned int j=0; j<dofs_per_cell; ++j)
-                      if ((finite_element.system_to_component_index(i).first == dim)
+                      if ((finite_element.system_to_component_index(i).first == introspection.component_indices.pressure)
                           &&
-                          (finite_element.system_to_component_index(j).first == dim))
+                          (finite_element.system_to_component_index(j).first == introspection.component_indices.pressure))
                         local_mass_matrix(j,i) += (fe_values[introspection.extractors.pressure].value(i,point) *
                                                    fe_values[introspection.extractors.pressure].value(j,point) *
                                                    fe_values.JxW(point));
@@ -298,7 +303,7 @@ namespace aspect
               cell->set_dof_values (local_projection, system_tmp);
             }
 
-        old_solution.block(1) = system_tmp.block(1);
+        old_solution.block(introspection.block_indices.pressure) = system_tmp.block(introspection.block_indices.pressure);
       }
 
     // normalize the pressure in such a way that the surface pressure

@@ -5,6 +5,9 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li>New: There is now a mesh refinement criterium that checks the mesh
+ * always has a minimum refinement level determined by a function given in the
+ * input file.
  *
  * <li> New: Input files can now contain lines ending in backslashes
  * to concatenate subsequent lines.
