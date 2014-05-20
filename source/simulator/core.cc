@@ -995,12 +995,12 @@ namespace aspect
       introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(0,n_u));
       if (n_p != 0)
         {
-          introspection.index_sets.locally_owned_pressure = system_index_set.get_view(n_u,n_u+n_p);
-          introspection.index_sets.system_partitioning.push_back(introspection.index_sets.locally_owned_pressure);
+          introspection.index_sets.locally_owned_pressure_dofs = system_index_set.get_view(n_u,n_u+n_p);
+          introspection.index_sets.system_partitioning.push_back(introspection.index_sets.locally_owned_pressure_dofs);
         }
       else
         {
-          introspection.index_sets.locally_owned_pressure = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
+          introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
         }
       introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
 

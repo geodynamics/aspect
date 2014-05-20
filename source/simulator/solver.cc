@@ -394,9 +394,9 @@ namespace aspect
         current_constraints.distribute (distributed_stokes_solution);
 
         // now rescale the pressure back to real physical units:
-        for (unsigned int i=0;i< introspection.index_sets.locally_owned_pressure.n_elements(); ++i)
+        for (unsigned int i=0;i< introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
           {
-            types::global_dof_index idx = introspection.index_sets.locally_owned_pressure.nth_index_in_set(i);
+            types::global_dof_index idx = introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
 
             distributed_stokes_solution(idx) *= pressure_scaling;
           }

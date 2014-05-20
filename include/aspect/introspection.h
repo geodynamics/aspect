@@ -253,7 +253,7 @@ namespace aspect
          * Pressure unknowns that are locally owned. This IndexSet is needed
          * if velocity and pressure end up in the same block.
          */
-        IndexSet locally_owned_pressure;
+        IndexSet locally_owned_pressure_dofs;
       };
       /**
        * A variable that contains index sets describing which of the globally
