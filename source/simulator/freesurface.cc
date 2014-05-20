@@ -42,8 +42,8 @@ namespace aspect
   template <int dim>
   Simulator<dim>::FreeSurfaceHandler::FreeSurfaceHandler( Simulator<dim> &simulator,
                                                           ParameterHandler &prm) 
-  : sim(simulator),
-    free_surface_fe (FE_Q<dim>(1),dim),
+  : sim(simulator),  //reference to the simulator that owns the FreeSurfaceHandler
+    free_surface_fe (FE_Q<dim>(1),dim), //Q1 elements which describe the mesh geometry
     free_surface_dof_handler (sim.triangulation)
   {
     parse_parameters(prm);
@@ -90,17 +90,30 @@ namespace aspect
 
     sim.pcout << "FS: free_surface_execute()" << std::endl;
 
-    make_constraints();
+    //Make the constraints for the elliptic problem.  On the free surface, we
+    //constrain mesh velocity to be v.n, on free slip it is constrainted to
+    //be tangential, and on no slip boundaries it is zero.
+    make_constraints(); 
 
+    //Assemble and solve the vector Laplace problem which determines
+    //the mesh velocitiy in the interior of the domain
     solve_elliptic_problem();
 
+    //calculate the displacement from the mesh velocity based on the
+    //current time step size.  Also interpolates the Q1 mesh velocity
+    //system onto the Stokes velocity system for ALE corrections
     calculate_mesh_displacement();
 
+    //Actually loop over the mesh vertices and displace them.
+    //Also called after redistribution with p4est
     displace_mesh();
 
+    //After changing the mesh we need to rebuild things
     sim.rebuild_stokes_matrix = sim.rebuild_stokes_preconditioner = true;
     sim.computing_timer.exit_section("FreeSurface");
   }
+
+
 
   template <int dim>
   void Simulator<dim>::FreeSurfaceHandler::make_constraints()
@@ -385,11 +398,10 @@ namespace aspect
 
     //actually do the ALE thing
     distributed_mesh_vertices.sadd(1.0, sim.time_step, distributed_mesh_vertex_velocity);
-
     mesh_vertices = distributed_mesh_vertices;
 
 
-    // calculate mesh_velocity from mesh_vertex_velocity
+    //Interpolate the mesh vertex velocity onto the Stokes velocity system for use in ALE corrections
 
     LinearAlgebra::BlockVector distributed_mesh_velocity;
     distributed_mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning, sim.mpi_communicator);
