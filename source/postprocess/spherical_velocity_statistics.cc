@@ -75,15 +75,15 @@ namespace aspect
               {
                 // create unit vector in radial direction
                 const Tensor<1,dim> radial_unit_vector = position_point[q] / position_point[q].norm();
- 
+
                 // compute the radial velocity by multiplying with the radial unit vector
                 const double radial_vel = (velocity_values[q] * radial_unit_vector);
                 local_rad_velocity_square_integral += (radial_vel * radial_vel) *
-                                                   fe_values.JxW(q);
+                                                      fe_values.JxW(q);
                 // compute the tangential velocity by subtracting the radial velocity from the velocity
                 const Tensor<1,dim> tangential_vel = velocity_values[q] -  radial_vel * radial_unit_vector;
                 local_tan_velocity_square_integral += (tangential_vel * tangential_vel) *
-                                                   fe_values.JxW(q);
+                                                      fe_values.JxW(q);
               }
           }
       // compute the global sums
@@ -102,38 +102,38 @@ namespace aspect
         {
           // make sure that the columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
-            const char *columns[] = { "Radial RMS velocity (m/yr)",
-                                      "Tangential RMS velocity (m/yr)",
-                                      "Total RMS velocity (m/yr)"
-                                    };
+          const char *columns[] = { "Radial RMS velocity (m/yr)",
+                                    "Tangential RMS velocity (m/yr)",
+                                    "Total RMS velocity (m/yr)"
+                                  };
           statistics.add_value (columns[0],
                                 rad_vrms * year_in_seconds);
           statistics.add_value (columns[1],
                                 tan_vrms * year_in_seconds);
           statistics.add_value (columns[2],
                                 vrms * year_in_seconds);
-            for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
-              {
-                statistics.set_precision (columns[i], 8);
-                statistics.set_scientific (columns[i], true);
-              }
+          for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+            {
+              statistics.set_precision (columns[i], 8);
+              statistics.set_scientific (columns[i], true);
+            }
         }
       else
         {
           // make sure that the columns filled by the this object
           // all show up with sufficient accuracy and in scientific notation
-            const char *columns[] = { "Radial RMS velocity (m/s)",
-                                      "Tangential RMS velocity (m/s)",
-                                      "Total RMS velocity (m/s)"
-                                    };
+          const char *columns[] = { "Radial RMS velocity (m/s)",
+                                    "Tangential RMS velocity (m/s)",
+                                    "Total RMS velocity (m/s)"
+                                  };
           statistics.add_value (columns[0], rad_vrms);
           statistics.add_value (columns[1], tan_vrms);
           statistics.add_value (columns[2], vrms);
-            for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
-              {
-                statistics.set_precision (columns[i], 8);
-                statistics.set_scientific (columns[i], true);
-              }
+          for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+            {
+              statistics.set_precision (columns[i], 8);
+              statistics.set_scientific (columns[i], true);
+            }
         }
 
       std::ostringstream output;
