@@ -643,27 +643,29 @@ namespace aspect
             for (; cell != endc; ++cell)
               if (cell->is_locally_owned())
                 {
-                  // identify the first pressure dof
                   cell->get_dof_indices (local_dof_indices);
                   for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
-                  {
+                    {
                       unsigned int support_point_index
-                          = finite_element.component_to_system_index(introspection.component_indices.pressure,
-                                                                                             /*dof index within component=*/ j);
+                      = finite_element.component_to_system_index(introspection.component_indices.pressure,
+                          /*dof index within component=*/ j);
 
-                  // make sure that this DoF is really owned by the current processor
-                  // and that it is in fact a pressure dof
-                  Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[support_point_index]),
+                      // make sure that this DoF is really owned by the current processor
+                      // and that it is in fact a pressure dof
+                      Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[support_point_index]),
                           ExcInternalError());
 
-                  Assert (introspection.block_indices.velocities == introspection.block_indices.pressure
-                      || local_dof_indices[support_point_index] >= vector.block(0).size(),
+                      Assert (introspection.block_indices.velocities == introspection.block_indices.pressure
+                          || local_dof_indices[support_point_index] >= vector.block(0).size(),
                           ExcInternalError());
 
-                  // then adjust its value
-                  distributed_vector(local_dof_indices[support_point_index]) += pressure_adjustment;
-                  }
+                      // then adjust its value. Note that because we end up touching
+                      // entries more than once, we are not simply incrementing
+                      // distributed_vector but copy from the unchanged vector.
+                      distributed_vector(local_dof_indices[support_point_index]) = vector(local_dof_indices[support_point_index]) + pressure_adjustment;
+                    }
                 }
+            distributed_vector.compress(VectorOperation::insert);
           }
       }
     else
@@ -691,7 +693,7 @@ namespace aspect
               // identify the first pressure dof
               cell->get_dof_indices (local_dof_indices);
               const unsigned int first_pressure_dof
-                = finite_element.component_to_system_index (dim, 0);
+                = finite_element.component_to_system_index (introspection.component_indices.pressure, 0);
 
               // make sure that this DoF is really owned by the current processor
               // and that it is in fact a pressure dof
@@ -705,6 +707,7 @@ namespace aspect
               // then adjust its value
               distributed_vector(local_dof_indices[first_pressure_dof]) += pressure_adjustment;
             }
+        distributed_vector.compress(VectorOperation::insert);
       }
 
     // now get back to the original vector
