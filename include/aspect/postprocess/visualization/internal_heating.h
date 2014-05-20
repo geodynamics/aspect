@@ -43,13 +43,13 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class Heating
+      class InternalHeating
         : public DataPostprocessorScalar<dim>,
           public SimulatorAccess<dim>,
           public Interface<dim>
       {
         public:
-          Heating ();
+          InternalHeating ();
 
           virtual
           void
