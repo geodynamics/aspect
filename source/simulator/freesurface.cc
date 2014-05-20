@@ -457,7 +457,6 @@ namespace aspect
 
     // these live in the same FE as the velocity variable:
     mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning, sim.introspection.index_sets.system_relevant_partitioning, sim.mpi_communicator);
-    old_mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning, sim.introspection.index_sets.system_relevant_partitioning, sim.mpi_communicator);
 
 
     free_surface_dof_handler.distribute_dofs(free_surface_fe);
@@ -469,8 +468,6 @@ namespace aspect
     // is because the numbering depends on the order the
     // cells are created.
     DoFRenumbering::hierarchical (free_surface_dof_handler);
-//  DoFRenumbering::component_wise (free_surface_dof_handler,
-//      introspection.components_to_blocks);
 
 
 

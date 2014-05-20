@@ -1424,12 +1424,6 @@ namespace aspect
           LinearAlgebra::BlockVector mesh_velocity;
 
           /**
-           * BlockVector which stores the old mesh velocity interpolated onto the Stokes velocity
-           * finite element space.
-           */
-          LinearAlgebra::BlockVector old_mesh_velocity;
-
-          /**
            * Vector for storing the positions of the mesh vertices.  This vector is updated
            * by FreeSurfaceHandler::calculate_mesh_displacement(), and is quite important
            * for making sure the mesh stays the same shape upon redistribution of the system.

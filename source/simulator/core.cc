@@ -1153,7 +1153,6 @@ namespace aspect
     if(parameters.free_surface_enabled)
       {
         x_system.push_back( &free_surface->mesh_velocity );
-        x_system.push_back( &free_surface->old_mesh_velocity );
       }
 
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
@@ -1193,14 +1192,13 @@ namespace aspect
       LinearAlgebra::BlockVector
       old_distributed_mesh_velocity (system_rhs);
 
-      std::vector<LinearAlgebra::BlockVector *> system_tmp ( parameters.free_surface_enabled ? 4 : 2);
+      std::vector<LinearAlgebra::BlockVector *> system_tmp ( parameters.free_surface_enabled ? 3 : 2);
       system_tmp[0] = &(distributed_system);
       system_tmp[1] = &(old_distributed_system);
       
       if(parameters.free_surface_enabled)
         {
           system_tmp[2] = &(distributed_mesh_velocity);
-          system_tmp[3] = &(old_distributed_mesh_velocity);
         } 
 
       system_trans.interpolate (system_tmp);
@@ -1209,7 +1207,6 @@ namespace aspect
       if(parameters.free_surface_enabled)
         {
           free_surface->mesh_velocity = distributed_mesh_velocity;
-          free_surface->old_mesh_velocity = old_distributed_mesh_velocity;
         }
     }
 
