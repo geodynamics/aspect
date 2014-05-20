@@ -32,7 +32,8 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes some statistics about the velocity of spherical/cylindrical models.
+     * A postprocessor that computes some statistics about the radial and tangential components
+     * of the velocity in spherical/cylindrical models.
      *
      * @ingroup Postprocessing
      */

@@ -92,55 +92,50 @@ namespace aspect
       const double global_tan_velocity_square_integral
         = Utilities::MPI::sum (local_tan_velocity_square_integral, this->get_mpi_communicator());
 
-      // compute the final output by dividing by the volume over which we integrated
-      const double rad_vrms = std::sqrt(global_rad_velocity_square_integral) /
-                              std::sqrt(this->get_volume());
-      const double tan_vrms = std::sqrt(global_tan_velocity_square_integral) /
-                              std::sqrt(this->get_volume());
+      // compute the final output by dividing by the volume over which we integrated and taking the sqrt
+      const double rad_vrms = std::sqrt(global_rad_velocity_square_integral / this->get_volume());
+      const double tan_vrms = std::sqrt(global_tan_velocity_square_integral / this->get_volume());
       const double vrms = std::sqrt(rad_vrms*rad_vrms + tan_vrms*tan_vrms);
 
       if (this->convert_output_to_years() == true)
         {
-          statistics.add_value ("Radial RMS velocity (m/yr)",
-                                rad_vrms * year_in_seconds);
-          statistics.add_value ("Tangential RMS velocity (m/yr)",
-                                tan_vrms * year_in_seconds);
-          statistics.add_value ("Total RMS velocity (m/yr)",
-                                vrms * year_in_seconds);
-
-          // also make sure that the other columns filled by the this object
+          // make sure that the columns filled by the this object
           // all show up with sufficient accuracy and in scientific notation
-          {
             const char *columns[] = { "Radial RMS velocity (m/yr)",
                                       "Tangential RMS velocity (m/yr)",
                                       "Total RMS velocity (m/yr)"
                                     };
+          statistics.add_value (columns[0],
+                                rad_vrms * year_in_seconds);
+          statistics.add_value (columns[1],
+                                tan_vrms * year_in_seconds);
+          statistics.add_value (columns[2],
+                                vrms * year_in_seconds);
             for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
               {
                 statistics.set_precision (columns[i], 8);
                 statistics.set_scientific (columns[i], true);
               }
-          }
+
         }
       else
         {
-          statistics.add_value ("Radial RMS velocity (m/s)", rad_vrms);
-          statistics.add_value ("Tangential RMS velocity (m/s)", tan_vrms);
-          statistics.add_value ("Total RMS velocity (m/s)", vrms);
 
-          // also make sure that the other columns filled by the this object
+          // make sure that the columns filled by the this object
           // all show up with sufficient accuracy and in scientific notation
-          {
             const char *columns[] = { "Radial RMS velocity (m/s)",
                                       "Tangential RMS velocity (m/s)",
                                       "Total RMS velocity (m/s)"
                                     };
+          statistics.add_value (columns[0], rad_vrms);
+          statistics.add_value (columns[1], tan_vrms);
+          statistics.add_value (columns[2], vrms);
             for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
               {
                 statistics.set_precision (columns[i], 8);
                 statistics.set_scientific (columns[i], true);
               }
-          }
+          
         }
 
       std::ostringstream output;
