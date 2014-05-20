@@ -120,8 +120,8 @@ namespace aspect
       double lateral_perturbation;
       double Depth=this->geometry_model->depth(position);
 
+      AssertThrow(solidus_curve.n_points!=0,ExcMessage("Error reading solidus file."));
       AssertThrow(solidus_curve.is_radius==true,ExcMessage("The solidus curve has to be radius dependent."));
-      AssertThrow(solidus_curve.n_points!=0,ExcMessage("Error eading solidus file."));
       const GeometryModel::SphericalShell<dim> *spherical_geometry_model=
         dynamic_cast< const GeometryModel::SphericalShell<dim> *>(this->geometry_model);
       AssertThrow(spherical_geometry_model!=0,
