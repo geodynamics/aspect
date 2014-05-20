@@ -209,7 +209,7 @@ namespace aspect
                        "The name of the directory into which all output files should be "
                        "placed. This may be an absolute or a relative path.");
 
-    prm.declare_entry ("Use Stokes direct solver", "false",
+    prm.declare_entry ("Use direct solver for Stokes system", "false",
                        Patterns::Bool(),
                        "If set to true the linear system for the Stokes equation will "
                        "be solved using Trilinos klu, otherwise an iterative Schur "
