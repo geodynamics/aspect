@@ -2921,25 +2921,7 @@ namespace aspect
       };
 
 
-      /**
-       * The exact solution for the Inclusion benchmark.
-       */
-      template <int dim>
-      class FunctionInclusion : public Function<dim>
-      {
-        public:
-          FunctionInclusion (double eta_B) : Function<dim>(dim+2), eta_B_(eta_B) {}
-          virtual void vector_value (const Point< dim >   &p,
-                                     Vector< double >   &values) const
-          {
-            double pos[2]= {p(0),p(1)};
-            aspect::DuretzEtAl::AnalyticSolutions::_Inclusion
-            (pos,0.2,eta_B_, &values[0], &values[1], &values[2]);
-          }
 
-        private:
-          double eta_B_;
-      };
     }
 
     template <int dim>
@@ -2963,14 +2945,6 @@ namespace aspect
       else if (dynamic_cast<const MaterialModel::DuretzEtAl::SolKz<dim> *>(&this->get_material_model()) != NULL)
         {
           ref_func.reset (new internal_DuretzEtAl::FunctionSolKz<dim>());
-        }
-      else if (dynamic_cast<const MaterialModel::DuretzEtAl::Inclusion<dim> *>(&this->get_material_model()) != NULL)
-        {
-          const MaterialModel::DuretzEtAl::Inclusion<dim> *
-          material_model
-            = dynamic_cast<const MaterialModel::DuretzEtAl::Inclusion<dim> *>(&this->get_material_model());
-
-          ref_func.reset (new internal_DuretzEtAl::FunctionInclusion<dim>(material_model->get_eta_B()));
         }
       else
         {

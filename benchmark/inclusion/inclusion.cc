@@ -1,60 +1,110 @@
 #include <aspect/material_model/simple.h>
+#include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/global.h>
+
+#include <deal.II/dofs/dof_tools.h>
+#include <deal.II/numerics/data_out.h>
+#include <deal.II/base/quadrature_lib.h>
+#include <deal.II/base/function_lib.h>
+#include <deal.II/numerics/error_estimator.h>
+#include <deal.II/numerics/vector_tools.h>
 
 
 namespace aspect
 {
-  namespace MaterialModel
+  namespace InclusionBenchmark
   {
     using namespace dealii;
 
-
-    namespace AnalyticSolutions
+  namespace AnalyticSolutions
+  {
+    // based on http://geodynamics.org/hg/cs/AMR/Discontinuous_Stokes with permission
+    void _Inclusion(double pos[2], double r_inclusion, double eta, double *vx, double *vy, double *p)
     {
-      // based on http://geodynamics.org/hg/cs/AMR/Discontinuous_Stokes with permission
-      void _Inclusion(double pos[2], double r_inclusion, double eta, double *vx, double *vy, double *p)
-      {
-        const double min_eta = 1.0;
-        const double max_eta = eta;
-        const double epsilon = 1; //strain rate
-        const double A(min_eta*(max_eta-min_eta)/(max_eta+min_eta));
-        std::complex<double> phi, psi, dphi;
-        const double offset[2]= {1.0, 1.0};
-        double r2_inclusion = r_inclusion * r_inclusion;
+      const double min_eta = 1.0;
+      const double max_eta = eta;
+      const double epsilon = 1; //strain rate
+      const double A(min_eta*(max_eta-min_eta)/(max_eta+min_eta));
+      std::complex<double> phi, psi, dphi;
+      const double offset[2]= {1.0, 1.0};
+      double r2_inclusion = r_inclusion * r_inclusion;
 
-        double x = pos[0]-offset[0];
-        double y = pos[1]-offset[1];
-        double r2 = x*x+y*y;
+      double x = pos[0]-offset[0];
+      double y = pos[1]-offset[1];
+      double r2 = x*x+y*y;
 
-        std::complex<double> z(x,y);
-        if (r2<r2_inclusion)
-          {
-            //inside the inclusion
-            phi=0;
-            dphi=0;
-            psi=-4*epsilon*(max_eta*min_eta/(min_eta+max_eta))*z;
-          }
-        else
-          {
-            //outside the inclusion
-            phi=-2*epsilon*A*r2_inclusion/z;
-            dphi=-phi/z;
-            psi=-2*epsilon*(min_eta*z+A*r2_inclusion*r2_inclusion/(z*z*z));
-          }
-        double visc = (r2<r2_inclusion)? max_eta : 1.0;
-        std::complex<double> v = (phi - z*conj(dphi) - conj(psi))/(2.0*visc);
-        *vx=v.real();
-        *vy=v.imag();
-        *p=-2*epsilon*dphi.real();
-      }
+      std::complex<double> z(x,y);
+      if (r2<r2_inclusion)
+        {
+          //inside the inclusion
+          phi=0;
+          dphi=0;
+          psi=-4*epsilon*(max_eta*min_eta/(min_eta+max_eta))*z;
+        }
+      else
+        {
+          //outside the inclusion
+          phi=-2*epsilon*A*r2_inclusion/z;
+          dphi=-phi/z;
+          psi=-2*epsilon*(min_eta*z+A*r2_inclusion*r2_inclusion/(z*z*z));
+        }
+      double visc = (r2<r2_inclusion)? max_eta : 1.0;
+      std::complex<double> v = (phi - z*conj(dphi) - conj(psi))/(2.0*visc);
+      *vx=v.real();
+      *vy=v.imag();
+      *p=-2*epsilon*dphi.real();
     }
 
-    namespace VelocityBoundaryConditions
-    {
-      namespace DuretzEtAl
+
+
+
+
+      /**
+       * The exact solution for the Inclusion benchmark.
+       */
+      template <int dim>
+      class FunctionInclusion : public Function<dim>
       {
+        public:
+          FunctionInclusion (double eta_B) : Function<dim>(dim+2), eta_B_(eta_B) {}
+          virtual void vector_value (const Point< dim >   &p,
+                                     Vector< double >   &values) const
+          {
+            double pos[2]= {p(0),p(1)};
+            AnalyticSolutions::_Inclusion
+              (pos,0.2,eta_B_, &values[0], &values[1], &values[2]);
+          }
+
+        private:
+          double eta_B_;
+      };
+    }
+
+
+
+    template <int dim>
+    class InclusionBoundary : public VelocityBoundaryConditions::Interface<dim>
+    {
+      public:
+        /**
+         * Constructor.
+         */
+        InclusionBoundary();
+
+        /**
+         * Return the boundary velocity as a function of position.
+         */
+        virtual
+        Tensor<1,dim>
+        boundary_velocity (const Point<dim> &position) const;
+
+      private:
+        double eta_B;
+    };
+
         template <int dim>
-        Inclusion<dim>::Inclusion ()
+        InclusionBoundary<dim>::InclusionBoundary ()
           :
           eta_B (1e3)
         {}
@@ -63,7 +113,7 @@ namespace aspect
 
         template <int dim>
         Tensor<1,dim>
-        Inclusion<dim>::
+        InclusionBoundary<dim>::
         boundary_velocity (const Point<dim> &p) const
         {
           Assert (dim == 2, ExcNotImplemented());
@@ -72,13 +122,13 @@ namespace aspect
 
           Tensor<1,dim> velocity;
           double pressure;
-          aspect::DuretzEtAl::AnalyticSolutions::_Inclusion
-          (pos,0.2,eta_B, &velocity[0], &velocity[1], &pressure);
+          AnalyticSolutions::_Inclusion
+            (pos,0.2,eta_B, &velocity[0], &velocity[1], &pressure);
 
           return velocity;
         }
-      }
-    }
+
+
 
 
       /**
@@ -92,7 +142,7 @@ namespace aspect
        * @ingroup MaterialModels
        */
      template <int dim>
-      class Inclusion : public MaterialModel::InterfaceCompatibility<dim>
+      class InclusionMaterial : public MaterialModel::InterfaceCompatibility<dim>
       {
         public:
           /**
@@ -143,14 +193,14 @@ namespace aspect
            * may depend on the variable identifies by the argument.
            */
           virtual bool
-          viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
+          viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
           /**
            * Return true if the density() function returns something that may
            * depend on the variable identifies by the argument.
            */
           virtual bool
-          density_depends_on (const NonlinearDependence::Dependence dependence) const;
+          density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
           /**
            * Return true if the compressibility() function returns something
@@ -160,14 +210,14 @@ namespace aspect
            * is_compressible() function returns false.
            */
           virtual bool
-          compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
+          compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
           /**
            * Return true if the specific_heat() function returns something
            * that may depend on the variable identifies by the argument.
            */
           virtual bool
-          specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
+          specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
           /**
            * Return true if the thermal_conductivity() function returns
@@ -175,7 +225,7 @@ namespace aspect
            * argument.
            */
           virtual bool
-          thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
+          thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
           /**
            * Return whether the model is compressible or not.
@@ -237,7 +287,7 @@ namespace aspect
     
       template <int dim>
       double
-      Inclusion<dim>::
+      InclusionMaterial<dim>::
       viscosity (const double,
                  const double,
                  const std::vector<double> &,       /*composition*/
@@ -251,7 +301,7 @@ namespace aspect
 
       template <int dim>
       double
-      Inclusion<dim>::
+      InclusionMaterial<dim>::
       reference_viscosity () const
       {
         return 1;
@@ -259,7 +309,7 @@ namespace aspect
 
       template <int dim>
       double
-      Inclusion<dim>::
+      InclusionMaterial<dim>::
       reference_density () const
       {
         return 0;
@@ -267,7 +317,7 @@ namespace aspect
 
       template <int dim>
       double
-      Inclusion<dim>::
+      InclusionMaterial<dim>::
       reference_thermal_expansion_coefficient () const
       {
         return 0;
@@ -275,7 +325,7 @@ namespace aspect
 
       template <int dim>
       double
-      Inclusion<dim>::
+      InclusionMaterial<dim>::
       specific_heat (const double,
                      const double,
                      const std::vector<double> &, /*composition*/
@@ -286,7 +336,7 @@ namespace aspect
 
       template <int dim>
       double
-      Inclusion<dim>::
+      InclusionMaterial<dim>::
       reference_cp () const
       {
         return 0;
@@ -294,7 +344,7 @@ namespace aspect
 
       template <int dim>
       double
-      Inclusion<dim>::
+      InclusionMaterial<dim>::
       thermal_conductivity (const double,
                             const double,
                             const std::vector<double> &, /*composition*/
@@ -305,7 +355,7 @@ namespace aspect
 
       template <int dim>
       double
-      Inclusion<dim>::
+      InclusionMaterial<dim>::
       reference_thermal_diffusivity () const
       {
         return 0;
@@ -313,7 +363,7 @@ namespace aspect
 
       template <int dim>
       double
-      Inclusion<dim>::
+      InclusionMaterial<dim>::
       density (const double,
                const double,
                const std::vector<double> &, /*composition*/
@@ -325,7 +375,7 @@ namespace aspect
 
       template <int dim>
       double
-      Inclusion<dim>::
+      InclusionMaterial<dim>::
       thermal_expansion_coefficient (const double temperature,
                                      const double,
                                      const std::vector<double> &, /*composition*/
@@ -337,7 +387,7 @@ namespace aspect
 
       template <int dim>
       double
-      Inclusion<dim>::
+      InclusionMaterial<dim>::
       compressibility (const double,
                        const double,
                        const std::vector<double> &, /*composition*/
@@ -350,8 +400,8 @@ namespace aspect
 
       template <int dim>
       bool
-      Inclusion<dim>::
-      viscosity_depends_on (const NonlinearDependence::Dependence) const
+      InclusionMaterial<dim>::
+      viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
       {
         return false;
       }
@@ -359,39 +409,39 @@ namespace aspect
 
       template <int dim>
       bool
-      Inclusion<dim>::
-      density_depends_on (const NonlinearDependence::Dependence) const
+      InclusionMaterial<dim>::
+      density_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
       {
         return false;
       }
 
       template <int dim>
       bool
-      Inclusion<dim>::
-      compressibility_depends_on (const NonlinearDependence::Dependence) const
+      InclusionMaterial<dim>::
+      compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
       {
         return false;
       }
 
       template <int dim>
       bool
-      Inclusion<dim>::
-      specific_heat_depends_on (const NonlinearDependence::Dependence) const
+      InclusionMaterial<dim>::
+      specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
       {
         return false;
       }
 
       template <int dim>
       bool
-      Inclusion<dim>::
-      thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+      InclusionMaterial<dim>::
+      thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
       {
         return false;
       }
 
       template <int dim>
       bool
-      Inclusion<dim>::
+      InclusionMaterial<dim>::
       is_compressible () const
       {
         return false;
@@ -399,7 +449,7 @@ namespace aspect
 
       template <int dim>
       void
-      Inclusion<dim>::declare_parameters (ParameterHandler &prm)
+      InclusionMaterial<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.enter_subsection("Material model");
         {
@@ -418,7 +468,7 @@ namespace aspect
 
       template <int dim>
       void
-      Inclusion<dim>::parse_parameters (ParameterHandler &prm)
+      InclusionMaterial<dim>::parse_parameters (ParameterHandler &prm)
       {
         prm.enter_subsection("Material model");
         {
@@ -433,12 +483,124 @@ namespace aspect
 
       template <int dim>
       double
-      Inclusion<dim>::get_eta_B() const
+      InclusionMaterial<dim>::get_eta_B() const
       {
         return eta_B;
       }
 
+
+
+
+
+
+      /**
+        * A postprocessor that evaluates the accuracy of the solution of the
+        * aspect::MaterialModel::DuretzEtAl::Inclusion material models.
+        *
+        * The implementation of error evaluators that correspond to the
+        * benchmarks defined in the following paper:
+        * @code
+        *  @Article{DMGT11,
+        *    author =       {T. Duretz and D. A. May and T. V. Gerya and P. J. Tackley},
+        *    title =        {Discretization errors and free surface stabilization in the
+        *                  finite difference and marker-in-cell method for applied
+        *                  geodynamics: {A} numerical study},
+        *    journal =      {Geochemistry Geophysics Geosystems},
+        *    year =         2011,
+        *    volume =       12,
+        *    pages =        {Q07004/1--26}}
+        * @endcode
+        *
+        * @note While this paper summarizes the benchmarks used here, some of the
+        * benchmarks actually originate in earlier papers. For the original
+        * references, see the bibliography of the paper above.
+        * @ingroup Postprocessing
+        */
+       template <int dim>
+       class InclusionPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+       {
+         public:
+           /**
+            * Generate graphical output from the current solution.
+            */
+           virtual
+           std::pair<std::string,std::string>
+           execute (TableHandler &statistics);
+       };
     
+      template <int dim>
+      std::pair<std::string,std::string>
+      InclusionPostprocessor<dim>::execute (TableHandler &statistics)
+      {
+        AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
+                    ExcNotImplemented());
+
+        std_cxx1x::shared_ptr<Function<dim> > ref_func;
+        if (dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model()) != NULL)
+          {
+            const InclusionMaterial<dim> *
+            material_model
+              = dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model());
+
+            ref_func.reset (new AnalyticSolutions::FunctionInclusion<dim>(material_model->get_eta_B()));
+          }
+        else
+          {
+            AssertThrow(false,
+                        ExcMessage("Postprocessor DuretzEtAl only works with the material model SolCx, SolKz, and Inclusion."));
+          }
+
+        const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
+
+        Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
+        Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
+        Vector<float> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
+        Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
+
+        ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
+                                            dim+2);
+        ComponentSelectFunction<dim> comp_p(dim, dim+2);
+
+        VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                           this->get_solution(),
+                                           *ref_func,
+                                           cellwise_errors_u,
+                                           quadrature_formula,
+                                           VectorTools::L1_norm,
+                                           &comp_u);
+        VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                           this->get_solution(),
+                                           *ref_func,
+                                           cellwise_errors_p,
+                                           quadrature_formula,
+                                           VectorTools::L1_norm,
+                                           &comp_p);
+        VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                           this->get_solution(),
+                                           *ref_func,
+                                           cellwise_errors_ul2,
+                                           quadrature_formula,
+                                           VectorTools::L2_norm,
+                                           &comp_u);
+        VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                           this->get_solution(),
+                                           *ref_func,
+                                           cellwise_errors_pl2,
+                                           quadrature_formula,
+                                           VectorTools::L2_norm,
+                                           &comp_p);
+
+        std::ostringstream os;
+        os << std::scientific << cellwise_errors_u.l1_norm()
+           << ", " << cellwise_errors_p.l1_norm()
+           << ", " << cellwise_errors_ul2.l2_norm()
+           << ", " << cellwise_errors_pl2.l2_norm();
+
+        return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
+      }
+
+
+
 
   }
 }
@@ -453,24 +615,27 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace MaterialModel
+  namespace InclusionBenchmark
   {
-     ASPECT_REGISTER_MATERIAL_MODEL(Inclusion,
+     ASPECT_REGISTER_MATERIAL_MODEL(InclusionMaterial,
                                      "Inclusion",
                                      "A material model that corresponds to the 'Inclusion' benchmark "
                                      "defined in Duretz et al., G-Cubed, 2011.")
- 
-  }
-  namespace VelocityBoundaryConditions
-  {
-    namespace DuretzEtAl
-    {
-      ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(Inclusion,
-                                                   "inclusion",
-                                                   "Implementation of the velocity boundary conditions for the "
-                                                   "``inclusion'' benchmark. See the manual and the Kronbichler, Heister "
-                                                   "and Bangerth paper on ASPECT for more information about this "
-                                                   "benchmark.")
-    }
+
+          ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(InclusionBoundary,
+                                                       "inclusion",
+                                                       "Implementation of the velocity boundary conditions for the "
+                                                       "``inclusion'' benchmark. See the manual and the Kronbichler, Heister "
+                                                       "and Bangerth paper on ASPECT for more information about this "
+                                                       "benchmark.")
+
+           ASPECT_REGISTER_POSTPROCESSOR(InclusionPostprocessor,
+                                          "DuretzEtAl error",
+                                          "A postprocessor that compares the solution of the benchmarks from "
+                                          "the Duretz et al., G-Cubed, 2011, paper with the one computed by ASPECT "
+                                          "and reports the error. Specifically, it can compute the errors for "
+                                          "the SolCx, SolKz and inclusion benchmarks. The postprocessor inquires "
+                                          "which material model is currently being used and adjusts "
+                                          "which exact solution to use accordingly.")
   }
 }
