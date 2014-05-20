@@ -34,13 +34,15 @@ namespace aspect
     {
       data_filename=filename;
       std::ifstream in(data_filename.c_str(), std::ios::in);
-      char temp[256];
+      AssertThrow (in, ExcMessage (std::string("Can't read file <") + filename + ">"));
+
+      std::string dummy;
+
       std::string T_Unit,P_Unit;
       n_points=0;
-      if (in.fail())return;
-      in.getline(temp,256);
+      getline (in, dummy);
       in>>T_Unit>>P_Unit;
-      in.getline(temp,256);
+      getline (in, dummy);
       while (!in.eof())
         {
           double T,p;
@@ -76,7 +78,7 @@ namespace aspect
               P_or_R_array.push_back(p);
               n_points++;
             }
-          in.getline(temp,256);
+          getline (in, dummy);
         }
     }
 
@@ -265,7 +267,20 @@ namespace aspect
           prm.leave_subsection();
           prm.enter_subsection("Data");
           {
-            solidus_filename=prm.get ("Solidus filename");
+            // Get the path to the data files. If it contains a reference
+            // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
+            // as a #define
+            solidus_filename = prm.get ("Solidus filename");
+            {
+              const std::string      subst_text = "$ASPECT_SOURCE_DIR";
+              std::string::size_type position;
+              while (position = solidus_filename.find (subst_text),  position!=std::string::npos)
+                solidus_filename.replace (solidus_filename.begin()+position,
+                                          solidus_filename.begin()+position+subst_text.size(),
+                                          ASPECT_SOURCE_DIR);
+            }
+
+            // then actually read the file
             solidus_curve.read(solidus_filename);
           }
           prm.leave_subsection();
