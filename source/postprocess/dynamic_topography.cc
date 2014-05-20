@@ -56,7 +56,7 @@ namespace aspect
 
       std::vector<std::pair<Point<dim>,double> > stored_values;
 
-      // loop over all of the surface cells and if one less than h/2 away from
+      // loop over all of the surface cells and if one less than h/3 away from
       // the top surface, evaluate the stress at its center
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
