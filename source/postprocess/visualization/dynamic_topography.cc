@@ -235,7 +235,7 @@ namespace aspect
                                                   "dynamic topography requires us to compute the stress tensor and "
                                                   "evaluate the component of it in the direction in which "
                                                   "gravity acts. In other words, we compute "
-                                                  "$\\sigma_{rr}={\\hat g}^T(2 \\eta \\varepsilon(\\mathbf u)-\frac 13 (\\textrm{div}\\;\\mathbf u)I)\\hat g - p_d$ "
+                                                  "$\\sigma_{rr}={\\hat g}^T(2 \\eta \\varepsilon(\\mathbf u)-\\frac 13 (\\textrm{div}\\;\\mathbf u)I)\\hat g - p_d$ "
                                                   "where $\\hat g = \\mathbf g/\\|\\mathbf g\\|$ is the direction of "
                                                   "the gravity vector $\\mathbf g$ and $p_d=p-p_a$ is the dynamic "
                                                   "pressure computed by subtracting the adiabatic pressure $p_a$ "
