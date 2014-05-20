@@ -1312,9 +1312,19 @@ challenging. Lagrangian meshes do move with the fluid, but they quickly become s
 distorted that remeshing is required.  The ALE approach tries to retain the
 benefits of both, allowing the mesh motion $\textbf{u}_m$ to be independent of 
 the fluid. The mass conservation condition requires that 
-$\textbf{u}_m \cdot \textbf{n} = \textbf{u} \cdot {n}$ on the free surface,
-but otherwise the mesh motion is unconstrained.
+$\textbf{u}_m \cdot \textbf{n} = \textbf{u} \cdot \textbf{n}$ on the free 
+surface, but otherwise the mesh motion is unconstrained, and should be chosen
+to keep the mesh as well behaved as possible.
 
+\aspect{} a Laplacian scheme for calculating the mesh velocity.  The mesh
+velocity is calculated by solving
+
+\begin{align}
+\nabla^2 \textbf{u}_m &= 0 & \qquad & \textrm{in } \Omega \\ 
+\textbf{u}_m &= \left( \textbf{u} \cdot \textbf{n} \right) \textbf{n} & \qquad & \textrm{on } \partial \Omega_{\textrm{free surface}} \\
+\textbf{u}_m \cdot \textbf{n} &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{free slip}} \\
+\textbf{u}_m &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{no slip}} \\
+\end{align}
 
 
 \section{Installation}
