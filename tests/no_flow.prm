@@ -1,5 +1,5 @@
 # A test that deals with the problem that if there is no flow then the
-# conduction time step is infinite. in that case, we need to limit the
+# convection time step is infinite. in that case, we need to limit the
 # time step size to something related to the conduction time step
 #
 # We make sure that there is no flow in this particular situation by using
@@ -101,7 +101,6 @@ subsection Model settings
   set Include adiabatic heating               = false
   set Include shear heating                   = false # default: true
 
-  set Radiogenic heating rate                 = 0
 
   set Fixed temperature boundary indicators   = 0, 1
 

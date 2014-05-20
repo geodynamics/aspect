@@ -1,0 +1,124 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,526 (578+81+289+289+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving composition system 1... 0 iterations.
+   Solving composition system 2... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-always_refine/solution-00000
+     Temperature min/avg/max:   0 K, 0.5 K, 1 K
+     Compositions min/max/mass: 0/1/0.4583 // 0/1/0.4583
+
+Number of active cells: 40 (on 4 levels)
+Number of degrees of freedom: 1,020 (386+55+193+193+193)
+
+*** Timestep 1:  t=0.0625 seconds
+   Solving temperature system... 8 iterations.
+   Solving composition system 1... 9 iterations.
+   Solving composition system 2... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-always_refine/solution-00001
+     Temperature min/avg/max:   0 K, 0.4999 K, 1 K
+     Compositions min/max/mass: -0.01799/1.048/0.4591 // -0.01278/1.077/0.4168
+
+Number of active cells: 40 (on 4 levels)
+Number of degrees of freedom: 1,020 (386+55+193+193+193)
+
+*** Timestep 2:  t=0.1875 seconds
+   Solving temperature system... 9 iterations.
+   Solving composition system 1... 10 iterations.
+   Solving composition system 2... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 23 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-always_refine/solution-00002
+     Temperature min/avg/max:   0 K, 0.5002 K, 1 K
+     Compositions min/max/mass: -0.004078/1.055/0.4601 // -0.01545/1.063/0.4162
+
+Number of active cells: 40 (on 4 levels)
+Number of degrees of freedom: 1,020 (386+55+193+193+193)
+
+*** Timestep 3:  t=0.3125 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 12 iterations.
+   Solving composition system 2... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-always_refine/solution-00003
+     Temperature min/avg/max:   0 K, 0.5005 K, 1 K
+     Compositions min/max/mass: -0.001263/1.042/0.4605 // -0.009274/1.03/0.4155
+
+Number of active cells: 40 (on 4 levels)
+Number of degrees of freedom: 1,020 (386+55+193+193+193)
+
+*** Timestep 4:  t=0.4375 seconds
+   Solving temperature system... 8 iterations.
+   Solving composition system 1... 10 iterations.
+   Solving composition system 2... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-always_refine/solution-00004
+     Temperature min/avg/max:   0 K, 0.4998 K, 1 K
+     Compositions min/max/mass: -0.001433/1.027/0.4606 // -0.002888/0.99/0.4149
+
+Number of active cells: 40 (on 4 levels)
+Number of degrees of freedom: 1,020 (386+55+193+193+193)
+
+*** Timestep 5:  t=0.5 seconds
+   Solving temperature system... 8 iterations.
+   Solving composition system 1... 9 iterations.
+   Solving composition system 2... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 21 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-always_refine/solution-00005
+     Temperature min/avg/max:   0 K, 0.4992 K, 1 K
+     Compositions min/max/mass: -0.001458/1.02/0.4606 // -0.001284/0.9584/0.4153
+
+Number of active cells: 40 (on 4 levels)
+Number of degrees of freedom: 1,020 (386+55+193+193+193)
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.746s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         6 |     0.102s |        14% |
+| Assemble composition system     |        12 |     0.143s |        19% |
+| Assemble temperature system     |         6 |    0.0771s |        10% |
+| Build Stokes preconditioner     |         6 |     0.122s |        16% |
+| Build composition preconditioner|        12 |   0.00639s |      0.86% |
+| Build temperature preconditioner|         6 |   0.00326s |      0.44% |
+| Solve Stokes system             |         6 |    0.0318s |       4.3% |
+| Solve composition system        |        12 |   0.00562s |      0.75% |
+| Solve temperature system        |         6 |   0.00273s |      0.37% |
+| Initialization                  |         2 |    0.0187s |       2.5% |
+| Postprocessing                  |         6 |    0.0379s |       5.1% |
+| Refine mesh structure, part 1   |         6 |    0.0943s |        13% |
+| Refine mesh structure, part 2   |         6 |   0.00161s |      0.22% |
+| Setup dof systems               |         7 |    0.0852s |        11% |
++---------------------------------+-----------+------------+------------+
+

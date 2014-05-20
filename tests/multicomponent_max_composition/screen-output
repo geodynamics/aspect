@@ -1,0 +1,76 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 4,096 (on 6 levels)
+Number of degrees of freedom: 104,487 (33,410+4,257+16,705+16,705+16,705+16,705)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving composition system 1... 0 iterations.
+   Solving composition system 2... 0 iterations.
+   Solving composition system 3... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+6 iterations.
+
+Number of active cells: 1,204 (on 7 levels)
+Number of degrees of freedom: 32,247 (10,306+1,329+5,153+5,153+5,153+5,153)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving composition system 1... 0 iterations.
+   Solving composition system 2... 0 iterations.
+   Solving composition system 3... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+5 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-multicomponent_max_composition/solution-00000
+
+*** Timestep 1:  t=56884.3 years
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 11 iterations.
+   Solving composition system 2... 14 iterations.
+   Solving composition system 3... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+1 iterations.
+
+   Postprocessing:
+
+*** Timestep 2:  t=112724 years
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 11 iterations.
+   Solving composition system 2... 11 iterations.
+   Solving composition system 3... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+1 iterations.
+
+   Postprocessing:
+
+Termination requested by criterion: end step
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      4.89s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         4 |      0.92s |        19% |
+| Assemble composition system     |        12 |     0.748s |        15% |
+| Assemble temperature system     |         4 |     0.352s |       7.2% |
+| Build Stokes preconditioner     |         4 |     0.483s |       9.9% |
+| Build composition preconditioner|        12 |     0.105s |       2.1% |
+| Build temperature preconditioner|         4 |    0.0353s |      0.72% |
+| Solve Stokes system             |         4 |      1.46s |        30% |
+| Solve composition system        |        12 |    0.0398s |      0.81% |
+| Solve temperature system        |         4 |    0.0143s |      0.29% |
+| Initialization                  |         3 |    0.0718s |       1.5% |
+| Postprocessing                  |         3 |    0.0515s |       1.1% |
+| Refine mesh structure, part 1   |         1 |     0.192s |       3.9% |
+| Refine mesh structure, part 2   |         1 |   0.00295s |      0.06% |
+| Setup dof systems               |         2 |     0.379s |       7.8% |
++---------------------------------+-----------+------------+------------+
+

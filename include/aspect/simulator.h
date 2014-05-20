@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #ifndef __aspect__simulator_h
@@ -43,6 +42,7 @@
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/heating_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
@@ -183,11 +183,13 @@ namespace aspect
         double                         surface_pressure;
         double                         adiabatic_surface_temperature;
         unsigned int                   timing_output_frequency;
+        bool                           use_direct_stokes_solver;
         double                         linear_stokes_solver_tolerance;
         unsigned int                   max_nonlinear_iterations;
         unsigned int                   n_cheap_stokes_solver_steps;
         double                         temperature_solver_tolerance;
         double                         composition_solver_tolerance;
+
         /**
          * @}
          */
@@ -398,7 +400,13 @@ namespace aspect
         is_temperature () const;
 
         /**
-         * Look up the block index for this temperature or compositional field
+         * Look up the component index for this temperature or compositional field.
+         * See Introspection::component_indices for more information.
+         */
+        unsigned int component_index(const Introspection<dim> &introspection) const;
+
+        /**
+         * Look up the block index for this temperature or compositional field.
          * See Introspection::block_indices for more information.
          */
         unsigned int block_index(const Introspection<dim> &introspection) const;
@@ -571,6 +579,12 @@ namespace aspect
        * compute_refinement_criterion(), set up all necessary data structures
        * on this new mesh, and interpolate the old solutions onto the new
        * mesh.
+       *
+       * @param[in] max_grid_level The maximum refinement level of the
+       * mesh. This is the sum of the initial global refinement and the
+       * initial adaptive refinement (as provided by the user in the input
+       * file) and in addition it gets increased by one at each additional
+       * refinement time.
        *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
@@ -1174,6 +1188,7 @@ namespace aspect
        */
       const std::auto_ptr<GeometryModel::Interface<dim> >            geometry_model;
       const std::auto_ptr<MaterialModel::Interface<dim> >            material_model;
+      const std::auto_ptr<HeatingModel::Interface<dim> >             heating_model;
       const std::auto_ptr<GravityModel::Interface<dim> >             gravity_model;
       const std::auto_ptr<BoundaryTemperature::Interface<dim> >      boundary_temperature;
       const std::auto_ptr<BoundaryComposition::Interface<dim> >      boundary_composition;
