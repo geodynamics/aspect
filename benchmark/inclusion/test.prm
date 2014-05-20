@@ -26,14 +26,14 @@ end
 
 
 subsection Model settings
-  set Prescribed velocity boundary indicators = 0:inclusion, 1:inclusion, 2:inclusion, 3:inclusion
+  set Prescribed velocity boundary indicators = 0:InclusionBoundary, 1:InclusionBoundary, 2:InclusionBoundary, 3:InclusionBoundary
   set Tangential velocity boundary indicators =
   set Zero velocity boundary indicators       =
 end
 
 
 subsection Material model
-  set Model name = local_Inclusion
+  set Model name = InclusionMaterial
 
   subsection Inclusion
     set Viscosity jump = 1e3
@@ -83,7 +83,7 @@ end
 ############### Parameters describing the what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = DuretzEtAl error, visualization
+  set List of postprocessors = InclusionPostprocessor, visualization
 
 
 
