@@ -5,6 +5,13 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li>New: There is now a new initial temperature condition plugin that can read in
+ * solidus temperatures from a file and add perturbations to it. There is also
+ * a corresponding data file for initial conditions for Mars from Permentier
+ * et al. in <code>data/initial-temperature/solidus.Mars</code>.
+ * <br>
+ * (Siqi Zhang, 2014/05/20)
+ *
  * <li>New: There is now a new postprocessor "spherical velocity statistics"
  * that computes statistics about the radial and tangential velocity field.
  * <br>
