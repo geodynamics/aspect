@@ -123,7 +123,7 @@ namespace aspect
                     Triangulation<dim>::smoothing_on_coarsening),
                    parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning),
 
-    mapping (4),
+    mapping (parameters.free_surface_enabled?1:4),
 
     // define the finite element. obviously, what we do here needs
     // to match the data we provide in the Introspection class
@@ -146,6 +146,7 @@ namespace aspect
 
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true)
+
   {
     computing_timer.enter_section("Initialization");
 
@@ -227,6 +228,14 @@ namespace aspect
       sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
       sim->initialize (*this);
+
+    //Initialize the free surface handler 
+    if(parameters.free_surface_enabled)
+      {
+        AssertThrow( parameters.nonlinear_solver == NonlinearSolver::IMPES,
+                     ExcMessage("The free surface scheme is only implemented for the IMPES solver") );
+        free_surface = std_cxx1x::shared_ptr<FreeSurfaceHandler>( new FreeSurfaceHandler( *this, prm ) );
+      }
 
     adiabatic_conditions.reset(new AdiabaticConditions<dim> (*geometry_model,
                                                              *gravity_model,
@@ -843,6 +852,7 @@ namespace aspect
     }
     constraints.close();
 
+
     // finally initialize vectors, matrices, etc.
 
     setup_system_matrix (introspection.index_sets.system_partitioning);
@@ -860,6 +870,8 @@ namespace aspect
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
 
+    if(parameters.free_surface_enabled)
+      free_surface->setup_dofs();
     setup_nullspace_removal();
 
     computing_timer.exit_section();
@@ -1014,11 +1026,27 @@ namespace aspect
     x_system[0] = &solution;
     x_system[1] = &old_solution;
 
+    if(parameters.free_surface_enabled)
+      {
+        x_system.push_back( &free_surface->mesh_velocity );
+        x_system.push_back( &free_surface->old_mesh_velocity );
+      }
+
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
+    std::vector<const LinearAlgebra::Vector *> x_fs_system (1);  //Outside of if statement for scoping reasons
+    parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
+      freesurface_trans(free_surface->free_surface_dof_handler);
+    if(parameters.free_surface_enabled)
+      x_fs_system[0] = &(free_surface->mesh_vertices);
+
+
     triangulation.prepare_coarsening_and_refinement();
     system_trans.prepare_for_coarsening_and_refinement(x_system);
+
+    if(parameters.free_surface_enabled)
+      freesurface_trans.prepare_for_coarsening_and_refinement(x_fs_system);
 
     triangulation.execute_coarsening_and_refinement ();
     global_volume = GridTools::volume (triangulation, mapping);
@@ -1033,14 +1061,44 @@ namespace aspect
       distributed_system (system_rhs);
       LinearAlgebra::BlockVector
       old_distributed_system (system_rhs);
-      std::vector<LinearAlgebra::BlockVector *> system_tmp (2);
+      LinearAlgebra::BlockVector
+      distributed_mesh_velocity (system_rhs);
+      LinearAlgebra::BlockVector
+      old_distributed_mesh_velocity (system_rhs);
+
+      std::vector<LinearAlgebra::BlockVector *> system_tmp ( parameters.free_surface_enabled ? 4 : 2);
       system_tmp[0] = &(distributed_system);
       system_tmp[1] = &(old_distributed_system);
+      
+      if(parameters.free_surface_enabled)
+        {
+          system_tmp[2] = &(distributed_mesh_velocity);
+          system_tmp[3] = &(old_distributed_mesh_velocity);
+        } 
 
       system_trans.interpolate (system_tmp);
       solution     = distributed_system;
       old_solution = old_distributed_system;
+      if(parameters.free_surface_enabled)
+        {
+          free_surface->mesh_velocity = distributed_mesh_velocity;
+          free_surface->old_mesh_velocity = old_distributed_mesh_velocity;
+        }
     }
+
+    if (parameters.free_surface_enabled)
+      {
+        LinearAlgebra::Vector distributed_mesh_vertices;
+        distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned, mpi_communicator);
+
+        std::vector<LinearAlgebra::Vector *> system_tmp (1);
+        system_tmp[0] = &(distributed_mesh_vertices);
+        freesurface_trans.interpolate (system_tmp);
+        free_surface->mesh_vertices     = distributed_mesh_vertices;
+      }
+
+    if (parameters.free_surface_enabled)
+      free_surface->displace_mesh ();
 
     computing_timer.exit_section();
   }
@@ -1072,6 +1130,9 @@ namespace aspect
       {
         case NonlinearSolver::IMPES:
         {
+          if (parameters.free_surface_enabled)
+            free_surface->execute ();
+
           assemble_advection_system (TemperatureOrComposition::temperature());
           build_advection_preconditioner(TemperatureOrComposition::temperature(),
                                          T_preconditioner);
@@ -1085,6 +1146,7 @@ namespace aspect
               assemble_advection_system (TemperatureOrComposition::composition(c));
               build_advection_preconditioner(TemperatureOrComposition::composition(c),
                                              C_preconditioner);
+
               solve_advection(TemperatureOrComposition::composition(c)); // this is correct, 0 would be temperature
               current_linearization_point.block(introspection.block_indices.compositional_fields[c])
                 = solution.block(introspection.block_indices.compositional_fields[c]);
