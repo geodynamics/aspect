@@ -375,6 +375,7 @@ namespace aspect
   double Simulator<dim>::solve_stokes ()
   {
     computing_timer.enter_section ("   Solve Stokes system");
+    pcout << "   Solving Stokes system... " << std::flush;
 
     if (parameters.use_direct_stokes_solver)
       {
@@ -414,7 +415,6 @@ namespace aspect
         return 0;
       }
 
-    pcout << "   Solving Stokes system... " << std::flush;
 
     const internal::StokesBlock stokes_block(system_matrix);
 
