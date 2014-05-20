@@ -34,13 +34,15 @@ namespace aspect
     {
       data_filename=filename;
       std::ifstream in(data_filename.c_str(), std::ios::in);
-      char temp[256];
+      AssertThrow (in, ExcMessage (std::string("Can't read file <") + filename + ">"));
+
+      std::string dummy;
+
       std::string T_Unit,P_Unit;
       n_points=0;
-      if (in.fail())return;
-      in.getline(temp,256);
+      getline (in, dummy);
       in>>T_Unit>>P_Unit;
-      in.getline(temp,256);
+      getline (in, dummy);
       while (!in.eof())
         {
           double T,p;
@@ -76,7 +78,7 @@ namespace aspect
               P_or_R_array.push_back(p);
               n_points++;
             }
-          in.getline(temp,256);
+          getline (in, dummy);
         }
     }
 
@@ -120,8 +122,8 @@ namespace aspect
       double lateral_perturbation;
       double Depth=this->geometry_model->depth(position);
 
+      AssertThrow(solidus_curve.n_points!=0,ExcMessage("Error reading solidus file."));
       AssertThrow(solidus_curve.is_radius==true,ExcMessage("The solidus curve has to be radius dependent."));
-      AssertThrow(solidus_curve.n_points!=0,ExcMessage("Error eading solidus file."));
       const GeometryModel::SphericalShell<dim> *spherical_geometry_model=
         dynamic_cast< const GeometryModel::SphericalShell<dim> *>(this->geometry_model);
       AssertThrow(spherical_geometry_model!=0,
@@ -234,7 +236,14 @@ namespace aspect
                                "Line 2:  Unit of temperature (C/K)        "
                                "Unit of pressure (GPa/kbar) or radius (km/m) \n"
                                "Line 3~: Column of solidus temperature    Column of radius/pressure \n"
-                               "See data/initial_temperature/solidus.Mars as an example.");
+                               "See data/initial-temperature/solidus.Mars as an example."
+                               "\n\n"
+                               "In order to facilitate placing input files in locations relative "
+                               "to the ASPECT source directory, the file name may also include the special "
+                               "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                               "in which the ASPECT source files were located when ASPECT was "
+                               "compiled. This interpretation allows, for example, to reference "
+                               "files located in the 'data/' subdirectory of ASPECT.");
           }
           prm.leave_subsection();
         }
@@ -265,7 +274,20 @@ namespace aspect
           prm.leave_subsection();
           prm.enter_subsection("Data");
           {
-            solidus_filename=prm.get ("Solidus filename");
+            // Get the path to the data files. If it contains a reference
+            // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
+            // as a #define
+            solidus_filename = prm.get ("Solidus filename");
+            {
+              const std::string      subst_text = "$ASPECT_SOURCE_DIR";
+              std::string::size_type position;
+              while (position = solidus_filename.find (subst_text),  position!=std::string::npos)
+                solidus_filename.replace (solidus_filename.begin()+position,
+                                          solidus_filename.begin()+position+subst_text.size(),
+                                          ASPECT_SOURCE_DIR);
+            }
+
+            // then actually read the file
             solidus_curve.read(solidus_filename);
           }
           prm.leave_subsection();
@@ -290,13 +312,13 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_CONDITIONS(Solidus,
                                        "solidus",
                                        "This is a temperature initial condition that "
-                                       "starts the model close to solidus, it also contants "
+                                       "starts the model close to solidus, it also contains "
                                        "a user defined lithoshpere thickness and with perturbations "
-                                       " in both lithosphere thickness and temperature with "
-                                       "shpere harmonic functions. It was used as the initial conditons "
-                                       "of early Mars that the planet is just freeze up from magma ocean, "
+                                       " in both lithosphere thickness and temperature based on "
+                                       "spherical harmonic functions. It was used as the initial condition "
+                                       "of early Mars after the freezing of the magma ocean, "
                                        "using the solidus from Parmentier et al., "
-                                       "Melt_solid segregation, Fractional magma ocean solidification, and implications for "
+                                       "Melt-solid segregation, Fractional magma ocean solidification, and implications for "
                                        "longterm planetary evolution. Luna and Planetary Science, 2007.")
   }
 }
