@@ -1040,14 +1040,18 @@ namespace aspect
     Amg_data.aggregation_threshold = 0.02;
 #endif
 
-    Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1));
     /*  The stabilization term for the free surface (Kaus et. al., 2010)
      *  makes changes to the system matrix which are of the same form as
      *  boundary stresses.  If these stresses are not also added to the
      *  system_preconditioner_matrix, then  if fails to be very good as a 
      *  preconditioner.  Instead, we just pass the system_matrix to the
      *  AMG precondition initialization so that it builds the preconditioner
-     *  directly from that. */
+     *  directly from that. However, we still need the mass matrix for the
+     *  pressure block which is assembled in the preconditioner matrix.
+     *  So rather than build a different preconditioner matrix which only
+     *  does the mass matrix, we just reuse the same system_preconditioner_matrix
+     *  for the Mp_preconditioner block.  Maybe a bit messy*/
+    Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1));
     if (parameters.free_surface_enabled)
       Amg_preconditioner->initialize (system_matrix.block(0,0),
                                     Amg_data);
