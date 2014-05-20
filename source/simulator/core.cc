@@ -866,6 +866,9 @@ namespace aspect
   }
 
 
+  /**
+   * This is an internal deal.II function stolen from dof_tools.cc
+   */
   template <int dim, int spacedim>
   std::vector<unsigned char>
   get_local_component_association (const FiniteElement<dim,spacedim>  &fe,
@@ -922,6 +925,12 @@ namespace aspect
     return local_component_association;
   }
 
+  /**
+   * Returns an IndexSet that contains all locally active DoFs that belong to
+   * the given component_mask.
+   *
+   * This function should be moved into deal.II at some point.
+   */
   template <int dim>
   IndexSet extract_component_subset(DoFHandler<dim> & dof_handler, const ComponentMask & component_mask)
   {
@@ -980,7 +989,8 @@ namespace aspect
           (introspection.block_indices.velocities == introspection.block_indices.pressure),
           ExcInternalError());
 
-      // only count pressure once if they are in the same block
+      // only count pressure once if velocity and pressure are in the same block,
+      // i.e., direct solver is used.
       if (introspection.block_indices.velocities == introspection.block_indices.pressure)
         n_p = 0;
 

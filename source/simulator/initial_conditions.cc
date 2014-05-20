@@ -180,7 +180,9 @@ namespace aspect
   void Simulator<dim>::compute_initial_pressure_field ()
   {
     // Note that this code will overwrite the velocity solution with 0 if
-    // velocity and pressure are in the same block.
+    // velocity and pressure are in the same block (i.e., direct solver is
+    // used). As the velocity is all zero anyway, this is currently not a
+    // problem.
 
     // we'd like to interpolate the initial pressure onto the pressure
     // variable but that's a bit involved because the pressure may either
