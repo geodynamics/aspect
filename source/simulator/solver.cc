@@ -291,7 +291,7 @@ namespace aspect
   double Simulator<dim>::solve_advection (const TemperatureOrComposition &temperature_or_composition)
   {
     double advection_solver_tolerance = -1;
-    unsigned int block_number = temperature_or_composition.block_index(introspection);
+    unsigned int block_idx = temperature_or_composition.block_index(introspection);
 
     if (temperature_or_composition.is_temperature())
       {
@@ -309,8 +309,8 @@ namespace aspect
       }
 
     const double tolerance = std::max(1e-50,
-                                      advection_solver_tolerance*system_rhs.block(block_number).l2_norm());
-    SolverControl solver_control (system_matrix.block(block_number, block_number).m(),
+                                      advection_solver_tolerance*system_rhs.block(block_idx).l2_norm());
+    SolverControl solver_control (system_matrix.block(block_idx, block_idx).m(),
                                   tolerance);
 
     SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
@@ -322,25 +322,25 @@ namespace aspect
     LinearAlgebra::BlockVector distributed_solution (
       introspection.index_sets.system_partitioning,
       mpi_communicator);
-    distributed_solution.block(block_number) = current_linearization_point.block (block_number);
+    distributed_solution.block(block_idx) = current_linearization_point.block (block_idx);
 
     // Temporary vector to hold the residual, we don't need a BlockVector here.
     LinearAlgebra::Vector temp (
-      introspection.index_sets.system_partitioning[block_number],
+      introspection.index_sets.system_partitioning[block_idx],
       mpi_communicator);
 
     // Compute the residual before we solve and return this at the end.
     // This is used in the nonlinear solver.
-    const double initial_residual = system_matrix.block(block_number,block_number).residual
+    const double initial_residual = system_matrix.block(block_idx,block_idx).residual
                                     (temp,
-                                     distributed_solution.block(block_number),
-                                     system_rhs.block(block_number));
+                                     distributed_solution.block(block_idx),
+                                     system_rhs.block(block_idx));
 
     // solve the linear system:
     current_constraints.set_zero(distributed_solution);
-    solver.solve (system_matrix.block(block_number,block_number),
-                  distributed_solution.block(block_number),
-                  system_rhs.block(block_number),
+    solver.solve (system_matrix.block(block_idx,block_idx),
+                  distributed_solution.block(block_idx),
+                  system_rhs.block(block_idx),
                   (temperature_or_composition.is_temperature()
                    ?
                    *T_preconditioner
@@ -348,7 +348,7 @@ namespace aspect
                    *C_preconditioner));
 
     current_constraints.distribute (distributed_solution);
-    solution.block(block_number) = distributed_solution.block(block_number);
+    solution.block(block_idx) = distributed_solution.block(block_idx);
 
     // print number of iterations and also record it in the
     // statistics file
