@@ -312,13 +312,13 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_CONDITIONS(Solidus,
                                        "solidus",
                                        "This is a temperature initial condition that "
-                                       "starts the model close to solidus, it also contants "
+                                       "starts the model close to solidus, it also contains "
                                        "a user defined lithoshpere thickness and with perturbations "
-                                       " in both lithosphere thickness and temperature with "
-                                       "shpere harmonic functions. It was used as the initial conditons "
-                                       "of early Mars that the planet is just freeze up from magma ocean, "
+                                       " in both lithosphere thickness and temperature based on "
+                                       "spherical harmonic functions. It was used as the initial condition "
+                                       "of early Mars after the freezing of the magma ocean, "
                                        "using the solidus from Parmentier et al., "
-                                       "Melt_solid segregation, Fractional magma ocean solidification, and implications for "
+                                       "Melt-solid segregation, Fractional magma ocean solidification, and implications for "
                                        "longterm planetary evolution. Luna and Planetary Science, 2007.")
   }
 }
