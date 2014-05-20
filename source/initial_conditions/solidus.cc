@@ -243,6 +243,7 @@ namespace aspect
       prm.enter_subsection("Initial conditions");
       {
         prm.enter_subsection("Solidus");
+        {
             deltaT=prm.get_double("Supersolidus");
             litho_thick=prm.get_double("Lithosphere thickness");
             prm.enter_subsection("Perturbation");
@@ -264,8 +265,9 @@ namespace aspect
       }
       prm.leave_subsection();
     }
-
   }
+  
+  
 }
 
 
