@@ -1455,7 +1455,7 @@ namespace aspect
                   ||
                   (parameters.prescribed_velocity_boundary_indicators.size() > 0))
                 rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
-
+				
               assemble_stokes_system();
               build_stokes_preconditioner();
               const double stokes_residual = solve_stokes();
@@ -1464,7 +1464,7 @@ namespace aspect
                 initial_stokes_residual = stokes_residual;
               else
                 {
-                  pcout << "      residual: " << stokes_residual/initial_stokes_residual << std::endl;
+                  pcout << "Nonlinear iteration " << i+1 << "; residual: " << stokes_residual/initial_stokes_residual << std::endl;
                   if (stokes_residual/initial_stokes_residual < parameters.nonlinear_tolerance)
                     {
                       break; // convergence reached, exist nonlinear iteration.
@@ -1573,6 +1573,9 @@ namespace aspect
         if ((timestep_number == 0) &&
             (pre_refinement_step < parameters.initial_adaptive_refinement))
           {
+		  if(parameters.timing_output_frequency ==0)
+			computing_timer.print_summary ();
+			
             output_statistics();
 
             if (parameters.run_postprocessors_on_initial_refinement)
@@ -1621,7 +1624,7 @@ namespace aspect
         if (((timestep_number > 0) && (parameters.timing_output_frequency != 0) &&
              (timestep_number % parameters.timing_output_frequency == 0))
             ||
-            (parameters.timing_output_frequency == 1))
+            (parameters.timing_output_frequency == 1)||(parameters.timing_output_frequency == 0))
           {
             computing_timer.print_summary ();
             output_statistics();
