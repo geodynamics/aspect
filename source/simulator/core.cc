@@ -402,6 +402,21 @@ namespace aspect
         bv->initialize ();
       }
 
+    for (std::map<types::boundary_id, std::string>::const_iterator
+         p = parameters.prescribed_traction_boundary_indicators.begin();
+         p != parameters.prescribed_traction_boundary_indicators.end();
+         ++p)
+      {
+        TractionBoundaryConditions::Interface<dim> *bv
+          = TractionBoundaryConditions::create_traction_boundary_conditions
+            (p->second,
+             prm,
+             *geometry_model);
+        if (dynamic_cast<SimulatorAccess<dim>*>(bv) != 0)
+          dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
+        traction_boundary_conditions[p->first].reset (bv);
+      }
+
     // determine how to treat the pressure. we have to scale it for the solver
     // to make velocities and pressures of roughly the same (numerical) size,
     // and we may have to fix up the right hand side vector before solving for
