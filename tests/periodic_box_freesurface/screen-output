@@ -1,0 +1,106 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 4,096 (on 7 levels)
+Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
+
+Number of free surface degrees of freedom: 8450
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+4 iterations.
+
+Number of active cells: 1,444 (on 8 levels)
+Number of degrees of freedom: 20,706 (12,722+1,623+6,361)
+
+Number of free surface degrees of freedom: 3246
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+3 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     10
+     Reference thermal expansion (1/K):             4e-05
+     Temperature contrast across model domain (K): 0
+     Model domain depth (m):                        500000
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Reference viscosity (Pas):                     1e+20
+     Ra number:                                     0
+     k_value:                                       4.7
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 1.13939e-06
+
+     RMS, max velocity:  0.627 m/year, 1.22 m/year
+     Topography min/max: 0 m, 0 m, 
+
+*** Timestep 1:  t=659.368 years
+   Solving mesh velocity system... 11 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+3 iterations.
+
+   Postprocessing:
+     RMS, max velocity:  0.44 m/year, 0.997 m/year
+     Topography min/max: -467.1 m, 512.7 m, 
+
+*** Timestep 2:  t=1538.39 years
+   Solving mesh velocity system... 11 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+3 iterations.
+
+   Postprocessing:
+     RMS, max velocity:  0.408 m/year, 0.951 m/year
+     Topography min/max: -643.6 m, 755.9 m, 
+
+*** Timestep 3:  t=2488.17 years
+   Solving mesh velocity system... 11 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:  0.396 m/year, 0.933 m/year
+     Topography min/max: -729.1 m, 911 m, 
+
+*** Timestep 4:  t=3470.04 years
+   Solving mesh velocity system... 11 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28 iterations.
+
+   Postprocessing:
+     RMS, max velocity:  0.391 m/year, 0.923 m/year
+     Topography min/max: -774.3 m, 1012 m, 
+
+Termination requested by criterion: end step
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |       8.4s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         6 |      2.13s |        25% |
+| Assemble temperature system     |         6 |     0.989s |        12% |
+| Build Stokes preconditioner     |         6 |      1.58s |        19% |
+| Build temperature preconditioner|         6 |    0.0506s |       0.6% |
+| Solve Stokes system             |         6 |      1.85s |        22% |
+| Solve temperature system        |         6 |    0.0288s |      0.34% |
+| FreeSurface                     |         6 |     0.398s |       4.7% |
+| Initialization                  |         3 |    0.0535s |      0.64% |
+| Postprocessing                  |         5 |    0.0284s |      0.34% |
+| Refine mesh structure, part 1   |         1 |     0.607s |       7.2% |
+| Refine mesh structure, part 2   |         1 |   0.00698s |     0.083% |
+| Setup dof systems               |         2 |     0.504s |         6% |
++---------------------------------+-----------+------------+------------+
+

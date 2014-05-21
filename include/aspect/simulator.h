@@ -113,10 +113,16 @@ namespace aspect
         enum Kind
         {
           none = 0,
-          net_rotation = 0x1,
-          net_translation = 0x2,
-          angular_momentum = 0x4,
-          translational_momentum = 0x8
+          net_translation_x = 0x1,
+          net_translation_y = 0x2,
+          net_translation_z = 0x4,
+          net_translation   = 0x1+0x2+0x4,
+          linear_momentum_x = 0x8,
+          linear_momentum_y = 0x10,
+          linear_momentum_z = 0x20,
+          linear_momentum   = 0x8+0x10+0x20,
+          net_rotation      = 0x40,
+          angular_momentum  = 0x80
         };
       };
 
