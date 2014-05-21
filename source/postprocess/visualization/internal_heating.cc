@@ -36,7 +36,7 @@ namespace aspect
       InternalHeating<dim>::
       InternalHeating ()
         :
-        DataPostprocessorScalar<dim> ("internal_heating",
+        DataPostprocessorScalar<dim> ("Internal heating rate",
                                       update_values | update_gradients | update_q_points)
       {}
 
@@ -59,12 +59,10 @@ namespace aspect
         Assert (uh[0].size() == dim+2+this->n_compositional_fields(), ExcInternalError());
         Assert (duh[0].size() == dim+2+this->n_compositional_fields(),ExcInternalError());
 
-//        in.position = evaluation_points;
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             double temperature=uh[q][dim+1];
             double pressure   =uh[q][dim];
-            Point<dim> point(evaluation_points[q]);
             std::vector<double> composition(this->n_compositional_fields());
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
@@ -72,7 +70,7 @@ namespace aspect
             computed_quantities[q](0) = heating_model.specific_heating_rate(temperature,
                                                                             pressure,
                                                                             composition,
-                                                                            point);
+                                                                            evaluation_points[q]);
           }
       }
     }
@@ -90,7 +88,7 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(InternalHeating,
                                                   "internal heating",
                                                   "A visualization output object that generates output "
-                                                  "for the internal heating rate.")
+                                                  "for the internal heating rate. Units: W/kg")
     }
   }
 }

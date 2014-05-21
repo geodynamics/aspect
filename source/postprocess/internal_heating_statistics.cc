@@ -40,8 +40,7 @@ namespace aspect
     {
         const HeatingModel::Interface<dim> &heating_model=this->get_heating_model();
 
-      // create a quadrature formula based on the compositional element alone.
-      // be defensive about determining that a compositional field actually exists
+      // create a quadrature formula based on the temperature element alone.
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
 
@@ -62,7 +61,7 @@ namespace aspect
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
 
-      double local_radioactive_heating_integrals;
+      double local_internal_heating_integrals;
       double local_volume;
 
       // compute the integral quantities by quadrature
@@ -83,7 +82,7 @@ namespace aspect
             {
                   for(unsigned c=0;c<this->n_compositional_fields();c++)
                         composition_values_at_q_point[c]=compositional_values[c][q];
-                  local_radioactive_heating_integrals += heating_model.specific_heating_rate(temperature_values[q],
+                  local_internal_heating_integrals += heating_model.specific_heating_rate(temperature_values[q],
                                                                                               pressure_values[q],
                                                                                               composition_values_at_q_point,
                                                                                               quadrature_points[q])*fe_values.JxW(q);
@@ -93,7 +92,7 @@ namespace aspect
       // compute the sum over all processors
       std::vector<double> local_value;
       std::vector<double> global_value;
-      local_value.push_back(local_radioactive_heating_integrals);
+      local_value.push_back(local_internal_heating_integrals);
       local_value.push_back(local_volume);
       Utilities::MPI::sum (local_value,
                            this->get_mpi_communicator(),
@@ -103,7 +102,7 @@ namespace aspect
 
       // finally produce something for the statistics file
       const std::string name("Average radioactive heating rate (W/kg) ");
-      statistics.add_value (name, global_radioactive_heating_integrals/global_volume);
+      statistics.add_value (name, global_internal_heating_integrals/global_volume);
 
       // also make sure that the other columns filled by the this object
       // all show up with sufficient accuracy and in scientific notation
@@ -113,7 +112,7 @@ namespace aspect
 
       std::ostringstream output;
       output.precision(4);
-          output << global_radioactive_heating_integrals/global_volume << " (W//kg) ";
+          output << global_internal_heating_integrals/global_volume << " (W//kg) ";
 
       return std::pair<std::string, std::string> ("Average radioactive heating rate: ",
                                                   output.str());
