@@ -879,7 +879,7 @@ namespace aspect
       {
         prm.enter_subsection("Steinberger model");
         {
-          prm.declare_entry ("Data directory", "data/material-model/steinberger/",
+          prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/material-model/steinberger/",
                              Patterns::DirectoryName (),
                              "The path to the model data. ");
           prm.declare_entry ("Material file names", "pyr-ringwood88.txt",
@@ -924,6 +924,14 @@ namespace aspect
         prm.enter_subsection("Steinberger model");
         {
           datadirectory        = prm.get ("Data directory");
+          {
+            const std::string      subst_text = "$ASPECT_SOURCE_DIR";
+            std::string::size_type position;
+            while (position = datadirectory.find (subst_text),  position!=std::string::npos)
+              datadirectory.replace (datadirectory.begin()+position,
+                                      datadirectory.begin()+position+subst_text.size(),
+                                      ASPECT_SOURCE_DIR);
+          }
           material_file_names  = Utilities::split_string_list
                                  (prm.get ("Material file names"));
           radial_viscosity_file_name   = prm.get ("Radial viscosity file name");
