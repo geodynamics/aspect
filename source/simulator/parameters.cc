@@ -364,7 +364,7 @@ namespace aspect
       prm.declare_entry ("Remove nullspace", "",
                          Patterns::MultipleSelection("net rotation|angular momentum|"
                                                      "net x translation|net y translation|net z translation|"
-                                                     "linear x momentum|linear y momentum|linear z momnetum"),
+                                                     "linear x momentum|linear y momentum|linear z momentum"),
                          "A selection of operations to remove certain parts of the nullspace from "
                          "the velocity after solving. For some geometries and certain boundary conditions "
                          "the velocity field is not uniquely determined but contains free translations "
