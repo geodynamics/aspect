@@ -336,7 +336,7 @@ namespace aspect
                          Patterns::Map (Patterns::Anything(),
                                         Patterns::Selection(VelocityBoundaryConditions::get_names<dim>())),
                          "A comma separated list denoting those boundaries "
-                         "on which the velocity is tangential but prescribed, i.e., where "
+                         "on which the velocity is prescribed, i.e., where unknown "
                          "external forces act to prescribe a particular velocity. This is "
                          "often used to prescribe a velocity that equals that of "
                          "overlying plates."
@@ -345,7 +345,7 @@ namespace aspect
                          "given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where "
                          "each key must be a valid boundary indicator (which is an integer) "
                          "and each value must be one of the currently implemented boundary "
-                         "velocity models. selector is an optional string given as a subset "
+                         "velocity models. ``selector'' is an optional string given as a subset "
                          "of the letters 'xyz' that allows you to apply the boundary conditions "
                          "only to the components listed. As an example, '1 y: function' applies "
                          "the type 'function' to the y component on boundary 1. Without a selector "
