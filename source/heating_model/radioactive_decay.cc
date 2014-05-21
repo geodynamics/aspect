@@ -97,19 +97,21 @@ namespace aspect
                                 "Heating rate of different element (W/kg)");
             prm.declare_entry("Half decay time","",
                                 Patterns::List (Patterns::Double (0)),
-                                "Half decay time. Units: (Seconds), or (Years) if set 'use years instead of seconds'.");
-            prm.declare_entry("Initial consentration crust","",
+                                "Half decay time. Units: (Seconds), or "
+                                "(Years) if set 'use years instead of seconds'.");
+            prm.declare_entry("Initial concentration crust","",
                                 Patterns::List (Patterns::Double (0)),
-                                "Initial consentration of different elments (ppm)");
-            prm.declare_entry("Initial consentration mantle","",
+                                "Initial concentration of different elements (ppm)");
+            prm.declare_entry("Initial concentration mantle","",
                                 Patterns::List (Patterns::Double (0)),
-                                "Initial consentration of different elments (ppm)");
+                                "Initial concentration of different elements (ppm)");
             prm.declare_entry("Crust defined by composition","false",
                                 Patterns::Bool(),
                                 "Whether crust defined by composition or depth");
             prm.declare_entry("Crust depth","0",
                                 Patterns::Double(),
-                                "Depth of the crust when crust if defined by depth.");
+                                "Depth of the crust when crust if defined by depth. "
+                                "Units: m");
             prm.declare_entry("Crust composition number","0",
                                 Patterns::Integer(0),
                                 "Which composition field should be treated as crust");
@@ -146,16 +148,16 @@ namespace aspect
                            
             radioactive_initial_consentration_crust=Utilities::string_to_double
                 (Utilities::split_string_list
-                (prm.get("Initial consentration crust")));
+                (prm.get("Initial concentration crust")));
             AssertThrow(radioactive_initial_consentration_crust.size()==n_radio_heating_elements,
-                ExcMessage("Number of initial consentration entities does not match "
+                ExcMessage("Number of initial concentration entities does not match "
                            "the number of radioactive elements."));
                            
             radioactive_initial_consentration_mantle=Utilities::string_to_double
                 (Utilities::split_string_list
-                (prm.get("Initial consentration mantle")));
+                (prm.get("Initial concentration mantle")));
             AssertThrow(radioactive_initial_consentration_mantle.size()==n_radio_heating_elements,
-                ExcMessage("Number of initial consentration entities does not match "
+                ExcMessage("Number of initial concentration entities does not match "
                            "the number of radioactive elements."));
 
             is_crust_defined_by_composition = prm.get_bool    ("Crust defined by composition");
@@ -178,9 +180,10 @@ namespace aspect
     ASPECT_REGISTER_HEATING_MODEL(Radioactive_decay,
                                                  "radioactive decay",
                                                  "Implementation of a model in which the heating "
-                                                 "rate is decaying exponetially over time \n"
+                                                 "rate is decaying exponentially over time \n"
                                                  "The formula is interpreted as having units "
                                                  "W/kg."
                                                  "\n\n")
   }
 }
+
