@@ -1,25 +1,5 @@
-/*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-
-#include <aspect/material_model/duretz_et_al.h>
-#include <aspect/postprocess/duretz_et_al.h>
+#include <aspect/material_model/simple.h>
+#include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
@@ -31,14 +11,35 @@
 #include <deal.II/numerics/vector_tools.h>
 
 
+
 namespace aspect
 {
-  namespace DuretzEtAl
+  /**
+   * This is the "Sol Kz" benchmark defined in the following paper:
+   * @code
+   *  @Article{DMGT11,
+   *    author =       {T. Duretz and D. A. May and T. V. Gerya and P. J. Tackley},
+   *    title =        {Discretization errors and free surface stabilization in the
+   *                  finite difference and marker-in-cell method for applied
+   *                  geodynamics: {A} numerical study},
+   *    journal =      {Geochemistry Geophysics Geosystems},
+   *    year =         2011,
+   *    volume =       12,
+   *    pages =        {Q07004/1--26}}
+   * @endcode
+   *
+   * The results are published in Kronbichler, Heister and Bangerth paper.
+   */
+  namespace InclusionBenchmark
   {
+    using namespace dealii;
+
     namespace AnalyticSolutions
     {
-      const double PI = 3.14159265358979323846264338328;
-
+      // based on http://geodynamics.org/hg/cs/AMR/Discontinuous_Stokes with permission
+      // The following code has been taken from http://www.underworldproject.org/,
+      // release 1.7.0. As mentioned in the Underworld Manual, this code has been
+      // released under the GNU General Public License (GPL).
 
 
       void _Velic_solKz(
@@ -541,58 +542,358 @@ namespace aspect
 
 
 
-    }
-  }
-}
-
-namespace aspect
-{
-  namespace Postprocess
-  {
-    namespace internal_DuretzEtAl
+    /**
+     * The exact solution for the SolKz benchmark.
+     */
+    template <int dim>
+    class FunctionSolKz : public Function<dim>
     {
-      using namespace dealii;
+      public:
+        FunctionSolKz () : Function<dim>() {}
+
+        virtual void vector_value (const Point< dim >   &p,
+                                   Vector< double >   &values) const
+        {
+          double pos[2]= {p(0),p(1)};
+          double total_stress[3], strain_rate[3];
+          static const double B = 0.5 * std::log(1e6);
+          AnalyticSolutions::_Velic_solKz
+          (pos,
+           1.0, 2, 3,
+           B,
+           &values[0], &values[2], total_stress, strain_rate );
+        }
+    };
 
 
+    }
+
+
+
+  template <int dim>
+  class SolKzMaterial : public MaterialModel::InterfaceCompatibility<dim>
+  {
+    public:
+      /**
+       * @name Physical parameters used in the basic equations
+       * @{
+       */
+      virtual double viscosity (const double                  temperature,
+                                const double                  pressure,
+                                const std::vector<double>    &compositional_fields,
+                                const SymmetricTensor<2,dim> &strain_rate,
+                                const Point<dim>             &position) const;
+
+      virtual double density (const double temperature,
+                              const double pressure,
+                              const std::vector<double> &compositional_fields,
+                              const Point<dim> &position) const;
+
+      virtual double compressibility (const double temperature,
+                                      const double pressure,
+                                      const std::vector<double> &compositional_fields,
+                                      const Point<dim> &position) const;
+
+      virtual double specific_heat (const double temperature,
+                                    const double pressure,
+                                    const std::vector<double> &compositional_fields,
+                                    const Point<dim> &position) const;
+
+      virtual double thermal_expansion_coefficient (const double      temperature,
+                                                    const double      pressure,
+                                                    const std::vector<double> &compositional_fields,
+                                                    const Point<dim> &position) const;
+
+      virtual double thermal_conductivity (const double temperature,
+                                           const double pressure,
+                                           const std::vector<double> &compositional_fields,
+                                           const Point<dim> &position) const;
+      /**
+       * @}
+       */
 
       /**
-       * The exact solution for the SolKz benchmark.
+       * @name Qualitative properties one can ask a material model
+       * @{
        */
-      template <int dim>
-      class FunctionSolKz : public Function<dim>
-      {
-        public:
-          FunctionSolKz () : Function<dim>() {}
 
-          virtual void vector_value (const Point< dim >   &p,
-                                     Vector< double >   &values) const
-          {
-            double pos[2]= {p(0),p(1)};
-            double total_stress[3], strain_rate[3];
-            static const double B = 0.5 * std::log(1e6);
-            aspect::DuretzEtAl::AnalyticSolutions::_Velic_solKz
-            (pos,
-             1.0, 2, 3,
-             B,
-             &values[0], &values[2], total_stress, strain_rate );
-          }
-      };
+      /**
+       * Return true if the viscosity() function returns something that
+       * may depend on the variable identifies by the argument.
+       */
+      virtual bool
+      viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+
+      /**
+       * Return true if the density() function returns something that may
+       * depend on the variable identifies by the argument.
+       */
+      virtual bool
+      density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+
+      /**
+       * Return true if the compressibility() function returns something
+       * that may depend on the variable identifies by the argument.
+       *
+       * This function must return false for all possible arguments if the
+       * is_compressible() function returns false.
+       */
+      virtual bool
+      compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+
+      /**
+       * Return true if the specific_heat() function returns something
+       * that may depend on the variable identifies by the argument.
+       */
+      virtual bool
+      specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+
+      /**
+       * Return true if the thermal_conductivity() function returns
+       * something that may depend on the variable identifies by the
+       * argument.
+       */
+      virtual bool
+      thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+
+      /**
+       * Return whether the model is compressible or not.
+       * Incompressibility does not necessarily imply that the density is
+       * constant; rather, it may still depend on temperature or pressure.
+       * In the current context, compressibility means whether we should
+       * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
+       * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
+       * (incompressible Stokes).
+       */
+      virtual bool is_compressible () const;
+      /**
+       * @}
+       */
+
+      /**
+       * @name Reference quantities
+       * @{
+       */
+      virtual double reference_viscosity () const;
+
+      virtual double reference_density () const;
+
+      virtual double reference_thermal_expansion_coefficient () const;
+
+//TODO: should we make this a virtual function as well? where is it used?
+      double reference_thermal_diffusivity () const;
+
+      double reference_cp () const;
+      /**
+       * @}
+       */
+  };
 
 
 
-    }
+  template <int dim>
+  double
+  SolKzMaterial<dim>::
+  viscosity (const double,
+             const double,
+             const std::vector<double> &,       /*composition*/
+             const SymmetricTensor<2,dim> &,
+             const Point<dim> &p) const
+  {
+    // defined as given in the Duretz et al. paper
+    static const double B = 0.5 * std::log(1e6);
+    return std::exp(2*B*p[1]);
+  }
+
+
+  template <int dim>
+  double
+  SolKzMaterial<dim>::
+  reference_viscosity () const
+  {
+    return 1;
+  }
+
+  template <int dim>
+  double
+  SolKzMaterial<dim>::
+  reference_density () const
+  {
+    return 0;
+  }
+
+  template <int dim>
+  double
+  SolKzMaterial<dim>::
+  reference_thermal_expansion_coefficient () const
+  {
+    return 0;
+  }
+
+  template <int dim>
+  double
+  SolKzMaterial<dim>::
+  specific_heat (const double,
+                 const double,
+                 const std::vector<double> &, /*composition*/
+                 const Point<dim> &) const
+  {
+    return 0;
+  }
+
+  template <int dim>
+  double
+  SolKzMaterial<dim>::
+  reference_cp () const
+  {
+    return 0;
+  }
+
+  template <int dim>
+  double
+  SolKzMaterial<dim>::
+  thermal_conductivity (const double,
+                        const double,
+                        const std::vector<double> &, /*composition*/
+                        const Point<dim> &) const
+  {
+    return 0;
+  }
+
+  template <int dim>
+  double
+  SolKzMaterial<dim>::
+  reference_thermal_diffusivity () const
+  {
+    return 0;
+  }
+
+  template <int dim>
+  double
+  SolKzMaterial<dim>::
+  density (const double,
+           const double,
+           const std::vector<double> &, /*composition*/
+           const Point<dim> &p) const
+  {
+    // defined as given in the paper
+    return -std::sin(2*p[1])*std::cos(3*numbers::PI*p[0]);
+  }
+
+
+  template <int dim>
+  double
+  SolKzMaterial<dim>::
+  thermal_expansion_coefficient (const double temperature,
+                                 const double,
+                                 const std::vector<double> &, /*composition*/
+                                 const Point<dim> &) const
+  {
+    return 0;
+  }
+
+
+  template <int dim>
+  double
+  SolKzMaterial<dim>::
+  compressibility (const double,
+                   const double,
+                   const std::vector<double> &, /*composition*/
+                   const Point<dim> &) const
+  {
+    return 0.0;
+  }
+
+
+
+  template <int dim>
+  bool
+  SolKzMaterial<dim>::
+  viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
+  {
+    return false;
+  }
+
+
+  template <int dim>
+  bool
+  SolKzMaterial<dim>::
+  density_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
+  {
+    return false;
+  }
+
+  template <int dim>
+  bool
+  SolKzMaterial<dim>::
+  compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
+  {
+    return false;
+  }
+
+  template <int dim>
+  bool
+  SolKzMaterial<dim>::
+  specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
+  {
+    return false;
+  }
+
+  template <int dim>
+  bool
+  SolKzMaterial<dim>::
+  thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
+  {
+    return false;
+  }
+
+
+  template <int dim>
+  bool
+  SolKzMaterial<dim>::
+  is_compressible () const
+  {
+    return false;
+  }
+
+
+
+
+
+
+    /**
+      * A postprocessor that evaluates the accuracy of the solution.
+      *
+      * The implementation of error evaluators that correspond to the
+      * benchmarks defined in the paper Duretz et al. reference above.
+      */
+    template <int dim>
+    class SolKzPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * Generate graphical output from the current solution.
+         */
+        virtual
+        std::pair<std::string,std::string>
+        execute (TableHandler &statistics);
+    };
 
     template <int dim>
     std::pair<std::string,std::string>
-    DuretzEtAl<dim>::execute (TableHandler &statistics)
+    SolKzPostprocessor<dim>::execute (TableHandler &statistics)
     {
       AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
                   ExcNotImplemented());
 
       std_cxx1x::shared_ptr<Function<dim> > ref_func;
-      if (dynamic_cast<const MaterialModel::DuretzEtAl::SolKz<dim> *>(&this->get_material_model()) != NULL)
+      if (dynamic_cast<const SolKzMaterial<dim> *>(&this->get_material_model()) != NULL)
         {
-          ref_func.reset (new internal_DuretzEtAl::FunctionSolKz<dim>());
+          const SolKzMaterial<dim> *
+          material_model
+            = dynamic_cast<const SolKzMaterial<dim> *>(&this->get_material_model());
+
+          ref_func.reset (new AnalyticSolutions::FunctionSolKz<dim>());
         }
       else
         {
@@ -648,17 +949,25 @@ namespace aspect
 
       return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
     }
+
   }
 }
+
 
 
 // explicit instantiations
 namespace aspect
 {
-  namespace Postprocess
+  namespace InclusionBenchmark
   {
-    ASPECT_REGISTER_POSTPROCESSOR(DuretzEtAl,
-                                  "DuretzEtAl error",
+    ASPECT_REGISTER_MATERIAL_MODEL(SolKzMaterial,
+                                   "SolKzMaterial",
+                                   "A material model that corresponds to the 'SolKz' benchmark "
+                                   "defined in Duretz et al., G-Cubed, 2011.")
+
+
+    ASPECT_REGISTER_POSTPROCESSOR(SolKzPostprocessor,
+                                  "SolKzPostprocessor",
                                   "A postprocessor that compares the solution of the benchmarks from "
                                   "the Duretz et al., G-Cubed, 2011, paper with the one computed by ASPECT "
                                   "and reports the error. Specifically, it can compute the errors for "
