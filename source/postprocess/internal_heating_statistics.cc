@@ -97,7 +97,7 @@ namespace aspect
       Utilities::MPI::sum (local_value,
                            this->get_mpi_communicator(),
                            global_value);
-      double global_radioactive_heating_integrals=global_value[0];
+      double global_internal_heating_integrals=global_value[0];
       double global_volume=global_value[1];
 
       // finally produce something for the statistics file
