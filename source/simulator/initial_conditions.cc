@@ -102,7 +102,6 @@ namespace aspect
               cell->get_dof_indices (local_dof_indices);
               for (unsigned int i=0; i<finite_element.base_element(base_element).dofs_per_cell; ++i)
                 {
-//TODO: Use introspection here
                   const unsigned int system_local_dof
                     = finite_element.component_to_system_index(torc.component_index(introspection),
                         /*dof index within component=*/i);
