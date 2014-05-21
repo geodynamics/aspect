@@ -766,7 +766,9 @@ namespace aspect
                                     nullspace_removal | NullspaceRemoval::angular_momentum);
             else if (nullspace_names[i]=="net translation")
               nullspace_removal = typename NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::net_translation);
+                                    nullspace_removal | NullspaceRemoval::net_translation_x |
+                                    NullspaceRemoval::net_translation_y | ( dim == 3 ?
+                                    NullspaceRemoval::net_translation_z : 0) );
             else if (nullspace_names[i]=="net x translation")
               nullspace_removal = typename NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::net_translation_x);
@@ -787,7 +789,9 @@ namespace aspect
                                     nullspace_removal | NullspaceRemoval::linear_momentum_z);
             else if (nullspace_names[i]=="linear momentum")
               nullspace_removal = typename NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::linear_momentum);
+                                    nullspace_removal | NullspaceRemoval::linear_momentum_x |
+                                    NullspaceRemoval::linear_momentum_y | ( dim == 3 ?
+                                    NullspaceRemoval::linear_momentum_z : 0) );
             else
               AssertThrow(false, ExcInternalError());
           }

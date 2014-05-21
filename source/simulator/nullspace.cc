@@ -100,9 +100,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::setup_nullspace_removal()
   {
-    if (parameters.nullspace_removal & NullspaceRemoval::linear_momentum_x || 
-        parameters.nullspace_removal & NullspaceRemoval::linear_momentum_y || 
-        parameters.nullspace_removal & NullspaceRemoval::linear_momentum_z )
+    if (parameters.nullspace_removal & NullspaceRemoval::linear_momentum)
       AssertThrow(false, ExcNotImplemented());
 
     std::vector<std_cxx1x::shared_ptr<TensorFunction<1,dim> > > funcs;
@@ -158,9 +156,7 @@ namespace aspect
                                         LinearAlgebra::BlockVector &tmp_distributed_stokes)
   {
     if (parameters.nullspace_removal & NullspaceRemoval::net_rotation ||
-        parameters.nullspace_removal & NullspaceRemoval::net_translation_x || 
-        parameters.nullspace_removal & NullspaceRemoval::net_translation_y ||
-        parameters.nullspace_removal & NullspaceRemoval::net_translation_z )
+        parameters.nullspace_removal & NullspaceRemoval::net_translation )
       {
         Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
             ExcNotImplemented());
