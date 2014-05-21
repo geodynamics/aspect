@@ -68,7 +68,8 @@ namespace aspect
 
 //TODO: The code here is confusing. We should be using something
 // like the AdevctionField class instead of just a single
-// integer 'n'
+// integer 'n', and iterate over its components. in any case, we
+// should probably ask AdvectionField how many fields there actually are
     for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
       {
         AdvectionField torc = (n==0) ? AdvectionField::temperature()
