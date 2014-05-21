@@ -5746,90 +5746,13 @@ in sign between the implementation and the description in \cite{DMGT11}).
   \end{center}
 \end{figure}
 
-To run this benchmark, the following input file will do:
-\begin{lstlisting}[frame=single,language=prmfile]
-############### Global parameters
-
-set Dimension                              = 2
-
-set Start time                             = 0
-set End time                               = 0
-
-set Output directory                       = output
-
-set Pressure normalization                 = volume
-
-
-############### Parameters describing the model
-
-subsection Geometry model
-  set Model name = box
-
-  subsection Box
-    set X extent = 1
-    set Y extent = 1
-  end
-end
-
-
-subsection Model settings
-  set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 0,1,2,3
-  set Zero velocity boundary indicators       =
-end
-
-
-subsection Material model
-  set Model name = SolCx
-
-  subsection SolCx
-    set Viscosity jump = 1e6
-  end
-end
-
-
-subsection Gravity model
-  set Model name = vertical
-end
-
-
-############### Parameters describing the temperature field
-
-subsection Boundary temperature model
-  set Model name = box
-end
-
-
-subsection Initial conditions
-  set Model name = perturbed box
-end
-
-
-
-############### Parameters describing the discretization
-
-subsection Discretization
-  set Stokes velocity polynomial degree       = 2
-  set Use locally conservative discretization = false
-end
-
-
-subsection Mesh refinement
-  set Initial adaptive refinement              = 0
-  set Initial global refinement                = 4
-end
-
-
-############### Parameters describing the what to do with the solution
-
-subsection Postprocess
-  set List of postprocessors = DuretzEtAl error, visualization
-end
-\end{lstlisting}
+To run this benchmark, the following input file will do (see the files in \url{benchmark/solcx/} to rerun the benchmark):
+\lstinputlisting[frame=single,language=prmfile]{cookbooks/benchmarks/solcx.prm}
 
 Since this is the first cookbook in the benchmarking section, let us go
 through the different parts of this file in more detail:
 \begin{itemize}
+\item The material model and the postprocessor 
 \item The first part consists of parameter setting for overall
   parameters. Specifically, we set the dimension in which this benchmark runs
   to two and choose an output directory. Since we are not interested in a time
