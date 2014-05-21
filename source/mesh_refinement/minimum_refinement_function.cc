@@ -92,9 +92,19 @@ namespace aspect
       prm.enter_subsection("Mesh refinement");
       {
         prm.enter_subsection("Minimum refinement function");
+        try
         {
         	min_refinement_level.parse_parameters (prm);
         }
+        catch (...)
+        {
+            std::cerr << "ERROR: FunctionParser failed to parse\n"
+                << "\t'Mesh refinement.Minimum refinement function'\n"
+                << "with expression\n"
+                << "\t'" << prm.get("Function expression") << "'";
+            throw;
+        }
+
         prm.leave_subsection();
       }
       prm.leave_subsection();
