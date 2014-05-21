@@ -85,7 +85,8 @@ namespace aspect
                              ParameterHandler &prm)
     :
     parameters (prm),
-    introspection (parameters.n_compositional_fields, !parameters.use_direct_stokes_solver),
+    introspection (!parameters.use_direct_stokes_solver,
+        parameters.names_of_compositional_fields),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     pcout (std::cout,
            (Utilities::MPI::
@@ -1191,20 +1192,20 @@ namespace aspect
       {
         case NonlinearSolver::IMPES:
         {
-          assemble_advection_system (TemperatureOrComposition::temperature());
-          build_advection_preconditioner(TemperatureOrComposition::temperature(),
+          assemble_advection_system (AdvectionField::temperature());
+          build_advection_preconditioner(AdvectionField::temperature(),
                                          T_preconditioner);
-          solve_advection(TemperatureOrComposition::temperature());
+          solve_advection(AdvectionField::temperature());
 
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
 
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
-              assemble_advection_system (TemperatureOrComposition::composition(c));
-              build_advection_preconditioner(TemperatureOrComposition::composition(c),
+              assemble_advection_system (AdvectionField::composition(c));
+              build_advection_preconditioner(AdvectionField::composition(c),
                                              C_preconditioner);
-              solve_advection(TemperatureOrComposition::composition(c)); // this is correct, 0 would be temperature
+              solve_advection(AdvectionField::composition(c));
               current_linearization_point.block(introspection.block_indices.compositional_fields[c])
                 = solution.block(introspection.block_indices.compositional_fields[c]);
             }
@@ -1277,13 +1278,13 @@ namespace aspect
 
           do
             {
-              assemble_advection_system(TemperatureOrComposition::temperature());
+              assemble_advection_system(AdvectionField::temperature());
 
               if (iteration == 0)
-                build_advection_preconditioner(TemperatureOrComposition::temperature(),
+                build_advection_preconditioner(AdvectionField::temperature(),
                                                T_preconditioner);
 
-              const double temperature_residual = solve_advection(TemperatureOrComposition::temperature());
+              const double temperature_residual = solve_advection(AdvectionField::temperature());
 
               current_linearization_point.block(introspection.block_indices.temperature)
                 = solution.block(introspection.block_indices.temperature);
@@ -1292,11 +1293,11 @@ namespace aspect
 
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 {
-                  assemble_advection_system (TemperatureOrComposition::composition(c));
-                  build_advection_preconditioner(TemperatureOrComposition::composition(c),
+                  assemble_advection_system (AdvectionField::composition(c));
+                  build_advection_preconditioner(AdvectionField::composition(c),
                                                  C_preconditioner);
                   composition_residual[c]
-                    = solve_advection(TemperatureOrComposition::composition(c));
+                    = solve_advection(AdvectionField::composition(c));
                   current_linearization_point.block(introspection.block_indices.compositional_fields[c])
                     = solution.block(introspection.block_indices.compositional_fields[c]);
                 }
@@ -1356,19 +1357,19 @@ namespace aspect
         case NonlinearSolver::iterated_Stokes:
         {
           // solve the temperature system once...
-          assemble_advection_system (TemperatureOrComposition::temperature());
-          build_advection_preconditioner (TemperatureOrComposition::temperature (),
+          assemble_advection_system (AdvectionField::temperature());
+          build_advection_preconditioner (AdvectionField::temperature (),
                                           T_preconditioner);
-          solve_advection(TemperatureOrComposition::temperature());
+          solve_advection(AdvectionField::temperature());
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
 
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
-              assemble_advection_system (TemperatureOrComposition::composition(c));
-              build_advection_preconditioner (TemperatureOrComposition::composition (c),
+              assemble_advection_system (AdvectionField::composition(c));
+              build_advection_preconditioner (AdvectionField::composition (c),
                                               C_preconditioner);
-              solve_advection(TemperatureOrComposition::composition(c));
+              solve_advection(AdvectionField::composition(c));
               current_linearization_point.block(introspection.block_indices.compositional_fields[c])
                 = solution.block(introspection.block_indices.compositional_fields[c]);
             }
@@ -1539,14 +1540,14 @@ namespace aspect
           // see if this is a time step where regular refinement is necessary, but only
           // if the previous rule wasn't triggered
           if (
-              (timestep_number > 0
-              &&
-              (parameters.adaptive_refinement_interval > 0)
-              &&
-              (timestep_number % parameters.adaptive_refinement_interval == 0))
-              ||
-              (timestep_number==0 && parameters.adaptive_refinement_interval == 1)
-              )
+            (timestep_number > 0
+             &&
+             (parameters.adaptive_refinement_interval > 0)
+             &&
+             (timestep_number % parameters.adaptive_refinement_interval == 0))
+            ||
+            (timestep_number==0 && parameters.adaptive_refinement_interval == 1)
+          )
             refine_mesh (max_refinement_level);
 
         // every n time steps output a summary of the current

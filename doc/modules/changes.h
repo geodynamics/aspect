@@ -11,6 +11,11 @@
  * <br>
  * (Anne Glerum, 2014/05/21)
  *
+ * <li>New: Compositional fields have names now. If no names are specified in 
+ * the input file, the previously used names C_1, C_2, ... are used as a default. 
+ * <br>
+ * (Juliane Dannberg, 2014/05/21)
+ *
  * <li>New: There is now a new initial temperature condition plugin that can read in
  * solidus temperatures from a file and add perturbations to it. There is also
  * a corresponding data file for initial conditions for Mars from Permentier
