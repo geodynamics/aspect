@@ -105,6 +105,7 @@ namespace aspect
 
 #include <utility>
 #include <limits>
+#include <aspect/geometry_model/box.h>
 
 
 namespace aspect
@@ -123,7 +124,7 @@ namespace aspect
       // verify that the geometry is in fact a time_dep_box since only
       // for this geometry do we know for sure what boundary indicators it
       // uses and what they mean
-      Assert (dynamic_cast<const GeometryModel::Time_Dep_Box<dim>*>(&geometry_model)
+      Assert (dynamic_cast<const GeometryModel::Box<dim>*>(&geometry_model)
               != 0,
               ExcMessage ("This boundary model is only implemented if the geometry is "
                           "in fact a time_dep_box."));
