@@ -117,16 +117,16 @@ namespace aspect
       }
 
     if (parameters.nullspace_removal & NullspaceRemoval::net_translation_x)
-      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(0))); //x dir
+      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(0))); 
 
     if (parameters.nullspace_removal & NullspaceRemoval::net_translation_y)
-      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(1))); //y dir
+      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(1)));
 
     if (parameters.nullspace_removal & NullspaceRemoval::net_translation_z)
     { 
       //Only do z direction if dim == 3
       AssertThrow( dim == 3, ExcMessage("Can't remove z translational mode in 2 dimensions"));
-      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(2))); //z dir
+      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(2)));
     }
 
     if (funcs.size()>0)
