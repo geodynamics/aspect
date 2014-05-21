@@ -5,7 +5,6 @@
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 5e6
-set Output directory                       = output
 
 
 subsection Material model
@@ -94,12 +93,6 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization , internal heating statistics
+  set List of postprocessors = internal heating statistics
 
-  subsection Visualization
-    set Output format                 = vtu
-    set List of output variables      = internal heating
-	set Time between graphical output = 1e6
-    set Number of grouped files       = 0
-  end
 end
