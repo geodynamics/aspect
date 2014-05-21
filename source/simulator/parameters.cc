@@ -326,6 +326,10 @@ namespace aspect
                          "no external forces act to prescribe a particular tangential "
                          "velocity (although there is a force that requires the flow to "
                          "be tangential).");
+      prm.declare_entry ("Free surface boundary indicators", "",
+                          Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max())),
+                          "A comma separated list of integers denoting those boundaries "
+                          "where there is a free surface. Set to nothing to disable all free surface computations.");
       prm.declare_entry ("Prescribed velocity boundary indicators", "",
                          Patterns::Map (Patterns::Anything(),
                                         Patterns::Selection(VelocityBoundaryConditions::get_names<dim>())),
@@ -539,14 +543,7 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    prm.enter_subsection ("Free surface");
-    {
-      prm.declare_entry ("Free surface boundary indicators", "",
-                              Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max())),
-                              "A comma separated list of integers denoting those boundaries "
-                              "where there is a free surface. Set to nothing to disable all free surface computations.");
-    }
-    prm.leave_subsection ();
+    //Also declare the parameters that the FreeSurfaceHandler needs
     FreeSurfaceHandler::declare_parameters( prm );
   }
 
@@ -696,6 +693,15 @@ namespace aspect
         = std::set<types::boundary_id> (x_tangential_velocity_boundary_indicators.begin(),
                                         x_tangential_velocity_boundary_indicators.end());
 
+      const std::vector<int> x_free_surface_boundary_indicators
+        = Utilities::string_to_int
+          (Utilities::split_string_list
+           (prm.get ("Free surface boundary indicators")));
+      free_surface_boundary_indicators
+        = std::set<types::boundary_id> (x_free_surface_boundary_indicators.begin(),
+                                        x_free_surface_boundary_indicators.end());
+
+      free_surface_enabled = !free_surface_boundary_indicators.empty();
 
       const std::vector<std::string> x_prescribed_velocity_boundary_indicators
         = Utilities::split_string_list
@@ -811,20 +817,6 @@ namespace aspect
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
     }
-    prm.leave_subsection ();
-
-    prm.enter_subsection ("Free surface");
-        {
-          std::vector<int> x_free_surface_boundary_indicators
-            = Utilities::string_to_int
-              (Utilities::split_string_list
-               (prm.get ("Free surface boundary indicators")));
-          free_surface_boundary_indicators
-            = std::set<types::boundary_id> (x_free_surface_boundary_indicators.begin(),
-                                              x_free_surface_boundary_indicators.end());
-
-          free_surface_enabled = !free_surface_boundary_indicators.empty();
-        }
     prm.leave_subsection ();
   }
 

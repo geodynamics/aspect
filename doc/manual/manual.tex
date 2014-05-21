@@ -1294,6 +1294,7 @@ so we get
 where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the compressibility and $\rho$ and $\mathbf u$ are taken from the last time step.
 
 \subsection{Free surface calculations}
+\label{sec:freesurface}
 
 In reality the boundary conditions of a convecting Earth are not no-slip or 
 free slip (i.e. no normal velocity).  Instead, we expect that a free surface
@@ -4441,12 +4442,13 @@ will be small enough that it is difficult to see with the naked eye in visualiza
 but the \texttt{topography} postprocessor can help by outputting the maximum and minumum 
 topography on the free surface at every time step. 
 
-The bulk of the parameter file for this cookbook is similar to previous ones in this section.
-The main addition is the \texttt{Free surface} subsection.  There are two
-parameters that need to be set here.  First, you need to give \aspect{} a comma 
+The bulk of the parameter file for this cookbook is similar to previous ones in this manual.
+In the \texttt{Model settings} secion you need to give \aspect{} a comma 
 separated list of the free surface boundary indicators.  In this case, we are 
-dealing with the top boundary of a box in 2D, corresponding to boundary indicator
-3.  Second, we need to specify the value for the stabilization parameter ``theta''.
+dealing with the top boundary of a box in 2D, corresponding to boundary indicator 3.  
+
+The main addition is the \texttt{Free surface} subsection.  There is one main
+parameter that needs to be set here: the value for the stabilization parameter ``theta''.
 If this parameter is zero, then there is no stabilization, and you are likely to
 see instabilities develop in the free surface.  If this parameter is one then it
 will do a good job of stabilizing the free surface, but it may overly damp its 
@@ -4461,9 +4463,21 @@ as well as the desired accuracy.
 set CFL number                             = 0.1
 
 subsection Free surface
-  set Free surface boundary indicators = 3
   set Free surface stabilization theta = 0.5
 end
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+  set Fixed temperature boundary indicators   = 0,1,2,3
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 0,1,2
+  set Zero velocity boundary indicators       = 
+  set Free surface boundary indicators = 3
+end
+
+# Here is the major new section to the parameter file,
+# specifying the parameter for running free surface
 
 subsection Postprocess
   set List of postprocessors = visualization,topography,velocity statistics,

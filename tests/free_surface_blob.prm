@@ -94,11 +94,11 @@ subsection Model settings
   set Prescribed velocity boundary indicators =
   set Tangential velocity boundary indicators = 0,1
   set Zero velocity boundary indicators       = 2
+  set Free surface boundary indicators = 3
 end
 
 subsection Free surface
   set Free surface stabilization theta = 0.5
-  set Free surface boundary indicators = 3
 end
 
 subsection Termination criteria

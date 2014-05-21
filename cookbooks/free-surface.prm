@@ -102,10 +102,7 @@ end
 
 # Here we specify that the model has fixed temperature
 # boundary conditions, as well as free slip boundary
-# conditions for the sides and bottom.  We deliberately
-# do not specify boundary conditions on the velocity
-# for the top of the box here, as that happens lower
-# down.
+# conditions for the sides and bottom. 
 subsection Model settings
   set Include adiabatic heating               = false
   set Include shear heating                   = false
@@ -113,19 +110,18 @@ subsection Model settings
   set Prescribed velocity boundary indicators =
   set Tangential velocity boundary indicators = 0,1,2
   set Zero velocity boundary indicators       = 
+
+  # We specify a comma delimited list of the free surface boundaries
+  # for the model.  In this case, it is just the top boundary (3)
+  # of the box geometry model. 
+  set Free surface boundary indicators = 3
 end
 
 # Here is the major new section to the parameter file,
 # specifying the parameter for running free surface
 # calculations
 subsection Free surface
-
-  # We specify a comma delimited list of the free surface boundaries
-  # for the model.  In this case, it is just the top boundary (3)
-  # of the box geometry model. 
-  set Free surface boundary indicators = 3
-
-  # We also need to specify the free surface stabilization parameter
+  # We need to specify the free surface stabilization parameter
   # theta, between zero and one.  If it is zero, there is no stabilization
   # and you are likely to see a sloshing instability develop.  If
   # it is one, the surface should be the most stable, though you
