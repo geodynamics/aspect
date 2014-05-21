@@ -12,6 +12,13 @@
  * <br>
  * (Wolfgang Bangerth, 2014/05/21) 
  *
+ * <li> Fixed: Temperature and compositional boundary conditions were previously
+ * evaluated only once at the beginning of the simulation, but this did not
+ * allow for time dependent boundary conditions for these variables. This is now
+ * fixed.
+ * <br>
+ * (Wolfgang Bangerth, 2014/05/21)
+ *
  * <li> Fixed: We forgot to set the initial time before we evaluate the
  * temperature boundary conditions, so temperature boundary conditions
  * could not use <code>get_time()</code> -- they just got NaN. This is now
