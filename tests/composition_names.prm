@@ -81,7 +81,7 @@ subsection Initial conditions
   set Model name = function # default: 
   subsection Function
     set Function constants  = l=250000
-    set Function expression = if (x < l, 1873, 1623)
+    set Function expression = if(x < l, 1873, 1623)
     set Variable names      = x,y
   end
 end
