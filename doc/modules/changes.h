@@ -5,10 +5,10 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
- * <li>New: Composisitional fields have names now. If no names are specified in 
+ * <li>New: Compositional fields have names now. If no names are specified in 
  * the input file, the previously used names C_1, C_2, ... are used as a default. 
  * <br>
- * (Juliane Dannberg, 2014/05/22)
+ * (Juliane Dannberg, 2014/05/21)
 
  * <li>New: There is now a new initial temperature condition plugin that can read in
  * solidus temperatures from a file and add perturbations to it. There is also
