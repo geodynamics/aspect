@@ -1,12 +1,11 @@
-# This is a relatively realistic compressible model setup.
-# There is no simple analytical solution to it, it is rather
-# intended to serve as a comparison for more complicated
-# material models, which should be able to reproduce it.
-# The material model used here is already tested by
-# simple_compressibility_iterated_stokes.
-# Currently there is the steinberger-compressible test
-# reproducing this test.
-
+# This is a copy of the simple compressible test.
+# However it uses the Steinberger material model, which
+# reads in lookup tables. The testdata used in this test
+# was prepared with the same equations as in the simple
+# compressible material model. The output between the two is
+# very similar, although not completely equal due to roundoff
+# errors.
+ 
 set CFL number                             = 1.0
 set End time                               = 1e5
 set Adiabatic surface temperature          = 1600.0
@@ -47,16 +46,18 @@ subsection Initial conditions
 end
 
 subsection Material model
-  set Model name = simple compressible
+  set Model name = Steinberger
 
-  subsection Simple compressible model
-    set Reference density = 3340
-    set Reference specific heat = 1200
-    set Thermal expansion coefficient = 3e-5
-    set Viscosity = 1e21
-    set Reference compressibility = 2.5e-12
+  subsection Steinberger model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/test-steinberger-compressible/
+    set Material file names              = testdata.txt
+    set Lateral viscosity file name      = test-viscosity-prefactor.txt 
+    set Radial viscosity file name       = test-radial-visc.txt
+    set Bilinear interpolation           = true
+    set Latent heat                      = false
+    set Compressible                     = true
+    set Reference viscosity              = 1e21
   end
-
 end
 
 

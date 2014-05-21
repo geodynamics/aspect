@@ -48,7 +48,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Steinberger: public MaterialModel::InterfaceCompatibility<dim>, public ::aspect::SimulatorAccess<dim>
+    class Steinberger: public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
 
@@ -183,6 +183,16 @@ namespace aspect
          */
 
         /**
+         * Function to compute the material properties in @p out given the
+         * inputs in @p in. If MaterialModelInputs.strain_rate has the length
+         * 0, then the viscosity does not need to be computed.
+         */
+        virtual
+        void
+        evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+                 typename Interface<dim>::MaterialModelOutputs &out) const;
+
+        /**
          * @name Functions used in dealing with run-time parameters
          * @{
          */
@@ -206,13 +216,59 @@ namespace aspect
       private:
         bool interpolation;
         bool latent_heat;
+        bool compressible;
+        double reference_eta;
         std::vector<double> avg_temp;
         std::string datadirectory;
         std::vector<std::string> material_file_names;
         unsigned int n_material_data;
         std::string radial_viscosity_file_name;
         std::string lateral_viscosity_file_name;
-        virtual double get_deltat (const Point<dim> &position) const;
+
+        /**
+         * In the incompressible case we need to adjust the temperature as
+         * if there would be an adiabatic temperature increase to look up the
+         * material properties in the lookup table.
+         */
+        double get_corrected_temperature (const double temperature,
+                                          const double pressure,
+                                          const Point<dim> &position) const;
+
+        /**
+         * In the incompressible case we need to adjust the pressure as
+         * if there would be an compressible adiabatic pressure increase to
+         * look up the material properties in the lookup table. Unfortunately
+         * we do not know the adiabatic pressure profile for the incompressible
+         * case and therefore we do not know the dynamic pressure. The only
+         * currently possible solution is to use the adiabatic pressure profile
+         * only, neglecting dynamic pressure for material lookup in this case.
+         * This is essentially similar to having a depth dependent reference
+         * profile for all properties and modifying the profiles only in
+         * temperature-dimension.
+         */
+        double get_corrected_pressure (const double temperature,
+                                       const double pressure,
+                                       const Point<dim> &position) const;
+
+        /**
+         * This function returns the compressible density derived from the
+         * list of loaded lookup tables.
+         */
+        double get_compressible_density (const double temperature,
+                                         const double pressure,
+                                         const std::vector<double> &compositional_fields,
+                                         const Point<dim> &position) const;
+
+        /**
+         * We need to correct the compressible density in the incompressible
+         * case to an incompressible profile. This is done by dividing the
+         * compressible density with the density at this pressure at adiabatic
+         * temperature and multiplying with the surface adiabatic density.
+         */
+        double get_corrected_density (const double temperature,
+                                      const double pressure,
+                                      const std::vector<double> &compositional_fields,
+                                      const Point<dim> &position) const;
 
         /**
          * Pointer to an object that reads and processes data we get from

@@ -689,7 +689,7 @@ namespace aspect
                              "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                              "in which the ASPECT source files were located when ASPECT was "
                              "compiled. This interpretation allows, for example, to reference "
-                             "files located in the 'data/' subdirectory of ASPECT.");
+                             "files located in the 'data/' subdirectory of ASPECT. ");
           prm.declare_entry ("Velocity file name", "phi.%d",
                              Patterns::Anything (),
                              "The file name of the material data. Provide file in format: (Velocity file name).%d.gpml where %d is any sprintf integer qualifier, specifying the format of the current file number.");
