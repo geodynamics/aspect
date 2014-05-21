@@ -99,7 +99,7 @@ end
 subsection Material \
 model
   set Model name = S\
-olCx
+olCxMaterial
 end
 
 
@@ -145,8 +145,7 @@ end
 subsection Postproce\
 ss
   set List of postpr\
-ocessors = DuretzEtAl err\
-or
+ocessors = SolCxPostprocessor
   subsection Depth a\
 verage
     set Time between\
