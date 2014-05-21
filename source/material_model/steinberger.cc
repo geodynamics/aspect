@@ -498,18 +498,21 @@ namespace aspect
                            const std::vector<double> &compositional_fields,
                            const Point<dim> &position) const
     {
-      const double rho = get_density(temperature,pressure,compositional_fields,position);
+      const double rho = get_compressible_density(temperature,pressure,compositional_fields,position);
 
       const double adiabatic_temperature = this->get_adiabatic_conditions().temperature(position);
-      const double adiabatic_rho = get_density(adiabatic_temperature,
-                                           pressure,
-                                           compositional_fields,
-                                           position);
+      const double adiabatic_rho = get_compressible_density(adiabatic_temperature,
+                                                            pressure,
+                                                            compositional_fields,
+                                                            position);
 
       const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
       const double surface_temperature = this->get_adiabatic_surface_temperature();
       const double surface_pressure = this->get_surface_pressure();
-      const double surface_rho = get_density(surface_temperature,surface_pressure,compositional_fields,surface_point);
+      const double surface_rho = get_compressible_density(surface_temperature,
+                                                          surface_pressure,
+                                                          compositional_fields,
+                                                          surface_point);
 
       //Return the density scaled to an incompressible profile
       const double scaled_density = (rho / adiabatic_rho) * surface_rho;
@@ -599,7 +602,7 @@ namespace aspect
     template <int dim>
     double
     Steinberger<dim>::
-    get_density (const double temperature,
+    get_compressible_density (const double temperature,
              const double pressure,
              const std::vector<double> &compositional_fields,
              const Point<dim> &position) const
@@ -628,7 +631,7 @@ namespace aspect
     {
       if (compressible
           || !(&this->get_adiabatic_conditions()))
-          return get_density(temperature,pressure,compositional_fields,position);
+          return get_compressible_density(temperature,pressure,compositional_fields,position);
       else
         return get_corrected_density(temperature,pressure,compositional_fields,position);
     }
