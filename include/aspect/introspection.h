@@ -268,7 +268,8 @@ namespace aspect
 
       /**
        * A function that gets the name of a compositional field as an
-       * input parameter and returns its index.
+       * input parameter and returns its index. If the name is not
+       * found, an exception is thrown.
        *
        * @param name The name of compositional field (as specified in
        * the input file)
