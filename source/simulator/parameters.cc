@@ -804,7 +804,7 @@ namespace aspect
               "fields needs to either be empty or have length equal to "
               "the number of compositional fields."));
 
-      // check that the names use only allowed characters
+      // check that the names use only allowed characters, are not empty strings and are unique
       for (unsigned int i=0; i<names_of_compositional_fields.size(); ++i)
       {
         Assert (names_of_compositional_fields[i].find_first_not_of("abcdefghijklmnopqrstuvwxyz"
@@ -816,6 +816,10 @@ namespace aspect
         Assert (names_of_compositional_fields[i].size() > 0,
           ExcMessage("Invalid name of field " + names_of_compositional_fields[i] + ". "
             		 "Names of compositional fields need to be non-empty."));
+        for (unsigned int j=0; j<i; ++j)
+          Assert (names_of_compositional_fields[i] != names_of_compositional_fields[j],
+            ExcMessage("Names of compositional fields have to be unique! " + names_of_compositional_fields[i] +
+        		       " is used more than once."));
       }
 
       // default names if list is empty
