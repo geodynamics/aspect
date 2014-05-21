@@ -120,7 +120,6 @@ namespace aspect
                                                       this->get_dof_handler(),
                                                       vec,
                                                       indicators,
-//TODO: get this from introspection
                                                       this->introspection().component_indices.temperature);
 
       // Scale gradient in each cell with the correct power of h. Otherwise,
