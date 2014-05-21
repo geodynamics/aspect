@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: velocity_boundary_statistics.h 1433 2012-12-08 08:24:55Z bangerth $  */
+
 
 
 #ifndef __aspect__postprocess_velocity_boundary_statistics_h
