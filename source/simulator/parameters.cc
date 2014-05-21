@@ -83,7 +83,9 @@ namespace aspect
     prm.declare_entry ("Timing output frequency", "100",
                        Patterns::Integer(0),
                        "How frequently in timesteps to output timing information. This is "
-                       "generally adjusted only for debugging and timing purposes.");
+                       "generally adjusted only for debugging and timing purposes. If the "
+					   "value is set to zero it will also output timing information at the "
+					   "initiation timesteps.");
 
     prm.declare_entry ("Use years in output instead of seconds", "true",
                        Patterns::Bool (),
