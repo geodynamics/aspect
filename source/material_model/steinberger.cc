@@ -345,6 +345,11 @@ namespace aspect
             return values[idx];
           }
 
+          int get_nslices()
+          {
+            return values.size();
+          }
+
         private:
           std::vector<double> values;
           double min_depth;
@@ -418,7 +423,7 @@ namespace aspect
                                   (new internal::MaterialLookup(datadirectory+material_file_names[i],interpolation)));
       lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(datadirectory+lateral_viscosity_file_name));
       radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name));
-      avg_temp.resize(1000);
+      avg_temp.resize(lateral_viscosity_lookup->get_nslices());
     }
 
 
