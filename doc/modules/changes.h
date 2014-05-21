@@ -5,6 +5,13 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> Fixed: We forgot to set the initial time before we evaluate the
+ * temperature boundary conditions, so temperature boundary conditions
+ * could not use <code>get_time()</code> -- they just got NaN. This is now
+ * fixed.
+ * <br>
+ * (Wolfgang Bangerth, 2014/05/21) 
+ *
  * <li> New: There is now functionality for running models with a free surface
  * with an Arbitrary Lagrangian-Eulerian framework. The user specifies which
  * boundary indicators are to be free surface boundaries, as well as a stabilization
