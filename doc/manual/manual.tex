@@ -1355,7 +1355,7 @@ traction that prevents the free surface advection from overshooting its
 true position at the next time step.  \aspect{} implements this stabilization,
 the details of which may be found in \cite{KMM2010}
 
-An example of a simple model which uses a free surface may be found in section \ref{sec:cookbooks-freesurface}.
+An example of a simple model which uses a free surface may be found in Section \ref{sec:cookbooks-freesurface}.
 
 \section{Installation}
 \label{sec:installation}
@@ -4434,9 +4434,9 @@ provides a simple example of how to set up a model with a free surface, as well
 as demonstrates some of the challenges associated with doing so.
 
 \aspect{} supports models with a free surface using an Arbitrary Lagrangian-Eulerian 
-framework.  Most of this is done internally, so you do not need to worry about the
+framework (see Section~\ref{sec:freesurface}).  Most of this is done internally, so you do not need to worry about the
 details to run this cookbook.  Here we demonstrate the evolution of surface topography 
-that results when blob of hot material rises in the mantle, pushing up the free
+that results when a blob of hot material rises in the mantle, pushing up the free
 surface as it does.  Usually the amplitude of free surface topography 
 will be small enough that it is difficult to see with the naked eye in visualizations,
 but the \texttt{topography} postprocessor can help by outputting the maximum and minumum 
