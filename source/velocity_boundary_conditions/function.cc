@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/velocity_boundary_conditions/function.h>
@@ -61,14 +60,14 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::set_current_time (const double time)
+    Function<dim>::update()
     {
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
       if (this->convert_output_to_years())
-        boundary_velocity_function.set_time (time / year_in_seconds);
+        boundary_velocity_function.set_time (this->get_time() / year_in_seconds);
       else
-        boundary_velocity_function.set_time (time);
+        boundary_velocity_function.set_time (this->get_time());
     }
 
 
@@ -95,8 +94,17 @@ namespace aspect
       prm.enter_subsection("Boundary velocity model");
       {
         prm.enter_subsection("Function");
+        try
         {
           boundary_velocity_function.parse_parameters (prm);
+        }
+        catch (...)
+        {
+            std::cerr << "ERROR: FunctionParser failed to parse\n"
+                << "\t'Boundary velocity model.Function'\n"
+                << "with expression\n"
+                << "\t'" << prm.get("Function expression") << "'";
+            throw;
         }
         prm.leave_subsection();
       }

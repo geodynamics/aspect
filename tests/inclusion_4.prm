@@ -72,7 +72,7 @@ end
 
 
 subsection Material model
-  set Model name = Inclusion
+  set Model name = InclusionMaterial
 end
 
 
@@ -88,11 +88,10 @@ subsection Model settings
   set Include adiabatic heating               = false
   set Include shear heating                   = false # default: true
 
-  set Radiogenic heating rate                 = 0
 
   set Fixed temperature boundary indicators   = 0, 1
 
-  set Prescribed velocity boundary indicators = 0: inclusion, 1: inclusion, 2: inclusion, 3: inclusion
+  set Prescribed velocity boundary indicators = 0: InclusionBoundary, 1: InclusionBoundary, 2: InclusionBoundary, 3: InclusionBoundary
 
   set Tangential velocity boundary indicators =
 
@@ -101,7 +100,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization, DuretzEtAl error
+  set List of postprocessors = visualization, InclusionPostprocessor
 
   subsection Depth average
     set Time between graphical output = 1e8

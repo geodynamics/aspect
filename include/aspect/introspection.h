@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #ifndef __aspect__introspection_h
@@ -55,11 +54,14 @@ namespace aspect
     public:
       /**
        * Constructor.
-       * @param n_compositional_fields The number of compositional fields that
+       * @param split_vel_pressure Set to true if velocity and pressure should
+       * be in separate blocks.
+       * @param composition_names The names of compositional fields that
        * will be used in this simulation. This is used in initializing the
        * fields of this class.
        */
-      Introspection (const unsigned int n_compositional_fields);
+      Introspection (const bool split_vel_pressure,
+                     const std::vector<std::string> &names_of_compositional_fields);
 
       /**
        * @name Things that are independent of the current mesh
@@ -126,11 +128,12 @@ namespace aspect
        */
       struct BlockIndices
       {
-        BlockIndices (const unsigned int n_compositional_fields);
+        BlockIndices (const unsigned int n_compositional_fields,
+            const bool split_vel_pressure);
 
-        static const unsigned int       velocities  = 0;
-        static const unsigned int       pressure    = 1;
-        static const unsigned int       temperature = 2;
+        const unsigned int       velocities;
+        const unsigned int       pressure;
+        const unsigned int       temperature;
         const std::vector<unsigned int> compositional_fields;
       };
       /**
@@ -245,6 +248,12 @@ namespace aspect
          * two elements of system_partitioning.
          */
         std::vector<IndexSet> stokes_partitioning;
+
+        /**
+         * Pressure unknowns that are locally owned. This IndexSet is needed
+         * if velocity and pressure end up in the same block.
+         */
+        IndexSet locally_owned_pressure_dofs;
       };
       /**
        * A variable that contains index sets describing which of the globally
@@ -256,6 +265,44 @@ namespace aspect
       /**
        * @}
        */
+
+      /**
+       * A function that gets the name of a compositional field as an
+       * input parameter and returns its index. If the name is not
+       * found, an exception is thrown.
+       *
+       * @param name The name of compositional field (as specified in
+       * the input file)
+       */
+      unsigned int
+      compositional_index_for_name (const std::string &name) const;
+
+      /**
+       * A function that gets the index of a compositional field as an
+       * input parameter and returns its name.
+       *
+       * @param index The index of compositional field
+       */
+      std::string
+      name_for_compositional_index (const unsigned int index) const;
+
+      /**
+       * A function that gets the name of a compositional field as an
+       * input parameter and returns if the compositional field is
+       * used in this simulation.
+       *
+       * @param name The name of compositional field (as specified in
+       * the input file)
+       */
+      bool
+      compositional_name_exists (const std::string &name) const;
+
+    private:
+      /**
+       * A vector that stores the names of the compositional fields
+       * that will be used in the simulation.
+       */
+       std::vector<std::string> composition_names;
   };
 }
 

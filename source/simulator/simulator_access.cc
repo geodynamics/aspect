@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/simulator.h>
@@ -220,7 +219,7 @@ namespace aspect
   void
   SimulatorAccess<dim>::get_depth_average_temperature(std::vector<double> &values) const
   {
-    simulator->compute_depth_average_field(Simulator<dim>::TemperatureOrComposition::temperature(),
+    simulator->compute_depth_average_field(Simulator<dim>::AdvectionField::temperature(),
                                            values);
   }
 
@@ -232,7 +231,7 @@ namespace aspect
     // make sure that what we get here is really an index of one of the compositional fields
     AssertIndexRange(composition_index,this->n_compositional_fields());
 
-    simulator->compute_depth_average_field(Simulator<dim>::TemperatureOrComposition::composition(composition_index),
+    simulator->compute_depth_average_field(Simulator<dim>::AdvectionField::composition(composition_index),
                                            values);
   }
 

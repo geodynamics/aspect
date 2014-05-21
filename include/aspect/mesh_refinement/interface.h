@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #ifndef __aspect__mesh_refinement_interface_h
@@ -73,7 +72,8 @@ namespace aspect
         ~Interface ();
 
         /**
-         * Execute this mesh refinement criterion.
+         * Execute this mesh refinement criterion. The default implementation
+         * sets all the error indicators to zero.
          *
          * @param[out] error_indicators A vector that for every active cell of
          * the current mesh (which may be a partition of a distributed mesh)
@@ -82,8 +82,17 @@ namespace aspect
          */
         virtual
         void
-        execute (Vector<float> &error_indicators) const = 0;
+        execute (Vector<float> &error_indicators) const;
 
+        /**
+         * After cells have been marked for coarsening/refinement, apply
+         * additional criteria independent of the error estimate. The
+         * default implementation does nothing.
+         */
+        virtual
+        void
+        tag_additional_cells () const;
+      
         /**
          * Declare the parameters this class takes through input files.
          * Derived classes should overload this function if they actually do
@@ -152,6 +161,15 @@ namespace aspect
         virtual
         void
         execute (Vector<float> &error_indicators) const;
+
+        /**
+         * Apply additional refinement criteria independent of the error
+         * estimate for all of the mesh refinement objects that have been
+         * requested in the input file.
+         */
+        virtual
+        void
+        tag_additional_cells () const;
 
         /**
          * Declare the parameters of all known mesh refinement plugins, as
@@ -253,10 +271,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_MESH_REFINEMENT_CRITERION_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::MeshRefinement::Interface<2>,classname<2> > \
     dummy_ ## classname ## _2d (&aspect::MeshRefinement::Manager<2>::register_mesh_refinement_criterion, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::MeshRefinement::Interface<3>,classname<3> > \
     dummy_ ## classname ## _3d (&aspect::MeshRefinement::Manager<3>::register_mesh_refinement_criterion, \
                                 name, description); \
   }

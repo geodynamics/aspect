@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/simulator.h>
@@ -519,7 +518,7 @@ namespace aspect
   template <int dim>
   double
   Simulator<dim>::get_entropy_variation (const double average_field,
-                                         const TemperatureOrComposition &temperature_or_composition) const
+                                         const AdvectionField &advection_field) const
   {
     // only do this if we really need entropy
     // variation. otherwise return something that's obviously
@@ -533,11 +532,11 @@ namespace aspect
     const unsigned int n_q_points = quadrature_formula.size();
 
     const FEValuesExtractors::Scalar field
-      = (temperature_or_composition.is_temperature()
+      = (advection_field.is_temperature()
          ?
          introspection.extractors.temperature
          :
-         introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]
+         introspection.extractors.compositional_fields[advection_field.compositional_variable]
         );
 
     FEValues<dim> fe_values (finite_element, quadrature_formula,
@@ -606,7 +605,7 @@ namespace aspect
   Simulator<dim>::
   compute_advection_system_residual(internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
                                     const double                        average_field,
-                                    const TemperatureOrComposition     &temperature_or_composition,
+                                    const AdvectionField               &advection_field,
                                     double                             &max_residual,
                                     double                             &max_velocity,
                                     double                             &max_density,
@@ -624,10 +623,10 @@ namespace aspect
         const double u_grad_field = u * (scratch.old_field_grads[q] +
                                          scratch.old_old_field_grads[q]) / 2;
 
-        const double density              = ((temperature_or_composition.is_temperature())
+        const double density              = ((advection_field.is_temperature())
                                              ? scratch.explicit_material_model_outputs.densities[q] : 1.0);
-        const double conductivity = ((temperature_or_composition.is_temperature()) ? scratch.explicit_material_model_outputs.thermal_conductivities[q] : 0.0);
-        const double c_P                  = ((temperature_or_composition.is_temperature()) ? scratch.explicit_material_model_outputs.specific_heat[q] : 1.0);
+        const double conductivity = ((advection_field.is_temperature()) ? scratch.explicit_material_model_outputs.thermal_conductivities[q] : 0.0);
+        const double c_P                  = ((advection_field.is_temperature()) ? scratch.explicit_material_model_outputs.specific_heat[q] : 1.0);
         const double k_Delta_field = conductivity
                                      * (scratch.old_field_laplacians[q] +
                                         scratch.old_old_field_laplacians[q]) / 2;
@@ -638,7 +637,7 @@ namespace aspect
           = compute_heating_term(scratch,
                                  scratch.explicit_material_model_inputs,
                                  scratch.explicit_material_model_outputs,
-                                 temperature_or_composition,
+                                 advection_field,
                                  q);
         double residual
           = std::abs(density * c_P * (dField_dt + u_grad_field) - k_Delta_field - gamma);
@@ -663,7 +662,7 @@ namespace aspect
                      const double                        average_field,
                      const double                        global_entropy_variation,
                      const double                        cell_diameter,
-                     const TemperatureOrComposition     &temperature_or_composition) const
+                     const AdvectionField     &advection_field) const
   {
     if (std::abs(global_u_infty) < 1e-50
         || std::abs(global_entropy_variation) < 1e-50
@@ -677,7 +676,7 @@ namespace aspect
 
     compute_advection_system_residual(scratch,
                                       average_field,
-                                      temperature_or_composition,
+                                      advection_field,
                                       max_residual,
                                       max_velocity,
                                       max_density,
@@ -722,9 +721,9 @@ namespace aspect
 
     // this function computes the artificial viscosity for the temperature
     // equation only. create an object that signifies this.
-    const TemperatureOrComposition torc = TemperatureOrComposition::temperature_field;
+    const AdvectionField torc = AdvectionField::temperature_field;
     const std::pair<double,double>
-    global_field_range = get_extrapolated_temperature_or_composition_range (torc);
+    global_field_range = get_extrapolated_advection_field_range (torc);
     double global_entropy_variation = get_entropy_variation ((global_field_range.first +
                                                               global_field_range.second) / 2,
                                                              torc);
@@ -1007,6 +1006,9 @@ namespace aspect
     if (rebuild_stokes_preconditioner == false)
       return;
 
+    if (parameters.use_direct_stokes_solver)
+      return;
+
     computing_timer.enter_section ("   Build Stokes preconditioner");
     pcout << "   Rebuilding Stokes preconditioner..." << std::flush;
 
@@ -1231,41 +1233,31 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::build_advection_preconditioner(const TemperatureOrComposition &temperature_or_composition,
+  Simulator<dim>::build_advection_preconditioner(const AdvectionField &advection_field,
                                                  std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner)
   {
-    switch (temperature_or_composition.field_type)
+    switch (advection_field.field_type)
       {
-        case TemperatureOrComposition::temperature_field:
+        case AdvectionField::temperature_field:
         {
           computing_timer.enter_section ("   Build temperature preconditioner");
-
-          preconditioner.reset (new LinearAlgebra::PreconditionILU());
-          preconditioner->initialize (system_matrix.block(2,2));
-
-          computing_timer.exit_section();
-
           break;
         }
 
-        case TemperatureOrComposition::compositional_field:
+        case AdvectionField::compositional_field:
         {
           computing_timer.enter_section ("   Build composition preconditioner");
-
-          const unsigned int block_number
-            = 3+temperature_or_composition.compositional_variable;
-          preconditioner.reset (new LinearAlgebra::PreconditionILU());
-          preconditioner->initialize (system_matrix.block(block_number,
-                                                          block_number));
-
-          computing_timer.exit_section();
-
           break;
         }
 
         default:
           Assert (false, ExcNotImplemented());
       }
+
+    const unsigned int block_idx = advection_field.block_index(introspection);
+    preconditioner.reset (new LinearAlgebra::PreconditionILU());
+    preconditioner->initialize (system_matrix.block(block_idx, block_idx));
+    computing_timer.exit_section();
   }
 
 
@@ -1274,11 +1266,11 @@ namespace aspect
   Simulator<dim>::compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                                        typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                                       const TemperatureOrComposition     &temperature_or_composition,
+                                       const AdvectionField     &advection_field,
                                        const unsigned int q) const
   {
 
-    if (temperature_or_composition.field_type == TemperatureOrComposition::compositional_field)
+    if (advection_field.field_type == AdvectionField::compositional_field)
       return 0.0;
 
     const double current_T = material_model_inputs.temperature[q];
@@ -1290,6 +1282,10 @@ namespace aspect
     const double density              = material_model_outputs.densities[q];
     const double viscosity            = material_model_outputs.viscosities[q];
     const bool is_compressible        = material_model->is_compressible();
+    const double specific_radiogenic_heating_rate = heating_model->specific_heating_rate(material_model_inputs.temperature[q],
+                                                    material_model_inputs.pressure[q],
+                                                    material_model_inputs.composition[q],
+                                                    material_model_inputs.position[q]);
     const double compressibility      = (is_compressible
                                          ?
                                          material_model_outputs.compressibilities[q]
@@ -1301,7 +1297,7 @@ namespace aspect
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
     const double gamma
-      = (parameters.radiogenic_heating_rate * density
+      = (specific_radiogenic_heating_rate * density
          +
          // add the term 2*eta*(eps - 1/3*(tr eps)1):(eps - 1/3*(tr eps)1)
          //
@@ -1360,7 +1356,7 @@ namespace aspect
 
   template <int dim>
   void Simulator<dim>::
-  local_assemble_advection_system (const TemperatureOrComposition     &temperature_or_composition,
+  local_assemble_advection_system (const AdvectionField     &advection_field,
                                    const std::pair<double,double> global_field_range,
                                    const double                   global_max_velocity,
                                    const double                   global_entropy_variation,
@@ -1381,19 +1377,19 @@ namespace aspect
     Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
 
     const unsigned int solution_component
-      = (temperature_or_composition.is_temperature()
+      = (advection_field.is_temperature()
          ?
          introspection.component_indices.temperature
          :
-         introspection.component_indices.compositional_fields[temperature_or_composition.compositional_variable]
+         introspection.component_indices.compositional_fields[advection_field.compositional_variable]
         );
 
     const FEValuesExtractors::Scalar solution_field
-      = (temperature_or_composition.is_temperature()
+      = (advection_field.is_temperature()
          ?
          introspection.extractors.temperature
          :
-         introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]
+         introspection.extractors.compositional_fields[advection_field.compositional_variable]
         );
 
     scratch.finite_element_values.reinit (cell);
@@ -1407,7 +1403,7 @@ namespace aspect
     data.local_matrix = 0;
     data.local_rhs = 0;
 
-    if (temperature_or_composition.is_temperature())
+    if (advection_field.is_temperature())
       {
         scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_solution,
             scratch.old_temperature_values);
@@ -1441,10 +1437,10 @@ namespace aspect
       }
     else
       {
-        scratch.finite_element_values[introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]].get_function_values(old_solution,
-            scratch.old_composition_values[temperature_or_composition.compositional_variable]);
-        scratch.finite_element_values[introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]].get_function_values(old_old_solution,
-            scratch.old_old_composition_values[temperature_or_composition.compositional_variable]);
+        scratch.finite_element_values[introspection.extractors.compositional_fields[advection_field.compositional_variable]].get_function_values(old_solution,
+            scratch.old_composition_values[advection_field.compositional_variable]);
+        scratch.finite_element_values[introspection.extractors.compositional_fields[advection_field.compositional_variable]].get_function_values(old_old_solution,
+            scratch.old_old_composition_values[advection_field.compositional_variable]);
       }
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values (old_solution,
@@ -1455,8 +1451,8 @@ namespace aspect
         scratch.current_velocity_values);
 
 
-    scratch.old_field_values = ((temperature_or_composition.is_temperature()) ? &scratch.old_temperature_values : &scratch.old_composition_values[temperature_or_composition.compositional_variable]);
-    scratch.old_old_field_values = ((temperature_or_composition.is_temperature()) ? &scratch.old_old_temperature_values : &scratch.old_old_composition_values[temperature_or_composition.compositional_variable]);
+    scratch.old_field_values = ((advection_field.is_temperature()) ? &scratch.old_temperature_values : &scratch.old_composition_values[advection_field.compositional_variable]);
+    scratch.old_old_field_values = ((advection_field.is_temperature()) ? &scratch.old_old_temperature_values : &scratch.old_old_composition_values[advection_field.compositional_variable]);
 
     scratch.finite_element_values[solution_field].get_function_gradients (old_solution,
                                                                           scratch.old_field_grads);
@@ -1468,7 +1464,7 @@ namespace aspect
     scratch.finite_element_values[solution_field].get_function_laplacians (old_old_solution,
                                                                            scratch.old_old_field_laplacians);
 
-    if (temperature_or_composition.is_temperature())
+    if (advection_field.is_temperature())
       {
         compute_material_model_input_values (current_linearization_point,
                                              scratch.finite_element_values,
@@ -1506,7 +1502,7 @@ namespace aspect
                            0.5 * (global_field_range.second + global_field_range.first),
                            global_entropy_variation,
                            cell->diameter(),
-                           temperature_or_composition);
+                           advection_field);
     Assert (nu >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
 
     for (unsigned int q=0; q<n_q_points; ++q)
@@ -1522,7 +1518,7 @@ namespace aspect
           }
 
         const double density_c_P              =
-          ((temperature_or_composition.is_temperature())
+          ((advection_field.is_temperature())
            ?
            scratch.material_model_outputs.densities[q] *
            scratch.material_model_outputs.specific_heat[q]
@@ -1531,13 +1527,13 @@ namespace aspect
         Assert (density_c_P >= 0, ExcMessage ("The product of density and c_P needs to be a non-negative quantity."));
 
         const double conductivity =
-          ((temperature_or_composition.is_temperature())
+          ((advection_field.is_temperature())
            ?
            scratch.material_model_outputs.thermal_conductivities[q]
            :
            0.0);
         const double latent_heat_LHS =
-          ((parameters.include_latent_heat && temperature_or_composition.is_temperature())
+          ((parameters.include_latent_heat && advection_field.is_temperature())
            ?
            - scratch.material_model_outputs.densities[q] *
            scratch.material_model_inputs.temperature[q] *
@@ -1550,14 +1546,14 @@ namespace aspect
         const double gamma = compute_heating_term(scratch,
                                                   scratch.material_model_inputs,
                                                   scratch.material_model_outputs,
-                                                  temperature_or_composition,
+                                                  advection_field,
                                                   q);
         const double reaction_term =
-          ((temperature_or_composition.is_temperature())
+          ((advection_field.is_temperature())
            ?
            0.0
            :
-           scratch.material_model_outputs.reaction_terms[q][temperature_or_composition.compositional_variable]);
+           scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
 
         const double field_term_for_rhs
           = (use_bdf2_scheme ?
@@ -1571,7 +1567,6 @@ namespace aspect
              (*scratch.old_field_values)[q])
             *
             (density_c_P + latent_heat_LHS);
-
 
         const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
         const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
@@ -1624,23 +1619,18 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::assemble_advection_system (const TemperatureOrComposition &temperature_or_composition)
+  void Simulator<dim>::assemble_advection_system (const AdvectionField &advection_field)
   {
-    if (temperature_or_composition.is_temperature())
-      {
-        computing_timer.enter_section ("   Assemble temperature system");
-        system_matrix.block (2,2) = 0;
-      }
+    if (advection_field.is_temperature())
+      computing_timer.enter_section ("   Assemble temperature system");
     else
-      {
-        computing_timer.enter_section ("   Assemble composition system");
-        system_matrix.block(3+temperature_or_composition.compositional_variable,
-                            3+temperature_or_composition.compositional_variable) = 0;
-      }
+      computing_timer.enter_section ("   Assemble composition system");
+    const unsigned int block_idx = advection_field.block_index(introspection);
+    system_matrix.block(block_idx, block_idx) = 0;
     system_rhs = 0;
 
     const std::pair<double,double>
-    global_field_range = get_extrapolated_temperature_or_composition_range (temperature_or_composition);
+    global_field_range = get_extrapolated_advection_field_range (advection_field);
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
@@ -1654,7 +1644,7 @@ namespace aspect
          std_cxx1x::bind (&Simulator<dim>::
                           local_assemble_advection_system,
                           this,
-                          temperature_or_composition,
+                          advection_field,
                           global_field_range,
                           get_maximal_velocity(old_solution),
                           // use the mid-value of the advected field instead of the
@@ -1662,7 +1652,7 @@ namespace aspect
                           // sensitive to this and this is far simpler
                           get_entropy_variation ((global_field_range.first +
                                                   global_field_range.second) / 2,
-                                                 temperature_or_composition),
+                                                 advection_field),
                           std_cxx1x::_1,
                           std_cxx1x::_2,
                           std_cxx1x::_3),
@@ -1689,9 +1679,9 @@ namespace aspect
          // field index.)
          internal::Assembly::Scratch::
          AdvectionSystem<dim> (finite_element,
-                               finite_element.base_element(temperature_or_composition.base_element(introspection)),
+                               finite_element.base_element(advection_field.base_element(introspection)),
                                mapping,
-                               QGauss<dim>((temperature_or_composition.is_temperature()
+                               QGauss<dim>((advection_field.is_temperature()
                                             ?
                                             parameters.temperature_degree
                                             :
@@ -1700,7 +1690,7 @@ namespace aspect
                                            (parameters.stokes_velocity_degree+1)/2),
                                parameters.n_compositional_fields),
          internal::Assembly::CopyData::
-         AdvectionSystem<dim> (finite_element.base_element(temperature_or_composition.base_element(introspection))));
+         AdvectionSystem<dim> (finite_element.base_element(advection_field.base_element(introspection))));
 
     system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);
@@ -1731,10 +1721,10 @@ namespace aspect
                                                                      const internal::Assembly::CopyData::StokesSystem<dim> &data); \
   template void Simulator<dim>::assemble_stokes_system (); \
   template void Simulator<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell) const; \
-  template void Simulator<dim>::build_advection_preconditioner (const TemperatureOrComposition &, \
+  template void Simulator<dim>::build_advection_preconditioner (const AdvectionField &, \
                                                                 std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
   template void Simulator<dim>::local_assemble_advection_system ( \
-                                                                  const TemperatureOrComposition     &temperature_or_composition, \
+                                                                  const AdvectionField          &advection_field, \
                                                                   const std::pair<double,double> global_field_range, \
                                                                   const double                   global_max_velocity, \
                                                                   const double                   global_entropy_variation, \
@@ -1743,7 +1733,7 @@ namespace aspect
                                                                   internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::copy_local_to_global_advection_system ( \
                                                                         const internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
-  template void Simulator<dim>::assemble_advection_system (const TemperatureOrComposition     &temperature_or_composition); \
+  template void Simulator<dim>::assemble_advection_system (const AdvectionField     &advection_field); \
    
 
 

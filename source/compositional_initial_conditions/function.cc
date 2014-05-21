@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/compositional_initial_conditions/function.h>
@@ -71,10 +70,20 @@ namespace aspect
       prm.enter_subsection("Compositional initial conditions");
       {
         prm.enter_subsection("Function");
+        try
         {
           function.reset (new Functions::ParsedFunction<dim>(n_compositional_fields));
           function->parse_parameters (prm);
         }
+        catch (...)
+        {
+            std::cerr << "ERROR: FunctionParser failed to parse\n"
+                << "\t'Compositional initial conditions.Function'\n"
+                << "with expression\n"
+                << "\t'" << prm.get("Function expression") << "'";
+            throw;
+        }
+
         prm.leave_subsection();
       }
       prm.leave_subsection();

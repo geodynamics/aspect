@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #ifndef __aspect__velocity_boundary_conditions_function_h
@@ -66,7 +65,7 @@ namespace aspect
          */
         virtual
         void
-        set_current_time (const double time);
+        update ();
 
         /**
          * Declare the parameters this class takes through input files. The

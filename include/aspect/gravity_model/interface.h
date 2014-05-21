@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #ifndef __aspect__gravity_model_interface_h
@@ -150,10 +149,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_GRAVITY_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::GravityModel::Interface<2>,classname<2> > \
     dummy_ ## classname ## _2d (&aspect::GravityModel::register_gravity_model<2>, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::GravityModel::Interface<3>,classname<3> > \
     dummy_ ## classname ## _3d (&aspect::GravityModel::register_gravity_model<3>, \
                                 name, description); \
   }

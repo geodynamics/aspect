@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/postprocess/visualization.h>
@@ -133,8 +132,7 @@ namespace aspect
       solution_names.push_back ("p");
       solution_names.push_back ("T");
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-        solution_names.push_back ("C_" + boost::lexical_cast<std::string>(c+1));
-
+        solution_names.push_back (this->introspection().name_for_compositional_index(c));
 
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
       interpretation (dim,

@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: thermodynamic_phase.h 1433 2012-12-08 08:24:55Z bangerth $  */
 
 
 #ifndef __aspect__postprocess_visualization_melt_fraction_h

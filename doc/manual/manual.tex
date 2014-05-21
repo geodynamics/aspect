@@ -324,9 +324,6 @@ material in Schubert, Turcotte and Olson \cite{STO01}.
 Specifically, we consider the following set of equations for velocity $\mathbf
 u$, pressure $p$ and temperature $T$, as well as a set of advected quantities
 $c_i$ that we call \textit{compositional fields}:
-\marginpar{To be finished}
-\marginpar{Wouldn't the last term need to have a minus sign? drho/dT
-  is negative...}
 \begin{align}
   \label{eq:stokes-1}
   -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u)
@@ -356,7 +353,7 @@ $c_i$ that we call \textit{compositional fields}:
   \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
   \\
   &\quad
-  +\frac{\partial \rho}{\partial T} T \mathbf u \cdot \mathbf g
+  +\alpha T \left( \mathbf u \cdot \nabla p \right)
   \notag
   \\
   &\quad
@@ -392,13 +389,11 @@ terms of this equation correspond to
 \item internal heat production for example due to radioactive
   decay;
 \item friction heating;
-\item adiabatic compression of material; as written, this term assumes that
-  the the overall pressure is dominated by the hydrostatic pressure, in which
-  case the variation of the total pressure can be expressed by gravity and
-  density.
+\item adiabatic compression of material;
+\item phase change.
 \end{itemize}
-In addition, the equation does include phase change terms that correspond to
-the latent heat generated or consumed in this process. The latent heat release
+The last term corresponds to
+the latent heat generated or consumed in the process of phase change of material. The latent heat release
 is proportional to changes in the fraction of material $X$ that has already
 undergone the phase transition (also called phase function) and the change
 of entropy $\Delta S$. This process applies both
@@ -442,15 +437,24 @@ which it is in fact implemented:
   \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
   \\
   &\quad
-  +\frac{\partial \rho}{\partial T} T \mathbf u \cdot \mathbf g
+  +\alpha T \left( \mathbf u \cdot \nabla p \right)
   \notag
   \\
   &\quad
   + \rho T \Delta S \frac{\partial X}{\partial p} \mathbf u\cdot\nabla p
-  & \quad & \textrm{in $\Omega$},
+  & \quad & \textrm{in $\Omega$}.
   \notag
 \end{align}
 
+\subsubsection{Comment on adiabatic heating}
+In other codes and texts there is sometimes a simplification made to the adiabatic heating term in the previous equation. If you assume the pressure gradient is assumed to be small in the vertical direction, then $ -\rho \mathbf g \approx \nabla \mathbf{p} $, and we have the following relation (the negative sign is due to $\mathbf g$ pointing downwards)
+\begin{align}
+\alpha T \left( \mathbf u \cdot \nabla \mathbf p \right)
+  & \approx -\alpha \rho T \mathbf u \cdot \mathbf g.
+  \notag
+\end{align}
+
+\subsubsection{Boundary conditions}
 Having discussed \eqref{eq:temperature}, let us come to the last one of the
 original set of equations, \eqref{eq:compositional}. It describes the
 motion of a set of advected quantities $c_i(\mathbf x,t),i=1\ldots C$. We call these
@@ -500,6 +504,7 @@ $\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. No boundary conditions have to be posed
 for the compositional fields at those parts of the boundary where flow is either
 tangential to the boundary or points outward.
 
+\subsubsection{Comment on final set of equations}
 \aspect{} solves these equations in essentially the form stated. In
 particular, the form given in \eqref{eq:stokes-1} implies that the pressure
 $p$ we compute is in fact the \textit{total pressure}, i.e., the sum of
@@ -1269,11 +1274,24 @@ to as \textit{IMPES} methods (they originate in the porous media flow
 community, where the acronym stands for \textit{Im}plicit \textit{P}ressure,
 \textit{E}xplicit \textit{S}aturation). For details see \cite{KHB12}.
 
-\note{In \aspect{} 0.1, using the IMPES scheme is the only available
-  option. However, in later versions we will implement a fully nonlinear
-  scheme that treats the equations as coupled, and one will be able to choose
-  between the two variants using a run-time parameter.}
 
+
+\subsubsection{Compressible formula}
+In the compressible case, the conservation of mass equation becomes $\nabla \cdot \left( \rho \textbf{u} \right)= 0$ instead of $\nabla \cdot \textbf{u} = 0$, which is nonlinear and nonsymmetric (which makes preconditioning difficult). The following explanation describes what is done in \aspect{} for the linear solver to work.  Dividing by $\rho$ gives:
+\begin{equation*}
+\frac{1}{\rho} \nabla \cdot \left( \rho \textbf{u} \right) = \nabla \cdot \textbf{u} + \frac{1}{\rho} \nabla \rho \cdot  \textbf{u}.
+\end{equation*}
+Then we assume the change in density is dominated by the change in static pressure, which can be written as
+$\nabla p \approx \nabla p_s \approx \rho \textbf{g}$.
+This finally allows us to write
+\begin{equation*}
+\frac{1}{\rho} \nabla \rho \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p_s \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u} 
+\end{equation*}
+so we get
+\begin{equation*}
+\nabla \cdot \textbf{u} = \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u}
+\end{equation*}
+where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the compressibility and $\rho$ and $\mathbf u$ are taken from the last time step.
 
 \section{Installation}
 \label{sec:installation}
@@ -1511,7 +1529,8 @@ Number of degrees of freedom: 33,859 (20,786+2,680+10,393)
 \end{lstlisting}
 
 This output was produced by a parameter file that, among other settings,
-contained the following values:
+contained the following values (we will discuss many such input files in
+Section~\ref{sec:cookbooks}:
 \begin{lstlisting}[frame=single,language=prmfile]
 set Dimension                     = 2
 set End time                      = 2e9
@@ -2480,8 +2499,8 @@ thing to the left of the equals sign) and a content (what's to the right).
 
 All parameters you can list in this input file have been \textit{declared} in
 \aspect. What this means is that you can't just list anything in the input
-file with entries that are unknown simply being ignored. Rather, if your input
-file contains a line setting a parameter that is unknown to something, you
+file, and expect that entries that are unknown are simply ignored.
+Rather, if your input file contains a line setting a parameter that is unknown, you
 will get an error message. Likewise, all declared parameters have a
 description of possible values associated with them -- for example, some
 parameters must be non-negative integers (the number of initial refinement
@@ -2494,6 +2513,12 @@ has taken the time to also implement some error checking at this location).
 Finally, because parameters have been declared, you do not \textit{need} to
 specify a parameter in the input file: if a parameter isn't listed, then the
 program will simply use the default provided when declaring the parameter.
+
+\note{In cases where a parameter requires a significant amount of text, you can
+end a line in the input file with a backslash. This indicates that the
+following line will simply continue to be part of the text of the current line,
+in the same way as the C/C++ preprocessor expands lines that end in
+backslashes.}
 
 \subsubsection{Categories of parameters}
 
@@ -2532,8 +2557,9 @@ categorized into the following groups:
   plugins), and one can then specify the specifics of this model in a
   sub-subsection dedicated to this particular model.
 
-  A number of components of \aspect{} are implemented via plugins. These are,
-  together with the sections in which their parameters are declared:
+  A number of components of \aspect{} are implemented via plugins. Some of
+  these, together with the sections in which their parameters are declared, are
+  the following:
   \begin{itemize}
   \item The material model:
     Sections~\ref{parameters:Material_20model} and following.
@@ -2854,7 +2880,6 @@ subsection Model settings
   # want to use any of these options here:
   set Include adiabatic heating               = false % \index[prmindex]{Include adiabatic heating} \index[prmindexfull]{Model settings!Include adiabatic heating} %
   set Include shear heating                   = false % \index[prmindex]{Include shear heating} \index[prmindexfull]{Model settings!Include shear heating} %
-  set Radiogenic heating rate                 = 0 % \index[prmindex]{Radiogenic heating rate} \index[prmindexfull]{Model settings!Radiogenic heating rate} %
 end
 
 
@@ -4195,6 +4220,68 @@ than in the rest of the domain, an effect that from a physical perspective
 clearly makes no sense at all.
 
 
+\paragraph{The active case with reactions.}
+
+\textit{This section was contributed by Juliane Dannberg and Ren{\'e} Ga{\ss}m{\"o}ller}.
+
+In addition, there are setups where one wants the compositional fields to interact with each other. One example would be material upwelling at a mid-ocean ridge and changing the composition to that of oceanic crust when it reaches a certain depth. In this cookbook, we will describe how this kind of behaviour can be achieved by using the \texttt{composition reaction} function of the material model. 
+
+We will consider the exact same setup as in the previous paragraphs, except for the initial conditions and properties of the two compositional fields. There is one material that initially fills the bottom half of the domain and is less dense than the material above. In addition, there is another material that only gets created when the first material reaches the uppermost 20\% of the domain, and that has a higher density. This should cause the first material to move upwards, get partially converted to the second material, which then sinks down again. This means we want to change the initial conditions for the compositional fields: 
+
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Compositional initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = if(z<0.5, 1, 0); 0 % \index[prmindex]{Function expression} \index[prmindexfull]{Compositional initial conditions!Function!Function expression} %
+  end
+end
+\end{lstlisting}
+
+Moreover, instead of the \texttt{simple} material model, we will use the \texttt{composition reaction} material model, which basically behaves in the same way, but can handle two active compositional field and a reaction between those two fields. In the input file, the user defines a depth and above this \texttt{reaction depth} the first compositional fields is converted to the second field. This can be done by changing the following section (the complete input file can be found in \url{cookbooks/composition-reaction.prm}). 
+
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+subsection Material model
+  set Model name = composition reaction % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+
+  subsection Composition reaction model
+    set Thermal conductivity                           = 1e-6 % \index[prmindex]{Thermal conductivity} \index[prmindexfull]{Material model!Composition reaction model!Thermal conductivity} %
+    set Thermal expansion coefficient                  = 0.01 % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Composition reaction model!Thermal expansion coefficient} %
+    set Viscosity                                      = 1 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Composition reaction model!Viscosity} %
+    set Density differential for compositional field 1 = -5 % \index[prmindex]{Density differential for compositional field 1} \index[prmindexfull]{Material model!Composition reaction model!Density differential for compositional field 1} %
+    set Density differential for compositional field 2 = 5 % \index[prmindex]{Density differential for compositional field 2} \index[prmindexfull]{Material model!Composition reaction model!Density differential for compositional field 2} %
+    set Reaction depth                                 = 0.2 % \index[prmindex]{Reaction depth} \index[prmindexfull]{Material model!Composition reaction model!Reaction depth} %
+  end
+end
+\end{lstlisting}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/0.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/2.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/4.png}
+  \\
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/8.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/12.png}
+  \hfill
+  \includegraphics[width=0.3\textwidth]{cookbooks/composition-reaction/20.png}
+  \caption{\it Reaction between compositional fields: Temperature fields at $t=0, 2, 4, 8,
+  12, 20$. The black line is the isocontour line $c_1(\mathbf x,t)=0.5$
+    delineating the position of the material starting at the bottom and the white line is the    isocontour line $c_2(\mathbf x,t)=0.5$
+    delineating the position of the material that is created by the reaction.}
+  \label{fig:composition-reaction}
+\end{figure}
+
+Results of this model are visualized in
+Fig~\ref{fig:composition-reaction}. What is visible is
+that over the course of the simulation, the material that starts at the bottom
+of the domain ascends, reaches the reaction depth and gets converted to the second material, which starts to sink down.
+
+
 
 \subsubsection{Using tracer particles}
 
@@ -4681,11 +4768,11 @@ computed quantity.}
 There are two issues one should notice here.
 The more obvious one is that the flux from the mantle to the air is consistently
 higher than the heat flux from core to mantle. Since we have no radiogenic
-heating switched on (see the \texttt{Radiogenic heating rate}
-\index[prmindex]{Radiogenic heating rate}
-\index[prmindexfull]{Model settings!Radiogenic heating rate}
-parameter in the \texttt{Model settings} section of the input file; see also
-Section~\ref{parameters:Model_20settings}), in the long run the heat output
+heating model selected (see the \texttt{Model name}
+\index[prmindex]{Model name}
+\index[prmindexfull]{Heating model!Model name}
+parameter in the \texttt{Heating model} section of the input file; see also
+Section~\ref{parameters:Heating_20model}), in the long run the heat output
 of the mantle must equal the input, unless is cools. Our misconception was that
 after the 800 million year transition, we believed that we had reached a steady
 state where the average temperature remains constant and convection simply
@@ -4964,9 +5051,9 @@ release of heat due to radioactive decay is $7.4\cdot 10^{-12}$ W/kg. Taking a
 density of $3300\; \text{kg}/\text{m}^3$ and a volume of $10^{12}\; \text{m}^3$
 would yield roughly $2.4\cdot 10^{13}$ W of heat produced. This back of the
 envelope calculation lies within the uncertain range stated above.}
-Our model does not include radiogenic heating (though \aspect{} has a parameter
-\texttt{Radiogenic heating rate} to switch this on, see
-Section~\ref{parameters:Model_20settings}) but we can compare what the model
+Our model does not include radiogenic heating (though \aspect{} has a number of 
+\texttt{Heating models} to switch this on, see 
+Section~\ref{parameters:Heating_20model}) but we can compare what the model
 gives us in terms of heat flux through the inner and outer boundaries of our
 shell geometry. This is shown in the left panel of
 Fig.~\ref{fig:shell-simple-3d-eval} where we plot the heat flux through
@@ -5815,90 +5902,16 @@ Fig.~\ref{fig:inclusion}. As before, for details we refer to
   \end{center}
 \end{figure}
 
-As before, the benchmark can be run with a small variation of the input files
-already discussed above:
+The benchmark can be run using the parameter files in \url{benchmark/inclusion/}. The material model, boundary condition, and postprocessor are defined in \url{benchmark/inclusion/inclusion.cc}. Consequently, this code needs to be compiled into a shared lib before you can run the tests.
+
+\marginpar{Link to a general section on how you can compile libs for the benchmarks.}
+
 \marginpar{Revisit this once we have the machinery in place to choose nonzero
   boundary conditions in a more elegant way.}
 
-\begin{lstlisting}[frame=single,language=prmfile]
-############### Global parameters
+\marginpar{The following prm file isn't annotated yet. How to annotate if we have a .lib?}
 
-set Dimension                              = 2
-
-set Start time                             = 0
-set End time                               = 0
-
-set Output directory                       = output
-
-set Pressure normalization                 = volume
-
-
-############### Parameters describing the model
-
-subsection Geometry model
-  set Model name = box
-
-  subsection Box
-    set X extent = 2
-    set Y extent = 2
-  end
-end
-
-
-subsection Model settings
-  set Prescribed velocity boundary indicators = 0,1,2,3
-  set Tangential velocity boundary indicators =
-  set Zero velocity boundary indicators       =
-end
-
-
-subsection Material model
-  set Model name = Inclusion
-
-  subsection Inclusion
-    set Viscosity jump = 1e3
-  end
-end
-
-
-subsection Gravity model
-  set Model name = vertical
-end
-
-
-############### Parameters describing the temperature field
-
-subsection Boundary temperature model
-  set Model name = box
-end
-
-
-subsection Initial conditions
-  set Model name = perturbed box
-end
-
-
-
-############### Parameters describing the discretization
-
-subsection Discretization
-  set Stokes velocity polynomial degree       = 2
-  set Use locally conservative discretization = false
-end
-
-
-subsection Mesh refinement
-  set Initial adaptive refinement              = 0
-  set Initial global refinement                = 6
-end
-
-
-############### Parameters describing the what to do with the solution
-
-subsection Postprocess
-  set List of postprocessors = DuretzEtAl error, visualization
-end
-\end{lstlisting}
+\lstinputlisting[frame=single,language=prmfile]{cookbooks/benchmarks/inclusion.prm}
 
 \subsubsection{The ``Stokes' law'' benchmark}
 \label{sec:benchmark-stokes_law}
@@ -7010,6 +7023,11 @@ instead of the evaluate() function discussed above. They are now a deprecated
 way of implementing a material model. You can get your old model working
 by deriving from InterfaceCompatibility instead of Interface.
 
+\subsubsection{Heating models}
+\label{sec:heating-models}
+
+
+\marginpar{To be written}
 
 
 \subsubsection{Geometry models}
@@ -7388,7 +7406,7 @@ Specifically, your new class needs to implement the following basic interface:
 
         virtual
         void
-        set_current_time (const double time);
+        update ();
 
         static
         void
@@ -7406,7 +7424,9 @@ beginning of the program or at the beginning of each time step. Examples are
 models that need to call an external program to obtain plate velocities for the
 current time, or from historical records, in which case it is far cheaper to do
 so only once at the beginning of the time step than for every boundary point
-separately.
+separately. See, for example, the 
+\href{doc/doxygen/classaspect_1_1VelocityBoundaryConditions_1_1GPlates.html}{aspect::VelocityBoundaryConditions::GPlates}
+class.
 
 The remaining functions are obvious, and are also
 discussed in the documentation of this interface class at

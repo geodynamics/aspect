@@ -1,5 +1,7 @@
 -- Running with 1 MPI task using Trilinos.
 
+Loading shared library <./libinclusion_2.so>
+
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 

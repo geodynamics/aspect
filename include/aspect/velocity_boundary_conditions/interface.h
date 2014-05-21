@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #ifndef __aspect__velocity_boundary_conditions_interface_h
@@ -65,10 +64,8 @@ namespace aspect
         initialize (const GeometryModel::Interface<dim> &geometry_model);
 
         /**
-         * A function that is called at the beginning of each time step to
-         * indicate what the model time is for which the boundary values will
-         * next be evaluated. The default implementation of the function will
-         * simply record the time in the current_time member variable, but
+         * A function that is called at the beginning of each time step.
+         * The default implementation of the function does nothing, but
          * derived classes that need more elaborate setups for a given time
          * step may overload the function.
          *
@@ -79,7 +76,7 @@ namespace aspect
          */
         virtual
         void
-        set_current_time (const double time);
+        update ();
 
         /**
          * Return the boundary velocity as a function of position.
@@ -113,13 +110,6 @@ namespace aspect
          * Pointer to the geometry object in use.
          */
         const GeometryModel::Interface<dim> *geometry_model;
-
-        /**
-         * A variable that stores the current time of the simulation. Derived
-         * classes can query this variable. It is set at the beginning of each
-         * time step.
-         */
-        double current_time;
     };
 
 
@@ -198,10 +188,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::VelocityBoundaryConditions::Interface<2>,classname<2> > \
     dummy_ ## classname ## _2d (&aspect::VelocityBoundaryConditions::register_velocity_boundary_conditions_model<2>, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::VelocityBoundaryConditions::Interface<3>,classname<3> > \
     dummy_ ## classname ## _3d (&aspect::VelocityBoundaryConditions::register_velocity_boundary_conditions_model<3>, \
                                 name, description); \
   }

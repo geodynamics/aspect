@@ -1,0 +1,17 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Iterations for composition solver 2
+# 10: Iterations for composition solver 3
+# 11: Iterations for Stokes solver
+# 12: Time step size (years)
+# 13: Visualization file name
+0 0.0000e+00 4096 37667 16705 50115  0  0  0  0 36 1.1342e+05                                              "" 
+0 0.0000e+00 1204 11635  5153 15459  0  0  0  0 35 5.6884e+04 output-multicomponent_arithmetic/solution-00000 
+1 5.6884e+04 1204 11635  5153 15459 10 11 14 11 31 5.5840e+04                                              "" 
+2 1.1272e+05 1204 11635  5153 15459 10 11 11 10 31 5.5534e+04                                              "" 

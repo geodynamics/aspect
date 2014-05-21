@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/simulator.h>
@@ -54,7 +53,7 @@ namespace aspect
                        "In fact, file names that are do not contain any directory "
                        "information (i.e., only the name of a file such as <myplugin.so> "
                        "will not be found if they are not located in one of the directories "
-                       "listed in the LD_LIBRARY_PATH environment variable. In order "
+                       "listed in the \\texttt{LD_LIBRARY_PATH} environment variable. In order "
                        "to load a library in the current directory, use <./myplugin.so> "
                        "instead."
                        "\n\n"
@@ -210,6 +209,13 @@ namespace aspect
                        "The name of the directory into which all output files should be "
                        "placed. This may be an absolute or a relative path.");
 
+    prm.declare_entry ("Use direct solver for Stokes system", "false",
+                       Patterns::Bool(),
+                       "If set to true the linear system for the Stokes equation will "
+                       "be solved using Trilinos klu, otherwise an iterative Schur "
+                       "complement solver is used. The direct solver is only efficient "
+                       "for small problems.");
+
     prm.declare_entry ("Linear solver tolerance", "1e-7",
                        Patterns::Double(0,1),
                        "A relative tolerance up to which the linear Stokes systems in each "
@@ -279,12 +285,6 @@ namespace aspect
                          "always be used but may be undesirable when comparing results with known "
                          "benchmarks that do not include this term in the temperature equation "
                          "or when dealing with a model without phase transitions.");
-      prm.declare_entry ("Radiogenic heating rate", "0e0",
-                         Patterns::Double (),
-                         "The rate of heating due to radioactive decay (or other bulk sources "
-                         "you may want to describe). This parameter corresponds to the variable "
-                         "$H$ in the temperature equation stated in the manual, and the heating "
-                         "term is $\rho H$. Units: W/kg.");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Integer(0)),
                          "A comma separated list of integers denoting those boundaries "
@@ -526,6 +526,9 @@ namespace aspect
                          Patterns::Integer (0),
                          "The number of fields that will be advected along with the flow field, excluding "
                          "velocity, pressure and temperature.");
+      prm.declare_entry ("Names of fields", "",
+                         Patterns::List(Patterns::Anything()),
+                         "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("List of normalized fields", "",
                          Patterns::List (Patterns::Integer(0)),
                          "A list of integers smaller than or equal to the number of "
@@ -609,6 +612,7 @@ namespace aspect
     adiabatic_surface_temperature = prm.get_double ("Adiabatic surface temperature");
     pressure_normalization        = prm.get("Pressure normalization");
 
+    use_direct_stokes_solver      = prm.get_bool("Use direct solver for Stokes system");
     linear_stokes_solver_tolerance= prm.get_double ("Linear solver tolerance");
     n_cheap_stokes_solver_steps   = prm.get_integer ("Number of cheap Stokes solver steps");
     temperature_solver_tolerance  = prm.get_double ("Temperature solver tolerance");
@@ -652,7 +656,6 @@ namespace aspect
       include_shear_heating = prm.get_bool ("Include shear heating");
       include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
       include_latent_heat = prm.get_bool ("Include latent heat");
-      radiogenic_heating_rate = prm.get_double ("Radiogenic heating rate");
 
       const std::vector<int> x_fixed_temperature_boundary_indicators
         = Utilities::string_to_int
@@ -793,6 +796,37 @@ namespace aspect
     prm.enter_subsection ("Compositional fields");
     {
       n_compositional_fields = prm.get_integer ("Number of fields");
+
+      names_of_compositional_fields = Utilities::split_string_list (prm.get("Names of fields"));
+      AssertThrow ((names_of_compositional_fields.size() == 0) ||
+          (names_of_compositional_fields.size() == n_compositional_fields),
+          ExcMessage ("The length of the list of names for the compositional "
+              "fields needs to either be empty or have length equal to "
+              "the number of compositional fields."));
+
+      // check that the names use only allowed characters, are not empty strings and are unique
+      for (unsigned int i=0; i<names_of_compositional_fields.size(); ++i)
+      {
+        Assert (names_of_compositional_fields[i].find_first_not_of("abcdefghijklmnopqrstuvwxyz"
+                                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                           "0123456789_") == std::string::npos,
+    	  ExcMessage("Invalid character in field " + names_of_compositional_fields[i] + ". "
+    			     "Names of compositional fields should consist of a "
+    				 "combination of letters, numbers and underscores."));
+        Assert (names_of_compositional_fields[i].size() > 0,
+          ExcMessage("Invalid name of field " + names_of_compositional_fields[i] + ". "
+            		 "Names of compositional fields need to be non-empty."));
+        for (unsigned int j=0; j<i; ++j)
+          Assert (names_of_compositional_fields[i] != names_of_compositional_fields[j],
+            ExcMessage("Names of compositional fields have to be unique! " + names_of_compositional_fields[i] +
+        		       " is used more than once."));
+      }
+
+      // default names if list is empty
+      if (names_of_compositional_fields.size() == 0)
+    	for (unsigned int i=0;i<n_compositional_fields;++i)
+    	  names_of_compositional_fields.push_back("C_" + Utilities::int_to_string(i+1));
+
       const std::vector<int> n_normalized_fields = Utilities::string_to_int
                                                    (Utilities::split_string_list(prm.get ("List of normalized fields")));
       normalized_fields = std::vector<unsigned int> (n_normalized_fields.begin(),
@@ -814,6 +848,7 @@ namespace aspect
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);
     MaterialModel::declare_parameters<dim> (prm);
+    HeatingModel::declare_parameters<dim> (prm);
     GeometryModel::declare_parameters <dim>(prm);
     GravityModel::declare_parameters<dim> (prm);
     InitialConditions::declare_parameters<dim> (prm);

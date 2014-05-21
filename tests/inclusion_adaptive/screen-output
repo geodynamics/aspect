@@ -1,4 +1,11 @@
--- Running with 1 MPI task using Trilinos.
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libinclusion_adaptive.so>
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
