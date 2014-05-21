@@ -81,7 +81,7 @@ namespace aspect
 
             for (unsigned int q=0; q<n_q_points; ++q)
             {
-                  for(unsigned c=0;this->n_compositional_fields();c++)
+                  for(unsigned c=0;c<this->n_compositional_fields();c++)
                         composition_values_at_q_point[c]=compositional_values[c][q];
                   local_radioactive_heating_integrals += heating_model.specific_heating_rate(temperature_values[q],
                                                                                               pressure_values[q],
