@@ -72,11 +72,8 @@ namespace aspect
 // should probably ask AdvectionField how many fields there actually are
     for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
       {
-        AdvectionField advf = ((n == 0)
-            ?
-                AdvectionField::temperature()
-        :
-                AdvectionField::composition(n-1));
+        AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
+        : AdvectionField::composition(n-1));
 
         initial_solution.reinit(system_rhs, false);
 
