@@ -523,7 +523,6 @@ namespace aspect
     Steinberger<dim>::
     reference_viscosity () const
     {
-      //const double reference_eta    = 1e23;
       return reference_eta;
     }
 
@@ -907,10 +906,9 @@ namespace aspect
                              Patterns::Bool (),
                              "whether to include a compressible material description."
                              "For a description see the manual section.");
-          prm.declare_entry ("Reference viscosity", "1e21",
+          prm.declare_entry ("Reference viscosity", "1e23",
                              Patterns::Double(0),
-                             "whether to include a compressible material description."
-                             "For a description see the manual section.");
+                             "The reference viscosity that is used for pressure scaling.");
           prm.leave_subsection();
         }
         prm.leave_subsection();
