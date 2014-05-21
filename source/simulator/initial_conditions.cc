@@ -74,7 +74,6 @@ namespace aspect
       {
         AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
         : AdvectionField::composition(n-1));
-
         initial_solution.reinit(system_rhs, false);
 
         const unsigned int base_element = advf.base_element(introspection);
