@@ -410,6 +410,23 @@ namespace aspect
                          "\n\n"
                          "Note that when ``Use years in output instead of seconds'' is set "
                          "to true, velocity should be given in m/yr. ");
+      prm.declare_entry ("Prescribed traction boundary indicators", "",
+                         Patterns::Map (Patterns::Anything(),
+                                        Patterns::Selection(TractionBoundaryConditions::get_names<dim>())),
+                         "A comma separated list denoting those boundaries "
+                         "on which the a traction force is prescribed, i.e., where "
+                         "known external forces act, resulting in an unknown velocity. This is "
+                         "often used to model ``open'' boundaries where we only know the pressure. "
+                         "This pressure then produces a force that is normal to the boundary and "
+                         "proportional to the pressure."
+                         "\n\n"
+                         "The format of valid entries for this parameter is that of a map "
+                         "given as ``key1 [selector]: value1, key2 : value2, key3 : value3, ...'' where "
+                         "each key must be a valid boundary indicator (which is an integer) "
+                         "and each value must be one of the currently implemented boundary "
+                         "traction models. As an example, '1: function' applies "
+                         "the traction boundary condition specified by the plugin 'function' to the "
+                         "boundary with indicator 1.");
 
       prm.declare_entry ("Remove nullspace", "",
                          Patterns::MultipleSelection("net rotation|angular momentum|"
