@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: spherical_velocity_statistics.cc 1969 2013-10-16 19:32:59Z heien $  */
+
 
 
 #include <aspect/postprocess/spherical_velocity_statistics.h>
