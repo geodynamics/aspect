@@ -5,6 +5,12 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li>New: There is now a new postprocessor "velocity boundary statistics"
+ * that computes statistics about the minimal and maximal velocities on each
+ * piece of the boundary.
+ * <br>
+ * (Anne Glerum, 2014/05/21)
+ *
  * <li>New: There is now a new initial temperature condition plugin that can read in
  * solidus temperatures from a file and add perturbations to it. There is also
  * a corresponding data file for initial conditions for Mars from Permentier
