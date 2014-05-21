@@ -4444,7 +4444,8 @@ but the \texttt{topography} postprocessor can help by outputting the maximum and
 topography on the free surface at every time step. 
 
 The bulk of the parameter file for this cookbook is similar to previous ones in this manual.
-In the \texttt{Model settings} secion you need to give \aspect{} a comma 
+We use initial temperature conditions that set up a hot blob of rock in the center of the 
+domain. In the \texttt{Model settings} secion you need to give \aspect{} a comma 
 separated list of the free surface boundary indicators.  In this case, we are 
 dealing with the top boundary of a box in 2D, corresponding to boundary indicator 3.  
 
@@ -4460,9 +4461,19 @@ mean that when making a model with a free surface you will want to take smaller
 time steps.  In general just how much smaller will depend on the problem at hand
 as well as the desired accuracy.  
 
+Following are the sections in the input file specific to this testcase.  The full parameter
+file may be found at \url{cookbooks/free-surface.prm}.
+
 \marginpar{ fix the markup on this }
 \begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
 set CFL number                             = 0.1
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function 
+    set Variable names      = x,y
+    set Function expression =  if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
+  end
 
 subsection Free surface
   set Free surface stabilization theta = 0.5
@@ -4477,9 +4488,6 @@ subsection Model settings
   set Zero velocity boundary indicators       = 
   set Free surface boundary indicators = 3
 end
-
-# Here is the major new section to the parameter file,
-# specifying the parameter for running free surface
 
 subsection Postprocess
   set List of postprocessors = visualization,topography,velocity statistics,
