@@ -504,8 +504,8 @@ namespace aspect
           parameters.n_compositional_fields
           * introspection.system_dofs_per_block[introspection.block_indices.compositional_fields[0]]);
 
-    // then interpolate the current boundary velocities. this adds to
-    // the 'constraints' object we already have
+    // then interpolate the current boundary velocities. copy constraints
+    // into current_constraints and then add to current_constraints
     current_constraints.clear ();
     current_constraints.reinit (introspection.index_sets.system_relevant_set);
     current_constraints.merge (constraints);
@@ -555,7 +555,8 @@ namespace aspect
         }
     }
 
-    // now do the same for the temperature variable
+    // do the same for the temperature variable: evaluate the current boundary temperature
+    // and add these constraints as well
     {
       // obtain the boundary indicators that belong to Dirichlet-type
       // temperature boundary conditions and interpolate the temperature
