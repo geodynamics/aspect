@@ -345,7 +345,7 @@ namespace aspect
             return values[idx];
           }
 
-          int get_nslices()
+          int get_nslices() const
           {
             return values.size();
           }
