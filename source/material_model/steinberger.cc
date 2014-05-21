@@ -888,7 +888,11 @@ namespace aspect
         {
           prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/material-model/steinberger/",
                              Patterns::DirectoryName (),
-                             "The path to the model data. ");
+                             "The path to the model data. The path may also include the special "
+                             "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                             "in which the ASPECT source files were located when ASPECT was "
+                             "compiled. This interpretation allows, for example, to reference "
+                             "files located in the 'data/' subdirectory of ASPECT. ");
           prm.declare_entry ("Material file names", "pyr-ringwood88.txt",
                              Patterns::List (Patterns::Anything()),
                              "The file names of the material data. "
@@ -903,20 +907,20 @@ namespace aspect
                              "The file name of the lateral viscosity data. ");
           prm.declare_entry ("Bilinear interpolation", "true",
                              Patterns::Bool (),
-                             "whether to use bilinear interpolation to compute "
-                             "material properties (slower but more accurate).");
+                             "Whether to use bilinear interpolation to compute "
+                             "material properties (slower but more accurate). ");
           prm.declare_entry ("Latent heat", "false",
                              Patterns::Bool (),
-                             "whether to include latent heat effects in the"
+                             "Whether to include latent heat effects in the"
                              "calculation of thermal expansivity and specific heat."
-                             "Following the approach of Nakagawa et al. 2009.");
+                             "Following the approach of Nakagawa et al. 2009. ");
           prm.declare_entry ("Compressible", "false",
                              Patterns::Bool (),
-                             "whether to include a compressible material description."
-                             "For a description see the manual section.");
+                             "Whether to include a compressible material description."
+                             "For a description see the manual section. ");
           prm.declare_entry ("Reference viscosity", "1e23",
                              Patterns::Double(0),
-                             "The reference viscosity that is used for pressure scaling.");
+                             "The reference viscosity that is used for pressure scaling. ");
           prm.leave_subsection();
         }
         prm.leave_subsection();
