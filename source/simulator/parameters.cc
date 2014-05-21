@@ -362,7 +362,9 @@ namespace aspect
                          "current parameter section.");
 
       prm.declare_entry ("Remove nullspace", "",
-                         Patterns::MultipleSelection("net rotation|net translation|angular momentum|translational momentum"),
+                         Patterns::MultipleSelection("net rotation|angular momentum|"
+                                                     "net x translation|net y translation|net z translation|"
+                                                     "linear x momentum|linear y momentum|linear z momnetum"),
                          "A selection of operations to remove certain parts of the nullspace from "
                          "the velocity after solving. For some geometries and certain boundary conditions "
                          "the velocity field is not uniquely determined but contains free translations "
@@ -758,15 +760,27 @@ namespace aspect
             if (nullspace_names[i]=="net rotation")
               nullspace_removal = typename NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::net_rotation);
-            else if (nullspace_names[i]=="net translation")
-              nullspace_removal = typename NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::net_translation);
             else if (nullspace_names[i]=="angular momentum")
               nullspace_removal = typename NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::angular_momentum);
-            else if (nullspace_names[i]=="translational momentum")
+            else if (nullspace_names[i]=="net x translation")
+              nullspace_removal = typename NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::net_translation_x);
+            else if (nullspace_names[i]=="net y translation")
+              nullspace_removal = typename NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::net_translation_y);
+            else if (nullspace_names[i]=="net z translation")
+              nullspace_removal = typename NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::net_translation_z);
+            else if (nullspace_names[i]=="linear x momentum")
               nullspace_removal = typename       NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::translational_momentum);
+                                    nullspace_removal | NullspaceRemoval::linear_momentum_x);
+            else if (nullspace_names[i]=="linear y momentum")
+              nullspace_removal = typename       NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::linear_momentum_y);
+            else if (nullspace_names[i]=="linear z momentum")
+              nullspace_removal = typename       NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::linear_momentum_z);
             else
               AssertThrow(false, ExcInternalError());
           }

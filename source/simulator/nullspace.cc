@@ -100,7 +100,9 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::setup_nullspace_removal()
   {
-    if (parameters.nullspace_removal & NullspaceRemoval::translational_momentum)
+    if (parameters.nullspace_removal & NullspaceRemoval::linear_momentum_x || 
+        parameters.nullspace_removal & NullspaceRemoval::linear_momentum_y || 
+        parameters.nullspace_removal & NullspaceRemoval::linear_momentum_z )
       AssertThrow(false, ExcNotImplemented());
 
     std::vector<std_cxx1x::shared_ptr<TensorFunction<1,dim> > > funcs;
@@ -114,11 +116,18 @@ namespace aspect
             funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Rotation<dim>(a)));
       }
 
-    if (parameters.nullspace_removal & NullspaceRemoval::net_translation)
-      {
-        for (unsigned int a=0; a<dim; ++a)
-          funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(a)));
-      }
+    if (parameters.nullspace_removal & NullspaceRemoval::net_translation_x)
+      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(0))); //x dir
+
+    if (parameters.nullspace_removal & NullspaceRemoval::net_translation_y)
+      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(1))); //y dir
+
+    if (parameters.nullspace_removal & NullspaceRemoval::net_translation_z)
+    { 
+      //Only do z direction if dim == 3
+      AssertThrow( dim == 3, ExcMessage("Can't remove z translational mode in 2 dimensions"));
+      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(2))); //z dir
+    }
 
     if (funcs.size()>0)
       {
@@ -149,7 +158,9 @@ namespace aspect
                                         LinearAlgebra::BlockVector &tmp_distributed_stokes)
   {
     if (parameters.nullspace_removal & NullspaceRemoval::net_rotation ||
-        parameters.nullspace_removal & NullspaceRemoval::net_translation)
+        parameters.nullspace_removal & NullspaceRemoval::net_translation_x || 
+        parameters.nullspace_removal & NullspaceRemoval::net_translation_y ||
+        parameters.nullspace_removal & NullspaceRemoval::net_translation_z )
       {
         Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
             ExcNotImplemented());
