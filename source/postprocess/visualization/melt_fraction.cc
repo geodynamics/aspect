@@ -55,16 +55,16 @@ namespace aspect
         const unsigned int n_quadrature_points = uh.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-        Assert (uh[0].size() == dim+2+this->n_compositional_fields(), ExcInternalError());
+        Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            const double pressure    = uh[q][dim];
-            const double temperature = uh[q][dim+1];
+            const double pressure    = uh[q][this->introspection().component_indices.pressure];
+            const double temperature = uh[q][this->introspection().component_indices.temperature];
             std::vector<double> composition(this->n_compositional_fields());
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              composition[c] = uh[q][dim+2+c];
+              composition[c] = uh[q][this->introspection().component_indices.compositional_fields[0]+c];
 
             // anhydrous melting of peridotite after Katz, 2003
             const double T_solidus  = A1 + 273.15
