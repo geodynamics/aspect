@@ -86,17 +86,18 @@ namespace aspect
 
 
   template <int dim>
-  Introspection<dim>::Introspection(const unsigned int n_compositional_fields,
-      const bool split_vel_pressure)
+  Introspection<dim>::Introspection(const bool split_vel_pressure,
+      const std::vector<std::string> &names_of_compositional_fields)
     :
-    n_components (dim+2+n_compositional_fields),
-    n_blocks (((split_vel_pressure)?3:2)+n_compositional_fields),
-    extractors (n_compositional_fields),
-    component_indices (n_compositional_fields),
-    block_indices (n_compositional_fields, split_vel_pressure),
-    base_elements (n_compositional_fields),
+    n_components (dim+2+names_of_compositional_fields.size()),
+    n_blocks (((split_vel_pressure)?3:2)+names_of_compositional_fields.size()),
+    extractors (names_of_compositional_fields.size()),
+    component_indices (names_of_compositional_fields.size()),
+    block_indices (names_of_compositional_fields.size(), split_vel_pressure),
+    base_elements (names_of_compositional_fields.size()),
     components_to_blocks (component_to_block_mapping<dim>(n_components, split_vel_pressure)),
-    system_dofs_per_block (n_blocks)
+    system_dofs_per_block (n_blocks),
+    composition_names(names_of_compositional_fields)
   {}
 
 
@@ -165,6 +166,39 @@ namespace aspect
     temperature (dim+1),
     compositional_fields (half_open_extractor_sequence (dim+2, dim+2+n_compositional_fields))
   {
+  }
+
+  template <int dim>
+  unsigned int
+  Introspection<dim>::compositional_index_for_name (const std::string &name) const
+  {
+	if (compositional_name_exists(name))
+	  return std::find(composition_names.begin(), composition_names.end(), name) - composition_names.begin();
+	else
+	  AssertThrow (false, ExcMessage ("The compositional field " + name +
+			                          " you asked for is not used in the simulation."));
+	return numbers::invalid_unsigned_int;
+
+  }
+
+  template <int dim>
+  std::string
+  Introspection<dim>::name_for_compositional_index (const unsigned int index) const
+  {
+	// make sure that what we get here is really an index of one of the compositional fields
+	AssertIndexRange(index,composition_names.size());
+    return composition_names[index];
+  }
+
+  template <int dim>
+  bool
+  Introspection<dim>::compositional_name_exists (const std::string &name) const
+  {
+    return (std::find(composition_names.begin(), composition_names.end(), name) != composition_names.end()
+    		?
+    		true
+    		:
+    		false);
   }
 }
 

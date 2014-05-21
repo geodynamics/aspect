@@ -54,14 +54,14 @@ namespace aspect
     public:
       /**
        * Constructor.
-       * @param n_compositional_fields The number of compositional fields that
-       * will be used in this simulation. This is used in initializing the
-       * fields of this class.
        * @param split_vel_pressure Set to true if velocity and pressure should
        * be in separate blocks.
+       * @param composition_names The names of compositional fields that
+       * will be used in this simulation. This is used in initializing the
+       * fields of this class.
        */
       Introspection (const bool split_vel_pressure,
-                     const std::vector<std::string> &composition_names);
+                     const std::vector<std::string> &names_of_compositional_fields);
 
       /**
        * @name Things that are independent of the current mesh
@@ -266,17 +266,42 @@ namespace aspect
        * @}
        */
 
+      /**
+       * A function that gets the name of a compositional field as an
+       * input parameter and returns its index.
+       *
+       * @param name The name of compositional field (as specified in
+       * the input file)
+       */
       unsigned int
       compositional_index_for_name (const std::string &name) const;
 
+      /**
+       * A function that gets the index of a compositional field as an
+       * input parameter and returns its name.
+       *
+       * @param index The index of compositional field
+       */
       std::string
       name_for_compositional_index (const unsigned int index) const;
 
+      /**
+       * A function that gets the name of a compositional field as an
+       * input parameter and returns if the compositional field is
+       * used in this simulation.
+       *
+       * @param name The name of compositional field (as specified in
+       * the input file)
+       */
       bool
       compositional_name_exists (const std::string &name) const;
 
     private:
-      ...;
+      /**
+       * A vector that stores the names of the compositional fields
+       * that will be used in the simulation.
+       */
+       std::vector<std::string> composition_names;
   };
 }
 

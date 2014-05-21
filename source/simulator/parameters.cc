@@ -528,7 +528,7 @@ namespace aspect
                          "velocity, pressure and temperature.");
       prm.declare_entry ("Names of fields", "",
                          Patterns::List(Patterns::Anything()),
-                         "A user-defined name for each of the compositional fields requested."));
+                         "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("List of normalized fields", "",
                          Patterns::List (Patterns::Integer(0)),
                          "A list of integers smaller than or equal to the number of "
@@ -803,7 +803,25 @@ namespace aspect
           ExcMessage ("The length of the list of names for the compositional "
               "fields needs to either be empty or have length equal to "
               "the number of compositional fields."));
-//TODO: verify that names can only contain [a-zA-Z][a-zA-Z0-9_]*
+
+      // check that the names use only allowed characters
+      for (unsigned int i=0; i<names_of_compositional_fields.size(); ++i)
+      {
+        Assert (names_of_compositional_fields[i].find_first_not_of("abcdefghijklmnopqrstuvwxyz"
+                                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                           "0123456789_") == std::string::npos,
+    	  ExcMessage("Invalid character in field " + names_of_compositional_fields[i] + ". "
+    			     "Names of compositional fields should consist of a "
+    				 "combination of letters, numbers and underscores."));
+        Assert (names_of_compositional_fields[i].size() > 0,
+          ExcMessage("Invalid name of field " + names_of_compositional_fields[i] + ". "
+            		 "Names of compositional fields need to be non-empty."));
+      }
+
+      // default names if list is empty
+      if (names_of_compositional_fields.size() == 0)
+    	for (unsigned int i=0;i<n_compositional_fields;++i)
+    	  names_of_compositional_fields.push_back("C_" + Utilities::int_to_string(i+1));
 
       const std::vector<int> n_normalized_fields = Utilities::string_to_int
                                                    (Utilities::split_string_list(prm.get ("List of normalized fields")));
