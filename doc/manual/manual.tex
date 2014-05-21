@@ -1293,6 +1293,70 @@ so we get
 \end{equation*}
 where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the compressibility and $\rho$ and $\mathbf u$ are taken from the last time step.
 
+\subsection{Free surface calculations}
+\label{sec:freesurface}
+
+In reality the boundary conditions of a convecting Earth are not no-slip or 
+free slip (i.e. no normal velocity).  Instead, we expect that a free surface
+is a more realistic approximation, since air and water should not prevent the
+flow of rock upward or downward.  This means that we require zero stress on the 
+boundary, or $\sigma \cdot \textbf{n} = 0$, where $\sigma = 2 \eta \varepsilon (\textbf{u})$. 
+In general there will be flow across the boundary with this boundary condition.  
+To conserve mass we must then advect the boundary of the domain in the direction 
+of fluid flow.  Thus using a free surface necessitates that the mesh be dynamically deformable.  
+
+\subsubsection{Arbitrary Lagrangian-Eulerian implementation}
+
+The question of how to handle the motion of the mesh with a free surface is
+challenging.  Eulerian meshes are well behaved, but they do not move with the 
+fluid motions, which makes them difficult for use with free surfaces. 
+Lagrangian meshes do move with the fluid, but they quickly become so 
+distorted that remeshing is required. \aspect{} implements an Arbitrary 
+Lagrangian-Eulerian (ALE) framework for handling motion of the mesh.  The ALE 
+approach tries to retain the benefits of both the Lagrangian and the Eulerian
+approaches by allowing the mesh motion $\textbf{u}_m$ to be largely independent of 
+the fluid. The mass conservation condition requires that 
+$\textbf{u}_m \cdot \textbf{n} = \textbf{u} \cdot \textbf{n}$ on the free 
+surface, but otherwise the mesh motion is unconstrained, and should be chosen
+to keep the mesh as well behaved as possible.
+
+\aspect{} uses a Laplacian scheme for calculating the mesh velocity.  The mesh
+velocity is calculated by solving
+
+\begin{align}
+-\Delta \textbf{u}_m &= 0 & \qquad & \textrm{in } \Omega \\ 
+\textbf{u}_m &= \left( \textbf{u} \cdot \textbf{n} \right) \textbf{n} & \qquad & \textrm{on } \partial \Omega_{\textrm{free surface}} \\
+\textbf{u}_m \cdot \textbf{n} &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{free slip}} \\
+\textbf{u}_m &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{Dirichlet}} \\
+\end{align}
+After this mesh velocity is calculated, the mesh vertices are time-stepped explicitly.
+This scheme has the effect of choosing a minimally distorting perturbation to the mesh.
+Because the mesh velocity is no longer zero in the ALE approach, we must then correct
+the Eulerian advection terms in the advection system with the mesh velocity (see, e.g.
+\cite{DHPR2004}).  For instance, the temperature equation \ref{eq:temperature-boussinesq-linear}
+becomes
+
+\begin{equation*}
+  \rho C_p \left(\frac{\partial T}{\partial t} + \left(\mathbf u - \mathbf u_m \right) \cdot\nabla T\right)
+  - \nabla\cdot k\nabla T
+  =
+  \rho H
+   \quad
+   \textrm{in $\Omega$},
+\end{equation*}
+
+\subsubsection{Free surface stabilization}
+
+Small disequilibria in the location of a free surface can cause instabilities in
+the surface position result in a ``sloshing'' instability.  This may be countered with a
+quasi-implicit free surface integration scheme described in \cite{KMM2010}.
+This scheme enters the governing equations as a small stabilizing surface
+traction that prevents the free surface advection from overshooting its
+true position at the next time step.  \aspect{} implements this stabilization,
+the details of which may be found in \cite{KMM2010}.
+
+An example of a simple model which uses a free surface may be found in Section \ref{sec:cookbooks-freesurface}.
+
 \section{Installation}
 \label{sec:installation}
 
@@ -1529,7 +1593,8 @@ Number of degrees of freedom: 33,859 (20,786+2,680+10,393)
 \end{lstlisting}
 
 This output was produced by a parameter file that, among other settings,
-contained the following values:
+contained the following values (we will discuss many such input files in
+Section~\ref{sec:cookbooks}:
 \begin{lstlisting}[frame=single,language=prmfile]
 set Dimension                     = 2
 set End time                      = 2e9
@@ -2498,8 +2563,8 @@ thing to the left of the equals sign) and a content (what's to the right).
 
 All parameters you can list in this input file have been \textit{declared} in
 \aspect. What this means is that you can't just list anything in the input
-file with entries that are unknown simply being ignored. Rather, if your input
-file contains a line setting a parameter that is unknown to something, you
+file, and expect that entries that are unknown are simply ignored.
+Rather, if your input file contains a line setting a parameter that is unknown, you
 will get an error message. Likewise, all declared parameters have a
 description of possible values associated with them -- for example, some
 parameters must be non-negative integers (the number of initial refinement
@@ -2512,6 +2577,12 @@ has taken the time to also implement some error checking at this location).
 Finally, because parameters have been declared, you do not \textit{need} to
 specify a parameter in the input file: if a parameter isn't listed, then the
 program will simply use the default provided when declaring the parameter.
+
+\note{In cases where a parameter requires a significant amount of text, you can
+end a line in the input file with a backslash. This indicates that the
+following line will simply continue to be part of the text of the current line,
+in the same way as the C/C++ preprocessor expands lines that end in
+backslashes.}
 
 \subsubsection{Categories of parameters}
 
@@ -2550,8 +2621,9 @@ categorized into the following groups:
   plugins), and one can then specify the specifics of this model in a
   sub-subsection dedicated to this particular model.
 
-  A number of components of \aspect{} are implemented via plugins. These are,
-  together with the sections in which their parameters are declared:
+  A number of components of \aspect{} are implemented via plugins. Some of
+  these, together with the sections in which their parameters are declared, are
+  the following:
   \begin{itemize}
   \item The material model:
     Sections~\ref{parameters:Material_20model} and following.
@@ -4352,6 +4424,107 @@ This makes it rather intuitive to understand a flow field, but it can of course
 not be reproduced in a static medium such as this manual.
 
 
+\subsubsection{Using a free surface}
+\label{sec:cookbooks-freesurface}
+\textit{This section was contributed by Ian Rose}.
+
+Free surfaces are numerically challenging but can be useful for self consistently
+tracking dynamic topography and may be quite important as a boundary condition
+for tectonic processes like subduction.  The parameter file \url{cookbooks/free-surface.prm} 
+provides a simple example of how to set up a model with a free surface, as well 
+as demonstrates some of the challenges associated with doing so.
+
+\aspect{} supports models with a free surface using an Arbitrary Lagrangian-Eulerian 
+framework (see Section~\ref{sec:freesurface}).  Most of this is done internally, so you do not need to worry about the
+details to run this cookbook.  Here we demonstrate the evolution of surface topography 
+that results when a blob of hot material rises in the mantle, pushing up the free
+surface as it does.  Usually the amplitude of free surface topography 
+will be small enough that it is difficult to see with the naked eye in visualizations,
+but the \texttt{topography} postprocessor can help by outputting the maximum and minumum 
+topography on the free surface at every time step. 
+
+The bulk of the parameter file for this cookbook is similar to previous ones in this manual.
+We use initial temperature conditions that set up a hot blob of rock in the center of the 
+domain. In the \texttt{Model settings} secion you need to give \aspect{} a comma 
+separated list of the free surface boundary indicators.  In this case, we are 
+dealing with the top boundary of a box in 2D, corresponding to boundary indicator 3.  
+
+The main addition is the \texttt{Free surface} subsection.  There is one main
+parameter that needs to be set here: the value for the stabilization parameter ``theta''.
+If this parameter is zero, then there is no stabilization, and you are likely to
+see instabilities develop in the free surface.  If this parameter is one then it
+will do a good job of stabilizing the free surface, but it may overly damp its 
+motions.  The default value is 0.5.
+
+Also worth mentioning is the change to the CFL number. Stability concerns typically 
+mean that when making a model with a free surface you will want to take smaller 
+time steps.  In general just how much smaller will depend on the problem at hand
+as well as the desired accuracy.  
+
+Following are the sections in the input file specific to this testcase.  The full parameter
+file may be found at \url{cookbooks/free-surface.prm}.
+
+\marginpar{ fix the markup on this }
+\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
+set CFL number                             = 0.1
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function 
+    set Variable names      = x,y
+    set Function expression =  if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
+  end
+
+subsection Free surface
+  set Free surface stabilization theta = 0.5
+end
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+  set Fixed temperature boundary indicators   = 0,1,2,3
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 0,1,2
+  set Zero velocity boundary indicators       = 
+  set Free surface boundary indicators = 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization,topography,velocity statistics,
+  subsection Visualization
+    set Time between graphical output = 1.e6
+  end
+end
+\end{lstlisting}
+
+Running this input file will produce results like those in Figure~\ref{fig:freesurface}.
+The model starts with a single hot blob of rock which rises in the domain.  As it 
+rises, it pushes up the free surface in the middle, creating a topographic high there.
+This is similar to the kind of dynamic topography that you might see above a mantle 
+plume on Earth.  As the blob rises and diffuses, it loses the buoyancy to push up 
+the boundary, and the surface begins to relax.
+
+After running the cookbook, you may modify it in a number of ways:
+\begin{itemize}
+\item Add a more complicated initial temperature field to see how that affects topography.
+\item Add a high-viscosity lithosphere to the top using a compositional field to tamp down on topography.
+\item Explore different values for the stabilization theta and the CFL number to understand the nature of when and why stabilization is necessary.
+\item Try a model in a different geometry, such as spherical shells.
+\end{itemize}
+
+\begin{figure}
+  \centering
+  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface/free_surface_blob.png}
+  \hfill
+  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface/free_surface_topography.png}
+  \caption{\it Evolution of surface topography due to a rising blob.  On the left is a 
+           snapshot of the model setup.  The right shows the value of the highest 
+           topography in the domain over 18 Myr of model time.  The topography peaks
+           at 165 meters after 5.2 Myr.  This cookbook may be run with the
+           \url{cookbooks/free-surface.prm} input file.}
+  \label{fig:freesurface}
+\end{figure}
+
 
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
@@ -5894,90 +6067,16 @@ Fig.~\ref{fig:inclusion}. As before, for details we refer to
   \end{center}
 \end{figure}
 
-As before, the benchmark can be run with a small variation of the input files
-already discussed above:
+The benchmark can be run using the parameter files in \url{benchmark/inclusion/}. The material model, boundary condition, and postprocessor are defined in \url{benchmark/inclusion/inclusion.cc}. Consequently, this code needs to be compiled into a shared lib before you can run the tests.
+
+\marginpar{Link to a general section on how you can compile libs for the benchmarks.}
+
 \marginpar{Revisit this once we have the machinery in place to choose nonzero
   boundary conditions in a more elegant way.}
 
-\begin{lstlisting}[frame=single,language=prmfile]
-############### Global parameters
+\marginpar{The following prm file isn't annotated yet. How to annotate if we have a .lib?}
 
-set Dimension                              = 2
-
-set Start time                             = 0
-set End time                               = 0
-
-set Output directory                       = output
-
-set Pressure normalization                 = volume
-
-
-############### Parameters describing the model
-
-subsection Geometry model
-  set Model name = box
-
-  subsection Box
-    set X extent = 2
-    set Y extent = 2
-  end
-end
-
-
-subsection Model settings
-  set Prescribed velocity boundary indicators = 0,1,2,3
-  set Tangential velocity boundary indicators =
-  set Zero velocity boundary indicators       =
-end
-
-
-subsection Material model
-  set Model name = Inclusion
-
-  subsection Inclusion
-    set Viscosity jump = 1e3
-  end
-end
-
-
-subsection Gravity model
-  set Model name = vertical
-end
-
-
-############### Parameters describing the temperature field
-
-subsection Boundary temperature model
-  set Model name = box
-end
-
-
-subsection Initial conditions
-  set Model name = perturbed box
-end
-
-
-
-############### Parameters describing the discretization
-
-subsection Discretization
-  set Stokes velocity polynomial degree       = 2
-  set Use locally conservative discretization = false
-end
-
-
-subsection Mesh refinement
-  set Initial adaptive refinement              = 0
-  set Initial global refinement                = 6
-end
-
-
-############### Parameters describing the what to do with the solution
-
-subsection Postprocess
-  set List of postprocessors = DuretzEtAl error, visualization
-end
-\end{lstlisting}
+\lstinputlisting[frame=single,language=prmfile]{cookbooks/benchmarks/inclusion.prm}
 
 \subsubsection{The ``Stokes' law'' benchmark}
 \label{sec:benchmark-stokes_law}

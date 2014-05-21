@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/heating_model/function.h>
@@ -84,9 +83,20 @@ namespace aspect
       prm.enter_subsection("Heating model");
       {
         prm.enter_subsection("Function");
+        try
         {
-          heating_model_function.parse_parameters (prm);
+            heating_model_function.parse_parameters (prm);
         }
+        catch (...)
+        {
+            std::cerr << "ERROR: FunctionParser failed to parse\n"
+                << "\t'Heating model.Function'\n"
+                << "with expression\n"
+                << "\t'" << prm.get("Function expression") << "'";
+            throw;
+        }
+        {
+       }
         prm.leave_subsection();
       }
       prm.leave_subsection();

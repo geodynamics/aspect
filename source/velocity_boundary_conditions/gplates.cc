@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
  */
-/*  $Id$  */
 
 
 #include <aspect/global.h>
@@ -117,7 +116,7 @@ namespace aspect
       GPlatesLookup::fexists(const std::string &filename) const
       {
         std::ifstream ifile(filename.c_str());
-        return ifile;
+        return !(!ifile); // only in c++11 you can convert to bool directly
       }
 
       void

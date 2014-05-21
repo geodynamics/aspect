@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #ifndef __aspect__global_h
@@ -122,6 +121,12 @@ namespace aspect
      */
     typedef PETScWrappers::PreconditionBlockJacobi PreconditionILU;
 
+    /**
+     * Typedef for the Jacobi preconditioner used for free surface
+     * velocity projection.
+     */
+    typedef PETScWrappers::PreconditionJacobi PreconditionJacobi;
+
     typedef LinearAlgebraPETSc::MPI::CompressedBlockSparsityPattern CompressedBlockSparsityPattern;
 
 #else
@@ -164,6 +169,13 @@ namespace aspect
      * other blocks of the system matrix.
      */
     typedef TrilinosWrappers::PreconditionILU PreconditionILU;
+
+    /**
+     * Typedef for the Jacobi preconditioner used for free surface
+     * velocity projection.
+     */
+    typedef TrilinosWrappers::PreconditionJacobi PreconditionJacobi;
+    
 #endif
   }
 }

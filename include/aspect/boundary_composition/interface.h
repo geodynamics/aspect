@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #ifndef __aspect__boundary_composition_interface_h
@@ -157,10 +156,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_BOUNDARY_COMPOSITION_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryComposition::Interface<2>,classname<2> > \
     dummy_ ## classname ## _2d (&aspect::BoundaryComposition::register_boundary_composition<2>, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryComposition::Interface<3>,classname<3> > \
     dummy_ ## classname ## _3d (&aspect::BoundaryComposition::register_boundary_composition<3>, \
                                 name, description); \
   }

@@ -1,3 +1,18 @@
+/AspectConfig.cmake
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+/detailed.log
+/CTestTestfile.cmake
+/tests/CMakeFiles/
+/tests/CTestTestfile.cmake
+/tests/Makefile
+/tests/cmake_install.cmake
+/benchmark/inclusion/cmake_install.cmake
+/benchmark/inclusion/output/
+/benchmark/inclusion/Makefile
+/benchmark/inclusion/CMakeFiles/
+/benchmark/inclusion/CMakeCache.txt
 /doc/manual/manual.aux
 /doc/manual/manual.bbl
 /doc/manual/manual.blg
@@ -12,6 +27,7 @@
 /doc/manual/prmindexfull.ind
 /.cproject
 /.project
+/.cproject
 /.settings
 /output/
 /build/

@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/simulator.h>
@@ -57,9 +56,9 @@ namespace aspect
 {
 
   template <int dim>
-  Simulator<dim>::TemperatureOrComposition::
-  TemperatureOrComposition (const FieldType field_type,
-                            const unsigned int compositional_variable)
+  Simulator<dim>::AdvectionField::
+  AdvectionField (const FieldType field_type,
+                  const unsigned int compositional_variable)
     :
     field_type (field_type),
     compositional_variable (compositional_variable)
@@ -73,26 +72,26 @@ namespace aspect
 
 
   template <int dim>
-  typename Simulator<dim>::TemperatureOrComposition
-  Simulator<dim>::TemperatureOrComposition::temperature ()
+  typename Simulator<dim>::AdvectionField
+  Simulator<dim>::AdvectionField::temperature ()
   {
-    return TemperatureOrComposition(temperature_field);
+    return AdvectionField(temperature_field);
   }
 
 
 
   template <int dim>
-  typename Simulator<dim>::TemperatureOrComposition
-  Simulator<dim>::TemperatureOrComposition::composition (const unsigned int compositional_variable)
+  typename Simulator<dim>::AdvectionField
+  Simulator<dim>::AdvectionField::composition (const unsigned int compositional_variable)
   {
-    return TemperatureOrComposition(compositional_field,
-                                    compositional_variable);
+    return AdvectionField(compositional_field,
+                          compositional_variable);
   }
 
 
   template <int dim>
   bool
-  Simulator<dim>::TemperatureOrComposition::is_temperature() const
+  Simulator<dim>::AdvectionField::is_temperature() const
   {
     return (field_type == temperature_field);
   }
@@ -100,7 +99,7 @@ namespace aspect
 
   template <int dim>
   unsigned int
-  Simulator<dim>::TemperatureOrComposition::block_index(const Introspection<dim> &introspection) const
+  Simulator<dim>::AdvectionField::block_index(const Introspection<dim> &introspection) const
   {
     if (this->is_temperature())
       return introspection.block_indices.temperature;
@@ -108,10 +107,19 @@ namespace aspect
       return introspection.block_indices.compositional_fields[compositional_variable];
   }
 
+  template <int dim>
+  unsigned int
+  Simulator<dim>::AdvectionField::component_index(const Introspection<dim> &introspection) const
+  {
+    if (this->is_temperature())
+      return introspection.component_indices.temperature;
+    else
+      return introspection.component_indices.compositional_fields[compositional_variable];
+  }
 
   template <int dim>
   unsigned int
-  Simulator<dim>::TemperatureOrComposition::base_element(const Introspection<dim> &introspection) const
+  Simulator<dim>::AdvectionField::base_element(const Introspection<dim> &introspection) const
   {
     if (this->is_temperature())
       return introspection.base_elements.temperature;
@@ -392,21 +400,21 @@ namespace aspect
   template <int dim>
   std::pair<double,double>
   Simulator<dim>::
-  get_extrapolated_temperature_or_composition_range (const TemperatureOrComposition &temperature_or_composition) const
+  get_extrapolated_advection_field_range (const AdvectionField &advection_field) const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                             (temperature_or_composition.is_temperature() ?
+                                             (advection_field.is_temperature() ?
                                               parameters.temperature_degree :
                                               parameters.composition_degree));
 
     const unsigned int n_q_points = quadrature_formula.size();
 
     const FEValuesExtractors::Scalar field
-      = (temperature_or_composition.is_temperature()
+      = (advection_field.is_temperature()
          ?
          introspection.extractors.temperature
          :
-         introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]
+         introspection.extractors.compositional_fields[advection_field.compositional_variable]
         );
 
     FEValues<dim> fe_values (mapping, finite_element, quadrature_formula,
@@ -622,7 +630,44 @@ namespace aspect
     distributed_vector = vector;
 
     if (parameters.use_locally_conservative_discretization == false)
-      distributed_vector.block(1).add(pressure_adjustment);
+      {
+        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+          distributed_vector.block(introspection.block_indices.pressure).add(pressure_adjustment);
+        else
+          {
+            // velocity and pressure are in the same block, so we have to modify the values manually
+            std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+            typename DoFHandler<dim>::active_cell_iterator
+            cell = dof_handler.begin_active(),
+            endc = dof_handler.end();
+            for (; cell != endc; ++cell)
+              if (cell->is_locally_owned())
+                {
+                  cell->get_dof_indices (local_dof_indices);
+                  for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
+                    {
+                      unsigned int support_point_index
+                      = finite_element.component_to_system_index(introspection.component_indices.pressure,
+                          /*dof index within component=*/ j);
+
+                      // make sure that this DoF is really owned by the current processor
+                      // and that it is in fact a pressure dof
+                      Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[support_point_index]),
+                          ExcInternalError());
+
+                      Assert (introspection.block_indices.velocities == introspection.block_indices.pressure
+                          || local_dof_indices[support_point_index] >= vector.block(0).size(),
+                          ExcInternalError());
+
+                      // then adjust its value. Note that because we end up touching
+                      // entries more than once, we are not simply incrementing
+                      // distributed_vector but copy from the unchanged vector.
+                      distributed_vector(local_dof_indices[support_point_index]) = vector(local_dof_indices[support_point_index]) + pressure_adjustment;
+                    }
+                }
+            distributed_vector.compress(VectorOperation::insert);
+          }
+      }
     else
       {
         // this case is a bit more complicated: if the condition above is false
@@ -648,18 +693,21 @@ namespace aspect
               // identify the first pressure dof
               cell->get_dof_indices (local_dof_indices);
               const unsigned int first_pressure_dof
-                = finite_element.component_to_system_index (dim, 0);
+                = finite_element.component_to_system_index (introspection.component_indices.pressure, 0);
 
               // make sure that this DoF is really owned by the current processor
               // and that it is in fact a pressure dof
               Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[first_pressure_dof]),
                       ExcInternalError());
-              Assert (local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
+
+              Assert (introspection.block_indices.velocities == introspection.block_indices.pressure
+                  || local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
                       ExcInternalError());
 
               // then adjust its value
               distributed_vector(local_dof_indices[first_pressure_dof]) += pressure_adjustment;
             }
+        distributed_vector.compress(VectorOperation::insert);
       }
 
     // now get back to the original vector
@@ -675,6 +723,11 @@ namespace aspect
   {
     if (parameters.pressure_normalization == "no")
       return;
+
+    // TODO: pressure normalization currently does not work if velocity and
+    // pressure are in the same block.
+    Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
+        ExcNotImplemented());
 
     if (parameters.use_locally_conservative_discretization == false)
       vector.block (1).add (-1.0 * pressure_adjustment);
@@ -734,10 +787,15 @@ namespace aspect
 
     if (do_pressure_rhs_compatibility_modification)
       {
-        const double mean       = vector.block(1).mean_value();
-        const double correction = -mean*vector.block(1).size()/global_volume;
+        // TODO: currently does not work if velocity and
+        // pressure are in the same block.
+        Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
+            ExcNotImplemented());
 
-        vector.block(1).add(correction, pressure_shape_function_integrals.block(1));
+        const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
+        const double correction = -mean*vector.block(introspection.block_indices.pressure).size()/global_volume;
+
+        vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
       }
   }
 
@@ -858,15 +916,15 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition,
+  void Simulator<dim>::compute_depth_average_field(const AdvectionField &advection_field,
                                                    std::vector<double> &values) const
   {
     const FEValuesExtractors::Scalar field
-      = (temperature_or_composition.is_temperature()
+      = (advection_field.is_temperature()
          ?
          introspection.extractors.temperature
          :
-         introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]
+         introspection.extractors.compositional_fields[advection_field.compositional_variable]
         );
 
     FunctorDepthAverageField<dim> f(field);
@@ -1072,14 +1130,14 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template struct Simulator<dim>::TemperatureOrComposition; \
+  template struct Simulator<dim>::AdvectionField; \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
-  template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const TemperatureOrComposition &temperature_or_composition) const; \
+  template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
   template std::pair<double,bool> Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition, std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_depth_average_field(const AdvectionField &advection_field, std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const; \

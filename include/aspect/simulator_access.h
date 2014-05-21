@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #ifndef __aspect__simulator_access_h
@@ -186,6 +185,12 @@ namespace aspect
        */
       double
       get_adiabatic_surface_temperature () const;
+
+      /**
+       * Return the adiabatic surface pressure.
+       */
+      double
+      get_surface_pressure () const;
 
       /**
        * Return whether things like velocities should be converted from the

@@ -17,7 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
 
 
 #include <aspect/simulator.h>
@@ -289,12 +288,12 @@ namespace aspect
   }
 
   template <int dim>
-  double Simulator<dim>::solve_advection (const TemperatureOrComposition &temperature_or_composition)
+  double Simulator<dim>::solve_advection (const AdvectionField &advection_field)
   {
     double advection_solver_tolerance = -1;
-    unsigned int block_number = temperature_or_composition.block_index(introspection);
+    unsigned int block_idx = advection_field.block_index(introspection);
 
-    if (temperature_or_composition.is_temperature())
+    if (advection_field.is_temperature())
       {
         computing_timer.enter_section ("   Solve temperature system");
         pcout << "   Solving temperature system... " << std::flush;
@@ -304,14 +303,14 @@ namespace aspect
       {
         computing_timer.enter_section ("   Solve composition system");
         pcout << "   Solving composition system "
-              << temperature_or_composition.compositional_variable+1
+              << advection_field.compositional_variable+1
               << "... " << std::flush;
         advection_solver_tolerance = parameters.composition_solver_tolerance;
       }
 
     const double tolerance = std::max(1e-50,
-                                      advection_solver_tolerance*system_rhs.block(block_number).l2_norm());
-    SolverControl solver_control (system_matrix.block(block_number, block_number).m(),
+                                      advection_solver_tolerance*system_rhs.block(block_idx).l2_norm());
+    SolverControl solver_control (system_matrix.block(block_idx, block_idx).m(),
                                   tolerance);
 
     SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
@@ -323,45 +322,45 @@ namespace aspect
     LinearAlgebra::BlockVector distributed_solution (
       introspection.index_sets.system_partitioning,
       mpi_communicator);
-    distributed_solution.block(block_number) = current_linearization_point.block (block_number);
+    distributed_solution.block(block_idx) = current_linearization_point.block (block_idx);
 
     // Temporary vector to hold the residual, we don't need a BlockVector here.
     LinearAlgebra::Vector temp (
-      introspection.index_sets.system_partitioning[block_number],
+      introspection.index_sets.system_partitioning[block_idx],
       mpi_communicator);
 
     // Compute the residual before we solve and return this at the end.
     // This is used in the nonlinear solver.
-    const double initial_residual = system_matrix.block(block_number,block_number).residual
+    const double initial_residual = system_matrix.block(block_idx,block_idx).residual
                                     (temp,
-                                     distributed_solution.block(block_number),
-                                     system_rhs.block(block_number));
+                                     distributed_solution.block(block_idx),
+                                     system_rhs.block(block_idx));
 
     // solve the linear system:
     current_constraints.set_zero(distributed_solution);
-    solver.solve (system_matrix.block(block_number,block_number),
-                  distributed_solution.block(block_number),
-                  system_rhs.block(block_number),
-                  (temperature_or_composition.is_temperature()
+    solver.solve (system_matrix.block(block_idx,block_idx),
+                  distributed_solution.block(block_idx),
+                  system_rhs.block(block_idx),
+                  (advection_field.is_temperature()
                    ?
                    *T_preconditioner
                    :
                    *C_preconditioner));
 
     current_constraints.distribute (distributed_solution);
-    solution.block(block_number) = distributed_solution.block(block_number);
+    solution.block(block_idx) = distributed_solution.block(block_idx);
 
     // print number of iterations and also record it in the
     // statistics file
     pcout << solver_control.last_step()
           << " iterations." << std::endl;
 
-    if (temperature_or_composition.is_temperature())
+    if (advection_field.is_temperature())
       statistics.add_value("Iterations for temperature solver",
                            solver_control.last_step());
     else
       statistics.add_value("Iterations for composition solver " +
-                           Utilities::int_to_string(temperature_or_composition.compositional_variable+1),
+                           Utilities::int_to_string(advection_field.compositional_variable+1),
                            solver_control.last_step());
 
     computing_timer.exit_section();
@@ -376,8 +375,48 @@ namespace aspect
   double Simulator<dim>::solve_stokes ()
   {
     computing_timer.enter_section ("   Solve Stokes system");
-
     pcout << "   Solving Stokes system... " << std::flush;
+
+    if (parameters.use_direct_stokes_solver)
+      {
+        LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
+
+        Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
+
+        if (material_model->is_compressible ())
+          make_pressure_rhs_compatible(system_rhs);
+
+        SolverControl cn;
+        // TODO: can we re-use the direct solver?
+        TrilinosWrappers::SolverDirect solver(cn);
+        solver.solve(system_matrix.block(0,0), distributed_stokes_solution.block(0), system_rhs.block(0));
+
+        current_constraints.distribute (distributed_stokes_solution);
+
+        // now rescale the pressure back to real physical units:
+        for (unsigned int i=0;i< introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
+          {
+            types::global_dof_index idx = introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
+
+            distributed_stokes_solution(idx) *= pressure_scaling;
+          }
+        distributed_stokes_solution.compress(VectorOperation::insert);
+
+        // then copy back the solution from the temporary (non-ghosted) vector
+        // into the ghosted one with all solution components
+        solution.block(0) = distributed_stokes_solution.block(0);
+
+        remove_nullspace(solution, distributed_stokes_solution);
+
+        normalize_pressure(solution);
+
+        pcout << "done." << std::endl;
+
+        computing_timer.exit_section();
+
+        return 0;
+      }
+
 
     const internal::StokesBlock stokes_block(system_matrix);
 
@@ -515,7 +554,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template double Simulator<dim>::solve_advection (const TemperatureOrComposition &); \
+  template double Simulator<dim>::solve_advection (const AdvectionField &); \
   template double Simulator<dim>::solve_stokes ();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
