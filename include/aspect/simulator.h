@@ -1253,6 +1253,14 @@ namespace aspect
 
       DoFHandler<dim>                                           dof_handler;
 
+      /**
+       * Constraint objects. The first of these describes all constraints
+       * that are not time dependent (e.g., hanging nodes, no-normal-flux constraints),
+       * whereas the second one is initialized at the top of every time step by
+       * copying from the first and then adding to it constraints that are time
+       * dependent (e.g., time dependent velocity or temperature boundary
+       * conditions).
+       */
       ConstraintMatrix                                          constraints;
       ConstraintMatrix                                          current_constraints;
 
