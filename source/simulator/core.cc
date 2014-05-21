@@ -92,7 +92,7 @@ namespace aspect
             this_mpi_process(mpi_communicator)
             == 0)),
 
-    computing_timer (pcout, TimerOutput::summary,
+    computing_timer (pcout, TimerOutput::never,
                      TimerOutput::wall_times),
 
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
@@ -1616,6 +1616,10 @@ namespace aspect
           break;
       }
     while (true);
+
+    // we disable automatic summary printing so that it won't happen when
+    // throwing an exception. Therefore, we have to do this manually here:
+    computing_timer.print_summary ();
   }
 }
 
