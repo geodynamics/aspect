@@ -5,6 +5,13 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> Fixed: We accidentally evaluated the viscosity of the material model
+ * from the place where we compute the adiabatic conditions, but this
+ * required information that we didn't have. This is also unnecessary
+ * since we don't need the viscosity in this place. This is now fixed.
+ * <br>
+ * (Wolfgang Bangerth, 2014/05/21) 
+ *
  * <li> Fixed: We forgot to set the initial time before we evaluate the
  * temperature boundary conditions, so temperature boundary conditions
  * could not use <code>get_time()</code> -- they just got NaN. This is now
