@@ -4,9 +4,11 @@
 # material models, which should be able to reproduce it.
 # The material model used here is already tested by
 # simple_compressibility_iterated_stokes.
+# Currently there is the steinberger-compressible test
+# reproducing this test.
 
 set CFL number                             = 1.0
-set End time                               = 1e6
+set End time                               = 1e5
 set Adiabatic surface temperature          = 1600.0
 set Use years in output instead of seconds = true
 
@@ -38,7 +40,10 @@ end
 
 
 subsection Initial conditions
-  set Model name = adiabatic
+  set Model name = harmonic perturbation
+  subsection Harmonic perturbation
+    set Magnitude = 200.0
+  end
 end
 
 subsection Material model
