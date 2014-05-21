@@ -363,6 +363,7 @@ namespace aspect
 
       prm.declare_entry ("Remove nullspace", "",
                          Patterns::MultipleSelection("net rotation|angular momentum|"
+                                                     "net translation|linear momentum|"
                                                      "net x translation|net y translation|net z translation|"
                                                      "linear x momentum|linear y momentum|linear z momentum"),
                          "A selection of operations to remove certain parts of the nullspace from "
@@ -763,6 +764,9 @@ namespace aspect
             else if (nullspace_names[i]=="angular momentum")
               nullspace_removal = typename NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::angular_momentum);
+            else if (nullspace_names[i]=="net translation")
+              nullspace_removal = typename NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::net_translation);
             else if (nullspace_names[i]=="net x translation")
               nullspace_removal = typename NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::net_translation_x);
@@ -781,6 +785,9 @@ namespace aspect
             else if (nullspace_names[i]=="linear z momentum")
               nullspace_removal = typename       NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::linear_momentum_z);
+            else if (nullspace_names[i]=="linear momentum")
+              nullspace_removal = typename NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::linear_momentum);
             else
               AssertThrow(false, ExcInternalError());
           }
