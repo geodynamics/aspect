@@ -45,10 +45,10 @@ subsection Heating model
   set Model name = radioactive decay
   subsection Radioactive decay
     set Number of elements    = 2
-    set Heating rate                 = 1e-5  2e-5
-	  set Half decay time              = 5e6   2.5e6
-	  set Initial concentration mantle = 0.0   0.1
-	  set Initial concentration crust  = 0.1   0.0
+    set Heating rate                 = 1e-5,  2e-5
+	  set Half decay time              = 5e6,   2.5e6
+	  set Initial concentration mantle = 0.0,   0.1
+	  set Initial concentration crust  = 0.1,   0.0
     set Crust defined by composition = true
 	set Crust composition number     = 0
   
