@@ -4460,6 +4460,7 @@ mean that when making a model with a free surface you will want to take smaller
 time steps.  In general just how much smaller will depend on the problem at hand
 as well as the desired accuracy.  
 
+\marginpar{ fix the markup on this }
 \begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
 set CFL number                             = 0.1
 
@@ -4488,6 +4489,13 @@ subsection Postprocess
 end
 \end{lstlisting}
 
+Running this input file will produce results like those in Figure~\ref{fig:freesurface}.
+The model starts with a single hot blob of rock which rises in the domain.  As it 
+rises, it pushes up the free surface in the middle, creating a topographic high there.
+This is similar to the kind of dynamic topography that you might see above a mantle 
+plume on Earth.  As the blob rises and diffuses, it loses the buoyancy to push up 
+the boundary, and the surface begins to relax.
+
 After running the cookbook, you may modify it in a number of ways:
 \begin{itemize}
 \item Add a more complicated initial temperature field to see how that affects topography.
@@ -4506,7 +4514,7 @@ After running the cookbook, you may modify it in a number of ways:
            topography in the domain over 18 Myr of model time.  The topography peaks
            at 165 meters after 5.2 Myr.  This cookbook may be run with the
            \url{cookbooks/free-surface.prm} input file.}
-  \label{fig:free_surface}
+  \label{fig:freesurface}
 \end{figure}
 
 
