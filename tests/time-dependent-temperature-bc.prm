@@ -1,6 +1,11 @@
 # originally taken from diffusion.prm, but intended to test that we can deal
 # with time dependent temperature boundary conditions
-
+#
+# this is just a preliminary test. we used to crash because we forgot to set
+# the time before we evaluate the temperature boundary conditions for the
+# first time, and plugins providing such boundary conditions consequently
+# had no way to tell the time when evaluated when computing the initial
+# solution
 
 
 set Dimension = 2
@@ -8,7 +13,7 @@ set Dimension = 2
 
 set CFL number                             = 0.01
 
-set End time                               = 4e7
+set End time                               = 0
 
 
 set Resume computation                     = false
@@ -106,7 +111,7 @@ subsection Mesh refinement
 
   set Initial adaptive refinement        = 0                       # default: 2
 
-  set Initial global refinement          = 5                       # default: 2
+  set Initial global refinement          = 2                       # default: 2
 
   set Refinement fraction                = 0.3
 

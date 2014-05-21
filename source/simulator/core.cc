@@ -1522,6 +1522,10 @@ namespace aspect
         triangulation.refine_global (parameters.initial_global_refinement);
         global_volume = GridTools::volume (triangulation, mapping);
 
+        time                      = parameters.start_time;
+        timestep_number           = 0;
+        time_step = old_time_step = 0;
+
         setup_dofs();
       }
 
@@ -1534,12 +1538,14 @@ namespace aspect
     if (parameters.resume_computation == false)
       {
         computing_timer.enter_section ("Initialization");
-        set_initial_temperature_and_compositional_fields ();
-        compute_initial_pressure_field ();
 
         time                      = parameters.start_time;
         timestep_number           = 0;
         time_step = old_time_step = 0;
+
+        set_initial_temperature_and_compositional_fields ();
+        compute_initial_pressure_field ();
+
         computing_timer.exit_section();
       }
 
