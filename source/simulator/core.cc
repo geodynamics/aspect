@@ -504,13 +504,12 @@ namespace aspect
           parameters.n_compositional_fields
           * introspection.system_dofs_per_block[introspection.block_indices.compositional_fields[0]]);
 
-    // then interpolate the current boundary velocities. this adds to
-    // the current_constraints object we already have
+    // then interpolate the current boundary velocities. copy constraints
+    // into current_constraints and then add to current_constraints
+    current_constraints.clear ();
+    current_constraints.reinit (introspection.index_sets.system_relevant_set);
+    current_constraints.merge (constraints);
     {
-      current_constraints.clear ();
-      current_constraints.reinit (introspection.index_sets.system_relevant_set);
-      current_constraints.merge (constraints);
-
       // set the current time and do the interpolation
       // for the prescribed velocity fields
       for (typename std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::iterator
@@ -554,8 +553,61 @@ namespace aspect
                                                     current_constraints,
                                                     mask);
         }
-      current_constraints.close();
     }
+
+    // do the same for the temperature variable: evaluate the current boundary temperature
+    // and add these constraints as well
+    {
+      // obtain the boundary indicators that belong to Dirichlet-type
+      // temperature boundary conditions and interpolate the temperature
+      // there
+      for (std::set<types::boundary_id>::const_iterator
+           p = parameters.fixed_temperature_boundary_indicators.begin();
+           p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
+        {
+          Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
+                  ExcInternalError());
+          VectorTools::interpolate_boundary_values (dof_handler,
+                                                    *p,
+                                                    VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&BoundaryTemperature::Interface<dim>::temperature,
+                                                        std_cxx1x::cref(*boundary_temperature),
+                                                        std_cxx1x::cref(*geometry_model),
+                                                        *p,
+                                                        std_cxx1x::_1),
+                                                        introspection.component_masks.temperature.first_selected_component(),
+                                                        introspection.n_components),
+                                                    current_constraints,
+                                                    introspection.component_masks.temperature);
+
+        }
+
+      // now do the same for the composition variable:
+      // obtain the boundary indicators that belong to Dirichlet-type
+      // composition boundary conditions and interpolate the composition
+      // there
+      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+        for (std::set<types::boundary_id>::const_iterator
+             p = parameters.fixed_composition_boundary_indicators.begin();
+             p != parameters.fixed_composition_boundary_indicators.end(); ++p)
+          {
+            Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
+                    ExcInternalError());
+            VectorTools::interpolate_boundary_values (dof_handler,
+                                                      *p,
+                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&BoundaryComposition::Interface<dim>::composition,
+                                                          std_cxx1x::cref(*boundary_composition),
+                                                          std_cxx1x::cref(*geometry_model),
+                                                          *p,
+                                                          std_cxx1x::_1,
+                                                          c),
+                                                          introspection.component_masks.compositional_fields[c].first_selected_component(),
+                                                          introspection.n_components),
+                                                      current_constraints,
+                                                      introspection.component_masks.compositional_fields[c]);
+          }
+    }
+    current_constraints.close();
+
 
     //TODO: do this in a more efficient way (TH)? we really only need
     // to make sure that the time dependent velocity boundary conditions
@@ -563,6 +615,8 @@ namespace aspect
     // that by re-assembling the entire system
     if (!velocity_boundary_conditions.empty())
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
+
 
     // notify different system components that we started the next time step
     material_model->update();
@@ -787,8 +841,6 @@ namespace aspect
     // velocity that are different between time steps. these are then put
     // into current_constraints in start_timestep().
     {
-
-
       // do the interpolation for zero velocity
       for (std::set<types::boundary_id>::const_iterator
            p = parameters.zero_velocity_boundary_indicators.begin();
@@ -807,57 +859,6 @@ namespace aspect
                                                        parameters.tangential_velocity_boundary_indicators,
                                                        constraints,
                                                        mapping);
-    }
-
-    // now do the same for the temperature variable
-    {
-      // obtain the boundary indicators that belong to Dirichlet-type
-      // temperature boundary conditions and interpolate the temperature
-      // there
-      for (std::set<types::boundary_id>::const_iterator
-           p = parameters.fixed_temperature_boundary_indicators.begin();
-           p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
-        {
-          Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
-                  ExcInternalError());
-          VectorTools::interpolate_boundary_values (dof_handler,
-                                                    *p,
-                                                    VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&BoundaryTemperature::Interface<dim>::temperature,
-                                                        std_cxx1x::cref(*boundary_temperature),
-                                                        std_cxx1x::cref(*geometry_model),
-                                                        *p,
-                                                        std_cxx1x::_1),
-                                                        introspection.component_masks.temperature.first_selected_component(),
-                                                        introspection.n_components),
-                                                    constraints,
-                                                    introspection.component_masks.temperature);
-
-        }
-
-      // now do the same for the composition variable:
-      // obtain the boundary indicators that belong to Dirichlet-type
-      // composition boundary conditions and interpolate the composition
-      // there
-      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-        for (std::set<types::boundary_id>::const_iterator
-             p = parameters.fixed_composition_boundary_indicators.begin();
-             p != parameters.fixed_composition_boundary_indicators.end(); ++p)
-          {
-            Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
-                    ExcInternalError());
-            VectorTools::interpolate_boundary_values (dof_handler,
-                                                      *p,
-                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&BoundaryComposition::Interface<dim>::composition,
-                                                          std_cxx1x::cref(*boundary_composition),
-                                                          std_cxx1x::cref(*geometry_model),
-                                                          *p,
-                                                          std_cxx1x::_1,
-                                                          c),
-                                                          introspection.component_masks.compositional_fields[c].first_selected_component(),
-                                                          introspection.n_components),
-                                                      constraints,
-                                                      introspection.component_masks.compositional_fields[c]);
-          }
     }
     constraints.close();
 
