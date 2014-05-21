@@ -235,6 +235,8 @@ namespace aspect
 
           std::vector<double>         current_temperature_values;
           std::vector<Tensor<1,dim> > current_velocity_values;
+          std::vector<Tensor<1,dim> > mesh_velocity_values;
+
           std::vector<SymmetricTensor<2,dim> > current_strain_rates;
           std::vector<double>         current_pressure_values;
           std::vector<Tensor<1,dim> > current_pressure_gradients;
@@ -289,6 +291,7 @@ namespace aspect
                                      std::vector<double>(quadrature.size())),
           current_temperature_values(quadrature.size()),
           current_velocity_values(quadrature.size()),
+          mesh_velocity_values(quadrature.size()),
           current_strain_rates(quadrature.size()),
           current_pressure_values(quadrature.size()),
           current_pressure_gradients(quadrature.size()),
@@ -333,6 +336,7 @@ namespace aspect
           old_old_composition_values(scratch.old_old_composition_values),
           current_temperature_values(scratch.current_temperature_values),
           current_velocity_values(scratch.current_velocity_values),
+          mesh_velocity_values(scratch.mesh_velocity_values),
           current_strain_rates(scratch.current_strain_rates),
           current_pressure_values(scratch.current_pressure_values),
           current_pressure_gradients(scratch.current_pressure_gradients),
@@ -1036,9 +1040,24 @@ namespace aspect
     Amg_data.aggregation_threshold = 0.02;
 #endif
 
+    /*  The stabilization term for the free surface (Kaus et. al., 2010)
+     *  makes changes to the system matrix which are of the same form as
+     *  boundary stresses.  If these stresses are not also added to the
+     *  system_preconditioner_matrix, then  if fails to be very good as a 
+     *  preconditioner.  Instead, we just pass the system_matrix to the
+     *  AMG precondition initialization so that it builds the preconditioner
+     *  directly from that. However, we still need the mass matrix for the
+     *  pressure block which is assembled in the preconditioner matrix.
+     *  So rather than build a different preconditioner matrix which only
+     *  does the mass matrix, we just reuse the same system_preconditioner_matrix
+     *  for the Mp_preconditioner block.  Maybe a bit messy*/
     Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1));
-    Amg_preconditioner->initialize (system_preconditioner_matrix.block(0,0),
+    if (parameters.free_surface_enabled)
+      Amg_preconditioner->initialize (system_matrix.block(0,0),
                                     Amg_data);
+    else
+      Amg_preconditioner->initialize (system_preconditioner_matrix.block(0,0),
+          Amg_data);
 
     rebuild_stokes_preconditioner = false;
 
@@ -1140,6 +1159,10 @@ namespace aspect
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
+
+    //Add stabilization terms if necessary.
+    if(parameters.free_surface_enabled)
+      free_surface->apply_stabilization(cell, data.local_matrix);
 
     cell->get_dof_indices (data.local_dof_indices);
   }
@@ -1449,6 +1472,11 @@ namespace aspect
         scratch.old_old_velocity_values);
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.current_velocity_values);
+    
+    //get the mesh velocity, as we need to subtract it off of the advection systems
+    if (parameters.free_surface_enabled)
+      scratch.finite_element_values[introspection.extractors.velocities].get_function_values(free_surface->mesh_velocity,
+          scratch.mesh_velocity_values);
 
 
     scratch.old_field_values = ((advection_field.is_temperature()) ? &scratch.old_temperature_values : &scratch.old_composition_values[advection_field.compositional_variable]);
@@ -1568,7 +1596,12 @@ namespace aspect
             *
             (density_c_P + latent_heat_LHS);
 
-        const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+        //Subtract off the mesh velocity for ALE corrections if necessary
+        const Tensor<1,dim> current_u = scratch.current_velocity_values[q] - 
+                                        (parameters.free_surface_enabled ?
+                                         scratch.mesh_velocity_values[q] :
+                                         Tensor<1,dim>());
+
         const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
                                                   (time_step + old_time_step)) : 1.0;
 

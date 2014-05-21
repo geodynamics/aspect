@@ -124,7 +124,9 @@ namespace aspect
                     Triangulation<dim>::smoothing_on_coarsening),
                    parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning),
 
-    mapping (4),
+    //Fourth order mapping doesn't really make sense for free surface calculations, since we detatch the
+    //boundary indicators anyways.
+    mapping (parameters.free_surface_enabled?1:4),   
 
     // define the finite element. obviously, what we do here needs
     // to match the data we provide in the Introspection class
@@ -153,9 +155,10 @@ namespace aspect
     // first do some error checking for the parameters we got
     {
       // make sure velocity boundary indicators don't appear in multiple lists
-      std::set<types::boundary_id> boundary_indicator_lists[3]
+      std::set<types::boundary_id> boundary_indicator_lists[4]
         = { parameters.zero_velocity_boundary_indicators,
             parameters.tangential_velocity_boundary_indicators,
+            parameters.free_surface_boundary_indicators,
             std::set<types::boundary_id>()
           };
 
@@ -163,7 +166,7 @@ namespace aspect
            p = parameters.prescribed_velocity_boundary_indicators.begin();
            p != parameters.prescribed_velocity_boundary_indicators.end();
            ++p)
-        boundary_indicator_lists[2].insert (p->first);
+        boundary_indicator_lists[3].insert (p->first);
 
       // for each combination of boundary indicator lists, make sure that the
       // intersection is empty
@@ -228,6 +231,20 @@ namespace aspect
       sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
       sim->initialize (*this);
+
+    //Initialize the free surface handler 
+    if(parameters.free_surface_enabled)
+      {
+        //It should be possible to make the free surface work with any of a number of nonlinear
+        //schemes, but I do not see a way to do it in generality --IR
+        AssertThrow( parameters.nonlinear_solver == NonlinearSolver::IMPES,
+                     ExcMessage("The free surface scheme is only implemented for the IMPES solver") );
+        //Pressure normalization doesn't really make sense with a free surface, and if we do
+        //use it, we can run into problems with geometry_model->depth().
+        AssertThrow ( parameters.pressure_normalization == "no", 
+                      ExcMessage("The free surface scheme can only be used with no pressure normalization") );
+        free_surface.reset( new FreeSurfaceHandler( *this, prm ) );
+      }
 
     adiabatic_conditions.reset(new AdiabaticConditions<dim> (*geometry_model,
                                                              *gravity_model,
@@ -861,6 +878,8 @@ namespace aspect
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
 
+    if(parameters.free_surface_enabled)
+      free_surface->setup_dofs();
     setup_nullspace_removal();
 
     computing_timer.exit_section();
@@ -1134,11 +1153,27 @@ namespace aspect
     x_system[0] = &solution;
     x_system[1] = &old_solution;
 
+    if(parameters.free_surface_enabled)
+      x_system.push_back( &free_surface->mesh_velocity );
+
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
+    std::vector<const LinearAlgebra::Vector *> x_fs_system (1);  //Outside of if statement for scoping reasons
+    //Hack alert: we need freesurface_trans in the function scope, but cannot pass it the free_surface_dof_handler
+    //if it is not allocated.  So if the free surface is not enabled, just pass the normal system dof_handler,
+    //but then never use this SolutionTransfer object.
+    parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
+      freesurface_trans(parameters.free_surface_enabled ? free_surface->free_surface_dof_handler : dof_handler);
+    if(parameters.free_surface_enabled)
+      x_fs_system[0] = &(free_surface->mesh_vertices);
+
+
     triangulation.prepare_coarsening_and_refinement();
     system_trans.prepare_for_coarsening_and_refinement(x_system);
+
+    if(parameters.free_surface_enabled)
+      freesurface_trans.prepare_for_coarsening_and_refinement(x_fs_system);
 
     triangulation.execute_coarsening_and_refinement ();
     global_volume = GridTools::volume (triangulation, mapping);
@@ -1153,14 +1188,38 @@ namespace aspect
       distributed_system (system_rhs);
       LinearAlgebra::BlockVector
       old_distributed_system (system_rhs);
-      std::vector<LinearAlgebra::BlockVector *> system_tmp (2);
+      LinearAlgebra::BlockVector
+      distributed_mesh_velocity (system_rhs);
+      LinearAlgebra::BlockVector
+      old_distributed_mesh_velocity (system_rhs);
+
+      std::vector<LinearAlgebra::BlockVector *> system_tmp ( parameters.free_surface_enabled ? 3 : 2);
       system_tmp[0] = &(distributed_system);
       system_tmp[1] = &(old_distributed_system);
+      
+      if(parameters.free_surface_enabled)
+        system_tmp[2] = &(distributed_mesh_velocity);
 
       system_trans.interpolate (system_tmp);
       solution     = distributed_system;
       old_solution = old_distributed_system;
+      if(parameters.free_surface_enabled)
+        free_surface->mesh_velocity = distributed_mesh_velocity;
     }
+
+    if (parameters.free_surface_enabled)
+      {
+        LinearAlgebra::Vector distributed_mesh_vertices;
+        distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned, mpi_communicator);
+
+        std::vector<LinearAlgebra::Vector *> system_tmp (1);
+        system_tmp[0] = &(distributed_mesh_vertices);
+        freesurface_trans.interpolate (system_tmp);
+        free_surface->mesh_vertices     = distributed_mesh_vertices;
+      }
+
+    if (parameters.free_surface_enabled)
+      free_surface->displace_mesh ();
 
     computing_timer.exit_section();
   }
@@ -1192,8 +1251,20 @@ namespace aspect
       {
         case NonlinearSolver::IMPES:
         {
+<<<<<<< HEAD
+          //We do the free surface execution at the beginning of the timestep for a specific reason.
+          //The time step size is calculated AFTER the whole solve_timestep() function.  If we call
+          //free_surface_execute() after the Stokes solve, it will be before we know what the appropriate
+          //time step to take is, and we will timestep the boundary incorrectly.
+          if (parameters.free_surface_enabled)
+            free_surface->execute ();
+
+          assemble_advection_system (TemperatureOrComposition::temperature());
+          build_advection_preconditioner(TemperatureOrComposition::temperature(),
+=======
           assemble_advection_system (AdvectionField::temperature());
           build_advection_preconditioner(AdvectionField::temperature(),
+>>>>>>> 153341ebd8b3224570769d7f5cd3dc72b7db127c
                                          T_preconditioner);
           solve_advection(AdvectionField::temperature());
 
@@ -1205,7 +1276,12 @@ namespace aspect
               assemble_advection_system (AdvectionField::composition(c));
               build_advection_preconditioner(AdvectionField::composition(c),
                                              C_preconditioner);
+<<<<<<< HEAD
+
+              solve_advection(TemperatureOrComposition::composition(c)); // this is correct, 0 would be temperature
+=======
               solve_advection(AdvectionField::composition(c));
+>>>>>>> 153341ebd8b3224570769d7f5cd3dc72b7db127c
               current_linearization_point.block(introspection.block_indices.compositional_fields[c])
                 = solution.block(introspection.block_indices.compositional_fields[c]);
             }
