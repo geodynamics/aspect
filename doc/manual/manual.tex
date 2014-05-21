@@ -6067,90 +6067,16 @@ Fig.~\ref{fig:inclusion}. As before, for details we refer to
   \end{center}
 \end{figure}
 
-As before, the benchmark can be run with a small variation of the input files
-already discussed above:
+The benchmark can be run using the parameter files in \url{benchmark/inclusion/}. The material model, boundary condition, and postprocessor are defined in \url{benchmark/inclusion/inclusion.cc}. Consequently, this code needs to be compiled into a shared lib before you can run the tests.
+
+\marginpar{Link to a general section on how you can compile libs for the benchmarks.}
+
 \marginpar{Revisit this once we have the machinery in place to choose nonzero
   boundary conditions in a more elegant way.}
 
-\begin{lstlisting}[frame=single,language=prmfile]
-############### Global parameters
+\marginpar{The following prm file isn't annotated yet. How to annotate if we have a .lib?}
 
-set Dimension                              = 2
-
-set Start time                             = 0
-set End time                               = 0
-
-set Output directory                       = output
-
-set Pressure normalization                 = volume
-
-
-############### Parameters describing the model
-
-subsection Geometry model
-  set Model name = box
-
-  subsection Box
-    set X extent = 2
-    set Y extent = 2
-  end
-end
-
-
-subsection Model settings
-  set Prescribed velocity boundary indicators = 0,1,2,3
-  set Tangential velocity boundary indicators =
-  set Zero velocity boundary indicators       =
-end
-
-
-subsection Material model
-  set Model name = Inclusion
-
-  subsection Inclusion
-    set Viscosity jump = 1e3
-  end
-end
-
-
-subsection Gravity model
-  set Model name = vertical
-end
-
-
-############### Parameters describing the temperature field
-
-subsection Boundary temperature model
-  set Model name = box
-end
-
-
-subsection Initial conditions
-  set Model name = perturbed box
-end
-
-
-
-############### Parameters describing the discretization
-
-subsection Discretization
-  set Stokes velocity polynomial degree       = 2
-  set Use locally conservative discretization = false
-end
-
-
-subsection Mesh refinement
-  set Initial adaptive refinement              = 0
-  set Initial global refinement                = 6
-end
-
-
-############### Parameters describing the what to do with the solution
-
-subsection Postprocess
-  set List of postprocessors = DuretzEtAl error, visualization
-end
-\end{lstlisting}
+\lstinputlisting[frame=single,language=prmfile]{cookbooks/benchmarks/inclusion.prm}
 
 \subsubsection{The ``Stokes' law'' benchmark}
 \label{sec:benchmark-stokes_law}

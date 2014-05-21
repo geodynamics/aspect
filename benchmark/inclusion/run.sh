@@ -6,7 +6,7 @@ mkdir output
 for r in "3" "4" "5" "6" "7" "8"
 do
 echo "ref $r:"
-cp base.prm temp.prm
+cp global.prm.base temp.prm
 echo "subsection Mesh refinement" >>temp.prm
 echo "set Initial global refinement = $r" >> temp.prm
 echo "end" >> temp.prm

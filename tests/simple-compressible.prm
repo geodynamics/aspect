@@ -47,7 +47,6 @@ subsection Material model
   subsection Simple compressible model
     set Reference density = 3340
     set Reference specific heat = 1200
-    set Reference temperature = 1600
     set Thermal expansion coefficient = 3e-5
     set Viscosity = 1e21
     set Reference compressibility = 2.5e-12
