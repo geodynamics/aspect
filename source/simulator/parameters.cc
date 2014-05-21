@@ -287,6 +287,11 @@ namespace aspect
                          "always be used but may be undesirable when comparing results with known "
                          "benchmarks that do not include this term in the temperature equation "
                          "or when dealing with a model without phase transitions.");
+      prm.declare_entry ("Include melt transport", "false",
+                         Patterns::Bool (),
+                         "Whether to include the transport of melt into the model or not. If this "
+                         "is set to true, an additional compositional field for the porosity and "
+                         "an additional pressure (the compaction pressure) will be added.");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Integer(0)),
                          "A comma separated list of integers denoting those boundaries "
@@ -668,6 +673,7 @@ namespace aspect
       include_shear_heating = prm.get_bool ("Include shear heating");
       include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
       include_latent_heat = prm.get_bool ("Include latent heat");
+      include_melt_transport = prm.get_bool ("Include melt transport");
 
       const std::vector<int> x_fixed_temperature_boundary_indicators
         = Utilities::string_to_int
@@ -839,6 +845,12 @@ namespace aspect
     prm.enter_subsection ("Compositional fields");
     {
       n_compositional_fields = prm.get_integer ("Number of fields");
+      if (include_melt_transport && (n_compositional_fields == 0))
+      {
+    	AssertThrow (false,
+    	    ExcMessage ("If melt transport is included in the model, "
+    	    		    "there has to be at least one compositional field."));
+      }
 
       names_of_compositional_fields = Utilities::split_string_list (prm.get("Names of fields"));
       AssertThrow ((names_of_compositional_fields.size() == 0) ||
@@ -869,6 +881,17 @@ namespace aspect
       if (names_of_compositional_fields.size() == 0)
     	for (unsigned int i=0;i<n_compositional_fields;++i)
     	  names_of_compositional_fields.push_back("C_" + Utilities::int_to_string(i+1));
+
+      // if we want to solve the melt transport equations, check that one of the fields
+      // has the name porosity
+      if (include_melt_transport && std::find(names_of_compositional_fields.begin(),
+    		                                  names_of_compositional_fields.end(), "porosity")
+                                              == names_of_compositional_fields.end())
+    	{
+    	  AssertThrow (false, ExcMessage ("If melt transport is included in the model, "
+	    		                          "there has to be at least one compositional field "
+	    		                          "with the name 'porosity'."));
+    	}
 
       const std::vector<int> n_normalized_fields = Utilities::string_to_int
                                                    (Utilities::split_string_list(prm.get ("List of normalized fields")));

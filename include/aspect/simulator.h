@@ -207,6 +207,7 @@ namespace aspect
         bool                           include_shear_heating;
         bool                           include_adiabatic_heating;
         bool                           include_latent_heat;
+        bool                           include_melt_transport;
         double                         radiogenic_heating_rate;
         std::set<types::boundary_id> fixed_temperature_boundary_indicators;
         std::set<types::boundary_id> fixed_composition_boundary_indicators;

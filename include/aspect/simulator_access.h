@@ -180,6 +180,12 @@ namespace aspect
       include_latent_heat () const;
 
       /**
+       * Return whether we solve the equations for melt transport.
+       */
+      bool
+      include_melt_transport () const;
+
+      /**
        * Return the adiabatic surface temperature.
        */
       double

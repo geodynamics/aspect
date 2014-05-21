@@ -150,6 +150,13 @@ namespace aspect
     return simulator->parameters.include_latent_heat;
   }
 
+  template <int dim>
+  bool
+  SimulatorAccess<dim>::include_melt_transport () const
+  {
+    return simulator->parameters.include_melt_transport;
+  }
+
 
   template <int dim>
   double
