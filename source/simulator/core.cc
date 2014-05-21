@@ -1464,7 +1464,7 @@ namespace aspect
                 initial_stokes_residual = stokes_residual;
               else
                 {
-                  pcout << "Nonlinear iteration " << i+1 << "; residual: " << stokes_residual/initial_stokes_residual << std::endl;
+                  pcout << "   Residual after nonlinear iteration " << i+1 << ": " << stokes_residual/initial_stokes_residual << std::endl;
                   if (stokes_residual/initial_stokes_residual < parameters.nonlinear_tolerance)
                     {
                       break; // convergence reached, exist nonlinear iteration.
