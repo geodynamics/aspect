@@ -5,6 +5,13 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ *
+ * <li>New: There is now a new postprocessor "velocity boundary statistics"
+ * that computes statistics about the minimal and maximal velocities on each
+ * part of the boundary.
+ * <br>
+ * (Anne Glerum, 2014/05/21)
+ *
  * <li>New: Compositional fields have names now. If no names are specified in 
  * the input file, the previously used names C_1, C_2, ... are used as a default. 
  * <br>
