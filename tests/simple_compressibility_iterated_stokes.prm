@@ -63,7 +63,6 @@ subsection Material model
     set Reference density             = 0.909090909090    # default: 3300
     set Reference compressibility     = 0.01
     set Reference specific heat       = 1250
-    set Reference temperature         = 0    # default: 293
     set Thermal conductivity          = 1e-6 # default: 4.7
     set Viscosity                     = 1    # default: 5e24
   end
