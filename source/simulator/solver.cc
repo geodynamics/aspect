@@ -302,8 +302,9 @@ namespace aspect
     else
       {
         computing_timer.enter_section ("   Solve composition system");
-        pcout << "   Solving composition system "
-              << advection_field.compositional_variable+1
+        pcout << "   Solving "
+              << introspection.name_for_compositional_index(advection_field.compositional_variable)
+              << " system "
               << "... " << std::flush;
         advection_solver_tolerance = parameters.composition_solver_tolerance;
       }
