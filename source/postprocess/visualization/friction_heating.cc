@@ -74,7 +74,7 @@ namespace aspect
             in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[0]+c];
+              in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
 
           }
 

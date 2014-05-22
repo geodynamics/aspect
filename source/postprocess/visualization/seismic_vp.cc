@@ -62,7 +62,7 @@ namespace aspect
             const double temperature = uh[q][this->introspection().component_indices.temperature];
             std::vector<double> composition(this->n_compositional_fields());
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              composition[c] = uh[q][this->introspection().component_indices.compositional_fields[0]+c];
+              composition[c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
 
             computed_quantities[q](0) = this->get_material_model().seismic_Vp(temperature,
                                                                               pressure,
