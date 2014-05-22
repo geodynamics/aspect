@@ -1,0 +1,169 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 13920 (6528+864+3264+3264)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving composition system 1... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+6 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  1.863e-12 (W/kg) 
+
+*** Timestep 1:  t=1.34932e+06 years
+   Solving temperature system... 13 iterations.
+   Solving composition system 1... 14 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  1.301e-12 (W/kg) 
+
+*** Timestep 2:  t=2.03722e+06 years
+   Solving temperature system... 16 iterations.
+   Solving composition system 1... 18 iterations.
+   Solving Stokes system... 30 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  1.084e-12 (W/kg) 
+
+*** Timestep 3:  t=2.49355e+06 years
+   Solving temperature system... 17 iterations.
+   Solving composition system 1... 16 iterations.
+   Solving Stokes system... 29 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  9.606e-13 (W/kg) 
+
+*** Timestep 4:  t=2.83808e+06 years
+   Solving temperature system... 17 iterations.
+   Solving composition system 1... 15 iterations.
+   Solving Stokes system... 29 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  8.774e-13 (W/kg) 
+
+*** Timestep 5:  t=3.11838e+06 years
+   Solving temperature system... 16 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving Stokes system... 28 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  8.153e-13 (W/kg) 
+
+*** Timestep 6:  t=3.35778e+06 years
+   Solving temperature system... 16 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  7.658e-13 (W/kg) 
+
+*** Timestep 7:  t=3.56938e+06 years
+   Solving temperature system... 15 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  7.246e-13 (W/kg) 
+
+*** Timestep 8:  t=3.76133e+06 years
+   Solving temperature system... 15 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  6.893e-13 (W/kg) 
+
+*** Timestep 9:  t=3.93903e+06 years
+   Solving temperature system... 15 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  6.581e-13 (W/kg) 
+
+*** Timestep 10:  t=4.10628e+06 years
+   Solving temperature system... 15 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving Stokes system... 27 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  6.301e-13 (W/kg) 
+
+*** Timestep 11:  t=4.26588e+06 years
+   Solving temperature system... 14 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving Stokes system... 27 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  6.045e-13 (W/kg) 
+
+*** Timestep 12:  t=4.41999e+06 years
+   Solving temperature system... 14 iterations.
+   Solving composition system 1... 13 iterations.
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  5.808e-13 (W/kg) 
+
+*** Timestep 13:  t=4.57031e+06 years
+   Solving temperature system... 13 iterations.
+   Solving composition system 1... 12 iterations.
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  5.587e-13 (W/kg) 
+
+*** Timestep 14:  t=4.71827e+06 years
+   Solving temperature system... 13 iterations.
+   Solving composition system 1... 12 iterations.
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  5.377e-13 (W/kg) 
+
+*** Timestep 15:  t=4.86514e+06 years
+   Solving temperature system... 13 iterations.
+   Solving composition system 1... 12 iterations.
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  5.177e-13 (W/kg) 
+
+*** Timestep 16:  t=5e+06 years
+   Solving temperature system... 12 iterations.
+   Solving composition system 1... 12 iterations.
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     Average internal heating rate:  5e-13 (W/kg) 
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      39.3s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |        17 |      3.22s |       8.2% |
+| Assemble composition system     |        17 |      14.3s |        36% |
+| Assemble temperature system     |        17 |      15.7s |        40% |
+| Build Stokes preconditioner     |         1 |     0.888s |       2.3% |
+| Build composition preconditioner|        17 |     0.133s |      0.34% |
+| Build temperature preconditioner|        17 |     0.118s |       0.3% |
+| Solve Stokes system             |        17 |      2.22s |       5.6% |
+| Solve composition system        |        17 |     0.153s |      0.39% |
+| Solve temperature system        |        17 |     0.167s |      0.42% |
+| Initialization                  |         2 |     0.158s |       0.4% |
+| Postprocessing                  |        17 |     0.814s |       2.1% |
+| Setup dof systems               |         1 |     0.794s |         2% |
++---------------------------------+-----------+------------+------------+
+
