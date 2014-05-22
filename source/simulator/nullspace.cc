@@ -229,10 +229,10 @@ namespace aspect
                                                                   parameters.n_compositional_fields);
           for (unsigned int i=0; i< q_points.size(); i++)
             {
-              in.pressure[i] = fe_vals[i][dim];
-              in.temperature[i] = fe_vals[i][dim+1];
+              in.pressure[i] = fe_vals[i][introspection.component_indices.pressure];
+              in.temperature[i] = fe_vals[i][introspection.component_indices.temperature];
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                in.composition[i][c] = fe_vals[i][dim+2+c];
+                in.composition[i][c] = fe_vals[i][introspection.component_indices.compositional_fields[c]];
               in.position[i] = q_points[i];
 
             }

@@ -382,6 +382,7 @@ namespace aspect
         LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
         Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
+        Assert(introspection.block_indices.pressure == 0, ExcNotImplemented());
 
         if (material_model->is_compressible ())
           make_pressure_rhs_compatible(system_rhs);
@@ -418,6 +419,14 @@ namespace aspect
       }
 
 
+    // Many parts of the solver depend on the block layout (velocity = 0,
+    // pressure = 1). For example the remap vector or the StokesBlock matrix
+    // wrapper. Let us make sure that this holds (and shorten their names):
+    const unsigned int block_vel = introspection.block_indices.velocities;
+    const unsigned int block_p = introspection.block_indices.pressure;
+    Assert(block_vel == 0, ExcNotImplemented());
+    Assert(block_p == 1, ExcNotImplemented());
+
     const internal::StokesBlock stokes_block(system_matrix);
 
     // extract Stokes parts of solution vector, without any ghost elements
@@ -428,13 +437,13 @@ namespace aspect
 
     // copy current_linearization_point into it, because its distribution
     // is different.
-    remap.block (0) = current_linearization_point.block (0);
-    remap.block (1) = current_linearization_point.block (1);
+    remap.block (block_vel) = current_linearization_point.block (block_vel);
+    remap.block (block_p) = current_linearization_point.block (block_p);
 
     // before solving we scale the initial solution to the right dimensions
     denormalize_pressure (remap);
     current_constraints.set_zero (remap);
-    remap.block (1) /= pressure_scaling;
+    remap.block (block_p) /= pressure_scaling;
     // if the model is compressible then we need to adjust the right hand
     // side of the equation to make it compatible with the matrix on the
     // left
@@ -454,8 +463,8 @@ namespace aspect
     // extract Stokes parts of rhs vector
     LinearAlgebra::BlockVector distributed_stokes_rhs(introspection.index_sets.stokes_partitioning);
 
-    distributed_stokes_rhs.block(0) = system_rhs.block(0);
-    distributed_stokes_rhs.block(1) = system_rhs.block(1);
+    distributed_stokes_rhs.block(block_vel) = system_rhs.block(block_vel);
+    distributed_stokes_rhs.block(block_p) = system_rhs.block(block_p);
 
     PrimitiveVectorMemory< LinearAlgebra::BlockVector > mem;
 
@@ -467,8 +476,8 @@ namespace aspect
                                               1e-12 * initial_residual);
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
                                         solver_tolerance);
-    SolverControl solver_control_expensive (system_matrix.block(0,1).m() +
-                                            system_matrix.block(1,0).m(), solver_tolerance);
+    SolverControl solver_control_expensive (system_matrix.block(block_vel,block_p).m() +
+                                            system_matrix.block(block_p,block_vel).m(), solver_tolerance);
 
     try
       {
@@ -516,12 +525,12 @@ namespace aspect
     current_constraints.distribute (distributed_stokes_solution);
 
     // now rescale the pressure back to real physical units
-    distributed_stokes_solution.block(1) *= pressure_scaling;
+    distributed_stokes_solution.block(block_p) *= pressure_scaling;
 
     // then copy back the solution from the temporary (non-ghosted) vector
     // into the ghosted one with all solution components
-    solution.block(0) = distributed_stokes_solution.block(0);
-    solution.block(1) = distributed_stokes_solution.block(1);
+    solution.block(block_vel) = distributed_stokes_solution.block(block_vel);
+    solution.block(block_p) = distributed_stokes_solution.block(block_p);
 
     remove_nullspace(solution, distributed_stokes_solution);
 
