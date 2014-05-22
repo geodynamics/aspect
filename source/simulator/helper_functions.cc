@@ -730,7 +730,7 @@ namespace aspect
         ExcNotImplemented());
 
     if (parameters.use_locally_conservative_discretization == false)
-      vector.block (1).add (-1.0 * pressure_adjustment);
+      vector.block (introspection.block_indices.pressure).add (-1.0 * pressure_adjustment);
     else
       {
         // this case is a bit more complicated: if the condition above is false

@@ -54,11 +54,11 @@ namespace aspect
         const unsigned int n_quadrature_points = uh.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-        Assert (uh[0].size() == dim+2+this->n_compositional_fields(), ExcInternalError());
+        Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            const double temperature = uh[q][dim+1];
+            const double temperature = uh[q][this->introspection().component_indices.temperature];
 
             computed_quantities[q](0) = temperature - this->get_adiabatic_conditions().temperature(evaluation_points[q]);
           }

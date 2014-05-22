@@ -72,12 +72,11 @@ namespace aspect
 // should probably ask AdvectionField how many fields there actually are
     for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
       {
-        AdvectionField torc = (n==0) ? AdvectionField::temperature()
-        : AdvectionField::composition(n-1);
+        AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
+        : AdvectionField::composition(n-1));
         initial_solution.reinit(system_rhs, false);
 
-        const unsigned int base_element = torc.base_element(introspection);
-
+        const unsigned int base_element = advf.base_element(introspection);
 
         // get the temperature/composition support points
         const std::vector<Point<dim> > support_points
@@ -104,18 +103,18 @@ namespace aspect
               for (unsigned int i=0; i<finite_element.base_element(base_element).dofs_per_cell; ++i)
                 {
                   const unsigned int system_local_dof
-                    = finite_element.component_to_system_index(torc.component_index(introspection),
-                        /*dof index within component=*/i);
+                    = finite_element.component_to_system_index(advf.component_index(introspection),
+                                                               /*dof index within component=*/i);
 
                   const double value =
-                    (torc.is_temperature()
+                    (advf.is_temperature()
                      ?
                      initial_conditions->initial_temperature(fe_values.quadrature_point(i))
                      :
                      compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n-1));
                   initial_solution(local_dof_indices[system_local_dof]) = value;
 
-                  if (!torc.is_temperature())
+                  if (!advf.is_temperature())
                     Assert (value >= 0,
                             ExcMessage("Invalid initial conditions: Composition is negative"));
 
@@ -141,7 +140,7 @@ namespace aspect
         // we should not have written at all into any of the blocks with
         // the exception of the current temperature or composition block
         for (unsigned int b=0; b<initial_solution.n_blocks(); ++b)
-          if (b != torc.block_index(introspection))
+          if (b != advf.block_index(introspection))
             Assert (initial_solution.block(b).l2_norm() == 0,
                     ExcInternalError());
 
@@ -168,7 +167,7 @@ namespace aspect
         constraints.distribute(initial_solution);
 
         // copy temperature/composition block only
-        const unsigned int blockidx = torc.block_index(introspection);
+        const unsigned int blockidx = advf.block_index(introspection);
         solution.block(blockidx) = initial_solution.block(blockidx);
         old_solution.block(blockidx) = initial_solution.block(blockidx);
         old_old_solution.block(blockidx) = initial_solution.block(blockidx);
