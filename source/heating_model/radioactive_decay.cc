@@ -127,28 +127,28 @@ namespace aspect
             n_radio_heating_elements= prm.get_integer ("Number of elements");
             radioactive_heating_rates=Utilities::string_to_double
                 (Utilities::split_string_list
-                (prm.get("Heating rate")));
+                (prm.get("Heating rates")));
             AssertThrow(radioactive_heating_rates.size()==n_radio_heating_elements,
                 ExcMessage("Number of heating rate entities does not match "
                            "the number of radioactive elements."));
                            
             half_decay_times=Utilities::string_to_double
                 (Utilities::split_string_list
-                 (prm.get("Half decay time")));
+                 (prm.get("Half decay times")));
             AssertThrow(half_decay_times.size()==n_radio_heating_elements,
                 ExcMessage("Number of half decay time entities does not match "
                            "the number of radioactive elements."));
                            
             radioactive_initial_concentrations_crust=Utilities::string_to_double
                 (Utilities::split_string_list
-                (prm.get("Initial concentration crust")));
+                (prm.get("Initial concentrations crust")));
             AssertThrow(radioactive_initial_concentrations_crust.size()==n_radio_heating_elements,
                         ExcMessage("Number of initial concentration entities in crust "
                                    "does not match the number of radioactive elements."));
                            
             radioactive_initial_concentrations_mantle=Utilities::string_to_double
                 (Utilities::split_string_list
-                (prm.get("Initial concentration mantle")));
+                (prm.get("Initial concentrations mantle")));
             AssertThrow(radioactive_initial_concentrations_mantle.size()==n_radio_heating_elements,
                         ExcMessage("Number of initial concentration entities in mantle "
                                    "does not match the number of radioactive elements."));
