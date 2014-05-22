@@ -34,31 +34,19 @@ namespace aspect
     void
     MinimumRefinementFunction<dim>::tag_additional_cells () const
     {
-      // evaluate a single point per cell
-      const QMidpoint<dim> quadrature_formula;
-      const unsigned int n_q_points = quadrature_formula.size();
-
-      FEValues<dim> fe_values (this->get_mapping(),
-        		               this->get_fe(),
-                               quadrature_formula,
-                               update_values   |
-                               update_quadrature_points );
-
-      // ensure minimum refinement level
       for (typename Triangulation<dim>::active_cell_iterator
-           cell = this->get_triangulation().begin_active();
-           cell != this->get_triangulation().end(); ++cell)
+          cell = this->get_triangulation().begin_active();
+          cell != this->get_triangulation().end(); ++cell)
         {
           if (cell->is_locally_owned())
-          {
-        	fe_values.reinit(cell);
-        	const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(0));
-        	const Point<1> point(depth);
-          	if (cell->level() <= rint(min_refinement_level.value(point)))
-              cell->clear_coarsen_flag ();
-          	if (cell->level() <  rint(min_refinement_level.value(point)))
-              cell->set_refine_flag ();
-          }
+            {
+              const double depth = this->get_geometry_model().depth(cell->center());
+              const Point<1> point(depth);
+              if (cell->level() <= rint(min_refinement_level.value(point)))
+                cell->clear_coarsen_flag ();
+              if (cell->level() <  rint(min_refinement_level.value(point)))
+                cell->set_refine_flag ();
+            }
         }
     }
 
