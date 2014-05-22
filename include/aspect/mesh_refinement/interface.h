@@ -49,9 +49,17 @@ namespace aspect
 
     /**
      * This class declares the public interface of mesh refinement plugins.
-     * These plugins must implement a function that can be called between time
-     * steps to refine the mesh based on the solution and/or the location of a
-     * cell.
+     * Plugins have two different ways to influence adaptive refinement (and
+     * can make use of either or both):
+     *
+     * First, execute() allows the plugin to specify weights for individual
+     * cells that are then used to coarsen and refine (where larger numbers
+     * indicate a larger error).
+     *
+     * Second, after cells get flagged for coarsening and refinement (using
+     * the first approach), tag_additional_cells() is executed for each plugin.
+     * Here the plugin is free to set or clear coarsen and refine flags on
+     * any cell.
      *
      * Access to the data of the simulator is granted by the @p protected
      * member functions of the SimulatorAccess class, i.e., classes
@@ -88,6 +96,11 @@ namespace aspect
          * After cells have been marked for coarsening/refinement, apply
          * additional criteria independent of the error estimate. The
          * default implementation does nothing.
+         *
+         * This function is also called during the initial global refinement
+         * cycle. At this point you do not have access to solutions, DoFHandlers,
+         * or finite element spaces. You can check if this is the case by
+         * querying this->get_dof_handler().n_dofs() == 0.
          */
         virtual
         void
