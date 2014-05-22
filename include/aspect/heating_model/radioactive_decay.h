@@ -40,13 +40,13 @@ namespace aspect
      * @ingroup HeatingModels
      */
     template <int dim>
-    class Radioactive_decay : public Interface<dim>, public SimulatorAccess<dim>
+    class RadioactiveDecay : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
          * Constructor.
          */
-        Radioactive_decay ();
+        RadioactiveDecay ();
 
         /**
          * Return the specific heating rate as calculated by 
@@ -106,12 +106,12 @@ namespace aspect
         /**
          * Store the initial consentration in the crust.
          */
-        std::vector<double>            radioactive_initial_consentration_crust;
+        std::vector<double>            radioactive_initial_concentration_crust;
         
         /**
          * Store the initial consentration in the mantle.
          */
-        std::vector<double>            radioactive_initial_consentration_mantle;
+        std::vector<double>            radioactive_initial_concentration_mantle;
         
         /**
          * Whether crust defined by composition or depth

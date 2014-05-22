@@ -20,7 +20,7 @@
 /*  $Id$  */
 
 
-#include <aspect/heating_model/radioactive_decay.h>
+#include <aspect/heating_model/Radioactive_decay.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/global.h>
 
@@ -29,14 +29,14 @@ namespace aspect
   namespace HeatingModel
   {
     template <int dim>
-    Radioactive_decay<dim>::Radioactive_decay ()
+    RadioactiveDecay<dim>::RadioactiveDecay ()
     {}
 
 
 
     template <int dim>
     double
-    Radioactive_decay<dim>::
+    RadioactiveDecay<dim>::
     specific_heating_rate (const double,
         const double,
         const std::vector<double> &composition,
@@ -61,8 +61,7 @@ namespace aspect
             for(unsigned i_radio=0;i_radio<n_radio_heating_elements;i_radio++)
                 timedependent_radioactive_heating_rate+=
                     radioactive_heating_rate[i_radio]
-                    *(radioactive_initial_consentration_mantle[i_radio]*(1-crust_percent)
-                      +radioactive_initial_consentration_crust[i_radio]*crust_percent)*1e-6
+                    *(radioactive_initial_concentration_mantle[i_radio]*(1-crust_percent)
                     *std::pow(0.5,time/half_decay_time[i_radio]);
         }
         return (timedependent_radioactive_heating_rate);
@@ -71,7 +70,7 @@ namespace aspect
 
     template <int dim>
     void
-    Radioactive_decay<dim>::update ()
+    RadioactiveDecay<dim>::update ()
     {
       time = this->get_time();
       // we get time passed as seconds (always) but may want
@@ -83,7 +82,7 @@ namespace aspect
 
     template <int dim>
     void
-    Radioactive_decay<dim>::declare_parameters (ParameterHandler &prm)
+    RadioactiveDecay<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Heating model");
       {
@@ -124,7 +123,7 @@ namespace aspect
 
     template <int dim>
     void
-    Radioactive_decay<dim>::parse_parameters (ParameterHandler &prm)
+    RadioactiveDecay<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Heating model");
       {
@@ -146,18 +145,14 @@ namespace aspect
                 ExcMessage("Number of half decay time entities does not match "
                            "the number of radioactive elements."));
                            
-            radioactive_initial_consentration_crust=Utilities::string_to_double
-                (Utilities::split_string_list
+            radioactive_initial_concentration_crust=Utilities::string_to_double
                 (prm.get("Initial concentration crust")));
-            AssertThrow(radioactive_initial_consentration_crust.size()==n_radio_heating_elements,
-                ExcMessage("Number of initial concentration entities does not match "
+            AssertThrow(radioactive_initial_concentration_crust.size()==n_radio_heating_elements,
                            "the number of radioactive elements."));
                            
-            radioactive_initial_consentration_mantle=Utilities::string_to_double
-                (Utilities::split_string_list
+            radioactive_initial_concentration_mantle=Utilities::string_to_double
                 (prm.get("Initial concentration mantle")));
-            AssertThrow(radioactive_initial_consentration_mantle.size()==n_radio_heating_elements,
-                ExcMessage("Number of initial concentration entities does not match "
+            AssertThrow(radioactive_initial_concentration_mantle.size()==n_radio_heating_elements,
                            "the number of radioactive elements."));
 
             is_crust_defined_by_composition = prm.get_bool    ("Crust defined by composition");
@@ -177,13 +172,14 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    ASPECT_REGISTER_HEATING_MODEL(Radioactive_decay,
-                                                 "radioactive decay",
-                                                 "Implementation of a model in which the heating "
-                                                 "rate is decaying exponentially over time \n"
-                                                 "The formula is interpreted as having units "
-                                                 "W/kg."
-                                                 "\n\n")
-  }
-}
-
+    ASPECT_REGISTER_HEATING_MODEL(RadioactiveDecay,
+                                  "radioactive decay",
+                                  "Implementation of a model in which the heating "
+                                  "rate is decaying exponentially over time \n"
+                                  "The formula is interpreted as having units "
+                                  "W/kg."
+                                  "\n\n")
+  }                                              
+}                                                
+                                                 
+                                                                
