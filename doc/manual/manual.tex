@@ -32,11 +32,13 @@
 % use the listings package for code snippets. define keywords for prm files
 % and for gnuplot
 \usepackage{listings}
-\lstset{language=C++,basicstyle=\footnotesize}
+\lstset{language=C++,basicstyle=\small\ttfamily,columns=fullflexible,keepspaces=true,frame=single,escapeinside={\%}{\%}}
+%\lstset{language=C++,basicstyle=\small\ttfamily,columns=flexible}
 \lstdefinelanguage{prmfile}{morekeywords={set,subsection,end},
                             morecomment=[l]{\#},}
 \lstdefinelanguage{gnuplot}{morekeywords={plot,using,title,with,set,replot},
                             morecomment=[l]{\#},}
+
 
 % use the hyperref package; set the base for relative links to
 % the top-level aspect directory so that we can link to
@@ -1595,24 +1597,8 @@ Number of degrees of freedom: 33,859 (20,786+2,680+10,393)
 This output was produced by a parameter file that, among other settings,
 contained the following values (we will discuss many such input files in
 Section~\ref{sec:cookbooks}:
-\begin{lstlisting}[frame=single,language=prmfile]
-set Dimension                     = 2
-set End time                      = 2e9
-set Output directory              = output
+\lstinputlisting[language=prmfile]{cookbooks/overview/simple.prm.out}
 
-subsection Geometry model
-  set Model name                  = spherical shell
-end
-
-subsection Mesh refinement
-  set Initial global refinement   = 4
-  set Initial adaptive refinement = 1
-end
-
-subsection Postprocess
-  set List of postprocessors      = all
-end
-\end{lstlisting}
 In other words, these run-time parameters specify that we should start with a
 geometry that represents a spherical shell (see
 Sections~\ref{parameters:Geometry_20model} and
@@ -1806,9 +1792,7 @@ select which one you want by putting a line like the following into
 \index[prmindex]{Dimension}
 \index[prmindexfull]{Dimension}
 the parameter file (see Section~\ref{sec:parameters}):
-\begin{lstlisting}[frame=single,language=prmfile]
-set Dimension                     = 2
-\end{lstlisting}
+\lstinputlisting[language=prmfile]{cookbooks/overview/dim.part.prm.out}
 
 Internally, dealing with the dimension builds on a feature in
 \dealii{}, upon which \aspect{} is based, that is called
@@ -2530,30 +2514,7 @@ page~\pageref{sec:runtime-parameter-index}.
 
 Most of the run-time behavior of \aspect{} is driven by a parameter file that
 looks in essence like this:
-\begin{lstlisting}[frame=single,language=prmfile]
-set Dimension                     = 2
-set Resume computation            = false
-set End time                      = 1e10
-set CFL number                    = 1.0
-set Output directory              = bin
-
-subsection Mesh refinement
-  set Initial adaptive refinement = 1
-  set Initial global refinement   = 4
-end
-
-subsection Material model
-  set Model name                  = simple
-
-  subsection Simple model
-    set Reference density         = 3300
-    set Reference temperature     = 293
-    set Viscosity                 = 5e24
-  end
-end
-
-...
-\end{lstlisting}
+\lstinputlisting[language=prmfile]{cookbooks/overview/structure.part.prm.out}
 
 Some parameters live at the top level, but most parameters are grouped into
 subsections. An input parameter file is therefore much like a file system: a
@@ -2713,17 +2674,9 @@ computation you want to do. In particular, this includes the following:
 For each of these questions, there are one or more input parameters (sometimes
 grouped into sections) that allow you to specify what you want. For example, to
 choose a geometry, you will typically have a block like this in your input file:
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-set Dimension = 2
-subsection Geometry model
-  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
-
-  subsection Box
-    set X extent = 1 % \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
-    set Y extent = 1 % \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
-  end
-end
-\end{lstlisting}
+%
+\lstinputlisting[language=prmfile]{cookbooks/overview/geometry.part.prm.out}
+%
 This indicates that you want to do a computation in 2d, using a rectangular
 geometry (a ``box'') with edge length equal to one in both the $x$- and
 $y$-directions. Of course, there are other geometries you can choose from for
@@ -2836,177 +2789,7 @@ and the indices at the end of this manual if you want to find a particular
 parameter; you can find the input file to run this cookbook example in
 \url{cookbooks/convection-box.prm}):
 
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-# At the top, we define the number of space dimensions we would like to
-# work in:
-set Dimension                              = 2 % \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
-
-# There are several global variables that have to do with what
-# time system we want to work in and what the end time is. We
-# also designate an output directory.
-set Use years in output instead of seconds = false % \index[prmindex]{Use years in output instead of seconds} \index[prmindexfull]{Use years in output instead of seconds} %
-set End time                               = 0.5 % \index[prmindex]{End time} \index[prmindexfull]{End time} %
-set Output directory                       = output % \index[prmindex]{Output directory} \index[prmindexfull]{Output directory} %
-
-# Then there are variables that describe the tolerance of
-# the linear solver as well as how the pressure should
-# be normalized. Here, we choose a zero average pressure
-# at the surface of the domain (for the current geometry, the
-# surface is defined as the top boundary).
-set Linear solver tolerance                = 1e-10 % \index[prmindex]{Linear solver tolerance} \index[prmindexfull]{Linear solver tolerance} %
-set Temperature solver tolerance           = 1e-10 % \index[prmindex]{Temperature solver tolerance} \index[prmindexfull]{Temperature solver tolerance} %
-
-set Pressure normalization                 = surface % \index[prmindex]{Pressure normalization} \index[prmindexfull]{Pressure normalization} %
-set Surface pressure                       = 0 % \index[prmindex]{Surface pressure} \index[prmindexfull]{Surface pressure} %
-
-
-# Then come a number of sections that deal with the setup
-# of the problem to solve. The first one deals with the
-# geometry of the domain within which we want to solve.
-# The sections that follow all have the same basic setup
-# where we select the name of a particular model (here,
-# the box geometry) and then, in a further subsection,
-# set the parameters that are specific to this particular
-# model.
-subsection Geometry model
-  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
-
-  subsection Box
-    set X extent = 1 % \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
-    set Y extent = 1 % \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
-  end
-end
-
-
-# The next section deals with the initial conditions for the
-# temperature (there are no initial conditions for the
-# velocity variable since the velocity is assumed to always
-# be in a static equilibrium with the temperature field).
-# There are a number of models with the 'function' model
-# a generic one that allows us to enter the actual initial
-# conditions in the form of a formula that can contain
-# constants. We choose a linear temperature profile that
-# matches the boundary conditions defined below plus
-# a small perturbation:
-subsection Initial conditions
-  set Model name = function % \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
-
-  subsection Function
-    set Variable names      = x,z % \index[prmindex]{Variable names} \index[prmindexfull]{Initial conditions!Function!Variable names} %
-    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1 % \index[prmindex]{Function constants} \index[prmindexfull]{Initial conditions!Function!Function constants} %
-    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z) % \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
-  end
-end
-
-
-# Then follows a section that describes the boundary conditions
-# for the temperature. The model we choose is called 'box' and
-# allows to set a constant temperature on each of the four sides
-# of the box geometry. In our case, we choose something that is
-# heated from below and cooled from above. (As will be seen
-# in the next section, the actual temperature prescribed here
-# at the left and right does not matter.)
-subsection Boundary temperature model
-  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
-
-  subsection Box
-    set Bottom temperature = 1 % \index[prmindex]{Bottom temperature} \index[prmindexfull]{Boundary temperature model!Box!Bottom temperature} %
-    set Left temperature   = 0 % \index[prmindex]{Left temperature} \index[prmindexfull]{Boundary temperature model!Box!Left temperature} %
-    set Right temperature  = 0 % \index[prmindex]{Right temperature} \index[prmindexfull]{Boundary temperature model!Box!Right temperature} %
-    set Top temperature    = 0 % \index[prmindex]{Top temperature} \index[prmindexfull]{Boundary temperature model!Box!Top temperature} %
-  end
-end
-
-
-# We then also have to prescribe several other parts of the model
-# such as which boundaries actually carry a prescribed boundary
-# temperature (as described in the documentation of the `box'
-# geometry, boundaries 2 and 3 are the bottom and top boundaries)
-# whereas all other parts of the boundary are insulated (i.e.,
-# no heat flux through these boundaries; this is also often used
-# to specify symmetry boundaries).
-subsection Model settings
-  set Fixed temperature boundary indicators   = 2,3 % \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
-
-  # The next parameters then describe on which parts of the
-  # boundary we prescribe a zero or nonzero velocity and
-  # on which parts the flow is allowed to be tangential.
-  # Here, all four sides of the box allow tangential
-  # unrestricted flow but with a zero normal component:
-  set Zero velocity boundary indicators       = % \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
-  set Prescribed velocity boundary indicators = % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
-  set Tangential velocity boundary indicators = 0,1,2,3 % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
-
-  # The final part of this section describes whether we
-  # want to include adiabatic heating (from a small
-  # compressibility of the medium) or from shear friction,
-  # as well as the rate of internal heating. We do not
-  # want to use any of these options here:
-  set Include adiabatic heating               = false % \index[prmindex]{Include adiabatic heating} \index[prmindexfull]{Model settings!Include adiabatic heating} %
-  set Include shear heating                   = false % \index[prmindex]{Include shear heating} \index[prmindexfull]{Model settings!Include shear heating} %
-end
-
-
-# The following two sections describe first the
-# direction (vertical) and magnitude of gravity and the
-# material model (i.e., density, viscosity, etc). We have
-# discussed the settings used here in the introduction to
-# this cookbook in the manual already.
-subsection Gravity model
-  set Model name = vertical % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
-
-  subsection Vertical
-    set Magnitude = 1e14   # = Ra / Thermal expansion coefficient % \index[prmindex]{Magnitude} \index[prmindexfull]{Gravity model!Vertical!Magnitude} %
-  end
-end
-
-
-subsection Material model
-  set Model name = simple # default: % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
-
-  subsection Simple model
-    set Reference density             = 1 % \index[prmindex]{Reference density} \index[prmindexfull]{Material model!Simple model!Reference density} %
-    set Reference specific heat       = 1 % \index[prmindex]{Reference specific heat} \index[prmindexfull]{Material model!Simple model!Reference specific heat} %
-    set Reference temperature         = 0 % \index[prmindex]{Reference temperature} \index[prmindexfull]{Material model!Simple model!Reference temperature} %
-    set Thermal conductivity          = 1 % \index[prmindex]{Thermal conductivity} \index[prmindexfull]{Material model!Simple model!Thermal conductivity} %
-    set Thermal expansion coefficient = 1e-10 % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Simple model!Thermal expansion coefficient} %
-    set Viscosity                     = 1 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
-  end
-end
-
-
-# The settings above all pertain to the description of the
-# continuous partial differential equations we want to solve.
-# The following section deals with the discretization of
-# this problem, namely the kind of mesh we want to compute
-# on. We here use a globally refined mesh without
-# adaptive mesh refinement.
-subsection Mesh refinement
-  set Initial global refinement                = 4 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
-  set Initial adaptive refinement              = 0 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
-  set Time steps between mesh refinement       = 0 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
-end
-
-
-# The final part is to specify what ASPECT should do with the
-# solution once computed at the end of every time step. The
-# process of evaluating the solution is called `postprocessing'
-# and we choose to compute velocity and temperature statistics,
-# statistics about the heat flux through the boundaries of the
-# domain, and to generate graphical output files for later
-# visualization. These output files are created every time
-# a time step crosses time points separated by 0.01. Given
-# our start time (zero) and final time (0.5) this means that
-# we will obtain 50 output files.
-subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, ...
-                                           ... heat flux statistics, visualization % \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
-
-  subsection Visualization
-    set Time between graphical output = 0.01 % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
-  end
-end
-\end{lstlisting}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box/box.prm.out}
 
 
 \paragraph{Running the program.}
@@ -3280,13 +3063,9 @@ looking at movies of the solution.
 To generate these results, remember that we have chosen $\alpha=10^{-10}$ and
 $g=10^{10}Ra$ in our input file. In other words, changing the input file to
 contain the parameter setting
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-subsection Gravity model
-  subsection Vertical
-    set Magnitude = 1e16   # = Ra / Thermal expansion coefficient % \index[prmindex]{Magnitude} \index[prmindexfull]{Gravity model!Vertical!Magnitude} %
-  end
-end
-\end{lstlisting}
+%
+\lstinputlisting[language=prmfile]{cookbooks/convection-box/gravity.part.prm.out}
+%
 will achieve the desired effect of computing with $Ra=10^6$.
 
 
@@ -3297,13 +3076,9 @@ Blankenbach \textit{et al.} \cite{BBC89} by less than 1\%. However, it may be
 interesting to think about computing even more accurately. This is easily done
 by using a finer mesh, for example. In the parameter file above, we have chosen
 the mesh setting as follows:
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-subsection Mesh refinement
-  set Initial global refinement                = 4 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
-  set Initial adaptive refinement              = 0 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
-  set Time steps between mesh refinement       = 0 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
-end
-\end{lstlisting}
+%
+\lstinputlisting[language=prmfile]{cookbooks/convection-box/refine.part.prm.out}
+%
 We start out with a box geometry consisting of a single cell that is refined
 four times. Each time we split each cell into its 4 children, obtaining the
 $16\times 16$ mesh already mentioned. The other settings indicate that we do not
@@ -3328,16 +3103,7 @@ a particular time at least 8 times as expensive, assuming that all solvers in
 parameter in the \aspect{} input file that let's us increase the mesh resolution
 at later times. To this end, let us use the following snippet for the input
 file:
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-subsection Mesh refinement
-  set Initial global refinement                = 3 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
-  set Initial adaptive refinement              = 0 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
-  set Time steps between mesh refinement       = 0 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
-  set Additional refinement times              = 0.2, 0.3, 0.4 % \index[prmindex]{Additional refinement times} \index[prmindexfull]{Mesh refinement!Additional refinement times} %
-  set Refinement fraction                      = 1.0 % \index[prmindex]{Refinement fraction} \index[prmindexfull]{Mesh refinement!Refinement fraction} %
-  set Coarsening fraction                      = 0.0 % \index[prmindex]{Coarsening fraction} \index[prmindexfull]{Mesh refinement!Coarsening fraction} %
-end
-\end{lstlisting}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box/refine2.part.prm.out}
 
 What this does is the following: We start with an $8\times 8$ mesh (3 times
 globally refined) but then at times $t=0.2,0.3$ and $0.4$ we refine the mesh
@@ -3420,12 +3186,8 @@ cheaper of the two options.
 
 Following these considerations, let us add the following section to the
 parameter file:
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-subsection Discretization
-  set Stokes velocity polynomial degree       = 2 % \index[prmindex]{Stokes velocity polynomial degree} \index[prmindexfull]{Discretization!Stokes velocity polynomial degree} %
-  set Temperature polynomial degree           = 3 % \index[prmindex]{Temperature polynomial degree} \index[prmindexfull]{Discretization!Temperature polynomial degree} %
-end
-\end{lstlisting}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box/disc.part.prm.out}
+
 This leaves the velocity and pressure shape functions at quadratic and linear
 polynomial degree but increases the polynomial degree of the temperature from
 quadratic to cubic. Using the original, four times globally refined mesh, we
@@ -3502,95 +3264,32 @@ numbered as follows: ``\textit{in 3d, boundary indicators 0 through 5 indicate
 left, right, front, back, bottom and top boundaries}.'' Recalling that we want
 tangential flow all around and want to fix the temperature to known values at
 the bottom and top, the following will make sense:
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-set Dimension                              = 3 % \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/start.part.prm.out}
 
-subsection Geometry model
-  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
-
-  subsection Box
-    set X extent = 1 % \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
-    set Y extent = 1 % \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
-    set Z extent = 1 % \index[prmindex]{Z extent} \index[prmindexfull]{Geometry model!Box!Z extent} %
-  end
-end
-
-subsection Boundary temperature model
-  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
-
-  subsection Box
-    set Bottom temperature = 1 % \index[prmindex]{Bottom temperature} \index[prmindexfull]{Boundary temperature model!Box!Bottom temperature} %
-    set Top temperature    = 0 % \index[prmindex]{Top temperature} \index[prmindexfull]{Boundary temperature model!Box!Top temperature} %
-  end
-end
-
-subsection Model settings
-  set Fixed temperature boundary indicators   = 4,5 % \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
-
-  set Zero velocity boundary indicators       = % \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
-  set Prescribed velocity boundary indicators = % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
-  set Tangential velocity boundary indicators = 0,1,2,3,4,5 % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
-end
-\end{lstlisting}
 
 The next step is to describe the initial conditions. As before, we will use an
 instably layered medium but the perturbation now needs to be both in $x$- and
 $y$-direction
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-subsection Initial conditions
-  set Model name = function % \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
-
-  subsection Function
-    set Variable names      = x,y,z % \index[prmindex]{Variable names} \index[prmindexfull]{Initial conditions!Function!Variable names} %
-    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1 % \index[prmindex]{Function constants} \index[prmindexfull]{Initial conditions!Function!Function constants} %
-    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z)*y^3 % \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
-  end
-end
-\end{lstlisting}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/initial.part.prm.out}
 
 The third issue we need to address is that we can likely not afford a mesh as
 fine as in 2d. We choose a mesh that is refined 3 times globally at the
 beginning, then 3 times adaptively, and is then adapted every 15 time steps. We
 also allow one additional mesh refinement in the first time step following
 $t=0.003$ once the initial instability has given way to a more stable pattern:
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-subsection Mesh refinement
-  set Initial global refinement                = 3 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
-  set Initial adaptive refinement              = 3 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
-  set Time steps between mesh refinement       = 15 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
-
-  set Additional refinement times              = 0.003 % \index[prmindex]{Additional refinement times} \index[prmindexfull]{Mesh refinement!Additional refinement times} %
-end
-\end{lstlisting}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/amr.part.prm.out}
 
 Finally, as we have seen in the previous section, a computation with $Ra=10^4$
 does not lead to a simulation that is exactly exciting. Let us choose $Ra=10^6$
 instead (the mesh chosen above with up to 7 refinement levels after some time
 is fine enough to resolve this). We can achieve this in the same way as in the
 previous section by choosing $\alpha=10^{-10}$ and setting
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-subsection Gravity model
-  set Model name = vertical % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
-
-  subsection Vertical
-    set Magnitude = 1e16   # = Ra / Thermal expansion coefficient % \index[prmindex]{Magnitude} \index[prmindexfull]{Gravity model!Vertical!Magnitude} %
-  end
-end
-\end{lstlisting}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/gravity.part.prm.out}
 This has some interesting implications. First, a higher Rayleigh number makes
 time scales correspondingly smaller; where we generated graphical output only
 once every 0.01 time units before, we now need to choose the corresponding
 increment smaller by a factor of 100:
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, ...
-                       ...heat flux statistics, visualization % \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
-
-  subsection Visualization
-    set Time between graphical output = 0.0001 % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
-  end
-end
-\end{lstlisting}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/postprocess.part.prm.out}
 Secondly, a simulation like this -- in 3d, with a significant number of cells,
 and for a significant number of time steps -- will likely take a good amount of
 time. The computations for which we show results below was run using 64
@@ -3599,11 +3298,7 @@ processors by running it using the command
 during such a run, a significant amount of compute time would be lost if we had
 to run everything from the start. However, we can avoid this by periodically
 checkpointing the state of the computation:
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-subsection Checkpointing
-  set Steps between checkpoint = 50 % \index[prmindex]{Steps between checkpoint} \index[prmindexfull]{Checkpointing!Steps between checkpoint} %
-end
-\end{lstlisting}
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/checkpoint.part.prm.out}
 If the computation does crash (or if a computation runs out of the time limit
 imposed by a scheduling system), then it can be restarted from such
 checkpointing files (see the parameter {\tt Resume computation}
@@ -3741,6 +3436,7 @@ postprocessors.
 \end{figure}
 
 \subsubsection{Convection in a box with prescribed, variable velocity boundary conditions}
+\label{sec:cookbooks-platelike}
 
 A similarly simple setup to the ones considered in the previous subsections is
 to equip the model we had with a different set of boundary conditions. There, we used slip boundary
@@ -3765,14 +3461,7 @@ input file. It essentially extends the input file considered in the previous exa
 The part of this file that we are particularly interested in in the current
 context is the selection of the kind of boundary conditions on the four
 sides of the box geometry, which we do using a section like this:
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-subsection Model settings
-  set Fixed temperature boundary indicators   = 2, 3 % \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
-  set Zero velocity boundary indicators       =  % \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
-  set Tangential velocity boundary indicators = 0, 1, 2 % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
-  set Prescribed velocity boundary indicators = 3: function % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
-end
-\end{lstlisting}
+\lstinputlisting[language=prmfile]{cookbooks/platelike-boundary/modelsettings.part.prm.out}
 
 Following the convention for numbering boundaries described in the previous
 section, this means that we prescribe a fixed temperature at the bottom and top sides of the box (boundary
@@ -3786,15 +3475,7 @@ velocity vector at the boundary.
 
 The second part we need is that we actually describe the function that sets the
 velocity. We do this as follows:
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-subsection Boundary velocity model
-  subsection Function
-    set Variable names      = x,z,t % \index[prmindex]{Variable names} \index[prmindexfull]{Boundary velocity model!Function!Variable names} %
-    set Function constants  = pi=3.1415926 % \index[prmindex]{Function constants} \index[prmindexfull]{Boundary velocity model!Function!Function constants} %
-    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0 % \index[prmindex]{Function expression} \index[prmindexfull]{Boundary velocity model!Function!Function expression} %
-  end
-end
-\end{lstlisting}
+\lstinputlisting[language=prmfile]{cookbooks/platelike-boundary/boundary.part.prm.out}
 The first of these gives names to the components of the position vector (here,
 we are in 2d and we use $x$ and $z$ as spatial variable names) and the time.
 We could have left this entry at its default, \texttt{x,y,t}, but since we
@@ -3843,112 +3524,11 @@ The reason is, of course, that there is no incompressible (divergence free) flow
 field that allows for a constant vertical outflow component along the top
 boundary without corresponding inflow anywhere else.}
 
+\marginpar{Is there a reason that this is not a listings environment?}
+
 The remainder of the setup is described in the following, complete input file:
-\begin{lstlisting}[frame=single,language=prmfile,escapechar=\%]
-############### Global parameters
+\lstinputlisting[language=prmfile]{cookbooks/platelike-boundary/platelike.prm.out}
 
-set Dimension                              = 2 % \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
-set Start time                             = 0 % \index[prmindex]{Start time} \index[prmindexfull]{Start time} %
-set End time                               = 20 % \index[prmindex]{End time} \index[prmindexfull]{End time} %
-set Use years in output instead of seconds = false % \index[prmindex]{Use years in output instead of seconds} \index[prmindexfull]{Use years in output instead of seconds} %
-set Output directory                       = output % \index[prmindex]{Output directory} \index[prmindexfull]{Output directory} %
-
-
-############### Parameters describing the model
-# Let us here choose again a box domain of size 2x1
-# where we fix the temperature at the bottom and top,
-# allow free slip along the bottom, left and right,
-# and prescribe the velocity along the top using the
-# `function' description.
-
-subsection Geometry model
-  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
-
-  subsection Box
-    set X extent = 2 % \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
-    set Y extent = 1 % \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
-  end
-end
-
-
-subsection Model settings
-  set Fixed temperature boundary indicators   = 2, 3 % \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
-  set Zero velocity boundary indicators       =  % \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
-  set Tangential velocity boundary indicators = 0, 1, 2 % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
-  set Prescribed velocity boundary indicators = 3: function % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
-end
-
-
-# We then set the temperature to one at the bottom and zero
-# at the top:
-subsection Boundary temperature model
-  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
-
-  subsection Box
-    set Bottom temperature = 1 % \index[prmindex]{Bottom temperature} \index[prmindexfull]{Boundary temperature model!Box!Bottom temperature} %
-    set Top temperature    = 0 % \index[prmindex]{Top temperature} \index[prmindexfull]{Boundary temperature model!Box!Top temperature} %
-  end
-end
-
-
-# The velocity along the top boundary models a spreading
-# center that is moving left and right:
-subsection Boundary velocity model
-  subsection Function
-    set Variable names      = x,z,t % \index[prmindex]{Variable names} \index[prmindexfull]{Boundary velocity model!Function!Variable names} %
-    set Function constants  = pi=3.1415926 % \index[prmindex]{Function constants} \index[prmindexfull]{Boundary velocity model!Function!Function constants} %
-    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0 % \index[prmindex]{Function expression} \index[prmindexfull]{Boundary velocity model!Function!Function expression} %
-  end
-end
-
-
-# We then choose a vertical gravity model and describe the
-# initial temperature with a vertical gradient. The default
-# strength for gravity is one. The material model is the
-# same as before.
-subsection Gravity model
-  set Model name = vertical % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
-end
-
-
-subsection Initial conditions
-  set Model name = function % \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
-
-  subsection Function
-    set Variable names      = x,z % \index[prmindex]{Variable names} \index[prmindexfull]{Initial conditions!Function!Variable names} %
-    set Function expression = (1-z)     % \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
-  end
-end
-
-
-subsection Material model
-  set Model name = simple % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
-
-  subsection Simple model
-    set Thermal conductivity          = 1e-6 % \index[prmindex]{Thermal conductivity} \index[prmindexfull]{Material model!Simple model!Thermal conductivity} %
-    set Thermal expansion coefficient = 1e-4 % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Simple model!Thermal expansion coefficient} %
-    set Viscosity                     = 1 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
-  end
-end
-
-
-# The final part of this input file describes how many times the
-# mesh is refined and what to do with the solution once computed
-subsection Mesh refinement
-  set Initial adaptive refinement        = 0 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
-  set Initial global refinement          = 5 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
-  set Time steps between mesh refinement = 0 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
-end
-
-
-subsection Postprocess
-  set List of postprocessors = visualization, temperature statistics, heat flux statistics % \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
-
-  subsection Visualization
-    set Time between graphical output = 0.1 % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
-  end
-end
-\end{lstlisting}
 
 This model description yields a setup with a Rayleigh number of 200 (taking
 into account that the domain has size 2). It would, thus, be dominated by heat
@@ -5925,7 +5505,7 @@ The benchmark can be run using the parameter files in \url{benchmark/inclusion/}
 
 \marginpar{The following prm file isn't annotated yet. How to annotate if we have a .lib?}
 
-\lstinputlisting[frame=single,language=prmfile]{cookbooks/benchmarks/inclusion.prm}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/inclusion.prm.out}
 
 \subsubsection{The ``Stokes' law'' benchmark}
 \label{sec:benchmark-stokes_law}
