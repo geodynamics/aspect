@@ -105,13 +105,11 @@ namespace aspect
       statistics.add_value (name1, global_internal_heating_integrals/global_volume);
       // also make sure that the other columns filled by the this object
       // all show up with sufficient accuracy and in scientific notation
-
-      statistics.set_precision (name2, 8);
-      statistics.set_scientific (name2, true);
+      statistics.set_precision (name1, 8);
+      statistics.set_scientific (name1, true);
 
       const std::string name2("Total internal heating rate (W) ");
       statistics.add_value (name2, global_internal_heating_integrals);
-
       // also make sure that the other columns filled by the this object
       // all show up with sufficient accuracy and in scientific notation
       statistics.set_precision (name2, 8);
