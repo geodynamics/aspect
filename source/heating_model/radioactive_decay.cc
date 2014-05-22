@@ -175,9 +175,9 @@ namespace aspect
                                   "Implementation of a model in which the internal "
                                   "heating rate is radioactive decaying in the following rule:\n"
                                   "(initial concentration)*0.5^(time/(half life))\n"
-                                  "The curst and mantle can have different concentrations, and the crust can be "
+                                  "The crust and mantle can have different concentrations, and the crust can be "
                                   "defined either by depth or by a certain compositional field.\n"
-                                  "The formula is interpreted as having units W/kg. \n\n")
+                                  "The formula is interpreted as having units W/kg.")
   }                                              
 }                                                
                                                  
