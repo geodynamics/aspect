@@ -59,9 +59,9 @@ namespace aspect
                                                                    std::vector<double> (n_q_points));
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
-          this->n_compositional_fields());
+                                                                     this->n_compositional_fields());
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
-          this->n_compositional_fields());
+                                                                       this->n_compositional_fields());
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -71,66 +71,56 @@ namespace aspect
           {
             fe_values.reinit (cell);
 
-            // retrieve pressure, temperature and composition in case viscosity depends on it
-            if (this->get_material_model().viscosity_depends_on(MaterialModel::NonlinearDependence::any_variable))
-              {
-                fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                                                          in.pressure);
-                fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                                                                                             in.temperature);
-                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                  fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values 
-                           (this->get_solution(),prelim_composition_values[c]);
+            // retrieve the input for the material model
+            // TODO test whether viscosity depends on temperature, pressure or composition?
+            fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
+                                                                                      in.pressure);
+            fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
+                                                                                         in.temperature);
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values
+              (this->get_solution(),prelim_composition_values[c]);
 
-                for (unsigned int i=0;i<n_q_points;++i)
-                  {
-                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                      in.composition[i][c] = prelim_composition_values[c][i];
-                  }
-              }
-            else
+            for (unsigned int i=0; i<n_q_points; ++i)
               {
-                in.pressure.resize(0);
-                in.temperature.resize(0);
-                in.composition.resize(0);
-                in.position.resize(0);
+                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                  in.composition[i][c] = prelim_composition_values[c][i];
               }
 
             // retrieve the strain rate
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
-                                                                                                     in.strain_rate);
-            // get the viscosity  
+                in.strain_rate);
+            // get the viscosity from the material model
             this->get_material_model().evaluate(in, out);
 
             // integrate the local viscous dissipation $2\mu(\dot{\epsilon}::\dot{\epsilon})$ over the cell
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                local_dissipation_integral += out.viscosities[q] * 2.0 * in.strain_rate[q].norm() * 
-                                               in.strain_rate[q].norm() * fe_values.JxW(q);
+                local_dissipation_integral += out.viscosities[q] * 2.0 * in.strain_rate[q].norm() *
+                                              in.strain_rate[q].norm() * fe_values.JxW(q);
               }
           }
 
-//      const double global_dissipation_integral
-      // now compute global sum and divide by 2 to obtain the global viscous dissipation
+      // compute the viscous dissipation of the whole domain
       const double viscous_dissipation
         = 0.5 * ( Utilities::MPI::sum (local_dissipation_integral, this->get_mpi_communicator()));
-
-//      const double viscous_dissipation = global_dissipation_integral * 0.5;
 
       if (this->convert_output_to_years() == true)
         {
           // make sure that the columns filled by the this object
           // all show up with sufficient accuracy and in scientific notation
           const char *columns[] = { "Total viscous dissipation (J/yr/m)", //TODO does it make sense to output this?
-                                    "Total viscous dissipation (kW/m)"
+                                    "Total viscous dissipation (kJ/yr/m)"
                                   };
+
+          statistics.add_value (columns[0], viscous_dissipation * year_in_seconds);
+          statistics.add_value (columns[1], viscous_dissipation * year_in_seconds / 1000.0);
+
           for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
             {
               statistics.set_precision (columns[i], 8);
               statistics.set_scientific (columns[i], true);
             }
-          statistics.add_value (columns[0], viscous_dissipation * year_in_seconds);
-          statistics.add_value (columns[1], viscous_dissipation / 1000.0);
         }
       else
         {
@@ -139,13 +129,15 @@ namespace aspect
           const char *columns[] = { "Total viscous dissipation (W/m)",
                                     "Total viscous dissipation (kW/m)"
                                   };
+
+          statistics.add_value (columns[0], viscous_dissipation);
+          statistics.add_value (columns[1], viscous_dissipation/1000.0);
+
           for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
             {
               statistics.set_precision (columns[i], 8);
               statistics.set_scientific (columns[i], true);
             }
-          statistics.add_value (columns[0], viscous_dissipation);
-          statistics.add_value (columns[1], viscous_dissipation/1000.0);
         }
 
       std::ostringstream output;
@@ -153,8 +145,8 @@ namespace aspect
       if (this->convert_output_to_years() == true)
         output << viscous_dissipation * year_in_seconds
                << " J/yr/m"
-               << viscous_dissipation / 1000.0
-               << " kW/m";
+               << viscous_dissipation *year_in_seconds / 1000.0
+               << " kJ/yr/m";
       else
         output << viscous_dissipation
                << " W/m"

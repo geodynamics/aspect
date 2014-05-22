@@ -1,0 +1,16 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Iterations for Stokes solver
+# 10: Time step size (seconds)
+# 11: Visualization file name
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+0 0.0000e+00 64 2312  729  729 0 0 18 4.0291e+14                                                   "" 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 85 3271 1033 1033 0 0 18 2.1717e+14                                                   "" 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 99 3853 1218 1218 0 0 18 2.3268e+14 output-viscous_dissipation_statistics/solution-00000 4.21811950e-11 5.65834060e-10 
