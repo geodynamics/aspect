@@ -150,13 +150,15 @@ namespace aspect
                 (Utilities::split_string_list
                 (prm.get("Initial concentration crust")));
             AssertThrow(radioactive_initial_concentration_crust.size()==n_radio_heating_elements,
-                           "the number of radioactive elements."));
+                        ExcMessage("Number of initial concentration entities in crust "
+                                   "does not match the number of radioactive elements."));
                            
             radioactive_initial_concentration_mantle=Utilities::string_to_double
                 (Utilities::split_string_list
                 (prm.get("Initial concentration mantle")));
             AssertThrow(radioactive_initial_concentration_mantle.size()==n_radio_heating_elements,
-                           "the number of radioactive elements."));
+                        ExcMessage("Number of initial concentration entities in mantle "
+                                   "does not match the number of radioactive elements."));
 
             is_crust_defined_by_composition = prm.get_bool    ("Crust defined by composition");
             crust_depth                     = prm.get_double  ("Crust depth");
