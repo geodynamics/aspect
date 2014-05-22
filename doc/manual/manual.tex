@@ -1792,7 +1792,7 @@ select which one you want by putting a line like the following into
 \index[prmindex]{Dimension}
 \index[prmindexfull]{Dimension}
 the parameter file (see Section~\ref{sec:parameters}):
-\lstinputlisting[language=prmfile]{cookbooks/overview/dim.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/overview/dim.part.prm.out}
 
 Internally, dealing with the dimension builds on a feature in
 \dealii{}, upon which \aspect{} is based, that is called
@@ -3520,11 +3520,11 @@ then at the time of writing this you would get the following error message: \\
 \hspace*{.25cm}\texttt{Aborting!} \\
 \hspace*{.25cm}\texttt{----------------------------------------------------}
 
-\marginpar{Is there a reason that this is not a listings environment?}
-
 The reason is, of course, that there is no incompressible (divergence free) flow
 field that allows for a constant vertical outflow component along the top
 boundary without corresponding inflow anywhere else.}
+
+\marginpar{Is there a reason that this is not a listings environment?}
 
 The remainder of the setup is described in the following, complete input file:
 \lstinputlisting[language=prmfile]{cookbooks/platelike-boundary/platelike.prm.out}
