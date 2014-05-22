@@ -1,10 +1,10 @@
 ############### Global parameters
 
-set %\hyperref[parameters:Dimension]{Dimension}%                              = 2 % \index[prmindex]{%\hyperref[parameters:Dimension]{Dimension}%} \index[prmindexfull]{%\hyperref[parameters:Dimension]{Dimension}%} % % \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
-set %\hyperref[parameters:Start time]{Start time}%                             = 0 % \index[prmindex]{%\hyperref[parameters:Start time]{Start time}%} \index[prmindexfull]{%\hyperref[parameters:Start time]{Start time}%} % % \index[prmindex]{Start time} \index[prmindexfull]{Start time} %
-set %\hyperref[parameters:End time]{End time}%                               = 20 % \index[prmindex]{%\hyperref[parameters:End time]{End time}%} \index[prmindexfull]{%\hyperref[parameters:End time]{End time}%} % % \index[prmindex]{End time} \index[prmindexfull]{End time} %
-set %\hyperref[parameters:Use years in output instead of seconds]{Use years in output instead of seconds}% = false % \index[prmindex]{%\hyperref[parameters:Use years in output instead of seconds]{Use years in output instead of seconds}%} \index[prmindexfull]{%\hyperref[parameters:Use years in output instead of seconds]{Use years in output instead of seconds}%} % % \index[prmindex]{Use years in output instead of seconds} \index[prmindexfull]{Use years in output instead of seconds} %
-set %\hyperref[parameters:Output directory]{Output directory}%                       = output % \index[prmindex]{%\hyperref[parameters:Output directory]{Output directory}%} \index[prmindexfull]{%\hyperref[parameters:Output directory]{Output directory}%} % % \index[prmindex]{Output directory} \index[prmindexfull]{Output directory} %
+set %\hyperref[parameters:Dimension]{Dimension}%                              = 2 % \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
+set %\hyperref[parameters:Start time]{Start time}%                             = 0 % \index[prmindex]{Start time} \index[prmindexfull]{Start time} %
+set %\hyperref[parameters:End time]{End time}%                               = 20 % \index[prmindex]{End time} \index[prmindexfull]{End time} %
+set %\hyperref[parameters:Use years in output instead of seconds]{Use years in output instead of seconds}% = false % \index[prmindex]{Use years in output instead of seconds} \index[prmindexfull]{Use years in output instead of seconds} %
+set %\hyperref[parameters:Output directory]{Output directory}%                       = output % \index[prmindex]{Output directory} \index[prmindexfull]{Output directory} %
 
 
 ############### Parameters describing the model
@@ -15,31 +15,31 @@ set %\hyperref[parameters:Output directory]{Output directory}%                  
 # `function' description.
 
 subsection %\hyperref[parameters:Geometry_20model]{Geometry model}%
-  set %\hyperref[parameters:Geometry model/Model name]{Model name}% = box % \index[prmindex]{%\hyperref[parameters:Geometry model/Model name]{Model name}%} \index[prmindexfull]{Geometry model!%\hyperref[parameters:Geometry model/Model name]{Model name}%} % % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
+  set %\hyperref[parameters:Geometry model/Model name]{Model name}% = box % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
 
   subsection %\hyperref[parameters:Geometry_20model/Box]{Box}%
-    set %\hyperref[parameters:Geometry model/Box/X extent]{X extent}% = 2 % \index[prmindex]{%\hyperref[parameters:Geometry model/Box/X extent]{X extent}%} \index[prmindexfull]{Geometry model!Box!%\hyperref[parameters:Geometry model/Box/X extent]{X extent}%} % % \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
-    set %\hyperref[parameters:Geometry model/Box/Y extent]{Y extent}% = 1 % \index[prmindex]{%\hyperref[parameters:Geometry model/Box/Y extent]{Y extent}%} \index[prmindexfull]{Geometry model!Box!%\hyperref[parameters:Geometry model/Box/Y extent]{Y extent}%} % % \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
+    set %\hyperref[parameters:Geometry model/Box/X extent]{X extent}% = 2 % \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
+    set %\hyperref[parameters:Geometry model/Box/Y extent]{Y extent}% = 1 % \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
   end
 end
 
 
 subsection %\hyperref[parameters:Model_20settings]{Model settings}%
-  set %\hyperref[parameters:Model settings/Fixed temperature boundary indicators]{Fixed temperature boundary indicators}%   = 2, 3 % \index[prmindex]{%\hyperref[parameters:Model settings/Fixed temperature boundary indicators]{Fixed temperature boundary indicators}%} \index[prmindexfull]{Model settings!%\hyperref[parameters:Model settings/Fixed temperature boundary indicators]{Fixed temperature boundary indicators}%} % % \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
-  set %\hyperref[parameters:Model settings/Zero velocity boundary indicators]{Zero velocity boundary indicators}%       =  % \index[prmindex]{%\hyperref[parameters:Model settings/Zero velocity boundary indicators]{Zero velocity boundary indicators}%} \index[prmindexfull]{Model settings!%\hyperref[parameters:Model settings/Zero velocity boundary indicators]{Zero velocity boundary indicators}%} % % \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
-  set %\hyperref[parameters:Model settings/Tangential velocity boundary indicators]{Tangential velocity boundary indicators}% = 0, 1, 2 % \index[prmindex]{%\hyperref[parameters:Model settings/Tangential velocity boundary indicators]{Tangential velocity boundary indicators}%} \index[prmindexfull]{Model settings!%\hyperref[parameters:Model settings/Tangential velocity boundary indicators]{Tangential velocity boundary indicators}%} % % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
-  set %\hyperref[parameters:Model settings/Prescribed velocity boundary indicators]{Prescribed velocity boundary indicators}% = 3: function % \index[prmindex]{%\hyperref[parameters:Model settings/Prescribed velocity boundary indicators]{Prescribed velocity boundary indicators}%} \index[prmindexfull]{Model settings!%\hyperref[parameters:Model settings/Prescribed velocity boundary indicators]{Prescribed velocity boundary indicators}%} % % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
+  set %\hyperref[parameters:Model settings/Fixed temperature boundary indicators]{Fixed temperature boundary indicators}%   = 2, 3 % \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
+  set %\hyperref[parameters:Model settings/Zero velocity boundary indicators]{Zero velocity boundary indicators}%       = % \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
+  set %\hyperref[parameters:Model settings/Tangential velocity boundary indicators]{Tangential velocity boundary indicators}% = 0, 1, 2 % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
+  set %\hyperref[parameters:Model settings/Prescribed velocity boundary indicators]{Prescribed velocity boundary indicators}% = 3: function % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
 end
 
 
 # We then set the temperature to one at the bottom and zero
 # at the top:
 subsection %\hyperref[parameters:Boundary_20temperature_20model]{Boundary temperature model}%
-  set %\hyperref[parameters:Boundary temperature model/Model name]{Model name}% = box % \index[prmindex]{%\hyperref[parameters:Boundary temperature model/Model name]{Model name}%} \index[prmindexfull]{Boundary temperature model!%\hyperref[parameters:Boundary temperature model/Model name]{Model name}%} % % \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
+  set %\hyperref[parameters:Boundary temperature model/Model name]{Model name}% = box % \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
 
   subsection %\hyperref[parameters:Boundary_20temperature_20model/Box]{Box}%
-    set %\hyperref[parameters:Boundary temperature model/Box/Bottom temperature]{Bottom temperature}% = 1 % \index[prmindex]{%\hyperref[parameters:Boundary temperature model/Box/Bottom temperature]{Bottom temperature}%} \index[prmindexfull]{Boundary temperature model!Box!%\hyperref[parameters:Boundary temperature model/Box/Bottom temperature]{Bottom temperature}%} % % \index[prmindex]{Bottom temperature} \index[prmindexfull]{Boundary temperature model!Box!Bottom temperature} %
-    set %\hyperref[parameters:Boundary temperature model/Box/Top temperature]{Top temperature}%    = 0 % \index[prmindex]{%\hyperref[parameters:Boundary temperature model/Box/Top temperature]{Top temperature}%} \index[prmindexfull]{Boundary temperature model!Box!%\hyperref[parameters:Boundary temperature model/Box/Top temperature]{Top temperature}%} % % \index[prmindex]{Top temperature} \index[prmindexfull]{Boundary temperature model!Box!Top temperature} %
+    set %\hyperref[parameters:Boundary temperature model/Box/Bottom temperature]{Bottom temperature}% = 1 % \index[prmindex]{Bottom temperature} \index[prmindexfull]{Boundary temperature model!Box!Bottom temperature} %
+    set %\hyperref[parameters:Boundary temperature model/Box/Top temperature]{Top temperature}%    = 0 % \index[prmindex]{Top temperature} \index[prmindexfull]{Boundary temperature model!Box!Top temperature} %
   end
 end
 
@@ -48,9 +48,9 @@ end
 # center that is moving left and right:
 subsection %\hyperref[parameters:Boundary_20velocity_20model]{Boundary velocity model}%
   subsection %\hyperref[parameters:Boundary_20velocity_20model/Function]{Function}%
-    set %\hyperref[parameters:Boundary velocity model/Function/Variable names]{Variable names}%      = x,z,t % \index[prmindex]{%\hyperref[parameters:Boundary velocity model/Function/Variable names]{Variable names}%} \index[prmindexfull]{Boundary velocity model!Function!%\hyperref[parameters:Boundary velocity model/Function/Variable names]{Variable names}%} % % \index[prmindex]{Variable names} \index[prmindexfull]{Boundary velocity model!Function!Variable names} %
-    set %\hyperref[parameters:Boundary velocity model/Function/Function constants]{Function constants}%  = pi=3.1415926 % \index[prmindex]{%\hyperref[parameters:Boundary velocity model/Function/Function constants]{Function constants}%} \index[prmindexfull]{Boundary velocity model!Function!%\hyperref[parameters:Boundary velocity model/Function/Function constants]{Function constants}%} % % \index[prmindex]{Function constants} \index[prmindexfull]{Boundary velocity model!Function!Function constants} %
-    set %\hyperref[parameters:Boundary velocity model/Function/Function expression]{Function expression}% = if(x>1+sin(0.5*pi*t), 1, -1); 0 % \index[prmindex]{%\hyperref[parameters:Boundary velocity model/Function/Function expression]{Function expression}%} \index[prmindexfull]{Boundary velocity model!Function!%\hyperref[parameters:Boundary velocity model/Function/Function expression]{Function expression}%} % % \index[prmindex]{Function expression} \index[prmindexfull]{Boundary velocity model!Function!Function expression} %
+    set %\hyperref[parameters:Boundary velocity model/Function/Variable names]{Variable names}%      = x,z,t % \index[prmindex]{Variable names} \index[prmindexfull]{Boundary velocity model!Function!Variable names} %
+    set %\hyperref[parameters:Boundary velocity model/Function/Function constants]{Function constants}%  = pi=3.1415926 % \index[prmindex]{Function constants} \index[prmindexfull]{Boundary velocity model!Function!Function constants} %
+    set %\hyperref[parameters:Boundary velocity model/Function/Function expression]{Function expression}% = if(x>1+sin(0.5*pi*t), 1, -1); 0 % \index[prmindex]{Function expression} \index[prmindexfull]{Boundary velocity model!Function!Function expression} %
   end
 end
 
@@ -60,27 +60,27 @@ end
 # strength for gravity is one. The material model is the
 # same as before.
 subsection %\hyperref[parameters:Gravity_20model]{Gravity model}%
-  set %\hyperref[parameters:Gravity model/Model name]{Model name}% = vertical % \index[prmindex]{%\hyperref[parameters:Gravity model/Model name]{Model name}%} \index[prmindexfull]{Gravity model!%\hyperref[parameters:Gravity model/Model name]{Model name}%} % % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
+  set %\hyperref[parameters:Gravity model/Model name]{Model name}% = vertical % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
 end
 
 
 subsection %\hyperref[parameters:Initial_20conditions]{Initial conditions}%
-  set %\hyperref[parameters:Initial conditions/Model name]{Model name}% = function % \index[prmindex]{%\hyperref[parameters:Initial conditions/Model name]{Model name}%} \index[prmindexfull]{Initial conditions!%\hyperref[parameters:Initial conditions/Model name]{Model name}%} % % \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
+  set %\hyperref[parameters:Initial conditions/Model name]{Model name}% = function % \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
 
   subsection %\hyperref[parameters:Initial_20conditions/Function]{Function}%
-    set %\hyperref[parameters:Initial conditions/Function/Variable names]{Variable names}%      = x,z % \index[prmindex]{%\hyperref[parameters:Initial conditions/Function/Variable names]{Variable names}%} \index[prmindexfull]{Initial conditions!Function!%\hyperref[parameters:Initial conditions/Function/Variable names]{Variable names}%} % % \index[prmindex]{Variable names} \index[prmindexfull]{Initial conditions!Function!Variable names} %
-    set %\hyperref[parameters:Initial conditions/Function/Function expression]{Function expression}% = (1-z)     % \index[prmindex]{%\hyperref[parameters:Initial conditions/Function/Function expression]{Function expression}%} \index[prmindexfull]{Initial conditions!Function!%\hyperref[parameters:Initial conditions/Function/Function expression]{Function expression}%} % % \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
+    set %\hyperref[parameters:Initial conditions/Function/Variable names]{Variable names}%      = x,z % \index[prmindex]{Variable names} \index[prmindexfull]{Initial conditions!Function!Variable names} %
+    set %\hyperref[parameters:Initial conditions/Function/Function expression]{Function expression}% = (1-z) % \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
   end
 end
 
 
 subsection %\hyperref[parameters:Material_20model]{Material model}%
-  set %\hyperref[parameters:Material model/Model name]{Model name}% = simple % \index[prmindex]{%\hyperref[parameters:Material model/Model name]{Model name}%} \index[prmindexfull]{Material model!%\hyperref[parameters:Material model/Model name]{Model name}%} % % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+  set %\hyperref[parameters:Material model/Model name]{Model name}% = simple % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
 
   subsection %\hyperref[parameters:Material_20model/Simple_20model]{Simple model}%
-    set %\hyperref[parameters:Material model/Simple model/Thermal conductivity]{Thermal conductivity}%          = 1e-6 % \index[prmindex]{%\hyperref[parameters:Material model/Simple model/Thermal conductivity]{Thermal conductivity}%} \index[prmindexfull]{Material model!Simple model!%\hyperref[parameters:Material model/Simple model/Thermal conductivity]{Thermal conductivity}%} % % \index[prmindex]{Thermal conductivity} \index[prmindexfull]{Material model!Simple model!Thermal conductivity} %
-    set %\hyperref[parameters:Material model/Simple model/Thermal expansion coefficient]{Thermal expansion coefficient}% = 1e-4 % \index[prmindex]{%\hyperref[parameters:Material model/Simple model/Thermal expansion coefficient]{Thermal expansion coefficient}%} \index[prmindexfull]{Material model!Simple model!%\hyperref[parameters:Material model/Simple model/Thermal expansion coefficient]{Thermal expansion coefficient}%} % % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Simple model!Thermal expansion coefficient} %
-    set %\hyperref[parameters:Material model/Simple model/Viscosity]{Viscosity}%                     = 1 % \index[prmindex]{%\hyperref[parameters:Material model/Simple model/Viscosity]{Viscosity}%} \index[prmindexfull]{Material model!Simple model!%\hyperref[parameters:Material model/Simple model/Viscosity]{Viscosity}%} % % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
+    set %\hyperref[parameters:Material model/Simple model/Thermal conductivity]{Thermal conductivity}%          = 1e-6 % \index[prmindex]{Thermal conductivity} \index[prmindexfull]{Material model!Simple model!Thermal conductivity} %
+    set %\hyperref[parameters:Material model/Simple model/Thermal expansion coefficient]{Thermal expansion coefficient}% = 1e-4 % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Simple model!Thermal expansion coefficient} %
+    set %\hyperref[parameters:Material model/Simple model/Viscosity]{Viscosity}%                     = 1 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
   end
 end
 
@@ -88,16 +88,16 @@ end
 # The final part of this input file describes how many times the
 # mesh is refined and what to do with the solution once computed
 subsection %\hyperref[parameters:Mesh_20refinement]{Mesh refinement}%
-  set %\hyperref[parameters:Mesh refinement/Initial adaptive refinement]{Initial adaptive refinement}%        = 0 % \index[prmindex]{%\hyperref[parameters:Mesh refinement/Initial adaptive refinement]{Initial adaptive refinement}%} \index[prmindexfull]{Mesh refinement!%\hyperref[parameters:Mesh refinement/Initial adaptive refinement]{Initial adaptive refinement}%} % % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
-  set %\hyperref[parameters:Mesh refinement/Initial global refinement]{Initial global refinement}%          = 5 % \index[prmindex]{%\hyperref[parameters:Mesh refinement/Initial global refinement]{Initial global refinement}%} \index[prmindexfull]{Mesh refinement!%\hyperref[parameters:Mesh refinement/Initial global refinement]{Initial global refinement}%} % % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
-  set %\hyperref[parameters:Mesh refinement/Time steps between mesh refinement]{Time steps between mesh refinement}% = 0 % \index[prmindex]{%\hyperref[parameters:Mesh refinement/Time steps between mesh refinement]{Time steps between mesh refinement}%} \index[prmindexfull]{Mesh refinement!%\hyperref[parameters:Mesh refinement/Time steps between mesh refinement]{Time steps between mesh refinement}%} % % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
+  set %\hyperref[parameters:Mesh refinement/Initial adaptive refinement]{Initial adaptive refinement}%        = 0 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
+  set %\hyperref[parameters:Mesh refinement/Initial global refinement]{Initial global refinement}%          = 5 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
+  set %\hyperref[parameters:Mesh refinement/Time steps between mesh refinement]{Time steps between mesh refinement}% = 0 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
 end
 
 
 subsection %\hyperref[parameters:Postprocess]{Postprocess}%
-  set %\hyperref[parameters:Postprocess/List of postprocessors]{List of postprocessors}% = visualization, temperature statistics, heat flux statistics % \index[prmindex]{%\hyperref[parameters:Postprocess/List of postprocessors]{List of postprocessors}%} \index[prmindexfull]{Postprocess!%\hyperref[parameters:Postprocess/List of postprocessors]{List of postprocessors}%} % % \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
+  set %\hyperref[parameters:Postprocess/List of postprocessors]{List of postprocessors}% = visualization, temperature statistics, heat flux statistics % \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
 
   subsection %\hyperref[parameters:Postprocess/Visualization]{Visualization}%
-    set %\hyperref[parameters:Postprocess/Visualization/Time between graphical output]{Time between graphical output}% = 0.1 % \index[prmindex]{%\hyperref[parameters:Postprocess/Visualization/Time between graphical output]{Time between graphical output}%} \index[prmindexfull]{Postprocess!Visualization!%\hyperref[parameters:Postprocess/Visualization/Time between graphical output]{Time between graphical output}%} % % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
+    set %\hyperref[parameters:Postprocess/Visualization/Time between graphical output]{Time between graphical output}% = 0.1 % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
   end
 end

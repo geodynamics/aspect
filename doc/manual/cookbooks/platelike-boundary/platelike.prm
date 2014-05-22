@@ -1,10 +1,10 @@
 ############### Global parameters
 
-set Dimension                              = 2 % \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
-set Start time                             = 0 % \index[prmindex]{Start time} \index[prmindexfull]{Start time} %
-set End time                               = 20 % \index[prmindex]{End time} \index[prmindexfull]{End time} %
-set Use years in output instead of seconds = false % \index[prmindex]{Use years in output instead of seconds} \index[prmindexfull]{Use years in output instead of seconds} %
-set Output directory                       = output % \index[prmindex]{Output directory} \index[prmindexfull]{Output directory} %
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 20
+set Use years in output instead of seconds = false
+set Output directory                       = output
 
 
 ############### Parameters describing the model
@@ -15,31 +15,31 @@ set Output directory                       = output % \index[prmindex]{Output di
 # `function' description.
 
 subsection Geometry model
-  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
+  set Model name = box
 
   subsection Box
-    set X extent = 2 % \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
-    set Y extent = 1 % \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
+    set X extent = 2
+    set Y extent = 1
   end
 end
 
 
 subsection Model settings
-  set Fixed temperature boundary indicators   = 2, 3 % \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
-  set Zero velocity boundary indicators       =  % \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
-  set Tangential velocity boundary indicators = 0, 1, 2 % \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
-  set Prescribed velocity boundary indicators = 3: function % \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
+  set Fixed temperature boundary indicators   = 2, 3
+  set Zero velocity boundary indicators       =
+  set Tangential velocity boundary indicators = 0, 1, 2
+  set Prescribed velocity boundary indicators = 3: function
 end
 
 
 # We then set the temperature to one at the bottom and zero
 # at the top:
 subsection Boundary temperature model
-  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
+  set Model name = box
 
   subsection Box
-    set Bottom temperature = 1 % \index[prmindex]{Bottom temperature} \index[prmindexfull]{Boundary temperature model!Box!Bottom temperature} %
-    set Top temperature    = 0 % \index[prmindex]{Top temperature} \index[prmindexfull]{Boundary temperature model!Box!Top temperature} %
+    set Bottom temperature = 1
+    set Top temperature    = 0
   end
 end
 
@@ -48,9 +48,9 @@ end
 # center that is moving left and right:
 subsection Boundary velocity model
   subsection Function
-    set Variable names      = x,z,t % \index[prmindex]{Variable names} \index[prmindexfull]{Boundary velocity model!Function!Variable names} %
-    set Function constants  = pi=3.1415926 % \index[prmindex]{Function constants} \index[prmindexfull]{Boundary velocity model!Function!Function constants} %
-    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0 % \index[prmindex]{Function expression} \index[prmindexfull]{Boundary velocity model!Function!Function expression} %
+    set Variable names      = x,z,t
+    set Function constants  = pi=3.1415926
+    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
   end
 end
 
@@ -60,27 +60,27 @@ end
 # strength for gravity is one. The material model is the
 # same as before.
 subsection Gravity model
-  set Model name = vertical % \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
+  set Model name = vertical
 end
 
 
 subsection Initial conditions
-  set Model name = function % \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
+  set Model name = function
 
   subsection Function
-    set Variable names      = x,z % \index[prmindex]{Variable names} \index[prmindexfull]{Initial conditions!Function!Variable names} %
-    set Function expression = (1-z)     % \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
+    set Variable names      = x,z
+    set Function expression = (1-z)
   end
 end
 
 
 subsection Material model
-  set Model name = simple % \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+  set Model name = simple
 
   subsection Simple model
-    set Thermal conductivity          = 1e-6 % \index[prmindex]{Thermal conductivity} \index[prmindexfull]{Material model!Simple model!Thermal conductivity} %
-    set Thermal expansion coefficient = 1e-4 % \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Simple model!Thermal expansion coefficient} %
-    set Viscosity                     = 1 % \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 1e-4
+    set Viscosity                     = 1
   end
 end
 
@@ -88,16 +88,16 @@ end
 # The final part of this input file describes how many times the
 # mesh is refined and what to do with the solution once computed
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0 % \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
-  set Initial global refinement          = 5 % \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
-  set Time steps between mesh refinement = 0 % \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Time steps between mesh refinement = 0
 end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization, temperature statistics, heat flux statistics % \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
+  set List of postprocessors = visualization, temperature statistics, heat flux statistics
 
   subsection Visualization
-    set Time between graphical output = 0.1 % \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
+    set Time between graphical output = 0.1
   end
 end

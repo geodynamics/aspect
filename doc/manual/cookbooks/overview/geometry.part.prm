@@ -1,9 +1,9 @@
 set Dimension = 2
 subsection Geometry model
-  set Model name = box % \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
+  set Model name = box
 
   subsection Box
-    set X extent = 1 % \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
-    set Y extent = 1 % \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
+    set X extent = 1
+    set Y extent = 1
   end
 end
