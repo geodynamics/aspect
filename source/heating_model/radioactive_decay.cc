@@ -62,6 +62,7 @@ namespace aspect
                 timedependent_radioactive_heating_rate+=
                     radioactive_heating_rate[i_radio]
                     *(radioactive_initial_concentration_mantle[i_radio]*(1-crust_percent)
+                    +radioactive_initial_concentration_crust[i_radio]*crust_percent)*1e-6
                     *std::pow(0.5,time/half_decay_time[i_radio]);
         }
         return (timedependent_radioactive_heating_rate);
@@ -146,11 +147,13 @@ namespace aspect
                            "the number of radioactive elements."));
                            
             radioactive_initial_concentration_crust=Utilities::string_to_double
+                (Utilities::split_string_list
                 (prm.get("Initial concentration crust")));
             AssertThrow(radioactive_initial_concentration_crust.size()==n_radio_heating_elements,
                            "the number of radioactive elements."));
                            
             radioactive_initial_concentration_mantle=Utilities::string_to_double
+                (Utilities::split_string_list
                 (prm.get("Initial concentration mantle")));
             AssertThrow(radioactive_initial_concentration_mantle.size()==n_radio_heating_elements,
                            "the number of radioactive elements."));
@@ -174,11 +177,9 @@ namespace aspect
   {
     ASPECT_REGISTER_HEATING_MODEL(RadioactiveDecay,
                                   "radioactive decay",
-                                  "Implementation of a model in which the heating "
-                                  "rate is decaying exponentially over time \n"
-                                  "The formula is interpreted as having units "
-                                  "W/kg."
-                                  "\n\n")
+                                  "Implementation of a model in which the internal "
+                                  "heating rate is decaying exponentially over time \n"
+                                  "The formula is interpreted as having units W/kg. \n\n")
   }                                              
 }                                                
                                                  
