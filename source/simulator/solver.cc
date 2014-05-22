@@ -428,13 +428,13 @@ namespace aspect
 
     // copy current_linearization_point into it, because its distribution
     // is different.
-    remap.block (0) = current_linearization_point.block (0);
-    remap.block (1) = current_linearization_point.block (1);
+    remap.block (introspection.block_indices.velocities) = current_linearization_point.block (introspection.block_indices.velocities);
+    remap.block (introspection.block_indices.pressure) = current_linearization_point.block (introspection.block_indices.pressure);
 
     // before solving we scale the initial solution to the right dimensions
     denormalize_pressure (remap);
     current_constraints.set_zero (remap);
-    remap.block (1) /= pressure_scaling;
+    remap.block (introspection.block_indices.pressure) /= pressure_scaling;
     // if the model is compressible then we need to adjust the right hand
     // side of the equation to make it compatible with the matrix on the
     // left
@@ -454,8 +454,8 @@ namespace aspect
     // extract Stokes parts of rhs vector
     LinearAlgebra::BlockVector distributed_stokes_rhs(introspection.index_sets.stokes_partitioning);
 
-    distributed_stokes_rhs.block(0) = system_rhs.block(0);
-    distributed_stokes_rhs.block(1) = system_rhs.block(1);
+    distributed_stokes_rhs.block(introspection.block_indices.velocities) = system_rhs.block(introspection.block_indices.velocities);
+    distributed_stokes_rhs.block(introspection.block_indices.pressure) = system_rhs.block(introspection.block_indices.pressure);
 
     PrimitiveVectorMemory< LinearAlgebra::BlockVector > mem;
 
@@ -467,8 +467,8 @@ namespace aspect
                                               1e-12 * initial_residual);
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
                                         solver_tolerance);
-    SolverControl solver_control_expensive (system_matrix.block(0,1).m() +
-                                            system_matrix.block(1,0).m(), solver_tolerance);
+    SolverControl solver_control_expensive (system_matrix.block(introspection.block_indices.velocities,introspection.block_indices.pressure).m() +
+                                            system_matrix.block(introspection.block_indices.pressure,introspection.block_indices.velocities).m(), solver_tolerance);
 
     try
       {
@@ -516,12 +516,12 @@ namespace aspect
     current_constraints.distribute (distributed_stokes_solution);
 
     // now rescale the pressure back to real physical units
-    distributed_stokes_solution.block(1) *= pressure_scaling;
+    distributed_stokes_solution.block(introspection.block_indices.pressure) *= pressure_scaling;
 
     // then copy back the solution from the temporary (non-ghosted) vector
     // into the ghosted one with all solution components
-    solution.block(0) = distributed_stokes_solution.block(0);
-    solution.block(1) = distributed_stokes_solution.block(1);
+    solution.block(introspection.block_indices.velocities) = distributed_stokes_solution.block(introspection.block_indices.velocities);
+    solution.block(introspection.block_indices.pressure) = distributed_stokes_solution.block(introspection.block_indices.pressure);
 
     remove_nullspace(solution, distributed_stokes_solution);
 
