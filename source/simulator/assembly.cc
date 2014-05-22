@@ -241,6 +241,7 @@ namespace aspect
           std::vector<double>         current_pressure_values;
           std::vector<Tensor<1,dim> > current_pressure_gradients;
           std::vector<std::vector<double> > current_composition_values;
+          std::vector<double>         current_velocity_divergences;
 
           typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs;
           typename MaterialModel::Interface<dim>::MaterialModelOutputs material_model_outputs;
@@ -297,6 +298,7 @@ namespace aspect
           current_pressure_gradients(quadrature.size()),
           current_composition_values(n_compositional_fields,
                                      std::vector<double>(quadrature.size())),
+          current_velocity_divergences(quadrature.size()),
           material_model_inputs(quadrature.size(), n_compositional_fields),
           material_model_outputs(quadrature.size(), n_compositional_fields),
           explicit_material_model_inputs(quadrature.size(), n_compositional_fields),
@@ -341,6 +343,7 @@ namespace aspect
           current_pressure_values(scratch.current_pressure_values),
           current_pressure_gradients(scratch.current_pressure_gradients),
           current_composition_values(scratch.current_composition_values),
+          current_velocity_divergences(scratch.current_velocity_divergences),
           material_model_inputs(scratch.material_model_inputs),
           material_model_outputs(scratch.material_model_outputs),
           explicit_material_model_inputs(scratch.explicit_material_model_inputs),
@@ -1378,6 +1381,44 @@ namespace aspect
 
 
   template <int dim>
+  double
+  Simulator<dim>::compute_melting_RHS(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                      typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                                      typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                                      const AdvectionField     &advection_field,
+                                      const unsigned int q) const
+  {
+
+    if (!advection_field.is_porosity(introspection))
+      return 0.0;
+
+    Assert (scratch.material_model_outputs.densities[q] > 0,
+            ExcMessage ("The density needs to be a positive quantity "
+            		    "when melt transport is included in the simulation."));
+
+    const double melting_rate         = material_model_outputs.reaction_terms[q][advection_field.compositional_variable];
+    const double density              = material_model_outputs.densities[q];
+    const double current_phi          = material_model_inputs.composition[q][advection_field.compositional_variable];
+    const double divergece_u          = scratch.current_velocity_divergences[q];
+    const double compressibility      = (material_model->is_compressible()
+                                         ?
+                                         material_model_outputs.compressibilities[q]
+                                         :
+                                         0.0);
+    const Tensor<1,dim> current_u     = scratch.current_velocity_values[q];
+    const Tensor<1,dim>
+    gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
+
+
+    const double melt_transport_RHS = melting_rate / density
+    		                        + (1.0 - current_phi)
+    		                        * (divergece_u + compressibility * density * (current_u * gravity));
+
+    return melt_transport_RHS;
+  }
+
+
+  template <int dim>
   void Simulator<dim>::
   local_assemble_advection_system (const AdvectionField     &advection_field,
                                    const std::pair<double,double> global_field_range,
@@ -1472,6 +1513,8 @@ namespace aspect
         scratch.old_old_velocity_values);
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.current_velocity_values);
+    scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences(current_linearization_point,
+        scratch.current_velocity_divergences);
     
     //get the mesh velocity, as we need to subtract it off of the advection systems
     if (parameters.free_surface_enabled)
@@ -1577,11 +1620,17 @@ namespace aspect
                                                   advection_field,
                                                   q);
         const double reaction_term =
-          ((advection_field.is_temperature())
+          ((advection_field.is_temperature() || advection_field.is_porosity(introspection))
            ?
            0.0
            :
            scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+
+        const double melt_transport_RHS = compute_melting_RHS (scratch,
+                                                               scratch.material_model_inputs,
+                                                               scratch.material_model_outputs,
+                                                               advection_field,
+                                                               q);
 
         const double field_term_for_rhs
           = (use_bdf2_scheme ?
@@ -1611,7 +1660,7 @@ namespace aspect
             data.local_rhs(i)
             += (field_term_for_rhs * scratch.phi_field[i]
                 + time_step *
-                gamma
+                (gamma + melt_transport_RHS)
                 * scratch.phi_field[i]
                 + reaction_term
                 * scratch.phi_field[i])

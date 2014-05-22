@@ -418,6 +418,12 @@ namespace aspect
         is_temperature () const;
 
         /**
+         * Return whether this object refers to the porosity field.
+         */
+        bool
+        is_porosity (const Introspection<dim> &introspection) const;
+
+        /**
          * Look up the component index for this temperature or compositional field.
          * See Introspection::component_indices for more information.
          */
@@ -785,6 +791,22 @@ namespace aspect
                                   typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
                                   const AdvectionField &advection_field,
                                   const unsigned int q) const;
+
+
+      /**
+       * Compute the right-hand side for the advection system index. This is
+       * 0 for the temperature and all of the compositional fields, except for
+       * the porosity. It includes the melting rate and a term dependent
+       * on the density and velocity.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      double compute_melting_RHS(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                 typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                                 typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                                 const AdvectionField &advection_field,
+                                 const unsigned int q) const;
 
 
       /**
