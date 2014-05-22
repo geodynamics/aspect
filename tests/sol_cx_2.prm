@@ -1,4 +1,5 @@
 
+set Additional shared libraries            = ./libsolcx.so
 
 
 set Dimension = 2
@@ -71,7 +72,7 @@ end
 
 
 subsection Material model
-  set Model name = SolCx
+  set Model name = SolCxMaterial
 end
 
 
@@ -99,7 +100,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = DuretzEtAl error
+  set List of postprocessors = SolCxPostprocessor
 
   subsection Depth average
     set Time between graphical output = 1e8

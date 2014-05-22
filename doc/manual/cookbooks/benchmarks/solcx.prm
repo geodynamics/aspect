@@ -1,5 +1,4 @@
-# A description of the SolCX benchmark for which a known solution
-# is available. See the manual for more information.
+set Additional shared libraries            = ./libsolcx.so
 
 ############### Global parameters
 
@@ -33,7 +32,7 @@ end
 
 
 subsection Material model
-  set Model name = SolCx
+  set Model name = SolCxMaterial
 
   subsection SolCx
     set Viscosity jump = 1e6
@@ -76,5 +75,5 @@ end
 ############### Parameters describing the what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = DuretzEtAl error, visualization
+  set List of postprocessors = SolCxPostprocessor, visualization
 end
