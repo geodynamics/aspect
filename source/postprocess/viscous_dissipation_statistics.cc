@@ -65,6 +65,8 @@ namespace aspect
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
                                                                        this->n_compositional_fields());
 
+      std::vector<double> div_v(n_q_points);
+
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
@@ -74,7 +76,6 @@ namespace aspect
             fe_values.reinit (cell);
 
             // retrieve the input for the material model
-            // TODO test whether viscosity depends on temperature, pressure or composition?
             fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
                                                                                       in.pressure);
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
@@ -89,19 +90,24 @@ namespace aspect
                   in.composition[i][c] = prelim_composition_values[c][i];
               }
 
-            // retrieve the strain rate
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
                 in.strain_rate);
+
+            // get the divergence of velocity
+            fe_values[this->introspection().extractors.velocities].get_function_divergences (this->get_solution(), div_v);
+
             // get the viscosity from the material model
             this->get_material_model().evaluate(in, out);
 
             // calculate the local viscous dissipation integral
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                local_dissipation_integral += (2.0 * out.viscosities[q] * in.strain_rate[q].norm() *
-                                              in.strain_rate[q].norm() 
-                                            - in.pressure[q] * trace(in.strain_rate[q]))
-                                            * fe_values.JxW(q);
+                local_dissipation_integral += ( - in.pressure[q] * div_v[q]
+                                                + 2.0 * out.viscosities[q] * in.strain_rate[q] * in.strain_rate[q]
+                                                - (2.0 * out.viscosities[q] / 3.0) * div_v[q] * div_v[q])
+                                              * fe_values.JxW(q);
+                if (div_v[q] != 0)
+                  std::cout << div_v[q] << std::endl;
               }
           }
 
@@ -111,52 +117,31 @@ namespace aspect
 
       if (this->convert_output_to_years() == true)
         {
-          // make sure that the columns filled by the this object
+          // fill statistics file
+          // make sure that the columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
-          //TODO does it make sense to output this?
-          const char *columns[] = { "Total viscous dissipation (J/yr/m)",
-                                    "Total viscous dissipation (kJ/yr/m)"
-                                  };
-
-          statistics.add_value (columns[0], viscous_dissipation * year_in_seconds);
-          statistics.add_value (columns[1], viscous_dissipation * year_in_seconds / 1000.0);
-
-          for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
-            {
-              statistics.set_precision (columns[i], 8);
-              statistics.set_scientific (columns[i], true);
-            }
+          statistics.add_value ("Total viscous dissipation (J/yr/m)", viscous_dissipation * year_in_seconds);
+          statistics.set_precision ("Total viscous dissipation (J/yr/m)", 8);
+          statistics.set_scientific ("Total viscous dissipation (J/yr/m)", true);
         }
       else
         {
-          // make sure that the columns filled by the this object
+          // fill statistics file
+          // make sure that the columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
-          const char *columns[] = { "Total viscous dissipation (W/m)",
-                                    "Total viscous dissipation (kW/m)"
-                                  };
-
-          statistics.add_value (columns[0], viscous_dissipation);
-          statistics.add_value (columns[1], viscous_dissipation / 1000.0);
-
-          for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
-            {
-              statistics.set_precision (columns[i], 8);
-              statistics.set_scientific (columns[i], true);
-            }
+          statistics.add_value ("Total viscous dissipation (W/m)", viscous_dissipation);
+          statistics.set_precision ("Total viscous dissipation (W/m)", 8);
+          statistics.set_scientific ("Total viscous dissipation (W/m)", true);
         }
 
       std::ostringstream output;
       output.precision(3);
       if (this->convert_output_to_years() == true)
-        output << viscous_dissipation * year_in_seconds
-               << " J/yr/m"
-               << viscous_dissipation * year_in_seconds / 1000.0
-               << " kJ/yr/m";
+        output << viscous_dissipation *year_in_seconds
+               << " J/yr/m";
       else
         output << viscous_dissipation
-               << " W/m"
-               << viscous_dissipation / 1000.0
-               << " kW/m";
+               << " W/m";
 
       return std::pair<std::string, std::string> ("Total viscous dissipation:",
                                                   output.str());
@@ -174,9 +159,9 @@ namespace aspect
                                   "viscous dissipation statistics",
                                   "A postprocessor that computes the viscous dissipation"
                                   "for the whole domain as: "
-                                  "$\\frac{1}{2} \\int_{V} \\mathbf{\\sigma} : \\mathbr{\\dot{\\epsilon}}dV "
-                                  "= $\\frac{1}{2} \\int_{V} (-p\\delta_{ij}+2\\mu\\dot{\\epsilon}_{ij}) "
-                                  "(\\dot{\\epsilon_{ij}})dV$ ."
+                                  "$\\frac{1}{2} \\int_{V} \\mathbf{\\sigma} : \\mathbr{\\dot{\\epsilon}}dV$ "
+                                  "= $\\frac{1}{2} \\int_{V} (-p\\nabla \\cdot u+2\\mu\\dot{\\epsilon}:\\dot{\\epsilon} "
+                                  "- \\frac{2\\mu}{3}(\\nabla\\cdot)^{2}) dV$. "
                                  )
   }
 }
