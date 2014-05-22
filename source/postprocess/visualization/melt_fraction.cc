@@ -64,7 +64,7 @@ namespace aspect
             std::vector<double> composition(this->n_compositional_fields());
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              composition[c] = uh[q][this->introspection().component_indices.compositional_fields[0]+c];
+              composition[c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
 
             // anhydrous melting of peridotite after Katz, 2003
             const double T_solidus  = A1 + 273.15
