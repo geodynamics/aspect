@@ -506,6 +506,30 @@ namespace aspect
 
     // then interpolate the current boundary velocities. copy constraints
     // into current_constraints and then add to current_constraints
+    compute_current_constraints ();
+
+
+    //TODO: do this in a more efficient way (TH)? we really only need
+    // to make sure that the time dependent velocity boundary conditions
+    // end up in the right hand side in the right way; we currently do
+    // that by re-assembling the entire system
+    if (!velocity_boundary_conditions.empty())
+      rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
+
+
+    // notify different system components that we started the next time step
+    material_model->update();
+    gravity_model->update();
+    heating_model->update();
+  }
+
+
+  template <int dim>
+  void
+  Simulator<dim>::
+  compute_current_constraints ()
+  {
     current_constraints.clear ();
     current_constraints.reinit (introspection.index_sets.system_relevant_set);
     current_constraints.merge (constraints);
@@ -578,7 +602,6 @@ namespace aspect
                                                         introspection.n_components),
                                                     current_constraints,
                                                     introspection.component_masks.temperature);
-
         }
 
       // now do the same for the composition variable:
@@ -607,21 +630,6 @@ namespace aspect
           }
     }
     current_constraints.close();
-
-
-    //TODO: do this in a more efficient way (TH)? we really only need
-    // to make sure that the time dependent velocity boundary conditions
-    // end up in the right hand side in the right way; we currently do
-    // that by re-assembling the entire system
-    if (!velocity_boundary_conditions.empty())
-      rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
-
-
-
-    // notify different system components that we started the next time step
-    material_model->update();
-    gravity_model->update();
-    heating_model->update();
   }
 
 

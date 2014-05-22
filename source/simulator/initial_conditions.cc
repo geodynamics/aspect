@@ -164,8 +164,11 @@ namespace aspect
           }
 
         // then apply constraints and copy the
-        // result into vectors with ghost elements
-        constraints.distribute(initial_solution);
+        // result into vectors with ghost elements. to do so,
+        // we need the current constraints to be correct for
+        // the current time
+        compute_current_constraints ();
+        current_constraints.distribute(initial_solution);
 
         // copy temperature/composition block only
         const unsigned int blockidx = torc.block_index(introspection);
