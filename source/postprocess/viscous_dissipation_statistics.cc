@@ -40,7 +40,9 @@ namespace aspect
     ViscousDissipationStatistics<dim>::execute (TableHandler &statistics)
     {
       const QGauss<dim> quadrature_formula (this->get_fe()
-                                            .base_element(0).degree+1);
+                                            .base_element(this->introspection().base_elements.velocities)
+                                            .degree+1);
+
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -93,11 +95,17 @@ namespace aspect
             // get the viscosity from the material model
             this->get_material_model().evaluate(in, out);
 
-            // integrate the local viscous dissipation $2\mu(\dot{\epsilon}::\dot{\epsilon})$ over the cell
+            // calculate the local viscous dissipation integral
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                local_dissipation_integral += out.viscosities[q] * 2.0 * in.strain_rate[q].norm() *
-                                              in.strain_rate[q].norm() * fe_values.JxW(q);
+/*                local_dissipation_integral += (2.0 * out.viscosities[q] * in.strain_rate[q].norm() *
+                                              in.strain_rate[q].norm() 
+                                              - in.pressure[q] * trace(in.strain_rate[q]))
+                                              * fe_values.JxW(q);
+*/                local_dissipation_integral += (2.0 * out.viscosities[q] * in.strain_rate[q].norm() *
+                                                in.strain_rate[q].norm() 
+                                              - in.pressure[q] * trace(in.strain_rate[q]))
+                                              * fe_values.JxW(q);
               }
           }
 
@@ -109,7 +117,8 @@ namespace aspect
         {
           // make sure that the columns filled by the this object
           // all show up with sufficient accuracy and in scientific notation
-          const char *columns[] = { "Total viscous dissipation (J/yr/m)", //TODO does it make sense to output this?
+          //TODO does it make sense to output this?
+          const char *columns[] = { "Total viscous dissipation (J/yr/m)",
                                     "Total viscous dissipation (kJ/yr/m)"
                                   };
 
@@ -168,6 +177,10 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(ViscousDissipationStatistics,
                                   "viscous dissipation statistics",
                                   "A postprocessor that computes the viscous dissipation"
-                                  "for the whole domain.")
+                                  "for the whole domain as: "
+                                  "$\\frac{1}{2} \\int_{V} \\mathbf{\\sigma} : \\mathbr{\\dot{\\epsilon}}dV "
+                                  "= $\\frac{1}{2} \\int_{V} (-p\\delta_{ij}+2\\mu\\dot{\\epsilon}_{ij}) "
+                                  "(\\dot{\\epsilon_{ij}})dV$ ."
+                                 )
   }
 }
