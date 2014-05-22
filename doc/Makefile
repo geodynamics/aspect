@@ -6,7 +6,7 @@ aspect-files      = $(shell echo ../include/aspect/*.h \
                             ../include/aspect/*/*h     \
                             ../include/aspect/*/*/*h   \
                             modules/*h)
-aspect-manual-pix = $(shell echo manual/cookbooks/*/*png)
+aspect-manual-pix = $(shell find manual/ -name \*.png -o -name \*.prm.out)
 
 
 all: aspect.tag manual.pdf
