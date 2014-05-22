@@ -20,7 +20,7 @@
 /*  $Id$  */
 
 
-#include <aspect/heating_model/Radioactive_decay.h>
+#include <aspect/heating_model/radioactive_decay.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/global.h>
 
