@@ -790,7 +790,7 @@ namespace aspect
                                   typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                                   typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
                                   const AdvectionField &advection_field,
-                                  const unsigned int q) const;
+                                  const unsigned int q_point) const;
 
 
       /**
@@ -806,7 +806,7 @@ namespace aspect
                                  typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                                  typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
                                  const AdvectionField &advection_field,
-                                 const unsigned int q) const;
+                                 const unsigned int q_point) const;
 
 
       /**

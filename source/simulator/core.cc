@@ -668,6 +668,16 @@ namespace aspect
           coupling[x.velocities[d]][x.pressure] = DoFTools::always;
           coupling[x.pressure][x.velocities[d]] = DoFTools::always;
         }
+      if (parameters.include_melt_transport)
+        {
+        for (unsigned int d=0; d<dim; ++d)
+          {
+            coupling[x.velocities[d]][x.compaction_pressure] = DoFTools::always;
+            coupling[x.compaction_pressure][x.velocities[d]] = DoFTools::always;
+          }
+        // TODO: add coupling between pressure and pressure (second equation in the Keller et al. paper)
+        coupling[x.compaction_pressure][x.compaction_pressure] = DoFTools::always;
+        }
       coupling[x.temperature][x.temperature] = DoFTools::always;
       for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
         coupling[x.compositional_fields[c]][x.compositional_fields[c]]
