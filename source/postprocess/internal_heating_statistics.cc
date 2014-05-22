@@ -108,6 +108,9 @@ namespace aspect
       statistics.set_precision (name1, 8);
       statistics.set_scientific (name1, true);
 
+      // TODO:
+      // Total internal heating rate is not making sense in 2D at the moment,
+      // need to put a scale factor to transfer it to 3D.
       const std::string name2("Total internal heating rate (W) ");
       statistics.add_value (name2, global_internal_heating_integrals);
       // also make sure that the other columns filled by the this object
