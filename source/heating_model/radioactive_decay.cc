@@ -42,44 +42,37 @@ namespace aspect
         const std::vector<double> &composition,
         const Point<dim> &position) const
     {
-        double timedependent_radioactive_heating_rate=0;
+        double time = this->get_time();
+        // we get time passed as seconds (always) but may want
+        // to reinterpret it in years
+        if (this->convert_output_to_years())
+            time/=year_in_seconds;    
+        double timedependent_radioactive_heating_rates=0;
         if(n_radio_heating_elements!=0)
         {
-            double crust_percent=0;
+            double crust_fraction=0;
             if(is_crust_defined_by_composition)
             {
                 AssertThrow(crust_composition_num < composition.size(), ExcMessage("The composition number of crust is "
                                 " larger than number of composition fields."));
-                crust_percent=composition[crust_composition_num];
-                if(crust_percent<0)crust_percent=0;
-                if(crust_percent>1)crust_percent=1;
+                crust_fraction=composition[crust_composition_num];
+                if(crust_fraction<0)crust_fraction=0;
+                if(crust_fraction>1)crust_fraction=1;
             }
             else
                 if((this->get_geometry_model()).depth(position) < crust_depth)
-                    crust_percent=1.;
+                    crust_fraction=1.;
                     
             for(unsigned i_radio=0;i_radio<n_radio_heating_elements;i_radio++)
-                timedependent_radioactive_heating_rate+=
-                    radioactive_heating_rate[i_radio]
-                    *(radioactive_initial_concentration_mantle[i_radio]*(1-crust_percent)
-                    +radioactive_initial_concentration_crust[i_radio]*crust_percent)*1e-6
-                    *std::pow(0.5,time/half_decay_time[i_radio]);
+                timedependent_radioactive_heating_rates+=
+                    radioactive_heating_rates[i_radio]
+                    *(radioactive_initial_concentrations_mantle[i_radio]*(1-crust_fraction)
+                    +radioactive_initial_concentrationss_crust[i_radio]*crust_fraction)*1e-6 
+                    //1e-6 above is used to change concentration from ppm
+                    *std::pow(0.5,time/half_decay_times[i_radio]);
         }
-        return (timedependent_radioactive_heating_rate);
+        return (timedependent_radioactive_heating_rates);
     }
-
-
-    template <int dim>
-    void
-    RadioactiveDecay<dim>::update ()
-    {
-      time = this->get_time();
-      // we get time passed as seconds (always) but may want
-      // to reinterpret it in years
-      if (this->convert_output_to_years())
-        time/=year_in_seconds;
-    }
-
 
     template <int dim>
     void
@@ -92,19 +85,19 @@ namespace aspect
             prm.declare_entry("Number of elements","0",
                                 Patterns::Integer(0),
                                 "Number of radioactive elements");
-            prm.declare_entry("Heating rate","",
+            prm.declare_entry("Heating rates","",
                                 Patterns::List (Patterns::Double ()),
-                                "Heating rate of different element (W/kg)");
-            prm.declare_entry("Half decay time","",
+                                "Heating rates of different elements (W/kg)");
+            prm.declare_entry("Half decay times","",
                                 Patterns::List (Patterns::Double (0)),
-                                "Half decay time. Units: (Seconds), or "
+                                "Half decay times. Units: (Seconds), or "
                                 "(Years) if set 'use years instead of seconds'.");
-            prm.declare_entry("Initial concentration crust","",
+            prm.declare_entry("Initial concentrations crust","",
                                 Patterns::List (Patterns::Double (0)),
-                                "Initial concentration of different elements (ppm)");
-            prm.declare_entry("Initial concentration mantle","",
+                                "Initial concentrations of different elements (ppm)");
+            prm.declare_entry("Initial concentrations mantle","",
                                 Patterns::List (Patterns::Double (0)),
-                                "Initial concentration of different elements (ppm)");
+                                "Initial concentrations of different elements (ppm)");
             prm.declare_entry("Crust defined by composition","false",
                                 Patterns::Bool(),
                                 "Whether crust defined by composition or depth");
@@ -132,31 +125,31 @@ namespace aspect
         {
         
             n_radio_heating_elements= prm.get_integer ("Number of elements");
-            radioactive_heating_rate=Utilities::string_to_double
+            radioactive_heating_rates=Utilities::string_to_double
                 (Utilities::split_string_list
                 (prm.get("Heating rate")));
-            AssertThrow(radioactive_heating_rate.size()==n_radio_heating_elements,
+            AssertThrow(radioactive_heating_rates.size()==n_radio_heating_elements,
                 ExcMessage("Number of heating rate entities does not match "
                            "the number of radioactive elements."));
                            
-            half_decay_time=Utilities::string_to_double
+            half_decay_times=Utilities::string_to_double
                 (Utilities::split_string_list
                  (prm.get("Half decay time")));
-            AssertThrow(half_decay_time.size()==n_radio_heating_elements,
+            AssertThrow(half_decay_times.size()==n_radio_heating_elements,
                 ExcMessage("Number of half decay time entities does not match "
                            "the number of radioactive elements."));
                            
-            radioactive_initial_concentration_crust=Utilities::string_to_double
+            radioactive_initial_concentrations_crust=Utilities::string_to_double
                 (Utilities::split_string_list
                 (prm.get("Initial concentration crust")));
-            AssertThrow(radioactive_initial_concentration_crust.size()==n_radio_heating_elements,
+            AssertThrow(radioactive_initial_concentrations_crust.size()==n_radio_heating_elements,
                         ExcMessage("Number of initial concentration entities in crust "
                                    "does not match the number of radioactive elements."));
                            
-            radioactive_initial_concentration_mantle=Utilities::string_to_double
+            radioactive_initial_concentrations_mantle=Utilities::string_to_double
                 (Utilities::split_string_list
                 (prm.get("Initial concentration mantle")));
-            AssertThrow(radioactive_initial_concentration_mantle.size()==n_radio_heating_elements,
+            AssertThrow(radioactive_initial_concentrations_mantle.size()==n_radio_heating_elements,
                         ExcMessage("Number of initial concentration entities in mantle "
                                    "does not match the number of radioactive elements."));
 
@@ -180,7 +173,10 @@ namespace aspect
     ASPECT_REGISTER_HEATING_MODEL(RadioactiveDecay,
                                   "radioactive decay",
                                   "Implementation of a model in which the internal "
-                                  "heating rate is decaying exponentially over time \n"
+                                  "heating rate is radioactive decaying in the following rule:\n"
+                                  "(initial concentration)*0.5^(time/(half life))\n"
+                                  "The curst and mantle can have different concentrations, and the crust can be "
+                                  "defined either by depth or by a certain compositional field.\n"
                                   "The formula is interpreted as having units W/kg. \n\n")
   }                                              
 }                                                

@@ -101,20 +101,28 @@ namespace aspect
       double global_volume=global_value[1];
 
       // finally produce something for the statistics file
-      const std::string name("Average internal heating rate (W/kg) ");
-      statistics.add_value (name, global_internal_heating_integrals/global_volume);
-
+      const std::string name1("Average internal heating rate (W/kg) ");
+      statistics.add_value (name1, global_internal_heating_integrals/global_volume);
       // also make sure that the other columns filled by the this object
       // all show up with sufficient accuracy and in scientific notation
 
-      statistics.set_precision (name, 8);
-      statistics.set_scientific (name, true);
+      statistics.set_precision (name2, 8);
+      statistics.set_scientific (name2, true);
+
+      const std::string name2("Total internal heating rate (W) ");
+      statistics.add_value (name2, global_internal_heating_integrals);
+
+      // also make sure that the other columns filled by the this object
+      // all show up with sufficient accuracy and in scientific notation
+      statistics.set_precision (name2, 8);
+      statistics.set_scientific (name2, true);
 
       std::ostringstream output;
       output.precision(4);
-          output << global_internal_heating_integrals/global_volume << " (W/kg) ";
+          output << global_internal_heating_integrals/global_volume << " W/kg, "
+                 << global_internal_heating_integrals;
 
-      return std::pair<std::string, std::string> ("Average internal heating rate: ",
+      return std::pair<std::string, std::string> ("Internal heating rate (Total/Average): ",
                                                   output.str());
     }
   }

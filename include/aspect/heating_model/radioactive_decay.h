@@ -60,15 +60,6 @@ namespace aspect
                                const Point<dim> &position) const;
 
         /**
-         * A function that is called at the beginning of each time step to
-         * allow the model to do whatever necessary. In this case the time
-         * of the function object is updated.
-         */
-        virtual
-        void
-        update ();
-
-        /**
          * Declare the parameters this class takes through input files.
          */
         static
@@ -83,10 +74,6 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
-        /**
-         * The time to be used for calculate radioactive decay.
-         */
-        double                         time;
         
         /**
          * Number of radio active heating elements.
@@ -96,22 +83,22 @@ namespace aspect
         /**
          * Store the half life of different elements.
          */
-        std::vector<double>            half_decay_time;
+        std::vector<double>            half_decay_times;
         
         /**
          * Store the unit heating rate of different elements.
          */
-        std::vector<double>            radioactive_heating_rate;
+        std::vector<double>            radioactive_heating_rates;
         
         /**
          * Store the initial consentration in the crust.
          */
-        std::vector<double>            radioactive_initial_concentration_crust;
+        std::vector<double>            radioactive_initial_concentrations_crust;
         
         /**
          * Store the initial consentration in the mantle.
          */
-        std::vector<double>            radioactive_initial_concentration_mantle;
+        std::vector<double>            radioactive_initial_concentrations_mantle;
         
         /**
          * Whether crust defined by composition or depth
