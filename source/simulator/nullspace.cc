@@ -232,7 +232,7 @@ namespace aspect
               in.pressure[i] = fe_vals[i][introspection.component_indices.pressure];
               in.temperature[i] = fe_vals[i][introspection.component_indices.temperature];
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                in.composition[i][c] = fe_vals[i][introspection.component_indices.compositional_fields[0]+c];
+                in.composition[i][c] = fe_vals[i][introspection.component_indices.compositional_fields[c]];
               in.position[i] = q_points[i];
 
             }
