@@ -194,18 +194,27 @@ namespace aspect
     // first do some error checking for the parameters we got
     {
       // make sure velocity boundary indicators don't appear in multiple lists
-      std::set<types::boundary_id> boundary_indicator_lists[4]
+      std::set<types::boundary_id> boundary_indicator_lists[6]
         = { parameters.zero_velocity_boundary_indicators,
             parameters.tangential_velocity_boundary_indicators,
             parameters.free_surface_boundary_indicators,
-            std::set<types::boundary_id>()
+            std::set<types::boundary_id>(),  // to be parameters.prescribed_velocity_boundary_indicators,
+            std::set<types::boundary_id>()   // to be parameters.prescribed_traction_boundary_indicators
           };
 
+      // copy the boundary indicators of prescribed_velocity_boundary_indicators into a set
       for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
            p = parameters.prescribed_velocity_boundary_indicators.begin();
            p != parameters.prescribed_velocity_boundary_indicators.end();
            ++p)
         boundary_indicator_lists[3].insert (p->first);
+
+      // do the same for the boundary indicators for traction boundary conditions
+      for (std::map<types::boundary_id,std::string> >::const_iterator
+           p = parameters.prescribed_traction_boundary_indicators.begin();
+           p != parameters.prescribed_traction_boundary_indicators.end();
+           ++p)
+        boundary_indicator_lists[4].insert (p->first);
 
       // for each combination of boundary indicator lists, make sure that the
       // intersection is empty
