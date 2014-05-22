@@ -40,7 +40,7 @@ namespace aspect
     {
       public:
         /**
-         * Evaluate the solution for some velocity statistics.
+         * Evaluate the solution for some general statistics.
          */
         virtual
         std::pair<std::string,std::string>
