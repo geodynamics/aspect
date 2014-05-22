@@ -65,8 +65,6 @@ namespace aspect
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
                                                                        this->n_compositional_fields());
 
-      std::vector<double> div_v(n_q_points);
-
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
@@ -93,27 +91,23 @@ namespace aspect
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
                 in.strain_rate);
 
-            // get the divergence of velocity
-            fe_values[this->introspection().extractors.velocities].get_function_divergences (this->get_solution(), div_v);
-
             // get the viscosity from the material model
             this->get_material_model().evaluate(in, out);
 
             // calculate the local viscous dissipation integral
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                local_dissipation_integral += ( - in.pressure[q] * div_v[q]
+                const double div_v = trace(in.strain_rate[q]);	
+                local_dissipation_integral += ( - in.pressure[q] * div_v
                                                 + 2.0 * out.viscosities[q] * in.strain_rate[q] * in.strain_rate[q]
-                                                - (2.0 * out.viscosities[q] / 3.0) * div_v[q] * div_v[q])
+                                                - (2.0 * out.viscosities[q] / 3.0) * div_v * div_v)
                                               * fe_values.JxW(q);
-                if (div_v[q] != 0)
-                  std::cout << div_v[q] << std::endl;
               }
           }
 
       // compute the viscous dissipation of the whole domain
       const double viscous_dissipation
-        = 0.5 * ( Utilities::MPI::sum (local_dissipation_integral, this->get_mpi_communicator()));
+        = Utilities::MPI::sum (local_dissipation_integral, this->get_mpi_communicator());
 
       if (this->convert_output_to_years() == true)
         {
@@ -137,7 +131,7 @@ namespace aspect
       std::ostringstream output;
       output.precision(3);
       if (this->convert_output_to_years() == true)
-        output << viscous_dissipation *year_in_seconds
+        output << viscous_dissipation * year_in_seconds
                << " J/yr";
       else
         output << viscous_dissipation
@@ -159,9 +153,9 @@ namespace aspect
                                   "viscous dissipation statistics",
                                   "A postprocessor that computes the viscous dissipation"
                                   "for the whole domain as: "
-                                  "$\\frac{1}{2} \\int_{V} \\mathbf{\\sigma} : \\mathbr{\\dot{\\epsilon}}dV$ "
-                                  "= $\\frac{1}{2} \\int_{V} (-p\\nabla \\cdot u+2\\mu\\dot{\\epsilon}:\\dot{\\epsilon} "
-                                  "- \\frac{2\\mu}{3}(\\nabla\\cdot)^{2}) dV$. "
+                                  "$\\frac{1}{2} \\int_{V} \\sigma : \\dot{\\epsilon}dV$ "
+                                  "= $\\int_{V} (-p\\nabla \\cdot u+2\\mu\\dot{\\epsilon}:\\dot{\\epsilon} "
+                                  "- \\frac{2\\mu}{3}(\\nabla\\cdot u)^{2}) dV$. "
                                  )
   }
 }
