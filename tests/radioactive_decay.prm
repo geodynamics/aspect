@@ -4,7 +4,7 @@
 
 set Dimension                              = 2
 set Use years in output instead of seconds = true
-set End time                               = 5e6
+set End time                               = 1e6
 
 
 subsection Material model

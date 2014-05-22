@@ -118,9 +118,9 @@ namespace aspect
       std::ostringstream output;
       output.precision(4);
           output << global_internal_heating_integrals/global_volume << " W/kg, "
-                 << global_internal_heating_integrals;
+                 << global_internal_heating_integrals << " W";
 
-      return std::pair<std::string, std::string> ("Internal heating rate (Total/Average): ",
+      return std::pair<std::string, std::string> ("Internal heating rate (average/total): ",
                                                   output.str());
     }
   }
