@@ -32,7 +32,8 @@
 % use the listings package for code snippets. define keywords for prm files
 % and for gnuplot
 \usepackage{listings}
-\lstset{language=C++,basicstyle=\footnotesize}
+\lstset{language=C++,basicstyle=\small\ttfamily,columns=fullflexible,keepspaces=true}
+%\lstset{language=C++,basicstyle=\small\ttfamily,columns=flexible}
 \lstdefinelanguage{prmfile}{morekeywords={set,subsection,end},
                             morecomment=[l]{\#},}
 \lstdefinelanguage{gnuplot}{morekeywords={plot,using,title,with,set,replot},
@@ -5925,7 +5926,7 @@ The benchmark can be run using the parameter files in \url{benchmark/inclusion/}
 
 \marginpar{The following prm file isn't annotated yet. How to annotate if we have a .lib?}
 
-\lstinputlisting[frame=single,language=prmfile]{cookbooks/benchmarks/inclusion.prm}
+\lstinputlisting[frame=single,language=prmfile,escapeinside={\%}{\%}]{cookbooks/benchmarks/inclusion.prm.out}
 
 \subsubsection{The ``Stokes' law'' benchmark}
 \label{sec:benchmark-stokes_law}

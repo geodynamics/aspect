@@ -10,14 +10,26 @@ while (<>)
   {
     chop;
     $prm = $2;
-    print "$_ % \\index[prmindex]{$prm} \\index[prmindexfull]{${section}$prm} %\n";
+    $bla =$_;
+    $labelname = "parameters:$section$prm";
+    $labelname =~ s/!/\//g;
+    $bla =~ s/$prm/%\\hyperref[$labelname]{$prm}%/g;
+    print "$bla % \\index[prmindex]{$prm} \\index[prmindexfull]{${section}$prm} %\n";
   }
 
   # if we are entering a section then record this too
   elsif (m/^( *subsection (.*?) *\n)/)
   {
+      $thissection = $2;
     $section .= "$2!";
-    print;
+    $labelname = "parameters:$section";
+    $labelname =~ s/!/\//g;
+    $labelname =~ s/ /_20/g;
+    $labelname =~ s/\/$//g;
+    $bla = $_;
+    $bla=~ s/$thissection/%\\hyperref[$labelname]{$thissection}%/g;
+    
+    print "$bla";
   }
 
   # if we are leaving a section, strip the last section
