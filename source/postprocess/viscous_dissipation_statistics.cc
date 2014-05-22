@@ -98,14 +98,10 @@ namespace aspect
             // calculate the local viscous dissipation integral
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-/*                local_dissipation_integral += (2.0 * out.viscosities[q] * in.strain_rate[q].norm() *
+                local_dissipation_integral += (2.0 * out.viscosities[q] * in.strain_rate[q].norm() *
                                               in.strain_rate[q].norm() 
-                                              - in.pressure[q] * trace(in.strain_rate[q]))
-                                              * fe_values.JxW(q);
-*/                local_dissipation_integral += (2.0 * out.viscosities[q] * in.strain_rate[q].norm() *
-                                                in.strain_rate[q].norm() 
-                                              - in.pressure[q] * trace(in.strain_rate[q]))
-                                              * fe_values.JxW(q);
+                                            - in.pressure[q] * trace(in.strain_rate[q]))
+                                            * fe_values.JxW(q);
               }
           }
 
@@ -140,7 +136,7 @@ namespace aspect
                                   };
 
           statistics.add_value (columns[0], viscous_dissipation);
-          statistics.add_value (columns[1], viscous_dissipation/1000.0);
+          statistics.add_value (columns[1], viscous_dissipation / 1000.0);
 
           for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
             {
@@ -154,7 +150,7 @@ namespace aspect
       if (this->convert_output_to_years() == true)
         output << viscous_dissipation * year_in_seconds
                << " J/yr/m"
-               << viscous_dissipation *year_in_seconds / 1000.0
+               << viscous_dissipation * year_in_seconds / 1000.0
                << " kJ/yr/m";
       else
         output << viscous_dissipation
