@@ -67,7 +67,7 @@ namespace aspect
                 timedependent_radioactive_heating_rates+=
                     radioactive_heating_rates[i_radio]
                     *(radioactive_initial_concentrations_mantle[i_radio]*(1-crust_fraction)
-                    +radioactive_initial_concentrationss_crust[i_radio]*crust_fraction)*1e-6 
+                    +radioactive_initial_concentrations_crust[i_radio]*crust_fraction)*1e-6 
                     //1e-6 above is used to change concentration from ppm
                     *std::pow(0.5,time/half_decay_times[i_radio]);
         }
