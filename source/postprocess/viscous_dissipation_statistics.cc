@@ -120,28 +120,28 @@ namespace aspect
           // fill statistics file
           // make sure that the columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
-          statistics.add_value ("Total viscous dissipation (J/yr/m)", viscous_dissipation * year_in_seconds);
-          statistics.set_precision ("Total viscous dissipation (J/yr/m)", 8);
-          statistics.set_scientific ("Total viscous dissipation (J/yr/m)", true);
+          statistics.add_value ("Total viscous dissipation (J/yr)", viscous_dissipation * year_in_seconds);
+          statistics.set_precision ("Total viscous dissipation (J/yr)", 8);
+          statistics.set_scientific ("Total viscous dissipation (J/yr)", true);
         }
       else
         {
           // fill statistics file
           // make sure that the columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
-          statistics.add_value ("Total viscous dissipation (W/m)", viscous_dissipation);
-          statistics.set_precision ("Total viscous dissipation (W/m)", 8);
-          statistics.set_scientific ("Total viscous dissipation (W/m)", true);
+          statistics.add_value ("Total viscous dissipation (W)", viscous_dissipation);
+          statistics.set_precision ("Total viscous dissipation (W)", 8);
+          statistics.set_scientific ("Total viscous dissipation (W)", true);
         }
 
       std::ostringstream output;
       output.precision(3);
       if (this->convert_output_to_years() == true)
         output << viscous_dissipation *year_in_seconds
-               << " J/yr/m";
+               << " J/yr";
       else
         output << viscous_dissipation
-               << " W/m";
+               << " W";
 
       return std::pair<std::string, std::string> ("Total viscous dissipation:",
                                                   output.str());
