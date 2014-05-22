@@ -86,6 +86,7 @@ namespace aspect
     :
     parameters (prm),
     introspection (!parameters.use_direct_stokes_solver,
+        parameters.include_melt_transport,
         parameters.names_of_compositional_fields),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     pcout (std::cout,
@@ -139,7 +140,7 @@ namespace aspect
                     :
                     static_cast<const FiniteElement<dim> &>
                     (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
-                   1,
+                   1 + parameters.include_melt_transport,
                    FE_Q<dim>(parameters.temperature_degree),
                    1,
                    FE_Q<dim>(parameters.composition_degree),

@@ -130,6 +130,8 @@ namespace aspect
       // add the primary variables
       std::vector<std::string> solution_names (dim, "velocity");
       solution_names.push_back ("p");
+      if (this->include_melt_transport())
+        solution_names.push_back ("p_c");
       solution_names.push_back ("T");
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         solution_names.push_back (this->introspection().name_for_compositional_index(c));
@@ -138,6 +140,8 @@ namespace aspect
       interpretation (dim,
                       DataComponentInterpretation::component_is_part_of_vector);
       interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+      if (this->include_melt_transport())
+        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
       interpretation.push_back (DataComponentInterpretation::component_is_scalar);
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         interpretation.push_back (DataComponentInterpretation::component_is_scalar);
