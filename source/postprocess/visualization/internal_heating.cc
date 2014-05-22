@@ -56,17 +56,17 @@ namespace aspect
         const unsigned int n_quadrature_points = uh.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-        Assert (uh[0].size() == dim+2+this->n_compositional_fields(), ExcInternalError());
-        Assert (duh[0].size() == dim+2+this->n_compositional_fields(),ExcInternalError());
+        Assert (uh[0].size() == this->introspection().n_components, ExcInternalError());
+        Assert (duh[0].size() == this->introspection().n_components,ExcInternalError());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            double temperature=uh[q][dim+1];
-            double pressure   =uh[q][dim];
+            double temperature=uh[q][this->introspection().component_indices.temperature];
+            double pressure   =uh[q][this->introspection().component_indices.pressure];
             std::vector<double> composition(this->n_compositional_fields());
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              composition[c] = uh[q][dim+2+c];
+              composition[c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
             computed_quantities[q](0) = heating_model.specific_heating_rate(temperature,
                                                                             pressure,
                                                                             composition,
