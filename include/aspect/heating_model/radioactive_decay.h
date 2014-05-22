@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id$  */
+
 
 
 #ifndef __aspect__heating_model_radioactive_decay_h
