@@ -139,10 +139,6 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<Tensor<1,dim> >          velocity_values;
-          std::vector<std::vector<double> >     composition_values;
-
-          typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs;
-          typename MaterialModel::Interface<dim>::MaterialModelOutputs material_model_outputs;
         };
 
 
@@ -161,11 +157,7 @@ namespace aspect
           phi_u (finite_element.dofs_per_cell),
           grads_phi_u (finite_element.dofs_per_cell),
           div_phi_u (finite_element.dofs_per_cell),
-          velocity_values (quadrature.size()),
-          composition_values(n_compositional_fields,
-                             std::vector<double>(quadrature.size())),
-          material_model_inputs(quadrature.size(), n_compositional_fields),
-          material_model_outputs(quadrature.size(), n_compositional_fields)
+          velocity_values (quadrature.size())
         {}
 
 
@@ -178,11 +170,10 @@ namespace aspect
           phi_u (scratch.phi_u),
           grads_phi_u (scratch.grads_phi_u),
           div_phi_u (scratch.div_phi_u),
-          velocity_values (scratch.velocity_values),
-          composition_values(scratch.composition_values),
-          material_model_inputs(scratch.material_model_inputs),
-          material_model_outputs(scratch.material_model_outputs)
+          velocity_values (scratch.velocity_values)
         {}
+
+
 
         template <int dim>
         struct AdvectionSystem
