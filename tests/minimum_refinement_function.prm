@@ -174,7 +174,7 @@ end
 
 subsection Postprocess
 
-  set List of postprocessors = visualization,velocity statistics,temperature statistics,heat flux statistics, depth average # default: all
+  set List of postprocessors = visualization,velocity statistics, basic statistics, temperature statistics,heat flux statistics, depth average # default: all
 
   subsection Depth average
     # The time interval between each generation of graphical output files. A
