@@ -5058,6 +5058,22 @@ This is a comfort implementation, which could also be achieved by using the chec
 possibility described in section~\ref{sec:checkpoint-restart}. 
 
 
+\subsubsection{Kinematic Subduction Model with Nonlinear Rheology}
+\label{sec:cookbooks-subduction}
+\textit{This section was contributed by Katrina Arredondo}
+
+A simple 2D subduction model contains a subducting and overriding plate, where their velocities are explicitly defined. Possible rheologies include Newtonian (linear/diffusion creep) and nonNewtonian (nonlinear/dislocation creep) flow laws. This general, simple model may act as a starting point before constructing more complex subduction models or moving into 3D. This model is based off the reference model from Billen and Hirth, 2007.
+
+\paragraph{Temperature Initial Condition for Two Plates}
+A simple model set-up assumes a subducting plate with a ridge at the grid edge and an overriding plate of constant age. Plate temperatures with depth are defined by the half-space cooling model (Turcotte and Schubert, Geodynamics, 2002) and by distance from the ridge in the subducting plate. Under subsection "Initial conditions", set the Model name to "two plates" and define seven parameters: the ages of the two plates in terms of millions of years, the location of the trench in meters along the surface (also the length of the subducting plate, from the ridge to the trench), the surface temperature and mantle temperature below the plate (where the difference in temperature is equal to delta T, or change in temperature within the Rayleigh number drives convection, which does NOT include a possible adiabat temperature gradient), a reference thermal diffusivity (for the half-space cooling model), and the angle of the boundary between the two plates. 
+
+ \paragraph{Viscosity Model}
+The material model controls several processes that affect the viscosity: the rheology and weak zone. Under subsection "Material model", choose Model name "billen 2013." First choose the rheology of the model, where a linear model with diffusion creep will only be temperature dependent (on: "true"; off: "false"). Nonlinear models (diffusion and dislocation creep) will turn on temperature, stress and pressure dependence. If the model does not have an adiabat, turn on "Constant mantle temperature." The next section describes the weakzone (see figure). The following sections define the maximum and minimum caps on viscosity, reference values, and rheology parameters. The rheology values stem from Hirth and Kohlstedt [2003] and Bell et al. [2003]. 
+
+ \paragraph{Kinematic Boundary Condition}
+In the input paramter file, the "Boundary velocity model" defines the kinematic boundary conditions at the surface of the Earth. The trench location should be identical to that in the viscosity and initial condition model. While the overriding plate is held stationary, the velocity of the subducting plate is defined in terms of meters per year. The transition length defines the distance over which the surface velocity changes to zero at the edges of the subducting plate. Re is the radius of the Earth. 
+
+
 \subsection{Benchmarks}
 \label{sec:cookbooks-benchmarks}
 
