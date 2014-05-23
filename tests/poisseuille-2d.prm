@@ -1,3 +1,9 @@
+# A simple Poisseuille flow example in which we prescribe the velocity to
+# be (z*(z-1),0)^T and see what pressure we get. We switch off gravity
+# so the pressure is purely the dynamic pressure. It is only determined
+# up to a constant, and with a viscosity of eta=1, should be between
+# +2 at the left inlet and -2 at the right outlet.
+
 set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 0
