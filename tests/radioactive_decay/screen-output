@@ -6,7 +6,7 @@
 -----------------------------------------------------------------------------
 
 Number of active cells: 768 (on 4 levels)
-Number of degrees of freedom: 13920 (6528+864+3264+3264)
+Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
