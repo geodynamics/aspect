@@ -650,11 +650,6 @@ namespace aspect
                       = finite_element.component_to_system_index(introspection.component_indices.pressure,
                           /*dof index within component=*/ j);
 
-                      // make sure that this DoF is really owned by the current processor
-                      // and that it is in fact a pressure dof
-                      Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[support_point_index]),
-                          ExcInternalError());
-
                       Assert (introspection.block_indices.velocities == introspection.block_indices.pressure
                           || local_dof_indices[support_point_index] >= vector.block(0).size(),
                           ExcInternalError());
