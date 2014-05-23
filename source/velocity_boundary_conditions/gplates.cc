@@ -264,6 +264,12 @@ namespace aspect
                                         ExcMessage("Error in velocity boundary module interpolation. "
                                                    "Radial component of velocity should be zero, but is not."));
 
+                            // After checking that the residual normal velocity is small
+                            // we might as well remove it to increase compatibility of the
+                            // pressure right hand side.
+                            const Tensor<1,3> normalized_position = position / position.norm();
+                            surf_vel -=  (surf_vel * normalized_position) * normalized_position;
+
                             return surf_vel / n_interpolation_weight;
                           }
                         else
@@ -291,6 +297,12 @@ namespace aspect
         AssertThrow( residual_normal_velocity < 1e-11,
                      ExcMessage("Error in velocity boundary module interpolation. "
                                 "Radial component of velocity should be zero, but is not."));
+
+        // After checking that the residual normal velocity is small
+        // we might as well remove it to increase compatibility of the
+        // pressure right hand side.
+        const Tensor<1,3> normalized_position = position / position.norm();
+        surf_vel -=  (surf_vel * normalized_position) * normalized_position;
 
         // We have interpolated over the whole dataset of the provided velocities, which is ok.
         // Velocity will be constant for all evaluation points in this case.
