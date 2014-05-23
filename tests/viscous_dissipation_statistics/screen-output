@@ -33,19 +33,6 @@ Number of degrees of freedom: 6,289 (3,654+199+1,218+1,218)
    Solving Stokes system... 18 iterations.
 
    Postprocessing:
-
-     Reference density (kg/m^3):                    3300
-     Reference gravity (m/s^2):                     9.81
-     Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K): 1
-     Model domain depth (m):                        2.89e+06
-     Reference thermal diffusivity (m^2/s):         1.13939e-06
-     Reference viscosity (Pas):                     1e+22
-     Ra number:                                     1371.62
-     k_value:                                       4.7
-     reference_cp:                                  1250
-     reference_thermal_diffusivity:                 1.13939e-06
-
      Writing graphical output: output-viscous_dissipation_statistics/solution-00000
      RMS, max velocity:        4.22e-11 m/s, 5.66e-10 m/s
 
