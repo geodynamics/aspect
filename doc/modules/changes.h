@@ -5,6 +5,11 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> Add a find_postprocessor() function in Simulator_access class to pass a pointer 
+ * of a certain postprocessor, if it is not found, return a NULL pointer.
+ * <br>
+ * (Siqi Zhang, 2014/05/23)
+ *
  * <li> Mesh refinement plugins can now interact with initial global mesh
  * refinement and unflag certain cells if desired.
  * <br>
