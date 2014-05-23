@@ -77,7 +77,7 @@ end
 
 
 subsection Material model
-  set Model name = SolCx
+  set Model name = SolCxMaterial
 end
 
 

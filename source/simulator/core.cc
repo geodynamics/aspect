@@ -506,6 +506,30 @@ namespace aspect
 
     // then interpolate the current boundary velocities. copy constraints
     // into current_constraints and then add to current_constraints
+    compute_current_constraints ();
+
+
+    //TODO: do this in a more efficient way (TH)? we really only need
+    // to make sure that the time dependent velocity boundary conditions
+    // end up in the right hand side in the right way; we currently do
+    // that by re-assembling the entire system
+    if (!velocity_boundary_conditions.empty())
+      rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
+
+
+    // notify different system components that we started the next time step
+    material_model->update();
+    gravity_model->update();
+    heating_model->update();
+  }
+
+
+  template <int dim>
+  void
+  Simulator<dim>::
+  compute_current_constraints ()
+  {
     current_constraints.clear ();
     current_constraints.reinit (introspection.index_sets.system_relevant_set);
     current_constraints.merge (constraints);
@@ -581,7 +605,6 @@ namespace aspect
                                                         introspection.n_components),
                                                     current_constraints,
                                                     introspection.component_masks.temperature);
-
         }
 
       // now do the same for the composition variable:
@@ -610,21 +633,6 @@ namespace aspect
           }
     }
     current_constraints.close();
-
-
-    //TODO: do this in a more efficient way (TH)? we really only need
-    // to make sure that the time dependent velocity boundary conditions
-    // end up in the right hand side in the right way; we currently do
-    // that by re-assembling the entire system
-    if (!velocity_boundary_conditions.empty())
-      rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
-
-
-
-    // notify different system components that we started the next time step
-    material_model->update();
-    gravity_model->update();
-    heating_model->update();
   }
 
 
@@ -1523,7 +1531,22 @@ namespace aspect
       }
     else
       {
-        triangulation.refine_global (parameters.initial_global_refinement);
+        // Instead of calling global_refine(n) we flag all cells for
+        // refinement and then allow the mesh refinement plugins to unflag
+        // the cells if desired. This procedure is repeated n times. If there
+        // is no plugin that modifies the flags, it is equivalent to
+        // refine_global(n).
+        for (unsigned int n=0;n<parameters.initial_global_refinement;++n)
+          {
+            for (typename Triangulation<dim>::active_cell_iterator
+                cell = triangulation.begin_active();
+                cell != triangulation.end(); ++cell)
+              cell->set_refine_flag ();
+
+            mesh_refinement_manager.tag_additional_cells ();
+            triangulation.execute_coarsening_and_refinement();
+          }
+
         global_volume = GridTools::volume (triangulation, mapping);
 
         time                      = parameters.start_time;

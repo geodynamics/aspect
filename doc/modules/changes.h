@@ -5,6 +5,11 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> Mesh refinement plugins can now interact with initial global mesh
+ * refinement and unflag certain cells if desired.
+ * <br>
+ * (Timo Heister, 2014/05/22)
+ *
  * <li> Fixed: We accidentally evaluated the viscosity of the material model
  * from the place where we compute the adiabatic conditions, but this
  * required information that we didn't have. This is also unnecessary

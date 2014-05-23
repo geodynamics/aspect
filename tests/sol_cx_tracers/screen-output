@@ -1,5 +1,7 @@
 -- Running with 1 MPI task using Trilinos.
 
+Loading shared library <./libsol_cx_tracers.so>
+
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 

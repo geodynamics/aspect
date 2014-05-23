@@ -27,9 +27,6 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-
 
 namespace aspect
 {
@@ -132,68 +129,6 @@ namespace aspect
                << global_max_velocity
                << " m/s";
 
-// TODO: This really doesn't belong here
-      if (this->get_time() == 0e0)
-        {
-          if (dynamic_cast<const MaterialModel::Simple<dim> *>(&this->get_material_model()) != 0)
-            {
-
-              const MaterialModel::Simple<dim> &material_model
-                = dynamic_cast<const MaterialModel::Simple<dim> &>(this->get_material_model());
-
-              const double h = this->get_geometry_model().maximal_depth();
-
-              const double dT = this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
-                                - this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators());
-              // we do not compute the compositions but give the functions below the value 0.0 instead
-              std::vector<double> composition_values(this->n_compositional_fields(),0.0);
-
-              Point<dim> representative_point = this->get_geometry_model().representative_point(0);
-              const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
-              const double Ra = material_model.reference_density()*
-                                gravity*
-                                material_model.reference_thermal_expansion_coefficient()*
-                                dT*std::pow(h,3)/
-                                (material_model.reference_thermal_diffusivity()*
-                                 material_model.reference_viscosity());
-
-              this->get_pcout()<<  std::endl;
-              this->get_pcout()<< "     Reference density (kg/m^3):                    "
-                               << material_model.reference_density()
-                               << std::endl;
-              this->get_pcout()<< "     Reference gravity (m/s^2):                     "
-                               << gravity
-                               << std::endl;
-              this->get_pcout()<< "     Reference thermal expansion (1/K):             "
-                               << material_model.reference_thermal_expansion_coefficient()
-                               << std::endl;
-              this->get_pcout()<< "     Temperature contrast across model domain (K): "
-                               << dT
-                               << std::endl;
-              this->get_pcout()<< "     Model domain depth (m):                        "
-                               << h
-                               << std::endl;
-              this->get_pcout()<< "     Reference thermal diffusivity (m^2/s):         "
-                               << material_model.reference_thermal_diffusivity()
-                               << std::endl;
-              this->get_pcout()<< "     Reference viscosity (Pas):                     "
-                               << material_model.reference_viscosity()
-                               << std::endl;
-              this->get_pcout()<< "     Ra number:                                     "
-                               << Ra
-                               << std::endl;
-              this->get_pcout()<< "     k_value:                                       "
-                               << material_model.thermal_conductivity(dT, dT, composition_values, representative_point) //TODO: dT for the pressure is wrong
-                               << std::endl;
-              this->get_pcout()<< "     reference_cp:                                  "
-                               << material_model.reference_cp()
-                               << std::endl;
-              this->get_pcout()<< "     reference_thermal_diffusivity:                 "
-                               << material_model.thermal_conductivity(dT, dT, composition_values, representative_point)/(material_model.reference_density()*material_model.reference_cp()) //TODO: dT for the pressure is wrong
-                               << std::endl;
-              this->get_pcout()<<  std::endl;
-            }
-        }
       return std::pair<std::string, std::string> ("RMS, max velocity:",
                                                   output.str());
     }

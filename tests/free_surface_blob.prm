@@ -107,5 +107,5 @@ subsection Termination criteria
 end
 
 subsection Postprocess
-  set List of postprocessors = topography,velocity statistics,
+  set List of postprocessors = topography,velocity statistics, basic statistics, 
 end

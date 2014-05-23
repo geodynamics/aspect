@@ -493,6 +493,20 @@ namespace aspect
       void compute_initial_pressure_field ();
 
       /**
+       * Given the 'constraints' member that contains all constraints
+       * that are independent of the time (e.g., hanging node constraints,
+       * tangential flow constraints, etc), copy it over to 'current_constraints'
+       * and add to the latter all constraints that do depend on time such as
+       * temperature or velocity Dirichlet boundary conditions. This function
+       * is therefore called at the beginning of every time step in
+       * start_timestep(), but also when setting up the initial values.
+       *
+       * This function is implemented in
+       * <code>source/simulator/core.cc</code>.
+       */
+      void compute_current_constraints ();
+
+      /**
        * Do some housekeeping at the beginning of each time step. This
        * includes generating some screen output, adding some information to
        * the statistics file, and interpolating time-dependent boundary
@@ -1260,6 +1274,9 @@ namespace aspect
        * copying from the first and then adding to it constraints that are time
        * dependent (e.g., time dependent velocity or temperature boundary
        * conditions).
+       *
+       * 'constraints' is computed in setup_dofs(), 'current_constraints' is done
+       * in compute_current_constraints().
        */
       ConstraintMatrix                                          constraints;
       ConstraintMatrix                                          current_constraints;
