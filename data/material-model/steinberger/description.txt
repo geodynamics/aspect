@@ -6,15 +6,15 @@ radial-visc.txt (lookup with depth)
 
 vis_lateral:
 temp-viscosity-prefactor.txt (with depth)
--> value / adiabatic_temperature * (horizontal_avg-temperature) / (temperature)
+-> value / adiabatic_temperature * (adiabatic_temperature-temperature) / (temperature)
 
-(steinberger/calderwood, Formula (6)) 
+(steinberger/calderwood, modification of Formula (6), we replaced the average_temperature by the adiabatic temperature, since the consequence that the viscosity stays constant although the temperature and the lateral averaged temperature increase does not seem to be reasonable for our models) 
 
-thermal_expansivity:
+thermal_expansivity: lookup table
+specific heat: lookup table
+density: lookup table
+thermal conductivity: constant
 
-specific heat: constant
-
-density:
-?
+The provided lookup table was constructed with the software PERPLEX (Connolly, 2005) using the thermodynamic database by Stixrude (2011) and assuming a pyrolitic composition (Ringwood 1988).
 
 
