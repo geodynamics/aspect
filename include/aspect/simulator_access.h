@@ -427,7 +427,18 @@ namespace aspect
                                          const unsigned int                      q,
                                          std::vector<double>                    &composition_values_at_q_point);
 
-      /** @} */
+
+      /**
+       * Find a pointer to a certain postprocessor, if not return a NULL pointer.
+       */
+      template <typename PostprocessorType>
+      inline
+      PostprocessorType *
+      SimulatorAccess<dim>::find_postprocessor ()
+      {
+          return simulator->postprocessors.find_postprocessor<PostprocessorType>();
+      }                                         
+       /** @} */
 
     private:
       /**
