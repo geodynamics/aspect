@@ -92,7 +92,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics
+  set List of postprocessors = velocity statistics, basic statistics
 
   subsection Visualization
     set List of output variables = density

@@ -61,8 +61,8 @@ namespace aspect
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
 
-      double local_internal_heating_integrals;
-      double local_volume;
+      double local_internal_heating_integrals = 0;
+      double local_volume = 0;
 
       // compute the integral quantities by quadrature
       for (; cell!=endc; ++cell)

@@ -76,7 +76,7 @@ subsection Model settings
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics
+  set List of postprocessors = visualization, velocity statistics, basic statistics
 
   subsection Visualization
     set List of output variables = viscosity
