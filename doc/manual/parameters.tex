@@ -1635,6 +1635,11 @@ The model assigns boundary indicators as follows: In 2d, inner and outer boundar
 
 `constant heating': Implementation of a model in which the heating rate is constant.
 
+`radioactive decay': Implementation of a model in which the internal heating rate is radioactive decaying in the following rule:
+\[(\text{initial concentration})\cdot 0.5^{\text{time}/(\text{half life})}\]
+The crust and mantle can have different concentrations, and the crust can be defined either by depth or by a certain compositional field.
+The formula is interpreted as having units W/kg.
+
 `function': Implementation of a model in which the heating rate is given in terms of an explicit formula that is elaborated in the parameters in section ``Heating model|Function''. 
 
 The formula is interpreted as having units W/kg.
@@ -1642,7 +1647,7 @@ The formula is interpreted as having units W/kg.
 Since the symbol $t$ indicating time may appear in the formulas for the heating rate, it is interpreted as having units seconds unless the global parameter ``Use years in output instead of seconds'' is set.
 
 
-{\it Possible values:} [Selection constant heating|function ]
+{\it Possible values:} [Selection constant heating|radioactive decay|function ]
 \end{itemize}
 
 
@@ -1725,6 +1730,140 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} [Anything]
+\end{itemize}
+
+\subsection{Parameters in section \tt Heating model/Radioactive decay}
+\label{parameters:Heating_20model/Radioactive_20decay}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Crust composition number}
+\phantomsection\label{parameters:Heating model/Radioactive decay/Crust composition number}
+
+
+\index[prmindex]{Crust composition number}
+\index[prmindexfull]{Heating model!Radioactive decay!Crust composition number}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Which composition field should be treated as crust
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Crust defined by composition}
+\phantomsection\label{parameters:Heating model/Radioactive decay/Crust defined by composition}
+
+
+\index[prmindex]{Crust defined by composition}
+\index[prmindexfull]{Heating model!Radioactive decay!Crust defined by composition}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether crust defined by composition or depth
+
+
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Crust depth}
+\phantomsection\label{parameters:Heating model/Radioactive decay/Crust depth}
+
+
+\index[prmindex]{Crust depth}
+\index[prmindexfull]{Heating model!Radioactive decay!Crust depth}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Depth of the crust when crust if defined by depth. Units: m
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Half decay times}
+\phantomsection\label{parameters:Heating model/Radioactive decay/Half decay times}
+
+
+\index[prmindex]{Half decay times}
+\index[prmindexfull]{Heating model!Radioactive decay!Half decay times}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Half decay times. Units: (Seconds), or (Years) if set 'use years instead of seconds'.
+
+
+{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+\item {\it Parameter name:} {\tt Heating rates}
+\phantomsection\label{parameters:Heating model/Radioactive decay/Heating rates}
+
+
+\index[prmindex]{Heating rates}
+\index[prmindexfull]{Heating model!Radioactive decay!Heating rates}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Heating rates of different elements (W/kg)
+
+
+{\it Possible values:} [List list of <[Double -1.79769e+308...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+\item {\it Parameter name:} {\tt Initial concentrations crust}
+\phantomsection\label{parameters:Heating model/Radioactive decay/Initial concentrations crust}
+
+
+\index[prmindex]{Initial concentrations crust}
+\index[prmindexfull]{Heating model!Radioactive decay!Initial concentrations crust}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Initial concentrations of different elements (ppm)
+
+
+{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+\item {\it Parameter name:} {\tt Initial concentrations mantle}
+\phantomsection\label{parameters:Heating model/Radioactive decay/Initial concentrations mantle}
+
+
+\index[prmindex]{Initial concentrations mantle}
+\index[prmindexfull]{Heating model!Radioactive decay!Initial concentrations mantle}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Initial concentrations of different elements (ppm)
+
+
+{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+\item {\it Parameter name:} {\tt Number of elements}
+\phantomsection\label{parameters:Heating model/Radioactive decay/Number of elements}
+
+
+\index[prmindex]{Number of elements}
+\index[prmindexfull]{Heating model!Radioactive decay!Number of elements}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Number of radioactive elements
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Initial conditions}
@@ -2473,7 +2612,7 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 
 `composition reaction': A material model that behaves in the same way as the simple material model, but includes two compositional fields and a reaction between them. Above a depth given in the input file, the first fields gets converted to the second field. 
 
-`Steinberger': This material model looks up the viscosity from the tables that correspond to the paper of Steinberger and Calderwood 2006 (``Models of large-scale viscous flow in the Earth's mantle with constraints from mineral physics and surface observations'', Geophys. J. Int., 167, 1461-1481, \url{http://dx.doi.org/10.1111/j.1365-246X.2006.03131.x}) and material data from a database generated by the thermodynamics code \texttt{Perplex}, see \url{http://www.perplex.ethz.ch/}. The database builds upon the thermodynamic database by Stixrude 2011 and assumes a pyrolitic composition by Ringwood 1988. 
+`Steinberger': This material model looks up the viscosity from the tables that correspond to the paper of Steinberger and Calderwood 2006 (``Models of large-scale viscous flow in the Earth's mantle with constraints from mineral physics and surface observations'', Geophys. J. Int., 167, 1461-1481, \url{http://dx.doi.org/10.1111/j.1365-246X.2006.03131.x}) and material data from a database generated by the thermodynamics code \texttt{Perplex}, see \url{http://www.perplex.ethz.ch/}. The default example data builds upon the thermodynamic database by Stixrude 2011 and assumes a pyrolitic composition by Ringwood 1988 but is easily replaceable by other data files. 
 
 `latent heat': A material model that includes phase transitions and the possibility that latent heat is released or absorbed when material crosses one of the phase transitions of up to two different materials (compositional fields). This model implements a standard approximation of the latent heat terms following Christensen \& Yuen, 1986. The change of entropy is calculated as $Delta S = \gamma \frac{\Delta\rho}{\rho^2}$ with the Clapeyron slope $\gamma$ and the density change $\Delta\rho$ of the phase transition being input parameters. The model employs an analytic phase function in the form $X=0.5 \left( 1 + \tanh \left( \frac{\Delta p}{\Delta p_0} \right) \right)$ with $\Delta p = p - p_{transition} - \gamma \left( T - T_{transition} \right)$ and $\Delta p_0$ being the pressure difference over the width of the phase transition (specified as input parameter).
 
@@ -2499,12 +2638,8 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 `table': A material model that reads tables of pressure and temperature dependent material coefficients from files. The default values for this model's runtime parameters use a material description taken from the paper \textit{Complex phase distribution and seismic velocity structure of the transition zone: Convection model predictions for a magnesium-endmember olivine-pyroxene mantle} by Michael H.G. Jacobs and Arie P. van den Berg, Physics of the Earth and Planetary Interiors, Volume 186, Issues 1-2, May 2011, Pages 36--48. See \url{http://www.sciencedirect.com/science/article/pii/S0031920111000422}.
 
-`SolCx': A material model that corresponds to the 'SolCx' benchmark defined in Duretz et al., G-Cubed, 2011.
 
-`SolKz': A material model that corresponds to the 'SolKz' benchmark defined in Duretz et al., G-Cubed, 2011.
-
-
-{\it Possible values:} [Selection composition reaction|Steinberger|latent heat|simple|simple compressible|multicomponent|Tan Gurnis|table|SolCx|SolKz ]
+{\it Possible values:} [Selection composition reaction|Steinberger|latent heat|simple|simple compressible|multicomponent|Tan Gurnis|table ]
 \end{itemize}
 
 
@@ -3371,44 +3506,6 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
 
-\subsection{Parameters in section \tt Material model/SolCx}
-\label{parameters:Material_20model/SolCx}
-
-\begin{itemize}
-\item {\it Parameter name:} {\tt Background density}
-\phantomsection\label{parameters:Material model/SolCx/Background density}
-
-
-\index[prmindex]{Background density}
-\index[prmindexfull]{Material model!SolCx!Background density}
-{\it Value:} 0
-
-
-{\it Default:} 0
-
-
-{\it Description:} Density value upon which the variation of this testcase is overlaid. Since this background density is constant it does not affect the flow pattern but it adds to the total pressure since it produces a nonzero adiabatic pressure if set to a nonzero value.
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Viscosity jump}
-\phantomsection\label{parameters:Material model/SolCx/Viscosity jump}
-
-
-\index[prmindex]{Viscosity jump}
-\index[prmindexfull]{Material model!SolCx!Viscosity jump}
-{\it Value:} 1e6
-
-
-{\it Default:} 1e6
-
-
-{\it Description:} Viscosity in the right half of the domain.
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\end{itemize}
-
 \subsection{Parameters in section \tt Material model/Steinberger model}
 \label{parameters:Material_20model/Steinberger_20model}
 
@@ -3473,7 +3570,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Default:} false
 
 
-{\it Description:} Whether to include latent heat effects in thecalculation of thermal expansivity and specific heat.Following the approach of Nakagawa et al. 2009. 
+{\it Description:} Whether to include latent heat effects in the calculation of thermal expansivity and specific heat. Following the approach of Nakagawa et al. 2009. 
 
 
 {\it Possible values:} [Bool]
@@ -3505,7 +3602,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Default:} pyr-ringwood88.txt
 
 
-{\it Description:} The file names of the material data. List with as many components as activecompositional fields (material data is assumed tobe in order with the ordering of the fields). 
+{\it Description:} The file names of the material data. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields). 
 
 
 {\it Possible values:} [List list of <[Anything]> of length 0...4294967295 (inclusive)]
@@ -4717,6 +4814,8 @@ The following postprocessors are available:
 
 `heat flux statistics for the table model': A postprocessor that computes some statistics about the heat flux across boundaries.
 
+`viscous dissipation statistics': A postprocessor that computes the viscous dissipationfor the whole domain as: $\frac{1}{2} \int_{V} \sigma : \dot{\epsilon}dV$ = $\int_{V} (-p\nabla \cdot u+2\mu\dot{\epsilon}:\dot{\epsilon} - \frac{2\mu}{3}(\nabla\cdot u)^{2}) dV$. 
+
 `visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
 `temperature statistics': A postprocessor that computes some statistics about the temperature field.
@@ -4733,9 +4832,11 @@ As stated, this postprocessor computes the \textit{outbound} heat flux. If you a
 
 `depth average': A postprocessor that computes depth averaged quantities and writes them into a file <depth\_average.ext> in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section \texttt{Postprocess/Depth average} in the input file. 
 
-`DuretzEtAl error': A postprocessor that compares the solution of the benchmarks from the Duretz et al., G-Cubed, 2011, paper with the one computed by ASPECT and reports the error. Specifically, it can compute the errors for the SolCx, SolKz and inclusion benchmarks. The postprocessor inquires which material model is currently being used and adjusts which exact solution to use accordingly.
+`basic statistics': A postprocessor that computes some simplified statistics like the Rayleigh number and other quantities that only make sense in certain model setups.
 
 `tracers': Postprocessor that propagates passive tracer particles based on the velocity field.
+
+`pressure statistics': A postprocessor that computes some statistics about the pressure field.
 
 `velocity statistics': A postprocessor that computes some statistics about the velocity field.
 
@@ -4745,10 +4846,12 @@ The exact approach works as follows: At the centers of all cells that sit along 
 
 (As a side note, the postprocessor chooses the cell center instead of the center of the cell face at the surface, where we really are interested in the quantity, since this often gives better accuracy. The results should in essence be the same, though.)
 
+`internal heating statistics': A postprocessor that computes some statistics about internal heating, averaged by volume. 
+
 `spherical velocity statistics': A postprocessor that computes radial, tangential and total RMS velocity.
 
 
-{\it Possible values:} [MultipleSelection velocity boundary statistics|velocity statistics for the table model|heat flux statistics for the table model|visualization|temperature statistics|composition statistics|topography|heat flux statistics|Tan Gurnis error|depth average|DuretzEtAl error|tracers|velocity statistics|dynamic topography|spherical velocity statistics|all ]
+{\it Possible values:} [MultipleSelection velocity boundary statistics|velocity statistics for the table model|heat flux statistics for the table model|viscous dissipation statistics|visualization|temperature statistics|composition statistics|topography|heat flux statistics|Tan Gurnis error|depth average|basic statistics|tracers|pressure statistics|velocity statistics|dynamic topography|internal heating statistics|spherical velocity statistics|all ]
 \end{itemize}
 
 
@@ -4961,8 +5064,10 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 `thermodynamic phase': A visualization output object that generates output for the integer number of the phase that is thermodynamically stable at the temperature and pressure of the current point.
 
+`internal heating': A visualization output object that generates output for the internal heating rate. Units: W/kg
 
-{\it Possible values:} [MultipleSelection nonadiabatic pressure|melt fraction|strain rate|Vs anomaly|Vp anomaly|seismic vs|specific heat|viscosity|friction heating|density|artificial viscosity|viscosity ratio|error indicator|thermal expansivity|seismic vp|dynamic topography|nonadiabatic temperature|partition|thermodynamic phase|all ]
+
+{\it Possible values:} [MultipleSelection nonadiabatic pressure|melt fraction|strain rate|Vs anomaly|Vp anomaly|seismic vs|specific heat|viscosity|friction heating|density|artificial viscosity|viscosity ratio|error indicator|thermal expansivity|seismic vp|dynamic topography|nonadiabatic temperature|partition|thermodynamic phase|internal heating|all ]
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 
