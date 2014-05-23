@@ -389,7 +389,11 @@ namespace aspect
 
         SolverControl cn;
         // TODO: can we re-use the direct solver?
+#ifdef USE_PETSC
+        PETScWrappers::SparseDirectMUMPS solver(cn, mpi_communicator);
+#else
         TrilinosWrappers::SolverDirect solver(cn);
+#endif
         solver.solve(system_matrix.block(0,0), distributed_stokes_solution.block(0), system_rhs.block(0));
 
         current_constraints.distribute (distributed_stokes_solution);
