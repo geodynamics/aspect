@@ -1,0 +1,197 @@
+set Dimension = 2
+set Linear solver tolerance = 1e-3
+set Max nonlinear iterations = 10
+set Min nonlinear residual = 1e-3
+set Number of cheap Stokes solver steps = 0
+set Nonlinear solver scheme = IMPES
+set CFL number                             = 1.0
+set End time                               = 149631321408.0
+set Output directory                       = /work/02569/katrina/Models/TestWholeMantle/nonlinear_two_plates
+set Resume computation                     = false
+set Start time                             = 0
+set Use years in output instead of seconds = true
+set Timing output frequency		   = 100
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 1673.15
+    set Outer temperature = 275.15
+  end
+end
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 2
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    set alpha = 2
+    set beta  = 0.078
+    set cR    = 0.11
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Opening angle = 90
+    set Outer radius  = 6371000    
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+	set Magnitude = 9.81
+  end
+end
+
+subsection Initial conditions
+  # Select one of the following models:
+  # 
+  # `spherical hexagonal perturbation':
+  # An initial temperature field in which the temperature is perturbed
+  # following a six-fold pattern in angular direction from an otherwise
+  # spherically symmetric state.
+  # 
+  # `spherical gaussian perturbation': An
+  # initial temperature field in which the temperature is perturbed by a
+  # single Gaussian added to an otherwise spherically symmetric state.
+  # Additional parameters are read from the parameter file in subsection
+  # 'Spherical gaussian perturbation'.
+  # 
+  # `perturbed box': An initial
+  # temperature field in which the temperature is perturbed slightly from an
+  # otherwise constant value equal to one. The perturbation is chosen in such
+  # a way that the initial temperature is constant to one along the entire
+  # boundary.
+  set Model name = two_plates
+
+
+  subsection Two_plates
+	set Overriding Plate Age Ma = 40
+  	set Subducting Plate Age at the Trench Ma = 80
+	set Trench Location = 3000e3
+	set Surface Temperature = 275.15
+	set Mantle Temperature Below Plate = 1673.15
+	set Reference Thermal diffusivity  = 1e-6
+	set Wedge Angle = 30
+  end
+
+end
+
+
+subsection Material model
+  # `simple': A simple material model that has
+  # constant values for all coefficients but the density. This model uses the
+  # formulation that assumes an incompressible medium despite the fact that
+  # the density follows the law $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$.
+  # The value for the components of this formula and additional parameters are
+  # read from the parameter file in subsection 'Simple model'.
+  set Model name = billen_2013
+
+
+  subsection Billen_2013 model
+  	set Temperature Dependent	= true
+	set Stress Dependent		= false
+	set Pressure Dependent		= false
+	set Constant mantle temperature	= true
+
+	set Include Weakzone		= true
+	set Weakzone Viscosity		= 1e20
+	set Weakzone Angle		= 30
+	set Weakzone Width		= 100e3
+	set Trench Location		= 3000e3
+	set Weakest Weakzone Width	= 10e3
+	set Maximum Weakzone Depth	= 80e3 
+
+        set Maximum Viscosity           = 1e24
+        set Minimum Viscosity           = 1e18
+
+	set Reference density		= 3300
+	set Reference temperature	= 1400
+	set Reference Viscosity		= 1e20
+	set Reference Thermal diffusivity	= 1e-6 
+	set Reference Heat Capacity		= 1250
+	set Reference thermal expansion coefficient = 2e-5
+	set Reference gravity		= 9.81
+
+	set Activation energy diffusion = 331.7e3
+	set Activation volume diffusion in upper mantle	= 4.0e-6 
+	set Activation volume diffusion in lower mantle = 1.754e-6
+  	set Stress exponent diffusion	= 1.0
+	set Prefactor diffusion		= 0.285714
+	set Grain Size diffusion in upper mantle = 10000.0 
+	set Grain Size diffusion in lower mantle = 92.8e3
+	set Grain Size Exponent diffusion	= 3.0
+	set Water content diffusion		= 1000.0
+	set Water exponent diffusion		= 1.0
+
+	set Activation energy dislocation	= 520.0e3
+	set Activation volume dislocation in upper mantle = 11.0e-6 
+	set Stress exponent dislocation		= 3.5
+	set Prefactor dislocation		= 2.57142857e-20
+	set Water content dislocation		= 1000.0
+	set Water exponent dislocation		= 1.2
+
+	set Initial Yield Stress		= 500e6 
+	set Yield Stress Change Rate		= 0
+	set Maximum Yield Stress		= 500e6
+  end
+
+
+end
+
+subsection Mesh refinement
+  set Additional refinement times        = 
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 9
+  set Refinement fraction                = 0.3
+  set Coarsening fraction                = 0.05
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 0
+end
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0,1
+  set Include shear heating                   = false
+  set Prescribed velocity boundary indicators = 1: function
+  set Radiogenic heating rate                 = 0e0
+  set Tangential velocity boundary indicators = 0,2,3
+  set Zero velocity boundary indicators       = 
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names		= x,z,t
+    set Function constants	= trench_location = 3000e3, transition_length = 15e3, transition_speed = 0.05, subduction_speed = 0.05, Re = 6371e3
+    set Function expression     = if (x <= z*tan(trench_location/Re), if (x <= z*tan(transition_length/Re), min(x*transition_speed*z/Re, subduction_speed*z/Re), if (x >= z*tan((trench_location - transition_length)/Re), max((subduction_speed*z/Re - (x-z*tan(trench_location/Re))*transition_speed*z/Re),0), subduction_speed*z/Re)), 0); 0
+   end
+end
+
+subsection Termination criteria
+  set Termination criteria = steady state velocity
+  set Checkpoint on termination = true
+
+  subsection Steady state velocity
+    set Maximum relative deviation = 0.05
+    set Time in steady state = 14963132140.8
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization,velocity statistics,temperature statistics,heat flux statistics
+
+  subsection Visualization
+    set List of output variables      = viscosity, strain rate 
+    set Output format                 = hdf5
+    set Time between graphical output = 0
+  end
+end
+
+
