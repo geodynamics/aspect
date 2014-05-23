@@ -404,7 +404,7 @@ namespace aspect
       get_compositional_initial_conditions () const;
 
       /**
-       * Return a set of boudary indicators that describes which of the
+       * Return a set of boundary indicators that describes which of the
        * boundaries have a fixed temperature.
        */
       const std::set<types::boundary_id> &
@@ -432,12 +432,9 @@ namespace aspect
        * Find a pointer to a certain postprocessor, if not return a NULL pointer.
        */
       template <typename PostprocessorType>
-      inline
       PostprocessorType *
-      SimulatorAccess<dim>::find_postprocessor ()
-      {
-          return simulator->postprocessors.find_postprocessor<PostprocessorType>();
-      }                                         
+      find_postprocessor () const;
+                                      
        /** @} */
 
     private:
@@ -446,6 +443,15 @@ namespace aspect
        */
       const Simulator<dim> *simulator;
   };
+
+  template <int dim>
+  template <typename PostprocessorType>
+  inline
+  PostprocessorType *
+  SimulatorAccess<dim>::find_postprocessor<PostprocessorType> () const
+  {
+    return simulator->postprocessors.find_postprocessor<PostprocessorType>();
+  } 
 }
 
 
