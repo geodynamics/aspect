@@ -174,7 +174,7 @@ namespace aspect
                                   "radioactive decay",
                                   "Implementation of a model in which the internal "
                                   "heating rate is radioactive decaying in the following rule:\n"
-                                  "(initial concentration)*0.5^(time/(half life))\n"
+                                  "\\[(\\text{initial concentration})\\cdot 0.5^{\\text{time}/(\\text{half life})}\\]\n"
                                   "The crust and mantle can have different concentrations, and the crust can be "
                                   "defined either by depth or by a certain compositional field.\n"
                                   "The formula is interpreted as having units W/kg.")
