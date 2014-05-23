@@ -343,7 +343,7 @@ namespace aspect
              p != postprocessors.end(); ++p)
         if (PostprocessorType * x = dynamic_cast<PostprocessorType *> ( (*p).get()) )
             return x;
-        return 0;
+        return NULL;
     }       
         
     
