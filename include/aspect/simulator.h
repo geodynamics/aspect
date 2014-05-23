@@ -808,6 +808,20 @@ namespace aspect
                                  const AdvectionField &advection_field,
                                  const unsigned int q_point) const;
 
+      /**
+       * Compute the right-hand side for the fluid pressure equation of the Staokes
+       * system in case the simulation uses melt transport. This includes a term
+       * derived from Darcy's law, a term including the melting rate and a term dependent
+       * on the densities and velocities of fluid and solid.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      double compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                                        typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                                        const unsigned int q_point) const;
+
 
       /**
        * Copy the contribution to the advection system from a single cell into

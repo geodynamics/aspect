@@ -675,7 +675,8 @@ namespace aspect
             coupling[x.velocities[d]][x.compaction_pressure] = DoFTools::always;
             coupling[x.compaction_pressure][x.velocities[d]] = DoFTools::always;
           }
-        // TODO: add coupling between pressure and pressure (second equation in the Keller et al. paper)
+
+        coupling[x.pressure][x.pressure] = DoFTools::always;
         coupling[x.compaction_pressure][x.compaction_pressure] = DoFTools::always;
         }
       coupling[x.temperature][x.temperature] = DoFTools::always;
