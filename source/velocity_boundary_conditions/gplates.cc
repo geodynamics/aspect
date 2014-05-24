@@ -147,8 +147,12 @@ namespace aspect
         // n_points = n_theta * n_phi with n_phi = 2 * (n_theta - 1)
         // From the XML information we only know n_points, but need n_theta
         // and n_phi to properly size the arrays and get the grip point positions
-        const unsigned int n_theta = static_cast<unsigned int>(0.5 + std::sqrt(0.25 + n_points/2));
-        const unsigned int n_phi = 2 * (n_theta - 1);
+        const double dn_theta = 0.5 + std::sqrt(0.25 + n_points/2);
+        const unsigned int n_theta = static_cast<unsigned int> (dn_theta);
+        const unsigned int n_phi = 2 * (dn_theta - 1);
+
+        AssertThrow(dn_theta - n_theta <= 1e-5,
+                    ExcMessage("The velocity file has a grid structure that is not readable. Please refer to the manual for a proper grid structure."));
 
         if ((delta_theta != 0.0) || (delta_phi != 0.0))
           {
@@ -171,6 +175,12 @@ namespace aspect
         AssertThrow (in,
                      ExcMessage (std::string("Couldn't find velocities. Is file native gpml format for velocities?")));
 
+        // The lat-lon mesh has changed its starting longitude in gplates1.4
+        // correct for this while reading in the velocity data
+        unsigned int longitude_correction = 0;
+        if (gplates_1_4_or_higher(pt))
+          longitude_correction = n_phi/2;
+
         unsigned int i = 0;
         char sep;
         while (!in.eof())
@@ -183,11 +193,14 @@ namespace aspect
             if (in.eof())
               break;
 
+            const unsigned int idx_theta = i / n_phi;
+            const unsigned int idx_phi = (i + longitude_correction) % n_phi;
+
             // Currently it would not be necessary to update the grid positions at every timestep
             // since they are not allowed to change. In case we allow this later, do it anyway.
-            const Tensor<1,3> spherical_position = get_grid_point_position(i/n_phi,i%n_phi,false);
-            velocity_positions[i/n_phi][i%n_phi] = cartesian_surface_coordinates(spherical_position);
-            (*velocity_values)[i/n_phi][i%n_phi] = sphere_to_cart_velocity(spherical_velocities,spherical_position)
+            const Tensor<1,3> spherical_position = get_grid_point_position(idx_theta,idx_phi,false);
+            velocity_positions[idx_theta][idx_phi] = cartesian_surface_coordinates(spherical_position);
+            (*velocity_values)[idx_theta][idx_phi] = sphere_to_cart_velocity(spherical_velocities,spherical_position)
                                                    / cmyr_si;
 
             i++;
@@ -264,6 +277,12 @@ namespace aspect
                                         ExcMessage("Error in velocity boundary module interpolation. "
                                                    "Radial component of velocity should be zero, but is not."));
 
+                            // After checking that the residual normal velocity is small
+                            // we might as well remove it to increase compatibility of the
+                            // pressure right hand side.
+                            const Tensor<1,3> normalized_position = position / position.norm();
+                            surf_vel -=  (surf_vel * normalized_position) * normalized_position;
+
                             return surf_vel / n_interpolation_weight;
                           }
                         else
@@ -291,6 +310,12 @@ namespace aspect
         AssertThrow( residual_normal_velocity < 1e-11,
                      ExcMessage("Error in velocity boundary module interpolation. "
                                 "Radial component of velocity should be zero, but is not."));
+
+        // After checking that the residual normal velocity is small
+        // we might as well remove it to increase compatibility of the
+        // pressure right hand side.
+        const Tensor<1,3> normalized_position = position / position.norm();
+        surf_vel -=  (surf_vel * normalized_position) * normalized_position;
 
         // We have interpolated over the whole dataset of the provided velocities, which is ok.
         // Velocity will be constant for all evaluation points in this case.
@@ -482,6 +507,25 @@ namespace aspect
         index[0] = lround(scoord[0]/delta_theta);
         index[1] = lround(scoord[1]/delta_phi);
         reformat_indices(index);
+      }
+
+
+      bool
+      GPlatesLookup::gplates_1_4_or_higher(const boost::property_tree::ptree &pt) const
+      {
+        const std::string gpml_version = pt.get<std::string>("gpml:FeatureCollection.<xmlattr>.gpml:version");
+        std::vector<std::string> string_versions = dealii::Utilities::split_string_list(gpml_version,'.');
+        std::vector<int> int_versions = dealii::Utilities::string_to_int(string_versions);
+
+        const int gplates_1_3_version[3] = {1,6,322};
+
+        for (unsigned int i = 0; i < int_versions.size(); i++)
+          {
+            if (int_versions[i] > gplates_1_3_version[i]) return true;
+            if (int_versions[i] < gplates_1_3_version[i]) return false;
+          }
+
+        return false;
       }
     }
 
