@@ -520,7 +520,10 @@ namespace aspect
         const int gplates_1_3_version[3] = {1,6,322};
 
         for (unsigned int i = 0; i < int_versions.size(); i++)
-          if (int_versions[i] > gplates_1_3_version[i]) return true;
+          {
+            if (int_versions[i] > gplates_1_3_version[i]) return true;
+            if (int_versions[i] < gplates_1_3_version[i]) return false;
+          }
 
         return false;
       }
