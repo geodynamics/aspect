@@ -244,6 +244,14 @@ namespace aspect
            */
           void
           reformat_indices (int idx[2]) const;
+
+          /**
+           * Check whether the gpml file was created by GPlates1.4 or later.
+           * We need to know this, because the mesh has changed its longitude
+           * origin from 0 to -180 degrees and we need to correct for this.
+           */
+          bool
+          gplates_1_4_or_higher(boost::property_tree::ptree pt) const;
       };
     }
 

@@ -175,6 +175,12 @@ namespace aspect
         AssertThrow (in,
                      ExcMessage (std::string("Couldn't find velocities. Is file native gpml format for velocities?")));
 
+        // The lat-lon mesh has changed its starting longitude in gplates1.4
+        // correct for this while reading in the velocity data
+        unsigned int longitude_correction = 0;
+        if (gplates_1_4_or_higher(pt))
+          longitude_correction = n_phi/2;
+
         unsigned int i = 0;
         char sep;
         while (!in.eof())
@@ -187,11 +193,14 @@ namespace aspect
             if (in.eof())
               break;
 
+            const unsigned int idx_theta = i / n_phi;
+            const unsigned int idx_phi = (i + longitude_correction) % n_phi;
+
             // Currently it would not be necessary to update the grid positions at every timestep
             // since they are not allowed to change. In case we allow this later, do it anyway.
-            const Tensor<1,3> spherical_position = get_grid_point_position(i/n_phi,i%n_phi,false);
-            velocity_positions[i/n_phi][i%n_phi] = cartesian_surface_coordinates(spherical_position);
-            (*velocity_values)[i/n_phi][i%n_phi] = sphere_to_cart_velocity(spherical_velocities,spherical_position)
+            const Tensor<1,3> spherical_position = get_grid_point_position(idx_theta,idx_phi,false);
+            velocity_positions[idx_theta][idx_phi] = cartesian_surface_coordinates(spherical_position);
+            (*velocity_values)[idx_theta][idx_phi] = sphere_to_cart_velocity(spherical_velocities,spherical_position)
                                                    / cmyr_si;
 
             i++;
@@ -498,6 +507,25 @@ namespace aspect
         index[0] = lround(scoord[0]/delta_theta);
         index[1] = lround(scoord[1]/delta_phi);
         reformat_indices(index);
+      }
+
+
+      bool
+      GPlatesLookup::gplates_1_4_or_higher(boost::property_tree::ptree pt) const
+      {
+        const std::string gpml_version = pt.get<std::string>("gpml:FeatureCollection.<xmlattr>.gpml:version");
+        std::vector<std::string> string_versions = dealii::Utilities::split_string_list(gpml_version,'.');
+        std::vector<int> int_versions;
+        for (std::vector<std::string>::iterator it = string_versions.begin(); it != string_versions.end(); it ++)
+          {
+            int_versions.push_back(dealii::Utilities::string_to_int(*it));
+          }
+        const int gplates_1_4_version[3] = {1,6,325};
+
+        for (unsigned int i = 0; i < int_versions.size(); i++)
+          if (int_versions[i] < gplates_1_4_version[i]) return false;
+
+        return true;
       }
     }
 
