@@ -35,30 +35,20 @@ namespace aspect
       // set up a mapping between vector components to the blocks they
       // correspond to.
       std::vector<unsigned int> components_to_blocks (n_components, 0U);
-      if (split_vel_pressure)
-        {
-          // each variable has its own block except
-          // for the velocities which are all mapped into block 0
-          components_to_blocks[dim] = 1;
-          components_to_blocks[dim+1] = 2;
-          for (unsigned int i=dim+2; i<n_components; ++i)
-            components_to_blocks[i] = i-dim+1;
-        }
-      else
-        {
-          // here velocity and pressure is block 0:
-          components_to_blocks[dim+1] = 1;
-          for (unsigned int i=dim+2; i<n_components; ++i)
-            components_to_blocks[i] = i-dim;
-        }
 
-      if (add_compaction_pressure)
-        {
-          // if we have compaction pressure blocks stay the same
-          // but components get increased by 1
-          for (unsigned int i=dim+2; i<n_components; ++i)
-            --components_to_blocks[i];
-        }
+      // velocity is always 0, so start at pressure:
+      unsigned int start_idx = dim;
+
+      if (!split_vel_pressure)
+        ++start_idx; // skip pressure, so it will be block 0
+
+      if (!split_vel_pressure && add_compaction_pressure)
+        ++start_idx; // skip compaction pressure, so it will be block 0
+
+      // number the remainder increasing from 1:
+      unsigned int block = 0;
+      for (unsigned int i=start_idx; i < n_components; ++i)
+        components_to_blocks[i] = (++block);
 
       return components_to_blocks;
     }
