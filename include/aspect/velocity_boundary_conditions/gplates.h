@@ -251,7 +251,7 @@ namespace aspect
            * origin from 0 to -180 degrees and we need to correct for this.
            */
           bool
-          gplates_1_4_or_higher(boost::property_tree::ptree pt) const;
+          gplates_1_4_or_higher(const boost::property_tree::ptree &pt) const;
       };
     }
 
