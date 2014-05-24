@@ -1,0 +1,12 @@
+subsection Material model
+  set Model name = composition reaction 
+
+  subsection Composition reaction model
+    set Thermal conductivity                           = 1e-6 
+    set Thermal expansion coefficient                  = 0.01 
+    set Viscosity                                      = 1 
+    set Density differential for compositional field 1 = -5 
+    set Density differential for compositional field 2 = 5 
+    set Reaction depth                                 = 0.2 
+  end
+end

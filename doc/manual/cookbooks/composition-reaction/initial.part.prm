@@ -1,0 +1,8 @@
+subsection Compositional initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = if(z<0.5, 1, 0); 0 
+  end
+end
