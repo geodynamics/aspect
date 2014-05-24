@@ -147,8 +147,12 @@ namespace aspect
         // n_points = n_theta * n_phi with n_phi = 2 * (n_theta - 1)
         // From the XML information we only know n_points, but need n_theta
         // and n_phi to properly size the arrays and get the grip point positions
-        const unsigned int n_theta = static_cast<unsigned int>(0.5 + std::sqrt(0.25 + n_points/2));
-        const unsigned int n_phi = 2 * (n_theta - 1);
+        const double dn_theta = 0.5 + std::sqrt(0.25 + n_points/2);
+        const unsigned int n_theta = static_cast<unsigned int> (dn_theta);
+        const unsigned int n_phi = 2 * (dn_theta - 1);
+
+        AssertThrow(dn_theta - n_theta <= 1e-5,
+                    ExcMessage("The velocity file has a grid structure that is not readable. Please refer to the manual for a proper grid structure."));
 
         if ((delta_theta != 0.0) || (delta_phi != 0.0))
           {
