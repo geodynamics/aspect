@@ -1289,7 +1289,7 @@ This finally allows us to write
 \end{equation*}
 so we get
 \begin{equation*}
-\nabla \cdot \textbf{u} = \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u}
+\nabla \cdot \textbf{u} = - \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u}
 \end{equation*}
 where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the compressibility and $\rho$ and $\mathbf u$ are taken from the last time step.
 
@@ -1393,10 +1393,12 @@ The original formulation of the equations in section \ref{sec:equations} describ
   \notag
   \\
   \label{eq:stokes-3-melt}
-  \nabla \cdot \mathbf u_s + \frac{p_c}{\xi} &= 0
+  \nabla \cdot \mathbf u_s + \frac{p_c}{\xi} 
+  &=
+  - \kappa_s \rho_s \mathbf g \cdot \mathbf u_s
 \end{align}
 
-We use the indices s to indicate properties of the solid and f for the properties of the fluid. To adoid the density gradients, we can use the same method as for the mass conservation (described in section \ref{sec:boussinesq}) and assume the change in density (for both the solid and the fluid phase) is dominated by the change in static pressure, which can be written as
+We use the indices s to indicate properties of the solid and f for the properties of the fluid. To avoid the density gradients, we can use the same method as for the mass conservation (described in section \ref{sec:boussinesq}) and assume the change in density (for both the solid and the fluid phase) is dominated by the change in static pressure, which can be written as
 $\nabla p_{s,f} \approx \nabla p_\text{static} \approx \rho_{s,f} \textbf{g}$.
 This finally allows us to write
 \begin{equation*}
@@ -1461,7 +1463,7 @@ so we get
 \begin{equation*}
 \frac{\partial \phi}{\partial t} + \mathbf u_s \cdot \nabla \phi
 = \frac{\Gamma}{\rho_s}
-+ \frac{(1 - \phi)}{\rho_s} (\nabla \cdot \mathbf u_s + \kappa_s \rho_s \textbf{g} \cdot \mathbf{u_s} )
++ (1 - \phi) (\nabla \cdot \mathbf u_s + \kappa_s \rho_s \textbf{g} \cdot \mathbf{u_s} )
 \end{equation*}
 
 \section{Installation}

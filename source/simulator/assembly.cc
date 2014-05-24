@@ -1090,15 +1090,16 @@ namespace aspect
       return 0.0;
 
     const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+    const unsigned int is_compressible = material_model->is_compressible();
 
     const double melting_rate     = material_model_outputs.reaction_terms[q_point][porosity_index];
     const double solid_density    = material_model_outputs.densities[q_point];
-    const double fluid_density    = material_model_outputs.densities[q_point];
+    const double fluid_density    = material_model_outputs.densities[q_point] - 100;
     const double fluid_compressibility = material_model_outputs.compressibilities[q_point];
     const double solid_compressibility = material_model_outputs.compressibilities[q_point];
     const Tensor<1,dim> current_u = scratch.velocity_values[q_point];
     const double porosity         = material_model_inputs.composition[q_point][porosity_index];
-    const double K_D              = 1.0;
+    const double K_D              = 1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 1e20;
 
     const Tensor<1,dim>
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
@@ -1106,12 +1107,16 @@ namespace aspect
     double fluid_pressure_RHS = 0.0;
 
     // melting term
-    fluid_pressure_RHS += melting_rate * (1.0/fluid_density + 1.0/solid_density);
+    fluid_pressure_RHS -= melting_rate * (1.0/fluid_density + 1.0/solid_density);
 
     // compression term
-    fluid_pressure_RHS -= (current_u * gravity) * (porosity * fluid_density * fluid_compressibility
-                                                   + (1.0 - porosity) * solid_density * solid_compressibility)
-                          + K_D * fluid_compressibility * fluid_density * fluid_density * (gravity * gravity);
+    fluid_pressure_RHS += is_compressible
+                          ?
+                          (current_u * gravity) * (porosity * fluid_density * fluid_compressibility
+                                                   + (porosity) * solid_density * solid_compressibility)
+                          + K_D * fluid_compressibility * fluid_density * fluid_density * (gravity * gravity)
+                          :
+                          0.0;
 
     return fluid_pressure_RHS;
   }
@@ -1134,7 +1139,11 @@ namespace aspect
       data.local_matrix = 0;
     data.local_rhs = 0;
     if (do_pressure_rhs_compatibility_modification)
-      data.local_pressure_shape_function_integrals = 0;
+      {
+        Assert(!parameters.include_melt_transport,
+            ExcMessage("compressible models do not work with melt transport yet."));
+        data.local_pressure_shape_function_integrals = 0;
+      }
 
     // we only need the strain rates for the viscosity,
     // which we only need when rebuilding the matrix
@@ -1183,10 +1192,12 @@ namespace aspect
              std::numeric_limits<double>::quiet_NaN() );
         const double density = scratch.material_model_outputs.densities[q];
 
-        const double viscosity_f = scratch.material_model_outputs.viscosities[q];
-        const double K_D = 1.0;
+        const double viscosity_f = scratch.material_model_outputs.viscosities[q] / 100;
+        const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+        const double porosity    = scratch.material_model_inputs.composition[q][porosity_index];
+        const double K_D         = 1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 1e20;
         const double compressibility_f = scratch.material_model_outputs.compressibilities[q];
-        const double density_f = scratch.material_model_outputs.densities[q];
+        const double density_f = scratch.material_model_outputs.densities[q] - 100;
 
         const double p_f_RHS = compute_fluid_pressure_RHS(scratch,
                                                           scratch.material_model_inputs,
@@ -1208,15 +1219,22 @@ namespace aspect
                                              scratch.phi_p[i] * scratch.div_phi_u[j])
                                           + (parameters.include_melt_transport
                                              ?
-                                             pressure_scaling / viscosity_f * scratch.phi_p_c[i] * scratch.phi_p_c[j]
+                                             - pressure_scaling * pressure_scaling / viscosity_f
+                                               * scratch.phi_p_c[i] * scratch.phi_p_c[j]
                                              - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j]
                                              - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j]
-                                             + K_D * pressure_scaling * pressure_scaling *
+                                             - K_D * pressure_scaling * pressure_scaling *
                                                (scratch.grad_phi_p[i] * scratch.grad_phi_p[j])
-                                             + K_D * pressure_scaling * pressure_scaling *
-                                               compressibility_f * density_f * scratch.phi_p[i] * (scratch.grad_phi_p[j] * gravity)
-                                             + K_D * pressure_scaling * pressure_scaling *
-                                               compressibility_f * density_f * (scratch.grad_phi_p[i]* gravity) * scratch.phi_p[j]
+                                             + (is_compressible
+                                                ?
+                                                K_D * pressure_scaling * pressure_scaling *
+                                                  compressibility_f * density_f
+                                                  * scratch.phi_p[i] * (scratch.grad_phi_p[j] * gravity)
+                                                + K_D * pressure_scaling * pressure_scaling *
+                                                  compressibility_f * density_f
+                                                  * (scratch.grad_phi_p[i]* gravity) * scratch.phi_p[j]
+                                                :
+                                                0.0)
                                              :
                                              0))
                                         * scratch.finite_element_values.JxW(q);
@@ -1232,14 +1250,27 @@ namespace aspect
                                      scratch.phi_p[i])
                                     :
                                     0)
-                                 - (parameters.include_melt_transport
+                                 + (parameters.include_melt_transport
                                     ?
-                                    K_D * compressibility_f * density_f *
-                                    (scratch.grad_phi_p[i] * gravity)
+                                    + (is_compressible
+                                       ?
+                                       - pressure_scaling *
+                                         K_D * compressibility_f * density_f *
+                                         (scratch.grad_phi_p[i] * gravity)
+                                       + pressure_scaling *
+                                         compressibility * density *
+                                         (scratch.velocity_values[q] * gravity) *
+                                         scratch.phi_p_c[i]
+                                       :
+                                       0.0)
+                                    + pressure_scaling *
+                                    p_f_RHS * scratch.phi_p[i]
                                     :
                                     0.0)
                                )
                                * scratch.finite_element_values.JxW(q);
+
+
         if (do_pressure_rhs_compatibility_modification)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
