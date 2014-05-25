@@ -39,14 +39,8 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::initialize (const GeometryModel::Interface<dim>       &geometry_model_,
-                                const BoundaryTemperature::Interface<dim> &boundary_temperature_,
-                                const AdiabaticConditions<dim>            &adiabatic_conditions_)
-    {
-      geometry_model       = &geometry_model_;
-      boundary_temperature = &boundary_temperature_;
-      adiabatic_conditions = &adiabatic_conditions_;
-    }
+    Interface<dim>::initialize ()
+    {}
 
 
     template <int dim>
@@ -92,10 +86,7 @@ namespace aspect
 
     template <int dim>
     Interface<dim> *
-    create_initial_conditions (ParameterHandler &prm,
-                               const GeometryModel::Interface<dim> &geometry_model,
-                               const BoundaryTemperature::Interface<dim> &boundary_temperature,
-                               const AdiabaticConditions<dim>      &adiabatic_conditions)
+    create_initial_conditions (ParameterHandler &prm)
     {
       std::string model_name;
       prm.enter_subsection ("Initial conditions");
@@ -107,9 +98,7 @@ namespace aspect
       Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
                                                                                       "Initial conditions::Model name",
                                                                                       prm);
-      plugin->initialize (geometry_model,
-                          boundary_temperature,
-                          adiabatic_conditions);
+      plugin->initialize ();
       return plugin;
     }
 
@@ -179,10 +168,7 @@ namespace aspect
   \
   template \
   Interface<dim> * \
-  create_initial_conditions<dim> (ParameterHandler &prm, \
-                                  const GeometryModel::Interface<dim> &geometry_model, \
-                                  const BoundaryTemperature::Interface<dim> &boundary_temperature, \
-                                  const AdiabaticConditions<dim>      &adiabatic_conditions);
+  create_initial_conditions<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

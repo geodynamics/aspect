@@ -108,9 +108,9 @@ namespace aspect
                           0
                           :
                           BoundaryComposition::create_boundary_composition<dim>(prm)),
+    initial_conditions (InitialConditions::create_initial_conditions<dim>(prm)),
     compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions<dim>(prm)),
     adiabatic_conditions(),
-    initial_conditions (),
 
     time (std::numeric_limits<double>::quiet_NaN()),
     time_step (0),
@@ -230,6 +230,8 @@ namespace aspect
       sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
       sim->initialize (*this);
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_conditions.get()))
+      sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(compositional_initial_conditions.get()))
       sim->initialize (*this);
 
@@ -254,13 +256,6 @@ namespace aspect
                                                              parameters.surface_pressure,
                                                              parameters.adiabatic_surface_temperature,
                                                              parameters.n_compositional_fields));
-
-    initial_conditions.reset (InitialConditions::create_initial_conditions (prm,
-                                                                            *geometry_model,
-                                                                            *boundary_temperature,
-                                                                            *adiabatic_conditions));
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_conditions.get()))
-      sim->initialize (*this);
 
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);

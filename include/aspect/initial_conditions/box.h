@@ -23,6 +23,7 @@
 #define __aspect__initial_conditions_box_h
 
 #include <aspect/initial_conditions/interface.h>
+#include <aspect/simulator.h>
 
 namespace aspect
 {
@@ -37,7 +38,7 @@ namespace aspect
      * @ingroup InitialConditionsModels
      */
     template <int dim>
-    class PerturbedBox : public Interface<dim>
+    class PerturbedBox : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -54,7 +55,7 @@ namespace aspect
      * @ingroup InitialConditionsModels
      */
     template <int dim>
-    class PolarBox : public Interface<dim>
+    class PolarBox : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -70,7 +71,7 @@ namespace aspect
      * @ingroup InitialCOnditionsModels
      */
     template <int dim>
-    class MandelBox : public Interface<dim>
+    class MandelBox : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -87,7 +88,7 @@ namespace aspect
      * @ingroup InitialConditionsModels
      */
     template <int dim>
-    class InclusionShapeBox : public Interface<dim>
+    class InclusionShapeBox : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
