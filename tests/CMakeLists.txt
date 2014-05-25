@@ -185,6 +185,8 @@ FOREACH(_test ${_tests})
   FOREACH(_output ${_outputs})
     GET_FILENAME_COMPONENT(_output ${_output} NAME)
 
+    get_filename_component(ASPECT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PATH)
+
     # create the output.notime targets for each of the output files,
     # and also create a similar file for all of the input files (this
     # avoids the need to strip timing information from files we may
@@ -207,6 +209,7 @@ FOREACH(_test ${_tests})
 	cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}
         | egrep -v '^\\|.*\\|'
 	| egrep -v '^--'
+	| sed 's\#${ASPECT_BASE_DIR}\#ASPECT_DIR\#g'
         > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
               ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime

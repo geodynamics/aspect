@@ -19,10 +19,10 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Model will be rotated by 0.00 degrees around axis 0.00 0.00 1.00
 
 
-   Loading GPlates boundary velocity file /home/rengas/Software/Aspect-Versionen/aspect/data/velocity-boundary-conditions/gplates/current_day_1.4.gpml.
+   Loading GPlates boundary velocity file ASPECT_DIR/data/velocity-boundary-conditions/gplates/current_day_1.4.gpml.
 
 
-   Loading GPlates boundary velocity file /home/rengas/Software/Aspect-Versionen/aspect/data/velocity-boundary-conditions/gplates/current_day_1.4.gpml.
+   Loading GPlates boundary velocity file ASPECT_DIR/data/velocity-boundary-conditions/gplates/current_day_1.4.gpml.
 
 
    Loading new velocity file did not succeed.
