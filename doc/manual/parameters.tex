@@ -571,12 +571,10 @@ Because this class simply takes what the initial composition had described, this
 
 Because this class simply takes what the initial temperature had described, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in postprocessing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary temperature model/Initial temperature''.
 
-`Tan Gurnis': A model for the Tan/Gurnis benchmark.
-
 `spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Spherical constant'.
 
 
-{\it Possible values:} [Selection constant|box|initial temperature|Tan Gurnis|spherical constant ]
+{\it Possible values:} [Selection constant|box|initial temperature|spherical constant ]
 \end{itemize}
 
 
@@ -2634,12 +2632,10 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 `multicomponent': This model is for use with an arbitrary number of compositional fields, where each field represents a rock type which can have completely different properties from the others. However, each rock type itself has constant material properties.  The value of the  compositional field is interpreed as a volume fraction. If the sum of the fields is greater than one, they are renormalized.  If it is less than one, material properties  for ``background mantle'' make up the rest. When more than one field is present, the material properties are averaged arithmetically.  An exception is the viscosity, where the averaging should make more of a difference.  For this, the user selects between arithmetic, harmonic, geometric, or maximum composition averaging.
 
-`Tan Gurnis': A simple compressible material model based on a benchmark from the paper of Tan/Gurnis (2007). This does not use the temperature equation, but has a hardcoded temperature.
-
 `table': A material model that reads tables of pressure and temperature dependent material coefficients from files. The default values for this model's runtime parameters use a material description taken from the paper \textit{Complex phase distribution and seismic velocity structure of the transition zone: Convection model predictions for a magnesium-endmember olivine-pyroxene mantle} by Michael H.G. Jacobs and Arie P. van den Berg, Physics of the Earth and Planetary Interiors, Volume 186, Issues 1-2, May 2011, Pages 36--48. See \url{http://www.sciencedirect.com/science/article/pii/S0031920111000422}.
 
 
-{\it Possible values:} [Selection composition reaction|Steinberger|latent heat|simple|simple compressible|multicomponent|Tan Gurnis|table ]
+{\it Possible values:} [Selection composition reaction|Steinberger|latent heat|simple|simple compressible|multicomponent|table ]
 \end{itemize}
 
 
@@ -4144,160 +4140,6 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
 
-\subsection{Parameters in section \tt Material model/Tan Gurnis model}
-\label{parameters:Material_20model/Tan_20Gurnis_20model}
-
-\begin{itemize}
-\item {\it Parameter name:} {\tt Di}
-\phantomsection\label{parameters:Material model/Tan Gurnis model/Di}
-
-
-\index[prmindex]{Di}
-\index[prmindexfull]{Material model!Tan Gurnis model!Di}
-{\it Value:} 0.5
-
-
-{\it Default:} 0.5
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Reference density}
-\phantomsection\label{parameters:Material model/Tan Gurnis model/Reference density}
-
-
-\index[prmindex]{Reference density}
-\index[prmindexfull]{Material model!Tan Gurnis model!Reference density}
-{\it Value:} 3300
-
-
-{\it Default:} 3300
-
-
-{\it Description:} Reference density $\rho_0$. Units: $kg/m^3$.
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Reference specific heat}
-\phantomsection\label{parameters:Material model/Tan Gurnis model/Reference specific heat}
-
-
-\index[prmindex]{Reference specific heat}
-\index[prmindexfull]{Material model!Tan Gurnis model!Reference specific heat}
-{\it Value:} 1250
-
-
-{\it Default:} 1250
-
-
-{\it Description:} The value of the specific heat $cp$. Units: $J/kg/K$.
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Reference temperature}
-\phantomsection\label{parameters:Material model/Tan Gurnis model/Reference temperature}
-
-
-\index[prmindex]{Reference temperature}
-\index[prmindexfull]{Material model!Tan Gurnis model!Reference temperature}
-{\it Value:} 293
-
-
-{\it Default:} 293
-
-
-{\it Description:} The reference temperature $T_0$. Units: $K$.
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Thermal conductivity}
-\phantomsection\label{parameters:Material model/Tan Gurnis model/Thermal conductivity}
-
-
-\index[prmindex]{Thermal conductivity}
-\index[prmindexfull]{Material model!Tan Gurnis model!Thermal conductivity}
-{\it Value:} 4.7
-
-
-{\it Default:} 4.7
-
-
-{\it Description:} The value of the thermal conductivity $k$. Units: $W/m/K$.
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Thermal expansion coefficient}
-\phantomsection\label{parameters:Material model/Tan Gurnis model/Thermal expansion coefficient}
-
-
-\index[prmindex]{Thermal expansion coefficient}
-\index[prmindexfull]{Material model!Tan Gurnis model!Thermal expansion coefficient}
-{\it Value:} 2e-5
-
-
-{\it Default:} 2e-5
-
-
-{\it Description:} The value of the thermal expansion coefficient $\beta$. Units: $1/K$.
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Viscosity}
-\phantomsection\label{parameters:Material model/Tan Gurnis model/Viscosity}
-
-
-\index[prmindex]{Viscosity}
-\index[prmindexfull]{Material model!Tan Gurnis model!Viscosity}
-{\it Value:} 5e24
-
-
-{\it Default:} 5e24
-
-
-{\it Description:} The value of the constant viscosity. Units: $kg/m/s$.
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt a}
-\phantomsection\label{parameters:Material model/Tan Gurnis model/a}
-
-
-\index[prmindex]{a}
-\index[prmindexfull]{Material model!Tan Gurnis model!a}
-{\it Value:} 0
-
-
-{\it Default:} 0
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt gamma}
-\phantomsection\label{parameters:Material model/Tan Gurnis model/gamma}
-
-
-\index[prmindex]{gamma}
-\index[prmindexfull]{Material model!Tan Gurnis model!gamma}
-{\it Value:} 1
-
-
-{\it Default:} 1
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt wavenumber}
-\phantomsection\label{parameters:Material model/Tan Gurnis model/wavenumber}
-
-
-\index[prmindex]{wavenumber}
-\index[prmindexfull]{Material model!Tan Gurnis model!wavenumber}
-{\it Value:} 1
-
-
-{\it Default:} 1
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\end{itemize}
-
 \subsection{Parameters in section \tt Mesh refinement}
 \label{parameters:Mesh_20refinement}
 
@@ -4828,8 +4670,6 @@ The following postprocessors are available:
 
 As stated, this postprocessor computes the \textit{outbound} heat flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
 
-`Tan Gurnis error': A postprocessor that compares the solution of the benchmarks from the Tan/Gurnis (2007) paper with the one computed by ASPECT by outputing data that is compared using a matlab script.
-
 `depth average': A postprocessor that computes depth averaged quantities and writes them into a file <depth\_average.ext> in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section \texttt{Postprocess/Depth average} in the input file. 
 
 `basic statistics': A postprocessor that computes some simplified statistics like the Rayleigh number and other quantities that only make sense in certain model setups.
@@ -4851,7 +4691,7 @@ The exact approach works as follows: At the centers of all cells that sit along 
 `spherical velocity statistics': A postprocessor that computes radial, tangential and total RMS velocity.
 
 
-{\it Possible values:} [MultipleSelection velocity boundary statistics|velocity statistics for the table model|heat flux statistics for the table model|viscous dissipation statistics|visualization|temperature statistics|composition statistics|topography|heat flux statistics|Tan Gurnis error|depth average|basic statistics|tracers|pressure statistics|velocity statistics|dynamic topography|internal heating statistics|spherical velocity statistics|all ]
+{\it Possible values:} [MultipleSelection velocity boundary statistics|velocity statistics for the table model|heat flux statistics for the table model|viscous dissipation statistics|visualization|temperature statistics|composition statistics|topography|heat flux statistics|depth average|basic statistics|tracers|pressure statistics|velocity statistics|dynamic topography|internal heating statistics|spherical velocity statistics|all ]
 \end{itemize}
 
 

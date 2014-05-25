@@ -2,8 +2,6 @@
 # ---------------------
 
 
-set Additional shared libraries            = ./tangurnis/code/libtangurnis.so
-
 # At the top, state that the program should be run for a two-dimensional 
 # simulation
 set Dimension = 2
@@ -185,7 +183,6 @@ subsection Initial conditions
   subsection Function
     set Function expression = sin(pi*y)*cos(pi*1*x)
   end
-
 end
 
 
@@ -210,7 +207,7 @@ subsection Material model
     set Di                            = 0.5
     set gamma                         = 1
 
-    set a                             = 2
+    set a                             = 0
 
     set wavenumber                    = 1
   end
@@ -301,6 +298,8 @@ subsection Postprocess
   end
 
   subsection Visualization
+    set List of output variables      = density
+
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no
     # grouping. This will disable parallel file output and instead write one
