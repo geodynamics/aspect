@@ -520,6 +520,8 @@ namespace aspect
 
 
     // notify different system components that we started the next time step
+    // TODO: implement this for all plugins that might need it at one place.
+    // Temperature BC are currently updated in compute_current_constraints
     material_model->update();
     gravity_model->update();
     heating_model->update();
