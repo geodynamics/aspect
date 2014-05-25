@@ -108,8 +108,7 @@ namespace aspect
                           0
                           :
                           BoundaryComposition::create_boundary_composition<dim>(prm)),
-    compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions (prm,
-                                      *geometry_model)),
+    compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions<dim>(prm)),
     adiabatic_conditions(),
     initial_conditions (),
 
@@ -230,6 +229,8 @@ namespace aspect
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature.get()))
       sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
+      sim->initialize (*this);
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(compositional_initial_conditions.get()))
       sim->initialize (*this);
 
     //Initialize the free surface handler 
