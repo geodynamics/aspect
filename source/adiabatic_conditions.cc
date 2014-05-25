@@ -21,8 +21,7 @@
 
 #include <aspect/global.h>
 #include <aspect/adiabatic_conditions.h>
-#include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/std_cxx1x/bind.h>
 
