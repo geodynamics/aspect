@@ -86,6 +86,7 @@ namespace aspect
             std::vector<double> fluid_viscosities;
             std::vector<double> permeabilities;
             std::vector<double> fluid_densities;
+            std::vector<double> fluid_compressibilities;
          };
 
 

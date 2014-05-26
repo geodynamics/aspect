@@ -91,8 +91,12 @@ end
 
 subsection Material model
 
-  set Model name = simple # default: 
-
+  set Model name = keller # default:
+  subsection Keller
+    set Reference shear viscosity = 5e24
+    set Reference solid density = 3300
+    set Reference melt density = 3300
+  end 
 end
 
 

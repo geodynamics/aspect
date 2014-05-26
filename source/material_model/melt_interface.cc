@@ -53,6 +53,7 @@ namespace aspect
       fluid_viscosities.resize(n_points);
       permeabilities.resize(n_points);
       fluid_densities.resize(n_points);
+      fluid_compressibilities.resize(n_points);
     }
 
   }
