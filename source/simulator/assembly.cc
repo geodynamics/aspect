@@ -1192,19 +1192,28 @@ namespace aspect
              std::numeric_limits<double>::quiet_NaN() );
         const double density = scratch.material_model_outputs.densities[q];
 
-        const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
-        double porosity          = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
-        const double K_D         = 1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 10;
+        double porosity = 0.0;
+        double K_D = 0.0;
+        double viscosity_c = 0.0;
+        double compressibility_f = 0.0;
+        double density_f = 0.0;
+        double p_f_RHS = 0.0;
+        if (parameters.include_melt_transport)
+          {
+            const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+            porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
+            K_D = 1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 10;
 
-        porosity                 = std::max(porosity,0.001);
-        const double viscosity_c = scratch.material_model_outputs.viscosities[q] * (1.0 - porosity) / porosity;
-        const double compressibility_f = scratch.material_model_outputs.compressibilities[q];
-        const double density_f = scratch.material_model_outputs.densities[q] - 100;
+            porosity = std::max(porosity,0.001);
 
-        const double p_f_RHS = compute_fluid_pressure_RHS(scratch,
-                                                          scratch.material_model_inputs,
-                                                          scratch.material_model_outputs,
-                                                          q);
+            viscosity_c = scratch.material_model_outputs.viscosities[q] * (1.0 - porosity) / porosity;
+            compressibility_f = scratch.material_model_outputs.compressibilities[q];
+            density_f = scratch.material_model_outputs.densities[q] - 100;
+            p_f_RHS = compute_fluid_pressure_RHS(scratch,
+                scratch.material_model_inputs,
+                scratch.material_model_outputs,
+                q);
+          }
 
         if (rebuild_stokes_matrix)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
