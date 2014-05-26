@@ -71,7 +71,7 @@ namespace aspect
         for (unsigned int i=0;i<in.position.size();++i)
           {
             out.viscosities[i] = 1.0;
-            out.densities[i] = 1.0;
+            out.densities[i] = 1.0 + (in.composition[i][0]);
             out.thermal_expansion_coefficients[i] = 1.0;
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;

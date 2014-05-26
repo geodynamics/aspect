@@ -80,7 +80,7 @@ end
 subsection Compositional initial conditions
   set Model name = function # default: 
   subsection Function
-    set Function expression = if(y>250000*(1+0.5*sin(x*pi/250000)),0.3,0);0.0
+    set Function expression = if(y>250000*(1+0.5*sin(x*pi/250000)),0.3,0);if(x<200000,0.3,0.0)
     set Variable names      = x,y
   end
 end
@@ -100,6 +100,9 @@ subsection Mesh refinement
   set Initial adaptive refinement              = 0                    # default: 2
   set Initial global refinement                = 5                    # default: 2
   set Strategy                                 = composition
+ set Time steps between mesh refinement       = 0
+
+
 end
 
 
@@ -120,7 +123,7 @@ subsection Postprocess
 
   subsection Visualization
 
-    set List of output variables      = density, viscosity, thermal expansivity
+    set List of output variables      = density, viscosity, thermal expansivity, melt pressure, melt velocity
 
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no
