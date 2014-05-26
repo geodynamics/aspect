@@ -74,11 +74,18 @@ namespace aspect
 
         struct MaterialModelInputs: public Interface<dim>::MaterialModelInputs
          {
-
+            MaterialModelInputs (const unsigned int n_points,
+                                              const unsigned int n_comp);
          };
         struct MaterialModelOutputs: public Interface<dim>::MaterialModelOutputs
          {
+            MaterialModelOutputs (const unsigned int n_points,
+                                  const unsigned int n_comp);
 
+            std::vector<double> compaction_viscosities;
+            std::vector<double> fluid_viscosities;
+            std::vector<double> permeabilities;
+            std::vector<double> fluid_densities;
          };
 
 

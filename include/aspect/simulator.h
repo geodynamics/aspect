@@ -42,6 +42,7 @@
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/melt_interface.h>
 #include <aspect/heating_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
@@ -818,8 +819,8 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       double compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                                        typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                                        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
+                                        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
                                         const unsigned int q_point) const;
 
 
