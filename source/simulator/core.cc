@@ -1011,8 +1011,11 @@ namespace aspect
           = finite_element.component_mask (introspection.extractors.velocities);
         introspection.component_masks.pressure
           = finite_element.component_mask (introspection.extractors.pressure);
-        introspection.component_masks.compaction_pressure
-          = finite_element.component_mask (introspection.extractors.compaction_pressure);
+
+        if (parameters.include_melt_transport)
+          introspection.component_masks.compaction_pressure
+            = finite_element.component_mask (introspection.extractors.compaction_pressure);
+
         introspection.component_masks.temperature
           = finite_element.component_mask (introspection.extractors.temperature);
         for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)

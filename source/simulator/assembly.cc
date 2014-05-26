@@ -1098,8 +1098,8 @@ namespace aspect
     const double fluid_compressibility = material_model_outputs.compressibilities[q_point];
     const double solid_compressibility = material_model_outputs.compressibilities[q_point];
     const Tensor<1,dim> current_u = scratch.velocity_values[q_point];
-    const double porosity         = material_model_inputs.composition[q_point][porosity_index];
-    const double K_D         = std::max(1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 10, 1e-20);
+    const double porosity         = std::max(material_model_inputs.composition[q_point][porosity_index],0.0);
+    const double K_D              = 1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 10;
 
     const Tensor<1,dim>
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
@@ -1193,9 +1193,11 @@ namespace aspect
         const double density = scratch.material_model_outputs.densities[q];
 
         const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
-        const double porosity    = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.001);
+        double porosity          = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
+        const double K_D         = 1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 10;
+
+        porosity                 = std::max(porosity,0.001);
         const double viscosity_c = scratch.material_model_outputs.viscosities[q] * (1.0 - porosity) / porosity;
-        const double K_D         = std::max(1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 10, 1e-20);
         const double compressibility_f = scratch.material_model_outputs.compressibilities[q];
         const double density_f = scratch.material_model_outputs.densities[q] - 100;
 
@@ -1264,7 +1266,7 @@ namespace aspect
                                        :
                                        0.0)
                                     + pressure_scaling *
-                                    p_f_RHS * scratch.phi_p[i]
+                                    /*p_f_RHS*/0.0 * scratch.phi_p[i]
                                     :
                                     0.0)
                                )

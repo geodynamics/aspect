@@ -1,15 +1,8 @@
 # Listing of Parameters
 # ---------------------
-# In order to make the problem in the first time step easier to solve, we need
-# a reasonable guess for the temperature and pressure. To obtain it, we use an
-# adiabatic pressure and temperature field. This parameter describes what the
-# `adiabatic' temperature would be at the surface of the domain (i.e. at depth
-# zero). Note that this value need not coincide with the boundary condition
-# posed at this point. Rather, the boundary condition may differ significantly
-# from the adiabatic value, and then typically induce a thermal boundary
-# layer.
-# For more information, see the section in the manual that discusses the
-# general mathematical model.
+# This test checks if including melt tranport in a simulation, 
+# but setting the porosity to 0, gives the same results as running
+# the simulation without melt tranport. 
 
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0
@@ -20,7 +13,7 @@ set Dimension                              = 2
 
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
-set End time                               = 1e12
+set End time                               = 1e10
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -90,7 +83,7 @@ end
 subsection Compositional initial conditions
   set Model name = function # default: 
   subsection Function
-    set Function expression = if(y>250000*(1+0.5*sin(x*pi/250000)),0.3,0);0.1
+    set Function expression = if(y>250000*(1+0.5*sin(x*pi/250000)),0.3,0);0.0
     set Variable names      = x,y
   end
 end
@@ -108,7 +101,7 @@ subsection Mesh refinement
   set Refinement fraction                      = 0.3
 
   set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 1                    # default: 2
+  set Initial global refinement                = 5                    # default: 2
   set Strategy                                 = composition
 end
 
