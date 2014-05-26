@@ -1204,7 +1204,7 @@ namespace aspect
             porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
             K_D = 1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 10;
 
-            porosity = std::max(porosity,0.001);
+            porosity = std::min(std::max(porosity,0.001),0.999);
 
             viscosity_c = scratch.material_model_outputs.viscosities[q] * (1.0 - porosity) / porosity;
             compressibility_f = scratch.material_model_outputs.compressibilities[q];
