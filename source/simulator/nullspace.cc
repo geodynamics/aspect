@@ -25,7 +25,7 @@
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/constraint_matrix.h>
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
 #include <deal.II/lac/solver_cg.h>
 #else
 #include <deal.II/lac/trilinos_solver.h>

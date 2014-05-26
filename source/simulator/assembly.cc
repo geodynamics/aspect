@@ -1021,7 +1021,7 @@ namespace aspect
     Amg_preconditioner.reset (new LinearAlgebra::PreconditionAMG());
 
     LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     Amg_data.symmetric_operator = false;
 #else
     Amg_data.constant_modes = constant_modes;

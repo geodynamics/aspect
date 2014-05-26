@@ -45,27 +45,48 @@ ENDIF()
 
 MESSAGE(STATUS "found deal.II version ${DEAL_II_PACKAGE_VERSION} at '${deal.II_DIR}'")
 
-IF(NOT DEAL_II_WITH_TRILINOS OR NOT DEAL_II_WITH_P4EST)
-  IF(NOT DEAL_II_WITH_TRILINOS)
-    MESSAGE(SEND_ERROR
-      "\n-- deal.II was built without support for Trilinos!\n"
-      )
-  ENDIF()
+SET(ASPECT_USE_PETSC OFF CACHE BOOL "Use PETSc instead of Trilinos if set to 'on'.")
 
-  IF(NOT DEAL_II_WITH_P4EST)
+MESSAGE(STATUS "using PETSc = '${ASPECT_USE_PETSC}'")
+
+SET(_DEALII_GOOD ON)
+
+IF(ASPECT_USE_PETSC AND NOT DEAL_II_WITH_PETSC)
+    MESSAGE(SEND_ERROR
+      "\n-- deal.II was built without support for PETSc!\n"
+      )
+    SET(_DEALII_GOOD OFF)
+ENDIF()
+
+IF(NOT DEAL_II_WITH_P4EST)
     MESSAGE(SEND_ERROR
       "\n-- deal.II was built without support for p4est!\n"
       )
-  ENDIF()
+    SET(_DEALII_GOOD OFF)
+ENDIF()
 
+IF(NOT ASPECT_USE_PETSC AND NOT DEAL_II_WITH_TRILINOS)
+    MESSAGE(SEND_ERROR
+      "\n-- deal.II was built without support for Trilinos!\n"
+      )
+    SET(_DEALII_GOOD OFF)
+ENDIF()
+
+IF (NOT _DEALII_GOOD)
   MESSAGE(FATAL_ERROR
-    "\nAspect requires a deal.II installation built with support for Trilinos and p4est but one or both of these appears to be missing!\n"
+    "\nAspect requires a deal.II installation built with support for Trilinos/PETSc and p4est but one or both of these appears to be missing!\n"
     )
-
 ENDIF()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 PROJECT(${TARGET})
+
+IF (ASPECT_USE_PETSC)
+FOREACH(_source_file ${TARGET_SRC})
+  SET_PROPERTY(SOURCE ${_source_file}
+    APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_PETSC="1")
+ENDFOREACH()
+ENDIF()
 
 
 # Pass down the source directory to the sources. This can be used

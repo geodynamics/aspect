@@ -273,20 +273,7 @@ GET_CMAKE_PROPERTY(_variables VARIABLES)
 
 # Append compiler information to CTEST_BUILD_NAME:
 IF(NOT EXISTS ${CTEST_BINARY_DIRECTORY}/detailed.log)
-  # Apparently, ${CTEST_BINARY_DIRECTORY} is not a configured build
-  # directory. In this case we need a trick: set up a dummy project and
-  # query it for the compiler information.
-  FILE(WRITE ${CTEST_BINARY_DIRECTORY}/query_for_compiler/CMakeLists.txt "
-FILE(WRITE ${CTEST_BINARY_DIRECTORY}/detailed.log
-  \"#        CMAKE_CXX_COMPILER:     \${CMAKE_CXX_COMPILER_ID} \${CMAKE_CXX_COMPILER_VERSION} on platform \${CMAKE_SYSTEM_NAME} \${CMAKE_SYSTEM_PROCESSOR}\"
-  )"
-    )
-  EXECUTE_PROCESS(
-    COMMAND ${CMAKE_COMMAND} ${_options} "-G${CTEST_CMAKE_GENERATOR}" .
-    OUTPUT_QUIET ERROR_QUIET
-    WORKING_DIRECTORY ${CTEST_BINARY_DIRECTORY}/query_for_compiler
-    )
-  FILE(REMOVE_RECURSE ${CTEST_BINARY_DIRECTORY}/query_for_compiler)
+  MESSAGE(FATAL_ERROR "could not find detailed.log")
 ENDIF()
 
 IF(EXISTS ${CTEST_BINARY_DIRECTORY}/detailed.log)
@@ -304,6 +291,13 @@ IF(EXISTS ${CTEST_BINARY_DIRECTORY}/detailed.log)
       _compiler_id MATCHES "CMAKE_CXX_COMPILER" )
     SET(CTEST_BUILD_NAME "${_compiler_id}")
   ENDIF()
+
+
+  FILE(STRINGS ${CTEST_BINARY_DIRECTORY}/detailed.log _use_petsc_line
+    REGEX "ASPECT_USE_PETSC:"
+    )
+  STRING(REGEX REPLACE "^.*#.*ASPECT_USE_PETSC: *(.*)$" "\\1" USE_PETSC ${_use_petsc_line})
+
 ENDIF()
 
 #
@@ -360,7 +354,9 @@ ELSE()
   SET(_branch "")
 ENDIF()
 
-
+IF(USE_PETSC)
+  SET(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-PETSc")
+ENDIF()
 
 SET(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${_branch}")
 

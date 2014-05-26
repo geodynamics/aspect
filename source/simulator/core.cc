@@ -673,7 +673,7 @@ namespace aspect
           = DoFTools::always;
     }
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     LinearAlgebra::CompressedBlockSparsityPattern sp(introspection.index_sets.system_relevant_partitioning);
 
 #else
@@ -687,7 +687,7 @@ namespace aspect
                                      Utilities::MPI::
                                      this_mpi_process(mpi_communicator));
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
                                                dof_handler.locally_owned_dofs_per_processor(),
                                                mpi_communicator, introspection.index_sets.system_relevant_set);
@@ -725,7 +725,7 @@ namespace aspect
           coupling[c][d] = DoFTools::none;
 
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     LinearAlgebra::CompressedBlockSparsityPattern sp(introspection.index_sets.system_relevant_partitioning);
 
 #else
@@ -737,7 +737,7 @@ namespace aspect
                                      constraints, false,
                                      Utilities::MPI::
                                      this_mpi_process(mpi_communicator));
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
                                                dof_handler.locally_owned_dofs_per_processor(),
                                                mpi_communicator, introspection.index_sets.system_relevant_set);
