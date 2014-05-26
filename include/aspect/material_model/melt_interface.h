@@ -72,39 +72,26 @@ namespace aspect
          */
         virtual ~MeltInterface();
 
+        struct MaterialModelInputs: public Interface<dim>::MaterialModelInputs
+         {
+
+         };
+        struct MaterialModelOutputs: public Interface<dim>::MaterialModelOutputs
+         {
+
+         };
+
+
         /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in. If MaterialModelInputs.strain_rate has the length
          * 0, then the viscosity does not need to be computed.
          */
-        virtual void evaluate(const MaterialModelInputs &in, MaterialModelOutputs &out) const = 0;
+        virtual void evaluate_with_melt(const MaterialModelInputs &in, MaterialModelOutputs &out) const = 0;
 
-        /**
-         * @name Functions used in dealing with run-time parameters
-         * @{
-         */
-        /**
-         * Declare the parameters this class takes through input files. The
-         * default implementation of this function does not describe any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+            typename Interface<dim>::MaterialModelOutputs &out) const = 0;
 
-        /**
-         * Read the parameters this class declares from the parameter file.
-         * The default implementation of this function does not read any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-        /**
-         * @}
-         */
     };
   }
 }

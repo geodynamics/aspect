@@ -38,3 +38,16 @@ namespace aspect
     {}
   }
 }
+
+// explicit instantiations
+namespace aspect
+{
+
+  namespace MaterialModel
+  {
+#define INSTANTIATE(dim) \
+  template class MeltInterface<dim>;
+
+    ASPECT_INSTANTIATE(INSTANTIATE)
+  }
+}
