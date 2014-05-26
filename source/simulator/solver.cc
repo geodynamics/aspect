@@ -33,6 +33,7 @@
 
 #include <deal.II/lac/pointer_matrix.h>
 
+#include <deal.II/fe/fe_values.h>
 
 namespace aspect
 {
@@ -411,6 +412,75 @@ namespace aspect
         remove_nullspace(solution, distributed_stokes_solution);
 
         normalize_pressure(solution);
+
+
+        // convert melt pressures:
+        if (parameters.include_melt_transport)
+          {
+            // We were solving for p_f (fluid pressure) and p_c (compaction
+            // pressure), but we want the solid pressure in the first pressure
+            // variable:
+
+            // p_s = (p_c - (phi-1) p_f) / (1-phi)
+            //    or p_f if phi=1
+
+            // Note that we need phi, which we haven't updated yet. The best
+            // we can do is use the current linearization point.
+
+            // Think what we need to do if the pressure is not an FE_Q...
+            Assert(parameters.use_locally_conservative_discretization == false, ExcNotImplemented());
+
+            // ...
+            distributed_stokes_solution.block(0) = solution.block(0);
+
+            const unsigned int por_idx = introspection.compositional_index_for_name("porosity");
+            const Quadrature<dim> quadrature(finite_element.base_element(introspection.base_elements.pressure).get_unit_support_points());
+            std::vector<double> porosity_values(quadrature.size());
+            FEValues<dim> fe_values (mapping,
+                                     finite_element,
+                                     quadrature,
+                                     update_quadrature_points | update_values);
+
+            std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+            typename DoFHandler<dim>::active_cell_iterator
+            cell = dof_handler.begin_active(),
+            endc = dof_handler.end();
+            for (; cell != endc; ++cell)
+              if (cell->is_locally_owned())
+                {
+                  fe_values.reinit(cell);
+                  cell->get_dof_indices (local_dof_indices);
+                  fe_values[introspection.extractors.compositional_fields[por_idx]].get_function_values (
+                      current_linearization_point, porosity_values);
+                  for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
+                    {
+                      unsigned int pressure_idx
+                      = finite_element.component_to_system_index(introspection.component_indices.pressure,
+                          /*dof index within component=*/ j);
+
+                      // skip entries that are not locally owned:
+                      if (!dof_handler.locally_owned_dofs().is_element(pressure_idx))
+                        continue;
+
+                      unsigned int p_c_idx
+                      = finite_element.component_to_system_index(introspection.component_indices.compaction_pressure,
+                          /*dof index within component=*/ j);
+
+                      double p_f = distributed_stokes_solution(local_dof_indices[pressure_idx]);
+                      double p_c = distributed_stokes_solution(local_dof_indices[p_c_idx]);
+                      double phi = porosity_values[j];
+                      double p_s;
+                      if (phi >(1.0-1e-5))
+                        p_s = p_f;
+                      else
+                        p_s = (p_c - (phi-1.0) * p_f) / (1.0-phi);
+
+                      solution(local_dof_indices[pressure_idx]) = p_s;
+                      solution(local_dof_indices[p_c_idx]) = p_f;
+                    }
+                }
+            solution.block(0).compress(VectorOperation::insert);
+          }
 
         pcout << "done." << std::endl;
 

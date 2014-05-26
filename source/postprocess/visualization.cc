@@ -129,9 +129,14 @@ namespace aspect
 
       // add the primary variables
       std::vector<std::string> solution_names (dim, "velocity");
-      solution_names.push_back ("p");
       if (this->include_melt_transport())
-        solution_names.push_back ("p_c");
+        {
+          solution_names.push_back ("p_s");
+          solution_names.push_back ("p_f");
+        }
+      else
+        solution_names.push_back ("p");
+
       solution_names.push_back ("T");
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         solution_names.push_back (this->introspection().name_for_compositional_index(c));

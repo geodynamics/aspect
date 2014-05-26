@@ -1226,7 +1226,7 @@ namespace aspect
           {
             const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
             porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
-            K_D = melt_outputs.permeabilities[q] / melt_outputs. fluid_viscosities[q];
+            K_D = melt_outputs.permeabilities[q] / melt_outputs.fluid_viscosities[q];
 
             porosity = std::min(std::max(porosity,0.001),0.999);
 
