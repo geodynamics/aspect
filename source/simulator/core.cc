@@ -1011,6 +1011,8 @@ namespace aspect
           = finite_element.component_mask (introspection.extractors.velocities);
         introspection.component_masks.pressure
           = finite_element.component_mask (introspection.extractors.pressure);
+        introspection.component_masks.compaction_pressure
+          = finite_element.component_mask (introspection.extractors.compaction_pressure);
         introspection.component_masks.temperature
           = finite_element.component_mask (introspection.extractors.temperature);
         for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
@@ -1054,7 +1056,7 @@ namespace aspect
         }
       else
         {
-          introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
+          introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure | introspection.component_masks.compaction_pressure);
         }
       introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
 

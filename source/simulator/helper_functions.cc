@@ -734,6 +734,8 @@ namespace aspect
   {
     if (parameters.pressure_normalization == "no")
       return;
+    Assert(!parameters.include_melt_transport,
+        ExcMessage("normalize pressure does not work with melt transport yet."));
 
     // TODO: pressure normalization currently does not work if velocity and
     // pressure are in the same block.
@@ -795,6 +797,8 @@ namespace aspect
   {
     if (parameters.use_locally_conservative_discretization)
       AssertThrow(false, ExcNotImplemented());
+    Assert(!parameters.include_melt_transport,
+        ExcMessage("compressible models do not work with melt transport yet."));
 
     if (do_pressure_rhs_compatibility_modification)
       {

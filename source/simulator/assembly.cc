@@ -1099,7 +1099,7 @@ namespace aspect
     const double solid_compressibility = material_model_outputs.compressibilities[q_point];
     const Tensor<1,dim> current_u = scratch.velocity_values[q_point];
     const double porosity         = material_model_inputs.composition[q_point][porosity_index];
-    const double K_D              = 1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 1e20;
+    const double K_D         = std::max(1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 10, 1e-20);
 
     const Tensor<1,dim>
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
@@ -1192,10 +1192,10 @@ namespace aspect
              std::numeric_limits<double>::quiet_NaN() );
         const double density = scratch.material_model_outputs.densities[q];
 
-        const double viscosity_f = scratch.material_model_outputs.viscosities[q] / 100;
         const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
-        const double porosity    = scratch.material_model_inputs.composition[q][porosity_index];
-        const double K_D         = 1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 1e20;
+        const double porosity    = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.001);
+        const double viscosity_c = scratch.material_model_outputs.viscosities[q] * (1.0 - porosity) / porosity;
+        const double K_D         = std::max(1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 10, 1e-20);
         const double compressibility_f = scratch.material_model_outputs.compressibilities[q];
         const double density_f = scratch.material_model_outputs.densities[q] - 100;
 
@@ -1219,7 +1219,7 @@ namespace aspect
                                              scratch.phi_p[i] * scratch.div_phi_u[j])
                                           + (parameters.include_melt_transport
                                              ?
-                                             - pressure_scaling * pressure_scaling / viscosity_f
+                                             - pressure_scaling * pressure_scaling / viscosity_c
                                                * scratch.phi_p_c[i] * scratch.phi_p_c[j]
                                              - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j]
                                              - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j]
@@ -1347,7 +1347,7 @@ namespace aspect
                             (update_values    |
                              update_quadrature_points  |
                              update_JxW_values |
-                             (rebuild_stokes_matrix == true
+                             ((rebuild_stokes_matrix || parameters.include_melt_transport)
                               ?
                               update_gradients
                               :
@@ -1513,7 +1513,7 @@ namespace aspect
     const double melting_rate         = material_model_outputs.reaction_terms[q_point][advection_field.compositional_variable];
     const double density              = material_model_outputs.densities[q_point];
     const double current_phi          = material_model_inputs.composition[q_point][advection_field.compositional_variable];
-    const double divergece_u          = scratch.current_velocity_divergences[q_point];
+    const double divergence_u         = scratch.current_velocity_divergences[q_point];
     const double compressibility      = (material_model->is_compressible()
                                          ?
                                          material_model_outputs.compressibilities[q_point]
@@ -1526,7 +1526,7 @@ namespace aspect
 
     const double melt_transport_RHS = melting_rate / density
     		                        + (1.0 - current_phi)
-    		                        * (divergece_u + compressibility * density * (current_u * gravity));
+    		                        * (divergence_u + compressibility * density * (current_u * gravity));
 
     return melt_transport_RHS;
   }
