@@ -10,9 +10,9 @@ Number of degrees of freedom: 104,487 (33,410+4,257+16,705+16,705+16,705+16,705)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
-   Solving composition system 1... 0 iterations.
-   Solving composition system 2... 0 iterations.
-   Solving composition system 3... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
+   Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+6 iterations.
 
@@ -21,9 +21,9 @@ Number of degrees of freedom: 32,247 (10,306+1,329+5,153+5,153+5,153+5,153)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
-   Solving composition system 1... 0 iterations.
-   Solving composition system 2... 0 iterations.
-   Solving composition system 3... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
+   Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+5 iterations.
 
@@ -32,9 +32,9 @@ Number of degrees of freedom: 32,247 (10,306+1,329+5,153+5,153+5,153+5,153)
 
 *** Timestep 1:  t=56884.3 years
    Solving temperature system... 10 iterations.
-   Solving composition system 1... 11 iterations.
-   Solving composition system 2... 14 iterations.
-   Solving composition system 3... 11 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 14 iterations.
+   Solving C_3 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+1 iterations.
 
@@ -42,9 +42,9 @@ Number of degrees of freedom: 32,247 (10,306+1,329+5,153+5,153+5,153+5,153)
 
 *** Timestep 2:  t=112724 years
    Solving temperature system... 10 iterations.
-   Solving composition system 1... 11 iterations.
-   Solving composition system 2... 11 iterations.
-   Solving composition system 3... 10 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving C_2 system ... 11 iterations.
+   Solving C_3 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+1 iterations.
 
