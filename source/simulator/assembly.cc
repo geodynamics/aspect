@@ -1096,12 +1096,12 @@ namespace aspect
 
     const double melting_rate     = material_model_outputs.reaction_terms[q_point][porosity_index];
     const double solid_density    = material_model_outputs.densities[q_point];
-    const double fluid_density    = material_model_outputs.densities[q_point] - 100;
+    const double fluid_density    = material_model_outputs.fluid_densities[q_point];
     const double fluid_compressibility = material_model_outputs.compressibilities[q_point];
-    const double solid_compressibility = material_model_outputs.compressibilities[q_point];
+    const double solid_compressibility = material_model_outputs.fluid_compressibilities[q_point];
     const Tensor<1,dim> current_u = scratch.velocity_values[q_point];
     const double porosity         = std::max(material_model_inputs.composition[q_point][porosity_index],0.0);
-    const double K_D              = 1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2) / 10;
+    const double K_D = material_model_outputs.permeabilities[q_point] / material_model_outputs.fluid_viscosities[q_point];
 
     const Tensor<1,dim>
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
@@ -1231,7 +1231,7 @@ namespace aspect
             porosity = std::min(std::max(porosity,0.001),0.999);
 
             viscosity_c = melt_outputs.compaction_viscosities[q];
-            compressibility_f = scratch.material_model_outputs.compressibilities[q];
+            compressibility_f = melt_outputs.fluid_compressibilities[q];
             density_f = melt_outputs.fluid_densities[q];
 
             p_f_RHS = compute_fluid_pressure_RHS(scratch,
