@@ -469,7 +469,7 @@ namespace aspect
                                const double pressure,
                                const Point<dim> &position) const
     {
-      if (!(&this->get_adiabatic_conditions())
+      if (!(this->get_adiabatic_conditions().is_initialized())
           || this->include_adiabatic_heating()
           || compressible)
         return temperature;
@@ -488,7 +488,7 @@ namespace aspect
                             const double pressure,
                             const Point<dim> &position) const
     {
-      if (!(&this->get_adiabatic_conditions())
+      if (!(this->get_adiabatic_conditions().is_initialized())
           || compressible)
         return pressure;
 
@@ -635,7 +635,7 @@ namespace aspect
              const Point<dim> &position) const
     {
       if (compressible
-          || !(&this->get_adiabatic_conditions()))
+          || !(this->get_adiabatic_conditions().is_initialized()))
         return get_compressible_density(temperature,pressure,compositional_fields,position);
       else
         return get_corrected_density(temperature,pressure,compositional_fields,position);
@@ -862,7 +862,7 @@ namespace aspect
            * Note that the used viscosity formulation needs the not
            * corrected temperatures.
            */
-          if (&this->get_adiabatic_conditions() && in.strain_rate.size())
+          if (this->get_adiabatic_conditions().is_initialized() && in.strain_rate.size())
             out.viscosities[i]                    = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 
           out.densities[i]                      = density                       (temperature, pressure, in.composition[i], in.position[i]);

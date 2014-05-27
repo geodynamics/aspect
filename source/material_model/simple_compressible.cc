@@ -115,7 +115,7 @@ namespace aspect
     {
       double rho = reference_rho * std::exp(reference_compressibility * (pressure - this->get_surface_pressure()));
 
-      if (&this->get_adiabatic_conditions())
+      if (this->get_adiabatic_conditions().is_initialized())
         rho *= (1 - thermal_alpha * (temperature - this->get_adiabatic_conditions().temperature(position)));
 
       return rho;

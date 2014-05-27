@@ -53,7 +53,7 @@
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/termination_criteria/interface.h>
 #include <aspect/postprocess/interface.h>
-#include <aspect/adiabatic_conditions.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 
 
@@ -1225,7 +1225,7 @@ namespace aspect
       const std::auto_ptr<BoundaryComposition::Interface<dim> >      boundary_composition;
       const std::auto_ptr<InitialConditions::Interface<dim> >        initial_conditions;
       const std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
-      std::auto_ptr<const AdiabaticConditions<dim> >                 adiabatic_conditions;
+      const std::auto_ptr<AdiabaticConditions::Interface<dim> >      adiabatic_conditions;
       std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       /**
        * @}

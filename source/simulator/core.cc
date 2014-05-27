@@ -110,7 +110,7 @@ namespace aspect
                           BoundaryComposition::create_boundary_composition<dim>(prm)),
     initial_conditions (InitialConditions::create_initial_conditions<dim>(prm)),
     compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions<dim>(prm)),
-    adiabatic_conditions(),
+    adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
 
     time (std::numeric_limits<double>::quiet_NaN()),
     time_step (0),
@@ -234,6 +234,8 @@ namespace aspect
       sim->initialize (*this);
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(compositional_initial_conditions.get()))
       sim->initialize (*this);
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(adiabatic_conditions.get()))
+      sim->initialize (*this);
 
     //Initialize the free surface handler
     if (parameters.free_surface_enabled)
@@ -249,13 +251,7 @@ namespace aspect
         free_surface.reset( new FreeSurfaceHandler( *this, prm ) );
       }
 
-    adiabatic_conditions.reset(new AdiabaticConditions<dim> (*geometry_model,
-                                                             *gravity_model,
-                                                             *material_model,
-                                                             *compositional_initial_conditions,
-                                                             parameters.surface_pressure,
-                                                             parameters.adiabatic_surface_temperature,
-                                                             parameters.n_compositional_fields));
+    adiabatic_conditions->initialize();
 
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);

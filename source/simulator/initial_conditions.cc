@@ -20,7 +20,7 @@
 
 
 #include <aspect/simulator.h>
-#include <aspect/adiabatic_conditions.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/compositional_initial_conditions/interface.h>
 
@@ -209,7 +209,7 @@ namespace aspect
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
         VectorTools::interpolate (mapping, dof_handler,
-                                  VectorFunctionFromScalarFunctionObject<dim> (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
+                                  VectorFunctionFromScalarFunctionObject<dim> (std_cxx1x::bind (&AdiabaticConditions::Interface<dim>::pressure,
                                                                                std_cxx1x::cref (*adiabatic_conditions),
                                                                                std_cxx1x::_1),
                                                                                introspection.component_indices.pressure,
@@ -252,7 +252,7 @@ namespace aspect
         std::vector<double> rhs_values(n_q_points);
 
         ScalarFunctionFromFunctionObject<dim>
-        adiabatic_pressure (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
+        adiabatic_pressure (std_cxx1x::bind (&AdiabaticConditions::Interface<dim>::pressure,
                                              std_cxx1x::cref(*adiabatic_conditions),
                                              std_cxx1x::_1));
 
