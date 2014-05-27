@@ -35,10 +35,9 @@ FIND_PACKAGE(deal.II 8.0 QUIET
   HINTS ${deal.II_DIR} ${DEAL_II_DIR} ../ ../../ $ENV{DEAL_II_DIR}
   )
 IF(NOT ${deal.II_FOUND})
-  MESSAGE(FATAL_ERROR "\n"
-    "*** Could not find a suitably recent version of deal.II. ***\n\n"
-    "You may want to either pass a flag -DDEAL_II_DIR=/path/to/deal.II to cmake\n"
-    "or set an environment variable \"DEAL_II_DIR\" that contains a path to a\n."
+  MESSAGE(FATAL_ERROR "\n*** Could not find a suitably recent version of deal.II. ***\n"
+    "You may want to either pass a flag -DDEAL_II_DIR=/path/to/deal.II to cmake "
+    "or set an environment variable \"DEAL_II_DIR\" that contains a path to a "
     "sufficiently recent version of deal.II."
     )
 ENDIF()
