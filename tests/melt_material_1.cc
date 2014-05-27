@@ -15,7 +15,7 @@ namespace aspect
 {
   template <int dim>
   class MeltMaterial:
-      public MaterialModel::MeltInterface<dim>
+      public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
       virtual bool
       viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
@@ -83,12 +83,16 @@ namespace aspect
           typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &out) const
       {
         evaluate(in, out);
+	const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
         for (unsigned int i=0;i<in.position.size();++i)
           {
-            out.compaction_viscosities[i] = 1.0;
-            out.fluid_viscosities[i]=1.0;
-            out.permeabilities[i]=1.0;
-            out.fluid_densities[i]=1.0;
+	    const double porosity = in.composition[i][porosity_idx];
+
+            out.compaction_viscosities[i] = 100.0;
+            out.fluid_viscosities[i]=0.1;
+            out.permeabilities[i]=1.0 * std::pow(porosity,3) * std::pow(1.0-porosity,2);
+            out.fluid_densities[i]=.1;
+            out.fluid_compressibilities[i] = 0.0;
           }
 
       }

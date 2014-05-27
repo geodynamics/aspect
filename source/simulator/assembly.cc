@@ -1290,20 +1290,21 @@ namespace aspect
                                     ?
                                     + (is_compressible
                                        ?
-                                       - pressure_scaling *
-                                         K_D * compressibility_f * density_f *
-                                         (scratch.grad_phi_p[i] * gravity)
-                                       + pressure_scaling *
+
+                                       pressure_scaling *
                                          compressibility * density *
                                          (scratch.velocity_values[q] * gravity) *
                                          scratch.phi_p_c[i]
                                        :
                                        0.0)
                                     + pressure_scaling *
-                                    /*p_f_RHS*/0.0 * scratch.phi_p[i]
+                                    p_f_RHS * scratch.phi_p[i]
                                     :
                                     0.0)
-                               )
+                                    - pressure_scaling *
+                                    K_D * density_f *
+                                    (scratch.grad_phi_p[i] * gravity)
+                                )
                                * scratch.finite_element_values.JxW(q);
 
 

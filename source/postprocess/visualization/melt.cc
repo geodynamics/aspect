@@ -161,9 +161,9 @@ namespace aspect
             double p_s = in.pressure[q];
             double p_f = uh[q][this->introspection().component_indices.compaction_pressure];
 
-            if (phi < 1e-5)
+            if (phi < 1e-7)
               for (unsigned int d=0; d<dim; ++d)
-                computed_quantities[q](d) = 0.0;
+                computed_quantities[q](d) = uh[q][d];
             else
               {
                 double K_D = out.permeabilities[q] / out.fluid_viscosities[q];
