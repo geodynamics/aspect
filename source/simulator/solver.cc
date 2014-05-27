@@ -416,6 +416,7 @@ namespace aspect
 
         // convert melt pressures:
         if (parameters.include_melt_transport)
+        if (false)
           {
             // We were solving for p_f (fluid pressure) and p_c (compaction
             // pressure), but we want the solid pressure in the first pressure

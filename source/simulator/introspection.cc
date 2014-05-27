@@ -124,9 +124,9 @@ namespace aspect
     :
     velocities(0),
     pressure (1),
-    compaction_pressure (add_compaction_pressure ? 1 : numbers::invalid_unsigned_int),
-    temperature (2),
-    compositional_fields (n_compositional_fields > 0 ? 3 : numbers::invalid_unsigned_int)
+    compaction_pressure (add_compaction_pressure ? 2 : numbers::invalid_unsigned_int),
+    temperature (3),
+    compositional_fields (n_compositional_fields > 0 ? 4 : numbers::invalid_unsigned_int)
   {}
 
 
