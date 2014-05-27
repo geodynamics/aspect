@@ -33,8 +33,11 @@ namespace aspect
 
     /**
      * A material model that consists of globally constant values for all
-     * material parameters except the density, that depends linearly on the
+     * material parameters except the density, which depends linearly on the
      * temperature. The model is considered incompressible.
+     *
+     * This material model implements what the "Simple" model was originally
+     * intended to do, before it got too complicated.
      *
      * @ingroup MaterialModels
      */
