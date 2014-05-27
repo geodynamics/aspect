@@ -95,7 +95,7 @@ subsection Material model
   subsection Keller
     set Reference shear viscosity = 5e24
     set Reference solid density = 3300
-    set Reference melt density = 3300
+    set Reference melt density = 3200
   end 
 end
 
@@ -127,7 +127,7 @@ subsection Postprocess
 
   subsection Visualization
 
-    set List of output variables      = density, viscosity, thermal expansivity
+    set List of output variables      = melt velocity, melt pressure, density, viscosity, thermal expansivity
 
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no

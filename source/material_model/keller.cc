@@ -61,7 +61,10 @@ namespace aspect
     Keller<dim>::
     density_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      return false;
+      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
+        return true;
+      else
+        return false;
     }
 
     template <int dim>
@@ -114,7 +117,7 @@ namespace aspect
           else
             out.viscosities[i] = eta_0;
 
-          out.densities[i] = reference_rho_s;
+          out.densities[i] = reference_rho_s * (1 - thermal_expansivity * (in.temperature[i] - reference_T));
           out.thermal_expansion_coefficients[i] = thermal_expansivity;
           out.specific_heat[i] = reference_specific_heat;
           out.thermal_conductivities[i] = thermal_conductivity;
@@ -127,17 +130,20 @@ namespace aspect
     Keller<dim>::
     evaluate_with_melt(const typename MeltInterface<dim>::MaterialModelInputs &in, typename MeltInterface<dim>::MaterialModelOutputs &out) const
     {
+      evaluate(in, out);
+      const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+
       for (unsigned int i=0;i<in.position.size();++i)
         {
-          evaluate(in, out);
-          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-          const double porosity = in.composition[i][porosity_idx];
+          double porosity = in.composition[i][porosity_idx];
 
           out.fluid_viscosities[i] = eta_f;
-          out.compaction_viscosities[i] = eta_0 * (1.0 - porosity) / porosity;
           out.permeabilities[i] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
           out.fluid_densities[i] = reference_rho_f;
           out.fluid_compressibilities[i] = 0.0;
+
+          porosity = std::max(std::min(porosity,0.999),1e-3);
+          out.compaction_viscosities[i] = eta_0 * (1.0 - porosity) / porosity;
         }
     }
 

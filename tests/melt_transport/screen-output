@@ -38,54 +38,54 @@ Number of degrees of freedom: 23,303 (10,628+4,225+4,225+4,225)
      Writing graphical output:  output-melt_transport/solution-00002
      Compositions min/max/mass: -0.02071/0.3189/3.749e+10 // -0.000555/0.0005621/175.2
 
-*** Timestep 3:  t=6.38253e+09 years
+*** Timestep 3:  t=6.38101e+09 years
    Solving temperature system... 268 iterations.
    Solving peridotite system ... 11 iterations.
-   Solving porosity system ... 13 iterations.
-   Solving Stokes system... done.
-
-   Postprocessing:
-     Writing graphical output:  output-melt_transport/solution-00003
-     Compositions min/max/mass: -0.01785/0.3151/3.749e+10 // -0.0004905/0.00048/275.6
-
-*** Timestep 4:  t=9.41118e+09 years
-   Solving temperature system... 357 iterations.
-   Solving peridotite system ... 15 iterations.
-   Solving porosity system ... 18 iterations.
-   Solving Stokes system... done.
-
-   Postprocessing:
-     Writing graphical output:  output-melt_transport/solution-00004
-     Compositions min/max/mass: -0.01431/0.3136/3.749e+10 // -0.0002755/0.0002503/333.2
-
-*** Timestep 5:  t=1e+10 years
-   Solving temperature system... 176 iterations.
-   Solving peridotite system ... 10 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
+     Writing graphical output:  output-melt_transport/solution-00003
+     Compositions min/max/mass: -0.01784/0.3151/3.749e+10 // -0.01728/0.01981/1.091e+05
+
+*** Timestep 4:  t=9.38267e+09 years
+   Solving temperature system... 357 iterations.
+   Solving peridotite system ... 15 iterations.
+   Solving porosity system ... 19 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing graphical output:  output-melt_transport/solution-00004
+     Compositions min/max/mass: -0.0143/0.3136/3.749e+10 // -0.1541/0.03625/6.119e+06
+
+*** Timestep 5:  t=1e+10 years
+   Solving temperature system... 181 iterations.
+   Solving peridotite system ... 10 iterations.
+   Solving porosity system ... 13 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
      Writing graphical output:  output-melt_transport/solution-00005
-     Compositions min/max/mass: -0.01133/0.3133/3.749e+10 // -0.0002552/0.0002415/335.4
+     Compositions min/max/mass: -0.01124/0.3133/3.749e+10 // -0.1405/0.08609/1.142e+07
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      59.4s |            |
+| Total wallclock time elapsed since start    |       117s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         6 |      7.74s |        13% |
-| Assemble composition system     |        12 |      17.1s |        29% |
-| Assemble temperature system     |         6 |      10.4s |        17% |
-| Build composition preconditioner|        12 |     0.278s |      0.47% |
-| Build temperature preconditioner|         6 |     0.141s |      0.24% |
-| Solve Stokes system             |         6 |      3.82s |       6.4% |
-| Solve composition system        |        12 |     0.682s |       1.1% |
-| Solve temperature system        |         6 |      2.53s |       4.3% |
-| Initialization                  |         2 |      3.13s |       5.3% |
-| Postprocessing                  |         6 |      5.26s |       8.9% |
-| Setup dof systems               |         1 |      2.03s |       3.4% |
+| Assemble Stokes system          |         6 |      56.6s |        48% |
+| Assemble composition system     |        12 |      17.9s |        15% |
+| Assemble temperature system     |         6 |      10.9s |       9.3% |
+| Build composition preconditioner|        12 |      0.28s |      0.24% |
+| Build temperature preconditioner|         6 |     0.141s |      0.12% |
+| Solve Stokes system             |         6 |      5.94s |       5.1% |
+| Solve composition system        |        12 |     0.685s |      0.59% |
+| Solve temperature system        |         6 |      2.59s |       2.2% |
+| Initialization                  |         2 |      3.76s |       3.2% |
+| Postprocessing                  |         6 |      8.17s |         7% |
+| Setup dof systems               |         1 |      2.25s |       1.9% |
 +---------------------------------+-----------+------------+------------+
 
