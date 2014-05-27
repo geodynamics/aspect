@@ -5,6 +5,10 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> PETSc support can now be enabled using 'cmake -D ASPECT_USE_PETSC=ON'.
+ * <br>
+ * (Timo Heister, 2014/05/27)
+ *
  * <li> Fixed: The GPlates plugin now correctly handles meshes created by 
  * GPlates 1.4 and later. Previous Aspect versions may only read in files
  * created by GPlates 1.3.

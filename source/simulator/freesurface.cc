@@ -221,7 +221,7 @@ namespace aspect
 
     //set up the matrix
     LinearAlgebra::SparseMatrix mass_matrix;
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
 
 #else
@@ -230,7 +230,7 @@ namespace aspect
 #endif
     DoFTools::make_sparsity_pattern (free_surface_dof_handler, sp, mass_matrix_constraints, false,
                                       Utilities::MPI::this_mpi_process(sim.mpi_communicator));
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
                                                free_surface_dof_handler.n_locally_owned_dofs_per_processor(),
                                                sim.mpi_communicator, mesh_locally_relevant);
@@ -365,7 +365,7 @@ namespace aspect
     // TODO: think about keeping object between time steps
     LinearAlgebra::PreconditionAMG preconditioner_stiffness;
     LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     Amg_data.symmetric_operator = false;
 #else
     Amg_data.constant_modes = constant_modes;
@@ -522,7 +522,7 @@ namespace aspect
       for (unsigned int c=0; c<dim; ++c)
         coupling[c][c] = DoFTools::always;
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
       CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
 
 #else
@@ -536,7 +536,7 @@ namespace aspect
                                        Utilities::MPI::
                                        this_mpi_process(sim.mpi_communicator));
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
       SparsityTools::distribute_sparsity_pattern(sp,
                                                  free_surface_dof_handler.n_locally_owned_dofs_per_processor(),
                                                  sim.mpi_communicator, mesh_locally_relevant);
