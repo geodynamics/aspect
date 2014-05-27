@@ -13,8 +13,8 @@ while (<>)
     $bla =$_;
     $labelname = "parameters:$section$prm";
     $labelname =~ s/!/\//g;
-    $bla =~ s/$prm/%\\hyperref[$labelname]{$prm}%/g;
-    print "$bla % \\index[prmindex]{$prm} \\index[prmindexfull]{${section}$prm} %\n";
+    $bla =~ s/$prm/%%\\hyperref[$labelname]{$prm}%/g;
+    print "$bla%% \\index[prmindex]{$prm} \\index[prmindexfull]{${section}$prm} %\n";
   }
 
   # if we are entering a section then record this too
@@ -27,7 +27,7 @@ while (<>)
     $labelname =~ s/ /_20/g;
     $labelname =~ s/\/$//g;
     $bla = $_;
-    $bla=~ s/$thissection/%\\hyperref[$labelname]{$thissection}%/g;
+    $bla=~ s/$thissection/%%\\hyperref[$labelname]{$thissection}%/g;
     
     print "$bla";
   }

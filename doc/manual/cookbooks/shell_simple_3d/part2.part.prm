@@ -1,0 +1,18 @@
+subsection Geometry model set Model name = spherical shell 
+
+  subsection Spherical shell
+    set Inner radius  = 3481000 
+    set Outer radius  = 6336000 
+  end
+end
+
+
+subsection Model settings
+  set Zero velocity boundary indicators       = 0 
+  set Tangential velocity boundary indicators = 1 
+  set Prescribed velocity boundary indicators = 
+
+  set Fixed temperature boundary indicators   = 0,1 
+
+  set Include shear heating                   = false 
+end

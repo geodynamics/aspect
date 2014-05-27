@@ -1,0 +1,8 @@
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.14159
+    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
+  end
+end

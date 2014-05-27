@@ -1,0 +1,8 @@
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics, composition statistics 
+
+  subsection Visualization
+    set List of output variables = density 
+    set Time between graphical output = 0.1 
+  end
+end

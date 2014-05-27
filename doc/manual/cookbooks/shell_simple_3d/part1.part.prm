@@ -1,0 +1,14 @@
+set Dimension                              = 3 
+set Use years in output instead of seconds = true 
+set End time                               = 1.5e9 
+set Output directory                       = output 
+
+
+subsection Material model
+  set Model name = simple 
+
+  subsection Simple model
+    set Thermal expansion coefficient = 4e-5 
+    set Viscosity                     = 1e22 
+  end
+end

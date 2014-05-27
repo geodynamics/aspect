@@ -1,3 +1,4 @@
+/doc/manual/cookbooks/**/*.prm.out
 /AspectConfig.cmake
 /CMakeFiles/
 /CMakeCache.txt
