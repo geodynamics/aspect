@@ -22,10 +22,7 @@
 #ifndef __aspect__global_h
 #define __aspect__global_h
 
-// uncomment this to use PETSc for linear algebra
-//#define USE_PETSC
-
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
 #include <deal.II/lac/petsc_block_vector.h>
 #include <deal.II/lac/petsc_block_sparse_matrix.h>
 #include <deal.II/lac/petsc_precondition.h>
@@ -79,7 +76,7 @@ namespace aspect
   {
     using namespace dealii;
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     /**
      * Typedef for the vector type used.
      */

@@ -5,6 +5,34 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> PETSc support can now be enabled using 'cmake -D ASPECT_USE_PETSC=ON'.
+ * <br>
+ * (Timo Heister, 2014/05/27)
+ *
+ * <li> Fixed: The GPlates plugin now correctly handles meshes created by 
+ * GPlates 1.4 and later. Previous Aspect versions may only read in files
+ * created by GPlates 1.3.
+ * <br>
+ * (Rene Gassmoeller, 2014/05/23)
+ *
+ * <li> Add a find_postprocessor() function in Simulator_access class to pass a pointer 
+ * of a certain postprocessor, if it is not found, return a NULL pointer.
+ * <br>
+ * (Siqi Zhang, 2014/05/23)
+ *
+ *
+ * <li> Mesh refinement plugins can now interact with initial global mesh
+ * refinement and unflag certain cells if desired.
+ * <br>
+ * (Timo Heister, 2014/05/22)
+ *
+ * <li> Changed: The functionality that outputs some basic statistics values
+ * like the Rayleigh number in case of a simple material model was moved 
+ * from the velocity statistics postprocessor to a new postprocessor 
+ * called basic statistics.
+ * <br>
+ * (Rene Gassmoeller, 2014/05/21)
+ *
  * <li> Fixed: We accidentally evaluated the viscosity of the material model
  * from the place where we compute the adiabatic conditions, but this
  * required information that we didn't have. This is also unnecessary
@@ -47,6 +75,13 @@
  * <br>
  * (Juliane Dannberg, 2014/05/21)
  *
+ * <li> New: There is now a simple compressible material model with constant
+ * compressibility resulting in an exponential dependeny of density on pressure
+ * and a linear dependence on temperature deviation from the adiabatic profile. 
+ * All other material properties are constant.
+ * <br>
+ * (Rene Gassmoeller, 2014/05/20)
+ *
  * <li>New: There is now a new initial temperature condition plugin that can read in
  * solidus temperatures from a file and add perturbations to it. There is also
  * a corresponding data file for initial conditions for Mars from Permentier
@@ -88,6 +123,11 @@
  * the topography is, on average, zero.
  * <br>
  * (Jacqueline Austermann, 2014/05/19)
+ *
+ * <li>Fixed: The GPlates cookbook in Aspect-1.0 contained a bug that 
+ * prevented it from using the GPlates plugin. This is fixed now.
+ * <br>
+ * (Rene Gassmoeller, 2014/05/18)
  *
  * <li>New: There is a new plugin architecture for heating models that
  * allows for plugins defining the radiogenic heating rate in dependency

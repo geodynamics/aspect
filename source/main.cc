@@ -241,7 +241,7 @@ int main (int argc, char *argv[])
           if (n_threads>1)
             std::cout << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
 #endif
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
           std::cout << "--     . using PETSc\n";
 #else
           std::cout << "--     . using Trilinos\n";

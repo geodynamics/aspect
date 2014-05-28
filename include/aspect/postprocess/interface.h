@@ -201,6 +201,17 @@ namespace aspect
         execute (TableHandler &statistics);
 
         /**
+        * Go through the list of all postprocessors that have been selected in
+        * the input file (and are consequently currently active) and see if
+        * one of them has the desired type specified by the template
+        * argument. If so, return a pointer to it. If no postprocessor is
+        * active that matches the given type, return a NULL pointer.        
+        */
+        template <typename PostprocessorType>
+        PostprocessorType *
+        find_postprocessor () const;      
+        
+        /**
          * Declare the parameters of all known postprocessors, as well as of
          * ones this class has itself.
          */
@@ -313,7 +324,29 @@ namespace aspect
         (*p)->load (saved_text);
     }
 
-
+    /**
+    * Go through the list of all postprocessors that have been selected in
+    * the input file (and are consequently currently active) and see if
+    * one of them has the desired type specified by the template
+    * argument. If so, return a pointer to it. If no postprocessor is
+    * active that matches the given type, return a NULL pointer.        
+    */
+        
+    template <int dim>
+    template <typename PostprocessorType>
+    inline
+    PostprocessorType *
+    Manager<dim>::find_postprocessor () const
+    {
+        for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
+             p = postprocessors.begin();
+             p != postprocessors.end(); ++p)
+        if (PostprocessorType * x = dynamic_cast<PostprocessorType *> ( (*p).get()) )
+            return x;
+        return NULL;
+    }       
+        
+    
     /**
      * Given a class name, a name, and a description for the parameter file
      * for a postprocessor, register it with the aspect::Postprocess::Manager

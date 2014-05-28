@@ -144,12 +144,8 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<Tensor<1,dim> >          grad_phi_p;
-          std::vector<Tensor<1,dim> >          velocity_values;
           std::vector<double>                  phi_p_c;
-          std::vector<std::vector<double> >     composition_values;
-
-          typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs;
-          typename MaterialModel::Interface<dim>::MaterialModelOutputs material_model_outputs;
+          std::vector<Tensor<1,dim> >          velocity_values;
         };
 
 
@@ -170,12 +166,8 @@ namespace aspect
           grads_phi_u (finite_element.dofs_per_cell),
           div_phi_u (finite_element.dofs_per_cell),
           grad_phi_p (add_compaction_pressure ? finite_element.dofs_per_cell : 0),
-          velocity_values (quadrature.size()),
           phi_p_c (add_compaction_pressure ? finite_element.dofs_per_cell : 0),
-          composition_values(n_compositional_fields,
-                             std::vector<double>(quadrature.size())),
-          material_model_inputs(quadrature.size(), n_compositional_fields),
-          material_model_outputs(quadrature.size(), n_compositional_fields)
+          velocity_values (quadrature.size())
         {}
 
 
@@ -189,12 +181,11 @@ namespace aspect
           grads_phi_u (scratch.grads_phi_u),
           div_phi_u (scratch.div_phi_u),
           grad_phi_p(scratch.grad_phi_p),
-          velocity_values (scratch.velocity_values),
           phi_p_c (scratch.phi_p_c),
-          composition_values(scratch.composition_values),
-          material_model_inputs(scratch.material_model_inputs),
-          material_model_outputs(scratch.material_model_outputs)
+          velocity_values (scratch.velocity_values)
         {}
+
+
 
         template <int dim>
         struct AdvectionSystem
@@ -1045,7 +1036,7 @@ namespace aspect
     Amg_preconditioner.reset (new LinearAlgebra::PreconditionAMG());
 
     LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     Amg_data.symmetric_operator = false;
 #else
     Amg_data.constant_modes = constant_modes;

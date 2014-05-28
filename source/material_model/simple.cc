@@ -344,7 +344,7 @@ namespace aspect
                                    "are non-constant: "
                                    "\\begin{align}"
                                    "  \\eta(p,T,\\mathfrak c) &= \\tau(T) \\zeta(\\mathfrak c) \\eta_0, \\\\"
-                                   "  \\rho(p,T,\\mathfrak c) &= \\left(1-\\alpha (T-T_0)\\right)\\rho_0 + \\Delta\rho \\; c_0,"
+                                   "  \\rho(p,T,\\mathfrak c) &= \\left(1-\\alpha (T-T_0)\\right)\\rho_0 + \\Delta\\rho \\; c_0,"
                                    "\\end{align}"
                                    "where $c_0$ is the first component of the compositional vector "
                                    "$\\mathfrak c$ if the model uses compositional fields, or zero otherwise. "
@@ -378,6 +378,13 @@ namespace aspect
                                    "\n\n"
                                    "Note that this model uses the formulation that assumes an incompressible "
                                    "medium despite the fact that the density follows the law "
-                                   "$\\rho(T)=\\rho_0(1-\\beta(T-T_{\\text{ref}})$. ")
+                                   "$\\rho(T)=\\rho_0(1-\\beta(T-T_{\\text{ref}})$. "
+                                   "\n\n"
+                                   "\\note{Despite its name, this material model is not exactly ``simple'', "
+                                   "as indicated by the formulas above. While it was originally intended "
+                                   "to be simple, it has over time acquired all sorts of temperature "
+                                   "and compositional dependencies that weren't initially intended. "
+                                   "Consequently, there is now a ``simpler'' material model that now fills "
+                                   "the role the current model was originally intended to fill.}")
   }
 }

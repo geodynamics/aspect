@@ -339,6 +339,13 @@ namespace aspect
   {
     return *simulator->compositional_initial_conditions.get();
   }
+  
+  template <int dim>
+  const HeatingModel::Interface<dim> &
+  SimulatorAccess<dim>::get_heating_model () const
+  {
+    return *simulator->heating_model.get();
+  }
 
   template <int dim>
   void

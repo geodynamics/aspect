@@ -31,6 +31,7 @@ _detailed(
 #  ASPECT configuration:
 #        DEAL_II_DIR:            ${deal.II_DIR}
 #        DEAL_II VERSION:        ${DEAL_II_PACKAGE_VERSION}
+#        ASPECT_USE_PETSC:       ${ASPECT_USE_PETSC}
 #        CMAKE_BUILD_TYPE:       ${CMAKE_BUILD_TYPE}
 #        CMAKE_INSTALL_PREFIX:   ${CMAKE_INSTALL_PREFIX}
 #        CMAKE_SOURCE_DIR:       ${CMAKE_SOURCE_DIR} 

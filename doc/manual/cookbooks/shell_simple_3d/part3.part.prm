@@ -1,0 +1,7 @@
+subsection Boundary temperature model
+  set Model name = spherical constant 
+  subsection Spherical constant
+    set Inner temperature = 1973 
+    set Outer temperature = 973 
+  end
+end

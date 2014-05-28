@@ -687,7 +687,7 @@ namespace aspect
           = DoFTools::always;
     }
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     LinearAlgebra::CompressedBlockSparsityPattern sp(introspection.index_sets.system_relevant_partitioning);
 
 #else
@@ -701,7 +701,7 @@ namespace aspect
                                      Utilities::MPI::
                                      this_mpi_process(mpi_communicator));
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
                                                dof_handler.locally_owned_dofs_per_processor(),
                                                mpi_communicator, introspection.index_sets.system_relevant_set);
@@ -739,7 +739,7 @@ namespace aspect
           coupling[c][d] = DoFTools::none;
 
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     LinearAlgebra::CompressedBlockSparsityPattern sp(introspection.index_sets.system_relevant_partitioning);
 
 #else
@@ -751,7 +751,7 @@ namespace aspect
                                      constraints, false,
                                      Utilities::MPI::
                                      this_mpi_process(mpi_communicator));
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
                                                dof_handler.locally_owned_dofs_per_processor(),
                                                mpi_communicator, introspection.index_sets.system_relevant_set);
@@ -1550,7 +1550,22 @@ namespace aspect
       }
     else
       {
-        triangulation.refine_global (parameters.initial_global_refinement);
+        // Instead of calling global_refine(n) we flag all cells for
+        // refinement and then allow the mesh refinement plugins to unflag
+        // the cells if desired. This procedure is repeated n times. If there
+        // is no plugin that modifies the flags, it is equivalent to
+        // refine_global(n).
+        for (unsigned int n=0;n<parameters.initial_global_refinement;++n)
+          {
+            for (typename Triangulation<dim>::active_cell_iterator
+                cell = triangulation.begin_active();
+                cell != triangulation.end(); ++cell)
+              cell->set_refine_flag ();
+
+            mesh_refinement_manager.tag_additional_cells ();
+            triangulation.execute_coarsening_and_refinement();
+          }
+
         global_volume = GridTools::volume (triangulation, mapping);
 
         time                      = parameters.start_time;

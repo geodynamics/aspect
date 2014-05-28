@@ -1,0 +1,18 @@
+# This is the new part: We declare that there will
+# be two compositional fields that will be
+# advected along. Their initial conditions are given by
+# a function that is one for the lowermost 0.2 height
+# units of the domain and zero otherwise in the first case,
+# and one in the top most 0.2 height units in the latter.
+subsection Compositional fields
+  set Number of fields = 2
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if(y<0.2, 1, 0) ; if(y>0.8, 1, 0) 
+  end
+end

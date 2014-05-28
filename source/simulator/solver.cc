@@ -25,7 +25,7 @@
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/constraint_matrix.h>
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
 #include <deal.II/lac/solver_cg.h>
 #else
 #include <deal.II/lac/trilinos_solver.h>
@@ -246,7 +246,7 @@ namespace aspect
       {
         SolverControl solver_control(5000, 1e-6 * src.block(1).l2_norm());
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
         SolverCG<LinearAlgebra::Vector> solver(solver_control);
 #else
         TrilinosWrappers::SolverCG solver(solver_control);
@@ -274,7 +274,7 @@ namespace aspect
       if (do_solve_A == true)
         {
           SolverControl solver_control(5000, utmp.l2_norm()*1e-2);
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
           SolverCG<LinearAlgebra::Vector> solver(solver_control);
 #else
           TrilinosWrappers::SolverCG solver(solver_control);
@@ -391,7 +391,11 @@ namespace aspect
 
         SolverControl cn;
         // TODO: can we re-use the direct solver?
+#ifdef ASPECT_USE_PETSC
+        PETScWrappers::SparseDirectMUMPS solver(cn, mpi_communicator);
+#else
         TrilinosWrappers::SolverDirect solver(cn);
+#endif
         solver.solve(system_matrix.block(0,0), distributed_stokes_solution.block(0), system_rhs.block(0));
 
         current_constraints.distribute (distributed_stokes_solution);

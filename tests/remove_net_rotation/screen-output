@@ -1,0 +1,682 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     9.81
+     Reference thermal expansion (1/K):             4e-05
+     Temperature contrast across model domain (K): 100
+     Model domain depth (m):                        2.855e+06
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Reference viscosity (Pas):                     1e+20
+     Ra number:                                     2.64477e+07
+     k_value:                                       4.7
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 1.13939e-06
+
+     RMS, max velocity: 0.292 m/year, 0.44 m/year
+
+Number of active cells: 480 (on 4 levels)
+Number of degrees of freedom: 7,536 (4,608+624+2,304)
+
+*** Timestep 1:  t=321803 years
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.679 m/year, 1.63 m/year
+
+Number of active cells: 516 (on 4 levels)
+Number of degrees of freedom: 8,082 (4,944+666+2,472)
+
+*** Timestep 2:  t=407468 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.806 m/year, 1.91 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 3:  t=473930 years
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.814 m/year, 1.22 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 4:  t=590565 years
+   Solving temperature system... 18 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.1 m/year, 1.66 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 5:  t=676676 years
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.35 m/year, 2.04 m/year
+
+Number of active cells: 738 (on 4 levels)
+Number of degrees of freedom: 10,361 (6,348+839+3,174)
+
+*** Timestep 6:  t=746843 years
+   Solving temperature system... 15 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.57 m/year, 2.73 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 7:  t=793807 years
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.73 m/year, 2.65 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 8:  t=848382 years
+   Solving temperature system... 15 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 23 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.92 m/year, 2.94 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 9:  t=897676 years
+   Solving temperature system... 15 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.08 m/year, 3.21 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 10:  t=943091 years
+   Solving temperature system... 15 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.22 m/year, 3.44 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 11:  t=985355 years
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.34 m/year, 3.64 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 12:  t=1.02525e+06 years
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.43 m/year, 3.79 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 13:  t=1.06338e+06 years
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.5 m/year, 3.92 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 14:  t=1.10024e+06 years
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.54 m/year, 4 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 15:  t=1.13622e+06 years
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.57 m/year, 4.06 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 16:  t=1.17166e+06 years
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.57 m/year, 4.08 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 17:  t=1.20681e+06 years
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.56 m/year, 4.08 m/year
+
+Number of active cells: 732 (on 4 levels)
+Number of degrees of freedom: 10,302 (6,312+834+3,156)
+
+*** Timestep 18:  t=1.24194e+06 years
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.54 m/year, 4.81 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 19:  t=1.27516e+06 years
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.48 m/year, 3.99 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 20:  t=1.31095e+06 years
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.42 m/year, 3.91 m/year
+
+Number of active cells: 732 (on 4 levels)
+Number of degrees of freedom: 10,302 (6,312+834+3,156)
+
+*** Timestep 21:  t=1.34742e+06 years
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.36 m/year, 4.74 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 22:  t=1.38106e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.27 m/year, 3.69 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 23:  t=1.41956e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.18 m/year, 3.55 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 24:  t=1.45947e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.08 m/year, 3.4 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 25:  t=1.50112e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.98 m/year, 3.24 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 26:  t=1.54479e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.87 m/year, 3.1 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 27:  t=1.59079e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.76 m/year, 2.97 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 28:  t=1.63945e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.64 m/year, 2.85 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 29:  t=1.69113e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.53 m/year, 2.71 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 30:  t=1.74624e+06 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.42 m/year, 2.58 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 31:  t=1.80521e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.3 m/year, 2.43 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 32:  t=1.86851e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.19 m/year, 2.29 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 33:  t=1.93665e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 1.09 m/year, 2.14 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 34:  t=2.00971e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.99 m/year, 1.99 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 35:  t=2.08821e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.896 m/year, 1.85 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 36:  t=2.17296e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.808 m/year, 1.7 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 37:  t=2.26498e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.727 m/year, 1.56 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 38:  t=2.36389e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.654 m/year, 1.42 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 39:  t=2.46971e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.59 m/year, 1.3 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 40:  t=2.58236e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.534 m/year, 1.19 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 41:  t=2.70113e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.487 m/year, 1.1 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 42:  t=2.82548e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.447 m/year, 1.04 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 43:  t=2.95504e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.415 m/year, 0.998 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 44:  t=3.08944e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.388 m/year, 0.963 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 45:  t=3.22825e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.367 m/year, 0.934 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 46:  t=3.37105e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.349 m/year, 0.909 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 47:  t=3.51744e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.335 m/year, 0.887 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 48:  t=3.66707e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.323 m/year, 0.868 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 49:  t=3.81967e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.313 m/year, 0.852 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 50:  t=3.97507e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.304 m/year, 0.836 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 51:  t=4.13321e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.296 m/year, 0.822 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 52:  t=4.29414e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.29 m/year, 0.808 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 53:  t=4.45798e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.283 m/year, 0.793 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 54:  t=4.62489e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.278 m/year, 0.779 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 55:  t=4.79506e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.272 m/year, 0.764 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 56:  t=4.96863e+06 years
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.267 m/year, 0.75 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 57:  t=5e+06 years
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.266 m/year, 0.747 m/year
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |        28s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |        58 |      5.84s |        21% |
+| Assemble temperature system     |        58 |       6.4s |        23% |
+| Build Stokes preconditioner     |        58 |      6.49s |        23% |
+| Build temperature preconditioner|        58 |     0.209s |      0.74% |
+| Solve Stokes system             |        58 |      1.75s |       6.2% |
+| Solve temperature system        |        58 |     0.194s |      0.69% |
+| Initialization                  |         2 |    0.0289s |       0.1% |
+| Postprocessing                  |        58 |     0.263s |      0.94% |
+| Refine mesh structure, part 1   |        58 |      3.14s |        11% |
+| Refine mesh structure, part 2   |        58 |    0.0921s |      0.33% |
+| Setup dof systems               |        59 |      2.95s |        11% |
++---------------------------------+-----------+------------+------------+
+

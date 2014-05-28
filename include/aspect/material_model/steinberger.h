@@ -41,9 +41,11 @@ namespace aspect
      * A variable viscosity material model that reads the essential values of
      * coefficients from tables in input files.
      *
-     * This model is based on the paper Steinberger/Calderwood 2006: "Models
-     * of large-scale viscous flow in the Earth's mantle with contraints from
-     * mineral physics and surface observations"
+     * The viscosity of this model is based on the paper
+     * Steinberger/Calderwood 2006: "Models of large-scale viscous flow in
+     * the Earth's mantle with contraints from mineral physics and surface
+     * observations". The thermal conductivity is constant and the other
+     * parameters are provided via lookup tables from the software PERPLEX.
      *
      * @ingroup MaterialModels
      */
@@ -271,11 +273,11 @@ namespace aspect
                                       const Point<dim> &position) const;
 
         /**
-         * Pointer to an object that reads and processes data we get from
-         * Perplex files.
+         * List of pointers to objects that read and process data we get from
+         * Perplex files. There is one pointer/object per compositional field
+         * data provided.
          */
         std::vector<std_cxx1x::shared_ptr<internal::MaterialLookup> > material_lookup;
-        //std_cxx1x::shared_ptr<internal::MaterialLookup> material_lookup;
 
         /**
          * Pointer to an object that reads and processes data for the lateral
