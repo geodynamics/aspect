@@ -106,8 +106,11 @@ ENDIF()
 
 FILE(GLOB _tests *.prm)
 
+MESSAGE(STATUS "Adding tests...")
+SET(_n_tests "0")
 LIST(SORT _tests)
 FOREACH(_test ${_tests})
+  MATH(EXPR _n_tests "${_n_tests} + 1")
   GET_FILENAME_COMPONENT(_test ${_test} NAME_WE)
 
   CHECK_LINEAR_ALGEBRA(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
@@ -292,3 +295,4 @@ FOREACH(_test ${_tests})
   ENDIF()
 ENDFOREACH()
 
+MESSAGE(STATUS "...added ${_n_tests} tests")
