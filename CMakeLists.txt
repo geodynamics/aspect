@@ -136,7 +136,7 @@ ENDIF()
 
 DEAL_II_INVOKE_AUTOPILOT()
 
-MESSAGE(STATUS "writing config into detailed.log...")
+MESSAGE(STATUS "Writing config into detailed.log...")
 LIST(APPEND CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}
   )
