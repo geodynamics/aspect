@@ -5,6 +5,14 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> Changed: Previously, we aborted the program if the specified output
+ * directory did not exist. This is inconvenient for jobs that may have been
+ * sitting in a queue for a long time and for which forgetting to create the
+ * output directory may have just been an oversight. We now simply generate
+ * this directory if it is missing.
+ * <br>
+ * (Wolfgang Bangerth, 2014/05/28)
+ *
  * <li> New: Given the proliferation of plugins of all kinds, plugin names
  * are now listed in alphabetical order in the documentation.
  * <br>
