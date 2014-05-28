@@ -1246,7 +1246,7 @@ namespace aspect
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             for (unsigned int j=0; j<dofs_per_cell; ++j)
               data.local_matrix(i,j) += ( eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
-                                          - (is_compressible
+                                          - ((is_compressible || parameters.include_melt_transport)
                                              ?
                                              eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                              :
