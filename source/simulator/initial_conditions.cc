@@ -203,18 +203,18 @@ namespace aspect
         LinearAlgebra::BlockVector system_tmp;
         system_tmp.reinit (system_rhs);
 
-        const ScalarFunctionFromFunctionObject<dim>
-        adiabatic_pressure (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
-                                             std_cxx1x::cref(*adiabatic_conditions),
-                                             std_cxx1x::_1));
-
         // interpolate the pressure given by the adiabatic conditions
         // object onto the solution space. note that interpolate
         // wants a function that represents all components of the
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
-        interpolate_onto_pressure_system (adiabatic_pressure,
-                                          system_tmp);
+        VectorTools::interpolate (mapping, dof_handler,
+                                  VectorFunctionFromScalarFunctionObject<dim> (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
+                                                                               std_cxx1x::cref (*adiabatic_conditions),
+                                                                               std_cxx1x::_1),
+                                                                               introspection.component_indices.pressure,
+                                                                               introspection.n_components),
+                                  system_tmp);
 
         // we may have hanging nodes, so apply constraints
         constraints.distribute (system_tmp);

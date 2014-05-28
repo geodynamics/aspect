@@ -1027,16 +1027,6 @@ namespace aspect
                                             LinearAlgebra::Vector &vec);
 
       /**
-       * Interpolate the given function onto the pressure FE space and write
-       * it into the given vector.
-       *
-       * This function is implemented in
-       * <code>source/simulator/initial_cinditions.cc</code>.
-       */
-      void interpolate_onto_pressure_system(const Function<dim> &func,
-                                            LinearAlgebra::BlockVector &vec);
-
-      /**
        * Set up data structures for null space removal. Called after every
        * mesh refinement.
        *
