@@ -42,11 +42,11 @@ IF(NOT ${deal.II_FOUND})
     )
 ENDIF()
 
-MESSAGE(STATUS "found deal.II version ${DEAL_II_PACKAGE_VERSION} at '${deal.II_DIR}'")
+MESSAGE(STATUS "Found deal.II version ${DEAL_II_PACKAGE_VERSION} at '${deal.II_DIR}'")
 
 SET(ASPECT_USE_PETSC OFF CACHE BOOL "Use PETSc instead of Trilinos if set to 'on'.")
 
-MESSAGE(STATUS "using PETSc = '${ASPECT_USE_PETSC}'")
+MESSAGE(STATUS "Using PETSc = '${ASPECT_USE_PETSC}'")
 
 SET(_DEALII_GOOD ON)
 
