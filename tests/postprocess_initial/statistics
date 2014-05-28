@@ -8,20 +8,22 @@
 # 8: Iterations for composition solver 1
 # 9: Iterations for composition solver 2
 # 10: Iterations for Stokes solver
-# 11: Time step size (seconds)
-# 12: Visualization file name
-# 13: Minimal temperature (K)
-# 14: Average temperature (K)
-# 15: Maximal temperature (K)
-# 16: Average nondimensional temperature (K)
-# 17: Minimal value for composition C_1
-# 18: Maximal value for composition C_1
-# 19: Global mass for composition C_1
-# 20: Minimal value for composition C_2
-# 21: Maximal value for composition C_2
-# 22: Global mass for composition C_2
-0 0.0000e+00  64  659 289  578 0 0 0 22 1.0000e-15 output-postprocess_initial/solution-00000 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01  0.00000000e+00 1.00000000e+00 4.58333333e-01 0.00000000e+00 1.00000000e+00 4.58333333e-01 
-0 0.0000e+00  40  441 193  386 0 0 0 22 1.0000e-15 output-postprocess_initial/solution-00001 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01  0.00000000e+00 1.00000000e+00 4.58333333e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
-0 0.0000e+00  64  734 323  646 0 0 0 22 1.0000e-15 output-postprocess_initial/solution-00002 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01  0.00000000e+00 1.00000000e+00 3.95833333e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
-0 0.0000e+00 106 1161 511 1022 0 0 0 22 1.0000e-15 output-postprocess_initial/solution-00003 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -1.25000000e-01 1.00000000e+00 3.94639757e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
-1 1.0000e-15 106 1161 511 1022 0 0 0  0 7.5368e-02 output-postprocess_initial/solution-00004 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -1.25000000e-01 1.00000000e+00 3.94639757e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Time step size (seconds)
+# 14: Visualization file name
+# 15: Minimal temperature (K)
+# 16: Average temperature (K)
+# 17: Maximal temperature (K)
+# 18: Average nondimensional temperature (K)
+# 19: Minimal value for composition C_1
+# 20: Maximal value for composition C_1
+# 21: Global mass for composition C_1
+# 22: Minimal value for composition C_2
+# 23: Maximal value for composition C_2
+# 24: Global mass for composition C_2
+0 0.0000e+00  64  659 289  578 0 0 0 22 23 23 1.0000e-15 output-postprocess_initial/solution-00000 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01  0.00000000e+00 1.00000000e+00 4.58333333e-01 0.00000000e+00 1.00000000e+00 4.58333333e-01 
+0 0.0000e+00  40  441 193  386 0 0 0 22 23 69 1.0000e-15 output-postprocess_initial/solution-00001 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01  0.00000000e+00 1.00000000e+00 4.58333333e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
+0 0.0000e+00  64  734 323  646 0 0 0 22 23 92 1.0000e-15 output-postprocess_initial/solution-00002 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01  0.00000000e+00 1.00000000e+00 3.95833333e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
+0 0.0000e+00 106 1161 511 1022 0 0 0 22 23 92 1.0000e-15 output-postprocess_initial/solution-00003 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -1.25000000e-01 1.00000000e+00 3.94639757e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
+1 1.0000e-15 106 1161 511 1022 0 0 0  0  0  0 7.5368e-02 output-postprocess_initial/solution-00004 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -1.25000000e-01 1.00000000e+00 3.94639757e-01 0.00000000e+00 1.00000000e+00 4.16666667e-01 
