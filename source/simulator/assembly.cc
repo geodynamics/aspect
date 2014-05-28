@@ -1258,14 +1258,39 @@ namespace aspect
                                     0)
                                )
                                * scratch.finite_element_values.JxW(q);
+
         if (do_pressure_rhs_compatibility_modification)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
 
-    //Add stabilization terms if necessary.
+    // add stabilization terms for free boundaries if necessary.
     if (parameters.free_surface_enabled)
       free_surface->apply_stabilization(cell, data.local_matrix);
+
+    // see if any of the faces are traction boundaries for which
+    // we need to assembly force terms for the right hand side
+    for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+      if (cell->at_boundary(f))
+        if (traction_boundary_conditions
+            .find (cell->face(f)->boundary_indicator())
+            !=
+                traction_boundary_conditions.end())
+          {
+            scratch.face_finite_element_values.reinit (cell, f);
+
+            for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
+              {
+                const Tensor<1,dim> traction
+                = traction_boundary_conditions[cell->face(f)->boundary_indicator()]
+                                               ->traction (scratch.face_finite_element_values.quadrature_point(q),
+                                                           scratch.face_finite_element_values.normal_vector(q));
+                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                  data.local_rhs(i) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
+                  traction *
+                  scratch.face_finite_element_values.JxW(q);
+              }
+          }
 
     cell->get_dof_indices (data.local_dof_indices);
   }
@@ -1346,6 +1371,7 @@ namespace aspect
                              ?
                              update_values |
                              update_quadrature_points |
+                             update_normal_vectors |
                              update_JxW_values
                              :
                              UpdateFlags(0)),
