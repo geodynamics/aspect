@@ -107,8 +107,8 @@ namespace aspect
   {
     ASPECT_REGISTER_BOUNDARY_COMPOSITION_MODEL(InitialComposition,
                                                "initial composition",
-                                               "A model in which the composition at the boundary"
-                                               "is chosen to be the same as given in the initial"
+                                               "A model in which the composition at the boundary "
+                                               "is chosen to be the same as given in the initial "
                                                "conditions."
                                                "\n\n"
                                                "Because this class simply takes what the initial "
