@@ -49,6 +49,7 @@ namespace aspect
         {
           StokesPreconditioner (const FiniteElement<dim> &finite_element,
                                 const Quadrature<dim>    &quadrature,
+                                const Quadrature<dim>    &face_quadrature,
                                 const Mapping<dim>       &mapping,
                                 const UpdateFlags         update_flags,
                                 const unsigned int        n_compositional_fields);
@@ -57,6 +58,7 @@ namespace aspect
           virtual ~StokesPreconditioner ();
 
           FEValues<dim>               finite_element_values;
+          FEFaceValues<dim>           finite_element_face_values;
 
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  phi_p;
@@ -78,11 +80,14 @@ namespace aspect
         StokesPreconditioner<dim>::
         StokesPreconditioner (const FiniteElement<dim> &finite_element,
                               const Quadrature<dim>    &quadrature,
+                              const Quadrature<dim>    &face_quadrature,
                               const Mapping<dim>       &mapping,
                               const UpdateFlags         update_flags,
                               const unsigned int        n_compositional_fields)
           :
           finite_element_values (mapping, finite_element, quadrature,
+                                 update_flags),
+          finite_element_face_values (mapping, finite_element, face_quadrature,
                                  update_flags),
           grads_phi_u (finite_element.dofs_per_cell),
           phi_p (finite_element.dofs_per_cell),
@@ -105,6 +110,10 @@ namespace aspect
                                  scratch.finite_element_values.get_fe(),
                                  scratch.finite_element_values.get_quadrature(),
                                  scratch.finite_element_values.get_update_flags()),
+          finite_element_face_values (scratch.finite_element_face_values.get_mapping(),
+                                      scratch.finite_element_face_values.get_fe(),
+                                      scratch.finite_element_face_values.get_quadrature(),
+                                      scratch.finite_element_face_values.get_update_flags()),
           grads_phi_u (scratch.grads_phi_u),
           phi_p (scratch.phi_p),
           temperature_values (scratch.temperature_values),
@@ -973,6 +982,7 @@ namespace aspect
     system_preconditioner_matrix = 0;
 
     const QGauss<dim> quadrature_formula(parameters.stokes_velocity_degree+1);
+    const QGauss<dim-1> face_quadrature_formula(parameters.stokes_velocity_degree+1);
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
@@ -994,7 +1004,7 @@ namespace aspect
                           this,
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
-         StokesPreconditioner<dim> (finite_element, quadrature_formula,
+         StokesPreconditioner<dim> (finite_element, quadrature_formula, face_quadrature_formula,
                                     mapping,
                                     update_JxW_values |
                                     update_values |
@@ -1351,6 +1361,7 @@ namespace aspect
       pressure_shape_function_integrals = 0;
 
     const QGauss<dim> quadrature_formula(parameters.stokes_velocity_degree+1);
+    const QGauss<dim-1> face_quadrature_formula(parameters.stokes_velocity_degree+1);
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
