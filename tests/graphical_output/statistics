@@ -5,6 +5,8 @@
 # 5: Number of temperature degrees of freedom
 # 6: Iterations for temperature solver
 # 7: Iterations for Stokes solver
-# 8: Time step size (seconds)
-# 9: Visualization file name
-0 0.0000e+00 16 187 81 0 17 3.4287e+01 output-graphical_output/solution-00000 
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (seconds)
+# 11: Visualization file name
+0 0.0000e+00 16 187 81 0 17 18 17 3.4287e+01 output-graphical_output/solution-00000 

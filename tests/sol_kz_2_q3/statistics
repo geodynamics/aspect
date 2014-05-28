@@ -5,5 +5,7 @@
 # 5: Number of temperature degrees of freedom
 # 6: Iterations for temperature solver
 # 7: Iterations for Stokes solver
-# 8: Time step size (seconds)
-0 0.0000e+00 16 419 81 0 25 9.7871e+02 
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (seconds)
+0 0.0000e+00 16 419 81 0 25 26 125 9.7871e+02 
