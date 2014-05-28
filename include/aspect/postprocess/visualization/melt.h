@@ -79,6 +79,110 @@ namespace aspect
                                                   const std::vector<Point<dim> >                  &evaluation_points,
                                                   std::vector<Vector<double> >                    &computed_quantities) const;
            };
+
+      /**
+       * A class derived from DataPostprocessor that takes an output vector
+       * and computes a variable that represents the melt density at every point.
+       *
+       * The member functions are all implementations of those declared in the
+       * base class. See there for their meaning.
+       */
+      template <int dim>
+      class MeltDensity
+        : public DataPostprocessorScalar<dim>,
+          public SimulatorAccess<dim>,
+          public Interface<dim>
+      {
+        public:
+          MeltDensity ();
+
+          virtual
+          void
+          compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
+                                             const std::vector<std::vector<Tensor<1,dim> > > &duh,
+                                             const std::vector<std::vector<Tensor<2,dim> > > &dduh,
+                                             const std::vector<Point<dim> >                  &normals,
+                                             const std::vector<Point<dim> >                  &evaluation_points,
+                                             std::vector<Vector<double> >                    &computed_quantities) const;
+      };
+
+      /**
+       * A class derived from DataPostprocessor that takes an output vector
+       * and computes a variable that represents the compaction viscosity at every point.
+       *
+       * The member functions are all implementations of those declared in the
+       * base class. See there for their meaning.
+       */
+      template <int dim>
+      class CompactionViscosity
+        : public DataPostprocessorScalar<dim>,
+          public SimulatorAccess<dim>,
+          public Interface<dim>
+      {
+        public:
+    	  CompactionViscosity ();
+
+          virtual
+          void
+          compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
+                                             const std::vector<std::vector<Tensor<1,dim> > > &duh,
+                                             const std::vector<std::vector<Tensor<2,dim> > > &dduh,
+                                             const std::vector<Point<dim> >                  &normals,
+                                             const std::vector<Point<dim> >                  &evaluation_points,
+                                             std::vector<Vector<double> >                    &computed_quantities) const;
+      };
+
+      /**
+       * A class derived from DataPostprocessor that takes an output vector
+       * and computes a variable that represents the permeability at every point.
+       *
+       * The member functions are all implementations of those declared in the
+       * base class. See there for their meaning.
+       */
+      template <int dim>
+      class Permeability
+        : public DataPostprocessorScalar<dim>,
+          public SimulatorAccess<dim>,
+          public Interface<dim>
+      {
+        public:
+    	  Permeability ();
+
+          virtual
+          void
+          compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
+                                             const std::vector<std::vector<Tensor<1,dim> > > &duh,
+                                             const std::vector<std::vector<Tensor<2,dim> > > &dduh,
+                                             const std::vector<Point<dim> >                  &normals,
+                                             const std::vector<Point<dim> >                  &evaluation_points,
+                                             std::vector<Vector<double> >                    &computed_quantities) const;
+      };
+
+      /**
+       * A class derived from DataPostprocessor that takes an output vector
+       * and computes a variable that represents the melt viscosity at every point.
+       *
+       * The member functions are all implementations of those declared in the
+       * base class. See there for their meaning.
+       */
+      template <int dim>
+      class MeltViscosity
+        : public DataPostprocessorScalar<dim>,
+          public SimulatorAccess<dim>,
+          public Interface<dim>
+      {
+        public:
+    	  MeltViscosity ();
+
+          virtual
+          void
+          compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
+                                             const std::vector<std::vector<Tensor<1,dim> > > &duh,
+                                             const std::vector<std::vector<Tensor<2,dim> > > &dduh,
+                                             const std::vector<Point<dim> >                  &normals,
+                                             const std::vector<Point<dim> >                  &evaluation_points,
+                                             std::vector<Vector<double> >                    &computed_quantities) const;
+      };
     }
   }
 }
