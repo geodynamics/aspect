@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -148,7 +148,7 @@ namespace aspect
          * user to select all plugins at the same time.
          *
          * To make it easier to visually scan through the list of plugins,
-         * names are sorted alpha betically.
+         * names are sorted alphabetically.
          */
         static
         std::string get_pattern_of_names (const bool allow_all = false);
@@ -158,7 +158,7 @@ namespace aspect
          * descriptions that have been provided at the time of registration.
          *
          * To make it easier to visually scan through the list of plugins,
-         * names are sorted alpha betically.
+         * names are sorted alphabetically.
          */
         static
         std::string get_description_string ();
