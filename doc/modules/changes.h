@@ -5,7 +5,12 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
- * <li> PETSc support can now be enabled using 'cmake -D ASPECT_USE_PETSC=ON'.
+ * <li> New: Given the proliferation of plugins of all kinds, plugin names
+ * are now listed in alphabetical order in the documentation.
+ * <br>
+ * (Wolfgang Bangerth, 2014/05/27)
+ *
+ * <li> New: PETSc support can now be enabled using 'cmake -D ASPECT_USE_PETSC=ON'.
  * <br>
  * (Timo Heister, 2014/05/27)
  *

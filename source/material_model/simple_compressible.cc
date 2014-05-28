@@ -281,9 +281,9 @@ namespace aspect
                                    "\n\n"
                                    "This model uses the following equations for the density: "
                                    "\\begin{align}"
-                                   "  \\rho(p,T) = &rho_0"
-                                   "             * &\\left(1-\\alpha (T-T_a)\\right) "
-                                   "             * &\\exp{\\beta (P-P_0))}"
+                                   "  \\rho(p,T) = \\rho_0"
+                                   "              \\left(1-\\alpha (T-T_a)\\right) "
+                                   "              \\exp{\\beta (P-P_0))}"
                                    "\\end{align}")
   }
 }
