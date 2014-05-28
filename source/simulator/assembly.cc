@@ -1106,7 +1106,7 @@ namespace aspect
     fluid_pressure_RHS += is_compressible
                           ?
                           (current_u * gravity) * (porosity * fluid_density * fluid_compressibility
-                                                   + (porosity) * solid_density * solid_compressibility)
+                                                   - porosity * solid_density * solid_compressibility)
                           + K_D * fluid_compressibility * fluid_density * fluid_density * (gravity * gravity)
                           :
                           0.0;
