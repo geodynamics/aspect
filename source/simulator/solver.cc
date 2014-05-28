@@ -201,6 +201,9 @@ namespace aspect
         void vmult (LinearAlgebra::BlockVector       &dst,
                     const LinearAlgebra::BlockVector &src) const;
 
+        unsigned int n_iterations_A() const;
+        unsigned int n_iterations_S() const;
+
       private:
         /**
          * References to the various matrix object this preconditioner works on.
@@ -215,6 +218,8 @@ namespace aspect
          * or to just apply a single preconditioner step with it.
          **/
         const bool do_solve_A;
+        mutable unsigned int n_iterations_A_;
+        mutable unsigned int n_iterations_S_;
     };
 
 
@@ -230,8 +235,25 @@ namespace aspect
       stokes_preconditioner_matrix     (Spre),
       mp_preconditioner (Mppreconditioner),
       a_preconditioner  (Apreconditioner),
-      do_solve_A        (do_solve_A)
+      do_solve_A        (do_solve_A),
+      n_iterations_A_(0),
+      n_iterations_S_(0)
     {}
+
+    template <class PreconditionerA, class PreconditionerMp>
+    unsigned int
+    BlockSchurPreconditioner<PreconditionerA, PreconditionerMp>::
+    n_iterations_A() const
+    {
+        return n_iterations_A_;
+    }
+    template <class PreconditionerA, class PreconditionerMp>
+    unsigned int
+    BlockSchurPreconditioner<PreconditionerA, PreconditionerMp>::
+    n_iterations_S() const
+    {
+        return n_iterations_S_;
+    }
 
 
     template <class PreconditionerA, class PreconditionerMp>
@@ -257,9 +279,12 @@ namespace aspect
         // iterating. We simply skip
         // solving in this case.
         if (src.block(1).l2_norm() > 1e-50 || dst.block(1).l2_norm() > 1e-50)
-          solver.solve(stokes_preconditioner_matrix.block(1,1),
-                       dst.block(1), src.block(1),
-                       mp_preconditioner);
+          {
+            solver.solve(stokes_preconditioner_matrix.block(1,1),
+                dst.block(1), src.block(1),
+                mp_preconditioner);
+            n_iterations_S_ += solver_control.last_step();
+          }
 
         dst.block(1) *= -1.0;
       }
@@ -280,9 +305,13 @@ namespace aspect
 #endif
           solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
                        a_preconditioner);
+          n_iterations_A_ += solver_control.last_step();
         }
       else
+        {
         a_preconditioner.vmult (dst.block(0), utmp);
+        n_iterations_A_ += 1;
+        }
     }
 
   }
@@ -483,6 +512,7 @@ namespace aspect
     SolverControl solver_control_expensive (system_matrix.block(block_vel,block_p).m() +
                                             system_matrix.block(block_p,block_vel).m(), solver_tolerance);
 
+    unsigned int its_A = 0, its_S = 0;
     try
       {
         // if this cheaper solver is not desired, then simply short-cut
@@ -504,6 +534,9 @@ namespace aspect
                AdditionalData(30, true));
         solver.solve(stokes_block, distributed_stokes_solution,
                      distributed_stokes_rhs, preconditioner);
+
+        its_A += preconditioner.n_iterations_A();
+        its_S += preconditioner.n_iterations_S();
       }
 
     // step 1b: take the stronger solver in case
@@ -522,7 +555,9 @@ namespace aspect
                AdditionalData(50, true));
         solver.solve(stokes_block, distributed_stokes_solution,
                      distributed_stokes_rhs, preconditioner);
-      }
+        its_A += preconditioner.n_iterations_A();
+        its_S += preconditioner.n_iterations_S();
+     }
 
     // distribute hanging node and
     // other constraints
@@ -551,6 +586,10 @@ namespace aspect
 
     statistics.add_value("Iterations for Stokes solver",
                          solver_control_cheap.last_step() + solver_control_expensive.last_step());
+    statistics.add_value("Velocity iterations in Stokes preconditioner",
+                         its_A);
+    statistics.add_value("Schur complement iterations in Stokes preconditioner",
+                         its_S);
 
     computing_timer.exit_section();
 
