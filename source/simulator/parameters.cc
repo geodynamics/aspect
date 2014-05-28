@@ -25,6 +25,8 @@
 #include <deal.II/base/parameter_handler.h>
 
 #include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 
 namespace aspect
@@ -614,10 +616,15 @@ namespace aspect
         std::cerr << "\n"
                   << "-----------------------------------------------------------------------------\n"
                   << "The output directory <" << output_directory
-                  << "> provided in the input file appears not to exist!\n"
-                  << "-----------------------------------------------------------------------------\n"
+                  << "> provided in the input file appears not to exist.\n"
+                  << "ASPECT will create it for you.\n"
+                  << "-----------------------------------------------------------------------------\n\n"
                   << std::endl;
-        std::exit (1);
+
+        const int error = mkdir (output_directory.c_str(), /*mode using octal format=*/0700);
+
+        AssertThrow (error==0,
+                     ExcMessage (std::string("Can't create the output directory at <") + output_directory + ">"));
       }
 
     surface_pressure              = prm.get_double ("Surface pressure");
