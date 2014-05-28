@@ -18,7 +18,7 @@ set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
 
-set Use years in output instead of seconds = true
+set Use years in output instead of seconds = false
 set Use direct solver for Stokes system    = true
 
 subsection Compositional fields
@@ -70,7 +70,7 @@ end
 
 subsection Boundary velocity model
   subsection Function
-    set Function expression = 0;-0.5*y*y
+    set Function expression = 0;0.5*y*y
     set Variable names      = x,y
   end
 end  
