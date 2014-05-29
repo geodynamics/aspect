@@ -55,6 +55,8 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
 
+#include <boost/iostreams/tee.hpp>
+#include <boost/iostreams/stream.hpp>
 
 
 namespace aspect
@@ -1195,6 +1197,21 @@ namespace aspect
 
       MPI_Comm                            mpi_communicator;
 
+      /**
+       * This stream will log into the file output/log.txt (used automatically
+       * by pcout).
+       */
+      std::ofstream log_file_stream;
+
+      typedef boost::iostreams::tee_device<std::ostream, std::ofstream> TeeDevice;
+      typedef boost::iostreams::stream< TeeDevice > TeeStream;
+
+      TeeDevice iostream_tee_device;
+      TeeStream iostream_tee_stream;
+
+      /**
+       * Output stream for logging information. Will only output on processor 0.
+       */
       ConditionalOStream                  pcout;
 
       /**

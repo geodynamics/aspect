@@ -88,7 +88,9 @@ namespace aspect
     introspection (!parameters.use_direct_stokes_solver,
                    parameters.names_of_compositional_fields),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
-    pcout (std::cout,
+    iostream_tee_device(std::cout, log_file_stream),
+    iostream_tee_stream(iostream_tee_device),
+    pcout (iostream_tee_stream,
            (Utilities::MPI::
             this_mpi_process(mpi_communicator)
             == 0)),
@@ -149,6 +151,13 @@ namespace aspect
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true)
   {
+    if (parameters.resume_computation)
+      log_file_stream.open((parameters.output_directory + "log.txt").c_str(), std::ios_base::app);
+    else
+      log_file_stream.open((parameters.output_directory + "log.txt").c_str());
+
+    print_aspect_header(pcout);
+
     computing_timer.enter_section("Initialization");
 
     // first do some error checking for the parameters we got

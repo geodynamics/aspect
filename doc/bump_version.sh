@@ -18,7 +18,7 @@ echo "$VER" >../VERSION
 echo "manual.tex ..."
 sed -i "s/^.* %VERSION-INFO%\$/$VER %VERSION-INFO%/g" manual/manual.tex 
 
-echo "main.cc ..."
-sed -i "s|version \(.*\)\\\\n\" //VERSION-INFO|version $VER\\\\n\" //VERSION-INFO|g" ../source/main.cc
+echo "global.h ..."
+sed -i "s|version \(.*\)\\\\n\" //VERSION-INFO|version $VER\\\\n\" //VERSION-INFO|g" ../include/aspect/global.h
 
-git add ../VERSION manual/manual.tex ../source/main.cc
+git add ../VERSION manual/manual.tex ../include/aspect/global.h
