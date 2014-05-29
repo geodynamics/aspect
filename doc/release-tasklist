@@ -69,17 +69,20 @@ available from
 
                    http://aspect.dealii.org/
 
-This is the release after the ASPECT hackathon 2014 in May:
+This release combines the incredible number of changes made during the
+ASPECT hackathon in May 2014, as well as other changes made since the
+last release. In particular, it includes the following changes:
 - free surface computations
 - optional direct solver support
 - new material models (multi-component, simple compressible, ...)
 - finer mesh refinement control using plugins
 - updates to dynamic topography postprocessors
 - updates to gplates boundary conditions
-- new cookbooks: reaction between fields, ...
-- benchmarks are now in benchmarks/ 
+- compositional fields can now react with each other
+- new cookbooks: reaction between fields, free surfaces
 - improved PETSc support
-- fix time dependent boundary conditions
+- boundary conditions can now be time dependent 
+- support for radiogenic heating models
 
 Wolfgang Bangerth, Timo Heister, and many other contributors.
 
