@@ -45,30 +45,16 @@ namespace aspect
     InitialProfile<dim>::initialize()
     {
       delta_z = this->get_geometry_model().maximal_depth() / (n_points-1);
-      this->update();
-      initialized = true;
-    }
 
-    template <int dim>
-    bool
-    InitialProfile<dim>::is_initialized() const
-    {
-      return initialized;
-    }
-
-    template <int dim>
-    void
-    InitialProfile<dim>::update()
-    {
       const unsigned int n_compositional_fields = this->n_compositional_fields();
 
       temperatures[0] = this->get_adiabatic_surface_temperature();
       pressures[0]    = this->get_surface_pressure();
 
       // now integrate downward using the explicit Euler method for simplicity
-          //
-          // note: p'(z) = rho(p,T) * |g|
-          //       T'(z) = alpha |g| T / c_p
+      //
+      // note: p'(z) = rho(p,T) * |g|
+      //       T'(z) = alpha |g| T / c_p
       double z;
       for (unsigned int i=1; i<n_points; ++i)
         {
@@ -113,7 +99,20 @@ namespace aspect
               -std::numeric_limits<double>::epsilon() * temperatures.size(),
               ExcInternalError());
 
+      initialized = true;
     }
+
+    template <int dim>
+    bool
+    InitialProfile<dim>::is_initialized() const
+    {
+      return initialized;
+    }
+
+    template <int dim>
+    void
+    InitialProfile<dim>::update()
+    {}
 
     template <int dim>
     void InitialProfile<dim>::get_adiabatic_temperature_profile(std::vector<double> &values) const
