@@ -210,6 +210,7 @@ expand_backslashes (const std::string &filename)
 }
 
 
+
 int main (int argc, char *argv[])
 {
   using namespace dealii;
@@ -223,38 +224,15 @@ int main (int argc, char *argv[])
     {
       deallog.depth_console(0);
 
-      // print some status messages at the top
-      if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
-        {
-          const int n_tasks = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
-
-          std::cout << "-----------------------------------------------------------------------------\n"
-                    << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
-                    << "--     . version 1.1.pre\n" //VERSION-INFO. Do not edit by hand.
-#ifdef DEBUG
-                    << "--     . running in DEBUG mode\n"
-#else
-                    << "--     . running in OPTIMIZED mode\n"
-#endif
-                    << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
-#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
-          const int n_threads = multithread_info.n_threads();
-          if (n_threads>1)
-            std::cout << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
-#endif
-#ifdef ASPECT_USE_PETSC
-          std::cout << "--     . using PETSc\n";
-#else
-          std::cout << "--     . using Trilinos\n";
-#endif
-          std::cout << "-----------------------------------------------------------------------------\n"
-                    << std::endl;
-        }
-
       if (argc < 2)
         {
-          std::cout << "\tUsage: ./aspect <parameter_file.prm>" << std::endl;
-          return 0;
+          // print header and usage info only on processor 0
+          if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+            {
+              print_aspect_header(std::cout);
+              std::cout << "\tUsage: ./aspect <parameter_file.prm>" << std::endl;
+            }
+          return 2;
         }
 
       // see which parameter file to use
@@ -267,7 +245,9 @@ int main (int argc, char *argv[])
           {
             const std::string message = (std::string("Input parameter file <")
                                          + parameter_filename + "> not found.");
-            AssertThrow(false, ExcMessage (message));
+            if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+              AssertThrow(false, ExcMessage (message));
+            return 3;
           }
       }
       // now that we know that the file can, at least in principle, be read

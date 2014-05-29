@@ -5,6 +5,10 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> New: ASPECT now logs all screen output to output/log.txt.
+ * <br>
+ * (Timo Heister, 2014/05/29)
+ *
  * <li> Changed: For some modules, e.g. the selection of which postprocessor
  * to run, "all" was an option. This may have made sense when we had 3 or 4
  * such postprocessors, but this is no longer the case. Furthermore, not all
