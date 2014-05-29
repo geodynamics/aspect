@@ -1,6 +1,7 @@
 cd ..
+rm -f output/parameters.tex
 ./aspect doc/manual/empty.prm >/dev/null 2>/dev/null
-cp output/parameters.tex doc/manual/
+cp output/parameters.tex doc/manual/ || echo "ERROR: could not copy parameters.tex"
 cd doc/manual
 echo patching parameters.tex
 sed -i 's/LD_LIBRARY_PATH/LD\\_LIBRARY\\_PATH/g' parameters.tex
