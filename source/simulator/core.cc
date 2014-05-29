@@ -518,6 +518,7 @@ namespace aspect
     material_model->update();
     gravity_model->update();
     heating_model->update();
+    adiabatic_conditions->update();
   }
 
 
