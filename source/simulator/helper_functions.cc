@@ -615,9 +615,7 @@ namespace aspect
       if (parameters.pressure_normalization == "surface")
         pressure_adjustment = -temp[0]/temp[1] + parameters.surface_pressure;
       else if (parameters.pressure_normalization == "volume")
-//TODO: This can't be right. it should be -temp[0]/temp[1] to divide
-        // by the volume. this was definitely wrong in ASPIRE
-        pressure_adjustment = -temp[0];
+        pressure_adjustment = -temp[0]/temp[1];
       else
         AssertThrow(false, ExcNotImplemented());
     }
