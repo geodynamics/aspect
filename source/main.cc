@@ -244,12 +244,14 @@ parse_parameters (const std::string &input_as_string,
   // if not success, then throw an exception: ExcMessage on processor 0,
   // QuietException on the others
   if (success == false)
-    if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
-      {
-        AssertThrow(false, dealii::ExcMessage ("Invalid input parameter file."));
-      }
-    else
-      throw QuietException();
+    {
+      if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+        {
+          AssertThrow(false, dealii::ExcMessage ("Invalid input parameter file."));
+        }
+      else
+        throw QuietException();
+    }
 
   // otherwise, processor 0 was ok reading the data, so we can expect the
   // other processors will be ok as well
