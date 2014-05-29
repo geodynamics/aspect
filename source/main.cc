@@ -210,6 +210,56 @@ expand_backslashes (const std::string &filename)
 }
 
 
+/**
+ * An exception that we can silently treat in main(). Used in read_parameters().
+ */
+class QuietException {};
+
+/**
+ * Let ParameterHandler parse the input file, here given as a string.
+ * Since ParameterHandler unconditionally writes to the screen when it
+ * finds something it doesn't like, we get massive amounts of output
+ * in parallel computations since every processor writes the same
+ * stuff to screen. To avoid this, let processor 0 parse the input
+ * first and, if necessary, produce its output. Only if this
+ * succeeds, also let the other processors read their input.
+ *
+ * In case of an error, we need to abort all processors without them
+ * having read their data. This is done by throwing an exception of the
+ * special class QuietException that we can catch in main() and terminate
+ * the program quietly without generating other output.
+ */
+void
+parse_parameters (const std::string &input_as_string,
+                  dealii::ParameterHandler  &prm)
+{
+  // try reading on processor 0
+  bool success = true;
+  if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+    success = prm.read_input_from_string(input_as_string.c_str());
+
+  // broadcast the result
+  MPI_Bcast (&success, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
+
+  // if not success, then throw an exception: ExcMessage on processor 0,
+  // QuietException on the others
+  if (success == false)
+    if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+      {
+        AssertThrow(false, dealii::ExcMessage ("Invalid input parameter file."));
+      }
+    else
+      throw QuietException();
+
+  // otherwise, processor 0 was ok reading the data, so we can expect the
+  // other processors will be ok as well
+  if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) != 0)
+    {
+      success = prm.read_input_from_string(input_as_string.c_str());
+      AssertThrow(success, dealii::ExcMessage ("Invalid input parameter file."));
+    }
+}
+
 
 int main (int argc, char *argv[])
 {
@@ -270,15 +320,13 @@ int main (int argc, char *argv[])
       // is only read at run-time
       ParameterHandler prm;
 
-      const std::string input_file = expand_backslashes (parameter_filename);
+      const std::string input_as_string = expand_backslashes (parameter_filename);
       switch (dim)
         {
           case 2:
           {
             aspect::Simulator<2>::declare_parameters(prm);
-
-            const bool success = prm.read_input_from_string(input_file.c_str());
-            AssertThrow(success, ExcMessage ("Invalid input parameter file."));
+            parse_parameters (input_as_string, prm);
 
             aspect::Simulator<2> flow_problem(MPI_COMM_WORLD, prm);
             flow_problem.run();
@@ -289,9 +337,7 @@ int main (int argc, char *argv[])
           case 3:
           {
             aspect::Simulator<3>::declare_parameters(prm);
-
-            const bool success = prm.read_input_from_string(input_file.c_str());
-            AssertThrow(success, ExcMessage ("Invalid input parameter file."));
+            parse_parameters (input_as_string, prm);
 
             aspect::Simulator<3> flow_problem(MPI_COMM_WORLD, prm);
             flow_problem.run();
@@ -318,6 +364,14 @@ int main (int argc, char *argv[])
 
       return 1;
     }
+  catch (QuietException &)
+  {
+      // quitly treat an exception used on processors other than
+      // root when we already know that processor 0 will generate
+      // an exception. we do this to avoid creating too much
+      // (duplicate) screen output
+      return 1;
+  }
   catch (...)
     {
       std::cerr << std::endl << std::endl
