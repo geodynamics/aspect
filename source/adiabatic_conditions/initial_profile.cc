@@ -189,7 +189,11 @@ namespace aspect
     ASPECT_REGISTER_ADIABATIC_CONDITIONS_MODEL(InitialProfile,
                                                "initial profile",
                                                "A model in which the adiabatic profile is "
-                                               "calculated as a constant profile at the start "
-                                               "of the model run.")
+                                               "calculated once at the start of the model run. "
+                                               "The gravity is assumed to be in depth direction "
+                                               "and the composition is evaluated at reference "
+                                               "points, no lateral averaging is performed. "
+                                               "All material parameters are used from the "
+                                               "material model plugin.")
   }
 }
