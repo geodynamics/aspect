@@ -230,6 +230,7 @@ int main (int argc, char *argv[])
 
           std::cout << "-----------------------------------------------------------------------------\n"
                     << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
+                    << "--     . version 1.1.pre\n" //VERSION-INFO. Do not edit by hand.
 #ifdef DEBUG
                     << "--     . running in DEBUG mode\n"
 #else
