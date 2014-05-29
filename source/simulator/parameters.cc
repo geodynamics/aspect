@@ -31,9 +31,10 @@
 namespace aspect
 {
   template <int dim>
-  Simulator<dim>::Parameters::Parameters (ParameterHandler &prm)
+  Simulator<dim>::Parameters::Parameters (ParameterHandler &prm,
+                                          MPI_Comm mpi_communicator)
   {
-    parse_parameters (prm);
+    parse_parameters (prm, mpi_communicator);
   }
 
 
@@ -561,7 +562,8 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::Parameters::
-  parse_parameters (ParameterHandler &prm)
+  parse_parameters (ParameterHandler &prm,
+                    MPI_Comm mpi_communicator)
   {
     // first, make sure that the ParameterHandler parser agrees
     // with the code in main() about the meaning of the "Dimension"
@@ -605,8 +607,9 @@ namespace aspect
       output_directory += "/";
 
     // verify that the output directory actually exists. if it doesn't, create
-    // it.
-    if (opendir(output_directory.c_str()) == NULL)
+    // it on processor zero
+    if ((Utilities::MPI::this_mpi_process(mpi_communicator) == 0) &&
+        (opendir(output_directory.c_str()) == NULL))
       {
         std::cerr << "\n"
                   << "-----------------------------------------------------------------------------\n"
@@ -621,7 +624,7 @@ namespace aspect
         // a nested subdirectory as output directory, and if multiple parts of the path
         // do not exist, this would fail. working around this is easiest by just calling
         // 'mkdir -p' from the command line
-        const int error = system ((std::string("mkdir -p ") + output_directory).c_str());
+        const int error = system ((std::string("mkdir -p '") + output_directory + "'").c_str());
 
         AssertThrow (error==0,
                      ExcMessage (std::string("Can't create the output directory at <") + output_directory + ">"));
@@ -914,9 +917,11 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template Simulator<dim>::Parameters::Parameters (ParameterHandler &prm); \
+  template Simulator<dim>::Parameters::Parameters (ParameterHandler &prm, \
+                                                   MPI_Comm mpi_communicator); \
   template void Simulator<dim>::Parameters::declare_parameters (ParameterHandler &prm); \
-  template void Simulator<dim>::Parameters::parse_parameters(ParameterHandler &prm); \
+  template void Simulator<dim>::Parameters::parse_parameters(ParameterHandler &prm, \
+                                                             MPI_Comm mpi_communicator); \
   template void Simulator<dim>::declare_parameters (ParameterHandler &prm);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
