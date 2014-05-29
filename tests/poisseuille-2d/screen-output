@@ -15,24 +15,24 @@ Number of degrees of freedom: 268 (162+25+81)
 
    Postprocessing:
      RMS, max velocity:    0.183 m/s, 0.249 m/s
-     Pressure min/avg/max: -2 Pa, 1.665e-15 Pa, 2 Pa
+     Pressure min/avg/max: -2 Pa, -1.318e-15 Pa, 2 Pa
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.185s |            |
+| Total wallclock time elapsed since start    |     0.292s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |    0.0235s |        13% |
-| Assemble temperature system     |         1 |    0.0269s |        15% |
-| Build Stokes preconditioner     |         1 |    0.0244s |        13% |
-| Build temperature preconditioner|         1 |  0.000928s |       0.5% |
-| Solve Stokes system             |         1 |   0.00903s |       4.9% |
-| Solve temperature system        |         1 |    0.0011s |      0.59% |
-| Initialization                  |         2 |    0.0537s |        29% |
-| Postprocessing                  |         1 |   0.00364s |         2% |
-| Setup dof systems               |         1 |     0.019s |        10% |
+| Assemble Stokes system          |         1 |     0.023s |       7.9% |
+| Assemble temperature system     |         1 |    0.0285s |       9.7% |
+| Build Stokes preconditioner     |         1 |    0.0342s |        12% |
+| Build temperature preconditioner|         1 |   0.00627s |       2.1% |
+| Solve Stokes system             |         1 |    0.0104s |       3.6% |
+| Solve temperature system        |         1 |   0.00339s |       1.2% |
+| Initialization                  |         2 |    0.0732s |        25% |
+| Postprocessing                  |         1 |   0.00415s |       1.4% |
+| Setup dof systems               |         1 |    0.0415s |        14% |
 +---------------------------------+-----------+------------+------------+
 
