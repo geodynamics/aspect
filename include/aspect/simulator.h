@@ -148,8 +148,13 @@ namespace aspect
          *
          * @param prm The parameter object that has previously been filled
          * with content by reading an input file.
+         *
+         * @param mpi_communicator The MPI communicator we will use for this
+         * simulation. We need this when calling parse_parameters() so that
+         * we can verify some of the input arguments.
          */
-        Parameters (ParameterHandler &prm);
+        Parameters (ParameterHandler &prm,
+                    MPI_Comm mpi_communicator);
 
         /**
          * Declare the run-time parameters this class takes, and call the
@@ -167,8 +172,13 @@ namespace aspect
          * an input file.
          *
          * @param prm The object from which to obtain the run-time parameters.
+         *
+         * @param mpi_communicator The MPI communicator we will use for this
+         * simulation. We need this when calling parse_parameters() so that
+         * we can verify some of the input arguments.
          */
-        void parse_parameters (ParameterHandler &prm);
+        void parse_parameters (ParameterHandler &prm,
+                               MPI_Comm mpi_communicator);
 
         /**
          * @name Global parameters
