@@ -1358,17 +1358,17 @@ namespace aspect
           FreeSurfaceHandler(Simulator<dim> &, ParameterHandler &prm);
 
           /**
-           * The main execution step for the free surface implementation.
-           * This computes the motion of the free surface, moves the boundary
-           * nodes accordingly, redistributes the internal nodes in order to
+           * The main execution step for the free surface implementation. This
+           * computes the motion of the free surface, moves the boundary nodes
+           * accordingly, redistributes the internal nodes in order to
            * preserve mesh regularity, and calculates the Arbitrary-
            * Lagrangian-Eulerian correction terms for advected quantities.
            */
           void execute();
 
           /**
-           * Allocates and sets up the members of the FreeSurfaceHandler.
-           * This is called by Simulator<dim>::setup_dofs()
+           * Allocates and sets up the members of the FreeSurfaceHandler. This
+           * is called by Simulator<dim>::setup_dofs()
            */
           void setup_dofs();
 
