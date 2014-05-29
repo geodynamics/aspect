@@ -15,6 +15,14 @@
  * postprocessors can always be run for a given geometry, input parameters, etc.
  * Consequently, the option of specifying "all" has been removed. Where this
  * applied, we have also removed the default value "all".
+ *
+ * <li> Changed: If the input file is invalid, for example because a
+ * parameter's value did not satisfy its constraints or because it tried
+ * to define a parameter that did not exist, all processors in a parallel
+ * computation produced the same error message -- leading to massive amounts
+ * of output that were barely readable. This has been changed now: only
+ * processor zero now generates the output, but all processors abort
+ * nonetheless.
  * <br>
  * (Wolfgang Bangerth, 2014/05/29)
  *
