@@ -71,7 +71,7 @@ namespace aspect
         for (unsigned int i=0;i<in.position.size();++i)
           {
             out.viscosities[i] = 3.0/4.0;
-            out.densities[i] = 2.0;
+            out.densities[i] = 3.0;
             out.thermal_expansion_coefficients[i] = 1.0;
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;
@@ -87,7 +87,7 @@ namespace aspect
           {
             out.compaction_viscosities[i] = 1.0;
             out.fluid_viscosities[i]= 2.0;
-            out.permeabilities[i]= 2.0 + std::pow(in.position[i][1],2);
+            out.permeabilities[i]= 1.0 + std::pow(in.position[i][1],2);
             out.fluid_densities[i]= 1.0;
             out.fluid_compressibilities[i] = 0.0;
           }

@@ -1,23 +1,23 @@
 # 1: Time step number
-# 2: Time (years)
+# 2: Time (seconds)
 # 3: Number of mesh cells
 # 4: Number of Stokes degrees of freedom
 # 5: Number of temperature degrees of freedom
 # 6: Number of degrees of freedom for all compositions
 # 7: Iterations for temperature solver
 # 8: Iterations for composition solver 1
-# 9: Iterations for composition solver 2
-# 10: Time step size (years)
-# 11: Visualization file name
-# 12: Minimal value for composition peridotite
-# 13: Maximal value for composition peridotite
-# 14: Global mass for composition peridotite
-# 15: Minimal value for composition porosity
-# 16: Maximal value for composition porosity
-# 17: Global mass for composition porosity
-0 0.0000e+00 1024 10628 4225 8450   0  0   0 1.2940e+09 output-melt_transport/solution-00000  0.00000000e+00 3.00000000e-01 3.74877930e+10  0.00000000e+00 0.00000000e+00  0.00000000e+00 
-1 1.2940e+09 1024 10628 4225 8450 375 15 249 2.1725e+09 output-melt_transport/solution-00001 -2.53111587e-02 3.25244875e-01 3.74877930e+10 -2.03396205e-15 2.03395035e-15 -1.46186552e-09 
-2 3.4666e+09 1024 10628 4225 8450 330 12  15 2.9159e+09 output-melt_transport/solution-00002 -2.07142654e-02 3.18937668e-01 3.74877929e+10 -5.55013674e-04 5.62050693e-04  1.75159319e+02 
-3 6.3825e+09 1024 10628 4225 8450 268 11  13 3.0287e+09 output-melt_transport/solution-00003 -1.78501386e-02 3.15098304e-01 3.74877929e+10 -4.90475749e-04 4.79996970e-04  2.75591961e+02 
-4 9.4112e+09 1024 10628 4225 8450 357 15  18 5.8882e+08 output-melt_transport/solution-00004 -1.43144621e-02 3.13609833e-01 3.74877928e+10 -2.75541384e-04 2.50336871e-04  3.33212273e+02 
-5 1.0000e+10 1024 10628 4225 8450 176 10  12 2.9655e+09 output-melt_transport/solution-00005 -1.13331846e-02 3.13274145e-01 3.74877928e+10 -2.55180064e-04 2.41540708e-04  3.35444544e+02 
+# 9: Time step size (seconds)
+# 10: RMS velocity (m/s)
+# 11: Max. velocity (m/s)
+# 12: Minimal pressure (Pa)
+# 13: Average pressure (Pa)
+# 14: Maximal pressure (Pa)
+# 15: Maximum velocity magnitude on boundary with indicator 0 (m/s)
+# 16: Minimum velocity magnitude on boundary with indicator 0 (m/s)
+# 17: Maximum velocity magnitude on boundary with indicator 1 (m/s)
+# 18: Minimum velocity magnitude on boundary with indicator 1 (m/s)
+# 19: Maximum velocity magnitude on boundary with indicator 2 (m/s)
+# 20: Minimum velocity magnitude on boundary with indicator 2 (m/s)
+# 21: Maximum velocity magnitude on boundary with indicator 3 (m/s)
+# 22: Minimum velocity magnitude on boundary with indicator 3 (m/s)
+0 0.0000e+00 1024 10628 4225 4225 0 0 3.1250e-04 2.23606798e-01 4.96484275e-01 -2.00000000e+00 -1.00000000e+00 5.00000000e-01 4.96484275e-01 6.20198505e-06 4.96484275e-01 6.20198505e-06 0.00000000e+00 0.00000000e+00 5.00000000e-01 5.00000000e-01 
