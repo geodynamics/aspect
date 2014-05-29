@@ -1,0 +1,6 @@
+subsection %%\hyperref[parameters:Mesh_20refinement]{Mesh refinement}%
+  set %%\hyperref[parameters:Mesh refinement/Initial global refinement]{Initial global refinement}%          = 2 %% \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
+  set %%\hyperref[parameters:Mesh refinement/Initial adaptive refinement]{Initial adaptive refinement}%        = 3 %% \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
+  set %%\hyperref[parameters:Mesh refinement/Strategy]{Strategy}%                           = temperature %% \index[prmindex]{Strategy} \index[prmindexfull]{Mesh refinement!Strategy} %
+  set %%\hyperref[parameters:Mesh refinement/Time steps between mesh refinement]{Time steps between mesh refinement}% = 15 %% \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
+end

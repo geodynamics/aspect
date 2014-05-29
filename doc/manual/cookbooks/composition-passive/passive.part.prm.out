@@ -1,0 +1,18 @@
+# This is the new part: We declare that there will
+# be two compositional fields that will be
+# advected along. Their initial conditions are given by
+# a function that is one for the lowermost 0.2 height
+# units of the domain and zero otherwise in the first case,
+# and one in the top most 0.2 height units in the latter.
+subsection %%\hyperref[parameters:Compositional_20fields]{Compositional fields}%
+  set %%\hyperref[parameters:Compositional fields/Number of fields]{Number of fields}% = 2%% \index[prmindex]{Number of fields} \index[prmindexfull]{Compositional fields!Number of fields} %
+end
+
+subsection %%\hyperref[parameters:Compositional_20initial_20conditions]{Compositional initial conditions}%
+  set %%\hyperref[parameters:Compositional initial conditions/Model name]{Model name}% = function%% \index[prmindex]{Model name} \index[prmindexfull]{Compositional initial conditions!Model name} %
+
+  subsection %%\hyperref[parameters:Compositional_20initial_20conditions/Function]{Function}%
+    set %%\hyperref[parameters:Compositional initial conditions/Function/Variable names]{Variable names}%      = x,y%% \index[prmindex]{Variable names} \index[prmindexfull]{Compositional initial conditions!Function!Variable names} %
+    set %%\hyperref[parameters:Compositional initial conditions/Function/Function expression]{Function expression}% = if(y<0.2, 1, 0) ; if(y>0.8, 1, 0) %% \index[prmindex]{Function expression} \index[prmindexfull]{Compositional initial conditions!Function!Function expression} %
+  end
+end

@@ -9,7 +9,7 @@ aspect-files      = $(shell echo ../include/aspect/*.h \
 aspect-manual-pix = $(shell find manual/cookbooks/ -name \*.png)
 
 
-aspect-prms = $(shell find manual/ -name \*.prm)
+aspect-prms = $(shell find manual/cookbooks/ -name \*.prm)
 aspect-prms-out = $(aspect-prms:=.out)
 
 test:
