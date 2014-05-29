@@ -1223,9 +1223,9 @@ namespace aspect
       const std::auto_ptr<GravityModel::Interface<dim> >             gravity_model;
       const std::auto_ptr<BoundaryTemperature::Interface<dim> >      boundary_temperature;
       const std::auto_ptr<BoundaryComposition::Interface<dim> >      boundary_composition;
-      std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
+      const std::auto_ptr<InitialConditions::Interface<dim> >        initial_conditions;
+      const std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
       std::auto_ptr<const AdiabaticConditions<dim> >                 adiabatic_conditions;
-      std::auto_ptr<InitialConditions::Interface<dim> >              initial_conditions;
       std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       /**
        * @}

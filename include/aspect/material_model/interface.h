@@ -141,8 +141,7 @@ namespace aspect
         virtual ~Interface();
 
         /**
-         * Initialization function. TODO: Is there some argument that is
-         * possibly needed by some material models?
+         * Initialization function.
          */
         virtual
         void

@@ -120,12 +120,12 @@ namespace aspect
       double T_solidus,T_perturbation;
       double litho_thick_theta;
       double lateral_perturbation;
-      double Depth=this->geometry_model->depth(position);
+      double Depth=this->get_geometry_model().depth(position);
 
       AssertThrow(solidus_curve.n_points!=0,ExcMessage("Error reading solidus file."));
       AssertThrow(solidus_curve.is_radius==true,ExcMessage("The solidus curve has to be radius dependent."));
       const GeometryModel::SphericalShell<dim> *spherical_geometry_model=
-        dynamic_cast< const GeometryModel::SphericalShell<dim> *>(this->geometry_model);
+        dynamic_cast< const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
       AssertThrow(spherical_geometry_model!=0,
                   ExcMessage("This initial condition can only be used with spherical shell geometry model."));
       T_min=(this->get_boundary_temperature()).minimal_temperature();
@@ -160,7 +160,7 @@ namespace aspect
       else
         T_solidus=solidus_curve.T(0,sqrt(position.square()))+deltaT;
 
-      T_perturbation=Depth/( this->geometry_model->maximal_depth() )*magnitude_T*lateral_perturbation;
+      T_perturbation=Depth/( this->get_geometry_model().maximal_depth() )*magnitude_T*lateral_perturbation;
       return T_solidus+T_perturbation;
     }
 
