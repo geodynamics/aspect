@@ -611,7 +611,7 @@ namespace aspect
     if ((Utilities::MPI::this_mpi_process(mpi_communicator) == 0) &&
         (opendir(output_directory.c_str()) == NULL))
       {
-        std::cerr << "\n"
+        std::cout << "\n"
                   << "-----------------------------------------------------------------------------\n"
                   << "The output directory <" << output_directory
                   << "> provided in the input file appears not to exist.\n"
