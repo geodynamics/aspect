@@ -36,11 +36,11 @@ namespace aspect
     {
       // this initial condition only makes sense if the geometry is a
       // spherical shell. verify that it is indeed
-      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*>
-              (&this->get_geometry_model())
-              != 0,
-              ExcMessage ("This initial condition can only be used if the geometry "
-                          "is a spherical shell."));
+      AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*>
+                  (&this->get_geometry_model())
+                  != 0,
+                  ExcMessage ("This initial condition can only be used if the geometry "
+                              "is a spherical shell."));
 
       const double R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
                         (this->get_geometry_model()).outer_radius();
@@ -104,11 +104,11 @@ namespace aspect
     {
       // this initial condition only makes sense if the geometry is a
       // spherical shell. verify that it is indeed
-      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*>
-              (&this->get_geometry_model())
-              != 0,
-              ExcMessage ("This initial condition can only be used if the geometry "
-                          "is a spherical shell."));
+      AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*>
+                  (&this->get_geometry_model())
+                  != 0,
+                  ExcMessage ("This initial condition can only be used if the geometry "
+                              "is a spherical shell."));
       const double
       R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (this->get_geometry_model()).inner_radius(),
       R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (this->get_geometry_model()).outer_radius();
