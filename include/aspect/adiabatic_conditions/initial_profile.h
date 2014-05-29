@@ -58,27 +58,30 @@ namespace aspect
        * adiabatic conditions along a vertical transect of the geometry based
        * on the given material model and other quantities.
        */
-      void initialize ();
+      virtual void initialize ();
 
       /**
        * Some plugins need to know whether the adiabatic conditions are
-       * already calculated. Namely all plugins that are needed to create the
-       * adiabatic conditions but themselves depedend on the adiabatic
-       * profile. Utilizing this function they may behave differently on
-       * initialization of the adiabatic conditions and at model runtime.
+       * already calculated. This is for example the case for the simple com-
+       * pressible material model, which uses the adiabatic temperature as
+       * reference temperature to calculate the density. For the calculation of
+       * the adiabatic conditions this functionality is simply switched off,
+       * because we are always on the reference profile. This way
+       * the plugin behaves differently at initialization time of the adiabatic
+       * conditions and during the main model run.
        */
-      bool is_initialized() const;
+      virtual bool is_initialized() const;
 
       /**
        * Empty update function. This class does not update the
        * adiabatic profile over time.
        */
-      void update ();
+      virtual void update ();
 
       /**
        * Return the adiabatic temperature at a given point of the domain.
        */
-      double temperature (const Point<dim> &p) const;
+      virtual double temperature (const Point<dim> &p) const;
 
       /**
        * Return the adiabatic temperature profile as a vector of values
@@ -88,12 +91,12 @@ namespace aspect
        * function takes the pre-existing size of this vector as the number of
        * depth slices.
        */
-      void get_adiabatic_temperature_profile(std::vector<double> &values) const;
+      virtual void get_adiabatic_temperature_profile(std::vector<double> &values) const;
 
       /**
        * Return the adiabatic pressure at a given point of the domain.
        */
-      double pressure (const Point<dim> &p) const;
+      virtual double pressure (const Point<dim> &p) const;
 
       private:
 
@@ -115,7 +118,8 @@ namespace aspect
          * depth at which we have computed them. The public member functions of
          * this class interpolate linearly between these points.
          */
-        std::vector<double> temperatures, pressures;
+        std::vector<double> temperatures;
+        std::vector<double> pressures;
 
         /**
          * Interval spacing between each two data points in the tables above
