@@ -1132,7 +1132,7 @@ namespace aspect
     // that our implementation of compressible materials makes sure
     // that the density does not appear on the lhs.
     return (material_model->viscosity_depends_on (MaterialModel::NonlinearDependence::any_variable)
-            == true);
+            || parameters.include_melt_transport);
   }
 }
 

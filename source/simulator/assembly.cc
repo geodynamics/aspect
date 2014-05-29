@@ -49,7 +49,7 @@ namespace aspect
         {
           StokesPreconditioner (const FiniteElement<dim> &finite_element,
                                 const Quadrature<dim>    &quadrature,
-                                const Quadrature<dim>    &face_quadrature,
+                                const Quadrature<dim-1>  &face_quadrature,
                                 const Mapping<dim>       &mapping,
                                 const UpdateFlags         update_flags,
                                 const unsigned int        n_compositional_fields);
@@ -80,7 +80,7 @@ namespace aspect
         StokesPreconditioner<dim>::
         StokesPreconditioner (const FiniteElement<dim> &finite_element,
                               const Quadrature<dim>    &quadrature,
-                              const Quadrature<dim>    &face_quadrature,
+                              const Quadrature<dim-1>  &face_quadrature,
                               const Mapping<dim>       &mapping,
                               const UpdateFlags         update_flags,
                               const unsigned int        n_compositional_fields)
@@ -88,7 +88,9 @@ namespace aspect
           finite_element_values (mapping, finite_element, quadrature,
                                  update_flags),
           finite_element_face_values (mapping, finite_element, face_quadrature,
-                                 update_flags),
+                                     (update_values  | update_quadrature_points |
+                                      update_normal_vectors | update_gradients |
+                                      update_JxW_values)),
           grads_phi_u (finite_element.dofs_per_cell),
           phi_p (finite_element.dofs_per_cell),
           temperature_values (quadrature.size()),
@@ -143,6 +145,7 @@ namespace aspect
           StokesSystem (const FiniteElement<dim> &finite_element,
                         const Mapping<dim>       &mapping,
                         const Quadrature<dim>    &quadrature,
+                        const Quadrature<dim-1>  &face_quadrature,
                         const UpdateFlags         update_flags,
                         const unsigned int        n_compositional_fields,
                         const bool                add_compaction_pressure);
@@ -164,11 +167,12 @@ namespace aspect
         StokesSystem (const FiniteElement<dim> &finite_element,
                       const Mapping<dim>       &mapping,
                       const Quadrature<dim>    &quadrature,
+                      const Quadrature<dim-1>  &face_quadrature,
                       const UpdateFlags         update_flags,
                       const unsigned int        n_compositional_fields,
                       const bool                add_compaction_pressure)
           :
-          StokesPreconditioner<dim> (finite_element, quadrature,
+          StokesPreconditioner<dim> (finite_element, quadrature, face_quadrature,
                                      mapping,
                                      update_flags, n_compositional_fields),
           phi_u (finite_element.dofs_per_cell),
@@ -868,10 +872,11 @@ namespace aspect
 
 
   template <int dim>
+  template <class fevalues>
   void
   Simulator<dim>::
   compute_material_model_input_values (const LinearAlgebra::BlockVector                    &input_solution,
-                                       const FEValues<dim>                                         &input_finite_element_values,
+                                       const fevalues                                         &input_finite_element_values,
                                        const bool                                                   compute_strainrate,
                                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const
   {
@@ -1132,8 +1137,9 @@ namespace aspect
                                 internal::Assembly::Scratch::StokesSystem<dim> &scratch,
                                 internal::Assembly::CopyData::StokesSystem<dim> &data)
   {
-    const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
-    const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+    const unsigned int dofs_per_cell   = scratch.finite_element_values.get_fe().dofs_per_cell;
+    const unsigned int n_q_points      = scratch.finite_element_values.n_quadrature_points;
+    const unsigned int n_face_q_points = scratch.finite_element_face_values.n_quadrature_points;
     const bool is_compressible = material_model->is_compressible();
 
     scratch.finite_element_values.reinit (cell);
@@ -1315,6 +1321,42 @@ namespace aspect
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
 
+    if (parameters.include_melt_transport)
+      for (unsigned int face=0; face<GeometryInfo<dim>::faces_per_cell; ++face)
+        if (cell->face(face)->at_boundary())
+          {
+            scratch.finite_element_face_values.reinit(cell, face);
+
+            typename MaterialModel::MeltInterface<dim>::MaterialModelInputs melt_inputs(n_face_q_points, parameters.n_compositional_fields);
+            typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs melt_outputs(n_face_q_points, parameters.n_compositional_fields);
+
+            compute_material_model_input_values (current_linearization_point,
+                                                 scratch.finite_element_face_values,
+                                                 rebuild_stokes_matrix,
+                                                 melt_inputs);
+            // TODO: fill other inputs
+
+            typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
+            AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
+            melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
+
+            for (unsigned int q=0; q<n_face_q_points; ++q)
+              {
+                const Tensor<1,dim>
+                gravity = gravity_model->gravity_vector (scratch.finite_element_face_values.quadrature_point(q));
+                const double density_f = melt_outputs.fluid_densities[q];
+                const double K_D = melt_outputs.permeabilities[q] / melt_outputs.fluid_viscosities[q];
+
+                for (unsigned int i = 0; i < dofs_per_cell; ++i)
+                  data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
+                                        * pressure_scaling * K_D * density_f *
+                                       (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)
+                                        * scratch.finite_element_face_values.JxW(q));
+              }
+          }
+
+
+
     //Add stabilization terms if necessary.
     if(parameters.free_surface_enabled)
       free_surface->apply_stabilization(cell, data.local_matrix);
@@ -1383,7 +1425,7 @@ namespace aspect
                           this,
                           std_cxx1x::_1),
          internal::Assembly::Scratch::
-         StokesSystem<dim> (finite_element, mapping, quadrature_formula,
+         StokesSystem<dim> (finite_element, mapping, quadrature_formula, face_quadrature_formula,
                             (update_values    |
                              update_quadrature_points  |
                              update_JxW_values |
