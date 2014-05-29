@@ -15,6 +15,39 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
    Postprocessing:
 
+*** Timestep 1:  t=1.02703e+06 seconds
+   Solving temperature system... 25 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+
+*** Timestep 2:  t=2.05405e+06 seconds
+   Solving temperature system... 18 iterations.
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+
+*** Timestep 3:  t=3.08108e+06 seconds
+   Solving temperature system... 18 iterations.
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+
+*** Timestep 4:  t=4.14732e+06 seconds
+   Solving temperature system... 18 iterations.
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+
+*** Snapshot created!
+
+*** Timestep 5:  t=5.33541e+06 seconds
+   Solving temperature system... 19 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+
 Termination requested by criterion: user request
 *** Snapshot created!
 
