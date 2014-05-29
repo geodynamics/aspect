@@ -143,15 +143,13 @@ namespace aspect
 
         /**
          * Generate a list of names of the registered plugins separated by '|'
-         * so that they can be taken as the input for Patterns::Selection. If
-         * the argument is true, then add "|all" to the list, i.e. allow a
-         * user to select all plugins at the same time.
+         * so that they can be taken as the input for Patterns::Selection.
          *
          * To make it easier to visually scan through the list of plugins,
          * names are sorted alphabetically.
          */
         static
-        std::string get_pattern_of_names (const bool allow_all = false);
+        std::string get_pattern_of_names ();
 
         /**
          * Return a string that describes all registered plugins using the
@@ -257,7 +255,7 @@ namespace aspect
       template <typename InterfaceClass>
       std::string
       PluginList<InterfaceClass>::
-      get_pattern_of_names (const bool allow_all)
+      get_pattern_of_names ()
       {
         Assert (plugins != 0,
                 ExcMessage ("No plugins registered!?"));
@@ -279,14 +277,6 @@ namespace aspect
             if (pattern_of_names.size() > 0)
               pattern_of_names += "|";
             pattern_of_names += *p;
-          }
-
-        // if requested, also add the "all" option
-        if (allow_all == true)
-          {
-            if (pattern_of_names.size() > 0)
-              pattern_of_names += "|";
-            pattern_of_names += "all";
           }
 
         return pattern_of_names;
