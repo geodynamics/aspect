@@ -35,31 +35,45 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that represents adiabatic conditions, i.e. that starts at the top
-     * of the domain and integrates pressure and temperature as we go down into
-     * depth.
-     *
-     * @note The implementation has numerous deficiencies indicated in the .cc
-     * file and may not quite compute what we want. Specifically, it doesn't
-     * currently take into account all the physical parameters it needs, and it
-     * also doesn't get gravity right with the exception of the simplest cases.
+     * A simple class that calculates adiabatic conditions. This implementation
+     * calculates a simple profile at model start time and does not update it
+     * over time. It utilizes the initial condition for compositional fields at
+     * a reference point (a generic point in the current depth) to calculate the
+     * material parameters. The gravity is assumed to be directly downward, i.e.
+     * radial in spherical models and vertical in box-shaped models.
      */
     template <int dim>
     class InitialProfile : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
       /**
-       * Constructor. Compute the adiabatic conditions along a vertical
-       * transect of the geometry based on the given material model and other
-       * quantities.
+       * Constructor. Initialize variables.
        */
       InitialProfile ();
 
-      void update ();
-
+      /**
+       * Initialization function. Because this function is called after
+       * initializing the SimulatorAccess, all of the necessary information
+       * is available to calculate the adiabatic profile. It computes the
+       * adiabatic conditions along a vertical transect of the geometry based
+       * on the given material model and other quantities.
+       */
       void initialize ();
 
+      /**
+       * Some plugins need to know whether the adiabatic conditions are
+       * already calculated. Namely all plugins that are needed to create the
+       * adiabatic conditions but themselves depedend on the adiabatic
+       * profile. Utilizing this function they may behave differently on
+       * initialization of the adiabatic conditions and at model runtime.
+       */
       bool is_initialized() const;
+
+      /**
+       * Empty update function. This class does not update the
+       * adiabatic profile over time.
+       */
+      void update ();
 
       /**
        * Return the adiabatic temperature at a given point of the domain.

@@ -85,8 +85,6 @@ namespace aspect
           in.temperature[0] = temperatures[i-1];
           in.pressure[0] = pressures[i-1];
 
-          //TODO: we look up the composition at the representative point, but we should
-          // use averaged compositional values here. Right?
           for (unsigned int c=0; c<n_compositional_fields; ++c)
             in.composition[0][c] = this->get_compositional_initial_conditions().initial_composition(representative_point, c);
 

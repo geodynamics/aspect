@@ -33,7 +33,7 @@ namespace aspect
 {
   /**
    * A namespace for the definition of things that have to do with describing
-   * the boundary values for the composition.
+   * the calculation of a reference adiabatic profile.
    *
    * @ingroup AdiabaticConditions
    */
@@ -42,7 +42,11 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * Base class for classes that describe composition boundary values.
+     * Base class for classes that describe adiabatic conditions, i.e. that
+     * starts at the top of the domain and integrate pressure and temperature
+     * as we go down into depth. There are several ways to do this (time-
+     * dependent or constant, using laterally averaged values or a reference
+     * profile), therefore we allow for user written plugins.
      *
      * @ingroup AdiabaticConditions
      */
@@ -57,14 +61,20 @@ namespace aspect
          virtual ~Interface();
 
          /**
-          * Initialization function.
+          * Initialization function. Because this function is called after
+          * initializing the SimulatorAccess, all of the necessary information
+          * is available to calculate the adiabatic profile.
           */
          virtual
          void
          initialize ();
 
          /**
-          * Initialization function.
+          * Some plugins need to know whether the adiabatic conditions are
+          * already calculated. Namely all plugins that are needed to create the
+          * adiabatic conditions but themselves depedend on the adiabatic
+          * profile. Utilizing this function they may behave differently on
+          * initialization of the adiabatic conditions and at model runtime.
           */
          virtual
          bool
@@ -73,7 +83,7 @@ namespace aspect
          /**
           * Compute the adiabatic conditions along a vertical
           * transect of the geometry based on the given material model and other
-          * quantities.
+          * quantities. This function is called at every new timestep.
           */
          virtual
          void update ();
@@ -175,7 +185,7 @@ namespace aspect
      * for a adiabatic conditions model, register it with the functions that
      * can declare their parameters and create these objects.
      *
-     * @ingroup BoundaryCompositions
+     * @ingroup AdiabaticConditions
      */
 #define ASPECT_REGISTER_ADIABATIC_CONDITIONS_MODEL(classname, name, description) \
   template class classname<2>; \
