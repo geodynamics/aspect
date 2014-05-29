@@ -41,8 +41,11 @@ namespace aspect
       // we need to compute max and min of the pressure as well, which
       // may be on the boundary of the cell, so we use an iterated
       // trapezoidal rule instead of the usual Gauss rule
+      //
+      // iterate it 'degree' times to make sure our evaluation points are
+      // in fact the support points.
       const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                               this->get_fe().base_element(this->introspection().base_elements.pressure).degree+1);
+                                               this->get_fe().base_element(this->introspection().base_elements.pressure).degree);
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
