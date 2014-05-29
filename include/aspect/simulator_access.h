@@ -40,7 +40,7 @@
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/heating_model/interface.h>
-#include <aspect/adiabatic_conditions.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 
 
@@ -378,7 +378,7 @@ namespace aspect
        * Return a pointer to the object that describes the adiabatic
        * conditions.
        */
-      const AdiabaticConditions<dim> &
+      const AdiabaticConditions::Interface<dim> &
       get_adiabatic_conditions () const;
 
       /**

@@ -311,7 +311,7 @@ namespace aspect
 
 
   template <int dim>
-  const AdiabaticConditions<dim> &
+  const AdiabaticConditions::Interface<dim> &
   SimulatorAccess<dim>::get_adiabatic_conditions () const
   {
     return *simulator->adiabatic_conditions.get();

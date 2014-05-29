@@ -60,6 +60,7 @@ namespace aspect
          * adiabatic conditions and store them so that derived classes can
          * access them.
          */
+        virtual
         void
         initialize ();
 
