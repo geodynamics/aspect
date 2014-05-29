@@ -245,14 +245,14 @@ namespace aspect
     BlockSchurPreconditioner<PreconditionerA, PreconditionerMp>::
     n_iterations_A() const
     {
-        return n_iterations_A_;
+      return n_iterations_A_;
     }
     template <class PreconditionerA, class PreconditionerMp>
     unsigned int
     BlockSchurPreconditioner<PreconditionerA, PreconditionerMp>::
     n_iterations_S() const
     {
-        return n_iterations_S_;
+      return n_iterations_S_;
     }
 
 
@@ -281,8 +281,8 @@ namespace aspect
         if (src.block(1).l2_norm() > 1e-50 || dst.block(1).l2_norm() > 1e-50)
           {
             solver.solve(stokes_preconditioner_matrix.block(1,1),
-                dst.block(1), src.block(1),
-                mp_preconditioner);
+                         dst.block(1), src.block(1),
+                         mp_preconditioner);
             n_iterations_S_ += solver_control.last_step();
           }
 
@@ -309,8 +309,8 @@ namespace aspect
         }
       else
         {
-        a_preconditioner.vmult (dst.block(0), utmp);
-        n_iterations_A_ += 1;
+          a_preconditioner.vmult (dst.block(0), utmp);
+          n_iterations_A_ += 1;
         }
     }
 
@@ -428,7 +428,7 @@ namespace aspect
         current_constraints.distribute (distributed_stokes_solution);
 
         // now rescale the pressure back to real physical units:
-        for (unsigned int i=0;i< introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
+        for (unsigned int i=0; i< introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
           {
             types::global_dof_index idx = introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
 
@@ -557,7 +557,7 @@ namespace aspect
                      distributed_stokes_rhs, preconditioner);
         its_A += preconditioner.n_iterations_A();
         its_S += preconditioner.n_iterations_S();
-     }
+      }
 
     // distribute hanging node and
     // other constraints

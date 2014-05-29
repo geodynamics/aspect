@@ -41,7 +41,7 @@ namespace aspect
     Interface<dim>::execute (Vector<float> &error_indicators) const
     {
       for (unsigned int i=0; i<error_indicators.size(); ++i)
-    	error_indicators[i] = 0;
+        error_indicators[i] = 0;
     }
 
 

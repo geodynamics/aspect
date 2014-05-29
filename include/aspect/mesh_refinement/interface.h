@@ -105,7 +105,7 @@ namespace aspect
         virtual
         void
         tag_additional_cells () const;
-      
+
         /**
          * Declare the parameters this class takes through input files.
          * Derived classes should overload this function if they actually do

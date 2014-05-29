@@ -1034,7 +1034,7 @@ namespace aspect
     /*  The stabilization term for the free surface (Kaus et. al., 2010)
      *  makes changes to the system matrix which are of the same form as
      *  boundary stresses.  If these stresses are not also added to the
-     *  system_preconditioner_matrix, then  if fails to be very good as a 
+     *  system_preconditioner_matrix, then  if fails to be very good as a
      *  preconditioner.  Instead, we just pass the system_matrix to the
      *  AMG precondition initialization so that it builds the preconditioner
      *  directly from that. However, we still need the mass matrix for the
@@ -1045,10 +1045,10 @@ namespace aspect
     Mp_preconditioner->initialize (system_preconditioner_matrix.block(1,1));
     if (parameters.free_surface_enabled)
       Amg_preconditioner->initialize (system_matrix.block(0,0),
-                                    Amg_data);
+                                      Amg_data);
     else
       Amg_preconditioner->initialize (system_preconditioner_matrix.block(0,0),
-          Amg_data);
+                                      Amg_data);
 
     rebuild_stokes_preconditioner = false;
 
@@ -1152,7 +1152,7 @@ namespace aspect
       }
 
     //Add stabilization terms if necessary.
-    if(parameters.free_surface_enabled)
+    if (parameters.free_surface_enabled)
       free_surface->apply_stabilization(cell, data.local_matrix);
 
     cell->get_dof_indices (data.local_dof_indices);
@@ -1463,7 +1463,7 @@ namespace aspect
         scratch.old_old_velocity_values);
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.current_velocity_values);
-    
+
     //get the mesh velocity, as we need to subtract it off of the advection systems
     if (parameters.free_surface_enabled)
       scratch.finite_element_values[introspection.extractors.velocities].get_function_values(free_surface->mesh_velocity,

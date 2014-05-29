@@ -409,7 +409,7 @@ namespace aspect
        */
       const std::set<types::boundary_id> &
       get_fixed_temperature_boundary_indicators () const;
-      
+
       /**
        * Return a pointer to the heating model.
        */
@@ -435,8 +435,8 @@ namespace aspect
       template <typename PostprocessorType>
       PostprocessorType *
       find_postprocessor () const;
-                                      
-       /** @} */
+
+      /** @} */
 
     private:
       /**

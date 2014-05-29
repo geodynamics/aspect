@@ -37,7 +37,7 @@ namespace aspect
     Multicomponent<dim>::
     compute_volume_fractions( const std::vector<double> &compositional_fields) const
     {
-       std::vector<double> volume_fractions( compositional_fields.size()+1);
+      std::vector<double> volume_fractions( compositional_fields.size()+1);
 
       //clip the compositional fields so they are between zero and one
       std::vector<double> x_comp = compositional_fields;
@@ -47,9 +47,9 @@ namespace aspect
       //sum the compositional fields for normalization purposes
       double sum_composition = 0.0;
       for ( unsigned int i=0; i < x_comp.size(); ++i)
-        sum_composition += x_comp[i]; 
-      
-      if(sum_composition >= 1.0)
+        sum_composition += x_comp[i];
+
+      if (sum_composition >= 1.0)
         {
           volume_fractions[0] = 0.0;  //background mantle
           for ( unsigned int i=1; i <= x_comp.size(); ++i)
@@ -62,9 +62,9 @@ namespace aspect
             volume_fractions[i] = x_comp[i-1];
         }
       return volume_fractions;
-    }    
-          
-    
+    }
+
+
 
     template <int dim>
     double
@@ -81,39 +81,39 @@ namespace aspect
       switch (viscosity_averaging)
         {
           case arithmetic:
-            {
-              for(unsigned int i=0; i< volume_fractions.size(); ++i)
-                  visc += volume_fractions[i]*viscosities[i];
-              break;
-            }
+          {
+            for (unsigned int i=0; i< volume_fractions.size(); ++i)
+              visc += volume_fractions[i]*viscosities[i];
+            break;
+          }
           case harmonic:
-            {
-              for(unsigned int i=0; i< volume_fractions.size(); ++i)
-                visc += volume_fractions[i]/(viscosities[i]);
-              visc = 1.0/visc;
-              break;
-            }
+          {
+            for (unsigned int i=0; i< volume_fractions.size(); ++i)
+              visc += volume_fractions[i]/(viscosities[i]);
+            visc = 1.0/visc;
+            break;
+          }
           case geometric:
-            {
-              double geometric_mean = 0.0;
-              for(unsigned int i=0; i < volume_fractions.size(); ++i)
-                visc += volume_fractions[i]*std::log(viscosities[i]);
-              visc = std::exp(visc);
-              break;
-            }
+          {
+            double geometric_mean = 0.0;
+            for (unsigned int i=0; i < volume_fractions.size(); ++i)
+              visc += volume_fractions[i]*std::log(viscosities[i]);
+            visc = std::exp(visc);
+            break;
+          }
           case maximum_composition:
-            {
-              const unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(), 
-                                      volume_fractions.end() )
-                                      - volume_fractions.begin());
-              visc = viscosities[i];
-              break;
-            }
+          {
+            const unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(),
+                                                                    volume_fractions.end() )
+                                                  - volume_fractions.begin());
+            visc = viscosities[i];
+            break;
+          }
           default:
-            {
-              AssertThrow( false, ExcNotImplemented() );
-              break;
-            }
+          {
+            AssertThrow( false, ExcNotImplemented() );
+            break;
+          }
         }
       return visc;
     }
@@ -131,7 +131,7 @@ namespace aspect
     double
     Multicomponent<dim>::
     reference_density () const
-    { 
+    {
       return densities[0];  //background
     }
 
@@ -155,9 +155,9 @@ namespace aspect
 
       //Arithmetic averaging of specific heats
       std::vector<double> volume_fractions = compute_volume_fractions(composition);
-      for(unsigned int i=0; i< volume_fractions.size(); ++i)
+      for (unsigned int i=0; i< volume_fractions.size(); ++i)
         cp += volume_fractions[i]*specific_heats[i];
-  
+
       return cp;
     }
 
@@ -184,10 +184,10 @@ namespace aspect
       //but for most Earth materials we hope that they do
       //not vary so much that it is a big problem.
       std::vector<double> volume_fractions = compute_volume_fractions(composition);
-      for(unsigned int i=0; i< volume_fractions.size(); ++i)
+      for (unsigned int i=0; i< volume_fractions.size(); ++i)
         k += volume_fractions[i]*thermal_conductivities[i];
 
-      return k;     
+      return k;
     }
 
     template <int dim>
@@ -210,14 +210,14 @@ namespace aspect
 
       //Arithmetic averaging of densities
       std::vector<double> volume_fractions = compute_volume_fractions(composition);
-      for(unsigned int i=0; i< volume_fractions.size(); ++i)
-      {
-        //not strictly correct if thermal expansivities are different, since we are interpreting
-        //these compositions as volume fractions, but the error introduced should not be too bad.
-        const double temperature_factor= (1.0 - thermal_expansivities[i] * (temperature - reference_T));
-        rho += volume_fractions[i]*densities[i]*temperature_factor;
-      }
- 
+      for (unsigned int i=0; i< volume_fractions.size(); ++i)
+        {
+          //not strictly correct if thermal expansivities are different, since we are interpreting
+          //these compositions as volume fractions, but the error introduced should not be too bad.
+          const double temperature_factor= (1.0 - thermal_expansivities[i] * (temperature - reference_T));
+          rho += volume_fractions[i]*densities[i]*temperature_factor;
+        }
+
       return rho;
     }
 
@@ -234,10 +234,10 @@ namespace aspect
 
       //Arithmetic averaging of thermal expansivities
       std::vector<double> volume_fractions = compute_volume_fractions(composition);
-      for(unsigned int i=0; i< volume_fractions.size(); ++i)
+      for (unsigned int i=0; i< volume_fractions.size(); ++i)
         alpha += volume_fractions[i]*thermal_expansivities[i];
 
-      return alpha;     
+      return alpha;
     }
 
 
@@ -355,11 +355,11 @@ namespace aspect
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value. Units: $W/m/K$ ");
           prm.declare_entry("Viscosity averaging scheme", "harmonic",
-                             Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
-                             "When more than one compositional field is present at a point "
-                             "with different viscosities, we need to come up with an average "
-                             "viscosity at that point.  Select a weighted harmonic, arithmetic, "
-                             "geometric, or maximum composition.");
+                            Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
+                            "When more than one compositional field is present at a point "
+                            "with different viscosities, we need to come up with an average "
+                            "viscosity at that point.  Select a weighted harmonic, arithmetic, "
+                            "geometric, or maximum composition.");
         }
         prm.leave_subsection();
       }
@@ -376,9 +376,9 @@ namespace aspect
       //simulatoraccess has been initialized here...
       unsigned int n_fields;
       prm.enter_subsection ("Compositional fields");
-        {
-          n_fields = prm.get_integer ("Number of fields");
-        }
+      {
+        n_fields = prm.get_integer ("Number of fields");
+      }
       prm.leave_subsection();
       n_fields++; //increment for background
 
@@ -387,59 +387,59 @@ namespace aspect
         prm.enter_subsection("Multicomponent");
         {
           reference_T                = prm.get_double ("Reference temperature");
- 
+
           if (prm.get ("Viscosity averaging scheme") == "Harmonic")
-            viscosity_averaging = harmonic; 
+            viscosity_averaging = harmonic;
           else if (prm.get ("Viscosity averaging scheme") == "Arithmetic")
-            viscosity_averaging = arithmetic; 
+            viscosity_averaging = arithmetic;
           else if (prm.get ("Viscosity averaging scheme") == "Geometric")
-            viscosity_averaging = geometric; 
+            viscosity_averaging = geometric;
           else if (prm.get ("Viscosity averaging scheme") == "Maximum composition")
-            viscosity_averaging = maximum_composition; 
+            viscosity_averaging = maximum_composition;
 
           std::vector<double> x_values;
 
           //Parse densities
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Densities")));
-          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields), 
+          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
                       ExcMessage("Length of density list must be either one, or n_compositional_fields+1"));
-          if(x_values.size() == 1) 
+          if (x_values.size() == 1)
             densities.assign( n_fields , x_values[0]);
           else
             densities = x_values;
 
           //Parse viscosities
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Viscosities")));
-          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields), 
+          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
                       ExcMessage("Length of viscosity list must be either one, or n_compositional_fields+1"));
-          if(x_values.size() == 1) 
+          if (x_values.size() == 1)
             viscosities.assign( n_fields , x_values[0]);
           else
             viscosities = x_values;
 
           //Parse thermal conductivities
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Thermal conductivities")));
-          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields), 
+          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
                       ExcMessage("Length of thermal conductivity list must be either one, or n_compositional_fields+1"));
-          if(x_values.size() == 1) 
+          if (x_values.size() == 1)
             thermal_conductivities.assign( n_fields , x_values[0]);
           else
             thermal_conductivities = x_values;
- 
+
           //Parse thermal expansivities
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Thermal expansivities")));
-          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields), 
+          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
                       ExcMessage("Length of thermal expansivity list must be either one, or n_compositional_fields+1"));
-          if(x_values.size() == 1) 
+          if (x_values.size() == 1)
             thermal_expansivities.assign( n_fields , x_values[0]);
           else
             thermal_expansivities = x_values;
 
           //Parse specific heats
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Specific heats")));
-          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields), 
+          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
                       ExcMessage("Length of specific heat list must be either one, or n_compositional_fields+1"));
-          if(x_values.size() == 1) 
+          if (x_values.size() == 1)
             specific_heats.assign( n_fields , x_values[0]);
           else
             specific_heats = x_values;

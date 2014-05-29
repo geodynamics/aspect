@@ -180,7 +180,7 @@ namespace aspect
          * is assumed to be the amount of background mantle.
          */
         const std::vector<double> compute_volume_fractions(
-                                    const std::vector<double> &compositional_fields) const;
+          const std::vector<double> &compositional_fields) const;
         /**
          * Reference temperature for thermal expansion.  All components use
          * the same reference_T.
@@ -193,11 +193,12 @@ namespace aspect
          * maximum_composition.  The max composition scheme simply uses the
          * viscosity of whichever field has the highes volume fraction.
          */
-        enum {
-            harmonic,
-            arithmetic,
-            geometric,
-            maximum_composition
+        enum
+        {
+          harmonic,
+          arithmetic,
+          geometric,
+          maximum_composition
         } viscosity_averaging;
 
         /**

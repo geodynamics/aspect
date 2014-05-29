@@ -1348,7 +1348,7 @@ namespace aspect
        */
       class FreeSurfaceHandler
       {
-        public: 
+        public:
           /**
            * Initialize the free surface handler, allowing it to read in
            * relevant parameters as well as giving it a reference to the
@@ -1356,7 +1356,7 @@ namespace aspect
            * changes to the internals of the simulator.
            */
           FreeSurfaceHandler(Simulator<dim> &, ParameterHandler &prm);
-          
+
           /**
            * The main execution step for the free surface implementation.
            * This computes the motion of the free surface, moves the boundary
@@ -1388,7 +1388,7 @@ namespace aspect
            * assemly of the system matrix.
            */
           void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                FullMatrix<double> &local_matrix);
+                                    FullMatrix<double> &local_matrix);
 
           /**
            * Declare parameters for the free surface handling.
@@ -1419,7 +1419,7 @@ namespace aspect
            * free surface. Called by make_constraints()
            */
           void project_normal_velocity_onto_boundary (LinearAlgebra::Vector &output);
-           
+
           /**
            * Actually solve the elliptic problem for the mesh velocitiy.  Just
            * solves a vector Laplacian equation.
@@ -1440,7 +1440,7 @@ namespace aspect
            * Reference to the Simulator object to which a FreeSurfaceHandler
            * instance belongs
            */
-          Simulator<dim> &sim; 
+          Simulator<dim> &sim;
 
           /**
            * Finite element for the free surface implementation.  Should be Q1

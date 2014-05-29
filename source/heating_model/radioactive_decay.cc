@@ -38,40 +38,39 @@ namespace aspect
     double
     RadioactiveDecay<dim>::
     specific_heating_rate (const double,
-        const double,
-        const std::vector<double> &composition,
-        const Point<dim> &position) const
+                           const double,
+                           const std::vector<double> &composition,
+                           const Point<dim> &position) const
     {
-        double time = this->get_time();
-        // we get time passed as seconds (always) but may want
-        // to reinterpret it in years
-        if (this->convert_output_to_years())
-            time/=year_in_seconds;    
-        double timedependent_radioactive_heating_rates=0;
-        if(n_radio_heating_elements!=0)
+      double time = this->get_time();
+      // we get time passed as seconds (always) but may want
+      // to reinterpret it in years
+      if (this->convert_output_to_years())
+        time/=year_in_seconds;
+      double timedependent_radioactive_heating_rates=0;
+      if (n_radio_heating_elements!=0)
         {
-            double crust_fraction=0;
-            if(is_crust_defined_by_composition)
+          double crust_fraction=0;
+          if (is_crust_defined_by_composition)
             {
-                AssertThrow(crust_composition_num < composition.size(), ExcMessage("The composition number of crust is "
-                                " larger than number of composition fields."));
-                crust_fraction=composition[crust_composition_num];
-                if(crust_fraction<0)crust_fraction=0;
-                if(crust_fraction>1)crust_fraction=1;
+              AssertThrow(crust_composition_num < composition.size(), ExcMessage("The composition number of crust is "
+                                                                                 " larger than number of composition fields."));
+              crust_fraction=composition[crust_composition_num];
+              if (crust_fraction<0)crust_fraction=0;
+              if (crust_fraction>1)crust_fraction=1;
             }
-            else
-                if((this->get_geometry_model()).depth(position) < crust_depth)
-                    crust_fraction=1.;
-                    
-            for(unsigned i_radio=0;i_radio<n_radio_heating_elements;i_radio++)
-                timedependent_radioactive_heating_rates+=
-                    radioactive_heating_rates[i_radio]
-                    *(radioactive_initial_concentrations_mantle[i_radio]*(1-crust_fraction)
-                    +radioactive_initial_concentrations_crust[i_radio]*crust_fraction)*1e-6 
-                    //1e-6 above is used to change concentration from ppm
-                    *std::pow(0.5,time/half_decay_times[i_radio]);
+          else if ((this->get_geometry_model()).depth(position) < crust_depth)
+            crust_fraction=1.;
+
+          for (unsigned i_radio=0; i_radio<n_radio_heating_elements; i_radio++)
+            timedependent_radioactive_heating_rates+=
+              radioactive_heating_rates[i_radio]
+              *(radioactive_initial_concentrations_mantle[i_radio]*(1-crust_fraction)
+                +radioactive_initial_concentrations_crust[i_radio]*crust_fraction)*1e-6
+              //1e-6 above is used to change concentration from ppm
+              *std::pow(0.5,time/half_decay_times[i_radio]);
         }
-        return (timedependent_radioactive_heating_rates);
+      return (timedependent_radioactive_heating_rates);
     }
 
     template <int dim>
@@ -82,32 +81,32 @@ namespace aspect
       {
         prm.enter_subsection("Radioactive decay");
         {
-            prm.declare_entry("Number of elements","0",
-                                Patterns::Integer(0),
-                                "Number of radioactive elements");
-            prm.declare_entry("Heating rates","",
-                                Patterns::List (Patterns::Double ()),
-                                "Heating rates of different elements (W/kg)");
-            prm.declare_entry("Half decay times","",
-                                Patterns::List (Patterns::Double (0)),
-                                "Half decay times. Units: (Seconds), or "
-                                "(Years) if set 'use years instead of seconds'.");
-            prm.declare_entry("Initial concentrations crust","",
-                                Patterns::List (Patterns::Double (0)),
-                                "Initial concentrations of different elements (ppm)");
-            prm.declare_entry("Initial concentrations mantle","",
-                                Patterns::List (Patterns::Double (0)),
-                                "Initial concentrations of different elements (ppm)");
-            prm.declare_entry("Crust defined by composition","false",
-                                Patterns::Bool(),
-                                "Whether crust defined by composition or depth");
-            prm.declare_entry("Crust depth","0",
-                                Patterns::Double(),
-                                "Depth of the crust when crust if defined by depth. "
-                                "Units: m");
-            prm.declare_entry("Crust composition number","0",
-                                Patterns::Integer(0),
-                                "Which composition field should be treated as crust");
+          prm.declare_entry("Number of elements","0",
+                            Patterns::Integer(0),
+                            "Number of radioactive elements");
+          prm.declare_entry("Heating rates","",
+                            Patterns::List (Patterns::Double ()),
+                            "Heating rates of different elements (W/kg)");
+          prm.declare_entry("Half decay times","",
+                            Patterns::List (Patterns::Double (0)),
+                            "Half decay times. Units: (Seconds), or "
+                            "(Years) if set 'use years instead of seconds'.");
+          prm.declare_entry("Initial concentrations crust","",
+                            Patterns::List (Patterns::Double (0)),
+                            "Initial concentrations of different elements (ppm)");
+          prm.declare_entry("Initial concentrations mantle","",
+                            Patterns::List (Patterns::Double (0)),
+                            "Initial concentrations of different elements (ppm)");
+          prm.declare_entry("Crust defined by composition","false",
+                            Patterns::Bool(),
+                            "Whether crust defined by composition or depth");
+          prm.declare_entry("Crust depth","0",
+                            Patterns::Double(),
+                            "Depth of the crust when crust if defined by depth. "
+                            "Units: m");
+          prm.declare_entry("Crust composition number","0",
+                            Patterns::Integer(0),
+                            "Which composition field should be treated as crust");
         }
         prm.leave_subsection();
       }
@@ -123,39 +122,39 @@ namespace aspect
       {
         prm.enter_subsection("Radioactive decay");
         {
-        
-            n_radio_heating_elements= prm.get_integer ("Number of elements");
-            radioactive_heating_rates=Utilities::string_to_double
-                (Utilities::split_string_list
-                (prm.get("Heating rates")));
-            AssertThrow(radioactive_heating_rates.size()==n_radio_heating_elements,
-                ExcMessage("Number of heating rate entities does not match "
-                           "the number of radioactive elements."));
-                           
-            half_decay_times=Utilities::string_to_double
-                (Utilities::split_string_list
-                 (prm.get("Half decay times")));
-            AssertThrow(half_decay_times.size()==n_radio_heating_elements,
-                ExcMessage("Number of half decay time entities does not match "
-                           "the number of radioactive elements."));
-                           
-            radioactive_initial_concentrations_crust=Utilities::string_to_double
-                (Utilities::split_string_list
-                (prm.get("Initial concentrations crust")));
-            AssertThrow(radioactive_initial_concentrations_crust.size()==n_radio_heating_elements,
-                        ExcMessage("Number of initial concentration entities in crust "
-                                   "does not match the number of radioactive elements."));
-                           
-            radioactive_initial_concentrations_mantle=Utilities::string_to_double
-                (Utilities::split_string_list
-                (prm.get("Initial concentrations mantle")));
-            AssertThrow(radioactive_initial_concentrations_mantle.size()==n_radio_heating_elements,
-                        ExcMessage("Number of initial concentration entities in mantle "
-                                   "does not match the number of radioactive elements."));
 
-            is_crust_defined_by_composition = prm.get_bool    ("Crust defined by composition");
-            crust_depth                     = prm.get_double  ("Crust depth");
-            crust_composition_num           = prm.get_integer ("Crust composition number");
+          n_radio_heating_elements= prm.get_integer ("Number of elements");
+          radioactive_heating_rates=Utilities::string_to_double
+                                    (Utilities::split_string_list
+                                     (prm.get("Heating rates")));
+          AssertThrow(radioactive_heating_rates.size()==n_radio_heating_elements,
+                      ExcMessage("Number of heating rate entities does not match "
+                                 "the number of radioactive elements."));
+
+          half_decay_times=Utilities::string_to_double
+                           (Utilities::split_string_list
+                            (prm.get("Half decay times")));
+          AssertThrow(half_decay_times.size()==n_radio_heating_elements,
+                      ExcMessage("Number of half decay time entities does not match "
+                                 "the number of radioactive elements."));
+
+          radioactive_initial_concentrations_crust=Utilities::string_to_double
+                                                   (Utilities::split_string_list
+                                                    (prm.get("Initial concentrations crust")));
+          AssertThrow(radioactive_initial_concentrations_crust.size()==n_radio_heating_elements,
+                      ExcMessage("Number of initial concentration entities in crust "
+                                 "does not match the number of radioactive elements."));
+
+          radioactive_initial_concentrations_mantle=Utilities::string_to_double
+                                                    (Utilities::split_string_list
+                                                     (prm.get("Initial concentrations mantle")));
+          AssertThrow(radioactive_initial_concentrations_mantle.size()==n_radio_heating_elements,
+                      ExcMessage("Number of initial concentration entities in mantle "
+                                 "does not match the number of radioactive elements."));
+
+          is_crust_defined_by_composition = prm.get_bool    ("Crust defined by composition");
+          crust_depth                     = prm.get_double  ("Crust depth");
+          crust_composition_num           = prm.get_integer ("Crust composition number");
         }
         prm.leave_subsection();
       }
@@ -178,7 +177,7 @@ namespace aspect
                                   "The crust and mantle can have different concentrations, and the crust can be "
                                   "defined either by depth or by a certain compositional field.\n"
                                   "The formula is interpreted as having units W/kg.")
-  }                                              
-}                                                
-                                                 
-                                                                
+  }
+}
+
+

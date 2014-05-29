@@ -82,10 +82,10 @@ namespace aspect
                         }
 
                   if (is_at_top == false)
-                  {
-                	(*return_value.second)(cell_index) = 0;
-                    continue;
-                  }
+                    {
+                      (*return_value.second)(cell_index) = 0;
+                      continue;
+                    }
                 }
                 fe_values.reinit (cell);
 
@@ -150,23 +150,23 @@ namespace aspect
         for (; cell!=endc; ++cell,++cell_index)
           if (cell->is_locally_owned() && (*return_value.second)(cell_index) != 0)
             if (cell->at_boundary())
-            {
-              // see if the cell is at the *top* boundary, not just any boundary
               {
-                bool is_at_top = false;
-                for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                  if (cell->at_boundary(f))
-                    if (this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
-                      {
-                    	(*return_value.second)(cell_index) -= (subtract_mean_dyn_topography
-                    			                               ?
-                    			                               average_topography
-                    			                               :
-                    			                               0);
-                        break;
-                      }
+                // see if the cell is at the *top* boundary, not just any boundary
+                {
+                  bool is_at_top = false;
+                  for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                    if (cell->at_boundary(f))
+                      if (this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
+                        {
+                          (*return_value.second)(cell_index) -= (subtract_mean_dyn_topography
+                                                                 ?
+                                                                 average_topography
+                                                                 :
+                                                                 0);
+                          break;
+                        }
+                }
               }
-            }
 
         return return_value;
       }

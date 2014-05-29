@@ -210,7 +210,7 @@ namespace aspect
         template <typename PostprocessorType>
         PostprocessorType *
         find_postprocessor () const;
-        
+
         /**
          * Declare the parameters of all known postprocessors, as well as of
          * ones this class has itself.
@@ -337,15 +337,15 @@ namespace aspect
     PostprocessorType *
     Manager<dim>::find_postprocessor () const
     {
-        for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
-             p = postprocessors.begin();
-             p != postprocessors.end(); ++p)
-        if (PostprocessorType * x = dynamic_cast<PostprocessorType *> ( (*p).get()) )
-            return x;
-        return NULL;
-    }       
-        
-    
+      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
+           p = postprocessors.begin();
+           p != postprocessors.end(); ++p)
+        if (PostprocessorType *x = dynamic_cast<PostprocessorType *> ( (*p).get()) )
+          return x;
+      return NULL;
+    }
+
+
     /**
      * Given a class name, a name, and a description for the parameter file
      * for a postprocessor, register it with the aspect::Postprocess::Manager

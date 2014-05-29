@@ -99,7 +99,7 @@ namespace aspect
     Simpler<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      for (unsigned int i=0;i<in.position.size();++i)
+      for (unsigned int i=0; i<in.position.size(); ++i)
         {
           out.viscosities[i] = eta;
           out.densities[i] = reference_rho * (1.0 - thermal_alpha * (in.temperature[i] - reference_T));

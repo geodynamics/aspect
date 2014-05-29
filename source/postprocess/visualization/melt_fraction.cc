@@ -193,7 +193,7 @@ namespace aspect
                                  "in the quadratic function that approximates "
                                  "the liquidus of peridotite. "
                                  "Units: $°C/(Pa^2)$.");
-			  prm.declare_entry ("r1", "0.5",
+              prm.declare_entry ("r1", "0.5",
                                  Patterns::Double (),
                                  "Constant in the linear function that "
                                  "approximates the clinopyroxene reaction "
@@ -210,7 +210,7 @@ namespace aspect
                                  "Exponent of the melting temperature in "
                                  "the melt fraction calculation. "
                                  "Units: non-dimensional.");
-			  prm.declare_entry ("Mass fraction cpx", "0.15",
+              prm.declare_entry ("Mass fraction cpx", "0.15",
                                  Patterns::Double (),
                                  "Mass fraction of clinopyroxene in the "
                                  "peridotite to be molten. "
@@ -233,7 +233,7 @@ namespace aspect
                                  "in the quadratic function that approximates "
                                  "the solidus of pyroxenite. "
                                  "Units: $°C/(Pa^2)$.");
-			  prm.declare_entry ("E1", "663.8",
+              prm.declare_entry ("E1", "663.8",
                                  Patterns::Double (),
                                  "Prefactor of the linear depletion term "
                                  "in the quadratic function that approximates "

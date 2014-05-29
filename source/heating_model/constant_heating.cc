@@ -30,9 +30,9 @@ namespace aspect
     double
     ConstantHeating<dim>::
     specific_heating_rate (const double,
-        const double,
-        const std::vector<double> &,
-        const Point<dim> &) const
+                           const double,
+                           const std::vector<double> &,
+                           const Point<dim> &) const
     {
       // return a constant value
       return radiogenic_heating_rate;

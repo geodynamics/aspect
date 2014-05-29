@@ -129,7 +129,7 @@ namespace aspect
       struct BlockIndices
       {
         BlockIndices (const unsigned int n_compositional_fields,
-            const bool split_vel_pressure);
+                      const bool split_vel_pressure);
 
         const unsigned int       velocities;
         const unsigned int       pressure;
@@ -302,7 +302,7 @@ namespace aspect
        * A vector that stores the names of the compositional fields that will
        * be used in the simulation.
        */
-       std::vector<std::string> composition_names;
+      std::vector<std::string> composition_names;
   };
 }
 

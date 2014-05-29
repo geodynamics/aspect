@@ -45,19 +45,19 @@ namespace aspect
         temperature_dependence = 1.0;
 
       double composition_dependence = 1.0;
-      switch(composition.size())
-      {
-        case 0:
-          return composition_dependence * temperature_dependence * eta;
-        case 1:
-          //geometric interpolation
-          return (pow(10, ((1-composition[0]) * log10(eta*temperature_dependence)
-                           + composition[0] * log10(eta*composition_viscosity_prefactor_1*temperature_dependence))));
-        default:
-          return (pow(10, ((1 - 0.5*composition[0] - 0.5*composition[1]) * log10(eta*temperature_dependence)
-                           + 0.5 * composition[0] * log10(eta*composition_viscosity_prefactor_1*temperature_dependence)
-                           + 0.5 * composition[1] * log10(eta*composition_viscosity_prefactor_2*temperature_dependence))));
-      }
+      switch (composition.size())
+        {
+          case 0:
+            return composition_dependence * temperature_dependence * eta;
+          case 1:
+            //geometric interpolation
+            return (pow(10, ((1-composition[0]) * log10(eta*temperature_dependence)
+                             + composition[0] * log10(eta*composition_viscosity_prefactor_1*temperature_dependence))));
+          default:
+            return (pow(10, ((1 - 0.5*composition[0] - 0.5*composition[1]) * log10(eta*temperature_dependence)
+                             + 0.5 * composition[0] * log10(eta*composition_viscosity_prefactor_1*temperature_dependence)
+                             + 0.5 * composition[1] * log10(eta*composition_viscosity_prefactor_2*temperature_dependence))));
+        }
     }
 
 
@@ -179,18 +179,18 @@ namespace aspect
     {
       const double depth = this->get_geometry_model().depth(position);
       double delta_C = 0.0;
-      switch(compositional_variable)
-      {
-        case 0:
-          if(depth < reaction_depth) delta_C = -compositional_fields[0];
-          break;
-        case 1:
-          if(depth < reaction_depth) delta_C = compositional_fields[0];
-          break;
-        default:
-          delta_C = 0.0;
-          break;
-      }
+      switch (compositional_variable)
+        {
+          case 0:
+            if (depth < reaction_depth) delta_C = -compositional_fields[0];
+            break;
+          case 1:
+            if (depth < reaction_depth) delta_C = compositional_fields[0];
+            break;
+          default:
+            delta_C = 0.0;
+            break;
+        }
       return delta_C;
     }
 
