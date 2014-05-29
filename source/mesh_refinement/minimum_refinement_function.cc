@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -35,8 +35,8 @@ namespace aspect
     MinimumRefinementFunction<dim>::tag_additional_cells () const
     {
       for (typename Triangulation<dim>::active_cell_iterator
-          cell = this->get_triangulation().begin_active();
-          cell != this->get_triangulation().end(); ++cell)
+           cell = this->get_triangulation().begin_active();
+           cell != this->get_triangulation().end(); ++cell)
         {
           if (cell->is_locally_owned())
             {
@@ -81,17 +81,17 @@ namespace aspect
       {
         prm.enter_subsection("Minimum refinement function");
         try
-        {
-        	min_refinement_level.parse_parameters (prm);
-        }
+          {
+            min_refinement_level.parse_parameters (prm);
+          }
         catch (...)
-        {
+          {
             std::cerr << "ERROR: FunctionParser failed to parse\n"
-                << "\t'Mesh refinement.Minimum refinement function'\n"
-                << "with expression\n"
-                << "\t'" << prm.get("Function expression") << "'";
+                      << "\t'Mesh refinement.Minimum refinement function'\n"
+                      << "with expression\n"
+                      << "\t'" << prm.get("Function expression") << "'";
             throw;
-        }
+          }
 
         prm.leave_subsection();
       }

@@ -84,8 +84,8 @@ namespace aspect
                        Patterns::Integer(0),
                        "How frequently in timesteps to output timing information. This is "
                        "generally adjusted only for debugging and timing purposes. If the "
-					   "value is set to zero it will also output timing information at the "
-					   "initiation timesteps.");
+                       "value is set to zero it will also output timing information at the "
+                       "initiation timesteps.");
 
     prm.declare_entry ("Use years in output instead of seconds", "true",
                        Patterns::Bool (),
@@ -329,9 +329,9 @@ namespace aspect
                          "velocity (although there is a force that requires the flow to "
                          "be tangential).");
       prm.declare_entry ("Free surface boundary indicators", "",
-                          Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max())),
-                          "A comma separated list of integers denoting those boundaries "
-                          "where there is a free surface. Set to nothing to disable all free surface computations.");
+                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max())),
+                         "A comma separated list of integers denoting those boundaries "
+                         "where there is a free surface. Set to nothing to disable all free surface computations.");
       prm.declare_entry ("Prescribed velocity boundary indicators", "",
                          Patterns::Map (Patterns::Anything(),
                                         Patterns::Selection(VelocityBoundaryConditions::get_names<dim>())),
@@ -768,7 +768,7 @@ namespace aspect
               nullspace_removal = typename NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::net_translation_x |
                                     NullspaceRemoval::net_translation_y | ( dim == 3 ?
-                                    NullspaceRemoval::net_translation_z : 0) );
+                                                                            NullspaceRemoval::net_translation_z : 0) );
             else if (nullspace_names[i]=="net x translation")
               nullspace_removal = typename NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::net_translation_x);
@@ -791,7 +791,7 @@ namespace aspect
               nullspace_removal = typename NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::linear_momentum_x |
                                     NullspaceRemoval::linear_momentum_y | ( dim == 3 ?
-                                    NullspaceRemoval::linear_momentum_z : 0) );
+                                                                            NullspaceRemoval::linear_momentum_z : 0) );
             else
               AssertThrow(false, ExcInternalError());
           }
@@ -842,33 +842,33 @@ namespace aspect
 
       names_of_compositional_fields = Utilities::split_string_list (prm.get("Names of fields"));
       AssertThrow ((names_of_compositional_fields.size() == 0) ||
-          (names_of_compositional_fields.size() == n_compositional_fields),
-          ExcMessage ("The length of the list of names for the compositional "
-              "fields needs to either be empty or have length equal to "
-              "the number of compositional fields."));
+                   (names_of_compositional_fields.size() == n_compositional_fields),
+                   ExcMessage ("The length of the list of names for the compositional "
+                               "fields needs to either be empty or have length equal to "
+                               "the number of compositional fields."));
 
       // check that the names use only allowed characters, are not empty strings and are unique
       for (unsigned int i=0; i<names_of_compositional_fields.size(); ++i)
-      {
-        Assert (names_of_compositional_fields[i].find_first_not_of("abcdefghijklmnopqrstuvwxyz"
-                                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                           "0123456789_") == std::string::npos,
-    	  ExcMessage("Invalid character in field " + names_of_compositional_fields[i] + ". "
-    			     "Names of compositional fields should consist of a "
-    				 "combination of letters, numbers and underscores."));
-        Assert (names_of_compositional_fields[i].size() > 0,
-          ExcMessage("Invalid name of field " + names_of_compositional_fields[i] + ". "
-            		 "Names of compositional fields need to be non-empty."));
-        for (unsigned int j=0; j<i; ++j)
-          Assert (names_of_compositional_fields[i] != names_of_compositional_fields[j],
-            ExcMessage("Names of compositional fields have to be unique! " + names_of_compositional_fields[i] +
-        		       " is used more than once."));
-      }
+        {
+          Assert (names_of_compositional_fields[i].find_first_not_of("abcdefghijklmnopqrstuvwxyz"
+                                                                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                                                     "0123456789_") == std::string::npos,
+                  ExcMessage("Invalid character in field " + names_of_compositional_fields[i] + ". "
+                             "Names of compositional fields should consist of a "
+                             "combination of letters, numbers and underscores."));
+          Assert (names_of_compositional_fields[i].size() > 0,
+                  ExcMessage("Invalid name of field " + names_of_compositional_fields[i] + ". "
+                             "Names of compositional fields need to be non-empty."));
+          for (unsigned int j=0; j<i; ++j)
+            Assert (names_of_compositional_fields[i] != names_of_compositional_fields[j],
+                    ExcMessage("Names of compositional fields have to be unique! " + names_of_compositional_fields[i] +
+                               " is used more than once."));
+        }
 
       // default names if list is empty
       if (names_of_compositional_fields.size() == 0)
-    	for (unsigned int i=0;i<n_compositional_fields;++i)
-    	  names_of_compositional_fields.push_back("C_" + Utilities::int_to_string(i+1));
+        for (unsigned int i=0; i<n_compositional_fields; ++i)
+          names_of_compositional_fields.push_back("C_" + Utilities::int_to_string(i+1));
 
       const std::vector<int> n_normalized_fields = Utilities::string_to_int
                                                    (Utilities::split_string_list(prm.get ("List of normalized fields")));

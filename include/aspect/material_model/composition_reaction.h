@@ -205,8 +205,8 @@ namespace aspect
         double compositional_delta_rho_2;
 
         /**
-         * Above this depth the compositional fields react:
-         * The first field gets converted to the second field.
+         * Above this depth the compositional fields react: The first field
+         * gets converted to the second field.
          */
         double reaction_depth;
     };

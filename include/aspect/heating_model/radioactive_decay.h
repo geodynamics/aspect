@@ -49,8 +49,8 @@ namespace aspect
         RadioactiveDecay ();
 
         /**
-         * Return the specific heating rate as calculated by 
-         * radioactive decay.
+         * Return the specific heating rate as calculated by radioactive
+         * decay.
          */
         virtual
         double
@@ -74,42 +74,42 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
-        
+
         /**
          * Number of radio active heating elements.
          */
         unsigned int                   n_radio_heating_elements;
-        
+
         /**
          * Store the half life of different elements.
          */
         std::vector<double>            half_decay_times;
-        
+
         /**
          * Store the unit heating rate of different elements.
          */
         std::vector<double>            radioactive_heating_rates;
-        
+
         /**
          * Store the initial consentration in the crust.
          */
         std::vector<double>            radioactive_initial_concentrations_crust;
-        
+
         /**
          * Store the initial consentration in the mantle.
          */
         std::vector<double>            radioactive_initial_concentrations_mantle;
-        
+
         /**
          * Whether crust defined by composition or depth
          */
         bool                           is_crust_defined_by_composition;
-        
+
         /**
          * Depth of the crust.
          */
         double                         crust_depth;
-        
+
         /**
          * Composition number of crust.
          */

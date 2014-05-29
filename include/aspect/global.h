@@ -119,8 +119,8 @@ namespace aspect
     typedef PETScWrappers::PreconditionBlockJacobi PreconditionILU;
 
     /**
-     * Typedef for the Jacobi preconditioner used for free surface
-     * velocity projection.
+     * Typedef for the Jacobi preconditioner used for free surface velocity
+     * projection.
      */
     typedef PETScWrappers::PreconditionJacobi PreconditionJacobi;
 
@@ -168,11 +168,11 @@ namespace aspect
     typedef TrilinosWrappers::PreconditionILU PreconditionILU;
 
     /**
-     * Typedef for the Jacobi preconditioner used for free surface
-     * velocity projection.
+     * Typedef for the Jacobi preconditioner used for free surface velocity
+     * projection.
      */
     typedef TrilinosWrappers::PreconditionJacobi PreconditionJacobi;
-    
+
 #endif
   }
 }

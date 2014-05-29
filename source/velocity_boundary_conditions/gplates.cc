@@ -201,7 +201,7 @@ namespace aspect
             const Tensor<1,3> spherical_position = get_grid_point_position(idx_theta,idx_phi,false);
             velocity_positions[idx_theta][idx_phi] = cartesian_surface_coordinates(spherical_position);
             (*velocity_values)[idx_theta][idx_phi] = sphere_to_cart_velocity(spherical_velocities,spherical_position)
-                                                   / cmyr_si;
+                                                     / cmyr_si;
 
             i++;
           }

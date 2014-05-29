@@ -250,18 +250,18 @@ namespace aspect
             {
               prm.enter_subsection("Function");
               try
-              {
-                function.reset (new Functions::ParsedFunction<1>(n_compositional_fields));
-                function->parse_parameters (prm);
-              }
+                {
+                  function.reset (new Functions::ParsedFunction<1>(n_compositional_fields));
+                  function->parse_parameters (prm);
+                }
               catch (...)
-              {
+                {
                   std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Initial conditions.Adiabatic.Function'\n"
-                      << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'";
+                            << "\t'Initial conditions.Adiabatic.Function'\n"
+                            << "with expression\n"
+                            << "\t'" << prm.get("Function expression") << "'";
                   throw;
-              }
+                }
 
               prm.leave_subsection();
             }

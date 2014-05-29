@@ -34,8 +34,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements a heating model based on a
-     * functional description provided in the input file.
+     * A class that implements a heating model based on a functional
+     * description provided in the input file.
      *
      * @ingroup HeatingModels
      */
@@ -49,8 +49,8 @@ namespace aspect
         Function ();
 
         /**
-         * Return the specific heating rate as calculated by the
-         * function object.
+         * Return the specific heating rate as calculated by the function
+         * object.
          */
         virtual
         double
@@ -61,8 +61,8 @@ namespace aspect
 
         /**
          * A function that is called at the beginning of each time step to
-         * allow the model to do whatever necessary. In this case the time
-         * of the function object is updated.
+         * allow the model to do whatever necessary. In this case the time of
+         * the function object is updated.
          */
         virtual
         void

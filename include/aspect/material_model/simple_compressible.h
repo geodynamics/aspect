@@ -37,8 +37,8 @@ namespace aspect
      * material parameters except that the density decays linearly with the
      * temperature and increases linearly with pressure.
      *
-     * The model is considered incompressible or compressible,
-     * depending on the compressibility.
+     * The model is considered incompressible or compressible, depending on
+     * the compressibility.
      *
      * @ingroup MaterialModels
      */

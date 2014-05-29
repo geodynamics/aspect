@@ -56,9 +56,9 @@ namespace aspect
        * Constructor.
        * @param split_vel_pressure Set to true if velocity and pressure should
        * be in separate blocks.
-       * @param composition_names The names of compositional fields that
-       * will be used in this simulation. This is used in initializing the
-       * fields of this class.
+       * @param composition_names The names of compositional fields that will
+       * be used in this simulation. This is used in initializing the fields
+       * of this class.
        */
       Introspection (const bool split_vel_pressure,
                      const std::vector<std::string> &names_of_compositional_fields);
@@ -129,7 +129,7 @@ namespace aspect
       struct BlockIndices
       {
         BlockIndices (const unsigned int n_compositional_fields,
-            const bool split_vel_pressure);
+                      const bool split_vel_pressure);
 
         const unsigned int       velocities;
         const unsigned int       pressure;
@@ -149,8 +149,8 @@ namespace aspect
        * If there are compositional fields, they are all discretized with the
        * same base element and, consequently, we only need a single index. If
        * a variable does not exist in the problem (e.g., we do not have
-       * compositional fields), then the corresponding index is set to an invalid
-       * number.
+       * compositional fields), then the corresponding index is set to an
+       * invalid number.
        */
       struct BaseElements
       {
@@ -267,19 +267,19 @@ namespace aspect
        */
 
       /**
-       * A function that gets the name of a compositional field as an
-       * input parameter and returns its index. If the name is not
-       * found, an exception is thrown.
+       * A function that gets the name of a compositional field as an input
+       * parameter and returns its index. If the name is not found, an
+       * exception is thrown.
        *
-       * @param name The name of compositional field (as specified in
-       * the input file)
+       * @param name The name of compositional field (as specified in the
+       * input file)
        */
       unsigned int
       compositional_index_for_name (const std::string &name) const;
 
       /**
-       * A function that gets the index of a compositional field as an
-       * input parameter and returns its name.
+       * A function that gets the index of a compositional field as an input
+       * parameter and returns its name.
        *
        * @param index The index of compositional field
        */
@@ -287,22 +287,22 @@ namespace aspect
       name_for_compositional_index (const unsigned int index) const;
 
       /**
-       * A function that gets the name of a compositional field as an
-       * input parameter and returns if the compositional field is
-       * used in this simulation.
+       * A function that gets the name of a compositional field as an input
+       * parameter and returns if the compositional field is used in this
+       * simulation.
        *
-       * @param name The name of compositional field (as specified in
-       * the input file)
+       * @param name The name of compositional field (as specified in the
+       * input file)
        */
       bool
       compositional_name_exists (const std::string &name) const;
 
     private:
       /**
-       * A vector that stores the names of the compositional fields
-       * that will be used in the simulation.
+       * A vector that stores the names of the compositional fields that will
+       * be used in the simulation.
        */
-       std::vector<std::string> composition_names;
+      std::vector<std::string> composition_names;
   };
 }
 

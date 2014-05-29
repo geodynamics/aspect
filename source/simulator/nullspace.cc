@@ -115,22 +115,22 @@ namespace aspect
       }
 
     if (parameters.nullspace_removal & NullspaceRemoval::net_translation_x)
-      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(0))); 
+      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(0)));
 
     if (parameters.nullspace_removal & NullspaceRemoval::net_translation_y)
       funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(1)));
 
     if (parameters.nullspace_removal & NullspaceRemoval::net_translation_z)
-    { 
-      //Only do z direction if dim == 3
-      AssertThrow( dim == 3, ExcMessage("Can't remove z translational mode in 2 dimensions"));
-      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(2)));
-    }
+      {
+        //Only do z direction if dim == 3
+        AssertThrow( dim == 3, ExcMessage("Can't remove z translational mode in 2 dimensions"));
+        funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(2)));
+      }
 
     if (funcs.size()>0)
       {
         Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-            ExcNotImplemented());
+               ExcNotImplemented());
 
         net_rotations_translations.resize(funcs.size());
         for (unsigned int i=0; i<funcs.size(); ++i)
@@ -159,9 +159,9 @@ namespace aspect
         parameters.nullspace_removal & NullspaceRemoval::net_translation )
       {
         Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-            ExcNotImplemented());
+               ExcNotImplemented());
 
-       for (unsigned int i=0; i<net_rotations_translations.size(); ++i)
+        for (unsigned int i=0; i<net_rotations_translations.size(); ++i)
           {
             // compute the magnitude of the solution vector in direction
             // of this null space vector and subtract the corresponding multiple
@@ -196,7 +196,7 @@ namespace aspect
                                              LinearAlgebra::BlockVector &tmp_distributed_stokes )
   {
     Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-        ExcNotImplemented());
+           ExcNotImplemented());
 
     // compute and remove angular momentum from velocity field, by computing
     // int rho V \cdot r_orth = omega  * int rho x^2

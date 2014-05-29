@@ -62,7 +62,7 @@ namespace aspect
           {
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                                                         pressure_values);
+                                                                                      pressure_values);
             for (unsigned int q=0; q<n_q_points; ++q)
               {
                 local_pressure_integral += pressure_values[q]*fe_values.JxW(q);

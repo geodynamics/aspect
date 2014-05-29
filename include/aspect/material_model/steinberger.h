@@ -42,8 +42,8 @@ namespace aspect
      * coefficients from tables in input files.
      *
      * The viscosity of this model is based on the paper
-     * Steinberger/Calderwood 2006: "Models of large-scale viscous flow in
-     * the Earth's mantle with contraints from mineral physics and surface
+     * Steinberger/Calderwood 2006: "Models of large-scale viscous flow in the
+     * Earth's mantle with contraints from mineral physics and surface
      * observations". The thermal conductivity is constant and the other
      * parameters are provided via lookup tables from the software PERPLEX.
      *
@@ -228,8 +228,8 @@ namespace aspect
         std::string lateral_viscosity_file_name;
 
         /**
-         * In the incompressible case we need to adjust the temperature as
-         * if there would be an adiabatic temperature increase to look up the
+         * In the incompressible case we need to adjust the temperature as if
+         * there would be an adiabatic temperature increase to look up the
          * material properties in the lookup table.
          */
         double get_corrected_temperature (const double temperature,
@@ -237,16 +237,16 @@ namespace aspect
                                           const Point<dim> &position) const;
 
         /**
-         * In the incompressible case we need to adjust the pressure as
-         * if there would be an compressible adiabatic pressure increase to
-         * look up the material properties in the lookup table. Unfortunately
-         * we do not know the adiabatic pressure profile for the incompressible
-         * case and therefore we do not know the dynamic pressure. The only
-         * currently possible solution is to use the adiabatic pressure profile
-         * only, neglecting dynamic pressure for material lookup in this case.
-         * This is essentially similar to having a depth dependent reference
-         * profile for all properties and modifying the profiles only in
-         * temperature-dimension.
+         * In the incompressible case we need to adjust the pressure as if
+         * there would be an compressible adiabatic pressure increase to look
+         * up the material properties in the lookup table. Unfortunately we do
+         * not know the adiabatic pressure profile for the incompressible case
+         * and therefore we do not know the dynamic pressure. The only
+         * currently possible solution is to use the adiabatic pressure
+         * profile only, neglecting dynamic pressure for material lookup in
+         * this case. This is essentially similar to having a depth dependent
+         * reference profile for all properties and modifying the profiles
+         * only in temperature-dimension.
          */
         double get_corrected_pressure (const double temperature,
                                        const double pressure,
