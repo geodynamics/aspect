@@ -57,9 +57,9 @@ namespace aspect
      * indicate a larger error).
      *
      * Second, after cells get flagged for coarsening and refinement (using
-     * the first approach), tag_additional_cells() is executed for each plugin.
-     * Here the plugin is free to set or clear coarsen and refine flags on
-     * any cell.
+     * the first approach), tag_additional_cells() is executed for each
+     * plugin. Here the plugin is free to set or clear coarsen and refine
+     * flags on any cell.
      *
      * Access to the data of the simulator is granted by the @p protected
      * member functions of the SimulatorAccess class, i.e., classes
@@ -94,13 +94,13 @@ namespace aspect
 
         /**
          * After cells have been marked for coarsening/refinement, apply
-         * additional criteria independent of the error estimate. The
-         * default implementation does nothing.
+         * additional criteria independent of the error estimate. The default
+         * implementation does nothing.
          *
          * This function is also called during the initial global refinement
-         * cycle. At this point you do not have access to solutions, DoFHandlers,
-         * or finite element spaces. You can check if this is the case by
-         * querying this->get_dof_handler().n_dofs() == 0.
+         * cycle. At this point you do not have access to solutions,
+         * DoFHandlers, or finite element spaces. You can check if this is the
+         * case by querying this->get_dof_handler().n_dofs() == 0.
          */
         virtual
         void

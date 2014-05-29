@@ -429,7 +429,8 @@ namespace aspect
 
 
       /**
-       * Find a pointer to a certain postprocessor, if not return a NULL pointer.
+       * Find a pointer to a certain postprocessor, if not return a NULL
+       * pointer.
        */
       template <typename PostprocessorType>
       PostprocessorType *

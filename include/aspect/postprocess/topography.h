@@ -32,9 +32,9 @@ namespace aspect
 
     /**
      * Loops over the cells vertices and determines the maximum and minimum
-     * topography of the domain, relative to the initial box height for a 
-     * box geometry model, and the initial radius for spheres or spherical
-     * shells.  Intended for use with a free surface.
+     * topography of the domain, relative to the initial box height for a box
+     * geometry model, and the initial radius for spheres or spherical shells.
+     * Intended for use with a free surface.
      * @ingroup Postprocessing
      */
 

@@ -37,7 +37,8 @@ namespace aspect
     {
       /**
        * A class derived from DataPostprocessor that takes an output vector
-       * and computes a variable that represents the internal heating rate at every point.
+       * and computes a variable that represents the internal heating rate at
+       * every point.
        *
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.

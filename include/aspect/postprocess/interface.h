@@ -201,15 +201,15 @@ namespace aspect
         execute (TableHandler &statistics);
 
         /**
-        * Go through the list of all postprocessors that have been selected in
-        * the input file (and are consequently currently active) and see if
-        * one of them has the desired type specified by the template
-        * argument. If so, return a pointer to it. If no postprocessor is
-        * active that matches the given type, return a NULL pointer.        
-        */
+         * Go through the list of all postprocessors that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the desired type specified by the template
+         * argument. If so, return a pointer to it. If no postprocessor is
+         * active that matches the given type, return a NULL pointer.
+         */
         template <typename PostprocessorType>
         PostprocessorType *
-        find_postprocessor () const;      
+        find_postprocessor () const;
         
         /**
          * Declare the parameters of all known postprocessors, as well as of
@@ -325,13 +325,12 @@ namespace aspect
     }
 
     /**
-    * Go through the list of all postprocessors that have been selected in
-    * the input file (and are consequently currently active) and see if
-    * one of them has the desired type specified by the template
-    * argument. If so, return a pointer to it. If no postprocessor is
-    * active that matches the given type, return a NULL pointer.        
-    */
-        
+     * Go through the list of all postprocessors that have been selected in
+     * the input file (and are consequently currently active) and see if one
+     * of them has the desired type specified by the template argument. If so,
+     * return a pointer to it. If no postprocessor is active that matches the
+     * given type, return a NULL pointer.
+     */
     template <int dim>
     template <typename PostprocessorType>
     inline

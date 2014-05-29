@@ -33,11 +33,11 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       /**
-       * A class derived from CellDataVectorCreator that takes an output vector
-       * and computes a variable that represents the dynamic topography. This
-       * quantity, strictly speaking, only makes sense at the surface of the
-       * domain. Thus, the value is set to zero in all the cells inside of
-       * the domain.
+       * A class derived from CellDataVectorCreator that takes an output
+       * vector and computes a variable that represents the dynamic
+       * topography. This quantity, strictly speaking, only makes sense at the
+       * surface of the domain. Thus, the value is set to zero in all the
+       * cells inside of the domain.
        *
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.
@@ -52,20 +52,18 @@ namespace aspect
            * Evaluate the solution for the dynamic topography.
            *
            * The function classes have to implement that want to output
-           * cellwise data.
-           * @return A pair of values with the following meaning:
-           *   - The first element provides the name by which this
-           *     data should be written to the output file.
-           *   - The second element is a pointer to a vector with
-           *     one element per active cell on the current processor.
-           *     Elements corresponding to active cells that are either
-           *     artificial or ghost cells (in deal.II language, see the
-           *     deal.II glossary) will be ignored but must nevertheless
-           *     exist in the returned vector. While implementations of this
-           *     function must create this vector, ownership is taken over
-           *     by the caller of this function and the caller will take
-           *     care of destroying the vector pointed to.
-           **/
+           * cellwise data. @return A pair of values with the following
+           * meaning: - The first element provides the name by which this data
+           * should be written to the output file. - The second element is a
+           * pointer to a vector with one element per active cell on the
+           * current processor. Elements corresponding to active cells that
+           * are either artificial or ghost cells (in deal.II language, see
+           * the deal.II glossary) will be ignored but must nevertheless exist
+           * in the returned vector. While implementations of this function
+           * must create this vector, ownership is taken over by the caller of
+           * this function and the caller will take care of destroying the
+           * vector pointed to.
+           */
           virtual
           std::pair<std::string, Vector<float> *>
           execute () const;
@@ -86,8 +84,8 @@ namespace aspect
 
         private:
           /**
-           * A parameter that we read from the input file that denotes
-           * whether we should subtract the mean topography or not.
+           * A parameter that we read from the input file that denotes whether
+           * we should subtract the mean topography or not.
            */
           bool subtract_mean_dyn_topography;
       };

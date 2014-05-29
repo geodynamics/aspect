@@ -49,8 +49,8 @@ namespace aspect
         RadioactiveDecay ();
 
         /**
-         * Return the specific heating rate as calculated by 
-         * radioactive decay.
+         * Return the specific heating rate as calculated by radioactive
+         * decay.
          */
         virtual
         double
