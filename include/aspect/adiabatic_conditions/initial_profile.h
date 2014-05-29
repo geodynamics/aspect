@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__adiabatic_conditions_h
-#define __aspect__adiabatic_conditions_h
+#ifndef __aspect__adiabatic_conditions_initial_profile_h
+#define __aspect__adiabatic_conditions_initial_profile_h
 
 
 #include <aspect/adiabatic_conditions/interface.h>
