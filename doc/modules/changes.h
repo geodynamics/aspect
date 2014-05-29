@@ -5,6 +5,15 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> Changed: For some modules, e.g. the selection of which postprocessor
+ * to run, "all" was an option. This may have made sense when we had 3 or 4
+ * such postprocessors, but this is no longer the case. Furthermore, not all
+ * postprocessors can always be run for a given geometry, input parameters, etc.
+ * Consequently, the option of specifying "all" has been removed. Where this
+ * applied, we have also removed the default value "all".
+ * <br>
+ * (Wolfgang Bangerth, 2014/05/29)
+ *
  * <li> Changed: Previously, we aborted the program if the specified output
  * directory did not exist. This is inconvenient for jobs that may have been
  * sitting in a queue for a long time and for which forgetting to create the
