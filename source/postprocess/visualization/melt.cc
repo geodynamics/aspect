@@ -122,7 +122,7 @@ namespace aspect
       {
         // p_f = (p_c - (1-phi) p_s ) / (phi-1)
         // or p_c if phi=1
-        // melt velocity = v_f =  v_s - K_D (nabla p_f - rho_f g) / phi  or = 0
+        // melt velocity = v_f =  v_s - K_D (nabla p_f - rho_f g) / phi  or = v_s
 
         const unsigned int n_quadrature_points = uh.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
