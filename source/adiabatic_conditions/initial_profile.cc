@@ -188,7 +188,8 @@ namespace aspect
   {
     ASPECT_REGISTER_ADIABATIC_CONDITIONS_MODEL(InitialProfile,
                                                "initial profile",
-                                               "A model in which the composition is chosen constant on "
-                                               "all the sides of a box.")
+                                               "A model in which the adiabatic profile is "
+                                               "calculated as a constant profile at the start "
+                                               "of the model run.")
   }
 }
