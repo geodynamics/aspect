@@ -1233,7 +1233,7 @@ namespace aspect
         if (parameters.include_melt_transport)
           {
             const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
-            porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
+            porosity = std::max(melt_inputs.composition[q][porosity_index],0.000);
             K_D = melt_outputs.permeabilities[q] / melt_outputs.fluid_viscosities[q];
             compressibility_f = melt_outputs.fluid_compressibilities[q];
             density_f = melt_outputs.fluid_densities[q];
