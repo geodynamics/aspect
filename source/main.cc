@@ -238,8 +238,14 @@ parse_parameters (const std::string &input_as_string,
   if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
     success = prm.read_input_from_string(input_as_string.c_str());
 
-  // broadcast the result
-  MPI_Bcast (&success, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
+  // broadcast the result. we'd like to do this with a bool
+  // data type but MPI_C_BOOL is not part of old MPI standards.
+  // so, do the broadcast in integers
+  {
+      int isuccess = (success ? 1 : 0);
+      MPI_Bcast (&isuccess, 1, MPI_INT, 0, MPI_COMM_WORLD);
+      success = (isuccess == 1);
+  }
 
   // if not success, then throw an exception: ExcMessage on processor 0,
   // QuietException on the others
