@@ -16,25 +16,58 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
    Postprocessing:
 
+*** Timestep 1:  t=1.02774e+06 seconds
+   Solving temperature system... 25 iterations.
+   Solving Stokes system... 30+5 iterations.
+
+   Postprocessing:
+
+*** Timestep 2:  t=2.10119e+06 seconds
+   Solving temperature system... 19 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+
+*** Timestep 3:  t=3.2227e+06 seconds
+   Solving temperature system... 19 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+
+*** Timestep 4:  t=4.39466e+06 seconds
+   Solving temperature system... 19 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+
+*** Snapshot created!
+
+*** Timestep 5:  t=5.61937e+06 seconds
+   Solving temperature system... 19 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+
 Termination requested by criterion: user request
 *** Snapshot created!
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      2.27s |            |
+| Total wallclock time elapsed since start    |      19.8s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |     0.271s |        12% |
-| Assemble temperature system     |         1 |     0.151s |       6.6% |
-| Build Stokes preconditioner     |         1 |     0.281s |        12% |
-| Build temperature preconditioner|         1 |    0.0143s |      0.63% |
-| Solve Stokes system             |         1 |     0.315s |        14% |
-| Solve temperature system        |         1 |   0.00145s |     0.064% |
-| Create snapshot                 |         1 |     0.958s |        42% |
-| Initialization                  |         2 |    0.0428s |       1.9% |
-| Postprocessing                  |         1 |  0.000119s |    0.0052% |
-| Setup dof systems               |         1 |     0.162s |       7.1% |
+| Assemble Stokes system          |         6 |      5.15s |        26% |
+| Assemble temperature system     |         6 |      5.93s |        30% |
+| Build Stokes preconditioner     |         2 |      3.11s |        16% |
+| Build temperature preconditioner|         6 |    0.0992s |       0.5% |
+| Solve Stokes system             |         6 |      3.22s |        16% |
+| Solve temperature system        |         6 |     0.183s |      0.92% |
+| Create snapshot                 |         2 |    0.0823s |      0.42% |
+| Initialization                  |         2 |     0.145s |      0.73% |
+| Postprocessing                  |         6 |  0.000767s |    0.0039% |
+| Setup dof systems               |         1 |      1.31s |       6.6% |
 +---------------------------------+-----------+------------+------------+
 

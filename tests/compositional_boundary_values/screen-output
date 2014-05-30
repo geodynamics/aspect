@@ -24,7 +24,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 16 iterations.
    Solving composition system 2... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.5346/10/0.4938 // 0.5188/10/1.444
@@ -34,7 +34,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 14 iterations.
    Solving composition system 2... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.6738/10/0.7991 // 0.3936/10/1.719
@@ -44,7 +44,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 14 iterations.
    Solving composition system 2... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.6932/10/1.111 // 0.3761/10/2
@@ -54,7 +54,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 14 iterations.
    Solving composition system 2... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.7261/10.13/1.426 // 0.3465/10.12/2.283
@@ -64,7 +64,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 14 iterations.
    Solving composition system 2... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.6628/10.22/1.74 // 0.4035/10.2/2.566
@@ -74,7 +74,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 14 iterations.
    Solving composition system 2... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.5183/10.34/2.054 // 0.5335/10.3/2.849
@@ -84,7 +84,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 13 iterations.
    Solving composition system 2... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.3084/10.26/2.368 // 0.7224/10.23/3.131
@@ -94,7 +94,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 13 iterations.
    Solving composition system 2... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.2433/10.28/2.681 // 0.7811/10.25/3.413
@@ -104,7 +104,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 13 iterations.
    Solving composition system 2... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.2134/10.32/2.994 // 0.808/10.29/3.695
@@ -114,7 +114,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 13 iterations.
    Solving composition system 2... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.1871/10.26/3.307 // 0.8316/10.23/3.976
@@ -127,7 +127,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 13 iterations.
    Solving composition system 2... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.1335/10.31/3.619 // 0.8799/10.28/4.257
@@ -137,7 +137,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 12 iterations.
    Solving composition system 2... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.05264/10.29/3.93 // 0.9526/10.26/4.537
@@ -147,7 +147,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 13 iterations.
    Solving composition system 2... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.03362/10.28/4.238 // 0.9697/10.25/4.815
@@ -157,7 +157,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 12 iterations.
    Solving composition system 2... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.03825/10.32/4.542 // 0.9656/10.29/5.088
@@ -167,7 +167,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 12 iterations.
    Solving composition system 2... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.03166/10.25/4.84 // 0.9715/10.23/5.356
@@ -177,7 +177,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 13 iterations.
    Solving composition system 2... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.009827/10.3/5.127 // 0.9912/10.27/5.614
@@ -186,23 +186,23 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       3.7s |            |
+| Total wallclock time elapsed since start    |      17.6s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        17 |     0.788s |        21% |
-| Assemble composition system     |        34 |     0.912s |        25% |
-| Assemble temperature system     |        17 |     0.492s |        13% |
-| Build Stokes preconditioner     |        17 |     0.753s |        20% |
-| Build composition preconditioner|        34 |    0.0516s |       1.4% |
-| Build temperature preconditioner|        17 |    0.0203s |      0.55% |
-| Solve Stokes system             |        17 |    0.0449s |       1.2% |
-| Solve composition system        |        34 |    0.0501s |       1.4% |
-| Solve temperature system        |        17 |    0.0178s |      0.48% |
-| Initialization                  |         2 |     0.091s |       2.5% |
-| Postprocessing                  |        17 |    0.0302s |      0.82% |
-| Refine mesh structure, part 1   |         1 |    0.0337s |      0.91% |
-| Refine mesh structure, part 2   |         1 |  0.000643s |     0.017% |
-| Setup dof systems               |         2 |     0.034s |      0.92% |
+| Assemble Stokes system          |        17 |      4.32s |        25% |
+| Assemble composition system     |        34 |      3.47s |        20% |
+| Assemble temperature system     |        17 |      2.18s |        12% |
+| Build Stokes preconditioner     |        17 |      2.66s |        15% |
+| Build composition preconditioner|        34 |    0.0354s |       0.2% |
+| Build temperature preconditioner|        17 |    0.0119s |     0.068% |
+| Solve Stokes system             |        17 |     0.122s |       0.7% |
+| Solve composition system        |        34 |    0.0568s |      0.32% |
+| Solve temperature system        |        17 |    0.0414s |      0.24% |
+| Initialization                  |         2 |     0.592s |       3.4% |
+| Postprocessing                  |        17 |     0.115s |      0.65% |
+| Refine mesh structure, part 1   |         1 |     0.135s |      0.77% |
+| Refine mesh structure, part 2   |         1 |   0.00133s |    0.0076% |
+| Setup dof systems               |         2 |    0.0991s |      0.56% |
 +---------------------------------+-----------+------------+------------+
 

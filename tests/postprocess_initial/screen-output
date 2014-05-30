@@ -71,7 +71,7 @@ Number of degrees of freedom: 2,694 (1,022+139+511+511+511)
    Solving composition system 1... 0 iterations.
    Solving composition system 2... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-postprocess_initial/solution-00004
@@ -82,23 +82,23 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      1.39s |            |
+| Total wallclock time elapsed since start    |      9.02s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         5 |     0.239s |        17% |
-| Assemble composition system     |        10 |     0.275s |        20% |
-| Assemble temperature system     |         5 |     0.148s |        11% |
-| Build Stokes preconditioner     |         5 |     0.235s |        17% |
-| Build composition preconditioner|        10 |    0.0133s |      0.96% |
-| Build temperature preconditioner|         5 |    0.0072s |      0.52% |
-| Solve Stokes system             |         5 |    0.0427s |       3.1% |
-| Solve composition system        |        10 |   0.00505s |      0.36% |
-| Solve temperature system        |         5 |   0.00269s |      0.19% |
-| Initialization                  |         5 |     0.113s |       8.2% |
-| Postprocessing                  |         5 |    0.0642s |       4.6% |
-| Refine mesh structure, part 1   |         3 |    0.0919s |       6.6% |
-| Refine mesh structure, part 2   |         3 |   0.00371s |      0.27% |
-| Setup dof systems               |         4 |     0.104s |       7.5% |
+| Assemble Stokes system          |         5 |      1.91s |        21% |
+| Assemble composition system     |        10 |      1.51s |        17% |
+| Assemble temperature system     |         5 |     0.848s |       9.4% |
+| Build Stokes preconditioner     |         5 |      1.36s |        15% |
+| Build composition preconditioner|        10 |    0.0262s |      0.29% |
+| Build temperature preconditioner|         5 |   0.00425s |     0.047% |
+| Solve Stokes system             |         5 |     0.136s |       1.5% |
+| Solve composition system        |        10 |   0.00879s |     0.097% |
+| Solve temperature system        |         5 |   0.00427s |     0.047% |
+| Initialization                  |         5 |      1.08s |        12% |
+| Postprocessing                  |         5 |     0.275s |         3% |
+| Refine mesh structure, part 1   |         3 |     0.775s |       8.6% |
+| Refine mesh structure, part 2   |         3 |   0.00681s |     0.076% |
+| Setup dof systems               |         4 |     0.502s |       5.6% |
 +---------------------------------+-----------+------------+------------+
 

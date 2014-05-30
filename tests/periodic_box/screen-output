@@ -54,7 +54,7 @@ Number of degrees of freedom: 7,441 (4,568+589+2,284)
 
 *** Timestep 3:  t=14648.8 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 30 iterations.
+   Solving Stokes system... 29 iterations.
 
    Postprocessing:
      RMS, max velocity: 0.388 m/year, 0.921 m/year
@@ -115,20 +115,20 @@ Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      4.73s |            |
+| Total wallclock time elapsed since start    |      25.8s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        12 |     0.552s |        12% |
-| Assemble temperature system     |        12 |      1.09s |        23% |
-| Build Stokes preconditioner     |         2 |      0.43s |       9.1% |
-| Build temperature preconditioner|        12 |    0.0941s |         2% |
-| Solve Stokes system             |        12 |      1.23s |        26% |
-| Solve temperature system        |        12 |    0.0539s |       1.1% |
-| Initialization                  |         3 |    0.0778s |       1.6% |
-| Postprocessing                  |        11 |    0.0526s |       1.1% |
-| Refine mesh structure, part 1   |         2 |     0.545s |        12% |
-| Refine mesh structure, part 2   |         2 |   0.00633s |      0.13% |
-| Setup dof systems               |         3 |     0.318s |       6.7% |
+| Assemble Stokes system          |        12 |      4.84s |        19% |
+| Assemble temperature system     |        12 |      5.77s |        22% |
+| Build Stokes preconditioner     |         2 |      2.53s |       9.8% |
+| Build temperature preconditioner|        12 |     0.125s |      0.49% |
+| Solve Stokes system             |        12 |      2.78s |        11% |
+| Solve temperature system        |        12 |     0.125s |      0.49% |
+| Initialization                  |         3 |     0.745s |       2.9% |
+| Postprocessing                  |        11 |     0.241s |      0.93% |
+| Refine mesh structure, part 1   |         2 |      3.64s |        14% |
+| Refine mesh structure, part 2   |         2 |    0.0247s |     0.096% |
+| Setup dof systems               |         3 |      2.07s |         8% |
 +---------------------------------+-----------+------------+------------+
 
