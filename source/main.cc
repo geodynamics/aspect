@@ -281,15 +281,14 @@ int main (int argc, char *argv[])
   try
     {
       deallog.depth_console(0);
+      if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+        print_aspect_header(std::cout);
 
       if (argc < 2)
         {
-          // print header and usage info only on processor 0
+          // print usage info only on processor 0
           if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
-            {
-              print_aspect_header(std::cout);
-              std::cout << "\tUsage: ./aspect <parameter_file.prm>" << std::endl;
-            }
+            std::cout << "\tUsage: ./aspect <parameter_file.prm>" << std::endl;
           return 2;
         }
 

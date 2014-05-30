@@ -156,7 +156,9 @@ namespace aspect
     else
       log_file_stream.open((parameters.output_directory + "log.txt").c_str());
 
-    print_aspect_header(pcout);
+    // we already printed the header to the screen, so here we just dump it
+    // into the logfile.
+    print_aspect_header(log_file_stream);
 
     computing_timer.enter_section("Initialization");
 
