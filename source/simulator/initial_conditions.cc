@@ -66,10 +66,8 @@ namespace aspect
     // we need to track whether we need to normalize the totality of fields
     bool normalize_composition = false;
 
-//TODO: The code here is confusing. We should be using something
-// like the AdevctionField class instead of just a single
-// integer 'n', and iterate over its components. in any case, we
-// should probably ask AdvectionField how many fields there actually are
+    //TODO: it would be great if we had a cleaner way than iterating to 1+n_fields.
+    // Additionally, the n==1 logic for normalization at the bottom is not pretty.
     for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
       {
         AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
