@@ -3,7 +3,7 @@
 --     . version 1.1.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
---     . using Trilinos
+--     . using PETSc
 -----------------------------------------------------------------------------
 
 Number of active cells: 1 (on 1 levels)
@@ -14,31 +14,31 @@ Number of degrees of freedom: 49 (18+4+9+9+9)
    Solving composition system 1... 0 iterations.
    Solving composition system 2... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6 iterations.
+   Solving Stokes system... 7 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_names/solution-00000
+     Writing graphical output:  output-petsc_composition_names/solution-00000
      Compositions min/max/mass: 0/0/0 // 0/0/0
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |    0.0662s |            |
+| Total wallclock time elapsed since start    |     0.194s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |   0.00123s |       1.9% |
-| Assemble composition system     |         2 |   0.00756s |        11% |
-| Assemble temperature system     |         1 |    0.0032s |       4.8% |
-| Build Stokes preconditioner     |         1 |   0.00498s |       7.5% |
-| Build composition preconditioner|         2 |  0.000228s |      0.34% |
-| Build temperature preconditioner|         1 |  0.000388s |      0.59% |
-| Solve Stokes system             |         1 |   0.00199s |         3% |
-| Solve composition system        |         2 |  0.000572s |      0.86% |
-| Solve temperature system        |         1 |  0.000387s |      0.58% |
-| Initialization                  |         2 |    0.0349s |        53% |
-| Postprocessing                  |         1 |    0.0023s |       3.5% |
-| Setup dof systems               |         1 |   0.00547s |       8.3% |
+| Assemble Stokes system          |         1 |   0.00551s |       2.8% |
+| Assemble composition system     |         2 |    0.0328s |        17% |
+| Assemble temperature system     |         1 |    0.0199s |        10% |
+| Build Stokes preconditioner     |         1 |    0.0134s |       6.9% |
+| Build composition preconditioner|         2 |  0.000357s |      0.18% |
+| Build temperature preconditioner|         1 |   0.00038s |       0.2% |
+| Solve Stokes system             |         1 |    0.0477s |        25% |
+| Solve composition system        |         2 |   0.00298s |       1.5% |
+| Solve temperature system        |         1 |   0.00209s |       1.1% |
+| Initialization                  |         2 |    0.0328s |        17% |
+| Postprocessing                  |         1 |   0.00423s |       2.2% |
+| Setup dof systems               |         1 |    0.0257s |        13% |
 +---------------------------------+-----------+------------+------------+
 
