@@ -210,6 +210,65 @@ expand_backslashes (const std::string &filename)
 }
 
 
+/**
+ * An exception that we can silently treat in main(). Used in read_parameters().
+ */
+class QuietException {};
+
+/**
+ * Let ParameterHandler parse the input file, here given as a string.
+ * Since ParameterHandler unconditionally writes to the screen when it
+ * finds something it doesn't like, we get massive amounts of output
+ * in parallel computations since every processor writes the same
+ * stuff to screen. To avoid this, let processor 0 parse the input
+ * first and, if necessary, produce its output. Only if this
+ * succeeds, also let the other processors read their input.
+ *
+ * In case of an error, we need to abort all processors without them
+ * having read their data. This is done by throwing an exception of the
+ * special class QuietException that we can catch in main() and terminate
+ * the program quietly without generating other output.
+ */
+void
+parse_parameters (const std::string &input_as_string,
+                  dealii::ParameterHandler  &prm)
+{
+  // try reading on processor 0
+  bool success = true;
+  if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+    success = prm.read_input_from_string(input_as_string.c_str());
+
+  // broadcast the result. we'd like to do this with a bool
+  // data type but MPI_C_BOOL is not part of old MPI standards.
+  // so, do the broadcast in integers
+  {
+      int isuccess = (success ? 1 : 0);
+      MPI_Bcast (&isuccess, 1, MPI_INT, 0, MPI_COMM_WORLD);
+      success = (isuccess == 1);
+  }
+
+  // if not success, then throw an exception: ExcMessage on processor 0,
+  // QuietException on the others
+  if (success == false)
+    {
+      if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+        {
+          AssertThrow(false, dealii::ExcMessage ("Invalid input parameter file."));
+        }
+      else
+        throw QuietException();
+    }
+
+  // otherwise, processor 0 was ok reading the data, so we can expect the
+  // other processors will be ok as well
+  if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) != 0)
+    {
+      success = prm.read_input_from_string(input_as_string.c_str());
+      AssertThrow(success, dealii::ExcMessage ("Invalid input parameter file."));
+    }
+}
+
+
 int main (int argc, char *argv[])
 {
   using namespace dealii;
@@ -222,38 +281,15 @@ int main (int argc, char *argv[])
   try
     {
       deallog.depth_console(0);
-
-      // print some status messages at the top
       if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
-        {
-          const int n_tasks = Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
-
-          std::cout << "-----------------------------------------------------------------------------\n"
-                    << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
-#ifdef DEBUG
-                    << "--     . running in DEBUG mode\n"
-#else
-                    << "--     . running in OPTIMIZED mode\n"
-#endif
-                    << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
-#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
-          const int n_threads = multithread_info.n_threads();
-          if (n_threads>1)
-            std::cout << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
-#endif
-#ifdef USE_PETSC
-          std::cout << "--     . using PETSc\n";
-#else
-          std::cout << "--     . using Trilinos\n";
-#endif
-          std::cout << "-----------------------------------------------------------------------------\n"
-                    << std::endl;
-        }
+        print_aspect_header(std::cout);
 
       if (argc < 2)
         {
-          std::cout << "\tUsage: ./aspect <parameter_file.prm>" << std::endl;
-          return 0;
+          // print usage info only on processor 0
+          if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+            std::cout << "\tUsage: ./aspect <parameter_file.prm>" << std::endl;
+          return 2;
         }
 
       // see which parameter file to use
@@ -266,7 +302,9 @@ int main (int argc, char *argv[])
           {
             const std::string message = (std::string("Input parameter file <")
                                          + parameter_filename + "> not found.");
-            AssertThrow(false, ExcMessage (message));
+            if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+              AssertThrow(false, ExcMessage (message));
+            return 3;
           }
       }
       // now that we know that the file can, at least in principle, be read
@@ -289,15 +327,13 @@ int main (int argc, char *argv[])
       // is only read at run-time
       ParameterHandler prm;
 
-      const std::string input_file = expand_backslashes (parameter_filename);
+      const std::string input_as_string = expand_backslashes (parameter_filename);
       switch (dim)
         {
           case 2:
           {
             aspect::Simulator<2>::declare_parameters(prm);
-
-            const bool success = prm.read_input_from_string(input_file.c_str());
-            AssertThrow(success, ExcMessage ("Invalid input parameter file."));
+            parse_parameters (input_as_string, prm);
 
             aspect::Simulator<2> flow_problem(MPI_COMM_WORLD, prm);
             flow_problem.run();
@@ -308,9 +344,7 @@ int main (int argc, char *argv[])
           case 3:
           {
             aspect::Simulator<3>::declare_parameters(prm);
-
-            const bool success = prm.read_input_from_string(input_file.c_str());
-            AssertThrow(success, ExcMessage ("Invalid input parameter file."));
+            parse_parameters (input_as_string, prm);
 
             aspect::Simulator<3> flow_problem(MPI_COMM_WORLD, prm);
             flow_problem.run();
@@ -337,6 +371,14 @@ int main (int argc, char *argv[])
 
       return 1;
     }
+  catch (QuietException &)
+  {
+      // quitly treat an exception used on processors other than
+      // root when we already know that processor 0 will generate
+      // an exception. we do this to avoid creating too much
+      // (duplicate) screen output
+      return 1;
+  }
   catch (...)
     {
       std::cerr << std::endl << std::endl

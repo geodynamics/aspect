@@ -38,6 +38,21 @@ namespace aspect
 
     template <int dim>
     void
+    Interface<dim>::execute (Vector<float> &error_indicators) const
+    {
+      for (unsigned int i=0; i<error_indicators.size(); ++i)
+        error_indicators[i] = 0;
+    }
+
+
+    template <int dim>
+    void
+    Interface<dim>::tag_additional_cells () const
+    {}
+
+
+    template <int dim>
+    void
     Interface<dim>::declare_parameters (ParameterHandler &)
     {}
 
@@ -193,6 +208,73 @@ namespace aspect
             Assert (false, ExcNotImplemented());
         }
     }
+
+
+    template <int dim>
+    void
+    Manager<dim>::tag_additional_cells () const
+    {
+      Assert (mesh_refinement_objects.size() > 0, ExcInternalError());
+
+      // call the tag_additional_cells() functions of all
+      // plugins we have here in turns.
+      unsigned int index = 0;
+      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
+           p = mesh_refinement_objects.begin();
+           p != mesh_refinement_objects.end(); ++p, ++index)
+        {
+          try
+            {
+              (*p)->tag_additional_cells ();
+            }
+
+          // plugins that throw exceptions usually do not result in
+          // anything good because they result in an unwinding of the stack
+          // and, if only one processor triggers an exception, the
+          // destruction of objects often causes a deadlock. thus, if
+          // an exception is generated, catch it, print an error message,
+          // and abort the program
+          catch (std::exception &exc)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running mesh refinement plugin <"
+                        << typeid(**p).name()
+                        << ">: " << std::endl
+                        << exc.what() << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              // terminate the program!
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
+          catch (...)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running mesh refinement plugin <"
+                        << typeid(**p).name()
+                        << ">: " << std::endl;
+              std::cerr << "Unknown exception!" << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              // terminate the program!
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
+        }
+    }
+
+
+
 
 
 // -------------------------------- Deal with registering plugins and automating

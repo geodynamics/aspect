@@ -132,8 +132,7 @@ namespace aspect
       solution_names.push_back ("p");
       solution_names.push_back ("T");
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-        solution_names.push_back ("C_" + boost::lexical_cast<std::string>(c+1));
-
+        solution_names.push_back (this->introspection().name_for_compositional_index(c));
 
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
       interpretation (dim,
@@ -578,7 +577,7 @@ namespace aspect
           // finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors
           const std::string pattern_of_names
-            = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names (true);
+            = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
           prm.declare_entry("List of output variables",
                             "",
                             Patterns::MultipleSelection(pattern_of_names),

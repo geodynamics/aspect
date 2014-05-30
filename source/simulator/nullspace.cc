@@ -25,7 +25,7 @@
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/constraint_matrix.h>
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
 #include <deal.II/lac/solver_cg.h>
 #else
 #include <deal.II/lac/trilinos_solver.h>
@@ -100,7 +100,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::setup_nullspace_removal()
   {
-    if (parameters.nullspace_removal & NullspaceRemoval::translational_momentum)
+    if (parameters.nullspace_removal & NullspaceRemoval::linear_momentum)
       AssertThrow(false, ExcNotImplemented());
 
     std::vector<std_cxx1x::shared_ptr<TensorFunction<1,dim> > > funcs;
@@ -114,16 +114,23 @@ namespace aspect
             funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Rotation<dim>(a)));
       }
 
-    if (parameters.nullspace_removal & NullspaceRemoval::net_translation)
+    if (parameters.nullspace_removal & NullspaceRemoval::net_translation_x)
+      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(0)));
+
+    if (parameters.nullspace_removal & NullspaceRemoval::net_translation_y)
+      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(1)));
+
+    if (parameters.nullspace_removal & NullspaceRemoval::net_translation_z)
       {
-        for (unsigned int a=0; a<dim; ++a)
-          funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(a)));
+        //Only do z direction if dim == 3
+        AssertThrow( dim == 3, ExcMessage("Can't remove z translational mode in 2 dimensions"));
+        funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(2)));
       }
 
     if (funcs.size()>0)
       {
         Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-            ExcNotImplemented());
+               ExcNotImplemented());
 
         net_rotations_translations.resize(funcs.size());
         for (unsigned int i=0; i<funcs.size(); ++i)
@@ -149,12 +156,12 @@ namespace aspect
                                         LinearAlgebra::BlockVector &tmp_distributed_stokes)
   {
     if (parameters.nullspace_removal & NullspaceRemoval::net_rotation ||
-        parameters.nullspace_removal & NullspaceRemoval::net_translation)
+        parameters.nullspace_removal & NullspaceRemoval::net_translation )
       {
         Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-            ExcNotImplemented());
+               ExcNotImplemented());
 
-       for (unsigned int i=0; i<net_rotations_translations.size(); ++i)
+        for (unsigned int i=0; i<net_rotations_translations.size(); ++i)
           {
             // compute the magnitude of the solution vector in direction
             // of this null space vector and subtract the corresponding multiple
@@ -189,7 +196,7 @@ namespace aspect
                                              LinearAlgebra::BlockVector &tmp_distributed_stokes )
   {
     Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-        ExcNotImplemented());
+           ExcNotImplemented());
 
     // compute and remove angular momentum from velocity field, by computing
     // int rho V \cdot r_orth = omega  * int rho x^2
@@ -222,10 +229,10 @@ namespace aspect
                                                                   parameters.n_compositional_fields);
           for (unsigned int i=0; i< q_points.size(); i++)
             {
-              in.pressure[i] = fe_vals[i][dim];
-              in.temperature[i] = fe_vals[i][dim+1];
+              in.pressure[i] = fe_vals[i][introspection.component_indices.pressure];
+              in.temperature[i] = fe_vals[i][introspection.component_indices.temperature];
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                in.composition[i][c] = fe_vals[i][dim+2+c];
+                in.composition[i][c] = fe_vals[i][introspection.component_indices.compositional_fields[c]];
               in.position[i] = q_points[i];
 
             }

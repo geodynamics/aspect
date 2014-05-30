@@ -94,9 +94,18 @@ namespace aspect
       prm.enter_subsection("Boundary velocity model");
       {
         prm.enter_subsection("Function");
-        {
-          boundary_velocity_function.parse_parameters (prm);
-        }
+        try
+          {
+            boundary_velocity_function.parse_parameters (prm);
+          }
+        catch (...)
+          {
+            std::cerr << "ERROR: FunctionParser failed to parse\n"
+                      << "\t'Boundary velocity model.Function'\n"
+                      << "with expression\n"
+                      << "\t'" << prm.get("Function expression") << "'";
+            throw;
+          }
         prm.leave_subsection();
       }
       prm.leave_subsection();

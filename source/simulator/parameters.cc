@@ -25,14 +25,16 @@
 #include <deal.II/base/parameter_handler.h>
 
 #include <dirent.h>
+#include <stdlib.h>
 
 
 namespace aspect
 {
   template <int dim>
-  Simulator<dim>::Parameters::Parameters (ParameterHandler &prm)
+  Simulator<dim>::Parameters::Parameters (ParameterHandler &prm,
+                                          MPI_Comm mpi_communicator)
   {
-    parse_parameters (prm);
+    parse_parameters (prm, mpi_communicator);
   }
 
 
@@ -83,7 +85,9 @@ namespace aspect
     prm.declare_entry ("Timing output frequency", "100",
                        Patterns::Integer(0),
                        "How frequently in timesteps to output timing information. This is "
-                       "generally adjusted only for debugging and timing purposes.");
+                       "generally adjusted only for debugging and timing purposes. If the "
+                       "value is set to zero it will also output timing information at the "
+                       "initiation timesteps.");
 
     prm.declare_entry ("Use years in output instead of seconds", "true",
                        Patterns::Bool (),
@@ -326,11 +330,15 @@ namespace aspect
                          "no external forces act to prescribe a particular tangential "
                          "velocity (although there is a force that requires the flow to "
                          "be tangential).");
+      prm.declare_entry ("Free surface boundary indicators", "",
+                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max())),
+                         "A comma separated list of integers denoting those boundaries "
+                         "where there is a free surface. Set to nothing to disable all free surface computations.");
       prm.declare_entry ("Prescribed velocity boundary indicators", "",
                          Patterns::Map (Patterns::Anything(),
                                         Patterns::Selection(VelocityBoundaryConditions::get_names<dim>())),
                          "A comma separated list denoting those boundaries "
-                         "on which the velocity is tangential but prescribed, i.e., where "
+                         "on which the velocity is prescribed, i.e., where unknown "
                          "external forces act to prescribe a particular velocity. This is "
                          "often used to prescribe a velocity that equals that of "
                          "overlying plates."
@@ -339,7 +347,7 @@ namespace aspect
                          "given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where "
                          "each key must be a valid boundary indicator (which is an integer) "
                          "and each value must be one of the currently implemented boundary "
-                         "velocity models. selector is an optional string given as a subset "
+                         "velocity models. ``selector'' is an optional string given as a subset "
                          "of the letters 'xyz' that allows you to apply the boundary conditions "
                          "only to the components listed. As an example, '1 y: function' applies "
                          "the type 'function' to the y component on boundary 1. Without a selector "
@@ -356,7 +364,10 @@ namespace aspect
                          "current parameter section.");
 
       prm.declare_entry ("Remove nullspace", "",
-                         Patterns::MultipleSelection("net rotation|net translation|angular momentum|translational momentum"),
+                         Patterns::MultipleSelection("net rotation|angular momentum|"
+                                                     "net translation|linear momentum|"
+                                                     "net x translation|net y translation|net z translation|"
+                                                     "linear x momentum|linear y momentum|linear z momentum"),
                          "A selection of operations to remove certain parts of the nullspace from "
                          "the velocity after solving. For some geometries and certain boundary conditions "
                          "the velocity field is not uniquely determined but contains free translations "
@@ -526,6 +537,9 @@ namespace aspect
                          Patterns::Integer (0),
                          "The number of fields that will be advected along with the flow field, excluding "
                          "velocity, pressure and temperature.");
+      prm.declare_entry ("Names of fields", "",
+                         Patterns::List(Patterns::Anything()),
+                         "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("List of normalized fields", "",
                          Patterns::List (Patterns::Integer(0)),
                          "A list of integers smaller than or equal to the number of "
@@ -538,6 +552,9 @@ namespace aspect
                          "divided by this maximum.");
     }
     prm.leave_subsection ();
+
+    //Also declare the parameters that the FreeSurfaceHandler needs
+    FreeSurfaceHandler::declare_parameters( prm );
   }
 
 
@@ -545,7 +562,8 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::Parameters::
-  parse_parameters (ParameterHandler &prm)
+  parse_parameters (ParameterHandler &prm,
+                    MPI_Comm mpi_communicator)
   {
     // first, make sure that the ParameterHandler parser agrees
     // with the code in main() about the meaning of the "Dimension"
@@ -588,21 +606,28 @@ namespace aspect
     else if (output_directory[output_directory.size()-1] != '/')
       output_directory += "/";
 
-    // verify that the output directory actually exists. trying to
-    // write to a non-existing output directory will eventually
-    // produce an error but one not easily understood. since
-    // this is no error where a nicely formatted error message
-    // with a backtrace is likely very useful, just print an
-    // error and exit
-    if (opendir(output_directory.c_str()) == NULL)
+    // verify that the output directory actually exists. if it doesn't, create
+    // it on processor zero
+    if ((Utilities::MPI::this_mpi_process(mpi_communicator) == 0) &&
+        (opendir(output_directory.c_str()) == NULL))
       {
-        std::cerr << "\n"
+        std::cout << "\n"
                   << "-----------------------------------------------------------------------------\n"
                   << "The output directory <" << output_directory
-                  << "> provided in the input file appears not to exist!\n"
-                  << "-----------------------------------------------------------------------------\n"
+                  << "> provided in the input file appears not to exist.\n"
+                  << "ASPECT will create it for you.\n"
+                  << "-----------------------------------------------------------------------------\n\n"
                   << std::endl;
-        std::exit (1);
+
+        // create the directory. we could call the 'mkdir()' function directly, but
+        // this can only create a single level of directories. if someone has specified
+        // a nested subdirectory as output directory, and if multiple parts of the path
+        // do not exist, this would fail. working around this is easiest by just calling
+        // 'mkdir -p' from the command line
+        const int error = system ((std::string("mkdir -p '") + output_directory + "'").c_str());
+
+        AssertThrow (error==0,
+                     ExcMessage (std::string("Can't create the output directory at <") + output_directory + ">"));
       }
 
     surface_pressure              = prm.get_double ("Surface pressure");
@@ -686,6 +711,15 @@ namespace aspect
         = std::set<types::boundary_id> (x_tangential_velocity_boundary_indicators.begin(),
                                         x_tangential_velocity_boundary_indicators.end());
 
+      const std::vector<int> x_free_surface_boundary_indicators
+        = Utilities::string_to_int
+          (Utilities::split_string_list
+           (prm.get ("Free surface boundary indicators")));
+      free_surface_boundary_indicators
+        = std::set<types::boundary_id> (x_free_surface_boundary_indicators.begin(),
+                                        x_free_surface_boundary_indicators.end());
+
+      free_surface_enabled = !free_surface_boundary_indicators.empty();
 
       const std::vector<std::string> x_prescribed_velocity_boundary_indicators
         = Utilities::split_string_list
@@ -737,15 +771,37 @@ namespace aspect
             if (nullspace_names[i]=="net rotation")
               nullspace_removal = typename NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::net_rotation);
-            else if (nullspace_names[i]=="net translation")
-              nullspace_removal = typename NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::net_translation);
             else if (nullspace_names[i]=="angular momentum")
               nullspace_removal = typename NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::angular_momentum);
-            else if (nullspace_names[i]=="translational momentum")
+            else if (nullspace_names[i]=="net translation")
+              nullspace_removal = typename NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::net_translation_x |
+                                    NullspaceRemoval::net_translation_y | ( dim == 3 ?
+                                                                            NullspaceRemoval::net_translation_z : 0) );
+            else if (nullspace_names[i]=="net x translation")
+              nullspace_removal = typename NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::net_translation_x);
+            else if (nullspace_names[i]=="net y translation")
+              nullspace_removal = typename NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::net_translation_y);
+            else if (nullspace_names[i]=="net z translation")
+              nullspace_removal = typename NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::net_translation_z);
+            else if (nullspace_names[i]=="linear x momentum")
               nullspace_removal = typename       NullspaceRemoval::Kind(
-                                    nullspace_removal | NullspaceRemoval::translational_momentum);
+                                    nullspace_removal | NullspaceRemoval::linear_momentum_x);
+            else if (nullspace_names[i]=="linear y momentum")
+              nullspace_removal = typename       NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::linear_momentum_y);
+            else if (nullspace_names[i]=="linear z momentum")
+              nullspace_removal = typename       NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::linear_momentum_z);
+            else if (nullspace_names[i]=="linear momentum")
+              nullspace_removal = typename NullspaceRemoval::Kind(
+                                    nullspace_removal | NullspaceRemoval::linear_momentum_x |
+                                    NullspaceRemoval::linear_momentum_y | ( dim == 3 ?
+                                                                            NullspaceRemoval::linear_momentum_z : 0) );
             else
               AssertThrow(false, ExcInternalError());
           }
@@ -793,6 +849,37 @@ namespace aspect
     prm.enter_subsection ("Compositional fields");
     {
       n_compositional_fields = prm.get_integer ("Number of fields");
+
+      names_of_compositional_fields = Utilities::split_string_list (prm.get("Names of fields"));
+      AssertThrow ((names_of_compositional_fields.size() == 0) ||
+                   (names_of_compositional_fields.size() == n_compositional_fields),
+                   ExcMessage ("The length of the list of names for the compositional "
+                               "fields needs to either be empty or have length equal to "
+                               "the number of compositional fields."));
+
+      // check that the names use only allowed characters, are not empty strings and are unique
+      for (unsigned int i=0; i<names_of_compositional_fields.size(); ++i)
+        {
+          Assert (names_of_compositional_fields[i].find_first_not_of("abcdefghijklmnopqrstuvwxyz"
+                                                                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                                                     "0123456789_") == std::string::npos,
+                  ExcMessage("Invalid character in field " + names_of_compositional_fields[i] + ". "
+                             "Names of compositional fields should consist of a "
+                             "combination of letters, numbers and underscores."));
+          Assert (names_of_compositional_fields[i].size() > 0,
+                  ExcMessage("Invalid name of field " + names_of_compositional_fields[i] + ". "
+                             "Names of compositional fields need to be non-empty."));
+          for (unsigned int j=0; j<i; ++j)
+            Assert (names_of_compositional_fields[i] != names_of_compositional_fields[j],
+                    ExcMessage("Names of compositional fields have to be unique! " + names_of_compositional_fields[i] +
+                               " is used more than once."));
+        }
+
+      // default names if list is empty
+      if (names_of_compositional_fields.size() == 0)
+        for (unsigned int i=0; i<n_compositional_fields; ++i)
+          names_of_compositional_fields.push_back("C_" + Utilities::int_to_string(i+1));
+
       const std::vector<int> n_normalized_fields = Utilities::string_to_int
                                                    (Utilities::split_string_list(prm.get ("List of normalized fields")));
       normalized_fields = std::vector<unsigned int> (n_normalized_fields.begin(),
@@ -821,6 +908,7 @@ namespace aspect
     CompositionalInitialConditions::declare_parameters<dim> (prm);
     BoundaryTemperature::declare_parameters<dim> (prm);
     BoundaryComposition::declare_parameters<dim> (prm);
+    AdiabaticConditions::declare_parameters<dim> (prm);
     VelocityBoundaryConditions::declare_parameters<dim> (prm);
   }
 }
@@ -830,9 +918,11 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template Simulator<dim>::Parameters::Parameters (ParameterHandler &prm); \
+  template Simulator<dim>::Parameters::Parameters (ParameterHandler &prm, \
+                                                   MPI_Comm mpi_communicator); \
   template void Simulator<dim>::Parameters::declare_parameters (ParameterHandler &prm); \
-  template void Simulator<dim>::Parameters::parse_parameters(ParameterHandler &prm); \
+  template void Simulator<dim>::Parameters::parse_parameters(ParameterHandler &prm, \
+                                                             MPI_Comm mpi_communicator); \
   template void Simulator<dim>::declare_parameters (ParameterHandler &prm);
 
   ASPECT_INSTANTIATE(INSTANTIATE)

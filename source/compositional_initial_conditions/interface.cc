@@ -39,10 +39,8 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::initialize (const GeometryModel::Interface<dim>       &geometry_model_)
-    {
-      geometry_model       = &geometry_model_;
-    }
+    Interface<dim>::initialize ()
+    {}
 
 
     template <int dim>
@@ -88,8 +86,7 @@ namespace aspect
 
     template <int dim>
     Interface<dim> *
-    create_initial_conditions (ParameterHandler &prm,
-                               const GeometryModel::Interface<dim> &geometry_model)
+    create_initial_conditions (ParameterHandler &prm)
     {
       // we need to get at the number of compositional fields here to
       // know whether we need to generate something at all.
@@ -111,7 +108,7 @@ namespace aspect
           Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
                                                                                           "Compositional initial conditions::Model name",
                                                                                           prm);
-          plugin->initialize (geometry_model);
+          plugin->initialize ();
           return plugin;
         }
     }
@@ -174,8 +171,7 @@ namespace aspect
   \
   template \
   Interface<dim> * \
-  create_initial_conditions<dim> (ParameterHandler &prm, \
-                                  const GeometryModel::Interface<dim> &geometry_model);
+  create_initial_conditions<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

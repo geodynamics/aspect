@@ -1,0 +1,16 @@
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, \
+                temperature statistics, heat flux statistics, \
+	        depth average
+
+  subsection Visualization
+    set Output format                 = vtu 
+    set Time between graphical output = 1e6 
+    set Number of grouped files       = 1 
+  end
+
+  subsection Depth average
+    set Time between graphical output = 1.5e6 
+    set Output format                 = vtu 
+  end
+end

@@ -62,15 +62,15 @@ namespace aspect
         initialize ();
 
         /**
-         * A function that is called at the beginning of each time step.
-         * The default implementation of the function does nothing, but
-         * derived classes that need more elaborate setups for a given time
-         * step may overload the function.
+         * A function that is called at the beginning of each time step. The
+         * default implementation of the function does nothing, but derived
+         * classes that need more elaborate setups for a given time step may
+         * overload the function.
          *
-         * The point of this function is to allow complex heating
-         * models to do an initialization step once at the beginning of each
-         * time step. An example would be a model that take into account
-         * the decay of heat generating elements.
+         * The point of this function is to allow complex heating models to do
+         * an initialization step once at the beginning of each time step. An
+         * example would be a model that take into account the decay of heat
+         * generating elements.
          */
         virtual
         void
@@ -111,15 +111,15 @@ namespace aspect
 
 
     /**
-     * Register a heating model so that it can be
-     * selected from the parameter file.
+     * Register a heating model so that it can be selected from the parameter
+     * file.
      *
      * @param name A string that identifies the heating model
      * @param description A text description of what this model does and that
      * will be listed in the documentation of the parameter file.
      * @param declare_parameters_function A pointer to a function that can be
-     * used to declare the parameters that this heating
-     * model wants to read from input files.
+     * used to declare the parameters that this heating model wants to read
+     * from input files.
      * @param factory_function A pointer to a function that can create an
      * object of this heating model.
      *
@@ -148,17 +148,15 @@ namespace aspect
     create_heating_model (ParameterHandler &prm);
 
     /**
-     * Return a list of names of all implemented heating models,
-     * separated by '|' so that it can be used in an object of type
-     * Patterns::Selection.
+     * Return a list of names of all implemented heating models, separated by
+     * '|' so that it can be used in an object of type Patterns::Selection.
      */
     template <int dim>
     std::string
     get_names ();
 
     /**
-     * Declare the runtime parameters of the registered heating
-     * models.
+     * Declare the runtime parameters of the registered heating models.
      *
      * @ingroup HeatingModels
      */
@@ -170,8 +168,8 @@ namespace aspect
 
     /**
      * Given a class name, a name, and a description for the parameter file
-     * for a heating model, register it with the
-     * functions that can declare their parameters and create these objects.
+     * for a heating model, register it with the functions that can declare
+     * their parameters and create these objects.
      *
      * @ingroup HeatingModels
      */
@@ -180,10 +178,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_HEATING_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::HeatingModel::Interface<2>,classname<2> > \
     dummy_ ## classname ## _2d (&aspect::HeatingModel::register_heating_model<2>, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::HeatingModel::Interface<3>,classname<3> > \
     dummy_ ## classname ## _3d (&aspect::HeatingModel::register_heating_model<3>, \
                                 name, description); \
   }

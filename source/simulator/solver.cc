@@ -25,7 +25,7 @@
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/constraint_matrix.h>
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
 #include <deal.II/lac/solver_cg.h>
 #else
 #include <deal.II/lac/trilinos_solver.h>
@@ -201,6 +201,9 @@ namespace aspect
         void vmult (LinearAlgebra::BlockVector       &dst,
                     const LinearAlgebra::BlockVector &src) const;
 
+        unsigned int n_iterations_A() const;
+        unsigned int n_iterations_S() const;
+
       private:
         /**
          * References to the various matrix object this preconditioner works on.
@@ -215,6 +218,8 @@ namespace aspect
          * or to just apply a single preconditioner step with it.
          **/
         const bool do_solve_A;
+        mutable unsigned int n_iterations_A_;
+        mutable unsigned int n_iterations_S_;
     };
 
 
@@ -230,8 +235,25 @@ namespace aspect
       stokes_preconditioner_matrix     (Spre),
       mp_preconditioner (Mppreconditioner),
       a_preconditioner  (Apreconditioner),
-      do_solve_A        (do_solve_A)
+      do_solve_A        (do_solve_A),
+      n_iterations_A_(0),
+      n_iterations_S_(0)
     {}
+
+    template <class PreconditionerA, class PreconditionerMp>
+    unsigned int
+    BlockSchurPreconditioner<PreconditionerA, PreconditionerMp>::
+    n_iterations_A() const
+    {
+      return n_iterations_A_;
+    }
+    template <class PreconditionerA, class PreconditionerMp>
+    unsigned int
+    BlockSchurPreconditioner<PreconditionerA, PreconditionerMp>::
+    n_iterations_S() const
+    {
+      return n_iterations_S_;
+    }
 
 
     template <class PreconditionerA, class PreconditionerMp>
@@ -245,7 +267,7 @@ namespace aspect
       {
         SolverControl solver_control(5000, 1e-6 * src.block(1).l2_norm());
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
         SolverCG<LinearAlgebra::Vector> solver(solver_control);
 #else
         TrilinosWrappers::SolverCG solver(solver_control);
@@ -257,9 +279,12 @@ namespace aspect
         // iterating. We simply skip
         // solving in this case.
         if (src.block(1).l2_norm() > 1e-50 || dst.block(1).l2_norm() > 1e-50)
-          solver.solve(stokes_preconditioner_matrix.block(1,1),
-                       dst.block(1), src.block(1),
-                       mp_preconditioner);
+          {
+            solver.solve(stokes_preconditioner_matrix.block(1,1),
+                         dst.block(1), src.block(1),
+                         mp_preconditioner);
+            n_iterations_S_ += solver_control.last_step();
+          }
 
         dst.block(1) *= -1.0;
       }
@@ -273,27 +298,31 @@ namespace aspect
       if (do_solve_A == true)
         {
           SolverControl solver_control(5000, utmp.l2_norm()*1e-2);
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
           SolverCG<LinearAlgebra::Vector> solver(solver_control);
 #else
           TrilinosWrappers::SolverCG solver(solver_control);
 #endif
           solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
                        a_preconditioner);
+          n_iterations_A_ += solver_control.last_step();
         }
       else
-        a_preconditioner.vmult (dst.block(0), utmp);
+        {
+          a_preconditioner.vmult (dst.block(0), utmp);
+          n_iterations_A_ += 1;
+        }
     }
 
   }
 
   template <int dim>
-  double Simulator<dim>::solve_advection (const TemperatureOrComposition &temperature_or_composition)
+  double Simulator<dim>::solve_advection (const AdvectionField &advection_field)
   {
     double advection_solver_tolerance = -1;
-    unsigned int block_idx = temperature_or_composition.block_index(introspection);
+    unsigned int block_idx = advection_field.block_index(introspection);
 
-    if (temperature_or_composition.is_temperature())
+    if (advection_field.is_temperature())
       {
         computing_timer.enter_section ("   Solve temperature system");
         pcout << "   Solving temperature system... " << std::flush;
@@ -303,7 +332,7 @@ namespace aspect
       {
         computing_timer.enter_section ("   Solve composition system");
         pcout << "   Solving composition system "
-              << temperature_or_composition.compositional_variable+1
+              << advection_field.compositional_variable+1
               << "... " << std::flush;
         advection_solver_tolerance = parameters.composition_solver_tolerance;
       }
@@ -341,7 +370,7 @@ namespace aspect
     solver.solve (system_matrix.block(block_idx,block_idx),
                   distributed_solution.block(block_idx),
                   system_rhs.block(block_idx),
-                  (temperature_or_composition.is_temperature()
+                  (advection_field.is_temperature()
                    ?
                    *T_preconditioner
                    :
@@ -355,12 +384,12 @@ namespace aspect
     pcout << solver_control.last_step()
           << " iterations." << std::endl;
 
-    if (temperature_or_composition.is_temperature())
+    if (advection_field.is_temperature())
       statistics.add_value("Iterations for temperature solver",
                            solver_control.last_step());
     else
       statistics.add_value("Iterations for composition solver " +
-                           Utilities::int_to_string(temperature_or_composition.compositional_variable+1),
+                           Utilities::int_to_string(advection_field.compositional_variable+1),
                            solver_control.last_step());
 
     computing_timer.exit_section();
@@ -382,19 +411,24 @@ namespace aspect
         LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
         Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
+        Assert(introspection.block_indices.pressure == 0, ExcNotImplemented());
 
         if (material_model->is_compressible ())
           make_pressure_rhs_compatible(system_rhs);
 
         SolverControl cn;
         // TODO: can we re-use the direct solver?
+#ifdef ASPECT_USE_PETSC
+        PETScWrappers::SparseDirectMUMPS solver(cn, mpi_communicator);
+#else
         TrilinosWrappers::SolverDirect solver(cn);
+#endif
         solver.solve(system_matrix.block(0,0), distributed_stokes_solution.block(0), system_rhs.block(0));
 
         current_constraints.distribute (distributed_stokes_solution);
 
         // now rescale the pressure back to real physical units:
-        for (unsigned int i=0;i< introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
+        for (unsigned int i=0; i< introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
           {
             types::global_dof_index idx = introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
 
@@ -418,6 +452,14 @@ namespace aspect
       }
 
 
+    // Many parts of the solver depend on the block layout (velocity = 0,
+    // pressure = 1). For example the remap vector or the StokesBlock matrix
+    // wrapper. Let us make sure that this holds (and shorten their names):
+    const unsigned int block_vel = introspection.block_indices.velocities;
+    const unsigned int block_p = introspection.block_indices.pressure;
+    Assert(block_vel == 0, ExcNotImplemented());
+    Assert(block_p == 1, ExcNotImplemented());
+
     const internal::StokesBlock stokes_block(system_matrix);
 
     // extract Stokes parts of solution vector, without any ghost elements
@@ -428,13 +470,13 @@ namespace aspect
 
     // copy current_linearization_point into it, because its distribution
     // is different.
-    remap.block (0) = current_linearization_point.block (0);
-    remap.block (1) = current_linearization_point.block (1);
+    remap.block (block_vel) = current_linearization_point.block (block_vel);
+    remap.block (block_p) = current_linearization_point.block (block_p);
 
     // before solving we scale the initial solution to the right dimensions
     denormalize_pressure (remap);
     current_constraints.set_zero (remap);
-    remap.block (1) /= pressure_scaling;
+    remap.block (block_p) /= pressure_scaling;
     // if the model is compressible then we need to adjust the right hand
     // side of the equation to make it compatible with the matrix on the
     // left
@@ -454,8 +496,8 @@ namespace aspect
     // extract Stokes parts of rhs vector
     LinearAlgebra::BlockVector distributed_stokes_rhs(introspection.index_sets.stokes_partitioning);
 
-    distributed_stokes_rhs.block(0) = system_rhs.block(0);
-    distributed_stokes_rhs.block(1) = system_rhs.block(1);
+    distributed_stokes_rhs.block(block_vel) = system_rhs.block(block_vel);
+    distributed_stokes_rhs.block(block_p) = system_rhs.block(block_p);
 
     PrimitiveVectorMemory< LinearAlgebra::BlockVector > mem;
 
@@ -467,9 +509,10 @@ namespace aspect
                                               1e-12 * initial_residual);
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
                                         solver_tolerance);
-    SolverControl solver_control_expensive (system_matrix.block(0,1).m() +
-                                            system_matrix.block(1,0).m(), solver_tolerance);
+    SolverControl solver_control_expensive (system_matrix.block(block_vel,block_p).m() +
+                                            system_matrix.block(block_p,block_vel).m(), solver_tolerance);
 
+    unsigned int its_A = 0, its_S = 0;
     try
       {
         // if this cheaper solver is not desired, then simply short-cut
@@ -491,6 +534,9 @@ namespace aspect
                AdditionalData(30, true));
         solver.solve(stokes_block, distributed_stokes_solution,
                      distributed_stokes_rhs, preconditioner);
+
+        its_A += preconditioner.n_iterations_A();
+        its_S += preconditioner.n_iterations_S();
       }
 
     // step 1b: take the stronger solver in case
@@ -509,6 +555,8 @@ namespace aspect
                AdditionalData(50, true));
         solver.solve(stokes_block, distributed_stokes_solution,
                      distributed_stokes_rhs, preconditioner);
+        its_A += preconditioner.n_iterations_A();
+        its_S += preconditioner.n_iterations_S();
       }
 
     // distribute hanging node and
@@ -516,12 +564,12 @@ namespace aspect
     current_constraints.distribute (distributed_stokes_solution);
 
     // now rescale the pressure back to real physical units
-    distributed_stokes_solution.block(1) *= pressure_scaling;
+    distributed_stokes_solution.block(block_p) *= pressure_scaling;
 
     // then copy back the solution from the temporary (non-ghosted) vector
     // into the ghosted one with all solution components
-    solution.block(0) = distributed_stokes_solution.block(0);
-    solution.block(1) = distributed_stokes_solution.block(1);
+    solution.block(block_vel) = distributed_stokes_solution.block(block_vel);
+    solution.block(block_p) = distributed_stokes_solution.block(block_p);
 
     remove_nullspace(solution, distributed_stokes_solution);
 
@@ -538,6 +586,10 @@ namespace aspect
 
     statistics.add_value("Iterations for Stokes solver",
                          solver_control_cheap.last_step() + solver_control_expensive.last_step());
+    statistics.add_value("Velocity iterations in Stokes preconditioner",
+                         its_A);
+    statistics.add_value("Schur complement iterations in Stokes preconditioner",
+                         its_S);
 
     computing_timer.exit_section();
 
@@ -554,7 +606,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template double Simulator<dim>::solve_advection (const TemperatureOrComposition &); \
+  template double Simulator<dim>::solve_advection (const AdvectionField &); \
   template double Simulator<dim>::solve_stokes ();
 
   ASPECT_INSTANTIATE(INSTANTIATE)

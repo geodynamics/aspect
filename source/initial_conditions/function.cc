@@ -62,9 +62,18 @@ namespace aspect
       prm.enter_subsection("Initial conditions");
       {
         prm.enter_subsection("Function");
-        {
-          function.parse_parameters (prm);
-        }
+        try
+          {
+            function.parse_parameters (prm);
+          }
+        catch (...)
+          {
+            std::cerr << "ERROR: FunctionParser failed to parse\n"
+                      << "\t'Initial conditions.Function'\n"
+                      << "with expression\n"
+                      << "\t'" << prm.get("Function expression") << "'";
+            throw;
+          }
         prm.leave_subsection();
       }
       prm.leave_subsection();

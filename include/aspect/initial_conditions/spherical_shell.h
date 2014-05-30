@@ -23,6 +23,7 @@
 #define __aspect__initial_conditions_spherical_shell_h
 
 #include <aspect/initial_conditions/interface.h>
+#include <aspect/simulator.h>
 
 
 namespace aspect
@@ -38,7 +39,7 @@ namespace aspect
      * @ingroup InitialConditionsModels
      */
     template <int dim>
-    class SphericalHexagonalPerturbation : public Interface<dim>
+    class SphericalHexagonalPerturbation : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -56,7 +57,7 @@ namespace aspect
      * @ingroup InitialConditionsModels
      */
     template <int dim>
-    class SphericalGaussianPerturbation : public Interface<dim>
+    class SphericalGaussianPerturbation : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
 

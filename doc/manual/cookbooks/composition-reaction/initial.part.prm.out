@@ -1,0 +1,8 @@
+subsection %%\hyperref[parameters:Compositional_20initial_20conditions]{Compositional initial conditions}%
+  set %%\hyperref[parameters:Compositional initial conditions/Model name]{Model name}% = function%% \index[prmindex]{Model name} \index[prmindexfull]{Compositional initial conditions!Model name} %
+
+  subsection %%\hyperref[parameters:Compositional_20initial_20conditions/Function]{Function}%
+    set %%\hyperref[parameters:Compositional initial conditions/Function/Variable names]{Variable names}%      = x,z%% \index[prmindex]{Variable names} \index[prmindexfull]{Compositional initial conditions!Function!Variable names} %
+    set %%\hyperref[parameters:Compositional initial conditions/Function/Function expression]{Function expression}% = if(z<0.5, 1, 0); 0 %% \index[prmindex]{Function expression} \index[prmindexfull]{Compositional initial conditions!Function!Function expression} %
+  end
+end

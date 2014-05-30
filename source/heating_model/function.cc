@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -38,9 +38,9 @@ namespace aspect
     double
     Function<dim>::
     specific_heating_rate (const double,
-        const double,
-        const std::vector<double> &,
-        const Point<dim> &p) const
+                           const double,
+                           const std::vector<double> &,
+                           const Point<dim> &p) const
     {
       return heating_model_function.value(p);
     }
@@ -83,8 +83,19 @@ namespace aspect
       prm.enter_subsection("Heating model");
       {
         prm.enter_subsection("Function");
+        try
+          {
+            heating_model_function.parse_parameters (prm);
+          }
+        catch (...)
+          {
+            std::cerr << "ERROR: FunctionParser failed to parse\n"
+                      << "\t'Heating model.Function'\n"
+                      << "with expression\n"
+                      << "\t'" << prm.get("Function expression") << "'";
+            throw;
+          }
         {
-          heating_model_function.parse_parameters (prm);
         }
         prm.leave_subsection();
       }
@@ -100,19 +111,19 @@ namespace aspect
   namespace HeatingModel
   {
     ASPECT_REGISTER_HEATING_MODEL(Function,
-                                                 "function",
-                                                 "Implementation of a model in which the heating "
-                                                 "rate is given in terms of an explicit formula "
-                                                 "that is elaborated in the parameters in section "
-                                                 "``Heating model|Function''. "
-                                                 "\n\n"
-                                                 "The formula is interpreted as having units "
-                                                 "W/kg."
-                                                 "\n\n"
-                                                 "Since the symbol $t$ indicating time "
-                                                 "may appear in the formulas for the heating rate"
-                                                 ", it is interpreted as having units "
-                                                 "seconds unless the global parameter ``Use "
-                                                 "years in output instead of seconds'' is set.")
+                                  "function",
+                                  "Implementation of a model in which the heating "
+                                  "rate is given in terms of an explicit formula "
+                                  "that is elaborated in the parameters in section "
+                                  "``Heating model|Function''. "
+                                  "\n\n"
+                                  "The formula is interpreted as having units "
+                                  "W/kg."
+                                  "\n\n"
+                                  "Since the symbol $t$ indicating time "
+                                  "may appear in the formulas for the heating rate"
+                                  ", it is interpreted as having units "
+                                  "seconds unless the global parameter ``Use "
+                                  "years in output instead of seconds'' is set.")
   }
 }

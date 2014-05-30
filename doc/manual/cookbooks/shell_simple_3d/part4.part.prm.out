@@ -1,0 +1,10 @@
+subsection %%\hyperref[parameters:Initial_20conditions]{Initial conditions}%
+  set %%\hyperref[parameters:Initial conditions/Model name]{Model name}% = function %% \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
+  subsection %%\hyperref[parameters:Initial_20conditions/Function]{Function}%
+    set %%\hyperref[parameters:Initial conditions/Function/Function expression]{Function expression}% = 1473 %% \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
+  end
+end
+
+subsection %%\hyperref[parameters:Gravity_20model]{Gravity model}%
+  set %%\hyperref[parameters:Gravity model/Model name]{Model name}% = radial earth-like %% \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
+end

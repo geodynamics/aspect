@@ -33,8 +33,7 @@ namespace aspect
 
     /**
      * A material model that consists of globally constant values for all
-     * material parameters except that the density decays linearly with the
-     * temperature.
+     * material parameters except density and viscosity.
      *
      * The model is considered incompressible, following the definition
      * described in Interface::is_compressible. This is essentially the

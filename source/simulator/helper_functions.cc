@@ -56,9 +56,9 @@ namespace aspect
 {
 
   template <int dim>
-  Simulator<dim>::TemperatureOrComposition::
-  TemperatureOrComposition (const FieldType field_type,
-                            const unsigned int compositional_variable)
+  Simulator<dim>::AdvectionField::
+  AdvectionField (const FieldType field_type,
+                  const unsigned int compositional_variable)
     :
     field_type (field_type),
     compositional_variable (compositional_variable)
@@ -72,26 +72,26 @@ namespace aspect
 
 
   template <int dim>
-  typename Simulator<dim>::TemperatureOrComposition
-  Simulator<dim>::TemperatureOrComposition::temperature ()
+  typename Simulator<dim>::AdvectionField
+  Simulator<dim>::AdvectionField::temperature ()
   {
-    return TemperatureOrComposition(temperature_field);
+    return AdvectionField(temperature_field);
   }
 
 
 
   template <int dim>
-  typename Simulator<dim>::TemperatureOrComposition
-  Simulator<dim>::TemperatureOrComposition::composition (const unsigned int compositional_variable)
+  typename Simulator<dim>::AdvectionField
+  Simulator<dim>::AdvectionField::composition (const unsigned int compositional_variable)
   {
-    return TemperatureOrComposition(compositional_field,
-                                    compositional_variable);
+    return AdvectionField(compositional_field,
+                          compositional_variable);
   }
 
 
   template <int dim>
   bool
-  Simulator<dim>::TemperatureOrComposition::is_temperature() const
+  Simulator<dim>::AdvectionField::is_temperature() const
   {
     return (field_type == temperature_field);
   }
@@ -99,7 +99,7 @@ namespace aspect
 
   template <int dim>
   unsigned int
-  Simulator<dim>::TemperatureOrComposition::block_index(const Introspection<dim> &introspection) const
+  Simulator<dim>::AdvectionField::block_index(const Introspection<dim> &introspection) const
   {
     if (this->is_temperature())
       return introspection.block_indices.temperature;
@@ -109,7 +109,7 @@ namespace aspect
 
   template <int dim>
   unsigned int
-  Simulator<dim>::TemperatureOrComposition::component_index(const Introspection<dim> &introspection) const
+  Simulator<dim>::AdvectionField::component_index(const Introspection<dim> &introspection) const
   {
     if (this->is_temperature())
       return introspection.component_indices.temperature;
@@ -119,7 +119,7 @@ namespace aspect
 
   template <int dim>
   unsigned int
-  Simulator<dim>::TemperatureOrComposition::base_element(const Introspection<dim> &introspection) const
+  Simulator<dim>::AdvectionField::base_element(const Introspection<dim> &introspection) const
   {
     if (this->is_temperature())
       return introspection.base_elements.temperature;
@@ -400,21 +400,21 @@ namespace aspect
   template <int dim>
   std::pair<double,double>
   Simulator<dim>::
-  get_extrapolated_temperature_or_composition_range (const TemperatureOrComposition &temperature_or_composition) const
+  get_extrapolated_advection_field_range (const AdvectionField &advection_field) const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                             (temperature_or_composition.is_temperature() ?
+                                             (advection_field.is_temperature() ?
                                               parameters.temperature_degree :
                                               parameters.composition_degree));
 
     const unsigned int n_q_points = quadrature_formula.size();
 
     const FEValuesExtractors::Scalar field
-      = (temperature_or_composition.is_temperature()
+      = (advection_field.is_temperature()
          ?
          introspection.extractors.temperature
          :
-         introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]
+         introspection.extractors.compositional_fields[advection_field.compositional_variable]
         );
 
     FEValues<dim> fe_values (mapping, finite_element, quadrature_formula,
@@ -615,9 +615,7 @@ namespace aspect
       if (parameters.pressure_normalization == "surface")
         pressure_adjustment = -temp[0]/temp[1] + parameters.surface_pressure;
       else if (parameters.pressure_normalization == "volume")
-//TODO: This can't be right. it should be -temp[0]/temp[1] to divide
-        // by the volume. this was definitely wrong in ASPIRE
-        pressure_adjustment = -temp[0];
+        pressure_adjustment = -temp[0]/temp[1];
       else
         AssertThrow(false, ExcNotImplemented());
     }
@@ -647,17 +645,12 @@ namespace aspect
                   for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
                     {
                       unsigned int support_point_index
-                      = finite_element.component_to_system_index(introspection.component_indices.pressure,
-                          /*dof index within component=*/ j);
-
-                      // make sure that this DoF is really owned by the current processor
-                      // and that it is in fact a pressure dof
-                      Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[support_point_index]),
-                          ExcInternalError());
+                        = finite_element.component_to_system_index(introspection.component_indices.pressure,
+                                                                   /*dof index within component=*/ j);
 
                       Assert (introspection.block_indices.velocities == introspection.block_indices.pressure
-                          || local_dof_indices[support_point_index] >= vector.block(0).size(),
-                          ExcInternalError());
+                              || local_dof_indices[support_point_index] >= vector.block(0).size(),
+                              ExcInternalError());
 
                       // then adjust its value. Note that because we end up touching
                       // entries more than once, we are not simply incrementing
@@ -701,7 +694,7 @@ namespace aspect
                       ExcInternalError());
 
               Assert (introspection.block_indices.velocities == introspection.block_indices.pressure
-                  || local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
+                      || local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
                       ExcInternalError());
 
               // then adjust its value
@@ -727,10 +720,10 @@ namespace aspect
     // TODO: pressure normalization currently does not work if velocity and
     // pressure are in the same block.
     Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-        ExcNotImplemented());
+           ExcNotImplemented());
 
     if (parameters.use_locally_conservative_discretization == false)
-      vector.block (1).add (-1.0 * pressure_adjustment);
+      vector.block (introspection.block_indices.pressure).add (-1.0 * pressure_adjustment);
     else
       {
         // this case is a bit more complicated: if the condition above is false
@@ -790,7 +783,7 @@ namespace aspect
         // TODO: currently does not work if velocity and
         // pressure are in the same block.
         Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-            ExcNotImplemented());
+               ExcNotImplemented());
 
         const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
         const double correction = -mean*vector.block(introspection.block_indices.pressure).size()/global_volume;
@@ -916,15 +909,15 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition,
+  void Simulator<dim>::compute_depth_average_field(const AdvectionField &advection_field,
                                                    std::vector<double> &values) const
   {
     const FEValuesExtractors::Scalar field
-      = (temperature_or_composition.is_temperature()
+      = (advection_field.is_temperature()
          ?
          introspection.extractors.temperature
          :
-         introspection.extractors.compositional_fields[temperature_or_composition.compositional_variable]
+         introspection.extractors.compositional_fields[advection_field.compositional_variable]
         );
 
     FunctorDepthAverageField<dim> f(field);
@@ -1130,14 +1123,14 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template struct Simulator<dim>::TemperatureOrComposition; \
+  template struct Simulator<dim>::AdvectionField; \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
-  template std::pair<double,double> Simulator<dim>::get_extrapolated_temperature_or_composition_range (const TemperatureOrComposition &temperature_or_composition) const; \
+  template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
   template std::pair<double,bool> Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::compute_depth_average_field(const TemperatureOrComposition &temperature_or_composition, std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_depth_average_field(const AdvectionField &advection_field, std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const; \

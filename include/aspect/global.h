@@ -22,10 +22,7 @@
 #ifndef __aspect__global_h
 #define __aspect__global_h
 
-// uncomment this to use PETSc for linear algebra
-//#define USE_PETSC
-
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
 #include <deal.II/lac/petsc_block_vector.h>
 #include <deal.II/lac/petsc_block_sparse_matrix.h>
 #include <deal.II/lac/petsc_precondition.h>
@@ -40,6 +37,8 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 
+#include <deal.II/base/mpi.h>
+#include <deal.II/base/multithread_info.h>
 
 
 namespace aspect
@@ -79,7 +78,7 @@ namespace aspect
   {
     using namespace dealii;
 
-#ifdef USE_PETSC
+#ifdef ASPECT_USE_PETSC
     /**
      * Typedef for the vector type used.
      */
@@ -120,6 +119,12 @@ namespace aspect
      * communicating ILU, so we use Jacobi here.
      */
     typedef PETScWrappers::PreconditionBlockJacobi PreconditionILU;
+
+    /**
+     * Typedef for the Jacobi preconditioner used for free surface velocity
+     * projection.
+     */
+    typedef PETScWrappers::PreconditionJacobi PreconditionJacobi;
 
     typedef LinearAlgebraPETSc::MPI::CompressedBlockSparsityPattern CompressedBlockSparsityPattern;
 
@@ -163,8 +168,44 @@ namespace aspect
      * other blocks of the system matrix.
      */
     typedef TrilinosWrappers::PreconditionILU PreconditionILU;
+
+    /**
+     * Typedef for the Jacobi preconditioner used for free surface velocity
+     * projection.
+     */
+    typedef TrilinosWrappers::PreconditionJacobi PreconditionJacobi;
+
 #endif
   }
+}
+
+
+template < class Stream>
+void print_aspect_header(Stream & stream)
+{
+    const int n_tasks = dealii::Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
+
+    stream << "-----------------------------------------------------------------------------\n"
+        << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
+        << "--     . version 1.1.pre\n" //VERSION-INFO. Do not edit by hand.
+#ifdef DEBUG
+        << "--     . running in DEBUG mode\n"
+#else
+        << "--     . running in OPTIMIZED mode\n"
+#endif
+        << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
+#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
+    const int n_threads = dealii::multithread_info.n_threads();
+    if (n_threads>1)
+      stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
+#endif
+#ifdef ASPECT_USE_PETSC
+    stream << "--     . using PETSc\n";
+#else
+    stream << "--     . using Trilinos\n";
+#endif
+    stream << "-----------------------------------------------------------------------------\n"
+              << std::endl;
 }
 
 

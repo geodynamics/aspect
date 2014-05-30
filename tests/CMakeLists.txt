@@ -29,6 +29,33 @@ FUNCTION(get_mpi_count _filename)
   endif()
 ENDFUNCTION()
 
+# extract from the prm if the test should be run with trilinos or
+# petsc. This is encoded in the .prm in form of line
+# '# LINEAR ALGEBRA: PETSC'
+# '# LINEAR ALGEBRA: PETSC TRILINOS'
+# If no line is there, Trilinos is assumed. 
+FUNCTION(check_linear_algebra _filename)
+  FILE(STRINGS ${_filename} _input_lines
+       REGEX "LINEAR ALGEBRA:")
+  IF("${_input_lines}" STREQUAL "")
+    IF(ASPECT_USE_PETSC)
+      SET(_use_test 0 PARENT_SCOPE)
+    ELSE()
+      SET(_use_test 1 PARENT_SCOPE)
+    ENDIF()
+  ELSE()
+    SET(_use_test 0 PARENT_SCOPE)
+    FOREACH(_input_line ${_input_lines})
+      IF (${_input_line} MATCHES "PETSC" AND ASPECT_USE_PETSC)
+        SET(_use_test 1 PARENT_SCOPE)
+      ENDIF()
+      IF (${_input_line} MATCHES "TRILINOS" AND NOT ASPECT_USE_PETSC)
+        SET(_use_test 1 PARENT_SCOPE)
+      ENDIF()
+    ENDFOREACH()
+  ENDIF()
+ENDFUNCTION()
+
 
 # set a time limit of 10 minutes per test. this should be long
 # enough even for long-running tests, and short enough to not
@@ -63,7 +90,7 @@ IF("${TEST_DIFF}" STREQUAL "")
   #
 
   IF(NOT NUMDIFF_EXECUTABLE MATCHES "-NOTFOUND")
-    SET(TEST_DIFF ${NUMDIFF_EXECUTABLE} -a 1e-6 -r 1e-8 -s ' \\t\\n:')
+    SET(TEST_DIFF ${NUMDIFF_EXECUTABLE} -a 1e-6 -r 1e-8 -s ' \\t\\n:,')
     IF(DIFF_EXECUTABLE MATCHES "-NOTFOUND")
       SET(DIFF_EXECUTABLE ${NUMDIFF_EXECUTABLE})
     ENDIF()
@@ -77,12 +104,18 @@ IF("${TEST_DIFF}" STREQUAL "")
   ENDIF()
 ENDIF()
 
-
 FILE(GLOB _tests *.prm)
+
+MESSAGE(STATUS "Adding tests...")
+SET(_n_tests "0")
 LIST(SORT _tests)
 FOREACH(_test ${_tests})
+  MATH(EXPR _n_tests "${_n_tests} + 1")
   GET_FILENAME_COMPONENT(_test ${_test} NAME_WE)
-  MESSAGE(STATUS "Adding test ${_test}")
+
+  CHECK_LINEAR_ALGEBRA(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
+
+  IF("${_use_test}" STREQUAL "1")
 
   IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.cc)
     ADD_LIBRARY(${_test} SHARED EXCLUDE_FROM_ALL ${_test}.cc)
@@ -148,7 +181,6 @@ FOREACH(_test ${_tests})
       DEPENDS aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
       )
   ELSE()
-    MESSAGE(STATUS "    MPI status: ${_mpi_count} processes")
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
       COMMAND
 	for i in ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/* \; do
@@ -185,6 +217,8 @@ FOREACH(_test ${_tests})
   FOREACH(_output ${_outputs})
     GET_FILENAME_COMPONENT(_output ${_output} NAME)
 
+    get_filename_component(ASPECT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PATH)
+
     # create the output.notime targets for each of the output files,
     # and also create a similar file for all of the input files (this
     # avoids the need to strip timing information from files we may
@@ -207,6 +241,7 @@ FOREACH(_test ${_tests})
 	cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}
         | egrep -v '^\\|.*\\|'
 	| egrep -v '^--'
+	| sed 's\#${ASPECT_BASE_DIR}\#ASPECT_DIR\#g'
         > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
               ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
@@ -256,5 +291,8 @@ FOREACH(_test ${_tests})
   SET_TESTS_PROPERTIES(${_test} PROPERTIES
 	TIMEOUT ${TEST_TIME_LIMIT}
     )
+
+  ENDIF()
 ENDFOREACH()
 
+MESSAGE(STATUS "...added ${_n_tests} tests")

@@ -1,0 +1,16 @@
+subsection %%\hyperref[parameters:Postprocess]{Postprocess}%
+  set %%\hyperref[parameters:Postprocess/List of postprocessors]{List of postprocessors}% = visualization, velocity statistics, \%% \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
+                temperature statistics, heat flux statistics, \
+	        depth average
+
+  subsection %%\hyperref[parameters:Postprocess/Visualization]{Visualization}%
+    set %%\hyperref[parameters:Postprocess/Visualization/Output format]{Output format}%                 = vtu %% \index[prmindex]{Output format} \index[prmindexfull]{Postprocess!Visualization!Output format} %
+    set %%\hyperref[parameters:Postprocess/Visualization/Time between graphical output]{Time between graphical output}% = 1e6 %% \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
+    set %%\hyperref[parameters:Postprocess/Visualization/Number of grouped files]{Number of grouped files}%       = 1 %% \index[prmindex]{Number of grouped files} \index[prmindexfull]{Postprocess!Visualization!Number of grouped files} %
+  end
+
+  subsection %%\hyperref[parameters:Postprocess/Depth_20average]{Depth average}%
+    set %%\hyperref[parameters:Postprocess/Depth average/Time between graphical output]{Time between graphical output}% = 1.5e6 %% \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Depth average!Time between graphical output} %
+    set %%\hyperref[parameters:Postprocess/Depth average/Output format]{Output format}%                 = vtu %% \index[prmindex]{Output format} \index[prmindexfull]{Postprocess!Depth average!Output format} %
+  end
+end

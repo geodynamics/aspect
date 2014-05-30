@@ -39,7 +39,8 @@
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/postprocess/interface.h>
-#include <aspect/adiabatic_conditions.h>
+#include <aspect/heating_model/interface.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 
 
@@ -184,6 +185,12 @@ namespace aspect
        */
       double
       get_adiabatic_surface_temperature () const;
+
+      /**
+       * Return the adiabatic surface pressure.
+       */
+      double
+      get_surface_pressure () const;
 
       /**
        * Return whether things like velocities should be converted from the
@@ -371,7 +378,7 @@ namespace aspect
        * Return a pointer to the object that describes the adiabatic
        * conditions.
        */
-      const AdiabaticConditions<dim> &
+      const AdiabaticConditions::Interface<dim> &
       get_adiabatic_conditions () const;
 
       /**
@@ -397,12 +404,17 @@ namespace aspect
       get_compositional_initial_conditions () const;
 
       /**
-       * Return a set of boudary indicators that describes which of the
+       * Return a set of boundary indicators that describes which of the
        * boundaries have a fixed temperature.
        */
       const std::set<types::boundary_id> &
       get_fixed_temperature_boundary_indicators () const;
 
+      /**
+       * Return a pointer to the heating model.
+       */
+      const HeatingModel::Interface<dim> &
+      get_heating_model () const;
 
       /**
        * A convenience function that copies the values of the compositional
@@ -415,6 +427,15 @@ namespace aspect
                                          const unsigned int                      q,
                                          std::vector<double>                    &composition_values_at_q_point);
 
+
+      /**
+       * Find a pointer to a certain postprocessor, if not return a NULL
+       * pointer.
+       */
+      template <typename PostprocessorType>
+      PostprocessorType *
+      find_postprocessor () const;
+
       /** @} */
 
     private:
@@ -423,6 +444,15 @@ namespace aspect
        */
       const Simulator<dim> *simulator;
   };
+
+  template <int dim>
+  template <typename PostprocessorType>
+  inline
+  PostprocessorType *
+  SimulatorAccess<dim>::find_postprocessor () const
+  {
+    return simulator->postprocess_manager.template find_postprocessor<PostprocessorType>();
+  }
 }
 
 

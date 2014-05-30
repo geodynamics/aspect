@@ -1,0 +1,8 @@
+subsection %%\hyperref[parameters:Compositional_20initial_20conditions]{Compositional initial conditions}%
+  set %%\hyperref[parameters:Compositional initial conditions/Model name]{Model name}% = function%% \index[prmindex]{Model name} \index[prmindexfull]{Compositional initial conditions!Model name} %
+  subsection %%\hyperref[parameters:Compositional_20initial_20conditions/Function]{Function}%
+    set %%\hyperref[parameters:Compositional initial conditions/Function/Variable names]{Variable names}%      = x,z%% \index[prmindex]{Variable names} \index[prmindexfull]{Compositional initial conditions!Function!Variable names} %
+    set %%\hyperref[parameters:Compositional initial conditions/Function/Function constants]{Function constants}%  = pi=3.14159%% \index[prmindex]{Function constants} \index[prmindexfull]{Compositional initial conditions!Function!Function constants} %
+    set %%\hyperref[parameters:Compositional initial conditions/Function/Function expression]{Function expression}% = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))%% \index[prmindex]{Function expression} \index[prmindexfull]{Compositional initial conditions!Function!Function expression} %
+  end
+end

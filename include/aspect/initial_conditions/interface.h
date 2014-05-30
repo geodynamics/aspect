@@ -23,9 +23,6 @@
 #define __aspect__initial_conditions_interface_h
 
 #include <aspect/plugins.h>
-#include <aspect/geometry_model/interface.h>
-#include <aspect/boundary_temperature/interface.h>
-#include <aspect/adiabatic_conditions.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
@@ -63,10 +60,9 @@ namespace aspect
          * adiabatic conditions and store them so that derived classes can
          * access them.
          */
+        virtual
         void
-        initialize (const GeometryModel::Interface<dim>       &geometry_model,
-                    const BoundaryTemperature::Interface<dim> &boundary_temperature,
-                    const AdiabaticConditions<dim>            &adiabatic_conditions);
+        initialize ();
 
         /**
          * Return the initial temperature as a function of position.
@@ -95,22 +91,6 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-      protected:
-        /**
-         * Pointer to the geometry object in use.
-         */
-        const GeometryModel::Interface<dim>       *geometry_model;
-
-        /**
-         * Pointer to an object that described the boundary values for the
-         * temperature field.
-         */
-        const BoundaryTemperature::Interface<dim> *boundary_temperature;
-
-        /**
-         * Pointer to an object that describes adiabatic conditions.
-         */
-        const AdiabaticConditions<dim>            *adiabatic_conditions;
     };
 
 
@@ -152,10 +132,7 @@ namespace aspect
      */
     template <int dim>
     Interface<dim> *
-    create_initial_conditions (ParameterHandler &prm,
-                               const GeometryModel::Interface<dim> &geometry_model,
-                               const BoundaryTemperature::Interface<dim> &boundary_temperature,
-                               const AdiabaticConditions<dim>      &adiabatic_conditions);
+    create_initial_conditions (ParameterHandler &prm);
 
 
     /**
@@ -182,10 +159,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_INITIAL_CONDITIONS_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::InitialConditions::Interface<2>,classname<2> > \
     dummy_ ## classname ## _2d (&aspect::InitialConditions::register_initial_conditions_model<2>, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::InitialConditions::Interface<3>,classname<3> > \
     dummy_ ## classname ## _3d (&aspect::InitialConditions::register_initial_conditions_model<3>, \
                                 name, description); \
   }

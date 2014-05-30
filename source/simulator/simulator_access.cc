@@ -159,6 +159,13 @@ namespace aspect
   }
 
   template <int dim>
+  double
+  SimulatorAccess<dim>::get_surface_pressure () const
+  {
+    return simulator->parameters.surface_pressure;
+  }
+
+  template <int dim>
   void
   SimulatorAccess<dim>::get_refinement_criteria (Vector<float> &estimated_error_per_cell) const
   {
@@ -212,7 +219,7 @@ namespace aspect
   void
   SimulatorAccess<dim>::get_depth_average_temperature(std::vector<double> &values) const
   {
-    simulator->compute_depth_average_field(Simulator<dim>::TemperatureOrComposition::temperature(),
+    simulator->compute_depth_average_field(Simulator<dim>::AdvectionField::temperature(),
                                            values);
   }
 
@@ -224,7 +231,7 @@ namespace aspect
     // make sure that what we get here is really an index of one of the compositional fields
     AssertIndexRange(composition_index,this->n_compositional_fields());
 
-    simulator->compute_depth_average_field(Simulator<dim>::TemperatureOrComposition::composition(composition_index),
+    simulator->compute_depth_average_field(Simulator<dim>::AdvectionField::composition(composition_index),
                                            values);
   }
 
@@ -304,7 +311,7 @@ namespace aspect
 
 
   template <int dim>
-  const AdiabaticConditions<dim> &
+  const AdiabaticConditions::Interface<dim> &
   SimulatorAccess<dim>::get_adiabatic_conditions () const
   {
     return *simulator->adiabatic_conditions.get();
@@ -324,6 +331,13 @@ namespace aspect
   SimulatorAccess<dim>::get_compositional_initial_conditions () const
   {
     return *simulator->compositional_initial_conditions.get();
+  }
+
+  template <int dim>
+  const HeatingModel::Interface<dim> &
+  SimulatorAccess<dim>::get_heating_model () const
+  {
+    return *simulator->heating_model.get();
   }
 
   template <int dim>

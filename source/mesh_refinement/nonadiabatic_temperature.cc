@@ -80,8 +80,8 @@ namespace aspect
             for (unsigned int i=0; i<this->get_fe().base_element(this->introspection().base_elements.temperature).dofs_per_cell; ++i)
               {
                 const unsigned int system_local_dof
-                  = this->get_fe().component_to_system_index(/*temperature component=*/dim+1,
-                                                                                       /*dof index within component=*/i);
+                  = this->get_fe().component_to_system_index(this->introspection().component_indices.temperature,
+                                                             /*dof index within component=*/i);
 
                 vec_distributed(local_dof_indices[system_local_dof])
                   = in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]);
@@ -98,8 +98,7 @@ namespace aspect
                                                       this->get_dof_handler(),
                                                       vec,
                                                       indicators,
-                                                      //TODO: replace by the appropriate component mask
-                                                      dim+1);
+                                                      this->introspection().component_indices.temperature);
 
       // Scale gradient in each cell with the correct power of h. Otherwise,
       // error indicators do not reduce when refined if there is a density

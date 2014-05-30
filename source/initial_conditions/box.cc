@@ -35,7 +35,7 @@ namespace aspect
       // this initial condition only makes sense if the geometry is a
       // Box. verify that it is indeed
       const GeometryModel::Box<dim> *geometry
-        = dynamic_cast<const GeometryModel::Box<dim>*> (this->geometry_model);
+        = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
       AssertThrow (geometry != 0,
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is a box."));
@@ -54,7 +54,7 @@ namespace aspect
       // this initial condition only makes sense if the geometry is a
       // Box. verify that it is indeed
       const GeometryModel::Box<dim> *geometry
-        = dynamic_cast<const GeometryModel::Box<dim>*> (this->geometry_model);
+        = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
       AssertThrow (geometry != 0,
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is a box."));
@@ -77,7 +77,7 @@ namespace aspect
       // this initial condition only makes sense if the geometry is a
       // box. verify that it is indeed
       const GeometryModel::Box<dim> *geometry
-        = dynamic_cast<const GeometryModel::Box<dim>*> (this->geometry_model);
+        = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
       AssertThrow (geometry != 0,
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is a box."));
@@ -112,7 +112,7 @@ namespace aspect
       // this initial condition only makes sense if the geometry is a
       // box. verify that it is indeed
       const GeometryModel::Box<dim> *geometry
-        = dynamic_cast<const GeometryModel::Box<dim>*> (this->geometry_model);
+        = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
       AssertThrow (geometry != 0,
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is a box."));

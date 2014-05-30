@@ -64,10 +64,10 @@ namespace aspect
         initialize (const GeometryModel::Interface<dim> &geometry_model);
 
         /**
-         * A function that is called at the beginning of each time step.
-         * The default implementation of the function does nothing, but
-         * derived classes that need more elaborate setups for a given time
-         * step may overload the function.
+         * A function that is called at the beginning of each time step. The
+         * default implementation of the function does nothing, but derived
+         * classes that need more elaborate setups for a given time step may
+         * overload the function.
          *
          * The point of this function is to allow complex boundary velocity
          * models to do an initialization step once at the beginning of each
@@ -188,10 +188,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::VelocityBoundaryConditions::Interface<2>,classname<2> > \
     dummy_ ## classname ## _2d (&aspect::VelocityBoundaryConditions::register_velocity_boundary_conditions_model<2>, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::VelocityBoundaryConditions::Interface<3>,classname<3> > \
     dummy_ ## classname ## _3d (&aspect::VelocityBoundaryConditions::register_velocity_boundary_conditions_model<3>, \
                                 name, description); \
   }

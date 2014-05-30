@@ -1,0 +1,39 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libtime-dependent-temperature-bc.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0 K, 0 K
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      0.16s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |    0.0229s |        14% |
+| Assemble temperature system     |         1 |    0.0265s |        17% |
+| Build Stokes preconditioner     |         1 |    0.0239s |        15% |
+| Build temperature preconditioner|         1 |   0.00085s |      0.53% |
+| Solve Stokes system             |         1 |   0.00178s |       1.1% |
+| Solve temperature system        |         1 |  0.000565s |      0.35% |
+| Initialization                  |         2 |    0.0411s |        26% |
+| Postprocessing                  |         1 |   0.00216s |       1.3% |
+| Setup dof systems               |         1 |    0.0285s |        18% |
++---------------------------------+-----------+------------+------------+
+

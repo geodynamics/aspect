@@ -1,47 +1,54 @@
-
-TODO: this needs to be updated to use git.
-
-Make sure we create a branch "aspect-x.y" and that we tag the release.
-
-
 - Tasklist:
   . go through the list of TODOs in the source code and see what can be done
   . make sure the description of the interfaces that need to be updated
     are up to date in the manual
-  . check that readme.html is okay  and the links to the mailinglists are working (also in manual.pdf)
+  . check that readme.html is okay and the links to the mailinglists are working (also in manual.pdf)
+  . setup:
+      export OLDVER=1.0;export VER=1.1;export NEXTVER=1.2.pre
   . fix doxygen errors:
-    find include -name "*h" -print | xargs -n 1 deal-trunk/tests/scripts/checkdoxygen.py
-  . fix formatting:
-    find . -name "*.h" -print | while read file;do deal.II/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
-  . apply astyle formatting, see doc/astyle.rc
-  . update copyright years of all files
-    find . -name "*.h" -o -name "*.cc" -print | while read file;do sed -i 's/^.*Copyright.*/  Copyright (C) 2011 - 2014 by the authors of the ASPECT code./' $file; done
+      find include -name "*h" -print | xargs -n 1 deal-trunk/tests/scripts/checkdoxygen.py
+    and commit.
+  . fix formatting, apply astyle, copyright years:
+      find . -name "*.h" -print | while read file;do deal.II/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
+      astyle --options=doc/astyle.rc `find include source | egrep '\.(h|cc)$'`
+      find . -name "*.h" -o -name "*.cc" -print | while read file;do sed -i 's/^.*Copyright.*/  Copyright (C) 2011 - 2014 by the authors of the ASPECT code./' $file; done
+  . commit.
+      git status # check!
+      git commit -a -m "doxygen formatting, astyle, comment wrapping"
   . update changes.h in doc/modules:
-    1. svn cp changes.h <oldversion>-<newversion>.h
-    2. remove entries from changes.h
-    3. update headers of both files
-    4. svn commit
+      cd doc/modules; ./increment_version.sh $OLDVER $VER;cd ../..
+      cd doc;./bump_version.sh $NEXTVER; cd ..
+      git commit -m "release task: update version and changes.h"
   . create a branch:
-    svn cp https://svn.aspect.dealii.org/trunk/aspect https://svn.aspect.dealii.org/branches/releases/aspect-0.2
+      git checkout master
+      git checkout -b aspect-$VER
+  . version update:
+      cd doc;./bump_version.sh $VER; cd ..
+      git commit -m "release task: update version info"
   . remove from the branch:
-    svn rm data/material-model/table \
-    source/material_model/table.cc \
-    source/postprocess/table_velocity_statistics.cc \
-    source/postprocess/table_heat_flux_statistics.cc \
-    cookbooks/future/table_model.prm \
-    include/aspect/material_model/table.h \
-    include/aspect/postprocess/table_velocity_statistics.h \
-    include/aspect/postprocess/table_heat_flux_statistics.h
-  . update the version number on the front page of doc/manual.pdf (and also on trunk!)
-  . update doc/manual/parameters.tex by "cd doc;./update_parameters.sh"
-  . run
-      cd doc ; make manual.pdf
-  . check in doc/manual.pdf
-  . make sure the .prm and .xml files we ship match the default values
-    of parameters
-  . create a tar file: 
-    svn export https://svn.aspect.dealii.org/branches/releases/aspect-1.0 aspect-1.0
-    tar -czf aspect-1.0.tar.gz aspect-1.0/
+      git rm data/material-model/table \
+      source/material_model/table.cc \
+      source/postprocess/table_velocity_statistics.cc \
+      source/postprocess/table_heat_flux_statistics.cc \
+      cookbooks/future/table_model.prm \
+      include/aspect/material_model/table.h \
+      include/aspect/postprocess/table_velocity_statistics.h \
+      include/aspect/postprocess/table_heat_flux_statistics.h
+      git commit -m "release task: remove table model"
+  . compile aspect
+  . update doc/manual/parameters.tex and documentation
+      cd doc;./update_parameters.sh; make manual.pdf; cd ..
+      git add doc/manual/parameters.tex doc/manual.pdf
+      git commit -m "release task: update manual"
+  . make sure the .prm and .xml files we ship match the default values of
+    parameters
+  . Tag the release:
+      git tag -a v$VER -m 'tag version $VER'
+  . create a tar file:
+      git archive --format=tar.gz --prefix=aspect/ v$VER >aspect-$VER.tar.gz
+  . make public (branch and tag):
+      git push cig aspect-$VER
+      git push cig v$VER
   . upload tar file
   . link it on download.html, update version info etc.
   . announce on
@@ -50,6 +57,34 @@ Make sure we create a branch "aspect-x.y" and that we tag the release.
        cig-mc@geodynamics.org
        cig-cs@geodynamics.org
        dealii@googlegroups.com
+
+
+Announcement for 1.1:
+---------------------
+We are pleased to announce the release of ASPECT 1.1. ASPECT is the Advanced
+Solver for Problems in Earth ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible and extensible mantle convection solver. ASPECT is
+available from
+
+                   http://aspect.dealii.org/
+
+This release combines the incredible number of changes made during the
+ASPECT hackathon in May 2014, as well as other changes made since the
+last release. In particular, it includes the following changes:
+- free surface computations
+- optional direct solver support
+- new material models (multi-component, simple compressible, ...)
+- finer mesh refinement control using plugins
+- updates to dynamic topography postprocessors
+- updates to gplates boundary conditions
+- compositional fields can now react with each other
+- new cookbooks: reaction between fields, free surfaces
+- improved PETSc support
+- boundary conditions can now be time dependent 
+- support for radiogenic heating models
+
+Wolfgang Bangerth, Timo Heister, and many other contributors.
 
 
 Announcement for 1.0:

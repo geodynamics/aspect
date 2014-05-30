@@ -38,7 +38,13 @@ namespace aspect
 
 
     template <int dim>
+    void
+    Interface<dim>::update ()
+    {}
 
+
+
+    template <int dim>
     void
     Interface<dim>::
     declare_parameters (dealii::ParameterHandler &prm)

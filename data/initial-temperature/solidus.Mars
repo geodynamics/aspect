@@ -1,0 +1,13 @@
+#Liquidus from Parmentier et al. (2007). The following line is the units for T and P/Z
+C km #Units for Temperature(C/K) and Pressure(GPa/kbar) or Depth(km) 
+1075.65  3383.83 #
+1311.48  3175.46
+1483.04  2966.47
+1600.38  2714.74
+1625.06  2638.25
+1694.49  2404.58
+1721.74  2303.40
+1754.16  2179.34
+1943.51  1794.50
+2064.87  1465.07
+2092.70  1372.32
