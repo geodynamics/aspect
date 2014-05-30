@@ -77,7 +77,7 @@ Number of degrees of freedom: 6,824 (4,194+533+2,097)
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00005
-     Errors u_L1, p_L1, u_L2, p_L2: 1.274730e-02, 3.576354e-01, 6.856237e-03, 9.830738e-01
+     Errors u_L1, p_L1, u_L2, p_L2: 1.274730e-02, 3.576272e-01, 6.856237e-03, 9.830738e-01
 
 Termination requested by criterion: end time
 
