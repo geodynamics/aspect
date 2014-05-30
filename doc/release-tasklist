@@ -12,7 +12,6 @@
       find . -name "*.h" -print | while read file;do deal.II/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
       astyle --options=doc/astyle.rc `find include source | egrep '\.(h|cc)$'`
       find . -name "*.h" -o -name "*.cc" -print | while read file;do sed -i 's/^.*Copyright.*/  Copyright (C) 2011 - 2014 by the authors of the ASPECT code./' $file; done
-  . commit.
       git status # check!
       git commit -a -m "doxygen formatting, astyle, comment wrapping"
   . update changes.h in doc/modules:
@@ -72,6 +71,7 @@ available from
 This release combines the incredible number of changes made during the
 ASPECT hackathon in May 2014, as well as other changes made since the
 last release. In particular, it includes the following changes:
+- fixes to Stokes solver tolerance (users might need to change settings!)
 - free surface computations
 - optional direct solver support
 - new material models (multi-component, simple compressible, ...)
