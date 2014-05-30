@@ -121,10 +121,10 @@ namespace aspect
           = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
 
         prm.declare_entry ("Model name", "initial profile",
-            Patterns::Selection (pattern_of_names),
-            "Select one of the following models:\n\n"
-            +
-            std_cxx1x::get<dim>(registered_plugins).get_description_string());
+                           Patterns::Selection (pattern_of_names),
+                           "Select one of the following models:\n\n"
+                           +
+                           std_cxx1x::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 

@@ -181,31 +181,31 @@ namespace aspect
 
 
 template < class Stream>
-void print_aspect_header(Stream & stream)
+void print_aspect_header(Stream &stream)
 {
-    const int n_tasks = dealii::Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
+  const int n_tasks = dealii::Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 
-    stream << "-----------------------------------------------------------------------------\n"
-        << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
-        << "--     . version 1.1.pre\n" //VERSION-INFO. Do not edit by hand.
+  stream << "-----------------------------------------------------------------------------\n"
+         << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
+         << "--     . version 1.1.pre\n" //VERSION-INFO. Do not edit by hand.
 #ifdef DEBUG
-        << "--     . running in DEBUG mode\n"
+         << "--     . running in DEBUG mode\n"
 #else
-        << "--     . running in OPTIMIZED mode\n"
+         << "--     . running in OPTIMIZED mode\n"
 #endif
-        << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
+         << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
 #if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
-    const int n_threads = dealii::multithread_info.n_threads();
-    if (n_threads>1)
-      stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
+  const int n_threads = dealii::multithread_info.n_threads();
+  if (n_threads>1)
+    stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
 #endif
 #ifdef ASPECT_USE_PETSC
-    stream << "--     . using PETSc\n";
+  stream << "--     . using PETSc\n";
 #else
-    stream << "--     . using Trilinos\n";
+  stream << "--     . using Trilinos\n";
 #endif
-    stream << "-----------------------------------------------------------------------------\n"
-              << std::endl;
+  stream << "-----------------------------------------------------------------------------\n"
+         << std::endl;
 }
 
 

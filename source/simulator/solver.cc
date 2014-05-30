@@ -503,11 +503,11 @@ namespace aspect
     // pressure (the current pressure is a good approximation for the static
     // pressure).
     const double residual_u = system_matrix.block(0,1).residual (distributed_stokes_solution.block(0),
-                                                  remap.block(1),
-                                                  system_rhs.block(0));
+                                                                 remap.block(1),
+                                                                 system_rhs.block(0));
     const double residual_p = system_rhs.block(1).l2_norm();
     const double solver_tolerance = parameters.linear_stokes_solver_tolerance *
-        sqrt(residual_u*residual_u+residual_p*residual_p);
+                                    sqrt(residual_u*residual_u+residual_p*residual_p);
 
     // Now overwrite the solution vector again with the current best guess
     // to solve the linear system

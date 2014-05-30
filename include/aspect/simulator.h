@@ -152,8 +152,8 @@ namespace aspect
          * with content by reading an input file.
          *
          * @param mpi_communicator The MPI communicator we will use for this
-         * simulation. We need this when calling parse_parameters() so that
-         * we can verify some of the input arguments.
+         * simulation. We need this when calling parse_parameters() so that we
+         * can verify some of the input arguments.
          */
         Parameters (ParameterHandler &prm,
                     MPI_Comm mpi_communicator);
@@ -176,8 +176,8 @@ namespace aspect
          * @param prm The object from which to obtain the run-time parameters.
          *
          * @param mpi_communicator The MPI communicator we will use for this
-         * simulation. We need this when calling parse_parameters() so that
-         * we can verify some of the input arguments.
+         * simulation. We need this when calling parse_parameters() so that we
+         * can verify some of the input arguments.
          */
         void parse_parameters (ParameterHandler &prm,
                                MPI_Comm mpi_communicator);
@@ -1210,7 +1210,8 @@ namespace aspect
       TeeStream iostream_tee_stream;
 
       /**
-       * Output stream for logging information. Will only output on processor 0.
+       * Output stream for logging information. Will only output on processor
+       * 0.
        */
       ConditionalOStream                  pcout;
 

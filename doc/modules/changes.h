@@ -20,13 +20,13 @@
  * <li> Changed: For some modules, e.g. the selection of which postprocessor
  * to run, "all" was an option. This may have made sense when we had 3 or 4
  * such postprocessors, but this is no longer the case. Furthermore, not all
- * postprocessors can always be run for a given geometry, input parameters, etc.
- * Consequently, the option of specifying "all" has been removed. Where this
- * applied, we have also removed the default value "all".
+ * postprocessors can always be run for a given geometry, input parameters,
+ * etc. Consequently, the option of specifying "all" has been removed. Where
+ * this applied, we have also removed the default value "all".
  *
  * <li> Changed: If the input file is invalid, for example because a
- * parameter's value did not satisfy its constraints or because it tried
- * to define a parameter that did not exist, all processors in a parallel
+ * parameter's value did not satisfy its constraints or because it tried to
+ * define a parameter that did not exist, all processors in a parallel
  * computation produced the same error message -- leading to massive amounts
  * of output that were barely readable. This has been changed now: only
  * processor zero now generates the output, but all processors abort
