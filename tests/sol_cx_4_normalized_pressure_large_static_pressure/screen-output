@@ -1,5 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.1.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -13,15 +14,27 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18 iterations.
+   Solving Stokes system... 30+8 iterations.
 
    Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 1.148790e-06, 2.983379e-03, 1.687894e-06, 9.775305e-03
+     Errors u_L1, p_L1, u_L2, p_L2: 1.125999e-06, 2.994139e-03, 1.670011e-06, 9.778441e-03
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.406s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |    0.0425s |        10% |
+| Assemble temperature system     |         1 |    0.0355s |       8.7% |
+| Build Stokes preconditioner     |         1 |    0.0527s |        13% |
+| Build temperature preconditioner|         1 |   0.00308s |      0.76% |
+| Solve Stokes system             |         1 |    0.0599s |        15% |
+| Solve temperature system        |         1 |  0.000649s |      0.16% |
+| Initialization                  |         2 |    0.0309s |       7.6% |
+| Postprocessing                  |         1 |     0.135s |        33% |
+| Setup dof systems               |         1 |    0.0264s |       6.5% |
 +---------------------------------+-----------+------------+------------+
 

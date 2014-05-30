@@ -1,4 +1,10 @@
--- Running with 1 MPI task using Trilinos.
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.1.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
 
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
@@ -7,7 +13,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving temperature system... 0 iterations.
    Solving composition system 1... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+11 iterations.
+   Solving Stokes system... 30+12 iterations.
 
    Postprocessing:
 
@@ -33,7 +39,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving temperature system... 20 iterations.
    Solving composition system 1... 18 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 5 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution-00001
@@ -46,7 +52,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving temperature system... 12 iterations.
    Solving composition system 1... 19 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 5 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution-00002
@@ -59,7 +65,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving temperature system... 10 iterations.
    Solving composition system 1... 18 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 3 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution-00003
@@ -72,6 +78,21 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      11.6s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         4 |      1.32s |        11% |
+| Assemble composition system     |         4 |      1.04s |         9% |
+| Assemble temperature system     |         4 |      1.09s |       9.5% |
+| Build Stokes preconditioner     |         4 |      1.31s |        11% |
+| Build composition preconditioner|         4 |    0.0356s |      0.31% |
+| Build temperature preconditioner|         4 |    0.0362s |      0.31% |
+| Solve Stokes system             |         4 |     0.379s |       3.3% |
+| Solve composition system        |         4 |    0.0314s |      0.27% |
+| Solve temperature system        |         4 |    0.0253s |      0.22% |
+| Initialization                  |         2 |     0.162s |       1.4% |
+| Postprocessing                  |         4 |      5.72s |        50% |
+| Setup dof systems               |         1 |     0.123s |       1.1% |
 +---------------------------------+-----------+------------+------------+
 
