@@ -5,6 +5,14 @@
  * 1.0. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ *
+ * <li> Changed: the Stokes linear solver tolerance now includes the current
+ * pressure instead of being only based on the rhs. This makes the tolerance
+ * less problem dependent. Please note that in many cases you can loosen the
+ * tolerance to something between 1e-4 to 1e-7.
+ * <br>
+ * (Timo Heister, 2014/05/30)
+ *
  * <li> New: ASPECT now logs all screen output to output/log.txt.
  * <br>
  * (Timo Heister, 2014/05/29)
