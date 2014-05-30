@@ -1,4 +1,10 @@
--- Running with 1 MPI task using Trilinos.
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.1.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,526 (578+81+289+289+289)
@@ -8,7 +14,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 0 iterations.
    Solving composition system 2... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18 iterations.
+   Solving Stokes system... 22 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition-passive-tracers/solution-00000
@@ -19,7 +25,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 10 iterations.
    Solving composition system 2... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7 iterations.
+   Solving Stokes system... 12 iterations.
 
    Postprocessing:
      Advecting particles: done
@@ -29,7 +35,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 11 iterations.
    Solving composition system 2... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18 iterations.
+   Solving Stokes system... 22 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition-passive-tracers/solution-00001
@@ -40,7 +46,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 12 iterations.
    Solving composition system 2... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18 iterations.
+   Solving Stokes system... 22 iterations.
 
    Postprocessing:
      Advecting particles: done
@@ -50,7 +56,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 11 iterations.
    Solving composition system 2... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18 iterations.
+   Solving Stokes system... 22 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition-passive-tracers/solution-00002
@@ -61,7 +67,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 11 iterations.
    Solving composition system 2... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18 iterations.
+   Solving Stokes system... 22 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition-passive-tracers/solution-00003
@@ -72,7 +78,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 11 iterations.
    Solving composition system 2... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17 iterations.
+   Solving Stokes system... 22 iterations.
 
    Postprocessing:
      Advecting particles: done
@@ -82,7 +88,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 11 iterations.
    Solving composition system 2... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18 iterations.
+   Solving Stokes system... 22 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition-passive-tracers/solution-00004
@@ -93,7 +99,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 10 iterations.
    Solving composition system 2... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18 iterations.
+   Solving Stokes system... 22 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition-passive-tracers/solution-00005
@@ -104,7 +110,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 10 iterations.
    Solving composition system 2... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17 iterations.
+   Solving Stokes system... 22 iterations.
 
    Postprocessing:
      Advecting particles: done
@@ -114,7 +120,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 10 iterations.
    Solving composition system 2... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17 iterations.
+   Solving Stokes system... 22 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition-passive-tracers/solution-00006
@@ -125,7 +131,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 10 iterations.
    Solving composition system 2... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18 iterations.
+   Solving Stokes system... 22 iterations.
 
    Postprocessing:
      Advecting particles: done
@@ -135,7 +141,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 11 iterations.
    Solving composition system 2... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18 iterations.
+   Solving Stokes system... 22 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition-passive-tracers/solution-00007
@@ -146,7 +152,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 10 iterations.
    Solving composition system 2... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4 iterations.
+   Solving Stokes system... 10 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition-passive-tracers/solution-00008
@@ -157,7 +163,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 10 iterations.
    Solving composition system 2... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4 iterations.
+   Solving Stokes system... 9 iterations.
 
    Postprocessing:
      Advecting particles: done
@@ -167,7 +173,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 10 iterations.
    Solving composition system 2... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3 iterations.
+   Solving Stokes system... 8 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition-passive-tracers/solution-00009
@@ -178,7 +184,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving composition system 1... 10 iterations.
    Solving composition system 2... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4 iterations.
+   Solving Stokes system... 9 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition-passive-tracers/solution-00010
@@ -188,6 +194,21 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      7.06s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |        17 |     0.787s |        11% |
+| Assemble composition system     |        34 |      1.03s |        15% |
+| Assemble temperature system     |        17 |     0.607s |       8.6% |
+| Build Stokes preconditioner     |        17 |     0.768s |        11% |
+| Build composition preconditioner|        34 |    0.0423s |       0.6% |
+| Build temperature preconditioner|        17 |    0.0338s |      0.48% |
+| Solve Stokes system             |        17 |     0.179s |       2.5% |
+| Solve composition system        |        34 |    0.0354s |       0.5% |
+| Solve temperature system        |        17 |    0.0299s |      0.42% |
+| Initialization                  |         2 |    0.0419s |      0.59% |
+| Postprocessing                  |        17 |      3.31s |        47% |
+| Setup dof systems               |         1 |    0.0195s |      0.28% |
 +---------------------------------+-----------+------------+------------+
 

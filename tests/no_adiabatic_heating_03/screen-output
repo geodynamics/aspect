@@ -1,5 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.1.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -16,20 +17,21 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system... 26 iterations.
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20 iterations.
-   Residual after nonlinear iteration 2: 0.0245986
+   Solving Stokes system... 21 iterations.
+   Residual after nonlinear iteration 2: 1.00429
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15 iterations.
-   Residual after nonlinear iteration 3: 0.00133812
+   Residual after nonlinear iteration 3: 1.00434
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10 iterations.
-   Residual after nonlinear iteration 4: 4.59637e-05
+   Residual after nonlinear iteration 4: 1.00433
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5 iterations.
-   Residual after nonlinear iteration 5: 2.11765e-06
+   Residual after nonlinear iteration 5: 1.00433
+
 
    Postprocessing:
 
@@ -52,23 +54,23 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 1:  t=0.0284091 seconds
    Solving temperature system... 25 iterations.
    Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+   Residual after nonlinear iteration 2: 1
+
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 3 iterations.
+   Residual after nonlinear iteration 3: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 0.206557
+   Solving Stokes system... 2 iterations.
+   Residual after nonlinear iteration 4: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 3: 0.206557
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 4: 0.206557
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 5: 0.206557
+   Solving Stokes system... 2 iterations.
+   Residual after nonlinear iteration 5: 1
 
 
    Postprocessing:
@@ -78,23 +80,23 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 2:  t=0.0568181 seconds
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+   Residual after nonlinear iteration 2: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+   Residual after nonlinear iteration 3: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+   Residual after nonlinear iteration 4: 1
+
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 3 iterations.
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 0.149268
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 3: 0.149268
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 4: 0.149268
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 5: 0.149268
+   Residual after nonlinear iteration 5: 1
 
 
    Postprocessing:
@@ -104,22 +106,22 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 3:  t=0.0852272 seconds
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 2 iterations.
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 3 iterations.
    Residual after nonlinear iteration 2: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 2 iterations.
    Residual after nonlinear iteration 3: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 2 iterations.
    Residual after nonlinear iteration 4: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 2 iterations.
    Residual after nonlinear iteration 5: 1
 
 
@@ -133,20 +135,20 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system... 2 iterations.
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 0.696779
+   Solving Stokes system... 2 iterations.
+   Residual after nonlinear iteration 2: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 3: 0.696779
+   Solving Stokes system... 3 iterations.
+   Residual after nonlinear iteration 3: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 4: 0.696779
+   Solving Stokes system... 2 iterations.
+   Residual after nonlinear iteration 4: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 5: 0.696779
+   Solving Stokes system... 2 iterations.
+   Residual after nonlinear iteration 5: 1
 
 
    Postprocessing:
@@ -158,18 +160,18 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      2.77s |            |
+| Total wallclock time elapsed since start    |      5.44s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        25 |      1.06s |        38% |
-| Assemble temperature system     |         5 |     0.164s |       5.9% |
-| Build Stokes preconditioner     |        25 |      1.27s |        46% |
-| Build temperature preconditioner|         5 |    0.0117s |      0.42% |
-| Solve Stokes system             |        25 |    0.0948s |       3.4% |
-| Solve temperature system        |         5 |    0.0106s |      0.38% |
-| Initialization                  |         2 |    0.0321s |       1.2% |
-| Postprocessing                  |         5 |    0.0692s |       2.5% |
-| Setup dof systems               |         1 |    0.0261s |      0.94% |
+| Assemble Stokes system          |        25 |      2.17s |        40% |
+| Assemble temperature system     |         5 |     0.318s |       5.8% |
+| Build Stokes preconditioner     |        25 |      2.36s |        43% |
+| Build temperature preconditioner|         5 |     0.021s |      0.39% |
+| Solve Stokes system             |        25 |     0.216s |         4% |
+| Solve temperature system        |         5 |    0.0291s |      0.53% |
+| Initialization                  |         2 |    0.0868s |       1.6% |
+| Postprocessing                  |         5 |     0.103s |       1.9% |
+| Setup dof systems               |         1 |    0.0371s |      0.68% |
 +---------------------------------+-----------+------------+------------+
 

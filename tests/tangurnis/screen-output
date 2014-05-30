@@ -1,5 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.1.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -15,17 +16,23 @@ Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
    Solving Stokes system... 30+2 iterations.
       Nonlinear Stokes residual: 0.0056096
    Solving Stokes system... 30 iterations.
-      Nonlinear Stokes residual: 0.0126531
+      Nonlinear Stokes residual: 0.0132574
    Solving Stokes system... 23 iterations.
-      Nonlinear Stokes residual: 0.000344376
+      Nonlinear Stokes residual: 0.0132756
    Solving Stokes system... 18 iterations.
-      Nonlinear Stokes residual: 2.5457e-05
+      Nonlinear Stokes residual: 0.0132522
    Solving Stokes system... 11 iterations.
-      Nonlinear Stokes residual: 1.03191e-06
+      Nonlinear Stokes residual: 0.0132522
    Solving Stokes system... 7 iterations.
-      Nonlinear Stokes residual: 7.36538e-08
+      Nonlinear Stokes residual: 0.0132522
    Solving Stokes system... 2 iterations.
-      Nonlinear Stokes residual: 3.23924e-09
+      Nonlinear Stokes residual: 0.0132522
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 0.0132522
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 0.0132522
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 0.0132522
 
    Postprocessing:
      writing:                  output.csv
@@ -33,7 +40,25 @@ Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
 
 *** Timestep 1:  t=0.0001 seconds
    Solving Stokes system... 0 iterations.
-      Nonlinear Stokes residual: 1.18319e-09
+      Nonlinear Stokes residual: 0.0132522
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 0.0132522
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 0.0132522
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 0.0132522
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 0.0132522
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 0.0132522
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 0.0132522
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 0.0132522
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 0.0132522
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 0.0132522
 
    Postprocessing:
      writing:                  output.csv
@@ -43,15 +68,15 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      7.14s |            |
+| Total wallclock time elapsed since start    |      16.2s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         8 |      1.46s |        20% |
-| Build Stokes preconditioner     |         1 |     0.772s |        11% |
-| Solve Stokes system             |         8 |      1.34s |        19% |
-| Initialization                  |         2 |     0.183s |       2.6% |
-| Postprocessing                  |         2 |      2.63s |        37% |
-| Setup dof systems               |         1 |     0.324s |       4.5% |
+| Assemble Stokes system          |        20 |      5.77s |        36% |
+| Build Stokes preconditioner     |         1 |      1.34s |       8.3% |
+| Solve Stokes system             |        20 |      3.09s |        19% |
+| Initialization                  |         2 |     0.292s |       1.8% |
+| Postprocessing                  |         2 |      4.41s |        27% |
+| Setup dof systems               |         1 |     0.579s |       3.6% |
 +---------------------------------+-----------+------------+------------+
 

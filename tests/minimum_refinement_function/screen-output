@@ -1,5 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.1.pre
 --     . running in DEBUG mode
 --     . running with 2 MPI processes
 --     . using Trilinos
@@ -11,7 +12,7 @@ Number of degrees of freedom: 948 (578+81+289)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12 iterations.
+   Solving Stokes system... 18 iterations.
 
    Postprocessing:
 
@@ -39,7 +40,7 @@ Number of degrees of freedom: 2,509 (1,536+205+768)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12 iterations.
+   Solving Stokes system... 18 iterations.
 
    Postprocessing:
 
@@ -67,7 +68,7 @@ Number of degrees of freedom: 6,656 (4,086+527+2,043)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20 iterations.
+   Solving Stokes system... 29 iterations.
 
    Postprocessing:
 
@@ -95,7 +96,7 @@ Number of degrees of freedom: 18,123 (11,138+1,416+5,569)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20 iterations.
+   Solving Stokes system... 29 iterations.
 
    Postprocessing:
 
@@ -124,20 +125,20 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      17.4s |            |
+| Total wallclock time elapsed since start    |      2.86s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         4 |      2.59s |        15% |
-| Assemble temperature system     |         4 |      1.25s |       7.2% |
-| Build Stokes preconditioner     |         4 |      1.88s |        11% |
-| Build temperature preconditioner|         4 |    0.0395s |      0.23% |
-| Solve Stokes system             |         4 |     0.478s |       2.7% |
-| Solve temperature system        |         4 |    0.0259s |      0.15% |
-| Initialization                  |         5 |     0.301s |       1.7% |
-| Postprocessing                  |         4 |       5.1s |        29% |
-| Refine mesh structure, part 1   |         4 |      2.02s |        12% |
-| Refine mesh structure, part 2   |         4 |    0.0952s |      0.55% |
-| Setup dof systems               |         5 |       3.5s |        20% |
+| Assemble Stokes system          |         4 |     0.352s |        12% |
+| Assemble temperature system     |         4 |     0.186s |       6.5% |
+| Build Stokes preconditioner     |         4 |     0.398s |        14% |
+| Build temperature preconditioner|         4 |    0.0177s |      0.62% |
+| Solve Stokes system             |         4 |     0.226s |       7.9% |
+| Solve temperature system        |         4 |   0.00913s |      0.32% |
+| Initialization                  |         5 |     0.134s |       4.7% |
+| Postprocessing                  |         4 |     0.772s |        27% |
+| Refine mesh structure, part 1   |         4 |     0.296s |        10% |
+| Refine mesh structure, part 2   |         4 |    0.0206s |      0.72% |
+| Setup dof systems               |         5 |     0.393s |        14% |
 +---------------------------------+-----------+------------+------------+
 

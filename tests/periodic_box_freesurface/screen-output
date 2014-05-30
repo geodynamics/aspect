@@ -1,5 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.1.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -13,7 +14,7 @@ Number of free surface degrees of freedom: 8450
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+4 iterations.
+   Solving Stokes system... 30+6 iterations.
 
 Number of active cells: 1,444 (on 8 levels)
 Number of degrees of freedom: 20,706 (12,722+1,623+6,361)
@@ -23,7 +24,7 @@ Number of free surface degrees of freedom: 3246
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+6 iterations.
 
    Postprocessing:
 
@@ -46,7 +47,7 @@ Number of free surface degrees of freedom: 3246
    Solving mesh velocity system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+7 iterations.
 
    Postprocessing:
      RMS, max velocity:  0.44 m/year, 0.997 m/year
@@ -56,7 +57,7 @@ Number of free surface degrees of freedom: 3246
    Solving mesh velocity system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+5 iterations.
 
    Postprocessing:
      RMS, max velocity:  0.408 m/year, 0.951 m/year
@@ -66,7 +67,7 @@ Number of free surface degrees of freedom: 3246
    Solving mesh velocity system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... 30+5 iterations.
 
    Postprocessing:
      RMS, max velocity:  0.396 m/year, 0.933 m/year
@@ -76,7 +77,7 @@ Number of free surface degrees of freedom: 3246
    Solving mesh velocity system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28 iterations.
+   Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
      RMS, max velocity:  0.391 m/year, 0.923 m/year
@@ -86,21 +87,21 @@ Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       8.4s |            |
+| Total wallclock time elapsed since start    |      21.5s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         6 |      2.13s |        25% |
-| Assemble temperature system     |         6 |     0.989s |        12% |
-| Build Stokes preconditioner     |         6 |      1.58s |        19% |
-| Build temperature preconditioner|         6 |    0.0506s |       0.6% |
-| Solve Stokes system             |         6 |      1.85s |        22% |
-| Solve temperature system        |         6 |    0.0288s |      0.34% |
-| FreeSurface                     |         6 |     0.398s |       4.7% |
-| Initialization                  |         3 |    0.0535s |      0.64% |
-| Postprocessing                  |         5 |    0.0284s |      0.34% |
-| Refine mesh structure, part 1   |         1 |     0.607s |       7.2% |
-| Refine mesh structure, part 2   |         1 |   0.00698s |     0.083% |
-| Setup dof systems               |         2 |     0.504s |         6% |
+| Assemble Stokes system          |         6 |      5.25s |        24% |
+| Assemble temperature system     |         6 |      2.89s |        13% |
+| Build Stokes preconditioner     |         6 |      3.74s |        17% |
+| Build temperature preconditioner|         6 |     0.174s |      0.81% |
+| Solve Stokes system             |         6 |      5.26s |        24% |
+| Solve temperature system        |         6 |     0.077s |      0.36% |
+| FreeSurface                     |         6 |     0.972s |       4.5% |
+| Initialization                  |         3 |     0.249s |       1.2% |
+| Postprocessing                  |         5 |     0.077s |      0.36% |
+| Refine mesh structure, part 1   |         1 |      1.37s |       6.4% |
+| Refine mesh structure, part 2   |         1 |    0.0166s |     0.077% |
+| Setup dof systems               |         2 |     0.907s |       4.2% |
 +---------------------------------+-----------+------------+------------+
 
