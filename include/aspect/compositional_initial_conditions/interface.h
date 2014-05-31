@@ -58,6 +58,7 @@ namespace aspect
         /**
          * Initialization function.
          */
+        virtual
         void
         initialize ();
 
