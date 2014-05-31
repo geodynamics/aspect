@@ -18,6 +18,21 @@
  * <br>
  * (Timo Heister, 2014/05/29)
  *
+ * <li> Changed: The adiabatic reference profile is now defined in a plugin
+ * architecture as well. Currently, only the old funtionality of having a
+ * constant profile, which is computed before the first timestep, is included.
+ * However, now there is the possibility for more simple or more realistic
+ * user-written plugins (like an analytic function, or a profile that is
+ * updated over time).
+ * <br>
+ * (Rene Gassmoeller, 2014/05/29)
+ *
+ * <li> Changed: The initial conditions do not longer use pointers to other
+ * parts of the program (like the geometry model), instead they now should be
+ * derived from the SimulatorAccess class as all other plugins.
+ * <br>
+ * (Rene Gassmoeller, 2014/05/29)
+ *
  * <li> Changed: For some modules, e.g. the selection of which postprocessor
  * to run, "all" was an option. This may have made sense when we had 3 or 4
  * such postprocessors, but this is no longer the case. Furthermore, not all
