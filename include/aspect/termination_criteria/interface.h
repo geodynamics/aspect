@@ -73,6 +73,11 @@ namespace aspect
         ~Interface ();
 
         /**
+         * Initialize function.
+         */
+        virtual void initialize ();
+
+        /**
          * Execute evaluation of the termination criterion.
          *
          * @return Whether to terminate the simulation (true) or continue

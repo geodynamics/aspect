@@ -57,6 +57,11 @@ namespace aspect
         virtual ~Interface();
 
         /**
+         * Initialize function.
+         */
+        virtual void initialize ();
+
+        /**
          * Return the composition that is to hold at a particular location on
          * the boundary of the domain.
          *

@@ -547,7 +547,7 @@ namespace aspect
 
     template <int dim>
     void
-    GPlates<dim>::initialize (const GeometryModel::Interface<dim> &geometry_model)
+    GPlates<dim>::initialize ()
     {
       char sep;
 
@@ -563,6 +563,9 @@ namespace aspect
                             "may not be equal."));
 
       lookup.reset(new internal::GPlatesLookup(pointone,pointtwo,interpolation_width));
+
+      const GeometryModel::Interface<dim> &geometry_model =
+          this->get_geometry_model();
 
       Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model) != 0,
               ExcMessage ("This boundary condition can only be used if the geometry "
