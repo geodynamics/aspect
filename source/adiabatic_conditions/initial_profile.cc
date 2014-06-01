@@ -44,6 +44,8 @@ namespace aspect
     void
     InitialProfile<dim>::initialize()
     {
+      if (initialized)
+        return;
       delta_z = this->get_geometry_model().maximal_depth() / (n_points-1);
 
       const unsigned int n_compositional_fields = this->n_compositional_fields();

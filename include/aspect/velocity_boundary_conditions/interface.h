@@ -56,12 +56,13 @@ namespace aspect
         virtual ~Interface();
 
         /**
-         * Initialization function. Takes a reference to the geometry model so
-         * that derived classes can access them.
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after the
+         * SimulatorAccess (if applicable) is initialized.
          */
         virtual
         void
-        initialize (const GeometryModel::Interface<dim> &geometry_model);
+        initialize ();
 
         /**
          * A function that is called at the beginning of each time step. The
@@ -104,12 +105,6 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
-
-      protected:
-        /**
-         * Pointer to the geometry object in use.
-         */
-        const GeometryModel::Interface<dim> *geometry_model;
     };
 
 
@@ -152,8 +147,7 @@ namespace aspect
     template <int dim>
     Interface<dim> *
     create_velocity_boundary_conditions (const std::string &name,
-                                         ParameterHandler &prm,
-                                         const GeometryModel::Interface<dim> &geometry_model);
+                                         ParameterHandler &prm);
 
     /**
      * Return a list of names of all implemented boundary velocity models,

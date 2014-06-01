@@ -61,9 +61,9 @@ namespace aspect
         virtual ~Interface();
 
         /**
-         * Initialization function. Because this function is called after
-         * initializing the SimulatorAccess, all of the necessary information
-         * is available to calculate the adiabatic profile.
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after the
+         * SimulatorAccess (if applicable) is initialized.
          */
         virtual
         void

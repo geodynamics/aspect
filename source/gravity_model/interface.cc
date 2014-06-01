@@ -38,6 +38,11 @@ namespace aspect
 
     template <int dim>
     void
+    Interface<dim>::initialize ()
+    {}
+
+    template <int dim>
+    void
     Interface<dim>::update ()
     {}
 
