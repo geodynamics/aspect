@@ -33,7 +33,8 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes some statistics about the velocity at different parts of the boundary.
+     * A postprocessor that computes some statistics about the velocity at
+     * different parts of the boundary.
      *
      * @ingroup Postprocessing
      */
@@ -43,7 +44,7 @@ namespace aspect
       public:
         /**
          * Evaluate the solution for some velocity boundary statistics.
-         **/
+         */
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);

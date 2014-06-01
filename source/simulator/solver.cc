@@ -202,6 +202,9 @@ namespace aspect
         void vmult (LinearAlgebra::BlockVector       &dst,
                     const LinearAlgebra::BlockVector &src) const;
 
+        unsigned int n_iterations_A() const;
+        unsigned int n_iterations_S() const;
+
       private:
         /**
          * References to the various matrix object this preconditioner works on.
@@ -216,6 +219,8 @@ namespace aspect
          * or to just apply a single preconditioner step with it.
          **/
         const bool do_solve_A;
+        mutable unsigned int n_iterations_A_;
+        mutable unsigned int n_iterations_S_;
     };
 
 
@@ -231,8 +236,25 @@ namespace aspect
       stokes_preconditioner_matrix     (Spre),
       mp_preconditioner (Mppreconditioner),
       a_preconditioner  (Apreconditioner),
-      do_solve_A        (do_solve_A)
+      do_solve_A        (do_solve_A),
+      n_iterations_A_(0),
+      n_iterations_S_(0)
     {}
+
+    template <class PreconditionerA, class PreconditionerMp>
+    unsigned int
+    BlockSchurPreconditioner<PreconditionerA, PreconditionerMp>::
+    n_iterations_A() const
+    {
+      return n_iterations_A_;
+    }
+    template <class PreconditionerA, class PreconditionerMp>
+    unsigned int
+    BlockSchurPreconditioner<PreconditionerA, PreconditionerMp>::
+    n_iterations_S() const
+    {
+      return n_iterations_S_;
+    }
 
 
     template <class PreconditionerA, class PreconditionerMp>
@@ -258,9 +280,12 @@ namespace aspect
         // iterating. We simply skip
         // solving in this case.
         if (src.block(1).l2_norm() > 1e-50 || dst.block(1).l2_norm() > 1e-50)
-          solver.solve(stokes_preconditioner_matrix.block(1,1),
-                       dst.block(1), src.block(1),
-                       mp_preconditioner);
+          {
+            solver.solve(stokes_preconditioner_matrix.block(1,1),
+                         dst.block(1), src.block(1),
+                         mp_preconditioner);
+            n_iterations_S_ += solver_control.last_step();
+          }
 
         dst.block(1) *= -1.0;
       }
@@ -281,9 +306,13 @@ namespace aspect
 #endif
           solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
                        a_preconditioner);
+          n_iterations_A_ += solver_control.last_step();
         }
       else
-        a_preconditioner.vmult (dst.block(0), utmp);
+        {
+          a_preconditioner.vmult (dst.block(0), utmp);
+          n_iterations_A_ += 1;
+        }
     }
 
   }
@@ -401,7 +430,7 @@ namespace aspect
         current_constraints.distribute (distributed_stokes_solution);
 
         // now rescale the pressure back to real physical units:
-        for (unsigned int i=0;i< introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
+        for (unsigned int i=0; i< introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
           {
             types::global_dof_index idx = introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
 
@@ -510,8 +539,10 @@ namespace aspect
     // create vector with distribution of system_rhs.
     LinearAlgebra::BlockVector remap (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
-    // copy current_linearization_point into it, because its distribution
-    // is different.
+    // copy the velocity and pressure from current_linearization_point into
+    // the vector remap. We need to do the copy because remap has a different
+    // layout than current_linearization_point, which also contains all the
+    // other solution variables.
     remap.block (block_vel) = current_linearization_point.block (block_vel);
     remap.block (block_p) = current_linearization_point.block (block_p);
 
@@ -527,12 +558,30 @@ namespace aspect
 
     // (ab)use the distributed solution vector to temporarily put a residual in
     // (we don't care about the residual vector -- all we care about is the
-    // value (number) of the initial residual)
+    // value (number) of the initial residual). The initial residual is returned
+    // to the caller (for nonlinear computations).
     const double initial_residual = stokes_block.residual (distributed_stokes_solution,
                                                            remap,
                                                            system_rhs);
 
-    // then overwrite it again with the current best guess and solve the linear system
+    // Note: the residual is computed with a zero velocity, effectively computing
+    // || B^T p - g ||, which we are going to use for our solver tolerance.
+    // We do not use the current velocity for the initial residual because
+    // this would not decrease the number of iterations if we had a better
+    // initial guess (say using a smaller timestep). But we need to use
+    // the pressure instead of only using the norm of the rhs, because we
+    // are only interested in the part of the rhs not balanced by the static
+    // pressure (the current pressure is a good approximation for the static
+    // pressure).
+    const double residual_u = system_matrix.block(0,1).residual (distributed_stokes_solution.block(0),
+                                                                 remap.block(1),
+                                                                 system_rhs.block(0));
+    const double residual_p = system_rhs.block(1).l2_norm();
+    const double solver_tolerance = parameters.linear_stokes_solver_tolerance *
+                                    sqrt(residual_u*residual_u+residual_p*residual_p);
+
+    // Now overwrite the solution vector again with the current best guess
+    // to solve the linear system
     distributed_stokes_solution = remap;
 
     // extract Stokes parts of rhs vector
@@ -546,14 +595,12 @@ namespace aspect
     // step 1a: try if the simple and fast solver
     // succeeds in 30 steps or less (or whatever the chosen value for the
     // corresponding parameter is).
-    const double solver_tolerance = std::max (parameters.linear_stokes_solver_tolerance *
-                                              distributed_stokes_rhs.l2_norm(),
-                                              1e-12 * initial_residual);
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
                                         solver_tolerance);
     SolverControl solver_control_expensive (system_matrix.block(block_vel,block_p).m() +
                                             system_matrix.block(block_p,block_vel).m(), solver_tolerance);
 
+    unsigned int its_A = 0, its_S = 0;
     try
       {
         // if this cheaper solver is not desired, then simply short-cut
@@ -575,6 +622,9 @@ namespace aspect
                AdditionalData(30, true));
         solver.solve(stokes_block, distributed_stokes_solution,
                      distributed_stokes_rhs, preconditioner);
+
+        its_A += preconditioner.n_iterations_A();
+        its_S += preconditioner.n_iterations_S();
       }
 
     // step 1b: take the stronger solver in case
@@ -593,6 +643,8 @@ namespace aspect
                AdditionalData(50, true));
         solver.solve(stokes_block, distributed_stokes_solution,
                      distributed_stokes_rhs, preconditioner);
+        its_A += preconditioner.n_iterations_A();
+        its_S += preconditioner.n_iterations_S();
       }
 
     // distribute hanging node and
@@ -622,6 +674,10 @@ namespace aspect
 
     statistics.add_value("Iterations for Stokes solver",
                          solver_control_cheap.last_step() + solver_control_expensive.last_step());
+    statistics.add_value("Velocity iterations in Stokes preconditioner",
+                         its_A);
+    statistics.add_value("Schur complement iterations in Stokes preconditioner",
+                         its_S);
 
     computing_timer.exit_section();
 

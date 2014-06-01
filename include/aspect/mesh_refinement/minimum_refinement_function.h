@@ -34,9 +34,8 @@ namespace aspect
   {
 
     /**
-     * A class that implements a minimum refinement level
-     * based on a functional description provided in the
-     * input file.
+     * A class that implements a minimum refinement level based on a
+     * functional description provided in the input file.
      *
      * @ingroup MeshRefinement
      */
@@ -62,8 +61,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void

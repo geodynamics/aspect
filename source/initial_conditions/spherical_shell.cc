@@ -36,18 +36,20 @@ namespace aspect
     {
       // this initial condition only makes sense if the geometry is a
       // spherical shell. verify that it is indeed
-      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*>
-              (this->geometry_model)
-              != 0,
-              ExcMessage ("This initial condition can only be used if the geometry "
-                          "is a spherical shell."));
+      AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*>
+                   (&this->get_geometry_model())
+                   != 0,
+                   ExcMessage ("This initial condition can only be used if the geometry "
+                               "is a spherical shell."));
 
-      const double R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).outer_radius();
+      const double R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
+                        (this->get_geometry_model()).outer_radius();
 
       // s = fraction of the way from
       // the inner to the outer
       // boundary; 0<=s<=1
-      const double s = this->geometry_model->depth(position) / this->geometry_model->maximal_depth();
+      const double s = this->get_geometry_model().depth(position)
+                       / this->get_geometry_model().maximal_depth();
 
       /* now compute an angular variation of the linear temperature field by
          stretching the variable s appropriately. note that the following
@@ -68,9 +70,9 @@ namespace aspect
                            +
                            0.2 * s * (1-s) * std::sin(6*phi) * scale;
 
-      return (this->boundary_temperature->maximal_temperature()*(s_mod)
+      return (this->get_boundary_temperature().maximal_temperature()*(s_mod)
               +
-              this->boundary_temperature->minimal_temperature()*(1e0-s_mod));
+              this->get_boundary_temperature().minimal_temperature()*(1e0-s_mod));
     }
 
 
@@ -102,17 +104,18 @@ namespace aspect
     {
       // this initial condition only makes sense if the geometry is a
       // spherical shell. verify that it is indeed
-      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*>
-              (this->geometry_model)
-              != 0,
-              ExcMessage ("This initial condition can only be used if the geometry "
-                          "is a spherical shell."));
+      AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*>
+                   (&this->get_geometry_model())
+                   != 0,
+                   ExcMessage ("This initial condition can only be used if the geometry "
+                               "is a spherical shell."));
       const double
-      R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).inner_radius(),
-      R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (*this->geometry_model).outer_radius();
-      const double dT = this->boundary_temperature->maximal_temperature() - this->boundary_temperature->minimal_temperature();
-      const double T0 = this->boundary_temperature->maximal_temperature()/dT;
-      const double T1 = this->boundary_temperature->minimal_temperature()/dT;
+      R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (this->get_geometry_model()).inner_radius(),
+      R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (this->get_geometry_model()).outer_radius();
+      const double dT = this->get_boundary_temperature().maximal_temperature()
+                        - this->get_boundary_temperature().minimal_temperature();
+      const double T0 = this->get_boundary_temperature().maximal_temperature()/dT;
+      const double T1 = this->get_boundary_temperature().minimal_temperature()/dT;
       const double h = R1-R0;
 
       // s = fraction of the way from

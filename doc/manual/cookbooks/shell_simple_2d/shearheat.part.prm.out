@@ -1,0 +1,3 @@
+subsection %%\hyperref[parameters:Model_20settings]{Model settings}%
+  set %%\hyperref[parameters:Model settings/Include shear heating]{Include shear heating}%                   = false %% \index[prmindex]{Include shear heating} \index[prmindexfull]{Model settings!Include shear heating} %
+end

@@ -103,7 +103,7 @@ namespace aspect
               {
                 const unsigned int system_local_dof
                   = this->get_fe().component_to_system_index(this->introspection().component_indices.temperature,
-                                                                                       /*dof index within component=*/i);
+                                                             /*dof index within component=*/i);
 
                 vec_distributed(local_dof_indices[system_local_dof])
                   = std::log(out.viscosities[i]);

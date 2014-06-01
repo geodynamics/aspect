@@ -1,0 +1,82 @@
+# test that pressure "volume" normalization works correctly.
+# note that the solution is kind of non-sensical..
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = IMPES
+set Pressure normalization                 = volume
+
+
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 2
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 1
+    set Thermal conductivity          = 0
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0, 1
+  set Prescribed velocity boundary indicators = 3: function
+  set Tangential velocity boundary indicators = 
+  set Zero velocity boundary indicators       = 0, 1
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names = x,z
+    set Function expression = 0;x*(1-x)*z
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, visualization
+end
+

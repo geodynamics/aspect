@@ -1,6 +1,7 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . running in OPTIMIZED mode
+--     . version 1.1.pre
+--     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
 -----------------------------------------------------------------------------
@@ -11,7 +12,7 @@ Number of degrees of freedom: 10,436 (6,402+833+3,201)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+6 iterations.
 
    Postprocessing:
 
@@ -43,7 +44,7 @@ Number of degrees of freedom: 12,904 (7,916+1,030+3,958)
 *** Timestep 1:  t=1.56836e+13 seconds
    Solving temperature system... 19 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24 iterations.
+   Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
      Writing graphical output:                       output-spherical_velocity_statistics/solution-00001
@@ -55,7 +56,7 @@ Number of degrees of freedom: 12,904 (7,916+1,030+3,958)
 
 *** Timestep 2:  t=2.32729e+13 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 20 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
      Writing graphical output:                       output-spherical_velocity_statistics/solution-00002
@@ -71,7 +72,7 @@ Number of degrees of freedom: 14,115 (8,658+1,128+4,329)
 *** Timestep 3:  t=3.07665e+13 seconds
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
      Writing graphical output:                       output-spherical_velocity_statistics/solution-00003
@@ -83,13 +84,13 @@ Number of degrees of freedom: 14,115 (8,658+1,128+4,329)
 
 *** Timestep 4:  t=3.81707e+13 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 19 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
      Writing graphical output:                       output-spherical_velocity_statistics/solution-00004
      RMS, max velocity:                              1.35e-09 m/s, 3.89e-09 m/s
      Temperature min/avg/max:                        -202.9 K, 105.6 K, 1613 K
-     Heat fluxes through boundary parts:             -0.1178 W, -0.2424 W, 1.713e-07 W, -1.151e-05 W
+     Heat fluxes through boundary parts:             -0.1178 W, -0.2424 W, 1.715e-07 W, -1.151e-05 W
      Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 9.22e-10 m/s, 9.86e-10 m/s, 1.35e-09 m/s
 
@@ -99,7 +100,7 @@ Number of degrees of freedom: 15,598 (9,568+1,246+4,784)
 *** Timestep 5:  t=4.54881e+13 seconds
    Solving temperature system... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
      Writing graphical output:                       output-spherical_velocity_statistics/solution-00005
@@ -111,7 +112,7 @@ Number of degrees of freedom: 15,598 (9,568+1,246+4,784)
 
 *** Timestep 6:  t=5.27266e+13 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 20 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
      Writing graphical output:                       output-spherical_velocity_statistics/solution-00006
@@ -127,19 +128,19 @@ Number of degrees of freedom: 17,345 (10,640+1,385+5,320)
 *** Timestep 7:  t=5.9889e+13 seconds
    Solving temperature system... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 19 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
      Writing graphical output:                       output-spherical_velocity_statistics/solution-00007
      RMS, max velocity:                              1.44e-09 m/s, 4.01e-09 m/s
      Temperature min/avg/max:                        -202.4 K, 107.6 K, 1613 K
-     Heat fluxes through boundary parts:             -0.1138 W, -0.2394 W, 6.598e-07 W, -4.841e-06 W
+     Heat fluxes through boundary parts:             -0.1138 W, -0.2394 W, 6.599e-07 W, -4.84e-06 W
      Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 9.92e-10 m/s, 1.04e-09 m/s, 1.44e-09 m/s
 
 *** Timestep 8:  t=6.6987e+13 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 18 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
      Writing graphical output:                       output-spherical_velocity_statistics/solution-00008
@@ -152,28 +153,28 @@ Number of degrees of freedom: 17,345 (10,640+1,385+5,320)
 Number of active cells: 1,356 (on 7 levels)
 Number of degrees of freedom: 19,477 (11,950+1,552+5,975)
 
-*** Timestep 9:  t=7.40219e+13 seconds
+*** Timestep 9:  t=7.4022e+13 seconds
    Solving temperature system... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17 iterations.
+   Solving Stokes system... 30+1 iterations.
 
    Postprocessing:
      Writing graphical output:                       output-spherical_velocity_statistics/solution-00009
      RMS, max velocity:                              1.5e-09 m/s, 4.08e-09 m/s
      Temperature min/avg/max:                        -201.9 K, 108.5 K, 1613 K
-     Heat fluxes through boundary parts:             -0.1138 W, -0.2378 W, 5.627e-07 W, 7.65e-06 W
+     Heat fluxes through boundary parts:             -0.1138 W, -0.2378 W, 5.628e-07 W, 7.65e-06 W
      Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 1.04e-09 m/s, 1.08e-09 m/s, 1.5e-09 m/s
 
 *** Timestep 10:  t=8.10056e+13 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 19 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
      Writing graphical output:                       output-spherical_velocity_statistics/solution-00010
      RMS, max velocity:                              1.53e-09 m/s, 4.11e-09 m/s
      Temperature min/avg/max:                        -201.7 K, 108.9 K, 1613 K
-     Heat fluxes through boundary parts:             -0.1144 W, -0.2371 W, 1.18e-06 W, 6.828e-06 W
+     Heat fluxes through boundary parts:             -0.1144 W, -0.2371 W, 1.181e-06 W, 6.829e-06 W
      Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 1.06e-09 m/s, 1.1e-09 m/s, 1.53e-09 m/s
 
@@ -186,21 +187,21 @@ Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      8.91s |            |
+| Total wallclock time elapsed since start    |      35.3s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        11 |      0.66s |       7.4% |
-| Assemble temperature system     |        11 |      1.14s |        13% |
-| Build Stokes preconditioner     |         6 |     0.691s |       7.8% |
-| Build temperature preconditioner|        11 |     0.214s |       2.4% |
-| Solve Stokes system             |        11 |      1.06s |        12% |
-| Solve temperature system        |        11 |    0.0984s |       1.1% |
-| Create snapshot                 |         1 |     0.126s |       1.4% |
-| Initialization                  |         2 |    0.0215s |      0.24% |
-| Postprocessing                  |        11 |       3.9s |        44% |
-| Refine mesh structure, part 1   |         7 |     0.273s |       3.1% |
-| Refine mesh structure, part 2   |         7 |    0.0291s |      0.33% |
-| Setup dof systems               |         8 |     0.639s |       7.2% |
+| Assemble Stokes system          |        11 |       2.1s |         6% |
+| Assemble temperature system     |        11 |      4.36s |        12% |
+| Build Stokes preconditioner     |         6 |       1.9s |       5.4% |
+| Build temperature preconditioner|        11 |     0.174s |      0.49% |
+| Solve Stokes system             |        11 |      2.58s |       7.3% |
+| Solve temperature system        |        11 |     0.123s |      0.35% |
+| Create snapshot                 |         1 |      1.29s |       3.6% |
+| Initialization                  |         2 |    0.0608s |      0.17% |
+| Postprocessing                  |        11 |        19s |        54% |
+| Refine mesh structure, part 1   |         7 |       1.6s |       4.5% |
+| Refine mesh structure, part 2   |         7 |    0.0487s |      0.14% |
+| Setup dof systems               |         8 |      1.59s |       4.5% |
 +---------------------------------+-----------+------------+------------+
 

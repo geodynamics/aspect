@@ -38,7 +38,7 @@ namespace aspect
     std::pair<std::string,std::string>
     InternalHeatingStatistics<dim>::execute (TableHandler &statistics)
     {
-        const HeatingModel::Interface<dim> &heating_model=this->get_heating_model();
+      const HeatingModel::Interface<dim> &heating_model=this->get_heating_model();
 
       // create a quadrature formula based on the temperature element alone.
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
@@ -70,24 +70,24 @@ namespace aspect
           {
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                    temperature_values);
+                                                                                         temperature_values);
             fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                    pressure_values);
-            for(unsigned c=0;c<this->n_compositional_fields();c++)
-                fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
-                        compositional_values[c]);
+                                                                                      pressure_values);
+            for (unsigned c=0; c<this->n_compositional_fields(); c++)
+              fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
+                  compositional_values[c]);
             quadrature_points=fe_values.get_quadrature_points();
 
             for (unsigned int q=0; q<n_q_points; ++q)
-            {
-                  for(unsigned c=0;c<this->n_compositional_fields();c++)
-                        composition_values_at_q_point[c]=compositional_values[c][q];
-                  local_internal_heating_integrals += heating_model.specific_heating_rate(temperature_values[q],
-                                                                                              pressure_values[q],
-                                                                                              composition_values_at_q_point,
-                                                                                              quadrature_points[q])*fe_values.JxW(q);
-                  local_volume+=fe_values.JxW(q);
-            }
+              {
+                for (unsigned c=0; c<this->n_compositional_fields(); c++)
+                  composition_values_at_q_point[c]=compositional_values[c][q];
+                local_internal_heating_integrals += heating_model.specific_heating_rate(temperature_values[q],
+                                                                                        pressure_values[q],
+                                                                                        composition_values_at_q_point,
+                                                                                        quadrature_points[q])*fe_values.JxW(q);
+                local_volume+=fe_values.JxW(q);
+              }
           }
       // compute the sum over all processors
       std::vector<double> local_value;
@@ -120,8 +120,8 @@ namespace aspect
 
       std::ostringstream output;
       output.precision(4);
-          output << global_internal_heating_integrals/global_volume << " W/kg, "
-                 << global_internal_heating_integrals << " W";
+      output << global_internal_heating_integrals/global_volume << " W/kg, "
+             << global_internal_heating_integrals << " W";
 
       return std::pair<std::string, std::string> ("Internal heating rate (average/total): ",
                                                   output.str());

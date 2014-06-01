@@ -32,8 +32,8 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes some statistics about the radial and tangential components
-     * of the velocity in spherical/cylindrical models.
+     * A postprocessor that computes some statistics about the radial and
+     * tangential components of the velocity in spherical/cylindrical models.
      *
      * @ingroup Postprocessing
      */
@@ -43,7 +43,7 @@ namespace aspect
       public:
         /**
          * Evaluate the solution for some velocity statistics.
-         **/
+         */
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);

@@ -29,8 +29,8 @@ namespace aspect
     template <int dim>
     std::vector<unsigned int>
     component_to_block_mapping (const unsigned int n_components,
-        const bool split_vel_pressure,
-        const bool add_compaction_pressure)
+                               const bool split_vel_pressure,
+                               const bool add_compaction_pressure)
     {
       // set up a mapping between vector components to the blocks they
       // correspond to.
@@ -58,7 +58,7 @@ namespace aspect
   template <int dim>
   Introspection<dim>::Introspection(const bool split_vel_pressure,
       const bool add_compaction_pressure,
-      const std::vector<std::string> &names_of_compositional_fields)
+                                    const std::vector<std::string> &names_of_compositional_fields)
     :
     n_components (dim+2+names_of_compositional_fields.size()+(add_compaction_pressure?1:0)),
     n_blocks (((split_vel_pressure)?3:2)+names_of_compositional_fields.size()),
@@ -105,15 +105,15 @@ namespace aspect
   template <int dim>
   Introspection<dim>::BlockIndices::
   BlockIndices (const unsigned int n_compositional_fields,
-      const bool split_vel_pressure)
+                const bool split_vel_pressure)
     :
     velocities(0),
     pressure (split_vel_pressure?1:0),
     compaction_pressure (split_vel_pressure?1:0),
     temperature (split_vel_pressure?2:1),
     compositional_fields (half_open_sequence(
-        (split_vel_pressure?3:2),
-        (split_vel_pressure?3:2)+n_compositional_fields))
+                            (split_vel_pressure?3:2),
+                            (split_vel_pressure?3:2)+n_compositional_fields))
   {}
 
 
@@ -159,23 +159,23 @@ namespace aspect
   unsigned int
   Introspection<dim>::compositional_index_for_name (const std::string &name) const
   {
-	std::vector<std::string>::const_iterator it = std::find(composition_names.begin(), composition_names.end(), name);
-	if (it == composition_names.end())
-	{
-	  AssertThrow (false, ExcMessage ("The compositional field " + name +
-					                  " you asked for is not used in the simulation."));
-	}
-	else
-	  return it - composition_names.begin();
-	return numbers::invalid_unsigned_int;
+    std::vector<std::string>::const_iterator it = std::find(composition_names.begin(), composition_names.end(), name);
+    if (it == composition_names.end())
+      {
+        AssertThrow (false, ExcMessage ("The compositional field " + name +
+                                        " you asked for is not used in the simulation."));
+      }
+    else
+      return it - composition_names.begin();
+    return numbers::invalid_unsigned_int;
   }
 
   template <int dim>
   std::string
   Introspection<dim>::name_for_compositional_index (const unsigned int index) const
   {
-	// make sure that what we get here is really an index of one of the compositional fields
-	AssertIndexRange(index,composition_names.size());
+    // make sure that what we get here is really an index of one of the compositional fields
+    AssertIndexRange(index,composition_names.size());
     return composition_names[index];
   }
 
@@ -184,10 +184,10 @@ namespace aspect
   Introspection<dim>::compositional_name_exists (const std::string &name) const
   {
     return (std::find(composition_names.begin(), composition_names.end(), name) != composition_names.end()
-    		?
-    		true
-    		:
-    		false);
+            ?
+            true
+            :
+            false);
   }
 }
 

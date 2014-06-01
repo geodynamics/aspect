@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -51,14 +51,14 @@ namespace aspect
 
       const std::set<types::boundary_id>
       boundary_indicators
-       = this->get_geometry_model().get_used_boundary_indicators ();
+        = this->get_geometry_model().get_used_boundary_indicators ();
       for (std::set<types::boundary_id>::const_iterator
            p = boundary_indicators.begin();
            p != boundary_indicators.end(); ++p)
-      {
-       local_max_vel[*p] = -std::numeric_limits<double>::max();
-       local_min_vel[*p] = std::numeric_limits<double>::max();
-      }
+        {
+          local_max_vel[*p] = -std::numeric_limits<double>::max();
+          local_min_vel[*p] = std::numeric_limits<double>::max();
+        }
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -81,17 +81,17 @@ namespace aspect
                 double local_min = std::numeric_limits<double>::max();
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
-                   const double vel_mag = velocities[q].norm();
-                   local_max = std::max(vel_mag,
-                                        local_max);
-                   local_min = std::min(vel_mag,
-                                        local_min);
+                    const double vel_mag = velocities[q].norm();
+                    local_max = std::max(vel_mag,
+                                         local_max);
+                    local_min = std::min(vel_mag,
+                                         local_min);
                   }
                 // then merge them with the min/max velocities we found for other faces with the same boundary indicator
-		local_max_vel[cell->face(f)->boundary_indicator()] = std::max(local_max,
-                                                                     local_max_vel[cell->face(f)->boundary_indicator()]);
-		local_min_vel[cell->face(f)->boundary_indicator()] = std::min(local_min,
-                                                                     local_min_vel[cell->face(f)->boundary_indicator()]);
+                local_max_vel[cell->face(f)->boundary_indicator()] = std::max(local_max,
+                                                                              local_max_vel[cell->face(f)->boundary_indicator()]);
+                local_min_vel[cell->face(f)->boundary_indicator()] = std::min(local_min,
+                                                                              local_min_vel[cell->face(f)->boundary_indicator()]);
               }
 
       // now communicate to get the global values
@@ -105,10 +105,10 @@ namespace aspect
         for (std::set<types::boundary_id>::const_iterator
              p = boundary_indicators.begin();
              p != boundary_indicators.end(); ++p)
-         {
-          local_max_values.push_back (local_max_vel[*p]);
-          local_min_values.push_back (-local_min_vel[*p]);
-         } 
+          {
+            local_max_values.push_back (local_max_vel[*p]);
+            local_min_values.push_back (-local_min_vel[*p]);
+          }
         // then collect contributions from all processors
         // now do the reductions over all processors. we can use Utilities::MPI::max
         // for the maximal values. unfortunately, there is currently no matching
@@ -124,10 +124,10 @@ namespace aspect
         for (std::set<types::boundary_id>::const_iterator
              p = boundary_indicators.begin();
              p != boundary_indicators.end(); ++p, ++index)
-         { 
-          global_max_vel[*p] = global_max_values[index];
-          global_min_vel[*p] = -global_min_values[index];
-         } 
+          {
+            global_max_vel[*p] = global_max_values[index];
+            global_min_vel[*p] = -global_min_values[index];
+          }
       }
 
       // now add the computed max and min velocities to the statistics object
@@ -138,53 +138,53 @@ namespace aspect
            p = global_max_vel.begin(), a = global_min_vel.begin();
            p != global_max_vel.end() && a != global_min_vel.end(); ++p, ++a, ++index)
         {
-         if (this->convert_output_to_years() == true)
-         {
-          const std::string name_max = "Maximum velocity magnitude on boundary with indicator "
-                                   + Utilities::int_to_string(p->first)
-                                   + " (m/yr)";
-          statistics.add_value (name_max, p->second*year_in_seconds);
-          const std::string name_min = "Minimum velocity magnitude on boundary with indicator "
-                                   + Utilities::int_to_string(a->first)
-                                   + " (m/yr)";
-          statistics.add_value (name_min, a->second*year_in_seconds);
-          // also make sure that the other columns filled by the this object
-          // all show up with sufficient accuracy and in scientific notation
-          statistics.set_precision (name_max, 8);
-          statistics.set_scientific (name_max, true);
-          statistics.set_precision (name_min, 8);
-          statistics.set_scientific (name_min, true);
-         }
-         else
-         {
-          const std::string name_max = "Maximum velocity magnitude on boundary with indicator "
-                                   + Utilities::int_to_string(p->first)
-                                   + " (m/s)";
-          statistics.add_value (name_max, p->second);
-          const std::string name_min = "Minimum velocity magnitude on boundary with indicator "
-                                   + Utilities::int_to_string(a->first)
-                                   + " (m/s)";
-          statistics.add_value (name_min, a->second);
-          // also make sure that the other columns filled by the this object
-          // all show up with sufficient accuracy and in scientific notation
-          statistics.set_precision (name_max, 8);
-          statistics.set_scientific (name_max, true);
-          statistics.set_precision (name_min, 8);
-          statistics.set_scientific (name_min, true);
-         }
+          if (this->convert_output_to_years() == true)
+            {
+              const std::string name_max = "Maximum velocity magnitude on boundary with indicator "
+                                           + Utilities::int_to_string(p->first)
+                                           + " (m/yr)";
+              statistics.add_value (name_max, p->second*year_in_seconds);
+              const std::string name_min = "Minimum velocity magnitude on boundary with indicator "
+                                           + Utilities::int_to_string(a->first)
+                                           + " (m/yr)";
+              statistics.add_value (name_min, a->second*year_in_seconds);
+              // also make sure that the other columns filled by the this object
+              // all show up with sufficient accuracy and in scientific notation
+              statistics.set_precision (name_max, 8);
+              statistics.set_scientific (name_max, true);
+              statistics.set_precision (name_min, 8);
+              statistics.set_scientific (name_min, true);
+            }
+          else
+            {
+              const std::string name_max = "Maximum velocity magnitude on boundary with indicator "
+                                           + Utilities::int_to_string(p->first)
+                                           + " (m/s)";
+              statistics.add_value (name_max, p->second);
+              const std::string name_min = "Minimum velocity magnitude on boundary with indicator "
+                                           + Utilities::int_to_string(a->first)
+                                           + " (m/s)";
+              statistics.add_value (name_min, a->second);
+              // also make sure that the other columns filled by the this object
+              // all show up with sufficient accuracy and in scientific notation
+              statistics.set_precision (name_max, 8);
+              statistics.set_scientific (name_max, true);
+              statistics.set_precision (name_min, 8);
+              statistics.set_scientific (name_min, true);
+            }
 
           // finally have something for the screen
           screen_text.precision(4);
           if (this->convert_output_to_years() == true)
-          {
-           screen_text << p->second*year_in_seconds << " m/yr, " << a->second*year_in_seconds << " m/yr"
-                       << (index == global_max_vel.size()-1 ? "" : ", ");
-          }
+            {
+              screen_text << p->second *year_in_seconds << " m/yr, " << a->second *year_in_seconds << " m/yr"
+                          << (index == global_max_vel.size()-1 ? "" : ", ");
+            }
           else
-          {
-           screen_text << p->second << " m/s, " << a->second << " m/s"
-                       << (index == global_max_vel.size()-1 ? "" : ", ");
-          }
+            {
+              screen_text << p->second << " m/s, " << a->second << " m/s"
+                          << (index == global_max_vel.size()-1 ? "" : ", ");
+            }
 
         }
 
@@ -204,7 +204,7 @@ namespace aspect
                                   "velocity boundary statistics",
                                   "A postprocessor that computes some statistics about "
                                   "the velocity along the boundaries. For each boundary "
-				  "indicator (see your geometry description for which boundary "
-				  "indicators are used), the min and max velocity magnitude is computed.")
+                                  "indicator (see your geometry description for which boundary "
+                                  "indicators are used), the min and max velocity magnitude is computed.")
   }
 }

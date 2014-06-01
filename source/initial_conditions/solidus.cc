@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -87,7 +87,7 @@ namespace aspect
     double MeltingCurve::T(const double p, const double radius) const
     {
       double T_value,P_or_R_value=is_radius?radius:p;
-      if (T_array.size()==0)return(0);
+      if (T_array.size()==0)return (0);
       for (unsigned i=1; i<n_points; i++)
         {
           if (     (i==n_points-1) ||
@@ -95,11 +95,11 @@ namespace aspect
                    (!is_radius && P_or_R_value<P_or_R_array[i]) )
             {
               T_value=T_array[i-1]+(T_array[i]-T_array[i-1])/(P_or_R_array[i]-P_or_R_array[i-1])*(P_or_R_value-P_or_R_array[i-1]);
-              return(T_value);
+              return (T_value);
             }
         }
       AssertThrow(false,ExcMessage(std::string("Something wrong with the melting curve data ")+ data_filename ));
-      return(-1);
+      return (-1);
     }
 
   }
@@ -120,12 +120,12 @@ namespace aspect
       double T_solidus,T_perturbation;
       double litho_thick_theta;
       double lateral_perturbation;
-      double Depth=this->geometry_model->depth(position);
+      double Depth=this->get_geometry_model().depth(position);
 
       AssertThrow(solidus_curve.n_points!=0,ExcMessage("Error reading solidus file."));
       AssertThrow(solidus_curve.is_radius==true,ExcMessage("The solidus curve has to be radius dependent."));
       const GeometryModel::SphericalShell<dim> *spherical_geometry_model=
-        dynamic_cast< const GeometryModel::SphericalShell<dim> *>(this->geometry_model);
+        dynamic_cast< const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
       AssertThrow(spherical_geometry_model!=0,
                   ExcMessage("This initial condition can only be used with spherical shell geometry model."));
       T_min=(this->get_boundary_temperature()).minimal_temperature();
@@ -160,7 +160,7 @@ namespace aspect
       else
         T_solidus=solidus_curve.T(0,sqrt(position.square()))+deltaT;
 
-      T_perturbation=Depth/( this->geometry_model->maximal_depth() )*magnitude_T*lateral_perturbation;
+      T_perturbation=Depth/( this->get_geometry_model().maximal_depth() )*magnitude_T*lateral_perturbation;
       return T_solidus+T_perturbation;
     }
 

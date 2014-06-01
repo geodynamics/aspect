@@ -7,10 +7,12 @@
 # 7: Iterations for temperature solver
 # 8: Iterations for composition solver 1
 # 9: Iterations for Stokes solver
-# 10: Time step size (seconds)
-# 11: Visualization file name
-# 12: RMS velocity (m/s)
-# 13: Max. velocity (m/s)
-0 0.0000e+00 64 2312  729  729 0 0 18 4.0291e+14                                                   "" 0.00000000e+00 0.00000000e+00 
-0 0.0000e+00 85 3271 1033 1033 0 0 18 2.1717e+14                                                   "" 0.00000000e+00 0.00000000e+00 
-0 0.0000e+00 99 3853 1218 1218 0 0 18 2.3267e+14 output-viscous_dissipation_statistics/solution-00000 4.21812533e-11 5.65834424e-10 
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Time step size (seconds)
+# 13: Visualization file name
+# 14: RMS velocity (m/s)
+# 15: Max. velocity (m/s)
+0 0.0000e+00  64 2312  729  729 0 0 25 26  25 4.0291e+14                                                   "" 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 120 4438 1405 1405 0 0 26 27 129 1.7945e+14                                                   "" 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 176 6564 2081 2081 0 0 26 27 130 8.4188e+13 output-viscous_dissipation_statistics/solution-00000 6.86121468e-11 1.04584486e-09 

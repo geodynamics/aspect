@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -44,60 +44,60 @@ namespace aspect
       double time = this->get_time();
       types::boundary_id relevant_boundary = 0;
 
-      if(GeometryModel::Box<dim> *gm = dynamic_cast<GeometryModel::Box<dim> *>
-                                             (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
-      {
-        Point<dim> extents = gm->get_extents();
-        reference_height = extents[dim-1];
-        vertical_gravity = true;
-        relevant_boundary = (dim == 2 ? 3 : 5); //select top boundary
-      }
-      else if(GeometryModel::Sphere<dim> *gm = dynamic_cast<GeometryModel::Sphere<dim> *>
-                                             (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
-      {
-        reference_height = gm->radius();
-        vertical_gravity = false;
-        relevant_boundary = 0;  //select top boundary
-      }
-      else if(GeometryModel::SphericalShell<dim> *gm = dynamic_cast<GeometryModel::SphericalShell<dim> *>
-                                             (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
-      {
-        reference_height = gm->outer_radius();
-        vertical_gravity = false;
-        relevant_boundary = 1;  //select top boundary
-      }
+      if (GeometryModel::Box<dim> *gm = dynamic_cast<GeometryModel::Box<dim> *>
+                                        (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
+        {
+          Point<dim> extents = gm->get_extents();
+          reference_height = extents[dim-1];
+          vertical_gravity = true;
+          relevant_boundary = (dim == 2 ? 3 : 5); //select top boundary
+        }
+      else if (GeometryModel::Sphere<dim> *gm = dynamic_cast<GeometryModel::Sphere<dim> *>
+                                                (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
+        {
+          reference_height = gm->radius();
+          vertical_gravity = false;
+          relevant_boundary = 0;  //select top boundary
+        }
+      else if (GeometryModel::SphericalShell<dim> *gm = dynamic_cast<GeometryModel::SphericalShell<dim> *>
+                                                        (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
+        {
+          reference_height = gm->outer_radius();
+          vertical_gravity = false;
+          relevant_boundary = 1;  //select top boundary
+        }
       else
-      {
-        AssertThrow(false, ExcMessage("The topography postprocessor does not recognize the geometry model."
-                                 "Consider using a box, a spherical shell, or a sphere.") );
-      }
+        {
+          AssertThrow(false, ExcMessage("The topography postprocessor does not recognize the geometry model."
+                                        "Consider using a box, a spherical shell, or a sphere.") );
+        }
 
       //get maximum surface topography
-      typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = this->get_triangulation().begin_active(), 
-                                                                                 endc = this->get_triangulation().end();
+      typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = this->get_triangulation().begin_active(),
+                                                                               endc = this->get_triangulation().end();
 
       //Choose stupidly large values for initialization
       double local_max_height = -std::numeric_limits<double>::max();
       double local_min_height = std::numeric_limits<double>::max();
 
-      for(; cell != endc; ++cell)
-        if(cell->is_locally_owned() && cell->at_boundary())
+      for (; cell != endc; ++cell)
+        if (cell->is_locally_owned() && cell->at_boundary())
           for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
-            if(cell->face(face_no)->at_boundary() && cell->face(face_no)->boundary_indicator() == relevant_boundary )
-              for( unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_face;  ++v)
-              {
-                Point<dim> vertex = cell->face(face_no)->vertex(v);
-                double topography = (vertical_gravity ? vertex[dim-1] : vertex.norm()) - reference_height;
-                if ( topography > local_max_height)
-                  local_max_height = topography;
-                if ( topography < local_min_height)
-                  local_min_height = topography;
+            if (cell->face(face_no)->at_boundary() && cell->face(face_no)->boundary_indicator() == relevant_boundary )
+              for ( unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_face;  ++v)
+                {
+                  Point<dim> vertex = cell->face(face_no)->vertex(v);
+                  double topography = (vertical_gravity ? vertex[dim-1] : vertex.norm()) - reference_height;
+                  if ( topography > local_max_height)
+                    local_max_height = topography;
+                  if ( topography < local_min_height)
+                    local_min_height = topography;
 
-              }
+                }
 
       double max_topography = Utilities::MPI::max(local_max_height, this->get_mpi_communicator());
       double min_topography = -Utilities::MPI::max(-local_min_height, this->get_mpi_communicator());
-  
+
       statistics.add_value ("Minimum topography (m)",
                             min_topography);
       statistics.add_value ("Maximum topography (m)",

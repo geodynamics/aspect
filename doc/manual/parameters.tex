@@ -15,12 +15,12 @@
 {\it Default:} 
 
 
-{\it Description:} A list of names of additional shared libraries that should be loaded upon starting up the program. The names of these files can contain absolute or relative paths (relative to the directory in which you call ASPECT). In fact, file names that are do not contain any directory information (i.e., only the name of a file such as <myplugin.so> will not be found if they are not located in one of the directories listed in the \texttt{LD\_LIBRARY\_PATH} environment variable. In order to load a library in the current directory, use <./myplugin.so> instead.
+{\it Description:} A list of names of additional shared libraries that should be loaded upon starting up the program. The names of these files can contain absolute or relative paths (relative to the directory in which you call ASPECT). In fact, file names that are do not contain any directory information (i.e., only the name of a file such as $<$myplugin.so$>$ will not be found if they are not located in one of the directories listed in the \texttt{LD\_LIBRARY\_PATH} environment variable. In order to load a library in the current directory, use $<$./myplugin.so$>$ instead.
 
 The typical use of this parameter is so that you can implement additional plugins in your own directories, rather than in the ASPECT source directories. You can then simply compile these plugins into a shared library without having to re-compile all of ASPECT. See the section of the manual discussing writing extensions for more information on how to compile additional files into a shared library.
 
 
-{\it Possible values:} [List list of <[FileName (Type: input)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [FileName (Type: input)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Adiabatic surface temperature}
 \phantomsection\label{parameters:Adiabatic surface temperature}
 
@@ -367,6 +367,30 @@ For more information, see the section in the manual that discusses the general m
 
 
 
+\subsection{Parameters in section \tt Adiabatic conditions model}
+\label{parameters:Adiabatic_20conditions_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Model name}
+\phantomsection\label{parameters:Adiabatic conditions model/Model name}
+
+
+\index[prmindex]{Model name}
+\index[prmindexfull]{Adiabatic conditions model!Model name}
+{\it Value:} initial profile
+
+
+{\it Default:} initial profile
+
+
+{\it Description:} Select one of the following models:
+
+`initial profile': A model in which the adiabatic profile is calculated once at the start of the model run. The gravity is assumed to be in depth direction and the composition is evaluated at reference points, no lateral averaging is performed. All material parameters are used from the material model plugin.
+
+
+{\it Possible values:} [Selection initial profile ]
+\end{itemize}
+
 \subsection{Parameters in section \tt Boundary composition model}
 \label{parameters:Boundary_20composition_20model}
 
@@ -387,14 +411,14 @@ For more information, see the section in the manual that discusses the general m
 
 `box': A model in which the composition is chosen constant on all the sides of a box.
 
-`spherical constant': A model in which the composition is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Sherical constant'.
-
-`initial composition': A model in which the composition at the boundaryis chosen to be the same as given in the initialconditions.
+`initial composition': A model in which the composition at the boundary is chosen to be the same as given in the initial conditions.
 
 Because this class simply takes what the initial composition had described, this class can not know certain pieces of information such as the minimal and maximal composition on the boundary. For operations that require this, for example in postprocessing, this boundary composition model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary composition model/Initial composition''.
 
+`spherical constant': A model in which the composition is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Sherical constant'.
 
-{\it Possible values:} [Selection box|spherical constant|initial composition ]
+
+{\it Possible values:} [Selection box|initial composition|spherical constant ]
 \end{itemize}
 
 
@@ -418,7 +442,7 @@ Because this class simply takes what the initial composition had described, this
 {\it Description:} A comma separated list of composition boundary values at the bottom boundary (at minimal y-value in 2d, or minimal z-value in 3d). This list must have as many entries as there are compositional fields. Units: none.
 
 
-{\it Possible values:} [List list of <[Double -1.79769e+308...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double -1.79769e+308...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Left composition}
 \phantomsection\label{parameters:Boundary composition model/Box/Left composition}
 
@@ -434,7 +458,7 @@ Because this class simply takes what the initial composition had described, this
 {\it Description:} A comma separated list of composition boundary values at the left boundary (at minimal x-value). This list must have as many entries as there are compositional fields. Units: none.
 
 
-{\it Possible values:} [List list of <[Double -1.79769e+308...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double -1.79769e+308...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Right composition}
 \phantomsection\label{parameters:Boundary composition model/Box/Right composition}
 
@@ -450,7 +474,7 @@ Because this class simply takes what the initial composition had described, this
 {\it Description:} A comma separated list of composition boundary values at the right boundary (at maximal x-value). This list must have as many entries as there are compositional fields. Units: none.
 
 
-{\it Possible values:} [List list of <[Double -1.79769e+308...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double -1.79769e+308...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Top composition}
 \phantomsection\label{parameters:Boundary composition model/Box/Top composition}
 
@@ -466,7 +490,7 @@ Because this class simply takes what the initial composition had described, this
 {\it Description:} A comma separated list of composition boundary values at the top boundary (at maximal y-value in 2d, or maximal z-value in 3d). This list must have as many entries as there are compositional fields. Units: none.
 
 
-{\it Possible values:} [List list of <[Double -1.79769e+308...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double -1.79769e+308...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Boundary composition model/Initial composition}
@@ -563,18 +587,18 @@ Because this class simply takes what the initial composition had described, this
 
 {\it Description:} Select one of the following models:
 
-`constant': A model in which the temperature is chosen constant on a given boundary indicator.  Parameters are read from the subsection 'Constant'.
-
 `box': A model in which the temperature is chosen constant on all the sides of a box.
 
-`initial temperature': A model in which the temperature at the boundaryis chosen to be the same as given in the initialconditions.
+`constant': A model in which the temperature is chosen constant on a given boundary indicator.  Parameters are read from the subsection 'Constant'.
+
+`initial temperature': A model in which the temperature at the boundary is chosen to be the same as given in the initial conditions.
 
 Because this class simply takes what the initial temperature had described, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in postprocessing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary temperature model/Initial temperature''.
 
 `spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Spherical constant'.
 
 
-{\it Possible values:} [Selection constant|box|initial temperature|spherical constant ]
+{\it Possible values:} [Selection box|constant|initial temperature|spherical constant ]
 \end{itemize}
 
 
@@ -668,7 +692,7 @@ Because this class simply takes what the initial temperature had described, this
 {\it Description:} A comma separated list of mappings between boundary indicators and the temperature associated with the boundary indicators. The format for this list is ``indicator1 : value1, indicator2 : value2, ...'', where each indicator is a valid boundary indicator and each value is the temperature of that boundary.
 
 
-{\it Possible values:} [Map map of <[Integer range 0...255 (inclusive)]:[Double -1.79769e+308...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [Map map of [Integer range 0...255 (inclusive)]:[Double -1.79769e+308...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Boundary temperature model/Initial temperature}
@@ -984,7 +1008,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Description:} A list of integers smaller than or equal to the number of compositional fields. All compositional fields in this list will be normalized before the first timestep. The normalization is implemented in the following way: First, the sum of the fields to be normalized is calculated at every point and the global maximum is determined. Second, the compositional fields to be normalized are divided by this maximum.
 
 
-{\it Possible values:} [List list of <[Integer range 0...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Integer range 0...2147483647 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Names of fields}
 \phantomsection\label{parameters:Compositional fields/Names of fields}
 
@@ -1000,7 +1024,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Description:} A user-defined name for each of the compositional fields requested.
 
 
-{\it Possible values:} [List list of <[Anything]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Anything] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Number of fields}
 \phantomsection\label{parameters:Compositional fields/Number of fields}
 
@@ -1277,14 +1301,14 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 `box': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. The box geometry labels its 2*dim sides as follows: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries; in 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries. See also the documentation of the deal.II class ``GeometryInfo''.
 
+`sphere': Geometry model for sphere with a user specified radius.
+
 `spherical shell': A geometry representing a spherical shell or a pice of it. Inner and outer radii are read from the parameter file in subsection 'Spherical shell'.
 
 The model assigns boundary indicators as follows: In 2d, inner and outer boundaries get boundary indicators zero and one, and if the opening angle set in the input file is less than 360, then left and right boundaries are assigned indicators two and three. In 3d, inner and outer indicators are treated as in 2d. If the opening angle is chosen as 90 degrees, i.e., the domain is the intersection of a spherical shell and the first octant, then indicator 2 is at the face $x=0$, 3 at $y=0$, and 4 at $z=0$.
 
-`sphere': Geometry model for sphere with a user specified radius.
 
-
-{\it Possible values:} [Selection box|spherical shell|sphere ]
+{\it Possible values:} [Selection box|sphere|spherical shell ]
 \end{itemize}
 
 
@@ -1633,19 +1657,19 @@ The model assigns boundary indicators as follows: In 2d, inner and outer boundar
 
 `constant heating': Implementation of a model in which the heating rate is constant.
 
-`radioactive decay': Implementation of a model in which the internal heating rate is radioactive decaying in the following rule:
-\[(\text{initial concentration})\cdot 0.5^{\text{time}/(\text{half life})}\]
-The crust and mantle can have different concentrations, and the crust can be defined either by depth or by a certain compositional field.
-The formula is interpreted as having units W/kg.
-
 `function': Implementation of a model in which the heating rate is given in terms of an explicit formula that is elaborated in the parameters in section ``Heating model|Function''. 
 
 The formula is interpreted as having units W/kg.
 
 Since the symbol $t$ indicating time may appear in the formulas for the heating rate, it is interpreted as having units seconds unless the global parameter ``Use years in output instead of seconds'' is set.
 
+`radioactive decay': Implementation of a model in which the internal heating rate is radioactive decaying in the following rule:
+\[(\text{initial concentration})\cdot 0.5^{\text{time}/(\text{half life})}\]
+The crust and mantle can have different concentrations, and the crust can be defined either by depth or by a certain compositional field.
+The formula is interpreted as having units W/kg.
 
-{\it Possible values:} [Selection constant heating|radioactive decay|function ]
+
+{\it Possible values:} [Selection constant heating|function|radioactive decay ]
 \end{itemize}
 
 
@@ -1797,7 +1821,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Description:} Half decay times. Units: (Seconds), or (Years) if set 'use years instead of seconds'.
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Heating rates}
 \phantomsection\label{parameters:Heating model/Radioactive decay/Heating rates}
 
@@ -1813,7 +1837,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Description:} Heating rates of different elements (W/kg)
 
 
-{\it Possible values:} [List list of <[Double -1.79769e+308...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double -1.79769e+308...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Initial concentrations crust}
 \phantomsection\label{parameters:Heating model/Radioactive decay/Initial concentrations crust}
 
@@ -1829,7 +1853,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Description:} Initial concentrations of different elements (ppm)
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Initial concentrations mantle}
 \phantomsection\label{parameters:Heating model/Radioactive decay/Initial concentrations mantle}
 
@@ -1845,7 +1869,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Description:} Initial concentrations of different elements (ppm)
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Number of elements}
 \phantomsection\label{parameters:Heating model/Radioactive decay/Number of elements}
 
@@ -1882,28 +1906,28 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Description:} Select one of the following models:
 
-`solidus': This is a temperature initial condition that starts the model close to solidus, it also contains a user defined lithoshpere thickness and with perturbations  in both lithosphere thickness and temperature based on spherical harmonic functions. It was used as the initial condition of early Mars after the freezing of the magma ocean, using the solidus from Parmentier et al., Melt-solid segregation, Fractional magma ocean solidification, and implications for longterm planetary evolution. Luna and Planetary Science, 2007.
-
-`perturbed box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is chosen in such a way that the initial temperature is constant to one along the entire boundary.
-
-`polar box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is such that there are two poles on opposing corners of the box. 
-
-`inclusion shape perturbation': An initial temperature field in which there is an inclusion in a constant-temperature box field. The size, shape, gradient, position, and temperature of the inclusion are defined by parameters.
-
-`mandelbox': Fractal-shaped temperature field.
-
 `adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers, whose ages are given as input parameters.
-
-`spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following a six-fold pattern in angular direction from an otherwise spherically symmetric state.
-
-`spherical gaussian perturbation': An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection 'Spherical gaussian perturbation'.
 
 `function': Temperature is given in terms of an explicit formula
 
 `harmonic perturbation': An initial temperature field in which the temperature is perturbed following a harmonic function (spherical harmonic or sine depending on geometry and dimension) in lateral and radial direction from an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model).
 
+`inclusion shape perturbation': An initial temperature field in which there is an inclusion in a constant-temperature box field. The size, shape, gradient, position, and temperature of the inclusion are defined by parameters.
 
-{\it Possible values:} [Selection solidus|perturbed box|polar box|inclusion shape perturbation|mandelbox|adiabatic|spherical hexagonal perturbation|spherical gaussian perturbation|function|harmonic perturbation ]
+`mandelbox': Fractal-shaped temperature field.
+
+`perturbed box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is chosen in such a way that the initial temperature is constant to one along the entire boundary.
+
+`polar box': An initial temperature field in which the temperature is perturbed slightly from an otherwise constant value equal to one. The perturbation is such that there are two poles on opposing corners of the box. 
+
+`solidus': This is a temperature initial condition that starts the model close to solidus, it also contains a user defined lithoshpere thickness and with perturbations  in both lithosphere thickness and temperature based on spherical harmonic functions. It was used as the initial condition of early Mars after the freezing of the magma ocean, using the solidus from Parmentier et al., Melt-solid segregation, Fractional magma ocean solidification, and implications for longterm planetary evolution. Luna and Planetary Science, 2007.
+
+`spherical gaussian perturbation': An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection 'Spherical gaussian perturbation'.
+
+`spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following a six-fold pattern in angular direction from an otherwise spherically symmetric state.
+
+
+{\it Possible values:} [Selection adiabatic|function|harmonic perturbation|inclusion shape perturbation|mandelbox|perturbed box|polar box|solidus|spherical gaussian perturbation|spherical hexagonal perturbation ]
 \end{itemize}
 
 
@@ -2608,34 +2632,40 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 
 {\it Description:} Select one of the following models:
 
-`composition reaction': A material model that behaves in the same way as the simple material model, but includes two compositional fields and a reaction between them. Above a depth given in the input file, the first fields gets converted to the second field. 
-
 `Steinberger': This material model looks up the viscosity from the tables that correspond to the paper of Steinberger and Calderwood 2006 (``Models of large-scale viscous flow in the Earth's mantle with constraints from mineral physics and surface observations'', Geophys. J. Int., 167, 1461-1481, \url{http://dx.doi.org/10.1111/j.1365-246X.2006.03131.x}) and material data from a database generated by the thermodynamics code \texttt{Perplex}, see \url{http://www.perplex.ethz.ch/}. The default example data builds upon the thermodynamic database by Stixrude 2011 and assumes a pyrolitic composition by Ringwood 1988 but is easily replaceable by other data files. 
 
+`composition reaction': A material model that behaves in the same way as the simple material model, but includes two compositional fields and a reaction between them. Above a depth given in the input file, the first fields gets converted to the second field. 
+
 `latent heat': A material model that includes phase transitions and the possibility that latent heat is released or absorbed when material crosses one of the phase transitions of up to two different materials (compositional fields). This model implements a standard approximation of the latent heat terms following Christensen \& Yuen, 1986. The change of entropy is calculated as $Delta S = \gamma \frac{\Delta\rho}{\rho^2}$ with the Clapeyron slope $\gamma$ and the density change $\Delta\rho$ of the phase transition being input parameters. The model employs an analytic phase function in the form $X=0.5 \left( 1 + \tanh \left( \frac{\Delta p}{\Delta p_0} \right) \right)$ with $\Delta p = p - p_{transition} - \gamma \left( T - T_{transition} \right)$ and $\Delta p_0$ being the pressure difference over the width of the phase transition (specified as input parameter).
+
+`multicomponent': This model is for use with an arbitrary number of compositional fields, where each field represents a rock type which can have completely different properties from the others. However, each rock type itself has constant material properties.  The value of the  compositional field is interpreed as a volume fraction. If the sum of the fields is greater than one, they are renormalized.  If it is less than one, material properties  for ``background mantle'' make up the rest. When more than one field is present, the material properties are averaged arithmetically.  An exception is the viscosity, where the averaging should make more of a difference.  For this, the user selects between arithmetic, harmonic, geometric, or maximum composition averaging.
 
 `simple': A material model that has constant values for all coefficients but the density and viscosity. The defaults for all coefficients are chosen to be similar to what is believed to be correct for Earth's mantle. All of the values that define this model are read from a section ``Material model/Simple model'' in the input file, see Section~\ref{parameters:Material_20model/Simple_20model}.
 
 This model uses the following set of equations for the two coefficients that are non-constant: \begin{align}  \eta(p,T,\mathfrak c) &= \tau(T) \zeta(\mathfrak c) \eta_0, \\  \rho(p,T,\mathfrak c) &= \left(1-\alpha (T-T_0)\right)\rho_0 + \Delta\rho \; c_0,\end{align}where $c_0$ is the first component of the compositional vector $\mathfrak c$ if the model uses compositional fields, or zero otherwise. 
 
-The temperature pre-factor for the viscosity formula above is defined as \begin{align}  \tau(T) &= H\left(e^{\beta (T-T_0)/T_0}\right),  \qquad\qquad H(x) = \left\{                         \begin{cases}                            10^{-2} & \text{if}\; x<10^{-2}, \\                            x & \text{if}\; 10^{-2}\le x \le 10^2, \\                            10^{2} & \text{if}\; x>10^{2}, \\                         \end{cases}                       \right.\end{align} where $\beta$ corresponds to the input parameter ``Thermal viscosity exponent'' and $T_0$ to the parameter ``Reference temperature''. If you set $T_0=0$ in the input file, the thermal pre-factor $\tau(T)=1$.
+The temperature pre-factor for the viscosity formula above is defined as \begin{align}  \tau(T) &= H\left(e^{\beta (T-T_0)/T_0}\right),  \qquad\qquad H(x) = \begin{cases}                            10^{-2} & \text{if}\; x<10^{-2}, \\                            x & \text{if}\; 10^{-2}\le x \le 10^2, \\                            10^{2} & \text{if}\; x>10^{2}, \\                         \end{cases}\end{align} where $\beta$ corresponds to the input parameter ``Thermal viscosity exponent'' and $T_0$ to the parameter ``Reference temperature''. If you set $T_0=0$ in the input file, the thermal pre-factor $\tau(T)=1$.
 
 The compositional pre-factor for the viscosity is defined as \begin{align}  \zeta(\mathfrak c) &= \xi^{c_0}\end{align} if the model has compositional fields and equals one otherwise. $\xi$ corresponds to the parameter ``Composition viscosity prefactor'' in the input file.
 
 Finally, in the formula for the density, $\Delta\rho$ corresponds to the parameter ``Density differential for compositional field 1''.
 
-Note that this model uses the formulation that assumes an incompressible medium despite the fact that the density follows the law $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$. 
+Note that this model uses the formulation that assumes an incompressible medium despite the fact that the density follows the law $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}}))$. 
+
+\note{Despite its name, this material model is not exactly ``simple'', as indicated by the formulas above. While it was originally intended to be simple, it has over time acquired all sorts of temperature and compositional dependencies that weren't initially intended. Consequently, there is now a ``simpler'' material model that now fills the role the current model was originally intended to fill.}
 
 `simple compressible': A material model that has constant values for all coefficients but the density. The defaults for all coefficients are chosen to be similar to what is believed to be correct for Earth's mantle. All of the values that define this model are read from a section ``Material model/Simple compressible model'' in the input file, see Section~\ref{parameters:Material_20model/Simple_20compressible_20model}.
 
-This model uses the following equations for the density: \begin{align}  \rho(p,T) = &rho_0             * &\left(1-\alpha (T-T_a)\right)              * &\exp{\beta (P-P_0))}\end{align}
+This model uses the following equations for the density: \begin{align}  \rho(p,T) = \rho_0              \left(1-\alpha (T-T_a)\right)               \exp{\beta (P-P_0))}\end{align}
 
-`multicomponent': This model is for use with an arbitrary number of compositional fields, where each field represents a rock type which can have completely different properties from the others. However, each rock type itself has constant material properties.  The value of the  compositional field is interpreed as a volume fraction. If the sum of the fields is greater than one, they are renormalized.  If it is less than one, material properties  for ``background mantle'' make up the rest. When more than one field is present, the material properties are averaged arithmetically.  An exception is the viscosity, where the averaging should make more of a difference.  For this, the user selects between arithmetic, harmonic, geometric, or maximum composition averaging.
+`simpler': A material model that has constant values except for density, which depends linearly on temperature: \begin{align}  \rho(p,T) &= \left(1-\alpha (T-T_0)\right)\rho_0.\end{align}
+
+\note{This material model fills the role the ``simple'' material model was originally intended to fill, before the latter acquired all sorts of complicated temperature and compositional dependencies.}
 
 `table': A material model that reads tables of pressure and temperature dependent material coefficients from files. The default values for this model's runtime parameters use a material description taken from the paper \textit{Complex phase distribution and seismic velocity structure of the transition zone: Convection model predictions for a magnesium-endmember olivine-pyroxene mantle} by Michael H.G. Jacobs and Arie P. van den Berg, Physics of the Earth and Planetary Interiors, Volume 186, Issues 1-2, May 2011, Pages 36--48. See \url{http://www.sciencedirect.com/science/article/pii/S0031920111000422}.
 
 
-{\it Possible values:} [Selection composition reaction|Steinberger|latent heat|simple|simple compressible|multicomponent|table ]
+{\it Possible values:} [Selection Steinberger|composition reaction|latent heat|multicomponent|simple|simple compressible|simpler|table ]
 \end{itemize}
 
 
@@ -2857,7 +2887,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} A list of activation enthalpies for the temperature dependence of the viscosity of each phase. List must have one more entry than Phase transition depths. Units: $1/K$.
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Composition viscosity prefactor}
 \phantomsection\label{parameters:Material model/Latent heat/Composition viscosity prefactor}
 
@@ -2905,7 +2935,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} A list of phases, which correspond to the Phase transition density jumps. The density jumps occur only in the phase that is given by this phase value. 0 stands for the 1st compositional fields, 1 for the second compositional field and -1 for none of them. List must have the same number of entries as Phase transition depths. Units: $Pa/K$.
 
 
-{\it Possible values:} [List list of <[Integer range 0...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Integer range 0...2147483647 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Density differential for compositional field 1}
 \phantomsection\label{parameters:Material model/Latent heat/Density differential for compositional field 1}
 
@@ -2937,7 +2967,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: $Pa/K$.
 
 
-{\it Possible values:} [List list of <[Double -1.79769e+308...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double -1.79769e+308...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Phase transition density jumps}
 \phantomsection\label{parameters:Material model/Latent heat/Phase transition density jumps}
 
@@ -2953,7 +2983,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} A list of density jumps at each phase transition. A positive value means that the density increases with depth. The corresponding entry in Corresponding phase for density jump determines if the density jump occurs in peridotite, eclogite or none of them.List must have the same number of entries as Phase transition depths. Units: $kg/m^3$.
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Phase transition depths}
 \phantomsection\label{parameters:Material model/Latent heat/Phase transition depths}
 
@@ -2969,7 +2999,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} A list of depths where phase transitions occur. Values must monotonically increase. Units: $m$.
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Phase transition temperatures}
 \phantomsection\label{parameters:Material model/Latent heat/Phase transition temperatures}
 
@@ -2985,7 +3015,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition ocurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: $K$.
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Phase transition widths}
 \phantomsection\label{parameters:Material model/Latent heat/Phase transition widths}
 
@@ -3001,7 +3031,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} A list of widths for each phase transition. The phase functions are scaled with these values, leading to a jump betwen phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: $m$.
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Reference density}
 \phantomsection\label{parameters:Material model/Latent heat/Reference density}
 
@@ -3129,7 +3159,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} A list of prefactors for the viscosity for each phase. The reference viscosity will be multiplied by this factor to get the corresponding viscosity for each phase. List must have one more entry than Phase transition depths. Units: non-dimensional.
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Material model/Multicomponent}
@@ -3151,7 +3181,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} List of densities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value.  Units: $kg / m^3$
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Reference temperature}
 \phantomsection\label{parameters:Material model/Multicomponent/Reference temperature}
 
@@ -3183,7 +3213,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} List of specific heats for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $J /kg /K$
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Thermal conductivities}
 \phantomsection\label{parameters:Material model/Multicomponent/Thermal conductivities}
 
@@ -3199,7 +3229,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} List of thermal conductivities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $W/m/K$ 
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Thermal expansivities}
 \phantomsection\label{parameters:Material model/Multicomponent/Thermal expansivities}
 
@@ -3215,7 +3245,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} List of thermal expansivities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $1/K$
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Viscosities}
 \phantomsection\label{parameters:Material model/Multicomponent/Viscosities}
 
@@ -3231,7 +3261,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} List of viscosities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $Pa s$
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Viscosity averaging scheme}
 \phantomsection\label{parameters:Material model/Multicomponent/Viscosity averaging scheme}
 
@@ -3502,6 +3532,108 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
 
+\subsection{Parameters in section \tt Material model/Simpler model}
+\label{parameters:Material_20model/Simpler_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Reference density}
+\phantomsection\label{parameters:Material model/Simpler model/Reference density}
+
+
+\index[prmindex]{Reference density}
+\index[prmindexfull]{Material model!Simpler model!Reference density}
+{\it Value:} 3300
+
+
+{\it Default:} 3300
+
+
+{\it Description:} Reference density $\rho_0$. Units: $kg/m^3$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference specific heat}
+\phantomsection\label{parameters:Material model/Simpler model/Reference specific heat}
+
+
+\index[prmindex]{Reference specific heat}
+\index[prmindexfull]{Material model!Simpler model!Reference specific heat}
+{\it Value:} 1250
+
+
+{\it Default:} 1250
+
+
+{\it Description:} The value of the specific heat $cp$. Units: $J/kg/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference temperature}
+\phantomsection\label{parameters:Material model/Simpler model/Reference temperature}
+
+
+\index[prmindex]{Reference temperature}
+\index[prmindexfull]{Material model!Simpler model!Reference temperature}
+{\it Value:} 293
+
+
+{\it Default:} 293
+
+
+{\it Description:} The reference temperature $T_0$. The reference temperature is used in the density formula. Units: $K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal conductivity}
+\phantomsection\label{parameters:Material model/Simpler model/Thermal conductivity}
+
+
+\index[prmindex]{Thermal conductivity}
+\index[prmindexfull]{Material model!Simpler model!Thermal conductivity}
+{\it Value:} 4.7
+
+
+{\it Default:} 4.7
+
+
+{\it Description:} The value of the thermal conductivity $k$. Units: $W/m/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal expansion coefficient}
+\phantomsection\label{parameters:Material model/Simpler model/Thermal expansion coefficient}
+
+
+\index[prmindex]{Thermal expansion coefficient}
+\index[prmindexfull]{Material model!Simpler model!Thermal expansion coefficient}
+{\it Value:} 2e-5
+
+
+{\it Default:} 2e-5
+
+
+{\it Description:} The value of the thermal expansion coefficient $\beta$. Units: $1/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Viscosity}
+\phantomsection\label{parameters:Material model/Simpler model/Viscosity}
+
+
+\index[prmindex]{Viscosity}
+\index[prmindexfull]{Material model!Simpler model!Viscosity}
+{\it Value:} 5e24
+
+
+{\it Default:} 5e24
+
+
+{\it Description:} The value of the viscosity $\eta$. Units: $kg/m/s$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
+
 \subsection{Parameters in section \tt Material model/Steinberger model}
 \label{parameters:Material_20model/Steinberger_20model}
 
@@ -3601,7 +3733,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} The file names of the material data. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields). 
 
 
-{\it Possible values:} [List list of <[Anything]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Anything] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Radial viscosity file name}
 \phantomsection\label{parameters:Material model/Steinberger model/Radial viscosity file name}
 
@@ -4159,7 +4291,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Description:} A list of times so that if the end time of a time step is beyond this time, an additional round of mesh refinement is triggered. This is mostly useful to make sure we can get through the initial transient phase of a simulation on a relatively coarse mesh, and then refine again when we are in a time range that we are interested in and where we would like to use a finer mesh. Units: Each element of the list has units years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Coarsening fraction}
 \phantomsection\label{parameters:Mesh refinement/Coarsening fraction}
 
@@ -4282,7 +4414,7 @@ You can experimentally play with these scaling factors by choosing to output the
 If the list of indicators given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are indicators chosen in the ``Strategy'' parameter.
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Refinement fraction}
 \phantomsection\label{parameters:Mesh refinement/Refinement fraction}
 
@@ -4331,28 +4463,28 @@ If the list of indicators given in this parameter is empty, then this indicates 
 
 The following criteria are available:
 
-`viscosity': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the logarithm of the viscosity, $\log\eta$. (We choose the logarithm of the viscosity because it can vary by orders of magnitude.)Because this quantity may not be a continuous function ($\eta$ may be a discontinuous function along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
+`composition': A mesh refinement criterion that computes refinement indicators from the compositional fields. If there is more than one compositional field, then it simply takes the sum of the indicators computed from each of the compositional field.
 
-`velocity': A mesh refinement criterion that computes refinement indicators from the velocity field.
+`density': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the density, $\rho$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
+
+`minimum refinement function': A mesh refinement criterion that ensures a minimum refinement level described by an explicit formula with the depth as argument. After reading in the function, its values are rounded to the nearest integer. 
+
+`nonadiabatic temperature': A mesh refinement criterion that computes refinement indicators from the excess temperature(difference between temperature and adiabatic temperature.
 
 `temperature': A mesh refinement criterion that computes refinement indicators from the temperature field.
 
-`density': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the density, $\rho$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
+`thermal energy density': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the thermal energy density, $\rho C_p T$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1.5}$ where $h_K$ is the diameter of each cell. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
 `topography': A class that implements a mesh refinement criterion, which always flags all cells in the uppermost layer for refinement. This is useful to provide high accuracy for processes at or close to the surface.
 
 To use this refinement criterion, you may want to combine it with other refinement criteria, setting the 'Normalize individual refinement criteria' flag and using the 'max' setting for 'Refinement criteria merge operation'.
 
-`composition': A mesh refinement criterion that computes refinement indicators from the compositional fields. If there is more than one compositional field, then it simply takes the sum of the indicators computed from each of the compositional field.
+`velocity': A mesh refinement criterion that computes refinement indicators from the velocity field.
 
-`minimum refinement function': A mesh refinement criterion that ensures a minimum refinement level described by an explicit formula with the depth as argument. After reading in the function, its values are rounded to the nearest integer. 
-
-`thermal energy density': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the thermal energy density, $\rho C_p T$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1.5}$ where $h_K$ is the diameter of each cell. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
-
-`nonadiabatic temperature': A mesh refinement criterion that computes refinement indicators from the excess temperature(difference between temperature and adiabatic temperature.
+`viscosity': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the logarithm of the viscosity, $\log\eta$. (We choose the logarithm of the viscosity because it can vary by orders of magnitude.)Because this quantity may not be a continuous function ($\eta$ may be a discontinuous function along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
 
-{\it Possible values:} [MultipleSelection viscosity|velocity|temperature|density|topography|composition|minimum refinement function|thermal energy density|nonadiabatic temperature ]
+{\it Possible values:} [MultipleSelection composition|density|minimum refinement function|nonadiabatic temperature|temperature|thermal energy density|topography|velocity|viscosity ]
 \item {\it Parameter name:} {\tt Time steps between mesh refinement}
 \phantomsection\label{parameters:Mesh refinement/Time steps between mesh refinement}
 
@@ -4394,7 +4526,7 @@ To use this refinement criterion, you may want to combine it with other refineme
 If the list of scaling factors given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are compositional fields.
 
 
-{\it Possible values:} [List list of <[Double 0...1.79769e+308 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Mesh refinement/Minimum refinement function}
@@ -4476,7 +4608,7 @@ If the function you are describing represents a vector-valued function with mult
 This parameter only describes which boundaries have a fixed composition, but not what composition should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryComposition group, unless an existing implementation in this group already provides what you want.
 
 
-{\it Possible values:} [List list of <[Integer range 0...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Integer range 0...2147483647 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Fixed temperature boundary indicators}
 \phantomsection\label{parameters:Model settings/Fixed temperature boundary indicators}
 
@@ -4494,7 +4626,7 @@ This parameter only describes which boundaries have a fixed composition, but not
 This parameter only describes which boundaries have a fixed temperature, but not what temperature should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryTemperature group, unless an existing implementation in this group already provides what you want.
 
 
-{\it Possible values:} [List list of <[Integer range 0...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Integer range 0...2147483647 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Free surface boundary indicators}
 \phantomsection\label{parameters:Model settings/Free surface boundary indicators}
 
@@ -4510,7 +4642,7 @@ This parameter only describes which boundaries have a fixed temperature, but not
 {\it Description:} A comma separated list of integers denoting those boundaries where there is a free surface. Set to nothing to disable all free surface computations.
 
 
-{\it Possible values:} [List list of <[Integer range 0...255 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Integer range 0...255 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Include adiabatic heating}
 \phantomsection\label{parameters:Model settings/Include adiabatic heating}
 
@@ -4578,7 +4710,7 @@ The format of valid entries for this parameter is that of a map given as ``key1 
 Note that the no-slip boundary condition is a special case of the current one where the prescribed velocity happens to be zero. It can thus be implemented by indicating that a particular boundary is part of the ones selected using the current parameter and using ``zero velocity'' as the boundary values. Alternatively, you can simply list the part of the boundary on which the velocity is to be zero with the parameter ``Zero velocity boundary indicator'' in the current parameter section.
 
 
-{\it Possible values:} [Map map of <[Anything]:[Selection zero velocity|gplates|function ]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [Map map of [Anything]:[Selection function|gplates|zero velocity ] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Remove nullspace}
 \phantomsection\label{parameters:Model settings/Remove nullspace}
 
@@ -4611,7 +4743,7 @@ Note that while more than operation can be selected it only makes sense to pick 
 {\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is tangential and unrestrained, i.e., free-slip where no external forces act to prescribe a particular tangential velocity (although there is a force that requires the flow to be tangential).
 
 
-{\it Possible values:} [List list of <[Integer range 0...255 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Integer range 0...255 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Zero velocity boundary indicators}
 \phantomsection\label{parameters:Model settings/Zero velocity boundary indicators}
 
@@ -4627,7 +4759,7 @@ Note that while more than operation can be selected it only makes sense to pick 
 {\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is zero.
 
 
-{\it Possible values:} [List list of <[Integer range 0...255 (inclusive)]> of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Integer range 0...255 (inclusive)] of length 0...4294967295 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess}
@@ -4650,35 +4782,11 @@ Note that while more than operation can be selected it only makes sense to pick 
 
 The following postprocessors are available:
 
-`velocity boundary statistics': A postprocessor that computes some statistics about the velocity along the boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the min and max velocity magnitude is computed.
-
-`velocity statistics for the table model': A postprocessor that computes some statistics about the velocity field.
-
-`heat flux statistics for the table model': A postprocessor that computes some statistics about the heat flux across boundaries.
-
-`viscous dissipation statistics': A postprocessor that computes the viscous dissipationfor the whole domain as: $\frac{1}{2} \int_{V} \sigma : \dot{\epsilon}dV$ = $\int_{V} (-p\nabla \cdot u+2\mu\dot{\epsilon}:\dot{\epsilon} - \frac{2\mu}{3}(\nabla\cdot u)^{2}) dV$. 
-
-`visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
-
-`temperature statistics': A postprocessor that computes some statistics about the temperature field.
+`basic statistics': A postprocessor that computes some simplified statistics like the Rayleigh number and other quantities that only make sense in certain model setups.
 
 `composition statistics': A postprocessor that computes some statistics about the compositional fields, if present in this simulation. In particular, it computes maximal and minimal values of each field, as well as the total mass contained in this field as defined by the integral $m_i(t) = \int_\Omega c_i(\mathbf x,t) \; dx$.
 
-`topography': A postprocessor intended for use with a free surface.  After every step, it loops over all the vertices on the top surface and determines the maximum and minimum topography relative to a reference datum (initial box height for a box geometry model or initial radius for a sphere/spherical shell geometry model).  Outputs topography in meters
-
-`heat flux statistics': A postprocessor that computes some statistics about the (conductive) heat flux across boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the heat flux is computed in outward direction, i.e., from the domain to the outside, using the formula $\int_{\Gamma_i} k \nabla T \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $k$ is the thermal conductivity as reported by the material model, $T$ is the temperature, and $\mathbf n$ is the outward normal. Note that the quantity so computed does not include any energy transported across the boundary by material transport in cases where $\mathbf u \cdot \mathbf n \neq 0$.
-
-As stated, this postprocessor computes the \textit{outbound} heat flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
-
-`depth average': A postprocessor that computes depth averaged quantities and writes them into a file <depth\_average.ext> in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section \texttt{Postprocess/Depth average} in the input file. 
-
-`basic statistics': A postprocessor that computes some simplified statistics like the Rayleigh number and other quantities that only make sense in certain model setups.
-
-`tracers': Postprocessor that propagates passive tracer particles based on the velocity field.
-
-`pressure statistics': A postprocessor that computes some statistics about the pressure field.
-
-`velocity statistics': A postprocessor that computes some statistics about the velocity field.
+`depth average': A postprocessor that computes depth averaged quantities and writes them into a file $<$depth\_average.ext$>$ in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section \texttt{Postprocess/Depth average} in the input file. 
 
 `dynamic topography': A postprocessor that computes a measure of dynamic topography based on the stress at the surface. The data is written into a file named 'dynamic\_topography.NNNNN' in the output directory, where NNNNN is the number of the time step.
 
@@ -4686,12 +4794,36 @@ The exact approach works as follows: At the centers of all cells that sit along 
 
 (As a side note, the postprocessor chooses the cell center instead of the center of the cell face at the surface, where we really are interested in the quantity, since this often gives better accuracy. The results should in essence be the same, though.)
 
+`heat flux statistics': A postprocessor that computes some statistics about the (conductive) heat flux across boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the heat flux is computed in outward direction, i.e., from the domain to the outside, using the formula $\int_{\Gamma_i} k \nabla T \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $k$ is the thermal conductivity as reported by the material model, $T$ is the temperature, and $\mathbf n$ is the outward normal. Note that the quantity so computed does not include any energy transported across the boundary by material transport in cases where $\mathbf u \cdot \mathbf n \neq 0$.
+
+As stated, this postprocessor computes the \textit{outbound} heat flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
+
+`heat flux statistics for the table model': A postprocessor that computes some statistics about the heat flux across boundaries.
+
 `internal heating statistics': A postprocessor that computes some statistics about internal heating, averaged by volume. 
+
+`pressure statistics': A postprocessor that computes some statistics about the pressure field.
 
 `spherical velocity statistics': A postprocessor that computes radial, tangential and total RMS velocity.
 
+`temperature statistics': A postprocessor that computes some statistics about the temperature field.
 
-{\it Possible values:} [MultipleSelection velocity boundary statistics|velocity statistics for the table model|heat flux statistics for the table model|viscous dissipation statistics|visualization|temperature statistics|composition statistics|topography|heat flux statistics|depth average|basic statistics|tracers|pressure statistics|velocity statistics|dynamic topography|internal heating statistics|spherical velocity statistics|all ]
+`topography': A postprocessor intended for use with a free surface.  After every step, it loops over all the vertices on the top surface and determines the maximum and minimum topography relative to a reference datum (initial box height for a box geometry model or initial radius for a sphere/spherical shell geometry model).  Outputs topography in meters
+
+`tracers': Postprocessor that propagates passive tracer particles based on the velocity field.
+
+`velocity boundary statistics': A postprocessor that computes some statistics about the velocity along the boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the min and max velocity magnitude is computed.
+
+`velocity statistics': A postprocessor that computes some statistics about the velocity field.
+
+`velocity statistics for the table model': A postprocessor that computes some statistics about the velocity field.
+
+`viscous dissipation statistics': A postprocessor that computes the viscous dissipationfor the whole domain as: $\frac{1}{2} \int_{V} \sigma : \dot{\epsilon}dV$ = $\int_{V} (-p\nabla \cdot u+2\mu\dot{\epsilon}:\dot{\epsilon} - \frac{2\mu}{3}(\nabla\cdot u)^{2}) dV$. 
+
+`visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
+
+
+{\it Possible values:} [MultipleSelection basic statistics|composition statistics|depth average|dynamic topography|heat flux statistics|heat flux statistics for the table model|internal heating statistics|pressure statistics|spherical velocity statistics|temperature statistics|topography|tracers|velocity boundary statistics|velocity statistics|velocity statistics for the table model|viscous dissipation statistics|visualization|all ]
 \end{itemize}
 
 
@@ -4864,50 +4996,50 @@ Units: years if the 'Use years in output instead of seconds' parameter is set; s
 
 The following postprocessors are available:
 
-`nonadiabatic pressure': A visualization output object that generates output for the non-adiabatic component of the pressure.
-
-`melt fraction': A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point (batch melting). Does not take into account latent heat.
-
-`strain rate': A visualization output object that generates output for the norm of the strain rate, i.e., for the quantity $\sqrt{\varepsilon(\mathbf u):\varepsilon(\mathbf u)}$ in the incompressible case and $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]}$ in the compressible case.
+`Vp anomaly': A visualization output object that generates output showing the anomaly in the seismic compression wave speed $V_p$ as a spatially variable function with one value per cell. This anomaly is shown as a percentage change relative to the average value of $V_p$ at the depth of this cell.
 
 `Vs anomaly': A visualization output object that generates output showing the anomaly in the seismic shear wave speed $V_s$ as a spatially variable function with one value per cell. This anomaly is shown as a percentage change relative to the average value of $V_s$ at the depth of this cell.
 
-`Vp anomaly': A visualization output object that generates output showing the anomaly in the seismic compression wave speed $V_p$ as a spatially variable function with one value per cell. This anomaly is shown as a percentage change relative to the average value of $V_p$ at the depth of this cell.
-
-`seismic vs': A visualization output object that generates output for the seismic S-wave speed.
-
-`specific heat': A visualization output object that generates output for the specific heat $C_p$.
-
-`viscosity': A visualization output object that generates output for the viscosity.
-
-`friction heating': A visualization output object that generates output for the amount of friction heating often referred to as $\tau:\epsilon$. More concisely, in the incompressible case, the quantity that is output is defined as $\eta \varepsilon(\mathbf u):\varepsilon(\mathbf u)$ where $\eta$ is itself a function of temperature, pressure and strain rate. In the compressible case, the quantity that's computed is $\eta [\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]$.
-
-`density': A visualization output object that generates output for the density.
-
 `artificial viscosity': A visualization output object that generates output showing the value of the artificial viscosity on each cell.
 
-`viscosity ratio': A visualization output object that generates output for the ratio between dislocation viscosity and diffusion viscosity.
-
-`error indicator': A visualization output object that generates output showing the estimated error or other mesh refinement indicator as a spatially variable function with one value per cell.
-
-`thermal expansivity': A visualization output object that generates output for the thermal expansivity.
-
-`seismic vp': A visualization output object that generates output for the seismic P-wave speed.
+`density': A visualization output object that generates output for the density.
 
 `dynamic topography': A visualization output object that generates output for the dynamic topography. The approach to determine the dynamic topography requires us to compute the stress tensor and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)-\frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{\|\mathbf g\| \rho}$ where $\rho$ is the density at the cell center.
 
 Strictly speaking, the dynamic topography is of course a quantity that is only of interest at the surface. However, we compute it everywhere to make things fit into the framework within which we produce data for visualization. You probably only want to visualize whatever data this postprocessor generates at the surface of your domain and simply ignore the rest of the data generated.
 
+`error indicator': A visualization output object that generates output showing the estimated error or other mesh refinement indicator as a spatially variable function with one value per cell.
+
+`friction heating': A visualization output object that generates output for the amount of friction heating often referred to as $\tau:\epsilon$. More concisely, in the incompressible case, the quantity that is output is defined as $\eta \varepsilon(\mathbf u):\varepsilon(\mathbf u)$ where $\eta$ is itself a function of temperature, pressure and strain rate. In the compressible case, the quantity that's computed is $\eta [\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]$.
+
+`internal heating': A visualization output object that generates output for the internal heating rate. Units: W/kg
+
+`melt fraction': A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point (batch melting). Does not take into account latent heat.
+
+`nonadiabatic pressure': A visualization output object that generates output for the non-adiabatic component of the pressure.
+
 `nonadiabatic temperature': A visualization output object that generates output for the non-adiabatic component of the pressure.
 
 `partition': A visualization output object that generates output for the parallel partition that every cell of the mesh is associated with.
 
+`seismic vp': A visualization output object that generates output for the seismic P-wave speed.
+
+`seismic vs': A visualization output object that generates output for the seismic S-wave speed.
+
+`specific heat': A visualization output object that generates output for the specific heat $C_p$.
+
+`strain rate': A visualization output object that generates output for the norm of the strain rate, i.e., for the quantity $\sqrt{\varepsilon(\mathbf u):\varepsilon(\mathbf u)}$ in the incompressible case and $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]}$ in the compressible case.
+
+`thermal expansivity': A visualization output object that generates output for the thermal expansivity.
+
 `thermodynamic phase': A visualization output object that generates output for the integer number of the phase that is thermodynamically stable at the temperature and pressure of the current point.
 
-`internal heating': A visualization output object that generates output for the internal heating rate. Units: W/kg
+`viscosity': A visualization output object that generates output for the viscosity.
+
+`viscosity ratio': A visualization output object that generates output for the ratio between dislocation viscosity and diffusion viscosity.
 
 
-{\it Possible values:} [MultipleSelection nonadiabatic pressure|melt fraction|strain rate|Vs anomaly|Vp anomaly|seismic vs|specific heat|viscosity|friction heating|density|artificial viscosity|viscosity ratio|error indicator|thermal expansivity|seismic vp|dynamic topography|nonadiabatic temperature|partition|thermodynamic phase|internal heating|all ]
+{\it Possible values:} [MultipleSelection Vp anomaly|Vs anomaly|artificial viscosity|density|dynamic topography|error indicator|friction heating|internal heating|melt fraction|nonadiabatic pressure|nonadiabatic temperature|partition|seismic vp|seismic vs|specific heat|strain rate|thermal expansivity|thermodynamic phase|viscosity|viscosity ratio|all ]
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 
@@ -5326,16 +5458,16 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 {\it Description:} A comma separated list of termination criteria that will determine when the simulation should end. Whether explicitly stated or not, the ``end time'' termination criterion will always be used.The following termination criteria are available:
 
-`end time': Terminate the simulation once the end time specified in the input file has been reached. Unlike all other termination criteria, this criterion is \textit{always} active, whether it has been explicitly selected or not in the input file (this is done to preserve historical behavior of \aspect{}, but it also likely does not inconvenience anyone since it is what would be selected in most cases anyway).
-
 `end step': Terminate the simulation once the specified timestep has been reached. 
 
-`user request': Terminate the simulation gracefully when a file with a specified name appears in the output directory. This allows the user to gracefully exit the simulation at any time by simply creating such a file using, for example, \texttt{touch output/terminate}. The file's location is chosen to be in the output directory, rather than in a generic location such as the Aspect directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
+`end time': Terminate the simulation once the end time specified in the input file has been reached. Unlike all other termination criteria, this criterion is \textit{always} active, whether it has been explicitly selected or not in the input file (this is done to preserve historical behavior of \aspect{}, but it also likely does not inconvenience anyone since it is what would be selected in most cases anyway).
 
 `steady state velocity': A criterion that terminates the simulation when the RMS of the velocity field stays within a certain range for a specified period of time.
 
+`user request': Terminate the simulation gracefully when a file with a specified name appears in the output directory. This allows the user to gracefully exit the simulation at any time by simply creating such a file using, for example, \texttt{touch output/terminate}. The file's location is chosen to be in the output directory, rather than in a generic location such as the Aspect directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
 
-{\it Possible values:} [MultipleSelection end time|end step|user request|steady state velocity|all ]
+
+{\it Possible values:} [MultipleSelection end step|end time|steady state velocity|user request|all ]
 \end{itemize}
 
 

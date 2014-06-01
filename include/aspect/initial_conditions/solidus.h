@@ -50,8 +50,8 @@ namespace aspect
         double T(const double p, const double radius) const;
 
         /**
-         * Is the melting curve denpendent on radius.
-         * The melting curve can be dependent on radius or pressure.
+         * Is the melting curve denpendent on radius. The melting curve can be
+         * dependent on radius or pressure.
          */
         bool is_radius;
 
@@ -78,7 +78,8 @@ namespace aspect
 
 
     /**
-     * A class that implements temperature initial conditions based on solidus provided by a data file.
+     * A class that implements temperature initial conditions based on solidus
+     * provided by a data file.
      *
      * @ingroup InitialConditionsModels
      */
@@ -105,8 +106,7 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter
-         * file.
+         * Read the parameters this class declares from the parameter file.
          */
         virtual
         void
@@ -135,7 +135,8 @@ namespace aspect
         double       magnitude_lith;
 
         /**
-         * Temperature difference from solidus, so the initial condition can be super-solidus or sub-solidus.
+         * Temperature difference from solidus, so the initial condition can
+         * be super-solidus or sub-solidus.
          */
         double       deltaT;
 

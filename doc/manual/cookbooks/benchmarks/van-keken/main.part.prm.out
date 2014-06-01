@@ -1,0 +1,17 @@
+subsection %%\hyperref[parameters:Material_20model]{Material model}%
+  set %%\hyperref[parameters:Material model/Model name]{Model name}% = simple%% \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+  subsection %%\hyperref[parameters:Material_20model/Simple_20model]{Simple model}%
+    set %%\hyperref[parameters:Material model/Simple model/Viscosity]{Viscosity}%                     = 1e2%% \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Simple model!Viscosity} %
+    set %%\hyperref[parameters:Material model/Simple model/Thermal expansion coefficient]{Thermal expansion coefficient}% = 0%% \index[prmindex]{Thermal expansion coefficient} \index[prmindexfull]{Material model!Simple model!Thermal expansion coefficient} %
+    set %%\hyperref[parameters:Material model/Simple model/Density differential for compositional field 1]{Density differential for compositional field 1}% = -10%% \index[prmindex]{Density differential for compositional field 1} \index[prmindexfull]{Material model!Simple model!Density differential for compositional field 1} %
+  end
+end
+
+subsection %%\hyperref[parameters:Compositional_20initial_20conditions]{Compositional initial conditions}%
+  set %%\hyperref[parameters:Compositional initial conditions/Model name]{Model name}% = function%% \index[prmindex]{Model name} \index[prmindexfull]{Compositional initial conditions!Model name} %
+  subsection %%\hyperref[parameters:Compositional_20initial_20conditions/Function]{Function}%
+    set %%\hyperref[parameters:Compositional initial conditions/Function/Variable names]{Variable names}%      = x,z%% \index[prmindex]{Variable names} \index[prmindexfull]{Compositional initial conditions!Function!Variable names} %
+    set %%\hyperref[parameters:Compositional initial conditions/Function/Function constants]{Function constants}%  = pi=3.14159%% \index[prmindex]{Function constants} \index[prmindexfull]{Compositional initial conditions!Function!Function constants} %
+    set %%\hyperref[parameters:Compositional initial conditions/Function/Function expression]{Function expression}% = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 0 , 1 )%% \index[prmindex]{Function expression} \index[prmindexfull]{Compositional initial conditions!Function!Function expression} %
+  end
+end

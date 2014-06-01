@@ -9,9 +9,11 @@
 # 9: Iterations for composition solver 2
 # 10: Iterations for composition solver 3
 # 11: Iterations for Stokes solver
-# 12: Time step size (years)
-# 13: Visualization file name
-0 0.0000e+00 4096 37667 16705 50115  0  0  0  0 36 1.1342e+05                                                   "" 
-0 0.0000e+00 1204 11635  5153 15459  0  0  0  0 35 5.6884e+04 output-multicomponent_max_composition/solution-00000 
-1 5.6884e+04 1204 11635  5153 15459 10 11 14 11 31 5.5840e+04                                                   "" 
-2 1.1272e+05 1204 11635  5153 15459 10 11 11 10 31 5.5534e+04                                                   "" 
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
+# 14: Time step size (years)
+# 15: Visualization file name
+0 0.0000e+00 4096 37667 16705 50115  0  0  0  0 40 163 38 1.1342e+05                                                   "" 
+0 0.0000e+00 1198 11581  5129 15387  0  0  0  0 41 176 52 5.6887e+04 output-multicomponent_max_composition/solution-00000 
+1 5.6887e+04 1198 11581  5129 15387 10 11 14 11 38 117 36 5.5838e+04                                                   "" 
+2 1.1272e+05 1198 11581  5129 15387 10 11 11 10 37  95 32 5.5529e+04                                                   "" 

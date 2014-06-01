@@ -32,7 +32,8 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes some statistics about the internal heating rate.
+     * A postprocessor that computes some statistics about the internal
+     * heating rate.
      *
      * @ingroup Postprocessing
      */

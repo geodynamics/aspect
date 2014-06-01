@@ -44,13 +44,13 @@ namespace aspect
       // use either the user-input reference temperature as background temperature
       // (incompressible model) or the adiabatic temperature profile (compressible model)
       const double background_temperature = this->get_material_model().is_compressible() ?
-                                            this->adiabatic_conditions->temperature(position) :
+                                            this->get_adiabatic_conditions().temperature(position) :
                                             reference_temperature;
 
       // s = fraction of the way from
       // the inner to the outer
       // boundary; 0<=s<=1
-      const double s = this->geometry_model->depth(position) / this->geometry_model->maximal_depth();
+      const double s = this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth();
 
       const double depth_perturbation = std::sin(vertical_wave_number*s*numbers::PI);
 
@@ -58,7 +58,7 @@ namespace aspect
       double lateral_perturbation = 0.0;
 
       if (const GeometryModel::SphericalShell<dim> *
-          spherical_geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (this->geometry_model))
+          spherical_geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
         {
           // In case of spherical shell calculate spherical coordinates
           const Tensor<1,dim> scoord = spherical_surface_coordinates(position);
@@ -86,7 +86,7 @@ namespace aspect
             }
         }
       else if (const GeometryModel::Box<dim> *
-               box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (this->geometry_model))
+               box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
         {
           // In case of Box model use a sine as lateral perturbation
           // that is scaled to the extent of the geometry.

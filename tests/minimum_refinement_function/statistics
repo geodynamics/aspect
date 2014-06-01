@@ -5,19 +5,21 @@
 # 5: Number of temperature degrees of freedom
 # 6: Iterations for temperature solver
 # 7: Iterations for Stokes solver
-# 8: Time step size (years)
-# 9: Visualization file name
-# 10: RMS velocity (m/year)
-# 11: Max. velocity (m/year)
-# 12: Minimal temperature (K)
-# 13: Average temperature (K)
-# 14: Maximal temperature (K)
-# 15: Average nondimensional temperature (K)
-# 16: Outward heat flux through boundary with indicator 0 (W)
-# 17: Outward heat flux through boundary with indicator 1 (W)
-# 18: Outward heat flux through boundary with indicator 2 (W)
-# 19: Outward heat flux through boundary with indicator 3 (W)
-0 0.0000e+00   64   659  289 0 12 5.2172e+09 output-minimum_refinement_function/solution-00000 3.79980348e-06 5.98259549e-06 1.62300000e+03 1.74279167e+03 1.87300000e+03 3.42261905e-02 2.37801676e-11 7.92672255e-12 2.14021509e-11 -4.60057899e-12 
-0 0.0000e+00  172  1741  768 0 12 2.5922e+09 output-minimum_refinement_function/solution-00001 3.79850995e-06 6.02663207e-06 1.62300000e+03 1.74539583e+03 1.87300000e+03 3.49702381e-02 2.20815842e-11 4.86927242e-12 4.57485130e-11  1.07288873e-11 
-0 0.0000e+00  472  4613 2043 0 20 1.3507e+09 output-minimum_refinement_function/solution-00002 3.79831354e-06 6.02568554e-06 1.62300000e+03 1.74587055e+03 1.90425000e+03 3.51058718e-02 3.62364459e-11 2.26477787e-11 5.02780687e-11  1.07288873e-11 
-0 0.0000e+00 1309 12554 5569 0 20 7.0517e+08 output-minimum_refinement_function/solution-00003 3.79804689e-06 6.03675148e-06 1.62300000e+03 1.74689798e+03 1.90425000e+03 3.53994218e-02 5.60532523e-11 8.83263370e-12 2.43463621e-11 -2.44039773e-11 
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (years)
+# 11: Visualization file name
+# 12: RMS velocity (m/year)
+# 13: Max. velocity (m/year)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+# 18: Outward heat flux through boundary with indicator 0 (W)
+# 19: Outward heat flux through boundary with indicator 1 (W)
+# 20: Outward heat flux through boundary with indicator 2 (W)
+# 21: Outward heat flux through boundary with indicator 3 (W)
+0 0.0000e+00   64   659  289 0 18 19  54 5.2172e+09 output-minimum_refinement_function/solution-00000 3.79980811e-06 5.98257532e-06 1.62300000e+03 1.74279167e+03 1.87300000e+03 3.42261905e-02 2.37801676e-11 7.92672255e-12 2.14021509e-11 -4.60057899e-12 
+0 0.0000e+00  172  1741  768 0 18 19 143 2.5922e+09 output-minimum_refinement_function/solution-00001 3.79851290e-06 6.02661304e-06 1.62300000e+03 1.74539583e+03 1.87300000e+03 3.49702381e-02 2.20815842e-11 4.86927242e-12 4.57485130e-11  1.07288873e-11 
+0 0.0000e+00  472  4613 2043 0 29 30 239 1.3507e+09 output-minimum_refinement_function/solution-00002 3.79831514e-06 6.02568958e-06 1.62300000e+03 1.74587055e+03 1.90425000e+03 3.51058718e-02 3.62364459e-11 2.26477787e-11 5.02780687e-11  1.07288873e-11 
+0 0.0000e+00 1309 12554 5569 0 29 30 259 7.0517e+08 output-minimum_refinement_function/solution-00003 3.79804774e-06 6.03674754e-06 1.62300000e+03 1.74689798e+03 1.90425000e+03 3.53994218e-02 5.60532523e-11 8.83263370e-12 2.43463621e-11 -2.44039773e-11 

@@ -40,7 +40,7 @@
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/heating_model/interface.h>
-#include <aspect/adiabatic_conditions.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 
 
@@ -384,7 +384,7 @@ namespace aspect
        * Return a pointer to the object that describes the adiabatic
        * conditions.
        */
-      const AdiabaticConditions<dim> &
+      const AdiabaticConditions::Interface<dim> &
       get_adiabatic_conditions () const;
 
       /**
@@ -415,7 +415,7 @@ namespace aspect
        */
       const std::set<types::boundary_id> &
       get_fixed_temperature_boundary_indicators () const;
-      
+
       /**
        * Return a pointer to the heating model.
        */
@@ -435,13 +435,14 @@ namespace aspect
 
 
       /**
-       * Find a pointer to a certain postprocessor, if not return a NULL pointer.
+       * Find a pointer to a certain postprocessor, if not return a NULL
+       * pointer.
        */
       template <typename PostprocessorType>
       PostprocessorType *
       find_postprocessor () const;
-                                      
-       /** @} */
+
+      /** @} */
 
     private:
       /**

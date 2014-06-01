@@ -286,10 +286,10 @@ namespace aspect
         initialize (const GeometryModel::Interface<dim> &geometry_model);
 
         /**
-         * A function that is called at the beginning of each time step.
-         * For the current plugin, this function loads the next velocity files if necessary
-         * and outputs a warning if the end of the set of velocity files is
-         * reached.
+         * A function that is called at the beginning of each time step. For
+         * the current plugin, this function loads the next velocity files if
+         * necessary and outputs a warning if the end of the set of velocity
+         * files is reached.
          */
         void
         update ();
@@ -309,8 +309,8 @@ namespace aspect
 
       private:
         /**
-         * A variable that stores the current time of the simulation, but relative
-         * to the velocity_file_start_time.
+         * A variable that stores the current time of the simulation, but
+         * relative to the velocity_file_start_time.
          */
         double time_relative_to_vel_file_start_time;
 

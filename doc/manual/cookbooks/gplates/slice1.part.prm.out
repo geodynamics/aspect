@@ -1,0 +1,2 @@
+    set %%\hyperref[parameters:Point one]{Point one}% = 3.1416,0.0 %% \index[prmindex]{Point one} \index[prmindexfull]{Point one} %
+    set %%\hyperref[parameters:Point two]{Point two}% = 1.5708,0.0 %% \index[prmindex]{Point two} \index[prmindexfull]{Point two} %

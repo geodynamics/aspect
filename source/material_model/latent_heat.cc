@@ -37,7 +37,7 @@ namespace aspect
                     const int phase) const
     {
       // if we already have the adiabatic conditions, we can use them
-      if (&this->get_adiabatic_conditions())
+      if (this->get_adiabatic_conditions().is_initialized())
         {
           // first, get the pressure at which the phase transition occurs normally
           // and get the pressure change in the range of the phase transition
@@ -96,7 +96,7 @@ namespace aspect
                                const int phase) const
     {
       // we already should have the adiabatic conditions here
-      AssertThrow (&this->get_adiabatic_conditions(),
+      AssertThrow (this->get_adiabatic_conditions().is_initialized(),
                    ExcMessage("need adiabatic conditions to incorporate phase transitions"));
 
       // first, get the pressure at which the phase transition occurs normally
@@ -222,7 +222,7 @@ namespace aspect
       if (this->include_adiabatic_heating ())
         {
           // temperature dependence is 1 - alpha * (T - T(adiabatic))
-          if (&this->get_adiabatic_conditions())
+          if (this->get_adiabatic_conditions().is_initialized())
             temperature_dependence -= (temperature - this->get_adiabatic_conditions().temperature(position))
                                       * thermal_expansion_coefficient(temperature, pressure, compositional_fields, position);
         }
@@ -271,7 +271,7 @@ namespace aspect
 
       // fourth, pressure dependence of density
       double pressure_dependence = 0.0;
-      if (is_compressible() && &this->get_adiabatic_conditions())
+      if (is_compressible() && this->get_adiabatic_conditions().is_initialized())
         {
           const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
           const double adiabatic_surface_pressure = this->get_adiabatic_conditions().pressure(surface_point);
@@ -319,7 +319,7 @@ namespace aspect
     {
       double entropy_gradient = 0.0;
       const double rho = density (temperature, pressure, compositional_fields, position);
-      if (&this->get_adiabatic_conditions() && this->include_latent_heat())
+      if (this->get_adiabatic_conditions().is_initialized() && this->include_latent_heat())
         for (unsigned int phase=0; phase<transition_depths.size(); ++phase)
           {
             //calculate derivative of the phase function

@@ -469,14 +469,14 @@ namespace aspect
                                const double pressure,
                                const Point<dim> &position) const
     {
-      if (!(&this->get_adiabatic_conditions())
+      if (!(this->get_adiabatic_conditions().is_initialized())
           || this->include_adiabatic_heating()
           || compressible)
         return temperature;
 
       return temperature
-          + this->get_adiabatic_conditions().temperature(position)
-          - this->get_adiabatic_surface_temperature();
+             + this->get_adiabatic_conditions().temperature(position)
+             - this->get_adiabatic_surface_temperature();
     }
 
 
@@ -488,7 +488,7 @@ namespace aspect
                             const double pressure,
                             const Point<dim> &position) const
     {
-      if (!(&this->get_adiabatic_conditions())
+      if (!(this->get_adiabatic_conditions().is_initialized())
           || compressible)
         return pressure;
 
@@ -608,9 +608,9 @@ namespace aspect
     double
     Steinberger<dim>::
     get_compressible_density (const double temperature,
-             const double pressure,
-             const std::vector<double> &compositional_fields,
-             const Point<dim> &position) const
+                              const double pressure,
+                              const std::vector<double> &compositional_fields,
+                              const Point<dim> &position) const
     {
       double rho = 0.0;
       if (n_material_data == 1)
@@ -635,8 +635,8 @@ namespace aspect
              const Point<dim> &position) const
     {
       if (compressible
-          || !(&this->get_adiabatic_conditions()))
-          return get_compressible_density(temperature,pressure,compositional_fields,position);
+          || !(this->get_adiabatic_conditions().is_initialized()))
+        return get_compressible_density(temperature,pressure,compositional_fields,position);
       else
         return get_corrected_density(temperature,pressure,compositional_fields,position);
     }
@@ -851,18 +851,18 @@ namespace aspect
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
           const double temperature = get_corrected_temperature(in.temperature[i],
-                                                  in.pressure[i],
-                                                  in.position[i]);
+                                                               in.pressure[i],
+                                                               in.position[i]);
           const double pressure    = get_corrected_pressure(in.temperature[i],
-                                               in.pressure[i],
-                                               in.position[i]);
+                                                            in.pressure[i],
+                                                            in.position[i]);
 
           /* We are only asked to give viscosities if strain_rate.size() > 0
            * and we can only calculate it if adiabatic_conditions are available.
            * Note that the used viscosity formulation needs the not
            * corrected temperatures.
            */
-          if (&this->get_adiabatic_conditions() && in.strain_rate.size())
+          if (this->get_adiabatic_conditions().is_initialized() && in.strain_rate.size())
             out.viscosities[i]                    = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 
           out.densities[i]                      = density                       (temperature, pressure, in.composition[i], in.position[i]);
@@ -943,8 +943,8 @@ namespace aspect
             std::string::size_type position;
             while (position = datadirectory.find (subst_text),  position!=std::string::npos)
               datadirectory.replace (datadirectory.begin()+position,
-                                      datadirectory.begin()+position+subst_text.size(),
-                                      ASPECT_SOURCE_DIR);
+                                     datadirectory.begin()+position+subst_text.size(),
+                                     ASPECT_SOURCE_DIR);
           }
           material_file_names  = Utilities::split_string_list
                                  (prm.get ("Material file names"));

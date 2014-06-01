@@ -41,26 +41,28 @@ namespace aspect
                                  : age_bottom_boundary_layer);
 
       // first, get the temperature at the top and bottom boundary of the model
-      const double T_surface = this->boundary_temperature->minimal_temperature(this->get_fixed_temperature_boundary_indicators());
-      const double T_bottom = this->boundary_temperature->maximal_temperature(this->get_fixed_temperature_boundary_indicators());
+      const double T_surface = this->get_boundary_temperature().minimal_temperature(
+                                 this->get_fixed_temperature_boundary_indicators());
+      const double T_bottom = this->get_boundary_temperature().maximal_temperature(
+                                this->get_fixed_temperature_boundary_indicators());
 
       // then, get the temperature of the adiabatic profile at a representative
       // point at the top and bottom boundary of the model
-      const Point<dim> surface_point = this->geometry_model->representative_point(0.0);
-      const Point<dim> bottom_point = this->geometry_model->representative_point(this->geometry_model->maximal_depth());
-      const double adiabatic_surface_temperature = this->adiabatic_conditions->temperature(surface_point);
-      const double adiabatic_bottom_temperature = this->adiabatic_conditions->temperature(bottom_point);
+      const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
+      const Point<dim> bottom_point = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
+      const double adiabatic_surface_temperature = this->get_adiabatic_conditions().temperature(surface_point);
+      const double adiabatic_bottom_temperature = this->get_adiabatic_conditions().temperature(bottom_point);
 
       // get a representative profile of the compositional fields as an input
       // for the material model
-      const double depth = this->geometry_model->depth(position);
+      const double depth = this->get_geometry_model().depth(position);
 
       // look up material properties
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, this->n_compositional_fields());
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, this->n_compositional_fields());
       in.position[0]=position;
-      in.temperature[0]=this->adiabatic_conditions->temperature(position);
-      in.pressure[0]=this->adiabatic_conditions->pressure(position);
+      in.temperature[0]=this->get_adiabatic_conditions().temperature(position);
+      in.pressure[0]=this->get_adiabatic_conditions().pressure(position);
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         in.composition[0][c] = function->value(Point<1>(depth),c);
       in.strain_rate[0] = SymmetricTensor<2,dim>(); // adiabat has strain=0.
@@ -71,13 +73,13 @@ namespace aspect
       // analytical solution for the thermal boundary layer from half-space cooling model
       const double surface_cooling_temperature = age_top > 0.0 ?
                                                  (T_surface - adiabatic_surface_temperature) *
-                                                 erfc(this->geometry_model->depth(position) /
+                                                 erfc(this->get_geometry_model().depth(position) /
                                                       (2 * sqrt(kappa * age_top)))
                                                  : 0.0;
       const double bottom_heating_temperature = age_bottom > 0.0 ?
                                                 (T_bottom - adiabatic_bottom_temperature + subadiabaticity)
-                                                * erfc((this->geometry_model->maximal_depth()
-                                                        - this->geometry_model->depth(position)) /
+                                                * erfc((this->get_geometry_model().maximal_depth()
+                                                        - this->get_geometry_model().depth(position)) /
                                                        (2 * sqrt(kappa * age_bottom)))
                                                 : 0.0;
 
@@ -89,7 +91,7 @@ namespace aspect
       if (perturbation_position == "center")
         {
           if (const GeometryModel::SphericalShell<dim> *
-              shell_geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (this->geometry_model))
+              shell_geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
             {
               const double inner_radius = shell_geometry_model->inner_radius();
               const double half_opening_angle = numbers::PI/180.0 * 0.5 * shell_geometry_model->opening_angle();
@@ -120,7 +122,7 @@ namespace aspect
                 }
             }
           else if (const GeometryModel::Box<dim> *
-                   box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (this->geometry_model))
+                   box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
             // for the box geometry, choose a point at the center of the bottom face.
             // (note that the loop only runs over the first dim-1 coordinates, leaving
             // the depth variable at zero)
@@ -138,7 +140,7 @@ namespace aspect
 
       // add the subadiabaticity
       const double zero_depth = 0.174;
-      const double nondimesional_depth = (this->geometry_model->depth(position) / this->geometry_model->maximal_depth() - zero_depth)
+      const double nondimesional_depth = (this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth() - zero_depth)
                                          / (1.0 - zero_depth);
       double subadiabatic_T = 0.0;
       if (nondimesional_depth > 0)
@@ -148,7 +150,7 @@ namespace aspect
       // constant adiabatic surface temperature instead of adiabatic profile.
       const double temperature_profile = (this->include_adiabatic_heating())
                                          ?
-                                         this->adiabatic_conditions->temperature(position)
+                                         this->get_adiabatic_conditions().temperature(position)
                                          :
                                          adiabatic_surface_temperature;
 
@@ -248,18 +250,18 @@ namespace aspect
             {
               prm.enter_subsection("Function");
               try
-              {
-                function.reset (new Functions::ParsedFunction<1>(n_compositional_fields));
-                function->parse_parameters (prm);
-              }
+                {
+                  function.reset (new Functions::ParsedFunction<1>(n_compositional_fields));
+                  function->parse_parameters (prm);
+                }
               catch (...)
-              {
+                {
                   std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Initial conditions.Adiabatic.Function'\n"
-                      << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'";
+                            << "\t'Initial conditions.Adiabatic.Function'\n"
+                            << "with expression\n"
+                            << "\t'" << prm.get("Function expression") << "'";
                   throw;
-              }
+                }
 
               prm.leave_subsection();
             }

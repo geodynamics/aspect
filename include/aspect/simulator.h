@@ -54,8 +54,10 @@
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/termination_criteria/interface.h>
 #include <aspect/postprocess/interface.h>
-#include <aspect/adiabatic_conditions.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
+#include <boost/iostreams/tee.hpp>
+#include <boost/iostreams/stream.hpp>
 
 
 namespace aspect
@@ -149,8 +151,13 @@ namespace aspect
          *
          * @param prm The parameter object that has previously been filled
          * with content by reading an input file.
+         *
+         * @param mpi_communicator The MPI communicator we will use for this
+         * simulation. We need this when calling parse_parameters() so that we
+         * can verify some of the input arguments.
          */
-        Parameters (ParameterHandler &prm);
+        Parameters (ParameterHandler &prm,
+                    MPI_Comm mpi_communicator);
 
         /**
          * Declare the run-time parameters this class takes, and call the
@@ -168,8 +175,13 @@ namespace aspect
          * an input file.
          *
          * @param prm The object from which to obtain the run-time parameters.
+         *
+         * @param mpi_communicator The MPI communicator we will use for this
+         * simulation. We need this when calling parse_parameters() so that we
+         * can verify some of the input arguments.
          */
-        void parse_parameters (ParameterHandler &prm);
+        void parse_parameters (ParameterHandler &prm,
+                               MPI_Comm mpi_communicator);
 
         /**
          * @name Global parameters
@@ -421,24 +433,25 @@ namespace aspect
         /**
          * Return whether this object refers to the porosity field.
          */
+
         bool
         is_porosity (const Introspection<dim> &introspection) const;
 
         /**
-         * Look up the component index for this temperature or compositional field.
-         * See Introspection::component_indices for more information.
+         * Look up the component index for this temperature or compositional
+         * field. See Introspection::component_indices for more information.
          */
         unsigned int component_index(const Introspection<dim> &introspection) const;
 
         /**
-         * Look up the block index for this temperature or compositional field.
-         * See Introspection::block_indices for more information.
+         * Look up the block index for this temperature or compositional
+         * field. See Introspection::block_indices for more information.
          */
         unsigned int block_index(const Introspection<dim> &introspection) const;
 
         /**
-         * Look up the base element within the larger composite finite element we used
-         * for everything, for this temperature or compositional field
+         * Look up the base element within the larger composite finite element
+         * we used for everything, for this temperature or compositional field
          * See Introspection::base_elements for more information.
          */
         unsigned int base_element(const Introspection<dim> &introspection) const;
@@ -501,10 +514,10 @@ namespace aspect
       void compute_initial_pressure_field ();
 
       /**
-       * Given the 'constraints' member that contains all constraints
-       * that are independent of the time (e.g., hanging node constraints,
-       * tangential flow constraints, etc), copy it over to 'current_constraints'
-       * and add to the latter all constraints that do depend on time such as
+       * Given the 'constraints' member that contains all constraints that are
+       * independent of the time (e.g., hanging node constraints, tangential
+       * flow constraints, etc), copy it over to 'current_constraints' and add
+       * to the latter all constraints that do depend on time such as
        * temperature or velocity Dirichlet boundary conditions. This function
        * is therefore called at the beginning of every time step in
        * start_timestep(), but also when setting up the initial values.
@@ -619,11 +632,11 @@ namespace aspect
        * on this new mesh, and interpolate the old solutions onto the new
        * mesh.
        *
-       * @param[in] max_grid_level The maximum refinement level of the
-       * mesh. This is the sum of the initial global refinement and the
-       * initial adaptive refinement (as provided by the user in the input
-       * file) and in addition it gets increased by one at each additional
-       * refinement time.
+       * @param[in] max_grid_level The maximum refinement level of the mesh.
+       * This is the sum of the initial global refinement and the initial
+       * adaptive refinement (as provided by the user in the input file) and
+       * in addition it gets increased by one at each additional refinement
+       * time.
        *
        * This function is implemented in
        * <code>source/simulator/core.cc</code>.
@@ -1224,6 +1237,22 @@ namespace aspect
 
       MPI_Comm                            mpi_communicator;
 
+      /**
+       * This stream will log into the file output/log.txt (used automatically
+       * by pcout).
+       */
+      std::ofstream log_file_stream;
+
+      typedef boost::iostreams::tee_device<std::ostream, std::ofstream> TeeDevice;
+      typedef boost::iostreams::stream< TeeDevice > TeeStream;
+
+      TeeDevice iostream_tee_device;
+      TeeStream iostream_tee_stream;
+
+      /**
+       * Output stream for logging information. Will only output on processor
+       * 0.
+       */
       ConditionalOStream                  pcout;
 
       /**
@@ -1262,9 +1291,9 @@ namespace aspect
       const std::auto_ptr<GravityModel::Interface<dim> >             gravity_model;
       const std::auto_ptr<BoundaryTemperature::Interface<dim> >      boundary_temperature;
       const std::auto_ptr<BoundaryComposition::Interface<dim> >      boundary_composition;
-      std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
-      std::auto_ptr<const AdiabaticConditions<dim> >                 adiabatic_conditions;
-      std::auto_ptr<InitialConditions::Interface<dim> >              initial_conditions;
+      const std::auto_ptr<InitialConditions::Interface<dim> >        initial_conditions;
+      const std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
+      const std::auto_ptr<AdiabaticConditions::Interface<dim> >      adiabatic_conditions;
       std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       /**
        * @}
@@ -1307,15 +1336,15 @@ namespace aspect
       DoFHandler<dim>                                           dof_handler;
 
       /**
-       * Constraint objects. The first of these describes all constraints
-       * that are not time dependent (e.g., hanging nodes, no-normal-flux constraints),
-       * whereas the second one is initialized at the top of every time step by
-       * copying from the first and then adding to it constraints that are time
-       * dependent (e.g., time dependent velocity or temperature boundary
-       * conditions).
+       * Constraint objects. The first of these describes all constraints that
+       * are not time dependent (e.g., hanging nodes, no-normal-flux
+       * constraints), whereas the second one is initialized at the top of
+       * every time step by copying from the first and then adding to it
+       * constraints that are time dependent (e.g., time dependent velocity or
+       * temperature boundary conditions).
        *
-       * 'constraints' is computed in setup_dofs(), 'current_constraints' is done
-       * in compute_current_constraints().
+       * 'constraints' is computed in setup_dofs(), 'current_constraints' is
+       * done in compute_current_constraints().
        */
       ConstraintMatrix                                          constraints;
       ConstraintMatrix                                          current_constraints;
@@ -1380,49 +1409,54 @@ namespace aspect
        */
 
       /**
-       * A member class that isolates the functions and variables that deal with the
-       * free surface implementation.  If there are no free surface boundary indicators,
-       * then there is no instantiation of this class at all.
+       * A member class that isolates the functions and variables that deal
+       * with the free surface implementation.  If there are no free surface
+       * boundary indicators, then there is no instantiation of this class at
+       * all.
        */
       class FreeSurfaceHandler
       {
-        public: 
+        public:
           /**
-           * Initialize the free surface handler, allowing it to read in relevant parameters
-           * as well as giving it a reference to the Simulator that owns it, since it needs
-           * to make fairly extensive changes to the internals of the simulator.
+           * Initialize the free surface handler, allowing it to read in
+           * relevant parameters as well as giving it a reference to the
+           * Simulator that owns it, since it needs to make fairly extensive
+           * changes to the internals of the simulator.
            */
           FreeSurfaceHandler(Simulator<dim> &, ParameterHandler &prm);
-          
+
           /**
-           * The main execution step for the free surface implementation.  This computes the 
-           * motion of the free surface, moves the boundary nodes accordingly, redistributes
-           * the internal nodes in order to preserve mesh regularity, and calculates the
-           * Arbitrary-Lagrangian-Eulerian correction terms for advected quantities.
+           * The main execution step for the free surface implementation. This
+           * computes the motion of the free surface, moves the boundary nodes
+           * accordingly, redistributes the internal nodes in order to
+           * preserve mesh regularity, and calculates the Arbitrary-
+           * Lagrangian-Eulerian correction terms for advected quantities.
            */
           void execute();
 
           /**
-           * Allocates and sets up the members of the FreeSurfaceHandler.  This is called
-           * by Simulator<dim>::setup_dofs()
+           * Allocates and sets up the members of the FreeSurfaceHandler. This
+           * is called by Simulator<dim>::setup_dofs()
            */
           void setup_dofs();
 
           /**
-           * Loop over all the mesh vertices and move them so that they are in the positions
-           * determined by the free surface implementation.  Called in execute(), 
-           * and also called after redistributing mesh so that the other processes know
-           * what has happened to that part of the mesh.
+           * Loop over all the mesh vertices and move them so that they are in
+           * the positions determined by the free surface implementation.
+           * Called in execute(), and also called after redistributing mesh so
+           * that the other processes know what has happened to that part of
+           * the mesh.
            */
           void displace_mesh();
 
           /**
-           * Apply stabilization to a cell of the system matrix.  The stabilization is only
-           * added to cells on a free surface.  The scheme is based on that of Kaus et. al.,
-           * 2010.  Called during assemly of the system matrix.
+           * Apply stabilization to a cell of the system matrix.  The
+           * stabilization is only added to cells on a free surface.  The
+           * scheme is based on that of Kaus et. al., 2010.  Called during
+           * assemly of the system matrix.
            */
           void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                FullMatrix<double> &local_matrix);
+                                    FullMatrix<double> &local_matrix);
 
           /**
            * Declare parameters for the free surface handling.
@@ -1437,40 +1471,44 @@ namespace aspect
 
         private:
           /**
-           * Set the boundary conditions for the solution of the elliptic problem, which
-           * computes the displacements of the internal vertices so that the mesh does
-           * not become too distored due to motion of the free surface.  Velocities of
-           * vertices on the free surface are set to be the normal of the Stokes velocity 
-           * solution projected onto that surface.  Velocities of vertices on free-slip
-           * boundaries are constrained to be tangential to those boundaries.  Velocities
-           * of vertices on no-slip boundaries are set to be zero.  
+           * Set the boundary conditions for the solution of the elliptic
+           * problem, which computes the displacements of the internal
+           * vertices so that the mesh does not become too distored due to
+           * motion of the free surface.  Velocities of vertices on the free
+           * surface are set to be the normal of the Stokes velocity solution
+           * projected onto that surface.  Velocities of vertices on free-slip
+           * boundaries are constrained to be tangential to those boundaries.
+           * Velocities of vertices on no-slip boundaries are set to be zero.
            */
           void make_constraints ();
 
           /**
-           * Project the normal part of the Stokes velocity solution onto the free surface.
-           * Called by make_constraints()
+           * Project the normal part of the Stokes velocity solution onto the
+           * free surface. Called by make_constraints()
            */
           void project_normal_velocity_onto_boundary (LinearAlgebra::Vector &output);
-           
+
           /**
-           * Actually solve the elliptic problem for the mesh velocitiy.  Just solves a
-           * vector Laplacian equation.
+           * Actually solve the elliptic problem for the mesh velocitiy.  Just
+           * solves a vector Laplacian equation.
            */
           void solve_elliptic_problem ();
 
           /**
-           * From the mesh velocity called in FreeSurfaceHandler::solve_elliptic_problem()
-           * we calculate the mesh displacement with mesh_velocity*time_step.  This function
-           * also interpolates the mesh velocity onto the finite element space of the 
-           * Stokes velocity system so that it can be used for ALE corrections.
+           * From the mesh velocity called in
+           * FreeSurfaceHandler::solve_elliptic_problem() we calculate the
+           * mesh displacement with mesh_velocity*time_step.  This function
+           * also interpolates the mesh velocity onto the finite element space
+           * of the Stokes velocity system so that it can be used for ALE
+           * corrections.
            */
           void calculate_mesh_displacement ();
 
           /**
-           * Reference to the Simulator object to which a FreeSurfaceHandler instance belongs
+           * Reference to the Simulator object to which a FreeSurfaceHandler
+           * instance belongs
            */
-          Simulator<dim> &sim; 
+          Simulator<dim> &sim;
 
           /**
            * Finite element for the free surface implementation.  Should be Q1
@@ -1483,31 +1521,36 @@ namespace aspect
           DoFHandler<dim>                                           free_surface_dof_handler;
 
           /**
-           * Stabilization parameter for the free surface.  Should be between zero and one.
-           * A value of zero means no stabilization.  See Kaus et. al. 2010 for more details.  
+           * Stabilization parameter for the free surface.  Should be between
+           * zero and one. A value of zero means no stabilization.  See Kaus
+           * et. al. 2010 for more details.
            */
           double free_surface_theta;
 
           /**
-           * BlockVector which stores the mesh velocity interpolated onto the Stokes velocity
-           * finite element space.  This is used for ALE corrections.
+           * BlockVector which stores the mesh velocity interpolated onto the
+           * Stokes velocity finite element space.  This is used for ALE
+           * corrections.
            */
           LinearAlgebra::BlockVector mesh_velocity;
 
           /**
-           * Vector for storing the positions of the mesh vertices.  This vector is updated
-           * by FreeSurfaceHandler::calculate_mesh_displacement(), and is quite important
-           * for making sure the mesh stays the same shape upon redistribution of the system.
+           * Vector for storing the positions of the mesh vertices.  This
+           * vector is updated by
+           * FreeSurfaceHandler::calculate_mesh_displacement(), and is quite
+           * important for making sure the mesh stays the same shape upon
+           * redistribution of the system.
            */
           LinearAlgebra::Vector mesh_vertices;
 
           /**
-           * The solution of FreeSurfaceHandler::solve_elliptic_problem().  
+           * The solution of FreeSurfaceHandler::solve_elliptic_problem().
            */
           LinearAlgebra::Vector mesh_vertex_velocity;
 
           /**
-           * The matrix for solving the elliptic problem for moving the internal vertices.
+           * The matrix for solving the elliptic problem for moving the
+           * internal vertices.
            */
           LinearAlgebra::SparseMatrix mesh_matrix;
 
@@ -1531,9 +1574,9 @@ namespace aspect
       };
 
       /**
-       * Shared pointer for an instance of the FreeSurfaceHandler.
-       * this way, if we do not need the machinery for doing free
-       * surface stuff, we do not even allocate it.
+       * Shared pointer for an instance of the FreeSurfaceHandler. this way,
+       * if we do not need the machinery for doing free surface stuff, we do
+       * not even allocate it.
        */
       std_cxx1x::shared_ptr<FreeSurfaceHandler> free_surface;
 

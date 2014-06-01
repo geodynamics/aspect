@@ -5,7 +5,9 @@
 # 5: Number of temperature degrees of freedom
 # 6: Iterations for temperature solver
 # 7: Iterations for Stokes solver
-# 8: Time step size (years)
-# 9: RMS velocity (m/year)
-# 10: Max. velocity (m/year)
-0 0.0000e+00 64 659 289 0 5 6.2500e-02 3.61774894e-01 1.02110958e+00 
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (years)
+# 11: RMS velocity (m/year)
+# 12: Max. velocity (m/year)
+0 0.0000e+00 64 659 289 0 22 23 23 6.2500e-02 3.52636445e-01 1.01837805e+00 

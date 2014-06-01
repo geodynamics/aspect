@@ -64,8 +64,8 @@ namespace aspect
 
       private:
         /**
-         * A parameter that we read from the input file that denotes
-         * whether we should subtract the mean topography or not.
+         * A parameter that we read from the input file that denotes whether
+         * we should subtract the mean topography or not.
          */
         bool subtract_mean_dyn_topography;
     };

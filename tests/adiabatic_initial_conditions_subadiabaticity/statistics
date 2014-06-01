@@ -5,6 +5,8 @@
 # 5: Number of temperature degrees of freedom
 # 6: Iterations for temperature solver
 # 7: Iterations for Stokes solver
-# 8: Time step size (seconds)
-# 9: Visualization file name
-0 0.0000e+00 3072 28291 12545 0 30 1.6996e-06 output-adiabatic_initial_conditions_subadiabaticity/solution-00000 
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (seconds)
+# 11: Visualization file name
+0 0.0000e+00 3072 28291 12545 0 36 49 14 1.6994e-06 output-adiabatic_initial_conditions_subadiabaticity/solution-00000 

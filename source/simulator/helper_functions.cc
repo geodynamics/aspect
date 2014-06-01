@@ -702,9 +702,7 @@ namespace aspect
       if (parameters.pressure_normalization == "surface")
         pressure_adjustment = -temp[0]/temp[1] + parameters.surface_pressure;
       else if (parameters.pressure_normalization == "volume")
-//TODO: This can't be right. it should be -temp[0]/temp[1] to divide
-        // by the volume. this was definitely wrong in ASPIRE
-        pressure_adjustment = -temp[0];
+        pressure_adjustment = -temp[0]/temp[1];
       else
         AssertThrow(false, ExcNotImplemented());
     }
@@ -734,12 +732,12 @@ namespace aspect
                   for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
                     {
                       unsigned int support_point_index
-                      = finite_element.component_to_system_index(introspection.component_indices.pressure,
-                          /*dof index within component=*/ j);
+                        = finite_element.component_to_system_index(introspection.component_indices.pressure,
+                                                                   /*dof index within component=*/ j);
 
                       Assert (introspection.block_indices.velocities == introspection.block_indices.pressure
-                          || local_dof_indices[support_point_index] >= vector.block(0).size(),
-                          ExcInternalError());
+                              || local_dof_indices[support_point_index] >= vector.block(0).size(),
+                              ExcInternalError());
 
                       // then adjust its value. Note that because we end up touching
                       // entries more than once, we are not simply incrementing
@@ -783,7 +781,7 @@ namespace aspect
                       ExcInternalError());
 
               Assert (introspection.block_indices.velocities == introspection.block_indices.pressure
-                  || local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
+                      || local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
                       ExcInternalError());
 
               // then adjust its value
@@ -811,7 +809,7 @@ namespace aspect
     // TODO: pressure normalization currently does not work if velocity and
     // pressure are in the same block.
     Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-        ExcNotImplemented());
+           ExcNotImplemented());
 
     if (parameters.use_locally_conservative_discretization == false)
       vector.block (introspection.block_indices.pressure).add (-1.0 * pressure_adjustment);
@@ -876,7 +874,7 @@ namespace aspect
         // TODO: currently does not work if velocity and
         // pressure are in the same block.
         Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-            ExcNotImplemented());
+               ExcNotImplemented());
 
         const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
         const double correction = -mean*vector.block(introspection.block_indices.pressure).size()/global_volume;

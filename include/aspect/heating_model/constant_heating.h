@@ -40,9 +40,8 @@ namespace aspect
     {
       public:
         /**
-         * Return the specific heating rate. For the
-         * current class, this function obviously simply returns a
-         * constant value.
+         * Return the specific heating rate. For the current class, this
+         * function obviously simply returns a constant value.
          */
         virtual
         double

@@ -1,0 +1,7 @@
+subsection %%\hyperref[parameters:Boundary_20temperature_20model]{Boundary temperature model}%
+  set %%\hyperref[parameters:Boundary temperature model/Model name]{Model name}% = spherical constant %% \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
+  subsection %%\hyperref[parameters:Boundary_20temperature_20model/Spherical_20constant]{Spherical constant}%
+    set %%\hyperref[parameters:Boundary temperature model/Spherical constant/Inner temperature]{Inner temperature}% = 1973 %% \index[prmindex]{Inner temperature} \index[prmindexfull]{Boundary temperature model!Spherical constant!Inner temperature} %
+    set %%\hyperref[parameters:Boundary temperature model/Spherical constant/Outer temperature]{Outer temperature}% = 973 %% \index[prmindex]{Outer temperature} \index[prmindexfull]{Boundary temperature model!Spherical constant!Outer temperature} %
+  end
+end

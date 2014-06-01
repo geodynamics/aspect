@@ -318,7 +318,7 @@ namespace aspect
 
 
   template <int dim>
-  const AdiabaticConditions<dim> &
+  const AdiabaticConditions::Interface<dim> &
   SimulatorAccess<dim>::get_adiabatic_conditions () const
   {
     return *simulator->adiabatic_conditions.get();
@@ -339,7 +339,7 @@ namespace aspect
   {
     return *simulator->compositional_initial_conditions.get();
   }
-  
+
   template <int dim>
   const HeatingModel::Interface<dim> &
   SimulatorAccess<dim>::get_heating_model () const

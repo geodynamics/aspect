@@ -171,9 +171,9 @@ namespace aspect
         // construct a string for Patterns::MultipleSelection that
         // contains the names of all registered postprocessors
         const std::string pattern_of_names
-          = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names (true);
+          = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
         prm.declare_entry("List of postprocessors",
-                          "all",
+                          "",
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma separated list of postprocessor objects that should be run "
                           "at the end of each time step. Some of these postprocessors will "

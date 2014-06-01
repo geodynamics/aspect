@@ -20,7 +20,7 @@
 
 
 #include <aspect/simulator.h>
-#include <aspect/adiabatic_conditions.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/compositional_initial_conditions/interface.h>
 
@@ -66,14 +66,12 @@ namespace aspect
     // we need to track whether we need to normalize the totality of fields
     bool normalize_composition = false;
 
-//TODO: The code here is confusing. We should be using something
-// like the AdevctionField class instead of just a single
-// integer 'n', and iterate over its components. in any case, we
-// should probably ask AdvectionField how many fields there actually are
+    //TODO: it would be great if we had a cleaner way than iterating to 1+n_fields.
+    // Additionally, the n==1 logic for normalization at the bottom is not pretty.
     for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
       {
         AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
-        : AdvectionField::composition(n-1));
+                               : AdvectionField::composition(n-1));
         initial_solution.reinit(system_rhs, false);
 
         const unsigned int base_element = advf.base_element(introspection);
@@ -209,7 +207,7 @@ namespace aspect
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
         VectorTools::interpolate (mapping, dof_handler,
-                                  VectorFunctionFromScalarFunctionObject<dim> (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
+                                  VectorFunctionFromScalarFunctionObject<dim> (std_cxx1x::bind (&AdiabaticConditions::Interface<dim>::pressure,
                                                                                std_cxx1x::cref (*adiabatic_conditions),
                                                                                std_cxx1x::_1),
                                                                                introspection.component_indices.pressure,
@@ -252,7 +250,7 @@ namespace aspect
         std::vector<double> rhs_values(n_q_points);
 
         ScalarFunctionFromFunctionObject<dim>
-        adiabatic_pressure (std_cxx1x::bind (&AdiabaticConditions<dim>::pressure,
+        adiabatic_pressure (std_cxx1x::bind (&AdiabaticConditions::Interface<dim>::pressure,
                                              std_cxx1x::cref(*adiabatic_conditions),
                                              std_cxx1x::_1));
 

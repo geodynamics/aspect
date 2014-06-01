@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -115,7 +115,7 @@ namespace aspect
     {
       double rho = reference_rho * std::exp(reference_compressibility * (pressure - this->get_surface_pressure()));
 
-      if (&this->get_adiabatic_conditions())
+      if (this->get_adiabatic_conditions().is_initialized())
         rho *= (1 - thermal_alpha * (temperature - this->get_adiabatic_conditions().temperature(position)));
 
       return rho;
@@ -281,9 +281,9 @@ namespace aspect
                                    "\n\n"
                                    "This model uses the following equations for the density: "
                                    "\\begin{align}"
-                                   "  \\rho(p,T) = &rho_0"
-                                   "             * &\\left(1-\\alpha (T-T_a)\\right) "
-                                   "             * &\\exp{\\beta (P-P_0))}"
+                                   "  \\rho(p,T) = \\rho_0"
+                                   "              \\left(1-\\alpha (T-T_a)\\right) "
+                                   "              \\exp{\\beta (P-P_0))}"
                                    "\\end{align}")
   }
 }

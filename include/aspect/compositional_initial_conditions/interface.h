@@ -56,13 +56,11 @@ namespace aspect
         virtual ~Interface();
 
         /**
-         * Initialization function. Take references to the geometry model, the
-         * object that describes the temperature boundary values, and the
-         * adiabatic conditions and store them so that derived classes can
-         * access them.
+         * Initialization function.
          */
+        virtual
         void
-        initialize (const GeometryModel::Interface<dim>       &geometry_model);
+        initialize ();
 
         /**
          * Return the initial composition as a function of position.
@@ -90,12 +88,6 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
-
-      protected:
-        /**
-         * Pointer to the geometry object in use.
-         */
-        const GeometryModel::Interface<dim>       *geometry_model;
 
     };
 
@@ -138,8 +130,7 @@ namespace aspect
      */
     template <int dim>
     Interface<dim> *
-    create_initial_conditions (ParameterHandler &prm,
-                               const GeometryModel::Interface<dim> &geometry_model);
+    create_initial_conditions (ParameterHandler &prm);
 
 
     /**

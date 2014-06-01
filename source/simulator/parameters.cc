@@ -25,14 +25,16 @@
 #include <deal.II/base/parameter_handler.h>
 
 #include <dirent.h>
+#include <stdlib.h>
 
 
 namespace aspect
 {
   template <int dim>
-  Simulator<dim>::Parameters::Parameters (ParameterHandler &prm)
+  Simulator<dim>::Parameters::Parameters (ParameterHandler &prm,
+                                          MPI_Comm mpi_communicator)
   {
-    parse_parameters (prm);
+    parse_parameters (prm, mpi_communicator);
   }
 
 
@@ -84,8 +86,8 @@ namespace aspect
                        Patterns::Integer(0),
                        "How frequently in timesteps to output timing information. This is "
                        "generally adjusted only for debugging and timing purposes. If the "
-					   "value is set to zero it will also output timing information at the "
-					   "initiation timesteps.");
+                       "value is set to zero it will also output timing information at the "
+                       "initiation timesteps.");
 
     prm.declare_entry ("Use years in output instead of seconds", "true",
                        Patterns::Bool (),
@@ -222,8 +224,12 @@ namespace aspect
                        Patterns::Double(0,1),
                        "A relative tolerance up to which the linear Stokes systems in each "
                        "time or nonlinear step should be solved. The absolute tolerance will "
-                       "then be the norm of the right hand side of the equation "
-                       "times this tolerance. A given tolerance value of 1 would "
+                       "then be $\\| M x_0 - F \\| \\cdot \\text{tol}$, where $x_0 = (0,p_0)$ "
+                       "is the initial guess of the pressure, $M$ is the system matrix, "
+                       "F is the right-hand side, and tol is the parameter specified here. "
+                       "We include the initial guess of the pressure "
+                       "to remove the dependency of the tolerance on the static pressure. "
+                       "A given tolerance value of 1 would "
                        "mean that a zero solution vector is an acceptable solution "
                        "since in that case the norm of the residual of the linear "
                        "system equals the norm of the right hand side. A given "
@@ -235,9 +241,8 @@ namespace aspect
                        "to be so that if you make it smaller the results of your "
                        "simulation do not change any more (qualitatively) whereas "
                        "if you make it larger, they do. For most cases, the default "
-                       "value should be sufficient. However, for cases where the "
-                       "static pressure is much larger than the dynamic one, it may "
-                       "be necessary to choose a smaller value.");
+                       "value should be sufficient. In fact, a tolerance of 1e-4 "
+                       "might be accurate enough.");
     prm.declare_entry ("Number of cheap Stokes solver steps", "30",
                        Patterns::Integer(0),
                        "As explained in the ASPECT paper (Kronbichler, Heister, and Bangerth, "
@@ -334,9 +339,9 @@ namespace aspect
                          "velocity (although there is a force that requires the flow to "
                          "be tangential).");
       prm.declare_entry ("Free surface boundary indicators", "",
-                          Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max())),
-                          "A comma separated list of integers denoting those boundaries "
-                          "where there is a free surface. Set to nothing to disable all free surface computations.");
+                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max())),
+                         "A comma separated list of integers denoting those boundaries "
+                         "where there is a free surface. Set to nothing to disable all free surface computations.");
       prm.declare_entry ("Prescribed velocity boundary indicators", "",
                          Patterns::Map (Patterns::Anything(),
                                         Patterns::Selection(VelocityBoundaryConditions::get_names<dim>())),
@@ -565,7 +570,8 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::Parameters::
-  parse_parameters (ParameterHandler &prm)
+  parse_parameters (ParameterHandler &prm,
+                    MPI_Comm mpi_communicator)
   {
     // first, make sure that the ParameterHandler parser agrees
     // with the code in main() about the meaning of the "Dimension"
@@ -608,21 +614,28 @@ namespace aspect
     else if (output_directory[output_directory.size()-1] != '/')
       output_directory += "/";
 
-    // verify that the output directory actually exists. trying to
-    // write to a non-existing output directory will eventually
-    // produce an error but one not easily understood. since
-    // this is no error where a nicely formatted error message
-    // with a backtrace is likely very useful, just print an
-    // error and exit
-    if (opendir(output_directory.c_str()) == NULL)
+    // verify that the output directory actually exists. if it doesn't, create
+    // it on processor zero
+    if ((Utilities::MPI::this_mpi_process(mpi_communicator) == 0) &&
+        (opendir(output_directory.c_str()) == NULL))
       {
-        std::cerr << "\n"
+        std::cout << "\n"
                   << "-----------------------------------------------------------------------------\n"
                   << "The output directory <" << output_directory
-                  << "> provided in the input file appears not to exist!\n"
-                  << "-----------------------------------------------------------------------------\n"
+                  << "> provided in the input file appears not to exist.\n"
+                  << "ASPECT will create it for you.\n"
+                  << "-----------------------------------------------------------------------------\n\n"
                   << std::endl;
-        std::exit (1);
+
+        // create the directory. we could call the 'mkdir()' function directly, but
+        // this can only create a single level of directories. if someone has specified
+        // a nested subdirectory as output directory, and if multiple parts of the path
+        // do not exist, this would fail. working around this is easiest by just calling
+        // 'mkdir -p' from the command line
+        const int error = system ((std::string("mkdir -p '") + output_directory + "'").c_str());
+
+        AssertThrow (error==0,
+                     ExcMessage (std::string("Can't create the output directory at <") + output_directory + ">"));
       }
 
     surface_pressure              = prm.get_double ("Surface pressure");
@@ -774,7 +787,7 @@ namespace aspect
               nullspace_removal = typename NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::net_translation_x |
                                     NullspaceRemoval::net_translation_y | ( dim == 3 ?
-                                    NullspaceRemoval::net_translation_z : 0) );
+                                                                            NullspaceRemoval::net_translation_z : 0) );
             else if (nullspace_names[i]=="net x translation")
               nullspace_removal = typename NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::net_translation_x);
@@ -797,7 +810,7 @@ namespace aspect
               nullspace_removal = typename NullspaceRemoval::Kind(
                                     nullspace_removal | NullspaceRemoval::linear_momentum_x |
                                     NullspaceRemoval::linear_momentum_y | ( dim == 3 ?
-                                    NullspaceRemoval::linear_momentum_z : 0) );
+                                                                            NullspaceRemoval::linear_momentum_z : 0) );
             else
               AssertThrow(false, ExcInternalError());
           }
@@ -854,33 +867,33 @@ namespace aspect
 
       names_of_compositional_fields = Utilities::split_string_list (prm.get("Names of fields"));
       AssertThrow ((names_of_compositional_fields.size() == 0) ||
-          (names_of_compositional_fields.size() == n_compositional_fields),
-          ExcMessage ("The length of the list of names for the compositional "
-              "fields needs to either be empty or have length equal to "
-              "the number of compositional fields."));
+                   (names_of_compositional_fields.size() == n_compositional_fields),
+                   ExcMessage ("The length of the list of names for the compositional "
+                               "fields needs to either be empty or have length equal to "
+                               "the number of compositional fields."));
 
       // check that the names use only allowed characters, are not empty strings and are unique
       for (unsigned int i=0; i<names_of_compositional_fields.size(); ++i)
-      {
-        Assert (names_of_compositional_fields[i].find_first_not_of("abcdefghijklmnopqrstuvwxyz"
-                                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                           "0123456789_") == std::string::npos,
-    	  ExcMessage("Invalid character in field " + names_of_compositional_fields[i] + ". "
-    			     "Names of compositional fields should consist of a "
-    				 "combination of letters, numbers and underscores."));
-        Assert (names_of_compositional_fields[i].size() > 0,
-          ExcMessage("Invalid name of field " + names_of_compositional_fields[i] + ". "
-            		 "Names of compositional fields need to be non-empty."));
-        for (unsigned int j=0; j<i; ++j)
-          Assert (names_of_compositional_fields[i] != names_of_compositional_fields[j],
-            ExcMessage("Names of compositional fields have to be unique! " + names_of_compositional_fields[i] +
-        		       " is used more than once."));
-      }
+        {
+          Assert (names_of_compositional_fields[i].find_first_not_of("abcdefghijklmnopqrstuvwxyz"
+                                                                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                                                     "0123456789_") == std::string::npos,
+                  ExcMessage("Invalid character in field " + names_of_compositional_fields[i] + ". "
+                             "Names of compositional fields should consist of a "
+                             "combination of letters, numbers and underscores."));
+          Assert (names_of_compositional_fields[i].size() > 0,
+                  ExcMessage("Invalid name of field " + names_of_compositional_fields[i] + ". "
+                             "Names of compositional fields need to be non-empty."));
+          for (unsigned int j=0; j<i; ++j)
+            Assert (names_of_compositional_fields[i] != names_of_compositional_fields[j],
+                    ExcMessage("Names of compositional fields have to be unique! " + names_of_compositional_fields[i] +
+                               " is used more than once."));
+        }
 
       // default names if list is empty
       if (names_of_compositional_fields.size() == 0)
-    	for (unsigned int i=0;i<n_compositional_fields;++i)
-    	  names_of_compositional_fields.push_back("C_" + Utilities::int_to_string(i+1));
+        for (unsigned int i=0; i<n_compositional_fields; ++i)
+          names_of_compositional_fields.push_back("C_" + Utilities::int_to_string(i+1));
 
       // if we want to solve the melt transport equations, check that one of the fields
       // has the name porosity
@@ -921,6 +934,7 @@ namespace aspect
     CompositionalInitialConditions::declare_parameters<dim> (prm);
     BoundaryTemperature::declare_parameters<dim> (prm);
     BoundaryComposition::declare_parameters<dim> (prm);
+    AdiabaticConditions::declare_parameters<dim> (prm);
     VelocityBoundaryConditions::declare_parameters<dim> (prm);
   }
 }
@@ -930,9 +944,11 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template Simulator<dim>::Parameters::Parameters (ParameterHandler &prm); \
+  template Simulator<dim>::Parameters::Parameters (ParameterHandler &prm, \
+                                                   MPI_Comm mpi_communicator); \
   template void Simulator<dim>::Parameters::declare_parameters (ParameterHandler &prm); \
-  template void Simulator<dim>::Parameters::parse_parameters(ParameterHandler &prm); \
+  template void Simulator<dim>::Parameters::parse_parameters(ParameterHandler &prm, \
+                                                             MPI_Comm mpi_communicator); \
   template void Simulator<dim>::declare_parameters (ParameterHandler &prm);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
