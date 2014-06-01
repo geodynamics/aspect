@@ -359,6 +359,11 @@ namespace aspect
         bool time_dependent;
 
         /**
+         * Scale the velocity boundary condition by a scalar factor.
+         */
+        double scale_factor;
+
+        /**
          * Two user defined points that prescribe the plane from which the 2D
          * model takes the velocity boundary condition. One can think of this,
          * as if the model is lying in this plane although no actual model

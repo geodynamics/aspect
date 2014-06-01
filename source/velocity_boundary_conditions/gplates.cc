@@ -714,7 +714,7 @@ namespace aspect
     boundary_velocity (const Point<dim> &position) const
     {
       if (time_relative_to_vel_file_start_time >= 0.0)
-        return lookup->surface_velocity(position,time_weight);
+        return scale_factor * lookup->surface_velocity(position,time_weight);
       else
         return Tensor<1,dim> ();
     }
@@ -752,6 +752,9 @@ namespace aspect
                              "time, a no-slip boundary condition is assumed. "
                              "Depending on the setting of the global 'Use years in output instead of seconds' flag "
                              "in the input file, this number is either interpreted as seconds or as years.");
+          prm.declare_entry ("Scale factor", "1",
+                             Patterns::Double (0),
+                             "Scalar factor, which is applied to the boundary velocity.");
           prm.declare_entry ("Point one", "1.570796,0.0",
                              Patterns::Anything (),
                              "Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.");
@@ -803,6 +806,7 @@ namespace aspect
 
           velocity_file_name    = prm.get ("Velocity file name");
           interpolation_width   = prm.get_double ("Interpolation width");
+          scale_factor          = prm.get_double ("Scale factor");
           point1                = prm.get ("Point one");
           point2                = prm.get ("Point two");
 
