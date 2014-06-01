@@ -100,6 +100,7 @@ namespace aspect
       } simulator_access;
       simulator_access.initialize (simulator);
       mpi_communicator = simulator_access.get_mpi_communicator();
+      // TODO: there must be a cleaner way to do this.
     }
 
 
