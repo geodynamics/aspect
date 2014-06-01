@@ -77,7 +77,7 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * It performs some basic
+         * This function performs some basic
          * sanity checks on the parameter values previously read from the
          * input file.
          */
