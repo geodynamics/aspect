@@ -55,10 +55,9 @@ namespace aspect
         virtual ~Interface();
 
         /**
-         * Initialization function. Take references to the geometry model, the
-         * object that describes the temperature boundary values, and the
-         * adiabatic conditions and store them so that derived classes can
-         * access them.
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after the
+         * SimulatorAccess (if applicable) is initialized.
          */
         virtual
         void

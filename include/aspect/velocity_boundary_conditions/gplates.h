@@ -279,8 +279,7 @@ namespace aspect
 
         /**
          * Initialization function. This function is called once at the
-         * beginning of the program. Parses the user input and checks for
-         * valid geometry model.
+         * beginning of the program. Checks preconditions.
          */
         virtual
         void
