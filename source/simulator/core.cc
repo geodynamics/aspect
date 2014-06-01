@@ -225,12 +225,8 @@ namespace aspect
                                  "is not used by the geometry model."));
     }
 
-    // continue with initializing members that can't be initialized for one reason
-    // or another in the member initializer list above
-
-    // TODO: Could this be done in the interfaces create_... function? Would be cleaner
-    // and initialize() called from create_... would already have SimulatorAccess
-    // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it:
+    // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
+    // call the initialize() functions immediately after.
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(geometry_model.get()))
       sim->initialize (*this);
     geometry_model->initialize ();
