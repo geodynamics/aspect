@@ -276,8 +276,6 @@ namespace aspect
         free_surface.reset( new FreeSurfaceHandler( *this, prm ) );
       }
 
-    adiabatic_conditions->initialize();
-
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
 
