@@ -51,8 +51,9 @@ subsection Geometry model
   set Model name = box # default: 
 
   subsection Box
-    set X extent  = 1000
+    set X extent  = 224
     set Y extent  = 2236
+    set Y repetitions = 10
   end
 
 end
@@ -98,7 +99,7 @@ subsection Mesh refinement
   set Refinement fraction                      = 0.0
 
   set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 5                    # default: 2
+  set Initial global refinement                = 3                    # default: 2
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
@@ -106,10 +107,10 @@ end
 
 subsection Model settings
   set Fixed temperature boundary indicators   = 2,3        # default: 
-  set Fixed composition boundary indicators   = 0,1,2,3   
+  set Fixed composition boundary indicators   = 
   set Prescribed velocity boundary indicators =  
 
-  set Tangential velocity boundary indicators = 0,1,2,3
+  set Tangential velocity boundary indicators = 0,1
   set Zero velocity boundary indicators       =           # default: 
 
   set Include melt transport                  = true
@@ -122,7 +123,7 @@ subsection Postprocess
 
   subsection Visualization
 
-    set List of output variables      = density, viscosity, thermal expansivity, melt pressure, melt velocity
+    set List of output variables      = density, viscosity, thermal expansivity, melt pressure, melt velocity, melt density, permeability
 
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no

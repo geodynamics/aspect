@@ -35,6 +35,10 @@ namespace aspect
 
     namespace AnalyticSolutions
     {
+      // vectors to store the porosity field and the corresponding coordinate in
+      const unsigned int max_points = 1000;
+      std::vector<double> porosity(max_points), coordinate(max_points);
+
       /**
        * @note The solitary wave solution only exists as a function x = func(phi)
        * and not phi = func(x), which is what we would like to have for describing
@@ -68,62 +72,58 @@ namespace aspect
         * implicitly, we have to interpolate from the coordinates where we have the
         * porosity to our mesh.
         *
-        * @param x The coordinate vector where we want to interpolate the solitary
-        * wave function to.
         * @param amplitude The amplitude of the solitary wave, which is always
         * greater than 1.
         * @param offset The offset of the center of the solitary wave from the
         * boundary of the domain.
-        *
-        * @param phi The porosity of the solitary wave function.
         */
-       void compute_porosity (const std::vector<double> &grid_coordinate,
-                              const double amplitude,
-                              const double offset,
-                              std::vector<double> &grid_porosity)
+       void compute_porosity (const double amplitude,
+                              const double background_porosity,
+                              const double offset)
        {
-         const unsigned int max_points = 1000;
-         std::vector<double> porosity(max_points), coordinate(max_points);
+         // non-dimensionalize the amplitude
+         const double non_dim_amplitude = amplitude / background_porosity;
 
          // get the coordinates where we have the solution
          for (unsigned int i=0;i<max_points;++i)
            {
-             porosity[i] = 1.0 + 1e-10*amplitude
-                           + double(i)/double(max_points-1) * (amplitude * (1.0 - 1e-10) - 1.0);
-             coordinate[i] = solitary_wave_solution(porosity[i], amplitude);
-           }
+             porosity[i] = 1.0 + 1e-10*non_dim_amplitude
+                           + double(i)/double(max_points-1) * (non_dim_amplitude * (1.0 - 1e-10) - 1.0);
+             coordinate[i] = solitary_wave_solution(porosity[i], non_dim_amplitude);
 
+             // re-scale porosity and position
+             porosity[i] *= background_porosity;
+             coordinate[i] /= 0.1;
+           }
+       }
+
+
+       double interpolate (const double position,
+                           const double offset)
+       {
          // interpolate from the solution grid to the mesh used in the simulation
          // solitary wave is a monotonically decreasing function, so the coordinates
          // should be in descending order
-         for (unsigned int i=0;i<grid_coordinate.size();++i)
-           {
-             // we only have the solution of the solitary wave for
-             // coordinates larger than 0 (one half of the wave)
-             const double x = (grid_coordinate[i] > offset
-                 ?
-                     grid_coordinate[i] - offset
-                     :
-                     offset - grid_coordinate[i]);
 
-             AssertThrow(x < coordinate[0],
-                         ExcMessage("The solitary wave solution can not be computed "
-                             "for this coordinate."));
+         // we only have the solution of the solitary wave for
+         // coordinates larger than 0 (one half of the wave)
+         const double x = (position > offset
+                          ?
+                          position - offset
+                          :
+                          offset - position);
 
-             unsigned int j= max_points-2;
-             while (x < coordinate[j] && j>=0)
-               j--;
+         if(x > coordinate[0])
+           return porosity[0];
 
-             const double distance = (grid_coordinate[i] - coordinate[j+1])
-                                      /(coordinate[j] - coordinate[j+1]);
-             grid_porosity[i] = porosity[j+1] + distance /(porosity[j] - porosity[j+1]);
-             }
-         // TODO rescale
+         unsigned int j= max_points-2;
+         while (x > coordinate[j] && j>0)
+           j--;
+
+         const double distance = (x - coordinate[j+1])
+                                 /(coordinate[j] - coordinate[j+1]);
+         return porosity[j+1] + distance * (porosity[j] - porosity[j+1]);
        }
-
-       // vectors to store the porosity field and the corresponding coordinate in
-       std::vector<double> porosity_vector;
-       std::vector<double> position_vector;
      }
 
 
@@ -317,7 +317,7 @@ namespace aspect
        * access them.
        */
       void
-      initialize (const GeometryModel::Interface<dim>       &geometry_model);
+      initialize ();
 
       /**
        * Return the boundary velocity as a function of position.
@@ -342,54 +342,14 @@ namespace aspect
 
     template <int dim>
     void
-    SolitaryWaveInitialCondition<dim>::initialize (const GeometryModel::Interface<dim> &)
+    SolitaryWaveInitialCondition<dim>::initialize ()
     {
-      // initialize position and porosity vectors
-      const unsigned int base_element = this->introspection().base_elements.compositional_fields;
-      const FiniteElement<dim> &finite_element = this->get_fe();
+      std::cout << "Initialize solitary wave solution"
+                << std::endl;
 
-      // get the composition support points
-      const std::vector<Point<dim> > support_points
-        = finite_element.base_element(base_element).get_unit_support_points();
-      Assert (support_points.size() != 0,
-              ExcInternalError());
-
-      // create an FEValues object with just the composition element
-      FEValues<dim> fe_values (this->get_mapping(), finite_element,
-                               support_points,
-                               update_quadrature_points);
-
-      std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
-      const DoFHandler<dim> &dof_handler = this->get_dof_handler();
-
-      unsigned int j=0;
-      for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
-           cell != dof_handler.end(); ++cell)
-        {
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit (cell);
-
-            // go through the composition dofs and set their global values
-            // to the porosity wave solution field interpolated at these points
-            cell->get_dof_indices (local_dof_indices);
-            const unsigned int dofs_per_cell = finite_element.base_element(base_element).dofs_per_cell;
-            for (unsigned int i=0; i<dofs_per_cell; ++i)
-              AnalyticSolutions::position_vector.push_back(fe_values.quadrature_point(i)[dim-1]);
-          }
-        ++j;
-        }
-
-      AnalyticSolutions::porosity_vector.resize(AnalyticSolutions::position_vector.size());
-
-      // non-dimensionalize the amplitude and compute the porosity for every point
-      const double non_dim_amplitude = amplitude / background_porosity;
-
-      AnalyticSolutions::compute_porosity(AnalyticSolutions::position_vector,
-                                          non_dim_amplitude,
-                                          offset,
-                                          AnalyticSolutions::porosity_vector);
-      // TODO dimensionalize again
+      AnalyticSolutions::compute_porosity(amplitude,
+                                          background_porosity,
+                                          offset);
     }
 
 
@@ -398,13 +358,8 @@ namespace aspect
     SolitaryWaveInitialCondition<dim>::
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
     {
-      for (unsigned int i=0;i<AnalyticSolutions::position_vector.size();++i)
-        if(position[dim-1] == AnalyticSolutions::position_vector[i])
-          return AnalyticSolutions::porosity_vector[i];
-
-      AssertThrow(false,
-                  ExcMessage("No solitary wave solution was found for this position."));
-      return std::numeric_limits<double>::quiet_NaN();
+      return std::min(std::max(AnalyticSolutions::interpolate(position[dim-1],
+                                            offset),0.0),1.0e10);
     }
 
 
