@@ -80,6 +80,11 @@ namespace aspect
         ~Interface ();
 
         /**
+         * Initialize function.
+         */
+        virtual void initialize ();
+
+        /**
          * Execute this mesh refinement criterion. The default implementation
          * sets all the error indicators to zero.
          *

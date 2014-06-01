@@ -108,7 +108,6 @@ namespace aspect
           Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
                                                                                           "Compositional initial conditions::Model name",
                                                                                           prm);
-          plugin->initialize ();
           return plugin;
         }
     }

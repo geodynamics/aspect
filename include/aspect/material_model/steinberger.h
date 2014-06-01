@@ -58,6 +58,7 @@ namespace aspect
          * Initialization function. Loads the material data and sets up
          * pointers.
          */
+        virtual
         void
         initialize ();
 

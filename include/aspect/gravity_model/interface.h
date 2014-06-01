@@ -54,6 +54,11 @@ namespace aspect
         virtual ~Interface();
 
         /**
+         * Initialize function.
+         */
+        virtual void initialize ();
+
+        /**
          * Return the gravity vector as a function of position.
          */
         virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const = 0;
