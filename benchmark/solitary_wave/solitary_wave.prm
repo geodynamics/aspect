@@ -110,7 +110,7 @@ subsection Model settings
   set Fixed composition boundary indicators   = 
   set Prescribed velocity boundary indicators =  
 
-  set Tangential velocity boundary indicators = 0,1
+  set Tangential velocity boundary indicators = 0,1,2,3
   set Zero velocity boundary indicators       =           # default: 
 
   set Include melt transport                  = true
@@ -123,7 +123,7 @@ subsection Postprocess
 
   subsection Visualization
 
-    set List of output variables      = density, viscosity, thermal expansivity, melt pressure, melt velocity, melt density, permeability
+    set List of output variables      = density, viscosity, thermal expansivity, melt pressure, melt velocity, melt density, permeability, melt viscosity, compaction viscosity
 
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no

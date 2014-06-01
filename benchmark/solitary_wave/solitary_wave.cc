@@ -178,12 +178,12 @@ namespace aspect
 
       virtual double reference_viscosity () const
       {
-        return 1.0;
+        return eta_0;
       }
 
       virtual double reference_density () const
       {
-        return 1.0;
+        return reference_rho_s;
       }
 
       /**
@@ -209,7 +209,7 @@ namespace aspect
             out.viscosities[i] = eta_0;
             out.densities[i] = reference_rho_s;
             out.thermal_expansion_coefficients[i] = 0.0;
-            out.specific_heat[i] = 0.0;
+            out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 0.0;
             out.compressibilities[i] = 0.0;
           }
