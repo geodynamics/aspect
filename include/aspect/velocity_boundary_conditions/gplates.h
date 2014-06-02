@@ -279,11 +279,11 @@ namespace aspect
 
         /**
          * Initialization function. This function is called once at the
-         * beginning of the program. Parses the user input and checks for
-         * valid geometry model.
+         * beginning of the program. Checks preconditions.
          */
+        virtual
         void
-        initialize (const GeometryModel::Interface<dim> &geometry_model);
+        initialize ();
 
         /**
          * A function that is called at the beginning of each time step. For
@@ -291,6 +291,7 @@ namespace aspect
          * necessary and outputs a warning if the end of the set of velocity
          * files is reached.
          */
+        virtual
         void
         update ();
 

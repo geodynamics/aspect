@@ -242,9 +242,9 @@ parse_parameters (const std::string &input_as_string,
   // data type but MPI_C_BOOL is not part of old MPI standards.
   // so, do the broadcast in integers
   {
-      int isuccess = (success ? 1 : 0);
-      MPI_Bcast (&isuccess, 1, MPI_INT, 0, MPI_COMM_WORLD);
-      success = (isuccess == 1);
+    int isuccess = (success ? 1 : 0);
+    MPI_Bcast (&isuccess, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    success = (isuccess == 1);
   }
 
   // if not success, then throw an exception: ExcMessage on processor 0,
@@ -372,13 +372,13 @@ int main (int argc, char *argv[])
       return 1;
     }
   catch (QuietException &)
-  {
+    {
       // quitly treat an exception used on processors other than
       // root when we already know that processor 0 will generate
       // an exception. we do this to avoid creating too much
       // (duplicate) screen output
       return 1;
-  }
+    }
   catch (...)
     {
       std::cerr << std::endl << std::endl

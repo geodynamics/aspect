@@ -1,3 +1,10 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.1.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
 
 Loading shared library <./libno_adiabatic_heating.so>
 
@@ -398,6 +405,17 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      52.7s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |       120 |      43.8s |        83% |
+| Build Stokes preconditioner     |        24 |      5.64s |        11% |
+| Solve Stokes system             |       120 |     0.923s |       1.8% |
+| Initialization                  |         2 |     0.157s |       0.3% |
+| Postprocessing                  |        24 |     0.246s |      0.47% |
+| Refine mesh structure, part 1   |         2 |     0.674s |       1.3% |
+| Refine mesh structure, part 2   |         2 |   0.00127s |    0.0024% |
+| Setup dof systems               |         3 |     0.303s |      0.57% |
 +---------------------------------+-----------+------------+------------+
 

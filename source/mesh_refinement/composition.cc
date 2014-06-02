@@ -58,8 +58,8 @@ namespace aspect
         {
           Vector<float> this_indicator (indicators.size());
 
-	  QGauss<dim-1> quadrature (this->get_fe().base_element(this->introspection().base_elements.compositional_fields).degree+1);
-	  
+          QGauss<dim-1> quadrature (this->get_fe().base_element(this->introspection().base_elements.compositional_fields).degree+1);
+
           KellyErrorEstimator<dim>::estimate (this->get_dof_handler(),
                                               quadrature,
                                               typename FunctionMap<dim>::type(),
