@@ -224,8 +224,12 @@ namespace aspect
                        Patterns::Double(0,1),
                        "A relative tolerance up to which the linear Stokes systems in each "
                        "time or nonlinear step should be solved. The absolute tolerance will "
-                       "then be the norm of the right hand side of the equation "
-                       "times this tolerance. A given tolerance value of 1 would "
+                       "then be $\\| M x_0 - F \\| \\cdot \\text{tol}$, where $x_0 = (0,p_0)$ "
+                       "is the initial guess of the pressure, $M$ is the system matrix, "
+                       "F is the right-hand side, and tol is the parameter specified here. "
+                       "We include the initial guess of the pressure "
+                       "to remove the dependency of the tolerance on the static pressure. "
+                       "A given tolerance value of 1 would "
                        "mean that a zero solution vector is an acceptable solution "
                        "since in that case the norm of the residual of the linear "
                        "system equals the norm of the right hand side. A given "
@@ -237,9 +241,8 @@ namespace aspect
                        "to be so that if you make it smaller the results of your "
                        "simulation do not change any more (qualitatively) whereas "
                        "if you make it larger, they do. For most cases, the default "
-                       "value should be sufficient. However, for cases where the "
-                       "static pressure is much larger than the dynamic one, it may "
-                       "be necessary to choose a smaller value.");
+                       "value should be sufficient. In fact, a tolerance of 1e-4 "
+                       "might be accurate enough.");
     prm.declare_entry ("Number of cheap Stokes solver steps", "30",
                        Patterns::Integer(0),
                        "As explained in the ASPECT paper (Kronbichler, Heister, and Bangerth, "

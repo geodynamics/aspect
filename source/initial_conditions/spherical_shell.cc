@@ -37,10 +37,10 @@ namespace aspect
       // this initial condition only makes sense if the geometry is a
       // spherical shell. verify that it is indeed
       AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*>
-                  (&this->get_geometry_model())
-                  != 0,
-                  ExcMessage ("This initial condition can only be used if the geometry "
-                              "is a spherical shell."));
+                   (&this->get_geometry_model())
+                   != 0,
+                   ExcMessage ("This initial condition can only be used if the geometry "
+                               "is a spherical shell."));
 
       const double R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
                         (this->get_geometry_model()).outer_radius();
@@ -105,15 +105,15 @@ namespace aspect
       // this initial condition only makes sense if the geometry is a
       // spherical shell. verify that it is indeed
       AssertThrow (dynamic_cast<const GeometryModel::SphericalShell<dim>*>
-                  (&this->get_geometry_model())
-                  != 0,
-                  ExcMessage ("This initial condition can only be used if the geometry "
-                              "is a spherical shell."));
+                   (&this->get_geometry_model())
+                   != 0,
+                   ExcMessage ("This initial condition can only be used if the geometry "
+                               "is a spherical shell."));
       const double
       R0 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (this->get_geometry_model()).inner_radius(),
       R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&> (this->get_geometry_model()).outer_radius();
       const double dT = this->get_boundary_temperature().maximal_temperature()
-                      - this->get_boundary_temperature().minimal_temperature();
+                        - this->get_boundary_temperature().minimal_temperature();
       const double T0 = this->get_boundary_temperature().maximal_temperature()/dT;
       const double T1 = this->get_boundary_temperature().minimal_temperature()/dT;
       const double h = R1-R0;

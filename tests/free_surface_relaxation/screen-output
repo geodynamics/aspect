@@ -1,5 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.1.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -48,7 +49,7 @@ Number of free surface degrees of freedom: 2142
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+6 iterations.
+   Solving Stokes system... 0+7 iterations.
 
    Postprocessing:
      Topography min/max: -1.491e+04 m, 1.49e+04 m, 
@@ -58,7 +59,7 @@ Number of free surface degrees of freedom: 2142
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
+   Solving Stokes system... 0+4 iterations.
 
    Postprocessing:
      Topography min/max: -1.486e+04 m, 1.485e+04 m, 
@@ -68,7 +69,7 @@ Number of free surface degrees of freedom: 2142
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
+   Solving Stokes system... 0+4 iterations.
 
    Postprocessing:
      Topography min/max: -1.481e+04 m, 1.48e+04 m, 
@@ -78,7 +79,7 @@ Number of free surface degrees of freedom: 2142
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
+   Solving Stokes system... 0+4 iterations.
 
    Postprocessing:
      Topography min/max: -1.477e+04 m, 1.475e+04 m, 
@@ -87,27 +88,27 @@ Number of free surface degrees of freedom: 2142
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      3.95s |            |
+| Total wallclock time elapsed since start    |      8.62s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         6 |       1.2s |        30% |
-| Assemble temperature system     |         6 |     0.808s |        20% |
-| Build Stokes preconditioner     |         6 |     0.871s |        22% |
-| Build temperature preconditioner|         6 |    0.0254s |      0.64% |
-| Solve Stokes system             |         6 |     0.611s |        15% |
-| Solve temperature system        |         6 |   0.00425s |      0.11% |
-| FreeSurface                     |         6 |     0.255s |       6.4% |
-| Initialization                  |         2 |    0.0281s |      0.71% |
-| Postprocessing                  |         6 |    0.0285s |      0.72% |
-| Setup dof systems               |         1 |       0.1s |       2.5% |
+| Assemble Stokes system          |         6 |      2.48s |        29% |
+| Assemble temperature system     |         6 |      1.88s |        22% |
+| Build Stokes preconditioner     |         6 |      1.82s |        21% |
+| Build temperature preconditioner|         6 |    0.0746s |      0.86% |
+| Solve Stokes system             |         6 |      1.31s |        15% |
+| Solve temperature system        |         6 |   0.00834s |     0.097% |
+| FreeSurface                     |         6 |     0.522s |         6% |
+| Initialization                  |         2 |    0.0876s |         1% |
+| Postprocessing                  |         6 |     0.064s |      0.74% |
+| Setup dof systems               |         1 |      0.21s |       2.4% |
 +---------------------------------+-----------+------------+------------+
 
 *** Timestep 6:  t=1488.34 years
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
+   Solving Stokes system... 0+4 iterations.
 
    Postprocessing:
      Topography min/max: -1.472e+04 m, 1.47e+04 m, 
@@ -117,7 +118,7 @@ Number of free surface degrees of freedom: 2142
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
+   Solving Stokes system... 0+4 iterations.
 
    Postprocessing:
      Topography min/max: -1.467e+04 m, 1.465e+04 m, 
@@ -127,7 +128,7 @@ Number of free surface degrees of freedom: 2142
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
+   Solving Stokes system... 0+4 iterations.
 
    Postprocessing:
      Topography min/max: -1.462e+04 m, 1.46e+04 m, 
@@ -137,7 +138,7 @@ Number of free surface degrees of freedom: 2142
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
+   Solving Stokes system... 0+4 iterations.
 
    Postprocessing:
      Topography min/max: -1.458e+04 m, 1.456e+04 m, 
@@ -147,7 +148,7 @@ Number of free surface degrees of freedom: 2142
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
+   Solving Stokes system... 0+4 iterations.
 
    Postprocessing:
      Topography min/max: -1.453e+04 m, 1.451e+04 m, 
@@ -156,39 +157,39 @@ Number of free surface degrees of freedom: 2142
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      6.98s |            |
+| Total wallclock time elapsed since start    |      15.5s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        11 |      2.21s |        32% |
-| Assemble temperature system     |        11 |      1.49s |        21% |
-| Build Stokes preconditioner     |        11 |      1.61s |        23% |
-| Build temperature preconditioner|        11 |    0.0465s |      0.67% |
-| Solve Stokes system             |        11 |     0.928s |        13% |
-| Solve temperature system        |        11 |   0.00762s |      0.11% |
-| FreeSurface                     |        11 |      0.47s |       6.7% |
-| Initialization                  |         2 |    0.0281s |       0.4% |
-| Postprocessing                  |        11 |    0.0509s |      0.73% |
-| Setup dof systems               |         1 |       0.1s |       1.4% |
+| Assemble Stokes system          |        11 |      4.64s |        30% |
+| Assemble temperature system     |        11 |      3.53s |        23% |
+| Build Stokes preconditioner     |        11 |      3.33s |        21% |
+| Build temperature preconditioner|        11 |      0.14s |      0.91% |
+| Solve Stokes system             |        11 |      2.12s |        14% |
+| Solve temperature system        |        11 |    0.0148s |     0.095% |
+| FreeSurface                     |        11 |      1.01s |       6.5% |
+| Initialization                  |         2 |    0.0876s |      0.57% |
+| Postprocessing                  |        11 |     0.116s |      0.75% |
+| Setup dof systems               |         1 |      0.21s |       1.4% |
 +---------------------------------+-----------+------------+------------+
 
 Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      6.98s |            |
+| Total wallclock time elapsed since start    |      15.5s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        11 |      2.21s |        32% |
-| Assemble temperature system     |        11 |      1.49s |        21% |
-| Build Stokes preconditioner     |        11 |      1.61s |        23% |
-| Build temperature preconditioner|        11 |    0.0465s |      0.67% |
-| Solve Stokes system             |        11 |     0.928s |        13% |
-| Solve temperature system        |        11 |   0.00762s |      0.11% |
-| FreeSurface                     |        11 |      0.47s |       6.7% |
-| Initialization                  |         2 |    0.0281s |       0.4% |
-| Postprocessing                  |        11 |    0.0509s |      0.73% |
-| Setup dof systems               |         1 |       0.1s |       1.4% |
+| Assemble Stokes system          |        11 |      4.64s |        30% |
+| Assemble temperature system     |        11 |      3.53s |        23% |
+| Build Stokes preconditioner     |        11 |      3.33s |        21% |
+| Build temperature preconditioner|        11 |      0.14s |      0.91% |
+| Solve Stokes system             |        11 |      2.12s |        14% |
+| Solve temperature system        |        11 |    0.0148s |     0.095% |
+| FreeSurface                     |        11 |      1.01s |       6.5% |
+| Initialization                  |         2 |    0.0876s |      0.57% |
+| Postprocessing                  |        11 |     0.116s |      0.75% |
+| Setup dof systems               |         1 |      0.21s |       1.4% |
 +---------------------------------+-----------+------------+------------+
 

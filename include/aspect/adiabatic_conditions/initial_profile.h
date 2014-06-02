@@ -35,75 +35,76 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A simple class that calculates adiabatic conditions. This implementation
-     * calculates a simple profile at model start time and does not update it
-     * over time. It utilizes the initial condition for compositional fields at
-     * a reference point (a generic point in the current depth) to calculate the
-     * material parameters. The gravity is assumed to be directly downward, i.e.
-     * radial in spherical models and vertical in box-shaped models.
+     * A simple class that calculates adiabatic conditions. This
+     * implementation calculates a simple profile at model start time and does
+     * not update it over time. It utilizes the initial condition for
+     * compositional fields at a reference point (a generic point in the
+     * current depth) to calculate the material parameters. The gravity is
+     * assumed to be directly downward, i.e. radial in spherical models and
+     * vertical in box-shaped models.
      */
     template <int dim>
     class InitialProfile : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-      /**
-       * Constructor. Initialize variables.
-       */
-      InitialProfile ();
+        /**
+         * Constructor. Initialize variables.
+         */
+        InitialProfile ();
 
-      /**
-       * Initialization function. Because this function is called after
-       * initializing the SimulatorAccess, all of the necessary information
-       * is available to calculate the adiabatic profile. It computes the
-       * adiabatic conditions along a vertical transect of the geometry based
-       * on the given material model and other quantities.
-       */
-      virtual void initialize ();
+        /**
+         * Initialization function. Because this function is called after
+         * initializing the SimulatorAccess, all of the necessary information is
+         * available to calculate the adiabatic profile. It computes the
+         * adiabatic conditions along a vertical transect of the geometry based
+         * on the given material model and other quantities.
+         */
+        virtual void initialize ();
 
-      /**
-       * Some plugins need to know whether the adiabatic conditions are
-       * already calculated. This is for example the case for the simple com-
-       * pressible material model, which uses the adiabatic temperature as
-       * reference temperature to calculate the density. For the calculation of
-       * the adiabatic conditions this functionality is simply switched off,
-       * because we are always on the reference profile. This way
-       * the plugin behaves differently at initialization time of the adiabatic
-       * conditions and during the main model run.
-       */
-      virtual bool is_initialized() const;
+        /**
+         * Some plugins need to know whether the adiabatic conditions are
+         * already calculated. This is for example the case for the simple com-
+         * pressible material model, which uses the adiabatic temperature as
+         * reference temperature to calculate the density. For the calculation
+         * of the adiabatic conditions this functionality is simply switched
+         * off, because we are always on the reference profile. This way the
+         * plugin behaves differently at initialization time of the adiabatic
+         * conditions and during the main model run.
+         */
+        virtual bool is_initialized() const;
 
-      /**
-       * Empty update function. This class does not update the
-       * adiabatic profile over time.
-       */
-      virtual void update ();
+        /**
+         * Empty update function. This class does not update the adiabatic
+         * profile over time.
+         */
+        virtual void update ();
 
-      /**
-       * Return the adiabatic temperature at a given point of the domain.
-       */
-      virtual double temperature (const Point<dim> &p) const;
+        /**
+         * Return the adiabatic temperature at a given point of the domain.
+         */
+        virtual double temperature (const Point<dim> &p) const;
 
-      /**
-       * Return the adiabatic temperature profile as a vector of values
-       * corresponding to increasing depth.
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      virtual void get_adiabatic_temperature_profile(std::vector<double> &values) const;
+        /**
+         * Return the adiabatic temperature profile as a vector of values
+         * corresponding to increasing depth.
+         *
+         * @param values The output vector of depth averaged values. The
+         * function takes the pre-existing size of this vector as the number of
+         * depth slices.
+         */
+        virtual void get_adiabatic_temperature_profile(std::vector<double> &values) const;
 
-      /**
-       * Return the adiabatic pressure at a given point of the domain.
-       */
-      virtual double pressure (const Point<dim> &p) const;
+        /**
+         * Return the adiabatic pressure at a given point of the domain.
+         */
+        virtual double pressure (const Point<dim> &p) const;
 
       private:
 
         /**
-         * Wether the adiabatic conditions are already calculated.
-         * This is important for plugins that are used by the adiabatic conditions
-         * but also depend on the adiabatic conditions. This way they can behave
+         * Wether the adiabatic conditions are already calculated. This is
+         * important for plugins that are used by the adiabatic conditions but
+         * also depend on the adiabatic conditions. This way they can behave
          * differently in initialization and model run.
          */
         bool initialized;
@@ -115,8 +116,8 @@ namespace aspect
 
         /**
          * Vectors of values of temperatures and pressures on a transect into
-         * depth at which we have computed them. The public member functions of
-         * this class interpolate linearly between these points.
+         * depth at which we have computed them. The public member functions
+         * of this class interpolate linearly between these points.
          */
         std::vector<double> temperatures;
         std::vector<double> pressures;

@@ -54,83 +54,83 @@ namespace aspect
     class Interface
     {
       public:
-         /**
-          * Destructor. Made virtual to enforce that derived classes also have
-          * virtual destructors.
-          */
-         virtual ~Interface();
+        /**
+         * Destructor. Made virtual to enforce that derived classes also have
+         * virtual destructors.
+         */
+        virtual ~Interface();
 
-         /**
-          * Initialization function. Because this function is called after
-          * initializing the SimulatorAccess, all of the necessary information
-          * is available to calculate the adiabatic profile.
-          */
-         virtual
-         void
-         initialize ();
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after the
+         * SimulatorAccess (if applicable) is initialized.
+         */
+        virtual
+        void
+        initialize ();
 
-         /**
-          * Some plugins need to know whether the adiabatic conditions are
-          * already calculated. Namely all plugins that are needed to create the
-          * adiabatic conditions but themselves depedend on the adiabatic
-          * profile. Utilizing this function they may behave differently on
-          * initialization of the adiabatic conditions and at model runtime.
-          */
-         virtual
-         bool
-         is_initialized () const = 0;
+        /**
+         * Some plugins need to know whether the adiabatic conditions are
+         * already calculated. Namely all plugins that are needed to create
+         * the adiabatic conditions but themselves depedend on the adiabatic
+         * profile. Utilizing this function they may behave differently on
+         * initialization of the adiabatic conditions and at model runtime.
+         */
+        virtual
+        bool
+        is_initialized () const = 0;
 
-         /**
-          * Compute the adiabatic conditions along a vertical
-          * transect of the geometry based on the given material model and other
-          * quantities. This function is called at every new timestep.
-          */
-         virtual
-         void update ();
+        /**
+         * Compute the adiabatic conditions along a vertical transect of the
+         * geometry based on the given material model and other quantities.
+         * This function is called at every new timestep.
+         */
+        virtual
+        void update ();
 
-         /**
-          * Return the adiabatic temperature at a given point of the domain.
-          */
-         virtual
-         double temperature (const Point<dim> &p) const = 0;
+        /**
+         * Return the adiabatic temperature at a given point of the domain.
+         */
+        virtual
+        double temperature (const Point<dim> &p) const = 0;
 
-         /**
-          * Return the adiabatic temperature profile as a vector of values
-          * corresponding to increasing depth.
-          *
-          * @param values The output vector of depth averaged values. The
-          * function takes the pre-existing size of this vector as the number of
-          * depth slices.
-          */
-         virtual
-         void get_adiabatic_temperature_profile(std::vector<double> &values) const = 0;
+        /**
+         * Return the adiabatic temperature profile as a vector of values
+         * corresponding to increasing depth.
+         *
+         * @param values The output vector of depth averaged values. The
+         * function takes the pre-existing size of this vector as the number
+         * of depth slices.
+         */
+        virtual
+        void get_adiabatic_temperature_profile(std::vector<double> &values) const = 0;
 
-         /**
-          * Return the adiabatic pressure at a given point of the domain.
-          */
-         virtual
-         double pressure (const Point<dim> &p) const = 0;
+        /**
+         * Return the adiabatic pressure at a given point of the domain.
+         */
+        virtual
+        double pressure (const Point<dim> &p) const = 0;
 
 
-         /**
-          * Declare the parameters this class takes through input files. The
-          * default implementation of this function does not describe any
-          * parameters. Consequently, derived classes do not have to overload
-          * this function if they do not take any runtime parameters.
-          */
-         static
-         void
-         declare_parameters (ParameterHandler &prm);
+        /**
+         * Declare the parameters this class takes through input files. The
+         * default implementation of this function does not describe any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
 
-         /**
-          * Read the parameters this class declares from the parameter file.
-          * The default implementation of this function does not read any
-          * parameters. Consequently, derived classes do not have to overload
-          * this function if they do not take any runtime parameters.
-          */
-         virtual
-         void
-         parse_parameters (ParameterHandler &prm);
+        /**
+         * Read the parameters this class declares from the parameter file.
+         * The default implementation of this function does not read any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
 
     };
 
@@ -143,8 +143,8 @@ namespace aspect
      * @param description A text description of what this model does and that
      * will be listed in the documentation of the parameter file.
      * @param declare_parameters_function A pointer to a function that can be
-     * used to declare the parameters that this model wants to read
-     * from input files.
+     * used to declare the parameters that this model wants to read from input
+     * files.
      * @param factory_function A pointer to a function that can create an
      * object of this adiabatic conditions model.
      *

@@ -1,4 +1,10 @@
--- Running with 1 MPI task using Trilinos.
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.1.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
@@ -6,7 +12,7 @@ Number of degrees of freedom: 948 (578+81+289)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5 iterations.
+   Solving Stokes system... 22 iterations.
 
    Postprocessing:
 
@@ -22,12 +28,24 @@ Number of degrees of freedom: 948 (578+81+289)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 8e-10
 
-     RMS, max velocity: 0.362 m/year, 1.02 m/year
+     RMS, max velocity: 0.353 m/year, 1.02 m/year
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.124s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |    0.0179s |        14% |
+| Assemble temperature system     |         1 |    0.0181s |        15% |
+| Build Stokes preconditioner     |         1 |    0.0228s |        18% |
+| Build temperature preconditioner|         1 |   0.00141s |       1.1% |
+| Solve Stokes system             |         1 |   0.00927s |       7.5% |
+| Solve temperature system        |         1 |  0.000423s |      0.34% |
+| Initialization                  |         2 |    0.0281s |        23% |
+| Postprocessing                  |         1 |   0.00132s |       1.1% |
+| Setup dof systems               |         1 |    0.0134s |        11% |
 +---------------------------------+-----------+------------+------------+
 

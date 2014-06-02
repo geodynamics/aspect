@@ -77,15 +77,11 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * Initialize this class for a given simulator. This function
-         * overloads that of the SimulatorAccess base class. It calls the
-         * respective function of the base class and then performs some basic
+         * This function performs some basic
          * sanity checks on the parameter values previously read from the
          * input file.
-         *
-         * @param simulator A reference to the main simulator object.
          */
-        virtual void initialize (const Simulator<dim> &simulator);
+        virtual void initialize ();
 
       private:
         /**

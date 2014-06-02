@@ -34,6 +34,10 @@ namespace aspect
     Interface<dim>::~Interface ()
     {}
 
+    template <int dim>
+    void
+    Interface<dim>::initialize ()
+    {}
 
     template <int dim>
     void
@@ -59,12 +63,16 @@ namespace aspect
     void
     Manager<dim>::initialize (const Simulator<dim> &simulator)
     {
+      SimulatorAccess<dim>::initialize (simulator);
+
       for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::iterator
            p = termination_objects.begin();
            p != termination_objects.end(); ++p)
-        dynamic_cast<SimulatorAccess<dim>&>(**p).initialize (simulator);
+        {
+          dynamic_cast<SimulatorAccess<dim>&>(**p).initialize (simulator);
+          (*p)->initialize ();
+        }
 
-      SimulatorAccess<dim>::initialize (simulator);
     }
 
     template <int dim>
