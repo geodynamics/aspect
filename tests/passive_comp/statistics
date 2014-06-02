@@ -16,8 +16,8 @@
 # 16: Minimal temperature (K)
 # 17: Average temperature (K)
 # 18: Maximal temperature (K)
-# 19: Outward heat flux through boundary with indicator 0 (W)
-# 20: Outward heat flux through boundary with indicator 1 (W)
+# 19: Outward heat flux through boundary with indicator 0 ("inner") (W)
+# 20: Outward heat flux through boundary with indicator 1 ("outer") (W)
 0 0.0000e+00 768 7392 3264 3264  0  0 42 78 51 2.8162e+12 output-passive_comp/solution-00000 5.11003697e-08 6.29356646e-08 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
 1 2.8162e+12 768 7392 3264 3264 20 18  5  6 23 2.8162e+12 output-passive_comp/solution-00001 5.11003696e-08 6.29356646e-08 0.00000000e+00 4.36840613e-04 2.38734277e-03 2.94092221e-01 8.31113581e-01 
 2 5.6325e+12 768 7392 3264 3264 12 19  5  6 23 2.3675e+12 output-passive_comp/solution-00002 5.11003696e-08 6.29356646e-08 0.00000000e+00 8.56084488e-04 3.40033111e-03 6.25661823e-01 1.95934190e+00 

@@ -157,16 +157,6 @@ namespace aspect
     {
       public:
         /**
-         * Initialize the plugins handled by this object for a given
-         * simulator.
-         *
-         * @param simulator A reference to the main simulator object to which
-         * the postprocessor implemented in the derived class should be
-         * applied.
-         */
-        void initialize (const Simulator<dim> &simulator);
-
-        /**
          * Execute all of the termination criteria objects that have been
          * requested in the input file.
          *

@@ -31,10 +31,10 @@ end
 
 subsection Model settings
   set Zero velocity boundary indicators       = 
-  set Tangential velocity boundary indicators = 0,1
+  set Tangential velocity boundary indicators = inner, outer
   set Prescribed velocity boundary indicators =
 
-  set Fixed temperature boundary indicators   = 0,1
+  set Fixed temperature boundary indicators   = inner, outer
 
   set Include shear heating                   = true
 

@@ -31,6 +31,22 @@ namespace aspect
 {
   namespace Postprocess
   {
+    namespace
+    {
+      /**
+       * Given a string #s, return it in the form ' ("s")' if nonempty.
+       * Otherwise just return the empty string itself.
+       */
+      std::string parenthesize_if_nonempty (const std::string &s)
+      {
+        if (s.size() > 0)
+          return " (\"" + s + "\")";
+        else
+          return "";
+      }
+    }
+
+
     template <int dim>
     std::pair<std::string,std::string>
     VelocityBoundaryStatistics<dim>::execute (TableHandler &statistics)
@@ -142,10 +158,14 @@ namespace aspect
             {
               const std::string name_max = "Maximum velocity magnitude on boundary with indicator "
                                            + Utilities::int_to_string(p->first)
+                                           + parenthesize_if_nonempty(this->get_geometry_model()
+                                             .translate_id_to_symbol_name (p->first))
                                            + " (m/yr)";
               statistics.add_value (name_max, p->second*year_in_seconds);
               const std::string name_min = "Minimum velocity magnitude on boundary with indicator "
                                            + Utilities::int_to_string(a->first)
+                                           + parenthesize_if_nonempty(this->get_geometry_model()
+                                             .translate_id_to_symbol_name (p->first))
                                            + " (m/yr)";
               statistics.add_value (name_min, a->second*year_in_seconds);
               // also make sure that the other columns filled by the this object
@@ -159,10 +179,14 @@ namespace aspect
             {
               const std::string name_max = "Maximum velocity magnitude on boundary with indicator "
                                            + Utilities::int_to_string(p->first)
+                                           + parenthesize_if_nonempty(this->get_geometry_model()
+                                             .translate_id_to_symbol_name (p->first))
                                            + " (m/s)";
               statistics.add_value (name_max, p->second);
               const std::string name_min = "Minimum velocity magnitude on boundary with indicator "
                                            + Utilities::int_to_string(a->first)
+                                           + parenthesize_if_nonempty(this->get_geometry_model()
+                                             .translate_id_to_symbol_name (p->first))
                                            + " (m/s)";
               statistics.add_value (name_min, a->second);
               // also make sure that the other columns filled by the this object
@@ -177,12 +201,14 @@ namespace aspect
           screen_text.precision(4);
           if (this->convert_output_to_years() == true)
             {
-              screen_text << p->second *year_in_seconds << " m/yr, " << a->second *year_in_seconds << " m/yr"
+              screen_text << p->second *year_in_seconds << " m/yr, "
+                          << a->second *year_in_seconds << " m/yr"
                           << (index == global_max_vel.size()-1 ? "" : ", ");
             }
           else
             {
-              screen_text << p->second << " m/s, " << a->second << " m/s"
+              screen_text << p->second << " m/s, "
+                          << a->second << " m/s"
                           << (index == global_max_vel.size()-1 ? "" : ", ");
             }
 

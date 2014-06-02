@@ -30,23 +30,6 @@ namespace aspect
   {
     template <int dim>
     void
-    Composition<dim>::initialize (const Simulator<dim> &simulator)
-    {
-      // call the corresponding function in the base class, then use
-      // what has by then been initialized
-      SimulatorAccess<dim>::initialize (simulator);
-
-      AssertThrow (composition_scaling_factors.size() == this->n_compositional_fields()
-                   ||
-                   composition_scaling_factors.size() == 0,
-                   ExcMessage ("The number of scaling factors given here must either be "
-                               "zero or equal to the number of chosen refinement criteria."));
-      if (composition_scaling_factors.size() == 0)
-        composition_scaling_factors.resize (this->n_compositional_fields(), 1.0);
-    }
-
-    template <int dim>
-    void
     Composition<dim>::execute(Vector<float> &indicators) const
     {
       AssertThrow (this->n_compositional_fields() >= 1,
@@ -115,6 +98,15 @@ namespace aspect
           composition_scaling_factors
             = Utilities::string_to_double(
                 Utilities::split_string_list(prm.get("Compositional field scaling factors")));
+
+          AssertThrow (composition_scaling_factors.size() == this->n_compositional_fields()
+                       ||
+                       composition_scaling_factors.size() == 0,
+                       ExcMessage ("The number of scaling factors given here must either be "
+                                   "zero or equal to the number of chosen refinement criteria."));
+
+          if (composition_scaling_factors.size() == 0)
+            composition_scaling_factors.resize (this->n_compositional_fields(), 1.0);
         }
         prm.leave_subsection();
       }

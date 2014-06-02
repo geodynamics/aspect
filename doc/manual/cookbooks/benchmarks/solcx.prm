@@ -26,7 +26,7 @@ end
 
 subsection Model settings
   set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 0,1,2,3
+  set Tangential velocity boundary indicators = left, right, bottom, top
   set Zero velocity boundary indicators       =
 end
 

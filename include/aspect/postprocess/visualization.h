@@ -254,18 +254,6 @@ namespace aspect
         execute (TableHandler &statistics);
 
         /**
-         * Initialize this class for a given simulator. In addition to calling
-         * the respective function from the base class, this function also
-         * initializes all the visualization postprocessor plugins.
-         *
-         * @param simulator A reference to the main simulator object to which
-         * the postprocessor implemented in the derived class should be
-         * applied.
-         */
-        virtual void initialize (const Simulator<dim> &simulator);
-
-
-        /**
          * A function that is used to register visualization postprocessor
          * objects in such a way that the Manager can deal with all of them
          * without having to know them by name. This allows the files in which

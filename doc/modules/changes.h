@@ -6,6 +6,18 @@
  *
  *
  * <ol>
+ * <li> New: There are numerous places in the input file where one can or
+ * has to input boundary indicators. These indicators identify individual
+ * parts of the boundary of the domain, such as the inner or outer surfaces
+ * of a spherical shell. However, remembering these numerical indicators
+ * when writing or reading input files is a hassle and error prone.
+ * <br>
+ * Given this problem, there is now functionality in Aspect so that geometry
+ * models can (and, for the existing models, do) provide symbolic names for
+ * each of the boundary parts. These symbolic names can then be used in the
+ * input files wherever it was previously necessary to use numbers.
+ * <br>
+ * (Wolfgang Bangerth, 2014/07/21)
  *
  * <li> New: The <code>spherical hexagonal perturbation</code> initial
  * temperature model has been generalized to allow other modes than just

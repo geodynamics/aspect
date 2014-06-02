@@ -14,8 +14,8 @@
 # 14: Minimal temperature (K)
 # 15: Average temperature (K)
 # 16: Maximal temperature (K)
-# 17: Outward heat flux through boundary with indicator 0 (W)
-# 18: Outward heat flux through boundary with indicator 1 (W)
-# 19: Outward heat flux through boundary with indicator 2 (W)
-# 20: Outward heat flux through boundary with indicator 3 (W)
+# 17: Outward heat flux through boundary with indicator 0 ("inner") (W)
+# 18: Outward heat flux through boundary with indicator 1 ("outer") (W)
+# 19: Outward heat flux through boundary with indicator 2 ("left") (W)
+# 20: Outward heat flux through boundary with indicator 3 ("right") (W)
 0 0.0000e+00 3072 28291 12545 0 36 49 14 7.6917e-06 output-adiabatic_conditions/solution-00000 7.09255628e+08 4.38269080e+09 1.61300000e+03 1.61300000e+03 1.61300000e+03 1.07650810e-17 1.44802173e-17 6.92817235e-18 -2.26297087e-19 

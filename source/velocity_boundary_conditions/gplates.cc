@@ -99,7 +99,7 @@ namespace aspect
         std::ostringstream output;
 
         output << std::setprecision (3) << std::setw(3) << std::fixed << std::endl
-               << "   Set up GPlates boundary velocity module."  << std::endl
+               << "   Setting up GPlates boundary velocity plugin."  << std::endl
                << std::endl;
         if (dim == 2)
           {

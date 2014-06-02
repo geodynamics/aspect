@@ -30,10 +30,10 @@ end
 
 
 subsection Model settings
-  set Prescribed velocity boundary indicators = 1:gplates
-  set Tangential velocity boundary indicators = 0
+  set Prescribed velocity boundary indicators = outer:gplates
+  set Tangential velocity boundary indicators = inner
 
-  set Fixed temperature boundary indicators   = 0,1
+  set Fixed temperature boundary indicators   = inner, outer
 
   set Include shear heating                   = false
 end

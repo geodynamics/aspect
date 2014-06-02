@@ -60,22 +60,6 @@ namespace aspect
 // ------------------------------ Manager -----------------------------
 
     template <int dim>
-    void
-    Manager<dim>::initialize (const Simulator<dim> &simulator)
-    {
-      SimulatorAccess<dim>::initialize (simulator);
-
-      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::iterator
-           p = termination_objects.begin();
-           p != termination_objects.end(); ++p)
-        {
-          dynamic_cast<SimulatorAccess<dim>&>(**p).initialize (simulator);
-          (*p)->initialize ();
-        }
-
-    }
-
-    template <int dim>
     double Manager<dim>::check_for_last_time_step (const double time_step) const
     {
       double new_time_step = time_step;
@@ -250,15 +234,19 @@ namespace aspect
       }
       prm.leave_subsection();
 
-      // go through the list, create objects and let them parse
+      // go through the list, create objects, initialize them, and let them parse
       // their own parameters
       for (unsigned int name=0; name<plugin_names.size(); ++name)
         {
           termination_objects.push_back (std_cxx1x::shared_ptr<Interface<dim> >
                                          (std_cxx1x::get<dim>(registered_plugins)
                                           .create_plugin (plugin_names[name],
-                                                          "Termination criteria::Termination criteria",
-                                                          prm)));
+                                                          "Termination criteria::Termination criteria")));
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*termination_objects.back()))
+            sim->initialize (this->get_simulator());
+          termination_objects.back()->parse_parameters (prm);
+          termination_objects.back()->initialize ();
+
           termination_obj_names.push_back(plugin_names[name]);
         }
     }

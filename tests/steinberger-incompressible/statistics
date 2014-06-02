@@ -15,9 +15,9 @@
 # 15: Average temperature (K)
 # 16: Maximal temperature (K)
 # 17: Average nondimensional temperature (K)
-# 18: Outward heat flux through boundary with indicator 0 (W)
-# 19: Outward heat flux through boundary with indicator 1 (W)
-# 20: Outward heat flux through boundary with indicator 2 (W)
-# 21: Outward heat flux through boundary with indicator 3 (W)
+# 18: Outward heat flux through boundary with indicator 0 ("inner") (W)
+# 19: Outward heat flux through boundary with indicator 1 ("outer") (W)
+# 20: Outward heat flux through boundary with indicator 2 ("left") (W)
+# 21: Outward heat flux through boundary with indicator 3 ("right") (W)
 0 0.0000e+00 192 1891 833  0 26 27 52 1.0000e+05 output-steinberger-incompressible/solution-00000 5.07400751e-01 9.70617035e-01 2.73000000e+02 1.62415815e+03 4.25000000e+03 3.39743060e-01 -6.13121190e+05 4.77340997e+05 1.59404026e+03 1.59404026e+03 
 1 1.0000e+05 192 1891 833 11 22 23 46 1.2289e+05 output-steinberger-incompressible/solution-00001 5.05434871e-01 9.72859905e-01 2.73000000e+02 1.62590894e+03 4.25000000e+03 3.40183290e-01 -5.77549995e+05 4.57849818e+05 1.33958105e+03 1.33958105e+03 

@@ -87,11 +87,11 @@ end
 subsection Model settings
   set Include adiabatic heating               = false
   set Include shear heating                   = false
-  set Fixed temperature boundary indicators   = 2,3
+  set Fixed temperature boundary indicators   = bottom, top
   set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 2,3
+  set Tangential velocity boundary indicators = bottom, top
   set Zero velocity boundary indicators       = 
-  set Remove nullspace = net x translation
+  set Remove nullspace                        = net x translation
 end
 
 subsection Postprocess
