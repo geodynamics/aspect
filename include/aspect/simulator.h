@@ -92,7 +92,7 @@ namespace aspect
    * @ingroup Simulator
    */
   template <int dim>
-  class Simulator : public Subscriptor
+  class Simulator
   {
     private:
       /**
