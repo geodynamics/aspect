@@ -63,7 +63,7 @@ namespace aspect
                 this->convert_output_to_years() ? year_in_seconds : 1.0;
             const unsigned int n_q_points = uh.size();
             for (unsigned int q=0;q<n_q_points;++q)
-              for (unsigned int i=0;i<computed_quantities.size();++i)
+              for (unsigned int i=0;i<computed_quantities[q].size();++i)
                 computed_quantities[q][i]=uh[q][i] * ((i < dim) ? velocity_scaling_factor : 1.0);
           }
 
