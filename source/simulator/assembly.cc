@@ -1297,14 +1297,6 @@ namespace aspect
                                     0)
                                  + (parameters.include_melt_transport
                                     ?
-                                    + (is_compressible
-                                       ?
-                                       pressure_scaling *
-                                         compressibility * density_s *
-                                         (scratch.velocity_values[q] * gravity) *
-                                         scratch.phi_p_c[i]
-                                       :
-                                       0.0)
                                     + pressure_scaling *
                                       p_f_RHS * scratch.phi_p[i]
                                     - pressure_scaling *
