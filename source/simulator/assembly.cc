@@ -1115,9 +1115,14 @@ namespace aspect
     double fluid_pressure_RHS = 0.0;
 
     // melting term
-    fluid_pressure_RHS -= melting_rate * (1.0/fluid_density + 1.0/solid_density);
+    fluid_pressure_RHS -= melting_rate * (1.0/fluid_density - 1.0/solid_density);
 
     // compression term
+    // The whole expression for the first term on the RHS would be
+    // (u_s \cdot g) (\phi \rho_f \kappa_f + (1 - \phi) \rho_s \kappa_s).
+    // However, we already have the term (u_s \cdot g) \rho_s \kappa_s in the
+    // assembly of the stokes system without melt. Because of that, we only
+    // need to have -\phi \rho_s \kappa_s here.
     fluid_pressure_RHS += is_compressible
                           ?
                           (current_u * gravity) * (porosity * fluid_density * fluid_compressibility
@@ -1275,9 +1280,6 @@ namespace aspect
                                                 K_D * pressure_scaling * pressure_scaling *
                                                   compressibility_f * density_f
                                                   * scratch.phi_p[i] * (scratch.grad_phi_p[j] * gravity)
-                                                + K_D * pressure_scaling * pressure_scaling *
-                                                  compressibility_f * density_f
-                                                  * (scratch.grad_phi_p[i]* gravity) * scratch.phi_p[j]
                                                 :
                                                 0.0)
                                              :
