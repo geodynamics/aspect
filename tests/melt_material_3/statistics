@@ -1,0 +1,24 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Time step size (seconds)
+# 10: RMS velocity (m/s)
+# 11: Max. velocity (m/s)
+# 12: Minimal pressure (Pa)
+# 13: Average pressure (Pa)
+# 14: Maximal pressure (Pa)
+# 15: Maximum velocity magnitude on boundary with indicator 0 (m/s)
+# 16: Minimum velocity magnitude on boundary with indicator 0 (m/s)
+# 17: Maximum velocity magnitude on boundary with indicator 1 (m/s)
+# 18: Minimum velocity magnitude on boundary with indicator 1 (m/s)
+# 19: Maximum velocity magnitude on boundary with indicator 2 (m/s)
+# 20: Minimum velocity magnitude on boundary with indicator 2 (m/s)
+# 21: Maximum velocity magnitude on boundary with indicator 3 (m/s)
+# 22: Minimum velocity magnitude on boundary with indicator 3 (m/s)
+# 23: Visualization file name
+0 0.0000e+00 1024 10628 4225 4225 0 0 5.1957e-03 4.74359788e-01 9.93796014e-01 -3.52835271e+00 -2.02835271e+00 -5.28352711e-01 9.93796014e-01 8.32138766e-04 9.93796014e-01 8.32138766e-04 0.00000000e+00 0.00000000e+00 1.00000000e+00 1.00000000e+00 output-melt_material_3/solution-00000 
