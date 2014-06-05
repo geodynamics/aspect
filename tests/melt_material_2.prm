@@ -1,13 +1,13 @@
 # A testcase that demonstrates melt transport with a compactible matrix,
-# but incompressible matrix and fluid. It solves the ewuation on a box
-# with zero verlocity boundary conditions at the bottom boundary, 
+# but incompressible matrix and fluid. It solves the equation on a box
+# with zero velocity boundary conditions at the bottom boundary, 
 # tangential velocities at the sides and an open boundary at the top.
 #
 # This also checks the correct size of the time step, which depends
 # both on the melt and the solid velocity.
 #
 # We the choose a Darcy coefficient (= permeability divided by fluid
-# viscosity) of y^2/2 and otherwise constant material parameters 
+# viscosity) of 0.5+y^2/2 and otherwise constant material parameters 
 # so that the gradient of the fluid pressure vanishes. The velocity
 # should then be y^2/2, the compaction pressure -y and the fluid
 # pressure should be constant.
