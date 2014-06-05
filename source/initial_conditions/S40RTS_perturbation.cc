@@ -143,13 +143,13 @@ namespace aspect
            }
 
          // Declare a function that returns the cosine coefficients
-         std::vector<double> cos_coeffs()
+         const std::vector<double> & cos_coeffs() const
          {
            return a_lm;
          }
 
          // Declare a function that returns the sine coefficients
-         std::vector<double> sin_coeffs()
+         const std::vector<double> & sin_coeffs() const
          {
            return b_lm;
          }
@@ -195,7 +195,7 @@ namespace aspect
            } 
          }
 
-         std::vector<double> spline_depths()
+         const std::vector<double> & spline_depths() const
          { 
            return depths;
          }
