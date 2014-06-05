@@ -7,7 +7,7 @@
 # both on the melt and the solid velocity.
 #
 # We the choose a Darcy coefficient (= permeability divided by fluid
-# viscosity) of 0.5+y^2/2 and otherwise constant material parameters 
+# viscosity) of (1+y^2)/2 and otherwise constant material parameters 
 # so that the gradient of the fluid pressure is -1. The velocity
 # should then be y^2/2, the compaction pressure -y and the fluid
 # pressure should be linear.
@@ -140,7 +140,7 @@ end
 
 subsection Postprocess
 
-  set List of postprocessors = velocity statistics, pressure statistics, velocity boundary statistics, visualization
+  set List of postprocessors = velocity statistics, pressure statistics, velocity boundary statistics
 
   subsection Visualization
 

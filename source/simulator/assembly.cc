@@ -1342,10 +1342,18 @@ namespace aspect
                 const double K_D = melt_outputs.permeabilities[q] / melt_outputs.fluid_viscosities[q];
 
                 for (unsigned int i = 0; i < dofs_per_cell; ++i)
-                  data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
-                                        * pressure_scaling * K_D * density_f *
-                                       (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)
-                                        * scratch.finite_element_face_values.JxW(q));
+                  {
+                    data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
+                                          * pressure_scaling * K_D * density_f *
+                                         (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)
+                                          * scratch.finite_element_face_values.JxW(q));
+                    for (unsigned int j=0; j<dofs_per_cell; ++j)
+                      data.local_matrix(i,j) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
+                                                * pressure_scaling * pressure_scaling * K_D *
+                                                (scratch.finite_element_face_values.get_normal_vectors()[q] *
+                                                scratch.finite_element_face_values[introspection.extractors.pressure].gradient(j, q))
+                                                * scratch.finite_element_face_values.JxW(q));
+                  }
               }
           }
 
