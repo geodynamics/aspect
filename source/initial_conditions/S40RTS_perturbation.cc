@@ -22,13 +22,69 @@
 #include <aspect/initial_conditions/S40RTS_perturbation.h>
 #include <fstream>
 #include <iostream>
+#include <deal.II/base/std_cxx1x/array.h>
 
 #include <boost/math/special_functions/spherical_harmonic.hpp>
 
 namespace aspect
 {
   namespace InitialConditions
-  { 
+  {
+
+    // tk does the cubic spline interpolation.
+    // This interpolation is based on the script spline.h, which was downloaded from 
+    // http://kluge.in-chemnitz.de/opensource/spline/spline.h  
+    // Copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
+   
+      namespace tk {
+         // band matrix solver
+         class band_matrix {
+            private:
+            std::vector< std::vector<double> > m_upper;  // upper band
+            std::vector< std::vector<double> > m_lower;  // lower band
+            public:
+            band_matrix() {};                             // constructor
+            band_matrix(int dim, int n_u, int n_l);       // constructor
+            ~band_matrix() {};                            // destructor
+            void resize(int dim, int n_u, int n_l);      // init with dim,n_u,n_l
+            int dim() const;                             // matrix dimension
+            int num_upper() const {
+                return m_upper.size()-1;
+            }
+            int num_lower() const {
+                return m_lower.size()-1;
+            }
+            // access operator
+            double & operator () (int i, int j);            // write
+            double   operator () (int i, int j) const;      // read
+            // we can store an additional diogonal (in m_lower)
+             double& saved_diag(int i);
+            double  saved_diag(int i) const;
+            void lu_decompose();
+            std::vector<double> r_solve(const std::vector<double>& b) const;
+            std::vector<double> l_solve(const std::vector<double>& b) const;
+            std::vector<double> lu_solve(const std::vector<double>& b,
+                                         bool is_lu_decomposed=false);
+
+        };
+
+        // spline interpolation
+        class spline {
+            private:
+            std::vector<double> m_x,m_y;           // x,y coordinates of points
+            // interpolation parameters
+            // f(x) = a*(x-x_i)^3 + b*(x-x_i)^2 + c*(x-x_i) + y_i
+            std::vector<double> m_a,m_b,m_c,m_d;
+            public:
+            void set_points(const std::vector<double>& x,
+                            const std::vector<double>& y, bool cubic_spline=true);
+            double operator() (double x) const;
+        };
+      }
+
+
+
+ 
     
     namespace internal
     {
@@ -85,11 +141,14 @@ namespace aspect
                }
              } 
            }
+
+         // Declare a function that returns the cosine coefficients
          std::vector<double> cos_coeffs()
          {
            return a_lm;
          }
 
+         // Declare a function that returns the sine coefficients
          std::vector<double> sin_coeffs()
          {
            return b_lm;
@@ -147,6 +206,7 @@ namespace aspect
 
      }
 
+
     template <int dim>
     void
     S40RTSPerturbation<dim>::initialize()
@@ -194,7 +254,7 @@ namespace aspect
            depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);       
 
         // convert coordinates from [x,y,z] to [r, phi, theta] 
-        const Tensor<1,dim> scoord = spherical_surface_coordinates(position);
+        std_cxx1x::array<double,dim> scoord = spherical_surface_coordinates(position);
 
         // iterate over all degrees and orders at each depth and sum them all up.
         std::vector<double> spline_values(num_spline_knots,0);
@@ -254,11 +314,11 @@ namespace aspect
     }
 
     template <int dim>
-    const Tensor<1,dim>
+    std_cxx1x::array<double,dim>
     S40RTSPerturbation<dim>::
-    spherical_surface_coordinates(const Tensor<1,dim> &position) const
+    spherical_surface_coordinates(const dealii::Point<dim,double> &position) 
     {
-      Tensor<1,dim> scoord;
+      std_cxx1x::array<double,dim> scoord;
 
       scoord[0] = std::sqrt(position.norm_square()); // R
       scoord[1] = std::atan2(position[1],position[0]); // Phi
@@ -510,28 +570,30 @@ namespace aspect
                              "The path to the model data. ");
           prm.declare_entry ("Initial condition file name", "S40RTS.sph",
                             Patterns::Anything(),
-                             "The file name of the spherical harmonics coefficients"
+                             "The file name of the spherical harmonics coefficients "
                              "from Ritsema et al.");
           prm.declare_entry ("Spline knots depth file name", "Spline_knots.txt",
                             Patterns::Anything(),
-                             "The file name of the spline knot locations from"
+                             "The file name of the spline knot locations from "
                              "Ritsema et al.");
           prm.declare_entry ("vs to density scaling", "0.25",
                              Patterns::Double (0),
-                             " ");
+                             "This parameter specifies how the perturbation in shear wave velocity "
+                             "as prescribed by S20RTS or S40RTS is scaled into a density perturbation. "
+                             "See the general description of this model for more detailed information.");
           prm.declare_entry ("Thermal expansion coefficient in initial temperature scaling", "2e-5",
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\beta$. "
                              "Units: $1/K$.");
           prm.declare_entry ("Remove degree 0 from perturbation","true",
                              Patterns::Bool (),
-                             "Option to remove the degree zero component from the perturbation,"
-                             "which will ensure that the depth-average temperature is equal to"
-                             "the background temperature.");
+                             "Option to remove the degree zero component from the perturbation, "
+                             "which will ensure that the laterally averaged temperature for a fixed "
+                             "depth is equal to the background temperature.");
           prm.declare_entry ("Reference temperature", "1600.0",
                              Patterns::Double (0),
-                             "The reference temperature that is perturbed by the"
-                             "harmonic function. Only used in incompressible models.");
+                             "The reference temperature that is perturbed by the spherical "
+                             "harmonic functions. Only used in incompressible models.");
         }
         prm.leave_subsection ();
       }
@@ -582,25 +644,25 @@ namespace aspect
                                        "S40RTS perturbation",
                                        "An initial temperature field in which the temperature "
                                        "is perturbed following the S20RTS or S40RTS shear wave "
-                                       "velocity model by Ritsema and others, which can be downloaded" 
-                                       "here http://www.earth.lsa.umich.edu/~jritsema/research.html"
-                                       "Information on the vs model can be found in Ritsema, J., Deuss," 
-                                       "A., van Heijst, H.J. & Woodhouse, J.H., 2011. S40RTS: a" 
-                                       "degree-40 shear-velocity model for the mantle from new Rayleigh" 
-                                       "wave dispersion, teleseismic traveltime and normal-mode" 
-                                       "splitting function measurements, Geophys. J. Int. 184, 1223-1236." 
-                                       "The scaling between the shear wave perturbation and the"
-                                       "temperature perturbation can be set by the user with the" 
-                                       "'vs to density scaling' parameter and the 'Thermal" 
-                                       "expansion coefficient in initial temperature scaling'" 
-                                       "parameter. The scaling is as follows: $\\delta ln \\rho"
-                                       "(r,\\theta,\\phi) = \\xi \\cdot \\delta ln v_s(r,\\theta,"
-                                       "\\phi)$ and $\\delta T(r,\\theta,\\phi) = - \\frac{1}{\\alpha}"
-                                       "\\delta ln \\rho(r,\\theta,\\phi)$. $\\xi$ is the 'vs to"
-                                       "density scaling' parameter and $\\alpha$ is the 'Thermal" 
-                                       "expansion coefficient in initial temperature scaling'" 
-                                       "parameter. The temperature perturbation is added to an" 
-                                       "otherwise constant temperature (incompressible model) or" 
+                                       "velocity model by Ritsema and others, which can be downloaded " 
+                                       "here \\url{http://www.earth.lsa.umich.edu/~jritsema/research.html}. "
+                                       "Information on the vs model can be found in Ritsema, J., Deuss, " 
+                                       "A., van Heijst, H.J. & Woodhouse, J.H., 2011. S40RTS: a " 
+                                       "degree-40 shear-velocity model for the mantle from new Rayleigh " 
+                                       "wave dispersion, teleseismic traveltime and normal-mode " 
+                                       "splitting function measurements, Geophys. J. Int. 184, 1223-1236. " 
+                                       "The scaling between the shear wave perturbation and the "
+                                       "temperature perturbation can be set by the user with the " 
+                                       "'vs to density scaling' parameter and the 'Thermal " 
+                                       "expansion coefficient in initial temperature scaling' " 
+                                       "parameter. The scaling is as follows: $\\delta ln \\rho "
+                                       "(r,\\theta,\\phi) = \\xi \\cdot \\delta ln v_s(r,\\theta, "
+                                       "\\phi)$ and $\\delta T(r,\\theta,\\phi) = - \\frac{1}{\\alpha} "
+                                       "\\delta ln \\rho(r,\\theta,\\phi)$. $\\xi$ is the 'vs to "
+                                       "density scaling' parameter and $\\alpha$ is the 'Thermal " 
+                                       "expansion coefficient in initial temperature scaling' " 
+                                       "parameter. The temperature perturbation is added to an " 
+                                       "otherwise constant temperature (incompressible model) or " 
                                        "adiabatic reference profile (compressible model).")
   }
 }

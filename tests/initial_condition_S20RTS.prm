@@ -2,7 +2,6 @@ set Dimension                              = 3
 set Use years in output instead of seconds = true
 set Start time                             = 0
 set End time                               = 0
-#set Output directory                       = output-S20RTS
 
 
 subsection Material model
@@ -74,7 +73,7 @@ subsection Postprocess
   set List of postprocessors = visualization, temperature statistics
 
   subsection Visualization
-    set Output format                 = vtu
+    set Output format                 = gnuplot
     set Time between graphical output = 0
   end
 

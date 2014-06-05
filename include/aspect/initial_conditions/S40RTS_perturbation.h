@@ -22,9 +22,8 @@
 #ifndef __aspect__initial_conditions_S40RTS_perturbation_h
 #define __aspect__initial_conditions_S40RTS_perturbation_h
 
-#include <aspect/initial_conditions/interface.h>
-#include <aspect/simulator.h>
-
+#include <aspect/simulator_access.h>
+#include <deal.II/base/std_cxx1x/array.h>
 
 namespace aspect
 {
@@ -85,8 +84,8 @@ namespace aspect
         /**
          * Returns spherical coordinates of a cartesian position.
          */
-        const Tensor<1,dim>
-        spherical_surface_coordinates(const Tensor<1,dim> &position) const;
+        static std_cxx1x::array<double,dim>
+        spherical_surface_coordinates(const dealii::Point<dim,double> &position);
         
         /**
          * File directory and names
@@ -124,66 +123,20 @@ namespace aspect
          */
         double reference_temperature;
 
+        /**
+         * Pointer to an object that reads and processes the spherical harmonics
+         * coefficients
+         */
         std_cxx1x::shared_ptr<internal::SphericalHarmonicsLookup> spherical_harmonics_lookup;
+        
+        /**
+         * Pointer to an object that reads and processes the depths for the spline
+         * knot points. 
+         */
         std_cxx1x::shared_ptr<internal::SplineDepthsLookup> spline_depths_lookup;
-
 
     };
 
-
-
-    // tk does the cubic spline interpolation.
-    // This interpolation is based on the script spline.h, which was downloaded from 
-    // http://kluge.in-chemnitz.de/opensource/spline/spline.h   //
-    // Copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
-        
-    namespace tk {
-        
-        // band matrix solver
-        class band_matrix {
-            private:
-            std::vector< std::vector<double> > m_upper;  // upper band
-            std::vector< std::vector<double> > m_lower;  // lower band
-            public:
-            band_matrix() {};                             // constructor
-            band_matrix(int dim, int n_u, int n_l);       // constructor
-            ~band_matrix() {};                            // destructor
-            void resize(int dim, int n_u, int n_l);      // init with dim,n_u,n_l
-            int dim() const;                             // matrix dimension
-            int num_upper() const {
-                return m_upper.size()-1;
-            }
-            int num_lower() const {
-                return m_lower.size()-1;
-            }
-            // access operator
-            double & operator () (int i, int j);            // write
-            double   operator () (int i, int j) const;      // read
-            // we can store an additional diogonal (in m_lower)
-            double& saved_diag(int i);
-            double  saved_diag(int i) const;
-            void lu_decompose();
-            std::vector<double> r_solve(const std::vector<double>& b) const;
-            std::vector<double> l_solve(const std::vector<double>& b) const;
-            std::vector<double> lu_solve(const std::vector<double>& b,
-                                         bool is_lu_decomposed=false);
-            
-        };
-        
-        
-        // spline interpolation
-         class spline {
-            private:
-            std::vector<double> m_x,m_y;           // x,y coordinates of points
-            // interpolation parameters
-            // f(x) = a*(x-x_i)^3 + b*(x-x_i)^2 + c*(x-x_i) + y_i
-            std::vector<double> m_a,m_b,m_c,m_d;
-            public:
-            void set_points(const std::vector<double>& x,
-                            const std::vector<double>& y, bool cubic_spline=true);
-            double operator() (double x) const;
-        };
-     }
   }
 }
 
