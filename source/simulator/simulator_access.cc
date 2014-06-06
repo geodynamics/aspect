@@ -38,6 +38,13 @@ namespace aspect
     simulator = &simulator_object;
   }
 
+  template <int dim>
+  const Simulator<dim> &
+  SimulatorAccess<dim>::get_simulator() const
+  {
+    return *simulator;
+  }
+
 
 
   template <int dim>

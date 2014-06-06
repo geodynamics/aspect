@@ -1,5 +1,9 @@
 set Dimension                              = 3
+<<<<<<< HEAD
 set Use years in output instead of seconds = true
+=======
+set Use years in output instead of seconds = false
+>>>>>>> s40rts
 set Start time                             = 0
 set End time                               = 0
 

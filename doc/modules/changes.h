@@ -7,5 +7,11 @@
  *
  * <ol>
  *
+ * <li> Fixed: When setting "Use years in output instead of seconds" the
+ * velocity solution is now exported in m/year instead of m/s in visualization
+ * files.
+ * <br>
+ * (Timo Heister, 2014/06/02)
+ *
  * </ol>
  */
