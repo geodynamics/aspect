@@ -211,11 +211,6 @@ expand_backslashes (const std::string &filename)
 
 
 /**
- * An exception that we can silently treat in main(). Used in read_parameters().
- */
-class QuietException {};
-
-/**
  * Let ParameterHandler parse the input file, here given as a string.
  * Since ParameterHandler unconditionally writes to the screen when it
  * finds something it doesn't like, we get massive amounts of output
@@ -226,7 +221,7 @@ class QuietException {};
  *
  * In case of an error, we need to abort all processors without them
  * having read their data. This is done by throwing an exception of the
- * special class QuietException that we can catch in main() and terminate
+ * special class aspect::QuietException that we can catch in main() and terminate
  * the program quietly without generating other output.
  */
 void
@@ -256,7 +251,7 @@ parse_parameters (const std::string &input_as_string,
           AssertThrow(false, dealii::ExcMessage ("Invalid input parameter file."));
         }
       else
-        throw QuietException();
+        throw aspect::QuietException();
     }
 
   // otherwise, processor 0 was ok reading the data, so we can expect the
@@ -371,7 +366,7 @@ int main (int argc, char *argv[])
 
       return 1;
     }
-  catch (QuietException &)
+  catch (aspect::QuietException &)
     {
       // quitly treat an exception used on processors other than
       // root when we already know that processor 0 will generate

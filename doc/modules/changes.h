@@ -7,6 +7,13 @@
  *
  * <ol>
  *
+ * <li> Fixed: When a linear solver fails to converge in a parallel program,
+ * every processor would output the same error message -- leading to incredible
+ * amounts of entangled error messages. This has now been resolved: every processor
+ * still fails, but only processor 0 reports the error.
+ * <br>
+ * (Wolfgang Bangerth, 2014/06/06)
+ *
  * <li> Fixed: When setting "Use years in output instead of seconds" the
  * velocity solution is now exported in m/year instead of m/s in visualization
  * files.
