@@ -1306,13 +1306,13 @@ where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the compressibility a
 \label{sec:freesurface}
 
 In reality the boundary conditions of a convecting Earth are not no-slip or 
-free slip (i.e. no normal velocity).  Instead, we expect that a free surface
+free slip (i.e., no normal velocity).  Instead, we expect that a free surface
 is a more realistic approximation, since air and water should not prevent the
 flow of rock upward or downward.  This means that we require zero stress on the 
 boundary, or $\sigma \cdot \textbf{n} = 0$, where $\sigma = 2 \eta \varepsilon (\textbf{u})$. 
 In general there will be flow across the boundary with this boundary condition.  
 To conserve mass we must then advect the boundary of the domain in the direction 
-of fluid flow.  Thus using a free surface necessitates that the mesh be dynamically deformable.  
+of fluid flow.  Thus, using a free surface necessitates that the mesh be dynamically deformable.  
 
 \subsubsection{Arbitrary Lagrangian-Eulerian implementation}
 
@@ -1333,16 +1333,16 @@ to keep the mesh as well behaved as possible.
 velocity is calculated by solving
 
 \begin{align}
--\Delta \textbf{u}_m &= 0 & \qquad & \textrm{in } \Omega \\ 
-\textbf{u}_m &= \left( \textbf{u} \cdot \textbf{n} \right) \textbf{n} & \qquad & \textrm{on } \partial \Omega_{\textrm{free surface}} \\
-\textbf{u}_m \cdot \textbf{n} &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{free slip}} \\
-\textbf{u}_m &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{Dirichlet}} \\
+-\Delta \textbf{u}_m &= 0 & \qquad & \textrm{in } \Omega, \\ 
+\textbf{u}_m &= \left( \textbf{u} \cdot \textbf{n} \right) \textbf{n} & \qquad & \textrm{on } \partial \Omega_{\textrm{free surface}}, \\
+\textbf{u}_m \cdot \textbf{n} &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{free slip}}, \\
+\textbf{u}_m &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{Dirichlet}}.
 \end{align}
 After this mesh velocity is calculated, the mesh vertices are time-stepped explicitly.
 This scheme has the effect of choosing a minimally distorting perturbation to the mesh.
 Because the mesh velocity is no longer zero in the ALE approach, we must then correct
 the Eulerian advection terms in the advection system with the mesh velocity (see, e.g.
-\cite{DHPR2004}).  For instance, the temperature equation \ref{eq:temperature-boussinesq-linear}
+\cite{DHPR2004}).  For instance, the temperature equation \eqref{eq:temperature-boussinesq-linear}
 becomes
 
 \begin{equation*}
@@ -1351,13 +1351,13 @@ becomes
   =
   \rho H
    \quad
-   \textrm{in $\Omega$},
+   \textrm{in $\Omega$}.
 \end{equation*}
 
 \subsubsection{Free surface stabilization}
 
 Small disequilibria in the location of a free surface can cause instabilities in
-the surface position result in a ``sloshing'' instability.  This may be countered with a
+the surface position and result in a ``sloshing'' instability.  This may be countered with a
 quasi-implicit free surface integration scheme described in \cite{KMM2010}.
 This scheme enters the governing equations as a small stabilizing surface
 traction that prevents the free surface advection from overshooting its
