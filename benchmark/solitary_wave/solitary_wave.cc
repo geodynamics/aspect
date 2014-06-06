@@ -25,9 +25,27 @@ namespace aspect
    *    journal =      {Geophysical Journal International},
    *    year =         2013,
    *    volume =       195(3),
-   *    pages =        {1406-1442}}
+   *    pages =        {1406-1442}
    * @endcode
    *
+   * To calculate the initial condition, which is a solitary wave solution of
+   * the magma dynamics equations, we use the equation for the one-dinemsional
+   * case and the non-dimensionalization as it is described in
+   * @code
+   *  @Article{SS11,
+   *    author =       {G. Simpson and M. Spiegelman},
+   *    title =        {Solitary Wave Benchmarks in Magma Dynamics},
+   *    journal =      {Journal of Scientific Computing},
+   *    year =         2011,
+   *    volume =       49(3),
+   *    pages =        {268-290}
+   * @endcode
+   *
+   * Specifically, this means that we scale the porosity with the background
+   * porosity, and the coordinates with the compaction length $\delta_0$, which is
+   * defined as $\sqrt \frac{k(\phi_o) \xi}{\eta_f}$.  $k(\phi_o)$ is the
+   * permeability at background porosity, $\xi$ is the compaction viscosity
+   * and $\eta_f$ is the shear viscosity of the melt.
    */
   namespace SolitaryWaveBenchmark
   {
@@ -36,7 +54,7 @@ namespace aspect
     namespace AnalyticSolutions
     {
       // vectors to store the porosity field and the corresponding coordinate in
-      const unsigned int max_points = 1000;
+      const unsigned int max_points = 1e6;
       std::vector<double> porosity(max_points), coordinate(max_points);
 
       /**
@@ -93,7 +111,7 @@ namespace aspect
 
              // re-scale porosity and position
              porosity[i] *= background_porosity;
-             coordinate[i] /= 0.1;
+             coordinate[i] *= std::sqrt(5.0);
            }
        }
 
@@ -358,8 +376,8 @@ namespace aspect
     SolitaryWaveInitialCondition<dim>::
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
     {
-      return std::min(std::max(AnalyticSolutions::interpolate(position[dim-1],
-                                            offset),0.0),1.0e10);
+      return AnalyticSolutions::interpolate(position[dim-1],
+                                            offset);
     }
 
 
@@ -377,7 +395,7 @@ namespace aspect
           prm.declare_entry ("Background porosity", "0.001",
               Patterns::Double (0),
               "Background porosity of the solitary wave. Units: none.");
-          prm.declare_entry ("Offset", "1000",
+          prm.declare_entry ("Offset", "150",
               Patterns::Double (0),
               "Offset of the center of the solitary wave from the boundary"
               "of the domain. "
