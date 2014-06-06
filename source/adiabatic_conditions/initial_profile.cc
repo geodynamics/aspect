@@ -33,17 +33,19 @@ namespace aspect
   {
     template <int dim>
     InitialProfile<dim>::InitialProfile()
-    :
-    initialized(false),
-    n_points(1000),
-    temperatures(n_points, -1),
-    pressures(n_points, -1)
+      :
+      initialized(false),
+      n_points(1000),
+      temperatures(n_points, -1),
+      pressures(n_points, -1)
     {}
 
     template <int dim>
     void
     InitialProfile<dim>::initialize()
     {
+      if (initialized)
+        return;
       delta_z = this->get_geometry_model().maximal_depth() / (n_points-1);
 
       const unsigned int n_compositional_fields = this->n_compositional_fields();
@@ -87,9 +89,9 @@ namespace aspect
           const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
 
           pressures[i] = pressures[i-1]
-                                   + density * gravity * delta_z;
+                         + density * gravity * delta_z;
           temperatures[i] = temperatures[i-1] * (1 +
-              alpha * gravity * delta_z / cp);
+                                                 alpha * gravity * delta_z / cp);
         }
 
       Assert (*std::min_element (pressures.begin(), pressures.end()) >=
@@ -138,7 +140,7 @@ namespace aspect
       if (z >= this->get_geometry_model().maximal_depth())
         {
           Assert (z <= this->get_geometry_model().maximal_depth() + delta_z,
-              ExcInternalError());
+                  ExcInternalError());
           return pressures.back();
         }
 
@@ -163,7 +165,7 @@ namespace aspect
       if (z >= this->get_geometry_model().maximal_depth())
         {
           Assert (z <= this->get_geometry_model().maximal_depth() + delta_z,
-              ExcInternalError());
+                  ExcInternalError());
           return temperatures.back();
         }
 

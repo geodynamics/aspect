@@ -42,9 +42,9 @@ namespace aspect
 
       // first, get the temperature at the top and bottom boundary of the model
       const double T_surface = this->get_boundary_temperature().minimal_temperature(
-          this->get_fixed_temperature_boundary_indicators());
+                                 this->get_fixed_temperature_boundary_indicators());
       const double T_bottom = this->get_boundary_temperature().maximal_temperature(
-          this->get_fixed_temperature_boundary_indicators());
+                                this->get_fixed_temperature_boundary_indicators());
 
       // then, get the temperature of the adiabatic profile at a representative
       // point at the top and bottom boundary of the model

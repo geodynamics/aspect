@@ -1,0 +1,147 @@
+# This test checks if the postprocessor 'melt fraction' works as 
+# intended. The visulaization output is then a p-T-diagramme of
+# the melt fraction of peridotite using the melting model of 
+# Katz et. al, 2003 (Geochem., Geophys., Geosyst. )
+# with the temperature ranging from 1000°C to 1900°C on the x axis 
+# and the pressure ranging from 0 GPa to 8 GPa on the y axis. 
+
+# MPI: 2
+
+set Dimension                              = 2
+
+# There are several global variables that have to do with what
+# time system we want to work in and what the end time is. We
+# also designate an output directory.
+set Use years in output instead of seconds = false
+set End time                               = 0.0
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+
+# Then come a number of sections that deal with the setup
+# of the problem to solve. The first one deals with the
+# geometry of the domain within which we want to solve.
+# The sections that follow all have the same basic setup
+# where we select the name of a particular model (here,
+# the box geometry) and then, in a further subsection,
+# set the parameters that are specific to this particular
+# model.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 9
+    set Y extent = 8
+  end
+end
+
+
+# The next section deals with the initial conditions for the
+# temperature (there are no initial conditions for the
+# velocity variable since the velocity is assumed to always
+# be in a static equilibrium with the temperature field).
+# There are a number of models with the 'function' model
+# a generic one that allows us to enter the actual initial
+# conditions in the form of a formula that can contain
+# constants. We choose a linear temperature profile that
+# matches the boundary conditions defined below plus
+# a small perturbation:
+subsection Initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = 1100+273.15+x*100
+  end
+end
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+subsection Model settings
+  # The next parameters then describe on which parts of the
+  # boundary we prescribe a zero or nonzero velocity and
+  # on which parts the flow is allowed to be tangential.
+  # Here, all four sides of the box allow tangential
+  # unrestricted flow but with a zero normal component:
+  set Zero velocity boundary indicators       =
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 0,1,2,3
+
+  # The final part of this section describes whether we
+  # want to include adiabatic heating (from a small
+  # compressibility of the medium) or from shear friction,
+  # as well as the rate of internal heating. We do not
+  # want to use any of these options here:
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+end
+
+
+# The following two sections describe first the
+# direction (vertical) and magnitude of gravity and the
+# material model (i.e., density, viscosity, etc). We have
+# discussed the settings used here in the introduction to
+# this cookbook in the manual already.
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1e9   # to have a pressure range up to 8 GPa
+  end
+end
+
+
+subsection Material model
+  set Model name = simple # default:
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+
+# The settings above all pertain to the description of the
+# continuous partial differential equations we want to solve.
+# The following section deals with the discretization of
+# this problem, namely the kind of mesh we want to compute
+# on. We here use a globally refined mesh without
+# adaptive mesh refinement.
+subsection Mesh refinement
+  set Initial global refinement                = 6
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+# The final part is to specify what ASPECT should do with the
+# solution once computed at the end of every time step. The
+# process of evaluating the solution is called `postprocessing'
+# and we choose to compute velocity and temperature statistics,
+# statistics about the heat flux through the boundaries of the
+# domain, and to generate graphical output files for later
+# visualization. These output files are created every time
+# a time step crosses time points separated by 0.01. Given
+# our start time (zero) and final time (0.5) this means that
+# we will obtain 50 output files.
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set Time between graphical output = 0.01
+    set List of output variables = melt fraction
+
+    subsection Melt fraction
+      set Mass fraction cpx = 0.17
+    end
+  end
+end
+

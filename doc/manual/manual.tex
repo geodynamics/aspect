@@ -32,10 +32,10 @@
 % use the listings package for code snippets. define keywords for prm files
 % and for gnuplot
 \usepackage{listings}
-\lstset{language=C++,basicstyle=\small\ttfamily,columns=fullflexible,keepspaces=true,frame=single,escapeinside={\%\%}{\%}}
+\lstset{language=C++,basicstyle=\small\ttfamily,columns=fullflexible,keepspaces=true,frame=single}
 %\lstset{language=C++,basicstyle=\small\ttfamily,columns=flexible}
 \lstdefinelanguage{prmfile}{morekeywords={set,subsection,end},
-                            morecomment=[l]{\#},}
+                            morecomment=[l]{\#},escapeinside={\%\%}{\%},}
 \lstdefinelanguage{gnuplot}{morekeywords={plot,using,title,with,set,replot},
                             morecomment=[l]{\#},}
 
@@ -125,7 +125,7 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
 % e.g. 1.0
 \raggedleft \huge \fontfamily{\sfdefault}\selectfont Version
 % keep the following line as is so that we can replace this using a script:
-1.1.pre %VERSION-INFO%
+1.2.pre %VERSION-INFO%
 \\\large(generated \today)\\}
 
 %AUTHOR(S) & WEBSITE%
@@ -288,7 +288,7 @@ You can refer to the website by citing the following:
       @MANUAL{aspectweb,
         title = {ASPECT: Advanced Solver for Problems in Earth's ConvecTion},
         author = {W. Bangerth and T. Heister and others},
-        year = {2013},
+        year = {2014},
         note = {\texttt{http://aspect.dealii.org/}},
         url = {http://aspect.dealii.org/}
       }
@@ -296,12 +296,11 @@ You can refer to the website by citing the following:
 The manual's proper reference is this:
 \begin{lstlisting}[frame=single,language=tex]
 @Manual{aspectmanual,
-        title = 	 {\textsc{ASPECT}: Advanced Solver for Problems in Earth's
+        title =        {\textsc{ASPECT}: Advanced Solver for Problems in Earth's
           ConvecTion},
-        author = 	 {W. Bangerth and T. Heister and others},
-        organization = {Texas A\&M University/Computational
-                           Infrastructure in Geodynamics},
-        year = 	 2013
+        author =       {W. Bangerth and T. Heister and others},
+        organization = {Computational Infrastructure in Geodynamics},
+        year = 	 2014
       }
 \end{lstlisting}
 
@@ -1307,13 +1306,13 @@ where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the compressibility a
 \label{sec:freesurface}
 
 In reality the boundary conditions of a convecting Earth are not no-slip or 
-free slip (i.e. no normal velocity).  Instead, we expect that a free surface
+free slip (i.e., no normal velocity).  Instead, we expect that a free surface
 is a more realistic approximation, since air and water should not prevent the
 flow of rock upward or downward.  This means that we require zero stress on the 
 boundary, or $\sigma \cdot \textbf{n} = 0$, where $\sigma = 2 \eta \varepsilon (\textbf{u})$. 
 In general there will be flow across the boundary with this boundary condition.  
 To conserve mass we must then advect the boundary of the domain in the direction 
-of fluid flow.  Thus using a free surface necessitates that the mesh be dynamically deformable.  
+of fluid flow.  Thus, using a free surface necessitates that the mesh be dynamically deformable.  
 
 \subsubsection{Arbitrary Lagrangian-Eulerian implementation}
 
@@ -1334,16 +1333,16 @@ to keep the mesh as well behaved as possible.
 velocity is calculated by solving
 
 \begin{align}
--\Delta \textbf{u}_m &= 0 & \qquad & \textrm{in } \Omega \\ 
-\textbf{u}_m &= \left( \textbf{u} \cdot \textbf{n} \right) \textbf{n} & \qquad & \textrm{on } \partial \Omega_{\textrm{free surface}} \\
-\textbf{u}_m \cdot \textbf{n} &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{free slip}} \\
-\textbf{u}_m &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{Dirichlet}} \\
+-\Delta \textbf{u}_m &= 0 & \qquad & \textrm{in } \Omega, \\ 
+\textbf{u}_m &= \left( \textbf{u} \cdot \textbf{n} \right) \textbf{n} & \qquad & \textrm{on } \partial \Omega_{\textrm{free surface}}, \\
+\textbf{u}_m \cdot \textbf{n} &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{free slip}}, \\
+\textbf{u}_m &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{Dirichlet}}.
 \end{align}
 After this mesh velocity is calculated, the mesh vertices are time-stepped explicitly.
 This scheme has the effect of choosing a minimally distorting perturbation to the mesh.
 Because the mesh velocity is no longer zero in the ALE approach, we must then correct
 the Eulerian advection terms in the advection system with the mesh velocity (see, e.g.
-\cite{DHPR2004}).  For instance, the temperature equation \ref{eq:temperature-boussinesq-linear}
+\cite{DHPR2004}).  For instance, the temperature equation \eqref{eq:temperature-boussinesq-linear}
 becomes
 
 \begin{equation*}
@@ -1352,13 +1351,13 @@ becomes
   =
   \rho H
    \quad
-   \textrm{in $\Omega$},
+   \textrm{in $\Omega$}.
 \end{equation*}
 
 \subsubsection{Free surface stabilization}
 
 Small disequilibria in the location of a free surface can cause instabilities in
-the surface position result in a ``sloshing'' instability.  This may be countered with a
+the surface position and result in a ``sloshing'' instability.  This may be countered with a
 quasi-implicit free surface integration scheme described in \cite{KMM2010}.
 This scheme enters the governing equations as a small stabilizing surface
 traction that prevents the free surface advection from overshooting its
@@ -5080,7 +5079,7 @@ in sign between the implementation and the description in \cite{DMGT11}).
 \end{figure}
 
 To run this benchmark, the following input file will do (see the files in \url{benchmark/solcx/} to rerun the benchmark):
-\lstinputlisting[frame=single,language=prmfile]{cookbooks/benchmarks/solcx.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/solcx.prm.out}
 
 Since this is the first cookbook in the benchmarking section, let us go
 through the different parts of this file in more detail:
@@ -5197,7 +5196,7 @@ variable density variation. For details, refer again to \cite{DMGT11}.
 The following input file, only a small variation of the one in the previous
 section, solves the benchmark (see \url{benchmark/solkz/}):
 
-\lstinputlisting[frame=single,language=prmfile]{cookbooks/benchmarks/solkz.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/solkz.prm.out}
 
 The output when running \aspect{} on this parameter file looks similar to the
 one shown for the SolCx case. The solution when computed with one more level

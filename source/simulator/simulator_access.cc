@@ -35,7 +35,14 @@ namespace aspect
   void
   SimulatorAccess<dim>::initialize (const Simulator<dim> &simulator_object)
   {
-    simulator = SmartPointer<const Simulator<dim> > (&simulator_object, typeid(*this).name());
+    simulator = &simulator_object;
+  }
+
+  template <int dim>
+  const Simulator<dim> &
+  SimulatorAccess<dim>::get_simulator() const
+  {
+    return *simulator;
   }
 
 
