@@ -280,10 +280,27 @@ namespace aspect
         // solving in this case.
         if (src.block(1).l2_norm() > 1e-50 || dst.block(1).l2_norm() > 1e-50)
           {
-            solver.solve(stokes_preconditioner_matrix.block(1,1),
-                         dst.block(1), src.block(1),
-                         mp_preconditioner);
-            n_iterations_S_ += solver_control.last_step();
+	    try
+	      {
+		solver.solve(stokes_preconditioner_matrix.block(1,1),
+			     dst.block(1), src.block(1),
+			     mp_preconditioner);
+		n_iterations_S_ += solver_control.last_step();
+	      }
+	    // if the solver fails, report the error from processor 0 with some additional
+	    // information about its location, and throw a quiet exception on all other
+	    // processors
+	    catch (const SolverControl::NoConvergence &exc)
+	      {
+		if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
+		  Assert (false,
+			  ExcMessage (std::string("The iterative solver in BlockSchurPreconditioner::vmult "
+						  "did not converge. It reported the following error:\n\n")
+				      +
+				      exc.what()))
+		else
+		  throw QuietException();
+	      }
           }
 
         dst.block(1) *= -1.0;
@@ -303,9 +320,26 @@ namespace aspect
 #else
           TrilinosWrappers::SolverCG solver(solver_control);
 #endif
-          solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
-                       a_preconditioner);
-          n_iterations_A_ += solver_control.last_step();
+	  try
+	    {
+	      solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
+			   a_preconditioner);
+	      n_iterations_A_ += solver_control.last_step();
+	    }
+	    // if the solver fails, report the error from processor 0 with some additional
+	    // information about its location, and throw a quiet exception on all other
+	    // processors
+	    catch (const SolverControl::NoConvergence &exc)
+	      {
+		if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
+		  Assert (false,
+			  ExcMessage (std::string("The iterative solver in BlockSchurPreconditioner::vmult "
+						  "did not converge. It reported the following error:\n\n")
+				      +
+				      exc.what()))
+		else
+		  throw QuietException();
+	      }	  
         }
       else
         {
@@ -367,15 +401,32 @@ namespace aspect
 
     // solve the linear system:
     current_constraints.set_zero(distributed_solution);
-    solver.solve (system_matrix.block(block_idx,block_idx),
-                  distributed_solution.block(block_idx),
-                  system_rhs.block(block_idx),
-                  (advection_field.is_temperature()
-                   ?
-                   *T_preconditioner
-                   :
-                   *C_preconditioner));
-
+    try
+      {
+	solver.solve (system_matrix.block(block_idx,block_idx),
+		      distributed_solution.block(block_idx),
+		      system_rhs.block(block_idx),
+		      (advection_field.is_temperature()
+		       ?
+		       *T_preconditioner
+		       :
+		       *C_preconditioner));
+      }
+    // if the solver fails, report the error from processor 0 with some additional
+    // information about its location, and throw a quiet exception on all other
+    // processors
+    catch (const SolverControl::NoConvergence &exc)
+      {
+	if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
+	  Assert (false,
+		  ExcMessage (std::string("The iterative advection solver "
+					  "did not converge. It reported the following error:\n\n")
+			      +
+			      exc.what()))
+	else
+	  throw QuietException();
+      }
+    
     current_constraints.distribute (distributed_solution);
     solution.block(block_idx) = distributed_solution.block(block_idx);
 
@@ -423,7 +474,27 @@ namespace aspect
 #else
         TrilinosWrappers::SolverDirect solver(cn);
 #endif
-        solver.solve(system_matrix.block(0,0), distributed_stokes_solution.block(0), system_rhs.block(0));
+	try
+	  {
+	    solver.solve(system_matrix.block(0,0),
+			 distributed_stokes_solution.block(0),
+			 system_rhs.block(0));
+	  }
+	// if the solver fails, report the error from processor 0 with some additional
+	// information about its location, and throw a quiet exception on all other
+	// processors
+	catch (const std::exception &exc)
+	  {
+	    if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
+	      Assert (false,
+		      ExcMessage (std::string("The direct Stokes solver "
+					      "did not succeed. It reported the following error:\n\n")
+				  +
+				  exc.what()))
+	    else
+	      throw QuietException();
+	  }
+	
 
         current_constraints.distribute (distributed_stokes_solution);
 
@@ -549,8 +620,10 @@ namespace aspect
         solver(solver_control_cheap, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
                AdditionalData(30, true));
-        solver.solve(stokes_block, distributed_stokes_solution,
-                     distributed_stokes_rhs, preconditioner);
+	solver.solve (stokes_block,
+		      distributed_stokes_solution,
+		      distributed_stokes_rhs,
+		      preconditioner);
 
         its_A += preconditioner.n_iterations_A();
         its_S += preconditioner.n_iterations_S();
@@ -570,8 +643,30 @@ namespace aspect
         solver(solver_control_expensive, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
                AdditionalData(50, true));
-        solver.solve(stokes_block, distributed_stokes_solution,
-                     distributed_stokes_rhs, preconditioner);
+
+	try
+	  {
+	    solver.solve(stokes_block,
+			 distributed_stokes_solution,
+			 distributed_stokes_rhs,
+			 preconditioner);
+	  }
+	// if the solver fails, report the error from processor 0 with some additional
+	// information about its location, and throw a quiet exception on all other
+	// processors
+	catch (const SolverControl::NoConvergence &exc)
+	  {
+	    if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
+	      Assert (false,
+		      ExcMessage (std::string("The iterative Stokes solver "
+					      "did not converge. It reported the following error:\n\n")
+				  +
+				  exc.what()))
+	    else
+	      throw QuietException();
+	  }
+	
+	
         its_A += preconditioner.n_iterations_A();
         its_S += preconditioner.n_iterations_S();
       }
