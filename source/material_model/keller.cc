@@ -229,6 +229,7 @@ namespace aspect
           thermal_conductivity       = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_expansivity        = prm.get_double ("Thermal expansion coefficient");
+          alpha_phi                  = prm.get_double ("Exponential melt weakening factor");
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model keller with Thermal viscosity exponent can not have reference_T=0."));
