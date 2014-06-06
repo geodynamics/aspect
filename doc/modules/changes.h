@@ -7,6 +7,12 @@
  *
  * <ol>
  *
+ * <li> New: Initial temperature condition "S40RTS perturbation" has been
+ * added, that provides a perturbation for a shell geometry based on the
+ * S20RTS or S40RTS global shear wave velocity model data.
+ * <br>
+ * (Jacky Austermann, 2014/06/06)
+ *
  * <li> Fixed: When a linear solver fails to converge in a parallel program,
  * every processor would output the same error message -- leading to incredible
  * amounts of entangled error messages. This has now been resolved: every processor
