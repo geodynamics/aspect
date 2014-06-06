@@ -58,7 +58,7 @@ namespace aspect
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            const double pressure    = uh[q][dim];
+            const double pressure    = uh[q][this->introspection().component_indices.pressure];
 
             computed_quantities[q](0) = pressure - this->get_adiabatic_conditions().pressure(evaluation_points[q]);
           }

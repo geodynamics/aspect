@@ -57,6 +57,13 @@ namespace aspect
         virtual ~Interface();
 
         /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after the
+         * SimulatorAccess (if applicable) is initialized.
+         */
+        virtual void initialize ();
+
+        /**
          * Return the temperature that is to hold at a particular location on
          * the boundary of the domain.
          *

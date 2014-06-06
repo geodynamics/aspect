@@ -226,30 +226,38 @@ namespace aspect
                                  "is not used by the geometry model."));
     }
 
-    // continue with initializing members that can't be initialized for one reason
-    // or another in the member initializer list above
-
-    // TODO: Could this be done in the interfaces create_... function? Would be cleaner
-    // and initialize() called from create_... would already have SimulatorAccess
-    // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it:
+    // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
+    // call the initialize() functions immediately after.
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(geometry_model.get()))
       sim->initialize (*this);
+    geometry_model->initialize ();
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(material_model.get()))
       sim->initialize (*this);
+    material_model->initialize ();
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(heating_model.get()))
       sim->initialize (*this);
+    heating_model->initialize ();
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(gravity_model.get()))
       sim->initialize (*this);
+    gravity_model->initialize ();
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature.get()))
       sim->initialize (*this);
+    boundary_temperature->initialize ();
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
       sim->initialize (*this);
+    if (boundary_composition.get())
+      boundary_composition->initialize ();
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_conditions.get()))
       sim->initialize (*this);
+    initial_conditions->initialize ();
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(compositional_initial_conditions.get()))
       sim->initialize (*this);
+    if (compositional_initial_conditions.get())
+      compositional_initial_conditions->initialize ();
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(adiabatic_conditions.get()))
       sim->initialize (*this);
+    adiabatic_conditions->initialize ();
+
 
     //Initialize the free surface handler
     if (parameters.free_surface_enabled)
@@ -264,8 +272,6 @@ namespace aspect
                       ExcMessage("The free surface scheme can only be used with no pressure normalization") );
         free_surface.reset( new FreeSurfaceHandler( *this, prm ) );
       }
-
-    adiabatic_conditions->initialize();
 
     postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
@@ -285,12 +291,12 @@ namespace aspect
          ++p)
       {
         VelocityBoundaryConditions::Interface<dim> *bv
-          = VelocityBoundaryConditions::create_velocity_boundary_conditions
+          = VelocityBoundaryConditions::create_velocity_boundary_conditions<dim>
             (p->second.second,
-             prm,
-             *geometry_model);
+             prm);
         if (dynamic_cast<SimulatorAccess<dim>*>(bv) != 0)
           dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
+        bv->initialize ();
         velocity_boundary_conditions[p->first].reset (bv);
       }
 

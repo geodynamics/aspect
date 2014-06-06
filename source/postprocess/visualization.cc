@@ -38,8 +38,82 @@ namespace aspect
 {
   namespace Postprocess
   {
+    namespace internal
+    {
+      /**
+       * This Postprocessor will generate the output variables of velocity,
+       * pressure, temperature, and compositional fields. They can not be added
+       * directly if the velocity needs to be converted from m/s to m/year, so
+       * this is what this class does.
+       */
+      template <int dim>
+      class BaseVariablePostprocessor: public DataPostprocessor< dim >, public SimulatorAccess<dim>
+      {
+        public:
+          virtual
+          void
+          compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
+              const std::vector<std::vector<Tensor<1,dim> > > &duh,
+              const std::vector<std::vector<Tensor<2,dim> > > &dduh,
+              const std::vector<Point<dim> >                  &normals,
+              const std::vector<Point<dim> >                  &evaluation_points,
+              std::vector<Vector<double> >                    &computed_quantities) const
+          {
+            const double velocity_scaling_factor =
+                this->convert_output_to_years() ? year_in_seconds : 1.0;
+            const unsigned int n_q_points = uh.size();
+            for (unsigned int q=0;q<n_q_points;++q)
+              for (unsigned int i=0;i<computed_quantities[q].size();++i)
+                computed_quantities[q][i]=uh[q][i] * ((i < dim) ? velocity_scaling_factor : 1.0);
+          }
+
+          virtual std::vector<std::string> get_names () const
+          {
+            std::vector<std::string> solution_names (dim, "velocity");
+            if (this->include_melt_transport())
+              {
+                solution_names.push_back ("p_s");
+                solution_names.push_back ("p_f");
+              }
+            else
+              solution_names.push_back ("p");
+              
+            solution_names.push_back ("T");
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              solution_names.push_back (this->introspection().name_for_compositional_index(c));
+
+            return solution_names;
+          }
+
+          virtual
+          std::vector<DataComponentInterpretation::DataComponentInterpretation>
+          get_data_component_interpretation () const
+          {
+            std::vector<DataComponentInterpretation::DataComponentInterpretation>
+            interpretation (dim,
+                DataComponentInterpretation::component_is_part_of_vector);
+            interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+            if (this->include_melt_transport())
+              interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+            interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+
+            return interpretation;
+          }
+
+          virtual UpdateFlags get_needed_update_flags () const
+          {
+            return update_values;
+          }
+      };
+    }
+
+
     namespace VisualizationPostprocessors
     {
+
+
       template <int dim>
       Interface<dim>::~Interface ()
       {}
@@ -120,41 +194,18 @@ namespace aspect
         return std::pair<std::string,std::string>();
 
 
+      internal::BaseVariablePostprocessor<dim> base_variables;
+      dynamic_cast<SimulatorAccess<dim>*>(&base_variables)->initialize(this->get_simulator());
+
       // create a DataOut object on the heap; ownership of this
       // object will later be transferred to a different thread
       // that will write data in the background. the other thread
       // will then also destroy the object
       DataOut<dim> data_out;
       data_out.attach_dof_handler (this->get_dof_handler());
-
-      // add the primary variables
-      std::vector<std::string> solution_names (dim, "velocity");
-      if (this->include_melt_transport())
-        {
-          solution_names.push_back ("p_s");
-          solution_names.push_back ("p_f");
-        }
-      else
-        solution_names.push_back ("p");
-
-      solution_names.push_back ("T");
-      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-        solution_names.push_back (this->introspection().name_for_compositional_index(c));
-
-      std::vector<DataComponentInterpretation::DataComponentInterpretation>
-      interpretation (dim,
-                      DataComponentInterpretation::component_is_part_of_vector);
-      interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-      if (this->include_melt_transport())
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-      interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-        interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-
       data_out.add_data_vector (this->get_solution(),
-                                solution_names,
-                                DataOut<dim>::type_dof_data,
-                                interpretation);
+                                                  base_variables);
+
 
       // then for each additional selected output variable
       // add the computed quantity as well. keep a list of
