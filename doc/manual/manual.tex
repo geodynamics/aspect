@@ -1369,7 +1369,7 @@ An example of a simple model which uses a free surface may be found in Section \
 \subsection{Calculations with melt transport}
 \label{sec:melt_transport}
 
-The original formulation of the equations in section \ref{sec:equations} describes the movement of solid mantle material. These computations also allow for taking into account how partially molten material changes the material properties and the energy balance through the release of latent heat. However, this will not consider melt extraction or any relative movement between melt and solid and there might be problems where the transport of melt is of interest. Thus, \aspect{} allows for solving additional equations describing the behaviour of silicate melt percolating through and interacting with a viscously deforming host rock. This is implemented using the approach of \cite{KMK2014} and changes the Stokes system to:
+The original formulation of the equations in section \ref{sec:equations} describes the movement of solid mantle material. These computations also allow for taking into account how partially molten material changes the material properties and the energy balance through the release of latent heat. However, this will not consider melt extraction or any relative movement between melt and solid and there might be problems where the transport of melt is of interest. Thus, \aspect{} allows for solving additional equations describing the behavior of silicate melt percolating through and interacting with a viscously deforming host rock. This is implemented using the approach of \cite{KMK2014} and changes the Stokes system to:
 
 \begin{align}
   \label{eq:stokes-1-melt}
@@ -1404,10 +1404,12 @@ The original formulation of the equations in section \ref{sec:equations} describ
   \label{eq:stokes-3-melt}
   \nabla \cdot \mathbf u_s + \frac{p_c}{\xi} 
   &=
-  - \kappa_s \rho_s \mathbf g \cdot \mathbf u_s
+  0.
 \end{align}
 
-We use the indices s to indicate properties of the solid and f for the properties of the fluid. To avoid the density gradients, we can use the same method as for the mass conservation (described in section \ref{sec:boussinesq}) and assume the change in density (for both the solid and the fluid phase) is dominated by the change in static pressure, which can be written as
+We use the indices $s$ to indicate properties of the solid and $f$ for the properties of the fluid. The equations are solved for the solid velocity $\mathbf{u_s}$, the fluid pressure $p_f$, and an additional variable, the compaction pressure $p_c$, which is related to the fluid and solid pressure through the relation $p_c = (1-\phi) (p_s-p_f)$. $K_D$ is the Darcy coefficient, which is defined as the quotient of the permeability and the fluid viscosity and $\Gamma$ is the melting rate. $\eta$ and $\xi$ are the shear and compaction viscosities and can depend on the porosity, temperature, pressure, strain rate and composition. However, there are various laws for these quantities and so this is implemented in the material model. Common formulations for the dependence on porosity are $\eta = (1-\phi) \eta_0 e^{-\alpha_\phi \phi}$ with $\alpha_\phi \approx 25...30$ and $\xi = \eta_0 \phi^{-n}$ with $n \approx 1$.
+
+To avoid the density gradients, we can use the same method as for the mass conservation (described in section \ref{sec:boussinesq}) and assume the change in density (for both the solid and the fluid phase) is dominated by the change in static pressure, which can be written as
 $\nabla p_{s,f} \approx \nabla p_\text{static} \approx \rho_{s,f} \textbf{g}$.
 This finally allows us to write
 \begin{equation*}
@@ -1437,7 +1439,7 @@ so we can replace the second equation by
   & \textrm{in $\Omega$},
 \end{align*}
 
- The equations are solved for the solid velocity $\mathbf{u_s}$, the fluid pressure $p_f$, and an additional variable, the compaction pressure $p_c$, which is related to the fluid and solid pressure over the relation $p_c = (1-\phi) (p_s-p_f)$. $K_D$ is the Darcy coefficient, which is defined as the quotient of the permeability and the fluid viscosity and $\Gamma$ is the melting rate. $\eta$ and $\xi$ are the shear and compaction viscosities and can depend on the porosity, temperature, pressure, strain rate and composition. However, there are various laws for these quantities and so this is implemented in the material model. Common formulations for the dependence on porosity are $\eta = (1-\phi) \eta_0 e^{-\alpha_\phi \phi}$ with $\alpha_\phi \approx 25...30$ and $\xi = \eta_0 \phi^{-n}$ with $n \approx 1$. We do not use the visco-elasto-plastic rheology of the \cite{KMK2014} formulation yet. In order to do this, we would have to add elastic deformation terms on the right hand side of equation \ref{eq:stokes-1-melt} and equation \ref{eq:stokes-3-melt} including the elastic and compaction stress evolution parameters $\xi_\tau$ and $\xi_p$. In addition, this would require a modification of the rheologic law using effective shear and compaction viscosities $\eta_\text{eff}$ and $\xi_\text{eff}$ combining a failure criteria and a shear and compaction visco-elasticity. 
+\note{We do not use the visco-elasto-plastic rheology of the formulation in \cite{KMK2014} yet. In order to do this, we would have to add elastic deformation terms on the right hand side of equation \ref{eq:stokes-1-melt} and equation \ref{eq:stokes-3-melt} including the elastic and compaction stress evolution parameters $\xi_\tau$ and $\xi_p$. In addition, this would require a modification of the rheologic law using effective shear and compaction viscosities $\eta_\text{eff}$ and $\xi_\text{eff}$ combining a failure criteria and a shear and compaction visco-elasticity.}
 
 Moreover, melt transport requires an advection equation for the porosity field $\phi$:
 \begin{align}
