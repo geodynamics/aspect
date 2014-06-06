@@ -396,7 +396,10 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(MeltVelocity,
                                                   "melt velocity",
                                                   "A visualization output object that generates output "
-                                                  "for melt velocity.")
+                                                  "for melt velocity. Note: The pressure gradient is used "
+                                                  "in this calculation. As the pressure gradient is not a "
+                                                  "continuous function, the melt velocity can also be "
+                                                  "expected to be discontinuous. ")
           ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(MeltPressure,
                                                       "melt pressure",
                                                       "A visualization output object that generates output "
