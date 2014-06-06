@@ -154,6 +154,9 @@ namespace aspect
         AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
         melt_mat->evaluate_with_melt(in, out);
 
+        const double velocity_scaling_factor =
+            this->convert_output_to_years() ? year_in_seconds : 1.0;
+
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             double phi = in.composition[q][por_idx];
@@ -174,7 +177,7 @@ namespace aspect
                 Tensor<1,dim> correction = - K_D * (grad_p_f - out.fluid_densities[q] * gravity) / phi;
 
                 for (unsigned int d=0; d<dim; ++d)
-                  computed_quantities[q](d) = uh[q][d] + correction[d];
+                  computed_quantities[q](d) = (uh[q][d] + correction[d]) * velocity_scaling_factor;
               }
           }
       }

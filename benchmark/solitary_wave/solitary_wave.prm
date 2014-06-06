@@ -48,7 +48,7 @@ end
 
 subsection Boundary velocity model
   subsection Function
-    set Function expression = 0;-1.65677e-4
+    set Function expression = 0;-7.89e-5
   end
 end
 
