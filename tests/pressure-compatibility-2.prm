@@ -1,0 +1,99 @@
+# This is a compressible test case that shall
+# test the behaviour of the pressure compatibility
+# mechanism in case of prescribed normal velocities
+# integrated over the boundaries. It is converging
+# in this setup, but if the solver tolerance is
+# decreased or the prescribed normal velocity is
+# increased it fails to converge, which is exactly
+# the behaviour we intend.
+
+set CFL number                             = 1
+set End time                               = 400
+set Adiabatic surface temperature          = 0.5
+set Use years in output instead of seconds = false
+set Linear solver tolerance                = 1e-7
+set Pressure normalization                 = no
+
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Top temperature = 0
+    set Bottom temperature = 2
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = harmonic perturbation
+  subsection Harmonic perturbation
+    set Magnitude = 0.01
+  end
+end
+
+subsection Material model
+  set Model name = simple compressible
+
+  subsection Simple compressible model
+    set Reference density = 1
+    set Reference specific heat = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity = 1
+    set Thermal conductivity = 1e-7
+    set Reference compressibility = 1e-6
+  end
+
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+
+  set Initial global refinement          = 3
+
+  set Refinement fraction                = 0.0
+  set Coarsening fraction                = 0.0
+
+  set Strategy                           = velocity
+
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2,3
+
+  set Include adiabatic heating               = true
+  set Include shear heating                   = true
+
+  set Tangential velocity boundary indicators = 0,1,3
+  set Prescribed velocity boundary indicators = 2:function
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names = x,y
+    set Function expression = 0;1e-9
+  end
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, temperature statistics
+end

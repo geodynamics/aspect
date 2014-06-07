@@ -1,0 +1,91 @@
+# A test, whether we apply the right pressure compatibility
+# correction in the case of prescribed boundary conditions.
+# This test is essentially similar to the platelike-boundary
+# cookbook but uses a strongly compressible material model.
+# Previously we did not correct the pressure RHS in this setup,
+# which prevented it from converging. 
+
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0.1
+set Use years in output instead of seconds = false
+set Adiabatic surface temperature = 0
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 1
+  end
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2, 3
+  set Zero velocity boundary indicators       = 
+  set Tangential velocity boundary indicators = 0, 1, 2
+  set Prescribed velocity boundary indicators = 3: function
+end
+
+
+subsection Boundary temperature model
+  set Model name = box
+  
+  subsection Box
+    set Bottom temperature = 1
+    set Top temperature    = 0
+  end
+end
+
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,z,t
+    set Function constants  = pi=3.1415926
+    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Initial conditions
+  set Model name = function
+  
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = (1-z)    
+  end
+end
+
+
+subsection Material model
+  set Model name = simple compressible
+
+  subsection Simple compressible model
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 1e-4
+    set Reference compressibility     = 7e-5
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = temperature statistics, heat flux statistics, velocity statistics
+end
+
+

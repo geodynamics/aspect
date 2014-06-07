@@ -809,18 +809,57 @@ namespace aspect
     if (parameters.use_locally_conservative_discretization)
       AssertThrow(false, ExcNotImplemented());
 
-    if (do_pressure_rhs_compatibility_modification)
-      {
-        // TODO: currently does not work if velocity and
-        // pressure are in the same block.
-        Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-               ExcNotImplemented());
+    // TODO: currently does not work if velocity and
+    // pressure are in the same block.
+    Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
+           ExcNotImplemented());
 
-        const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
-        const double correction = -mean*vector.block(introspection.block_indices.pressure).size()/global_volume;
+    const QGauss<dim-1> quadrature_formula (parameters.stokes_velocity_degree+1);
 
-        vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
-      }
+    FEFaceValues<dim> fe_face_values (mapping,
+                                      finite_element,
+                                      quadrature_formula,
+                                      update_normal_vectors |
+                                      update_q_points |
+                                      update_JxW_values);
+
+    double local_normal_velocity_integral = 0;
+
+    typename DoFHandler<dim>::active_cell_iterator
+      cell = dof_handler.begin_active(),
+      endc = dof_handler.end();
+
+    // for every surface face that is part of a geometry boundary
+    // and that is owned by this processor,
+    // integrate the normal velocity magnitude.
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          if (cell->face(f)->at_boundary() &&
+              parameters.prescribed_velocity_boundary_indicators.find(cell->face(f)->boundary_indicator())!=
+              parameters.prescribed_velocity_boundary_indicators.end())
+            {
+              fe_face_values.reinit (cell, f);
+
+              // for each of the quadrature points, evaluate the
+              // normal velocity and add it to the integral
+              for (unsigned int q=0; q<quadrature_formula.size(); ++q)
+                {
+                  const Tensor<1,dim> velocity =
+                      velocity_boundary_conditions.find(cell->face(f)->boundary_indicator())->second->boundary_velocity(fe_face_values.quadrature_point(q));
+
+                  const double normal_velocity = velocity * fe_face_values.normal_vector(q);
+                  local_normal_velocity_integral += normal_velocity * fe_face_values.JxW(q);
+                }
+            }
+
+    const double global_normal_velocity_integral =
+        Utilities::MPI::sum (local_normal_velocity_integral,mpi_communicator);
+
+    const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
+    const double correction = (local_normal_velocity_integral - mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
+
+    vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
   }
 
 
