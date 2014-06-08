@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> Changed: The maximum number of solver iterations for all linear solvers
+ * (including the inner solvers) is now set to 1000.
+ * <br>
+ * (Timo Heister, 2014/06/08)
+ *
  * <li> New: Initial temperature condition "S40RTS perturbation" has been
  * added, that provides a perturbation for a shell geometry based on the
  * S20RTS or S40RTS global shear wave velocity model data.
