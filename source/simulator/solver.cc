@@ -265,7 +265,7 @@ namespace aspect
       LinearAlgebra::Vector utmp(src.block(0));
 
       {
-        SolverControl solver_control(5000, 1e-6 * src.block(1).l2_norm());
+        SolverControl solver_control(1000, 1e-6 * src.block(1).l2_norm());
 
 #ifdef ASPECT_USE_PETSC
         SolverCG<LinearAlgebra::Vector> solver(solver_control);
@@ -314,7 +314,7 @@ namespace aspect
 
       if (do_solve_A == true)
         {
-          SolverControl solver_control(5000, utmp.l2_norm()*1e-2);
+          SolverControl solver_control(1000, utmp.l2_norm()*1e-2);
 #ifdef ASPECT_USE_PETSC
           SolverCG<LinearAlgebra::Vector> solver(solver_control);
 #else
@@ -373,8 +373,7 @@ namespace aspect
 
     const double tolerance = std::max(1e-50,
                                       advection_solver_tolerance*system_rhs.block(block_idx).l2_norm());
-    SolverControl solver_control (system_matrix.block(block_idx, block_idx).m(),
-                                  tolerance);
+    SolverControl solver_control (1000, tolerance);
 
     SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
                                                  SolverGMRES<LinearAlgebra::Vector>::AdditionalData(30,true));
