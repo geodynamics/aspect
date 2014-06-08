@@ -293,7 +293,7 @@ namespace aspect
 	    catch (const SolverControl::NoConvergence &exc)
 	      {
 		if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
-		  Assert (false,
+		  AssertThrow (false,
 			  ExcMessage (std::string("The iterative solver in BlockSchurPreconditioner::vmult "
 						  "did not converge. It reported the following error:\n\n")
 				      +
@@ -332,7 +332,7 @@ namespace aspect
 	    catch (const SolverControl::NoConvergence &exc)
 	      {
 		if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
-		  Assert (false,
+		  AssertThrow (false,
 			  ExcMessage (std::string("The iterative solver in BlockSchurPreconditioner::vmult "
 						  "did not converge. It reported the following error:\n\n")
 				      +
@@ -417,7 +417,7 @@ namespace aspect
     catch (const SolverControl::NoConvergence &exc)
       {
 	if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-	  Assert (false,
+	  AssertThrow (false,
 		  ExcMessage (std::string("The iterative advection solver "
 					  "did not converge. It reported the following error:\n\n")
 			      +
@@ -485,7 +485,7 @@ namespace aspect
 	catch (const std::exception &exc)
 	  {
 	    if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-	      Assert (false,
+	      AssertThrow (false,
 		      ExcMessage (std::string("The direct Stokes solver "
 					      "did not succeed. It reported the following error:\n\n")
 				  +
@@ -656,7 +656,7 @@ namespace aspect
 	catch (const SolverControl::NoConvergence &exc)
 	  {
 	    if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-	      Assert (false,
+	      AssertThrow (false,
 		      ExcMessage (std::string("The iterative Stokes solver "
 					      "did not converge. It reported the following error:\n\n")
 				  +
