@@ -70,7 +70,7 @@ namespace aspect
 
         for (unsigned int i=0;i<in.position.size();++i)
           {
-            out.viscosities[i] = 3.0/4.0;
+            out.viscosities[i] = 3.0;
             out.thermal_expansion_coefficients[i] = 1.0;
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;
@@ -100,7 +100,7 @@ namespace aspect
         double C = u_0_x * 7.0/3.0 * shear_viscosity - u_0 * compaction_viscosity;
         double D = -B/2.0;
 
-        return std::exp(- 2.0 * z + 1.0/(2.0*C) * ((A + 2.0*C) * std::log(2.0*C*std::exp(2.0*z) - B)));
+        return std::exp(- 4.0 * z + ((A/C + 2.0) * std::log(2.0*C*std::exp(2.0*z) - B)));
       }
 
       virtual void evaluate_with_melt(const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &in,
@@ -113,7 +113,7 @@ namespace aspect
           {
             double porosity = in.composition[i][porosity_idx];
             out.compaction_viscosities[i] = 1.0;
-            out.fluid_viscosities[i]= 1.0;
+            out.fluid_viscosities[i]= 2.0;
             out.permeabilities[i]= permeability(in.position[i],porosity,out.viscosities[i],out.compaction_viscosities[i]);
             out.fluid_compressibilities[i] = 1.0;
             out.fluid_densities[i] = rho_f_0 * std::exp(-out.fluid_compressibilities[i] * in.position[i][1]);
