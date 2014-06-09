@@ -72,7 +72,7 @@ namespace aspect
           {
             const double y = in.position[i][dim-1] + 0.1;
             out.viscosities[i] = 3.0/4.0;
-            out.densities[i] = (y<std::sqrt(0.001) ? 2.998 / 0.999 : 1 + std::pow(y,2)/0.001);
+            out.densities[i] = 2 + std::pow(y,2)/0.001;
             out.thermal_expansion_coefficients[i] = 1.0;
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;
@@ -110,6 +110,6 @@ namespace aspect
 {
 
     ASPECT_REGISTER_MATERIAL_MODEL(MeltMaterial,
-                                   "MeltMaterial3",
+                                   "MeltMaterial4",
 				   "")
 }

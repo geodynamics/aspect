@@ -8,10 +8,13 @@
 # both on the melt and the solid velocity.
 #
 # We the choose a porosity phi = 1 - 0.001/y^2, a Darcy coefficient 
-# (= permeability divided by fluid viscosity) of k_0 + 0.001/ (1 - phi) 
-# and otherwise constant material parameters so that the gradient of the 
-# fluid pressure is -1. The velocity should then be y^2/2, the compaction 
-# pressure -y and the fluid pressure should be linear.
+# (= permeability divided by fluid viscosity) of k_0 + 0.001/ (1 - phi),
+# a solid density of 2 + y^2/0.001  and otherwise constant material 
+# parameters so that the gradient of the fluid pressure is -1. 
+# The velocity should then be y^2/2, the compaction pressure -y and 
+# the fluid pressure should be linear.
+# Note that we shift y --> y + 0.1, because we would have a negative
+# porosity otherwise. 
 #
 # We compute these material properties in a new material model, which
 # is implemented in the .cc file.     
@@ -110,7 +113,7 @@ end
 
 subsection Material model
 
-  set Model name = MeltMaterial3 # default: 
+  set Model name = MeltMaterial4 # default: 
   
 
 end
