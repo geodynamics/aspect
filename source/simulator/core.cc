@@ -1221,8 +1221,8 @@ namespace aspect
         distributed_mesh_velocity.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
 
       std::vector<LinearAlgebra::BlockVector *> system_tmp (2);
-      system_tmp[0] = &(distributed_system);
-      system_tmp[1] = &(old_distributed_system);
+      system_tmp[0] = &distributed_system;
+      system_tmp[1] = &old_distributed_system;
 
       if (parameters.free_surface_enabled)
         system_tmp.push_back(&distributed_mesh_velocity);
