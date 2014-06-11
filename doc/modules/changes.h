@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> Fixed: The direct solver now works with nonlinear schemes like
+ * iterated IMPES.
+ * <br>
+ * (Timo Heister, 2014/06/11)
+ *
  * <li> Changed: The maximum number of solver iterations for all linear solvers
  * (including the inner solvers) is now set to 1000.
  * <br>
