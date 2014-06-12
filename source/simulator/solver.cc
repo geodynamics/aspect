@@ -458,13 +458,42 @@ namespace aspect
 
     if (parameters.use_direct_stokes_solver)
       {
-        LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
-
+        // We hardcode the blocks down below, so make sure block 0 is indeed
+        // the block containing velocity and pressure:
         Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
         Assert(introspection.block_indices.pressure == 0, ExcNotImplemented());
 
+        LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
+
+        // While we don't need to set up the initial guess for the direct solver
+        // (it will be ignored by the solver anyway), we need this if we are
+        // using a nonlinear scheme, because we use this to compute the current
+        // nonlinear residual (see initial_residual below).
+        // TODO: if there was an easy way to know if the caller needs the
+        // initial residual we could skip all of this stuff.
+        distributed_stokes_solution.block(0) = current_linearization_point.block(0);
+        denormalize_pressure (distributed_stokes_solution);
+        current_constraints.set_zero (distributed_stokes_solution);
+
+        // Undo the pressure scaling:
+        for (unsigned int i=0; i< introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
+          {
+            types::global_dof_index idx = introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
+
+            distributed_stokes_solution(idx) /= pressure_scaling;
+          }
+        distributed_stokes_solution.compress(VectorOperation::insert);
+
         if (material_model->is_compressible ())
           make_pressure_rhs_compatible(system_rhs);
+
+        // we need a temporary vector for the residual (even if we don't care about it)
+        LinearAlgebra::Vector residual (introspection.index_sets.stokes_partitioning[0], mpi_communicator);
+
+        const double initial_residual = system_matrix.block(0,0).residual(
+            residual,
+            distributed_stokes_solution.block(0),
+            system_rhs.block(0));
 
         SolverControl cn;
         // TODO: can we re-use the direct solver?
@@ -518,7 +547,7 @@ namespace aspect
 
         computing_timer.exit_section();
 
-        return 0;
+        return initial_residual;
       }
 
 
