@@ -1,0 +1,43 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.2.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libcompressibility_iterated_stokes_direct_solver.so>
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (9,539+4,225)
+
+*** Timestep 0:  t=0 seconds
+   Solving Stokes system... done.
+      Nonlinear Stokes residual: 21.2064
+   Solving Stokes system... done.
+      Nonlinear Stokes residual: 0.293292
+   Solving Stokes system... done.
+      Nonlinear Stokes residual: 0.0159069
+   Solving Stokes system... done.
+      Nonlinear Stokes residual: 0.000575267
+   Solving Stokes system... done.
+      Nonlinear Stokes residual: 1.42992e-05
+
+   Postprocessing:
+     Top/bottom flux: 1/1
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      1.68s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         5 |     0.793s |        47% |
+| Solve Stokes system             |         5 |       0.7s |        42% |
+| Initialization                  |         2 |     0.045s |       2.7% |
+| Postprocessing                  |         1 |   0.00193s |      0.11% |
+| Setup dof systems               |         1 |    0.0792s |       4.7% |
++---------------------------------+-----------+------------+------------+
+

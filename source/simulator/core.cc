@@ -1203,6 +1203,7 @@ namespace aspect
     system_trans(dof_handler);
 
     std::vector<const LinearAlgebra::Vector *> x_fs_system (1);  //Outside of if statement for scoping reasons
+
     //Hack alert: we need freesurface_trans in the function scope, but cannot pass it the free_surface_dof_handler
     //if it is not allocated.  So if the free surface is not enabled, just pass the normal system dof_handler,
     //but then never use this SolutionTransfer object.
@@ -1227,23 +1228,24 @@ namespace aspect
     computing_timer.enter_section ("Refine mesh structure, part 2");
 
     {
-      LinearAlgebra::BlockVector
-      distributed_system (system_rhs);
-      LinearAlgebra::BlockVector
-      old_distributed_system (system_rhs);
-      LinearAlgebra::BlockVector
-      distributed_mesh_velocity (system_rhs);
-      LinearAlgebra::BlockVector
-      old_distributed_mesh_velocity (system_rhs);
+      LinearAlgebra::BlockVector distributed_system;
+      LinearAlgebra::BlockVector old_distributed_system;
+      LinearAlgebra::BlockVector distributed_mesh_velocity;
 
-      std::vector<LinearAlgebra::BlockVector *> system_tmp ( parameters.free_surface_enabled ? 3 : 2);
-      system_tmp[0] = &(distributed_system);
-      system_tmp[1] = &(old_distributed_system);
+      distributed_system.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
+      old_distributed_system.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
+      if (parameters.free_surface_enabled)
+        distributed_mesh_velocity.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
+
+      std::vector<LinearAlgebra::BlockVector *> system_tmp (2);
+      system_tmp[0] = &distributed_system;
+      system_tmp[1] = &old_distributed_system;
 
       if (parameters.free_surface_enabled)
-        system_tmp[2] = &(distributed_mesh_velocity);
+        system_tmp.push_back(&distributed_mesh_velocity);
 
       system_trans.interpolate (system_tmp);
+
       solution     = distributed_system;
       old_solution = old_distributed_system;
       if (parameters.free_surface_enabled)
