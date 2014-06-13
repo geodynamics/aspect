@@ -833,7 +833,7 @@ namespace aspect
                       // then adjust its value. Note that because we end up touching
                       // entries more than once, we are not simply incrementing
                       // distributed_vector but copy from the unchanged vector.
-                      distributed_vector(local_dof_indices[support_point_index])
+                      distributed_vector(local_dof_indices[local_dof_index])
                         = vector(local_dof_indices[local_dof_index]) - pressure_adjustment;
                     }
                 }
