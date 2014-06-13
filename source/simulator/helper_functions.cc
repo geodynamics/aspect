@@ -803,8 +803,6 @@ namespace aspect
   {
     if (parameters.pressure_normalization == "no")
       return;
-    Assert(!parameters.include_melt_transport,
-        ExcMessage("normalize pressure does not work with melt transport yet."));
 
     if (parameters.use_locally_conservative_discretization == false)
       {
