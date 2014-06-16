@@ -88,28 +88,30 @@ namespace aspect
       }
 
       template <int dim>
-      void GPlatesLookup::screen_output(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two) const
+      void GPlatesLookup::screen_output(const Tensor<1,2> &surface_point_one,
+                                        const Tensor<1,2> &surface_point_two,
+                                        const ConditionalOStream &pcout) const
       {
         const Tensor<1,3> point_one = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_one));
         const Tensor<1,3> point_two = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_two));
 
-        std::cout << std::setprecision (3) << std::setw(3) << std::fixed << std::endl
+        pcout << std::setprecision (3) << std::setw(3) << std::fixed << std::endl
                   << "   Set up GPlates boundary velocity module."  << std::endl
                   << std::endl;
         if (dim == 2)
           {
-            std::cout << "   Input point 1 spherical coordinates: " << surface_point_one << std::endl
-                      << "   Input point 1 Cartesian output coordinates: " << rotate(point_one,rotation_axis,-rotation_angle)  << std::endl
-                      << "   Input point 2 spherical coordinates: " << surface_point_two << std::endl
-                      << "   Input point 2 Cartesian output coordinates: " << rotate(point_two,rotation_axis,-rotation_angle)  << std::endl
-                      << std::endl <<  std::setprecision(2)
-                      << "   Model will be rotated by " << -rotation_angle*180/numbers::PI
-                      << " degrees around axis " << rotation_axis << std::endl
-                      << std::endl;
+            pcout << "   Input point 1 spherical coordinates: " << surface_point_one << std::endl
+                  << "   Input point 1 Cartesian output coordinates: " << rotate(point_one,rotation_axis,-rotation_angle)  << std::endl
+                  << "   Input point 2 spherical coordinates: " << surface_point_two << std::endl
+                  << "   Input point 2 Cartesian output coordinates: " << rotate(point_two,rotation_axis,-rotation_angle)  << std::endl
+                  << std::endl <<  std::setprecision(2)
+                  << "   Model will be rotated by " << -rotation_angle*180/numbers::PI
+                  << " degrees around axis " << rotation_axis << std::endl
+                  << std::endl;
           }
 
-        std::cout << std::setprecision(6);
-        std::cout.unsetf(std::ios_base::floatfield);
+        pcout << std::setprecision(6);
+        pcout.get_stream().unsetf(std::ios_base::floatfield);
       }
 
       bool
@@ -120,11 +122,11 @@ namespace aspect
       }
 
       void
-      GPlatesLookup::load_file(const std::string &filename, const bool screen_output)
+      GPlatesLookup::load_file(const std::string &filename, const ConditionalOStream &pcout)
       {
-        if (screen_output)
-          std::cout << std::endl << "   Loading GPlates boundary velocity file "
-                    << filename << "." << std::endl << std::endl;
+        pcout << std::endl << "   Loading GPlates boundary velocity file "
+              << filename << "." << std::endl << std::endl;
+
         using boost::property_tree::ptree;
         ptree pt;
 
@@ -604,22 +606,22 @@ namespace aspect
       if ((create_filename (current_time_step) == create_filename (current_time_step+1)) && time_dependent)
         {
           if (first_process)
-            lookup->screen_output<dim> (pointone, pointtwo);
+            lookup->screen_output<dim> (pointone, pointtwo,this->get_pcout());
 
           lookup->load_file (create_filename (current_time_step),
-                             first_process);
-          end_time_dependence (current_time_step, first_process);
+                             this->get_pcout());
+          end_time_dependence (current_time_step);
           return;
         }
 
       if (time_dependent && (time_relative_to_vel_file_start_time >= 0.0))
         {
           if ((current_time_step < 0) && (first_process) && (dim == 2))
-            lookup->screen_output<dim> (pointone, pointtwo);
+            lookup->screen_output<dim> (pointone, pointtwo,this->get_pcout());
 
           if (static_cast<int> (time_relative_to_vel_file_start_time / time_step) > current_time_step)
             {
-              update_velocity_data(first_process);
+              update_velocity_data();
             }
 
           time_weight = time_relative_to_vel_file_start_time / time_step - current_time_step;
@@ -632,7 +634,7 @@ namespace aspect
 
     template <int dim>
     void
-    GPlates<dim>::update_velocity_data (const bool first_process)
+    GPlates<dim>::update_velocity_data ()
     {
 
       const int old_time_step = current_time_step;
@@ -646,14 +648,14 @@ namespace aspect
         try
           {
             lookup->load_file (create_filename (current_time_step),
-                               first_process);
+                               this->get_pcout());
           }
         catch (...)
           // If loading current_time_step failed, end time dependent part with old_time_step.
           {
             try
               {
-                end_time_dependence (old_time_step, first_process);
+                end_time_dependence (old_time_step);
               }
             catch (...)
               {
@@ -673,7 +675,7 @@ namespace aspect
       try
         {
           lookup->load_file (create_filename (current_time_step + 1),
-                             first_process);
+                             this->get_pcout());
         }
 
       // If loading current_time_step + 1 failed, end time dependent part with current_time_step.
@@ -683,29 +685,27 @@ namespace aspect
 
       catch (...)
         {
-          end_time_dependence (current_time_step, first_process);
+          end_time_dependence (current_time_step);
         }
     }
 
     template <int dim>
     void
-    GPlates<dim>::end_time_dependence (const int timestep,
-                                       const bool first_process)
+    GPlates<dim>::end_time_dependence (const int timestep)
     {
       // Next velocity file not found --> Constant velocities
       // by simply loading the old file twice
-      lookup->load_file (create_filename (timestep), first_process);
+      lookup->load_file (create_filename (timestep), this->get_pcout());
       // no longer consider the problem time dependent from here on out
       // this cancels all attempts to read files at the next time steps
       time_dependent = false;
       // this cancels the time interpolation in lookup
       time_weight = 1.0;
       // Give warning if first processor
-      if (first_process)
-        std::cout << std::endl
-                  << "   Loading new velocity file did not succeed." << std::endl
-                  << "   Assuming constant boundary conditions for rest of model run."
-                  << std::endl << std::endl;
+      this->get_pcout() << std::endl
+                        << "   Loading new velocity file did not succeed." << std::endl
+                        << "   Assuming constant boundary conditions for rest of model run."
+                        << std::endl << std::endl;
     }
 
     template <int dim>

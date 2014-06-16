@@ -63,7 +63,8 @@ namespace aspect
            */
           template <int dim>
           void screen_output(const Tensor<1,2> &surface_point_one,
-                             const Tensor<1,2> &surface_point_two) const;
+                             const Tensor<1,2> &surface_point_two,
+                             const ConditionalOStream &pcout) const;
 
           /**
            * Check whether a file named @p filename exists.
@@ -75,7 +76,7 @@ namespace aspect
            * file does not exist.
            */
           void load_file(const std::string &filename,
-                         const bool screen_output);
+                         const ConditionalOStream &pcout);
 
           /**
            * Returns the computed surface velocity in cartesian coordinates.
@@ -399,15 +400,14 @@ namespace aspect
          * Handles the update of the velocity data in lookup.
          */
         void
-        update_velocity_data (const bool first_process);
+        update_velocity_data ();
 
         /**
          * Handles settings and user notification in case the time-dependent
          * part of the boundary condition is over.
          */
         void
-        end_time_dependence (const int timestep,
-                             const bool first_process);
+        end_time_dependence (const int timestep);
 
         /**
          * Create a filename out of the name template.
