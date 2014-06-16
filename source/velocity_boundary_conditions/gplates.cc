@@ -95,23 +95,24 @@ namespace aspect
         const Tensor<1,3> point_one = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_one));
         const Tensor<1,3> point_two = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_two));
 
-        pcout << std::setprecision (3) << std::setw(3) << std::fixed << std::endl
-                  << "   Set up GPlates boundary velocity module."  << std::endl
-                  << std::endl;
+        std::ostringstream output;
+
+        output << std::setprecision (3) << std::setw(3) << std::fixed << std::endl
+               << "   Set up GPlates boundary velocity module."  << std::endl
+               << std::endl;
         if (dim == 2)
           {
-            pcout << "   Input point 1 spherical coordinates: " << surface_point_one << std::endl
-                  << "   Input point 1 Cartesian output coordinates: " << rotate(point_one,rotation_axis,-rotation_angle)  << std::endl
-                  << "   Input point 2 spherical coordinates: " << surface_point_two << std::endl
-                  << "   Input point 2 Cartesian output coordinates: " << rotate(point_two,rotation_axis,-rotation_angle)  << std::endl
-                  << std::endl <<  std::setprecision(2)
-                  << "   Model will be rotated by " << -rotation_angle*180/numbers::PI
-                  << " degrees around axis " << rotation_axis << std::endl
-                  << std::endl;
+            output << "   Input point 1 spherical coordinates: " << surface_point_one << std::endl
+                   << "   Input point 1 Cartesian output coordinates: " << rotate(point_one,rotation_axis,-rotation_angle)  << std::endl
+                   << "   Input point 2 spherical coordinates: " << surface_point_two << std::endl
+                   << "   Input point 2 Cartesian output coordinates: " << rotate(point_two,rotation_axis,-rotation_angle)  << std::endl
+                   << std::endl <<  std::setprecision(2)
+                   << "   Model will be rotated by " << -rotation_angle*180/numbers::PI
+                   << " degrees around axis " << rotation_axis << std::endl
+                   << std::endl;
           }
 
-        pcout << std::setprecision(6);
-        pcout.get_stream().unsetf(std::ios_base::floatfield);
+        pcout << output.str();
       }
 
       bool
