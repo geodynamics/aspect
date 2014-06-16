@@ -610,15 +610,12 @@ namespace aspect
       Interface<dim>::update ();
 
       time_relative_to_vel_file_start_time = this->get_time() - velocity_file_start_time;
-      const bool first_process = (Utilities::MPI::this_mpi_process (this->get_mpi_communicator ())
-                                  == 0);
 
       // If the boundary condition is constant, switch off time_dependence end leave function.
       // This also sets time_weight to 1.0
       if ((create_filename (current_time_step) == create_filename (current_time_step+1)) && time_dependent)
         {
-          if (first_process)
-            lookup->screen_output<dim> (pointone, pointtwo,this->get_pcout());
+          lookup->screen_output<dim> (pointone, pointtwo,this->get_pcout());
 
           lookup->load_file (create_filename (current_time_step),
                              this->get_pcout());
@@ -628,7 +625,7 @@ namespace aspect
 
       if (time_dependent && (time_relative_to_vel_file_start_time >= 0.0))
         {
-          if ((current_time_step < 0) && (first_process) && (dim == 2))
+          if (current_time_step < 0)
             lookup->screen_output<dim> (pointone, pointtwo,this->get_pcout());
 
           if (static_cast<int> (time_relative_to_vel_file_start_time / time_step) > current_time_step)
