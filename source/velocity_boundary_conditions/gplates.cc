@@ -274,6 +274,10 @@ namespace aspect
                           {
                             // If we are outside of the interpolation circle even without extending phi (j), we have
                             // visited all possible interpolation points. Return current surf_vel.
+
+                            // If everything worked as intended the radial component of the velocity should be small.
+                            // However we can not do this check for velocity = 0. We assume velocities < 1e-16 m/s
+                            // to be essentially zero and pass the check in this case.
                             double residual_normal_velocity(0.0);
                             if (surf_vel.norm() > 1e-16)
                               residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
@@ -310,6 +314,9 @@ namespace aspect
             while (i < velocity_values->n_rows() / 2);
           }
 
+        // If everything worked as intended the radial component of the velocity should be small.
+        // However we can not do this check for velocity close to 0. We assume velocities < 1e-16 m/s
+        // to be essentially zero and pass the check in this case.
         double residual_normal_velocity(0.0);
         if (surf_vel.norm() > 1e-16)
           residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
@@ -759,7 +766,10 @@ namespace aspect
                              "in the input file, this number is either interpreted as seconds or as years.");
           prm.declare_entry ("Scale factor", "1",
                              Patterns::Double (0),
-                             "Scalar factor, which is applied to the boundary velocity.");
+                             "Scalar factor, which is applied to the boundary velocity. "
+                             "You might want to use this to scale the velocities to a "
+                             "reference model (e.g. with free-slip boundary) or another "
+                             "plate reconstruction.");
           prm.declare_entry ("Point one", "1.570796,0.0",
                              Patterns::Anything (),
                              "Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.");
