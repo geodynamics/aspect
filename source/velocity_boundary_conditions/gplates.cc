@@ -273,7 +273,9 @@ namespace aspect
                           {
                             // If we are outside of the interpolation circle even without extending phi (j), we have
                             // visited all possible interpolation points. Return current surf_vel.
-                            const double residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
+                            double residual_normal_velocity(0.0);
+                            if (surf_vel.norm() > 1e-16)
+                              residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
 
                             AssertThrow(residual_normal_velocity < 1e-11,
                                         ExcMessage("Error in velocity boundary module interpolation. "
@@ -307,7 +309,9 @@ namespace aspect
             while (i < velocity_values->n_rows() / 2);
           }
 
-        const double residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
+        double residual_normal_velocity(0.0);
+        if (surf_vel.norm() > 1e-16)
+          residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
 
         AssertThrow( residual_normal_velocity < 1e-11,
                      ExcMessage("Error in velocity boundary module interpolation. "
