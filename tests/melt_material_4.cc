@@ -26,6 +26,8 @@ namespace aspect
       virtual bool
       density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
       {
+        if ((dependence & MaterialModel::NonlinearDependence::compositional_fields) != MaterialModel::NonlinearDependence::none)
+          return true;
         return false;
       }
 

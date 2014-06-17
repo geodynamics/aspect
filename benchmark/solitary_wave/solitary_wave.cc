@@ -103,6 +103,7 @@ namespace aspect
          const double non_dim_amplitude = amplitude / background_porosity;
 
          // get the coordinates where we have the solution
+         // TODO use Newton iteration here
          for (unsigned int i=0;i<max_points;++i)
            {
              porosity[i] = 1.0 + 1e-10*non_dim_amplitude
@@ -110,6 +111,7 @@ namespace aspect
              coordinate[i] = solitary_wave_solution(porosity[i], non_dim_amplitude);
 
              // re-scale porosity and position
+             // TODO get the scaling factor from the material parameters
              porosity[i] *= background_porosity;
              coordinate[i] *= std::sqrt(5.0);
            }
@@ -159,12 +161,16 @@ namespace aspect
       virtual bool
       viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
       {
+        if ((dependence & MaterialModel::NonlinearDependence::compositional_fields) != MaterialModel::NonlinearDependence::none)
+          return true;
         return false;
       }
 
       virtual bool
       density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
       {
+        if ((dependence & MaterialModel::NonlinearDependence::compositional_fields) != MaterialModel::NonlinearDependence::none)
+          return true;
         return false;
       }
 
@@ -473,6 +479,14 @@ namespace aspect
 
       Vector<float> cellwise_errors_f (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
+
+      // what we want to compare:
+      // (1) z-coordinate of the wave peak: \Delta = z_p(analytical) - z_p(numerical)
+      // (2) error of the numerical phase speed c:
+      // c_numerical = c_analytical - Delta / time;
+      // error_c = std::abs (c_numerical / c_analytical - 1);
+      // (3) preservation of shape of melt fraction
+      // (4) preservation of the shape of compaction pressure
 
       std::ostringstream os;
       os << std::scientific << 0.0
