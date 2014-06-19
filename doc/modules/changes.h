@@ -7,6 +7,10 @@
  *
  * <ol>
  *
+ * <li> New: Added a visualization processor to output the local gravity vector.
+ * <br>
+ * (Timo Heister, 2014/06/17)
+ *
  * <li> Fixed: The direct solver now works with nonlinear schemes like
  * iterated IMPES.
  * <br>

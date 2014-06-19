@@ -812,9 +812,10 @@ namespace aspect
           {
             // velocity and pressure are in the same block, so we have to modify the values manually
 
+            const unsigned int block_idx = introspection.block_indices.pressure;
             LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.stokes_partitioning,
                                                            mpi_communicator);
-            distributed_vector = vector;
+            distributed_vector.block(block_idx) = vector.block(block_idx);
 
             std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
             typename DoFHandler<dim>::active_cell_iterator
@@ -838,7 +839,7 @@ namespace aspect
                     }
                 }
             distributed_vector.compress(VectorOperation::insert);
-            vector = distributed_vector;
+            vector.block(block_idx) = distributed_vector.block(block_idx);
           }
       }
     else

@@ -1,0 +1,119 @@
+# implement own gravity model, also test gravity visualization
+
+
+set Dimension = 2
+
+
+set CFL number                             = 1.0
+
+set End time                               = 0
+
+
+set Resume computation                     = false
+
+set Start time                             = 0
+
+set Adiabatic surface temperature          = 0
+
+set Surface pressure                       = 0
+
+set Use years in output instead of seconds = false  # default: true
+
+set Nonlinear solver scheme                = IMPES
+
+
+subsection Boundary temperature model
+  set Model name = box
+
+end
+
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+
+  set Temperature polynomial degree           = 2
+
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    set alpha = 2
+
+    set beta  = 0.078
+
+    set cR    = 0.5   # default: 0.11
+  end
+
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+
+    set Y extent = 2
+
+    set Z extent = 1
+  end
+end
+
+
+subsection Gravity model
+  set Model name = my gravity
+
+end
+
+
+subsection Initial conditions
+  set Model name = perturbed box
+
+end
+
+
+subsection Material model
+  set Model name = simpler
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0                       # default: 2
+  set Initial global refinement          = 2                       # default: 2
+
+  set Strategy                           = density, temperature
+end
+
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false # default: true
+
+
+  set Fixed temperature boundary indicators   = 0, 1
+
+  set Prescribed velocity boundary indicators =
+
+  set Tangential velocity boundary indicators = 0,1,2,3
+
+  set Zero velocity boundary indicators       =
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Depth average
+    set Time between graphical output = 0
+  end
+
+  subsection Visualization
+    set Number of grouped files       = 0
+
+    set Output format                 = gnuplot
+
+    set Time between graphical output = 0   # default: 1e8
+
+    set List of output variables = gravity
+  end
+end
+
