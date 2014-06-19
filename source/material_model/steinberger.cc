@@ -458,7 +458,7 @@ namespace aspect
           delta_temperature = temperature-avg_temp[idx];
         }
       else
-        const double delta_temperature = temperature-adiabatic_temperature;
+        delta_temperature = temperature-adiabatic_temperature;
 
       // For an explanation on this formula see the Steinberger & Calderwood 2006 paper
       const double vis_lateral_exp = -1.0*lateral_viscosity_lookup->lateral_viscosity(depth)*delta_temperature/(temperature*adiabatic_temperature);
