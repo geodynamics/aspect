@@ -7,6 +7,12 @@
  *
  * <ol>
  *
+ * <li> Changed: The internal heating statistics postprocessor now calculates
+ * the integral and averaged internal heating by mass averaging instead
+ * of volume averaging.
+ * <br>
+ * (Rene Gassmoeller, 2014/06/20)
+ *
  * <li> New: Added a visualization processor to output the local gravity vector.
  * <br>
  * (Timo Heister, 2014/06/17)
