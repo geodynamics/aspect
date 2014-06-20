@@ -676,6 +676,11 @@ namespace aspect
                                "Loading new and old velocity file did not succeed. "
                                "Maybe the time step was so large we jumped over all files "
                                "or the files were removed during the model run. "
+                               "Another possible way here is to restart a model with "
+                               "previously time-dependent boundary condition after the "
+                               "last file was already read. Aspect has no way to find the "
+                               "last readable file from the current model time. Please "
+                               "prescribe the last velocity file manually in such a case. "
                                "Cancelling calculation."));
               }
           }
