@@ -45,7 +45,7 @@ namespace aspect
 
               for ( unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell;  ++v)
                 {
-                  const Point<dim> vertex = cell->vertex(v);
+                  const Point<dim> &vertex = cell->vertex(v);
 
                   // TODO: This should be an input parameter for the user to decide
                   // whether to use depth or coordinates
@@ -55,7 +55,10 @@ namespace aspect
                   if (cell->level() <= rint(min_refinement_level.value(point)))
                     clear_coarsen = true;
                   if (cell->level() <  rint(min_refinement_level.value(point)))
-                    refine = true;
+                    {
+                      refine = true;
+                      break;
+                    }
                 }
 
               if (clear_coarsen)
