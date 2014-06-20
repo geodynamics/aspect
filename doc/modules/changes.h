@@ -7,6 +7,12 @@
  *
  * <ol>
  *
+ * * <li> Changed: The minimum refinement function is now evaluated at every
+ * cell corner instead of the cell midpoint. This especially helps in refining
+ * thin boundary layers.
+ * <br>
+ * (Rene Gassmoeller, 2014/06/11)
+ *
  * <li> Changed: The internal heating statistics postprocessor now calculates
  * the integral and averaged internal heating by mass averaging instead
  * of volume averaging.
