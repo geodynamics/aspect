@@ -1,0 +1,17 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (seconds)
+# 11: Minimal temperature (K)
+# 12: Average temperature (K)
+# 13: Maximal temperature (K)
+# 14: Average internal heating rate (W/kg) 
+# 15: Total internal heating rate (W) 
+0 0.0000e+00 1024 9539 4225 0 25 26 26 1.0000e+03 1.00000000e+03 1.00000000e+03 1.00000000e+03 1.00000000e+00 3.40000000e+15 
+1 1.0000e+03 1024 9539 4225 9  0  0  0 1.5625e+04 1.00000000e+03 1.00099578e+03 1.00110647e+03 1.00000000e+00 3.40000000e+15 
