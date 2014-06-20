@@ -220,8 +220,12 @@ namespace aspect
         bool interpolation;
         bool latent_heat;
         bool compressible;
+        bool use_lateral_average_temperature;
         double reference_eta;
         std::vector<double> avg_temp;
+        double min_eta;
+        double max_eta;
+        double max_lateral_eta_variation;
         std::string datadirectory;
         std::vector<std::string> material_file_names;
         unsigned int n_material_data;
