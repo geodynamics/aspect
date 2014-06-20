@@ -454,7 +454,7 @@ namespace aspect
       double delta_temperature;
       if (use_lateral_average_temperature)
         {
-          const unsigned int idx = static_cast<unsigned int>(avg_temp.size() * depth / this->get_geometry_model().maximal_depth());
+          const unsigned int idx = static_cast<unsigned int>((avg_temp.size()-1) * depth / this->get_geometry_model().maximal_depth());
           delta_temperature = temperature-avg_temp[idx];
         }
       else
