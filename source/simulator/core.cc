@@ -1185,16 +1185,16 @@ namespace aspect
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
-    std::vector<const LinearAlgebra::Vector *> x_fs_system (1);  //Outside of if statement for scoping reasons
-
-    //Hack alert: we need freesurface_trans in the function scope, but cannot pass it the free_surface_dof_handler
-    //if it is not allocated.  So if the free surface is not enabled, just pass the normal system dof_handler,
-    //but then never use this SolutionTransfer object.
-    parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
-    freesurface_trans(parameters.free_surface_enabled ? free_surface->free_surface_dof_handler : dof_handler);
+    std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
+    std::auto_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
+      freesurface_trans;
+    
     if (parameters.free_surface_enabled)
-      x_fs_system[0] = &(free_surface->mesh_vertices);
-
+      {
+	x_fs_system[0] = &(free_surface->mesh_vertices);
+	freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
+				 (free_surface->free_surface_dof_handler));
+      }
 
     triangulation.prepare_coarsening_and_refinement();
     system_trans.prepare_for_coarsening_and_refinement(x_system);
@@ -1227,7 +1227,13 @@ namespace aspect
       if (parameters.free_surface_enabled)
         system_tmp.push_back(&distributed_mesh_velocity);
 
+      // transfer the data previously stored into the vectors indexed by
+      // system_tmp. then ensure that the interpolated solution satisfies
+      // hanging node constraints
       system_trans.interpolate (system_tmp);
+
+      constraints.distribute (distributed_system);
+      constraints.distribute (old_distributed_system);
 
       solution     = distributed_system;
       old_solution = old_distributed_system;
@@ -1235,15 +1241,17 @@ namespace aspect
         free_surface->mesh_velocity = distributed_mesh_velocity;
     }
 
+    // do the same as above also for the free surface solution
     if (parameters.free_surface_enabled)
       {
         LinearAlgebra::Vector distributed_mesh_vertices;
         distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned, mpi_communicator);
 
         std::vector<LinearAlgebra::Vector *> system_tmp (1);
-        system_tmp[0] = &(distributed_mesh_vertices);
+        system_tmp[0] = &distributed_mesh_vertices;
         freesurface_trans.interpolate (system_tmp);
-        free_surface->mesh_vertices     = distributed_mesh_vertices;
+	free_surface->mesh_constraints.distribute (distributed_mesh_vertices);
+        free_surface->mesh_vertices = distributed_mesh_vertices;
       }
 
     if (parameters.free_surface_enabled)
