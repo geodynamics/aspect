@@ -739,7 +739,7 @@ namespace aspect
                                    "fields are specified, the model assumes that the first compositional "
                                    "field is the fraction of pyroxenite and the rest of the material "
                                    "is peridotite. "
-                                   ""
+                                   "\n\n"
                                    "Otherwise, this material model has a temperature- and pressure-"
                                    "dependent density and viscosity and the density and thermal "
                                    "expansivity depend on the melt fraction present. "
