@@ -1,0 +1,97 @@
+# This is a copy of the steinberger compressible test.
+# However it uses the actual Steinberger viscosity model, 
+# instead of the constant viscosity testdata.
+ 
+set CFL number                             = 1.0
+set End time                               = 1e5
+set Adiabatic surface temperature          = 1600.0
+set Use years in output instead of seconds = true
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 4250
+    set Outer temperature = 273
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Opening angle = 90
+    set Outer radius  = 6371000
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = harmonic perturbation
+  subsection Harmonic perturbation
+    set Magnitude = 200.0
+  end
+end
+
+subsection Material model
+  set Model name = Steinberger
+
+  subsection Steinberger model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
+    set Material file names              = test-steinberger-compressible/testdata.txt
+    set Bilinear interpolation           = true
+    set Latent heat                      = false
+    set Compressible                     = true
+    set Reference viscosity              = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+
+  set Initial global refinement          = 3
+
+  set Refinement fraction                = 0.0
+  set Coarsening fraction                = 0.0
+
+  set Strategy                           = velocity
+
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0,1
+
+  set Include adiabatic heating               = true
+  set Include shear heating                   = false
+
+  set Tangential velocity boundary indicators = 0,2,3
+  set Zero velocity boundary indicators       = 1
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization,velocity statistics, basic statistics, temperature statistics,heat flux statistics, depth average
+
+
+  subsection Visualization
+    set Output format                 = vtu
+    set List of output variables      = viscosity
+    set Time between graphical output = 0
+  end
+
+  subsection Depth average
+    set Time between graphical output = 0
+  end
+
+end

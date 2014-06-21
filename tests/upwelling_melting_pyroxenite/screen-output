@@ -1,0 +1,87 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.2.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 1,280 (on 4 levels)
+Number of degrees of freedom: 23,277 (10,914+1,449+5,457+5,457)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving composition system 1... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 23 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 1447 K, 1597 K, 1747 K
+
+*** Timestep 1:  t=5.73562e+12 seconds
+   Solving temperature system... 16 iterations.
+   Solving composition system 1... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 1447 K, 1597 K, 1747 K
+
+*** Timestep 2:  t=1.13003e+13 seconds
+   Solving temperature system... 16 iterations.
+   Solving composition system 1... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 1448 K, 1597 K, 1747 K
+
+*** Timestep 3:  t=1.68599e+13 seconds
+   Solving temperature system... 15 iterations.
+   Solving composition system 1... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 1448 K, 1597 K, 1747 K
+
+*** Timestep 4:  t=2.24219e+13 seconds
+   Solving temperature system... 15 iterations.
+   Solving composition system 1... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 1449 K, 1597 K, 1747 K
+
+*** Timestep 5:  t=2.5e+13 seconds
+   Solving temperature system... 11 iterations.
+   Solving composition system 1... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 1449 K, 1597 K, 1747 K
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      95.8s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         6 |      32.4s |        34% |
+| Assemble composition system     |         6 |      13.3s |        14% |
+| Assemble temperature system     |         6 |      15.2s |        16% |
+| Build Stokes preconditioner     |         6 |      18.7s |        19% |
+| Build composition preconditioner|         6 |     0.176s |      0.18% |
+| Build temperature preconditioner|         6 |      0.18s |      0.19% |
+| Solve Stokes system             |         6 |      1.48s |       1.5% |
+| Solve composition system        |         6 |    0.0408s |     0.043% |
+| Solve temperature system        |         6 |     0.197s |      0.21% |
+| Initialization                  |         2 |       2.9s |         3% |
+| Postprocessing                  |         6 |     0.733s |      0.77% |
+| Setup dof systems               |         1 |       2.1s |       2.2% |
++---------------------------------+-----------+------------+------------+
+
