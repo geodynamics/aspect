@@ -1,6 +1,7 @@
 #########################################################
 # this tests that "Run postprocessors on initial refinement = true"
-# is working correctly (increasing the output id.
+# is working correctly (in particular that it increases the id
+# of the output files)
 
 
 set Dimension                              = 2
