@@ -455,12 +455,16 @@ namespace aspect
       return;
 
     // these live in the same FE as the velocity variable:
-    mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning, sim.introspection.index_sets.system_relevant_partitioning, sim.mpi_communicator);
+    mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning,
+			 sim.introspection.index_sets.system_relevant_partitioning,
+			 sim.mpi_communicator);
 
 
     free_surface_dof_handler.distribute_dofs(free_surface_fe);
 
-    sim.pcout << "Number of free surface degrees of freedom: " << free_surface_dof_handler.n_dofs() << std::endl;
+    sim.pcout << "Number of free surface degrees of freedom: "
+	      << free_surface_dof_handler.n_dofs()
+	      << std::endl;
 
     // Renumber the DoFs hierarchical so that we get the
     // same numbering if we resume the computation. This
