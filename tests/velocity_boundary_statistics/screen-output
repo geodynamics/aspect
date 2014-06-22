@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
+--     . version 1.2.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -134,7 +134,7 @@ Number of degrees of freedom: 17,345 (10,640+1,385+5,320)
      Writing graphical output:                  output-velocity_boundary_statistics/solution-00007
      RMS, max velocity:                         1.44e-09 m/s, 4.01e-09 m/s
      Temperature min/avg/max:                   -202.4 K, 107.6 K, 1613 K
-     Heat fluxes through boundary parts:        -0.1138 W, -0.2394 W, 6.599e-07 W, -4.84e-06 W
+     Heat fluxes through boundary parts:        -0.1138 W, -0.2394 W, 6.6e-07 W, -4.84e-06 W
      Writing depth average                      output-velocity_boundary_statistics/depth_average.gnuplot
      Max and min velocity along boundary parts: 3.988e-09 m/s, 2.363e-12 m/s, 0 m/s, 0 m/s, 1.876e-10 m/s, 2.509e-13 m/s, 1.553e-09 m/s, 1.339e-13 m/s
 
@@ -162,7 +162,7 @@ Number of degrees of freedom: 19,477 (11,950+1,552+5,975)
      Writing graphical output:                  output-velocity_boundary_statistics/solution-00009
      RMS, max velocity:                         1.5e-09 m/s, 4.08e-09 m/s
      Temperature min/avg/max:                   -201.9 K, 108.5 K, 1613 K
-     Heat fluxes through boundary parts:        -0.1138 W, -0.2378 W, 5.628e-07 W, 7.65e-06 W
+     Heat fluxes through boundary parts:        -0.1138 W, -0.2378 W, 5.628e-07 W, 7.649e-06 W
      Writing depth average                      output-velocity_boundary_statistics/depth_average.gnuplot
      Max and min velocity along boundary parts: 4.054e-09 m/s, 2.359e-12 m/s, 0 m/s, 0 m/s, 1.9e-10 m/s, 2.504e-13 m/s, 1.583e-09 m/s, 1.272e-13 m/s
 
@@ -187,21 +187,21 @@ Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      38.2s |            |
+| Total wallclock time elapsed since start    |       145s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        11 |      2.36s |       6.2% |
-| Assemble temperature system     |        11 |      4.34s |        11% |
-| Build Stokes preconditioner     |         6 |      2.16s |       5.7% |
-| Build temperature preconditioner|        11 |      0.18s |      0.47% |
-| Solve Stokes system             |        11 |      3.13s |       8.2% |
-| Solve temperature system        |        11 |     0.149s |      0.39% |
-| Create snapshot                 |         1 |      2.24s |       5.9% |
-| Initialization                  |         2 |    0.0608s |      0.16% |
-| Postprocessing                  |        11 |      19.7s |        51% |
-| Refine mesh structure, part 1   |         7 |      1.81s |       4.7% |
-| Refine mesh structure, part 2   |         7 |     0.057s |      0.15% |
-| Setup dof systems               |         8 |      1.57s |       4.1% |
+| Assemble Stokes system          |        11 |      13.5s |       9.4% |
+| Assemble temperature system     |        11 |      17.8s |        12% |
+| Build Stokes preconditioner     |         6 |      9.32s |       6.4% |
+| Build temperature preconditioner|        11 |     0.164s |      0.11% |
+| Solve Stokes system             |        11 |      5.75s |         4% |
+| Solve temperature system        |        11 |     0.237s |      0.16% |
+| Create snapshot                 |         1 |     0.073s |      0.05% |
+| Initialization                  |         2 |     0.346s |      0.24% |
+| Postprocessing                  |        11 |        78s |        54% |
+| Refine mesh structure, part 1   |         7 |      6.84s |       4.7% |
+| Refine mesh structure, part 2   |         7 |     0.249s |      0.17% |
+| Setup dof systems               |         8 |      8.47s |       5.9% |
 +---------------------------------+-----------+------------+------------+
 

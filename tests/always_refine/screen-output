@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
+--     . version 1.2.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -34,7 +34,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
    Postprocessing:
      Writing graphical output:  output-always_refine/solution-00001
      Temperature min/avg/max:   0 K, 0.4999 K, 1 K
-     Compositions min/max/mass: -0.01799/1.048/0.4591 // -0.01278/1.077/0.4168
+     Compositions min/max/mass: -0.01799/1.048/0.4592 // -0.01278/1.077/0.4168
 
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
@@ -49,7 +49,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
    Postprocessing:
      Writing graphical output:  output-always_refine/solution-00002
      Temperature min/avg/max:   0 K, 0.5002 K, 1 K
-     Compositions min/max/mass: -0.004078/1.055/0.4601 // -0.01545/1.063/0.4162
+     Compositions min/max/mass: -0.00408/1.055/0.4601 // -0.01546/1.063/0.4162
 
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
@@ -64,7 +64,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
    Postprocessing:
      Writing graphical output:  output-always_refine/solution-00003
      Temperature min/avg/max:   0 K, 0.5005 K, 1 K
-     Compositions min/max/mass: -0.001263/1.042/0.4605 // -0.009274/1.03/0.4155
+     Compositions min/max/mass: -0.001255/1.042/0.4605 // -0.009279/1.03/0.4155
 
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
@@ -79,7 +79,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
    Postprocessing:
      Writing graphical output:  output-always_refine/solution-00004
      Temperature min/avg/max:   0 K, 0.4998 K, 1 K
-     Compositions min/max/mass: -0.001433/1.027/0.4606 // -0.002888/0.99/0.4149
+     Compositions min/max/mass: -0.001417/1.027/0.4606 // -0.002872/0.99/0.4149
 
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
@@ -94,7 +94,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
    Postprocessing:
      Writing graphical output:  output-always_refine/solution-00005
      Temperature min/avg/max:   0 K, 0.4992 K, 1 K
-     Compositions min/max/mass: -0.001458/1.02/0.4606 // -0.001284/0.9584/0.4153
+     Compositions min/max/mass: -0.001443/1.02/0.4606 // -0.001283/0.9584/0.4153
 
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
@@ -103,23 +103,23 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       1.2s |            |
+| Total wallclock time elapsed since start    |      6.52s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         6 |     0.157s |        13% |
-| Assemble composition system     |        12 |     0.219s |        18% |
-| Assemble temperature system     |         6 |     0.117s |       9.8% |
-| Build Stokes preconditioner     |         6 |     0.179s |        15% |
-| Build composition preconditioner|        12 |    0.0106s |      0.89% |
-| Build temperature preconditioner|         6 |    0.0054s |      0.45% |
-| Solve Stokes system             |         6 |    0.0504s |       4.2% |
-| Solve composition system        |        12 |    0.0089s |      0.74% |
-| Solve temperature system        |         6 |   0.00448s |      0.37% |
-| Initialization                  |         2 |    0.0458s |       3.8% |
-| Postprocessing                  |         6 |    0.0479s |         4% |
-| Refine mesh structure, part 1   |         6 |     0.154s |        13% |
-| Refine mesh structure, part 2   |         6 |   0.00303s |      0.25% |
-| Setup dof systems               |         7 |     0.156s |        13% |
+| Assemble Stokes system          |         6 |       1.2s |        18% |
+| Assemble composition system     |        12 |       1.2s |        18% |
+| Assemble temperature system     |         6 |     0.652s |        10% |
+| Build Stokes preconditioner     |         6 |     0.794s |        12% |
+| Build composition preconditioner|        12 |   0.00992s |      0.15% |
+| Build temperature preconditioner|         6 |    0.0058s |     0.089% |
+| Solve Stokes system             |         6 |     0.103s |       1.6% |
+| Solve composition system        |        12 |    0.0178s |      0.27% |
+| Solve temperature system        |         6 |   0.00916s |      0.14% |
+| Initialization                  |         2 |     0.282s |       4.3% |
+| Postprocessing                  |         6 |      0.19s |       2.9% |
+| Refine mesh structure, part 1   |         6 |      1.06s |        16% |
+| Refine mesh structure, part 2   |         6 |    0.0155s |      0.24% |
+| Setup dof systems               |         7 |     0.624s |       9.6% |
 +---------------------------------+-----------+------------+------------+
 
