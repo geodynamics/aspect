@@ -1200,7 +1200,7 @@ namespace aspect
     system_trans.prepare_for_coarsening_and_refinement(x_system);
 
     if (parameters.free_surface_enabled)
-      freesurface_trans.prepare_for_coarsening_and_refinement(x_fs_system);
+      freesurface_trans->prepare_for_coarsening_and_refinement(x_fs_system);
 
     triangulation.execute_coarsening_and_refinement ();
     global_volume = GridTools::volume (triangulation, mapping);
@@ -1249,7 +1249,7 @@ namespace aspect
 
         std::vector<LinearAlgebra::Vector *> system_tmp (1);
         system_tmp[0] = &distributed_mesh_vertices;
-        freesurface_trans.interpolate (system_tmp);
+        freesurface_trans->interpolate (system_tmp);
 	free_surface->mesh_constraints.distribute (distributed_mesh_vertices);
         free_surface->mesh_vertices = distributed_mesh_vertices;
       }
