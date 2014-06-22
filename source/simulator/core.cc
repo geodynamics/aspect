@@ -1230,6 +1230,17 @@ namespace aspect
       // transfer the data previously stored into the vectors indexed by
       // system_tmp. then ensure that the interpolated solution satisfies
       // hanging node constraints
+      //
+      // note that the 'constraints' variable contains hanging node constraints
+      // and constraints from periodic boundary conditions (as well as from
+      // zero and tangential velocity boundary conditions), but not from
+      // non-homogeneous boundary conditions. the latter are added not in setup_dofs(),
+      // which we call above, but added to 'current_constraints' in start_timestep(),
+      // which we do not want to call here.
+      //
+      // however, what we have should be sufficient: we have everything that
+      // is necessary to make the solution vectors *conforming* on the current
+      // mesh.
       system_trans.interpolate (system_tmp);
 
       constraints.distribute (distributed_system);
