@@ -40,11 +40,30 @@ namespace aspect
         {
           if (cell->is_locally_owned())
             {
-              const double depth = this->get_geometry_model().depth(cell->center());
-              const Point<1> point(depth);
-              if (cell->level() <= rint(min_refinement_level.value(point)))
+              bool refine = false;
+              bool clear_coarsen = false;
+
+              for ( unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell;  ++v)
+                {
+                  const Point<dim> vertex = cell->vertex(v);
+
+                  // TODO: This should be an input parameter for the user to decide
+                  // whether to use depth or coordinates
+                  const double depth = this->get_geometry_model().depth(vertex);
+                  const Point<1> point(depth);
+
+                  if (cell->level() <= rint(min_refinement_level.value(point)))
+                    clear_coarsen = true;
+                  if (cell->level() <  rint(min_refinement_level.value(point)))
+                    {
+                      refine = true;
+                      break;
+                    }
+                }
+
+              if (clear_coarsen)
                 cell->clear_coarsen_flag ();
-              if (cell->level() <  rint(min_refinement_level.value(point)))
+              if (refine)
                 cell->set_refine_flag ();
             }
         }
