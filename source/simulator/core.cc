@@ -1191,7 +1191,7 @@ namespace aspect
     
     if (parameters.free_surface_enabled)
       {
-	x_fs_system[0] = &(free_surface->mesh_vertices);
+	x_fs_system[0] = &free_surface->mesh_vertices;
 	freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
 				 (free_surface->free_surface_dof_handler));
       }
@@ -1250,7 +1250,7 @@ namespace aspect
         std::vector<LinearAlgebra::Vector *> system_tmp (1);
         system_tmp[0] = &distributed_mesh_vertices;
         freesurface_trans->interpolate (system_tmp);
-	free_surface->mesh_constraints.distribute (distributed_mesh_vertices);
+        free_surface->mesh_constraints.distribute (distributed_mesh_vertices);
         free_surface->mesh_vertices = distributed_mesh_vertices;
       }
 
