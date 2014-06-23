@@ -69,12 +69,6 @@ namespace aspect
       private:
 
         /**
-         * Returns spherical coordinates of a cartesian position.
-         */
-        const Tensor<1,dim>
-        spherical_surface_coordinates(const Tensor<1,dim> &position) const;
-
-        /**
          * The radial/depth wave number of the harmonic perturbation. All wave
          * number variables are in fact twice the wave number in a
          * mathematical sense. This allows the user to prescribe a single up-

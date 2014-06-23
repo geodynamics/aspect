@@ -20,6 +20,7 @@
 
 
 #include <aspect/initial_conditions/S40RTS_perturbation.h>
+#include <aspect/utilities.h>
 #include <fstream>
 #include <iostream>
 #include <deal.II/base/std_cxx1x/array.h>
@@ -254,7 +255,7 @@ namespace aspect
            depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);       
 
         // convert coordinates from [x,y,z] to [r, phi, theta] 
-        std_cxx1x::array<double,dim> scoord = spherical_surface_coordinates(position);
+        std_cxx1x::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
 
         // iterate over all degrees and orders at each depth and sum them all up.
         std::vector<double> spline_values(num_spline_knots,0);
@@ -312,22 +313,6 @@ namespace aspect
      return temperature;
 
     }
-
-    template <int dim>
-    std_cxx1x::array<double,dim>
-    S40RTSPerturbation<dim>::
-    spherical_surface_coordinates(const dealii::Point<dim,double> &position) 
-    {
-      std_cxx1x::array<double,dim> scoord;
-
-      scoord[0] = std::sqrt(position.norm_square()); // R
-      scoord[1] = std::atan2(position[1],position[0]); // Phi
-      if (scoord[1] < 0.0) scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
-      if (dim==3)
-        scoord[2] = std::acos(position[2]/std::sqrt(position.norm_square())); // Theta
-
-      return scoord;
-    } 
 
 
     // tk does the cubic spline interpolation.
