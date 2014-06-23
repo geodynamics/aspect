@@ -1267,15 +1267,7 @@ namespace aspect
         system_tmp[0] = &distributed_mesh_vertices;
 
         freesurface_trans->interpolate (system_tmp);
-
-//TODO: as explained in the documentation of SolutionTransfer, after interpolate()
-// we may have a non-conforming solution at hanging nodes. so we would like to 
-// call distribute() as in this line:	
-//	free_surface->mesh_constraints.distribute (distributed_mesh_vertices);
-// This doesn't seem to work, however, and leads to an invalid mesh vertex
-// field. Maybe because free_surface->mesh_constraints can only be applied to
-// the vertex increments field and not the vertex field!?
-	
+        free_surface->mesh_vertex_constraints.distribute (distributed_mesh_vertices);
         free_surface->mesh_vertices = distributed_mesh_vertices;
       }
 
