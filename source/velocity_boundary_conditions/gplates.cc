@@ -22,6 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/velocity_boundary_conditions/gplates.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/table.h>
@@ -468,18 +469,6 @@ namespace aspect
       }
 
       Tensor<1,3>
-      GPlatesLookup::spherical_surface_coordinates(const Tensor<1,3> &position) const
-      {
-        Tensor<1,3> scoord;
-
-        scoord[0] = std::acos(position[2]/position.norm()); // Theta
-        scoord[1] = std::atan2(position[1],position[0]); // Phi
-        if (scoord[1] < 0.0) scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
-        scoord[2] = position.norm(); // R
-        return scoord;
-      }
-
-      Tensor<1,3>
       GPlatesLookup::cartesian_surface_coordinates(const Tensor<1,3> &sposition) const
       {
         Tensor<1,3> ccoord;
@@ -517,8 +506,9 @@ namespace aspect
       GPlatesLookup::calculate_spatial_index(int *index,
                                              const Tensor<1,3> &position) const
       {
-        const Tensor<1,3> scoord = spherical_surface_coordinates(position);
-        index[0] = lround(scoord[0]/delta_theta);
+        const Point<3> cpoint = static_cast<Point<3> > (position);
+        const std_cxx1x::array<double,3> scoord = ::aspect::utilities::spherical_coordinates<3>(cpoint);
+        index[0] = lround(scoord[2]/delta_theta);
         index[1] = lround(scoord[1]/delta_phi);
         reformat_indices(index);
       }
