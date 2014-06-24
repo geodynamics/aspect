@@ -507,7 +507,7 @@ namespace aspect
                                              const Tensor<1,3> &position) const
       {
         const Point<3> cpoint = static_cast<Point<3> > (position);
-        const std_cxx1x::array<double,3> scoord = ::aspect::utilities::spherical_coordinates<3>(cpoint);
+        const std_cxx1x::array<double,3> scoord = ::aspect::utilities::spherical_coordinates(cpoint);
         index[0] = lround(scoord[2]/delta_theta);
         index[1] = lround(scoord[1]/delta_phi);
         reformat_indices(index);
