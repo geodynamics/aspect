@@ -118,6 +118,7 @@ subsection Postprocess
   subsection Visualization
     set Time between graphical output = 0
     set List of output variables = dynamic topography
+    set Output format                 = gnuplot
     subsection Dynamic Topography
       set Subtract mean of dynamic topography = true
     end 
@@ -126,5 +127,4 @@ subsection Postprocess
 end
 
 
-set Output directory = output-dynamic_topography
 

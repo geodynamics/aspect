@@ -138,5 +138,6 @@ subsection Postprocess
 
   subsection Visualization
     set List of output variables = density, viscosity
+    set Output format                 = gnuplot
   end
 end
