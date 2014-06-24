@@ -119,35 +119,49 @@ namespace aspect
     if (!sim.parameters.free_surface_enabled)
       return;
 
-    mesh_constraints.clear();
-    mesh_constraints.reinit(mesh_locally_relevant);
-    DoFTools::make_hanging_node_constraints(free_surface_dof_handler, mesh_constraints);
+    //We would like to make sure that the mesh stays conforming upon
+    //redistribution, so we construct mesh_vertex_constraints, which
+    //keeps track of hanging node constraints.
+    mesh_vertex_constraints.clear();
+    mesh_vertex_constraints.reinit(mesh_locally_relevant);
+
+    DoFTools::make_hanging_node_constraints(free_surface_dof_handler, mesh_vertex_constraints);
+
+    //We can safely close this now
+    mesh_vertex_constraints.close();
+ 
+    //Now construct the mesh displacement constraints
+    mesh_displacement_constraints.clear();
+    mesh_displacement_constraints.reinit(mesh_locally_relevant);
+
+    //mesh_displacement_constraints can use the same hanging node
+    //information that was used for mesh_vertex constraints.
+    mesh_displacement_constraints.merge(mesh_vertex_constraints);
 
     //Add the vanilla periodic boundary constraints
     typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
     periodic_boundary_pairs pbp = sim.geometry_model->get_periodic_boundary_pairs();
     for (periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
-      DoFTools::make_periodicity_constraints(free_surface_dof_handler, (*p).first.first, (*p).first.second, (*p).second, mesh_constraints);
-
+      DoFTools::make_periodicity_constraints(free_surface_dof_handler, (*p).first.first, (*p).first.second, (*p).second, mesh_displacement_constraints);
 
     //Zero out the displacement for the zero-velocity boundary indicators
     for (std::set<types::boundary_id>::const_iterator p = sim.parameters.zero_velocity_boundary_indicators.begin();
          p != sim.parameters.zero_velocity_boundary_indicators.end(); ++p)
       VectorTools::interpolate_boundary_values (free_surface_dof_handler, *p,
-                                                ZeroFunction<dim>(dim), mesh_constraints);
+                                                ZeroFunction<dim>(dim), mesh_displacement_constraints);
 
     //Zero out the displacement for the prescribed velocity
     for (std::map<types::boundary_id, std::pair<std::string, std::string> >::const_iterator p = sim.parameters.prescribed_velocity_boundary_indicators.begin();
          p != sim.parameters.prescribed_velocity_boundary_indicators.end(); ++p)
       VectorTools::interpolate_boundary_values (free_surface_dof_handler, p->first,
-                                                ZeroFunction<dim>(dim), mesh_constraints);
+                                                ZeroFunction<dim>(dim), mesh_displacement_constraints);
 
     //make the tangential boundary indicators no displacement normal to the boundary
     VectorTools::compute_no_normal_flux_constraints (free_surface_dof_handler,
                                                      /* first_vector_component= */
                                                      0,
                                                      sim.parameters.tangential_velocity_boundary_indicators,
-                                                     mesh_constraints, sim.mapping);
+                                                     mesh_displacement_constraints, sim.mapping);
 
     //make the periodic boundary indicators no displacement normal to the boundary
     std::set< types::boundary_id > periodic_boundaries;
@@ -160,7 +174,7 @@ namespace aspect
                                                      /* first_vector_component= */
                                                      0,
                                                      periodic_boundaries,
-                                                     mesh_constraints, sim.mapping);
+                                                     mesh_displacement_constraints, sim.mapping);
 
     //For the free surface indicators we constrain the displacement to be v.n
     LinearAlgebra::Vector boundary_normal_velocity;
@@ -174,15 +188,15 @@ namespace aspect
     for ( unsigned int i = 0; i < constrained_dofs.n_elements();  ++i)
       {
         types::global_dof_index index = constrained_dofs.nth_index_in_set(i);
-        if (mesh_constraints.can_store_line(index))
-          if (mesh_constraints.is_constrained(index)==false)
+        if (mesh_displacement_constraints.can_store_line(index))
+          if (mesh_displacement_constraints.is_constrained(index)==false)
             {
-              mesh_constraints.add_line(index);
-              mesh_constraints.set_inhomogeneity(index, boundary_normal_velocity[index]);
+              mesh_displacement_constraints.add_line(index);
+              mesh_displacement_constraints.set_inhomogeneity(index, boundary_normal_velocity[index]);
             }
       }
 
-    mesh_constraints.close();
+    mesh_displacement_constraints.close();
   }
 
 
@@ -350,7 +364,7 @@ namespace aspect
                                       fe_values.JxW(point);
               }
 
-          mesh_constraints.distribute_local_to_global (cell_matrix, cell_vector,
+          mesh_displacement_constraints.distribute_local_to_global (cell_matrix, cell_vector,
                                                        cell_dof_indices, mesh_matrix, rhs, false);
         }
 
@@ -382,7 +396,7 @@ namespace aspect
     cg.solve (mesh_matrix, poisson_solution, rhs, preconditioner_stiffness);
     sim.pcout << "   Solving mesh velocity system... " << solver_control.last_step() <<" iterations."<< std::endl;
 
-    mesh_constraints.distribute (poisson_solution);
+    mesh_displacement_constraints.distribute (poisson_solution);
     mesh_vertex_velocity = poisson_solution;
   }
 
@@ -455,12 +469,16 @@ namespace aspect
       return;
 
     // these live in the same FE as the velocity variable:
-    mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning, sim.introspection.index_sets.system_relevant_partitioning, sim.mpi_communicator);
+    mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning,
+			 sim.introspection.index_sets.system_relevant_partitioning,
+			 sim.mpi_communicator);
 
 
     free_surface_dof_handler.distribute_dofs(free_surface_fe);
 
-    sim.pcout << "Number of free surface degrees of freedom: " << free_surface_dof_handler.n_dofs() << std::endl;
+    sim.pcout << "Number of free surface degrees of freedom: "
+	      << free_surface_dof_handler.n_dofs()
+	      << std::endl;
 
     // Renumber the DoFs hierarchical so that we get the
     // same numbering if we resume the computation. This
@@ -532,7 +550,7 @@ namespace aspect
 
       DoFTools::make_sparsity_pattern (free_surface_dof_handler,
                                        coupling, sp,
-                                       mesh_constraints, false,
+                                       mesh_displacement_constraints, false,
                                        Utilities::MPI::
                                        this_mpi_process(sim.mpi_communicator));
 

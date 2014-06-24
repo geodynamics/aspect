@@ -1,6 +1,5 @@
 #########################################################
-# this tests that "Run postprocessors on initial refinement = true"
-# is working correctly (increasing the output id.
+# Refine in every time step and see what happens.
 
 
 set Dimension                              = 2

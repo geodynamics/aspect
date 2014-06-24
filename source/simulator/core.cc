@@ -1185,22 +1185,22 @@ namespace aspect
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
-    std::vector<const LinearAlgebra::Vector *> x_fs_system (1);  //Outside of if statement for scoping reasons
-
-    //Hack alert: we need freesurface_trans in the function scope, but cannot pass it the free_surface_dof_handler
-    //if it is not allocated.  So if the free surface is not enabled, just pass the normal system dof_handler,
-    //but then never use this SolutionTransfer object.
-    parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
-    freesurface_trans(parameters.free_surface_enabled ? free_surface->free_surface_dof_handler : dof_handler);
+    std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
+    std::auto_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
+      freesurface_trans;
+    
     if (parameters.free_surface_enabled)
-      x_fs_system[0] = &(free_surface->mesh_vertices);
-
+      {
+	x_fs_system[0] = &free_surface->mesh_vertices;
+	freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
+				 (free_surface->free_surface_dof_handler));
+      }
 
     triangulation.prepare_coarsening_and_refinement();
     system_trans.prepare_for_coarsening_and_refinement(x_system);
 
     if (parameters.free_surface_enabled)
-      freesurface_trans.prepare_for_coarsening_and_refinement(x_fs_system);
+      freesurface_trans->prepare_for_coarsening_and_refinement(x_fs_system);
 
     triangulation.execute_coarsening_and_refinement ();
     global_volume = GridTools::volume (triangulation, mapping);
@@ -1227,23 +1227,48 @@ namespace aspect
       if (parameters.free_surface_enabled)
         system_tmp.push_back(&distributed_mesh_velocity);
 
+      // transfer the data previously stored into the vectors indexed by
+      // system_tmp. then ensure that the interpolated solution satisfies
+      // hanging node constraints
+      //
+      // note that the 'constraints' variable contains hanging node constraints
+      // and constraints from periodic boundary conditions (as well as from
+      // zero and tangential velocity boundary conditions), but not from
+      // non-homogeneous boundary conditions. the latter are added not in setup_dofs(),
+      // which we call above, but added to 'current_constraints' in start_timestep(),
+      // which we do not want to call here.
+      //
+      // however, what we have should be sufficient: we have everything that
+      // is necessary to make the solution vectors *conforming* on the current
+      // mesh.
       system_trans.interpolate (system_tmp);
 
+      constraints.distribute (distributed_system);
       solution     = distributed_system;
+
+      constraints.distribute (old_distributed_system);
       old_solution = old_distributed_system;
+
       if (parameters.free_surface_enabled)
-        free_surface->mesh_velocity = distributed_mesh_velocity;
+	{
+	  constraints.distribute (distributed_mesh_velocity);
+	  free_surface->mesh_velocity = distributed_mesh_velocity;
+	}
     }
 
+    // do the same as above also for the free surface solution
     if (parameters.free_surface_enabled)
       {
         LinearAlgebra::Vector distributed_mesh_vertices;
-        distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned, mpi_communicator);
+        distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned,
+					 mpi_communicator);
 
         std::vector<LinearAlgebra::Vector *> system_tmp (1);
-        system_tmp[0] = &(distributed_mesh_vertices);
-        freesurface_trans.interpolate (system_tmp);
-        free_surface->mesh_vertices     = distributed_mesh_vertices;
+        system_tmp[0] = &distributed_mesh_vertices;
+
+        freesurface_trans->interpolate (system_tmp);
+        free_surface->mesh_vertex_constraints.distribute (distributed_mesh_vertices);
+        free_surface->mesh_vertices = distributed_mesh_vertices;
       }
 
     if (parameters.free_surface_enabled)
