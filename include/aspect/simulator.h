@@ -1525,9 +1525,14 @@ namespace aspect
           IndexSet mesh_locally_relevant;
 
           /**
-           * Storage for the mesh constraints for solving the elliptic problem
+           * Storage for the mesh displacement constraints for solving the elliptic problem
            */
-          ConstraintMatrix mesh_constraints;
+          ConstraintMatrix mesh_displacement_constraints;
+
+          /**
+           * Storage for the mesh vertex constraints to keep hanging nodes well-behaved
+           */
+          ConstraintMatrix mesh_vertex_constraints;
 
 
           friend class Simulator<dim>;
