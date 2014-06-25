@@ -23,7 +23,7 @@
 
 namespace aspect
 {
-  namespace utilities
+  namespace Utilities
   {
     template <int dim>
     std_cxx1x::array<double,dim>
@@ -57,7 +57,7 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  namespace utilities
+  namespace Utilities
   {
 #define INSTANTIATE(dim) \
     template \

@@ -31,12 +31,17 @@ namespace aspect
    * A namespace for utility functions that might be used in many different
    * places to prevent code duplication.
    */
-  namespace utilities
+  namespace Utilities
   {
     using namespace dealii;
 
     /**
      * Returns spherical coordinates of a cartesian point.
+     * The returned array is filled with radius, phi and
+     * theta (polar angle). If the dimension is set to 2
+     * theta is omitted. Phi is always normalized to
+     * [0,2*pi].
+     *
      */
     template <int dim>
     std_cxx1x::array<double,dim>
@@ -44,7 +49,8 @@ namespace aspect
 
     /**
      * Return the cartesian point of a spherical position
-     * defined by radius, theta (polar angle) and phi.
+     * defined by radius, phi and theta (polar angle).
+     * If the dimension is set to 2 theta is omitted.
      */
     template <int dim>
     Point<dim>
