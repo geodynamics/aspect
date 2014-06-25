@@ -7,13 +7,13 @@
  *
  * <ol>
  *
- * * <li> Changed: The viscosity in the steinberger material model can now be
+ * <li> Changed: The viscosity in the steinberger material model can now be
  * calculated by taking either the lateral averaged temperature or the
  * adiabatic temperature in this depth as reference.
  * <br>
  * (Rene Gassmoeller, 2014/06/20)
  *
- * * <li> Changed: The minimum refinement function is now evaluated at every
+ * <li> Changed: The minimum refinement function is now evaluated at every
  * cell corner instead of the cell midpoint. This especially helps in refining
  * thin boundary layers.
  * <br>
