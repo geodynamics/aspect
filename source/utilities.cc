@@ -31,12 +31,16 @@ namespace aspect
     {
       std_cxx1x::array<double,dim> scoord;
 
-      scoord[0] = std::sqrt(position.norm_square()); // R
+      scoord[0] = position.norm(); // R
       scoord[1] = std::atan2(position(1),position(0)); // Phi
       if (scoord[1] < 0.0) scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
       if (dim==3)
-        scoord[2] = std::acos(position(2)/std::sqrt(position.norm_square())); // Theta
-
+        {
+          if (scoord[0])
+            scoord[2] = std::acos(position(2)/position.norm()); // Theta
+          else
+            scoord[2] = 0.0;
+        }
       return scoord;
     }
 
@@ -45,10 +49,17 @@ namespace aspect
     cartesian_coordinates(const std_cxx1x::array<double,dim> &scoord)
     {
       Point<dim> ccoord;
-
-      ccoord[0] = scoord[0] * std::sin(scoord[2]) * std::cos(scoord[1]); // X
-      ccoord[1] = scoord[0] * std::sin(scoord[2]) * std::sin(scoord[1]); // Y
-      ccoord[2] = scoord[0] * std::cos(scoord[2]); // Z
+      if (dim==3)
+        {
+          ccoord[0] = scoord[0] * std::sin(scoord[2]) * std::cos(scoord[1]); // X
+          ccoord[1] = scoord[0] * std::sin(scoord[2]) * std::sin(scoord[1]); // Y
+          ccoord[2] = scoord[0] * std::cos(scoord[2]); // Z
+        }
+      else if (dim==2)
+        {
+          ccoord[0] = scoord[0] * std::cos(scoord[1]); // X
+          ccoord[1] = scoord[0] * std::sin(scoord[1]); // Y
+        }
       return ccoord;
     }
   }
