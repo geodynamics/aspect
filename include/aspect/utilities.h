@@ -22,6 +22,8 @@
 #ifndef __aspect__utilities_h
 #define __aspect__utilities_h
 
+#include <aspect/global.h>
+
 #include <deal.II/base/std_cxx1x/array.h>
 #include <deal.II/base/point.h>
 
@@ -45,7 +47,22 @@ namespace aspect
      */
     template <int dim>
     std_cxx1x::array<double,dim>
-    spherical_coordinates(const Point<dim> &position);
+    spherical_coordinates(const Point<dim> &position)
+    {
+      std_cxx1x::array<double,dim> scoord;
+
+      scoord[0] = position.norm(); // R
+      scoord[1] = std::atan2(position(1),position(0)); // Phi
+      if (scoord[1] < 0.0) scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
+      if (dim==3)
+        {
+          if (scoord[0])
+            scoord[2] = std::acos(position(2)/position.norm()); // Theta
+          else
+            scoord[2] = 0.0;
+        }
+      return scoord;
+    }
 
     /**
      * Return the cartesian point of a spherical position
@@ -54,10 +71,42 @@ namespace aspect
      */
     template <int dim>
     Point<dim>
-    cartesian_coordinates(const std_cxx1x::array<double,dim> &sposition);
+    cartesian_coordinates(const std_cxx1x::array<double,dim> &scoord)
+    {
+      Point<dim> ccoord;
+      if (dim==3)
+        {
+          ccoord[0] = scoord[0] * std::sin(scoord[2]) * std::cos(scoord[1]); // X
+          ccoord[1] = scoord[0] * std::sin(scoord[2]) * std::sin(scoord[1]); // Y
+          ccoord[2] = scoord[0] * std::cos(scoord[2]); // Z
+        }
+      else if (dim==2)
+        {
+          ccoord[0] = scoord[0] * std::cos(scoord[1]); // X
+          ccoord[1] = scoord[0] * std::sin(scoord[1]); // Y
+        }
+      return ccoord;
+    }
 
   }
 }
 
+// explicit instantiation of the functions we implement in this file
+namespace aspect
+{
+  namespace Utilities
+  {
+#define INSTANTIATE(dim) \
+    template \
+    std_cxx1x::array<double,dim> \
+    spherical_coordinates<dim> (const Point<dim> &); \
+    \
+    template \
+    Point<dim> \
+    cartesian_coordinates<dim> (const std_cxx1x::array<double,dim> &);
+
+    ASPECT_INSTANTIATE(INSTANTIATE)
+  }
+}
 
 #endif
