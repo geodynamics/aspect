@@ -1,6 +1,5 @@
 /**
- * @page changes_between_0.1_and_0.2 Changes between version 0.1 and version
- * 0.2
+ * @page changes_between_0.1_and_0.2 Changes between version 0.1 and version 0.2
  *
  * <p> This is the list of changes made after the release of Aspect version
  * 0.1 and before 0.2. All entries are signed with the names of the author.
