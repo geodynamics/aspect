@@ -56,8 +56,8 @@ namespace aspect
       if (scoord[1] < 0.0) scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
       if (dim==3)
         {
-          if (scoord[0])
-            scoord[2] = std::acos(position(2)/position.norm()); // Theta
+          if (scoord[0] > std::numeric_limits<double>::min())
+            scoord[2] = std::acos(position(2)/scoord[0]);
           else
             scoord[2] = 0.0;
         }
@@ -88,24 +88,6 @@ namespace aspect
       return ccoord;
     }
 
-  }
-}
-
-// explicit instantiation of the functions we implement in this file
-namespace aspect
-{
-  namespace Utilities
-  {
-#define INSTANTIATE(dim) \
-    template \
-    std_cxx1x::array<double,dim> \
-    spherical_coordinates<dim> (const Point<dim> &); \
-    \
-    template \
-    Point<dim> \
-    cartesian_coordinates<dim> (const std_cxx1x::array<double,dim> &);
-
-    ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }
 
