@@ -74,17 +74,27 @@ namespace aspect
     cartesian_coordinates(const std_cxx1x::array<double,dim> &scoord)
     {
       Point<dim> ccoord;
-      if (dim==3)
+
+      switch(dim)
+      {
+      case 2:
         {
           ccoord[0] = scoord[0] * std::sin(scoord[2]) * std::cos(scoord[1]); // X
           ccoord[1] = scoord[0] * std::sin(scoord[2]) * std::sin(scoord[1]); // Y
           ccoord[2] = scoord[0] * std::cos(scoord[2]); // Z
+          break;
         }
-      else if (dim==2)
+      case 3:
         {
           ccoord[0] = scoord[0] * std::cos(scoord[1]); // X
           ccoord[1] = scoord[0] * std::sin(scoord[1]); // Y
+          break;
         }
+      default:
+        Assert (false, ExcNotImplemented());
+        break;
+      }
+
       return ccoord;
     }
 
