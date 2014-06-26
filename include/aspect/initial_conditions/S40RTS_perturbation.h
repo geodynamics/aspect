@@ -82,12 +82,6 @@ namespace aspect
       private:
 
         /**
-         * Returns spherical coordinates of a cartesian position.
-         */
-        static std_cxx1x::array<double,dim>
-        spherical_surface_coordinates(const dealii::Point<dim,double> &position);
-        
-        /**
          * File directory and names
          */
         std::string datadirectory;

@@ -153,11 +153,6 @@ namespace aspect
           Tensor<1,out> convert_tensor (const Tensor<1,in> &old_tensor) const;
 
           /**
-           * Returns spherical coordinates of a cartesian position.
-           */
-          Tensor<1,3> spherical_surface_coordinates(const Tensor<1,3> &position) const;
-
-          /**
            * Return the cartesian coordinates of a spherical surface position
            * defined by theta (polar angle. not geographical latitude) and
            * phi.

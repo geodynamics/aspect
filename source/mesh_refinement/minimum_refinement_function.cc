@@ -46,6 +46,7 @@ namespace aspect
               for ( unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell;  ++v)
                 {
                   const Point<dim> vertex = cell->vertex(v);
+                  double minimum_refinement_level = 0;
 
                   // TODO: This should be an input parameter for the user to decide
                   // whether to use depth or coordinates
