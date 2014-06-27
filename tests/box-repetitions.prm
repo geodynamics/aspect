@@ -67,5 +67,8 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization#, velocity statistics, basic statistics,  temperature statistics, heat flux statistics
+  subsection Visualization
+    set Output format                 = gnuplot
+  end
 end
 

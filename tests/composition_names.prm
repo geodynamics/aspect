@@ -138,7 +138,7 @@ subsection Postprocess
     set Number of grouped files       = 0
 
     # The file format to be used for graphical output.
-    set Output format                 = vtu
+    set Output format                 = gnuplot
 
     # The time interval between each generation of graphical output files. A
     # value of zero indicates that output should be generated in each time
