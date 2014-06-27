@@ -69,9 +69,24 @@ namespace aspect
 
       private:
         /**
-         * A function object representing the minimum refinement level.
+         * The coordinate representation to evaluate the function.
+         * Possible choices are depth, cartesian and spherical.
          */
-        Functions::ParsedFunction<1> min_refinement_level;
+        enum coordinates
+        {
+          depth,
+          cartesian,
+          spherical
+        } coordinate_system;
+
+        /**
+         * A function object representing the minimum refinement level. Which
+         * of the two functions is actually evaluated is determined by the
+         * 'Coordinate dependence' input parameter.
+         */
+        Functions::ParsedFunction<1> min_refinement_level_depth;
+        Functions::ParsedFunction<dim> min_refinement_level_position;
+
     };
   }
 }
