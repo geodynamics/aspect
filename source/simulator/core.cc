@@ -158,7 +158,8 @@ namespace aspect
 
     // we already printed the header to the screen, so here we just dump it
     // into the logfile.
-    print_aspect_header(log_file_stream);
+    if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
+      print_aspect_header(log_file_stream);
 
     computing_timer.enter_section("Initialization");
 
