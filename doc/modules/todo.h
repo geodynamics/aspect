@@ -26,15 +26,21 @@
  *
  * <li>Make snapshotting as atomic as possible so that a job that is
  * terminated while creating a snapshot doesn't get us in trouble
+ *
  * <li>Provide an option to store not only the last snapshot but many
+ *
  * <li>Move the adiabatic heating term (the last one in the temperature
  * equation) to the left hand side and make it implicit
+ *
  * <li>The nonlinear solvers are at best lightly tested. Do this more
  * systemtically.
+ *
  * <li>The same can be said of the compressible solvers
+ *
  * <li>Rewrite the tracer code
- * <li>Free surfaces (Ian Rose has something initial)
+ *
  * <li>Self gravity (Ian Rose has something initial)
+ *
  * <li>We need a scheme to verify that plugins are compiled against the same
  * version of ASPECT that they are running under.
  * </ol>
