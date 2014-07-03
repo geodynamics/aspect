@@ -43,6 +43,11 @@
  *
  * <li>We need a scheme to verify that plugins are compiled against the same
  * version of ASPECT that they are running under.
+ *
+ * <li>More benchmarks. One possibility is the benchmark by King that has been
+ * described (apart from the original paper by Scott) in the thesis at
+ * https://www10.informatik.uni-erlangen.de/Research/Projects/terraneo/docs/schlag-thesis-2014.pdf
+ * starting at page 22.
  * </ol>
  *
  *
