@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> New: There is now a section in the manual detailing the
+ * "Burstedde" benchmark and its verification.
+ * <br>
+ * (Iris van Zelst, Wolfgang Bangerth, 2014/07/07)
+ *
  * <li> Changed: The viscosity in the steinberger material model can now be
  * calculated by taking either the lateral averaged temperature or the
  * adiabatic temperature in this depth as reference.
