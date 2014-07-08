@@ -94,7 +94,7 @@ namespace aspect
         boundary_velocity (const Point<dim> &position) const;
 
       private:
-       double beta;
+        double beta;
     };
 
     template <int dim>
@@ -269,7 +269,7 @@ namespace aspect
         /**
          * viscosity value in the inclusion
          */
-       double beta;
+        double beta;
     };
 
     template <int dim>
@@ -435,33 +435,33 @@ namespace aspect
     }
 
     template <int dim>
-    void 
+    void
     BursteddeMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
-     //create a global section in the parameter file for parameters
-     //that describe this benchmark. note that we declare them here 
-     //in the material model, but other kinds of plugins (e.g., the gravity
-     //model below) may also read these parameters even though they do not 
-     //declare them
-     prm.enter_subsection("Burstedde benchmark");
-     { 
-      prm.declare_entry("Viscosity parameter", "20",
-                       Patterns::Double (0),
-                       "Viscosity in the Burstedde benchmark.");
-     }
-     prm.leave_subsection();
-    } 
- 
+      //create a global section in the parameter file for parameters
+      //that describe this benchmark. note that we declare them here
+      //in the material model, but other kinds of plugins (e.g., the gravity
+      //model below) may also read these parameters even though they do not
+      //declare them
+      prm.enter_subsection("Burstedde benchmark");
+      {
+        prm.declare_entry("Viscosity parameter", "20",
+                          Patterns::Double (0),
+                          "Viscosity in the Burstedde benchmark.");
+      }
+      prm.leave_subsection();
+    }
+
 
     template <int dim>
     void
     BursteddeMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
-     prm.enter_subsection("Burstedde benchmark");
-     {
-      beta = prm.get_double ("Viscosity parameter");
-     }
-     prm.leave_subsection();
+      prm.enter_subsection("Burstedde benchmark");
+      {
+        beta = prm.get_double ("Viscosity parameter");
+      }
+      prm.leave_subsection();
     }
 
 
@@ -472,35 +472,35 @@ namespace aspect
       return beta;
     }
 
-  /**
-   *gravity model for the Burstedde benchmark
-  */
-
-  template <int dim>
-  class BursteddeGravity : public aspect::GravityModel::Interface<dim>
-  {
-  public:
-    virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const;
-    
-    static
-    void
-    declare_parameters (ParameterHandler &prm);
-
     /**
-     * Read the parameters this class declares from the parameter file.
+     *gravity model for the Burstedde benchmark
     */
-    virtual
-    void
-    parse_parameters (ParameterHandler &prm);
 
-  double beta;
-  };
+    template <int dim>
+    class BursteddeGravity : public aspect::GravityModel::Interface<dim>
+    {
+      public:
+        virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const;
 
-   template <int dim>
-   Tensor<1,dim>
-   BursteddeGravity<dim>::
-   gravity_vector(const Point<dim> &pos) const
-   {
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+        */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+        double beta;
+    };
+
+    template <int dim>
+    Tensor<1,dim>
+    BursteddeGravity<dim>::
+    gravity_vector(const Point<dim> &pos) const
+    {
 
       const double x=pos[0];
       const double y=pos[1];
@@ -532,23 +532,23 @@ namespace aspect
     }
 
     template <int dim>
-    void 
+    void
     BursteddeGravity<dim>::declare_parameters (ParameterHandler &prm)
     {
-     //nothing to declare here. This plugin will however, read parameters
-     //declared by the material model in the "Burstedde benchmark" section
+      //nothing to declare here. This plugin will however, read parameters
+      //declared by the material model in the "Burstedde benchmark" section
     }
 
     template <int dim>
     void
     BursteddeGravity<dim>::parse_parameters (ParameterHandler &prm)
     {
-     prm.enter_subsection("Burstedde benchmark");
-     {
-      beta = prm.get_double ("Viscosity parameter");
-     }
-     prm.leave_subsection();
-    } 
+      prm.enter_subsection("Burstedde benchmark");
+      {
+        beta = prm.get_double ("Viscosity parameter");
+      }
+      prm.leave_subsection();
+    }
 
 
     /**
@@ -594,11 +594,11 @@ namespace aspect
       Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
-      
+
       double u_l1;
       double p_l1;
       double u_l2;
-      double p_l2;      
+      double p_l2;
 
       ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
                                           dim+2);
@@ -633,18 +633,18 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-     u_l1 =  Utilities::MPI::sum(cellwise_errors_u.l1_norm(),MPI_COMM_WORLD);
-     p_l1 =  Utilities::MPI::sum(cellwise_errors_p.l1_norm(),MPI_COMM_WORLD);
-     u_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),MPI_COMM_WORLD));  
-     p_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),MPI_COMM_WORLD));  
-     
-     std::ostringstream os;
- 
-     
-     os << std::scientific <<  u_l1 
-                           << ", " << p_l1
-                           << ", " << u_l2 
-                           << ", " << p_l2;
+      u_l1 =  Utilities::MPI::sum(cellwise_errors_u.l1_norm(),MPI_COMM_WORLD);
+      p_l1 =  Utilities::MPI::sum(cellwise_errors_p.l1_norm(),MPI_COMM_WORLD);
+      u_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),MPI_COMM_WORLD));
+      p_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),MPI_COMM_WORLD));
+
+      std::ostringstream os;
+
+
+      os << std::scientific <<  u_l1
+         << ", " << p_l1
+         << ", " << u_l2
+         << ", " << p_l2;
 
       return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
     }
