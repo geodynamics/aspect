@@ -38,12 +38,55 @@ namespace aspect
 
       if (phi == 360)
         {
-          GridGenerator::hyper_shell (coarse_grid,
-                                      Point<dim>(),
-                                      R0,
-                                      R1,
-                                      (dim==3) ? 96 : 12,
-                                      true);
+          if(dim == 2)
+            {
+              GridGenerator::hyper_shell (coarse_grid, Point<dim>(), R0, R1, 12, true);
+              static const HyperShellBoundary<dim> boundary_shell;
+              coarse_grid.set_boundary (0, boundary_shell);
+              coarse_grid.set_boundary (1, boundary_shell);
+            }
+          else if( dim == 3)
+            {
+              Triangulation<dim> tmp;
+              GridGenerator::hyper_shell (tmp, Point<dim>(), R0, R1, 12, true);
+              static const HyperShellBoundary<dim> boundary_shell;
+              tmp.set_boundary (0, boundary_shell);
+              tmp.set_boundary (1, boundary_shell);
+
+              typename Triangulation<dim>::active_cell_iterator cell;
+              for(cell = tmp.begin_active(); cell != tmp.end(); ++cell)
+              {
+                cell->set_refine_flag(RefinementCase<dim>::cut_axis(1));
+                cell->set_refine_flag(RefinementCase<dim>::cut_axis(0));
+              }
+              tmp.execute_coarsening_and_refinement();
+
+              //copy tmp into coarse grid
+              std::vector<CellData<dim> > cells(tmp.n_active_cells());
+
+              unsigned int index = 0;
+              for (typename Triangulation<dim>::active_cell_iterator cell = tmp.begin_active(); cell != tmp.end(); ++cell, ++index)
+              {
+                for (unsigned int v=0; v<GeometryInfo<dim>::vertices_per_cell; ++v)
+                  cells[index].vertices[v] = cell->vertex_index(v);
+                cells[index].material_id = 0;
+              }
+
+              //create the triangulation
+              coarse_grid.create_triangulation (tmp.get_vertices(), cells, SubCellData());
+              //set the outer boundary indicator
+              unsigned int count = 0;
+              for (typename Triangulation<dim>::cell_iterator cell = coarse_grid.begin();
+                cell != coarse_grid.end(); ++cell)
+              if (cell->face(5)->at_boundary())
+                {
+                  cell->face(5)->set_boundary_indicator(1);
+                  ++count;
+                }
+              Assert (count == 48, ExcInternalError());
+              coarse_grid.set_boundary (0, boundary_shell);
+              coarse_grid.set_boundary (1, boundary_shell);
+            } 
         }
       else if (phi == 90)
         {
