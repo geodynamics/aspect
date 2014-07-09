@@ -37,19 +37,35 @@ namespace aspect
 
     namespace AnalyticSolutions
     {
-      void _Burstedde(double pos[3],double eta, double *vx, double *vy, double *vz, double *p)
+      Tensor<1,3>
+      burstedde_velocity (const Point<3> &pos,
+                          const double eta)
       {
+        const double x = pos[0];
+        const double y = pos[1];
+        const double z = pos[2];
+
+        // create a Point<3> (because it has a constructor that takes
+        // three doubles) and return it (it automatically converts to
+        // the necessary Tensor<1,3>).
+        return Point<3> (x+x*x+x*y+x*x*x*y,
+                         y+x*y+y*y+x*x*y*y,
+                         -2.*z-3.*x*z-3.*y*z-5.*x*x*y*z);
+      }
+
+      double
+      burstedde_pressure (const Point<3> &pos,
+                          const double eta)
+      {
+        const double x = pos[0];
+        const double y = pos[1];
+        const double z = pos[2];
+
         const double min_eta = 1.0;
         const double max_eta = eta;
-        const double epsilon = 1.; //strain rate
         const double A(min_eta*(max_eta-min_eta)/(max_eta+min_eta));
-        double x = pos[0];
-        double y = pos[1];
-        double z = pos[2];
-        *vx=x+x*x+x*y+x*x*x*y;
-        *vy=y+x*y+y*y+x*x*y*y;
-        *vz=-2.*z-3.*x*z-3.*y*z-5.*x*x*y*z;
-        *p=x*y*z+x*x*x*y*y*y*z-5./32.;
+
+        return x*y*z+x*x*x*y*y*y*z-5./32.;
       }
 
 
@@ -60,18 +76,30 @@ namespace aspect
       class FunctionBurstedde : public Function<dim>
       {
         public:
-          FunctionBurstedde (double beta) : Function<dim>(dim+2), beta_(beta) {}
-          virtual void vector_value (const Point< dim >   &p,
+          FunctionBurstedde (const double beta)
+            :
+            Function<dim>(dim+2),
+            beta_(beta)
+          {}
+
+          virtual void vector_value (const Point< dim >   &pos,
                                      Vector< double >   &values) const
           {
-            double pos[3]= {p(0),p(1),p(2)};
-            AnalyticSolutions::_Burstedde
-            (pos,beta_, &values[0], &values[1], &values[2],&values[3]);
+            Assert (dim == 3, ExcNotImplemented());
+            Assert (values.size() >= 4, ExcInternalError());
 
+            const Point<3> p (pos[0], pos[1], pos[2]);
+
+            const Tensor<1,3> v = AnalyticSolutions::burstedde_velocity (p, beta_);
+            values[0] = v[0];
+            values[1] = v[1];
+            values[2] = v[2];
+
+            values[3] = AnalyticSolutions::burstedde_pressure (p, beta_);
           }
 
         private:
-          double beta_;
+          const double beta_;
       };
     }
 
@@ -94,7 +122,7 @@ namespace aspect
         boundary_velocity (const Point<dim> &position) const;
 
       private:
-        double beta;
+        const double beta;
     };
 
     template <int dim>
@@ -105,19 +133,23 @@ namespace aspect
 
 
 
-    template <int dim>
-    Tensor<1,dim>
-    BursteddeBoundary<dim>::
-    boundary_velocity (const Point<dim> &p) const
+    template <>
+    Tensor<1,2>
+    BursteddeBoundary<2>::
+    boundary_velocity (const Point<2> &p) const
     {
-      double pos[3]= {p(0),p(1),p(2)};
+      Assert (false, ExcNotImplemented());
+      return Tensor<1,2>();
+    }
 
-      Tensor<1,dim> velocity;
-      double pressure;
-      AnalyticSolutions::_Burstedde
-      (pos,beta, &velocity[0], &velocity[1], &velocity[2],&pressure);
 
-      return velocity;
+
+    template <>
+    Tensor<1,3>
+    BursteddeBoundary<3>::
+    boundary_velocity (const Point<3> &p) const
+    {
+      return AnalyticSolutions::burstedde_velocity (p, beta);
     }
 
 
@@ -574,19 +606,13 @@ namespace aspect
     BursteddePostprocessor<dim>::execute (TableHandler &statistics)
     {
       std_cxx1x::shared_ptr<Function<dim> > ref_func;
-      if (dynamic_cast<const BursteddeMaterial<dim> *>(&this->get_material_model()) != NULL)
-        {
-          const BursteddeMaterial<dim> *
-          material_model
-            = dynamic_cast<const BursteddeMaterial<dim> *>(&this->get_material_model());
+      {
+        const BursteddeMaterial<dim> *
+        material_model
+          = dynamic_cast<const BursteddeMaterial<dim> *>(&this->get_material_model());
 
-          ref_func.reset (new AnalyticSolutions::FunctionBurstedde<dim>(material_model->get_beta()));
-        }
-      else
-        {
-          AssertThrow(false,
-                      ExcMessage("Postprocessor DuretzEtAl only works with the material model SolCx, SolKz, and Burstedde."));
-        }
+        ref_func.reset (new AnalyticSolutions::FunctionBurstedde<dim>(material_model->get_beta()));
+      }
 
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
 
