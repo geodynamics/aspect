@@ -5063,6 +5063,47 @@ a period of no-slip boundary conditions before starting the use of the GPlates p
 This is a comfort implementation, which could also be achieved by using the checkpointing
 possibility described in section~\ref{sec:checkpoint-restart}. 
 
+\subsubsection{Reproducing Rheology of Morency and Doin, 2004}
+\label{sec:cookbooks-morency-doin}
+\textit{This section was contributed by Jonathan Perry-Houts}
+
+Modeling interactions between the upper mantle and the lithosphere can be difficult because
+of the dynamic range of temperatures and pressures involved. Many simple material models
+will assign very high viscosities at low temperature thermal boundary layers. The
+pseudo-brittle rheology described in \cite{MD04} was developed to limit the strength of
+lithosphere at low temperature. The effective rheology can be described as the harmonic mean
+of two non-Newtonian rheologies:
+\[v_{eff} = \left(\frac{1}{v_{eff}^v}+\frac{1}{v_{eff}^p}\right)^{-1}\]
+where
+\[v_{eff}^v = B \left(\frac{\dot{\varepsilon}}{\dot{\varepsilon}_{ref}}\right)^{-1+1/n_v}
+    exp\left(\frac{E_a +V_a \rho_m g z}{n_v R T}\right)
+    \text{ and  }
+    v_{eff}^p = (\tau_0 + \gamma \rho_m g z) \left( \frac{\dot{\varepsilon}^{-1+1/n_p}}
+    {\dot{\varepsilon}_{ref}^{1/n_p}} \right), \]
+where $v_{eff}$ is the effective viscosity, $B$ is a scaling constant, $\dot{\varepsilon}$ is
+related to the second invariant of the strain rate tensor, $\dot{\varepsilon}_{ref}$ is a
+reference strain rate, $n_v$ and $n_p$ are stress exponents, $E_a$ is the activation energy,
+$V_a$ is the activation volume, $\rho_m$ is the mantle density, $R$ is the gas constant, $T$
+is temperature, $\tau_0$ is the cohesive strength of rocks at the surface, $\gamma$ is a
+coefficient of yield stress increase with depth, and $z$ is depth.
+
+By limiting the strength of the lithosphere at low temperature, this rheology allows one to
+more realistically model processes like lithospheric delamination and foundering in the
+presence of weak crustal layers. A similar model setup to the one described in \cite{MD04}
+can be reproduced with the following parameters. (Note: the viscosity profile in Figure 1
+of \cite{MD04} appears to be wrong. The published parameters do not reproduce those
+viscosities; I don't know why. The values used here get close. See Fig.~\ref{fig:md-1} for
+the approximate reproduction of that figure).
+
+\lstinputlisting[language=prmfile]{cookbooks/morency_doin/morency_doin.prm.out}
+
+\begin{figure}[h!]
+  \includegraphics[width=\textwidth]{cookbooks/morency_doin/morency_doin_2004_fig1.pdf}
+  \caption{\it Approximate reproduction of figure 1 from \cite{MD04} using the `morency doin'
+  material model with almost all default parameters. Note the low-viscosity Moho, enabled by
+  the low activation energy of the crustal component.}
+  \label{fig:md-1}
+\end{figure}
 
 \subsection{Benchmarks}
 \label{sec:cookbooks-benchmarks}
