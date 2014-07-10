@@ -23,14 +23,14 @@
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 0.5
 set Composition solver tolerance           = 1e-12
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = IMPES#iterated IMPES
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
 
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
-set End time                               = 1e8
+set End time                               = 1e-4
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -145,7 +145,7 @@ end
 
 subsection Postprocess
 
-  set List of postprocessors = velocity statistics, pressure statistics, velocity boundary statistics, visualization
+  set List of postprocessors = velocity statistics, pressure statistics, velocity boundary statistics, visualization, MMPostprocessor
 
   subsection Visualization
 
