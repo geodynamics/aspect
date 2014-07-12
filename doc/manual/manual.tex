@@ -2314,14 +2314,16 @@ number of reasons to periodically save the state of the program:
 To this end, \aspect{} creates a set of files in the output directory
 \index[prmindex]{Output directory}
 \index[prmindexfull]{Output directory}
-(selected in the parameter file) every 50 time steps in which the entire state
-of the program is saved so that a simulation can later be continued at this
+(selected in the parameter file) every N time steps (controlled by the number
+of steps or wall time as specified in \texttt{subsection Checkpointing}, see
+Section~\ref{parameters:Checkpointing}) in which the entire state of the
+program is saved so that a simulation can later be continued at this
 point. The previous checkpoint files will then be deleted. To resume
 operations from the last saved state, you need to set the \texttt{Resume
   computation} flag in the input parameter file to \texttt{true}, see
 \index[prmindex]{Resume computation}
 \index[prmindexfull]{Resume computation}
-Section~\ref{parameters:global}.
+Section~\ref{parameters:Resume computation}.
 
 \note{It is not imperative that the parameters selected in the input file are
   exactly the same when resuming a program from a saved state than what they
