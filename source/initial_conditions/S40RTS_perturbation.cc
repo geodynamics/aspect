@@ -632,7 +632,7 @@ namespace aspect
                                        "velocity model by Ritsema and others, which can be downloaded "
                                        "here \\url{http://www.earth.lsa.umich.edu/~jritsema/research.html}. "
                                        "Information on the vs model can be found in Ritsema, J., Deuss, "
-                                       "A., van Heijst, H.J. & Woodhouse, J.H., 2011. S40RTS: a "
+                                       "A., van Heijst, H.J. \\& Woodhouse, J.H., 2011. S40RTS: a "
                                        "degree-40 shear-velocity model for the mantle from new Rayleigh "
                                        "wave dispersion, teleseismic traveltime and normal-mode "
                                        "splitting function measurements, Geophys. J. Int. 184, 1223-1236. "

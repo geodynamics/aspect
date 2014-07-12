@@ -743,7 +743,9 @@ namespace aspect
                              "files located in the 'data/' subdirectory of ASPECT. ");
           prm.declare_entry ("Velocity file name", "phi.%d",
                              Patterns::Anything (),
-                             "The file name of the material data. Provide file in format: (Velocity file name).%d.gpml where %d is any sprintf integer qualifier, specifying the format of the current file number.");
+                             "The file name of the material data. Provide file in format: "
+                             "(Velocity file name).\\%d.gpml where \\%d is any sprintf integer "
+                             "qualifier, specifying the format of the current file number.");
           prm.declare_entry ("Time step", "1e6",
                              Patterns::Double (0),
                              "Time step between following velocity files. "
