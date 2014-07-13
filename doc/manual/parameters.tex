@@ -115,9 +115,9 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} 1e-7
 
 
-{\it Description:} A relative tolerance up to which the linear Stokes systems in each time or nonlinear step should be solved. The absolute tolerance will then be the norm of the right hand side of the equation times this tolerance. A given tolerance value of 1 would mean that a zero solution vector is an acceptable solution since in that case the norm of the residual of the linear system equals the norm of the right hand side. A given tolerance of 0 would mean that the linear system has to be solved exactly, since this is the only way to obtain a zero residual.
+{\it Description:} A relative tolerance up to which the linear Stokes systems in each time or nonlinear step should be solved. The absolute tolerance will then be $\| M x_0 - F \| \cdot \text{tol}$, where $x_0 = (0,p_0)$ is the initial guess of the pressure, $M$ is the system matrix, F is the right-hand side, and tol is the parameter specified here. We include the initial guess of the pressure to remove the dependency of the tolerance on the static pressure. A given tolerance value of 1 would mean that a zero solution vector is an acceptable solution since in that case the norm of the residual of the linear system equals the norm of the right hand side. A given tolerance of 0 would mean that the linear system has to be solved exactly, since this is the only way to obtain a zero residual.
 
-In practice, you should choose the value of this parameter to be so that if you make it smaller the results of your simulation do not change any more (qualitatively) whereas if you make it larger, they do. For most cases, the default value should be sufficient. However, for cases where the static pressure is much larger than the dynamic one, it may be necessary to choose a smaller value.
+In practice, you should choose the value of this parameter to be so that if you make it smaller the results of your simulation do not change any more (qualitatively) whereas if you make it larger, they do. For most cases, the default value should be sufficient. In fact, a tolerance of 1e-4 might be accurate enough.
 
 
 {\it Possible values:} [Double 0...1 (inclusive)]
@@ -901,6 +901,22 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Scale factor}
+\phantomsection\label{parameters:Boundary velocity model/GPlates model/Scale factor}
+
+
+\index[prmindex]{Scale factor}
+\index[prmindexfull]{Boundary velocity model!GPlates model!Scale factor}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Scalar factor, which is applied to the boundary velocity. You might want to use this to scale the velocities to a reference model (e.g. with free-slip boundary) or another plate reconstruction.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \item {\it Parameter name:} {\tt Time step}
 \phantomsection\label{parameters:Boundary velocity model/GPlates model/Time step}
 
@@ -923,13 +939,13 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Velocity file name}
 \index[prmindexfull]{Boundary velocity model!GPlates model!Velocity file name}
-{\it Value:} phi.%d
+{\it Value:} phi.\%d
 
 
-{\it Default:} phi.%d
+{\it Default:} phi.\%d
 
 
-{\it Description:} The file name of the material data. Provide file in format: (Velocity file name).%d.gpml where %d is any sprintf integer qualifier, specifying the format of the current file number.
+{\it Description:} The file name of the material data. Provide file in format: (Velocity file name).\%d.gpml where \%d is any sprintf integer qualifier, specifying the format of the current file number.
 
 
 {\it Possible values:} [Anything]
@@ -1906,6 +1922,8 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Description:} Select one of the following models:
 
+`S40RTS perturbation': An initial temperature field in which the temperature is perturbed following the S20RTS or S40RTS shear wave velocity model by Ritsema and others, which can be downloaded here \url{http://www.earth.lsa.umich.edu/~jritsema/research.html}. Information on the vs model can be found in Ritsema, J., Deuss, A., van Heijst, H.J. \& Woodhouse, J.H., 2011. S40RTS: a degree-40 shear-velocity model for the mantle from new Rayleigh wave dispersion, teleseismic traveltime and normal-mode splitting function measurements, Geophys. J. Int. 184, 1223-1236. The scaling between the shear wave perturbation and the temperature perturbation can be set by the user with the 'vs to density scaling' parameter and the 'Thermal expansion coefficient in initial temperature scaling' parameter. The scaling is as follows: $\delta ln \rho (r,\theta,\phi) = \xi \cdot \delta ln v_s(r,\theta, \phi)$ and $\delta T(r,\theta,\phi) = - \frac{1}{\alpha} \delta ln \rho(r,\theta,\phi)$. $\xi$ is the 'vs to density scaling' parameter and $\alpha$ is the 'Thermal expansion coefficient in initial temperature scaling' parameter. The temperature perturbation is added to an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model).
+
 `adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers, whose ages are given as input parameters.
 
 `function': Temperature is given in terms of an explicit formula
@@ -1927,7 +1945,7 @@ If the function you are describing represents a vector-valued function with mult
 `spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following a six-fold pattern in angular direction from an otherwise spherically symmetric state.
 
 
-{\it Possible values:} [Selection adiabatic|function|harmonic perturbation|inclusion shape perturbation|mandelbox|perturbed box|polar box|solidus|spherical gaussian perturbation|spherical hexagonal perturbation ]
+{\it Possible values:} [Selection S40RTS perturbation|adiabatic|function|harmonic perturbation|inclusion shape perturbation|mandelbox|perturbed box|polar box|solidus|spherical gaussian perturbation|spherical hexagonal perturbation ]
 \end{itemize}
 
 
@@ -2374,6 +2392,124 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
 
+\subsection{Parameters in section \tt Initial conditions/S40RTS perturbation}
+\label{parameters:Initial_20conditions/S40RTS_20perturbation}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Data directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Initial conditions!S40RTS perturbation!Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/S40RTS/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/S40RTS/
+
+
+{\it Description:} The path to the model data. 
+
+
+{\it Possible values:} [DirectoryName]
+\item {\it Parameter name:} {\tt Initial condition file name}
+\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Initial condition file name}
+
+
+\index[prmindex]{Initial condition file name}
+\index[prmindexfull]{Initial conditions!S40RTS perturbation!Initial condition file name}
+{\it Value:} S40RTS.sph
+
+
+{\it Default:} S40RTS.sph
+
+
+{\it Description:} The file name of the spherical harmonics coefficients from Ritsema et al.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Reference temperature}
+\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Reference temperature}
+
+
+\index[prmindex]{Reference temperature}
+\index[prmindexfull]{Initial conditions!S40RTS perturbation!Reference temperature}
+{\it Value:} 1600.0
+
+
+{\it Default:} 1600.0
+
+
+{\it Description:} The reference temperature that is perturbed by the spherical harmonic functions. Only used in incompressible models.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Remove degree 0 from perturbation}
+\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Remove degree 0 from perturbation}
+
+
+\index[prmindex]{Remove degree 0 from perturbation}
+\index[prmindexfull]{Initial conditions!S40RTS perturbation!Remove degree 0 from perturbation}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Option to remove the degree zero component from the perturbation, which will ensure that the laterally averaged temperature for a fixed depth is equal to the background temperature.
+
+
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Spline knots depth file name}
+\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Spline knots depth file name}
+
+
+\index[prmindex]{Spline knots depth file name}
+\index[prmindexfull]{Initial conditions!S40RTS perturbation!Spline knots depth file name}
+{\it Value:} Spline\_knots.txt
+
+
+{\it Default:} Spline\_knots.txt
+
+
+{\it Description:} The file name of the spline knot locations from Ritsema et al.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Thermal expansion coefficient in initial temperature scaling}
+\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Thermal expansion coefficient in initial temperature scaling}
+
+
+\index[prmindex]{Thermal expansion coefficient in initial temperature scaling}
+\index[prmindexfull]{Initial conditions!S40RTS perturbation!Thermal expansion coefficient in initial temperature scaling}
+{\it Value:} 2e-5
+
+
+{\it Default:} 2e-5
+
+
+{\it Description:} The value of the thermal expansion coefficient $\beta$. Units: $1/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt vs to density scaling}
+\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/vs to density scaling}
+
+
+\index[prmindex]{vs to density scaling}
+\index[prmindexfull]{Initial conditions!S40RTS perturbation!vs to density scaling}
+{\it Value:} 0.25
+
+
+{\it Default:} 0.25
+
+
+{\it Description:} This parameter specifies how the perturbation in shear wave velocity as prescribed by S20RTS or S40RTS is scaled into a density perturbation. See the general description of this model for more detailed information.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
+
 \subsection{Parameters in section \tt Initial conditions/Solidus}
 \label{parameters:Initial_20conditions/Solidus}
 
@@ -2638,6 +2774,10 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 
 `latent heat': A material model that includes phase transitions and the possibility that latent heat is released or absorbed when material crosses one of the phase transitions of up to two different materials (compositional fields). This model implements a standard approximation of the latent heat terms following Christensen \& Yuen, 1986. The change of entropy is calculated as $Delta S = \gamma \frac{\Delta\rho}{\rho^2}$ with the Clapeyron slope $\gamma$ and the density change $\Delta\rho$ of the phase transition being input parameters. The model employs an analytic phase function in the form $X=0.5 \left( 1 + \tanh \left( \frac{\Delta p}{\Delta p_0} \right) \right)$ with $\Delta p = p - p_{transition} - \gamma \left( T - T_{transition} \right)$ and $\Delta p_0$ being the pressure difference over the width of the phase transition (specified as input parameter).
 
+`latent heat melt': A material model that includes the latent heat of melting for two materials: peridotite and pyroxenite. The melting model for peridotite is taken from Katz et al., 2003 (A new parameterization of hydrous mantle melting) and the one for pyroxenite from Sobolev et al., 2011 (Linking mantle plumes, large igneous provinces and environmental catastrophes). The model assumes a constant entropy change for melting 100\% of the material, which can be specified in the input file. The partial derivatives of entropy with respect to temperature and pressure required for calculating the latent heat consumption are then calculated as product of this constant entropy change, and the respective derivative of the function the describes the melt fraction. This is linearly averaged with respect to the fractions of the two materials present. If no compositional fields are specified in the input file, the model assumes that the material is peridotite. If compositional fields are specified, the model assumes that the first compositional field is the fraction of pyroxenite and the rest of the material is peridotite. 
+
+Otherwise, this material model has a temperature- and pressure-dependent density and viscosity and the density and thermal expansivity depend on the melt fraction present. It is possible to extent this model to include a melt fraction dependence of all the material parameters by calling the function melt\_fraction in the calculation of the respective parameter. However, melt and solid move with the same velocity and melt extraction is not taken into account (batch melting). 
+
 `multicomponent': This model is for use with an arbitrary number of compositional fields, where each field represents a rock type which can have completely different properties from the others. However, each rock type itself has constant material properties.  The value of the  compositional field is interpreed as a volume fraction. If the sum of the fields is greater than one, they are renormalized.  If it is less than one, material properties  for ``background mantle'' make up the rest. When more than one field is present, the material properties are averaged arithmetically.  An exception is the viscosity, where the averaging should make more of a difference.  For this, the user selects between arithmetic, harmonic, geometric, or maximum composition averaging.
 
 `simple': A material model that has constant values for all coefficients but the density and viscosity. The defaults for all coefficients are chosen to be similar to what is believed to be correct for Earth's mantle. All of the values that define this model are read from a section ``Material model/Simple model'' in the input file, see Section~\ref{parameters:Material_20model/Simple_20model}.
@@ -2665,7 +2805,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 `table': A material model that reads tables of pressure and temperature dependent material coefficients from files. The default values for this model's runtime parameters use a material description taken from the paper \textit{Complex phase distribution and seismic velocity structure of the transition zone: Convection model predictions for a magnesium-endmember olivine-pyroxene mantle} by Michael H.G. Jacobs and Arie P. van den Berg, Physics of the Earth and Planetary Interiors, Volume 186, Issues 1-2, May 2011, Pages 36--48. See \url{http://www.sciencedirect.com/science/article/pii/S0031920111000422}.
 
 
-{\it Possible values:} [Selection Steinberger|composition reaction|latent heat|multicomponent|simple|simple compressible|simpler|table ]
+{\it Possible values:} [Selection Steinberger|composition reaction|latent heat|latent heat melt|multicomponent|simple|simple compressible|simpler|table ]
 \end{itemize}
 
 
@@ -3160,6 +3300,540 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 
 {\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Material model/Latent heat melt}
+\label{parameters:Material_20model/Latent_20heat_20melt}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt A1}
+\phantomsection\label{parameters:Material model/Latent heat melt/A1}
+
+
+\index[prmindex]{A1}
+\index[prmindexfull]{Material model!Latent heat melt!A1}
+{\it Value:} 1085.7
+
+
+{\it Default:} 1085.7
+
+
+{\it Description:} Constant parameter in the quadratic function that approximates the solidus of peridotite. Units: $°C$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt A2}
+\phantomsection\label{parameters:Material model/Latent heat melt/A2}
+
+
+\index[prmindex]{A2}
+\index[prmindexfull]{Material model!Latent heat melt!A2}
+{\it Value:} 1.329e-7
+
+
+{\it Default:} 1.329e-7
+
+
+{\it Description:} Prefactor of the linear pressure term in the quadratic function that approximates the solidus of peridotite. Units: $°C/Pa$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt A3}
+\phantomsection\label{parameters:Material model/Latent heat melt/A3}
+
+
+\index[prmindex]{A3}
+\index[prmindexfull]{Material model!Latent heat melt!A3}
+{\it Value:} -5.1e-18
+
+
+{\it Default:} -5.1e-18
+
+
+{\it Description:} Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of peridotite. Units: $°C/(Pa^2)$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt B1}
+\phantomsection\label{parameters:Material model/Latent heat melt/B1}
+
+
+\index[prmindex]{B1}
+\index[prmindexfull]{Material model!Latent heat melt!B1}
+{\it Value:} 1475.0
+
+
+{\it Default:} 1475.0
+
+
+{\it Description:} Constant parameter in the quadratic function that approximates the lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $°C$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt B2}
+\phantomsection\label{parameters:Material model/Latent heat melt/B2}
+
+
+\index[prmindex]{B2}
+\index[prmindexfull]{Material model!Latent heat melt!B2}
+{\it Value:} 8.0e-8
+
+
+{\it Default:} 8.0e-8
+
+
+{\it Description:} Prefactor of the linear pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $°C/Pa$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt B3}
+\phantomsection\label{parameters:Material model/Latent heat melt/B3}
+
+
+\index[prmindex]{B3}
+\index[prmindexfull]{Material model!Latent heat melt!B3}
+{\it Value:} -3.2e-18
+
+
+{\it Default:} -3.2e-18
+
+
+{\it Description:} Prefactor of the quadratic pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $°C/(Pa^2)$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt C1}
+\phantomsection\label{parameters:Material model/Latent heat melt/C1}
+
+
+\index[prmindex]{C1}
+\index[prmindexfull]{Material model!Latent heat melt!C1}
+{\it Value:} 1780.0
+
+
+{\it Default:} 1780.0
+
+
+{\it Description:} Constant parameter in the quadratic function that approximates the liquidus of peridotite. Units: $°C$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt C2}
+\phantomsection\label{parameters:Material model/Latent heat melt/C2}
+
+
+\index[prmindex]{C2}
+\index[prmindexfull]{Material model!Latent heat melt!C2}
+{\it Value:} 4.50e-8
+
+
+{\it Default:} 4.50e-8
+
+
+{\it Description:} Prefactor of the linear pressure term in the quadratic function that approximates the liquidus of peridotite. Units: $°C/Pa$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt C3}
+\phantomsection\label{parameters:Material model/Latent heat melt/C3}
+
+
+\index[prmindex]{C3}
+\index[prmindexfull]{Material model!Latent heat melt!C3}
+{\it Value:} -2.0e-18
+
+
+{\it Default:} -2.0e-18
+
+
+{\it Description:} Prefactor of the quadratic pressure term in the quadratic function that approximates the liquidus of peridotite. Units: $°C/(Pa^2)$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Composition viscosity prefactor}
+\phantomsection\label{parameters:Material model/Latent heat melt/Composition viscosity prefactor}
+
+
+\index[prmindex]{Composition viscosity prefactor}
+\index[prmindexfull]{Material model!Latent heat melt!Composition viscosity prefactor}
+{\it Value:} 1.0
+
+
+{\it Default:} 1.0
+
+
+{\it Description:} A linear dependency of viscosity on composition. Dimensionless prefactor.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Compressibility}
+\phantomsection\label{parameters:Material model/Latent heat melt/Compressibility}
+
+
+\index[prmindex]{Compressibility}
+\index[prmindexfull]{Material model!Latent heat melt!Compressibility}
+{\it Value:} 5.124e-12
+
+
+{\it Default:} 5.124e-12
+
+
+{\it Description:} The value of the compressibility $\kappa$. Units: $1/Pa$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt D1}
+\phantomsection\label{parameters:Material model/Latent heat melt/D1}
+
+
+\index[prmindex]{D1}
+\index[prmindexfull]{Material model!Latent heat melt!D1}
+{\it Value:} 976.0
+
+
+{\it Default:} 976.0
+
+
+{\it Description:} Constant parameter in the quadratic function that approximates the solidus of pyroxenite. Units: $°C$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt D2}
+\phantomsection\label{parameters:Material model/Latent heat melt/D2}
+
+
+\index[prmindex]{D2}
+\index[prmindexfull]{Material model!Latent heat melt!D2}
+{\it Value:} 1.23e-7
+
+
+{\it Default:} 1.23e-7
+
+
+{\it Description:} Prefactor of the linear pressure term in the quadratic function that approximates the solidus of pyroxenite. Units: $°C/Pa$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt D3}
+\phantomsection\label{parameters:Material model/Latent heat melt/D3}
+
+
+\index[prmindex]{D3}
+\index[prmindexfull]{Material model!Latent heat melt!D3}
+{\it Value:} -5.1e-18
+
+
+{\it Default:} -5.1e-18
+
+
+{\it Description:} Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of pyroxenite. Units: $°C/(Pa^2)$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Density differential for compositional field 1}
+\phantomsection\label{parameters:Material model/Latent heat melt/Density differential for compositional field 1}
+
+
+\index[prmindex]{Density differential for compositional field 1}
+\index[prmindexfull]{Material model!Latent heat melt!Density differential for compositional field 1}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $kg/m^3/\textrm{unit change in composition}$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt E1}
+\phantomsection\label{parameters:Material model/Latent heat melt/E1}
+
+
+\index[prmindex]{E1}
+\index[prmindexfull]{Material model!Latent heat melt!E1}
+{\it Value:} 663.8
+
+
+{\it Default:} 663.8
+
+
+{\it Description:} Prefactor of the linear depletion term in the quadratic function that approximates the melt fraction of pyroxenite. Units: $°C/Pa$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt E2}
+\phantomsection\label{parameters:Material model/Latent heat melt/E2}
+
+
+\index[prmindex]{E2}
+\index[prmindexfull]{Material model!Latent heat melt!E2}
+{\it Value:} -611.4
+
+
+{\it Default:} -611.4
+
+
+{\it Description:} Prefactor of the quadratic depletion term in the quadratic function that approximates the melt fraction of pyroxenite. Units: $°C/(Pa^2)$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Mass fraction cpx}
+\phantomsection\label{parameters:Material model/Latent heat melt/Mass fraction cpx}
+
+
+\index[prmindex]{Mass fraction cpx}
+\index[prmindexfull]{Material model!Latent heat melt!Mass fraction cpx}
+{\it Value:} 0.15
+
+
+{\it Default:} 0.15
+
+
+{\it Description:} Mass fraction of clinopyroxene in the peridotite to be molten. Units: non-dimensional.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Maximum pyroxenite melt fraction}
+\phantomsection\label{parameters:Material model/Latent heat melt/Maximum pyroxenite melt fraction}
+
+
+\index[prmindex]{Maximum pyroxenite melt fraction}
+\index[prmindexfull]{Material model!Latent heat melt!Maximum pyroxenite melt fraction}
+{\it Value:} 0.5429
+
+
+{\it Default:} 0.5429
+
+
+{\it Description:} Maximum melt fraction of pyroxenite in this parameterization. At higher temperatures peridotite begins to melt.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Peridotite melting entropy change}
+\phantomsection\label{parameters:Material model/Latent heat melt/Peridotite melting entropy change}
+
+
+\index[prmindex]{Peridotite melting entropy change}
+\index[prmindexfull]{Material model!Latent heat melt!Peridotite melting entropy change}
+{\it Value:} 300
+
+
+{\it Default:} 300
+
+
+{\it Description:} The entropy change for the phase transition from solid to melt of peridotite. Units: $J/(kg K)$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Pyroxenite melting entropy change}
+\phantomsection\label{parameters:Material model/Latent heat melt/Pyroxenite melting entropy change}
+
+
+\index[prmindex]{Pyroxenite melting entropy change}
+\index[prmindexfull]{Material model!Latent heat melt!Pyroxenite melting entropy change}
+{\it Value:} 400
+
+
+{\it Default:} 400
+
+
+{\it Description:} The entropy change for the phase transition from solid to melt of pyroxenite. Units: $J/(kg K)$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference density}
+\phantomsection\label{parameters:Material model/Latent heat melt/Reference density}
+
+
+\index[prmindex]{Reference density}
+\index[prmindexfull]{Material model!Latent heat melt!Reference density}
+{\it Value:} 3300
+
+
+{\it Default:} 3300
+
+
+{\it Description:} Reference density $\rho_0$. Units: $kg/m^3$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference specific heat}
+\phantomsection\label{parameters:Material model/Latent heat melt/Reference specific heat}
+
+
+\index[prmindex]{Reference specific heat}
+\index[prmindexfull]{Material model!Latent heat melt!Reference specific heat}
+{\it Value:} 1250
+
+
+{\it Default:} 1250
+
+
+{\it Description:} The value of the specific heat $cp$. Units: $J/kg/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Reference temperature}
+\phantomsection\label{parameters:Material model/Latent heat melt/Reference temperature}
+
+
+\index[prmindex]{Reference temperature}
+\index[prmindexfull]{Material model!Latent heat melt!Reference temperature}
+{\it Value:} 293
+
+
+{\it Default:} 293
+
+
+{\it Description:} The reference temperature $T_0$. Units: $K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Relative density of melt}
+\phantomsection\label{parameters:Material model/Latent heat melt/Relative density of melt}
+
+
+\index[prmindex]{Relative density of melt}
+\index[prmindexfull]{Material model!Latent heat melt!Relative density of melt}
+{\it Value:} 0.9
+
+
+{\it Default:} 0.9
+
+
+{\it Description:} The relative density of melt compared to the solid material. This means, the density change upon melting is this parameter times the density of solid material.Units: non-dimensional.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal conductivity}
+\phantomsection\label{parameters:Material model/Latent heat melt/Thermal conductivity}
+
+
+\index[prmindex]{Thermal conductivity}
+\index[prmindexfull]{Material model!Latent heat melt!Thermal conductivity}
+{\it Value:} 2.38
+
+
+{\it Default:} 2.38
+
+
+{\it Description:} The value of the thermal conductivity $k$. Units: $W/m/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal expansion coefficient}
+\phantomsection\label{parameters:Material model/Latent heat melt/Thermal expansion coefficient}
+
+
+\index[prmindex]{Thermal expansion coefficient}
+\index[prmindexfull]{Material model!Latent heat melt!Thermal expansion coefficient}
+{\it Value:} 4e-5
+
+
+{\it Default:} 4e-5
+
+
+{\it Description:} The value of the thermal expansion coefficient $\alpha_s$. Units: $1/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal expansion coefficient of melt}
+\phantomsection\label{parameters:Material model/Latent heat melt/Thermal expansion coefficient of melt}
+
+
+\index[prmindex]{Thermal expansion coefficient of melt}
+\index[prmindexfull]{Material model!Latent heat melt!Thermal expansion coefficient of melt}
+{\it Value:} 6.8e-5
+
+
+{\it Default:} 6.8e-5
+
+
+{\it Description:} The value of the thermal expansion coefficient $\alpha_f$. Units: $1/K$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Thermal viscosity exponent}
+\phantomsection\label{parameters:Material model/Latent heat melt/Thermal viscosity exponent}
+
+
+\index[prmindex]{Thermal viscosity exponent}
+\index[prmindexfull]{Material model!Latent heat melt!Thermal viscosity exponent}
+{\it Value:} 0.0
+
+
+{\it Default:} 0.0
+
+
+{\it Description:} The temperature dependence of viscosity. Dimensionless exponent.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Viscosity}
+\phantomsection\label{parameters:Material model/Latent heat melt/Viscosity}
+
+
+\index[prmindex]{Viscosity}
+\index[prmindexfull]{Material model!Latent heat melt!Viscosity}
+{\it Value:} 5e24
+
+
+{\it Default:} 5e24
+
+
+{\it Description:} The value of the constant viscosity. Units: $kg/m/s$.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt beta}
+\phantomsection\label{parameters:Material model/Latent heat melt/beta}
+
+
+\index[prmindex]{beta}
+\index[prmindexfull]{Material model!Latent heat melt!beta}
+{\it Value:} 1.5
+
+
+{\it Default:} 1.5
+
+
+{\it Description:} Exponent of the melting temperature in the melt fraction calculation. Units: non-dimensional.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt r1}
+\phantomsection\label{parameters:Material model/Latent heat melt/r1}
+
+
+\index[prmindex]{r1}
+\index[prmindexfull]{Material model!Latent heat melt!r1}
+{\it Value:} 0.5
+
+
+{\it Default:} 0.5
+
+
+{\it Description:} Constant in the linear function that approximates the clinopyroxene reaction coefficient. Units: non-dimensional.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt r2}
+\phantomsection\label{parameters:Material model/Latent heat melt/r2}
+
+
+\index[prmindex]{r2}
+\index[prmindexfull]{Material model!Latent heat melt!r2}
+{\it Value:} 8e-11
+
+
+{\it Default:} 8e-11
+
+
+{\it Description:} Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: $1/Pa$.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Material model/Multicomponent}
@@ -3734,6 +4408,54 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 
 {\it Possible values:} [List list of [Anything] of length 0...4294967295 (inclusive)]
+\item {\it Parameter name:} {\tt Maximum lateral viscosity variation}
+\phantomsection\label{parameters:Material model/Steinberger model/Maximum lateral viscosity variation}
+
+
+\index[prmindex]{Maximum lateral viscosity variation}
+\index[prmindexfull]{Material model!Steinberger model!Maximum lateral viscosity variation}
+{\it Value:} 1e2
+
+
+{\it Default:} 1e2
+
+
+{\it Description:} The relative cutoff value for lateral viscosity variations caused by temperature deviations. The viscosity may vary laterally by this factor squared.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Maximum viscosity}
+\phantomsection\label{parameters:Material model/Steinberger model/Maximum viscosity}
+
+
+\index[prmindex]{Maximum viscosity}
+\index[prmindexfull]{Material model!Steinberger model!Maximum viscosity}
+{\it Value:} 1e23
+
+
+{\it Default:} 1e23
+
+
+{\it Description:} The maximum viscosity that is allowed in the viscosity calculation. Larger values will be cut off.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Minimum viscosity}
+\phantomsection\label{parameters:Material model/Steinberger model/Minimum viscosity}
+
+
+\index[prmindex]{Minimum viscosity}
+\index[prmindexfull]{Material model!Steinberger model!Minimum viscosity}
+{\it Value:} 1e19
+
+
+{\it Default:} 1e19
+
+
+{\it Description:} The minimum viscosity that is allowed in the viscosity calculation. Smaller values will be cut off.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \item {\it Parameter name:} {\tt Radial viscosity file name}
 \phantomsection\label{parameters:Material model/Steinberger model/Radial viscosity file name}
 
@@ -3766,6 +4488,22 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Use lateral average temperature for viscosity}
+\phantomsection\label{parameters:Material model/Steinberger model/Use lateral average temperature for viscosity}
+
+
+\index[prmindex]{Use lateral average temperature for viscosity}
+\index[prmindexfull]{Material model!Steinberger model!Use lateral average temperature for viscosity}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Whether to use to use the laterally averaged temperature instead of the adiabatic temperature for the viscosity calculation. This ensures that the laterally averaged viscosities remain more or less constant over the model runtime. This behaviour might or might not be desired.
+
+
+{\it Possible values:} [Bool]
 \end{itemize}
 
 \subsection{Parameters in section \tt Material model/Table model}
@@ -4467,7 +5205,7 @@ The following criteria are available:
 
 `density': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the density, $\rho$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
-`minimum refinement function': A mesh refinement criterion that ensures a minimum refinement level described by an explicit formula with the depth as argument. After reading in the function, its values are rounded to the nearest integer. 
+`minimum refinement function': A mesh refinement criterion that ensures a minimum refinement level described by an explicit formula with the depth or position as argument. Which coordinate representation is used is determined by an input parameter. Note that the order of spherical coordinates is r,phi,theta and not r,theta,phi, since this allows for dimension independent expressions. After evaluating the function, its values are rounded to the nearest integer. 
 
 `nonadiabatic temperature': A mesh refinement criterion that computes refinement indicators from the excess temperature(difference between temperature and adiabatic temperature.
 
@@ -4533,6 +5271,22 @@ If the list of scaling factors given in this parameter is empty, then this indic
 \label{parameters:Mesh_20refinement/Minimum_20refinement_20function}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Coordinate system}
+\phantomsection\label{parameters:Mesh refinement/Minimum refinement function/Coordinate system}
+
+
+\index[prmindex]{Coordinate system}
+\index[prmindexfull]{Mesh refinement!Minimum refinement function!Coordinate system}
+{\it Value:} depth
+
+
+{\it Default:} depth
+
+
+{\it Description:} A selection, which determines the assumed coordinate system for the function variables. Allowed values are 'depth', 'cartesian' and 'spherical'. 'depth' requires a function expression that only depends on one variable, which is interpreted to be the depth of the point. 'spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle.
+
+
+{\it Possible values:} [Selection depth|cartesian|spherical ]
 \item {\it Parameter name:} {\tt Function constants}
 \phantomsection\label{parameters:Mesh refinement/Minimum refinement function/Function constants}
 
@@ -4575,10 +5329,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Variable names}
 \index[prmindexfull]{Mesh refinement!Minimum refinement function!Variable names}
-{\it Value:} x,t
+{\it Value:} x,y,t
 
 
-{\it Default:} x,t
+{\it Default:} x,y,t
 
 
 {\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
@@ -4772,10 +5526,10 @@ Note that while more than operation can be selected it only makes sense to pick 
 
 \index[prmindex]{List of postprocessors}
 \index[prmindexfull]{Postprocess!List of postprocessors}
-{\it Value:} all
+{\it Value:} 
 
 
-{\it Default:} all
+{\it Default:} 
 
 
 {\it Description:} A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text 'all' indicates that all available postprocessors should be run after each time step.
@@ -4823,7 +5577,7 @@ As stated, this postprocessor computes the \textit{outbound} heat flux. If you a
 `visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
 
-{\it Possible values:} [MultipleSelection basic statistics|composition statistics|depth average|dynamic topography|heat flux statistics|heat flux statistics for the table model|internal heating statistics|pressure statistics|spherical velocity statistics|temperature statistics|topography|tracers|velocity boundary statistics|velocity statistics|velocity statistics for the table model|viscous dissipation statistics|visualization|all ]
+{\it Possible values:} [MultipleSelection basic statistics|composition statistics|depth average|dynamic topography|heat flux statistics|heat flux statistics for the table model|internal heating statistics|pressure statistics|spherical velocity statistics|temperature statistics|topography|tracers|velocity boundary statistics|velocity statistics|velocity statistics for the table model|viscous dissipation statistics|visualization ]
 \end{itemize}
 
 
@@ -5012,9 +5766,11 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 `friction heating': A visualization output object that generates output for the amount of friction heating often referred to as $\tau:\epsilon$. More concisely, in the incompressible case, the quantity that is output is defined as $\eta \varepsilon(\mathbf u):\varepsilon(\mathbf u)$ where $\eta$ is itself a function of temperature, pressure and strain rate. In the compressible case, the quantity that's computed is $\eta [\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]$.
 
+`gravity': A visualization output object that outputs the gravity vector.
+
 `internal heating': A visualization output object that generates output for the internal heating rate. Units: W/kg
 
-`melt fraction': A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point (batch melting). Does not take into account latent heat.
+`melt fraction': A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point (batch melting). Does not take into account latent heat. If there are no compositional fields, this postprocessor will visualize the melt fraction of peridotite (calculated using the anhydrous model of Katz, 2003). If there is at least one compositional field, the postprocessor assumes that the  first compositional field is the content of pyroxenite, and will visualize the melt fraction for a mixture of peridotite and pyroxenite (using the melting model of Sobolev, 2011 for pyroxenite). All the parameters that were used in these calculations can be changed in the input file, the most relevant maybe being the mass fraction of Cpx in peridotite in the Katz melting model (Mass fraction cpx), which right now has a default of 15\%. The corresponding p-T-diagrams can be generated by running the tests melt\_postprocessor\_peridotite and melt\_postprocessor\_pyroxenite.
 
 `nonadiabatic pressure': A visualization output object that generates output for the non-adiabatic component of the pressure.
 
@@ -5039,7 +5795,7 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 `viscosity ratio': A visualization output object that generates output for the ratio between dislocation viscosity and diffusion viscosity.
 
 
-{\it Possible values:} [MultipleSelection Vp anomaly|Vs anomaly|artificial viscosity|density|dynamic topography|error indicator|friction heating|internal heating|melt fraction|nonadiabatic pressure|nonadiabatic temperature|partition|seismic vp|seismic vs|specific heat|strain rate|thermal expansivity|thermodynamic phase|viscosity|viscosity ratio|all ]
+{\it Possible values:} [MultipleSelection Vp anomaly|Vs anomaly|artificial viscosity|density|dynamic topography|error indicator|friction heating|gravity|internal heating|melt fraction|nonadiabatic pressure|nonadiabatic temperature|partition|seismic vp|seismic vs|specific heat|strain rate|thermal expansivity|thermodynamic phase|viscosity|viscosity ratio ]
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 
@@ -5467,7 +6223,7 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 `user request': Terminate the simulation gracefully when a file with a specified name appears in the output directory. This allows the user to gracefully exit the simulation at any time by simply creating such a file using, for example, \texttt{touch output/terminate}. The file's location is chosen to be in the output directory, rather than in a generic location such as the Aspect directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
 
 
-{\it Possible values:} [MultipleSelection end step|end time|steady state velocity|user request|all ]
+{\it Possible values:} [MultipleSelection end step|end time|steady state velocity|user request ]
 \end{itemize}
 
 
