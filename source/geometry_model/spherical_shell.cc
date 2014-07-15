@@ -42,7 +42,7 @@ namespace aspect
                                       Point<dim>(),
                                       R0,
                                       R1,
-                                      (dim==3) ? 96 : 12,
+                                      (dim==3) ? 8*cell_count : cell_count,
                                       true);
         }
       else if (phi == 90)
@@ -186,6 +186,12 @@ namespace aspect
                              Patterns::Double (0, 360),
                              "Opening angle in degrees of the section of the shell "
                              "that we want to build. Units: degrees.");
+         
+          prm.declare_entry ("Cell count", "12",
+                              Patterns::Integer (),
+                              "The number of tangential cells that are "
+                              "created when initial global refinement is zero."); 
+
         }
         prm.leave_subsection();
       }
@@ -205,6 +211,7 @@ namespace aspect
           R0  = prm.get_double ("Inner radius");
           R1  = prm.get_double ("Outer radius");
           phi = prm.get_double ("Opening angle");
+          cell_count = prm.get_integer ("Cell count");
         }
         prm.leave_subsection();
       }

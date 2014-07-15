@@ -45,8 +45,27 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
+
+         /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
         virtual
         double initial_temperature (const Point<dim> &position) const;
+     
+      private:
+        int lemniscate_number; 
+        double rotation_offset;   
+  
     };
 
 
@@ -93,6 +112,7 @@ namespace aspect
         double sigma;
         double sign;
         unsigned int npoint;
+        //int lemniscate_number;
         std::string initial_geotherm_table;
 
         std::vector<double> radial_position;
