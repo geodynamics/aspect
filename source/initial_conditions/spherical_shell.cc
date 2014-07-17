@@ -25,6 +25,8 @@
 #include <iostream>
 #include <cstring>
 
+
+
 namespace aspect
 {
   namespace InitialConditions
@@ -59,6 +61,10 @@ namespace aspect
          For a plot, see
          http://www.wolframalpha.com/input/?i=plot+%28%282*sqrt%28x^2%2By^2%29-1%29%2B0.2*%282*sqrt%28x^2%2By^2%29-1%29*%281-%282*sqrt%28x^2%2By^2%29-1%29%29*sin%286*atan2%28x%2Cy%29%29%29%2C+x%3D-1+to+1%2C+y%3D-1+to+1
       */
+    
+      const double PI = 3.1415926535897932384626433832795028841971693993751058;
+
+      
       const double scale = ((dim==3)
                             ?
                             std::max(0.0,
@@ -68,7 +74,7 @@ namespace aspect
       const double phi   = std::atan2(position(0),position(1));
       const double s_mod = s
                            +
-                           0.2 * s * (1-s) * std::sin(6*phi) * scale;
+                           0.2 * s * (1-s) * std::sin(lemniscate_number*phi +(PI/2 + rotation_offset)) * scale;
 
       return (this->get_boundary_temperature().maximal_temperature()*(s_mod)
               +
@@ -166,6 +172,56 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    void
+    SphericalHexagonalPerturbation<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Initial conditions");
+      {
+        prm.enter_subsection("Spherical hexagonal perturbation");
+        {
+
+          prm.declare_entry ("Lemniscate number", "6",
+                              Patterns::Integer (),
+                              "The number of convection cells to perturb the system with.");   
+
+         prm.declare_entry  ("Rotation offset", "0",
+                              Patterns::Double (),
+                              "Amount to rotate the lemniscate in radians."
+                              "Default places a petal due north.");    
+ 
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+
+   template <int dim>
+    void
+    SphericalHexagonalPerturbation<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Initial conditions");
+      {
+        prm.enter_subsection("Spherical hexagonal perturbation");
+        {
+          lemniscate_number = prm.get_integer ("Lemniscate number");
+          rotation_offset = prm.get_double  ("Rotation offset");
+
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+
+
+
+
+
+
+
+
+
     template <int dim>
     void
     SphericalGaussianPerturbation<dim>::declare_parameters (ParameterHandler &prm)
@@ -173,7 +229,8 @@ namespace aspect
       prm.enter_subsection("Initial conditions");
       {
         prm.enter_subsection("Spherical gaussian perturbation");
-        {
+        {       
+ 
           prm.declare_entry ("Angle", "0e0",
                              Patterns::Double (0),
                              "The angle where the center of the perturbation is placed.");
@@ -210,6 +267,7 @@ namespace aspect
       {
         prm.enter_subsection("Spherical gaussian perturbation");
         {
+          //lemniscate_number = prm.get_integer ("Lemniscate number");
           angle = prm.get_double ("Angle");
           depth = prm.get_double ("Non-dimensional depth");
           amplitude  = prm.get_double ("Amplitude");
@@ -232,7 +290,7 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_CONDITIONS(SphericalHexagonalPerturbation,
                                        "spherical hexagonal perturbation",
                                        "An initial temperature field in which the temperature "
-                                       "is perturbed following a six-fold pattern in angular "
+                                       "is perturbed following an N-fold pattern in a specified "
                                        "direction from an otherwise spherically symmetric "
                                        "state.")
 

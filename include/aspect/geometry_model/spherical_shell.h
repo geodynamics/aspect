@@ -132,6 +132,13 @@ namespace aspect
          * Opening angle of the section of the shell that we simulate.
          */
         double phi;
+
+        /**
+         * Number of tangential mesh cells when the initial global 
+         * refinement is set to zero.
+         */
+         int cell_count;
+
     };
   }
 }
