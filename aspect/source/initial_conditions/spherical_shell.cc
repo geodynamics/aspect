@@ -62,8 +62,6 @@ namespace aspect
          http://www.wolframalpha.com/input/?i=plot+%28%282*sqrt%28x^2%2By^2%29-1%29%2B0.2*%282*sqrt%28x^2%2By^2%29-1%29*%281-%282*sqrt%28x^2%2By^2%29-1%29%29*sin%286*atan2%28x%2Cy%29%29%29%2C+x%3D-1+to+1%2C+y%3D-1+to+1
       */
     
-      const double PI = 3.1415926535897932384626433832795028841971693993751058;
-
       
       const double scale = ((dim==3)
                             ?
@@ -74,7 +72,7 @@ namespace aspect
       const double phi   = std::atan2(position(0),position(1));
       const double s_mod = s
                            +
-                           0.2 * s * (1-s) * std::sin(lemniscate_number*phi +(PI/2 + rotation_offset)) * scale;
+                           0.2 * s * (1-s) * std::sin(angular_mode*phi +(90 + 2*rotation_offset)*numbers::PI/180 ) * scale;
 
       return (this->get_boundary_temperature().maximal_temperature()*(s_mod)
               +
@@ -171,8 +169,6 @@ namespace aspect
         return (InterpolVal + Perturbation)*dT;
     }
 
-
-
     template <int dim>
     void
     SphericalHexagonalPerturbation<dim>::declare_parameters (ParameterHandler &prm)
@@ -182,15 +178,15 @@ namespace aspect
         prm.enter_subsection("Spherical hexagonal perturbation");
         {
 
-          prm.declare_entry ("Lemniscate number", "6",
+          prm.declare_entry ("Angular mode", "6",
                               Patterns::Integer (),
                               "The number of convection cells to perturb the system with.");   
 
-         prm.declare_entry  ("Rotation offset", "0",
+         prm.declare_entry  ("Rotation offset", "-45",
                               Patterns::Double (),
-                              "Amount to rotate the lemniscate in radians."
-                              "Default places a petal due north.");    
- 
+                              "Amount of clockwise rotation in degrees to apply to"
+                              "the perturbations. Default is set to -45 in order"
+                              "to provide backwards compatibility.");    
         }
         prm.leave_subsection ();
       }
@@ -205,22 +201,13 @@ namespace aspect
       {
         prm.enter_subsection("Spherical hexagonal perturbation");
         {
-          lemniscate_number = prm.get_integer ("Lemniscate number");
+          angular_mode = prm.get_integer ("Angular mode");
           rotation_offset = prm.get_double  ("Rotation offset");
-
         }
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
     }
-
-
-
-
-
-
-
-
 
     template <int dim>
     void
@@ -230,7 +217,6 @@ namespace aspect
       {
         prm.enter_subsection("Spherical gaussian perturbation");
         {       
- 
           prm.declare_entry ("Angle", "0e0",
                              Patterns::Double (0),
                              "The angle where the center of the perturbation is placed.");
@@ -258,7 +244,6 @@ namespace aspect
       prm.leave_subsection ();
     }
 
-
     template <int dim>
     void
     SphericalGaussianPerturbation<dim>::parse_parameters (ParameterHandler &prm)
@@ -267,7 +252,6 @@ namespace aspect
       {
         prm.enter_subsection("Spherical gaussian perturbation");
         {
-          //lemniscate_number = prm.get_integer ("Lemniscate number");
           angle = prm.get_double ("Angle");
           depth = prm.get_double ("Non-dimensional depth");
           amplitude  = prm.get_double ("Amplitude");
@@ -292,7 +276,8 @@ namespace aspect
                                        "An initial temperature field in which the temperature "
                                        "is perturbed following an N-fold pattern in a specified "
                                        "direction from an otherwise spherically symmetric "
-                                       "state.")
+                                       "state. The class's name comes from previous versions"
+                                       "when the only opiton was N=6")
 
     ASPECT_REGISTER_INITIAL_CONDITIONS(SphericalGaussianPerturbation,
                                        "spherical gaussian perturbation",
