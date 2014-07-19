@@ -60,6 +60,8 @@ namespace aspect
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
+            const double heating_work_fraction = 1.0 - out.boundary_area_change_work_fraction[q];
+
             const SymmetricTensor<2,dim> compressible_strain_rate
               = (this->get_material_model().is_compressible()
                  ?
@@ -67,7 +69,7 @@ namespace aspect
                  :
                  in.strain_rate[q]);
 
-            computed_quantities[q](0) = 2 * out.viscosities[q] *
+            computed_quantities[q](0) = 2 * out.viscosities[q] * heating_work_fraction *
                                         compressible_strain_rate * compressible_strain_rate;
           }
       }

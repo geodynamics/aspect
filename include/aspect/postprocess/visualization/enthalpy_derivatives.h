@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -14,18 +14,18 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
+  along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
 
 
-#ifndef _aspect_postprocess_visualization_material_properties_h
-#define _aspect_postprocess_visualization_material_properties_h
+#ifndef __aspect__postprocess_visualization_enthalpy_derivatives_h
+#define __aspect__postprocess_visualization_enthalpy_derivatives_h
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/numerics/data_postprocessor.h>
+#include <deal.II/numerics/data_out.h>
 
 
 namespace aspect
@@ -47,13 +47,13 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class MaterialProperties
+      class EnthalpyDerivatives
         : public DataPostprocessor<dim>,
           public SimulatorAccess<dim>,
           public Interface<dim>
       {
         public:
-          MaterialProperties ();
+          EnthalpyDerivatives ();
 
           virtual
           std::vector<std::string>
@@ -69,38 +69,12 @@ namespace aspect
 
           virtual
           void
-          evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const;
-
-
-          /**
-           * Declare the parameters this class takes through input files.
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
-           */
-          virtual
-          void
-          parse_parameters (ParameterHandler &prm);
-
-        private:
-          /**
-           * Names of the properties to calculate.
-           */
-          std::vector<std::string> property_names;
-
-          /**
-           * Whether to look for the current cell reference and
-           * transmit it to the material model. Potentially
-           * slows down the postprocessing, but allows some
-           * material models to calculate material properties
-           * more accurately for postprocessing.
-           */
-          bool use_cell_reference;
+          compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
+                                             const std::vector<std::vector<Tensor<1,dim> > > &duh,
+                                             const std::vector<std::vector<Tensor<2,dim> > > &dduh,
+                                             const std::vector<Point<dim> >                  &normals,
+                                             const std::vector<Point<dim> >                  &evaluation_points,
+                                             std::vector<Vector<double> >                    &computed_quantities) const;
       };
     }
   }

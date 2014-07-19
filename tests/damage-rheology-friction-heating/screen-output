@@ -1,0 +1,98 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving olivine_grain_size system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 29 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:     0.001/0.001/1e+07
+     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
+     RMS, max velocity:             0.577 m/year, 0.993 m/year
+     Total viscous dissipation:     1.64e+10 J/yr
+     Heating rate (average/total):  1.701e-11 W/kg, 578.3 W
+
+*** Timestep 1:  t=3125 years
+   Solving temperature system... 9 iterations.
+   Solving olivine_grain_size system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:     0.0009988/0.0009988/9.988e+06
+     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
+     RMS, max velocity:             0.577 m/year, 0.993 m/year
+     Total viscous dissipation:     1.64e+10 J/yr
+     Heating rate (average/total):  1.695e-11 W/kg, 576.3 W
+
+*** Timestep 2:  t=6250 years
+   Solving temperature system... 6 iterations.
+   Solving olivine_grain_size system ... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:     0.0009977/0.0009977/9.977e+06
+     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
+     RMS, max velocity:             0.577 m/year, 0.993 m/year
+     Total viscous dissipation:     1.63e+10 J/yr
+     Heating rate (average/total):  1.689e-11 W/kg, 574.4 W
+
+*** Timestep 3:  t=9375 years
+   Solving temperature system... 6 iterations.
+   Solving olivine_grain_size system ... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:     0.0009965/0.0009965/9.965e+06
+     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
+     RMS, max velocity:             0.577 m/year, 0.993 m/year
+     Total viscous dissipation:     1.63e+10 J/yr
+     Heating rate (average/total):  1.684e-11 W/kg, 572.5 W
+
+*** Timestep 4:  t=10000 years
+   Solving temperature system... 3 iterations.
+   Solving olivine_grain_size system ... 6 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:     0.0009963/0.0009963/9.963e+06
+     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
+     RMS, max velocity:             0.577 m/year, 0.993 m/year
+     Total viscous dissipation:     1.63e+10 J/yr
+     Heating rate (average/total):  1.683e-11 W/kg, 572.1 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      4.61s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         5 |     0.826s |        18% |
+| Assemble composition system     |         5 |      0.77s |        17% |
+| Assemble temperature system     |         5 |     0.781s |        17% |
+| Build Stokes preconditioner     |         5 |     0.877s |        19% |
+| Build composition preconditioner|         5 |     0.013s |      0.28% |
+| Build temperature preconditioner|         5 |    0.0131s |      0.28% |
+| Solve Stokes system             |         5 |     0.043s |      0.93% |
+| Solve composition system        |         5 |    0.0118s |      0.26% |
+| Solve temperature system        |         5 |   0.00864s |      0.19% |
+| Initialization                  |         2 |     0.366s |       7.9% |
+| Postprocessing                  |         5 |     0.698s |        15% |
+| Setup dof systems               |         1 |    0.0589s |       1.3% |
++---------------------------------+-----------+------------+------------+
+

@@ -33,8 +33,36 @@ namespace aspect
     namespace internal
     {
       class MaterialLookup;
-      class LateralViscosityLookup;
-      class RadialViscosityLookup;
+
+      class LateralViscosityLookup
+      {
+        public:
+          LateralViscosityLookup(const std::string &filename);
+
+          double lateral_viscosity(double depth);
+
+          int get_nslices() const;
+        private:
+          std::vector<double> values;
+          double min_depth;
+          double delta_depth;
+          double max_depth;
+      };
+
+
+      class RadialViscosityLookup
+      {
+        public:
+          RadialViscosityLookup(const std::string &filename);
+
+          double radial_viscosity(double depth) const;
+
+        private:
+          std::vector<double> values;
+          double min_depth;
+          double delta_depth;
+          double max_depth;
+      };
     }
     /**
      * A variable viscosity material model that reads the essential values of

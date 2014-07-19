@@ -299,11 +299,7 @@ namespace aspect
           bool interpolation;
       };
 
-      class LateralViscosityLookup
-      {
-        public:
-          LateralViscosityLookup(const std::string &filename,
-                                 const MPI_Comm &comm)
+      LateralViscosityLookup::LateralViscosityLookup(const std::string &filename)
           {
             std::string temp;
             // Read data from disk and distribute among processes
@@ -332,7 +328,7 @@ namespace aspect
             delta_depth = (max_depth-min_depth)/(values.size()-1);
           }
 
-          double lateral_viscosity(double depth)
+          double LateralViscosityLookup::lateral_viscosity(double depth)
           {
             depth=std::max(min_depth, depth);
             depth=std::min(depth, max_depth);
@@ -344,24 +340,12 @@ namespace aspect
             return values[idx];
           }
 
-          int get_nslices() const
+          int LateralViscosityLookup::get_nslices() const
           {
             return values.size();
           }
 
-        private:
-          std::vector<double> values;
-          double min_depth;
-          double delta_depth;
-          double max_depth;
-
-      };
-
-      class RadialViscosityLookup
-      {
-        public:
-          RadialViscosityLookup(const std::string &filename,
-                                const MPI_Comm &comm)
+          RadialViscosityLookup::RadialViscosityLookup(const std::string &filename)
           {
             std::string temp;
             // Read data from disk and distribute among processes
@@ -388,7 +372,7 @@ namespace aspect
             delta_depth = (max_depth-min_depth)/(values.size()-1);
           }
 
-          double radial_viscosity(double depth)
+          double RadialViscosityLookup::radial_viscosity(double depth) const
           {
             depth=std::max(min_depth, depth);
             depth=std::min(depth, max_depth);
@@ -399,14 +383,6 @@ namespace aspect
             Assert(idx<values.size(), ExcMessage("Attempting to look up a depth with an index that would be out of range. (depth-min_depth)/delta_depth too large."));
             return values[idx];
           }
-
-        private:
-          std::vector<double> values;
-          double min_depth;
-          double delta_depth;
-          double max_depth;
-
-      };
     }
 
 
