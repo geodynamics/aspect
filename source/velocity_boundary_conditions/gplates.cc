@@ -528,15 +528,17 @@ namespace aspect
       GPlatesLookup::gplates_1_4_or_higher(const boost::property_tree::ptree &pt) const
       {
         const std::string gpml_version = pt.get<std::string>("gpml:FeatureCollection.<xmlattr>.gpml:version");
-        std::vector<std::string> string_versions = dealii::Utilities::split_string_list(gpml_version,'.');
-        std::vector<int> int_versions = dealii::Utilities::string_to_int(string_versions);
+        const std::vector<std::string> string_versions = dealii::Utilities::split_string_list(gpml_version,'.');
+        const std::vector<int> int_versions = dealii::Utilities::string_to_int(string_versions);
 
         const int gplates_1_3_version[3] = {1,6,322};
 
         for (unsigned int i = 0; i < int_versions.size(); i++)
           {
-            if (int_versions[i] > gplates_1_3_version[i]) return true;
-            if (int_versions[i] < gplates_1_3_version[i]) return false;
+            if (int_versions[i] > gplates_1_3_version[i])
+	      return true;
+            if (int_versions[i] < gplates_1_3_version[i])
+	      return false;
           }
 
         return false;
