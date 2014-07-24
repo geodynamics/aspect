@@ -184,8 +184,8 @@ namespace aspect
 
          prm.declare_entry  ("Rotation offset", "-45",
                               Patterns::Double (),
-                              "Amount of clockwise rotation in degrees to apply to"
-                              "the perturbations. Default is set to -45 in order"
+                              "Amount of clockwise rotation in degrees to apply to "
+                              "the perturbations. Default is set to -45 in order "
                               "to provide backwards compatibility.");    
         }
         prm.leave_subsection ();
@@ -274,10 +274,10 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_CONDITIONS(SphericalHexagonalPerturbation,
                                        "spherical hexagonal perturbation",
                                        "An initial temperature field in which the temperature "
-                                       "is perturbed following an N-fold pattern in a specified "
+                                       "is perturbed following an $N$-fold pattern in a specified "
                                        "direction from an otherwise spherically symmetric "
                                        "state. The class's name comes from previous versions"
-                                       "when the only opiton was N=6")
+                                       "when the only opiton was $N=6$.")
 
     ASPECT_REGISTER_INITIAL_CONDITIONS(SphericalGaussianPerturbation,
                                        "spherical gaussian perturbation",
