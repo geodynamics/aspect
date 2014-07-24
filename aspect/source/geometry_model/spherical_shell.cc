@@ -42,7 +42,7 @@ namespace aspect
                                       Point<dim>(),
                                       R0,
                                       R1,
-                                      (dim==3) ? 8*cell_count : cell_count,
+                                      (dim==3) ? 8*n_cells_along_circumference : n_cells_along_circumference,
                                       true);
         }
       else if (phi == 90)
@@ -187,10 +187,10 @@ namespace aspect
                              "Opening angle in degrees of the section of the shell "
                              "that we want to build. Units: degrees.");
          
-          prm.declare_entry ("Cell count", "12",
+          prm.declare_entry ("Cells along circumference", "12",
                               Patterns::Integer (),
                               "The number of tangential cells that are "
-                              "created when initial global refinement is zero."); 
+                              "created in the coarse mesh."); 
 
         }
         prm.leave_subsection();
@@ -211,7 +211,7 @@ namespace aspect
           R0  = prm.get_double ("Inner radius");
           R1  = prm.get_double ("Outer radius");
           phi = prm.get_double ("Opening angle");
-          cell_count = prm.get_integer ("Cell count");
+          n_cells_along_circumference = prm.get_integer ("Cells along circumference");
         }
         prm.leave_subsection();
       }

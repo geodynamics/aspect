@@ -134,10 +134,9 @@ namespace aspect
         double phi;
 
         /**
-         * Number of tangential mesh cells when the initial global 
-         * refinement is set to zero.
+         * Number of tangential mesh cells in the initial, coarse mesh.
          */
-         int cell_count;
+         int n_cells_along_circumference;
 
     };
   }
