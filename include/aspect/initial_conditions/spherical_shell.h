@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -45,6 +45,8 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
+        virtual
+        double initial_temperature (const Point<dim> &position) const;
 
          /**
          * Declare the parameters this class takes through input files.
@@ -59,8 +61,6 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
-        virtual
-        double initial_temperature (const Point<dim> &position) const;
      
       private:
          /**
