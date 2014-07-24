@@ -186,13 +186,13 @@ namespace aspect
                              Patterns::Double (0, 360),
                              "Opening angle in degrees of the section of the shell "
                              "that we want to build. Units: degrees.");
-         
+
           prm.declare_entry ("Cells along circumference", "12",
-			     Patterns::Integer (),
-			     "The number of cells in circumferential direction that are "
-			     "created in the coarse mesh in 2d. In 3d, the number of "
-			     "cells is computed differently and does not have an "
-			     "easy interpretation. It is best left at its default in 3d.");
+                             Patterns::Integer (),
+                             "The number of cells in circumferential direction that are "
+                             "created in the coarse mesh in 2d. In 3d, the number of "
+                             "cells is computed differently and does not have an "
+                             "easy interpretation. It is best left at its default in 3d.");
         }
         prm.leave_subsection();
       }

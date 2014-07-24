@@ -61,8 +61,8 @@ namespace aspect
          For a plot, see
          http://www.wolframalpha.com/input/?i=plot+%28%282*sqrt%28x^2%2By^2%29-1%29%2B0.2*%282*sqrt%28x^2%2By^2%29-1%29*%281-%282*sqrt%28x^2%2By^2%29-1%29%29*sin%286*atan2%28x%2Cy%29%29%29%2C+x%3D-1+to+1%2C+y%3D-1+to+1
       */
-    
-      
+
+
       const double scale = ((dim==3)
                             ?
                             std::max(0.0,
@@ -179,21 +179,21 @@ namespace aspect
         {
 
           prm.declare_entry ("Angular mode", "6",
-                              Patterns::Integer (),
-                              "The number of convection cells to perturb the system with.");   
+                             Patterns::Integer (),
+                             "The number of convection cells to perturb the system with.");
 
-         prm.declare_entry  ("Rotation offset", "-45",
+          prm.declare_entry  ("Rotation offset", "-45",
                               Patterns::Double (),
                               "Amount of clockwise rotation in degrees to apply to "
                               "the perturbations. Default is set to -45 in order "
-                              "to provide backwards compatibility.");    
+                              "to provide backwards compatibility.");
         }
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
     }
 
-   template <int dim>
+    template <int dim>
     void
     SphericalHexagonalPerturbation<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -216,7 +216,7 @@ namespace aspect
       prm.enter_subsection("Initial conditions");
       {
         prm.enter_subsection("Spherical gaussian perturbation");
-        {       
+        {
           prm.declare_entry ("Angle", "0e0",
                              Patterns::Double (0),
                              "The angle where the center of the perturbation is placed.");
