@@ -4,7 +4,6 @@
 \usepackage{amsfonts}
 \usepackage{subfigure}
 \usepackage{textpos}
-\usepackage{float}
 
 % use a larger page size; otherwise, it is difficult to have complete
 % code listings and output on a single page
@@ -140,11 +139,12 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
 Wolfgang Bangerth\\Timo Heister\\
 \large
     with contributions by:\\
+    Jacky Austermann,
     Markus B{\"u}rg,
     Juliane Dannberg,
     William Durkin,
-    Ren{\'e} Ga{\ss}m{\"o}ller,
-    Thomas Geenen, \\
+    Ren{\'e} Ga{\ss}m{\"o}ller, \\
+    Thomas Geenen,
     Anne Glerum,
     Ryan Grove,
     Eric Heien,
@@ -153,6 +153,7 @@ Wolfgang Bangerth\\Timo Heister\\
     Jonathan Perry-Houts,
     Ian Rose,
     Cedric Thieulot,
+    Iris van Zelst,
     Siqi Zhang \\
 
 }
@@ -290,7 +291,7 @@ You can refer to the website by citing the following:
       @MANUAL{aspectweb,
         title = {ASPECT: Advanced Solver for Problems in Earth's ConvecTion},
         author = {W. Bangerth and T. Heister and others},
-        year = {2013},
+        year = {2014},
         note = {\texttt{http://aspect.dealii.org/}},
         url = {http://aspect.dealii.org/}
       }
@@ -298,7 +299,7 @@ You can refer to the website by citing the following:
 The manual's proper reference is this:
 \begin{lstlisting}[frame=single,language=tex]
 @Manual{aspectmanual,
-        title = 	 {\textsc{ASPECT}: Advanced Solver for Problems in Earth's
+        title =        {\textsc{ASPECT}: Advanced Solver for Problems in Earth's
           ConvecTion},
         author =       {W. Bangerth and T. Heister and others},
         organization = {Computational Infrastructure for Geodynamics},
@@ -338,7 +339,7 @@ $c_i$ that we call \textit{compositional fields}:
 \begin{align}
   \label{eq:stokes-1}
   -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u)
-                                  - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf I\right)
+                                  - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
                 \right] + \nabla p &=
   \rho \mathbf g
   & \qquad
@@ -359,9 +360,9 @@ $c_i$ that we call \textit{compositional fields}:
   &\quad
   +
   2\eta
-  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf I\right)
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
   :
-  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf I\right)
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
   \\
   &\quad
   +\alpha T \left( \mathbf u \cdot \nabla p \right)
@@ -443,9 +444,9 @@ which it is in fact implemented:
   &\quad
   +
   2\eta
-  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf I\right)
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
   :
-  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf I\right)
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
   \\
   &\quad
   +\alpha T \left( \mathbf u \cdot \nabla p \right)
@@ -1416,13 +1417,13 @@ from previous time steps).
 \label{sec:freesurface}
 
 In reality the boundary conditions of a convecting Earth are not no-slip or 
-free slip (i.e. no normal velocity).  Instead, we expect that a free surface
+free slip (i.e., no normal velocity).  Instead, we expect that a free surface
 is a more realistic approximation, since air and water should not prevent the
 flow of rock upward or downward.  This means that we require zero stress on the 
 boundary, or $\sigma \cdot \textbf{n} = 0$, where $\sigma = 2 \eta \varepsilon (\textbf{u})$. 
 In general there will be flow across the boundary with this boundary condition.  
 To conserve mass we must then advect the boundary of the domain in the direction 
-of fluid flow.  Thus using a free surface necessitates that the mesh be dynamically deformable.  
+of fluid flow.  Thus, using a free surface necessitates that the mesh be dynamically deformable.  
 
 \subsubsection{Arbitrary Lagrangian-Eulerian implementation}
 
@@ -1443,16 +1444,16 @@ to keep the mesh as well behaved as possible.
 velocity is calculated by solving
 
 \begin{align}
--\Delta \textbf{u}_m &= 0 & \qquad & \textrm{in } \Omega \\ 
-\textbf{u}_m &= \left( \textbf{u} \cdot \textbf{n} \right) \textbf{n} & \qquad & \textrm{on } \partial \Omega_{\textrm{free surface}} \\
-\textbf{u}_m \cdot \textbf{n} &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{free slip}} \\
-\textbf{u}_m &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{Dirichlet}} \\
+-\Delta \textbf{u}_m &= 0 & \qquad & \textrm{in } \Omega, \\ 
+\textbf{u}_m &= \left( \textbf{u} \cdot \textbf{n} \right) \textbf{n} & \qquad & \textrm{on } \partial \Omega_{\textrm{free surface}}, \\
+\textbf{u}_m \cdot \textbf{n} &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{free slip}}, \\
+\textbf{u}_m &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{Dirichlet}}.
 \end{align}
 After this mesh velocity is calculated, the mesh vertices are time-stepped explicitly.
 This scheme has the effect of choosing a minimally distorting perturbation to the mesh.
 Because the mesh velocity is no longer zero in the ALE approach, we must then correct
 the Eulerian advection terms in the advection system with the mesh velocity (see, e.g.
-\cite{DHPR2004}).  For instance, the temperature equation \ref{eq:temperature-boussinesq-linear}
+\cite{DHPR2004}).  For instance, the temperature equation \eqref{eq:temperature-boussinesq-linear}
 becomes
 
 \begin{equation*}
@@ -1461,13 +1462,13 @@ becomes
   =
   \rho H
    \quad
-   \textrm{in $\Omega$},
+   \textrm{in $\Omega$}.
 \end{equation*}
 
 \subsubsection{Free surface stabilization}
 
 Small disequilibria in the location of a free surface can cause instabilities in
-the surface position result in a ``sloshing'' instability.  This may be countered with a
+the surface position and result in a ``sloshing'' instability.  This may be countered with a
 quasi-implicit free surface integration scheme described in \cite{KMM2010}.
 This scheme enters the governing equations as a small stabilizing surface
 traction that prevents the free surface advection from overshooting its
@@ -2427,14 +2428,16 @@ number of reasons to periodically save the state of the program:
 To this end, \aspect{} creates a set of files in the output directory
 \index[prmindex]{Output directory}
 \index[prmindexfull]{Output directory}
-(selected in the parameter file) every 50 time steps in which the entire state
-of the program is saved so that a simulation can later be continued at this
+(selected in the parameter file) every N time steps (controlled by the number
+of steps or wall time as specified in \texttt{subsection Checkpointing}, see
+Section~\ref{parameters:Checkpointing}) in which the entire state of the
+program is saved so that a simulation can later be continued at this
 point. The previous checkpoint files will then be deleted. To resume
 operations from the last saved state, you need to set the \texttt{Resume
   computation} flag in the input parameter file to \texttt{true}, see
 \index[prmindex]{Resume computation}
 \index[prmindexfull]{Resume computation}
-Section~\ref{parameters:global}.
+Section~\ref{parameters:Resume computation}.
 
 \note{It is not imperative that the parameters selected in the input file are
   exactly the same when resuming a program from a saved state than what they
@@ -4174,112 +4177,6 @@ After running the cookbook, you may modify it in a number of ways:
 \end{figure}
 
 
-\subsubsection{Using a free surface with a crust}\mbox{}\\
-\label{sec:cookbooks-freesurfaceWC}
-\textit{This section was contributed by William Durkin}.
-This cookbook is a modification of the previous example that explores changes in the way topography develops when a 
-highly viscous crust is added.  One thing to note is that the origin of this model is at the bottom left corner of a 500x200 km box.
-In this cookbook, the material changes from low viscosity mantle to high viscosity crust at $z = \texttt{jump height}$, or $z_j$. The piecewise viscosity function is defined as
-
-\begin{align*}
-  \eta(z) = \left\{
-    \begin{matrix}
-      \eta_U & \text{for}\ z > z_j, \\
-      \eta_L & \text{for}\ z  \le z_j.
-    \end{matrix}
-  \right.
-\end{align*}
-
-where $\eta_U$ and $\eta_L$ are the viscosities of the upper and lower layers, respectively. This viscosity model can be implimented by creating a plugin from a modified \texttt{simpler} material model. The most important change is the conditional statement at the section of Simpler.cc that assigns viscosity values:\\
-
-\begin{lstlisting}[frame=single,language=C++]
-    
-template <int dim>
-    void
-    Simplerwc<dim>::
-    evaluate(const typename Interface<dim>::MaterialModelInputs &in, 
-              typename Interface<dim>::MaterialModelOutputs &out ) const
-    {
-      
-      double z;
-      for (unsigned int i=0; i<in.position.size(); ++i)
-        { 
-          z = in.position[i][1];
-          out.viscosities[i] = (z>jump_depth) ?  eta_U: eta_L ;
-                     
-          out.densities[i] = reference_rho*(1.0-thermal_alpha*(in.temperature[i]-reference_T));
-          out.thermal_expansion_coefficients[i] = thermal_alpha;
-          out.specific_heat[i] = reference_specific_heat;
-          out.thermal_conductivities[i] = k_value;
-          out.compressibilities[i] = 0.0;
-        }
-    }
-\end{lstlisting}
-
-\mbox{}\\
-Additional changes make the new parameters \texttt{Jump Depth}, \texttt{Lower Viscosity}, and \texttt{Upper Viscosity}
-available to the prm file. The entire code is found in \url{cookbooks/free_surface_with_crust/plugin/simplerwc.cc}  . Refer to section~\ref{sec:plugins} for instructions on how to do this.\\
-
-The following changes modify cookbook~\ref{sec:cookbooks-freesurface} to include a crust.\\ \\
-1) Load the plugin and declare global parameters:
-
-\begin{lstlisting}[frame=single,language=prmfile]
-set Additional shared libraries            = ./plugin/libsimplerwc.so 
-
-set Dimension = 2
-set CFL number                             = 0.1
-set End time                               = 1e8
-set Output directory                       = output/
-
-subsection Checkpointing
-  set Steps between checkpoint = 50
-end
-
-\end{lstlisting}
-
-\mbox{}\\
-2) Declare values for the new parameters:
-
-\begin{lstlisting}[frame=single,language=prmfile]
-subsection Material model
-  set Model name = simplerwc
-  subsection Simplerwc model
-    set Reference density             = 3300
-    set Reference specific heat       = 1250
-    set Reference temperature         = 0.0
-    set Thermal conductivity          = 1.0 # low thermal conductivity for a sharp blob
-    set Thermal expansion coefficient = 4e-5
-  
-    #Parameters added for this cookbook:
-    # The box is 200km high and has its origin set at the bottom left corner.
-    # Setting the jump height to 170km creates a 30km thick crust
-    set Lower viscosity               =1.e20
-    set Upper viscosity               =1.e23
-    set Jump height                    =170.e3
- 
-  end
-end
-\end{lstlisting}
-\mbox{}\\
-
-The entire script is located in \url{cookbooks/free_surface_with_crust/free_surface_wc.prm}\\ \\
-Results\\
-The crust is 30km thick and 1000 times as viscous as the lower layer. Figure~\ref{fig:freesurfaceWC} shows that
-adding a crust to the model causes the maximum topography to both decrease and occur at a later time.
-Heat flows through the system primarily by advection until the temperature anomaly reaches the base of the
-crustal layer (Fig~\ref{fig:freesurfaceWC}). The crust's high viscosity reduces the temperature anomaly's velocity substantially,
-causing it to affect the surface topography at a later time. Just as in cookbook \ref{sec:cookbooks-freesurface}, the topography
-returns to zero after a large amount of time.
-
-\begin{figure}
-  \centering
-  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/free-surfaceWC.png}
-  \hfill
-  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/Topography.png}
-  \caption{\it The effects adding a viscous crust has on the surface topography. The thermal anomaly spreads horizontally as it collides with the highly viscous crust (left). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right). }
-  \label{fig:freesurfaceWC}
-\end{figure}
-
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
 
@@ -5533,6 +5430,170 @@ The benchmark can be run using the parameter files in \url{benchmark/inclusion/}
 \marginpar{The following prm file isn't annotated yet. How to annotate if we have a .lib?}
 
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/inclusion.prm.out}
+
+
+\subsubsection{The Burstedde variable viscosity benchmark}
+\label{sec:benchmark-burstedde}
+
+\textit{This section was contributed by Iris van Zelst.}
+
+This benchmark is intended to test solvers for variable viscosity Stokes
+problems. It begins with postulating a smooth exact polynomial solution to the Stokes equation for a unit cube, first proposed by \cite{dobo04} and also described by \cite{busa13}:
+\begin{align}
+  {\mathbf u} &= \left( \begin{array}{c}
+      x+x^2+xy+x^3y \\
+      y + xy + y^2 + x^2 y^2\\
+      -2z - 3xz - 3yz - 5x^2 yz
+    \end{array}
+  \right)
+  \label{eq:burstedde-velocity}
+  \\
+  p &= xyz + x^3 y^3z - \frac{5}{32}.
+  \label{eq:burstedde-pressure}
+\end{align}
+
+It is then trivial to verify that the velocity field is divergence-free. The
+constant $-\frac{5}{32}$ has been added to the expression of $p$ to ensure
+that the volume pressure normalization of \aspect{} can be used in this
+benchmark (in other words, to ensure that the exact pressure has mean value
+zero and, consequently, can easily be compared with the numerically computed
+pressure). Following \cite{busa13}, the viscosity $\mu$ is given by the smoothly varying function 
+\begin{equation}
+  \mu = \exp\left\{1 - \beta\left[x (1-x) + y(1-y) + z(1-z)\right]\right\}.
+  \label{eq:burstedde-mu}
+\end{equation}
+The maximum of this function is $\mu = e$, for example at $(x,y,z)=(0,0,0)$, and the minimum of this function is $\mu = \exp \Big( 1-\frac{3\beta}{4}\Big)$ at $(x,y,z) = (0.5,0.5,0.5)$. The viscosity ratio $\mu^*$ is then given by 
+\begin{equation}
+  \mu^* = \frac{\exp\Big(1-\frac{3\beta}{4}\Big)}{\exp(1)} = \exp\Big(\frac{-3\beta}{4}\Big).
+\end{equation}
+Hence, by varying $\beta$ between 1 and 20, a difference of up to 7 orders of
+magnitude viscosity is obtained. $\beta$ will be one of the parameters that
+can be selected in the input file that accompanies this benchmark.
+
+The corresponding body force of the Stokes equation can then be computed by inserting this solution into the momentum equation,
+\begin{equation}
+  {\nabla} p - \nabla \cdot (2  \mu {\epsilon(\mathbf u)}) = \rho \mathbf g.
+  \label{eq:burstedde-momentum}
+\end{equation}
+Using equations \eqref{eq:burstedde-velocity}, \eqref{eq:burstedde-pressure}
+and \eqref{eq:burstedde-mu} in the
+momentum equation \eqref{eq:burstedde-momentum}, the following expression for the body force
+$\rho\mathbf g$ can be found:
+\begin{multline}
+  {\rho\mathbf g} 
+  =
+  \left(
+    \begin{array}{c}
+      yz+3x^2y^3z\\
+      xz +3x^3y^2z \\
+      xy+x^3y^3
+    \end{array}
+  \right)
+  -\mu
+  \left(
+    \begin{array}{c}
+      2+6xy  \\
+      2 + 2x^2 +  2y^2 \\
+      -10yz 
+    \end{array}
+  \right) \\
+  +
+  (1-2x)\beta \mu 
+  \left(
+    \begin{array}{c}
+      2+4x+2y+6x^2y \\
+      x+y+2xy^2+x^3 \\
+      -3z -10xyz 
+    \end{array}
+  \right)
+  +(1-2y)\beta \mu 
+  \left(
+    \begin{array}{c}
+      x+y+2xy^2+x^3 \\
+      2+2x+4y+4x^2y \\
+      -3z-5x^2z \\
+    \end{array}
+  \right)
+  \\
+  +(1-2z)\beta \mu
+  \left(
+    \begin{array}{c}
+      -3z -10xyz \\
+      -3z-5x^2z \\
+      -4-6x-6y-10x^2y
+    \end{array}
+  \right)
+\end{multline}
+Assuming $\rho = 1$, the above expression translates into an expression for the
+gravity vector $\mathbf g$. This expression for the gravity (even though it is
+completely unphysical), has consequently been incorporated into the
+\texttt{BursteddeGravity} gravity model that is described in the
+\texttt{benchmarks/burstedde/burstedde.cc} file that accompanies this benchmark.
+
+We will use the input file \texttt{benchmark/burstedde/burstedde.prm} as
+input, which is very similar to the input file
+\texttt{benchmark/inclusion/adaptive.prm} discussed above in
+Section~\ref{sec:benchmark-inclusion}. The major changes for the 3D polynomial
+Stokes benchmark are listed below: 
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/burstedde/burstedde.prm.out}
+
+The boundary conditions that are used are simply the velocities from equation
+\eqref{eq:burstedde-velocity} prescribed on each boundary. The viscosity parameter in the input
+file is $\beta$. Furthermore, in order to compute the velocity and pressure
+$L_1$ and $L_2$ norm, the postprocessor \texttt{BursteddePostprocessor} is
+used. Please note that the linear solver tolerance is set to a very small
+value (deviating from the default value), in order to ensure that the solver
+can solve the system accurately enough to make sure that the iteration
+error is smaller than the discretization error.
+
+Expected analytical solutions at two locations are summarised in Table~\ref{tab:burstedde-table} and can be deduced from equations \eqref{eq:burstedde-velocity} and
+\eqref{eq:burstedde-pressure}.
+Figure \ref{figure} shows that the analytical solution is indeed retrieved by the model.
+
+\begin{table}[h!]
+\caption{Analytical solutions \label{tab:burstedde-table}}
+\centering
+\begin{tabular}{l|c|c}
+Quantity & $\mathbf{r} = (0,0,0)$ & $\mathbf{r} = (1,1,1)$ \\ \hline
+$p$ & $-0.15625$ & $1.84375$ \\
+$\mathbf{u}$ & $(0,0,0)$  & $(4,4,-13)$ \\ 
+$|\mathbf{u}|$ & $0$ &  $14.177$ \\
+\end{tabular}
+\end{table}
+
+\begin{figure}[t!]
+  \centering
+  \subfigure[b]{
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/viscosity.png}}%
+  ~ 
+  \subfigure[]{
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/pressure.png}}%
+  \\
+  \subfigure[]{
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/velocity_x.png}}
+  ~
+  \subfigure[]{
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/velocity_z.png}}
+  \caption{Burstedde benchmark: Results for the 3D polynomial Stokes benchmark, obtained with a resolution of $16\times 16$ elements, with $\beta = 10$.}\label{figure}
+\end{figure}
+
+The convergence of the numerical error of this benchmark has been analysed by
+playing with the mesh refinement level in the input file, and
+results can be found in Figure \ref{errors}. The velocity shows cubic error
+convergence, while the pressure shows quadratic convergence in the $L_1$ and
+$L_2$ norms, as one would hope for using $Q_2$ elements for the velocity and
+$Q_1$ elements for the pressure.
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\textwidth]{cookbooks/benchmarks/burstedde/errors.pdf}
+  \caption{Burstedde benchmark: Error convergence for the 3D polynomial Stokes
+    benchmark.
+    \label{errors}}
+\end{figure}
+
+
 
 \subsubsection{The ``Stokes' law'' benchmark}
 \label{sec:benchmark-stokes_law}
