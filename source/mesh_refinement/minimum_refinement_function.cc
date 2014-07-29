@@ -109,12 +109,12 @@ namespace aspect
            */
           prm.declare_entry ("Coordinate system", "depth",
                              Patterns::Selection ("depth|cartesian|spherical"),
-                             "A selection, which determines the assumed coordinate "
+                             "A selection that determines the assumed coordinate "
                              "system for the function variables. Allowed values "
                              "are 'depth', 'cartesian' and 'spherical'. 'depth' "
                              "requires a function expression that only "
                              "depends on one variable, which is interpreted to "
-                             "be the depth of the point. 'spherical' coordinates "
+                             "be the depth of the point (in meters). 'spherical' coordinates "
                              "are interpreted as r,phi or r,phi,theta in 2D/3D "
                              "respectively with theta being the polar angle.");
           /**
@@ -190,6 +190,6 @@ namespace aspect
                                               "is r,phi,theta and not r,theta,phi, since this "
                                               "allows for dimension independent expressions. "
                                               "After evaluating the function, its values are "
-                                              "rounded to the nearest integer. ")
+                                              "rounded to the nearest integer.")
   }
 }
