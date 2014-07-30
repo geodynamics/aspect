@@ -276,8 +276,8 @@ namespace aspect
                                        "An initial temperature field in which the temperature "
                                        "is perturbed following an $N$-fold pattern in a specified "
                                        "direction from an otherwise spherically symmetric "
-                                       "state. The class's name comes from previous versions"
-                                       "when the only opiton was $N=6$.")
+                                       "state. The class's name comes from previous versions "
+                                       "when the only option was $N=6$.")
 
     ASPECT_REGISTER_INITIAL_CONDITIONS(SphericalGaussianPerturbation,
                                        "spherical gaussian perturbation",
