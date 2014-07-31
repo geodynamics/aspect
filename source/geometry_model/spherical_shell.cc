@@ -67,7 +67,8 @@ namespace aspect
           GridGenerator::half_hyper_shell (coarse_grid,
                                            Point<dim>(),
                                            R0,
-                                           R1,0,
+                                           R1,
+					   0,
                                            true);
         }
       else
@@ -212,7 +213,10 @@ namespace aspect
 			     "in 3d are 0 (let this class choose), 6, 12 and 96. "
 			     "Other possible values may be discussed in the documentation "
 			     "of the deal.II function GridGenerator::hyper_shell. "
-			     "The parameter is best left at its default in 3d.");
+			     "The parameter is best left at its default in 3d."
+			     "\n\n"
+			     "In either case, this parameter is ignored unless the opening "
+			     "angle of the domain is 360 degrees.");
         }
         prm.leave_subsection();
       }
