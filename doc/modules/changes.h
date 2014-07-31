@@ -5,15 +5,26 @@
  * 1.1. All entries are signed with the names of the author. </p>
  *
  *
- * <ol>
+ * <ol> 
  *
- * * <li> Changed: The viscosity in the steinberger material model can now be
- * calculated by taking either the lateral averaged temperature or the
- * adiabatic temperature in this depth as reference.
+ * <li> New: The <code>spherical hexagonal perturbation</code> initial
+ * temperature model has been generalized to allow other modes than just
+ * the hexagonal one.
+ * <br>
+ * (Joey Durkin, 2014/07/31)
+ *
+ * <li> New: The <code>spherical shell</code> geometry model in 2d now takes
+ * additional parameters indicating the number of circumferential cells.
+ * <br>
+ * (Joey Durkin, 2014/07/31)
+ *
+ * <li> Changed: The viscosity in the Steinberger material model can now be
+ * calculated by taking either the laterally averaged temperature or the
+ * adiabatic temperature at this depth as reference.
  * <br>
  * (Rene Gassmoeller, 2014/06/20)
  *
- * * <li> Changed: The minimum refinement function is now evaluated at every
+ * <li> Changed: The minimum refinement function is now evaluated at every
  * cell corner instead of the cell midpoint. This especially helps in refining
  * thin boundary layers.
  * <br>

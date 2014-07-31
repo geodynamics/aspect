@@ -76,9 +76,54 @@ namespace aspect
 
       return (this->get_boundary_temperature().maximal_temperature()*(s_mod)
               +
-              this->get_boundary_temperature().minimal_temperature()*(1e0-s_mod));
+              this->get_boundary_temperature().minimal_temperature()*(1-s_mod));
     }
 
+
+    
+    template <int dim>
+    void
+    SphericalHexagonalPerturbation<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Initial conditions");
+      {
+        prm.enter_subsection("Spherical hexagonal perturbation");
+        {
+
+          prm.declare_entry ("Angular mode", "6",
+                             Patterns::Integer (),
+                             "The number of convection cells to perturb the system with.");
+
+          prm.declare_entry  ("Rotation offset", "-45",
+                              Patterns::Double (),
+                              "Amount of clockwise rotation in degrees to apply to "
+                              "the perturbations. Default is set to -45 in order "
+                              "to provide backwards compatibility.");
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+
+
+    
+    template <int dim>
+    void
+    SphericalHexagonalPerturbation<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Initial conditions");
+      {
+        prm.enter_subsection("Spherical hexagonal perturbation");
+        {
+          angular_mode = prm.get_integer ("Angular mode");
+          rotation_offset = prm.get_double  ("Rotation offset");
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+
+    
 
     template <int dim>
     SphericalGaussianPerturbation<dim>::
@@ -169,46 +214,8 @@ namespace aspect
         return (InterpolVal + Perturbation)*dT;
     }
 
-    template <int dim>
-    void
-    SphericalHexagonalPerturbation<dim>::declare_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Initial conditions");
-      {
-        prm.enter_subsection("Spherical hexagonal perturbation");
-        {
 
-          prm.declare_entry ("Angular mode", "6",
-                             Patterns::Integer (),
-                             "The number of convection cells to perturb the system with.");
-
-          prm.declare_entry  ("Rotation offset", "-45",
-                              Patterns::Double (),
-                              "Amount of clockwise rotation in degrees to apply to "
-                              "the perturbations. Default is set to -45 in order "
-                              "to provide backwards compatibility.");
-        }
-        prm.leave_subsection ();
-      }
-      prm.leave_subsection ();
-    }
-
-    template <int dim>
-    void
-    SphericalHexagonalPerturbation<dim>::parse_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Initial conditions");
-      {
-        prm.enter_subsection("Spherical hexagonal perturbation");
-        {
-          angular_mode = prm.get_integer ("Angular mode");
-          rotation_offset = prm.get_double  ("Rotation offset");
-        }
-        prm.leave_subsection ();
-      }
-      prm.leave_subsection ();
-    }
-
+    
     template <int dim>
     void
     SphericalGaussianPerturbation<dim>::declare_parameters (ParameterHandler &prm)
