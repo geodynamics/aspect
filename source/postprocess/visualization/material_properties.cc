@@ -127,41 +127,44 @@ namespace aspect
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            unsigned k = 0;
-            for (unsigned int i=0; i<property_names.size(); ++i)
+            unsigned output_index = 0;
+            for (unsigned int i=0; i<property_names.size(); ++i, ++output_index)
               {
                 if (property_names[i] == "viscosity")
-                  computed_quantities[q][i+k] = out.viscosities[q];
+                  computed_quantities[q][output_index] = out.viscosities[q];
 
                 else if (property_names[i] == "density")
-                  computed_quantities[q][i+k] = out.densities[q];
+                  computed_quantities[q][output_index] = out.densities[q];
 
                 else if (property_names[i] == "thermal expansivity")
-                  computed_quantities[q][i+k] = out.thermal_expansion_coefficients[q];
+                  computed_quantities[q][output_index] = out.thermal_expansion_coefficients[q];
 
                 else if (property_names[i] == "specific heat")
-                  computed_quantities[q][i+k] = out.specific_heat[q];
+                  computed_quantities[q][output_index] = out.specific_heat[q];
 
                 else if (property_names[i] == "thermal conductivity")
-                  computed_quantities[q][i+k] = out.thermal_conductivities[q];
+                  computed_quantities[q][output_index] = out.thermal_conductivities[q];
 
                 else if (property_names[i] == "compressibility")
-                  computed_quantities[q][i+k] = out.compressibilities[q];
+                  computed_quantities[q][output_index] = out.compressibilities[q];
 
                 else if (property_names[i] == "entropy derivative pressure")
-                  computed_quantities[q][i+k] = out.entropy_derivative_pressure[q];
+                  computed_quantities[q][output_index] = out.entropy_derivative_pressure[q];
 
                 else if (property_names[i] == "entropy derivative temperature")
-                  computed_quantities[q][i+k] = out.entropy_derivative_temperature[q];
+                  computed_quantities[q][output_index] = out.entropy_derivative_temperature[q];
 
                 else if (property_names[i] == "reaction terms")
                   {
-                    for (k=0; k<this->n_compositional_fields(); ++k)
+                    for (unsigned int k=0; k<this->n_compositional_fields(); ++k, ++output_index)
                       {
-                        computed_quantities[q][i+k] = out.reaction_terms[q][k];
+                        computed_quantities[q][output_index] = out.reaction_terms[q][k];
                       }
-                    --k;
+                    --output_index;
                   }
+                else
+                  AssertThrow(false,
+                      ExcMessage("Material property not implemented for this postprocessor."));
               }
           }
       }
@@ -233,7 +236,16 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(MaterialProperties,
                                                   "material properties",
                                                   "A visualization output object that generates output "
-                                                  "for the material properties given by the material model.")
+                                                  "for the material properties given by the material model."
+                                                  "There are a number of other visualization postprocessors "
+                                                  "that offer to write individual material properties. However, "
+                                                  "they all individually have to evaluate the material model. "
+                                                  "This is inefficient if one wants to output more than just "
+                                                  "one or two of the fields provided by the material model. "
+                                                  "The current postprocessor allows to output a (potentially "
+                                                  "large) subsets of all of the information provided by "
+                                                  "material models at once, with just a single material model "
+                                                  "evaluation per output point.")
     }
   }
 }
