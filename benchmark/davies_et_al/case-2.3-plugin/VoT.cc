@@ -19,22 +19,98 @@
 */
 
 
-#include "./VoT.h"
+#include <aspect/material_model/interface.h>
+#include <aspect/simulator_access.h>
+
 #include <deal.II/base/parameter_handler.h>
+
 #include <cmath>
 
+
 using namespace dealii;
+
 
 namespace aspect
 {
   namespace MaterialModel
   {
+    /**
+     * A material model similar to the "Simpler" model, but with a temperature
+     * dependent viscosity (a "viscosity as a function of temperature", or VoT).
+     *
+     * @ingroup MaterialModels
+     */
+    template <int dim>
+    class VoT : public Interface<dim>
+    {
+      public:
+
+        virtual bool
+        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+        virtual bool
+        density_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+        virtual bool
+        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+        virtual bool
+        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+        virtual bool
+        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+        virtual bool is_compressible () const;
+
+        virtual double reference_viscosity () const;
+
+        virtual double reference_density () const;
+
+        virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+                              typename Interface<dim>::MaterialModelOutputs &out) const;
+
+
+        /**
+         * @name Functions used in dealing with run-time parameters
+         * @{
+         */
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+        /**
+         * @}
+         */
+
+      private:
+        double reference_rho;
+        double reference_T;
+        double eta;
+        double thermal_alpha;
+        double reference_specific_heat;
+        double k_value;
+    };
+
+
+
     template <int dim>
     bool
     VoT<dim>::
     viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
     {
-      return false;
+      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
+        return true;
+      else
+        return false;
     }
 
 
@@ -98,13 +174,13 @@ namespace aspect
     template <int dim>
     void
     VoT<dim>::
-    evaluate(const typename Interface<dim>::MaterialModelInputs &in, 
-               typename Interface<dim>::MaterialModelOutputs &out) const
+    evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+             typename Interface<dim>::MaterialModelOutputs &out) const
     {
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
-          out.viscosities[i] = eta*std::pow(1000,(-1*in.temperature[i]));
-        
+          out.viscosities[i] = eta*std::pow(1000,(-in.temperature[i]));
+
           out.densities[i] = reference_rho * (1.0 - thermal_alpha * (in.temperature[i] - reference_T));
           out.thermal_expansion_coefficients[i] = thermal_alpha;
           out.specific_heat[i] = reference_specific_heat;
