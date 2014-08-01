@@ -1,0 +1,81 @@
+# Copy of the simpler box test with a function
+# object describing the gravity
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = IMPES
+
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+
+subsection Gravity model
+  set Model name = function
+  subsection Function
+    set Function expression = 0;x
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1.2 # default: 1
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = perturbed box
+end
+
+
+subsection Material model
+  set Model name = simpler
+
+  subsection Simpler model
+    set Reference density             = 1    # default: 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1    # default: 293
+    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1    # default: 5e24
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0, 1
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 1
+  set Zero velocity boundary indicators       = 0, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics
+
+   
+subsection Visualization
+    set Output format                 = gnuplot
+    set List of output variables      = density, viscosity, gravity
+
+end
+end
+
