@@ -1,12 +1,12 @@
 ############### Global parameters
 # Case 2.2 begins with the final steady state solution of Case 2.1
-# Resume computiation must be set to true, and Output directory must
+# Resume computation must be set to true, and Output directory must
 # point to the folder that contains the results of Case 2.1.
 
 set CFL number                             = 10
 
 set End time                               = 3
-set Output directory                       = output-2
+set Output directory                       = output
 
 set Resume computation                     = true
 
@@ -22,40 +22,25 @@ end
 
 ############### Parameters describing the model
 
-subsection Boundary temperature model
-  set Model name = spherical constant
-  subsection Spherical constant
-    set Inner temperature = 1
-    set Outer temperature = 0
-  end
-end
-
-
-subsection Discretization
-  set Stokes velocity polynomial degree       = 2
-  set Temperature polynomial degree           = 2
-  set Use locally conservative discretization = false
-
-
-  subsection Stabilization parameters
-    set alpha = 2
-    set beta  = 0.078
-    set cR    = 0.11
-  end
-
-end
-
-
 subsection Geometry model
   set Model name = spherical shell
-
   subsection Spherical shell
     set Inner radius  = 1.22
     set Opening angle = 360
-    set Outer radius  = 2.22 
+    set Outer radius  = 2.22
   end
 end
 
+subsection Model settings
+  set Remove nullspace                        = net rotation
+
+  set Fixed temperature boundary indicators   = 0,1
+  set Prescribed velocity boundary indicators = 
+  set Tangential velocity boundary indicators = 0,1
+  set Zero velocity boundary indicators       = 
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+end
 
 subsection Gravity model
   set Model name = radial constant 
@@ -64,21 +49,8 @@ subsection Gravity model
   end
 end
 
-
-subsection Model settings
-  set Fixed temperature boundary indicators   = 0,1
-  set Prescribed velocity boundary indicators = 
-  set Tangential velocity boundary indicators = 0,1
-  set Zero velocity boundary indicators       = 
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
-
-  set Remove nullspace                        = net rotation
-end
-
 subsection Material model
   set Model name = simpler
-
   subsection Simpler model
     set Reference density             = 1
     set Reference specific heat       = 1.
@@ -89,9 +61,18 @@ subsection Material model
   end
 end
 
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 1
+    set Outer temperature = 0
+  end
+end
+
+
 ############### Parameters describing the temperature field
 # Angular mode is set to 4 in order to match the number of
-# convective cells reprted by Davies et al.
+# convective cells reported by Davies et al.
 
 subsection Initial conditions
   set Model name = spherical hexagonal perturbation
@@ -99,28 +80,35 @@ subsection Initial conditions
     set Angular mode          = 4
     set Rotation offset       = 0
   end
-
-  subsection Spherical gaussian perturbation
-    set Amplitude             = 0.01
-    set Angle                 = 0e0
-    set Non-dimensional depth = 0.7
-    set Sigma                 = 0.2
-    set Sign                  = 1
-  end
 end
 
 ############### Parameters describing the discretization
 
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 2
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    set alpha = 2
+    set beta  = 0.078
+    set cR    = 0.11
+  end
+end
+
 subsection Mesh refinement
   set Additional refinement times        = 
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 7
+  set Initial global refinement          = 5
   set Additional refinement times        = 
   set Refinement fraction                = 1
   set Coarsening fraction                = 0
+
   set Strategy                           = temperature
+
   set Time steps between mesh refinement = 0
 end
+
 
 ############### Parameters describing the what to do with the solution
 
@@ -137,6 +125,3 @@ subsection Postprocess
     set Time between graphical output = 1e6
   end
 end
-
-
-

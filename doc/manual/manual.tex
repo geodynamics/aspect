@@ -556,7 +556,7 @@ parameterizations.
 
 Note that below we will discuss examples of the dependence of coefficients on
 other quantities; which dependence is actually implemented in the code is a
-different matter. As we will discuss in Section~\ref{sec:parameters} and
+different matter. As we will discuss in Sections~\ref{sec:parameters} and
 \ref{sec:extending}, some versions of these models are already implemented and
 can be selected from the input parameter file; others are easy to add to
 \aspect{} by providing self-contained descriptions of a set of coefficients
@@ -5889,240 +5889,257 @@ The smaller the width, the closer the temperature gets to the predicted value of
 $T_2 = 1109.08 \, \text{K}$, demonstrating that we converge to the correct
 solution.
 
-\subsubsection{The 2D Cylindrical Shell Benchmark}
-\label{sec:benchmark-2D_cylindrical_shell}
-\textit{This section was contributed by William Durkin}.
-All of the benchmarks presented so far take place in a Cartesian domain. 
-Davies et al. describe a benchmark for a 2D spherical Earth that is 
-nondimensionalized such that 
 
+\subsubsection{The 2D cylindrical shell benchmarks by Davies et al.}
+\label{sec:benchmark-2D_cylindrical_shell}
+
+\textit{This section was contributed by William Durkin and Wolfgang Bangerth.}
+
+All of the benchmarks presented so far take place in a Cartesian domain. 
+Davies et al.~describe a benchmark for a 2D spherical Earth that is 
+nondimensionalized such that 
+\marginpar{Need to provide a reference to the Davies et al.~paper}
 \begin{table*}[h]
  \centering
  \begin{tabular}{ l l }
-    $r_{min}$ = 1.22 &  $\left. T \right|_{r_{min}}$ = 1 \\
-   $r_{max}$ = 2.22  &  $\left. T \right|_{r_{max}}$ = 0
+    $r_{\min}$ = 1.22 &  $\left. T \right|_{r_{min}}$ = 1 \\
+    $r_{\max}$ = 2.22 &  $\left. T \right|_{r_{max}}$ = 0
  \end{tabular}
 \end{table*}
 
-\par The benchmark is run for a series of apporximations (Boussinesq, Extended Boussinesq,
+The benchmark is run for a series of approximations (Boussinesq, Extended Boussinesq,
 Truncated Anelastic Liquid, and Anelastic Liquid), and temperature, velocity, and heat flux 
 calculations are compared with the results of other mantle modeling programs. \aspect{}
-will output all of these values directly except for the Nusselt number, which we must calculate outselves.
-The Nusselt number of the top and bottom surfaces, ${Nu}_T$ and ${Nu}_B$, respectively, are given by
-
- 
+will output all of these values directly except for the Nusselt number, which
+we must calculate ourselves from the heat fluxes that \aspect{} can compute.
+The Nusselt number of the top and bottom surfaces, ${Nu}_T$ and ${Nu}_B$,
+respectively, are defined by the authors of the benchmarks as
 \begin{equation}
-\label{NuTop}
-{Nu}_{T} = \frac{ln(f)}{2{\pi}r_{max}(1-f)}\int \limits_{0}^{2\pi} \frac{\partial T}{\partial r}\, d\theta  \\
+\label{eq:davies-NuTop}
+{Nu}_{T} = \frac{\ln(f)}{2{\pi}r_{\max}(1-f)}\int \limits_{0}^{2\pi} \frac{\partial T}{\partial r}\, d\theta  \\
 \end{equation}
 and
-
 \begin{equation*}
-{Nu}_{B} = \frac{fln(f)}{2{\pi}r_{min}(1-f)}\int \limits_{0}^{2\pi} \frac{\partial T}{\partial r}\, d\theta \\
+\label{eq:davies-NuBottom}
+{Nu}_{B} = \frac{f \ln(f)}{2{\pi}r_{\min}(1-f)}\int \limits_{0}^{2\pi} \frac{\partial T}{\partial r}\, d\theta \\
 \end{equation*}
+where $f$ is the ratio $\frac{r_{\min}}{r_{\max}}$.
 
-where f is the ratio $\frac{r_{min}}{r_{max}}$\\
-
-We can put this in terms of heat flux through the inner and outer surfaces as follows\\
-
+We can put this in terms of heat flux
 \begin{equation*}
 	q_r = -k\frac{\partial T}{\partial r}
 \end{equation*}
-
-where $q_r$ is heat flux in the radial direction. Let Q be the total heat that fluxes throug a surface.\\
-
+through the inner and outer surfaces,
+where $q_r$ is heat flux in the radial direction. Let $Q$ be the total heat that flows throug a surface,
 \begin{equation*}
-	Q = \int \limits_{0}^{2\pi} q_r\, d\theta
+  Q = \int \limits_{0}^{2\pi} q_r\, d\theta,
 \end{equation*}
-
-
-Equation \ref{NuTop} becomes\\
-
+then \eqref{eq:davies-NuTop} becomes
 \begin{equation*}
-	{Nu}_{T} = \frac{-Q_{T}ln(f)}{2\pi{r_{max}}(1-f)k}
+  {Nu}_{T} = \frac{-Q_{T}ln(f)}{2\pi{r_{max}}(1-f)k}
 \end{equation*}
-
 and similarly
-
 \begin{equation*}
-{Nu}_{B} = \frac{-Q_{B}fln(f)}{2\pi{r_{min}}(1-f)k}
+  {Nu}_{B} = \frac{-Q_{B}fln(f)}{2\pi{r_{min}}(1-f)k}.
 \end{equation*} 
+$Q_T$ and $Q_B$ are heat fluxes that \aspect{} can readily compute through the
+\texttt{heat flux statistics} postprocessor (see
+Section~\ref{parameters:Postprocess/List of postprocessors}).
+For further details on the nondimensionalization and equations used for each
+approximation, refer to Davies et al.
 
-For further details on the nondimensionalization and equations used for each approximation, refer to Davies et al. 
-
-\paragraph{Case 1.1: BA\_Ra104\_Iso\_ZS}\mbox{}\\
-\label{sec:case11_BA}
-
-This case is run with the following conditions:
-
-\begin{table*}[h]
- \centering
- \begin{tabular}{ l l }
-    Boussinesq Approximation &  Boundary Condition: Zero-Slip   \\
-    Rayleigh Number = $10^4$ &  Initial Conditions: D = 0, O = 4 \\ 
-    $\eta(T) = 1$
- \end{tabular}
-\end{table*}
-
-where D and O refer to the degree and order of a spherical harmonic that describes the 
-initial temperature. What is important here though is that the system evolve to four convective cells.
-We can explicitly tell \aspect{} to do this by setting the parameter \texttt{angular mode} to 4. 
-This is seen in \url{benchmark/davies_et_al/case-1.1.prm} \\
-
-\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-1.1.prm}
+The series of benchmarks is then defined by a number of cases relating to the
+exact equations chosen to model the fluid. We will discuss these in the
+following.
 
 
-\paragraph{Case 2.1: BA\_Ra104\_Iso\_FS}\mbox{}
-\label{sec:case21_BA}
+\paragraph{Case 1.1: BA\_Ra104\_Iso\_ZS}
+\label{sec:davies-case11_BA}
 
-\begin{table*}[h]
- \centering
- \begin{tabular}{ l l }
-    Boussinesq Approximation &  Boundary Condition: Free-Slip   \\
-    Rayleigh Number = $10^4$ &  Initial Conditions: D = 0, O = 4 \\ 
-    $\eta(T) = 1$
- \end{tabular}
-\end{table*}
+This case is run with the following settings:
+\begin{itemize}
+\item Boussinesq Approximation
+\item Boundary Condition: Zero-Slip
+\item Rayleigh Number = $10^4$ 
+\item Initial Conditions: $D = 0, O = 4$
+\item $\eta(T) = 1$
+\end{itemize}
+where $D$ and $O$ refer to the degree and order of a spherical harmonic that describes the 
+initial temperature. While the initial conditions matter, what is important
+here though is that the system evolve to four convective cells since we are
+only interested in the long term, steady state behavior.
 
-Case 2.1 is identical to case 1.1 with the exception that the boundary conditions are free-slip.
-Additinally, tangential rotation needs to be removed from the system. This is done by setting the 
-\texttt{Model settings} to look as follows: \\
+The model is relatively straightforward to set up, basing the input file on
+that discussed in Section~\ref{sec:shell-simple-2d}. The full input file can
+be found at \url{benchmark/davies_et_al/case-1.1.prm}, with the interesting
+parts excerpted as follows:
 
-\begin{lstlisting}[language=prmfile]
-subsection Model settings
-  set Remove nullspace                        = net rotation
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-1.1.prm.out}
 
-  set Fixed temperature boundary indicators   = 0,1
-  set Prescribed velocity boundary indicators = 
-  set Tangential velocity boundary indicators = 0,1
-  set Zero velocity boundary indicators       = 
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false 
-end
-\end{lstlisting}
-\mbox{}\\
-The script for case 2.1 located in \url{benchmark/davies_et_al/case-2.1.prm} \\
+We use the same trick here as in Section~\ref{sec:cookbooks-simple-box} to
+produce a model in which the density $\rho(T)$ in the temperature equation
+\eqref{eq:temperature} is almost constant (namely, by choosing a very small
+thermal expansion coefficient) as required by the benchmark, and instead
+prescribe the desired Rayleigh number by choosing a correspondingly large
+gravity.
 
-\paragraph{Case 2.2: BA\_Ra105\_Iso\_FS}\mbox{} 
-\label{sec:case22_BA}
-
-\begin{table*}[h]
- \centering
- \begin{tabular}{ l l }
-    Boussinesq Approximation &  Boundary Condition: Free-Slip   \\
-    Rayleigh Number = $10^5$ &  Initial Conditions: FSS: BA\_Ra104\_Iso\_FS \\ 
-    $\eta(T) = 1$ \\ 
- \end{tabular}
-\end{table*}
+Results for this and the other cases are shown below.
 
 
-For case 2.2, the system should have an increased Rayleigh number and begin with the final steady state of case 2.1.\\
- To start the model where case 2.1 left off, point case 2.2's output directory to a copy of
- case 2.1's results and increase the end time by 1 second.\\
+\paragraph{Case 2.1: BA\_Ra104\_Iso\_FS}
+\label{sec:davies-case21_BA}
 
-\begin{lstlisting}[language=prmfile]
-############### Global parameters
-# Case 2.2 begins with the final steady state solution of Case 2.1
-# Resume computiation must be set to true, and Output directory must
-# point to the folder that contains the results of Case 2.1.
+Case 2.1 uses the following setup, differing only in the boundary conditions:
+\begin{itemize}
+\item Boussinesq Approximation
+\item Boundary Condition: Free-Slip
+\item Rayleigh Number = $10^4$ 
+\item Initial Conditions: $D = 0, O = 4$
+\item $\eta(T) = 1$
+\end{itemize}
 
-set CFL number                             = 10
-set End time                               = 3
-set Output directory                       = output-2
-set Resume computation                     = true
-set Start time                             = 0
-set Use years in output instead of seconds = false
+As a consequence of the free slip boundary conditions, any solid body rotation
+of the entire system satisfies the Stokes equations with their boundary
+conditions. In other words, the solution of the problem is not unique: given a
+solution, adding a solid body rotation yields another solution. We select
+arbitrarily the one that has no net rotation (see
+Section~\ref{parameters:Model_20settings}). The section in the input file 
+that is relevant is then as follows (the full input file resides at
+\url{benchmark/davies_et_al/case-2.1.prm}):
+\index[prmindex]{Remove nullspace}
+\index[prmindexfull]{Model settings!Remove nullspace}
 
-subsection Checkpointing
-  set Steps between checkpoint = 15
-end
- 
-end
-\end{lstlisting}
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-2.1.prm.out}
 
-\mbox{}\\
-Set the Rayleigh number to $10^5$ by increasing the magnitude of gravity:\\
+Again, results are shown below.
 
-\begin{lstlisting}[language=prmfile]
-subsection Gravity model
-  set Model name = radial constant 
-  subsection Radial constant
-    set Magnitude =  1e11
-  end
-end
-\end{lstlisting}
-\mbox{}\\
-The full script for case 2.2 is located in \url{benchmark/davies_et_al/case-2.2.prm} \\
 
-\paragraph{Case 2.3: BA\_Ra103\_vv\_FS} \mbox{}
-\label{sec:case23_BA}
+\paragraph{Case 2.2: BA\_Ra105\_Iso\_FS}
+\label{sec:davies-case22_BA}
 
-\begin{table*}[h]
- \centering
- \begin{tabular}{ l l }
-    Boussinesq Approximation &  Boundary Condition: Free-Slip   \\
-    Rayleigh Number = $10^3$ &  Initial Conditions: FSS: BA\_Ra104\_Iso\_FS \\ 
-    $\eta(T) = 1000^{-T}$
- \end{tabular}
-\end{table*}
+Case 2.2 is described as follows:
+\begin{itemize}
+\item Boussinesq Approximation
+\item Boundary Condition: Free-Slip
+\item Rayleigh Number = $10^5$ 
+\item Initial Conditions: Final conditions of case 2.1 (BA\_Ra104\_Iso\_FS)
+\item $\eta(T) = 1$
+\end{itemize}
+In other words, we have an increased Rayleigh number and begin with the final
+steady state of case 2.1. To start the model where case 2.1 left off, the
+input file of case 2.1, \url{benchmark/davies_et_al/case-2.1.prm}, instructs
+\aspect{} to checkpoint itself every few time steps (see
+Section~\ref{sec:checkpoint-restart}). If case 2.2 uses the same
+output directory, we can then resume the computations from this checkpoint with
+an input file that prescribes a different Rayleigh number and a later input time:
 
-Viscosity is now a function of temperature. We create a plugin \url{benchmarks/davies_et_al/case2.3_plugin/VoT.cc}
-from the \texttt{simpler} material model to allow viscosity to depend on temperature such that $\eta(T) = 1000^{-T}$.
-The plugin is made by applying the following changes to \url{source/material_model/simpler.cc} :
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-2.2.prm.out}
 
+We increase the Rayleigh number to $10^5$ by increasing the magnitude of
+gravity in the input file.  The full script for case 2.2 is located in
+\url{benchmark/davies_et_al/case-2.2.prm}
+
+
+\paragraph{Case 2.3: BA\_Ra103\_vv\_FS}
+\label{sec:davies-case23_BA}
+
+Case 2.3 is a variation on the previous one:
+\begin{itemize}
+\item Boussinesq Approximation
+\item Boundary Condition: Free-Slip
+\item Rayleigh Number = $10^3$ 
+\item Initial Conditions: Final conditions of case 2.1 (BA\_Ra104\_Iso\_FS)
+\item $\eta(T) = 1000^{-T}$
+\end{itemize}
+The Rayleigh number is smaller here (and is selected using the gravity
+parameter in the input file, as before), but the more important change is that the
+viscosity is now a function of temperature. At the time of writing, there is
+no material model that would implement such a viscosity, so we
+create a plugin that does so for us (see Sections~\ref{sec:extending} and
+\ref{sec:write-plugin} in
+general, and Section~\ref{sec:material-models} for material models in
+particular). The code for it is located in 
+\url{benchmarks/davies_et_al/case-2.3-plugin/VoT.cc} and is essentially a copy of
+the \texttt{simpler} material model. The primary change compared to the 
+\texttt{simpler} material model is the line about the viscosity in the
+following function:
 \begin{lstlisting}[frame=single,language=C++]
 template <int dim>
-    void
-    VoT<dim>::
-    evaluate(const typename Interface<dim>::MaterialModelInputs &in, 
-               typename Interface<dim>::MaterialModelOutputs &out) const
+void
+VoT<dim>::
+evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+         typename Interface<dim>::MaterialModelOutputs &out) const
+{
+  for (unsigned int i=0; i<in.position.size(); ++i)
     {
-      for (unsigned int i=0; i<in.position.size(); ++i)
-        {
-          out.viscosities[i] = eta*std::pow(1000,(-1*in.temperature[i]));
-        
-          out.densities[i] = reference_rho * (1.0 - thermal_alpha * (in.temperature[i] - reference_T));
-          out.thermal_expansion_coefficients[i] = thermal_alpha;
-          out.specific_heat[i] = reference_specific_heat;
-          out.thermal_conductivities[i] = k_value;
-          out.compressibilities[i] = 0.0;
-        }
+      out.viscosities[i] = eta*std::pow(1000,(-in.temperature[i]));
+      out.densities[i] = reference_rho * (1.0 - thermal_alpha * (in.temperature[i] - reference_T));
+      out.thermal_expansion_coefficients[i] = thermal_alpha;
+      out.specific_heat[i] = reference_specific_heat;
+      out.thermal_conductivities[i] = k_value;
+      out.compressibilities[i] = 0.0;
     }
+}
 \end{lstlisting}
-\mbox{}\\
-To set the Rayleigh number to $10^3$, adjust the magnitude of gravity to $10^8$.\\
-The complete script for case 2.3 is located in \url{benchmark/davies_et_al/case-2.3.prm}
+Using the method described in Section~\ref{sec:write-plugin} and the files in
+the \texttt{benchmarks/davies\_et\_al/case-2.3-plugin}, we can compile our new
+material model into a shared library that we can then reference from the input file.
+The complete input file for case 2.3 is located in
+\url{benchmark/davies_et_al/case-2.3.prm} and contains among others the
+following parts:
 
-\paragraph{Results}\mbox{}\\
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-2.3.prm.out}
 
+
+\paragraph{Results}
+
+In the following, let us discuss some of the results of the benchmark setups
+discussed above. First, the final steady state temperature fields are shown in
+Fig.~\ref{fig:davies-2DcylinderFSS}. It is immediately obvious how the
+different Rayleigh numbers affect the width of the plumes. If one imagines a
+setup with constant gravity, constant inner and outer temperatures and
+constant thermal expension coefficient (this is not how we describe it in the
+input files, but we could have done so and it is closer to how we intuit about
+fluids than adjusting the gravity), then the Rayleigh number is inversely
+proportional to the viscosity -- and it is immediately clear that larger
+Rayleigh numbers (corresponding to lower viscosities) then lead to thinner
+plumes. This is nicely reflected in the visualizations.
 
 \begin{figure}[h]
-\label{fig:2DcylinderFSS}
-\subfigure[Case 1.1]{\includegraphics[width=3cm]{cookbooks/benchmarks/davies_et_al/case11_final}}
-\hfill
-\subfigure[Case 2.1]{\includegraphics[width=3cm]{cookbooks/benchmarks/davies_et_al/case21_final}}
-\hfill
-\subfigure[Case 2.2]{\includegraphics[width=3cm]{cookbooks/benchmarks/davies_et_al/case22_final}}
-\hfill
-\subfigure[Case 2.3]{\includegraphics[width=3cm]{cookbooks/benchmarks/davies_et_al/case23_final}}
-\hfill
-\caption{Final Steady State Temperatures for 2D Cylindrical Cases}
+  \subfigure[Case 1.1]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case11_final}}
+  \hfill
+  \subfigure[Case 2.1]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case21_final}}
+  \hfill
+  \subfigure[Case 2.2]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case22_final}}
+  \hfill
+  \subfigure[Case 2.3]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case23_final}}
+  \hfill
+  \caption{Davies et al.~benchmarks: Final steady state temperature fields for
+    the 2D cylindrical benchmark cases.}
+  \label{fig:davies-2DcylinderFSS}
 \end{figure}
+
+Secondly, Fig.~\ref{fig:davies-2DcylinderVrms} shows the root mean square
+velocity as a function of time for the various cases. It is obvious that they
+all converge to steady state solutions. However, there is an initial transient
+stage and, in cases 2.2 and 2.3, a sudden jolt to the system at the time where
+we switch from the model used to compute up to time $t=2$ to the
+different models used after that.
 
 \begin{figure}[h]
-\label{fig:2DcylinderFSS}
-\subfigure[Case 1.1]{\includegraphics[width=3.5cm]{cookbooks/benchmarks/davies_et_al/Case11Vrms}}
-\hfill
-\subfigure[Case 2.1]{\includegraphics[width=3.5cm]{cookbooks/benchmarks/davies_et_al/Case21Vrms}}
-\hfill
-\subfigure[Case 2.2]{\includegraphics[width=3.5cm]{cookbooks/benchmarks/davies_et_al/Case22Vrms}}
-\hfill
-\subfigure[Case 2.3]{\includegraphics[width=3.5cm]{cookbooks/benchmarks/davies_et_al/Case23Vrms}}
-\hfill
-\caption{Vrms for 2D Cylindrical Cases. Large jumps occur when transitioning from case 2.1 to cases 2.2 and 2.3 due to the rapid change of parameter settings.}
+  \subfigure[Case 1.1]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case11Vrms}}
+  \hfill
+  \subfigure[Case 2.1]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case21Vrms}}
+  \\
+  \subfigure[Case 2.2]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case22Vrms}}
+  \hfill
+  \subfigure[Case 2.3]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case23Vrms}}
+  \hfill
+  \caption{Davies et al.~benchmarks: $V_\text{rms}$ for 2D Cylindrical Cases. Large jumps occur when transitioning from case 2.1 to cases 2.2 and 2.3 due to the instantaneous change of parameter settings.}
+  \label{fig:davies-2DcylinderVrms}
 \end{figure}
 
-\mbox{}\\
+\marginpar{Need to say something more about this here}
 To compare the results of \aspect{} with those of other models, contact Davies et al. for access to 
 \url{https://docs.google.com/spreadsheet/ccc?key=
 0AruSwf4D-LtMdHFjUHNscWFpR1FWcExyejkzM0lfTUE&usp=sharing#gid=0}
@@ -6628,7 +6645,8 @@ the equations that \aspect{} solves. To implement a new material model, you
 need to overload the \href{doc/doxygen/classaspect_1_1MaterialModel_1_1Interface.html}{aspect::MaterialModel::Interface} class and use
 the \texttt{ASPECT\_REGISTER\_MATERIAL\_MODEL} macro to register your new
 class. The implementation of the new class should be in namespace
-\texttt{aspect::MaterialModel}.
+\texttt{aspect::MaterialModel}. An example of a material model implemented
+this way is given in Section~\ref{sec:davies-case23_BA}.
 
 Specifically, your new class needs to implement the following interface:
 \begin{lstlisting}[frame=single,language=C++]

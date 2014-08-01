@@ -1,10 +1,9 @@
-
 ############### Global parameters
 
 set CFL number                             = 10
 
 set End time                               = 2
-set Output directory                       = output-2
+set Output directory                       = output
 
 set Resume computation                     = false
 
@@ -20,29 +19,6 @@ end
 
 ############### Parameters describing the model
 
-subsection Boundary temperature model
-  set Model name = spherical constant
-  subsection Spherical constant
-    set Inner temperature = 1
-    set Outer temperature = 0
-  end
-end
-
-
-subsection Discretization
-  set Stokes velocity polynomial degree       = 2
-  set Temperature polynomial degree           = 2
-  set Use locally conservative discretization = false
-
-  subsection Stabilization parameters
-    set alpha = 2
-    set beta  = 0.078
-    set cR    = 0.11
-  end
-end
-
-
-
 subsection Geometry model
   set Model name = spherical shell
   subsection Spherical shell
@@ -52,6 +28,16 @@ subsection Geometry model
   end
 end
 
+subsection Model settings
+  set Remove nullspace                        = net rotation
+
+  set Fixed temperature boundary indicators   = 0,1
+  set Prescribed velocity boundary indicators = 
+  set Tangential velocity boundary indicators = 0,1
+  set Zero velocity boundary indicators       = 
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+end
 
 subsection Gravity model
   set Model name = radial constant 
@@ -72,43 +58,45 @@ subsection Material model
   end
 end
 
-subsection Model settings
-  set Remove nullspace                        = net rotation
-
-  set Fixed temperature boundary indicators   = 0,1
-  set Prescribed velocity boundary indicators = 
-  set Tangential velocity boundary indicators = 0,1
-  set Zero velocity boundary indicators       = 
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false 
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 1
+    set Outer temperature = 0
+  end
 end
+
 
 ############### Parameters describing the temperature field
 # Angular mode is set to 4 in order to match the number of
-# convective cells reprted by Davies et al.
+# convective cells reported by Davies et al.
 
 subsection Initial conditions
   set Model name = spherical hexagonal perturbation
   subsection Spherical hexagonal perturbation
     set Angular mode          = 4
-    set Rotation offset       = 0  
-  end
-
-  subsection Spherical gaussian perturbation
-    set Amplitude             = 0.01
-    set Angle                 = 0e0
-    set Non-dimensional depth = 0.7
-    set Sigma                 = 0.2
-    set Sign                  = 1
+    set Rotation offset       = 0
   end
 end
 
 ############### Parameters describing the discretization
 
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 2
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    set alpha = 2
+    set beta  = 0.078
+    set cR    = 0.11
+  end
+end
+
 subsection Mesh refinement
   set Additional refinement times        = 
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 7
+  set Initial global refinement          = 5
   set Additional refinement times        = 
   set Refinement fraction                = 1
   set Coarsening fraction                = 0
@@ -124,7 +112,6 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics,temperature statistics,heat flux statistics, depth average, velocity boundary statistics, spherical velocity statistics
 
-
   subsection Visualization
     set Number of grouped files       = 0
     set Output format                 = vtu
@@ -134,8 +121,4 @@ subsection Postprocess
   subsection Depth average
     set Time between graphical output = 1e6
   end
-
 end
-
-
-
