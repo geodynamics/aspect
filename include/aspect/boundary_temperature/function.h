@@ -68,7 +68,7 @@ namespace aspect
         update ();
 
         /**
-         * Return the minimal the temperature on that part of the boundary on
+         * Return the minimal temperature on that part of the boundary on
          * which Dirichlet conditions are posed.
          *
          * This value is used in computing dimensionless numbers such as the
@@ -78,7 +78,7 @@ namespace aspect
         double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
-         * Return the maximal the temperature on that part of the boundary on
+         * Return the maximal temperature on that part of the boundary on
          * which Dirichlet conditions are posed.
          *
          * This value is used in computing dimensionless numbers such as the

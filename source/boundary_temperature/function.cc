@@ -136,18 +136,18 @@ namespace aspect
   namespace BoundaryTemperature
   {
     ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(Function,
-                                                 "function",
-                                                 "Implementation of a model in which the boundary "
-                                                 "temperature is given in terms of an explicit formula "
-                                                 "that is elaborated in the parameters in section "
-                                                 "``Boundary temperature model|Function''. "
-                                                 "\n\n"
-                                                 "Likewise, since the symbol $t$ indicating time "
-                                                 "may appear in the formulas for the prescribed "
-                                                 "temperatures, it is interpreted as having units "
-                                                 "seconds unless the global input parameter ``Use "
-                                                 "years in output instead of seconds'' is set, in "
-                                                 "which case we interpret the formula expressions "
-                                                 "as having units year.")
+                                               "function",
+                                               "Implementation of a model in which the boundary "
+                                               "temperature is given in terms of an explicit formula "
+                                               "that is elaborated in the parameters in section "
+                                               "``Boundary temperature model|Function''. "
+                                               "\n\n"
+                                               "Since the symbol $t$ indicating time "
+                                               "may appear in the formulas for the prescribed "
+                                               "temperatures, it is interpreted as having units "
+                                               "seconds unless the global input parameter ``Use "
+                                               "years in output instead of seconds'' is set, in "
+                                               "which case we interpret the formula expressions "
+                                               "as having units year.")
   }
 }

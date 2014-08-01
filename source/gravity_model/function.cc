@@ -50,7 +50,7 @@ namespace aspect
       {
         prm.enter_subsection("Function");
         {
-          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+          Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
         }
         prm.leave_subsection();
       }
@@ -91,7 +91,9 @@ namespace aspect
   namespace GravityModel
   {
     ASPECT_REGISTER_GRAVITY_MODEL(Function,
-                                       "function",
-                                       "Gravity is given in terms of an explicit formula")
+                                  "function",
+                                  "Gravity is given in terms of an explicit formula "
+                                  "that is elaborated in the parameters in section "
+                                  "``Gravity model|Function''.")
   }
 }
