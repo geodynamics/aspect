@@ -7,6 +7,13 @@
  *
  * <ol>
  *
+ * <li> New: There are now function parser plugins for the
+ * gravity model and boundary temperature model. Gravity can
+ * be prescribed in dependence of position and boundary temperature
+ * in dependence of position and time.
+ * <br>
+ * (Sanja Panovska, Rene Gassmoeller, 2014/08/01)
+ *
  * <li> New: There is now a postprocessor that outputs multiple 
  * material properties with just a single call to the material
  * model. This is more efficient, but only matters for complex
