@@ -7,6 +7,25 @@
  *
  * <ol>
  *
+ * <li> New: There are now function parser plugins for the
+ * gravity model and boundary temperature model. Gravity can
+ * be prescribed in dependence of position and boundary temperature
+ * in dependence of position and time.
+ * <br>
+ * (Sanja Panovska, Rene Gassmoeller, 2014/08/01)
+ *
+ * <li> New: There is now a postprocessor that outputs multiple 
+ * material properties with just a single call to the material
+ * model. This is more efficient, but only matters for complex
+ * material models.
+ * <br>
+ * (Rene Gassmoeller, 2014/08/01)
+ * 
+ * <li> New: There is now a section in the manual detailing the
+ * "Burstedde" benchmark and its verification.
+ * <br>
+ * (Iris van Zelst, Wolfgang Bangerth, 2014/07/07)
+ *
  * <li> New: Added "maximum refinement function" plugin to limit the depth of
  * the mesh octree.
  * <br>

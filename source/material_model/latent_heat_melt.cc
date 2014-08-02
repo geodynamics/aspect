@@ -494,11 +494,11 @@ namespace aspect
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "4e-5",
                              Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\alpha_s. "
+                             "The value of the thermal expansion coefficient $\\alpha_s$. "
                              "Units: $1/K$.");
           prm.declare_entry ("Thermal expansion coefficient of melt", "6.8e-5",
                              Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\alpha_f. "
+                             "The value of the thermal expansion coefficient $\\alpha_f$. "
                              "Units: $1/K$.");
           prm.declare_entry ("Compressibility", "5.124e-12",
                              Patterns::Double (0),
@@ -726,7 +726,7 @@ namespace aspect
                                    "parameterization of hydrous mantle melting) and the one for "
                                    "pyroxenite from Sobolev et al., 2011 (Linking mantle plumes, "
                                    "large igneous provinces and environmental catastrophes). "
-                                   "The model assumes a constant entropy change for melting 100% "
+                                   "The model assumes a constant entropy change for melting 100\\% "
                                    "of the material, which can be specified in the input file. "
                                    "The partial derivatives of entropy with respect to temperature "
                                    "and pressure required for calculating the latent heat consumption "
