@@ -7,6 +7,13 @@
  *
  * <ol>
  *
+ * <li> New: There is now a postprocessor that outputs multiple 
+ * material properties with just a single call to the material
+ * model. This is more efficient, but only matters for complex
+ * material models.
+ * <br>
+ * (Rene Gassmoeller, 2014/08/01)
+ * 
  * <li> New: There is now a section in the manual detailing the
  * "Burstedde" benchmark and its verification.
  * <br>
