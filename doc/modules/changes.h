@@ -26,6 +26,11 @@
  * <br>
  * (Iris van Zelst, Wolfgang Bangerth, 2014/07/07)
  *
+ * <li> New: Added "maximum refinement function" plugin to limit the depth of
+ * the mesh octree.
+ * <br>
+ * (Jonathan Perry-Houts, 2014/07/03)
+ *
  * <li> Changed: The viscosity in the steinberger material model can now be
  * calculated by taking either the lateral averaged temperature or the
  * adiabatic temperature in this depth as reference.
