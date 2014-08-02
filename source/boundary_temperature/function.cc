@@ -88,7 +88,7 @@ namespace aspect
         {
           Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
 
-          prm.declare_entry ("Minimal temperature", "0",
+          prm.declare_entry ("Minimal temperature", "273",
                              Patterns::Double (),
                              "Minimal temperature. Units: K.");
           prm.declare_entry ("Maximal temperature", "3773",
@@ -148,6 +148,16 @@ namespace aspect
                                                "seconds unless the global input parameter ``Use "
                                                "years in output instead of seconds'' is set, in "
                                                "which case we interpret the formula expressions "
-                                               "as having units year.")
+                                               "as having units year."
+                                               "\n\n"
+                                               "Because this class simply takes what the "
+                                               "function calculates, this class can not "
+                                               "know certain pieces of information such as the "
+                                               "minimal and maximal temperature on the boundary. "
+                                               "For operations that require this, for example in "
+                                               "postprocessing, this boundary temperature model "
+                                               "must therefore be told what the minimal and "
+                                               "maximal values on the boundary are. This is done "
+                                               "using parameters set in section ``Boundary temperature model/Initial temperature''.")
   }
 }
