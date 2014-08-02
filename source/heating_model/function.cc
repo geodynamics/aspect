@@ -68,7 +68,7 @@ namespace aspect
       {
         prm.enter_subsection("Function");
         {
-          Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
+          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
         }
         prm.leave_subsection();
       }
