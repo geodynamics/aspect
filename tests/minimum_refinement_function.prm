@@ -157,8 +157,20 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 1
   subsection Minimum refinement function
     set Function constants  = 
+
+    # This is in fact the default value
+    set Coordinate system   = depth
+
+    # The following lines are equal to set the line:
+    # set Function expression = 4 + 2*sin(x*pi/250000)
+    # which implies:
+    # set Variable names    = x,y
+    # because that is the default value for Variable names.
+    # To illustrate the possibility to rename function variables
+    # in your favourite naming scheme we use the following:
+    set Variable names      = depth,not_used1
     set Function expression = 4 + 2*sin(depth*pi/250000)
-    set Variable names      = depth
+
   end
 end
 

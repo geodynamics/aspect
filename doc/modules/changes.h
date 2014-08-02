@@ -7,6 +7,12 @@
  *
  * <ol>
  *
+ * <li> Changed: The minimum refinement function now always declares
+ * three variables. In the 'depth' option only the first one is
+ * set to the depth, the other variables are set to zero.
+ * <br>
+ * (Rene Gassmoeller, 2014/08/04)
+ *
  * <li> New: There are now function parser plugins for the
  * gravity model and boundary temperature model. Gravity can
  * be prescribed in dependence of position and boundary temperature
