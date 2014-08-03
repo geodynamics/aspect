@@ -4994,7 +4994,7 @@ purpose-built plugins, they are kept separate from the more generic plugins in
 the normal source tree. Instead, the benchmarks have all the necessary code in
 \texttt{.cc} files in the benchmark directories. Those are then compiled into a shared
 library that will be used by \aspect{} if it is referenced in a \texttt{.prm}
-file. Let's take the SolCx benchmark as an example (also see Section \ref{sec:benchmark-solcx}).
+file. Let's take the SolCx benchmark as an example (see Section \ref{sec:benchmark-solcx}).
 The directory contains:
 \begin{itemize}
  \item \texttt{solcx.cc} -- the code file containing a material model
@@ -5003,7 +5003,9 @@ The directory contains:
  \item \texttt{CMakeLists.txt} -- a cmake configuration that allows you to
    compile \texttt{solcx.cc}.
 \end{itemize}
-To be able to run the benchmarks you need to:
+To run this benchmark you need to follow the general outline of
+steps discussed in Section~\ref{sec:write-plugin}. For the current case, this
+amounts to the following:
 \begin{enumerate}
  \item Move into the directory of that particular benchmark:
 \begin{verbatim}
@@ -5013,8 +5015,12 @@ To be able to run the benchmarks you need to:
 \begin{verbatim}
  $ cmake .  
 \end{verbatim}
- If the script is unable to pick up where \aspect{} is installed, you can
- specify this using \texttt{-D ASPECT\_DIR=$<$...$>$}.
+ By default, \texttt{cmake} will look for the \aspect{} binary and other
+ information in a number of directories relative to the current one.
+ If it is unable to pick up where \aspect{} was built and installed, you can
+ specify this directory explicitly this using \texttt{-D
+   ASPECT\_DIR=$<$...$>$} as an additional flag to \texttt{cmake}, where
+ \texttt{$<$...$>$} is the path to the build directory.
  \item Build the library:
 \begin{verbatim}
  $ make
@@ -5025,10 +5031,10 @@ Finally, you can run \aspect{} with \texttt{solcx.prm}:
 \begin{verbatim}
  $ ../../aspect solcx.prm
 \end{verbatim}
-Note that you need to run \aspect{} from the current directory, because
-\texttt{solcx.prm} refers to the plugin as ``./libsolcx.so''. For more
-information about plugins in shared libraries see Section
-\ref{sec:write-plugin}.
+where again you may have to use the appropriate path to get to the \aspect{}
+executable. You will need to run \aspect{} from the current directory because
+\texttt{solcx.prm} refers to the plugin as \texttt{./libsolcx.so}, i.e., in
+the current directory.
 
 
 
@@ -5896,9 +5902,9 @@ solution.
 \textit{This section was contributed by William Durkin and Wolfgang Bangerth.}
 
 All of the benchmarks presented so far take place in a Cartesian domain. 
-Davies et al.~describe a benchmark for a 2D spherical Earth that is 
+Davies et al.~describe a benchmark (in a paper that is currently still being
+written) for a 2D spherical Earth that is  
 nondimensionalized such that 
-\marginpar{Need to provide a reference to the Davies et al.~paper}
 \begin{table*}[h]
  \centering
  \begin{tabular}{ l l }
@@ -5936,11 +5942,11 @@ where $q_r$ is heat flux in the radial direction. Let $Q$ be the total heat that
 \end{equation*}
 then \eqref{eq:davies-NuTop} becomes
 \begin{equation*}
-  {Nu}_{T} = \frac{-Q_{T}ln(f)}{2\pi{r_{max}}(1-f)k}
+  {Nu}_{T} = \frac{-Q_{T}\ln(f)}{2\pi{r_{\max}}(1-f)k}
 \end{equation*}
 and similarly
 \begin{equation*}
-  {Nu}_{B} = \frac{-Q_{B}fln(f)}{2\pi{r_{min}}(1-f)k}.
+  {Nu}_{B} = \frac{-Q_{B}f\ln(f)}{2\pi{r_{\min}}(1-f)k}.
 \end{equation*} 
 $Q_T$ and $Q_B$ are heat fluxes that \aspect{} can readily compute through the
 \texttt{heat flux statistics} postprocessor (see
@@ -6059,7 +6065,8 @@ create a plugin that does so for us (see Sections~\ref{sec:extending} and
 \ref{sec:write-plugin} in
 general, and Section~\ref{sec:material-models} for material models in
 particular). The code for it is located in 
-\url{benchmarks/davies_et_al/case-2.3-plugin/VoT.cc} and is essentially a copy of
+\url{benchmarks/davies_et_al/case-2.3-plugin/VoT.cc} (where ``VoT'' is short
+for ``viscosity as a function of temperature'') and is essentially a copy of
 the \texttt{simpler} material model. The primary change compared to the 
 \texttt{simpler} material model is the line about the viscosity in the
 following function:
@@ -6081,7 +6088,8 @@ evaluate(const typename Interface<dim>::MaterialModelInputs &in,
     }
 }
 \end{lstlisting}
-Using the method described in Section~\ref{sec:write-plugin} and the files in
+Using the method described in Sections~\ref{sec:benchmark-run} and
+\ref{sec:write-plugin}, and the files in 
 the \texttt{benchmarks/davies\_et\_al/case-2.3-plugin}, we can compile our new
 material model into a shared library that we can then reference from the input file.
 The complete input file for case 2.3 is located in
@@ -6139,11 +6147,38 @@ different models used after that.
   \label{fig:davies-2DcylinderVrms}
 \end{figure}
 
-\marginpar{Need to say something more about this here}
-To compare the results of \aspect{} with those of other models, contact Davies et al. for access to 
-\url{https://docs.google.com/spreadsheet/ccc?key=
-0AruSwf4D-LtMdHFjUHNscWFpR1FWcExyejkzM0lfTUE&usp=sharing#gid=0}
+These runs also produce quantitative data that will be published along with
+the concise descriptions of the benchmarks and a comparison with other
+codes. In particular, some of the criteria listed above to judge the accuracy
+of results are listed in Table~\ref{tab:davies-et-al-results}.%
+\footnote{The input files available in the \texttt{benchmark/davies\_et\_al}
+  directory use 5 global refinements in order to provide cases that can be run
+  without excessive trouble on a normal computer. However, this is not enough
+  to achieve reasonable accuracy and both the data shown below and the data
+  submitted to the benchmarking effort uses 7
+  global refinement steps, corresponding to a mesh with 1536 cells in
+  tangential and 128 cells in radial direction. Computing on such meshes is
+  not cheap, as it leads to a problem size of more than 2.5 million
+  unknowns. It is best done using a parallel computation.}
 
+\begin{table}[tbp]
+  \centering
+  \begin{tabular}{|l|c|c|c|c|}
+    \hline
+    Case & $\left<T\right>$ & $Nu_T$ & $Nu_B$ & $V_\text{rms}$
+    \\ \hline
+    1.1 & 0.403 & 2.464 & 2.468 & 19.053 
+    \\ 
+    2.1 & 0.382 & 4.7000 & 4.706 & 46.244
+    \\ 
+    2.2 & 0.382 & 9.548 & 9.584 & 193.371
+    \\ 
+    2.3 & 0.582 & 5.102 & 5.121 & 79.632
+    \\ \hline
+  \end{tabular}
+  \caption{\it Davies et al. benchmarks: Numerical results for some of the output quantities required by the benchmarks and the various cases considered.}
+  \label{tab:davies-et-al-results}
+\end{table}
  
 
 
@@ -6596,7 +6631,8 @@ ASPECT_SETUP_PLUGIN(my_plugin)
  make
     \end{verbatim}
     and it should compile your plugin files into a shared library
-    \texttt{my\_plugin.so}. Of course, you may want to choose different names
+    \texttt{my\_plugin.so}. A concrete example of this process is discussed in
+    Section~\ref{sec:benchmark-run}. Of course, you may want to choose different names
     for the source files \texttt{source\_1.cc}, \texttt{source\_2.cc} or the name of
     the plugin \texttt{my\_plugin}.
 
@@ -6623,7 +6659,10 @@ files into a single shared library. In the latter case, you only need to list a
 single library in your input file, but each plugin will still be selectable in
 the various sections of your input file as long as each of your classes has a
 corresponding \texttt{ASPECT\_REGISTER\_*} statement somewhere in the file
-where you have its definition.}
+where you have its definition. An even simpler approach is to just put
+everything into a single file -- there is no requirement that different
+plugins are in separate files, though this is often convenient from a code
+organization point of view.}
 
 \note{If you choose to compile your plugins into a shared library yourself, you
   will need to recompile them every time you upgrade your \aspect{} installation
