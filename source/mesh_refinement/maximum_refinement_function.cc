@@ -52,8 +52,9 @@ namespace aspect
                   if (coordinate_system == depth)
                     {
                       const double depth = this->get_geometry_model().depth(vertex);
-                      const Point<1> point(depth);
-                      maximum_refinement_level = max_refinement_level_depth.value(point);
+                      Point<dim> point;
+                      point(0) = depth;
+                      maximum_refinement_level = max_refinement_level.value(point);
                     }
                   else if (coordinate_system == spherical)
                     {
@@ -66,11 +67,11 @@ namespace aspect
                       for (unsigned int i = 0;i<dim;++i)
                         point[i] = spherical_coordinates[i];
 
-                      maximum_refinement_level = max_refinement_level_position.value(point);
+                      maximum_refinement_level = max_refinement_level.value(point);
                     }
                   else if (coordinate_system == cartesian)
                     {
-                      maximum_refinement_level = max_refinement_level_position.value(vertex);
+                      maximum_refinement_level = max_refinement_level.value(vertex);
                     }
 
                   if (cell->level() >= rint(maximum_refinement_level))
@@ -109,21 +110,17 @@ namespace aspect
            */
           prm.declare_entry ("Coordinate system", "depth",
                              Patterns::Selection ("depth|cartesian|spherical"),
-                             "A selection, which determines the assumed coordinate "
+                             "A selection that determines the assumed coordinate "
                              "system for the function variables. Allowed values "
                              "are 'depth', 'cartesian' and 'spherical'. 'depth' "
-                             "requires a function expression that only "
-                             "depends on one variable, which is interpreted to "
+                             "will create a function, in which only the first "
+                             "variable is non-zero, which is interpreted to "
                              "be the depth of the point. 'spherical' coordinates "
                              "are interpreted as r,phi or r,phi,theta in 2D/3D "
                              "respectively with theta being the polar angle.");
           /**
            * Let the function that describes the maximal level of refinement
-           * as a function of position declare its parameters. This is actually
-           * not the one that parses the parameters in case the user choose
-           * 'depth' as coordinate dependence, but the parameters of the depth
-           * function are a subset of the parameters of this one so everything
-           * should work out ok.
+           * as a function of position declare its parameters.
            * This defines the maximum refinement level each cell should have,
            * and that can not be exceeded by coarsening.
            */
@@ -153,10 +150,7 @@ namespace aspect
 
           try
             {
-              if (coordinate_system == depth)
-                max_refinement_level_depth.parse_parameters (prm);
-              else
-                max_refinement_level_position.parse_parameters (prm);
+              max_refinement_level.parse_parameters (prm);
             }
           catch (...)
             {
@@ -186,10 +180,25 @@ namespace aspect
                                               "explicit formula with the depth or position "
                                               "as argument. Which coordinate representation "
                                               "is used is determined by an input parameter. "
-                                              "Note that the order of spherical coordinates "
-                                              "is r,phi,theta and not r,theta,phi, since this "
-                                              "allows for dimension independent expressions. "
+                                              "Whatever the coordinate system chosen, the "
+                                              "function you provide in the input file will "
+                                              "by default depend on variables 'x', 'y' and "
+                                              "'z' (if in 3d). However, the meaning of these "
+                                              "symbols depends on the coordinate system. In "
+                                              "the Cartesian coordinate system, they simply "
+                                              "refer to their natural meaning. If you have "
+                                              "selected 'depth' for the coordinate system, "
+                                              "then 'x' refers to the depth variable and 'y' "
+                                              "and 'z' will simply always be zero. If you "
+                                              "have selected a spherical coordinate system, "
+                                              "then 'x' will refer to the radial distance of "
+                                              "the point to the origin, 'y' to the azimuth "
+                                              "angle and 'z' to the polar angle measured "
+                                              "positive from the north pole. Note that the "
+                                              "order of spherical coordinates is r,phi,theta "
+                                              "and not r,theta,phi, since this allows for "
+                                              "dimension independent expressions. "
                                               "After evaluating the function, its values are "
-                                              "rounded to the nearest integer. ")
+                                              "rounded to the nearest integer.")
   }
 }
