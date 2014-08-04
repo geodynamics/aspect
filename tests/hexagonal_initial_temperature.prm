@@ -1,0 +1,94 @@
+# Test the spherical hexagonal perturbation initial temperature model
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1613.0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = IMPES
+
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 1
+    set Outer temperature = 0
+  end
+end
+
+subsection Termination criteria
+  set Termination criteria      = end step
+  set End step                  = 10
+
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius = 3481000
+    set Outer radius = 6371000
+    set Opening angle = 360
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = spherical hexagonal perturbation
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1613 # default: 293
+    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1e22    # default: 5e24
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Additional refinement times              = 
+
+  set Strategy = velocity
+   set Time steps between mesh refinement       = 2
+
+  set Refinement fraction                      = 0.1
+  set Coarsening fraction                      = 0.0
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0, 1
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 0
+  set Zero velocity boundary indicators       = 1
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics
+
+  subsection Visualization
+     set Output format                 = gnuplot
+  end
+end
+

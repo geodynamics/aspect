@@ -7,6 +7,17 @@
  *
  * <ol>
  *
+ * <li> New: The <code>spherical hexagonal perturbation</code> initial
+ * temperature model has been generalized to allow other modes than just
+ * the hexagonal one.
+ * <br>
+ * (Joey Durkin, 2014/08/04)
+ *
+ * <li> New: The <code>spherical shell</code> geometry model in 2d now takes
+ * additional parameters indicating the number of circumferential cells.
+ * <br>
+ * (Joey Durkin, 2014/08/04)
+ *
  * <li> Changed: Updated maximum refinement function with the same
  * bugfix as the minimum refinement function. It now always declares
  * dim number of variables. When using the 'depth' coordinate system,
@@ -17,7 +28,7 @@
  * <li> Fixed: The viscosity mesh refinement criterion did not ask
  * the material model for the viscosity, therefore it did not work
  * with many material models. Some material models calculate the
- * viscosity anyway, so it worked in that cases. Now the criterion 
+ * viscosity anyway, so it worked in that cases. Now the criterion
  * asks correctly for the viscosity.
  * <br>
  * (Rene Gassmoeller, Juliane Dannberg 2014/08/04)
@@ -35,13 +46,13 @@
  * <br>
  * (Sanja Panovska, Rene Gassmoeller, 2014/08/01)
  *
- * <li> New: There is now a postprocessor that outputs multiple 
+ * <li> New: There is now a postprocessor that outputs multiple
  * material properties with just a single call to the material
  * model. This is more efficient, but only matters for complex
  * material models.
  * <br>
  * (Rene Gassmoeller, 2014/08/01)
- * 
+ *
  * <li> New: There is now a section in the manual detailing the
  * "Burstedde" benchmark and its verification.
  * <br>
@@ -52,10 +63,9 @@
  * <br>
  * (Jonathan Perry-Houts, 2014/07/03)
  *
- * <li> Changed: The viscosity in the steinberger material model can now be
- * calculated by taking either the lateral averaged temperature or the
- * adiabatic temperature in this depth as reference.
- * <br>
+ * <li> Changed: The viscosity in the Steinberger material model can now be
+ * calculated by taking either the laterally averaged temperature or the
+ * adiabatic temperature at this depth as reference.
  * (Rene Gassmoeller, 2014/06/20)
  *
  * <li> Changed: The minimum refinement function is now evaluated at every

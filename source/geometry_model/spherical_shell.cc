@@ -42,7 +42,15 @@ namespace aspect
                                       Point<dim>(),
                                       R0,
                                       R1,
-                                      (dim==3) ? 96 : 12,
+                                      (n_cells_along_circumference == 0
+				       ?
+				       // automatic choice that leads to reasonable
+				       // meshes with the typical aspect ratio of
+				       // the Earth
+				       (dim==3 ? 96 : 12)
+				       :
+				       // user choice
+				       n_cells_along_circumference),
                                       true);
         }
       else if (phi == 90)
@@ -59,7 +67,8 @@ namespace aspect
           GridGenerator::half_hyper_shell (coarse_grid,
                                            Point<dim>(),
                                            R0,
-                                           R1,0,
+                                           R1,
+					   0,
                                            true);
         }
       else
@@ -186,6 +195,28 @@ namespace aspect
                              Patterns::Double (0, 360),
                              "Opening angle in degrees of the section of the shell "
                              "that we want to build. Units: degrees.");
+
+          prm.declare_entry ("Cells along circumference", "0",
+                             Patterns::Integer (0),
+                             "The number of cells in circumferential direction that are "
+                             "created in the coarse mesh in 2d. If zero, this number "
+			     "is chosen automatically in a way that produces meshes "
+			     "in which cells have a reasonable aspect ratio for models "
+			     "in which the depth of the mantle is roughly that of the "
+			     "Earth. For planets with much shallower mantles and larger "
+			     "cores, you may want to chose a larger number to avoid "
+			     "cells that are elongated in tangential and compressed in "
+			     "radial direction."
+			     "\n\n"
+			     "In 3d, the number of cells is computed differently and does "
+			     "not have an easy interpretation. Valid values for this parameter "
+			     "in 3d are 0 (let this class choose), 6, 12 and 96. "
+			     "Other possible values may be discussed in the documentation "
+			     "of the deal.II function GridGenerator::hyper_shell. "
+			     "The parameter is best left at its default in 3d."
+			     "\n\n"
+			     "In either case, this parameter is ignored unless the opening "
+			     "angle of the domain is 360 degrees.");
         }
         prm.leave_subsection();
       }
@@ -205,6 +236,7 @@ namespace aspect
           R0  = prm.get_double ("Inner radius");
           R1  = prm.get_double ("Outer radius");
           phi = prm.get_double ("Opening angle");
+          n_cells_along_circumference = prm.get_integer ("Cells along circumference");
         }
         prm.leave_subsection();
       }
