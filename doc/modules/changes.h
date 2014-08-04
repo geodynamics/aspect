@@ -7,6 +7,13 @@
  *
  * <ol>
  *
+ * <li> Changed: Updated maximum refinement function with the same
+ * bugfix as the minimum refinement function. It now always declares
+ * dim number of variables. When using the 'depth' coordinate system,
+ * only the first variable is used. The others are set to zero.
+ * <br>
+ * (Jonathan Perry-Houts, 2014/08/04)
+ *
  * <li> Fixed: The viscosity mesh refinement criterion did not ask
  * the material model for the viscosity, therefore it did not work
  * with many material models. Some material models calculate the

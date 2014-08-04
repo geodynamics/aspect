@@ -80,12 +80,12 @@ namespace aspect
         } coordinate_system;
 
         /**
-         * A function object representing the maximum refinement level. Which
-         * of the two functions is actually evaluated is determined by the
-         * 'Coordinate dependence' input parameter.
+         * A function object representing the maximum refinement level. The
+         * function always depends on 3 variables, although in the case of the
+         * 'depth' coordinate system only the first is used to evaluate the
+         * function.
          */
-        Functions::ParsedFunction<1> max_refinement_level_depth;
-        Functions::ParsedFunction<dim> max_refinement_level_position;
+        Functions::ParsedFunction<dim> max_refinement_level;
 
     };
   }
