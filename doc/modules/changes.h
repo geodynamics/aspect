@@ -7,6 +7,14 @@
  *
  * <ol>
  *
+ * <li> Fixed: The viscosity mesh refinement criterion did not ask
+ * the material model for the viscosity, therefore it did not work
+ * with many material models. Some material models calculate the
+ * viscosity anyway, so it worked in that cases. Now the criterion 
+ * asks correctly for the viscosity.
+ * <br>
+ * (Rene Gassmoeller, Juliane Dannberg 2014/08/04)
+ *
  * <li> Changed: The minimum refinement function now always declares
  * three variables. In the 'depth' option only the first one is
  * set to the depth, the other variables are set to zero.
