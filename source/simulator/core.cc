@@ -323,13 +323,10 @@ namespace aspect
          p != parameters.tangential_velocity_boundary_indicators.end();
          ++p)
       open_velocity_boundary_indicators.erase (*p);
-//TODO: The "correct" condition would be to not do the correction for compressible
-    // models if there are either open boundaries, or if there are boundaries
-    // where the prescribed velocity is so that in- and outflux do not exactly
-    // match
+
+    // we need to do the rhs compatibility modification, if the model is
+    // compressible, and there is no open boundary to balance the pressure
     do_pressure_rhs_compatibility_modification = (material_model->is_compressible()
-                                                  &&
-                                                  (parameters.prescribed_velocity_boundary_indicators.size() == 0)
                                                   &&
                                                   (open_velocity_boundary_indicators.size() == 0));
 

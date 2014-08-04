@@ -485,7 +485,7 @@ namespace aspect
           }
         distributed_stokes_solution.compress(VectorOperation::insert);
 
-        if (material_model->is_compressible ())
+        if (do_pressure_rhs_compatibility_modification)
           make_pressure_rhs_compatible(system_rhs);
 
         // we need a temporary vector for the residual (even if we don't care about it)
@@ -582,7 +582,7 @@ namespace aspect
     // if the model is compressible then we need to adjust the right hand
     // side of the equation to make it compatible with the matrix on the
     // left
-    if (material_model->is_compressible ())
+    if (do_pressure_rhs_compatibility_modification)
       make_pressure_rhs_compatible(system_rhs);
 
     // (ab)use the distributed solution vector to temporarily put a residual in
