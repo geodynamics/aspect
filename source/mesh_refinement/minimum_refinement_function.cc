@@ -199,6 +199,10 @@ namespace aspect
                                               "and not r,theta,phi, since this allows for "
                                               "dimension independent expressions. "
                                               "After evaluating the function, its values are "
-                                              "rounded to the nearest integer.")
+                                              "rounded to the nearest integer."
+					      "\n\n"
+					      "The format of these "
+					      "functions follows the syntax understood by the "
+					      "muparser library, see Section~\\ref{sec:muparser-format}.")
   }
 }

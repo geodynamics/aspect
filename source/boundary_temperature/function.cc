@@ -158,6 +158,10 @@ namespace aspect
                                                "postprocessing, this boundary temperature model "
                                                "must therefore be told what the minimal and "
                                                "maximal values on the boundary are. This is done "
-                                               "using parameters set in section ``Boundary temperature model/Initial temperature''.")
+                                               "using parameters set in section ``Boundary temperature model/Initial temperature''."
+					       "\n\n"
+					       "The format of these "
+					       "functions follows the syntax understood by the "
+					       "muparser library, see Section~\\ref{sec:muparser-format}.")
   }
 }

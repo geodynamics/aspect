@@ -210,7 +210,9 @@ namespace aspect
                              "The function object in the Function subsection "
                              "represents the compositional fields that will be used as a reference "
                              "profile for calculating the thermal diffusivity. "
-                             "The function depends only on depth.");
+                             "This function is one-dimensional and depends only on depth. The format of this "
+			     "functions follows the syntax understood by the "
+			     "muparser library, see Section~\\ref{sec:muparser-format}.");
           prm.enter_subsection("Function");
           {
             Functions::ParsedFunction<1>::declare_parameters (prm, 1);
