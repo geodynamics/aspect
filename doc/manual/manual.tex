@@ -376,7 +376,7 @@ $c_i$ that we call \textit{compositional fields}:
   \label{eq:compositional}
   \frac{\partial c_i}{\partial t} + \mathbf u\cdot\nabla c_i
   &=
-  0
+  q_i
   & \quad
   & \textrm{in $\Omega$},
   i=1\ldots C
@@ -403,7 +403,7 @@ terms of this equation correspond to
 \item adiabatic compression of material;
 \item phase change.
 \end{itemize}
-The last term corresponds to
+The last term of the temperature equation corresponds to
 the latent heat generated or consumed in the process of phase change of material. The latent heat release
 is proportional to changes in the fraction of material $X$ that has already
 undergone the phase transition (also called phase function) and the change
@@ -457,7 +457,15 @@ which it is in fact implemented:
   \notag
 \end{align}
 
-\subsubsection{Comment on adiabatic heating}
+The last of the equations above, equation~\eqref{eq:compositional}, describes
+the evolution of additional fields that are transported along with the
+velocity field $\mathbf u$ and may react with each other and react to other
+features of the solution, but that do not diffuse. We call these fields $c_i$
+\textit{compositional fields}, although they can also be used for other
+purposes than just tracking chemical compositions. We will discuss this
+equation in more detail in Section~\ref{sec:compositional}.
+
+\subsubsection{A comment on adiabatic heating}
 In other codes and texts there is sometimes a simplification made to the adiabatic heating term in the previous equation. If you assume the pressure gradient is assumed to be small in the vertical direction, then $ -\rho \mathbf g \approx \nabla \mathbf{p} $, and we have the following relation (the negative sign is due to $\mathbf g$ pointing downwards)
 \begin{align}
 \alpha T \left( \mathbf u \cdot \nabla \mathbf p \right)
@@ -515,7 +523,7 @@ $\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. No boundary conditions have to be posed
 for the compositional fields at those parts of the boundary where flow is either
 tangential to the boundary or points outward.
 
-\subsubsection{Comment on final set of equations}
+\subsubsection{Comments on the final set of equations}
 \aspect{} solves these equations in essentially the form stated. In
 particular, the form given in \eqref{eq:stokes-1} implies that the pressure
 $p$ we compute is in fact the \textit{total pressure}, i.e., the sum of
@@ -1011,6 +1019,9 @@ also selected in the input parameter file.
 
 
 
+\subsection{Compositional fields}
+\label{sec:compositional}
+
 \subsection{Numerical methods}
 
 There is no shortage in the literature for methods to solve the equations
@@ -1287,22 +1298,49 @@ community, where the acronym stands for \textit{Im}plicit \textit{P}ressure,
 
 
 
-\subsubsection{Compressible formula}
-In the compressible case, the conservation of mass equation becomes $\nabla \cdot \left( \rho \textbf{u} \right)= 0$ instead of $\nabla \cdot \textbf{u} = 0$, which is nonlinear and nonsymmetric (which makes preconditioning difficult). The following explanation describes what is done in \aspect{} for the linear solver to work.  Dividing by $\rho$ gives:
+\subsubsection{Compressible models}
+In the compressible case, the conservation of mass equation in
+equation~\eqref{eq:stokes-2} becomes $\nabla 
+\cdot \left( \rho \textbf{u} \right)= 0$ instead of $\nabla \cdot \textbf{u} =
+0$, which is nonlinear and no longer symmetric to the $\nabla p$ term in the
+force balance equation \eqref{eq:stokes-1}, making solving and preconditioning
+the resulting linear and nonlinear systems difficult. To make this work in
+\aspect{}, we consequently reformulate this equation. Dividing by $\rho$ and
+applying the product rule of differentiation gives
 \begin{equation*}
 \frac{1}{\rho} \nabla \cdot \left( \rho \textbf{u} \right) = \nabla \cdot \textbf{u} + \frac{1}{\rho} \nabla \rho \cdot  \textbf{u}.
 \end{equation*}
-Then we assume the change in density is dominated by the change in static pressure, which can be written as
-$\nabla p \approx \nabla p_s \approx \rho \textbf{g}$.
+We will now make two basic assumptions: First, the variation of the density
+$\rho(p,T,\mathbf x, \mathfrak c)$ is dominated by the dependence on the
+(total) pressure; in other words, $\nabla \rho \approx \frac{\partial \rho}{\partial
+  p}\nabla p$. This assumption is primarily justified by the fact that, in the
+Earth mantle, the density increases by at least 50\% between Earth crust and
+the core-mantle boundary due to larger pressure there. Secondly, we assume
+that the pressure is dominated by the static pressure, which can be written as
+$\nabla p \approx \nabla p_s \approx \rho \textbf{g}$. This is essentially
+motivated by the slowness of the movement in the Earth or, alternatively,
+based on the fact that the viscosity is so large.
 This finally allows us to write
 \begin{equation*}
 \frac{1}{\rho} \nabla \rho \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p_s \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u} 
 \end{equation*}
 so we get
-\begin{equation*}
+\marginpar{There's a sign wrong here. Check with the code}
+\begin{equation}
+\label{eq:stokes-2-compressible}
 \nabla \cdot \textbf{u} = \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u}
-\end{equation*}
-where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the compressibility and $\rho$ and $\mathbf u$ are taken from the last time step.
+\end{equation}
+where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the
+compressibility.
+
+In the implementation used in \aspect{}, this equation replaces
+\eqref{eq:stokes-2}. It has the advantage that it retains the symmetry of the
+Stokes equations if we can treat the right hand side of
+\eqref{eq:stokes-2-compressible} as known. We do so by evaluating $\rho$ and
+$\mathbf u$ using the solution from the last time step (or values extrapolated
+from previous time steps).
+
+
 
 \subsection{Free surface calculations}
 \label{sec:freesurface}
