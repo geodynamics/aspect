@@ -376,7 +376,7 @@ $c_i$ that we call \textit{compositional fields}:
   \label{eq:compositional}
   \frac{\partial c_i}{\partial t} + \mathbf u\cdot\nabla c_i
   &=
-  0
+  q_i
   & \quad
   & \textrm{in $\Omega$},
   i=1\ldots C
@@ -403,7 +403,7 @@ terms of this equation correspond to
 \item adiabatic compression of material;
 \item phase change.
 \end{itemize}
-The last term corresponds to
+The last term of the temperature equation corresponds to
 the latent heat generated or consumed in the process of phase change of material. The latent heat release
 is proportional to changes in the fraction of material $X$ that has already
 undergone the phase transition (also called phase function) and the change
@@ -457,7 +457,15 @@ which it is in fact implemented:
   \notag
 \end{align}
 
-\subsubsection{Comment on adiabatic heating}
+The last of the equations above, equation~\eqref{eq:compositional}, describes
+the evolution of additional fields that are transported along with the
+velocity field $\mathbf u$ and may react with each other and react to other
+features of the solution, but that do not diffuse. We call these fields $c_i$
+\textit{compositional fields}, although they can also be used for other
+purposes than just tracking chemical compositions. We will discuss this
+equation in more detail in Section~\ref{sec:compositional}.
+
+\subsubsection{A comment on adiabatic heating}
 In other codes and texts there is sometimes a simplification made to the adiabatic heating term in the previous equation. If you assume the pressure gradient is assumed to be small in the vertical direction, then $ -\rho \mathbf g \approx \nabla \mathbf{p} $, and we have the following relation (the negative sign is due to $\mathbf g$ pointing downwards)
 \begin{align}
 \alpha T \left( \mathbf u \cdot \nabla \mathbf p \right)
@@ -515,7 +523,7 @@ $\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. No boundary conditions have to be posed
 for the compositional fields at those parts of the boundary where flow is either
 tangential to the boundary or points outward.
 
-\subsubsection{Comment on final set of equations}
+\subsubsection{Comments on the final set of equations}
 \aspect{} solves these equations in essentially the form stated. In
 particular, the form given in \eqref{eq:stokes-1} implies that the pressure
 $p$ we compute is in fact the \textit{total pressure}, i.e., the sum of
@@ -1011,6 +1019,80 @@ also selected in the input parameter file.
 
 
 
+\subsection{Compositional fields}
+\label{sec:compositional}
+
+The last of the basic equations, \eqref{eq:compositional}, describes the
+evolution of a set of variables $c_i(\mathbf x, t), i=1\ldots C$ that we
+typically call \textit{compositional fields} and that we often aggregate into
+a vector $\mathfrak c$.
+
+Compositional fields were originally intended to track what their name
+suggest, namely the chemical composition of the convecting medium. In this
+interpretation, they composition is a quantity that is simply advected along
+passively, i.e., it would satisfy the equation
+\begin{align*}
+  \frac{\partial \mathfrak c}{\partial t} + \mathbf u \cdot \nabla \mathfrak c
+  = 0.
+\end{align*}
+However, these compositional fields participate in determining the values of
+the various coefficients as discussed in Section~\ref{sec:coefficients}.
+
+That said, over time compositional fields have shown to be a much more useful
+tool than originally intended. For example, they can be used to track where
+material comes from and goes to (see Section~\ref{sec:cookbooks-composition})
+and, if one allows for a reaction term on the right hand side,
+\begin{align*}
+  \frac{\partial \mathfrak c}{\partial t} + \mathbf u \cdot \nabla \mathfrak c
+  = \mathfrak q,
+\end{align*}
+then one can also model reactions between species -- for example to simulate
+phase changes where one compositional field indicating a particular phase
+transforms into another phase depending on pressure and temperature, or where
+several phases combine to other phases.
+
+Modeling reactions between different compositional fields often involves
+finding an equilibrium state between state between different fields because
+chemical reactions happen on a much faster time scale than transport. In other
+words, one then often assumes that there is a $\mathfrak c^\ast(p,T)$ so that
+\begin{align*}
+  \mathfrak q(p,T,\varepsilon(\mathbf u),\mathfrak c^\ast(p,T)) = 0.
+\end{align*}
+Consequently, the material model methods that deal with source terms for the
+compositional fields need to compute an \textit{increment} $\Delta\mathfrak c$
+to the previous value of the compositional fields so that the sum of the
+previous values and the increment equals $\mathfrak c^\ast$. This is opposed
+to the usual approach of evaluating the right hand side term $\mathfrak q$,
+which corresponds to a \textit{rate}, instead of an increment.
+
+On the other hand, there are other uses of compositional fields that do not
+actually have anything to do with quantities that can be considered related to
+compositions. For example, one may define a field that tracks the grain size
+of rocks. If the strain rate is high, then the grain size decreases as the
+rocks break. If the temperature is high enough, then grains heal and their size
+increases again. Such ``damage'' models would then call for an equation of the
+form (assuming one uses only a single compositional field)
+\begin{align*}
+  \frac{\partial c}{\partial t} + \mathbf u \cdot \nabla c
+  = q(T,c),
+\end{align*}
+where in the simplest case one could postulate
+\begin{align*}
+  q(T,c) = -\alpha c + \beta \max\{T-T_\text{healing},0\} c.
+\end{align*}
+One would then use this compositional field in the definition of the viscosity
+of the material: more damage means lower viscosity because the rocks are weaker.
+
+In cases like this, there is only a single compositional field and it is not
+in permanent equilibrium. Consequently, the increment implementations of
+material models in \aspect{} need to compute is typically the rate $q(T,c)$
+times the time step.
+
+Compositional fields have proven to be surprisingly versatile tools to model
+all sorts of components of models that go beyond the simple Stokes plus
+temperature set of equations. Play with them!
+
+
 \subsection{Numerical methods}
 
 There is no shortage in the literature for methods to solve the equations
@@ -1287,22 +1369,48 @@ community, where the acronym stands for \textit{Im}plicit \textit{P}ressure,
 
 
 
-\subsubsection{Compressible formula}
-In the compressible case, the conservation of mass equation becomes $\nabla \cdot \left( \rho \textbf{u} \right)= 0$ instead of $\nabla \cdot \textbf{u} = 0$, which is nonlinear and nonsymmetric (which makes preconditioning difficult). The following explanation describes what is done in \aspect{} for the linear solver to work.  Dividing by $\rho$ gives:
+\subsubsection{Compressible models}
+In the compressible case, the conservation of mass equation in
+equation~\eqref{eq:stokes-2} becomes $\nabla 
+\cdot \left( \rho \textbf{u} \right)= 0$ instead of $\nabla \cdot \textbf{u} =
+0$, which is nonlinear and no longer symmetric to the $\nabla p$ term in the
+force balance equation \eqref{eq:stokes-1}, making solving and preconditioning
+the resulting linear and nonlinear systems difficult. To make this work in
+\aspect{}, we consequently reformulate this equation. Dividing by $\rho$ and
+applying the product rule of differentiation gives
 \begin{equation*}
 \frac{1}{\rho} \nabla \cdot \left( \rho \textbf{u} \right) = \nabla \cdot \textbf{u} + \frac{1}{\rho} \nabla \rho \cdot  \textbf{u}.
 \end{equation*}
-Then we assume the change in density is dominated by the change in static pressure, which can be written as
-$\nabla p \approx \nabla p_s \approx \rho \textbf{g}$.
+We will now make two basic assumptions: First, the variation of the density
+$\rho(p,T,\mathbf x, \mathfrak c)$ is dominated by the dependence on the
+(total) pressure; in other words, $\nabla \rho \approx \frac{\partial \rho}{\partial
+  p}\nabla p$. This assumption is primarily justified by the fact that, in the
+Earth mantle, the density increases by at least 50\% between Earth crust and
+the core-mantle boundary due to larger pressure there. Secondly, we assume
+that the pressure is dominated by the static pressure, which can be written as
+$\nabla p \approx \nabla p_s \approx \rho \textbf{g}$. This is essentially
+motivated by the slowness of the movement in the Earth or, alternatively,
+based on the fact that the viscosity is so large.
 This finally allows us to write
 \begin{equation*}
 \frac{1}{\rho} \nabla \rho \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p_s \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u} 
 \end{equation*}
 so we get
-\begin{equation*}
-\nabla \cdot \textbf{u} = \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u}
-\end{equation*}
-where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the compressibility and $\rho$ and $\mathbf u$ are taken from the last time step.
+\begin{equation}
+\label{eq:stokes-2-compressible}
+\nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u}
+\end{equation}
+where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is often referred to
+as the compressibility.
+
+In the implementation used in \aspect{}, this equation replaces
+\eqref{eq:stokes-2}. It has the advantage that it retains the symmetry of the
+Stokes equations if we can treat the right hand side of
+\eqref{eq:stokes-2-compressible} as known. We do so by evaluating $\rho$ and
+$\mathbf u$ using the solution from the last time step (or values extrapolated
+from previous time steps).
+
+
 
 \subsection{Free surface calculations}
 \label{sec:freesurface}
