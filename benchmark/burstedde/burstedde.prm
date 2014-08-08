@@ -21,7 +21,8 @@ set Output directory                       = output
 
 set Pressure normalization                 = volume
 
-set Number of cheap Stokes solver steps = 0
+set Number of cheap Stokes solver steps    = 0
+
 
 ############### Parameters describing the model
 # The setup is a 3d unit cube.
@@ -43,7 +44,12 @@ end
 #Boundary conditions
 subsection Model settings
   set Tangential velocity boundary indicators = 
-  set Prescribed velocity boundary indicators = 0:BursteddeBoundary, 1: BursteddeBoundary, 2: BursteddeBoundary, 3: BursteddeBoundary, 4: BursteddeBoundary, 5: BursteddeBoundary
+  set Prescribed velocity boundary indicators = left  : BursteddeBoundary, \
+                                                right : BursteddeBoundary, \
+                                                front : BursteddeBoundary, \
+                                                back  : BursteddeBoundary, \
+                                                bottom: BursteddeBoundary, \
+                                                top   : BursteddeBoundary
 end
 
 

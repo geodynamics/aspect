@@ -99,8 +99,7 @@ namespace aspect
       prm.leave_subsection ();
 
       return std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                    "Gravity model::Model name",
-                                                                    prm);
+                                                                    "Gravity model::Model name");
     }
 
 

@@ -113,6 +113,62 @@ namespace aspect
 
 
     template <int dim>
+    std::map<std::string,types::boundary_id>
+    SphericalShell<dim>::
+    get_symbolic_boundary_names_map () const
+    {
+      switch (dim)
+      {
+      case 2:
+        {
+          static const std::pair<std::string,types::boundary_id> mapping[]
+          = { std::pair<std::string,types::boundary_id> ("inner", 0),
+	      std::pair<std::string,types::boundary_id> ("outer", 1),
+	      std::pair<std::string,types::boundary_id> ("left",  2),
+	      std::pair<std::string,types::boundary_id> ("right", 3) };
+
+          if (phi == 360)
+            return std::map<std::string,types::boundary_id> (&mapping[0],
+                                                             &mapping[2]);
+          else
+            return std::map<std::string,types::boundary_id> (&mapping[0],
+                                                             &mapping[4]);
+        }
+
+      case 3:
+        {
+          if (phi == 360)
+            {
+              static const std::pair<std::string,types::boundary_id> mapping[]
+		= { std::pair<std::string,types::boundary_id>("inner", 0),
+		    std::pair<std::string,types::boundary_id>("outer", 1) };
+
+              return std::map<std::string,types::boundary_id> (&mapping[0],
+                                                               &mapping[2]);
+            }
+          else if (phi == 90)
+            {
+              static const std::pair<std::string,types::boundary_id> mapping[]
+		= { std::pair<std::string,types::boundary_id>("inner", 0),
+		    std::pair<std::string,types::boundary_id>("outer", 1),
+		    std::pair<std::string,types::boundary_id>("east",  2),
+		    std::pair<std::string,types::boundary_id>("west",  3),
+		    std::pair<std::string,types::boundary_id>("south", 4) };
+
+              return std::map<std::string,types::boundary_id> (&mapping[0],
+                                                               &mapping[5]);
+            }
+          else
+            Assert (false, ExcNotImplemented());
+        }
+      }
+
+      Assert (false, ExcNotImplemented());
+      return std::map<std::string,types::boundary_id>();
+    }
+
+
+    template <int dim>
     double
     SphericalShell<dim>::
     length_scale () const
@@ -254,16 +310,23 @@ namespace aspect
                                    "spherical shell",
                                    "A geometry representing a spherical shell or a pice of it. "
                                    "Inner and outer radii are read from the parameter file "
-                                   "in subsection 'Spherical shell'.\n\n"
+                                   "in subsection 'Spherical shell'."
+                                   "\n\n"
                                    "The model assigns boundary indicators as follows: In 2d, "
                                    "inner and outer boundaries get boundary indicators zero "
                                    "and one, and if the opening angle set in the input file "
                                    "is less than 360, then left and right boundaries are "
-                                   "assigned indicators two and three. In 3d, inner and "
+                                   "assigned indicators two and three. These boundaries can "
+                                   "also be referenced using the symbolic names 'inner', 'outer' "
+                                   "and (if applicable) 'left', 'right'."
+                                   "\n\n"
+                                   "In 3d, inner and "
                                    "outer indicators are treated as in 2d. If the opening "
                                    "angle is chosen as 90 degrees, i.e., the domain is the "
                                    "intersection of a spherical shell and the first octant, "
                                    "then indicator 2 is at the face $x=0$, 3 at $y=0$, "
-                                   "and 4 at $z=0$.")
+                                   "and 4 at $z=0$. These last three boundaries can then also "
+                                   "be referred to as 'east', 'west' and 'south' symbolically "
+                                   "in input files.")
   }
 }

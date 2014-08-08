@@ -15,10 +15,10 @@
 # 15: Average temperature (K)
 # 16: Maximal temperature (K)
 # 17: Average nondimensional temperature (K)
-# 18: Outward heat flux through boundary with indicator 0 (W)
-# 19: Outward heat flux through boundary with indicator 1 (W)
-# 20: Outward heat flux through boundary with indicator 2 (W)
-# 21: Outward heat flux through boundary with indicator 3 (W)
+# 18: Outward heat flux through boundary with indicator 0 ("inner") (W)
+# 19: Outward heat flux through boundary with indicator 1 ("outer") (W)
+# 20: Outward heat flux through boundary with indicator 2 ("left") (W)
+# 21: Outward heat flux through boundary with indicator 3 ("right") (W)
 0 0.0000e+00  48  515  225 0 23  24 161 1.3262e+10 output-minimum_refinement_function_spherical/solution-00000 8.27215750e-07 1.49908156e-06 1.40144854e+03 1.62705027e+03 1.79855146e+03 6.44576384e-02 1.03193940e+03 1.99457722e+03 2.57839140e+03 2.57839140e+03 
 0 0.0000e+00 144 1475  649 0 47  57 151 8.9352e+09 output-minimum_refinement_function_spherical/solution-00001 6.17846682e-07 1.18229089e-06 1.40144854e+03 1.62699436e+03 1.79917293e+03 6.44416642e-02 9.63589790e+02 1.92170701e+03 2.48024075e+03 2.48024075e+03 
 0 0.0000e+00 348 3527 1561 0 47 114 156 5.7308e+09 output-minimum_refinement_function_spherical/solution-00002 6.17732296e-07 1.18259000e-06 1.40144854e+03 1.62699351e+03 1.79997831e+03 6.44414212e-02 9.63589790e+02 1.92170701e+03 2.48024075e+03 2.48024075e+03 

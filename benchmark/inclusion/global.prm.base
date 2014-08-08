@@ -26,7 +26,10 @@ end
 
 
 subsection Model settings
-  set Prescribed velocity boundary indicators = 0:InclusionBoundary, 1:InclusionBoundary, 2:InclusionBoundary, 3:InclusionBoundary
+  set Prescribed velocity boundary indicators = left  : InclusionBoundary, \
+                                                right : InclusionBoundary, \
+                                                bottom: InclusionBoundary, \
+                                                top   : InclusionBoundary
   set Tangential velocity boundary indicators =
   set Zero velocity boundary indicators       =
 end

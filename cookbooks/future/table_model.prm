@@ -111,12 +111,12 @@ subsection Mesh refinement
 end
 
 subsection Model settings
-  set Fixed temperature boundary indicators   = 0,1   # default: 
+  set Fixed temperature boundary indicators   = inner, outer
   set Include adiabatic heating               = false
   set Include shear heating                   = true
   set Prescribed velocity boundary indicators = 
-  set Tangential velocity boundary indicators = 1,2,3 # default: 
-  set Zero velocity boundary indicators       = 0     # default: 
+  set Tangential velocity boundary indicators = outer, left, right
+  set Zero velocity boundary indicators       = inner
 end
 
 subsection Postprocess

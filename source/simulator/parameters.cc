@@ -271,6 +271,12 @@ namespace aspect
                        "the composition system gets solved. See 'linear solver "
                        "tolerance' for more details.");
 
+    // next declare parameters that pertain to the equations to be
+    // solved, along with boundary conditions etc. note that at this
+    // point we do not know yet which geometry model we will use, so
+    // we do not know which symbolic names will be valid to address individual
+    // parts of the boundary. we can only work around this by allowing any string
+    // to indicate a boundary
     prm.enter_subsection ("Model settings");
     {
       prm.declare_entry ("Include shear heating", "true",
@@ -293,13 +299,21 @@ namespace aspect
                          "benchmarks that do not include this term in the temperature equation "
                          "or when dealing with a model without phase transitions.");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
-                         Patterns::List (Patterns::Integer(0)),
-                         "A comma separated list of integers denoting those boundaries "
+                         Patterns::List (Patterns::Anything()),
+                         "A comma separated list of names denoting those boundaries "
                          "on which the temperature is fixed and described by the "
                          "boundary temperature object selected in its own section "
                          "of this input file. All boundary indicators used by the geometry "
                          "but not explicitly listed here will end up with no-flux "
                          "(insulating) boundary conditions."
+                         "\n\n"
+                         "The names of the boundaries listed here can either by "
+                         "numeric numbers (in which case they correspond to the numerical "
+                         "boundary indicators assigned by the geometry object), or they "
+                         "can correspond to any of the symbolic names the geometry object "
+                         "may have provided for each part of the boundary. You may want "
+                         "to compare this with the documentation of the geometry model you "
+                         "use in your model."
                          "\n\n"
                          "This parameter only describes which boundaries have a fixed "
                          "temperature, but not what temperature should hold on these "
@@ -308,13 +322,21 @@ namespace aspect
                          "group, unless an existing implementation in this group "
                          "already provides what you want.");
       prm.declare_entry ("Fixed composition boundary indicators", "",
-                         Patterns::List (Patterns::Integer(0)),
-                         "A comma separated list of integers denoting those boundaries "
+                         Patterns::List (Patterns::Anything()),
+                         "A comma separated list of names denoting those boundaries "
                          "on which the composition is fixed and described by the "
                          "boundary composition object selected in its own section "
                          "of this input file. All boundary indicators used by the geometry "
                          "but not explicitly listed here will end up with no-flux "
                          "(insulating) boundary conditions."
+                         "\n\n"
+                         "The names of the boundaries listed here can either by "
+                         "numeric numbers (in which case they correspond to the numerical "
+                         "boundary indicators assigned by the geometry object), or they "
+                         "can correspond to any of the symbolic names the geometry object "
+                         "may have provided for each part of the boundary. You may want "
+                         "to compare this with the documentation of the geometry model you "
+                         "use in your model."
                          "\n\n"
                          "This parameter only describes which boundaries have a fixed "
                          "composition, but not what composition should hold on these "
@@ -323,20 +345,45 @@ namespace aspect
                          "group, unless an existing implementation in this group "
                          "already provides what you want.");
       prm.declare_entry ("Zero velocity boundary indicators", "",
-                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max())),
-                         "A comma separated list of integers denoting those boundaries "
-                         "on which the velocity is zero.");
+                         Patterns::List (Patterns::Anything()),
+                         "A comma separated list of names denoting those boundaries "
+                         "on which the velocity is zero."
+                         "\n\n"
+                         "The names of the boundaries listed here can either by "
+                         "numeric numbers (in which case they correspond to the numerical "
+                         "boundary indicators assigned by the geometry object), or they "
+                         "can correspond to any of the symbolic names the geometry object "
+                         "may have provided for each part of the boundary. You may want "
+                         "to compare this with the documentation of the geometry model you "
+                         "use in your model.");
       prm.declare_entry ("Tangential velocity boundary indicators", "",
-                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max())),
-                         "A comma separated list of integers denoting those boundaries "
+                         Patterns::List (Patterns::Anything()),
+                         "A comma separated list of names denoting those boundaries "
                          "on which the velocity is tangential and unrestrained, i.e., free-slip where "
                          "no external forces act to prescribe a particular tangential "
                          "velocity (although there is a force that requires the flow to "
-                         "be tangential).");
+                         "be tangential)."
+                         "\n\n"
+                         "The names of the boundaries listed here can either by "
+                         "numeric numbers (in which case they correspond to the numerical "
+                         "boundary indicators assigned by the geometry object), or they "
+                         "can correspond to any of the symbolic names the geometry object "
+                         "may have provided for each part of the boundary. You may want "
+                         "to compare this with the documentation of the geometry model you "
+                         "use in your model.");
       prm.declare_entry ("Free surface boundary indicators", "",
-                         Patterns::List (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max())),
-                         "A comma separated list of integers denoting those boundaries "
-                         "where there is a free surface. Set to nothing to disable all free surface computations.");
+                         Patterns::List (Patterns::Anything()),
+                         "A comma separated list of names denoting those boundaries "
+                         "where there is a free surface. Set to nothing to disable all "
+                         "free surface computations."
+                         "\n\n"
+                         "The names of the boundaries listed here can either by "
+                         "numeric numbers (in which case they correspond to the numerical "
+                         "boundary indicators assigned by the geometry object), or they "
+                         "can correspond to any of the symbolic names the geometry object "
+                         "may have provided for each part of the boundary. You may want "
+                         "to compare this with the documentation of the geometry model you "
+                         "use in your model.");
       prm.declare_entry ("Prescribed velocity boundary indicators", "",
                          Patterns::Map (Patterns::Anything(),
                                         Patterns::Selection(VelocityBoundaryConditions::get_names<dim>())),
@@ -348,13 +395,15 @@ namespace aspect
                          "\n\n"
                          "The format of valid entries for this parameter is that of a map "
                          "given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where "
-                         "each key must be a valid boundary indicator (which is an integer) "
+                         "each key must be a valid boundary indicator (which is either an "
+                         "integer or the symbolic name the geometry model in use may have "
+                         "provided for this part of the boundary) "
                          "and each value must be one of the currently implemented boundary "
                          "velocity models. ``selector'' is an optional string given as a subset "
                          "of the letters 'xyz' that allows you to apply the boundary conditions "
                          "only to the components listed. As an example, '1 y: function' applies "
                          "the type 'function' to the y component on boundary 1. Without a selector "
-                         "it will effect all components of the velocity."
+                         "it will affect all components of the velocity."
                          "\n\n"
                          "Note that the no-slip boundary condition is "
                          "a special case of the current one where the prescribed velocity "
@@ -566,7 +615,7 @@ namespace aspect
   void
   Simulator<dim>::Parameters::
   parse_parameters (ParameterHandler &prm,
-                    MPI_Comm mpi_communicator)
+                    const MPI_Comm mpi_communicator)
   {
     // first, make sure that the ParameterHandler parser agrees
     // with the code in main() about the meaning of the "Dimension"
@@ -681,89 +730,6 @@ namespace aspect
       include_shear_heating = prm.get_bool ("Include shear heating");
       include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
       include_latent_heat = prm.get_bool ("Include latent heat");
-
-      const std::vector<int> x_fixed_temperature_boundary_indicators
-        = Utilities::string_to_int
-          (Utilities::split_string_list
-           (prm.get ("Fixed temperature boundary indicators")));
-      fixed_temperature_boundary_indicators
-        = std::set<types::boundary_id> (x_fixed_temperature_boundary_indicators.begin(),
-                                        x_fixed_temperature_boundary_indicators.end());
-
-      const std::vector<int> x_fixed_composition_boundary_indicators
-        = Utilities::string_to_int
-          (Utilities::split_string_list
-           (prm.get ("Fixed composition boundary indicators")));
-      fixed_composition_boundary_indicators
-        = std::set<types::boundary_id> (x_fixed_composition_boundary_indicators.begin(),
-                                        x_fixed_composition_boundary_indicators.end());
-
-      const std::vector<int> x_zero_velocity_boundary_indicators
-        = Utilities::string_to_int
-          (Utilities::split_string_list
-           (prm.get ("Zero velocity boundary indicators")));
-      zero_velocity_boundary_indicators
-        = std::set<types::boundary_id> (x_zero_velocity_boundary_indicators.begin(),
-                                        x_zero_velocity_boundary_indicators.end());
-
-      const std::vector<int> x_tangential_velocity_boundary_indicators
-        = Utilities::string_to_int
-          (Utilities::split_string_list
-           (prm.get ("Tangential velocity boundary indicators")));
-      tangential_velocity_boundary_indicators
-        = std::set<types::boundary_id> (x_tangential_velocity_boundary_indicators.begin(),
-                                        x_tangential_velocity_boundary_indicators.end());
-
-      const std::vector<int> x_free_surface_boundary_indicators
-        = Utilities::string_to_int
-          (Utilities::split_string_list
-           (prm.get ("Free surface boundary indicators")));
-      free_surface_boundary_indicators
-        = std::set<types::boundary_id> (x_free_surface_boundary_indicators.begin(),
-                                        x_free_surface_boundary_indicators.end());
-
-      free_surface_enabled = !free_surface_boundary_indicators.empty();
-
-      const std::vector<std::string> x_prescribed_velocity_boundary_indicators
-        = Utilities::split_string_list
-          (prm.get ("Prescribed velocity boundary indicators"));
-      for (std::vector<std::string>::const_iterator p = x_prescribed_velocity_boundary_indicators.begin();
-           p != x_prescribed_velocity_boundary_indicators.end(); ++p)
-        {
-          // each entry has the format (white space is optional):
-          // <id> [x][y][z] : <value (might have spaces)>
-          std::string comp = "";
-          std::string value = "";
-
-          std::stringstream ss(*p);
-          int b_id;
-          ss >> b_id; // need to read as int, not char
-          types::boundary_id boundary_id = b_id;
-
-          char c;
-          while (ss.peek()==' ') ss.get(c); // eat spaces
-
-          if (ss.peek()!=':')
-            {
-              std::getline(ss,comp,':');
-              while (comp.length()>0 && *(--comp.end())==' ')
-                comp.erase(comp.length()-1); // remove whitespace at the end
-            }
-          else
-            ss.get(c); // read the ':'
-
-          while (ss.peek()==' ') ss.get(c); // eat spaces
-
-          std::getline(ss,value); // read until the end of the string
-
-          AssertThrow (prescribed_velocity_boundary_indicators.find(boundary_id)
-                       == prescribed_velocity_boundary_indicators.end(),
-                       ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
-                                   "> appears more than once in the list of indicators "
-                                   "for nonzero velocity boundaries."));
-          prescribed_velocity_boundary_indicators[boundary_id] =
-            std::pair<std::string,std::string>(comp,value);
-        }
 
       {
         nullspace_removal = NullspaceRemoval::none;
@@ -897,6 +863,195 @@ namespace aspect
 
 
   template <int dim>
+  void
+  Simulator<dim>::Parameters::
+  parse_geometry_dependent_parameters(ParameterHandler &prm,
+                                      const GeometryModel::Interface<dim> &geometry_model)
+  {
+    prm.enter_subsection ("Model settings");
+    {
+      try
+        {
+          const std::vector<types::boundary_id> x_fixed_temperature_boundary_indicators
+            = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
+                (prm.get ("Fixed temperature boundary indicators")));
+          fixed_temperature_boundary_indicators
+            = std::set<types::boundary_id> (x_fixed_temperature_boundary_indicators.begin(),
+                                            x_fixed_temperature_boundary_indicators.end());
+        }
+      catch (const std::string &error)
+        {
+          AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Fixed temperature "
+                                          "boundary indicators>, there was an error. Specifically, "
+                                          "the conversion function complained as follows: "
+                                          + error));
+        }
+
+      try
+        {
+          const std::vector<types::boundary_id> x_fixed_composition_boundary_indicators
+            = geometry_model.translate_symbolic_boundary_names_to_ids (Utilities::split_string_list
+               (prm.get ("Fixed composition boundary indicators")));
+          fixed_composition_boundary_indicators
+            = std::set<types::boundary_id> (x_fixed_composition_boundary_indicators.begin(),
+                                            x_fixed_composition_boundary_indicators.end());
+        }
+      catch (const std::string &error)
+        {
+          AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Fixed composition "
+                                          "boundary indicators>, there was an error. Specifically, "
+                                          "the conversion function complained as follows: "
+                                          + error));
+        }
+
+      try
+        {
+          const std::vector<types::boundary_id> x_zero_velocity_boundary_indicators
+            = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
+               (prm.get ("Zero velocity boundary indicators")));
+          zero_velocity_boundary_indicators
+            = std::set<types::boundary_id> (x_zero_velocity_boundary_indicators.begin(),
+                                            x_zero_velocity_boundary_indicators.end());
+        }
+      catch (const std::string &error)
+        {
+          AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Zero velocity "
+                                          "boundary indicators>, there was an error. Specifically, "
+                                          "the conversion function complained as follows: "
+                                          + error));
+        }
+
+      try
+        {
+          const std::vector<types::boundary_id> x_tangential_velocity_boundary_indicators
+            = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
+               (prm.get ("Tangential velocity boundary indicators")));
+          tangential_velocity_boundary_indicators
+            = std::set<types::boundary_id> (x_tangential_velocity_boundary_indicators.begin(),
+                                            x_tangential_velocity_boundary_indicators.end());
+        }
+      catch (const std::string &error)
+        {
+          AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Tangential velocity "
+                                          "boundary indicators>, there was an error. Specifically, "
+                                          "the conversion function complained as follows: "
+                                          + error));
+        }
+
+      try
+        {
+          const std::vector<types::boundary_id> x_free_surface_boundary_indicators
+            = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
+               (prm.get ("Free surface boundary indicators")));
+          free_surface_boundary_indicators
+            = std::set<types::boundary_id> (x_free_surface_boundary_indicators.begin(),
+                                            x_free_surface_boundary_indicators.end());
+
+          free_surface_enabled = !free_surface_boundary_indicators.empty();
+        }
+      catch (const std::string &error)
+        {
+          AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Free surface "
+                                          "boundary indicators>, there was an error. Specifically, "
+                                          "the conversion function complained as follows: "
+                                          + error));
+        }
+
+      const std::vector<std::string> x_prescribed_velocity_boundary_indicators
+        = Utilities::split_string_list
+          (prm.get ("Prescribed velocity boundary indicators"));
+      for (std::vector<std::string>::const_iterator p = x_prescribed_velocity_boundary_indicators.begin();
+           p != x_prescribed_velocity_boundary_indicators.end(); ++p)
+        {
+          // each entry has the format (white space is optional):
+          // <id> [x][y][z] : <value (might have spaces)>
+	  //
+	  // first tease apart the two halves
+	  const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
+	  AssertThrow (split_parts.size() == 2,
+		       ExcMessage ("The format for prescribed velocity boundary indicators "
+				   "requires that each entry has the form `"
+				   "<id> [x][y][z] : <value>', but there does not "
+				   "appear to be a colon in the entry <"
+				   + *p
+				   + ">."));
+
+	  // the easy part: get the value
+	  const std::string value = split_parts[1];
+
+	  // now for the rest. since we don't know whether there is a
+	  // component selector, start reading at the end and subtracting
+	  // letters x, y and zs
+	  std::string key_and_comp = split_parts[0];
+	  std::string comp;
+	  while ((key_and_comp.size()>0) &&
+		 ((key_and_comp[key_and_comp.size()-1] == 'x')
+		  ||
+		  (key_and_comp[key_and_comp.size()-1] == 'y')
+		  ||
+		  ((key_and_comp[key_and_comp.size()-1] == 'z') && (dim==3))))
+	    {
+	      comp += key_and_comp[key_and_comp.size()-1];
+	      key_and_comp.erase (--key_and_comp.end());
+	    }
+
+	  // we've stopped reading component selectors now. there are three
+	  // possibilities:
+	  // - no characters are left. this means that key_and_comp only
+	  //   consisted of a single word that only consisted of 'x', 'y'
+	  //   and 'z's. then this would have been a mistake to classify
+	  //   as a component selector, and we better undo it
+	  // - the last character of key_and_comp is not a whitespace. this
+	  //   means that the last word in key_and_comp ended in an 'x', 'y'
+	  //   or 'z', but this was not meant to be a component selector.
+	  //   in that case, put these characters back.
+	  // - otherwise, we split successfully. eat spaces that may be at
+	  //   the end of key_and_comp to get key
+	  if (key_and_comp.size() == 0)
+	    key_and_comp.swap (comp);
+	  else if (key_and_comp[key_and_comp.size()-1] != ' ')
+	    {
+	      key_and_comp += comp;
+	      comp = "";
+	    }
+	  else
+	    {
+	      while ((key_and_comp.size()>0) && (key_and_comp[key_and_comp.size()-1] == ' '))
+		key_and_comp.erase (--key_and_comp.end());
+	    }
+
+	  // finally, try to translate the key into a boundary_id. then
+	  // make sure we haven't see it yet
+	  types::boundary_id boundary_id;
+	  try
+	    {
+	      boundary_id = geometry_model.translate_symbolic_boundary_name_to_id(key_and_comp);
+	    }
+	  catch (const std::string &error)
+	    {
+	      AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
+					      "velocity indicators>, there was an error. Specifically, "
+					      "the conversion function complained as follows: "
+					      + error));
+	    }
+
+          AssertThrow (prescribed_velocity_boundary_indicators.find(boundary_id)
+                       == prescribed_velocity_boundary_indicators.end(),
+                       ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
+                                   "> appears more than once in the list of indicators "
+                                   "for nonzero velocity boundaries."));
+
+	  // finally, put it into the list
+          prescribed_velocity_boundary_indicators[boundary_id] =
+            std::pair<std::string,std::string>(comp,value);
+        }
+    }
+    prm.leave_subsection ();
+  }
+
+
+
+  template <int dim>
   void Simulator<dim>::declare_parameters (ParameterHandler &prm)
   {
     Parameters::declare_parameters (prm);
@@ -925,7 +1080,9 @@ namespace aspect
                                                    MPI_Comm mpi_communicator); \
   template void Simulator<dim>::Parameters::declare_parameters (ParameterHandler &prm); \
   template void Simulator<dim>::Parameters::parse_parameters(ParameterHandler &prm, \
-                                                             MPI_Comm mpi_communicator); \
+                                                             const MPI_Comm mpi_communicator); \
+  template void Simulator<dim>::Parameters::parse_geometry_dependent_parameters(ParameterHandler &prm, \
+                                                                                const GeometryModel::Interface<dim> &geometry_model); \
   template void Simulator<dim>::declare_parameters (ParameterHandler &prm);
 
   ASPECT_INSTANTIATE(INSTANTIATE)

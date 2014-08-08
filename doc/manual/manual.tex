@@ -2179,8 +2179,9 @@ with the input file discussed in Section~\ref{sec:cookbooks-simple-box},
 simulating convection in a box. After running \aspect{}, you will find
 a file called \texttt{statistics} in the output directory that, at the time
 of writing this, looked like this:
-This file has a structure that looks like this:
-  \begin{lstlisting}[frame=single,language=ksh]
+This file has a structure that looks (at the time of writing this section)
+like this:
+\begin{lstlisting}[frame=single,language=ksh]
 # 1: Time step number
 # 2: Time (seconds)
 # 3: Number of mesh cells
@@ -2188,33 +2189,37 @@ This file has a structure that looks like this:
 # 5: Number of temperature degrees of freedom
 # 6: Iterations for temperature solver
 # 7: Iterations for Stokes solver
-# 8: Time step size (seconds)
-# 9: RMS velocity (m/s)
-# 10: Max. velocity (m/s)
-# 11: Minimal temperature (K)
-# 12: Average temperature (K)
-# 13: Maximal temperature (K)
-# 14: Average nondimensional temperature (K)
-# 15: Outward heat flux through boundary with indicator 0 (W)
-# 16: Outward heat flux through boundary with indicator 1 (W)
-# 17: Outward heat flux through boundary with indicator 2 (W)
-# 18: Outward heat flux through boundary with indicator 3 (W)
-# 19: Visualization file name
-   0 0.0000e+00 256 2467 1089  1 22 1.2225e-02 1.79038621e+00 2.54812273e+00 ...
-   1 1.2225e-02 256 2467 1089 40 16 3.7409e-03 5.88727814e+00 8.34299267e+00 ...
-   2 1.5966e-02 256 2467 1089 25 15 2.0249e-03 1.08925316e+01 1.54185045e+01 ...
-   3 1.7991e-02 256 2467 1089 19 15 1.3658e-03 1.61586242e+01 2.28690070e+01 ...
-   4 1.9357e-02 256 2467 1089 16 14 1.0291e-03 2.14311381e+01 3.03519178e+01 ...
-   5 2.0386e-02 256 2467 1089 14 14 8.2853e-04 2.65966688e+01 3.76989179e+01 ...
-  \end{lstlisting}
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (seconds)
+# 11: RMS velocity (m/s)
+# 12: Max. velocity (m/s)
+# 13: Minimal temperature (K)
+# 14: Average temperature (K)
+# 15: Maximal temperature (K)
+# 16: Average nondimensional temperature (K)
+# 17: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 18: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 19: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 20: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 21: Visualization file name
+ 0 0.0000e+00 256 2467 1089  0 29 30 29 1.2268e-02 1.79026783e+00 2.54322608e+00
+ 1 1.2268e-02 256 2467 1089 32 29 30 30 3.7388e-03 5.89844152e+00 8.35160076e+00
+ 2 1.6007e-02 256 2467 1089 20 28 29 29 2.0239e-03 1.09071922e+01 1.54298908e+01
+ 3 1.8031e-02 256 2467 1089 15 27 28 28 1.3644e-03 1.61759153e+01 2.28931189e+01
+ 4 1.9395e-02 256 2467 1089 13 26 27 27 1.0284e-03 2.14465789e+01 3.03731397e+01
+ 5 2.0424e-02 256 2467 1089 11 25 26 26 8.2812e-04 2.66110761e+01 3.77180480e+01
+ \end{lstlisting}
 
 In other words, it first lists what the individual columns mean with a hash
 mark at the beginning of the line and then has one line for each time step
-in which the individual columns list what has been explained above. In the
-example shown here, the first time step appears twice because we use a mesh
-that starts out globally refined and we then start the entire computation
-over again on a once adaptively refined mesh (see the parameters in
-Section~\ref{parameters:Mesh_20refinement} for how to do that).
+in which the individual columns list what has been explained above.%
+\footnote{With
+  input files that ask for initial adaptive refinement, the first time step may
+  appear twice because we solve on a mesh
+  that is globally refined and we then start the entire computation
+  over again on a once adaptively refined mesh (see the parameters in
+  Section~\ref{parameters:Mesh_20refinement} for how to do that).}
 
 This file is easy to visualize. For example, one can import it as a whitespace
 separated file into a spreadsheet such as Microsoft Excel or OpenOffice/LibreOffice
@@ -2246,11 +2251,11 @@ gnuplot>
 \end{lstlisting}
 At the prompt on the last line, you can then enter commands. Given the
 description of the individual columns given above, let us first try to
-plot the heat flux through boundary 2 (which in this case is the bottom
-boundary of the box), i.e., column 17, as a function of time (column 2).
+plot the heat flux through boundary 2 (the bottom
+boundary of the box), i.e., column 19, as a function of time (column 2).
 This can be achieved using the following command:
 \begin{lstlisting}[frame=single,language=gnuplot]
-  plot "statistics" using 2:17
+  plot "statistics" using 2:19
 \end{lstlisting}
 The left panel of Fig.~\ref{fig:viz-gnuplot-1} shows what \texttt{Gnuplot}
 will display in its output window. There are many things one can
@@ -2260,14 +2265,14 @@ use not just points but lines and points for the curves,
 restrict the time axis to the range $[0,0.2]$ and the heat flux axis to
 $[-10:10]$,
 plot not only the flux through the bottom but also through the top boundary
-(column 18) and finally add a key to the figure, then the following
+(column 20) and finally add a key to the figure, then the following
 commands achieve this:
 \begin{lstlisting}[frame=single,language=gnuplot]
   set xlabel "Time"
   set ylabel "Heat flux"
   set style data linespoints
-  plot [0:0.2][-10:10] "statistics" using 2:17 title "Bottom boundary", \
-                       "statistics" using 2:18 title "Top boundary"
+  plot [0:0.2][-10:10] "statistics" using 2:19 title "Bottom boundary", \
+                       "statistics" using 2:20 title "Top boundary"
 \end{lstlisting}
 If a line gets too long, you can continue it by ending it in a backslash as
 above. This is rarely used on the command line but useful when writing the
@@ -2298,10 +2303,10 @@ the following abbreviated form would have achieved the same effect:
   se xl "Time"
   se yl "Heat flux"
   se sty da lp
-  pl [:0.2][-10:10] "statistics" us 2:17 t "Bottom boundary", "" us 2:18 t "Top boundary"
+  pl [:0.2][-10:10] "statistics" us 2:19 t "Bottom boundary", "" us 2:20 t "Top boundary"
 \end{lstlisting}
 This is of course unreadable at first but becomes useful once you become
-more familiar with the command offered by this program.
+more familiar with the commands offered by this program.
 
 Once you have gotten the commands that create the plot you want right, you probably
 want to save it into a file. \texttt{Gnuplot} can write output in many
@@ -2830,6 +2835,30 @@ geometry (a ``box'') with edge length equal to one in both the $x$- and
 $y$-directions. Of course, there are other geometries you can choose from for
 the \texttt{Model name} parameter, and consequently other subsections that
 specify the details of these geometries.
+
+Similarly, you describe boundary conditions using parameters such as this:
+%
+\lstinputlisting[language=prmfile]{cookbooks/overview/boundary-conditions.part.prm}
+%
+This snippet describes which of the four boundaries of the two-dimensional box
+we have selected above should have a prescribed temperature or an insulating
+boundary, and at which parts of the boundary we want zero, tangential or
+prescribed velocities.%
+\footnote{Internally, the geometry models \aspect{} uses label every part of
+  the boundary with what is called a \textit{boundary indicator} -- a number
+  that identifies pieces of the boundary. If you know which number each piece
+  has, you can list these numbers on the right hand sides of the assignments
+  of boundary types above. For example, the left boundary of the box has
+  boundary indicator zero (see Section~\ref{parameters:Geometry_20model}), and
+  using this number instead of the \texttt{left} would have been equally
+  valid. However, numbers are far more difficult to remember than names, and
+  consequently every geometry model provides string aliases such as
+  ``\texttt{left}'' for each boundary indicator describing parts of the
+  boundary. These symbolic aliases are specific to the geometry -- for the
+  box, they are ``\texttt{left}'', ``\texttt{right}'', ``\texttt{bottom}'',
+  etc., whereas for a spherical shell they are ``\texttt{inner}'' and
+  ``\texttt{outer}'' -- but are described in the documentation of every
+  geometry model, see Section~\ref{parameters:Geometry_20model}.}
 
 If you go down the list of questions about the setup above, you have already
 done the majority of the work describing your computation. The remaining
@@ -6510,17 +6539,23 @@ to solve the equations. A domain is described in \dealii{} by a coarse mesh
 and, if necessary, an object that characterizes the boundary. Together, these
 two suffice to reconstruct any domain by adaptively refining the coarse mesh
 and placing new nodes generated by refining cells onto the surface described
-by the boundary object. The geometry model is also responsible to describe to
-the rest of the code which parts of the boundary represent Dirichlet-type
+by the boundary object. The geometry model is also responsible for marking
+different parts of the boundary with different \textit{boundary indicators}
+for which one can then, in the input file, select whether these boundaries
+should be Dirichlet-type
 (fixed temperature) or Neumann-type (no heat flux) boundaries for the
-temperature, and where the velocity is considered zero or tangential to the
-boundary. This information is encoded in functions that return which boundary
-indicators represent these types of boundaries; in \dealii{}, a boundary
-indicator is a number attached to each piece of the boundary that can be used
-to represent the type of boundary a piece belongs to.
+temperature, and what kind of velocity conditions should hold there. In
+\dealii{}, a boundary indicator is a number of type
+\texttt{types::boundary\_id}, but since boundaries are hard to remember and
+get right in input files, geometry models also have a function that provide a
+map from symbolic names that can be used to describe pieces of the boundary to
+the corresponding boundary indicators. For example, the simple \texttt{box}
+geometry model in 2d provides the map
+\texttt{\{"left"$\rightarrow$0, "right"$\rightarrow$1,
+"bottom"$\rightarrow$2,"top"$\rightarrow$3\}}, and we have consistently used
+these symbolic names in the input files used in this manual.
 
-To implement a new geometry model, you
-need to overload the
+To implement a new geometry model, you need to overload the
 \href{doc/doxygen/classaspect_1_1GeometryModel_1_1Interface.html}{aspect::GeometryModel::Interface}
 class and use
 the \texttt{ASPECT\_REGISTER\_GEOMETRY\_MODEL} macro to register your new
@@ -6553,6 +6588,10 @@ Specifically, your new class needs to implement the following basic interface:
         virtual
         std::set<types::boundary_id_t>
         get_used_boundary_indicators () const = 0;
+
+        virtual
+        std::map<std::string,types::boundary_id>
+        get_symbolic_boundary_names_map () const;
 
         static
         void

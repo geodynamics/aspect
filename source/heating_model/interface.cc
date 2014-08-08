@@ -104,8 +104,7 @@ namespace aspect
       prm.leave_subsection ();
 
       Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                                      "Heating model::Model name",
-                                                                                      prm);
+                                                                                      "Heating model::Model name");
       return plugin;
     }
 

@@ -8,8 +8,8 @@
 # 8: Velocity iterations in Stokes preconditioner
 # 9: Schur complement iterations in Stokes preconditioner
 # 10: Time step size (seconds)
-# 11: Outward heat flux through boundary with indicator 0 (W)
-# 12: Outward heat flux through boundary with indicator 1 (W)
-# 13: Outward heat flux through boundary with indicator 2 (W)
-# 14: Outward heat flux through boundary with indicator 3 (W)
+# 11: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 12: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 13: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 14: Outward heat flux through boundary with indicator 3 ("top") (W)
 0 0.0000e+00 64 659 289 0 33 12 4 7.4833e+05 1.68781124e-07 2.01687811e-05 2.43044819e-07 2.43044819e-07 

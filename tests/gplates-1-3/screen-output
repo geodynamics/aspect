@@ -10,7 +10,7 @@ Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
 
-   Set up GPlates boundary velocity module.
+   Setting up GPlates boundary velocity plugin.
 
    Input point 1 spherical coordinates: 1.571 4.870
    Input point 1 Cartesian output coordinates: 0.157 -0.988 0.000

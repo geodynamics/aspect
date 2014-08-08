@@ -101,8 +101,7 @@ namespace aspect
       prm.leave_subsection ();
 
       return std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                    "Boundary temperature model::Model name",
-                                                                    prm);
+                                                                    "Boundary temperature model::Model name");
     }
 
 

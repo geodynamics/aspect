@@ -15,10 +15,10 @@
 # 15: Average temperature (K)
 # 16: Maximal temperature (K)
 # 17: Average nondimensional temperature (K)
-# 18: Outward heat flux through boundary with indicator 0 (W)
-# 19: Outward heat flux through boundary with indicator 1 (W)
-# 20: Outward heat flux through boundary with indicator 2 (W)
-# 21: Outward heat flux through boundary with indicator 3 (W)
+# 18: Outward heat flux through boundary with indicator 0 ("inner") (W)
+# 19: Outward heat flux through boundary with indicator 1 ("outer") (W)
+# 20: Outward heat flux through boundary with indicator 2 ("left") (W)
+# 21: Outward heat flux through boundary with indicator 3 ("right") (W)
 0 0.0000e+00 192 1891 833 0 383 4139 1556 6.0528e+04 output-steinberger-viscosity/solution-00000 1.88337302e-01 1.24920736e+00 2.73000000e+02 2.24994479e+03 4.25000000e+03 4.97094491e-01 -2.51257690e+05 4.95677960e+05 1.84703002e+03 1.84703002e+03 
 1 6.0528e+04 192 1891 833 9 244 2516  986 3.9472e+04 output-steinberger-viscosity/solution-00001 1.95933130e-01 1.20327356e+00 2.73000000e+02 2.24877888e+03 4.25000000e+03 4.96801327e-01 -2.41320954e+05 4.82742491e+05 1.57509842e+03 1.57509842e+03 
 2 1.0000e+05 192 1891 833 9 272 2841 1121 6.6894e+04 output-steinberger-viscosity/solution-00002 1.87435796e-01 1.13584689e+00 2.73000000e+02 2.24755195e+03 4.25000000e+03 4.96492822e-01 -2.35081401e+05 4.71838090e+05 1.44675961e+03 1.44675961e+03 

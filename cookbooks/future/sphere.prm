@@ -25,9 +25,9 @@ end
 
 subsection Model settings
   set Zero velocity boundary indicators       = 
-  set Tangential velocity boundary indicators = 0
+  set Tangential velocity boundary indicators = surface
   set Prescribed velocity boundary indicators =
-  set Fixed temperature boundary indicators   = 0
+  set Fixed temperature boundary indicators   = surface
   set Include shear heating                   = false 
   set Remove nullspace = net rotation
 end
@@ -36,7 +36,7 @@ end
 subsection Boundary temperature model
   set Model name = constant
   subsection Constant
-    set Boundary indicator to temperature mappings = 0 : 0.0 
+    set Boundary indicator to temperature mappings = surface: 0.0 
   end
 end
 

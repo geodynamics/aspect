@@ -122,10 +122,8 @@ namespace aspect
      * object that describes it. Ownership of the pointer is transferred to
      * the caller.
      *
-     * This function makes the newly created object read its parameters from
-     * the input parameter object, and then initializes it with the given
-     * geometry model, boundary values object, and adiabatic conditions
-     * object.
+     * The model object returned is not yet initialized and has not
+     * read its runtime parameters yet.
      *
      * @ingroup InitialConditionsModels
      */

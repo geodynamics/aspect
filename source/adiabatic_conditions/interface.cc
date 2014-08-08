@@ -101,8 +101,7 @@ namespace aspect
       prm.leave_subsection ();
 
       Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                                      "Adiabatic Conditions model::Model name",
-                                                                                      prm);
+                                                                                      "Adiabatic Conditions model::Model name");
 
       return plugin;
 

@@ -66,9 +66,8 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics
 
    
-subsection Visualization
+  subsection Visualization
     set List of output variables      = density, viscosity
-
-end
+  end
 end
 

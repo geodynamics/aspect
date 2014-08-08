@@ -859,6 +859,9 @@ namespace aspect
      * object that describes it. Ownership of the pointer is transferred to
      * the caller.
      *
+     * The material model object returned is not yet initialized and has not
+     * read its runtime parameters yet.
+     *
      * @ingroup MaterialModels
      */
     template <int dim>
