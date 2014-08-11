@@ -22,6 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/velocity_boundary_conditions/gplates.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/table.h>
@@ -98,7 +99,7 @@ namespace aspect
         std::ostringstream output;
 
         output << std::setprecision (3) << std::setw(3) << std::fixed << std::endl
-               << "   Set up GPlates boundary velocity module."  << std::endl
+               << "   Setting up GPlates boundary velocity plugin."  << std::endl
                << std::endl;
         if (dim == 2)
           {
@@ -468,18 +469,6 @@ namespace aspect
       }
 
       Tensor<1,3>
-      GPlatesLookup::spherical_surface_coordinates(const Tensor<1,3> &position) const
-      {
-        Tensor<1,3> scoord;
-
-        scoord[0] = std::acos(position[2]/position.norm()); // Theta
-        scoord[1] = std::atan2(position[1],position[0]); // Phi
-        if (scoord[1] < 0.0) scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
-        scoord[2] = position.norm(); // R
-        return scoord;
-      }
-
-      Tensor<1,3>
       GPlatesLookup::cartesian_surface_coordinates(const Tensor<1,3> &sposition) const
       {
         Tensor<1,3> ccoord;
@@ -517,8 +506,9 @@ namespace aspect
       GPlatesLookup::calculate_spatial_index(int *index,
                                              const Tensor<1,3> &position) const
       {
-        const Tensor<1,3> scoord = spherical_surface_coordinates(position);
-        index[0] = lround(scoord[0]/delta_theta);
+        const std_cxx1x::array<double,3> scoord =
+            ::aspect::Utilities::spherical_coordinates(static_cast<Point<3> > (position));
+        index[0] = lround(scoord[2]/delta_theta);
         index[1] = lround(scoord[1]/delta_phi);
         reformat_indices(index);
       }
@@ -528,15 +518,17 @@ namespace aspect
       GPlatesLookup::gplates_1_4_or_higher(const boost::property_tree::ptree &pt) const
       {
         const std::string gpml_version = pt.get<std::string>("gpml:FeatureCollection.<xmlattr>.gpml:version");
-        std::vector<std::string> string_versions = dealii::Utilities::split_string_list(gpml_version,'.');
-        std::vector<int> int_versions = dealii::Utilities::string_to_int(string_versions);
+        const std::vector<std::string> string_versions = dealii::Utilities::split_string_list(gpml_version,'.');
+        const std::vector<int> int_versions = dealii::Utilities::string_to_int(string_versions);
 
         const int gplates_1_3_version[3] = {1,6,322};
 
         for (unsigned int i = 0; i < int_versions.size(); i++)
           {
-            if (int_versions[i] > gplates_1_3_version[i]) return true;
-            if (int_versions[i] < gplates_1_3_version[i]) return false;
+            if (int_versions[i] > gplates_1_3_version[i])
+	      return true;
+            if (int_versions[i] < gplates_1_3_version[i])
+	      return false;
           }
 
         return false;
@@ -676,6 +668,11 @@ namespace aspect
                                "Loading new and old velocity file did not succeed. "
                                "Maybe the time step was so large we jumped over all files "
                                "or the files were removed during the model run. "
+                               "Another possible way here is to restart a model with "
+                               "previously time-dependent boundary condition after the "
+                               "last file was already read. Aspect has no way to find the "
+                               "last readable file from the current model time. Please "
+                               "prescribe the last velocity file manually in such a case. "
                                "Cancelling calculation."));
               }
           }
@@ -748,7 +745,9 @@ namespace aspect
                              "files located in the 'data/' subdirectory of ASPECT. ");
           prm.declare_entry ("Velocity file name", "phi.%d",
                              Patterns::Anything (),
-                             "The file name of the material data. Provide file in format: (Velocity file name).%d.gpml where %d is any sprintf integer qualifier, specifying the format of the current file number.");
+                             "The file name of the material data. Provide file in format: "
+                             "(Velocity file name).\\%d.gpml where \\%d is any sprintf integer "
+                             "qualifier, specifying the format of the current file number.");
           prm.declare_entry ("Time step", "1e6",
                              Patterns::Double (0),
                              "Time step between following velocity files. "

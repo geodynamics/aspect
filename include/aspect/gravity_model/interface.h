@@ -127,6 +127,9 @@ namespace aspect
      * object that describes it. Ownership of the pointer is transferred to
      * the caller.
      *
+     * The model object returned is not yet initialized and has not
+     * read its runtime parameters yet.
+     *
      * @ingroup GravityModels
      */
     template <int dim>

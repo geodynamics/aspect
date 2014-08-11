@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -47,6 +47,35 @@ namespace aspect
          */
         virtual
         double initial_temperature (const Point<dim> &position) const;
+
+        /**
+	 * Declare the parameters this class takes through input files.
+	 */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+      private:
+        /**
+	 *   The angular mode is the number of perturbations to
+	 *   apply to the spherical shell. Historically, this was
+	 *   permanently set to 6 (hence the class name SphericalHexagonalPerturbation)
+	 *   The default is 6 in order to provide backwards compatibility.
+	 *
+	 *   The rotation offset describes the number of degrees to rotate the perturbation
+	 *   counterclockwise. Setting the rotation offset to 0 will cause one of the perturbations
+	 *   to point north/up. Rotation offset is set to -45 degrees by default in order to provide
+	 *   backwards compatibility.
+	 */
+        int angular_mode;
+        double rotation_offset;
     };
 
 

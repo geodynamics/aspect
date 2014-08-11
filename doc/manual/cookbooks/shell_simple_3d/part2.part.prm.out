@@ -8,11 +8,11 @@ end
 
 
 subsection %%\hyperref[parameters:Model_20settings]{Model settings}%
-  set %%\hyperref[parameters:Model settings/Zero velocity boundary indicators]{Zero velocity boundary indicators}%       = 0 %% \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
-  set %%\hyperref[parameters:Model settings/Tangential velocity boundary indicators]{Tangential velocity boundary indicators}% = 1 %% \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
+  set %%\hyperref[parameters:Model settings/Zero velocity boundary indicators]{Zero velocity boundary indicators}%       = inner%% \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Model settings!Zero velocity boundary indicators} %
+  set %%\hyperref[parameters:Model settings/Tangential velocity boundary indicators]{Tangential velocity boundary indicators}% = outer%% \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
   set %%\hyperref[parameters:Model settings/Prescribed velocity boundary indicators]{Prescribed velocity boundary indicators}% = %% \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
 
-  set %%\hyperref[parameters:Model settings/Fixed temperature boundary indicators]{Fixed temperature boundary indicators}%   = 0,1 %% \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
+  set %%\hyperref[parameters:Model settings/Fixed temperature boundary indicators]{Fixed temperature boundary indicators}%   = inner, outer%% \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
 
   set %%\hyperref[parameters:Model settings/Include shear heating]{Include shear heating}%                   = false %% \index[prmindex]{Include shear heating} \index[prmindexfull]{Model settings!Include shear heating} %
 end

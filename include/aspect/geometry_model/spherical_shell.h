@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -69,6 +69,7 @@ namespace aspect
 
         virtual
         double maximal_depth() const;
+
         /**
          * Return the set of boundary indicators that are used by this model.
          * This information is used to determine what boundary indicators can
@@ -83,6 +84,15 @@ namespace aspect
         virtual
         std::set<types::boundary_id>
         get_used_boundary_indicators () const;
+
+        /**
+         * Return symbolic names for all boundary components. Their names
+         * are described in the documentation of this plugin, at the bottom
+         * of the .cc file.
+         */
+        virtual
+        std::map<std::string,types::boundary_id>
+        get_symbolic_boundary_names_map () const;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -132,6 +142,11 @@ namespace aspect
          * Opening angle of the section of the shell that we simulate.
          */
         double phi;
+
+        /**
+         * Number of tangential mesh cells in the initial, coarse mesh.
+         */
+        int n_cells_along_circumference;
     };
   }
 }

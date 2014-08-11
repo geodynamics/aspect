@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (years)
+# 11: Visualization file name
+# 12: RMS velocity (m/year)
+# 13: Max. velocity (m/year)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+# 18: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 19: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 20: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 3 ("top") (W)
+0 0.0000e+00   64  659  289 0 18 19  54 5.2172e+09 output-minimum_refinement_function_cartesian/solution-00000 3.79980811e-06 5.98257532e-06 1.62300000e+03 1.74279167e+03 1.87300000e+03 3.42261905e-02 2.37801676e-11  7.92672255e-12 2.14021509e-11 -4.60057899e-12 
+0 0.0000e+00  232 2323 1025 0 30 32 202 2.5923e+09 output-minimum_refinement_function_cartesian/solution-00001 3.79850110e-06 6.02639932e-06 1.62300000e+03 1.74539583e+03 1.87300000e+03 3.49702381e-02 3.68026404e-11 -2.26477787e-13 6.22813915e-11  1.07288873e-11 
+0 0.0000e+00  640 6217 2752 0 30 32 303 1.2941e+09 output-minimum_refinement_function_cartesian/solution-00002 3.79809021e-06 6.03685048e-06 1.62300000e+03 1.74669792e+03 1.87300000e+03 3.53422619e-02 4.98251132e-11  1.68725951e-11 5.20898910e-11 -2.83673386e-11 
+0 0.0000e+00 1018 9909 4393 0 29 30 230 8.4115e+08 output-minimum_refinement_function_cartesian/solution-00003 3.79808953e-06 6.03689580e-06 1.62300000e+03 1.74669792e+03 1.87300000e+03 3.53422619e-02 5.20898910e-11  1.98168064e-11 5.03913076e-11 -2.83673386e-11 

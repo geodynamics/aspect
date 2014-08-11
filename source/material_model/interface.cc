@@ -208,8 +208,7 @@ namespace aspect
       prm.leave_subsection ();
 
       Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                                      "Material model::Model name",
-                                                                                      prm);
+                                                                                      "Material model::Model name");
       return plugin;
     }
 

@@ -236,9 +236,6 @@ namespace aspect
                                  +
                                  ">"));
       }
-
-    // re-initialize the postprocessors with the current object
-    postprocess_manager.initialize (*this);
   }
 
 }

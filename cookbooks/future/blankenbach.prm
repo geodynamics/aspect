@@ -55,8 +55,8 @@ subsection Model settings
   set Include adiabatic heating               = false
   set Include shear heating                   = false # default: true
   set Prescribed velocity boundary indicators = 
-  set Tangential velocity boundary indicators = 0, 1     # default: 
-  set Zero velocity boundary indicators       = 2, 3  # default: 
+  set Tangential velocity boundary indicators = left, right
+  set Zero velocity boundary indicators       = bottom, top
 end
 
 

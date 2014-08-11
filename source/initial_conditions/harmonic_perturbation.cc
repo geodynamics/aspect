@@ -22,6 +22,7 @@
 #include <aspect/initial_conditions/harmonic_perturbation.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/utilities.h>
 
 #include <boost/math/special_functions/spherical_harmonic.hpp>
 
@@ -61,7 +62,7 @@ namespace aspect
           spherical_geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
         {
           // In case of spherical shell calculate spherical coordinates
-          const Tensor<1,dim> scoord = spherical_surface_coordinates(position);
+          const std_cxx1x::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
 
           if (dim==2)
             {
@@ -109,22 +110,6 @@ namespace aspect
                                  "harmonic perturbation."));
 
       return background_temperature + magnitude * depth_perturbation * lateral_perturbation;
-    }
-
-    template <int dim>
-    const Tensor<1,dim>
-    HarmonicPerturbation<dim>::
-    spherical_surface_coordinates(const Tensor<1,dim> &position) const
-    {
-      Tensor<1,dim> scoord;
-
-      scoord[0] = std::sqrt(position.norm_square()); // R
-      scoord[1] = std::atan2(position[1],position[0]); // Phi
-      if (scoord[1] < 0.0) scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
-      if (dim==3)
-        scoord[2] = std::acos(position[2]/std::sqrt(position.norm_square())); // Theta
-
-      return scoord;
     }
 
     template <int dim>

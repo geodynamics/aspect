@@ -39,26 +39,24 @@ end
 
 
 subsection Model settings
-  set Fixed temperature boundary indicators   = 0,1
+  set Fixed temperature boundary indicators   = inner, outer
 
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is tangential but prescribed, i.e., where external forces act to
   # prescribe a particular velocity. This is often used to prescribe a
   # velocity that equals that of overlying plates.
-  set Prescribed velocity boundary indicators = 1:gplates
+  set Prescribed velocity boundary indicators = outer:gplates
 
-  #set Zero velocity boundary indicators       = 1
-  set Tangential velocity boundary indicators = 0
+  #set Zero velocity boundary indicators       = outer
+  set Tangential velocity boundary indicators = inner
 end
 
 subsection Boundary velocity model
-
   subsection GPlates model
     set Data directory = data/velocity-boundary-conditions/gplates/
     set Velocity file name = time_dependent.%d.gpml
     set Time step = 1e14
   end
-
 end
 
 subsection Initial conditions

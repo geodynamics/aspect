@@ -341,24 +341,21 @@ STRING(REGEX REPLACE "^\"([^ ]+) ([^ ]+) ([^\"]+)\""
          "\\3" _git_WC_AUTHOR "${_git_WC_INFO}")
 
 EXECUTE_PROCESS(
-   COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref ${_git_WC_REV}
+   COMMAND ${GIT_EXECUTABLE} symbolic-ref HEAD
    WORKING_DIRECTORY ${CTEST_SOURCE_DIRECTORY}
-   OUTPUT_VARIABLE _git_WC_NAME
+   OUTPUT_VARIABLE _git_WC_BRANCH
    RESULT_VARIABLE _result
    OUTPUT_STRIP_TRAILING_WHITESPACE
    )
 
-IF (NOT "${_git_WC_NAME}" STREQUAL "master")
-  SET(_branch "${_git_WC_NAME}")
-ELSE()
-  SET(_branch "")
-ENDIF()
+STRING(REGEX REPLACE "refs/heads/" ""
+  _git_WC_BRANCH "${_git_WC_BRANCH}")
 
 IF(USE_PETSC)
   SET(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-PETSc")
 ENDIF()
 
-SET(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${_branch}")
+SET(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${_git_WC_BRANCH}")
 
 
 
@@ -369,14 +366,13 @@ SET(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${_branch}")
 FILE(WRITE ${CTEST_BINARY_DIRECTORY}/revision.log
 "###
 #
-#  git information:
-#        REV-NAME: ${_git_WC_NAME}
-#        SHORTREV: ${_git_WC_SHORTREV}
-#        REV:      ${_git_WC_REV}
-#        AUTHOR:   ${_git_WC_AUTHOR}
+#  Git information:
+#    Branch: ${_git_WC_BRANCH}
+#    Commit: ${_git_WC_REV}
+#    Author: ${_git_WC_AUTHOR}
 #
 ###"
-    )
+  )
 
 #
 # Append config file name to CTEST_BUILD_NAME:
@@ -419,10 +415,6 @@ ENDIF()
 #                          Run the testsuite:                          #
 #                                                                      #
 ########################################################################
-
-IF(NOT "${_branch}" STREQUAL "")
-  SET_PROPERTY(GLOBAL PROPERTY SubProject ${_branch})
-ENDIF()
 
 CTEST_START(Experimental TRACK ${TRACK})
 
@@ -477,19 +469,17 @@ IF(CMAKE_SYSTEM_NAME MATCHES "Linux")
   ENDIF()
 ENDIF()
 
-#IF(NOT "${_svn_WC_REVISION}" STREQUAL "")
-  FILE(WRITE ${_path}/Update.xml
+FILE(WRITE ${_path}/Update.xml
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <Update mode=\"Client\" Generator=\"ctest-${CTEST_VERSION}\">
-    <Site>${CTEST_SITE}</Site>
-      <BuildName>${CTEST_BUILD_NAME}</BuildName>
-        <BuildStamp>${_tag}-${TRACK}</BuildStamp>
-	<UpdateType>GIT</UpdateType>
-	<Revision>${_git_WC_SHORTREV}</Revision>
-        <Path>${_branch}</Path>
+<Site>${CTEST_SITE}</Site>
+<BuildName>${CTEST_BUILD_NAME}</BuildName>
+<BuildStamp>${_tag}-${TRACK}</BuildStamp>
+<UpdateType>GIT</UpdateType>
+<Revision>${_git_WC_SHORTREV}</Revision>
+<Path>${_git_WC_BRANCH}</Path>
 </Update>"
-    )
-#ENDIF()
+  )
 
 IF("${submit}")
 MESSAGE("-- Running CTEST_SUBMIT()")

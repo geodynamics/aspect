@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
+--     . version 1.2.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -134,7 +134,7 @@ Number of degrees of freedom: 17,345 (10,640+1,385+5,320)
      Writing graphical output:                       output-spherical_velocity_statistics/solution-00007
      RMS, max velocity:                              1.44e-09 m/s, 4.01e-09 m/s
      Temperature min/avg/max:                        -202.4 K, 107.6 K, 1613 K
-     Heat fluxes through boundary parts:             -0.1138 W, -0.2394 W, 6.599e-07 W, -4.84e-06 W
+     Heat fluxes through boundary parts:             -0.1138 W, -0.2394 W, 6.6e-07 W, -4.84e-06 W
      Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 9.92e-10 m/s, 1.04e-09 m/s, 1.44e-09 m/s
 
@@ -162,7 +162,7 @@ Number of degrees of freedom: 19,477 (11,950+1,552+5,975)
      Writing graphical output:                       output-spherical_velocity_statistics/solution-00009
      RMS, max velocity:                              1.5e-09 m/s, 4.08e-09 m/s
      Temperature min/avg/max:                        -201.9 K, 108.5 K, 1613 K
-     Heat fluxes through boundary parts:             -0.1138 W, -0.2378 W, 5.628e-07 W, 7.65e-06 W
+     Heat fluxes through boundary parts:             -0.1138 W, -0.2378 W, 5.628e-07 W, 7.649e-06 W
      Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 1.04e-09 m/s, 1.08e-09 m/s, 1.5e-09 m/s
 
@@ -187,21 +187,21 @@ Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      35.3s |            |
+| Total wallclock time elapsed since start    |       145s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        11 |       2.1s |         6% |
-| Assemble temperature system     |        11 |      4.36s |        12% |
-| Build Stokes preconditioner     |         6 |       1.9s |       5.4% |
-| Build temperature preconditioner|        11 |     0.174s |      0.49% |
-| Solve Stokes system             |        11 |      2.58s |       7.3% |
-| Solve temperature system        |        11 |     0.123s |      0.35% |
-| Create snapshot                 |         1 |      1.29s |       3.6% |
-| Initialization                  |         2 |    0.0608s |      0.17% |
-| Postprocessing                  |        11 |        19s |        54% |
-| Refine mesh structure, part 1   |         7 |       1.6s |       4.5% |
-| Refine mesh structure, part 2   |         7 |    0.0487s |      0.14% |
-| Setup dof systems               |         8 |      1.59s |       4.5% |
+| Assemble Stokes system          |        11 |      13.6s |       9.4% |
+| Assemble temperature system     |        11 |      17.8s |        12% |
+| Build Stokes preconditioner     |         6 |      9.31s |       6.4% |
+| Build temperature preconditioner|        11 |     0.165s |      0.11% |
+| Solve Stokes system             |        11 |      5.89s |       4.1% |
+| Solve temperature system        |        11 |     0.233s |      0.16% |
+| Create snapshot                 |         1 |    0.0707s |     0.049% |
+| Initialization                  |         2 |     0.345s |      0.24% |
+| Postprocessing                  |        11 |      78.1s |        54% |
+| Refine mesh structure, part 1   |         7 |      6.84s |       4.7% |
+| Refine mesh structure, part 2   |         7 |     0.246s |      0.17% |
+| Setup dof systems               |         8 |      8.37s |       5.8% |
 +---------------------------------+-----------+------------+------------+
 

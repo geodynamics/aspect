@@ -48,9 +48,9 @@ subsection Model settings
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. To guarantuee a steady downward flow, we fix the velocity
   # at the top and bottom, and set it to free slip on the sides. 
-  set Fixed temperature boundary indicators   = 3
-  set Prescribed velocity boundary indicators = 2:function, 3:function
-  set Tangential velocity boundary indicators = 0, 1
+  set Fixed temperature boundary indicators   = top
+  set Prescribed velocity boundary indicators = bottom:function, top:function
+  set Tangential velocity boundary indicators = left, right
 end
 
 

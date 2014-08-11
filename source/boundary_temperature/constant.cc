@@ -37,13 +37,15 @@ namespace aspect
                  const unsigned int                   boundary_indicator,
                  const Point<dim>                    &location) const
     {
-      types::boundary_id bid = boundary_indicator;
-      std::map< types::boundary_id, double>::const_iterator it = boundary_temperatures.find(bid);
+      const std::map<types::boundary_id, double>::const_iterator it = boundary_temperatures.find(boundary_indicator);
       if (it != boundary_temperatures.end())
         return it->second;
       else
         {
-          Assert (false, ExcMessage ("Unknown boundary indicator."));
+          Assert (false,
+		  ExcMessage ("Unknown boundary indicator with number <" + Utilities::int_to_string(boundary_indicator) + ">. "
+			      "You may not have specified the temperature for this boundary indicator "
+			      "in the input file."));
           return std::numeric_limits<double>::quiet_NaN();
         }
     }
@@ -94,13 +96,15 @@ namespace aspect
         prm.enter_subsection("Constant");
         {
           prm.declare_entry ("Boundary indicator to temperature mappings", "",
-                             Patterns::Map (Patterns::Integer(0, std::numeric_limits<types::boundary_id>::max()),
+                             Patterns::Map (Patterns::Anything(),
                                             Patterns::Double()),
                              "A comma separated list of mappings between boundary "
                              "indicators and the temperature associated with the "
                              "boundary indicators. The format for this list is "
                              "``indicator1 : value1, indicator2 : value2, ...'', "
                              "where each indicator is a valid boundary indicator "
+                             "(either a number or the symbolic name of a boundary as provided "
+                             "by the geometry model) "
                              "and each value is the temperature of that boundary." );
         }
         prm.leave_subsection ();
@@ -117,7 +121,7 @@ namespace aspect
       {
         prm.enter_subsection("Constant");
         {
-          //get the list of mappings
+          // get the list of mappings
           const std::vector<std::string> x_boundary_temperatures
             = Utilities::split_string_list(prm.get ("Boundary indicator to temperature mappings"));
 
@@ -126,35 +130,35 @@ namespace aspect
                it != x_boundary_temperatures.end(); ++it)
             {
               // each entry has the format (white space is optional):
-              // <id> [x][y][z] : <value (might have spaces)>
-              std::string comp = "";
-              std::string value = "";
+              // <id> : <value (might have spaces)>
+	      const std::vector<std::string> parts = Utilities::split_string_list (*it, ':');
+	      
+	      AssertThrow (parts.size() == 2,
+			   ExcMessage (std::string("Invalid entry trying to describe boundary "
+						   "temperatures. Each entry needs to have the form "
+						   "<boundary_id : name>, "
+						   "but there is an entry of the form <") + *it + ">"));
 
-              std::stringstream ss(*it);
-              int b_id;
-              ss >> b_id; // need to read as int, not char
-              types::boundary_id boundary_id = b_id;
+	      types::boundary_id boundary_id;
+	      try
+	      {
+	          boundary_id
+	          = this->get_geometry_model().translate_symbolic_boundary_name_to_id (parts[0]);
+	      }
+	      catch (const std::string &error)
+	      {
+	          AssertThrow (false, ExcMessage ("While parsing the entry <Boundary temperature model/Constant>, "
+	              "there was an error. Specifically, "
+	              "the conversion function complained as follows: "
+	              + error));
+	      }
 
-              char c;
-              while (ss.peek()==' ') ss.get(c); // eat spaces
+	      AssertThrow (boundary_temperatures.find(boundary_id) == boundary_temperatures.end(),
+	                   ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
+	                       "> appears more than once in the list of indicators "
+	                       "for constant temperature boundary conditions."));
 
-              if (ss.peek() != ':')
-                {
-                  Assert(false, ExcMessage("Cannot parse boundary temperature list, format"
-                                           "``boundary_id : value'' appears to be missing"));
-                }
-              else
-                ss.get(c); // read the ':'
-
-              while (ss.peek()==' ') ss.get(c); // eat spaces
-              std::getline(ss,value); // read until the end of the string
-
-              AssertThrow (boundary_temperatures.find(boundary_id) == boundary_temperatures.end(),
-                           ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
-                                       "> appears more than once in the list of indicators "
-                                       "for constant temperature boundary conditions."));
-
-              boundary_temperatures[boundary_id] = Utilities::string_to_double(value);
+	      boundary_temperatures[boundary_id] = Utilities::string_to_double (parts[1]);
             }
         }
         prm.leave_subsection ();

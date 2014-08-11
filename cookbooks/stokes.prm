@@ -36,7 +36,7 @@ end
 
 
 subsection Model settings
-  set Tangential velocity boundary indicators = 0,1,2,3,4,5
+  set Tangential velocity boundary indicators = left, right, front, back, bottom, top
 end
 
 
