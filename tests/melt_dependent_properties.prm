@@ -7,11 +7,12 @@
 # This also checks the correct size of the time step, which depends
 # both on the melt and the solid velocity.
 #
-# We the choose a porosity phi = 1 - 0.001/y^2, a Darcy coefficient 
-# (= permeability divided by fluid viscosity) of k_0 + 0.001/ (1 - phi),
-# a solid density of 2 + y^2/0.001  and otherwise constant material 
+# We the choose a porosity phi = 1 - y, a Darcy coefficient 
+# (= permeability divided by fluid viscosity) of k_0 - 1/y,
+# a solid density of 0.5*(1/y-1), a shear viscosity of eta = 3*y^2, 
+# a compaction viscosity of xi = y^2 and otherwise constant material 
 # parameters so that the gradient of the fluid pressure is -1. 
-# The velocity should then be y^2/2, the compaction pressure -y and 
+# The velocity should then be 1/y, the compaction pressure 1 and 
 # the fluid pressure should be linear.
 # Note that we shift y --> y + 0.1, because we would have a negative
 # porosity otherwise. 
@@ -23,14 +24,14 @@
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 0.5
 set Composition solver tolerance           = 1e-12
-set Nonlinear solver scheme                = IMPES#iterated IMPES
+set Nonlinear solver scheme                = iterated IMPES
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
 
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
-set End time                               = 1e-4
+set End time                               = 8e-5
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -39,7 +40,6 @@ set Start time                             = 0
 
 set Use years in output instead of seconds = false
 set Use direct solver for Stokes system    = true
-
 subsection Compositional fields
   set Number of fields = 1
   set Names of fields = porosity
@@ -68,8 +68,9 @@ subsection Geometry model
   set Model name = box # default: 
 
   subsection Box
-    set X extent  = 1
+    set X extent  = 0.1
     set Y extent  = 0.9
+    set Y repetitions = 9
   end
 
 end
@@ -89,7 +90,7 @@ end
 
 subsection Boundary velocity model
   subsection Function
-    set Function expression = 0;0.5*(y+0.1)*(y+0.1)
+    set Function expression = 0;1/(y+0.1)
     set Variable names      = x,y
   end
 end  
@@ -106,7 +107,7 @@ end
 subsection Compositional initial conditions
   set Model name = function # default: 
   subsection Function
-    set Function expression = 1.0 - 0.001/((y+0.1)*(y+0.1))
+    set Function expression = 1.0 - (y+0.1)
     set Variable names      = x,y
   end
 end
@@ -114,7 +115,7 @@ end
 
 subsection Material model
 
-  set Model name = MeltMaterial4 # default: 
+  set Model name = MeltPorosityDependence # default: 
   
 
 end
@@ -125,7 +126,7 @@ subsection Mesh refinement
   set Refinement fraction                      = 0.0
 
   set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 5                    # default: 2
+  set Initial global refinement                = 2                    # default: 2
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end

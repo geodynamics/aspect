@@ -10,8 +10,6 @@
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
 
-using namespace dealii;
-
 
 namespace aspect
 {
@@ -71,12 +69,13 @@ namespace aspect
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
                  typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
-
+        const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
         for (unsigned int i=0;i<in.position.size();++i)
           {
             const double y = in.position[i][dim-1] + 0.1;
-            out.viscosities[i] = 3.0/4.0;
-            out.densities[i] = 2 + std::pow(y,2)/0.001;
+            double porosity = in.composition[i][porosity_idx];
+            out.viscosities[i] = 3.0*(1.0-porosity)*(1.0-porosity);
+            out.densities[i] = 0.5 * (1.0/(1.0-porosity) + 1.0);
             out.thermal_expansion_coefficients[i] = 1.0;
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;
@@ -93,10 +92,11 @@ namespace aspect
         for (unsigned int i=0;i<in.position.size();++i)
           {
             double porosity = in.composition[i][porosity_idx];
-            out.compaction_viscosities[i] = 1.0;
-            out.fluid_viscosities[i]= 2.0;
-            out.permeabilities[i]= 1.0 + 0.001 / (1.0 - porosity);
-            out.fluid_densities[i]= 2.0;
+            const double y = in.position[i][dim-1] + 0.1;
+            out.compaction_viscosities[i] = (1.0-porosity)*(1.0-porosity);
+            out.fluid_viscosities[i]= 0.5;
+            out.permeabilities[i]= 11.0 - 1.0/(1.0-porosity);
+            out.fluid_densities[i]= 0.5;
             out.fluid_compressibilities[i] = 0.0;
           }
 
@@ -104,30 +104,26 @@ namespace aspect
 
   };
   
-  
 
-
-
-      template <int dim>
-      class RefFunction : public Function<dim>
-      {
-        public:
-          RefFunction () : Function<dim>(dim+2) {}
-          virtual void vector_value (const Point< dim >   &p,
+    template <int dim>
+    class RefFunction : public Function<dim>
+    {
+      public:
+        RefFunction () : Function<dim>(dim+2) {}
+        virtual void vector_value (const Point< dim >   &p,
                                      Vector< double >   &values) const
-          {
-	    double x = p(0);
-	    double y = p(1);
+        {
+          double x = p(0);
+	  double y = p(1);
 	    
-	    values[0]=0;  //x vel
-	    values[1]=0.5 * std::pow(y+0.1, 2.0);  //y vel
-	    values[2]=0;  // p_s
-	    values[3]=1.0 - (y+0.1);  // p_f
-	    values[4]=0; // T
-	    values[5]=1.0 - 0.001/std::pow(y+0.1,2.0); // porosity
-          }
-      };
-
+	  values[0]=0;  //x vel
+	  values[1]=1.0 / (y+0.1);  //y vel
+	  values[2]=0;  // p_s
+	  values[3]=1.0 - (y+0.1);  // p_f
+	  values[4]=0; // T
+	  values[5]=1.0 - (y+0.1); // porosity
+        }
+    };
 
 
     template <int dim>
@@ -192,7 +188,7 @@ namespace aspect
 
     }
 
-}
+}  
 
 
 // explicit instantiations
@@ -200,11 +196,10 @@ namespace aspect
 {
 
     ASPECT_REGISTER_MATERIAL_MODEL(MeltMaterial,
-                                   "MeltMaterial4",
+                                   "MeltPorosityDependence",
 				   "")
 
      ASPECT_REGISTER_POSTPROCESSOR(MMPostprocessor,
                                   "MMPostprocessor",
                                   "")
-
 }

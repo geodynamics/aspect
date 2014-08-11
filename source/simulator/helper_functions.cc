@@ -1234,6 +1234,9 @@ namespace aspect
     // left hand side of the Stokes equation is the viscosity. note
     // that our implementation of compressible materials makes sure
     // that the density does not appear on the lhs.
+    // if melt transport is included in the simulation, we have an
+    // additional equation with more coefficients on the left hand
+    // side.
     return (material_model->viscosity_depends_on (MaterialModel::NonlinearDependence::any_variable)
             || parameters.include_melt_transport);
   }
