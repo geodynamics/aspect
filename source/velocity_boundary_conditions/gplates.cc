@@ -53,13 +53,13 @@ namespace aspect
         delta_theta(0.0),
         interpolation_width(interpolation_width_)
       {
-        // get the Cartesian coordinates of the points the 2D model shall lie in
+        // get the Cartesian coordinates of the points the 2D model will lie in
         // this computation is done also for 3D since it is not expensive and the
         // template dim is currently not used here. Could be changed.
         const Tensor<1,3> point_one = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_one));
         const Tensor<1,3> point_two = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_two));
 
-        //Set up the normal vector of an unrotated 2D spherical shell
+        // Set up the normal vector of an unrotated 2D spherical shell
         // that by default lies in the x-y plane.
         const double normal[3] = {0.0,0.0,1.0};
         const Tensor<1,3> unrotated_normal_vector (normal);
@@ -68,23 +68,49 @@ namespace aspect
         // the origin and the two user-specified points
         Tensor<1,3> rotated_normal_vector;
         cross_product(rotated_normal_vector,point_one,point_two);
+
         rotated_normal_vector /= rotated_normal_vector.norm();
 
         if ((rotated_normal_vector - unrotated_normal_vector).norm() > 1e-3)
           {
             // Calculate the crossing line of the two normals,
-            // which will be the rotation axis to transform them
-            // into each other
+            // which will be the rotation axis to transform the one
+            // normal into the other
+            Tensor<1,3> rotation_axis;
             cross_product(rotation_axis,unrotated_normal_vector,rotated_normal_vector);
             rotation_axis /= rotation_axis.norm();
 
             // Calculate the rotation angle from the inner product rule
-            rotation_angle = std::acos(rotated_normal_vector*unrotated_normal_vector);
+            const double rotation_angle = std::acos(rotated_normal_vector*unrotated_normal_vector);
+
+            rotation_matrix = rotation_matrix_from_axis(rotation_axis,rotation_angle);
+
+            // Now apply the rotation that will project point_one onto the known point
+            // (0,1,0).
+            const Tensor<1,3> rotated_point_one = transpose(rotation_matrix) * point_one;
+
+            const double point_one_coords[3] = {0.0,1.0,0.0};
+            const Tensor<1,3> final_point_one (point_one_coords);
+
+            const double second_rotation_angle = std::acos(rotated_point_one*final_point_one);
+            Tensor<1,3> second_rotation_axis;
+            cross_product(second_rotation_axis,final_point_one,rotated_point_one);
+            second_rotation_axis /= second_rotation_axis.norm();
+
+            const Tensor<2,3> second_rotation_matrix = rotation_matrix_from_axis(second_rotation_axis,second_rotation_angle);
+
+            // The final rotation used for the model will be the combined
+            // rotation of the two operation above. This is achieved by a
+            // matrix multiplication of the rotation matrices.
+            // This concatenation of rotations is the reason for using a
+            // rotation matrix instead of a combined rotation_axis + angle
+            rotation_matrix = rotation_matrix * second_rotation_matrix;
           }
         else
           {
-            rotation_axis = unrotated_normal_vector;
-            rotation_angle = 0.0;
+            rotation_matrix[0][0] = 1.0;
+            rotation_matrix[1][1] = 1.0;
+            rotation_matrix[2][2] = 1.0;
           }
       }
 
@@ -103,13 +129,24 @@ namespace aspect
                << std::endl;
         if (dim == 2)
           {
-            output << "   Input point 1 spherical coordinates: " << surface_point_one << std::endl
-                   << "   Input point 1 Cartesian output coordinates: " << rotate(point_one,rotation_axis,-rotation_angle)  << std::endl
-                   << "   Input point 2 spherical coordinates: " << surface_point_two << std::endl
-                   << "   Input point 2 Cartesian output coordinates: " << rotate(point_two,rotation_axis,-rotation_angle)  << std::endl
+            Tensor<1,3> rotation_axis;
+            const double rotation_angle = rotation_axis_from_matrix(rotation_axis,rotation_matrix);
+
+            std_cxx1x::array<double,3> angles = angles_from_matrix(rotation_matrix);
+            std_cxx1x::array<double,3> back_angles = angles_from_matrix(transpose(rotation_matrix));
+
+            output << "   Input point 1 spherical coordinates: " << surface_point_one  << std::endl
+                   << "   Input point 1 normalized cartesian coordinates: " << point_one  << std::endl
+                   << "   Input point 1 rotated model coordinates: " << transpose(rotation_matrix) * point_one  << std::endl
+                   << "   Input point 2 spherical coordinates: " << surface_point_two  << std::endl
+                   << "   Input point 2 normalized cartesian coordinates: " << point_two  << std::endl
+                   << "   Input point 2 rotated model coordinates: " << transpose(rotation_matrix) * point_two << std::endl
                    << std::endl <<  std::setprecision(2)
                    << "   Model will be rotated by " << -rotation_angle*180/numbers::PI
                    << " degrees around axis " << rotation_axis << std::endl
+                   << "   The ParaView rotation angles are: " << angles[0] << " " << angles [1] << " " << angles[2] << std::endl
+                   << "   The inverse ParaView rotation angles are: " << back_angles[0] << " " << back_angles [1] << " " << back_angles[2]
+
                    << std::endl;
           }
 
@@ -221,7 +258,7 @@ namespace aspect
       {
         Tensor<1,3> internal_position;
         if (dim == 2)
-          internal_position = rotate(convert_tensor<dim,3>(position),rotation_axis,rotation_angle);
+          internal_position = rotation_matrix * convert_tensor<dim,3>(position);
         else
           internal_position = convert_tensor<dim,3>(position);
 
@@ -233,7 +270,7 @@ namespace aspect
         if (dim == 2)
           // convert_tensor conveniently also handles the projection to the 2D plane by
           // omitting the z-component of velocity (since the 2D model lies in the x-y plane).
-          output_boundary_velocity = convert_tensor<3,dim>(rotate(interpolated_velocity,rotation_axis,-1.0*rotation_angle));
+          output_boundary_velocity = convert_tensor<3,dim>(transpose(rotation_matrix) * interpolated_velocity);
         else
           output_boundary_velocity = convert_tensor<3,dim>(interpolated_velocity);
 
@@ -397,7 +434,7 @@ namespace aspect
             // Calculate the rotation angle from the inner product rule
             const double local_rotation_angle = std::acos(data_position*point_position);
 
-            const Tensor<1,3> point_velocity = rotate(data_velocity,local_rotation_axis,-local_rotation_angle);
+            const Tensor<1,3> point_velocity = rotate_around_axis(data_velocity,local_rotation_axis,local_rotation_angle);
 
             return point_velocity;
           }
@@ -459,10 +496,10 @@ namespace aspect
       }
 
       Tensor<1,3>
-      GPlatesLookup::rotate (const Tensor<1,3> &position, const Tensor<1,3> &rotation_axis, const double angle) const
+      GPlatesLookup::rotate_around_axis (const Tensor<1,3> &position, const Tensor<1,3> &rotation_axis, const double angle) const
       {
         Tensor<1,3> cross;
-        cross_product(cross,position,rotation_axis);
+        cross_product(cross,rotation_axis,position);
         const Tensor<1,3> newpos = (1-std::cos(angle)) * rotation_axis*(rotation_axis*position) +
                                    std::cos(angle) * position + std::sin(angle) * cross;
         return newpos;
@@ -488,6 +525,144 @@ namespace aspect
         velocity[1] = s_velocities[1]*std::cos(s_position[1])+s_velocities[0]*std::cos(s_position[0])*std::sin(s_position[1]);
         velocity[2] = -1.0*s_velocities[0]*std::sin(s_position[0]);
         return velocity;
+      }
+
+      Tensor<2,3>
+      GPlatesLookup::rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
+                                                const double rotation_angle) const
+      {
+        Tensor<2,3> rotation_matrix;
+        rotation_matrix[0][0] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[0] + std::cos(rotation_angle);
+        rotation_matrix[0][1] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[1] - rotation_axis[2] * std::sin(rotation_angle);
+        rotation_matrix[0][2] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[2] + rotation_axis[1] * std::sin(rotation_angle);
+        rotation_matrix[1][0] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[0] + rotation_axis[2] * std::sin(rotation_angle);
+        rotation_matrix[1][1] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[1] + std::cos(rotation_angle);
+        rotation_matrix[1][2] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[2] - rotation_axis[0] * std::sin(rotation_angle);
+        rotation_matrix[2][0] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[0] - rotation_axis[1] * std::sin(rotation_angle);
+        rotation_matrix[2][1] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[1] + rotation_axis[0] * std::sin(rotation_angle);
+        rotation_matrix[2][2] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[2] + std::cos(rotation_angle);
+        return rotation_matrix;
+      }
+
+      double
+      GPlatesLookup::rotation_axis_from_matrix (Tensor<1,3> &rotation_axis,
+                                 const Tensor<2,3> &rotation_matrix) const
+      {
+        double rotation_angle = std::acos(0.5 * (rotation_matrix[0][0] + rotation_matrix[1][1] + rotation_matrix[2][2] - 1));
+
+        if (rotation_angle > std::numeric_limits<double>::min())
+          {
+            rotation_axis[0] = (rotation_matrix[2][1] - rotation_matrix[1][2]) / (2*std::sin(rotation_angle));
+            rotation_axis[1] = (rotation_matrix[0][2] - rotation_matrix[2][0]) / (2*std::sin(rotation_angle));
+            rotation_axis[2] = (rotation_matrix[1][0] - rotation_matrix[0][1]) / (2*std::sin(rotation_angle));
+          }
+        else
+          {
+            rotation_axis[0] = 0.0;
+            rotation_axis[1] = 0.0;
+            rotation_axis[2] = 1.0;
+          }
+
+        return rotation_angle;
+      }
+
+      std_cxx1x::array<double,3>
+      GPlatesLookup::angles_from_matrix(const Tensor<2,3> &rotation_matrix) const
+      {
+        std_cxx1x::array<double,3> orientation;
+
+        /*
+         * The following code is part of the VTK project and copied here for
+         * compatibility to the paraview rotation formalism. It is protected by
+         * the following license:
+         *
+         *
+         * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+         * All rights reserved.
+         *
+         * Redistribution and use in source and binary forms, with or without
+         * modification, are permitted under certain conditions. See
+         * http://www.kitware.com/Copyright.htm for details.
+
+         * This software is distributed WITHOUT ANY WARRANTY; without even
+         * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+         * PURPOSE.  See the above copyright notice for more information.
+         *
+         *
+         * The original code in the VTK-6.0.0 source folder is found in:
+         * /Common/Transforms/vtkTransform.cxx in the function GetOrientation()
+         *
+         */
+
+        // first rotate about y axis
+        const double x2 = rotation_matrix[2][0];
+        const double y2 = rotation_matrix[2][1];
+        const double z2 = rotation_matrix[2][2];
+
+        const double x3 = rotation_matrix[1][0];
+        const double y3 = rotation_matrix[1][1];
+        const double z3 = rotation_matrix[1][2];
+
+        double d1 = sqrt(x2*x2 + z2*z2);
+
+        double cosTheta, sinTheta;
+        if (d1 < std::numeric_limits<double>::min())
+          {
+            cosTheta = 1.0;
+            sinTheta = 0.0;
+          }
+        else
+          {
+            cosTheta = z2/d1;
+            sinTheta = x2/d1;
+          }
+
+        double theta = atan2(sinTheta, cosTheta);
+        orientation[1] = - theta * 180 / numbers::PI;
+
+        // now rotate about x axis
+        double d = sqrt(x2*x2 + y2*y2 + z2*z2);
+
+        double sinPhi, cosPhi;
+        if (d < std::numeric_limits<double>::min())
+          {
+            sinPhi = 0.0;
+            cosPhi = 1.0;
+          }
+        else if (d1 < std::numeric_limits<double>::min())
+          {
+            sinPhi = y2/d;
+            cosPhi = z2/d;
+          }
+        else
+          {
+            sinPhi = y2/d;
+            cosPhi = (x2*x2 + z2*z2)/(d1*d);
+          }
+
+        double phi = atan2(sinPhi, cosPhi);
+        orientation[0] = phi * 180 / numbers::PI;
+
+        // finally, rotate about z
+        double x3p = x3*cosTheta - z3*sinTheta;
+        double y3p = - sinPhi*sinTheta*x3 + cosPhi*y3 - sinPhi*cosTheta*z3;
+        double d2 = sqrt(x3p*x3p + y3p*y3p);
+
+        double cosAlpha, sinAlpha;
+        if (d2 < std::numeric_limits<double>::min())
+          {
+            cosAlpha = 1.0;
+            sinAlpha = 0.0;
+          }
+        else
+          {
+            cosAlpha = y3p/d2;
+            sinAlpha = x3p/d2;
+          }
+
+        double alpha = atan2(sinAlpha, cosAlpha);
+        orientation[2] = alpha * 180 / numbers::PI;
+        return orientation;
       }
 
       template <int in, int out>
