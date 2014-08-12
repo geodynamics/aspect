@@ -119,6 +119,10 @@ FOREACH(_test ${_tests})
 
     IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.cc)
       ADD_LIBRARY(${_test} SHARED EXCLUDE_FROM_ALL ${_test}.cc)
+      IF (ASPECT_USE_PETSC)
+        SET_PROPERTY(SOURCE ${_test}.cc
+	APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_PETSC="1")
+      ENDIF()
       DEAL_II_SETUP_TARGET(${_test})
       SET(_testlib 'set Additional shared libraries = ./lib${_test}.so')
       SET(_testdepends ${_test})

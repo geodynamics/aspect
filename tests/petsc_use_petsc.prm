@@ -1,0 +1,155 @@
+# LINEAR ALGEBRA: PETSC
+
+# this test is here to make sure ASPECT_USE_PETSC is set for our plugin if ASPECT is compiled with PETSC
+
+# Listing of Parameters
+# ---------------------
+# In order to make the problem in the first time step easier to solve, we need
+# a reasonable guess for the temperature and pressure. To obtain it, we use an
+# adiabatic pressure and temperature field. This parameter describes what the
+# `adiabatic' temperature would be at the surface of the domain (i.e. at depth
+# zero). Note that this value need not coincide with the boundary condition
+# posed at this point. Rather, the boundary condition may differ significantly
+# from the adiabatic value, and then typically induce a thermal boundary
+# layer.
+# For more information, see the section in the manual that discusses the
+# general mathematical model.
+
+set Adiabatic surface temperature          = 1623               # default: 0
+set CFL number                             = 1.0
+set Composition solver tolerance           = 1e-12
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+set End time                               = 0
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Resume computation                     = false
+set Start time                             = 0
+
+set Use years in output instead of seconds = true
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = peridotite, eclogite
+end
+
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+
+  subsection Initial temperature
+    # Temperature at the inner boundary (core mantle boundary). Units: K.
+    set Maximal temperature = 3773 # default: 6000
+
+    # Temperature at the outer boundary (lithosphere water/air). Units: K.
+    set Minimal temperature = 273  # default: 0
+  end
+
+end
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+
+subsection Geometry model
+  set Model name = box # default: 
+
+  subsection Box
+    set X extent  = 500000
+    set Y extent  = 500000
+  end
+
+end
+
+
+subsection Gravity model
+  set Model name = vertical # default: 
+
+
+  subsection Vertical
+    # Magnitude of the gravity vector in $m/s^2$. The direction is always
+    # radially outward from the center of the earth.
+    set Magnitude = 10.0 # default: 30
+  end
+
+end
+
+
+subsection Initial conditions
+  set Model name = function # default: 
+  subsection Function
+    set Function constants  = l=250000
+    set Function expression = if(x < l, 1873, 1623)
+    set Variable names      = x,y
+  end
+end
+
+subsection Compositional initial conditions
+  set Model name = function # default: 
+  subsection Function
+    set Function expression = 0;0
+    set Variable names      = x,y
+  end
+end
+
+
+subsection Material model
+
+  set Model name = simple # default: 
+
+end
+
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.05
+  set Refinement fraction                      = 0.3
+
+  set Initial adaptive refinement              = 0                    # default: 2
+  set Initial global refinement                = 0                    # default: 2
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0,3        # default: 
+  set Prescribed velocity boundary indicators =  
+
+  set Tangential velocity boundary indicators = 0,1,2,3
+  set Zero velocity boundary indicators       =           # default: 
+end
+
+
+subsection Postprocess
+
+  set List of postprocessors = visualization,composition statistics
+
+  subsection Visualization
+
+    set List of output variables      = 
+
+    # VTU file output supports grouping files from several CPUs into one file
+    # using MPI I/O when writing on a parallel filesystem. Select 0 for no
+    # grouping. This will disable parallel file output and instead write one
+    # file per processor in a background thread. A value of 1 will generate
+    # one big file containing the whole solution.
+    set Number of grouped files       = 0
+
+    # The file format to be used for graphical output.
+    set Output format                 = vtu
+
+    # The time interval between each generation of graphical output files. A
+    # value of zero indicates that output should be generated in each time
+    # step. Units: years if the 'Use years in output instead of seconds'
+    # parameter is set; seconds otherwise.
+    set Time between graphical output = 0                                                                                # default: 1e8
+  end
+
+end
+
+
+
