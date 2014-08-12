@@ -1,7 +1,11 @@
+// hack:
+#define ASPECT_USE_PETSC
+
+#include <aspect/global.h>
 #include <aspect/material_model/melt_interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
+
 #include <aspect/simulator_access.h>
-#include <aspect/global.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -143,9 +147,6 @@ namespace aspect
     std::pair<std::string,std::string>
     MMPostprocessor<dim>::execute (TableHandler &statistics)
     {
-      AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
-                  ExcNotImplemented());
-
       RefFunction<dim> ref_func;
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
       
@@ -179,13 +180,13 @@ namespace aspect
                                          quadrature_formula,
                                          VectorTools::L2_norm,
                                          &comp_porosity);
+      double err_u = std::sqrt(Utilities::MPI::sum(cellwise_errors_u.norm_sqr(), this->get_mpi_communicator()));
+      double err_p = std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(), this->get_mpi_communicator()));
+      double err_por = std::sqrt(Utilities::MPI::sum(cellwise_errors_porosity.norm_sqr(), this->get_mpi_communicator()));
+      
       std::ostringstream os;
-      os << std::scientific << cellwise_errors_u.l2_norm()
-         << ", " << cellwise_errors_p.l2_norm()
-         << ", " << cellwise_errors_porosity.l2_norm();
-
+      os << std::scientific << err_u << ", " << err_p << ", " << err_por;
       return std::make_pair("Errors u_L2, p_fL2, porosity_L2:", os.str());
-
     }
 
 }  
