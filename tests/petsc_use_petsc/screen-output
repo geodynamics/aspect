@@ -1,0 +1,47 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.2.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using PETSc
+-----------------------------------------------------------------------------
+
+Loading shared library <./libpetsc_use_petsc.so>
+hey petsc!
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 49 (18+4+9+9+9)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Solving eclogite system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-petsc_use_petsc/solution-00000
+     Compositions min/max/mass: 0/0/0 // 0/0/0
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.367s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |    0.0127s |       3.5% |
+| Assemble composition system     |         2 |     0.062s |        17% |
+| Assemble temperature system     |         1 |    0.0462s |        13% |
+| Build Stokes preconditioner     |         1 |    0.0223s |       6.1% |
+| Build composition preconditioner|         2 |   0.00114s |      0.31% |
+| Build temperature preconditioner|         1 |  0.000874s |      0.24% |
+| Solve Stokes system             |         1 |    0.0732s |        20% |
+| Solve composition system        |         2 |    0.0121s |       3.3% |
+| Solve temperature system        |         1 |   0.00637s |       1.7% |
+| Initialization                  |         2 |    0.0546s |        15% |
+| Postprocessing                  |         1 |   0.00776s |       2.1% |
+| Setup dof systems               |         1 |    0.0612s |        17% |
++---------------------------------+-----------+------------+------------+
+
