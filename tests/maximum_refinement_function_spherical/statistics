@@ -15,13 +15,13 @@
 # 15: Average temperature (K)
 # 16: Maximal temperature (K)
 # 17: Average nondimensional temperature (K)
-# 18: Outward heat flux through boundary with indicator 0 (W)
-# 19: Outward heat flux through boundary with indicator 1 (W)
-# 20: Outward heat flux through boundary with indicator 2 (W)
-# 21: Outward heat flux through boundary with indicator 3 (W)
+# 18: Outward heat flux through boundary with indicator 0 ("inner") (W)
+# 19: Outward heat flux through boundary with indicator 1 ("outer") (W)
+# 20: Outward heat flux through boundary with indicator 2 ("left") (W)
+# 21: Outward heat flux through boundary with indicator 3 ("right") (W)
 0 0.0000e+00  192  1891   833 0 23  24 159 7.1597e+09 output-maximum_refinement_function_spherical/solution-00000 8.27602402e-07 1.47129249e-06 1.40082707e+03 1.62702227e+03 1.79917293e+03 6.46271982e-02 9.97963023e+02 1.95708558e+03 2.48024075e+03 2.48024075e+03 
 0 0.0000e+00  402  4155  1837 0 42  78 104 4.6093e+09 output-maximum_refinement_function_spherical/solution-00001 8.27658537e-07 1.47155108e-06 1.40082707e+03 1.62702039e+03 1.79917293e+03 6.46266617e-02 9.97963023e+02 1.95644850e+03 2.46327721e+03 2.46327721e+03 
 0 0.0000e+00  882  8623  3817 0 33  31  31 2.9967e+09 output-maximum_refinement_function_spherical/solution-00002 8.27678944e-07 1.47110407e-06 1.40082707e+03 1.62701943e+03 1.79917293e+03 6.46263864e-02 9.88524639e+02 1.95578196e+03 2.45268180e+03 2.45268180e+03 
-0 0.0000e+00 1533 15163  6721 0 50 146 168 2.2148e+09 output-maximum_refinement_function_spherical/solution-00003 8.26062576e-07 1.47289809e-06 1.40002169e+03 1.62701913e+03 1.79997831e+03 6.48564134e-02 9.88524639e+02 1.95903998e+03 2.45229799e+03 2.45229799e+03 
+0 0.0000e+00 1533 15163  6721 0 50 146 168 2.2148e+09 output-maximum_refinement_function_spherical/solution-00003 8.26021078e-07 1.47291326e-06 1.40002169e+03 1.62701913e+03 1.79997831e+03 6.48564134e-02 9.88524639e+02 1.95903998e+03 2.45229799e+03 2.45229799e+03 
 0 0.0000e+00 2628 25961 11509 0 35  51  50 1.5479e+09 output-maximum_refinement_function_spherical/solution-00004 8.27673002e-07 1.47233531e-06 1.40002169e+03 1.62701903e+03 1.79997831e+03 6.48563841e-02 9.85782060e+02 1.96147487e+03 2.44911432e+03 2.44911432e+03 
 0 0.0000e+00 3831 37508 16641 0 34  38  40 1.2705e+09 output-maximum_refinement_function_spherical/solution-00005 8.27671912e-07 1.47204274e-06 1.40002169e+03 1.62701907e+03 1.79997831e+03 6.48563963e-02 9.87027936e+02 1.96086786e+03 2.44833578e+03 2.44833578e+03 

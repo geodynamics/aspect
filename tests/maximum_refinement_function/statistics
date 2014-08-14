@@ -15,10 +15,10 @@
 # 15: Average temperature (K)
 # 16: Maximal temperature (K)
 # 17: Average nondimensional temperature (K)
-# 18: Outward heat flux through boundary with indicator 0 (W)
-# 19: Outward heat flux through boundary with indicator 1 (W)
-# 20: Outward heat flux through boundary with indicator 2 (W)
-# 21: Outward heat flux through boundary with indicator 3 (W)
+# 18: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 19: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 20: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 3 ("top") (W)
 0 0.0000e+00  64  659  289 0 18 19  54 5.2172e+09 output-maximum_refinement_function/solution-00000 3.79980811e-06 5.98257532e-06 1.62300000e+03 1.74279167e+03 1.87300000e+03 3.42261905e-02 2.37801676e-11 7.92672255e-12 2.14021509e-11 -4.60057899e-12 
 0 0.0000e+00  88  963  425 0 18 19 140 2.5926e+09 output-maximum_refinement_function/solution-00001 3.79833711e-06 6.02562908e-06 1.62300000e+03 1.74539583e+03 1.87300000e+03 3.49702381e-02 9.05911149e-12 6.79433361e-12 4.45028852e-11  1.12950818e-11 
 0 0.0000e+00 160 1765  781 0 18 19 140 1.2942e+09 output-maximum_refinement_function/solution-00002 3.79800948e-06 6.03646482e-06 1.62300000e+03 1.74634527e+03 1.90425000e+03 3.52415055e-02 9.05911149e-12 6.79433361e-12 1.68725951e-11 -3.68602556e-11 
