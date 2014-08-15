@@ -125,7 +125,7 @@ namespace aspect
             for (i=0; i<num_particles; ++i)
               {
                 // Select a cell based on relative volume
-                roulette_spin = total_volume*drand48();
+                roulette_spin = total_volume*uniform_distribution_01(random_number_generator);
                 select_cell = roulette_wheel.lower_bound(roulette_spin)->second;
 
                 const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
