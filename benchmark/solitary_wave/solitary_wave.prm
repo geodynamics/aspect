@@ -24,6 +24,10 @@ set Start time                             = 0
 set Use years in output instead of seconds = true
 set Use direct solver for Stokes system    = true
 
+subsection Discretization
+  set Stokes velocity polynomial degree = 3
+end
+
 subsection Compositional fields
   set Number of fields = 1
   set Names of fields = porosity
@@ -98,7 +102,7 @@ end
 subsection Material model
 
   set Model name = Solitary Wave # default: 
-  
+
 
 end
 

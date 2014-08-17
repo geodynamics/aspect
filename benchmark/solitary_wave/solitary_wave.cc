@@ -113,7 +113,7 @@ namespace aspect
              // re-scale porosity and position
              // TODO get the scaling factor from the material parameters
              porosity[i] *= background_porosity;
-             coordinate[i] *= std::sqrt(5.0);
+             coordinate[i] *= std::sqrt(35.0/3.0);
            }
        }
 
@@ -210,6 +210,11 @@ namespace aspect
         return reference_rho_s;
       }
 
+      double length_scaling (const double porosity) const
+      {
+        return std::sqrt(reference_permeability * std::pow(porosity,3) * (xi_0 + 4.0/3.0 * eta_0) / reference_rho_f);
+      }
+
       /**
        * Declare the parameters this class takes through input files.
        */
@@ -227,10 +232,13 @@ namespace aspect
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
                             typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
+        const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
         for (unsigned int i=0;i<in.position.size();++i)
           {
-            out.viscosities[i] = eta_0;
+            double porosity = in.composition[i][porosity_idx];
+
+            out.viscosities[i] = eta_0 * (1.0 - porosity);
             out.densities[i] = reference_rho_s;
             out.thermal_expansion_coefficients[i] = 0.0;
             out.specific_heat[i] = 1.0;
@@ -249,7 +257,7 @@ namespace aspect
           {
             double porosity = in.composition[i][porosity_idx];
 
-            out.compaction_viscosities[i] = xi_0;
+            out.compaction_viscosities[i] = xi_0 * (1.0 - porosity);
             out.fluid_viscosities[i]= eta_f;
             out.permeabilities[i]= reference_permeability * std::pow(porosity,3);
             out.fluid_densities[i]= reference_rho_f;
