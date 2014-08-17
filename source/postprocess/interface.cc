@@ -69,16 +69,6 @@ namespace aspect
 
 // ------------------------------ Manager -----------------------------
 
-    template <int dim>
-    void
-    Manager<dim>::initialize (const Simulator<dim> &simulator)
-    {
-      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::iterator
-           p = postprocessors.begin();
-           p != postprocessors.end(); ++p)
-        dynamic_cast<SimulatorAccess<dim>&>(**p).initialize (simulator);
-    }
-
 
 
     template <int dim>
@@ -230,11 +220,17 @@ namespace aspect
       // then go through the list, create objects and let them parse
       // their own parameters
       for (unsigned int name=0; name<postprocessor_names.size(); ++name)
-        postprocessors.push_back (std_cxx1x::shared_ptr<Interface<dim> >
-                                  (std_cxx1x::get<dim>(registered_plugins)
-                                   .create_plugin (postprocessor_names[name],
-                                                   "Postprocessor plugins",
-                                                   prm)));
+        {
+          postprocessors.push_back (std_cxx1x::shared_ptr<Interface<dim> >
+          (std_cxx1x::get<dim>(registered_plugins)
+              .create_plugin (postprocessor_names[name],
+                  "Postprocessor plugins")));
+          if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
+            sim->initialize (this->get_simulator());
+
+          postprocessors.back()->parse_parameters (prm);
+          postprocessors.back()->initialize ();
+        }
     }
 
 

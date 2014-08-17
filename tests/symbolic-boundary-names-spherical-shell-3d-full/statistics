@@ -1,0 +1,20 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (seconds)
+# 11: Visualization file name
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+# 18: Outward heat flux through boundary with indicator 0 ("inner") (W)
+# 19: Outward heat flux through boundary with indicator 1 ("outer") (W)
+0 0.0000e+00 96 3060 970 0 53 99 128 3.5786e-06 output-symbolic-boundary-names-spherical-shell-3d-full/solution-00000 2.37922274e+10 9.18188987e+10 0.00000000e+00 2.42232203e+03 6.00000000e+03 4.03720338e-01 -4.37766319e+05 9.49081205e+05 

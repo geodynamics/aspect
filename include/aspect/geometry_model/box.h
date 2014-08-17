@@ -84,7 +84,24 @@ namespace aspect
         get_used_boundary_indicators () const;
 
         /**
-         * Return the set of periodic boundaries
+         * Return a mapping from symbolic names of each part of the boundary
+         * to the corresponding boundary indicator. This allows users to
+         * specify *names*, not just *numbers* in their input files when
+         * describing which parts of the boundary have to satisfy which boundary
+         * conditions.
+         *
+         * This geometry returns the map
+         * <code>{{"left"->0}, {"right"->1}, {"bottom"->2}, {"top"->3}}</code> in
+         * 2d, and
+         * <code>{{"left"->0}, {"right"->1}, {"front"->2}, {"back"->3}, {"bottom"->4}, {"top"->5}}</code>
+         * in 3d.
+         */
+        virtual
+        std::map<std::string,types::boundary_id>
+        get_symbolic_boundary_names_map () const;
+
+        /**
+         * Return the set of periodic boundaries as described in the input file.
          */
         virtual
         std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >

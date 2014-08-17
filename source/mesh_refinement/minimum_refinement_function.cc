@@ -21,6 +21,7 @@
 
 
 #include <aspect/mesh_refinement/minimum_refinement_function.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -40,11 +41,51 @@ namespace aspect
         {
           if (cell->is_locally_owned())
             {
-              const double depth = this->get_geometry_model().depth(cell->center());
-              const Point<1> point(depth);
-              if (cell->level() <= rint(min_refinement_level.value(point)))
+              bool refine = false;
+              bool clear_coarsen = false;
+
+              for ( unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell;  ++v)
+                {
+                  const Point<dim> vertex = cell->vertex(v);
+                  double minimum_refinement_level = 0;
+
+                  if (coordinate_system == depth)
+                    {
+                      const double depth = this->get_geometry_model().depth(vertex);
+                      Point<dim> point;
+                      point(0) = depth;
+                      minimum_refinement_level = min_refinement_level.value(point);
+                    }
+                  else if (coordinate_system == spherical)
+                    {
+                      const std_cxx1x::array<double,dim> spherical_coordinates =
+                          aspect::Utilities::spherical_coordinates(vertex);
+
+                      // Conversion to evaluate the spherical coordinates in the minimum
+                      // refinement level function.
+                      Point<dim> point;
+                      for (unsigned int i = 0;i<dim;++i)
+                        point[i] = spherical_coordinates[i];
+
+                      minimum_refinement_level = min_refinement_level.value(point);
+                    }
+                  else if (coordinate_system == cartesian)
+                    {
+                      minimum_refinement_level = min_refinement_level.value(vertex);
+                    }
+
+                  if (cell->level() <= rint(minimum_refinement_level))
+                    clear_coarsen = true;
+                  if (cell->level() <  rint(minimum_refinement_level))
+                    {
+                      refine = true;
+                      break;
+                    }
+                }
+
+              if (clear_coarsen)
                 cell->clear_coarsen_flag ();
-              if (cell->level() <  rint(min_refinement_level.value(point)))
+              if (refine)
                 cell->set_refine_flag ();
             }
         }
@@ -61,12 +102,29 @@ namespace aspect
         prm.enter_subsection("Minimum refinement function");
         {
           /**
+           * Choose the coordinates to evaluate the minimum refinement level
+           * function. The function can be declared in dependence of depth,
+           * cartesian coordinates or spherical coordinates. Note that the order
+           * of spherical coordinates is r,phi,theta and not r,theta,phi, since
+           * this allows for dimension independent expressions.
+           */
+          prm.declare_entry ("Coordinate system", "depth",
+                             Patterns::Selection ("depth|cartesian|spherical"),
+                             "A selection that determines the assumed coordinate "
+                             "system for the function variables. Allowed values "
+                             "are 'depth', 'cartesian' and 'spherical'. 'depth' "
+                             "will create a function, in which only the first "
+                             "variable is non-zero, which is interpreted to "
+                             "be the depth of the point. 'spherical' coordinates "
+                             "are interpreted as r,phi or r,phi,theta in 2D/3D "
+                             "respectively with theta being the polar angle.");
+          /**
            * Let the function that describes the minimal level of refinement
-           * as a function of depth declare its parameters.
+           * as a function of position declare its parameters.
            * This defines the minimum refinement level each cell should have,
            * and that can not be exceeded by coarsening.
            */
-          Functions::ParsedFunction<1>::declare_parameters (prm, 1);
+          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
         }
         prm.leave_subsection();
       }
@@ -80,19 +138,29 @@ namespace aspect
       prm.enter_subsection("Mesh refinement");
       {
         prm.enter_subsection("Minimum refinement function");
-        try
-          {
-            min_refinement_level.parse_parameters (prm);
-          }
-        catch (...)
-          {
-            std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Mesh refinement.Minimum refinement function'\n"
-                      << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'";
-            throw;
-          }
+        {
+          if (prm.get ("Coordinate system") == "depth")
+            coordinate_system = depth;
+          else if (prm.get ("Coordinate system") == "cartesian")
+            coordinate_system = cartesian;
+          else if (prm.get ("Coordinate system") == "spherical")
+            coordinate_system = spherical;
+          else
+            AssertThrow (false, ExcNotImplemented());
 
+          try
+            {
+              min_refinement_level.parse_parameters (prm);
+            }
+          catch (...)
+            {
+              std::cerr << "ERROR: FunctionParser failed to parse\n"
+                  << "\t'Mesh refinement.Minimum refinement function'\n"
+                  << "with expression\n"
+                  << "\t'" << prm.get("Function expression") << "'";
+              throw;
+            }
+        }
         prm.leave_subsection();
       }
       prm.leave_subsection();
@@ -109,8 +177,32 @@ namespace aspect
                                               "minimum refinement function",
                                               "A mesh refinement criterion that ensures a "
                                               "minimum refinement level described by an "
-                                              "explicit formula with the depth as argument. "
-                                              "After reading in the function, its values are "
-                                              "rounded to the nearest integer. ")
+                                              "explicit formula with the depth or position "
+                                              "as argument. Which coordinate representation "
+                                              "is used is determined by an input parameter. "
+                                              "Whatever the coordinate system chosen, the "
+                                              "function you provide in the input file will "
+                                              "by default depend on variables 'x', 'y' and "
+                                              "'z' (if in 3d). However, the meaning of these "
+                                              "symbols depends on the coordinate system. In "
+                                              "the Cartesian coordinate system, they simply "
+                                              "refer to their natural meaning. If you have "
+                                              "selected 'depth' for the coordinate system, "
+                                              "then 'x' refers to the depth variable and 'y' "
+                                              "and 'z' will simply always be zero. If you "
+                                              "have selected a spherical coordinate system, "
+                                              "then 'x' will refer to the radial distance of "
+                                              "the point to the origin, 'y' to the azimuth "
+                                              "angle and 'z' to the polar angle measured "
+                                              "positive from the north pole. Note that the "
+                                              "order of spherical coordinates is r,phi,theta "
+                                              "and not r,theta,phi, since this allows for "
+                                              "dimension independent expressions. "
+                                              "After evaluating the function, its values are "
+                                              "rounded to the nearest integer."
+					      "\n\n"
+					      "The format of these "
+					      "functions follows the syntax understood by the "
+					      "muparser library, see Section~\\ref{sec:muparser-format}.")
   }
 }

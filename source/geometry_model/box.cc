@@ -78,6 +78,48 @@ namespace aspect
       return s;
     }
 
+
+
+    template <int dim>
+    std::map<std::string,types::boundary_id>
+    Box<dim>::
+    get_symbolic_boundary_names_map () const
+    {
+      switch (dim)
+      {
+      case 2:
+        {
+          static const std::pair<std::string,types::boundary_id> mapping[]
+	    = { std::pair<std::string,types::boundary_id>("left",   0),
+		std::pair<std::string,types::boundary_id>("right",  1),
+		std::pair<std::string,types::boundary_id>("bottom", 2),
+		std::pair<std::string,types::boundary_id>("top",    3) };
+
+          return std::map<std::string,types::boundary_id> (&mapping[0],
+                                                           &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+        }
+
+      case 3:
+        {
+          static const std::pair<std::string,types::boundary_id> mapping[]
+	    = { std::pair<std::string,types::boundary_id>("left",   0),
+		std::pair<std::string,types::boundary_id>("right",  1),
+		std::pair<std::string,types::boundary_id>("front",  2),
+		std::pair<std::string,types::boundary_id>("back",   3),
+		std::pair<std::string,types::boundary_id>("bottom", 4),
+		std::pair<std::string,types::boundary_id>("top",    5) };
+
+          return std::map<std::string,types::boundary_id> (&mapping[0],
+                                                           &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+        }
+      }
+
+      Assert (false, ExcNotImplemented());
+      return std::map<std::string,types::boundary_id>();
+    }
+
+
+
     template <int dim>
     std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >
     Box<dim>::
@@ -248,7 +290,8 @@ namespace aspect
                                    "2*dim sides as follows: in 2d, boundary indicators 0 through 3 "
                                    "denote the left, right, bottom and top boundaries; in 3d, boundary "
                                    "indicators 0 through 5 indicate left, right, front, back, bottom "
-                                   "and top boundaries. See also the documentation of the deal.II class "
-                                   "``GeometryInfo''.")
+                                   "and top boundaries (see also the documentation of the deal.II class "
+                                   "``GeometryInfo''). You can also use symbolic names ``left'', ``right'', "
+                                   "etc., to refer to these boundaries in input files.")
   }
 }

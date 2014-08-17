@@ -4,7 +4,7 @@ subsection %%\hyperref[parameters:Initial_20conditions]{Initial conditions}%
   set %%\hyperref[parameters:Initial conditions/Model name]{Model name}% = function%% \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
   subsection %%\hyperref[parameters:Initial_20conditions/Function]{Function}% 
     set %%\hyperref[parameters:Initial conditions/Function/Variable names]{Variable names}%      = x,y%% \index[prmindex]{Variable names} \index[prmindexfull]{Initial conditions!Function!Variable names} %
-    set %%\hyperref[parameters:Initial conditions/Function/Function expression]{Function expression}% =  if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)%% \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
+    set %%\hyperref[parameters:Initial conditions/Function/Function expression]{Function expression}% = if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)%% \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
   end
 
 subsection %%\hyperref[parameters:Initial_20conditions/Free_20surface]{Free surface}%
@@ -14,11 +14,11 @@ end
 subsection %%\hyperref[parameters:Initial_20conditions/Model_20settings]{Model settings}%
   set %%\hyperref[parameters:Initial conditions/Model settings/Include adiabatic heating]{Include adiabatic heating}%               = false%% \index[prmindex]{Include adiabatic heating} \index[prmindexfull]{Initial conditions!Model settings!Include adiabatic heating} %
   set %%\hyperref[parameters:Initial conditions/Model settings/Include shear heating]{Include shear heating}%                   = false%% \index[prmindex]{Include shear heating} \index[prmindexfull]{Initial conditions!Model settings!Include shear heating} %
-  set %%\hyperref[parameters:Initial conditions/Model settings/Fixed temperature boundary indicators]{Fixed temperature boundary indicators}%   = 0,1,2,3%% \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Initial conditions!Model settings!Fixed temperature boundary indicators} %
+  set %%\hyperref[parameters:Initial conditions/Model settings/Fixed temperature boundary indicators]{Fixed temperature boundary indicators}%   = left, right, bottom, top%% \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Initial conditions!Model settings!Fixed temperature boundary indicators} %
   set %%\hyperref[parameters:Initial conditions/Model settings/Prescribed velocity boundary indicators]{Prescribed velocity boundary indicators}% =%% \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Initial conditions!Model settings!Prescribed velocity boundary indicators} %
-  set %%\hyperref[parameters:Initial conditions/Model settings/Tangential velocity boundary indicators]{Tangential velocity boundary indicators}% = 0,1,2%% \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Initial conditions!Model settings!Tangential velocity boundary indicators} %
+  set %%\hyperref[parameters:Initial conditions/Model settings/Tangential velocity boundary indicators]{Tangential velocity boundary indicators}% = left, right, bottom%% \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Initial conditions!Model settings!Tangential velocity boundary indicators} %
   set %%\hyperref[parameters:Initial conditions/Model settings/Zero velocity boundary indicators]{Zero velocity boundary indicators}%       = %% \index[prmindex]{Zero velocity boundary indicators} \index[prmindexfull]{Initial conditions!Model settings!Zero velocity boundary indicators} %
-  set %%\hyperref[parameters:Initial conditions/Model settings/Free surface boundary indicators]{Free surface boundary indicators}% = 3%% \index[prmindex]{Free surface boundary indicators} \index[prmindexfull]{Initial conditions!Model settings!Free surface boundary indicators} %
+  set %%\hyperref[parameters:Initial conditions/Model settings/Free surface boundary indicators]{Free surface boundary indicators}%        = top%% \index[prmindex]{Free surface boundary indicators} \index[prmindexfull]{Initial conditions!Model settings!Free surface boundary indicators} %
 end
 
 subsection %%\hyperref[parameters:Initial_20conditions/Postprocess]{Postprocess}%

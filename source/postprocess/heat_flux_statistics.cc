@@ -30,6 +30,21 @@ namespace aspect
 {
   namespace Postprocess
   {
+    namespace
+    {
+      /**
+       * Given a string #s, return it in the form ' ("s")' if nonempty.
+       * Otherwise just return the empty string itself.
+       */
+      std::string parenthesize_if_nonempty (const std::string &s)
+      {
+        if (s.size() > 0)
+          return " (\"" + s + "\")";
+        else
+          return "";
+      }
+    }
+
     template <int dim>
     std::pair<std::string,std::string>
     HeatFluxStatistics<dim>::execute (TableHandler &statistics)
@@ -153,6 +168,8 @@ namespace aspect
         {
           const std::string name = "Outward heat flux through boundary with indicator "
                                    + Utilities::int_to_string(p->first)
+                                   + parenthesize_if_nonempty(this->get_geometry_model()
+                                     .translate_id_to_symbol_name (p->first))
                                    + " (W)";
           statistics.add_value (name, p->second);
 

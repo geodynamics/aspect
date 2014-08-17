@@ -24,6 +24,7 @@
 
 #include <aspect/global.h>
 #include <aspect/plugins.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/std_cxx1x/shared_ptr.h>
 #include <deal.II/base/table_handler.h>
@@ -37,6 +38,7 @@ namespace aspect
   using namespace dealii;
 
   template <int dim> class Simulator;
+  template <int dim> class SimulatorAccess;
 
 
   /**
@@ -181,19 +183,9 @@ namespace aspect
      * @ingroup Postprocessing
      */
     template <int dim>
-    class Manager
+    class Manager : public ::aspect::SimulatorAccess<dim>
     {
       public:
-        /**
-         * Initialize the postprocessors handled by this object for a given
-         * simulator.
-         *
-         * @param simulator A reference to the main simulator object to which
-         * the postprocessor implemented in the derived class should be
-         * applied.
-         */
-        void initialize (const Simulator<dim> &simulator);
-
         /**
          * Execute all of the postprocessor objects that have been requested
          * in the input file. These objects also fill the contents of the

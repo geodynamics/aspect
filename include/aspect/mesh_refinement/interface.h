@@ -24,6 +24,7 @@
 
 #include <aspect/global.h>
 #include <aspect/plugins.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/std_cxx1x/shared_ptr.h>
 #include <deal.II/base/table_handler.h>
@@ -36,6 +37,7 @@ namespace aspect
   using namespace dealii;
 
   template <int dim> class Simulator;
+  template <int dim> class SimulatorAccess;
 
 
   /**
@@ -153,7 +155,7 @@ namespace aspect
      * @ingroup MeshRefinement
      */
     template <int dim>
-    class Manager
+    class Manager : public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -161,16 +163,6 @@ namespace aspect
          * functions.
          */
         virtual ~Manager ();
-
-        /**
-         * Initialize the plugins handled by this object for a given
-         * simulator.
-         *
-         * @param simulator A reference to the main simulator object to which
-         * the postprocessor implemented in the derived class should be
-         * applied.
-         */
-        void initialize (const Simulator<dim> &simulator);
 
         /**
          * Execute all of the mesh refinement objects that have been requested
@@ -269,12 +261,6 @@ namespace aspect
          * parameter file.
          */
         std::list<std_cxx1x::shared_ptr<Interface<dim> > > mesh_refinement_objects;
-
-        /**
-         * An MPI communicator that spans the set of processors on which the
-         * simulator object lives.
-         */
-        MPI_Comm mpi_communicator;
     };
 
 

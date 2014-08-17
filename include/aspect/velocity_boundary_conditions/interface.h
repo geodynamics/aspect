@@ -138,16 +138,14 @@ namespace aspect
      * object that describes it. Ownership of the pointer is transferred to
      * the caller.
      *
-     * This function makes the newly created object read its parameters from
-     * the input parameter object, and then initializes it with the given
-     * geometry model.
+     * The model object returned is not yet initialized and has not
+     * read its runtime parameters yet.
      *
      * @ingroup VelocityBoundaryConditionsModels
      */
     template <int dim>
     Interface<dim> *
-    create_velocity_boundary_conditions (const std::string &name,
-                                         ParameterHandler &prm);
+    create_velocity_boundary_conditions (const std::string &name);
 
     /**
      * Return a list of names of all implemented boundary velocity models,

@@ -99,6 +99,8 @@ namespace aspect
   {
     ASPECT_REGISTER_COMPOSITIONAL_INITIAL_CONDITIONS(Function,
                                                      "function",
-                                                     "Composition is given in terms of an explicit formula")
+                                                     "Specify the composition in terms of an explicit formula. The format of these "
+						     "functions follows the syntax understood by the "
+						     "muparser library, see Section~\\ref{sec:muparser-format}.")
   }
 }

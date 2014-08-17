@@ -1,0 +1,29 @@
+set Linear solver tolerance                = 1e-12
+
+# Boundary conditions
+subsection Model settings
+  set Tangential velocity boundary indicators =
+  set Prescribed velocity boundary indicators = left  : BursteddeBoundary, \
+                                                right : BursteddeBoundary, \
+                                                front : BursteddeBoundary, \
+                                                back  : BursteddeBoundary, \
+                                                bottom: BursteddeBoundary, \
+                                                top   : BursteddeBoundary
+end
+
+subsection Material model
+  set Model name = BursteddeMaterial
+end
+
+subsection Gravity model
+  set Model name = BursteddeGravity
+end
+
+subsection Burstedde benchmark
+   # Viscosity parameter is beta  
+   set Viscosity parameter             = 20
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, BursteddePostprocessor
+end

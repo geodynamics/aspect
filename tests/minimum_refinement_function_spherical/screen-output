@@ -1,0 +1,144 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.2.pre
+--     . running in DEBUG mode
+--     . running with 2 MPI processes
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 48 (on 3 levels)
+Number of degrees of freedom: 740 (450+65+225)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 23 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     10
+     Reference thermal expansion (1/K):             2e-05
+     Temperature contrast across model domain (K): 3500
+     Model domain depth (m):                        250000
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Reference viscosity (Pas):                     5e+24
+     Ra number:                                     6.33561
+     k_value:                                       4.7
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 1.13939e-06
+
+     Writing graphical output:           output-minimum_refinement_function_spherical/solution-00000
+     RMS, max velocity:                  8.27e-07 m/year, 1.5e-06 m/year
+     Temperature min/avg/max:            1401 K, 1627 K, 1799 K
+     Heat fluxes through boundary parts: 1032 W, 1995 W, 2578 W, 2578 W
+     Writing depth average               output-minimum_refinement_function_spherical/depth_average.gnuplot
+
+Number of active cells: 144 (on 4 levels)
+Number of degrees of freedom: 2,124 (1,298+177+649)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+17 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     10
+     Reference thermal expansion (1/K):             2e-05
+     Temperature contrast across model domain (K): 3500
+     Model domain depth (m):                        250000
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Reference viscosity (Pas):                     5e+24
+     Ra number:                                     6.33561
+     k_value:                                       4.7
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 1.13939e-06
+
+     Writing graphical output:           output-minimum_refinement_function_spherical/solution-00001
+     RMS, max velocity:                  6.18e-07 m/year, 1.18e-06 m/year
+     Temperature min/avg/max:            1401 K, 1627 K, 1799 K
+     Heat fluxes through boundary parts: 963.6 W, 1922 W, 2480 W, 2480 W
+     Writing depth average               output-minimum_refinement_function_spherical/depth_average.gnuplot
+
+Number of active cells: 348 (on 5 levels)
+Number of degrees of freedom: 5,088 (3,122+405+1,561)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+17 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     10
+     Reference thermal expansion (1/K):             2e-05
+     Temperature contrast across model domain (K): 3500
+     Model domain depth (m):                        250000
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Reference viscosity (Pas):                     5e+24
+     Ra number:                                     6.33561
+     k_value:                                       4.7
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 1.13939e-06
+
+     Writing graphical output:           output-minimum_refinement_function_spherical/solution-00002
+     RMS, max velocity:                  6.18e-07 m/year, 1.18e-06 m/year
+     Temperature min/avg/max:            1401 K, 1627 K, 1800 K
+     Heat fluxes through boundary parts: 963.6 W, 1922 W, 2480 W, 2480 W
+     Writing depth average               output-minimum_refinement_function_spherical/depth_average.gnuplot
+
+Number of active cells: 576 (on 6 levels)
+Number of degrees of freedom: 8,390 (5,154+659+2,577)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+18 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     10
+     Reference thermal expansion (1/K):             2e-05
+     Temperature contrast across model domain (K): 3500
+     Model domain depth (m):                        250000
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Reference viscosity (Pas):                     5e+24
+     Ra number:                                     6.33561
+     k_value:                                       4.7
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 1.13939e-06
+
+     Writing graphical output:           output-minimum_refinement_function_spherical/solution-00003
+     RMS, max velocity:                  6.18e-07 m/year, 1.18e-06 m/year
+     Temperature min/avg/max:            1401 K, 1627 K, 1800 K
+     Heat fluxes through boundary parts: 963.6 W, 1922 W, 2480 W, 2480 W
+     Writing depth average               output-minimum_refinement_function_spherical/depth_average.gnuplot
+
+Number of active cells: 576 (on 6 levels)
+Number of degrees of freedom: 8,390 (5,154+659+2,577)
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      7.98s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         4 |     0.816s |        10% |
+| Assemble temperature system     |         4 |     0.759s |       9.5% |
+| Build Stokes preconditioner     |         4 |     0.646s |       8.1% |
+| Build temperature preconditioner|         4 |    0.0126s |      0.16% |
+| Solve Stokes system             |         4 |     0.711s |       8.9% |
+| Solve temperature system        |         4 |    0.0105s |      0.13% |
+| Initialization                  |         5 |     0.303s |       3.8% |
+| Postprocessing                  |         4 |      3.32s |        42% |
+| Refine mesh structure, part 1   |         4 |     0.346s |       4.3% |
+| Refine mesh structure, part 2   |         4 |    0.0293s |      0.37% |
+| Setup dof systems               |         5 |     0.801s |        10% |
++---------------------------------+-----------+------------+------------+
+

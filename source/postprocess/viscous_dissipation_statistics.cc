@@ -17,7 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-/*  $Id: viscous_dissipation_statistics.cc 1591 2013-09-09 14:46 glerum $  */
+/*  $Id$  */
 
 
 #include <aspect/postprocess/viscous_dissipation_statistics.h>

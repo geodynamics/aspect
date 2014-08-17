@@ -22,6 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/velocity_boundary_conditions/gplates.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/table.h>
@@ -88,28 +89,31 @@ namespace aspect
       }
 
       template <int dim>
-      void GPlatesLookup::screen_output(const Tensor<1,2> &surface_point_one, const Tensor<1,2> &surface_point_two) const
+      void GPlatesLookup::screen_output(const Tensor<1,2> &surface_point_one,
+                                        const Tensor<1,2> &surface_point_two,
+                                        const ConditionalOStream &pcout) const
       {
         const Tensor<1,3> point_one = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_one));
         const Tensor<1,3> point_two = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_two));
 
-        std::cout << std::setprecision (3) << std::setw(3) << std::fixed << std::endl
-                  << "   Set up GPlates boundary velocity module."  << std::endl
-                  << std::endl;
+        std::ostringstream output;
+
+        output << std::setprecision (3) << std::setw(3) << std::fixed << std::endl
+               << "   Setting up GPlates boundary velocity plugin."  << std::endl
+               << std::endl;
         if (dim == 2)
           {
-            std::cout << "   Input point 1 spherical coordinates: " << surface_point_one << std::endl
-                      << "   Input point 1 Cartesian output coordinates: " << rotate(point_one,rotation_axis,-rotation_angle)  << std::endl
-                      << "   Input point 2 spherical coordinates: " << surface_point_two << std::endl
-                      << "   Input point 2 Cartesian output coordinates: " << rotate(point_two,rotation_axis,-rotation_angle)  << std::endl
-                      << std::endl <<  std::setprecision(2)
-                      << "   Model will be rotated by " << -rotation_angle*180/numbers::PI
-                      << " degrees around axis " << rotation_axis << std::endl
-                      << std::endl;
+            output << "   Input point 1 spherical coordinates: " << surface_point_one << std::endl
+                   << "   Input point 1 Cartesian output coordinates: " << rotate(point_one,rotation_axis,-rotation_angle)  << std::endl
+                   << "   Input point 2 spherical coordinates: " << surface_point_two << std::endl
+                   << "   Input point 2 Cartesian output coordinates: " << rotate(point_two,rotation_axis,-rotation_angle)  << std::endl
+                   << std::endl <<  std::setprecision(2)
+                   << "   Model will be rotated by " << -rotation_angle*180/numbers::PI
+                   << " degrees around axis " << rotation_axis << std::endl
+                   << std::endl;
           }
 
-        std::cout << std::setprecision(6);
-        std::cout.unsetf(std::ios_base::floatfield);
+        pcout << output.str();
       }
 
       bool
@@ -120,11 +124,11 @@ namespace aspect
       }
 
       void
-      GPlatesLookup::load_file(const std::string &filename, const bool screen_output)
+      GPlatesLookup::load_file(const std::string &filename, const ConditionalOStream &pcout)
       {
-        if (screen_output)
-          std::cout << std::endl << "   Loading GPlates boundary velocity file "
-                    << filename << "." << std::endl << std::endl;
+        pcout << std::endl << "   Loading GPlates boundary velocity file "
+              << filename << "." << std::endl << std::endl;
+
         using boost::property_tree::ptree;
         ptree pt;
 
@@ -271,7 +275,13 @@ namespace aspect
                           {
                             // If we are outside of the interpolation circle even without extending phi (j), we have
                             // visited all possible interpolation points. Return current surf_vel.
-                            const double residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
+
+                            // If everything worked as intended the radial component of the velocity should be small.
+                            // However we can not do this check for velocity = 0. We assume velocities < 1e-16 m/s
+                            // to be essentially zero and pass the check in this case.
+                            double residual_normal_velocity(0.0);
+                            if (surf_vel.norm() > 1e-16)
+                              residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
 
                             AssertThrow(residual_normal_velocity < 1e-11,
                                         ExcMessage("Error in velocity boundary module interpolation. "
@@ -305,7 +315,12 @@ namespace aspect
             while (i < velocity_values->n_rows() / 2);
           }
 
-        const double residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
+        // If everything worked as intended the radial component of the velocity should be small.
+        // However we can not do this check for velocity close to 0. We assume velocities < 1e-16 m/s
+        // to be essentially zero and pass the check in this case.
+        double residual_normal_velocity(0.0);
+        if (surf_vel.norm() > 1e-16)
+          residual_normal_velocity = (surf_vel * position) / (surf_vel.norm() * position.norm());
 
         AssertThrow( residual_normal_velocity < 1e-11,
                      ExcMessage("Error in velocity boundary module interpolation. "
@@ -454,18 +469,6 @@ namespace aspect
       }
 
       Tensor<1,3>
-      GPlatesLookup::spherical_surface_coordinates(const Tensor<1,3> &position) const
-      {
-        Tensor<1,3> scoord;
-
-        scoord[0] = std::acos(position[2]/position.norm()); // Theta
-        scoord[1] = std::atan2(position[1],position[0]); // Phi
-        if (scoord[1] < 0.0) scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
-        scoord[2] = position.norm(); // R
-        return scoord;
-      }
-
-      Tensor<1,3>
       GPlatesLookup::cartesian_surface_coordinates(const Tensor<1,3> &sposition) const
       {
         Tensor<1,3> ccoord;
@@ -503,8 +506,9 @@ namespace aspect
       GPlatesLookup::calculate_spatial_index(int *index,
                                              const Tensor<1,3> &position) const
       {
-        const Tensor<1,3> scoord = spherical_surface_coordinates(position);
-        index[0] = lround(scoord[0]/delta_theta);
+        const std_cxx1x::array<double,3> scoord =
+            ::aspect::Utilities::spherical_coordinates(static_cast<Point<3> > (position));
+        index[0] = lround(scoord[2]/delta_theta);
         index[1] = lround(scoord[1]/delta_phi);
         reformat_indices(index);
       }
@@ -514,15 +518,17 @@ namespace aspect
       GPlatesLookup::gplates_1_4_or_higher(const boost::property_tree::ptree &pt) const
       {
         const std::string gpml_version = pt.get<std::string>("gpml:FeatureCollection.<xmlattr>.gpml:version");
-        std::vector<std::string> string_versions = dealii::Utilities::split_string_list(gpml_version,'.');
-        std::vector<int> int_versions = dealii::Utilities::string_to_int(string_versions);
+        const std::vector<std::string> string_versions = dealii::Utilities::split_string_list(gpml_version,'.');
+        const std::vector<int> int_versions = dealii::Utilities::string_to_int(string_versions);
 
         const int gplates_1_3_version[3] = {1,6,322};
 
         for (unsigned int i = 0; i < int_versions.size(); i++)
           {
-            if (int_versions[i] > gplates_1_3_version[i]) return true;
-            if (int_versions[i] < gplates_1_3_version[i]) return false;
+            if (int_versions[i] > gplates_1_3_version[i])
+	      return true;
+            if (int_versions[i] < gplates_1_3_version[i])
+	      return false;
           }
 
         return false;
@@ -596,30 +602,27 @@ namespace aspect
       Interface<dim>::update ();
 
       time_relative_to_vel_file_start_time = this->get_time() - velocity_file_start_time;
-      const bool first_process = (Utilities::MPI::this_mpi_process (this->get_mpi_communicator ())
-                                  == 0);
 
       // If the boundary condition is constant, switch off time_dependence end leave function.
       // This also sets time_weight to 1.0
       if ((create_filename (current_time_step) == create_filename (current_time_step+1)) && time_dependent)
         {
-          if (first_process)
-            lookup->screen_output<dim> (pointone, pointtwo);
+          lookup->screen_output<dim> (pointone, pointtwo,this->get_pcout());
 
           lookup->load_file (create_filename (current_time_step),
-                             first_process);
-          end_time_dependence (current_time_step, first_process);
+                             this->get_pcout());
+          end_time_dependence (current_time_step);
           return;
         }
 
       if (time_dependent && (time_relative_to_vel_file_start_time >= 0.0))
         {
-          if ((current_time_step < 0) && (first_process) && (dim == 2))
-            lookup->screen_output<dim> (pointone, pointtwo);
+          if (current_time_step < 0)
+            lookup->screen_output<dim> (pointone, pointtwo,this->get_pcout());
 
           if (static_cast<int> (time_relative_to_vel_file_start_time / time_step) > current_time_step)
             {
-              update_velocity_data(first_process);
+              update_velocity_data();
             }
 
           time_weight = time_relative_to_vel_file_start_time / time_step - current_time_step;
@@ -632,7 +635,7 @@ namespace aspect
 
     template <int dim>
     void
-    GPlates<dim>::update_velocity_data (const bool first_process)
+    GPlates<dim>::update_velocity_data ()
     {
 
       const int old_time_step = current_time_step;
@@ -646,14 +649,14 @@ namespace aspect
         try
           {
             lookup->load_file (create_filename (current_time_step),
-                               first_process);
+                               this->get_pcout());
           }
         catch (...)
           // If loading current_time_step failed, end time dependent part with old_time_step.
           {
             try
               {
-                end_time_dependence (old_time_step, first_process);
+                end_time_dependence (old_time_step);
               }
             catch (...)
               {
@@ -665,6 +668,11 @@ namespace aspect
                                "Loading new and old velocity file did not succeed. "
                                "Maybe the time step was so large we jumped over all files "
                                "or the files were removed during the model run. "
+                               "Another possible way here is to restart a model with "
+                               "previously time-dependent boundary condition after the "
+                               "last file was already read. Aspect has no way to find the "
+                               "last readable file from the current model time. Please "
+                               "prescribe the last velocity file manually in such a case. "
                                "Cancelling calculation."));
               }
           }
@@ -673,7 +681,7 @@ namespace aspect
       try
         {
           lookup->load_file (create_filename (current_time_step + 1),
-                             first_process);
+                             this->get_pcout());
         }
 
       // If loading current_time_step + 1 failed, end time dependent part with current_time_step.
@@ -683,29 +691,27 @@ namespace aspect
 
       catch (...)
         {
-          end_time_dependence (current_time_step, first_process);
+          end_time_dependence (current_time_step);
         }
     }
 
     template <int dim>
     void
-    GPlates<dim>::end_time_dependence (const int timestep,
-                                       const bool first_process)
+    GPlates<dim>::end_time_dependence (const int timestep)
     {
       // Next velocity file not found --> Constant velocities
       // by simply loading the old file twice
-      lookup->load_file (create_filename (timestep), first_process);
+      lookup->load_file (create_filename (timestep), this->get_pcout());
       // no longer consider the problem time dependent from here on out
       // this cancels all attempts to read files at the next time steps
       time_dependent = false;
       // this cancels the time interpolation in lookup
       time_weight = 1.0;
       // Give warning if first processor
-      if (first_process)
-        std::cout << std::endl
-                  << "   Loading new velocity file did not succeed." << std::endl
-                  << "   Assuming constant boundary conditions for rest of model run."
-                  << std::endl << std::endl;
+      this->get_pcout() << std::endl
+                        << "   Loading new velocity file did not succeed." << std::endl
+                        << "   Assuming constant boundary conditions for rest of model run."
+                        << std::endl << std::endl;
     }
 
     template <int dim>
@@ -714,7 +720,7 @@ namespace aspect
     boundary_velocity (const Point<dim> &position) const
     {
       if (time_relative_to_vel_file_start_time >= 0.0)
-        return lookup->surface_velocity(position,time_weight);
+        return scale_factor * lookup->surface_velocity(position,time_weight);
       else
         return Tensor<1,dim> ();
     }
@@ -739,7 +745,9 @@ namespace aspect
                              "files located in the 'data/' subdirectory of ASPECT. ");
           prm.declare_entry ("Velocity file name", "phi.%d",
                              Patterns::Anything (),
-                             "The file name of the material data. Provide file in format: (Velocity file name).%d.gpml where %d is any sprintf integer qualifier, specifying the format of the current file number.");
+                             "The file name of the material data. Provide file in format: "
+                             "(Velocity file name).\\%d.gpml where \\%d is any sprintf integer "
+                             "qualifier, specifying the format of the current file number.");
           prm.declare_entry ("Time step", "1e6",
                              Patterns::Double (0),
                              "Time step between following velocity files. "
@@ -752,6 +760,12 @@ namespace aspect
                              "time, a no-slip boundary condition is assumed. "
                              "Depending on the setting of the global 'Use years in output instead of seconds' flag "
                              "in the input file, this number is either interpreted as seconds or as years.");
+          prm.declare_entry ("Scale factor", "1",
+                             Patterns::Double (0),
+                             "Scalar factor, which is applied to the boundary velocity. "
+                             "You might want to use this to scale the velocities to a "
+                             "reference model (e.g. with free-slip boundary) or another "
+                             "plate reconstruction.");
           prm.declare_entry ("Point one", "1.570796,0.0",
                              Patterns::Anything (),
                              "Point that determines the plane in which a 2D model lies in. Has to be in the format 'a,b' where a and b are theta (polar angle)  and phi in radians.");
@@ -803,6 +817,7 @@ namespace aspect
 
           velocity_file_name    = prm.get ("Velocity file name");
           interpolation_width   = prm.get_double ("Interpolation width");
+          scale_factor          = prm.get_double ("Scale factor");
           point1                = prm.get ("Point one");
           point2                = prm.get ("Point two");
 

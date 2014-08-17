@@ -152,6 +152,7 @@ Wolfgang Bangerth\\Timo Heister\\
     Jonathan Perry-Houts,
     Ian Rose,
     Cedric Thieulot,
+    Iris van Zelst,
     Siqi Zhang \\
 
 }
@@ -300,7 +301,7 @@ The manual's proper reference is this:
         title =        {\textsc{ASPECT}: Advanced Solver for Problems in Earth's
           ConvecTion},
         author =       {W. Bangerth and T. Heister and others},
-        organization = {Computational Infrastructure in Geodynamics},
+        organization = {Computational Infrastructure for Geodynamics},
         year = 	 2014
       }
 \end{lstlisting}
@@ -375,7 +376,7 @@ $c_i$ that we call \textit{compositional fields}:
   \label{eq:compositional}
   \frac{\partial c_i}{\partial t} + \mathbf u\cdot\nabla c_i
   &=
-  0
+  q_i
   & \quad
   & \textrm{in $\Omega$},
   i=1\ldots C
@@ -402,7 +403,7 @@ terms of this equation correspond to
 \item adiabatic compression of material;
 \item phase change.
 \end{itemize}
-The last term corresponds to
+The last term of the temperature equation corresponds to
 the latent heat generated or consumed in the process of phase change of material. The latent heat release
 is proportional to changes in the fraction of material $X$ that has already
 undergone the phase transition (also called phase function) and the change
@@ -456,7 +457,15 @@ which it is in fact implemented:
   \notag
 \end{align}
 
-\subsubsection{Comment on adiabatic heating}
+The last of the equations above, equation~\eqref{eq:compositional}, describes
+the evolution of additional fields that are transported along with the
+velocity field $\mathbf u$ and may react with each other and react to other
+features of the solution, but that do not diffuse. We call these fields $c_i$
+\textit{compositional fields}, although they can also be used for other
+purposes than just tracking chemical compositions. We will discuss this
+equation in more detail in Section~\ref{sec:compositional}.
+
+\subsubsection{A comment on adiabatic heating}
 In other codes and texts there is sometimes a simplification made to the adiabatic heating term in the previous equation. If you assume the pressure gradient is assumed to be small in the vertical direction, then $ -\rho \mathbf g \approx \nabla \mathbf{p} $, and we have the following relation (the negative sign is due to $\mathbf g$ pointing downwards)
 \begin{align}
 \alpha T \left( \mathbf u \cdot \nabla \mathbf p \right)
@@ -514,7 +523,7 @@ $\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. No boundary conditions have to be posed
 for the compositional fields at those parts of the boundary where flow is either
 tangential to the boundary or points outward.
 
-\subsubsection{Comment on final set of equations}
+\subsubsection{Comments on the final set of equations}
 \aspect{} solves these equations in essentially the form stated. In
 particular, the form given in \eqref{eq:stokes-1} implies that the pressure
 $p$ we compute is in fact the \textit{total pressure}, i.e., the sum of
@@ -1010,6 +1019,80 @@ also selected in the input parameter file.
 
 
 
+\subsection{Compositional fields}
+\label{sec:compositional}
+
+The last of the basic equations, \eqref{eq:compositional}, describes the
+evolution of a set of variables $c_i(\mathbf x, t), i=1\ldots C$ that we
+typically call \textit{compositional fields} and that we often aggregate into
+a vector $\mathfrak c$.
+
+Compositional fields were originally intended to track what their name
+suggest, namely the chemical composition of the convecting medium. In this
+interpretation, they composition is a quantity that is simply advected along
+passively, i.e., it would satisfy the equation
+\begin{align*}
+  \frac{\partial \mathfrak c}{\partial t} + \mathbf u \cdot \nabla \mathfrak c
+  = 0.
+\end{align*}
+However, these compositional fields participate in determining the values of
+the various coefficients as discussed in Section~\ref{sec:coefficients}.
+
+That said, over time compositional fields have shown to be a much more useful
+tool than originally intended. For example, they can be used to track where
+material comes from and goes to (see Section~\ref{sec:cookbooks-composition})
+and, if one allows for a reaction term on the right hand side,
+\begin{align*}
+  \frac{\partial \mathfrak c}{\partial t} + \mathbf u \cdot \nabla \mathfrak c
+  = \mathfrak q,
+\end{align*}
+then one can also model reactions between species -- for example to simulate
+phase changes where one compositional field indicating a particular phase
+transforms into another phase depending on pressure and temperature, or where
+several phases combine to other phases.
+
+Modeling reactions between different compositional fields often involves
+finding an equilibrium state between state between different fields because
+chemical reactions happen on a much faster time scale than transport. In other
+words, one then often assumes that there is a $\mathfrak c^\ast(p,T)$ so that
+\begin{align*}
+  \mathfrak q(p,T,\varepsilon(\mathbf u),\mathfrak c^\ast(p,T)) = 0.
+\end{align*}
+Consequently, the material model methods that deal with source terms for the
+compositional fields need to compute an \textit{increment} $\Delta\mathfrak c$
+to the previous value of the compositional fields so that the sum of the
+previous values and the increment equals $\mathfrak c^\ast$. This is opposed
+to the usual approach of evaluating the right hand side term $\mathfrak q$,
+which corresponds to a \textit{rate}, instead of an increment.
+
+On the other hand, there are other uses of compositional fields that do not
+actually have anything to do with quantities that can be considered related to
+compositions. For example, one may define a field that tracks the grain size
+of rocks. If the strain rate is high, then the grain size decreases as the
+rocks break. If the temperature is high enough, then grains heal and their size
+increases again. Such ``damage'' models would then call for an equation of the
+form (assuming one uses only a single compositional field)
+\begin{align*}
+  \frac{\partial c}{\partial t} + \mathbf u \cdot \nabla c
+  = q(T,c),
+\end{align*}
+where in the simplest case one could postulate
+\begin{align*}
+  q(T,c) = -\alpha c + \beta \max\{T-T_\text{healing},0\} c.
+\end{align*}
+One would then use this compositional field in the definition of the viscosity
+of the material: more damage means lower viscosity because the rocks are weaker.
+
+In cases like this, there is only a single compositional field and it is not
+in permanent equilibrium. Consequently, the increment implementations of
+material models in \aspect{} need to compute is typically the rate $q(T,c)$
+times the time step.
+
+Compositional fields have proven to be surprisingly versatile tools to model
+all sorts of components of models that go beyond the simple Stokes plus
+temperature set of equations. Play with them!
+
+
 \subsection{Numerical methods}
 
 There is no shortage in the literature for methods to solve the equations
@@ -1286,22 +1369,48 @@ community, where the acronym stands for \textit{Im}plicit \textit{P}ressure,
 
 
 
-\subsubsection{Compressible formula}
-In the compressible case, the conservation of mass equation becomes $\nabla \cdot \left( \rho \textbf{u} \right)= 0$ instead of $\nabla \cdot \textbf{u} = 0$, which is nonlinear and nonsymmetric (which makes preconditioning difficult). The following explanation describes what is done in \aspect{} for the linear solver to work.  Dividing by $\rho$ gives:
+\subsubsection{Compressible models}
+In the compressible case, the conservation of mass equation in
+equation~\eqref{eq:stokes-2} becomes $\nabla 
+\cdot \left( \rho \textbf{u} \right)= 0$ instead of $\nabla \cdot \textbf{u} =
+0$, which is nonlinear and no longer symmetric to the $\nabla p$ term in the
+force balance equation \eqref{eq:stokes-1}, making solving and preconditioning
+the resulting linear and nonlinear systems difficult. To make this work in
+\aspect{}, we consequently reformulate this equation. Dividing by $\rho$ and
+applying the product rule of differentiation gives
 \begin{equation*}
 \frac{1}{\rho} \nabla \cdot \left( \rho \textbf{u} \right) = \nabla \cdot \textbf{u} + \frac{1}{\rho} \nabla \rho \cdot  \textbf{u}.
 \end{equation*}
-Then we assume the change in density is dominated by the change in static pressure, which can be written as
-$\nabla p \approx \nabla p_\text{static} \approx \rho \textbf{g}$.
+We will now make two basic assumptions: First, the variation of the density
+$\rho(p,T,\mathbf x, \mathfrak c)$ is dominated by the dependence on the
+(total) pressure; in other words, $\nabla \rho \approx \frac{\partial \rho}{\partial
+  p}\nabla p$. This assumption is primarily justified by the fact that, in the
+Earth mantle, the density increases by at least 50\% between Earth crust and
+the core-mantle boundary due to larger pressure there. Secondly, we assume
+that the pressure is dominated by the static pressure, which can be written as
+$\nabla p \approx \nabla p_s \approx \rho \textbf{g}$. This is essentially
+motivated by the slowness of the movement in the Earth or, alternatively,
+based on the fact that the viscosity is so large.
 This finally allows us to write
 \begin{equation*}
 \frac{1}{\rho} \nabla \rho \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \nabla p_s \cdot \textbf{u} \approx \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u} 
 \end{equation*}
 so we get
-\begin{equation*}
-\nabla \cdot \textbf{u} = - \frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u}
-\end{equation*}
-where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is the compressibility and $\rho$ and $\mathbf u$ are taken from the last time step.
+\begin{equation}
+\label{eq:stokes-2-compressible}
+\nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u}
+\end{equation}
+where $\frac{1}{\rho} \frac{\partial \rho}{\partial p}$ is often referred to
+as the compressibility.
+
+In the implementation used in \aspect{}, this equation replaces
+\eqref{eq:stokes-2}. It has the advantage that it retains the symmetry of the
+Stokes equations if we can treat the right hand side of
+\eqref{eq:stokes-2-compressible} as known. We do so by evaluating $\rho$ and
+$\mathbf u$ using the solution from the last time step (or values extrapolated
+from previous time steps).
+
+
 
 \subsection{Free surface calculations}
 \label{sec:freesurface}
@@ -2188,8 +2297,9 @@ with the input file discussed in Section~\ref{sec:cookbooks-simple-box},
 simulating convection in a box. After running \aspect{}, you will find
 a file called \texttt{statistics} in the output directory that, at the time
 of writing this, looked like this:
-This file has a structure that looks like this:
-  \begin{lstlisting}[frame=single,language=ksh]
+This file has a structure that looks (at the time of writing this section)
+like this:
+\begin{lstlisting}[frame=single,language=ksh]
 # 1: Time step number
 # 2: Time (seconds)
 # 3: Number of mesh cells
@@ -2197,33 +2307,37 @@ This file has a structure that looks like this:
 # 5: Number of temperature degrees of freedom
 # 6: Iterations for temperature solver
 # 7: Iterations for Stokes solver
-# 8: Time step size (seconds)
-# 9: RMS velocity (m/s)
-# 10: Max. velocity (m/s)
-# 11: Minimal temperature (K)
-# 12: Average temperature (K)
-# 13: Maximal temperature (K)
-# 14: Average nondimensional temperature (K)
-# 15: Outward heat flux through boundary with indicator 0 (W)
-# 16: Outward heat flux through boundary with indicator 1 (W)
-# 17: Outward heat flux through boundary with indicator 2 (W)
-# 18: Outward heat flux through boundary with indicator 3 (W)
-# 19: Visualization file name
-   0 0.0000e+00 256 2467 1089  1 22 1.2225e-02 1.79038621e+00 2.54812273e+00 ...
-   1 1.2225e-02 256 2467 1089 40 16 3.7409e-03 5.88727814e+00 8.34299267e+00 ...
-   2 1.5966e-02 256 2467 1089 25 15 2.0249e-03 1.08925316e+01 1.54185045e+01 ...
-   3 1.7991e-02 256 2467 1089 19 15 1.3658e-03 1.61586242e+01 2.28690070e+01 ...
-   4 1.9357e-02 256 2467 1089 16 14 1.0291e-03 2.14311381e+01 3.03519178e+01 ...
-   5 2.0386e-02 256 2467 1089 14 14 8.2853e-04 2.65966688e+01 3.76989179e+01 ...
-  \end{lstlisting}
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (seconds)
+# 11: RMS velocity (m/s)
+# 12: Max. velocity (m/s)
+# 13: Minimal temperature (K)
+# 14: Average temperature (K)
+# 15: Maximal temperature (K)
+# 16: Average nondimensional temperature (K)
+# 17: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 18: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 19: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 20: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 21: Visualization file name
+ 0 0.0000e+00 256 2467 1089  0 29 30 29 1.2268e-02 1.79026783e+00 2.54322608e+00
+ 1 1.2268e-02 256 2467 1089 32 29 30 30 3.7388e-03 5.89844152e+00 8.35160076e+00
+ 2 1.6007e-02 256 2467 1089 20 28 29 29 2.0239e-03 1.09071922e+01 1.54298908e+01
+ 3 1.8031e-02 256 2467 1089 15 27 28 28 1.3644e-03 1.61759153e+01 2.28931189e+01
+ 4 1.9395e-02 256 2467 1089 13 26 27 27 1.0284e-03 2.14465789e+01 3.03731397e+01
+ 5 2.0424e-02 256 2467 1089 11 25 26 26 8.2812e-04 2.66110761e+01 3.77180480e+01
+ \end{lstlisting}
 
 In other words, it first lists what the individual columns mean with a hash
 mark at the beginning of the line and then has one line for each time step
-in which the individual columns list what has been explained above. In the
-example shown here, the first time step appears twice because we use a mesh
-that starts out globally refined and we then start the entire computation
-over again on a once adaptively refined mesh (see the parameters in
-Section~\ref{parameters:Mesh_20refinement} for how to do that).
+in which the individual columns list what has been explained above.%
+\footnote{With
+  input files that ask for initial adaptive refinement, the first time step may
+  appear twice because we solve on a mesh
+  that is globally refined and we then start the entire computation
+  over again on a once adaptively refined mesh (see the parameters in
+  Section~\ref{parameters:Mesh_20refinement} for how to do that).}
 
 This file is easy to visualize. For example, one can import it as a whitespace
 separated file into a spreadsheet such as Microsoft Excel or OpenOffice/LibreOffice
@@ -2255,11 +2369,11 @@ gnuplot>
 \end{lstlisting}
 At the prompt on the last line, you can then enter commands. Given the
 description of the individual columns given above, let us first try to
-plot the heat flux through boundary 2 (which in this case is the bottom
-boundary of the box), i.e., column 17, as a function of time (column 2).
+plot the heat flux through boundary 2 (the bottom
+boundary of the box), i.e., column 19, as a function of time (column 2).
 This can be achieved using the following command:
 \begin{lstlisting}[frame=single,language=gnuplot]
-  plot "statistics" using 2:17
+  plot "statistics" using 2:19
 \end{lstlisting}
 The left panel of Fig.~\ref{fig:viz-gnuplot-1} shows what \texttt{Gnuplot}
 will display in its output window. There are many things one can
@@ -2269,14 +2383,14 @@ use not just points but lines and points for the curves,
 restrict the time axis to the range $[0,0.2]$ and the heat flux axis to
 $[-10:10]$,
 plot not only the flux through the bottom but also through the top boundary
-(column 18) and finally add a key to the figure, then the following
+(column 20) and finally add a key to the figure, then the following
 commands achieve this:
 \begin{lstlisting}[frame=single,language=gnuplot]
   set xlabel "Time"
   set ylabel "Heat flux"
   set style data linespoints
-  plot [0:0.2][-10:10] "statistics" using 2:17 title "Bottom boundary", \
-                       "statistics" using 2:18 title "Top boundary"
+  plot [0:0.2][-10:10] "statistics" using 2:19 title "Bottom boundary", \
+                       "statistics" using 2:20 title "Top boundary"
 \end{lstlisting}
 If a line gets too long, you can continue it by ending it in a backslash as
 above. This is rarely used on the command line but useful when writing the
@@ -2307,10 +2421,10 @@ the following abbreviated form would have achieved the same effect:
   se xl "Time"
   se yl "Heat flux"
   se sty da lp
-  pl [:0.2][-10:10] "statistics" us 2:17 t "Bottom boundary", "" us 2:18 t "Top boundary"
+  pl [:0.2][-10:10] "statistics" us 2:19 t "Bottom boundary", "" us 2:20 t "Top boundary"
 \end{lstlisting}
 This is of course unreadable at first but becomes useful once you become
-more familiar with the command offered by this program.
+more familiar with the commands offered by this program.
 
 Once you have gotten the commands that create the plot you want right, you probably
 want to save it into a file. \texttt{Gnuplot} can write output in many
@@ -2431,14 +2545,16 @@ number of reasons to periodically save the state of the program:
 To this end, \aspect{} creates a set of files in the output directory
 \index[prmindex]{Output directory}
 \index[prmindexfull]{Output directory}
-(selected in the parameter file) every 50 time steps in which the entire state
-of the program is saved so that a simulation can later be continued at this
+(selected in the parameter file) every N time steps (controlled by the number
+of steps or wall time as specified in \texttt{subsection Checkpointing}, see
+Section~\ref{parameters:Checkpointing}) in which the entire state of the
+program is saved so that a simulation can later be continued at this
 point. The previous checkpoint files will then be deleted. To resume
 operations from the last saved state, you need to set the \texttt{Resume
   computation} flag in the input parameter file to \texttt{true}, see
 \index[prmindex]{Resume computation}
 \index[prmindexfull]{Resume computation}
-Section~\ref{parameters:global}.
+Section~\ref{parameters:Resume computation}.
 
 \note{It is not imperative that the parameters selected in the input file are
   exactly the same when resuming a program from a saved state than what they
@@ -2734,6 +2850,35 @@ sections linked to above. Some of them will also be used in the cookbooks in
 Section~\ref{sec:cookbooks}.
 
 
+\subsubsection{A note on the syntax of formulas in input files}
+\label{sec:muparser-format}
+
+Input files have different ways of describing certain things to \aspect{}. For
+example, you could select a plugin for the temperature initial values that
+prescribes a constant temperature, or a
+plugin that implements a particular formula for these initial conditions in
+C++ in the code of the plugin, or a
+plugin that allows you to describe this formula in a symbolic way in the input file
+(see Section~\ref{parameters:Initial_20conditions}). An example of this latter
+case is this snippet of code discussed in
+Section~\ref{sec:cookbooks-simple-box-3d}:
+%
+\lstinputlisting[language=prmfile]{cookbooks/convection-box-3d/initial.part.prm.out}
+%
+The formulas you can enter here need to use a syntax that is understood by the
+functions and classes that interpret what you write. Internally, this is done
+using the muparser library, see \url{http://muparser.beltoforion.de/}. The
+syntax is mostly self-explanatory in that it allows to use the usual symbols
+\texttt{x}, \texttt{y} and \texttt{z} to reference coordinates (unless a
+particular plugin uses different variables, such as the depth), the symbol
+\texttt{t} for time in many situations, and allows you to use all of the
+typical mathematical functions such as sine and cosine. Another common case is
+an if-statement that has the general form
+\texttt{if(condition,true-expression,false-expression)}. For more examples of
+the syntax understood, reference the documentation of the muparser library
+linked to above.
+
+
 % now include a file that describes all currently available run-time parameters
 \input{parameters}
 
@@ -2808,6 +2953,30 @@ geometry (a ``box'') with edge length equal to one in both the $x$- and
 $y$-directions. Of course, there are other geometries you can choose from for
 the \texttt{Model name} parameter, and consequently other subsections that
 specify the details of these geometries.
+
+Similarly, you describe boundary conditions using parameters such as this:
+%
+\lstinputlisting[language=prmfile]{cookbooks/overview/boundary-conditions.part.prm}
+%
+This snippet describes which of the four boundaries of the two-dimensional box
+we have selected above should have a prescribed temperature or an insulating
+boundary, and at which parts of the boundary we want zero, tangential or
+prescribed velocities.%
+\footnote{Internally, the geometry models \aspect{} uses label every part of
+  the boundary with what is called a \textit{boundary indicator} -- a number
+  that identifies pieces of the boundary. If you know which number each piece
+  has, you can list these numbers on the right hand sides of the assignments
+  of boundary types above. For example, the left boundary of the box has
+  boundary indicator zero (see Section~\ref{parameters:Geometry_20model}), and
+  using this number instead of the \texttt{left} would have been equally
+  valid. However, numbers are far more difficult to remember than names, and
+  consequently every geometry model provides string aliases such as
+  ``\texttt{left}'' for each boundary indicator describing parts of the
+  boundary. These symbolic aliases are specific to the geometry -- for the
+  box, they are ``\texttt{left}'', ``\texttt{right}'', ``\texttt{bottom}'',
+  etc., whereas for a spherical shell they are ``\texttt{inner}'' and
+  ``\texttt{outer}'' -- but are described in the documentation of every
+  geometry model, see Section~\ref{parameters:Geometry_20model}.}
 
 If you go down the list of questions about the setup above, you have already
 done the majority of the work describing your computation. The remaining
@@ -3373,6 +3542,7 @@ limits the accuracy.
 
 
 \subsubsection{Convection in a 3d box}
+\label{sec:cookbooks-simple-box-3d}
 
 The world is not two-dimensional. While the previous section introduced a number
 of the knobs one can play with with \aspect{}, things only really become
@@ -5378,6 +5548,170 @@ The benchmark can be run using the parameter files in \url{benchmark/inclusion/}
 
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/inclusion.prm.out}
 
+
+\subsubsection{The Burstedde variable viscosity benchmark}
+\label{sec:benchmark-burstedde}
+
+\textit{This section was contributed by Iris van Zelst.}
+
+This benchmark is intended to test solvers for variable viscosity Stokes
+problems. It begins with postulating a smooth exact polynomial solution to the Stokes equation for a unit cube, first proposed by \cite{dobo04} and also described by \cite{busa13}:
+\begin{align}
+  {\mathbf u} &= \left( \begin{array}{c}
+      x+x^2+xy+x^3y \\
+      y + xy + y^2 + x^2 y^2\\
+      -2z - 3xz - 3yz - 5x^2 yz
+    \end{array}
+  \right)
+  \label{eq:burstedde-velocity}
+  \\
+  p &= xyz + x^3 y^3z - \frac{5}{32}.
+  \label{eq:burstedde-pressure}
+\end{align}
+
+It is then trivial to verify that the velocity field is divergence-free. The
+constant $-\frac{5}{32}$ has been added to the expression of $p$ to ensure
+that the volume pressure normalization of \aspect{} can be used in this
+benchmark (in other words, to ensure that the exact pressure has mean value
+zero and, consequently, can easily be compared with the numerically computed
+pressure). Following \cite{busa13}, the viscosity $\mu$ is given by the smoothly varying function 
+\begin{equation}
+  \mu = \exp\left\{1 - \beta\left[x (1-x) + y(1-y) + z(1-z)\right]\right\}.
+  \label{eq:burstedde-mu}
+\end{equation}
+The maximum of this function is $\mu = e$, for example at $(x,y,z)=(0,0,0)$, and the minimum of this function is $\mu = \exp \Big( 1-\frac{3\beta}{4}\Big)$ at $(x,y,z) = (0.5,0.5,0.5)$. The viscosity ratio $\mu^*$ is then given by 
+\begin{equation}
+  \mu^* = \frac{\exp\Big(1-\frac{3\beta}{4}\Big)}{\exp(1)} = \exp\Big(\frac{-3\beta}{4}\Big).
+\end{equation}
+Hence, by varying $\beta$ between 1 and 20, a difference of up to 7 orders of
+magnitude viscosity is obtained. $\beta$ will be one of the parameters that
+can be selected in the input file that accompanies this benchmark.
+
+The corresponding body force of the Stokes equation can then be computed by inserting this solution into the momentum equation,
+\begin{equation}
+  {\nabla} p - \nabla \cdot (2  \mu {\epsilon(\mathbf u)}) = \rho \mathbf g.
+  \label{eq:burstedde-momentum}
+\end{equation}
+Using equations \eqref{eq:burstedde-velocity}, \eqref{eq:burstedde-pressure}
+and \eqref{eq:burstedde-mu} in the
+momentum equation \eqref{eq:burstedde-momentum}, the following expression for the body force
+$\rho\mathbf g$ can be found:
+\begin{multline}
+  {\rho\mathbf g} 
+  =
+  \left(
+    \begin{array}{c}
+      yz+3x^2y^3z\\
+      xz +3x^3y^2z \\
+      xy+x^3y^3
+    \end{array}
+  \right)
+  -\mu
+  \left(
+    \begin{array}{c}
+      2+6xy  \\
+      2 + 2x^2 +  2y^2 \\
+      -10yz 
+    \end{array}
+  \right) \\
+  +
+  (1-2x)\beta \mu 
+  \left(
+    \begin{array}{c}
+      2+4x+2y+6x^2y \\
+      x+y+2xy^2+x^3 \\
+      -3z -10xyz 
+    \end{array}
+  \right)
+  +(1-2y)\beta \mu 
+  \left(
+    \begin{array}{c}
+      x+y+2xy^2+x^3 \\
+      2+2x+4y+4x^2y \\
+      -3z-5x^2z \\
+    \end{array}
+  \right)
+  \\
+  +(1-2z)\beta \mu
+  \left(
+    \begin{array}{c}
+      -3z -10xyz \\
+      -3z-5x^2z \\
+      -4-6x-6y-10x^2y
+    \end{array}
+  \right)
+\end{multline}
+Assuming $\rho = 1$, the above expression translates into an expression for the
+gravity vector $\mathbf g$. This expression for the gravity (even though it is
+completely unphysical), has consequently been incorporated into the
+\texttt{BursteddeGravity} gravity model that is described in the
+\texttt{benchmarks/burstedde/burstedde.cc} file that accompanies this benchmark.
+
+We will use the input file \texttt{benchmark/burstedde/burstedde.prm} as
+input, which is very similar to the input file
+\texttt{benchmark/inclusion/adaptive.prm} discussed above in
+Section~\ref{sec:benchmark-inclusion}. The major changes for the 3D polynomial
+Stokes benchmark are listed below: 
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/burstedde/burstedde.prm.out}
+
+The boundary conditions that are used are simply the velocities from equation
+\eqref{eq:burstedde-velocity} prescribed on each boundary. The viscosity parameter in the input
+file is $\beta$. Furthermore, in order to compute the velocity and pressure
+$L_1$ and $L_2$ norm, the postprocessor \texttt{BursteddePostprocessor} is
+used. Please note that the linear solver tolerance is set to a very small
+value (deviating from the default value), in order to ensure that the solver
+can solve the system accurately enough to make sure that the iteration
+error is smaller than the discretization error.
+
+Expected analytical solutions at two locations are summarised in Table~\ref{tab:burstedde-table} and can be deduced from equations \eqref{eq:burstedde-velocity} and
+\eqref{eq:burstedde-pressure}.
+Figure \ref{figure} shows that the analytical solution is indeed retrieved by the model.
+
+\begin{table}[h!]
+\caption{Analytical solutions \label{tab:burstedde-table}}
+\centering
+\begin{tabular}{l|c|c}
+Quantity & $\mathbf{r} = (0,0,0)$ & $\mathbf{r} = (1,1,1)$ \\ \hline
+$p$ & $-0.15625$ & $1.84375$ \\
+$\mathbf{u}$ & $(0,0,0)$  & $(4,4,-13)$ \\ 
+$|\mathbf{u}|$ & $0$ &  $14.177$ \\
+\end{tabular}
+\end{table}
+
+\begin{figure}[t!]
+  \centering
+  \subfigure[b]{
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/viscosity.png}}%
+  ~ 
+  \subfigure[]{
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/pressure.png}}%
+  \\
+  \subfigure[]{
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/velocity_x.png}}
+  ~
+  \subfigure[]{
+    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/velocity_z.png}}
+  \caption{Burstedde benchmark: Results for the 3D polynomial Stokes benchmark, obtained with a resolution of $16\times 16$ elements, with $\beta = 10$.}\label{figure}
+\end{figure}
+
+The convergence of the numerical error of this benchmark has been analysed by
+playing with the mesh refinement level in the input file, and
+results can be found in Figure \ref{errors}. The velocity shows cubic error
+convergence, while the pressure shows quadratic convergence in the $L_1$ and
+$L_2$ norms, as one would hope for using $Q_2$ elements for the velocity and
+$Q_1$ elements for the pressure.
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\textwidth]{cookbooks/benchmarks/burstedde/errors.pdf}
+  \caption{Burstedde benchmark: Error convergence for the 3D polynomial Stokes
+    benchmark.
+    \label{errors}}
+\end{figure}
+
+
+
 \subsubsection{The ``Stokes' law'' benchmark}
 \label{sec:benchmark-stokes_law}
 
@@ -6323,17 +6657,23 @@ to solve the equations. A domain is described in \dealii{} by a coarse mesh
 and, if necessary, an object that characterizes the boundary. Together, these
 two suffice to reconstruct any domain by adaptively refining the coarse mesh
 and placing new nodes generated by refining cells onto the surface described
-by the boundary object. The geometry model is also responsible to describe to
-the rest of the code which parts of the boundary represent Dirichlet-type
+by the boundary object. The geometry model is also responsible for marking
+different parts of the boundary with different \textit{boundary indicators}
+for which one can then, in the input file, select whether these boundaries
+should be Dirichlet-type
 (fixed temperature) or Neumann-type (no heat flux) boundaries for the
-temperature, and where the velocity is considered zero or tangential to the
-boundary. This information is encoded in functions that return which boundary
-indicators represent these types of boundaries; in \dealii{}, a boundary
-indicator is a number attached to each piece of the boundary that can be used
-to represent the type of boundary a piece belongs to.
+temperature, and what kind of velocity conditions should hold there. In
+\dealii{}, a boundary indicator is a number of type
+\texttt{types::boundary\_id}, but since boundaries are hard to remember and
+get right in input files, geometry models also have a function that provide a
+map from symbolic names that can be used to describe pieces of the boundary to
+the corresponding boundary indicators. For example, the simple \texttt{box}
+geometry model in 2d provides the map
+\texttt{\{"left"$\rightarrow$0, "right"$\rightarrow$1,
+"bottom"$\rightarrow$2,"top"$\rightarrow$3\}}, and we have consistently used
+these symbolic names in the input files used in this manual.
 
-To implement a new geometry model, you
-need to overload the
+To implement a new geometry model, you need to overload the
 \href{doc/doxygen/classaspect_1_1GeometryModel_1_1Interface.html}{aspect::GeometryModel::Interface}
 class and use
 the \texttt{ASPECT\_REGISTER\_GEOMETRY\_MODEL} macro to register your new
@@ -6366,6 +6706,10 @@ Specifically, your new class needs to implement the following basic interface:
         virtual
         std::set<types::boundary_id_t>
         get_used_boundary_indicators () const = 0;
+
+        virtual
+        std::map<std::string,types::boundary_id>
+        get_symbolic_boundary_names_map () const;
 
         static
         void

@@ -77,6 +77,21 @@ namespace aspect
     }
   }
 
+
+  /**
+   * Constructor of the IntermediaryConstructorAction class. Since the
+   * class has no members, there is nothing to initialize -- all we
+   * need to do is execute the 'action' argument.
+   */
+  template <int dim>
+  Simulator<dim>::IntermediaryConstructorAction::
+  IntermediaryConstructorAction (std_cxx1x::function<void ()> action)
+  {
+    action();
+  }
+
+
+
   /**
    * Constructor. Initialize all member variables.
    **/
@@ -100,6 +115,13 @@ namespace aspect
                      TimerOutput::wall_times),
 
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
+    // make sure the parameters object gets a chance to
+    // parse those parameters that depend on symbolic names
+    // for boundary components
+    post_geometry_model_creation_action (std_cxx1x::bind (&Parameters::parse_geometry_dependent_parameters,
+                                                          std_cxx1x::ref(parameters),
+                                                          std_cxx1x::ref(prm),
+                                                          std_cxx1x::cref(*geometry_model))),
     material_model (MaterialModel::create_material_model<dim>(prm)),
     heating_model (HeatingModel::create_heating_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
@@ -159,7 +181,8 @@ namespace aspect
 
     // we already printed the header to the screen, so here we just dump it
     // into the logfile.
-    print_aspect_header(log_file_stream);
+    if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
+      print_aspect_header(log_file_stream);
 
     computing_timer.enter_section("Initialization");
 
@@ -191,8 +214,16 @@ namespace aspect
                                    boundary_indicator_lists[j].end(),
                                    std::inserter(intersection, intersection.end()));
             AssertThrow (intersection.empty(),
-                         ExcMessage ("Some velocity boundary indicators are listed as having more "
-                                     "than one type in the input file."));
+                         ExcMessage ("Boundary indicator <"
+				     +
+				     Utilities::int_to_string(*intersection.begin())
+				     +
+				     "> with symbolic name <"
+				     +
+				     geometry_model->translate_id_to_symbol_name (*intersection.begin())
+				     +
+				     "> is listed as having more "
+                                     "than one type of velocity boundary condition in the input file."));
           }
 
       // next make sure that all listed indicators are actually used by
@@ -228,38 +259,64 @@ namespace aspect
 
     // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
     // call the initialize() functions immediately after.
+    //
+    // we also need to let all models parse their parameters. this is done *after* setting
+    // up their SimulatorAccess base class so that they can query, for example, the
+    // geometry model's description of symbolic names for boundary parts. note that
+    // the geometry model is the only model whose runtime parameters are already read
+    // at the time it is created
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(geometry_model.get()))
       sim->initialize (*this);
     geometry_model->initialize ();
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(material_model.get()))
       sim->initialize (*this);
+    material_model->parse_parameters (prm);
     material_model->initialize ();
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(heating_model.get()))
       sim->initialize (*this);
+    heating_model->parse_parameters (prm);
     heating_model->initialize ();
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(gravity_model.get()))
       sim->initialize (*this);
+    gravity_model->parse_parameters (prm);
     gravity_model->initialize ();
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature.get()))
       sim->initialize (*this);
+    boundary_temperature->parse_parameters (prm);
     boundary_temperature->initialize ();
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
       sim->initialize (*this);
     if (boundary_composition.get())
-      boundary_composition->initialize ();
+      {
+        boundary_composition->parse_parameters (prm);
+        boundary_composition->initialize ();
+      }
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_conditions.get()))
       sim->initialize (*this);
+    initial_conditions->parse_parameters (prm);
     initial_conditions->initialize ();
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(compositional_initial_conditions.get()))
       sim->initialize (*this);
     if (compositional_initial_conditions.get())
-      compositional_initial_conditions->initialize ();
+      {
+        compositional_initial_conditions->parse_parameters (prm);
+        compositional_initial_conditions->initialize ();
+      }
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(adiabatic_conditions.get()))
       sim->initialize (*this);
+    adiabatic_conditions->parse_parameters (prm);
     adiabatic_conditions->initialize ();
 
 
-    //Initialize the free surface handler
+    // Initialize the free surface handler
     if (parameters.free_surface_enabled)
       {
         //It should be possible to make the free surface work with any of a number of nonlinear
@@ -273,14 +330,14 @@ namespace aspect
         free_surface.reset( new FreeSurfaceHandler( *this, prm ) );
       }
 
-    postprocess_manager.parse_parameters (prm);
     postprocess_manager.initialize (*this);
+    postprocess_manager.parse_parameters (prm);
 
-    mesh_refinement_manager.parse_parameters (prm);
     mesh_refinement_manager.initialize (*this);
+    mesh_refinement_manager.parse_parameters (prm);
 
-    termination_manager.parse_parameters (prm);
     termination_manager.initialize (*this);
+    termination_manager.parse_parameters (prm);
 
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
@@ -292,10 +349,10 @@ namespace aspect
       {
         VelocityBoundaryConditions::Interface<dim> *bv
           = VelocityBoundaryConditions::create_velocity_boundary_conditions<dim>
-            (p->second.second,
-             prm);
+            (p->second.second);
         if (dynamic_cast<SimulatorAccess<dim>*>(bv) != 0)
           dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
+        bv->parse_parameters (prm);
         bv->initialize ();
         velocity_boundary_conditions[p->first].reset (bv);
       }
@@ -323,13 +380,10 @@ namespace aspect
          p != parameters.tangential_velocity_boundary_indicators.end();
          ++p)
       open_velocity_boundary_indicators.erase (*p);
-//TODO: The "correct" condition would be to not do the correction for compressible
-    // models if there are either open boundaries, or if there are boundaries
-    // where the prescribed velocity is so that in- and outflux do not exactly
-    // match
+
+    // we need to do the rhs compatibility modification, if the model is
+    // compressible, and there is no open boundary to balance the pressure
     do_pressure_rhs_compatibility_modification = (material_model->is_compressible()
-                                                  &&
-                                                  (parameters.prescribed_velocity_boundary_indicators.size() == 0)
                                                   &&
                                                   (open_velocity_boundary_indicators.size() == 0));
 
@@ -564,26 +618,40 @@ namespace aspect
 
           // here we create a mask for interpolate_boundary_values out of the 'selector'
           std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
-          Assert(introspection.component_masks.velocities[0]==true, ExcInternalError()); // in case we ever move the velocity around
+          Assert(introspection.component_masks.velocities[0]==true,
+		 ExcInternalError()); // in case we ever move the velocity around
           const std::string &comp = parameters.prescribed_velocity_boundary_indicators[p->first].first;
 
           if (comp.length()>0)
             {
               for (std::string::const_iterator direction=comp.begin(); direction!=comp.end(); ++direction)
                 {
-                  AssertThrow(*direction>='x' && *direction<='z', ExcMessage("Error in selector of prescribed velocity boundary component"));
-                  AssertThrow(dim==3 || *direction!='z', ExcMessage("for dim=2, prescribed velocity component z is invalid"))
-                  mask[*direction-'x']=true;
+		  switch (*direction)
+		    {
+		    case 'x':
+			  mask[0] = true;
+			  break;
+		    case 'y':
+			  mask[1] = true;
+			  break;
+		    case 'z':
+			  // we must be in 3d, or 'z' should never have gotten through
+			  Assert (dim==3, ExcInternalError());
+			  mask[2] = true;
+			  break;
+		    default:
+			  Assert (false, ExcInternalError());
+		    }
                 }
-              for (unsigned int i=0; i<introspection.component_masks.velocities.size(); ++i)
-                mask[i] = mask[i] & introspection.component_masks.velocities[i];
             }
           else
             {
+	      // no mask given -- take all velocities 
               for (unsigned int i=0; i<introspection.component_masks.velocities.size(); ++i)
                 mask[i]=introspection.component_masks.velocities[i];
 
-              Assert(introspection.component_masks.velocities[0]==true, ExcInternalError()); // in case we ever move the velocity down
+              Assert(introspection.component_masks.velocities[0]==true,
+		     ExcInternalError()); // in case we ever move the velocity down
             }
 
           VectorTools::interpolate_boundary_values (dof_handler,
@@ -1202,22 +1270,22 @@ namespace aspect
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
-    std::vector<const LinearAlgebra::Vector *> x_fs_system (1);  //Outside of if statement for scoping reasons
-
-    //Hack alert: we need freesurface_trans in the function scope, but cannot pass it the free_surface_dof_handler
-    //if it is not allocated.  So if the free surface is not enabled, just pass the normal system dof_handler,
-    //but then never use this SolutionTransfer object.
-    parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
-    freesurface_trans(parameters.free_surface_enabled ? free_surface->free_surface_dof_handler : dof_handler);
+    std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
+    std::auto_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
+      freesurface_trans;
+    
     if (parameters.free_surface_enabled)
-      x_fs_system[0] = &(free_surface->mesh_vertices);
-
+      {
+	x_fs_system[0] = &free_surface->mesh_vertices;
+	freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
+				 (free_surface->free_surface_dof_handler));
+      }
 
     triangulation.prepare_coarsening_and_refinement();
     system_trans.prepare_for_coarsening_and_refinement(x_system);
 
     if (parameters.free_surface_enabled)
-      freesurface_trans.prepare_for_coarsening_and_refinement(x_fs_system);
+      freesurface_trans->prepare_for_coarsening_and_refinement(x_fs_system);
 
     triangulation.execute_coarsening_and_refinement ();
     global_volume = GridTools::volume (triangulation, mapping);
@@ -1244,23 +1312,48 @@ namespace aspect
       if (parameters.free_surface_enabled)
         system_tmp.push_back(&distributed_mesh_velocity);
 
+      // transfer the data previously stored into the vectors indexed by
+      // system_tmp. then ensure that the interpolated solution satisfies
+      // hanging node constraints
+      //
+      // note that the 'constraints' variable contains hanging node constraints
+      // and constraints from periodic boundary conditions (as well as from
+      // zero and tangential velocity boundary conditions), but not from
+      // non-homogeneous boundary conditions. the latter are added not in setup_dofs(),
+      // which we call above, but added to 'current_constraints' in start_timestep(),
+      // which we do not want to call here.
+      //
+      // however, what we have should be sufficient: we have everything that
+      // is necessary to make the solution vectors *conforming* on the current
+      // mesh.
       system_trans.interpolate (system_tmp);
 
+      constraints.distribute (distributed_system);
       solution     = distributed_system;
+
+      constraints.distribute (old_distributed_system);
       old_solution = old_distributed_system;
+
       if (parameters.free_surface_enabled)
-        free_surface->mesh_velocity = distributed_mesh_velocity;
+	{
+	  constraints.distribute (distributed_mesh_velocity);
+	  free_surface->mesh_velocity = distributed_mesh_velocity;
+	}
     }
 
+    // do the same as above also for the free surface solution
     if (parameters.free_surface_enabled)
       {
         LinearAlgebra::Vector distributed_mesh_vertices;
-        distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned, mpi_communicator);
+        distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned,
+					 mpi_communicator);
 
         std::vector<LinearAlgebra::Vector *> system_tmp (1);
-        system_tmp[0] = &(distributed_mesh_vertices);
-        freesurface_trans.interpolate (system_tmp);
-        free_surface->mesh_vertices     = distributed_mesh_vertices;
+        system_tmp[0] = &distributed_mesh_vertices;
+
+        freesurface_trans->interpolate (system_tmp);
+        free_surface->mesh_vertex_constraints.distribute (distributed_mesh_vertices);
+        free_surface->mesh_vertices = distributed_mesh_vertices;
       }
 
     if (parameters.free_surface_enabled)

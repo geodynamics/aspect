@@ -473,8 +473,9 @@ namespace aspect
         // nonlinear residual (see initial_residual below).
         // TODO: if there was an easy way to know if the caller needs the
         // initial residual we could skip all of this stuff.
-        distributed_stokes_solution.block(0) = current_linearization_point.block(0);
-        denormalize_pressure (distributed_stokes_solution);
+        solution.block(0) = current_linearization_point.block(0);
+        denormalize_pressure (solution);
+        distributed_stokes_solution.block(0) = solution.block(0);
         current_constraints.set_zero (distributed_stokes_solution);
 
         // Undo the pressure scaling:
@@ -486,7 +487,7 @@ namespace aspect
           }
         distributed_stokes_solution.compress(VectorOperation::insert);
 
-        if (material_model->is_compressible ())
+        if (do_pressure_rhs_compatibility_modification)
           make_pressure_rhs_compatible(system_rhs);
 
         // we need a temporary vector for the residual (even if we don't care about it)
@@ -598,8 +599,8 @@ namespace aspect
                       = finite_element.component_to_system_index(introspection.component_indices.compaction_pressure,
                           /*dof index within component=*/ j);
 
-                      double p_f = distributed_stokes_solution(local_dof_indices[pressure_idx]);
-                      double p_c = distributed_stokes_solution(local_dof_indices[p_c_idx]);
+                      double p_f = solution(local_dof_indices[pressure_idx]);
+                      double p_c = solution(local_dof_indices[p_c_idx]);
                       double phi = porosity_values[j];
                       double p_s;
                       if (phi >(1.0-1e-5))
@@ -607,11 +608,12 @@ namespace aspect
                       else
                         p_s = (p_c - (phi-1.0) * p_f) / (1.0-phi);
 
-                      solution(local_dof_indices[pressure_idx]) = p_s;
-                      solution(local_dof_indices[p_c_idx]) = p_f;
+                      distributed_stokes_solution(local_dof_indices[pressure_idx]) = p_s;
+                      distributed_stokes_solution(local_dof_indices[p_c_idx]) = p_f;
                     }
                 }
-            solution.block(0).compress(VectorOperation::insert);
+            distributed_stokes_solution.block(0).compress(VectorOperation::insert);
+            solution.block(0) = distributed_stokes_solution.block(0);
           }
 
         pcout << "done." << std::endl;
@@ -652,7 +654,7 @@ namespace aspect
     // if the model is compressible then we need to adjust the right hand
     // side of the equation to make it compatible with the matrix on the
     // left
-    if (material_model->is_compressible ())
+    if (do_pressure_rhs_compatibility_modification)
       make_pressure_rhs_compatible(system_rhs);
 
     // (ab)use the distributed solution vector to temporarily put a residual in

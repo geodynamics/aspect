@@ -20,6 +20,7 @@
 
 
 #include <aspect/initial_conditions/S40RTS_perturbation.h>
+#include <aspect/utilities.h>
 #include <fstream>
 #include <iostream>
 #include <deal.II/base/std_cxx1x/array.h>
@@ -32,10 +33,10 @@ namespace aspect
   {
 
     // tk does the cubic spline interpolation.
-    // This interpolation is based on the script spline.h, which was downloaded from 
-    // http://kluge.in-chemnitz.de/opensource/spline/spline.h  
+    // This interpolation is based on the script spline.h, which was downloaded from
+    // http://kluge.in-chemnitz.de/opensource/spline/spline.h
     // Copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
-   
+
       namespace tk {
          // band matrix solver
          class band_matrix {
@@ -84,14 +85,14 @@ namespace aspect
 
 
 
- 
-    
+
+
     namespace internal
     {
        // Read in the spherical harmonics that are located in data/initial-conditions/S40RTS
        // and were downloaded from http://www.earth.lsa.umich.edu/~jritsema/research.html
        // Ritsema et al. choose real sine and cosine coefficients that follow the normalization
-       // by Dahlen & Tromp, Theoretical Global Seismology (equations B.58 and B.99). 
+       // by Dahlen & Tromp, Theoretical Global Seismology (equations B.58 and B.99).
 
        class SphericalHarmonicsLookup
        {
@@ -104,8 +105,8 @@ namespace aspect
                         ExcMessage (std::string("Couldn't open file <") + filename));
 
            in >> order;
-           getline(in,temp);  // throw away the rest of the line    
-          
+           getline(in,temp);  // throw away the rest of the line
+
            const int num_splines = 21;
            const int maxnumber = num_splines * (order+1)*(order+1);
 
@@ -129,7 +130,7 @@ namespace aspect
                a_lm.push_back(coeffs[ind]);
                b_lm.push_back(0.0);
                ind += 1;
-               
+
                ind_degree = 0;
                while (ind_degree < i)
                {
@@ -139,7 +140,7 @@ namespace aspect
                  ind += 1;
                  ind_degree +=1;
                }
-             } 
+             }
            }
 
          // Declare a function that returns the cosine coefficients
@@ -158,7 +159,7 @@ namespace aspect
          {
            return order;
          }
- 
+
          private:
            int order;
            std::vector<double> coeffs;
@@ -168,7 +169,7 @@ namespace aspect
        };
 
       // Read in the knot points for the spline interpolation. They are located in data/
-      // initial-conditions/S40RTS and were taken from the plotting script 
+      // initial-conditions/S40RTS and were taken from the plotting script
       // lib/libS20/splhsetup.f which is part of the plotting package downloadable at
       // http://www.earth.lsa.umich.edu/~jritsema/research.html
       class SplineDepthsLookup
@@ -181,7 +182,7 @@ namespace aspect
            AssertThrow (in,
        		ExcMessage (std::string("Couldn't open file <") + filename));
 
-           getline(in,temp);  // throw away the rest of the line 
+           getline(in,temp);  // throw away the rest of the line
            getline(in,temp);  // throw away the rest of the line
 
            int num_splines = 21;
@@ -192,11 +193,11 @@ namespace aspect
               in >> new_val;
 
               depths.push_back(new_val);
-           } 
+           }
          }
 
          const std::vector<double> & spline_depths() const
-         { 
+         {
            return depths;
          }
 
@@ -220,7 +221,7 @@ namespace aspect
     // perturbations of a high order be sure to confirm the accuracy first.
     // For more information, see:
     // http://www.boost.org/doc/libs/1_49_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_poly/sph_harm.html
-    
+
     template <int dim>
     double
     S40RTSPerturbation<dim>::
@@ -232,7 +233,7 @@ namespace aspect
       const double background_temperature = this->get_material_model().is_compressible() ?
                                             this->get_adiabatic_conditions().temperature(position) :
                                             reference_temperature;
-        
+
         //get the degree from the input file (20 or 40)
         const int maxdegree = spherical_harmonics_lookup->maxdegree();
 
@@ -243,18 +244,18 @@ namespace aspect
         // get the spherical harmonics coefficients
         const std::vector<double> a_lm = spherical_harmonics_lookup->cos_coeffs();
         const std::vector<double> b_lm = spherical_harmonics_lookup->sin_coeffs();
-       
+
         // get spline knots and rescale them from [-1 1] to [CMB moho]
         const std::vector<double> r = spline_depths_lookup->spline_depths();
         const double rmoho = 6346e3;
         const double rcmb = 3480e3;
-        std::vector<double> depth_values(num_spline_knots,0); 
+        std::vector<double> depth_values(num_spline_knots,0);
 
         for (int i = 0; i<num_spline_knots; i++)
-           depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);       
+           depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);
 
-        // convert coordinates from [x,y,z] to [r, phi, theta] 
-        std_cxx1x::array<double,dim> scoord = spherical_surface_coordinates(position);
+        // convert coordinates from [x,y,z] to [r, phi, theta]
+        std_cxx1x::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
 
         // iterate over all degrees and orders at each depth and sum them all up.
         std::vector<double> spline_values(num_spline_knots,0);
@@ -271,7 +272,7 @@ namespace aspect
               const double sin_component = boost::math::spherical_harmonic_i(degree_l,order_m,scoord[2],scoord[1]); //imaginary / sine part
                 if (order_m == 0) {
                   // option to zero out degree 0, i.e. make sure that the average of the perturbation
-                  // is 0 and the average of the temperature is the background temperature 
+                  // is 0 and the average of the temperature is the background temperature
                   prefact = (zero_out_degree_0
                              ?
                              0.
@@ -286,15 +287,15 @@ namespace aspect
          }
        }
 
-     // We need to reorder the spline_values because the coefficients are given from 
+     // We need to reorder the spline_values because the coefficients are given from
      // the surface down to the CMB and the interpolation knots range from the CMB up to
      // the surface.
      std::vector<double> spline_values_inv(num_spline_knots,0);
      for (int i=0; i<num_spline_knots; i++)
          spline_values_inv[i] = spline_values[num_spline_knots-1 - i];
 
-     // The boundary condition for the cubic spline interpolation is that the function is linear 
-     // at the boundary (i.e. moho and CMB). Values outside the range are linearly 
+     // The boundary condition for the cubic spline interpolation is that the function is linear
+     // at the boundary (i.e. moho and CMB). Values outside the range are linearly
      // extrapolated.
      tk::spline s;
      s.set_points(depth_values,spline_values_inv);
@@ -313,25 +314,9 @@ namespace aspect
 
     }
 
-    template <int dim>
-    std_cxx1x::array<double,dim>
-    S40RTSPerturbation<dim>::
-    spherical_surface_coordinates(const dealii::Point<dim,double> &position) 
-    {
-      std_cxx1x::array<double,dim> scoord;
-
-      scoord[0] = std::sqrt(position.norm_square()); // R
-      scoord[1] = std::atan2(position[1],position[0]); // Phi
-      if (scoord[1] < 0.0) scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
-      if (dim==3)
-        scoord[2] = std::acos(position[2]/std::sqrt(position.norm_square())); // Theta
-
-      return scoord;
-    } 
-
 
     // tk does the cubic spline interpolation.
-    // This interpolation is based on the script spline.h, which was downloaded from 
+    // This interpolation is based on the script spline.h, which was downloaded from
     // http://kluge.in-chemnitz.de/opensource/spline/spline.h   //
     // Copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
 
@@ -339,7 +324,7 @@ namespace aspect
         // --------------------------
         // band_matrix implementation
         // --------------------------
-  
+
         band_matrix::band_matrix(int dim, int n_u, int n_l) {
             resize(dim, n_u, n_l);
         }
@@ -363,8 +348,8 @@ namespace aspect
                 return 0;
             }
         }
-        
-        
+
+
         // defines the new operator (), so that we can access the elements
         // by A(i,j), index going from i=0,...,dim()-1
         double & band_matrix::operator () (int i, int j) {
@@ -392,13 +377,13 @@ namespace aspect
             assert( (i>=0) && (i<dim()) );
             return m_lower[0][i];
         }
-        
+
         // LR-Decomposition of a band matrix
         void band_matrix::lu_decompose() {
             int  i_max,j_max;
             int  j_min;
             double x;
-            
+
             // preconditioning
             //             // normalize column i so that a_ii=1
             for(int i=0; i<this->dim(); i++) {
@@ -411,7 +396,7 @@ namespace aspect
                 }
                 this->operator()(i,i)=1.0;          // prevents rounding errors
             }
-            
+
             // Gauss LR-Decomposition
             for(int k=0; k<this->dim(); k++) {
                 i_max=std::min(this->dim()-1,k+this->num_lower());  // num_lower not a mistake!
@@ -455,7 +440,7 @@ namespace aspect
             }
             return x;
         }
-        
+
         std::vector<double> band_matrix::lu_solve(const std::vector<double>& b,
                                                   bool is_lu_decomposed) {
             assert( this->dim()==(int)b.size() );
@@ -467,8 +452,8 @@ namespace aspect
             x=this->r_solve(y);
             return x;
         }
-        
-        
+
+
         // ---------------------
         // spline implementation
         // ---------------------
@@ -481,7 +466,7 @@ namespace aspect
             for(int i=0; i<n-1; i++) {
                 assert(m_x[i]<m_x[i+1]);
             }
-            
+
             if(cubic_spline==true) { // cubic spline interpolation
                 // setting up the matrix and right hand side of the equation system
                 // for the parameters b[]
@@ -500,10 +485,10 @@ namespace aspect
                 A(n-1,n-1)=2.0;
                 A(n-1,n-2)=0.0;
                 rhs[n-1]=0.0;
-                
+
                 // solve the equation system to obtain the parameters b[]
                 m_b=A.lu_solve(rhs);
-                
+
                 // calculate parameters a[] and c[] based on b[]
                 m_a.resize(n);
                 m_c.resize(n);
@@ -522,7 +507,7 @@ namespace aspect
                     m_c[i]=(m_y[i+1]-m_y[i])/(m_x[i+1]-m_x[i]);
                 }
             }
-            
+
             // for the right boundary we define
             // f_{n-1}(x) = b*(x-x_{n-1})^2 + c*(x-x_{n-1}) + y_{n-1}
             double h=x[n-1]-x[n-2];
@@ -530,14 +515,14 @@ namespace aspect
             m_a[n-1]=0.0;
             m_c[n-1]=3.0*m_a[n-2]*h*h+2.0*m_b[n-2]*h+m_c[n-2];   // = f'_{n-2}(x_{n-1})
         }
-        
+
         double spline::operator() (double x) const {
             size_t n=m_x.size();
             // find the closest point m_x[idx] < x, idx=0 even if x<m_x[0]
             std::vector<double>::const_iterator it;
             it=std::lower_bound(m_x.begin(),m_x.end(),x);
             int idx=std::max( int(it-m_x.begin())-1, 0);
-            
+
             double h=x-m_x[idx];
             double interpol;
             if(x<m_x[0]) {
@@ -552,17 +537,17 @@ namespace aspect
             }
             return interpol;
         }
-               
+
      } // namespace tk
 
- 
+
 
     template <int dim>
     void
     S40RTSPerturbation<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Initial conditions");
-      { 
+      {
           prm.enter_subsection("S40RTS perturbation");
           {
           prm.declare_entry("Data directory", "$ASPECT_SOURCE_DIR/data/initial-conditions/S40RTS/",
@@ -609,7 +594,7 @@ namespace aspect
       prm.enter_subsection("Initial conditions");
       {
         prm.enter_subsection("S40RTS perturbation");
-        { 
+        {
           datadirectory           = prm.get ("Data directory");
           {
             const std::string      subst_text = "$ASPECT_SOURCE_DIR";
@@ -629,7 +614,7 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-    
+
       initialize ();
     }
   }
@@ -644,25 +629,25 @@ namespace aspect
                                        "S40RTS perturbation",
                                        "An initial temperature field in which the temperature "
                                        "is perturbed following the S20RTS or S40RTS shear wave "
-                                       "velocity model by Ritsema and others, which can be downloaded " 
+                                       "velocity model by Ritsema and others, which can be downloaded "
                                        "here \\url{http://www.earth.lsa.umich.edu/~jritsema/research.html}. "
-                                       "Information on the vs model can be found in Ritsema, J., Deuss, " 
-                                       "A., van Heijst, H.J. & Woodhouse, J.H., 2011. S40RTS: a " 
-                                       "degree-40 shear-velocity model for the mantle from new Rayleigh " 
-                                       "wave dispersion, teleseismic traveltime and normal-mode " 
-                                       "splitting function measurements, Geophys. J. Int. 184, 1223-1236. " 
+                                       "Information on the vs model can be found in Ritsema, J., Deuss, "
+                                       "A., van Heijst, H.J. \\& Woodhouse, J.H., 2011. S40RTS: a "
+                                       "degree-40 shear-velocity model for the mantle from new Rayleigh "
+                                       "wave dispersion, teleseismic traveltime and normal-mode "
+                                       "splitting function measurements, Geophys. J. Int. 184, 1223-1236. "
                                        "The scaling between the shear wave perturbation and the "
-                                       "temperature perturbation can be set by the user with the " 
-                                       "'vs to density scaling' parameter and the 'Thermal " 
-                                       "expansion coefficient in initial temperature scaling' " 
+                                       "temperature perturbation can be set by the user with the "
+                                       "'vs to density scaling' parameter and the 'Thermal "
+                                       "expansion coefficient in initial temperature scaling' "
                                        "parameter. The scaling is as follows: $\\delta ln \\rho "
                                        "(r,\\theta,\\phi) = \\xi \\cdot \\delta ln v_s(r,\\theta, "
                                        "\\phi)$ and $\\delta T(r,\\theta,\\phi) = - \\frac{1}{\\alpha} "
                                        "\\delta ln \\rho(r,\\theta,\\phi)$. $\\xi$ is the 'vs to "
-                                       "density scaling' parameter and $\\alpha$ is the 'Thermal " 
-                                       "expansion coefficient in initial temperature scaling' " 
-                                       "parameter. The temperature perturbation is added to an " 
-                                       "otherwise constant temperature (incompressible model) or " 
+                                       "density scaling' parameter and $\\alpha$ is the 'Thermal "
+                                       "expansion coefficient in initial temperature scaling' "
+                                       "parameter. The temperature perturbation is added to an "
+                                       "otherwise constant temperature (incompressible model) or "
                                        "adiabatic reference profile (compressible model).")
   }
 }

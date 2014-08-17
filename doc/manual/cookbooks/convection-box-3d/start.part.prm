@@ -20,9 +20,9 @@ subsection Boundary temperature model
 end
 
 subsection Model settings
-  set Fixed temperature boundary indicators   = 4,5
+  set Fixed temperature boundary indicators   = bottom, top
 
   set Zero velocity boundary indicators       =
   set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 0,1,2,3,4,5
+  set Tangential velocity boundary indicators = left, right, front, back, bottom, top
 end

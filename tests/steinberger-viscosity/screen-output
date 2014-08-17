@@ -1,0 +1,66 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.2.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 192 (on 4 levels)
+Number of degrees of freedom: 2,724 (1,666+225+833)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+353 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-steinberger-viscosity/solution-00000
+     RMS, max velocity:                  0.188 m/year, 1.25 m/year
+     Temperature min/avg/max:            273 K, 2250 K, 4250 K
+     Heat fluxes through boundary parts: -2.513e+05 W, 4.957e+05 W, 1847 W, 1847 W
+     Writing depth average               output-steinberger-viscosity/depth_average.gnuplot
+
+*** Timestep 1:  t=60528.2 years
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+214 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-steinberger-viscosity/solution-00001
+     RMS, max velocity:                  0.196 m/year, 1.2 m/year
+     Temperature min/avg/max:            273 K, 2249 K, 4250 K
+     Heat fluxes through boundary parts: -2.413e+05 W, 4.827e+05 W, 1575 W, 1575 W
+     Writing depth average               output-steinberger-viscosity/depth_average.gnuplot
+
+*** Timestep 2:  t=100000 years
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+242 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-steinberger-viscosity/solution-00002
+     RMS, max velocity:                  0.187 m/year, 1.14 m/year
+     Temperature min/avg/max:            273 K, 2248 K, 4250 K
+     Heat fluxes through boundary parts: -2.351e+05 W, 4.718e+05 W, 1447 W, 1447 W
+     Writing depth average               output-steinberger-viscosity/depth_average.gnuplot
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |         9s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         3 |     0.769s |       8.5% |
+| Assemble temperature system     |         3 |     0.522s |       5.8% |
+| Build Stokes preconditioner     |         3 |     0.485s |       5.4% |
+| Build temperature preconditioner|         3 |   0.00552s |     0.061% |
+| Solve Stokes system             |         3 |      3.91s |        43% |
+| Solve temperature system        |         3 |   0.00451s |      0.05% |
+| Initialization                  |         2 |     0.126s |       1.4% |
+| Postprocessing                  |         3 |      2.59s |        29% |
+| Setup dof systems               |         1 |     0.109s |       1.2% |
++---------------------------------+-----------+------------+------------+
+

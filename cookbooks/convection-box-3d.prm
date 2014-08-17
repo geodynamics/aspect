@@ -82,24 +82,21 @@ subsection Boundary temperature model
 end
 
 
-# We then also have to prescribe several other parts of the model
-# such as which boundaries actually carry a prescribed boundary
-# temperature (as described in the documentation of the `box'
-# geometry, boundaries 2 and 3 are the bottom and top boundaries)
-# whereas all other parts of the boundary are insulated (i.e.,
-# no heat flux through these boundaries; this is also often used
-# to specify symmetry boundaries).
+# We then also have to prescribe several other parts of the model such as
+# which boundaries actually carry a prescribed boundary temperature, whereas
+# all other parts of the boundary are insulated (i.e., no heat flux through
+# these boundaries; this is also often used to specify symmetry boundaries).
 subsection Model settings
-  set Fixed temperature boundary indicators   = 4,5
+  set Fixed temperature boundary indicators   = bottom, top
 
   # The next parameters then describe on which parts of the
   # boundary we prescribe a zero or nonzero velocity and
   # on which parts the flow is allowed to be tangential.
-  # Here, all four sides of the box allow tangential
+  # Here, all six sides of the box allow tangential
   # unrestricted flow but with a zero normal component:
   set Zero velocity boundary indicators       =
   set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 0,1,2,3,4,5
+  set Tangential velocity boundary indicators = left, right, front, back, bottom, top
 
   # The final part of this section describes whether we
   # want to include adiabatic heating (from a small
@@ -151,8 +148,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 15
 
   set Additional refinement times              = 0.003
-
-
 end
 
 

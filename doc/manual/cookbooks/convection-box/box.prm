@@ -87,7 +87,7 @@ end
 # no heat flux through these boundaries; this is also often used
 # to specify symmetry boundaries).
 subsection Model settings
-  set Fixed temperature boundary indicators   = 2,3
+  set Fixed temperature boundary indicators   = bottom, top
 
   # The next parameters then describe on which parts of the
   # boundary we prescribe a zero or nonzero velocity and
@@ -96,7 +96,7 @@ subsection Model settings
   # unrestricted flow but with a zero normal component:
   set Zero velocity boundary indicators       =
   set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 0,1,2,3
+  set Tangential velocity boundary indicators = left, right, bottom, top
 
   # The final part of this section describes whether we
   # want to include adiabatic heating (from a small

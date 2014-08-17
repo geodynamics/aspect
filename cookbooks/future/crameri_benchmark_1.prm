@@ -20,7 +20,7 @@ set Use years in output instead of seconds = true
 subsection Boundary temperature model
   set Model name = constant
   subsection Constant
-    set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
+    set Boundary indicator to temperature mappings = left:0, right:0, bottom:0, right:0
   end
 end
 
@@ -98,10 +98,10 @@ end
 subsection Model settings
   set Include adiabatic heating               = false
   set Include shear heating                   = false
-  set Fixed temperature boundary indicators   = 2,3
+  set Fixed temperature boundary indicators   = bottom, top
   set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 0,1
-  set Zero velocity boundary indicators       = 2
+  set Tangential velocity boundary indicators = left, right
+  set Zero velocity boundary indicators       = bottom
 end
 
 subsection Free surface

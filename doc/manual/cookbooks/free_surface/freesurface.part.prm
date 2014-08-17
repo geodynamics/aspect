@@ -4,7 +4,7 @@ subsection Initial conditions
   set Model name = function
   subsection Function 
     set Variable names      = x,y
-    set Function expression =  if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
+    set Function expression = if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
   end
 
 subsection Free surface
@@ -14,11 +14,11 @@ end
 subsection Model settings
   set Include adiabatic heating               = false
   set Include shear heating                   = false
-  set Fixed temperature boundary indicators   = 0,1,2,3
+  set Fixed temperature boundary indicators   = left, right, bottom, top
   set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 0,1,2
+  set Tangential velocity boundary indicators = left, right, bottom
   set Zero velocity boundary indicators       = 
-  set Free surface boundary indicators = 3
+  set Free surface boundary indicators        = top
 end
 
 subsection Postprocess

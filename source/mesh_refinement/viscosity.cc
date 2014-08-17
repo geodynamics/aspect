@@ -57,7 +57,7 @@ namespace aspect
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
                                quadrature,
-                               update_quadrature_points | update_values);
+                               update_quadrature_points | update_values | update_gradients);
 
       // the values of the compositional fields are stored as blockvectors for each field
       // we have to extract them in this structure
@@ -81,12 +81,14 @@ namespace aspect
                                                                                       in.pressure);
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                                                                                          in.temperature);
+            fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
+                                                                                                     in.strain_rate);
+
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
                   prelim_composition_values[c]);
 
             in.position = fe_values.get_quadrature_points();
-            in.strain_rate.resize(0);// we are not reading the viscosity
             for (unsigned int i=0; i<quadrature.size(); ++i)
               {
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)

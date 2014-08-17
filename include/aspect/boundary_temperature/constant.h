@@ -23,6 +23,7 @@
 #define __aspect__boundary_temperature_constant_h
 
 #include <aspect/boundary_temperature/interface.h>
+#include <aspect/simulator_access.h>
 #include <map>
 
 
@@ -39,7 +40,7 @@ namespace aspect
      * @ingroup BoundaryTemperatures
      */
     template <int dim>
-    class Constant : public Interface<dim>
+    class Constant : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -100,7 +101,7 @@ namespace aspect
         /**
          * Temperatures at the inner and outer boundaries.
          */
-        std::map< types::boundary_id, double> boundary_temperatures;
+        std::map<types::boundary_id, double> boundary_temperatures;
     };
   }
 }

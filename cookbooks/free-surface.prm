@@ -25,7 +25,7 @@ set Use years in output instead of seconds = true
 subsection Boundary temperature model
   set Model name = constant
   subsection Constant
-    set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
+    set Boundary indicator to temperature mappings = left:0, right:0, bottom:0, top:0
   end
 end
 
@@ -70,7 +70,7 @@ subsection Initial conditions
   set Model name = function
   subsection Function 
     set Variable names      = x,y
-    set Function expression =  if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
+    set Function expression = if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
   end
 end
 
@@ -106,15 +106,15 @@ end
 subsection Model settings
   set Include adiabatic heating               = false
   set Include shear heating                   = false
-  set Fixed temperature boundary indicators   = 0,1,2,3
+  set Fixed temperature boundary indicators   = left, right, bottom, top
   set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 0,1,2
+  set Tangential velocity boundary indicators = left, right, bottom
   set Zero velocity boundary indicators       = 
 
   # We specify a comma delimited list of the free surface boundaries
-  # for the model.  In this case, it is just the top boundary (3)
+  # for the model.  In this case, it is just the top boundary
   # of the box geometry model. 
-  set Free surface boundary indicators = 3
+  set Free surface boundary indicators = top
 end
 
 # Here is the major new section to the parameter file,

@@ -315,7 +315,8 @@ namespace aspect
           DataOutBase::DataOutFilter   data_filter(DataOutBase::DataOutFilterFlags(true, true));
 
           // If the mesh changed since the last output, make a new mesh file
-          if (mesh_changed) last_mesh_file_name = mesh_file_prefix + ".h5";
+          if (mesh_changed)
+            last_mesh_file_name = mesh_file_prefix + ".h5";
           data_out.write_filtered_data(data_filter);
           data_out.write_hdf5_parallel(data_filter,
                                        mesh_changed,
@@ -516,13 +517,14 @@ namespace aspect
         // assemble the error message completely, and then output it atomically
         if (tmp_file_desc == -1)
           {
-            std::string x = std::string(
-                              "***** WARNING: could not create temporary file, will "
-                              "output directly to final location. This may negatively "
-                              "affect performance. (On processor ")
-                            + Utilities::int_to_string(
-                              Utilities::MPI::this_mpi_process (MPI_COMM_WORLD))
-                            + ".)\n";
+            const std::string x = ("***** WARNING: could not create temporary file <"
+				   +
+				   tmp_filename
+				   +
+				   ">, will output directly to final location. This may negatively "
+				   "affect performance. (On processor "
+				   + Utilities::int_to_string(Utilities::MPI::this_mpi_process (MPI_COMM_WORLD))
+				   + ".)\n");
 
             std::cerr << x << std::flush;
 
@@ -709,8 +711,7 @@ namespace aspect
           VisualizationPostprocessors::Interface<dim> *
           viz_postprocessor = std_cxx1x::get<dim>(registered_plugins)
                               .create_plugin (viz_names[name],
-                                              "Visualization plugins",
-                                              prm);
+                                              "Visualization plugins");
 
           // make sure that the postprocessor is indeed of type
           // dealii::DataPostprocessor or of type
@@ -727,7 +728,17 @@ namespace aspect
 
           postprocessors.push_back (std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> >
                                     (viz_postprocessor));
+
+          if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
+            sim->initialize (this->get_simulator());
+
+          postprocessors.back()->parse_parameters (prm);
         }
+
+      // Finally also set up a listener to check when the mesh changes
+      mesh_changed = true;
+      this->get_triangulation().signals.post_refinement
+          .connect(std_cxx1x::bind(&Visualization::mesh_changed_signal, std_cxx1x::ref(*this)));
     }
 
 
@@ -798,31 +809,6 @@ namespace aspect
         }
     }
 
-
-    template <int dim>
-    void
-    Visualization<dim>::initialize (const Simulator<dim> &simulator)
-    {
-      // first call the respective function in the base class
-      SimulatorAccess<dim>::initialize (simulator);
-
-      // pass initialization through to the various visualization
-      // objects if they so desire
-      for (typename std::list<std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::iterator
-           p = postprocessors.begin();
-           p != postprocessors.end(); ++p)
-        // see if a given visualization plugin is in fact derived
-        // from the SimulatorAccess class, and if so initialize it.
-        // note that viz plugins need not necessarily derive from
-        // SimulatorAccess if they don't need anything beyond the
-        // solution variables to compute what they compute
-        if (SimulatorAccess<dim> *x = dynamic_cast<SimulatorAccess<dim>*>(& **p))
-          x->initialize (simulator);
-
-      // Also set up a listener to check when the mesh changes
-      mesh_changed = true;
-      this->get_triangulation().signals.post_refinement.connect(std_cxx1x::bind(&Visualization::mesh_changed_signal, std_cxx1x::ref(*this)));
-    }
 
 
     template <int dim>

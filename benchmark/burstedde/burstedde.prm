@@ -1,0 +1,112 @@
+# The 3D polynomial Stokes (burstedde) benchmark, for which an 
+# analytical solution is available. 
+# 
+# See the manual for more information.
+
+############### Global parameters
+# We use a 3d setup. Since we are only interested
+# in a steady state solution, we set the end time
+# equal to the start time to force a single time
+# step before the program terminates.
+set Additional shared libraries            = ./libburstedde.so
+set Linear solver tolerance                = 1e-12
+
+set Dimension                              = 3
+
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
+
+set Output directory                       = output
+
+set Pressure normalization                 = volume
+
+set Number of cheap Stokes solver steps    = 0
+
+
+############### Parameters describing the model
+# The setup is a 3d unit cube.
+# Because the temperature plays no role in this model we need not
+# bother to describe temperature boundary conditions or
+# the material parameters that pertain to the temperature.
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 1
+    set Y extent  = 1 
+    set Z extent  = 1
+  end
+end
+
+#Boundary conditions
+subsection Model settings
+  set Tangential velocity boundary indicators = 
+  set Prescribed velocity boundary indicators = left  : BursteddeBoundary, \
+                                                right : BursteddeBoundary, \
+                                                front : BursteddeBoundary, \
+                                                back  : BursteddeBoundary, \
+                                                bottom: BursteddeBoundary, \
+                                                top   : BursteddeBoundary
+end
+
+
+subsection Material model
+  set Model name = BursteddeMaterial
+end
+
+
+subsection Gravity model
+  set Model name = BursteddeGravity
+end
+
+subsection Burstedde benchmark
+   #Viscosity parameter is beta  
+   set Viscosity parameter             = 20
+end 
+
+############### Parameters describing the temperature field
+# As above, there is no need to set anything for the
+# temperature boundary conditions.
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+subsection Initial conditions
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+
+############### Parameters describing the discretization
+# The following parameters describe how often we want to refine
+# the mesh globally and adaptively, what fraction of cells should
+# be refined in each adaptive refinement step, and what refinement
+# indicator to use when refining the mesh adaptively. 
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Refinement fraction                = 0.2
+  set Strategy                           = velocity
+end
+
+
+############### Parameters describing the what to do with the solution
+# The final section allows us to choose which postprocessors to
+# run at the end of each time step. 
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, BursteddePostprocessor
+
+  subsection Visualization
+    set List of output variables = density, viscosity, strain rate
+  end
+end
+

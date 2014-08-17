@@ -284,7 +284,7 @@ subsection Model settings
   # selected in its own section of this input file. All boundary indicators
   # used by the geometry but not explicitly listed here will end up with
   # no-flux (insulating) boundary conditions.
-  set Fixed temperature boundary indicators   = 0,1
+  set Fixed temperature boundary indicators   = inner, outer
 
   # Whether to include shear heating into the model or not. From a physical
   # viewpoint, shear heating should always be used but may be undesirable when
@@ -304,11 +304,11 @@ subsection Model settings
   # velocity is tangential and unrestrained, i.e., where no external forces
   # act to prescribe a particular tangential velocity (although there is a
   # force that requires the flow to be tangential).
-  set Tangential velocity boundary indicators = 0,2,3
+  set Tangential velocity boundary indicators = inner, left, right
 
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is zero.
-  set Zero velocity boundary indicators       = 1
+  set Zero velocity boundary indicators       = outer
 end
 
 
