@@ -6,6 +6,16 @@
  *
  *
  * <ol>
+ * <li> Changed: The GPlates velocity boundary plugin prescribed only the normal
+ * vector of the model plane of 2D models. Therefore it was very hard to rotate
+ * the model into its actual orientation, when comparing it with other datasets.
+ * Now the first of the user input points is always rotated to a known position
+ * (0,1,0), and the plugin outputs the according rotation angles to rotate the
+ * model into its proper orientation and the inverse angles to rotate other
+ * datasets into the model plane.
+ * <br>
+ * (Rene Gassmoeller, 2014/08/15)
+ *
  * <li> New: There are numerous places in the input file where one can or
  * has to input boundary indicators. These indicators identify individual
  * parts of the boundary of the domain, such as the inner or outer surfaces
