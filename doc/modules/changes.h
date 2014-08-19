@@ -6,6 +6,15 @@
  *
  *
  * <ol>
+ * <li> Fixed: The initial condition 'adiabatic' had a minor bug in the case
+ * of using a model without adiabatic heating and a prescribed bottom boundary
+ * layer. In this case the model should create a constant temperature profile
+ * with boundary layers to the boundary temperature. Due to a bug the bottom
+ * boundary layer amplitude was calculated against an adiabatic profile instead
+ * of a constant temperature. This is fixed now.
+ * <br>
+ * (Rene Gassmoeller, 2014/08/19)
+
  * <li> Changed: The GPlates velocity boundary plugin prescribed only the normal
  * vector of the model plane of 2D models. Therefore it was very hard to rotate
  * the model into its actual orientation, when comparing it with other datasets.

@@ -48,10 +48,15 @@ namespace aspect
 
       // then, get the temperature of the adiabatic profile at a representative
       // point at the top and bottom boundary of the model
+      // if adiabatic heating is switched off, assume a constant profile
       const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
       const Point<dim> bottom_point = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
       const double adiabatic_surface_temperature = this->get_adiabatic_conditions().temperature(surface_point);
-      const double adiabatic_bottom_temperature = this->get_adiabatic_conditions().temperature(bottom_point);
+      const double adiabatic_bottom_temperature = (this->include_adiabatic_heating())
+                                                  ?
+                                                   this->get_adiabatic_conditions().temperature(bottom_point)
+                                                   :
+                                                   adiabatic_surface_temperature;
 
       // get a representative profile of the compositional fields as an input
       // for the material model
