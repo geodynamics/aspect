@@ -43,9 +43,10 @@ namespace aspect
    *
    * Specifically, this means that we scale the porosity with the background
    * porosity, and the coordinates with the compaction length $\delta_0$, which is
-   * defined as $\sqrt \frac{k(\phi_o) \xi}{\eta_f}$.  $k(\phi_o)$ is the
-   * permeability at background porosity, $\xi$ is the compaction viscosity
-   * and $\eta_f$ is the shear viscosity of the melt.
+   * defined as $\sqrt \frac{k(\phi_0) \xi^{*}+4/3 \eta^{*}}{\eta_f}$.  $k(\phi_0)$ is the
+   * permeability at background porosity, $\xi^{*}$ is the compaction viscosity,
+   * $\eta^{*}$ is the shear viscosity of the fluid and $\eta_f$ is the shear viscosity
+   * of the melt.
    */
   namespace SolitaryWaveBenchmark
   {
