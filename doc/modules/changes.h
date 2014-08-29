@@ -6,6 +6,11 @@
  *
  *
  * <ol>
+ * <li> New: There is now a new section in the manual that documents running
+ * the benchmarks proposed by Davies et al.
+ * <br>
+ * (William Durkin IV, Wolfgang Bangerth, 2014/08/29)
+ *
  * <li> Fixed: The initial condition 'adiabatic' had a minor bug in the case
  * of using a model without adiabatic heating and a prescribed bottom boundary
  * layer. In this case the model should create a constant temperature profile
