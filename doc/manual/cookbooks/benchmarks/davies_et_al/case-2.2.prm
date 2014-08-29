@@ -1,0 +1,11 @@
+############### Global parameters
+# Case 2.2 begins with the final steady state solution of Case 2.1
+# "Resume computation" must be set to true, and "Output directory" must
+# point to the folder that contains the results of Case 2.1.
+
+set CFL number                             = 10
+
+set End time                               = 3
+set Output directory                       = output
+
+set Resume computation                     = true

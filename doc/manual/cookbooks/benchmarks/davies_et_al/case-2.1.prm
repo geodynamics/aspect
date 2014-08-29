@@ -1,0 +1,10 @@
+subsection Model settings
+  set Remove nullspace                        = net rotation
+
+  set Fixed temperature boundary indicators   = 0,1
+  set Prescribed velocity boundary indicators = 
+  set Tangential velocity boundary indicators = 0,1
+  set Zero velocity boundary indicators       = 
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false 
+end

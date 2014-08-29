@@ -1,0 +1,11 @@
+############### Global parameters
+# Case 2.2 begins with the final steady state solution of Case 2.1
+# "Resume computation" must be set to true, and "Output directory" must
+# point to the folder that contains the results of Case 2.1.
+
+set %%\hyperref[parameters:CFL number]{CFL number}%                             = 10%% \index[prmindex]{CFL number} \index[prmindexfull]{CFL number} %
+
+set %%\hyperref[parameters:End time]{End time}%                               = 3%% \index[prmindex]{End time} \index[prmindexfull]{End time} %
+set %%\hyperref[parameters:Output directory]{Output directory}%                       = output%% \index[prmindex]{Output directory} \index[prmindexfull]{Output directory} %
+
+set %%\hyperref[parameters:Resume computation]{Resume computation}%                     = true%% \index[prmindex]{Resume computation} \index[prmindexfull]{Resume computation} %
