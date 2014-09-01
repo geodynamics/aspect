@@ -19,21 +19,93 @@
 */
 
 
-#include "./simplerwc.h"
+#include <aspect/material_model/interface.h>
+#include <aspect/simulator_access.h>
+
 #include <deal.II/base/parameter_handler.h>
+
 #include <iostream>
 #include <cmath>
 
-using namespace dealii;
 
 namespace aspect
 {
   namespace MaterialModel
   {
+    using namespace dealii;
+
+    /**
+     * A material model that consists of globally constant values for all
+     * material parameters except the density, which depends linearly on the
+     * temperature. The model is considered incompressible.
+     *
+     * This material model implements what the "Simple" model was originally
+     * intended to do, before it got too complicated.
+     *
+     * @ingroup MaterialModels
+     */
+    template <int dim>
+    class Simplerwc : public Interface<dim>
+    {
+      public:
+
+        virtual bool
+        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+        virtual bool
+        density_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+        virtual bool
+        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+        virtual bool
+        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+        virtual bool
+        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
+
+        virtual bool is_compressible () const;
+
+        virtual double reference_viscosity () const;
+
+        virtual double reference_density () const;
+
+        virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+                              typename Interface<dim>::MaterialModelOutputs &out) const;
 
 
+        /**
+         * @name Functions used in dealing with run-time parameters
+         * @{
+         */
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
 
-    
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+        /**
+         * @}
+         */
+
+      private:
+        double reference_rho;
+        double reference_T;
+        double eta_L;
+        double eta_U;
+        double jump_height;
+        double thermal_alpha;
+        double reference_specific_heat;
+        double k_value;
+    };
+
     
     template <int dim>
     bool
