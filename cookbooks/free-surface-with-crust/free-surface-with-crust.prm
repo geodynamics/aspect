@@ -1,12 +1,4 @@
-set Additional shared libraries            = ./plugin/libsimplerwc.so 
-
-
-# Very simple cookbook which demonstrates the use of
-# a free surface for computing surface topography.
-# The model is 2D, with a rising blob beneath a free
-# surface.  We output the maximum and minimum
-# topography at every time step.
-
+set Additional shared libraries            = ./plugin/libsimpler-with-crust.so 
 
 set Dimension = 2
 

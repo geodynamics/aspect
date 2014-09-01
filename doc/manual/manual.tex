@@ -4198,13 +4198,12 @@ i.e., the piecewise viscosity function is defined as
 where $\eta_U$ and $\eta_L$ are the viscosities of the upper and lower layers,
 respectively. This viscosity model can be implemented by creating a plugin that
 is a small modification of the \texttt{simpler} material model (from which it
-is otherwise simply copied). We call this material model ``SimplerWC'' to
-indicate that it resembles the ``simpler'' model \textit{w}ith a \textit{c}rust.
+is otherwise simply copied). We call this material model ``SimplerWithCrust''.
 In particular, what is necessary is an evaluation function that looks like this:
 \begin{lstlisting}[frame=single,language=C++] 
     template <int dim>
     void
-    SimplerWC<dim>::
+    SimplerWithCrust<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, 
               typename Interface<dim>::MaterialModelOutputs &out ) const
     {
@@ -4229,7 +4228,7 @@ Additional changes make the new parameters \texttt{Jump height}, \texttt{Lower
 viscosity}, and \texttt{Upper viscosity} available to the input parameter file,
 and corresponding variables available in the class and used in the code snippet
 above. The entire code can be found in
-\url{cookbooks/free-surface-with-crust/plugin/simplerwc.cc}. Refer to
+\url{cookbooks/free-surface-with-crust/plugin/simpler-with-crust.cc}. Refer to
 Section~\ref{sec:plugins} for more information about writing and running
 plugins.
 

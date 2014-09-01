@@ -38,12 +38,12 @@ namespace aspect
      * A material model similar to the "simpler" material model, but where the
      * viscosity has two different values dependent on whether we are above or
      * below a line at a certain z-value, i.e., with a
-     * crust. (SimplerWC="Simpler with Crust")
+     * crust.
      *
      * @ingroup MaterialModels
      */
     template <int dim>
-    class SimplerWC : public Interface<dim>
+    class SimplerWithCrust : public Interface<dim>
     {
       public:
 
@@ -104,10 +104,10 @@ namespace aspect
         double k_value;
     };
 
-    
+
     template <int dim>
     bool
-    SimplerWC<dim>::
+    SimplerWithCrust<dim>::
     viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
     {
       return false;
@@ -116,7 +116,7 @@ namespace aspect
 
     template <int dim>
     bool
-    SimplerWC<dim>::
+    SimplerWithCrust<dim>::
     density_depends_on (const NonlinearDependence::Dependence dependence) const
     {
       return false;
@@ -124,7 +124,7 @@ namespace aspect
 
     template <int dim>
     bool
-    SimplerWC<dim>::
+    SimplerWithCrust<dim>::
     compressibility_depends_on (const NonlinearDependence::Dependence) const
     {
       return false;
@@ -132,7 +132,7 @@ namespace aspect
 
     template <int dim>
     bool
-    SimplerWC<dim>::
+    SimplerWithCrust<dim>::
     specific_heat_depends_on (const NonlinearDependence::Dependence) const
     {
       return false;
@@ -140,7 +140,7 @@ namespace aspect
 
     template <int dim>
     bool
-    SimplerWC<dim>::
+    SimplerWithCrust<dim>::
     thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
     {
       return false;
@@ -149,7 +149,7 @@ namespace aspect
 
     template <int dim>
     bool
-    SimplerWC<dim>::
+    SimplerWithCrust<dim>::
     is_compressible () const
     {
       return false;
@@ -157,17 +157,17 @@ namespace aspect
 
     template <int dim>
     double
-    SimplerWC<dim>::
+    SimplerWithCrust<dim>::
     reference_viscosity () const
     {
       return eta_L;
     }
- 
-        
+
+
 
     template <int dim>
     double
-    SimplerWC<dim>::
+    SimplerWithCrust<dim>::
     reference_density () const
     {
       return reference_rho;
@@ -175,17 +175,17 @@ namespace aspect
 
     template <int dim>
     void
-    SimplerWC<dim>::
+    SimplerWithCrust<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out ) const
     {
       for (unsigned int i=0; i<in.position.size(); ++i)
-        { 
+        {
           const double z = in.position[i][1];
-	  if (z>jump_height)
-	    out.viscosities[i] = eta_U;
-	  else
-	    out.viscosities[i] = eta_L;
-                     
+          if (z>jump_height)
+            out.viscosities[i] = eta_U;
+          else
+            out.viscosities[i] = eta_L;
+
           out.densities[i] = reference_rho * (1.0 - thermal_alpha * (in.temperature[i] - reference_T));
           out.thermal_expansion_coefficients[i] = thermal_alpha;
           out.specific_heat[i] = reference_specific_heat;
@@ -197,7 +197,7 @@ namespace aspect
 
     template <int dim>
     void
-   SimplerWC<dim>::declare_parameters (ParameterHandler &prm)
+    SimplerWithCrust<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
@@ -215,10 +215,10 @@ namespace aspect
                              "The value of the viscosity $\\eta$L. Units: $kg/m/s$.");
           prm.declare_entry ("Upper viscosity", "5e24",
                              Patterns::Double (0),
-	                     "The value of the viscosity in the top section $\\eta$U. Units: $kg/m/s$.");
+                             "The value of the viscosity in the top section $\\eta$U. Units: $kg/m/s$.");
           prm.declare_entry ("Jump height", "100000",
-                              Patterns::Double (0),
-                              "The height at which the viscosity changes. Units: m.");
+                             Patterns::Double (0),
+                             "The height at which the viscosity changes. Units: m.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
@@ -242,7 +242,7 @@ namespace aspect
 
     template <int dim>
     void
-    SimplerWC<dim>::parse_parameters (ParameterHandler &prm)
+    SimplerWithCrust<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
@@ -252,7 +252,7 @@ namespace aspect
           reference_T                = prm.get_double ("Reference temperature");
           eta_L                      = prm.get_double ("Lower viscosity");
           eta_U                      = prm.get_double ("Upper viscosity");
-          jump_height                 = prm.get_double ("Jump height"); 
+          jump_height                = prm.get_double ("Jump height");
           k_value                    = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
@@ -269,16 +269,9 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(SimplerWC,
+    ASPECT_REGISTER_MATERIAL_MODEL(SimplerWithCrust,
                                    "simpler with crust",
-                                   "A material model that has constant values "
-                                   "except for density, which depends linearly on temperature: "
-                                   "\\begin{align}"
-                                   "  \\rho(p,T) &= \\left(1-\\alpha (T-T_0)\\right)\\rho_0."
-                                   "\\end{align}"
-                                   "\n\n"
-                                   "\\note{This material model fills the role the ``simple'' material "
-                                   "model was originally intended to fill, before the latter acquired "
-                                   "all sorts of complicated temperature and compositional dependencies.}")
+                                   "A material model that is like the ``simpler'' model but "
+				   "has a jump in the viscosity.")
   }
 }
