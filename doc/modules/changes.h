@@ -6,6 +6,12 @@
  *
  *
  * <ol>
+ * <li> Fixed: When running in release mode and with user-defined libraries
+ * loaded, the deal.II solvers we use in ASPECT produced a lot more output
+ * than desired. This is now fixed.
+ * <br>
+ * (Wolfgang Bangerth, 2014/09/01)
+ *
  * <li> New: There is now a new section in the manual that documents running
  * the benchmarks proposed by Davies et al.
  * <br>

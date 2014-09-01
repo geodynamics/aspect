@@ -134,6 +134,13 @@ void possibly_load_shared_libs (const std::string &parameter_filename)
                                    + shared_libs_list[i] + ">. The operating system reports "
                                    + "that the error is this: <"
                                    + dlerror() + ">."));
+
+	  // for reasons not entirely clear, dlopening a shared
+	  // library resets the log level of the deallog variable to
+	  // its default. however, this only happens in release mode,
+	  // not in debug mode. to work around this problem, set the
+	  // log depth again to where we want it to be
+	  deallog.depth_console(0);
         }
 
       if (Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
