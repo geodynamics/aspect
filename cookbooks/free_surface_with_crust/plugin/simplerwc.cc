@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -35,17 +35,15 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A material model that consists of globally constant values for all
-     * material parameters except the density, which depends linearly on the
-     * temperature. The model is considered incompressible.
-     *
-     * This material model implements what the "Simple" model was originally
-     * intended to do, before it got too complicated.
+     * A material model similar to the "simpler" material model, but where the
+     * viscosity has two different values dependent on whether we are above or
+     * below a line at a certain z-value, i.e., with a
+     * crust. (SimplerWC="Simpler with Crust")
      *
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Simplerwc : public Interface<dim>
+    class SimplerWC : public Interface<dim>
     {
       public:
 
@@ -109,7 +107,7 @@ namespace aspect
     
     template <int dim>
     bool
-    Simplerwc<dim>::
+    SimplerWC<dim>::
     viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
     {
       return false;
@@ -118,7 +116,7 @@ namespace aspect
 
     template <int dim>
     bool
-    Simplerwc<dim>::
+    SimplerWC<dim>::
     density_depends_on (const NonlinearDependence::Dependence dependence) const
     {
       return false;
@@ -126,7 +124,7 @@ namespace aspect
 
     template <int dim>
     bool
-    Simplerwc<dim>::
+    SimplerWC<dim>::
     compressibility_depends_on (const NonlinearDependence::Dependence) const
     {
       return false;
@@ -134,7 +132,7 @@ namespace aspect
 
     template <int dim>
     bool
-    Simplerwc<dim>::
+    SimplerWC<dim>::
     specific_heat_depends_on (const NonlinearDependence::Dependence) const
     {
       return false;
@@ -142,7 +140,7 @@ namespace aspect
 
     template <int dim>
     bool
-    Simplerwc<dim>::
+    SimplerWC<dim>::
     thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
     {
       return false;
@@ -151,7 +149,7 @@ namespace aspect
 
     template <int dim>
     bool
-    Simplerwc<dim>::
+    SimplerWC<dim>::
     is_compressible () const
     {
       return false;
@@ -159,7 +157,7 @@ namespace aspect
 
     template <int dim>
     double
-    Simplerwc<dim>::
+    SimplerWC<dim>::
     reference_viscosity () const
     {
       return eta_L;
@@ -169,7 +167,7 @@ namespace aspect
 
     template <int dim>
     double
-    Simplerwc<dim>::
+    SimplerWC<dim>::
     reference_density () const
     {
       return reference_rho;
@@ -177,7 +175,7 @@ namespace aspect
 
     template <int dim>
     void
-    Simplerwc<dim>::
+    SimplerWC<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out ) const
     {
       
@@ -185,7 +183,10 @@ namespace aspect
       for (unsigned int i=0; i<in.position.size(); ++i)
         { 
           z = in.position[i][1];
-          out.viscosities[i] = (z>jump_height) ?  eta_U: eta_L ;
+	  if (z>jump_height)
+	    out.viscosities[i] = eta_U;
+	  else
+	    out.viscosities[i] = eta_L;
                      
           out.densities[i] = reference_rho * (1.0 - thermal_alpha * (in.temperature[i] - reference_T));
           out.thermal_expansion_coefficients[i] = thermal_alpha;
@@ -198,11 +199,11 @@ namespace aspect
 
     template <int dim>
     void
-   Simplerwc<dim>::declare_parameters (ParameterHandler &prm)
+   SimplerWC<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("Simplerwc model");
+        prm.enter_subsection("Simpler with crust model");
         {
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
@@ -243,11 +244,11 @@ namespace aspect
 
     template <int dim>
     void
-    Simplerwc<dim>::parse_parameters (ParameterHandler &prm)
+    SimplerWC<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("Simplerwc model");
+        prm.enter_subsection("Simpler with crust model");
         {
           reference_rho              = prm.get_double ("Reference density");
           reference_T                = prm.get_double ("Reference temperature");
@@ -270,8 +271,8 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(Simplerwc,
-                                   "simplerwc",
+    ASPECT_REGISTER_MATERIAL_MODEL(SimplerWC,
+                                   "simpler with crust",
                                    "A material model that has constant values "
                                    "except for density, which depends linearly on temperature: "
                                    "\\begin{align}"

@@ -89,20 +89,19 @@ end
 
 # A fairly standard simple geometry model
 subsection Material model
-  set Model name = simplerwc
-  subsection Simplerwc model
+  set Model name = simpler with crust
+  subsection Simpler with crust model
     set Reference density             = 3300
     set Reference specific heat       = 1250
     set Reference temperature         = 0.0
     set Thermal conductivity          = 1.0 # low thermal conductivity for a sharp blob
     set Thermal expansion coefficient = 4e-5
-    #set Viscosity                     = 1.e20
+    #set Viscosity                    = 1.e20
   
     #Parameters added by me
-    set Lower viscosity               =1.e20
-    set Upper viscosity               =1.e23
-    set Jump height                   =170.e3
- 
+    set Lower viscosity               = 1.e20
+    set Upper viscosity               = 1.e23
+    set Jump height                   = 170.e3
   end
 end
 
