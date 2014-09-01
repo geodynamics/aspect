@@ -172,6 +172,7 @@ FOREACH(_test ${_tests})
     # output (currently screen-output only).
     IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh)
         SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh")
+        SET(_testdepends ${_testdepends} ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh)
     ELSE()
         SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/default.sh")
     ENDIF()
