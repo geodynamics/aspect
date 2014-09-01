@@ -4177,6 +4177,112 @@ After running the cookbook, you may modify it in a number of ways:
 \end{figure}
 
 
+\subsubsection{Using a free surface with a crust}\mbox{}\\
+\label{sec:cookbooks-freesurfaceWC}
+\textit{This section was contributed by William Durkin}.
+This cookbook is a modification of the previous example that explores changes in the way topography develops when a 
+highly viscous crust is added.  One thing to note is that the origin of this model is at the bottom left corner of a 500x200 km box.
+In this cookbook, the material changes from low viscosity mantle to high viscosity crust at $z = \texttt{jump height}$, or $z_j$. The piecewise viscosity function is defined as
+
+\begin{align*}
+  \eta(z) = \left\{
+    \begin{matrix}
+      \eta_U & \text{for}\ z > z_j, \\
+      \eta_L & \text{for}\ z  \le z_j.
+    \end{matrix}
+  \right.
+\end{align*}
+
+where $\eta_U$ and $\eta_L$ are the viscosities of the upper and lower layers, respectively. This viscosity model can be implimented by creating a plugin from a modified \texttt{simpler} material model. The most important change is the conditional statement at the section of Simpler.cc that assigns viscosity values:\\
+
+\begin{lstlisting}[frame=single,language=C++]
+    
+template <int dim>
+    void
+    Simplerwc<dim>::
+    evaluate(const typename Interface<dim>::MaterialModelInputs &in, 
+              typename Interface<dim>::MaterialModelOutputs &out ) const
+    {
+      
+      double z;
+      for (unsigned int i=0; i<in.position.size(); ++i)
+        { 
+          z = in.position[i][1];
+          out.viscosities[i] = (z>jump_depth) ?  eta_U: eta_L ;
+                     
+          out.densities[i] = reference_rho*(1.0-thermal_alpha*(in.temperature[i]-reference_T));
+          out.thermal_expansion_coefficients[i] = thermal_alpha;
+          out.specific_heat[i] = reference_specific_heat;
+          out.thermal_conductivities[i] = k_value;
+          out.compressibilities[i] = 0.0;
+        }
+    }
+\end{lstlisting}
+
+\mbox{}\\
+Additional changes make the new parameters \texttt{Jump Depth}, \texttt{Lower Viscosity}, and \texttt{Upper Viscosity}
+available to the prm file. The entire code is found in \url{cookbooks/free_surface_with_crust/plugin/simplerwc.cc}  . Refer to section~\ref{sec:plugins} for instructions on how to do this.\\
+
+The following changes modify cookbook~\ref{sec:cookbooks-freesurface} to include a crust.\\ \\
+1) Load the plugin and declare global parameters:
+
+\begin{lstlisting}[frame=single,language=prmfile]
+set Additional shared libraries            = ./plugin/libsimplerwc.so 
+
+set Dimension = 2
+set CFL number                             = 0.1
+set End time                               = 1e8
+set Output directory                       = output/
+
+subsection Checkpointing
+  set Steps between checkpoint = 50
+end
+
+\end{lstlisting}
+
+\mbox{}\\
+2) Declare values for the new parameters:
+
+\begin{lstlisting}[frame=single,language=prmfile]
+subsection Material model
+  set Model name = simplerwc
+  subsection Simplerwc model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0.0
+    set Thermal conductivity          = 1.0 # low thermal conductivity for a sharp blob
+    set Thermal expansion coefficient = 4e-5
+  
+    #Parameters added for this cookbook:
+    # The box is 200km high and has its origin set at the bottom left corner.
+    # Setting the jump height to 170km creates a 30km thick crust
+    set Lower viscosity               =1.e20
+    set Upper viscosity               =1.e23
+    set Jump height                    =170.e3
+ 
+  end
+end
+\end{lstlisting}
+\mbox{}\\
+
+The entire script is located in \url{cookbooks/free_surface_with_crust/free_surface_wc.prm}\\ \\
+Results\\
+The crust is 30km thick and 1000 times as viscous as the lower layer. Figure~\ref{fig:freesurfaceWC} shows that
+adding a crust to the model causes the maximum topography to both decrease and occur at a later time.
+Heat flows through the system primarily by advection until the temperature anomaly reaches the base of the
+crustal layer (Fig~\ref{fig:freesurfaceWC}). The crust's high viscosity reduces the temperature anomaly's velocity substantially,
+causing it to affect the surface topography at a later time. Just as in cookbook \ref{sec:cookbooks-freesurface}, the topography
+returns to zero after a large amount of time.
+
+\begin{figure}
+  \centering
+  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/free-surfaceWC.png}
+  \hfill
+  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/Topography.png}
+  \caption{\it The effects adding a viscous crust has on the surface topography. The thermal anomaly spreads horizontally as it collides with the highly viscous crust (left). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right). }
+  \label{fig:freesurfaceWC}
+\end{figure}
+
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
 
