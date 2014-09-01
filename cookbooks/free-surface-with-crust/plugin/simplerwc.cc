@@ -178,11 +178,9 @@ namespace aspect
     SimplerWC<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out ) const
     {
-      
-      double z;
       for (unsigned int i=0; i<in.position.size(); ++i)
         { 
-          z = in.position[i][1];
+          const double z = in.position[i][1];
 	  if (z>jump_height)
 	    out.viscosities[i] = eta_U;
 	  else

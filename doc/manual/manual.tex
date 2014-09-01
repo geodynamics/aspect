@@ -4177,13 +4177,16 @@ After running the cookbook, you may modify it in a number of ways:
 \end{figure}
 
 
-\subsubsection{Using a free surface with a crust}\mbox{}\\
+\subsubsection{Using a free surface in a model with a crust}
 \label{sec:cookbooks-freesurfaceWC}
-\textit{This section was contributed by William Durkin}.
-This cookbook is a modification of the previous example that explores changes in the way topography develops when a 
-highly viscous crust is added.  One thing to note is that the origin of this model is at the bottom left corner of a 500x200 km box.
-In this cookbook, the material changes from low viscosity mantle to high viscosity crust at $z = \texttt{jump height}$, or $z_j$. The piecewise viscosity function is defined as
 
+\textit{This section was contributed by William Durkin}.
+
+This cookbook is a modification of the previous example that explores changes in the way topography develops when a 
+highly viscous crust is added.  
+In this cookbook, we use a material model in which the material changes from low
+viscosity mantle to high viscosity crust at $z = z_j = \texttt{jump height}$,
+i.e., the piecewise viscosity function is defined as
 \begin{align*}
   \eta(z) = \left\{
     \begin{matrix}
@@ -4192,23 +4195,27 @@ In this cookbook, the material changes from low viscosity mantle to high viscosi
     \end{matrix}
   \right.
 \end{align*}
-
-where $\eta_U$ and $\eta_L$ are the viscosities of the upper and lower layers, respectively. This viscosity model can be implimented by creating a plugin from a modified \texttt{simpler} material model. The most important change is the conditional statement at the section of Simpler.cc that assigns viscosity values:\\
-
-\begin{lstlisting}[frame=single,language=C++]
-    
-template <int dim>
+where $\eta_U$ and $\eta_L$ are the viscosities of the upper and lower layers,
+respectively. This viscosity model can be implemented by creating a plugin that
+is a small modification of the \texttt{simpler} material model (from which it
+is otherwise simply copied). We call this material model ``SimplerWC'' to
+indicate that it resembles the ``simpler'' model \textit{w}ith a \textit{c}rust.
+In particular, what is necessary is an evaluation function that looks like this:
+\begin{lstlisting}[frame=single,language=C++] 
+    template <int dim>
     void
-    Simplerwc<dim>::
+    SimplerWC<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, 
               typename Interface<dim>::MaterialModelOutputs &out ) const
     {
-      
-      double z;
       for (unsigned int i=0; i<in.position.size(); ++i)
         { 
-          z = in.position[i][1];
-          out.viscosities[i] = (z>jump_depth) ?  eta_U: eta_L ;
+          const double z = in.position[i][1];
+
+	  if (z>jump_height)
+	    out.viscosities[i] = eta_U;
+	  else
+	    out.viscosities[i] = eta_L;
                      
           out.densities[i] = reference_rho*(1.0-thermal_alpha*(in.temperature[i]-reference_T));
           out.thermal_expansion_coefficients[i] = thermal_alpha;
@@ -4218,70 +4225,52 @@ template <int dim>
         }
     }
 \end{lstlisting}
+Additional changes make the new parameters \texttt{Jump height}, \texttt{Lower
+viscosity}, and \texttt{Upper viscosity} available to the input parameter file,
+and corresponding variables available in the class and used in the code snippet
+above. The entire code can be found in
+\url{cookbooks/free-surface-with-crust/plugin/simplerwc.cc}. Refer to
+Section~\ref{sec:plugins} for more information about writing and running
+plugins.
 
-\mbox{}\\
-Additional changes make the new parameters \texttt{Jump Depth}, \texttt{Lower Viscosity}, and \texttt{Upper Viscosity}
-available to the prm file. The entire code is found in \url{cookbooks/free_surface_with_crust/plugin/simplerwc.cc}  . Refer to section~\ref{sec:plugins} for instructions on how to do this.\\
-
-The following changes modify cookbook~\ref{sec:cookbooks-freesurface} to include a crust.\\ \\
-1) Load the plugin and declare global parameters:
-
-\begin{lstlisting}[frame=single,language=prmfile]
-set Additional shared libraries            = ./plugin/libsimplerwc.so 
-
-set Dimension = 2
-set CFL number                             = 0.1
-set End time                               = 1e8
-set Output directory                       = output/
-
-subsection Checkpointing
-  set Steps between checkpoint = 50
-end
-
-\end{lstlisting}
-
-\mbox{}\\
-2) Declare values for the new parameters:
-
-\begin{lstlisting}[frame=single,language=prmfile]
-subsection Material model
-  set Model name = simplerwc
-  subsection Simplerwc model
-    set Reference density             = 3300
-    set Reference specific heat       = 1250
-    set Reference temperature         = 0.0
-    set Thermal conductivity          = 1.0 # low thermal conductivity for a sharp blob
-    set Thermal expansion coefficient = 4e-5
+The following changes are necessary compared to the input file from the
+cookbook shown in Section~\ref{sec:cookbooks-freesurface} to include a crust:
+\begin{itemize}
+  \item Load the plugin implementing the new material model:
+  \lstinputlisting[language=prmfile]{cookbooks/free_surface_with_crust/free-surface-wc.part1.prm.out}
   
-    #Parameters added for this cookbook:
-    # The box is 200km high and has its origin set at the bottom left corner.
-    # Setting the jump height to 170km creates a 30km thick crust
-    set Lower viscosity               =1.e20
-    set Upper viscosity               =1.e23
-    set Jump height                    =170.e3
- 
-  end
-end
-\end{lstlisting}
-\mbox{}\\
+  \item Declare values for the new parameters:
+  \lstinputlisting[language=prmfile]{cookbooks/free_surface_with_crust/free-surface-wc.part2.prm.out}
+  Note that the height of the interface at 170km is interpreted in the
+  coordinate system in which the box geometry of this cookbook lives. The box
+  has dimensions $500\text{km}\times 200\text{km}$, so an interface height of
+  170km implies a depth of 30km.
+\end{itemize}
 
-The entire script is located in \url{cookbooks/free_surface_with_crust/free_surface_wc.prm}\\ \\
-Results\\
-The crust is 30km thick and 1000 times as viscous as the lower layer. Figure~\ref{fig:freesurfaceWC} shows that
-adding a crust to the model causes the maximum topography to both decrease and occur at a later time.
+The entire script is located in
+\url{cookbooks/free-surface-with-crust/free-surface-with-crust.prm}.
+
+Running this input file yields a
+crust that is 30km thick and 1000 times as viscous as the lower layer.
+Figure~\ref{fig:freesurfaceWC} shows that adding a crust to the model causes the maximum topography to both decrease and occur at a later time.
 Heat flows through the system primarily by advection until the temperature anomaly reaches the base of the
-crustal layer (Fig~\ref{fig:freesurfaceWC}). The crust's high viscosity reduces the temperature anomaly's velocity substantially,
-causing it to affect the surface topography at a later time. Just as in cookbook \ref{sec:cookbooks-freesurface}, the topography
-returns to zero after a large amount of time.
+crustal layer (approximately at the time for which Fig~\ref{fig:freesurfaceWC}
+shows the temperature profile).
+The crust's high viscosity reduces the temperature anomaly's velocity
+substantially, causing it to affect the surface topography at a later time. Just
+as the cookbook shown in Section~\ref{sec:cookbooks-freesurface}, the
+topography returns to zero after some time.
 
 \begin{figure}
   \centering
   \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/free-surfaceWC.png}
   \hfill
   \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/Topography.png}
-  \caption{\it The effects adding a viscous crust has on the surface topography. The thermal anomaly spreads horizontally as it collides with the highly viscous crust (left). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right). }
+  \caption{\it Adding a viscous crust to a model with surface topography. The
+  thermal anomaly spreads horizontally as it collides with the highly viscous crust (left). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right). }
   \label{fig:freesurfaceWC}
 \end{figure}
+
 
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
