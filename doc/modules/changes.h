@@ -13,6 +13,12 @@
  * (Wolfgang Bangerth, 2014/09/01)
  *
  * <li> New: There is now a new section in the manual that documents running
+ * a free surface computation with a crust as a stagnant lid overlying a
+ * convecting mantle.
+ * <br>
+ * (William Durkin IV, Wolfgang Bangerth, 2014/09/01)
+ *
+ * <li> New: There is now a new section in the manual that documents running
  * the benchmarks proposed by Davies et al.
  * <br>
  * (William Durkin IV, Wolfgang Bangerth, 2014/08/29)

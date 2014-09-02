@@ -1,0 +1,150 @@
+set Additional shared libraries            = ./plugin/libsimpler-with-crust.so 
+
+set Dimension = 2
+
+# Free surface calculations are typically more difficult to keep
+# stable than others, so we take a smaller time step
+set CFL number                             = 0.1
+
+set End time                               = 1e10
+set Output directory                       = output/
+
+
+
+subsection Checkpointing
+  set Steps between checkpoint = 50
+end
+
+
+
+
+# Pressure normalization must be set to ``no'' for free surface
+# models, as we assume the pressure is zero at the free surface
+set Pressure normalization                 = no
+set Use years in output instead of seconds = true
+
+
+# We let the boundaries be zero temperature, as we are just
+# modelling a single rising blob
+subsection Boundary temperature model
+  set Model name = constant
+  subsection Constant
+    set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
+  end
+end
+
+
+subsection Discretization
+  set Use locally conservative discretization = false
+  subsection Stabilization parameters
+    set alpha = 2
+    set beta  = 0.078
+    set cR    = 0.5  
+  end
+end
+
+
+
+# We can use the normal box geometry model
+# for free surface modelling, we just need
+# to specify further down which surface
+# is to be the free one.
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 500.e3 
+    set Y extent = 200.e3
+    set X repetitions = 5
+    set Y repetitions = 2
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+
+# Our temperature initial conditions are simply a blob of hot 
+# rock in the center of the domain
+subsection Initial conditions
+  set Model name = function
+  subsection Function 
+    set Variable names      = x,y
+    set Function expression =  if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
+  end
+end
+
+
+# A fairly standard simple geometry model
+subsection Material model
+  set Model name = simpler with crust
+  subsection Simpler with crust model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0.0
+    set Thermal conductivity          = 1.0 # low thermal conductivity for a sharp blob
+    set Thermal expansion coefficient = 4e-5
+    #set Viscosity                    = 1.e20
+  
+    #Parameters added by me
+    set Lower viscosity               = 1.e20
+    set Upper viscosity               = 1.e23
+    set Jump height                   = 170.e3
+  end
+end
+
+
+subsection Mesh refinement
+  set Additional refinement times        =
+  set Initial adaptive refinement        = 0              
+  set Initial global refinement          = 5    
+  set Refinement fraction                = 0.3
+  set Coarsening fraction                = 0.05
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 0             
+end
+
+
+# Here we specify that the model has fixed temperature
+# boundary conditions, as well as free slip boundary
+# conditions for the sides and bottom. 
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+  set Fixed temperature boundary indicators   = 0,1,2,3
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 0,1,2
+  set Zero velocity boundary indicators       = 
+
+  # We specify a comma delimited list of the free surface boundaries
+  # for the model.  In this case, it is just the top boundary (3)
+  # of the box geometry model. 
+  set Free surface boundary indicators = 3
+end
+
+# Here is the major new section to the parameter file,
+# specifying the parameter for running free surface
+# calculations
+subsection Free surface
+  # We need to specify the free surface stabilization parameter
+  # theta, between zero and one.  If it is zero, there is no stabilization
+  # and you are likely to see a sloshing instability develop.  If
+  # it is one, the surface should be the most stable, though you
+  # may find that the rates that it moves are fairly damped
+  set Free surface stabilization theta = 0.5
+end
+
+# We also include the topography postprocessor, which just calculates
+# the maximum and minimun topography on your free surface at
+# every time step.  
+subsection Postprocess
+  set List of postprocessors = visualization,topography,velocity statistics,
+  subsection Visualization
+    set Time between graphical output = 1.e6
+  end
+end
+
