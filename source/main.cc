@@ -25,7 +25,10 @@
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
 
-#include <dlfcn.h>
+#if ASPECT_USE_SHARED_LIBS==1
+#  include <dlfcn.h>
+#  include <link.h>
+#endif
 
 
 
@@ -105,6 +108,73 @@ get_dimension(const std::string &parameter_filename)
 }
 
 
+#if ASPECT_USE_SHARED_LIBS==1
+// collect the names of the shared libraries linked to by this program. this
+// function is a callback for the dl_iterate_phdr() function we call below
+int get_names_of_shared_libs (struct dl_phdr_info *info,
+			      size_t size,
+			      void *data)
+{
+  reinterpret_cast<std::set<std::string>*>(data)->insert (info->dlpi_name);
+  return 0;
+}
+
+
+// make sure the list of shared libraries we currently link with
+// has deal.II only once
+void validate_shared_lib_list (const bool before_loading_shared_libs)
+{
+  // get the list of all shared libs we currently link against
+  std::set<std::string> shared_lib_names;
+  dl_iterate_phdr(get_names_of_shared_libs, &shared_lib_names);
+
+  // find everything that is interesting
+  std::set<std::string> dealii_shared_lib_names;
+  for (std::set<std::string>::const_iterator p = shared_lib_names.begin();
+       p != shared_lib_names.end(); ++p)
+    if (p->find ("libdeal_II") != std::string::npos)
+      dealii_shared_lib_names.insert (*p);
+
+  // produce an error if we load deal.II more than once
+  if (dealii_shared_lib_names.size() != 1)
+    {
+      std::ostringstream error;
+      error << "........................................................\n"
+	    << "ASPECT currently links against different versions of the\n"
+	    << "deal.II library, namely the ones at these locations:\n";
+      for (std::set<std::string>::const_iterator p = dealii_shared_lib_names.begin();
+	   p != dealii_shared_lib_names.end(); ++p)
+	error << "  " << *p << '\n';
+      error << "This can not work.\n\n";
+
+      if (before_loading_shared_libs)
+	error << "Since this is happening already before opening additional\n"
+	      << "shared libraries, this means that something must have gone\n"
+	      << "wrong when you configured deal.II and/or ASPECT. Please\n"
+	      << "contact the mailing lists for help.\n";
+      else
+	error << "Since this is happening after opening additional shared\n"
+	      << "library plugins, this likely means that you have compiled\n"
+	      << "ASPECT in release mode and the plugin in debug mode, or the\n"
+	      << "other way around. Please re-compile the plugin in the same\n"
+	      << "mode as ASPECT.\n";
+
+      error << "........................................................\n";
+	    
+      // if not success, then throw an exception: ExcMessage on processor 0,
+      // QuietException on the others
+      if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+        {
+	  AssertThrow (false, dealii::ExcMessage (error.str()));
+	}
+      else
+        throw aspect::QuietException();	
+    }
+}
+
+  
+#endif
+
 
 // retrieve a list of shared libraries from the parameter file and
 // dlopen them so that we can load plugins declared in them
@@ -112,12 +182,18 @@ void possibly_load_shared_libs (const std::string &parameter_filename)
 {
   using namespace dealii;
 
+
   const std::string shared_libs
     = get_last_value_of_parameter(parameter_filename,
                                   "Additional shared libraries");
   if (shared_libs.size() > 0)
     {
 #if ASPECT_USE_SHARED_LIBS==1
+      // check up front whether the list of shared libraries is internally
+      // consistent or whether we link, for whatever reason, with both the
+      // debug and release versions of deal.II
+      validate_shared_lib_list (true);
+  
       const std::vector<std::string>
       shared_libs_list = Utilities::split_string_list (shared_libs);
 
@@ -135,11 +211,21 @@ void possibly_load_shared_libs (const std::string &parameter_filename)
                                    + "that the error is this: <"
                                    + dlerror() + ">."));
 
-	  // for reasons not entirely clear, dlopening a shared
-	  // library resets the log level of the deallog variable to
-	  // its default. however, this only happens in release mode,
-	  // not in debug mode. to work around this problem, set the
-	  // log depth again to where we want it to be
+	  // check again whether the list of shared libraries is
+	  // internally consistent or whether we link with both the
+	  // debug and release versions of deal.II. this may happen if
+	  // the plugin was compiled against the debug version of
+	  // deal.II but aspect itself against the release version, or
+	  // the other way around
+	  validate_shared_lib_list (false);
+
+	  // on systems where we can detect that both libdeal_II.so and
+	  // libdeal_II.g.so is loaded, the test above function above will
+	  // throw an exception and we will terminate. on the other hand, on
+	  // systems where we can't detect this we should at least mitigate
+	  // some of the ill effects -- in particular, make sure that
+	  // deallog is set to use the desired output depth since otherwise
+	  // we get lots of output from the linear solvers
 	  deallog.depth_console(0);
         }
 

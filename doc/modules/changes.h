@@ -6,11 +6,12 @@
  *
  *
  * <ol>
- * <li> Fixed: When running in release mode and with user-defined libraries
- * loaded, the deal.II solvers we use in ASPECT produced a lot more output
- * than desired. This is now fixed.
+ * <li> Fixed: Running in release mode and with user-defined libraries
+ * loaded that were compiled against the debug version of deal.II, or the
+ * other way around, likely produces effects that are undesirable. ASPECT
+ * now tries to detect these situations and abort the program.
  * <br>
- * (Wolfgang Bangerth, 2014/09/01)
+ * (Wolfgang Bangerth, 2014/09/02)
  *
  * <li> New: There is now a new section in the manual that documents running
  * a free surface computation with a crust as a stagnant lid overlying a
