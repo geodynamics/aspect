@@ -49,6 +49,11 @@ aspect.tag: $(aspect-files) options.dox Makefile
 	@echo 'GENERATE_TAGFILE = $@'                                >> aspect.dox
 	@doxygen aspect.dox || echo "Running doxygen to generate documentation failed."
 
+# make target for generating the pdf manual. The goal is to have the return
+# value of the sequence of bash commands reflect if building the manual was
+# successful. For this matter we need to catch errors from pdflatex, but we
+# need to ignore them the first time we run pdflatex, because of missing label
+# definitions, etc..
 manual.pdf: manual/manual.tex manual/manual.bib manual/parameters.tex \
             $(aspect-manual-pix) $(aspect-prms-out)
 	@if test -x "`which pdflatex`" \
@@ -56,12 +61,12 @@ manual.pdf: manual/manual.tex manual/manual.bib manual/parameters.tex \
                  -a -x "`which makeindex`" ; then \
 	   (cd manual ; \
 		rm -f manual.{aux,bbl,blg,log,out,pdf,toc} prm*.{idx,ilg,ind} ; \
-		pdflatex --interaction=batchmode manual.tex && \
-		bibtex manual       && \
-		makeindex prmindex  && \
-		pdflatex --interaction=batchmode manual.tex && \
-		pdflatex --interaction=batchmode manual.tex && \
-		pdflatex --interaction=batchmode manual.tex) && \
+		pdflatex --interaction=batchmode manual.tex;      \
+		bibtex manual                                  && \
+		makeindex prmindex                             && \
+		pdflatex --interaction=batchmode manual.tex    && \
+		pdflatex --interaction=batchmode manual.tex    && \
+		pdflatex --interaction=batchmode manual.tex)   && \
 	   mv manual/manual.pdf . || \
 	   (echo "Error compiling manual.pdf, check manual/manual.log" && false); \
          else \
