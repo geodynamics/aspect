@@ -417,9 +417,8 @@ namespace aspect
          ++p)
       {
         TractionBoundaryConditions::Interface<dim> *bv
-          = TractionBoundaryConditions::create_traction_boundary_conditions
-            (p->second,
-             *geometry_model);
+          = TractionBoundaryConditions::create_traction_boundary_conditions<dim>
+            (p->second);
         if (dynamic_cast<SimulatorAccess<dim>*>(bv) != 0)
           dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
         bv->parse_parameters (prm);
