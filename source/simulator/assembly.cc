@@ -1342,9 +1342,16 @@ namespace aspect
           0)
          +
          // add the term from adiabatic compression heating
-         //   - drho/dT T (u . g)
+	 //   + alpha T (u . nabla p)
          // where we use the definition of
          //   alpha = - 1/rho drho/dT
+	 // Note: this term is often simplified using the relationship
+	 //   rho g = -nabla p
+	 // to yield
+	 //   - alpha rho T (u . g)
+	 // However, we do not use this simplification here, see the
+	 // comment in the manual in the section on the governing
+	 // equations
          (parameters.include_adiabatic_heating
           ?
           (current_u * current_grad_p) * alpha * current_T
