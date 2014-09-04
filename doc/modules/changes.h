@@ -6,6 +6,14 @@
  *
  *
  * <ol>
+ * <li> Fixed: There was a race condition in writing output files: we
+ * write to them in a temporary location and then move them to their
+ * final location. We used to do the second step before actually closing
+ * the file we just wrote to. Under some circumstances, this could lead
+ * to incomplete or empty output files. This is now fixed.
+ * <br>
+ * (Wolfgang Bangerth, 2014/09/03)
+ *
  * <li> Fixed: Running in release mode and with user-defined libraries
  * loaded that were compiled against the debug version of deal.II, or the
  * other way around, likely produces effects that are undesirable. ASPECT
