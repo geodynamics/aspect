@@ -591,6 +591,14 @@ Because this class simply takes what the initial composition had described, this
 
 `constant': A model in which the temperature is chosen constant on a given boundary indicator.  Parameters are read from the subsection 'Constant'.
 
+`function': Implementation of a model in which the boundary temperature is given in terms of an explicit formula that is elaborated in the parameters in section ``Boundary temperature model|Function''. 
+
+Since the symbol $t$ indicating time may appear in the formulas for the prescribed temperatures, it is interpreted as having units seconds unless the global input parameter ``Use years in output instead of seconds'' is set, in which case we interpret the formula expressions as having units year.
+
+Because this class simply takes what the function calculates, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in postprocessing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary temperature model/Initial temperature''.
+
+The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
 `initial temperature': A model in which the temperature at the boundary is chosen to be the same as given in the initial conditions.
 
 Because this class simply takes what the initial temperature had described, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in postprocessing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary temperature model/Initial temperature''.
@@ -598,7 +606,7 @@ Because this class simply takes what the initial temperature had described, this
 `spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Spherical constant'.
 
 
-{\it Possible values:} [Selection box|constant|initial temperature|spherical constant ]
+{\it Possible values:} [Selection box|constant|function|initial temperature|spherical constant ]
 \end{itemize}
 
 
@@ -689,10 +697,100 @@ Because this class simply takes what the initial temperature had described, this
 {\it Default:} 
 
 
-{\it Description:} A comma separated list of mappings between boundary indicators and the temperature associated with the boundary indicators. The format for this list is ``indicator1 : value1, indicator2 : value2, ...'', where each indicator is a valid boundary indicator and each value is the temperature of that boundary.
+{\it Description:} A comma separated list of mappings between boundary indicators and the temperature associated with the boundary indicators. The format for this list is ``indicator1 : value1, indicator2 : value2, ...'', where each indicator is a valid boundary indicator (either a number or the symbolic name of a boundary as provided by the geometry model) and each value is the temperature of that boundary.
 
 
-{\it Possible values:} [Map map of [Integer range 0...255 (inclusive)]:[Double -1.79769e+308...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
+{\it Possible values:} [Map map of [Anything]:[Double -1.79769e+308...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Boundary temperature model/Function}
+\label{parameters:Boundary_20temperature_20model/Function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Function constants}
+\phantomsection\label{parameters:Boundary temperature model/Function/Function constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Boundary temperature model!Function!Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Function expression}
+\phantomsection\label{parameters:Boundary temperature model/Function/Function expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Boundary temperature model!Function!Function expression}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Maximal temperature}
+\phantomsection\label{parameters:Boundary temperature model/Function/Maximal temperature}
+
+
+\index[prmindex]{Maximal temperature}
+\index[prmindexfull]{Boundary temperature model!Function!Maximal temperature}
+{\it Value:} 3773
+
+
+{\it Default:} 3773
+
+
+{\it Description:} Maximal temperature. Units: K.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Minimal temperature}
+\phantomsection\label{parameters:Boundary temperature model/Function/Minimal temperature}
+
+
+\index[prmindex]{Minimal temperature}
+\index[prmindexfull]{Boundary temperature model!Function!Minimal temperature}
+{\it Value:} 273
+
+
+{\it Default:} 273
+
+
+{\it Description:} Minimal temperature. Units: K.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Variable names}
+\phantomsection\label{parameters:Boundary temperature model/Function/Variable names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Boundary temperature model!Function!Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} [Anything]
 \end{itemize}
 
 \subsection{Parameters in section \tt Boundary temperature model/Initial temperature}
@@ -809,7 +907,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 0; 0
 
 
-{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the fparser library.
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 
@@ -1077,7 +1175,7 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Description:} Select one of the following models:
 
-`function': Composition is given in terms of an explicit formula
+`function': Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 
 {\it Possible values:} [Selection function ]
@@ -1119,7 +1217,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 0
 
 
-{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the fparser library.
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 
@@ -1315,13 +1413,15 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 {\it Description:} Select one of the following models:
 
-`box': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. The box geometry labels its 2*dim sides as follows: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries; in 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries. See also the documentation of the deal.II class ``GeometryInfo''.
+`box': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. The box geometry labels its 2*dim sides as follows: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries; in 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class ``GeometryInfo''). You can also use symbolic names ``left'', ``right'', etc., to refer to these boundaries in input files.
 
-`sphere': Geometry model for sphere with a user specified radius.
+`sphere': Geometry model for sphere with a user specified radius. This geometry has only a single boundary, so the only valid boundary indicator to specify in the input file is ``0''. It can also be referenced by the symbolic name ``surface'' in input files.
 
 `spherical shell': A geometry representing a spherical shell or a pice of it. Inner and outer radii are read from the parameter file in subsection 'Spherical shell'.
 
-The model assigns boundary indicators as follows: In 2d, inner and outer boundaries get boundary indicators zero and one, and if the opening angle set in the input file is less than 360, then left and right boundaries are assigned indicators two and three. In 3d, inner and outer indicators are treated as in 2d. If the opening angle is chosen as 90 degrees, i.e., the domain is the intersection of a spherical shell and the first octant, then indicator 2 is at the face $x=0$, 3 at $y=0$, and 4 at $z=0$.
+The model assigns boundary indicators as follows: In 2d, inner and outer boundaries get boundary indicators zero and one, and if the opening angle set in the input file is less than 360, then left and right boundaries are assigned indicators two and three. These boundaries can also be referenced using the symbolic names 'inner', 'outer' and (if applicable) 'left', 'right'.
+
+In 3d, inner and outer indicators are treated as in 2d. If the opening angle is chosen as 90 degrees, i.e., the domain is the intersection of a spherical shell and the first octant, then indicator 2 is at the face $x=0$, 3 at $y=0$, and 4 at $z=0$. These last three boundaries can then also be referred to as 'east', 'west' and 'south' symbolically in input files.
 
 
 {\it Possible values:} [Selection box|sphere|spherical shell ]
@@ -1505,6 +1605,26 @@ The model assigns boundary indicators as follows: In 2d, inner and outer boundar
 \label{parameters:Geometry_20model/Spherical_20shell}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Cells along circumference}
+\phantomsection\label{parameters:Geometry model/Spherical shell/Cells along circumference}
+
+
+\index[prmindex]{Cells along circumference}
+\index[prmindexfull]{Geometry model!Spherical shell!Cells along circumference}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The number of cells in circumferential direction that are created in the coarse mesh in 2d. If zero, this number is chosen automatically in a way that produces meshes in which cells have a reasonable aspect ratio for models in which the depth of the mantle is roughly that of the Earth. For planets with much shallower mantles and larger cores, you may want to chose a larger number to avoid cells that are elongated in tangential and compressed in radial direction.
+
+In 3d, the number of cells is computed differently and does not have an easy interpretation. Valid values for this parameter in 3d are 0 (let this class choose), 6, 12 and 96. Other possible values may be discussed in the documentation of the deal.II function GridGenerator::hyper\_shell. The parameter is best left at its default in 3d.
+
+In either case, this parameter is ignored unless the opening angle of the domain is 360 degrees.
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
 \item {\it Parameter name:} {\tt Inner radius}
 \phantomsection\label{parameters:Geometry model/Spherical shell/Inner radius}
 
@@ -1573,6 +1693,8 @@ The model assigns boundary indicators as follows: In 2d, inner and outer boundar
 
 {\it Description:} Select one of the following models:
 
+`function': Gravity is given in terms of an explicit formula that is elaborated in the parameters in section ``Gravity model|Function''. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
 `radial constant': A gravity model in which the gravity direction is radially inward and at constant magnitude. The magnitude is read from the parameter file in subsection 'Radial constant'.
 
 `radial earth-like': A gravity model in which the gravity direction is radially inward and with a magnitude that matches that of the earth at the core-mantle boundary as well as at the surface and in between is physically correct under the assumption of a constant density.
@@ -1582,10 +1704,68 @@ The model assigns boundary indicators as follows: In 2d, inner and outer boundar
 `vertical': A gravity model in which the gravity direction is vertically downward and at a constant magnitude by default equal to one.
 
 
-{\it Possible values:} [Selection radial constant|radial earth-like|radial linear|vertical ]
+{\it Possible values:} [Selection function|radial constant|radial earth-like|radial linear|vertical ]
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Gravity model/Function}
+\label{parameters:Gravity_20model/Function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Function constants}
+\phantomsection\label{parameters:Gravity model/Function/Function constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Gravity model!Function!Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Function expression}
+\phantomsection\label{parameters:Gravity model/Function/Function expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Gravity model!Function!Function expression}
+{\it Value:} 0; 0
+
+
+{\it Default:} 0; 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Variable names}
+\phantomsection\label{parameters:Gravity model/Function/Variable names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Gravity model!Function!Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} [Anything]
+\end{itemize}
 
 \subsection{Parameters in section \tt Gravity model/Radial constant}
 \label{parameters:Gravity_20model/Radial_20constant}
@@ -1673,7 +1853,7 @@ The model assigns boundary indicators as follows: In 2d, inner and outer boundar
 
 `constant heating': Implementation of a model in which the heating rate is constant.
 
-`function': Implementation of a model in which the heating rate is given in terms of an explicit formula that is elaborated in the parameters in section ``Heating model|Function''. 
+`function': Implementation of a model in which the heating rate is given in terms of an explicit formula that is elaborated in the parameters in section ``Heating model|Function''. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 The formula is interpreted as having units W/kg.
 
@@ -1740,13 +1920,13 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 \index[prmindex]{Function expression}
 \index[prmindexfull]{Heating model!Function!Function expression}
-{\it Value:} 0; 0
+{\it Value:} 0
 
 
-{\it Default:} 0; 0
+{\it Default:} 0
 
 
-{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the fparser library.
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 
@@ -1926,7 +2106,7 @@ If the function you are describing represents a vector-valued function with mult
 
 `adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers, whose ages are given as input parameters.
 
-`function': Temperature is given in terms of an explicit formula
+`function': Specify the initial temperature in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 `harmonic perturbation': An initial temperature field in which the temperature is perturbed following a harmonic function (spherical harmonic or sine depending on geometry and dimension) in lateral and radial direction from an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model).
 
@@ -1942,7 +2122,7 @@ If the function you are describing represents a vector-valued function with mult
 
 `spherical gaussian perturbation': An initial temperature field in which the temperature is perturbed by a single Gaussian added to an otherwise spherically symmetric state. Additional parameters are read from the parameter file in subsection 'Spherical gaussian perturbation'.
 
-`spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following a six-fold pattern in angular direction from an otherwise spherically symmetric state.
+`spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class's name comes from previous versions when the only option was $N=6$.
 
 
 {\it Possible values:} [Selection S40RTS perturbation|adiabatic|function|harmonic perturbation|inclusion shape perturbation|mandelbox|perturbed box|polar box|solidus|spherical gaussian perturbation|spherical hexagonal perturbation ]
@@ -2048,7 +2228,7 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Description:} If this value is larger than 0, the initial temperature profile will not be adiabatic, but subadiabatic. This value gives the maximal deviation from adiabaticity. Set to 0 for an adiabatic temperature profile. Units: K.
 
-The function object in the Function subsection represents the compositional fields that will be used as a reference profile for calculating the thermal diffusivity. The function depends only on depth.
+The function object in the Function subsection represents the compositional fields that will be used as a reference profile for calculating the thermal diffusivity. This function is one-dimensional and depends only on depth. The format of this functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -2090,7 +2270,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 0
 
 
-{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the fparser library.
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 
@@ -2148,7 +2328,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 0
 
 
-{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the fparser library.
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 
@@ -2745,6 +2925,44 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 
 
 {\it Description:} The sign of the perturbation.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Initial conditions/Spherical hexagonal perturbation}
+\label{parameters:Initial_20conditions/Spherical_20hexagonal_20perturbation}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Angular mode}
+\phantomsection\label{parameters:Initial conditions/Spherical hexagonal perturbation/Angular mode}
+
+
+\index[prmindex]{Angular mode}
+\index[prmindexfull]{Initial conditions!Spherical hexagonal perturbation!Angular mode}
+{\it Value:} 6
+
+
+{\it Default:} 6
+
+
+{\it Description:} The number of convection cells to perturb the system with.
+
+
+{\it Possible values:} [Integer range -2147483648...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Rotation offset}
+\phantomsection\label{parameters:Initial conditions/Spherical hexagonal perturbation/Rotation offset}
+
+
+\index[prmindex]{Rotation offset}
+\index[prmindexfull]{Initial conditions!Spherical hexagonal perturbation!Rotation offset}
+{\it Value:} -45
+
+
+{\it Default:} -45
+
+
+{\it Description:} Amount of clockwise rotation in degrees to apply to the perturbations. Default is set to -45 in order to provide backwards compatibility.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
@@ -5205,7 +5423,13 @@ The following criteria are available:
 
 `density': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the density, $\rho$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
-`minimum refinement function': A mesh refinement criterion that ensures a minimum refinement level described by an explicit formula with the depth or position as argument. Which coordinate representation is used is determined by an input parameter. Note that the order of spherical coordinates is r,phi,theta and not r,theta,phi, since this allows for dimension independent expressions. After evaluating the function, its values are rounded to the nearest integer. 
+`maximum refinement function': A mesh refinement criterion that ensures a maximum refinement level described by an explicit formula with the depth or position as argument. Which coordinate representation is used is determined by an input parameter. Whatever the coordinate system chosen, the function you provide in the input file will by default depend on variables 'x', 'y' and 'z' (if in 3d). However, the meaning of these symbols depends on the coordinate system. In the Cartesian coordinate system, they simply refer to their natural meaning. If you have selected 'depth' for the coordinate system, then 'x' refers to the depth variable and 'y' and 'z' will simply always be zero. If you have selected a spherical coordinate system, then 'x' will refer to the radial distance of the point to the origin, 'y' to the azimuth angle and 'z' to the polar angle measured positive from the north pole. Note that the order of spherical coordinates is r,phi,theta and not r,theta,phi, since this allows for dimension independent expressions. After evaluating the function, its values are rounded to the nearest integer.
+
+The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
+`minimum refinement function': A mesh refinement criterion that ensures a minimum refinement level described by an explicit formula with the depth or position as argument. Which coordinate representation is used is determined by an input parameter. Whatever the coordinate system chosen, the function you provide in the input file will by default depend on variables 'x', 'y' and 'z' (if in 3d). However, the meaning of these symbols depends on the coordinate system. In the Cartesian coordinate system, they simply refer to their natural meaning. If you have selected 'depth' for the coordinate system, then 'x' refers to the depth variable and 'y' and 'z' will simply always be zero. If you have selected a spherical coordinate system, then 'x' will refer to the radial distance of the point to the origin, 'y' to the azimuth angle and 'z' to the polar angle measured positive from the north pole. Note that the order of spherical coordinates is r,phi,theta and not r,theta,phi, since this allows for dimension independent expressions. After evaluating the function, its values are rounded to the nearest integer.
+
+The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 `nonadiabatic temperature': A mesh refinement criterion that computes refinement indicators from the excess temperature(difference between temperature and adiabatic temperature.
 
@@ -5222,7 +5446,7 @@ To use this refinement criterion, you may want to combine it with other refineme
 `viscosity': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the logarithm of the viscosity, $\log\eta$. (We choose the logarithm of the viscosity because it can vary by orders of magnitude.)Because this quantity may not be a continuous function ($\eta$ may be a discontinuous function along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
 
-{\it Possible values:} [MultipleSelection composition|density|minimum refinement function|nonadiabatic temperature|temperature|thermal energy density|topography|velocity|viscosity ]
+{\it Possible values:} [MultipleSelection composition|density|maximum refinement function|minimum refinement function|nonadiabatic temperature|temperature|thermal energy density|topography|velocity|viscosity ]
 \item {\it Parameter name:} {\tt Time steps between mesh refinement}
 \phantomsection\label{parameters:Mesh refinement/Time steps between mesh refinement}
 
@@ -5267,6 +5491,80 @@ If the list of scaling factors given in this parameter is empty, then this indic
 {\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \end{itemize}
 
+\subsection{Parameters in section \tt Mesh refinement/Maximum refinement function}
+\label{parameters:Mesh_20refinement/Maximum_20refinement_20function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Coordinate system}
+\phantomsection\label{parameters:Mesh refinement/Maximum refinement function/Coordinate system}
+
+
+\index[prmindex]{Coordinate system}
+\index[prmindexfull]{Mesh refinement!Maximum refinement function!Coordinate system}
+{\it Value:} depth
+
+
+{\it Default:} depth
+
+
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are 'depth', 'cartesian' and 'spherical'. 'depth' will create a function, in which only the first variable is non-zero, which is interpreted to be the depth of the point. 'spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle.
+
+
+{\it Possible values:} [Selection depth|cartesian|spherical ]
+\item {\it Parameter name:} {\tt Function constants}
+\phantomsection\label{parameters:Mesh refinement/Maximum refinement function/Function constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Mesh refinement!Maximum refinement function!Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Function expression}
+\phantomsection\label{parameters:Mesh refinement/Maximum refinement function/Function expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Mesh refinement!Maximum refinement function!Function expression}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Variable names}
+\phantomsection\label{parameters:Mesh refinement/Maximum refinement function/Variable names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Mesh refinement!Maximum refinement function!Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} [Anything]
+\end{itemize}
+
 \subsection{Parameters in section \tt Mesh refinement/Minimum refinement function}
 \label{parameters:Mesh_20refinement/Minimum_20refinement_20function}
 
@@ -5283,7 +5581,7 @@ If the list of scaling factors given in this parameter is empty, then this indic
 {\it Default:} depth
 
 
-{\it Description:} A selection, which determines the assumed coordinate system for the function variables. Allowed values are 'depth', 'cartesian' and 'spherical'. 'depth' requires a function expression that only depends on one variable, which is interpreted to be the depth of the point. 'spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle.
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are 'depth', 'cartesian' and 'spherical'. 'depth' will create a function, in which only the first variable is non-zero, which is interpreted to be the depth of the point. 'spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle.
 
 
 {\it Possible values:} [Selection depth|cartesian|spherical ]
@@ -5317,7 +5615,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 0
 
 
-{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the fparser library.
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 
@@ -5357,12 +5655,14 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 
 
 
-{\it Description:} A comma separated list of integers denoting those boundaries on which the composition is fixed and described by the boundary composition object selected in its own section of this input file. All boundary indicators used by the geometry but not explicitly listed here will end up with no-flux (insulating) boundary conditions.
+{\it Description:} A comma separated list of names denoting those boundaries on which the composition is fixed and described by the boundary composition object selected in its own section of this input file. All boundary indicators used by the geometry but not explicitly listed here will end up with no-flux (insulating) boundary conditions.
+
+The names of the boundaries listed here can either by numeric numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
 This parameter only describes which boundaries have a fixed composition, but not what composition should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryComposition group, unless an existing implementation in this group already provides what you want.
 
 
-{\it Possible values:} [List list of [Integer range 0...2147483647 (inclusive)] of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Anything] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Fixed temperature boundary indicators}
 \phantomsection\label{parameters:Model settings/Fixed temperature boundary indicators}
 
@@ -5375,12 +5675,14 @@ This parameter only describes which boundaries have a fixed composition, but not
 {\it Default:} 
 
 
-{\it Description:} A comma separated list of integers denoting those boundaries on which the temperature is fixed and described by the boundary temperature object selected in its own section of this input file. All boundary indicators used by the geometry but not explicitly listed here will end up with no-flux (insulating) boundary conditions.
+{\it Description:} A comma separated list of names denoting those boundaries on which the temperature is fixed and described by the boundary temperature object selected in its own section of this input file. All boundary indicators used by the geometry but not explicitly listed here will end up with no-flux (insulating) boundary conditions.
+
+The names of the boundaries listed here can either by numeric numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
 This parameter only describes which boundaries have a fixed temperature, but not what temperature should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryTemperature group, unless an existing implementation in this group already provides what you want.
 
 
-{\it Possible values:} [List list of [Integer range 0...2147483647 (inclusive)] of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Anything] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Free surface boundary indicators}
 \phantomsection\label{parameters:Model settings/Free surface boundary indicators}
 
@@ -5393,10 +5695,12 @@ This parameter only describes which boundaries have a fixed temperature, but not
 {\it Default:} 
 
 
-{\it Description:} A comma separated list of integers denoting those boundaries where there is a free surface. Set to nothing to disable all free surface computations.
+{\it Description:} A comma separated list of names denoting those boundaries where there is a free surface. Set to nothing to disable all free surface computations.
+
+The names of the boundaries listed here can either by numeric numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
 
-{\it Possible values:} [List list of [Integer range 0...255 (inclusive)] of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Anything] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Include adiabatic heating}
 \phantomsection\label{parameters:Model settings/Include adiabatic heating}
 
@@ -5459,7 +5763,7 @@ This parameter only describes which boundaries have a fixed temperature, but not
 
 {\it Description:} A comma separated list denoting those boundaries on which the velocity is prescribed, i.e., where unknown external forces act to prescribe a particular velocity. This is often used to prescribe a velocity that equals that of overlying plates.
 
-The format of valid entries for this parameter is that of a map given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where each key must be a valid boundary indicator (which is an integer) and each value must be one of the currently implemented boundary velocity models. ``selector'' is an optional string given as a subset of the letters 'xyz' that allows you to apply the boundary conditions only to the components listed. As an example, '1 y: function' applies the type 'function' to the y component on boundary 1. Without a selector it will effect all components of the velocity.
+The format of valid entries for this parameter is that of a map given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where each key must be a valid boundary indicator (which is either an integer or the symbolic name the geometry model in use may have provided for this part of the boundary) and each value must be one of the currently implemented boundary velocity models. ``selector'' is an optional string given as a subset of the letters 'xyz' that allows you to apply the boundary conditions only to the components listed. As an example, '1 y: function' applies the type 'function' to the y component on boundary 1. Without a selector it will affect all components of the velocity.
 
 Note that the no-slip boundary condition is a special case of the current one where the prescribed velocity happens to be zero. It can thus be implemented by indicating that a particular boundary is part of the ones selected using the current parameter and using ``zero velocity'' as the boundary values. Alternatively, you can simply list the part of the boundary on which the velocity is to be zero with the parameter ``Zero velocity boundary indicator'' in the current parameter section.
 
@@ -5494,10 +5798,12 @@ Note that while more than operation can be selected it only makes sense to pick 
 {\it Default:} 
 
 
-{\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is tangential and unrestrained, i.e., free-slip where no external forces act to prescribe a particular tangential velocity (although there is a force that requires the flow to be tangential).
+{\it Description:} A comma separated list of names denoting those boundaries on which the velocity is tangential and unrestrained, i.e., free-slip where no external forces act to prescribe a particular tangential velocity (although there is a force that requires the flow to be tangential).
+
+The names of the boundaries listed here can either by numeric numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
 
-{\it Possible values:} [List list of [Integer range 0...255 (inclusive)] of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Anything] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Zero velocity boundary indicators}
 \phantomsection\label{parameters:Model settings/Zero velocity boundary indicators}
 
@@ -5510,10 +5816,12 @@ Note that while more than operation can be selected it only makes sense to pick 
 {\it Default:} 
 
 
-{\it Description:} A comma separated list of integers denoting those boundaries on which the velocity is zero.
+{\it Description:} A comma separated list of names denoting those boundaries on which the velocity is zero.
+
+The names of the boundaries listed here can either by numeric numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
 
-{\it Possible values:} [List list of [Integer range 0...255 (inclusive)] of length 0...4294967295 (inclusive)]
+{\it Possible values:} [List list of [Anything] of length 0...4294967295 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess}
@@ -5770,6 +6078,8 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 `internal heating': A visualization output object that generates output for the internal heating rate. Units: W/kg
 
+`material properties': A visualization output object that generates output for the material properties given by the material model.There are a number of other visualization postprocessors that offer to write individual material properties. However, they all individually have to evaluate the material model. This is inefficient if one wants to output more than just one or two of the fields provided by the material model. The current postprocessor allows to output a (potentially large) subsets of all of the information provided by material models at once, with just a single material model evaluation per output point.
+
 `melt fraction': A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point (batch melting). Does not take into account latent heat. If there are no compositional fields, this postprocessor will visualize the melt fraction of peridotite (calculated using the anhydrous model of Katz, 2003). If there is at least one compositional field, the postprocessor assumes that the  first compositional field is the content of pyroxenite, and will visualize the melt fraction for a mixture of peridotite and pyroxenite (using the melting model of Sobolev, 2011 for pyroxenite). All the parameters that were used in these calculations can be changed in the input file, the most relevant maybe being the mass fraction of Cpx in peridotite in the Katz melting model (Mass fraction cpx), which right now has a default of 15\%. The corresponding p-T-diagrams can be generated by running the tests melt\_postprocessor\_peridotite and melt\_postprocessor\_pyroxenite.
 
 `nonadiabatic pressure': A visualization output object that generates output for the non-adiabatic component of the pressure.
@@ -5795,7 +6105,7 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 `viscosity ratio': A visualization output object that generates output for the ratio between dislocation viscosity and diffusion viscosity.
 
 
-{\it Possible values:} [MultipleSelection Vp anomaly|Vs anomaly|artificial viscosity|density|dynamic topography|error indicator|friction heating|gravity|internal heating|melt fraction|nonadiabatic pressure|nonadiabatic temperature|partition|seismic vp|seismic vs|specific heat|strain rate|thermal expansivity|thermodynamic phase|viscosity|viscosity ratio ]
+{\it Possible values:} [MultipleSelection Vp anomaly|Vs anomaly|artificial viscosity|density|dynamic topography|error indicator|friction heating|gravity|internal heating|material properties|melt fraction|nonadiabatic pressure|nonadiabatic temperature|partition|seismic vp|seismic vs|specific heat|strain rate|thermal expansivity|thermodynamic phase|viscosity|viscosity ratio ]
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 
@@ -5868,6 +6178,30 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 
 {\it Possible values:} [Bool]
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Visualization/Material properties}
+\label{parameters:Postprocess/Visualization/Material_20properties}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt List of material properties}
+\phantomsection\label{parameters:Postprocess/Visualization/Material properties/List of material properties}
+
+
+\index[prmindex]{List of material properties}
+\index[prmindexfull]{Postprocess!Visualization!Material properties!List of material properties}
+{\it Value:} density,thermal expansivity,specific heat,viscosity
+
+
+{\it Default:} density,thermal expansivity,specific heat,viscosity
+
+
+{\it Description:} A comma separated list of material properties that should be written whenever writing graphical output. By default, the material properties will always contain the density, thermal expansivity, specific heat and viscosity. The following material properties are available:
+
+viscosity|density|thermal expansivity|specific heat|thermal conductivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms
+
+
+{\it Possible values:} [MultipleSelection viscosity|density|thermal expansivity|specific heat|thermal conductivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms ]
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Visualization/Melt fraction}
