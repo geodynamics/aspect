@@ -485,6 +485,8 @@ namespace aspect
       // find out whether $TMPDIR is set and if so put the file in there
       std::string tmp_filename;
 
+      int tmp_file_desc = -1;
+      
       {
         // Try getting the environment variable for the temporary directory
         const char *tmp_filedir = getenv("TMPDIR");
@@ -499,7 +501,7 @@ namespace aspect
         // by using a C-style string that mkstemp will then overwrite
         char *tmp_filename_x = new char[tmp_filename.size()+1];
         std::strcpy(tmp_filename_x, tmp_filename.c_str());
-        const int tmp_file_desc = mkstemp(tmp_filename_x);
+        tmp_file_desc = mkstemp(tmp_filename_x);
         tmp_filename = tmp_filename_x;
         delete []tmp_filename_x;
 
@@ -548,6 +550,11 @@ namespace aspect
       // if necessary
       out << *file_contents;
       out.close ();
+      if (tmp_file_desc != -1)
+	{
+	  close(tmp_file_desc);
+	  tmp_file_desc = -1;
+	}
 
       if (tmp_filename != *filename)
         {
