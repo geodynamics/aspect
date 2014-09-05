@@ -37,51 +37,56 @@ namespace aspect
     // http://kluge.in-chemnitz.de/opensource/spline/spline.h
     // Copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
 
-      namespace tk {
-         // band matrix solver
-         class band_matrix {
-            private:
-            std::vector< std::vector<double> > m_upper;  // upper band
-            std::vector< std::vector<double> > m_lower;  // lower band
-            public:
-            band_matrix() {};                             // constructor
-            band_matrix(int dim, int n_u, int n_l);       // constructor
-            ~band_matrix() {};                            // destructor
-            void resize(int dim, int n_u, int n_l);      // init with dim,n_u,n_l
-            int dim() const;                             // matrix dimension
-            int num_upper() const {
-                return m_upper.size()-1;
-            }
-            int num_lower() const {
-                return m_lower.size()-1;
-            }
-            // access operator
-            double & operator () (int i, int j);            // write
-            double   operator () (int i, int j) const;      // read
-            // we can store an additional diogonal (in m_lower)
-             double& saved_diag(int i);
-            double  saved_diag(int i) const;
-            void lu_decompose();
-            std::vector<double> r_solve(const std::vector<double>& b) const;
-            std::vector<double> l_solve(const std::vector<double>& b) const;
-            std::vector<double> lu_solve(const std::vector<double>& b,
-                                         bool is_lu_decomposed=false);
+    namespace tk
+    {
+      // band matrix solver
+      class band_matrix
+      {
+        private:
+          std::vector< std::vector<double> > m_upper;  // upper band
+          std::vector< std::vector<double> > m_lower;  // lower band
+        public:
+          band_matrix() {};                             // constructor
+          band_matrix(int dim, int n_u, int n_l);       // constructor
+          ~band_matrix() {};                            // destructor
+          void resize(int dim, int n_u, int n_l);      // init with dim,n_u,n_l
+          int dim() const;                             // matrix dimension
+          int num_upper() const
+          {
+            return m_upper.size()-1;
+          }
+          int num_lower() const
+          {
+            return m_lower.size()-1;
+          }
+          // access operator
+          double &operator () (int i, int j);             // write
+          double   operator () (int i, int j) const;      // read
+          // we can store an additional diogonal (in m_lower)
+          double &saved_diag(int i);
+          double  saved_diag(int i) const;
+          void lu_decompose();
+          std::vector<double> r_solve(const std::vector<double> &b) const;
+          std::vector<double> l_solve(const std::vector<double> &b) const;
+          std::vector<double> lu_solve(const std::vector<double> &b,
+                                       bool is_lu_decomposed=false);
 
-        };
+      };
 
-        // spline interpolation
-        class spline {
-            private:
-            std::vector<double> m_x,m_y;           // x,y coordinates of points
-            // interpolation parameters
-            // f(x) = a*(x-x_i)^3 + b*(x-x_i)^2 + c*(x-x_i) + y_i
-            std::vector<double> m_a,m_b,m_c,m_d;
-            public:
-            void set_points(const std::vector<double>& x,
-                            const std::vector<double>& y, bool cubic_spline=true);
-            double operator() (double x) const;
-        };
-      }
+      // spline interpolation
+      class spline
+      {
+        private:
+          std::vector<double> m_x,m_y;           // x,y coordinates of points
+          // interpolation parameters
+          // f(x) = a*(x-x_i)^3 + b*(x-x_i)^2 + c*(x-x_i) + y_i
+          std::vector<double> m_a,m_b,m_c,m_d;
+        public:
+          void set_points(const std::vector<double> &x,
+                          const std::vector<double> &y, bool cubic_spline=true);
+          double operator() (double x) const;
+      };
+    }
 
 
 
@@ -89,84 +94,84 @@ namespace aspect
 
     namespace internal
     {
-       // Read in the spherical harmonics that are located in data/initial-conditions/S40RTS
-       // and were downloaded from http://www.earth.lsa.umich.edu/~jritsema/research.html
-       // Ritsema et al. choose real sine and cosine coefficients that follow the normalization
-       // by Dahlen & Tromp, Theoretical Global Seismology (equations B.58 and B.99).
+      // Read in the spherical harmonics that are located in data/initial-conditions/S40RTS
+      // and were downloaded from http://www.earth.lsa.umich.edu/~jritsema/research.html
+      // Ritsema et al. choose real sine and cosine coefficients that follow the normalization
+      // by Dahlen & Tromp, Theoretical Global Seismology (equations B.58 and B.99).
 
-       class SphericalHarmonicsLookup
-       {
-         public:
-         SphericalHarmonicsLookup(const std::string &filename)
-         {
-           std::string temp;
-           std::ifstream in(filename.c_str(), std::ios::in);
-           AssertThrow (in,
-                        ExcMessage (std::string("Couldn't open file <") + filename));
+      class SphericalHarmonicsLookup
+      {
+        public:
+          SphericalHarmonicsLookup(const std::string &filename)
+          {
+            std::string temp;
+            std::ifstream in(filename.c_str(), std::ios::in);
+            AssertThrow (in,
+                         ExcMessage (std::string("Couldn't open file <") + filename));
 
-           in >> order;
-           getline(in,temp);  // throw away the rest of the line
+            in >> order;
+            getline(in,temp);  // throw away the rest of the line
 
-           const int num_splines = 21;
-           const int maxnumber = num_splines * (order+1)*(order+1);
+            const int num_splines = 21;
+            const int maxnumber = num_splines * (order+1)*(order+1);
 
-           // read in all coefficients as a single data vector
-           for (int i=0; i<maxnumber; i++)
-           {
-              double new_val;
-              in >> new_val;
-              coeffs.push_back(new_val);
-           }
+            // read in all coefficients as a single data vector
+            for (int i=0; i<maxnumber; i++)
+              {
+                double new_val;
+                in >> new_val;
+                coeffs.push_back(new_val);
+              }
 
-           // reorder the coefficients into sin and cos coefficients. a_lm will be the cos coefficients
-           // and b_lm the sin coefficients.
-           int ind = 0;
-           int ind_degree;
+            // reorder the coefficients into sin and cos coefficients. a_lm will be the cos coefficients
+            // and b_lm the sin coefficients.
+            int ind = 0;
+            int ind_degree;
 
-           for (int j=0; j<num_splines; j++)
+            for (int j=0; j<num_splines; j++)
 
-             for (int i=0; i<order+1; i++)
-             {
-               a_lm.push_back(coeffs[ind]);
-               b_lm.push_back(0.0);
-               ind += 1;
+              for (int i=0; i<order+1; i++)
+                {
+                  a_lm.push_back(coeffs[ind]);
+                  b_lm.push_back(0.0);
+                  ind += 1;
 
-               ind_degree = 0;
-               while (ind_degree < i)
-               {
-                 a_lm.push_back(coeffs[ind]);
-                 ind += 1;
-                 b_lm.push_back(coeffs[ind]);
-                 ind += 1;
-                 ind_degree +=1;
-               }
-             }
-           }
+                  ind_degree = 0;
+                  while (ind_degree < i)
+                    {
+                      a_lm.push_back(coeffs[ind]);
+                      ind += 1;
+                      b_lm.push_back(coeffs[ind]);
+                      ind += 1;
+                      ind_degree +=1;
+                    }
+                }
+          }
 
-         // Declare a function that returns the cosine coefficients
-         const std::vector<double> & cos_coeffs() const
-         {
-           return a_lm;
-         }
+          // Declare a function that returns the cosine coefficients
+          const std::vector<double> &cos_coeffs() const
+          {
+            return a_lm;
+          }
 
-         // Declare a function that returns the sine coefficients
-         const std::vector<double> & sin_coeffs() const
-         {
-           return b_lm;
-         }
+          // Declare a function that returns the sine coefficients
+          const std::vector<double> &sin_coeffs() const
+          {
+            return b_lm;
+          }
 
-         int maxdegree()
-         {
-           return order;
-         }
+          int maxdegree()
+          {
+            return order;
+          }
 
-         private:
-           int order;
-           std::vector<double> coeffs;
-           std::vector<double> a_lm;
-           std::vector<double> b_lm;
+        private:
+          int order;
+          std::vector<double> coeffs;
+          std::vector<double> a_lm;
+          std::vector<double> b_lm;
 
-       };
+      };
 
       // Read in the knot points for the spline interpolation. They are located in data/
       // initial-conditions/S40RTS and were taken from the plotting script
@@ -174,38 +179,38 @@ namespace aspect
       // http://www.earth.lsa.umich.edu/~jritsema/research.html
       class SplineDepthsLookup
       {
-         public:
-         SplineDepthsLookup(const std::string &filename)
-         {
-           std::string temp;
-           std::ifstream in(filename.c_str(), std::ios::in);
-           AssertThrow (in,
-       		ExcMessage (std::string("Couldn't open file <") + filename));
+        public:
+          SplineDepthsLookup(const std::string &filename)
+          {
+            std::string temp;
+            std::ifstream in(filename.c_str(), std::ios::in);
+            AssertThrow (in,
+                         ExcMessage (std::string("Couldn't open file <") + filename));
 
-           getline(in,temp);  // throw away the rest of the line
-           getline(in,temp);  // throw away the rest of the line
+            getline(in,temp);  // throw away the rest of the line
+            getline(in,temp);  // throw away the rest of the line
 
-           int num_splines = 21;
+            int num_splines = 21;
 
-           for (int i=0; i<num_splines; i++)
-           {
-              double new_val;
-              in >> new_val;
+            for (int i=0; i<num_splines; i++)
+              {
+                double new_val;
+                in >> new_val;
 
-              depths.push_back(new_val);
-           }
-         }
+                depths.push_back(new_val);
+              }
+          }
 
-         const std::vector<double> & spline_depths() const
-         {
-           return depths;
-         }
+          const std::vector<double> &spline_depths() const
+          {
+            return depths;
+          }
 
-         private:
-         std::vector<double> depths;
-       };
+        private:
+          std::vector<double> depths;
+      };
 
-     }
+    }
 
 
     template <int dim>
@@ -234,83 +239,87 @@ namespace aspect
                                             this->get_adiabatic_conditions().temperature(position) :
                                             reference_temperature;
 
-        //get the degree from the input file (20 or 40)
-        const int maxdegree = spherical_harmonics_lookup->maxdegree();
+      //get the degree from the input file (20 or 40)
+      const int maxdegree = spherical_harmonics_lookup->maxdegree();
 
-        const int num_spline_knots = 21; // The tomography models are parameterized by 21 layers
+      const int num_spline_knots = 21; // The tomography models are parameterized by 21 layers
 
-        const int num_coeffs = (maxdegree+1) * (maxdegree+2) / 2 * num_spline_knots;
+      const int num_coeffs = (maxdegree+1) * (maxdegree+2) / 2 * num_spline_knots;
 
-        // get the spherical harmonics coefficients
-        const std::vector<double> a_lm = spherical_harmonics_lookup->cos_coeffs();
-        const std::vector<double> b_lm = spherical_harmonics_lookup->sin_coeffs();
+      // get the spherical harmonics coefficients
+      const std::vector<double> a_lm = spherical_harmonics_lookup->cos_coeffs();
+      const std::vector<double> b_lm = spherical_harmonics_lookup->sin_coeffs();
 
-        // get spline knots and rescale them from [-1 1] to [CMB moho]
-        const std::vector<double> r = spline_depths_lookup->spline_depths();
-        const double rmoho = 6346e3;
-        const double rcmb = 3480e3;
-        std::vector<double> depth_values(num_spline_knots,0);
+      // get spline knots and rescale them from [-1 1] to [CMB moho]
+      const std::vector<double> r = spline_depths_lookup->spline_depths();
+      const double rmoho = 6346e3;
+      const double rcmb = 3480e3;
+      std::vector<double> depth_values(num_spline_knots,0);
 
-        for (int i = 0; i<num_spline_knots; i++)
-           depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);
+      for (int i = 0; i<num_spline_knots; i++)
+        depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);
 
-        // convert coordinates from [x,y,z] to [r, phi, theta]
-        std_cxx1x::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
+      // convert coordinates from [x,y,z] to [r, phi, theta]
+      std_cxx1x::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
 
-        // iterate over all degrees and orders at each depth and sum them all up.
-        std::vector<double> spline_values(num_spline_knots,0);
-        double prefact;
-        int ind = 0;
+      // iterate over all degrees and orders at each depth and sum them all up.
+      std::vector<double> spline_values(num_spline_knots,0);
+      double prefact;
+      int ind = 0;
 
-        for (int depth_interp = 0; depth_interp < num_spline_knots; depth_interp++)
+      for (int depth_interp = 0; depth_interp < num_spline_knots; depth_interp++)
         {
           for (int degree_l = 0; degree_l < maxdegree+1; degree_l++)
-          {
-            for (int order_m = 0; order_m < degree_l+1; order_m++)
             {
-              const double cos_component = boost::math::spherical_harmonic_r(degree_l,order_m,scoord[2],scoord[1]); //real / cos part
-              const double sin_component = boost::math::spherical_harmonic_i(degree_l,order_m,scoord[2],scoord[1]); //imaginary / sine part
-                if (order_m == 0) {
-                  // option to zero out degree 0, i.e. make sure that the average of the perturbation
-                  // is 0 and the average of the temperature is the background temperature
-                  prefact = (zero_out_degree_0
-                             ?
-                             0.
-                             :
-                             1.);}
-                else {
-                  prefact = sqrt(2.);}
-		spline_values[depth_interp] += prefact * (a_lm[ind]*cos_component + b_lm[ind]*sin_component);
+              for (int order_m = 0; order_m < degree_l+1; order_m++)
+                {
+                  const double cos_component = boost::math::spherical_harmonic_r(degree_l,order_m,scoord[2],scoord[1]); //real / cos part
+                  const double sin_component = boost::math::spherical_harmonic_i(degree_l,order_m,scoord[2],scoord[1]); //imaginary / sine part
+                  if (order_m == 0)
+                    {
+                      // option to zero out degree 0, i.e. make sure that the average of the perturbation
+                      // is 0 and the average of the temperature is the background temperature
+                      prefact = (zero_out_degree_0
+                                 ?
+                                 0.
+                                 :
+                                 1.);
+                    }
+                  else
+                    {
+                      prefact = sqrt(2.);
+                    }
+                  spline_values[depth_interp] += prefact * (a_lm[ind]*cos_component + b_lm[ind]*sin_component);
 
-             ind += 1;
-           }
-         }
-       }
+                  ind += 1;
+                }
+            }
+        }
 
-     // We need to reorder the spline_values because the coefficients are given from
-     // the surface down to the CMB and the interpolation knots range from the CMB up to
-     // the surface.
-     std::vector<double> spline_values_inv(num_spline_knots,0);
-     for (int i=0; i<num_spline_knots; i++)
-         spline_values_inv[i] = spline_values[num_spline_knots-1 - i];
+      // We need to reorder the spline_values because the coefficients are given from
+      // the surface down to the CMB and the interpolation knots range from the CMB up to
+      // the surface.
+      std::vector<double> spline_values_inv(num_spline_knots,0);
+      for (int i=0; i<num_spline_knots; i++)
+        spline_values_inv[i] = spline_values[num_spline_knots-1 - i];
 
-     // The boundary condition for the cubic spline interpolation is that the function is linear
-     // at the boundary (i.e. moho and CMB). Values outside the range are linearly
-     // extrapolated.
-     tk::spline s;
-     s.set_points(depth_values,spline_values_inv);
+      // The boundary condition for the cubic spline interpolation is that the function is linear
+      // at the boundary (i.e. moho and CMB). Values outside the range are linearly
+      // extrapolated.
+      tk::spline s;
+      s.set_points(depth_values,spline_values_inv);
 
-     // Get value at specific depth
-     const double perturbation = s(scoord[0]);
+      // Get value at specific depth
+      const double perturbation = s(scoord[0]);
 
-     // scale the perturbation in seismic velocity into a density perturbation
-     // vs_to_density is an input parameter
-     const double density_perturbation = vs_to_density * perturbation;
+      // scale the perturbation in seismic velocity into a density perturbation
+      // vs_to_density is an input parameter
+      const double density_perturbation = vs_to_density * perturbation;
 
-     // scale the density perturbation into a temperature perturbation
-     const double temperature_perturbation =  -1./thermal_alpha * density_perturbation;
-     const double temperature = background_temperature + temperature_perturbation;
-     return temperature;
+      // scale the density perturbation into a temperature perturbation
+      const double temperature_perturbation =  -1./thermal_alpha * density_perturbation;
+      const double temperature = background_temperature + temperature_perturbation;
+      return temperature;
 
     }
 
@@ -320,225 +329,264 @@ namespace aspect
     // http://kluge.in-chemnitz.de/opensource/spline/spline.h   //
     // Copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
 
-    namespace tk {
-        // --------------------------
-        // band_matrix implementation
-        // --------------------------
+    namespace tk
+    {
+      // --------------------------
+      // band_matrix implementation
+      // --------------------------
 
-        band_matrix::band_matrix(int dim, int n_u, int n_l) {
-            resize(dim, n_u, n_l);
-        }
-        void band_matrix::resize(int dim, int n_u, int n_l) {
-            assert(dim>0);
-            assert(n_u>=0);
-            assert(n_l>=0);
-            m_upper.resize(n_u+1);
-            m_lower.resize(n_l+1);
-            for(size_t i=0; i<m_upper.size(); i++) {
-                m_upper[i].resize(dim);
-            }
-            for(size_t i=0; i<m_lower.size(); i++) {
-                m_lower[i].resize(dim);
-            }
-        }
-        int band_matrix::dim() const {
-            if(m_upper.size()>0) {
-                return m_upper[0].size();
-            } else {
-                return 0;
-            }
-        }
-
-
-        // defines the new operator (), so that we can access the elements
-        // by A(i,j), index going from i=0,...,dim()-1
-        double & band_matrix::operator () (int i, int j) {
-            int k=j-i;       // what band is the entry
-            assert( (i>=0) && (i<dim()) && (j>=0) && (j<dim()) );
-            assert( (-num_lower()<=k) && (k<=num_upper()) );
-            // k=0 -> diogonal, k<0 lower left part, k>0 upper right part
-            if(k>=0)   return m_upper[k][i];
-            else	    return m_lower[-k][i];
-        }
-        double band_matrix::operator () (int i, int j) const {
-            int k=j-i;       // what band is the entry
-            assert( (i>=0) && (i<dim()) && (j>=0) && (j<dim()) );
-            assert( (-num_lower()<=k) && (k<=num_upper()) );
-            // k=0 -> diogonal, k<0 lower left part, k>0 upper right part
-            if(k>=0)   return m_upper[k][i];
-            else	    return m_lower[-k][i];
-        }
-        // second diag (used in LU decomposition), saved in m_lower
-        double band_matrix::saved_diag(int i) const {
-            assert( (i>=0) && (i<dim()) );
-            return m_lower[0][i];
-        }
-        double & band_matrix::saved_diag(int i) {
-            assert( (i>=0) && (i<dim()) );
-            return m_lower[0][i];
-        }
-
-        // LR-Decomposition of a band matrix
-        void band_matrix::lu_decompose() {
-            int  i_max,j_max;
-            int  j_min;
-            double x;
-
-            // preconditioning
-            //             // normalize column i so that a_ii=1
-            for(int i=0; i<this->dim(); i++) {
-                assert(this->operator()(i,i)!=0.0);
-                this->saved_diag(i)=1.0/this->operator()(i,i);
-                j_min=std::max(0,i-this->num_lower());
-                j_max=std::min(this->dim()-1,i+this->num_upper());
-                for(int j=j_min; j<=j_max; j++) {
-                    this->operator()(i,j) *= this->saved_diag(i);
-                }
-                this->operator()(i,i)=1.0;          // prevents rounding errors
-            }
-
-            // Gauss LR-Decomposition
-            for(int k=0; k<this->dim(); k++) {
-                i_max=std::min(this->dim()-1,k+this->num_lower());  // num_lower not a mistake!
-                for(int i=k+1; i<=i_max; i++) {
-                    assert(this->operator()(k,k)!=0.0);
-                    x=-this->operator()(i,k)/this->operator()(k,k);
-                    this->operator()(i,k)=-x;                         // assembly part of L
-                    j_max=std::min(this->dim()-1,k+this->num_upper());
-                    for(int j=k+1; j<=j_max; j++) {
-                        // assembly part of R
-                        this->operator()(i,j)=this->operator()(i,j)+x*this->operator()(k,j);
-                    }
-                }
-            }
-        }
-        // solves Ly=b
-        std::vector<double> band_matrix::l_solve(const std::vector<double>& b) const {
-            assert( this->dim()==(int)b.size() );
-            std::vector<double> x(this->dim());
-            int j_start;
-            double sum;
-            for(int i=0; i<this->dim(); i++) {
-                sum=0;
-                j_start=std::max(0,i-this->num_lower());
-                for(int j=j_start; j<i; j++) sum += this->operator()(i,j)*x[j];
-                x[i]=(b[i]*this->saved_diag(i)) - sum;
-            }
-            return x;
-        }
-        // solves Rx=y
-        std::vector<double> band_matrix::r_solve(const std::vector<double>& b) const {
-            assert( this->dim()==(int)b.size() );
-            std::vector<double> x(this->dim());
-            int j_stop;
-            double sum;
-            for(int i=this->dim()-1; i>=0; i--) {
-                sum=0;
-                j_stop=std::min(this->dim()-1,i+this->num_upper());
-                for(int j=i+1; j<=j_stop; j++) sum += this->operator()(i,j)*x[j];
-                x[i]=( b[i] - sum ) / this->operator()(i,i);
-            }
-            return x;
-        }
-
-        std::vector<double> band_matrix::lu_solve(const std::vector<double>& b,
-                                                  bool is_lu_decomposed) {
-            assert( this->dim()==(int)b.size() );
-            std::vector<double>  x,y;
-            if(is_lu_decomposed==false) {
-                this->lu_decompose();
-            }
-            y=this->l_solve(b);
-            x=this->r_solve(y);
-            return x;
-        }
+      band_matrix::band_matrix(int dim, int n_u, int n_l)
+      {
+        resize(dim, n_u, n_l);
+      }
+      void band_matrix::resize(int dim, int n_u, int n_l)
+      {
+        assert(dim>0);
+        assert(n_u>=0);
+        assert(n_l>=0);
+        m_upper.resize(n_u+1);
+        m_lower.resize(n_l+1);
+        for (size_t i=0; i<m_upper.size(); i++)
+          {
+            m_upper[i].resize(dim);
+          }
+        for (size_t i=0; i<m_lower.size(); i++)
+          {
+            m_lower[i].resize(dim);
+          }
+      }
+      int band_matrix::dim() const
+      {
+        if (m_upper.size()>0)
+          {
+            return m_upper[0].size();
+          }
+        else
+          {
+            return 0;
+          }
+      }
 
 
-        // ---------------------
-        // spline implementation
-        // ---------------------
-        void spline::set_points(const std::vector<double>& x,
-                                const std::vector<double>& y, bool cubic_spline) {
-            assert(x.size()==y.size());
-            m_x=x;
-            m_y=y;
-            int   n=x.size();
-            for(int i=0; i<n-1; i++) {
-                assert(m_x[i]<m_x[i+1]);
-            }
+      // defines the new operator (), so that we can access the elements
+      // by A(i,j), index going from i=0,...,dim()-1
+      double &band_matrix::operator () (int i, int j)
+      {
+        int k=j-i;       // what band is the entry
+        assert( (i>=0) && (i<dim()) && (j>=0) && (j<dim()) );
+        assert( (-num_lower()<=k) && (k<=num_upper()) );
+        // k=0 -> diogonal, k<0 lower left part, k>0 upper right part
+        if (k>=0)   return m_upper[k][i];
+        else      return m_lower[-k][i];
+      }
+      double band_matrix::operator () (int i, int j) const
+      {
+        int k=j-i;       // what band is the entry
+        assert( (i>=0) && (i<dim()) && (j>=0) && (j<dim()) );
+        assert( (-num_lower()<=k) && (k<=num_upper()) );
+        // k=0 -> diogonal, k<0 lower left part, k>0 upper right part
+        if (k>=0)   return m_upper[k][i];
+        else      return m_lower[-k][i];
+      }
+      // second diag (used in LU decomposition), saved in m_lower
+      double band_matrix::saved_diag(int i) const
+      {
+        assert( (i>=0) && (i<dim()) );
+        return m_lower[0][i];
+      }
+      double &band_matrix::saved_diag(int i)
+      {
+        assert( (i>=0) && (i<dim()) );
+        return m_lower[0][i];
+      }
 
-            if(cubic_spline==true) { // cubic spline interpolation
-                // setting up the matrix and right hand side of the equation system
-                // for the parameters b[]
-                band_matrix A(n,1,1);
-                std::vector<double>  rhs(n);
-                for(int i=1; i<n-1; i++) {
-                    A(i,i-1)=1.0/3.0*(x[i]-x[i-1]);
-                    A(i,i)=2.0/3.0*(x[i+1]-x[i-1]);
-                    A(i,i+1)=1.0/3.0*(x[i+1]-x[i]);
-                    rhs[i]=(y[i+1]-y[i])/(x[i+1]-x[i]) - (y[i]-y[i-1])/(x[i]-x[i-1]);
-                }
-                // boundary conditions, zero curvature b[0]=b[n-1]=0
-                A(0,0)=2.0;
-                A(0,1)=0.0;
-                rhs[0]=0.0;
-                A(n-1,n-1)=2.0;
-                A(n-1,n-2)=0.0;
-                rhs[n-1]=0.0;
+      // LR-Decomposition of a band matrix
+      void band_matrix::lu_decompose()
+      {
+        int  i_max,j_max;
+        int  j_min;
+        double x;
 
-                // solve the equation system to obtain the parameters b[]
-                m_b=A.lu_solve(rhs);
+        // preconditioning
+        //             // normalize column i so that a_ii=1
+        for (int i=0; i<this->dim(); i++)
+          {
+            assert(this->operator()(i,i)!=0.0);
+            this->saved_diag(i)=1.0/this->operator()(i,i);
+            j_min=std::max(0,i-this->num_lower());
+            j_max=std::min(this->dim()-1,i+this->num_upper());
+            for (int j=j_min; j<=j_max; j++)
+              {
+                this->operator()(i,j) *= this->saved_diag(i);
+              }
+            this->operator()(i,i)=1.0;          // prevents rounding errors
+          }
 
-                // calculate parameters a[] and c[] based on b[]
-                m_a.resize(n);
-                m_c.resize(n);
-                for(int i=0; i<n-1; i++) {
-                    m_a[i]=1.0/3.0*(m_b[i+1]-m_b[i])/(x[i+1]-x[i]);
-                    m_c[i]=(y[i+1]-y[i])/(x[i+1]-x[i])
-                    - 1.0/3.0*(2.0*m_b[i]+m_b[i+1])*(x[i+1]-x[i]);
-                }
-            } else { // linear interpolation
-                m_a.resize(n);
-                m_b.resize(n);
-                m_c.resize(n);
-                for(int i=0; i<n-1; i++) {
-                    m_a[i]=0.0;
-                    m_b[i]=0.0;
-                    m_c[i]=(m_y[i+1]-m_y[i])/(m_x[i+1]-m_x[i]);
-                }
-            }
+        // Gauss LR-Decomposition
+        for (int k=0; k<this->dim(); k++)
+          {
+            i_max=std::min(this->dim()-1,k+this->num_lower());  // num_lower not a mistake!
+            for (int i=k+1; i<=i_max; i++)
+              {
+                assert(this->operator()(k,k)!=0.0);
+                x=-this->operator()(i,k)/this->operator()(k,k);
+                this->operator()(i,k)=-x;                         // assembly part of L
+                j_max=std::min(this->dim()-1,k+this->num_upper());
+                for (int j=k+1; j<=j_max; j++)
+                  {
+                    // assembly part of R
+                    this->operator()(i,j)=this->operator()(i,j)+x*this->operator()(k,j);
+                  }
+              }
+          }
+      }
+      // solves Ly=b
+      std::vector<double> band_matrix::l_solve(const std::vector<double> &b) const
+      {
+        assert( this->dim()==(int)b.size() );
+        std::vector<double> x(this->dim());
+        int j_start;
+        double sum;
+        for (int i=0; i<this->dim(); i++)
+          {
+            sum=0;
+            j_start=std::max(0,i-this->num_lower());
+            for (int j=j_start; j<i; j++) sum += this->operator()(i,j)*x[j];
+            x[i]=(b[i]*this->saved_diag(i)) - sum;
+          }
+        return x;
+      }
+      // solves Rx=y
+      std::vector<double> band_matrix::r_solve(const std::vector<double> &b) const
+      {
+        assert( this->dim()==(int)b.size() );
+        std::vector<double> x(this->dim());
+        int j_stop;
+        double sum;
+        for (int i=this->dim()-1; i>=0; i--)
+          {
+            sum=0;
+            j_stop=std::min(this->dim()-1,i+this->num_upper());
+            for (int j=i+1; j<=j_stop; j++) sum += this->operator()(i,j)*x[j];
+            x[i]=( b[i] - sum ) / this->operator()(i,i);
+          }
+        return x;
+      }
 
-            // for the right boundary we define
-            // f_{n-1}(x) = b*(x-x_{n-1})^2 + c*(x-x_{n-1}) + y_{n-1}
-            double h=x[n-1]-x[n-2];
-            // m_b[n-1] is determined by the boundary condition
-            m_a[n-1]=0.0;
-            m_c[n-1]=3.0*m_a[n-2]*h*h+2.0*m_b[n-2]*h+m_c[n-2];   // = f'_{n-2}(x_{n-1})
-        }
+      std::vector<double> band_matrix::lu_solve(const std::vector<double> &b,
+                                                bool is_lu_decomposed)
+      {
+        assert( this->dim()==(int)b.size() );
+        std::vector<double>  x,y;
+        if (is_lu_decomposed==false)
+          {
+            this->lu_decompose();
+          }
+        y=this->l_solve(b);
+        x=this->r_solve(y);
+        return x;
+      }
 
-        double spline::operator() (double x) const {
-            size_t n=m_x.size();
-            // find the closest point m_x[idx] < x, idx=0 even if x<m_x[0]
-            std::vector<double>::const_iterator it;
-            it=std::lower_bound(m_x.begin(),m_x.end(),x);
-            int idx=std::max( int(it-m_x.begin())-1, 0);
 
-            double h=x-m_x[idx];
-            double interpol;
-            if(x<m_x[0]) {
-                // extrapolation to the left
-                interpol=((m_b[0])*h + m_c[0])*h + m_y[0];
-            } else if(x>m_x[n-1]) {
-                // extrapolation to the right
-                interpol=((m_b[n-1])*h + m_c[n-1])*h + m_y[n-1];
-            } else {
-                // interpolation
-                interpol=((m_a[idx]*h + m_b[idx])*h + m_c[idx])*h + m_y[idx];
-            }
-            return interpol;
-        }
+      // ---------------------
+      // spline implementation
+      // ---------------------
+      void spline::set_points(const std::vector<double> &x,
+                              const std::vector<double> &y, bool cubic_spline)
+      {
+        assert(x.size()==y.size());
+        m_x=x;
+        m_y=y;
+        int   n=x.size();
+        for (int i=0; i<n-1; i++)
+          {
+            assert(m_x[i]<m_x[i+1]);
+          }
 
-     } // namespace tk
+        if (cubic_spline==true)  // cubic spline interpolation
+          {
+            // setting up the matrix and right hand side of the equation system
+            // for the parameters b[]
+            band_matrix A(n,1,1);
+            std::vector<double>  rhs(n);
+            for (int i=1; i<n-1; i++)
+              {
+                A(i,i-1)=1.0/3.0*(x[i]-x[i-1]);
+                A(i,i)=2.0/3.0*(x[i+1]-x[i-1]);
+                A(i,i+1)=1.0/3.0*(x[i+1]-x[i]);
+                rhs[i]=(y[i+1]-y[i])/(x[i+1]-x[i]) - (y[i]-y[i-1])/(x[i]-x[i-1]);
+              }
+            // boundary conditions, zero curvature b[0]=b[n-1]=0
+            A(0,0)=2.0;
+            A(0,1)=0.0;
+            rhs[0]=0.0;
+            A(n-1,n-1)=2.0;
+            A(n-1,n-2)=0.0;
+            rhs[n-1]=0.0;
+
+            // solve the equation system to obtain the parameters b[]
+            m_b=A.lu_solve(rhs);
+
+            // calculate parameters a[] and c[] based on b[]
+            m_a.resize(n);
+            m_c.resize(n);
+            for (int i=0; i<n-1; i++)
+              {
+                m_a[i]=1.0/3.0*(m_b[i+1]-m_b[i])/(x[i+1]-x[i]);
+                m_c[i]=(y[i+1]-y[i])/(x[i+1]-x[i])
+                       - 1.0/3.0*(2.0*m_b[i]+m_b[i+1])*(x[i+1]-x[i]);
+              }
+          }
+        else     // linear interpolation
+          {
+            m_a.resize(n);
+            m_b.resize(n);
+            m_c.resize(n);
+            for (int i=0; i<n-1; i++)
+              {
+                m_a[i]=0.0;
+                m_b[i]=0.0;
+                m_c[i]=(m_y[i+1]-m_y[i])/(m_x[i+1]-m_x[i]);
+              }
+          }
+
+        // for the right boundary we define
+        // f_{n-1}(x) = b*(x-x_{n-1})^2 + c*(x-x_{n-1}) + y_{n-1}
+        double h=x[n-1]-x[n-2];
+        // m_b[n-1] is determined by the boundary condition
+        m_a[n-1]=0.0;
+        m_c[n-1]=3.0*m_a[n-2]*h*h+2.0*m_b[n-2]*h+m_c[n-2];   // = f'_{n-2}(x_{n-1})
+      }
+
+      double spline::operator() (double x) const
+      {
+        size_t n=m_x.size();
+        // find the closest point m_x[idx] < x, idx=0 even if x<m_x[0]
+        std::vector<double>::const_iterator it;
+        it=std::lower_bound(m_x.begin(),m_x.end(),x);
+        int idx=std::max( int(it-m_x.begin())-1, 0);
+
+        double h=x-m_x[idx];
+        double interpol;
+        if (x<m_x[0])
+          {
+            // extrapolation to the left
+            interpol=((m_b[0])*h + m_c[0])*h + m_y[0];
+          }
+        else if (x>m_x[n-1])
+          {
+            // extrapolation to the right
+            interpol=((m_b[n-1])*h + m_c[n-1])*h + m_y[n-1];
+          }
+        else
+          {
+            // interpolation
+            interpol=((m_a[idx]*h + m_b[idx])*h + m_c[idx])*h + m_y[idx];
+          }
+        return interpol;
+      }
+
+    } // namespace tk
 
 
 
@@ -548,17 +596,17 @@ namespace aspect
     {
       prm.enter_subsection("Initial conditions");
       {
-          prm.enter_subsection("S40RTS perturbation");
-          {
+        prm.enter_subsection("S40RTS perturbation");
+        {
           prm.declare_entry("Data directory", "$ASPECT_SOURCE_DIR/data/initial-conditions/S40RTS/",
                             Patterns::DirectoryName (),
-                             "The path to the model data. ");
+                            "The path to the model data. ");
           prm.declare_entry ("Initial condition file name", "S40RTS.sph",
-                            Patterns::Anything(),
+                             Patterns::Anything(),
                              "The file name of the spherical harmonics coefficients "
                              "from Ritsema et al.");
           prm.declare_entry ("Spline knots depth file name", "Spline_knots.txt",
-                            Patterns::Anything(),
+                             Patterns::Anything(),
                              "The file name of the spline knot locations from "
                              "Ritsema et al.");
           prm.declare_entry ("vs to density scaling", "0.25",
@@ -601,8 +649,8 @@ namespace aspect
             std::string::size_type position;
             while (position = datadirectory.find (subst_text),  position!=std::string::npos)
               datadirectory.replace (datadirectory.begin()+position,
-                                      datadirectory.begin()+position+subst_text.size(),
-                                      ASPECT_SOURCE_DIR);
+                                     datadirectory.begin()+position+subst_text.size(),
+                                     ASPECT_SOURCE_DIR);
           }
           harmonics_coeffs_file_name = prm.get ("Initial condition file name");
           spline_depth_file_name  = prm.get ("Spline knots depth file name");

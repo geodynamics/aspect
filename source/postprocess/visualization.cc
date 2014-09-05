@@ -53,17 +53,17 @@ namespace aspect
           virtual
           void
           compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-              const std::vector<std::vector<Tensor<1,dim> > > &duh,
-              const std::vector<std::vector<Tensor<2,dim> > > &dduh,
-              const std::vector<Point<dim> >                  &normals,
-              const std::vector<Point<dim> >                  &evaluation_points,
-              std::vector<Vector<double> >                    &computed_quantities) const
+                                             const std::vector<std::vector<Tensor<1,dim> > > &duh,
+                                             const std::vector<std::vector<Tensor<2,dim> > > &dduh,
+                                             const std::vector<Point<dim> >                  &normals,
+                                             const std::vector<Point<dim> >                  &evaluation_points,
+                                             std::vector<Vector<double> >                    &computed_quantities) const
           {
             const double velocity_scaling_factor =
-                this->convert_output_to_years() ? year_in_seconds : 1.0;
+              this->convert_output_to_years() ? year_in_seconds : 1.0;
             const unsigned int n_q_points = uh.size();
-            for (unsigned int q=0;q<n_q_points;++q)
-              for (unsigned int i=0;i<computed_quantities[q].size();++i)
+            for (unsigned int q=0; q<n_q_points; ++q)
+              for (unsigned int i=0; i<computed_quantities[q].size(); ++i)
                 computed_quantities[q][i]=uh[q][i] * ((i < dim) ? velocity_scaling_factor : 1.0);
           }
 
@@ -84,7 +84,7 @@ namespace aspect
           {
             std::vector<DataComponentInterpretation::DataComponentInterpretation>
             interpretation (dim,
-                DataComponentInterpretation::component_is_part_of_vector);
+                            DataComponentInterpretation::component_is_part_of_vector);
             interpretation.push_back (DataComponentInterpretation::component_is_scalar);
             interpretation.push_back (DataComponentInterpretation::component_is_scalar);
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
@@ -198,7 +198,7 @@ namespace aspect
 
 
       data_out.add_data_vector (this->get_solution(),
-                                                  base_variables);
+                                base_variables);
 
 
       // then for each additional selected output variable
@@ -486,7 +486,7 @@ namespace aspect
       std::string tmp_filename;
 
       int tmp_file_desc = -1;
-      
+
       {
         // Try getting the environment variable for the temporary directory
         const char *tmp_filedir = getenv("TMPDIR");
@@ -514,13 +514,13 @@ namespace aspect
         if (tmp_file_desc == -1)
           {
             const std::string x = ("***** WARNING: could not create temporary file <"
-				   +
-				   tmp_filename
-				   +
-				   ">, will output directly to final location. This may negatively "
-				   "affect performance. (On processor "
-				   + Utilities::int_to_string(Utilities::MPI::this_mpi_process (MPI_COMM_WORLD))
-				   + ".)\n");
+                                   +
+                                   tmp_filename
+                                   +
+                                   ">, will output directly to final location. This may negatively "
+                                   "affect performance. (On processor "
+                                   + Utilities::int_to_string(Utilities::MPI::this_mpi_process (MPI_COMM_WORLD))
+                                   + ".)\n");
 
             std::cerr << x << std::flush;
 
@@ -551,10 +551,10 @@ namespace aspect
       out << *file_contents;
       out.close ();
       if (tmp_file_desc != -1)
-	{
-	  close(tmp_file_desc);
-	  tmp_file_desc = -1;
-	}
+        {
+          close(tmp_file_desc);
+          tmp_file_desc = -1;
+        }
 
       if (tmp_filename != *filename)
         {
@@ -731,7 +731,7 @@ namespace aspect
           postprocessors.push_back (std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> >
                                     (viz_postprocessor));
 
-          if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
             sim->initialize (this->get_simulator());
 
           postprocessors.back()->parse_parameters (prm);
@@ -740,7 +740,7 @@ namespace aspect
       // Finally also set up a listener to check when the mesh changes
       mesh_changed = true;
       this->get_triangulation().signals.post_refinement
-          .connect(std_cxx1x::bind(&Visualization::mesh_changed_signal, std_cxx1x::ref(*this)));
+      .connect(std_cxx1x::bind(&Visualization::mesh_changed_signal, std_cxx1x::ref(*this)));
     }
 
 

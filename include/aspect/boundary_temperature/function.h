@@ -49,7 +49,7 @@ namespace aspect
         Function ();
 
         /**
-         * Return the boundary temperature as a function of position and time. 
+         * Return the boundary temperature as a function of position and time.
          */
         virtual
         double

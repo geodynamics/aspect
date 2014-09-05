@@ -84,7 +84,7 @@ namespace aspect
    */
   class QuietException {};
 
-  
+
   /**
    * A namespace that contains typedefs for classes used in the linear algebra
    * description.

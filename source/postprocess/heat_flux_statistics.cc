@@ -169,7 +169,7 @@ namespace aspect
           const std::string name = "Outward heat flux through boundary with indicator "
                                    + Utilities::int_to_string(p->first)
                                    + parenthesize_if_nonempty(this->get_geometry_model()
-                                     .translate_id_to_symbol_name (p->first))
+                                                              .translate_id_to_symbol_name (p->first))
                                    + " (W)";
           statistics.add_value (name, p->second);
 

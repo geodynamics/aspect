@@ -546,7 +546,7 @@ namespace aspect
 
       double
       GPlatesLookup::rotation_axis_from_matrix (Tensor<1,3> &rotation_axis,
-                                 const Tensor<2,3> &rotation_matrix) const
+                                                const Tensor<2,3> &rotation_matrix) const
       {
         double rotation_angle = std::acos(0.5 * (rotation_matrix[0][0] + rotation_matrix[1][1] + rotation_matrix[2][2] - 1));
 
@@ -682,7 +682,7 @@ namespace aspect
                                              const Tensor<1,3> &position) const
       {
         const std_cxx1x::array<double,3> scoord =
-            ::aspect::Utilities::spherical_coordinates(static_cast<Point<3> > (position));
+          ::aspect::Utilities::spherical_coordinates(static_cast<Point<3> > (position));
         index[0] = lround(scoord[2]/delta_theta);
         index[1] = lround(scoord[1]/delta_phi);
         reformat_indices(index);
@@ -701,9 +701,9 @@ namespace aspect
         for (unsigned int i = 0; i < int_versions.size(); i++)
           {
             if (int_versions[i] > gplates_1_3_version[i])
-	      return true;
+              return true;
             if (int_versions[i] < gplates_1_3_version[i])
-	      return false;
+              return false;
           }
 
         return false;
@@ -746,7 +746,7 @@ namespace aspect
       lookup.reset(new internal::GPlatesLookup(pointone,pointtwo,interpolation_width));
 
       const GeometryModel::Interface<dim> &geometry_model =
-          this->get_geometry_model();
+        this->get_geometry_model();
 
       Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model) != 0,
               ExcMessage ("This boundary condition can only be used if the geometry "

@@ -43,9 +43,9 @@ namespace aspect
       else
         {
           Assert (false,
-		  ExcMessage ("Unknown boundary indicator with number <" + Utilities::int_to_string(boundary_indicator) + ">. "
-			      "You may not have specified the temperature for this boundary indicator "
-			      "in the input file."));
+                  ExcMessage ("Unknown boundary indicator with number <" + Utilities::int_to_string(boundary_indicator) + ">. "
+                              "You may not have specified the temperature for this boundary indicator "
+                              "in the input file."));
           return std::numeric_limits<double>::quiet_NaN();
         }
     }
@@ -131,34 +131,34 @@ namespace aspect
             {
               // each entry has the format (white space is optional):
               // <id> : <value (might have spaces)>
-	      const std::vector<std::string> parts = Utilities::split_string_list (*it, ':');
-	      
-	      AssertThrow (parts.size() == 2,
-			   ExcMessage (std::string("Invalid entry trying to describe boundary "
-						   "temperatures. Each entry needs to have the form "
-						   "<boundary_id : name>, "
-						   "but there is an entry of the form <") + *it + ">"));
+              const std::vector<std::string> parts = Utilities::split_string_list (*it, ':');
 
-	      types::boundary_id boundary_id;
-	      try
-	      {
-	          boundary_id
-	          = this->get_geometry_model().translate_symbolic_boundary_name_to_id (parts[0]);
-	      }
-	      catch (const std::string &error)
-	      {
-	          AssertThrow (false, ExcMessage ("While parsing the entry <Boundary temperature model/Constant>, "
-	              "there was an error. Specifically, "
-	              "the conversion function complained as follows: "
-	              + error));
-	      }
+              AssertThrow (parts.size() == 2,
+                           ExcMessage (std::string("Invalid entry trying to describe boundary "
+                                                   "temperatures. Each entry needs to have the form "
+                                                   "<boundary_id : name>, "
+                                                   "but there is an entry of the form <") + *it + ">"));
 
-	      AssertThrow (boundary_temperatures.find(boundary_id) == boundary_temperatures.end(),
-	                   ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
-	                       "> appears more than once in the list of indicators "
-	                       "for constant temperature boundary conditions."));
+              types::boundary_id boundary_id;
+              try
+                {
+                  boundary_id
+                    = this->get_geometry_model().translate_symbolic_boundary_name_to_id (parts[0]);
+                }
+              catch (const std::string &error)
+                {
+                  AssertThrow (false, ExcMessage ("While parsing the entry <Boundary temperature model/Constant>, "
+                                                  "there was an error. Specifically, "
+                                                  "the conversion function complained as follows: "
+                                                  + error));
+                }
 
-	      boundary_temperatures[boundary_id] = Utilities::string_to_double (parts[1]);
+              AssertThrow (boundary_temperatures.find(boundary_id) == boundary_temperatures.end(),
+                           ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
+                                       "> appears more than once in the list of indicators "
+                                       "for constant temperature boundary conditions."));
+
+              boundary_temperatures[boundary_id] = Utilities::string_to_double (parts[1]);
             }
         }
         prm.leave_subsection ();
