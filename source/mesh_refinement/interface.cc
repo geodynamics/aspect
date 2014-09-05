@@ -409,11 +409,11 @@ namespace aspect
       for (unsigned int name=0; name<plugin_names.size(); ++name)
         {
           mesh_refinement_objects.push_back (std_cxx1x::shared_ptr<Interface<dim> >
-          (std_cxx1x::get<dim>(registered_plugins)
-              .create_plugin (plugin_names[name],
-                  "Mesh refinement::Refinement criteria merge operation")));
+                                             (std_cxx1x::get<dim>(registered_plugins)
+                                              .create_plugin (plugin_names[name],
+                                                              "Mesh refinement::Refinement criteria merge operation")));
 
-          if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*mesh_refinement_objects.back()))
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*mesh_refinement_objects.back()))
             sim->initialize (this->get_simulator());
 
           mesh_refinement_objects.back()->parse_parameters (prm);

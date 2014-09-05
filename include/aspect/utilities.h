@@ -75,25 +75,25 @@ namespace aspect
     {
       Point<dim> ccoord;
 
-      switch(dim)
-      {
-      case 2:
+      switch (dim)
         {
-          ccoord[0] = scoord[0] * std::cos(scoord[1]); // X
-          ccoord[1] = scoord[0] * std::sin(scoord[1]); // Y
-          break;
+          case 2:
+          {
+            ccoord[0] = scoord[0] * std::cos(scoord[1]); // X
+            ccoord[1] = scoord[0] * std::sin(scoord[1]); // Y
+            break;
+          }
+          case 3:
+          {
+            ccoord[0] = scoord[0] * std::sin(scoord[2]) * std::cos(scoord[1]); // X
+            ccoord[1] = scoord[0] * std::sin(scoord[2]) * std::sin(scoord[1]); // Y
+            ccoord[2] = scoord[0] * std::cos(scoord[2]); // Z
+            break;
+          }
+          default:
+            Assert (false, ExcNotImplemented());
+            break;
         }
-      case 3:
-        {
-          ccoord[0] = scoord[0] * std::sin(scoord[2]) * std::cos(scoord[1]); // X
-          ccoord[1] = scoord[0] * std::sin(scoord[2]) * std::sin(scoord[1]); // Y
-          ccoord[2] = scoord[0] * std::cos(scoord[2]); // Z
-          break;
-        }
-      default:
-        Assert (false, ExcNotImplemented());
-        break;
-      }
 
       return ccoord;
     }

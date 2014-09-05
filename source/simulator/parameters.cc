@@ -874,7 +874,7 @@ namespace aspect
         {
           const std::vector<types::boundary_id> x_fixed_temperature_boundary_indicators
             = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
-                (prm.get ("Fixed temperature boundary indicators")));
+                                                                      (prm.get ("Fixed temperature boundary indicators")));
           fixed_temperature_boundary_indicators
             = std::set<types::boundary_id> (x_fixed_temperature_boundary_indicators.begin(),
                                             x_fixed_temperature_boundary_indicators.end());
@@ -891,7 +891,7 @@ namespace aspect
         {
           const std::vector<types::boundary_id> x_fixed_composition_boundary_indicators
             = geometry_model.translate_symbolic_boundary_names_to_ids (Utilities::split_string_list
-               (prm.get ("Fixed composition boundary indicators")));
+                                                                       (prm.get ("Fixed composition boundary indicators")));
           fixed_composition_boundary_indicators
             = std::set<types::boundary_id> (x_fixed_composition_boundary_indicators.begin(),
                                             x_fixed_composition_boundary_indicators.end());
@@ -908,7 +908,7 @@ namespace aspect
         {
           const std::vector<types::boundary_id> x_zero_velocity_boundary_indicators
             = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
-               (prm.get ("Zero velocity boundary indicators")));
+                                                                      (prm.get ("Zero velocity boundary indicators")));
           zero_velocity_boundary_indicators
             = std::set<types::boundary_id> (x_zero_velocity_boundary_indicators.begin(),
                                             x_zero_velocity_boundary_indicators.end());
@@ -925,7 +925,7 @@ namespace aspect
         {
           const std::vector<types::boundary_id> x_tangential_velocity_boundary_indicators
             = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
-               (prm.get ("Tangential velocity boundary indicators")));
+                                                                      (prm.get ("Tangential velocity boundary indicators")));
           tangential_velocity_boundary_indicators
             = std::set<types::boundary_id> (x_tangential_velocity_boundary_indicators.begin(),
                                             x_tangential_velocity_boundary_indicators.end());
@@ -942,7 +942,7 @@ namespace aspect
         {
           const std::vector<types::boundary_id> x_free_surface_boundary_indicators
             = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
-               (prm.get ("Free surface boundary indicators")));
+                                                                      (prm.get ("Free surface boundary indicators")));
           free_surface_boundary_indicators
             = std::set<types::boundary_id> (x_free_surface_boundary_indicators.begin(),
                                             x_free_surface_boundary_indicators.end());
@@ -965,75 +965,75 @@ namespace aspect
         {
           // each entry has the format (white space is optional):
           // <id> [x][y][z] : <value (might have spaces)>
-	  //
-	  // first tease apart the two halves
-	  const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
-	  AssertThrow (split_parts.size() == 2,
-		       ExcMessage ("The format for prescribed velocity boundary indicators "
-				   "requires that each entry has the form `"
-				   "<id> [x][y][z] : <value>', but there does not "
-				   "appear to be a colon in the entry <"
-				   + *p
-				   + ">."));
+          //
+          // first tease apart the two halves
+          const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
+          AssertThrow (split_parts.size() == 2,
+                       ExcMessage ("The format for prescribed velocity boundary indicators "
+                                   "requires that each entry has the form `"
+                                   "<id> [x][y][z] : <value>', but there does not "
+                                   "appear to be a colon in the entry <"
+                                   + *p
+                                   + ">."));
 
-	  // the easy part: get the value
-	  const std::string value = split_parts[1];
+          // the easy part: get the value
+          const std::string value = split_parts[1];
 
-	  // now for the rest. since we don't know whether there is a
-	  // component selector, start reading at the end and subtracting
-	  // letters x, y and zs
-	  std::string key_and_comp = split_parts[0];
-	  std::string comp;
-	  while ((key_and_comp.size()>0) &&
-		 ((key_and_comp[key_and_comp.size()-1] == 'x')
-		  ||
-		  (key_and_comp[key_and_comp.size()-1] == 'y')
-		  ||
-		  ((key_and_comp[key_and_comp.size()-1] == 'z') && (dim==3))))
-	    {
-	      comp += key_and_comp[key_and_comp.size()-1];
-	      key_and_comp.erase (--key_and_comp.end());
-	    }
+          // now for the rest. since we don't know whether there is a
+          // component selector, start reading at the end and subtracting
+          // letters x, y and zs
+          std::string key_and_comp = split_parts[0];
+          std::string comp;
+          while ((key_and_comp.size()>0) &&
+                 ((key_and_comp[key_and_comp.size()-1] == 'x')
+                  ||
+                  (key_and_comp[key_and_comp.size()-1] == 'y')
+                  ||
+                  ((key_and_comp[key_and_comp.size()-1] == 'z') && (dim==3))))
+            {
+              comp += key_and_comp[key_and_comp.size()-1];
+              key_and_comp.erase (--key_and_comp.end());
+            }
 
-	  // we've stopped reading component selectors now. there are three
-	  // possibilities:
-	  // - no characters are left. this means that key_and_comp only
-	  //   consisted of a single word that only consisted of 'x', 'y'
-	  //   and 'z's. then this would have been a mistake to classify
-	  //   as a component selector, and we better undo it
-	  // - the last character of key_and_comp is not a whitespace. this
-	  //   means that the last word in key_and_comp ended in an 'x', 'y'
-	  //   or 'z', but this was not meant to be a component selector.
-	  //   in that case, put these characters back.
-	  // - otherwise, we split successfully. eat spaces that may be at
-	  //   the end of key_and_comp to get key
-	  if (key_and_comp.size() == 0)
-	    key_and_comp.swap (comp);
-	  else if (key_and_comp[key_and_comp.size()-1] != ' ')
-	    {
-	      key_and_comp += comp;
-	      comp = "";
-	    }
-	  else
-	    {
-	      while ((key_and_comp.size()>0) && (key_and_comp[key_and_comp.size()-1] == ' '))
-		key_and_comp.erase (--key_and_comp.end());
-	    }
+          // we've stopped reading component selectors now. there are three
+          // possibilities:
+          // - no characters are left. this means that key_and_comp only
+          //   consisted of a single word that only consisted of 'x', 'y'
+          //   and 'z's. then this would have been a mistake to classify
+          //   as a component selector, and we better undo it
+          // - the last character of key_and_comp is not a whitespace. this
+          //   means that the last word in key_and_comp ended in an 'x', 'y'
+          //   or 'z', but this was not meant to be a component selector.
+          //   in that case, put these characters back.
+          // - otherwise, we split successfully. eat spaces that may be at
+          //   the end of key_and_comp to get key
+          if (key_and_comp.size() == 0)
+            key_and_comp.swap (comp);
+          else if (key_and_comp[key_and_comp.size()-1] != ' ')
+            {
+              key_and_comp += comp;
+              comp = "";
+            }
+          else
+            {
+              while ((key_and_comp.size()>0) && (key_and_comp[key_and_comp.size()-1] == ' '))
+                key_and_comp.erase (--key_and_comp.end());
+            }
 
-	  // finally, try to translate the key into a boundary_id. then
-	  // make sure we haven't see it yet
-	  types::boundary_id boundary_id;
-	  try
-	    {
-	      boundary_id = geometry_model.translate_symbolic_boundary_name_to_id(key_and_comp);
-	    }
-	  catch (const std::string &error)
-	    {
-	      AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
-					      "velocity indicators>, there was an error. Specifically, "
-					      "the conversion function complained as follows: "
-					      + error));
-	    }
+          // finally, try to translate the key into a boundary_id. then
+          // make sure we haven't see it yet
+          types::boundary_id boundary_id;
+          try
+            {
+              boundary_id = geometry_model.translate_symbolic_boundary_name_to_id(key_and_comp);
+            }
+          catch (const std::string &error)
+            {
+              AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
+                                              "velocity indicators>, there was an error. Specifically, "
+                                              "the conversion function complained as follows: "
+                                              + error));
+            }
 
           AssertThrow (prescribed_velocity_boundary_indicators.find(boundary_id)
                        == prescribed_velocity_boundary_indicators.end(),
@@ -1041,7 +1041,7 @@ namespace aspect
                                    "> appears more than once in the list of indicators "
                                    "for nonzero velocity boundaries."));
 
-	  // finally, put it into the list
+          // finally, put it into the list
           prescribed_velocity_boundary_indicators[boundary_id] =
             std::pair<std::string,std::string>(comp,value);
         }

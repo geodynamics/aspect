@@ -129,7 +129,7 @@ namespace aspect
 
     //We can safely close this now
     mesh_vertex_constraints.close();
- 
+
     //Now construct the mesh displacement constraints
     mesh_displacement_constraints.clear();
     mesh_displacement_constraints.reinit(mesh_locally_relevant);
@@ -365,7 +365,7 @@ namespace aspect
               }
 
           mesh_displacement_constraints.distribute_local_to_global (cell_matrix, cell_vector,
-                                                       cell_dof_indices, mesh_matrix, rhs, false);
+                                                                    cell_dof_indices, mesh_matrix, rhs, false);
         }
 
     rhs.compress (VectorOperation::add);
@@ -470,15 +470,15 @@ namespace aspect
 
     // these live in the same FE as the velocity variable:
     mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning,
-			 sim.introspection.index_sets.system_relevant_partitioning,
-			 sim.mpi_communicator);
+                         sim.introspection.index_sets.system_relevant_partitioning,
+                         sim.mpi_communicator);
 
 
     free_surface_dof_handler.distribute_dofs(free_surface_fe);
 
     sim.pcout << "Number of free surface degrees of freedom: "
-	      << free_surface_dof_handler.n_dofs()
-	      << std::endl;
+              << free_surface_dof_handler.n_dofs()
+              << std::endl;
 
     // Renumber the DoFs hierarchical so that we get the
     // same numbering if we resume the computation. This

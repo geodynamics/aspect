@@ -95,7 +95,7 @@ namespace aspect
                                   "Gravity is given in terms of an explicit formula "
                                   "that is elaborated in the parameters in section "
                                   "``Gravity model|Function''. The format of these "
-				  "functions follows the syntax understood by the "
-				  "muparser library, see Section~\\ref{sec:muparser-format}.")
+                                  "functions follows the syntax understood by the "
+                                  "muparser library, see Section~\\ref{sec:muparser-format}.")
   }
 }

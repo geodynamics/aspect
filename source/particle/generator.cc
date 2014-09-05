@@ -154,7 +154,7 @@ namespace aspect
                     for (d=0; d<dim; ++d)
                       {
                         pt[d] = uniform_distribution_01(random_number_generator) *
-				(max_bounds[d]-min_bounds[d]) + min_bounds[d];
+                                (max_bounds[d]-min_bounds[d]) + min_bounds[d];
                       }
                     try
                       {
@@ -180,14 +180,14 @@ namespace aspect
               }
           }
 
-      private:
-	/**
-	 * Random number generator and an object that describes a
-	 * uniform distribution on the interval [0,1]. These
-	 * will be used to generate particle locations at random.
-	 */
-	boost::mt19937            random_number_generator;
-	boost::uniform_01<double> uniform_distribution_01;
+        private:
+          /**
+           * Random number generator and an object that describes a
+           * uniform distribution on the interval [0,1]. These
+           * will be used to generate particle locations at random.
+           */
+          boost::mt19937            random_number_generator;
+          boost::uniform_01<double> uniform_distribution_01;
       };
 
 

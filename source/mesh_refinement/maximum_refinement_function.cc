@@ -59,12 +59,12 @@ namespace aspect
                   else if (coordinate_system == spherical)
                     {
                       const std_cxx1x::array<double,dim> spherical_coordinates =
-                          aspect::Utilities::spherical_coordinates(vertex);
+                        aspect::Utilities::spherical_coordinates(vertex);
 
                       // Conversion to evaluate the spherical coordinates in the maximum
                       // refinement level function.
                       Point<dim> point;
-                      for (unsigned int i = 0;i<dim;++i)
+                      for (unsigned int i = 0; i<dim; ++i)
                         point[i] = spherical_coordinates[i];
 
                       maximum_refinement_level = max_refinement_level.value(point);
@@ -155,9 +155,9 @@ namespace aspect
           catch (...)
             {
               std::cerr << "ERROR: FunctionParser failed to parse\n"
-                  << "\t'Mesh refinement.Maximum refinement function'\n"
-                  << "with expression\n"
-                  << "\t'" << prm.get("Function expression") << "'";
+                        << "\t'Mesh refinement.Maximum refinement function'\n"
+                        << "with expression\n"
+                        << "\t'" << prm.get("Function expression") << "'";
               throw;
             }
         }
@@ -200,9 +200,9 @@ namespace aspect
                                               "dimension independent expressions. "
                                               "After evaluating the function, its values are "
                                               "rounded to the nearest integer."
-					      "\n\n"
-					      "The format of these "
-					      "functions follows the syntax understood by the "
-					      "muparser library, see Section~\\ref{sec:muparser-format}.")
+                                              "\n\n"
+                                              "The format of these "
+                                              "functions follows the syntax understood by the "
+                                              "muparser library, see Section~\\ref{sec:muparser-format}.")
   }
 }

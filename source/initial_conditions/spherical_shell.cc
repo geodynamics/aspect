@@ -80,7 +80,7 @@ namespace aspect
     }
 
 
-    
+
     template <int dim>
     void
     SphericalHexagonalPerturbation<dim>::declare_parameters (ParameterHandler &prm)
@@ -106,7 +106,7 @@ namespace aspect
     }
 
 
-    
+
     template <int dim>
     void
     SphericalHexagonalPerturbation<dim>::parse_parameters (ParameterHandler &prm)
@@ -123,7 +123,7 @@ namespace aspect
       prm.leave_subsection ();
     }
 
-    
+
 
     template <int dim>
     SphericalGaussianPerturbation<dim>::
@@ -215,7 +215,7 @@ namespace aspect
     }
 
 
-    
+
     template <int dim>
     void
     SphericalGaussianPerturbation<dim>::declare_parameters (ParameterHandler &prm)

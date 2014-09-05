@@ -120,8 +120,8 @@ namespace aspect
                       << "\t'" << prm.get("Function expression") << "'";
             throw;
           }
-          min_temperature = prm.get_double ("Minimal temperature");
-          max_temperature = prm.get_double ("Maximal temperature");
+        min_temperature = prm.get_double ("Minimal temperature");
+        max_temperature = prm.get_double ("Maximal temperature");
         prm.leave_subsection();
       }
       prm.leave_subsection();
@@ -159,9 +159,9 @@ namespace aspect
                                                "must therefore be told what the minimal and "
                                                "maximal values on the boundary are. This is done "
                                                "using parameters set in section ``Boundary temperature model/Initial temperature''."
-					       "\n\n"
-					       "The format of these "
-					       "functions follows the syntax understood by the "
-					       "muparser library, see Section~\\ref{sec:muparser-format}.")
+                                               "\n\n"
+                                               "The format of these "
+                                               "functions follows the syntax understood by the "
+                                               "muparser library, see Section~\\ref{sec:muparser-format}.")
   }
 }

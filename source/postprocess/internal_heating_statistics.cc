@@ -70,11 +70,11 @@ namespace aspect
           {
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.temperature]
-                      .get_function_values (this->get_solution(),
-                                            in.temperature);
+            .get_function_values (this->get_solution(),
+                                  in.temperature);
             fe_values[this->introspection().extractors.pressure]
-                      .get_function_values (this->get_solution(),
-                                            in.pressure);
+            .get_function_values (this->get_solution(),
+                                  in.pressure);
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               fe_values[this->introspection().extractors.compositional_fields[c]]
               .get_function_values(this->get_solution(),

@@ -489,7 +489,7 @@ namespace aspect
        */
       struct IntermediaryConstructorAction
       {
-          IntermediaryConstructorAction (std_cxx1x::function<void ()> action);
+        IntermediaryConstructorAction (std_cxx1x::function<void ()> action);
       };
 
       /**

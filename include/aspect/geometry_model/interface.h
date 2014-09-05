@@ -154,14 +154,14 @@ namespace aspect
          * @note Names may contain spaces and numbers, but they may not contain
          * special characters and they should not equal the text representation
          * of numbers (e.g., a name "10" is ill-advised).
-	 *
-	 * @note Since in practice boundary indicators can be provided either
-	 * via number or symbolic name, the mapping from something given in the
-	 * input is not entirely trivial -- in particular, because a function also
-	 * has to do some error checking that a given string in fact matches any
-	 * known boundary indicator. To this end, use
-	 * GeometryModel::translate_boundary_indicator() and
-	 * GeometryModel::translate_boundary_indicators().
+        *
+        * @note Since in practice boundary indicators can be provided either
+        * via number or symbolic name, the mapping from something given in the
+        * input is not entirely trivial -- in particular, because a function also
+        * has to do some error checking that a given string in fact matches any
+        * known boundary indicator. To this end, use
+        * GeometryModel::translate_boundary_indicator() and
+        * GeometryModel::translate_boundary_indicators().
          *
          * @return A map from symbolic names to boundary indicators. The map
          * should provide a symbolic name for each used boundary indicator as
