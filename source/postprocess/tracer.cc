@@ -149,7 +149,7 @@ namespace aspect
                              "Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
-          prm.declare_entry("Data output format", "none",
+          prm.declare_entry("Data output format", "vtu",
                             Patterns::Selection(Particle::Output::output_object_names()),
                             "File format to output raw particle data in.");
           prm.declare_entry("Integration scheme", "rk2",
