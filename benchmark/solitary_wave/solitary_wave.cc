@@ -98,7 +98,8 @@ namespace aspect
         */
        void compute_porosity (const double amplitude,
                               const double background_porosity,
-                              const double offset)
+                              const double offset,
+                              const double compacttion_length)
        {
          // non-dimensionalize the amplitude
          const double non_dim_amplitude = amplitude / background_porosity;
@@ -114,7 +115,7 @@ namespace aspect
              // re-scale porosity and position
              // TODO get the scaling factor from the material parameters
              porosity[i] *= background_porosity;
-             coordinate[i] *= std::sqrt(35.0/3.0);
+             coordinate[i] *= compacttion_length;
            }
        }
 
@@ -213,7 +214,14 @@ namespace aspect
 
       double length_scaling (const double porosity) const
       {
-        return std::sqrt(reference_permeability * std::pow(porosity,3) * (xi_0 + 4.0/3.0 * eta_0) / reference_rho_f);
+        return std::sqrt(reference_permeability * std::pow(porosity,3) * (xi_0 + 4.0/3.0 * eta_0) / eta_f);
+      }
+
+      double velocity_scaling (const double porosity) const
+      {
+    	const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
+        return reference_permeability * std::pow(porosity,2) * (reference_rho_s - reference_rho_f)
+        	   * this->get_gravity_model().gravity_vector(surface_point).norm() / eta_f;
       }
 
       /**
@@ -344,10 +352,9 @@ namespace aspect
       public:
 
       /**
-       * Initialization function. Take references to the geometry model, the
-       * object that describes the temperature boundary values, and the
-       * adiabatic conditions and store them so that derived classes can
-       * access them.
+       * Initialization function. Take references to the material model and
+       * get the compaction length, so that it can be used subsequently to
+       * compute the analytical solution for the shape of the solitary wave.
        */
       void
       initialize ();
@@ -367,11 +374,42 @@ namespace aspect
       void
       parse_parameters (ParameterHandler &prm);
 
+      double
+      get_amplitude () const;
+
+      double
+      get_background_porosity () const;
+
+      double
+      get_offset () const;
+
       private:
         double amplitude;
         double background_porosity;
         double offset;
+        double compaction_length;
     };
+
+    template <int dim>
+    double
+    SolitaryWaveInitialCondition<dim>::get_amplitude () const
+    {
+      return amplitude;
+    }
+
+    template <int dim>
+    double
+    SolitaryWaveInitialCondition<dim>::get_background_porosity () const
+    {
+      return background_porosity;
+    }
+
+    template <int dim>
+    double
+    SolitaryWaveInitialCondition<dim>::get_offset () const
+    {
+      return offset;
+    }
 
     template <int dim>
     void
@@ -380,9 +418,24 @@ namespace aspect
       std::cout << "Initialize solitary wave solution"
                 << std::endl;
 
+      if (dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model()) != NULL)
+        {
+          const SolitaryWaveMaterial<dim> *
+          material_model
+            = dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model());
+
+          compaction_length = material_model->length_scaling(background_porosity);
+        }
+      else
+        {
+          AssertThrow(false,
+                      ExcMessage("Initial condition Solitary Wave only works with the material model Solitary wave."));
+        }
+
       AnalyticSolutions::compute_porosity(amplitude,
                                           background_porosity,
-                                          offset);
+                                          offset,
+                                          compaction_length);
     }
 
 
@@ -462,7 +515,71 @@ namespace aspect
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
+
+        /**
+         * Initialization function. Take references to the material model and
+         * initial conditions model to get the parameters necessary for computing
+         * the analytical solution for the shape of the solitary wave and store them.
+         */
+        void
+        initialize ();
+
+        double
+        compute_phase_shift ();
+
+      private:
+        double amplitude;
+        double background_porosity;
+        double offset;
+        double compaction_length;
+        double velocity_scaling;
     };
+
+    template <int dim>
+    void
+    SolitaryWavePostprocessor<dim>::initialize ()
+    {
+        // verify that we are using the "Solitary wave" initial conditions and material model,
+    	// then get the parameters we need
+
+        if (dynamic_cast<const SolitaryWaveInitialCondition<dim> *>(&this->get_compositional_initial_conditions()) != NULL)
+          {
+            const SolitaryWaveInitialCondition<dim> *
+            initial_conditions
+              = dynamic_cast<const SolitaryWaveInitialCondition<dim> *>(&this->get_compositional_initial_conditions());
+
+            amplitude           = initial_conditions->get_amplitude();
+            background_porosity = initial_conditions->get_background_porosity();
+            offset              = initial_conditions->get_offset();
+          }
+        else
+          {
+            AssertThrow(false,
+                        ExcMessage("Postprocessor Solitary Wave only works with the initial conditions model Solitary wave."));
+          }
+
+        if (dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model()) != NULL)
+          {
+            const SolitaryWaveMaterial<dim> *
+            material_model
+              = dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model());
+
+            compaction_length = material_model->length_scaling(background_porosity);
+            velocity_scaling = material_model->velocity_scaling(background_porosity);
+          }
+        else
+          {
+            AssertThrow(false,
+                        ExcMessage("Postprocessor Solitary Wave only works with the material model Solitary wave."));
+          }
+    }
+
+    template <int dim>
+    double
+    SolitaryWavePostprocessor<dim>::compute_phase_shift ()
+    {
+      return 1.0;
+    }
 
     template <int dim>
     std::pair<std::string,std::string>
@@ -472,6 +589,7 @@ namespace aspect
                   ExcNotImplemented());
 
       std_cxx1x::shared_ptr<Function<dim> > ref_func;
+
       if (dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model()) != NULL)
         {
           const SolitaryWaveMaterial<dim> *
@@ -489,10 +607,13 @@ namespace aspect
       Vector<float> cellwise_errors_f (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
 
+
+
       // what we want to compare:
       // (1) z-coordinate of the wave peak: \Delta = z_p(analytical) - z_p(numerical)
       // (2) error of the numerical phase speed c:
       // c_numerical = c_analytical - Delta / time;
+      const double c_analytical = velocity_scaling * (2.0 * amplitude / background_porosity + 1);
       // error_c = std::abs (c_numerical / c_analytical - 1);
       // (3) preservation of shape of melt fraction
       // (4) preservation of the shape of compaction pressure
@@ -520,7 +641,7 @@ namespace aspect
                                    "defined in Keller et al., JGI, 2013.")
 
     ASPECT_REGISTER_POSTPROCESSOR(SolitaryWavePostprocessor,
-                                  "SolitaryWavePostprocessor",
+                                  "solitary wave statistics",
                                   "A postprocessor that compares the solution of the benchmarks from "
                                   "the Keller et al., JGI, 2013, paper with the one computed by ASPECT "
                                   "and reports the error.")
