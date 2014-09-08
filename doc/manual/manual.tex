@@ -467,12 +467,20 @@ purposes than just tracking chemical compositions. We will discuss this
 equation in more detail in Section~\ref{sec:compositional}.
 
 \subsubsection{A comment on adiabatic heating}
-In other codes and texts there is sometimes a simplification made to the adiabatic heating term in the previous equation. If you assume the pressure gradient is assumed to be small in the vertical direction, then $ -\rho \mathbf g \approx \nabla \mathbf{p} $, and we have the following relation (the negative sign is due to $\mathbf g$ pointing downwards)
-\begin{align}
+Other codes and texts sometimes make a simplification to the adiabatic heating
+term in the previous equation. If you assume the vertical component of the
+gradient of the \textit{dynamic} pressure to be small compared to the gradient
+of the \textit{total} pressure (in other words, the gradient is dominated by
+the gradient of the hydrostatic pressure), then $ -\rho \mathbf g \approx
+\nabla \mathbf{p} $, and we have the following relation (the negative sign is
+due to $\mathbf g$ pointing downwards) 
+\begin{align*}
 \alpha T \left( \mathbf u \cdot \nabla \mathbf p \right)
   & \approx -\alpha \rho T \mathbf u \cdot \mathbf g.
-  \notag
-\end{align}
+\end{align*}
+While this simplification is possible, it is not necessary if you have access
+to the total pressure. \aspect{} therefore implements the original term
+without this simplification.
 
 \subsubsection{Boundary conditions}
 Having discussed \eqref{eq:temperature}, let us come to the last one of the
