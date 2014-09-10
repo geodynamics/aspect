@@ -340,6 +340,12 @@ namespace aspect
                          "be used for computing the additional pressures and the melt velocity, "
                          "and has a different advection equation than other compositional fields, "
                          "as it is effectively advected with the melt velocity.");
+      prm.declare_entry ("Use full density formulation", "true",
+                         Patterns::Bool (),
+                         "Whether to use the full density formulation, using the same density "
+                         "for all terms of the equations. The usual approximations use the "
+                         "reference density profile in every term except the buoyancy term of "
+                         "the stokes equation.");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "
@@ -993,6 +999,7 @@ namespace aspect
     prm.enter_subsection ("Model settings");
     {
       include_melt_transport = prm.get_bool ("Include melt transport");
+      use_full_density_formulation = prm.get_bool ("Use full density formulation");
 
       {
         nullspace_removal = NullspaceRemoval::none;

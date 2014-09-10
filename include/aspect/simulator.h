@@ -111,6 +111,7 @@ namespace aspect
   class Simulator
   {
     public:
+        bool                           use_full_density_formulation;
 
       /**
        * Constructor.

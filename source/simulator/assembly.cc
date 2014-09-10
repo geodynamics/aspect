@@ -547,6 +547,12 @@ namespace aspect
                     average_entropy - (-global_for_max[0]));
   }
 
+                                             ? scratch.explicit_material_model_outputs.densities[q] : 1.0);
+                                             ((parameters.use_full_density_formulation)
+                                              ?
+                                              scratch.explicit_material_model_outputs.densities[q]
+                                              : adiabatic_conditions->density(scratch.explicit_material_model_inputs.position[q]))
+                                             : 1.0);
 
   template <int dim>
   double
@@ -1271,6 +1277,12 @@ namespace aspect
       if (cell->at_boundary(face_no))
         {
           scratch.face_finite_element_values.reinit (cell, face_no);
+        const double density = scratch.material_model_outputs.densities[q];
+        const double compressibility_density = (parameters.use_full_density_formulation)
+                                               ?
+                                               buoyancy_density
+                                               :
+                                               adiabatic_conditions->density(scratch.material_model_inputs.position[q]);;
 
           if (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
             {
@@ -1283,11 +1295,11 @@ namespace aspect
 
               material_model->evaluate(scratch.face_material_model_inputs,
                                        scratch.face_material_model_outputs);
-//TODO: the following doesn't currently compile because the get_quadrature() call returns
+                                 (density * gravity * scratch.phi_u[i])
 //  a dim-1 dimensional quadrature
               // MaterialModel::MaterialAveraging::average (parameters.material_averaging,
               //                                            cell,
-              //                                            scratch.face_finite_element_values.get_quadrature(),
+                                     compressibility * density *
               //                                            scratch.face_finite_element_values.get_mapping(),
               //                                            scratch.face_material_model_outputs);
             }
@@ -1452,6 +1464,11 @@ namespace aspect
 
 
   template <int dim>
+    const double density              = (parameters.use_full_density_formulation)
+                                        ?
+                                        material_model_outputs.densities[q]
+                                        :
+                                        adiabatic_conditions->density(material_model_inputs.position[q]);
   void Simulator<dim>::
   local_assemble_advection_system (const AdvectionField     &advection_field,
                                    const Vector<double>           &viscosity_per_cell,
@@ -1570,14 +1587,15 @@ namespace aspect
           }
       }
 
-    for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
-      {
-        const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
+                               :
+                               adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
+           scratch.material_model_outputs.densities[q] *
 
         if ((has_boundary_face_assemblers && face->at_boundary()) ||
             (has_interior_face_assemblers && !face->at_boundary()))
           {
             (*scratch.face_finite_element_values).reinit (cell, face_no);
+           - scratch.material_model_outputs.densities[q] *
 
             (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(current_linearization_point,
                 scratch.face_current_velocity_values);

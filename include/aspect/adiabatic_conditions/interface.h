@@ -101,6 +101,12 @@ namespace aspect
         double pressure (const Point<dim> &p) const = 0;
 
         /**
+         * Return the reference_density at a given point of the domain.
+         */
+        virtual
+        double density (const Point<dim> &p) const = 0;
+
+        /**
          * Return the adiabatic temperature profile as a vector of values
          * corresponding to increasing depth.
          *
@@ -117,6 +123,7 @@ namespace aspect
          */
         virtual
         void get_adiabatic_pressure_profile(std::vector<double> &values) const;
+
 
         /**
          * Declare the parameters this class takes through input files. The

@@ -88,6 +88,11 @@ namespace aspect
          */
         virtual double pressure (const Point<dim> &p) const;
 
+        /**
+         * Return the reference density at a given point of the domain.
+         */
+        virtual double density (const Point<dim> &p) const;
+
       private:
 
         /**
@@ -110,6 +115,7 @@ namespace aspect
          */
         std::vector<double> temperatures;
         std::vector<double> pressures;
+        std::vector<double> densities;
 
         /**
          * Interval spacing between each two data points in the tables above
