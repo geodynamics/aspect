@@ -71,7 +71,10 @@ namespace aspect
           typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, n_compositional_fields);
           typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, n_compositional_fields);
           in.position[0] = representative_point;
-          in.temperature[0] = temperatures[i-1];
+          in.temperature[0] = (this->get_material_model().is_compressible())
+                               ?
+                                 temperatures[i-1]
+                               : temperatures[0];
           in.pressure[0] = pressures[i-1];
 
           for (unsigned int c=0; c<n_compositional_fields; ++c)
@@ -92,9 +95,7 @@ namespace aspect
           pressures[i] = pressures[i-1]
                          + density * gravity * delta_z;
           temperatures[i] = temperatures[i-1] * (1 +
-                                                 (this->include_adiabatic_heating() ?
-                                                 alpha * gravity * delta_z / cp
-                                                 : 0.0));
+                                                 alpha * gravity * delta_z / cp);
           densities[i-1] = density;
         }
       densities[n_points-1] = densities[n_points-2];
