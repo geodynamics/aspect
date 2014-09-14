@@ -191,6 +191,13 @@ namespace aspect
       include_latent_heat () const;
 
       /**
+       * Return the stokes velocity degree.
+       */
+      int
+      get_stokes_velocity_degree () const;
+
+
+      /**
        * Return the adiabatic surface temperature.
        */
       double
