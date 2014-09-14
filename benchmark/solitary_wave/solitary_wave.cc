@@ -99,13 +99,12 @@ namespace aspect
        void compute_porosity (const double amplitude,
                               const double background_porosity,
                               const double offset,
-                              const double compacttion_length)
+                              const double compaction_length)
        {
          // non-dimensionalize the amplitude
          const double non_dim_amplitude = amplitude / background_porosity;
 
          // get the coordinates where we have the solution
-         // TODO use Newton iteration here
          for (unsigned int i=0;i<max_points;++i)
            {
              porosity[i] = 1.0 + 1e-10*non_dim_amplitude
@@ -113,9 +112,8 @@ namespace aspect
              coordinate[i] = solitary_wave_solution(porosity[i], non_dim_amplitude);
 
              // re-scale porosity and position
-             // TODO get the scaling factor from the material parameters
              porosity[i] *= background_porosity;
-             coordinate[i] *= compacttion_length;
+             coordinate[i] *= compaction_length;
            }
        }
 
@@ -139,13 +137,65 @@ namespace aspect
            return porosity[0];
 
          unsigned int j= max_points-2;
-         while (x > coordinate[j] && j>0)
-           j--;
+         unsigned int i = j/2;
+         while (!(x < coordinate[j] && x >= coordinate[j+1]))
+         {
+           if(x < coordinate[j])
+        	 j += i;
+           else
+        	 j -= i;
+           if (i>1)
+             i /= 2;
+         }
 
          const double distance = (x - coordinate[j+1])
                                  /(coordinate[j] - coordinate[j+1]);
          return porosity[j+1] + distance * (porosity[j] - porosity[j+1]);
        }
+
+       /**
+        * The exact solution for the Solitary wave benchmark.
+        */
+       template <int dim>
+       class FunctionSolitaryWave : public Function<dim>
+       {
+         public:
+    	   FunctionSolitaryWave (double offset, double delta, std::vector<double> &initial_pressure, double max_z)
+    	     :
+    		 Function<dim>(dim+4),
+    		 offset_(offset),
+    		 delta_(delta),
+    	     initial_pressure_(initial_pressure),
+    	     max_z_(max_z)
+    	   {}
+
+           virtual void vector_value (const Point< dim > &p,
+                                      Vector< double >   &values) const
+           {
+        	 // TODO add pressure solution
+        	 const double index = static_cast<int>((p[dim-1]-delta_)/max_z_ * initial_pressure_.size());
+        	 const double z_coordinate1 = static_cast<double>(index)/static_cast<double>(initial_pressure_.size()) * max_z_;
+        	 const double z_coordinate2 = static_cast<double>(index+1)/static_cast<double>(initial_pressure_.size()) * max_z_;
+        	 const double interpolated_pressure = (index == initial_pressure_.size()-1)
+                    		                      ?
+                    		                      initial_pressure_[index]
+                    		                      :
+                    		                      initial_pressure_[index] + (initial_pressure_[index+1] - initial_pressure_[index])
+                    		                                  * (p[dim-1]-delta_ - z_coordinate1) / (z_coordinate2 - z_coordinate1);
+
+             values[dim+3] = AnalyticSolutions::interpolate(p[dim-1]-delta_,offset_); //porosity
+             values[dim+1] = interpolated_pressure;                                   //compaction pressure
+
+             std::cout << "initial pressure: " << interpolated_pressure
+                       << ", index: " << index << ", new_position: " << p[dim-1] << std::endl;
+           }
+
+         private:
+           double offset_;
+           double delta_;
+           std::vector<double> initial_pressure_;
+           double max_z_;
+       };
      }
 
 
@@ -524,6 +574,9 @@ namespace aspect
         void
         initialize ();
 
+        void
+        store_initial_pressure ();
+
         double
         compute_phase_shift ();
 
@@ -533,6 +586,10 @@ namespace aspect
         double offset;
         double compaction_length;
         double velocity_scaling;
+        double boundary_velocity;
+        unsigned int max_points;
+        std::vector<double> initial_pressure;
+        double maximum_pressure;
     };
 
     template <int dim>
@@ -572,13 +629,174 @@ namespace aspect
             AssertThrow(false,
                         ExcMessage("Postprocessor Solitary Wave only works with the material model Solitary wave."));
           }
+
+        // we also need the boundary velocity, but we can not get it from simulator access
+        // TODO: write solitary wave boundary condition where the phase speed is calculated!
+
+        max_points = 1e4;
+        initial_pressure.resize(max_points);
+        maximum_pressure = 0.0;
+    }
+
+    template <int dim>
+    void
+    SolitaryWavePostprocessor<dim>::store_initial_pressure ()
+    {
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.pressure).degree);
+      const unsigned int n_q_points = quadrature_formula.size();
+      const double max_depth = this->get_geometry_model().maximal_depth();
+
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_fe(),
+                               quadrature_formula,
+                               update_values   |
+                               update_quadrature_points |
+                               update_JxW_values);
+
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+
+      // do the same stuff we do in depth average
+      std::vector<double> volume(max_points);
+      std::vector<double> p_s(n_q_points);
+      std::vector<double> p_f(n_q_points);
+      std::vector<double> phi(n_q_points);
+      double local_max_pressure = 0.0;
+
+      const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity");
+
+      for (; cell!=endc; ++cell)
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit (cell);
+            fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
+            		                                                                  p_s);
+            fe_values[this->introspection().extractors.compaction_pressure].get_function_values (this->get_solution(),
+            		                                                                             p_f);
+            fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
+            		                                                                             phi);
+            for (unsigned int q=0; q<n_q_points; ++q)
+              {
+            	unsigned int z = fe_values.quadrature_point(q)[dim-1];
+                const unsigned int idx = static_cast<unsigned int>((z*max_points)/max_depth);
+                Assert(idx < max_points, ExcInternalError());
+
+                initial_pressure[idx] += (1.0-phi[q]) * (p_s[q] - p_f[q]) * fe_values.JxW(q);
+                volume[idx] += fe_values.JxW(q);
+
+                local_max_pressure = std::max (local_max_pressure, std::abs((1.0-phi[q]) * (p_s[q] - p_f[q])));
+              }
+          }
+
+      std::vector<double> pressure_all(max_points, 0.0);
+      std::vector<double> volume_all(max_points, 0.0);
+      Utilities::MPI::sum(volume, this->get_mpi_communicator(), volume_all);
+      Utilities::MPI::sum(initial_pressure, this->get_mpi_communicator(), pressure_all);
+      maximum_pressure = Utilities::MPI::max (local_max_pressure, this->get_mpi_communicator());
+
+
+      if(pressure_all[0] == 0.0)
+      {
+    	unsigned int j = 1;
+    	while (pressure_all[j] == 0.0)
+    	  j++;
+    	pressure_all[0] = pressure_all[j];
+    	volume_all[0]   = volume_all[j];
+    	initial_pressure[0] = pressure_all[j] / (static_cast<double>(volume_all[j])+1e-20);
+      }
+
+      if(pressure_all[max_points-1] == 0.0)
+      {
+    	unsigned int k = max_points-2;
+    	while (pressure_all[k] == 0.0)
+    	  k--;
+    	pressure_all[max_points-1] = pressure_all[k];
+    	volume_all[max_points-1]   = volume_all[k];
+    	initial_pressure[max_points-1] = pressure_all[k] / (static_cast<double>(volume_all[k])+1e-20);
+      }
+
+      for (unsigned int i=1; i<max_points-1; ++i)
+      {
+    	if (pressure_all[i] != 0.0)
+    	  initial_pressure[i] = pressure_all[i] / (static_cast<double>(volume_all[i])+1e-20);
+    	else
+    	{
+    	  // interpolate between the values we have
+    	  unsigned int k = i-1;
+    	  while (pressure_all[k] == 0.0)
+    		k--;
+    	  Assert(k >= 0, ExcInternalError());
+    	  unsigned int j = i+1;
+    	  while (pressure_all[j] == 0.0)
+    		j++;
+    	  Assert(j < max_points, ExcInternalError());
+    	  const double pressure_k = pressure_all[k] / (static_cast<double>(volume_all[k])+1e-20);
+    	  const double pressure_j = pressure_all[j] / (static_cast<double>(volume_all[j])+1e-20);
+    	  initial_pressure[i] = pressure_k + (pressure_j - pressure_k) * static_cast<double>(i-k)/static_cast<double>(j-k);
+    	}
+      }
     }
 
     template <int dim>
     double
     SolitaryWavePostprocessor<dim>::compute_phase_shift ()
     {
-      return 1.0;
+      AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
+                  ExcNotImplemented());
+      // TODO: how do we calculate the coordinate of the wave peak with more than 1 processor?
+
+      AssertThrow(this->introspection().compositional_name_exists("porosity"),
+                  ExcMessage("Postprocessor Solitary Wave only works if there is a compositional field called porosity."));
+      const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity");
+
+      // create a quadrature formula based on the compositional element alone.
+      // be defensive about determining that a compositional field actually exists
+      AssertThrow (this->introspection().base_elements.compositional_fields
+                   != numbers::invalid_unsigned_int,
+                   ExcMessage("This postprocessor cannot be used without compositional fields."));
+      const QIterated<dim> quadrature_formula (QTrapez<1>(), 200);
+      const unsigned int n_q_points = quadrature_formula.size();
+
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_fe(),
+                               quadrature_formula,
+                               update_values   |
+                               update_quadrature_points |
+                               update_JxW_values);
+
+      std::vector<double> compositional_values(n_q_points);
+
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+
+      // compute the maximum composition by quadrature (because we also need the coordinate)
+      double local_max_composition = -std::numeric_limits<double>::max();
+      double local_z_coordinate = -std::numeric_limits<double>::max();
+
+      for (; cell!=endc; ++cell)
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit (cell);
+            fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
+            		                                                                                 compositional_values);
+            // TODO: we should use a correlation instead of just finding the maximum
+            for (unsigned int q=0; q<n_q_points; ++q)
+              {
+                const double composition = compositional_values[q]*fe_values.JxW(q);
+
+                if(composition > local_max_composition)
+                {
+                  local_max_composition = composition;
+                  local_z_coordinate = fe_values.quadrature_point(q)[dim-1];
+                }
+              }
+          }
+
+      // TODO: different case for moving wave (with zero boundary velocity)
+      // const double phase_speed = velocity_scaling * (2.0 * amplitude / background_porosity + 1);
+      return local_z_coordinate - offset; // + phase_speed * this->get_time());
     }
 
     template <int dim>
@@ -588,13 +806,23 @@ namespace aspect
       AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
                   ExcNotImplemented());
 
+      if(this->get_timestep_number()==0)
+    	store_initial_pressure();
+
       std_cxx1x::shared_ptr<Function<dim> > ref_func;
+      double delta;
 
       if (dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model()) != NULL)
         {
           const SolitaryWaveMaterial<dim> *
           material_model
             = dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model());
+
+          delta = compute_phase_shift();
+
+          // TODO: we should use delta as an argument, but it does not work yet
+          ref_func.reset (new AnalyticSolutions::FunctionSolitaryWave<dim>(offset,0.0,initial_pressure,
+        		                                                           this->get_geometry_model().maximal_depth()));
         }
       else
         {
@@ -604,25 +832,44 @@ namespace aspect
 
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
 
-      Vector<float> cellwise_errors_f (this->get_triangulation().n_active_cells());
-      Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
-
-
-
       // what we want to compare:
-      // (1) z-coordinate of the wave peak: \Delta = z_p(analytical) - z_p(numerical)
-      // (2) error of the numerical phase speed c:
+      // (1) error of the numerical phase speed c:
       // c_numerical = c_analytical - Delta / time;
       const double c_analytical = velocity_scaling * (2.0 * amplitude / background_porosity + 1);
-      // error_c = std::abs (c_numerical / c_analytical - 1);
+      const double c_numerical = c_analytical + delta / this->get_time();
+      const double error_c = std::abs (c_numerical / c_analytical - 1);
+
       // (3) preservation of shape of melt fraction
       // (4) preservation of the shape of compaction pressure
 
-      std::ostringstream os;
-      os << std::scientific << 0.0
-         << ", " << 0.0;
+      Vector<float> cellwise_errors_f (this->get_triangulation().n_active_cells());
+      Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
 
-      return std::make_pair("Errors e_f, e_p:", os.str());
+      // get correct components for porosity and compaction pressure
+      ComponentSelectFunction<dim> comp_f(dim+3, dim+4);
+      ComponentSelectFunction<dim> comp_p(dim+1, dim+4);
+
+      VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                         this->get_solution(),
+                                         *ref_func,
+                                         cellwise_errors_f,
+                                         quadrature_formula,
+                                         VectorTools::L2_norm,
+                                         &comp_f);
+      VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                         this->get_solution(),
+                                         *ref_func,
+                                         cellwise_errors_p,
+                                         quadrature_formula,
+                                         VectorTools::L2_norm,
+                                         &comp_p);
+
+      std::ostringstream os;
+      os << std::scientific << cellwise_errors_f.l2_norm()/(amplitude * this->get_triangulation().n_levels())
+                    << ", " << cellwise_errors_p.l2_norm()/(maximum_pressure * this->get_triangulation().n_levels())
+                    << ", " << error_c;
+
+      return std::make_pair("Errors e_f, e_p, e_c:", os.str());
     }
 
   }
