@@ -157,6 +157,12 @@ namespace aspect
     return simulator->parameters.include_latent_heat;
   }
 
+  template <int dim>
+  int
+  SimulatorAccess<dim>::get_stokes_velocity_degree () const
+  {
+    return simulator->parameters.stokes_velocity_degree;
+  }
 
   template <int dim>
   double

@@ -290,7 +290,10 @@ namespace aspect
         }
 
       // now build the patches and see how we can output these
-      data_out.build_patches ();
+      data_out.build_patches ((interpolate_output) ?
+                               this->get_stokes_velocity_degree()
+                               :
+                               0);
 
       std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);
       std::string mesh_file_prefix = "mesh-" + Utilities::int_to_string (output_file_number, 5);
@@ -638,6 +641,18 @@ namespace aspect
                              "A value of 1 will generate one big file containing the whole "
                              "solution.");
 
+          prm.declare_entry ("Interpolate output", "false",
+                             Patterns::Bool(),
+                             "deal.II offers the possibility to linearly interpolate "
+                             "output fields of higher order elements to a finer resolution. "
+                             "This somewhat compensates the fact that most visualization "
+                             "software only offers linear interpolation between grid points "
+                             "and therefore the output file is a very coarse representation "
+                             "of the actual solution field. Activating this option increases "
+                             "the spatial resolution in each dimension by a factor equal "
+                             "to the polynomial degree used for the velocity finite element "
+                             "(usually 2).");
+
           // finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors
           const std::string pattern_of_names
@@ -685,6 +700,7 @@ namespace aspect
           output_interval = prm.get_double ("Time between graphical output");
           output_format   = prm.get ("Output format");
           group_files     = prm.get_integer("Number of grouped files");
+          interpolate_output = prm.get_bool("Interpolate output");
 
           // now also see which derived quantities we are to compute
           viz_names = Utilities::split_string_list(prm.get("List of output variables"));

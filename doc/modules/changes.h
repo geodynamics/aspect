@@ -6,6 +6,16 @@
  *
  *
  * <ol>
+ *<li> New: There is now the possibility to interpolate the visualization
+ * output to a refined output mesh. This accounts for the fact that most
+ * visualization software only offers linear interpolation between grid points
+ * and therefore the output file is a very coarse representation of the actual
+ * solution field. The new output is still a linear interpolation, but at least
+ * on a finer grid. The visualization output quality and used disk space will
+ * increase when activating this option.
+ * <br>
+ * (Rene Gassmoeller, 2014/09/14)
+ *
  * <li> Fixed: There was a race condition in writing output files: we
  * write to them in a temporary location and then move them to their
  * final location. We used to do the second step before actually closing
