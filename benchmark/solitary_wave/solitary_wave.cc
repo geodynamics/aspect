@@ -172,7 +172,6 @@ namespace aspect
            virtual void vector_value (const Point< dim > &p,
                                       Vector< double >   &values) const
            {
-        	 // TODO add pressure solution
         	 const double index = static_cast<int>((p[dim-1]-delta_)/max_z_ * initial_pressure_.size());
         	 const double z_coordinate1 = static_cast<double>(index)/static_cast<double>(initial_pressure_.size()) * max_z_;
         	 const double z_coordinate2 = static_cast<double>(index+1)/static_cast<double>(initial_pressure_.size()) * max_z_;
@@ -185,9 +184,6 @@ namespace aspect
 
              values[dim+3] = AnalyticSolutions::interpolate(p[dim-1]-delta_,offset_); //porosity
              values[dim+1] = interpolated_pressure;                                   //compaction pressure
-
-             std::cout << "initial pressure: " << interpolated_pressure
-                       << ", index: " << index << ", new_position: " << p[dim-1] << std::endl;
            }
 
          private:
@@ -633,7 +629,7 @@ namespace aspect
         // we also need the boundary velocity, but we can not get it from simulator access
         // TODO: write solitary wave boundary condition where the phase speed is calculated!
 
-        max_points = 1e4;
+        max_points = 1e6;
         initial_pressure.resize(max_points);
         maximum_pressure = 0.0;
     }
@@ -678,7 +674,7 @@ namespace aspect
             		                                                                             phi);
             for (unsigned int q=0; q<n_q_points; ++q)
               {
-            	unsigned int z = fe_values.quadrature_point(q)[dim-1];
+            	double z = fe_values.quadrature_point(q)[dim-1];
                 const unsigned int idx = static_cast<unsigned int>((z*max_points)/max_depth);
                 Assert(idx < max_points, ExcInternalError());
 
@@ -832,6 +828,54 @@ namespace aspect
 
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
 
+      // we need the compaction pressure, but we only have the solid and the fluid pressure stored in the solution vector.
+      // Hence, we create a new vector only with the compaction pressure
+      LinearAlgebra::BlockVector compaction_pressure(this->get_solution());
+
+      const unsigned int por_idx = this->introspection().compositional_index_for_name("porosity");
+      const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.pressure).get_unit_support_points());
+      std::vector<double> porosity_values(quadrature.size());
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_fe(),
+                               quadrature,
+                               update_quadrature_points | update_values);
+
+      std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+      for (; cell != endc; ++cell)
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit(cell);
+            cell->get_dof_indices (local_dof_indices);
+            fe_values[this->introspection().extractors.compositional_fields[por_idx]].get_function_values (
+            		this->get_solution(), porosity_values);
+            for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.pressure).dofs_per_cell; ++j)
+              {
+                unsigned int pressure_idx
+                = this->get_fe().component_to_system_index(this->introspection().component_indices.pressure,
+                    /*dof index within component=*/ j);
+
+                // skip entries that are not locally owned:
+                if (!this->get_dof_handler().locally_owned_dofs().is_element(pressure_idx))
+                  continue;
+
+                unsigned int p_f_idx
+                = this->get_fe().component_to_system_index(this->introspection().component_indices.compaction_pressure,
+                    /*dof index within component=*/ j);
+
+                double p_s = this->get_solution()(local_dof_indices[pressure_idx]);
+                double p_f = this->get_solution()(local_dof_indices[p_f_idx]);
+                double phi = porosity_values[j];
+                double p_c;
+                p_c = (1.0-phi) * (p_s - p_f);
+
+                compaction_pressure(local_dof_indices[p_f_idx]) = p_c;
+              }
+          }
+
+
       // what we want to compare:
       // (1) error of the numerical phase speed c:
       // c_numerical = c_analytical - Delta / time;
@@ -857,7 +901,7 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_f);
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-                                         this->get_solution(),
+    		                             compaction_pressure,
                                          *ref_func,
                                          cellwise_errors_p,
                                          quadrature_formula,
@@ -865,11 +909,12 @@ namespace aspect
                                          &comp_p);
 
       std::ostringstream os;
-      os << std::scientific << cellwise_errors_f.l2_norm()/(amplitude * this->get_triangulation().n_levels())
-                    << ", " << cellwise_errors_p.l2_norm()/(maximum_pressure * this->get_triangulation().n_levels())
-                    << ", " << error_c;
+      os << std::scientific << cellwise_errors_f.l2_norm() / (amplitude * sqrt(cellwise_errors_f.size()))
+                    << ", " << cellwise_errors_p.l2_norm() / (maximum_pressure * sqrt(cellwise_errors_p.size()))
+                    << ", " << error_c
+                    << ", " << delta;
 
-      return std::make_pair("Errors e_f, e_p, e_c:", os.str());
+      return std::make_pair("Errors e_f, e_p, e_c, delta:", os.str());
     }
 
   }
