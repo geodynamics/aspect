@@ -8,13 +8,17 @@ set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 0.5
 set Composition solver tolerance           = 1e-12
 set Nonlinear solver scheme                = iterated IMPES
+set Output directory                       = output
+set Max nonlinear iterations               = 5
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
 
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
-set End time                               = 1e12
+# This end time is chosen in such a way that the solitary wave travels
+# approximately 5 times its wavelength during the model time.
+set End time                               = 6e6
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -25,7 +29,7 @@ set Use years in output instead of seconds = true
 set Use direct solver for Stokes system    = true
 
 subsection Discretization
-  set Stokes velocity polynomial degree = 3
+  set Stokes velocity polynomial degree = 2
 end
 
 subsection Compositional fields
@@ -53,7 +57,7 @@ end
 
 subsection Boundary velocity model
   subsection Function
-    set Function expression = 0;-7.89e-5
+    set Function expression = 0;-1.656774e-4
   end
 end
 
@@ -61,9 +65,9 @@ subsection Geometry model
   set Model name = box # default: 
 
   subsection Box
-    set X extent  = 15
-    set Y extent  = 300
-    set Y repetitions = 20
+    set X extent  = 10
+    set Y extent  = 400
+    set Y repetitions = 40
   end
 
 end
@@ -86,7 +90,7 @@ subsection Initial conditions
   set Model name = function # default: 
   subsection Function
     set Function constants  = l=250000
-    set Function expression = 293
+    set Function expression = 293+1e-5*sin(y/l)
     set Variable names      = x,y
   end
 end
@@ -94,7 +98,7 @@ end
 subsection Compositional initial conditions
   set Model name = Solitary wave initial condition # default: 
   subsection Solitary wave initial condition
-     set Offset = 150
+    set Offset = 200
   end
 end
 
@@ -102,7 +106,6 @@ end
 subsection Material model
 
   set Model name = Solitary Wave # default: 
-
 
 end
 
@@ -132,7 +135,7 @@ end
 
 subsection Postprocess
 
-  set List of postprocessors = visualization,composition statistics,velocity statistics
+  set List of postprocessors = visualization,composition statistics,velocity statistics,solitary wave statistics
 
   subsection Visualization
 
@@ -152,7 +155,7 @@ subsection Postprocess
     # value of zero indicates that output should be generated in each time
     # step. Units: years if the 'Use years in output instead of seconds'
     # parameter is set; seconds otherwise.
-    set Time between graphical output = 0                                                                                # default: 1e8
+    set Time between graphical output = 5e5                                                                                # default: 1e8
   end
 
 end

@@ -55,7 +55,7 @@ namespace aspect
     namespace AnalyticSolutions
     {
       // vectors to store the porosity field and the corresponding coordinate in
-      const unsigned int max_points = 1e6;
+      const unsigned int max_points = 2e8;
       std::vector<double> porosity(max_points), coordinate(max_points);
 
       /**
@@ -792,7 +792,7 @@ namespace aspect
 
       // TODO: different case for moving wave (with zero boundary velocity)
       // const double phase_speed = velocity_scaling * (2.0 * amplitude / background_porosity + 1);
-      return local_z_coordinate - offset; // + phase_speed * this->get_time());
+      return local_z_coordinate - offset; // + phase_speed * this->get_time();
     }
 
     template <int dim>
