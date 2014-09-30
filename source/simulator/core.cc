@@ -175,14 +175,14 @@ namespace aspect
   {
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
-	// only open the logfile on processor 0, the other processors won't be
-	// writing into the stream anyway
-	log_file_stream.open((parameters.output_directory + "log.txt").c_str(),
-			     parameters.resume_computation ? std::ios_base::app : std::ios_base::out);
+        // only open the logfile on processor 0, the other processors won't be
+        // writing into the stream anyway
+        log_file_stream.open((parameters.output_directory + "log.txt").c_str(),
+                             parameters.resume_computation ? std::ios_base::app : std::ios_base::out);
 
-	// we already printed the header to the screen, so here we just dump it
-	// into the logfile.
-	print_aspect_header(log_file_stream);
+        // we already printed the header to the screen, so here we just dump it
+        // into the logfile.
+        print_aspect_header(log_file_stream);
       }
 
     computing_timer.enter_section("Initialization");
@@ -762,6 +762,8 @@ namespace aspect
 
 #else
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
+                                               system_partitioning,
+                                               introspection.index_sets.system_relevant_partitioning,
                                                mpi_communicator);
 #endif
 
@@ -814,6 +816,8 @@ namespace aspect
 
 #else
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
+                                               system_partitioning,
+                                               introspection.index_sets.system_relevant_partitioning,
                                                mpi_communicator);
 #endif
     DoFTools::make_sparsity_pattern (dof_handler,
