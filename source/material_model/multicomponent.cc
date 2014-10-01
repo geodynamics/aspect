@@ -396,6 +396,8 @@ namespace aspect
             viscosity_averaging = geometric;
           else if (prm.get ("Viscosity averaging scheme") == "maximum composition")
             viscosity_averaging = maximum_composition;
+          else
+            AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
 
           std::vector<double> x_values;
 
