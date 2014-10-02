@@ -134,6 +134,19 @@ ELSE()
   ENDFOREACH()
 ENDIF()
 
+# See whether we can verify that every plugin we load is compiled against
+# the same deal.II library
+INCLUDE (CheckIncludeFiles)
+CHECK_INCLUDE_FILES ("link.h" _HAVE_LINK_H)
+IF (_HAVE_LINK_H)
+  MESSAGE(STATUS "Enabling checking of compatible deal.II library when loading plugins")
+  FOREACH(_source_file ${TARGET_SRC})
+    SET_PROPERTY(SOURCE ${_source_file}
+      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_HAVE_LINK_H=1)
+  ENDFOREACH()
+ENDIF()
+
+
 DEAL_II_INVOKE_AUTOPILOT()
 
 MESSAGE(STATUS "Writing config into detailed.log...")
