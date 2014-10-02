@@ -388,14 +388,16 @@ namespace aspect
         {
           reference_T                = prm.get_double ("Reference temperature");
 
-          if (prm.get ("Viscosity averaging scheme") == "Harmonic")
+          if (prm.get ("Viscosity averaging scheme") == "harmonic")
             viscosity_averaging = harmonic;
-          else if (prm.get ("Viscosity averaging scheme") == "Arithmetic")
+          else if (prm.get ("Viscosity averaging scheme") == "arithmetic")
             viscosity_averaging = arithmetic;
-          else if (prm.get ("Viscosity averaging scheme") == "Geometric")
+          else if (prm.get ("Viscosity averaging scheme") == "geometric")
             viscosity_averaging = geometric;
-          else if (prm.get ("Viscosity averaging scheme") == "Maximum composition")
+          else if (prm.get ("Viscosity averaging scheme") == "maximum composition")
             viscosity_averaging = maximum_composition;
+          else
+            AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
 
           std::vector<double> x_values;
 
