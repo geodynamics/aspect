@@ -111,6 +111,8 @@ get_dimension(const std::string &parameter_filename)
 
 
 #if ASPECT_USE_SHARED_LIBS==1
+
+#ifdef ASPECT_HAVE_LINK_H
 // collect the names of the shared libraries linked to by this program. this
 // function is a callback for the dl_iterate_phdr() function we call below
 int get_names_of_shared_libs (struct dl_phdr_info *info,
@@ -120,6 +122,7 @@ int get_names_of_shared_libs (struct dl_phdr_info *info,
   reinterpret_cast<std::set<std::string>*>(data)->insert (info->dlpi_name);
   return 0;
 }
+#endif  
 
 
 // make sure the list of shared libraries we currently link with
