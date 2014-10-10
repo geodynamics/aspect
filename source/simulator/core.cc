@@ -772,6 +772,8 @@ namespace aspect
                                                mpi_communicator);
 #endif
 
+#endif
+
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
                                      constraints, false,
