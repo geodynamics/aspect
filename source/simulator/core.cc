@@ -761,15 +761,15 @@ namespace aspect
     LinearAlgebra::CompressedBlockSparsityPattern sp(introspection.index_sets.system_relevant_partitioning);
 
 #else
-
-#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) > 801
+#  if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) > 801
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
                                                system_partitioning,
                                                introspection.index_sets.system_relevant_partitioning,
                                                mpi_communicator);
-#else
+#  else
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
                                                mpi_communicator);
+#  endif
 #endif
 
     DoFTools::make_sparsity_pattern (dof_handler,
