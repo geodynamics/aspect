@@ -1243,9 +1243,6 @@ namespace aspect
             compressibility_f = melt_outputs.fluid_compressibilities[q];
             density_f = melt_outputs.fluid_densities[q];
             bulk_density = (1.0 - porosity) * density_s + porosity * density_f;
-
-            porosity = std::min(std::max(porosity,0.001),0.999);
-
             viscosity_c = melt_outputs.compaction_viscosities[q];
 
             p_f_RHS = compute_fluid_pressure_RHS(scratch,

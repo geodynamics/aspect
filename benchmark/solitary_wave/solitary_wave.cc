@@ -160,21 +160,27 @@ namespace aspect
        class FunctionSolitaryWave : public Function<dim>
        {
          public:
-    	   FunctionSolitaryWave (double offset, double delta, std::vector<double> &initial_pressure, double max_z)
+    	   FunctionSolitaryWave (const double offset, const double delta, const std::vector<double> &initial_pressure, const double max_z)
     	     :
     		 Function<dim>(dim+4),
     		 offset_(offset),
-    		 delta_(delta),
+    	     delta_(delta),
     	     initial_pressure_(initial_pressure),
     	     max_z_(max_z)
     	   {}
 
+    	   virtual void set_delta(const double delta)
+    	   {
+    		   delta_ = delta;
+    	   }
+
            virtual void vector_value (const Point< dim > &p,
                                       Vector< double >   &values) const
            {
-        	 const double index = static_cast<int>((p[dim-1]-delta_)/max_z_ * initial_pressure_.size());
-        	 const double z_coordinate1 = static_cast<double>(index)/static_cast<double>(initial_pressure_.size()) * max_z_;
-        	 const double z_coordinate2 = static_cast<double>(index+1)/static_cast<double>(initial_pressure_.size()) * max_z_;
+        	 const double index = static_cast<int>((p[dim-1]-delta_)/max_z_ * (initial_pressure_.size()-1));
+        	 AssertThrow(index < initial_pressure_.size(), ExcMessage("not in range"));
+        	 const double z_coordinate1 = static_cast<double>(index)/static_cast<double>(initial_pressure_.size()-1) * max_z_;
+        	 const double z_coordinate2 = static_cast<double>(index+1)/static_cast<double>(initial_pressure_.size()-1) * max_z_;
         	 const double interpolated_pressure = (index == initial_pressure_.size()-1)
                     		                      ?
                     		                      initial_pressure_[index]
@@ -187,10 +193,10 @@ namespace aspect
            }
 
          private:
-           double offset_;
+           const double offset_;
            double delta_;
-           std::vector<double> initial_pressure_;
-           double max_z_;
+           const std::vector<double> initial_pressure_;
+           const double max_z_;
        };
      }
 
@@ -586,6 +592,8 @@ namespace aspect
         unsigned int max_points;
         std::vector<double> initial_pressure;
         double maximum_pressure;
+        std_cxx1x::shared_ptr<Function<dim> > ref_func;
+
     };
 
     template <int dim>
@@ -654,7 +662,7 @@ namespace aspect
       endc = this->get_dof_handler().end();
 
       // do the same stuff we do in depth average
-      std::vector<double> volume(max_points);
+      std::vector<double> volume(max_points,0.0);
       std::vector<double> p_s(n_q_points);
       std::vector<double> p_f(n_q_points);
       std::vector<double> phi(n_q_points);
@@ -675,8 +683,8 @@ namespace aspect
             for (unsigned int q=0; q<n_q_points; ++q)
               {
             	double z = fe_values.quadrature_point(q)[dim-1];
-                const unsigned int idx = static_cast<unsigned int>((z*max_points)/max_depth);
-                Assert(idx < max_points, ExcInternalError());
+                const unsigned int idx = static_cast<unsigned int>((z*(max_points-1))/max_depth);
+                AssertThrow(idx < max_points, ExcInternalError());
 
                 initial_pressure[idx] += (1.0-phi[q]) * (p_s[q] - p_f[q]) * fe_values.JxW(q);
                 volume[idx] += fe_values.JxW(q);
@@ -691,7 +699,8 @@ namespace aspect
       Utilities::MPI::sum(initial_pressure, this->get_mpi_communicator(), pressure_all);
       maximum_pressure = Utilities::MPI::max (local_max_pressure, this->get_mpi_communicator());
 
-
+      // fill the first and last element of the initial_pressure vector if they are empty
+      // this makes sure they can be used for the interpolation later on
       if(pressure_all[0] == 0.0)
       {
     	unsigned int j = 1;
@@ -712,6 +721,7 @@ namespace aspect
     	initial_pressure[max_points-1] = pressure_all[k] / (static_cast<double>(volume_all[k])+1e-20);
       }
 
+      // interpolate between the non-zero elements to fill the elements that are 0
       for (unsigned int i=1; i<max_points-1; ++i)
       {
     	if (pressure_all[i] != 0.0)
@@ -803,9 +813,12 @@ namespace aspect
                   ExcNotImplemented());
 
       if(this->get_timestep_number()==0)
+      {
     	store_initial_pressure();
+        ref_func.reset (new AnalyticSolutions::FunctionSolitaryWave<dim>(offset,0.0,initial_pressure,
+      		                                                           this->get_geometry_model().maximal_depth()));
+      }
 
-      std_cxx1x::shared_ptr<Function<dim> > ref_func;
       double delta;
 
       if (dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model()) != NULL)
@@ -817,8 +830,8 @@ namespace aspect
           delta = compute_phase_shift();
 
           // TODO: we should use delta as an argument, but it does not work yet
-          ref_func.reset (new AnalyticSolutions::FunctionSolitaryWave<dim>(offset,0.0,initial_pressure,
-        		                                                           this->get_geometry_model().maximal_depth()));
+          // ref_func.set_delta(delta);
+
         }
       else
         {
@@ -826,7 +839,7 @@ namespace aspect
                       ExcMessage("Postprocessor Solitary Wave only works with the material model Solitary wave."));
         }
 
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.pressure).degree);
 
       // we need the compaction pressure, but we only have the solid and the fluid pressure stored in the solution vector.
       // Hence, we create a new vector only with the compaction pressure
