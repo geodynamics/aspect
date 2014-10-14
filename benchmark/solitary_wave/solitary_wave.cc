@@ -761,7 +761,7 @@ namespace aspect
       AssertThrow (this->introspection().base_elements.compositional_fields
                    != numbers::invalid_unsigned_int,
                    ExcMessage("This postprocessor cannot be used without compositional fields."));
-      const QIterated<dim> quadrature_formula (QTrapez<1>(), 200);
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.compositional_fields).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -777,6 +777,11 @@ namespace aspect
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
 
+      // The idea here is to first find the maximum, and then use the analytical solution of the
+      // solitary wave to calculate a phase shift for every point.
+      // This has to be done separately for points left and right of the maximum.
+      // In the end, these values for the phase shift are averaged.
+
       // compute the maximum composition by quadrature (because we also need the coordinate)
       double local_max_composition = -std::numeric_limits<double>::max();
       double local_z_coordinate = -std::numeric_limits<double>::max();
@@ -787,10 +792,9 @@ namespace aspect
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
             		                                                                                 compositional_values);
-            // TODO: we should use a correlation instead of just finding the maximum
             for (unsigned int q=0; q<n_q_points; ++q)
               {
-                const double composition = compositional_values[q]*fe_values.JxW(q);
+                const double composition = compositional_values[q];
 
                 if(composition > local_max_composition)
                 {
@@ -800,9 +804,45 @@ namespace aspect
               }
           }
 
+      cell = this->get_dof_handler().begin_active();
+      double phase_shift_integral = 0.0;
+      unsigned int number_of_points = 0;
+
+      for (; cell!=endc; ++cell)
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit (cell);
+            fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
+            		                                                                                 compositional_values);
+
+            for (unsigned int q=0; q<n_q_points; ++q)
+              {
+                const double composition = compositional_values[q];
+
+                if(composition > background_porosity + (amplitude - background_porosity)*0.05  && composition <= amplitude)
+                {
+                  double z = fe_values.quadrature_point(q)[dim-1];
+
+                  if(z > local_z_coordinate)
+                    z -= offset;
+                  else
+                    z = offset - z;
+
+				  double z_analytical = compaction_length
+									    * AnalyticSolutions::solitary_wave_solution(composition/background_porosity,
+																				    amplitude/background_porosity);
+
+				  phase_shift_integral += std::abs(z - z_analytical);
+				  number_of_points += 1;
+                }
+              }
+          }
+
+      phase_shift_integral /= static_cast<double>(number_of_points);
+
       // TODO: different case for moving wave (with zero boundary velocity)
       // const double phase_speed = velocity_scaling * (2.0 * amplitude / background_porosity + 1);
-      return local_z_coordinate - offset; // + phase_speed * this->get_time();
+      return phase_shift_integral; // + phase_speed * this->get_time();
     }
 
     template <int dim>
