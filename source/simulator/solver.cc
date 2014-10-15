@@ -466,14 +466,78 @@ namespace aspect
         Assert(introspection.block_indices.pressure == 0, ExcNotImplemented());
 
         LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
+        solution.block(0) = current_linearization_point.block(0);
 
+        if (parameters.include_melt_transport)
+          {
+            // We were solving for p_f (fluid pressure) and p_c (compaction
+            // pressure) and replaced them by p_s and p_f. Here we undo this step:
+            // (p_s, p_f) -> (p_f, p_c)
+
+            // p_c = (1-phi)*(p_s-p_f)
+            // p_f = (p_c - (1-phi) p_s) / (phi-1)
+            //    or p_s if phi=1
+            
+            // Think what we need to do if the pressure is not an FE_Q...
+            Assert(parameters.use_locally_conservative_discretization == false, ExcNotImplemented());
+	    
+	    distributed_stokes_solution.block(0) = solution.block(0);
+
+            const unsigned int por_idx = introspection.compositional_index_for_name("porosity");
+            const Quadrature<dim> quadrature(finite_element.base_element(introspection.base_elements.pressure).get_unit_support_points());
+            std::vector<double> porosity_values(quadrature.size());
+            FEValues<dim> fe_values (mapping,
+                                     finite_element,
+                                     quadrature,
+                                     update_quadrature_points | update_values);
+
+            std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+            typename DoFHandler<dim>::active_cell_iterator
+            cell = dof_handler.begin_active(),
+            endc = dof_handler.end();
+            for (; cell != endc; ++cell)
+              if (cell->is_locally_owned())
+                {
+                  fe_values.reinit(cell);
+                  cell->get_dof_indices (local_dof_indices);
+                  fe_values[introspection.extractors.compositional_fields[por_idx]].get_function_values (
+                      current_linearization_point, porosity_values);
+                  for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
+                    {
+                      unsigned int pressure_idx
+                      = finite_element.component_to_system_index(introspection.component_indices.pressure,
+                          /*dof index within component=*/ j);
+
+                      // skip entries that are not locally owned:
+                      if (!dof_handler.locally_owned_dofs().is_element(pressure_idx))
+                        continue;
+
+                      unsigned int p_c_idx
+                      = finite_element.component_to_system_index(introspection.component_indices.compaction_pressure,
+                          /*dof index within component=*/ j);
+
+                      double p_s = solution(local_dof_indices[pressure_idx]);
+                      double p_f = solution(local_dof_indices[p_c_idx]);
+                      double phi = porosity_values[j];
+                      double p_c = (1-phi)*(p_s-p_f);
+
+                      distributed_stokes_solution(local_dof_indices[pressure_idx]) = p_f;
+                      distributed_stokes_solution(local_dof_indices[p_c_idx]) = p_c;
+		      //std::cout << "(p_s, p_f) -> (p_f, p_c) " << p_s << ", " << p_f << ", " << phi << " -> "
+		      //<< p_f << ", " << p_c << std::endl;
+                    }
+                }
+            distributed_stokes_solution.block(0).compress(VectorOperation::insert);
+            solution.block(0) = distributed_stokes_solution.block(0);
+          }
+	
+	
         // While we don't need to set up the initial guess for the direct solver
         // (it will be ignored by the solver anyway), we need this if we are
         // using a nonlinear scheme, because we use this to compute the current
         // nonlinear residual (see initial_residual below).
         // TODO: if there was an easy way to know if the caller needs the
         // initial residual we could skip all of this stuff.
-        solution.block(0) = current_linearization_point.block(0);
         denormalize_pressure (solution);
         distributed_stokes_solution.block(0) = solution.block(0);
         current_constraints.set_zero (distributed_stokes_solution);
@@ -551,9 +615,10 @@ namespace aspect
         if (parameters.include_melt_transport)
           {
             // We were solving for p_f (fluid pressure) and p_c (compaction
-            // pressure), but we want the solid pressure in the first pressure
-            // variable:
-
+            // pressure), but replace them by:
+            // (p_f, p_c) -> (p_s, p_f)
+            
+            // using:
             // p_s = (p_c - (phi-1) p_f) / (1-phi)
             //    or p_f if phi=1
 
@@ -610,6 +675,8 @@ namespace aspect
 
                       distributed_stokes_solution(local_dof_indices[pressure_idx]) = p_s;
                       distributed_stokes_solution(local_dof_indices[p_c_idx]) = p_f;
+		      //std::cout << "(p_f, p_c) -> (p_s, p_f) " << p_f << ", " << p_c << ", " << phi << " -> "
+		      //<< p_s << ", " << p_f << std::endl;
                     }
                 }
             distributed_stokes_solution.block(0).compress(VectorOperation::insert);
