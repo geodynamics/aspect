@@ -119,6 +119,11 @@
  * material models.
  * <br>
  * (Rene Gassmoeller, 2014/08/01)
+ * 
+ * <li> New: Added material model based on visco-plastic rheology described
+ * in Morency and Doin, 2004.
+ * <br>
+ * (Jonathan Perry-Houts, 2014/07/10)
  *
  * <li> New: There is now a section in the manual detailing the
  * "Burstedde" benchmark and its verification.

@@ -1,0 +1,42 @@
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields  = upper_crust, lower_crust
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names = x,y
+    set Function expression = if(y>=725e3,1,0);if((y<=725e3&y>700e3),1,0)
+  end
+end
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names = x,y
+    set Function constants = h=750e3, w=3000e3
+    set Function expression = \
+      if( y < 100e3, (100e3-y)/100e3*100+1635, if(y>650e3, (h-y)/(100e3)*1342+293, 1635))
+  end
+end
+
+subsection Material model
+  set Model name = morency doin
+  subsection Morency
+    set Densities = 3300,2700,2700
+    set Activation energies = 500,320,320
+    set Coefficient of yield stress increase with depth = 0.25
+    set Thermal expansivities = 2e-5
+    set Stress exponents for viscous rheology = 3
+    set Stress exponents for plastic rheology = 30
+    set Thermal diffusivity = 0.8e-6
+    set Heat capacity = 1.25e3
+    set Activation volume = 6.4e-6
+    set Reference strain rate = 6.4e-16
+    set Preexponential constant for viscous rheology law = 7e11 ## Value used in paper is 1.24e14
+    set Cohesive strength of rocks at the surface = 117
+    set Reference temperature = 293
+    set Minimum strain rate = 5e-19                             ## Value used in paper is 1.4e-20
+  end
+end
