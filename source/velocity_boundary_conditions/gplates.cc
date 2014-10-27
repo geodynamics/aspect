@@ -239,7 +239,8 @@ namespace aspect
 
             // Currently it would not be necessary to update the grid positions at every timestep
             // since they are not allowed to change. In case we allow this later, do it anyway.
-            const Tensor<1,3> spherical_position = get_grid_point_position(idx_theta,idx_phi,false);
+            Tensor<1,3> spherical_position = get_grid_point_position(idx_theta,idx_phi,false);
+            if(idx_theta==0 || idx_theta==n_theta-1)spherical_position[1]=0.;
             velocity_positions[idx_theta][idx_phi] = cartesian_surface_coordinates(spherical_position);
             (*velocity_values)[idx_theta][idx_phi] = sphere_to_cart_velocity(spherical_velocities,spherical_position)
                                                      / cmyr_si;
