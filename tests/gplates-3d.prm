@@ -1,0 +1,90 @@
+# A simple setup for for using the GPlates interface in a 3d shell.
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set End time                               = 0
+set Output directory                       = output
+set Adiabatic surface temperature          = 1600
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Viscosity                     = 1e22
+    set Thermal viscosity exponent    = 5.0
+    set Reference temperature         = 1600
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+  end
+end
+
+
+subsection Model settings
+  set Prescribed velocity boundary indicators = 1:gplates
+  set Tangential velocity boundary indicators = 0
+
+  set Fixed temperature boundary indicators   = 0,1
+
+  set Include shear heating                   = false
+end
+
+
+subsection Boundary velocity model
+  subsection GPlates model
+    set Data directory = $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/gplates/
+    set Velocity file name = current_day_1.4.gpml
+    set Time step = 1e6
+    set Point one = 1.5708,4.87
+    set Point two = 1.5708,5.24
+    set Interpolation width = 2000000
+  end
+end
+
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 2600 
+    set Outer temperature = 273 
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = adiabatic
+
+  subsection Adiabatic
+    set Age top boundary layer = 5e7
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 2
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, velocity boundary statistics
+end
