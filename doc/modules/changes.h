@@ -6,7 +6,17 @@
  *
  *
  * <ol>
- *<li> New: There is now the possibility to interpolate the visualization
+ * <li> New: With a sufficiently new version of deal.II, ASPECT now uses
+ * meshes for the spherical shell where each node is placed on concentric
+ * shells. Previously, upon mesh refinement, new vertices were placed at
+ * an averaged location of the vertices of the mother cell, leading to
+ * a certain degree of distortion of cells. It also led to a situation
+ * where not all cells are equally shaped due to this distortion. The new
+ * mesh, in contrast, is completely symmetric.
+ * <br>
+ * (Wolfgang Bangerth, 2014/10/31)
+ *
+ * <li> New: There is now the possibility to interpolate the visualization
  * output to a refined output mesh. This accounts for the fact that most
  * visualization software only offers linear interpolation between grid points
  * and therefore the output file is a very coarse representation of the actual

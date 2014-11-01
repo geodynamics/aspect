@@ -23,7 +23,10 @@
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria_boundary_lib.h>
-
+#if (DEAL_II_VERSION_MAJOR>=9) || \
+  ((DEAL_II_VERSION_MAJOR==8) && (DEAL_II_VERSION_MINOR >= 2))
+#  include <deal.II/grid/manifold_lib.h>
+#endif
 
 namespace aspect
 {
@@ -76,6 +79,33 @@ namespace aspect
           Assert (false, ExcInternalError());
         }
 
+#if ((DEAL_II_VERSION_MAJOR>=9) ||				\
+     ((DEAL_II_VERSION_MAJOR==8) && (DEAL_II_VERSION_MINOR >= 2)))
+
+      // if deal.II is sufficiently new, then use a manifold
+      // description for all cells. use manifold_id 2 in order not to
+      // step on the boundary indicators used below
+      static const SphericalManifold<dim> spherical_manifold;
+      coarse_grid.set_manifold (2, spherical_manifold);
+
+      for (typename Triangulation<dim>::active_cell_iterator
+	     cell = coarse_grid.begin_active();
+	   cell != coarse_grid.end(); ++cell)
+	cell->set_all_manifold_ids (2);
+
+      // clear the manifold id from objects for which we have boundary
+      // objects (and need boundary objects because at the time of
+      // writing, only boundary objects provide normal vectors)
+      for (typename Triangulation<dim>::active_cell_iterator
+	     cell = coarse_grid.begin_active();
+	   cell != coarse_grid.end(); ++cell)
+	for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+	  if (cell->at_boundary(f))
+	    cell->face(f)->set_all_manifold_ids (numbers::invalid_manifold_id);
+#endif
+      
+      // attach a boundary object to the inner
+      // and outer boundaries
       static const HyperShellBoundary<dim> boundary_shell;
       coarse_grid.set_boundary (0, boundary_shell);
       coarse_grid.set_boundary (1, boundary_shell);
