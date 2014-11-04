@@ -56,7 +56,7 @@ namespace aspect
     {
       // vectors to store the porosity field and the corresponding coordinate in
       const unsigned int max_points = 2e8;
-      std::vector<double> porosity(max_points), coordinate(max_points);
+      std::vector<double> porosity, coordinate;
 
       /**
        * @note The solitary wave solution only exists as a function x = func(phi)
@@ -85,6 +85,34 @@ namespace aspect
                 * (2 * A_phi - 1.0/A_1 * std::log((A_1 - A_phi)/(A_1 + A_phi)));
        }
 
+
+       /**
+        * This function reads the coordinate and the porosity of the solitary wave
+        * from an input file.
+        *
+        * @param filename Name of the input file.
+        */
+       void read_solitary_wave_solution (const std::string &filename)
+       {
+         std::string temp;
+         std::ifstream in(filename.c_str(), std::ios::in);
+         AssertThrow (in,
+                      ExcMessage (std::string("Couldn't open file <") + filename));
+
+         while (!in.eof())
+           {
+             double x, f;
+             in >> x >> f;
+             if (in.eof())
+               break;
+             getline(in, temp);
+
+             coordinate.insert(coordinate.begin(),x);
+             porosity.insert(porosity.begin(),f);
+           }
+       }
+
+
        /**
         * This function gets the coordinate as an input parameters and gives
         * back the porosity of the solitary wave. As this function is only defined
@@ -99,22 +127,35 @@ namespace aspect
        void compute_porosity (const double amplitude,
                               const double background_porosity,
                               const double offset,
-                              const double compaction_length)
+                              const double compaction_length,
+                              const bool read_solution,
+                              const std::string file_name)
        {
          // non-dimensionalize the amplitude
          const double non_dim_amplitude = amplitude / background_porosity;
 
-         // get the coordinates where we have the solution
-         for (unsigned int i=0;i<max_points;++i)
+         if(read_solution)
+           read_solitary_wave_solution(file_name);
+         else
            {
-             porosity[i] = 1.0 + 1e-10*non_dim_amplitude
-                           + double(i)/double(max_points-1) * (non_dim_amplitude * (1.0 - 1e-10) - 1.0);
-             coordinate[i] = solitary_wave_solution(porosity[i], non_dim_amplitude);
+             porosity.resize(max_points);
+             coordinate.resize(max_points);
 
-             // re-scale porosity and position
-             porosity[i] *= background_porosity;
-             coordinate[i] *= compaction_length;
+             // get the coordinates where we have the solution
+             for (unsigned int i=0;i<max_points;++i)
+               {
+                 porosity[i] = 1.0 + 1e-10*non_dim_amplitude
+                               + double(i)/double(max_points-1) * (non_dim_amplitude * (1.0 - 1e-10) - 1.0);
+                 coordinate[i] = solitary_wave_solution(porosity[i], non_dim_amplitude);
+               }
            }
+
+             for (unsigned int i=0;i<coordinate.size();++i)
+               {
+                 // re-scale porosity and position
+                 porosity[i] *= background_porosity;
+                 coordinate[i] *= compaction_length;
+               }
        }
 
 
@@ -136,7 +177,7 @@ namespace aspect
          if(x > coordinate[0])
            return porosity[0];
 
-         unsigned int j= max_points-2;
+         unsigned int j= coordinate.size()-2;
          unsigned int i = j/2;
          while (!(x < coordinate[j] && x >= coordinate[j+1]))
          {
@@ -440,6 +481,8 @@ namespace aspect
         double background_porosity;
         double offset;
         double compaction_length;
+        bool read_solution;
+        std::string file_name;
     };
 
     template <int dim>
@@ -487,7 +530,9 @@ namespace aspect
       AnalyticSolutions::compute_porosity(amplitude,
                                           background_porosity,
                                           offset,
-                                          compaction_length);
+                                          compaction_length,
+                                          read_solution,
+                                          file_name);
     }
 
 
@@ -520,6 +565,13 @@ namespace aspect
               "Offset of the center of the solitary wave from the boundary"
               "of the domain. "
               "Units: $m$.");
+          prm.declare_entry ("Read solution from file", "false",
+              Patterns::Bool (),
+              "Whether to read the porosity initial condition from "
+              "a file or to compute it.");
+          prm.declare_entry ("File name", "solitary_wave.txt",
+              Patterns::Anything (),
+              "The file name of the porosity initial condition data. ");
         }
         prm.leave_subsection();
       }
@@ -539,6 +591,8 @@ namespace aspect
           amplitude            = prm.get_double ("Amplitude");
           background_porosity  = prm.get_double ("Background porosity");
           offset               = prm.get_double ("Offset");
+          read_solution        = prm.get_bool ("Read solution from file");
+          file_name            = prm.get ("File name");
 
           AssertThrow(amplitude > background_porosity,
                       ExcMessage("Amplitude of the solitary wave must be larger "
