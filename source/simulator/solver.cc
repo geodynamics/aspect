@@ -665,13 +665,16 @@ namespace aspect
                           /*dof index within component=*/ j);
 
                       double p_f = solution(local_dof_indices[pressure_idx]);
-                      double p_c = solution(local_dof_indices[p_c_idx]);
+                      double p_c = 0.0;
                       double phi = porosity_values[j];
                       double p_s;
-                      if (phi >(1.0-1e-5))
+                      if (phi >(1.0-parameters.melt_transport_threshold) || (phi <parameters.melt_transport_threshold))
                         p_s = p_f;
                       else
+                      {
+                    	p_c = solution(local_dof_indices[p_c_idx]);
                         p_s = (p_c - (phi-1.0) * p_f) / (1.0-phi);
+                      }
 
                       distributed_stokes_solution(local_dof_indices[pressure_idx]) = p_s;
                       distributed_stokes_solution(local_dof_indices[p_c_idx]) = p_f;

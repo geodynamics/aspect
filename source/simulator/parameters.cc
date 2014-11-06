@@ -303,6 +303,11 @@ namespace aspect
                          "Whether to include the transport of melt into the model or not. If this "
                          "is set to true, an additional compositional field for the porosity and "
                          "an additional pressure (the compaction pressure) will be added.");
+      prm.declare_entry ("Melt transport threshold", "1e-3",
+                         Patterns::Double (),
+                         "The porosity limit for melt migration. For smaller porosities, the equations "
+                         "reduce to the Stokes equations and do neglect melt transport. Only used "
+                         "if Include melt transport is true. ");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "
@@ -736,6 +741,7 @@ namespace aspect
       include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
       include_latent_heat = prm.get_bool ("Include latent heat");
       include_melt_transport = prm.get_bool ("Include melt transport");
+      melt_transport_threshold  = prm.get_double ("Melt transport threshold");
 
       {
         nullspace_removal = NullspaceRemoval::none;
