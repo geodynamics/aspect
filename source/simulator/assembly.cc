@@ -1107,7 +1107,11 @@ namespace aspect
     const double solid_compressibility = material_model_outputs.fluid_compressibilities[q_point];
     const Tensor<1,dim> current_u = scratch.velocity_values[q_point];
     const double porosity         = std::max(material_model_inputs.composition[q_point][porosity_index],0.0);
-    const double K_D = material_model_outputs.permeabilities[q_point] / material_model_outputs.fluid_viscosities[q_point];
+    const double K_D = (porosity > parameters.melt_transport_threshold
+    		            ?
+    		            material_model_outputs.permeabilities[q_point] / material_model_outputs.fluid_viscosities[q_point]
+    		            :
+    		            0.0);
 
     const Tensor<1,dim>
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
@@ -1239,7 +1243,13 @@ namespace aspect
           {
             const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
             porosity = std::max(melt_inputs.composition[q][porosity_index],0.000);
-            K_D = melt_outputs.permeabilities[q] / melt_outputs.fluid_viscosities[q];
+
+            K_D = (porosity > parameters.melt_transport_threshold
+            	   ?
+            	   melt_outputs.permeabilities[q] / melt_outputs.fluid_viscosities[q]
+            	   :
+            	   0.0);
+
             compressibility_f = melt_outputs.fluid_compressibilities[q];
             density_f = melt_outputs.fluid_densities[q];
             bulk_density = (1.0 - porosity) * density_s + porosity * density_f;
@@ -1336,7 +1346,15 @@ namespace aspect
                 const Tensor<1,dim>
                 gravity = gravity_model->gravity_vector (scratch.finite_element_face_values.quadrature_point(q));
                 const double density_f = melt_outputs.fluid_densities[q];
-                const double K_D = melt_outputs.permeabilities[q] / melt_outputs.fluid_viscosities[q];
+
+                const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+                const double porosity = std::max(melt_inputs.composition[q][porosity_index],0.000);
+
+                const double K_D = (porosity > parameters.melt_transport_threshold
+                	                ?
+                	                melt_outputs.permeabilities[q] / melt_outputs.fluid_viscosities[q]
+                	                :
+                	                0.0);
 
                 for (unsigned int i = 0; i < dofs_per_cell; ++i)
                   {
@@ -1604,10 +1622,13 @@ namespace aspect
     const Tensor<1,dim>
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
 
+    double melt_transport_RHS = melting_rate / density
+    		                    + (1.0 - current_phi)
+    		                    * (divergence_u + compressibility * density * (current_u * gravity));
 
-    const double melt_transport_RHS = melting_rate / density
-    		                        + (1.0 - current_phi)
-    		                        * (divergence_u + compressibility * density * (current_u * gravity));
+    if(current_phi < parameters.melt_transport_threshold && melting_rate < parameters.melt_transport_threshold
+    		                                             && (!material_model->is_compressible()))
+      melt_transport_RHS = 0.0;
 
     return melt_transport_RHS;
   }
@@ -1751,6 +1772,7 @@ namespace aspect
       }
     else
       {
+    // TODO: why do we use the old solution here?
         compute_material_model_input_values (old_solution,
                                              scratch.finite_element_values,
                                              true,
