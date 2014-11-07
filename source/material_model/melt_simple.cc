@@ -171,14 +171,13 @@ namespace aspect
 
               for (unsigned int c=0;c<in.composition[i].size();++c)
                 {
-                  if (c == peridotite_idx)
+                  if (c == peridotite_idx && this->get_timestep()>0)
                     out.reaction_terms[i][c] = melting_rate(in.temperature[i], in.pressure[i], in.composition[i]);
-                  else if (c == porosity_idx)
+                  else if (c == porosity_idx && this->get_timestep()>0)
                 	out.reaction_terms[i][c] = melting_rate(in.temperature[i], in.pressure[i], in.composition[i])
-                	                           * reference_rho_f;
+                	                           * reference_rho_s  / this->get_timestep();
                   else
                     out.reaction_terms[i][c] = 0.0;
-                  out.reaction_terms[i][c] = 0.0;
                 }
             }
           else
