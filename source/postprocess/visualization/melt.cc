@@ -58,6 +58,8 @@ namespace aspect
          // or p_c if phi=1
          // melt velocity = v_f =  v_s - K_D (nabla p_f - rho_f g) / phi  or = 0
 
+       	 AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
+
          const unsigned int n_quadrature_points = uh.size();
          Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
          Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
@@ -123,6 +125,8 @@ namespace aspect
         // p_f = (p_c - (1-phi) p_s ) / (phi-1)
         // or p_c if phi=1
         // melt velocity = v_f =  v_s - K_D (nabla p_f - rho_f g) / phi  or = v_s
+
+      	AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
 
         const unsigned int n_quadrature_points = uh.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
@@ -200,6 +204,8 @@ namespace aspect
                                          const std::vector<Point<dim> >                  &evaluation_points,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
+    	AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
+
         const unsigned int n_quadrature_points = uh.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
@@ -248,6 +254,8 @@ namespace aspect
                                           const std::vector<Point<dim> >                  &evaluation_points,
                                           std::vector<Vector<double> >                    &computed_quantities) const
        {
+       	 AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
+
          const unsigned int n_quadrature_points = uh.size();
          Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
          Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
@@ -301,7 +309,9 @@ namespace aspect
                                           const std::vector<Point<dim> >                  &evaluation_points,
                                           std::vector<Vector<double> >                    &computed_quantities) const
        {
-         const unsigned int n_quadrature_points = uh.size();
+       	 AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
+
+    	 const unsigned int n_quadrature_points = uh.size();
          Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
          Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
          Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
@@ -349,6 +359,8 @@ namespace aspect
                                            const std::vector<Point<dim> >                  &evaluation_points,
                                            std::vector<Vector<double> >                    &computed_quantities) const
         {
+          AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
+
           const unsigned int n_quadrature_points = uh.size();
           Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
           Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
