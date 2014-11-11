@@ -181,7 +181,11 @@ namespace aspect
                 }
             }
           else
+          {
             out.viscosities[i] = eta_0;
+            for (unsigned int c=0;c<in.composition[i].size();++c)
+              out.reaction_terms[i][c] = 0.0;
+          }
 
           out.densities[i] = reference_rho_s * (1 - thermal_expansivity * (in.temperature[i] - reference_T));
           out.thermal_expansion_coefficients[i] = thermal_expansivity;

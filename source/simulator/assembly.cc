@@ -1628,7 +1628,7 @@ namespace aspect
 
     if(current_phi < parameters.melt_transport_threshold && melting_rate < parameters.melt_transport_threshold
     		                                             && (!material_model->is_compressible()))
-      melt_transport_RHS = 0.0;
+      melt_transport_RHS = melting_rate / density;
 
     return melt_transport_RHS;
   }
