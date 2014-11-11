@@ -1522,11 +1522,14 @@ namespace aspect
 
               current_linearization_point = solution;
 
-              pcout << "      Nonlinear residuals: " << temperature_residual
-                    << ", " << stokes_residual;
+              // write the residual output in the same order as the output when
+              // solving the equations
+              pcout << "      Nonlinear residuals: " << temperature_residual;
 
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 pcout << ", " << composition_residual[c];
+
+              pcout << ", " << stokes_residual;
 
               pcout << std::endl
                     << std::endl;
