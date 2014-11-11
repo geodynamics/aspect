@@ -391,6 +391,9 @@ namespace aspect
       introspection.index_sets.system_partitioning[block_idx],
       mpi_communicator);
 
+    // solve the linear system:
+    current_constraints.set_zero(distributed_solution);
+
     // Compute the residual before we solve and return this at the end.
     // This is used in the nonlinear solver.
     const double initial_residual = system_matrix.block(block_idx,block_idx).residual
@@ -398,8 +401,6 @@ namespace aspect
                                      distributed_solution.block(block_idx),
                                      system_rhs.block(block_idx));
 
-    // solve the linear system:
-    current_constraints.set_zero(distributed_solution);
     try
       {
         solver.solve (system_matrix.block(block_idx,block_idx),
