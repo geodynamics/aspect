@@ -60,9 +60,9 @@ namespace aspect
     {
       static const std::pair<std::string,types::boundary_id> mapping("surface", 0);
       return std::map<std::string,types::boundary_id> (&mapping,
-						       &mapping+1);
+                                                       &mapping+1);
     }
-	
+
 
     template <int dim>
     double
@@ -157,8 +157,8 @@ namespace aspect
     ASPECT_REGISTER_GEOMETRY_MODEL(Sphere,
                                    "sphere",
                                    "Geometry model for sphere with a user specified radius. This geometry "
-				   "has only a single boundary, so the only valid boundary indicator to "
-				   "specify in the input file is ``0''. It can also be referenced by the "
-				   "symbolic name ``surface'' in input files.")
+                                   "has only a single boundary, so the only valid boundary indicator to "
+                                   "specify in the input file is ``0''. It can also be referenced by the "
+                                   "symbolic name ``surface'' in input files.")
   }
 }

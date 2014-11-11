@@ -48,10 +48,15 @@ namespace aspect
 
       // then, get the temperature of the adiabatic profile at a representative
       // point at the top and bottom boundary of the model
+      // if adiabatic heating is switched off, assume a constant profile
       const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
       const Point<dim> bottom_point = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
       const double adiabatic_surface_temperature = this->get_adiabatic_conditions().temperature(surface_point);
-      const double adiabatic_bottom_temperature = this->get_adiabatic_conditions().temperature(bottom_point);
+      const double adiabatic_bottom_temperature = (this->include_adiabatic_heating())
+                                                  ?
+                                                  this->get_adiabatic_conditions().temperature(bottom_point)
+                                                  :
+                                                  adiabatic_surface_temperature;
 
       // get a representative profile of the compositional fields as an input
       // for the material model
@@ -211,8 +216,8 @@ namespace aspect
                              "represents the compositional fields that will be used as a reference "
                              "profile for calculating the thermal diffusivity. "
                              "This function is one-dimensional and depends only on depth. The format of this "
-			     "functions follows the syntax understood by the "
-			     "muparser library, see Section~\\ref{sec:muparser-format}.");
+                             "functions follows the syntax understood by the "
+                             "muparser library, see Section~\\ref{sec:muparser-format}.");
           prm.enter_subsection("Function");
           {
             Functions::ParsedFunction<1>::declare_parameters (prm, 1);

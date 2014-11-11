@@ -224,11 +224,15 @@ namespace aspect
                                  "function that approximates the solidus "
                                  "of pyroxenite. "
                                  "Units: $°C$.");
-              prm.declare_entry ("D2", "1.23e-7",
+              prm.declare_entry ("D2", "1.329e-7",
                                  Patterns::Double (),
                                  "Prefactor of the linear pressure term "
                                  "in the quadratic function that approximates "
                                  "the solidus of pyroxenite. "
+                                 "Note that this factor is different from the "
+                                 "value given in Sobolev, 2011, because they use "
+                                 "the potential temperature whereas we use the "
+                                 "absolute temperature. "
                                  "Units: $°C/Pa$.");
               prm.declare_entry ("D3", "-5.1e-18",
                                  Patterns::Double (),

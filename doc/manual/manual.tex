@@ -142,8 +142,9 @@ Wolfgang Bangerth\\Timo Heister\\
     Jacky Austermann,
     Markus B{\"u}rg,
     Juliane Dannberg,
-    Ren{\'e} Ga{\ss}m{\"o}ller,
-    Thomas Geenen, \\
+    William Durkin,
+    Ren{\'e} Ga{\ss}m{\"o}ller, \\
+    Thomas Geenen,
     Anne Glerum,
     Ryan Grove,
     Eric Heien,
@@ -466,12 +467,20 @@ purposes than just tracking chemical compositions. We will discuss this
 equation in more detail in Section~\ref{sec:compositional}.
 
 \subsubsection{A comment on adiabatic heating}
-In other codes and texts there is sometimes a simplification made to the adiabatic heating term in the previous equation. If you assume the pressure gradient is assumed to be small in the vertical direction, then $ -\rho \mathbf g \approx \nabla \mathbf{p} $, and we have the following relation (the negative sign is due to $\mathbf g$ pointing downwards)
-\begin{align}
+Other codes and texts sometimes make a simplification to the adiabatic heating
+term in the previous equation. If you assume the vertical component of the
+gradient of the \textit{dynamic} pressure to be small compared to the gradient
+of the \textit{total} pressure (in other words, the gradient is dominated by
+the gradient of the hydrostatic pressure), then $ -\rho \mathbf g \approx
+\nabla \mathbf{p} $, and we have the following relation (the negative sign is
+due to $\mathbf g$ pointing downwards) 
+\begin{align*}
 \alpha T \left( \mathbf u \cdot \nabla \mathbf p \right)
   & \approx -\alpha \rho T \mathbf u \cdot \mathbf g.
-  \notag
-\end{align}
+\end{align*}
+While this simplification is possible, it is not necessary if you have access
+to the total pressure. \aspect{} therefore implements the original term
+without this simplification.
 
 \subsubsection{Boundary conditions}
 Having discussed \eqref{eq:temperature}, let us come to the last one of the
@@ -555,7 +564,7 @@ parameterizations.
 
 Note that below we will discuss examples of the dependence of coefficients on
 other quantities; which dependence is actually implemented in the code is a
-different matter. As we will discuss in Section~\ref{sec:parameters} and
+different matter. As we will discuss in Sections~\ref{sec:parameters} and
 \ref{sec:extending}, some versions of these models are already implemented and
 can be selected from the input parameter file; others are easy to add to
 \aspect{} by providing self-contained descriptions of a set of coefficients
@@ -3028,7 +3037,7 @@ temperature. This leads to the following set of equations:
   & \textrm{in $\Omega$}.
 \end{align}
 It is well known that we can non-dimensionalize this set of equations by
-choosing introducing the Raleigh number $Ra=\frac{g\alpha}{\eta k}$. Formally,
+introducing the Raleigh number $Ra=\frac{g\alpha}{\eta k}$. Formally,
 we can obtain the non-dimensionalized equations by using the above form and
 setting coefficients in the following way:
 \begin{align*}
@@ -4294,6 +4303,100 @@ After running the cookbook, you may modify it in a number of ways:
 \end{figure}
 
 
+\subsubsection{Using a free surface in a model with a crust}
+\label{sec:cookbooks-freesurfaceWC}
+
+\textit{This section was contributed by William Durkin}.
+
+This cookbook is a modification of the previous example that explores changes in the way topography develops when a 
+highly viscous crust is added.  
+In this cookbook, we use a material model in which the material changes from low
+viscosity mantle to high viscosity crust at $z = z_j = \texttt{jump height}$,
+i.e., the piecewise viscosity function is defined as
+\begin{align*}
+  \eta(z) = \left\{
+    \begin{matrix}
+      \eta_U & \text{for}\ z > z_j, \\
+      \eta_L & \text{for}\ z  \le z_j.
+    \end{matrix}
+  \right.
+\end{align*}
+where $\eta_U$ and $\eta_L$ are the viscosities of the upper and lower layers,
+respectively. This viscosity model can be implemented by creating a plugin that
+is a small modification of the \texttt{simpler} material model (from which it
+is otherwise simply copied). We call this material model ``SimplerWithCrust''.
+In particular, what is necessary is an evaluation function that looks like this:
+\begin{lstlisting}[frame=single,language=C++] 
+    template <int dim>
+    void
+    SimplerWithCrust<dim>::
+    evaluate(const typename Interface<dim>::MaterialModelInputs &in, 
+              typename Interface<dim>::MaterialModelOutputs &out ) const
+    {
+      for (unsigned int i=0; i<in.position.size(); ++i)
+        { 
+          const double z = in.position[i][1];
+
+	  if (z>jump_height)
+	    out.viscosities[i] = eta_U;
+	  else
+	    out.viscosities[i] = eta_L;
+                     
+          out.densities[i] = reference_rho*(1.0-thermal_alpha*(in.temperature[i]-reference_T));
+          out.thermal_expansion_coefficients[i] = thermal_alpha;
+          out.specific_heat[i] = reference_specific_heat;
+          out.thermal_conductivities[i] = k_value;
+          out.compressibilities[i] = 0.0;
+        }
+    }
+\end{lstlisting}
+Additional changes make the new parameters \texttt{Jump height}, \texttt{Lower
+viscosity}, and \texttt{Upper viscosity} available to the input parameter file,
+and corresponding variables available in the class and used in the code snippet
+above. The entire code can be found in
+\url{cookbooks/free-surface-with-crust/plugin/simpler-with-crust.cc}. Refer to
+Section~\ref{sec:plugins} for more information about writing and running
+plugins.
+
+The following changes are necessary compared to the input file from the
+cookbook shown in Section~\ref{sec:cookbooks-freesurface} to include a crust:
+\begin{itemize}
+  \item Load the plugin implementing the new material model:
+  \lstinputlisting[language=prmfile]{cookbooks/free_surface_with_crust/free-surface-wc.part1.prm.out}
+  
+  \item Declare values for the new parameters:
+  \lstinputlisting[language=prmfile]{cookbooks/free_surface_with_crust/free-surface-wc.part2.prm.out}
+  Note that the height of the interface at 170km is interpreted in the
+  coordinate system in which the box geometry of this cookbook lives. The box
+  has dimensions $500\text{km}\times 200\text{km}$, so an interface height of
+  170km implies a depth of 30km.
+\end{itemize}
+
+The entire script is located in
+\url{cookbooks/free-surface-with-crust/free-surface-with-crust.prm}.
+
+Running this input file yields a
+crust that is 30km thick and 1000 times as viscous as the lower layer.
+Figure~\ref{fig:freesurfaceWC} shows that adding a crust to the model causes the maximum topography to both decrease and occur at a later time.
+Heat flows through the system primarily by advection until the temperature anomaly reaches the base of the
+crustal layer (approximately at the time for which Fig~\ref{fig:freesurfaceWC}
+shows the temperature profile).
+The crust's high viscosity reduces the temperature anomaly's velocity
+substantially, causing it to affect the surface topography at a later time. Just
+as the cookbook shown in Section~\ref{sec:cookbooks-freesurface}, the
+topography returns to zero after some time.
+
+\begin{figure}
+  \centering
+  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/free-surfaceWC.png}
+  \hfill
+  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/Topography.png}
+  \caption{\it Adding a viscous crust to a model with surface topography. The
+  thermal anomaly spreads horizontally as it collides with the highly viscous crust (left). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right). }
+  \label{fig:freesurfaceWC}
+\end{figure}
+
+
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
 
@@ -5111,7 +5214,7 @@ purpose-built plugins, they are kept separate from the more generic plugins in
 the normal source tree. Instead, the benchmarks have all the necessary code in
 \texttt{.cc} files in the benchmark directories. Those are then compiled into a shared
 library that will be used by \aspect{} if it is referenced in a \texttt{.prm}
-file. Let's take the SolCx benchmark as an example (also see Section \ref{sec:benchmark-solcx}).
+file. Let's take the SolCx benchmark as an example (see Section \ref{sec:benchmark-solcx}).
 The directory contains:
 \begin{itemize}
  \item \texttt{solcx.cc} -- the code file containing a material model
@@ -5120,7 +5223,9 @@ The directory contains:
  \item \texttt{CMakeLists.txt} -- a cmake configuration that allows you to
    compile \texttt{solcx.cc}.
 \end{itemize}
-To be able to run the benchmarks you need to:
+To run this benchmark you need to follow the general outline of
+steps discussed in Section~\ref{sec:write-plugin}. For the current case, this
+amounts to the following:
 \begin{enumerate}
  \item Move into the directory of that particular benchmark:
 \begin{verbatim}
@@ -5130,8 +5235,12 @@ To be able to run the benchmarks you need to:
 \begin{verbatim}
  $ cmake .  
 \end{verbatim}
- If the script is unable to pick up where \aspect{} is installed, you can
- specify this using \texttt{-D ASPECT\_DIR=$<$...$>$}.
+ By default, \texttt{cmake} will look for the \aspect{} binary and other
+ information in a number of directories relative to the current one.
+ If it is unable to pick up where \aspect{} was built and installed, you can
+ specify this directory explicitly this using \texttt{-D
+   ASPECT\_DIR=$<$...$>$} as an additional flag to \texttt{cmake}, where
+ \texttt{$<$...$>$} is the path to the build directory.
  \item Build the library:
 \begin{verbatim}
  $ make
@@ -5142,10 +5251,10 @@ Finally, you can run \aspect{} with \texttt{solcx.prm}:
 \begin{verbatim}
  $ ../../aspect solcx.prm
 \end{verbatim}
-Note that you need to run \aspect{} from the current directory, because
-\texttt{solcx.prm} refers to the plugin as ``./libsolcx.so''. For more
-information about plugins in shared libraries see Section
-\ref{sec:write-plugin}.
+where again you may have to use the appropriate path to get to the \aspect{}
+executable. You will need to run \aspect{} from the current directory because
+\texttt{solcx.prm} refers to the plugin as \texttt{./libsolcx.so}, i.e., in
+the current directory.
 
 
 
@@ -6007,6 +6116,291 @@ $T_2 = 1109.08 \, \text{K}$, demonstrating that we converge to the correct
 solution.
 
 
+\subsubsection{The 2D cylindrical shell benchmarks by Davies et al.}
+\label{sec:benchmark-2D_cylindrical_shell}
+
+\textit{This section was contributed by William Durkin and Wolfgang Bangerth.}
+
+All of the benchmarks presented so far take place in a Cartesian domain. 
+Davies et al.~describe a benchmark (in a paper that is currently still being
+written) for a 2D spherical Earth that is  
+nondimensionalized such that 
+\begin{table*}[h]
+ \centering
+ \begin{tabular}{ l l }
+    $r_{\min}$ = 1.22 &  $\left. T \right|_{r_{min}}$ = 1 \\
+    $r_{\max}$ = 2.22 &  $\left. T \right|_{r_{max}}$ = 0
+ \end{tabular}
+\end{table*}
+
+The benchmark is run for a series of approximations (Boussinesq, Extended Boussinesq,
+Truncated Anelastic Liquid, and Anelastic Liquid), and temperature, velocity, and heat flux 
+calculations are compared with the results of other mantle modeling programs. \aspect{}
+will output all of these values directly except for the Nusselt number, which
+we must calculate ourselves from the heat fluxes that \aspect{} can compute.
+The Nusselt number of the top and bottom surfaces, ${Nu}_T$ and ${Nu}_B$,
+respectively, are defined by the authors of the benchmarks as
+\begin{equation}
+\label{eq:davies-NuTop}
+{Nu}_{T} = \frac{\ln(f)}{2{\pi}r_{\max}(1-f)}\int \limits_{0}^{2\pi} \frac{\partial T}{\partial r}\, d\theta  \\
+\end{equation}
+and
+\begin{equation*}
+\label{eq:davies-NuBottom}
+{Nu}_{B} = \frac{f \ln(f)}{2{\pi}r_{\min}(1-f)}\int \limits_{0}^{2\pi} \frac{\partial T}{\partial r}\, d\theta \\
+\end{equation*}
+where $f$ is the ratio $\frac{r_{\min}}{r_{\max}}$.
+
+We can put this in terms of heat flux
+\begin{equation*}
+	q_r = -k\frac{\partial T}{\partial r}
+\end{equation*}
+through the inner and outer surfaces,
+where $q_r$ is heat flux in the radial direction. Let $Q$ be the total heat that flows throug a surface,
+\begin{equation*}
+  Q = \int \limits_{0}^{2\pi} q_r\, d\theta,
+\end{equation*}
+then \eqref{eq:davies-NuTop} becomes
+\begin{equation*}
+  {Nu}_{T} = \frac{-Q_{T}\ln(f)}{2\pi{r_{\max}}(1-f)k}
+\end{equation*}
+and similarly
+\begin{equation*}
+  {Nu}_{B} = \frac{-Q_{B}f\ln(f)}{2\pi{r_{\min}}(1-f)k}.
+\end{equation*} 
+$Q_T$ and $Q_B$ are heat fluxes that \aspect{} can readily compute through the
+\texttt{heat flux statistics} postprocessor (see
+Section~\ref{parameters:Postprocess/List of postprocessors}).
+For further details on the nondimensionalization and equations used for each
+approximation, refer to Davies et al.
+
+The series of benchmarks is then defined by a number of cases relating to the
+exact equations chosen to model the fluid. We will discuss these in the
+following.
+
+
+\paragraph{Case 1.1: BA\_Ra104\_Iso\_ZS}
+\label{sec:davies-case11_BA}
+
+This case is run with the following settings:
+\begin{itemize}
+\item Boussinesq Approximation
+\item Boundary Condition: Zero-Slip
+\item Rayleigh Number = $10^4$ 
+\item Initial Conditions: $D = 0, O = 4$
+\item $\eta(T) = 1$
+\end{itemize}
+where $D$ and $O$ refer to the degree and order of a spherical harmonic that describes the 
+initial temperature. While the initial conditions matter, what is important
+here though is that the system evolve to four convective cells since we are
+only interested in the long term, steady state behavior.
+
+The model is relatively straightforward to set up, basing the input file on
+that discussed in Section~\ref{sec:shell-simple-2d}. The full input file can
+be found at \url{benchmark/davies_et_al/case-1.1.prm}, with the interesting
+parts excerpted as follows:
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-1.1.prm.out}
+
+We use the same trick here as in Section~\ref{sec:cookbooks-simple-box} to
+produce a model in which the density $\rho(T)$ in the temperature equation
+\eqref{eq:temperature} is almost constant (namely, by choosing a very small
+thermal expansion coefficient) as required by the benchmark, and instead
+prescribe the desired Rayleigh number by choosing a correspondingly large
+gravity.
+
+Results for this and the other cases are shown below.
+
+
+\paragraph{Case 2.1: BA\_Ra104\_Iso\_FS}
+\label{sec:davies-case21_BA}
+
+Case 2.1 uses the following setup, differing only in the boundary conditions:
+\begin{itemize}
+\item Boussinesq Approximation
+\item Boundary Condition: Free-Slip
+\item Rayleigh Number = $10^4$ 
+\item Initial Conditions: $D = 0, O = 4$
+\item $\eta(T) = 1$
+\end{itemize}
+
+As a consequence of the free slip boundary conditions, any solid body rotation
+of the entire system satisfies the Stokes equations with their boundary
+conditions. In other words, the solution of the problem is not unique: given a
+solution, adding a solid body rotation yields another solution. We select
+arbitrarily the one that has no net rotation (see
+Section~\ref{parameters:Model_20settings}). The section in the input file 
+that is relevant is then as follows (the full input file resides at
+\url{benchmark/davies_et_al/case-2.1.prm}):
+\index[prmindex]{Remove nullspace}
+\index[prmindexfull]{Model settings!Remove nullspace}
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-2.1.prm.out}
+
+Again, results are shown below.
+
+
+\paragraph{Case 2.2: BA\_Ra105\_Iso\_FS}
+\label{sec:davies-case22_BA}
+
+Case 2.2 is described as follows:
+\begin{itemize}
+\item Boussinesq Approximation
+\item Boundary Condition: Free-Slip
+\item Rayleigh Number = $10^5$ 
+\item Initial Conditions: Final conditions of case 2.1 (BA\_Ra104\_Iso\_FS)
+\item $\eta(T) = 1$
+\end{itemize}
+In other words, we have an increased Rayleigh number and begin with the final
+steady state of case 2.1. To start the model where case 2.1 left off, the
+input file of case 2.1, \url{benchmark/davies_et_al/case-2.1.prm}, instructs
+\aspect{} to checkpoint itself every few time steps (see
+Section~\ref{sec:checkpoint-restart}). If case 2.2 uses the same
+output directory, we can then resume the computations from this checkpoint with
+an input file that prescribes a different Rayleigh number and a later input time:
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-2.2.prm.out}
+
+We increase the Rayleigh number to $10^5$ by increasing the magnitude of
+gravity in the input file.  The full script for case 2.2 is located in
+\url{benchmark/davies_et_al/case-2.2.prm}
+
+
+\paragraph{Case 2.3: BA\_Ra103\_vv\_FS}
+\label{sec:davies-case23_BA}
+
+Case 2.3 is a variation on the previous one:
+\begin{itemize}
+\item Boussinesq Approximation
+\item Boundary Condition: Free-Slip
+\item Rayleigh Number = $10^3$ 
+\item Initial Conditions: Final conditions of case 2.1 (BA\_Ra104\_Iso\_FS)
+\item $\eta(T) = 1000^{-T}$
+\end{itemize}
+The Rayleigh number is smaller here (and is selected using the gravity
+parameter in the input file, as before), but the more important change is that the
+viscosity is now a function of temperature. At the time of writing, there is
+no material model that would implement such a viscosity, so we
+create a plugin that does so for us (see Sections~\ref{sec:extending} and
+\ref{sec:write-plugin} in
+general, and Section~\ref{sec:material-models} for material models in
+particular). The code for it is located in 
+\url{benchmarks/davies_et_al/case-2.3-plugin/VoT.cc} (where ``VoT'' is short
+for ``viscosity as a function of temperature'') and is essentially a copy of
+the \texttt{simpler} material model. The primary change compared to the 
+\texttt{simpler} material model is the line about the viscosity in the
+following function:
+\begin{lstlisting}[frame=single,language=C++]
+template <int dim>
+void
+VoT<dim>::
+evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+         typename Interface<dim>::MaterialModelOutputs &out) const
+{
+  for (unsigned int i=0; i<in.position.size(); ++i)
+    {
+      out.viscosities[i] = eta*std::pow(1000,(-in.temperature[i]));
+      out.densities[i] = reference_rho * (1.0 - thermal_alpha * (in.temperature[i] - reference_T));
+      out.thermal_expansion_coefficients[i] = thermal_alpha;
+      out.specific_heat[i] = reference_specific_heat;
+      out.thermal_conductivities[i] = k_value;
+      out.compressibilities[i] = 0.0;
+    }
+}
+\end{lstlisting}
+Using the method described in Sections~\ref{sec:benchmark-run} and
+\ref{sec:write-plugin}, and the files in 
+the \texttt{benchmarks/davies\_et\_al/case-2.3-plugin}, we can compile our new
+material model into a shared library that we can then reference from the input file.
+The complete input file for case 2.3 is located in
+\url{benchmark/davies_et_al/case-2.3.prm} and contains among others the
+following parts:
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-2.3.prm.out}
+
+
+\paragraph{Results}
+
+In the following, let us discuss some of the results of the benchmark setups
+discussed above. First, the final steady state temperature fields are shown in
+Fig.~\ref{fig:davies-2DcylinderFSS}. It is immediately obvious how the
+different Rayleigh numbers affect the width of the plumes. If one imagines a
+setup with constant gravity, constant inner and outer temperatures and
+constant thermal expension coefficient (this is not how we describe it in the
+input files, but we could have done so and it is closer to how we intuit about
+fluids than adjusting the gravity), then the Rayleigh number is inversely
+proportional to the viscosity -- and it is immediately clear that larger
+Rayleigh numbers (corresponding to lower viscosities) then lead to thinner
+plumes. This is nicely reflected in the visualizations.
+
+\begin{figure}[h]
+  \subfigure[Case 1.1]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case11_final}}
+  \hfill
+  \subfigure[Case 2.1]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case21_final}}
+  \hfill
+  \subfigure[Case 2.2]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case22_final}}
+  \hfill
+  \subfigure[Case 2.3]{\includegraphics[width=0.23\textwidth]{cookbooks/benchmarks/davies_et_al/case23_final}}
+  \hfill
+  \caption{Davies et al.~benchmarks: Final steady state temperature fields for
+    the 2D cylindrical benchmark cases.}
+  \label{fig:davies-2DcylinderFSS}
+\end{figure}
+
+Secondly, Fig.~\ref{fig:davies-2DcylinderVrms} shows the root mean square
+velocity as a function of time for the various cases. It is obvious that they
+all converge to steady state solutions. However, there is an initial transient
+stage and, in cases 2.2 and 2.3, a sudden jolt to the system at the time where
+we switch from the model used to compute up to time $t=2$ to the
+different models used after that.
+
+\begin{figure}[h]
+  \subfigure[Case 1.1]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case11Vrms}}
+  \hfill
+  \subfigure[Case 2.1]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case21Vrms}}
+  \\
+  \subfigure[Case 2.2]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case22Vrms}}
+  \hfill
+  \subfigure[Case 2.3]{\includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/davies_et_al/Case23Vrms}}
+  \hfill
+  \caption{Davies et al.~benchmarks: $V_\text{rms}$ for 2D Cylindrical Cases. Large jumps occur when transitioning from case 2.1 to cases 2.2 and 2.3 due to the instantaneous change of parameter settings.}
+  \label{fig:davies-2DcylinderVrms}
+\end{figure}
+
+These runs also produce quantitative data that will be published along with
+the concise descriptions of the benchmarks and a comparison with other
+codes. In particular, some of the criteria listed above to judge the accuracy
+of results are listed in Table~\ref{tab:davies-et-al-results}.%
+\footnote{The input files available in the \texttt{benchmark/davies\_et\_al}
+  directory use 5 global refinements in order to provide cases that can be run
+  without excessive trouble on a normal computer. However, this is not enough
+  to achieve reasonable accuracy and both the data shown below and the data
+  submitted to the benchmarking effort uses 7
+  global refinement steps, corresponding to a mesh with 1536 cells in
+  tangential and 128 cells in radial direction. Computing on such meshes is
+  not cheap, as it leads to a problem size of more than 2.5 million
+  unknowns. It is best done using a parallel computation.}
+
+\begin{table}[tbp]
+  \centering
+  \begin{tabular}{|l|c|c|c|c|}
+    \hline
+    Case & $\left<T\right>$ & $Nu_T$ & $Nu_B$ & $V_\text{rms}$
+    \\ \hline
+    1.1 & 0.403 & 2.464 & 2.468 & 19.053 
+    \\ 
+    2.1 & 0.382 & 4.7000 & 4.706 & 46.244
+    \\ 
+    2.2 & 0.382 & 9.548 & 9.584 & 193.371
+    \\ 
+    2.3 & 0.582 & 5.102 & 5.121 & 79.632
+    \\ \hline
+  \end{tabular}
+  \caption{\it Davies et al. benchmarks: Numerical results for some of the output quantities required by the benchmarks and the various cases considered.}
+  \label{tab:davies-et-al-results}
+\end{table}
+ 
+
 
 \section{Extending \aspect}
 \label{sec:extending}
@@ -6457,7 +6851,8 @@ ASPECT_SETUP_PLUGIN(my_plugin)
  make
     \end{verbatim}
     and it should compile your plugin files into a shared library
-    \texttt{my\_plugin.so}. Of course, you may want to choose different names
+    \texttt{my\_plugin.so}. A concrete example of this process is discussed in
+    Section~\ref{sec:benchmark-run}. Of course, you may want to choose different names
     for the source files \texttt{source\_1.cc}, \texttt{source\_2.cc} or the name of
     the plugin \texttt{my\_plugin}.
 
@@ -6484,7 +6879,10 @@ files into a single shared library. In the latter case, you only need to list a
 single library in your input file, but each plugin will still be selectable in
 the various sections of your input file as long as each of your classes has a
 corresponding \texttt{ASPECT\_REGISTER\_*} statement somewhere in the file
-where you have its definition.}
+where you have its definition. An even simpler approach is to just put
+everything into a single file -- there is no requirement that different
+plugins are in separate files, though this is often convenient from a code
+organization point of view.}
 
 \note{If you choose to compile your plugins into a shared library yourself, you
   will need to recompile them every time you upgrade your \aspect{} installation
@@ -6506,7 +6904,8 @@ the equations that \aspect{} solves. To implement a new material model, you
 need to overload the \href{doc/doxygen/classaspect_1_1MaterialModel_1_1Interface.html}{aspect::MaterialModel::Interface} class and use
 the \texttt{ASPECT\_REGISTER\_MATERIAL\_MODEL} macro to register your new
 class. The implementation of the new class should be in namespace
-\texttt{aspect::MaterialModel}.
+\texttt{aspect::MaterialModel}. An example of a material model implemented
+this way is given in Section~\ref{sec:davies-case23_BA}.
 
 Specifically, your new class needs to implement the following interface:
 \begin{lstlisting}[frame=single,language=C++]

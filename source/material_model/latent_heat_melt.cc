@@ -157,11 +157,11 @@ namespace aspect
 
       // fourth, melt fraction dependence
       double melt_dependence = (1.0 - relative_melt_density)
-	  * melt_fraction(temperature, pressure, compositional_fields, position);
+                               * melt_fraction(temperature, pressure, compositional_fields, position);
 
       // in the end, all the influences are added up
       return (reference_rho + composition_dependence + pressure_dependence) * temperature_dependence
-          * (1.0 - melt_dependence);
+             * (1.0 - melt_dependence);
     }
 
 
@@ -232,13 +232,13 @@ namespace aspect
         {
           // melt fraction when clinopyroxene is still present
           double melt_fraction_derivative_temperature
-          = beta * pow((temperature - T_solidus)/(T_lherz_liquidus - T_solidus),beta-1)
-          / (T_lherz_liquidus - T_solidus);
+            = beta * pow((temperature - T_solidus)/(T_lherz_liquidus - T_solidus),beta-1)
+              / (T_lherz_liquidus - T_solidus);
 
           double melt_fraction_derivative_pressure
-          = beta * pow((temperature - T_solidus)/(T_lherz_liquidus - T_solidus),beta-1)
-          * (dT_solidus_dp * (temperature - T_lherz_liquidus)
-              + dT_lherz_liquidus_dp * (T_solidus - temperature))
+            = beta * pow((temperature - T_solidus)/(T_lherz_liquidus - T_solidus),beta-1)
+              * (dT_solidus_dp * (temperature - T_lherz_liquidus)
+                 + dT_lherz_liquidus_dp * (T_solidus - temperature))
               / pow(T_lherz_liquidus - T_solidus,2);
 
           // melt fraction after melting of all clinopyroxene
@@ -254,18 +254,18 @@ namespace aspect
                                        + std::pow(F_max,1.0/beta) * (dT_lherz_liquidus_dp - dT_solidus_dp);
 
               melt_fraction_derivative_temperature
-              = (1.0 - F_max) * beta * std::pow((temperature - T_max)/(T_liquidus - T_max),beta-1)
-                / (T_liquidus - T_max);
+                = (1.0 - F_max) * beta * std::pow((temperature - T_max)/(T_liquidus - T_max),beta-1)
+                  / (T_liquidus - T_max);
 
               melt_fraction_derivative_pressure
-              = dF_max_dp
-                - dF_max_dp * std::pow((temperature - T_max)/(T_liquidus - T_max),beta)
-                + (1.0 - F_max) * beta * std::pow((temperature - T_max)/(T_liquidus - T_max),beta-1)
+                = dF_max_dp
+                  - dF_max_dp * std::pow((temperature - T_max)/(T_liquidus - T_max),beta)
+                  + (1.0 - F_max) * beta * std::pow((temperature - T_max)/(T_liquidus - T_max),beta-1)
                   * (dT_max_dp * (T_max - T_liquidus) - (dT_liquidus_dp - dT_max_dp) * (temperature - T_max)) / std::pow(T_liquidus - T_max, 2);
             }
 
           double melt_fraction_derivative = 0;
-          if(dependence == NonlinearDependence::temperature)
+          if (dependence == NonlinearDependence::temperature)
             melt_fraction_derivative = melt_fraction_derivative_temperature;
           else if (dependence == NonlinearDependence::pressure)
             melt_fraction_derivative = melt_fraction_derivative_pressure;
@@ -276,29 +276,29 @@ namespace aspect
         }
 
 
-        // for melting of pyroxenite after Sobolev et al., 2011
-        if(this->n_compositional_fields()>0)
+      // for melting of pyroxenite after Sobolev et al., 2011
+      if (this->n_compositional_fields()>0)
         {
           // calculate change of entropy for melting all material
           const double X = pyroxenite_melt_fraction(temperature, pressure, compositional_fields, position);
 
           // calculate change of melt fraction in dependence of pressure and temperature
           const double T_melting = D1 + 273.15
-    	                           + D2 * pressure
-    	                           + D3 * pressure * pressure;
+                                   + D2 * pressure
+                                   + D3 * pressure * pressure;
           const double dT_melting_dp = 2*D3*pressure + D2;
           const double discriminant = E1*E1/(E2*E2*4) + (temperature-T_melting)/E2;
 
           double melt_fraction_derivative = 0.0;
           if (temperature > T_melting && X < F_px_max && pressure < 1.3e10)
-          {
-            if(dependence == NonlinearDependence::temperature)
-        	    melt_fraction_derivative = -1.0/(2*E2 * sqrt(discriminant));
-            else if (dependence == NonlinearDependence::pressure)
-        	    melt_fraction_derivative = (dT_melting_dp)/(2*E2 * sqrt(discriminant));
-            else
-              AssertThrow(false, ExcMessage("not implemented"));
-          }
+            {
+              if (dependence == NonlinearDependence::temperature)
+                melt_fraction_derivative = -1.0/(2*E2 * sqrt(discriminant));
+              else if (dependence == NonlinearDependence::pressure)
+                melt_fraction_derivative = (dT_melting_dp)/(2*E2 * sqrt(discriminant));
+              else
+                AssertThrow(false, ExcMessage("not implemented"));
+            }
 
           entropy_gradient += melt_fraction_derivative * pyroxenite_melting_entropy_change * compositional_fields[0];
         }
@@ -316,14 +316,14 @@ namespace aspect
     {
       // anhydrous melting of peridotite after Katz, 2003
       const double T_solidus  = A1 + 273.15
-      		                + A2 * pressure
-      		                + A3 * pressure * pressure;
+                                + A2 * pressure
+                                + A3 * pressure * pressure;
       const double T_lherz_liquidus = B1 + 273.15
-      		                      + B2 * pressure
-      		                      + B3 * pressure * pressure;
+                                      + B2 * pressure
+                                      + B3 * pressure * pressure;
       const double T_liquidus = C1 + 273.15
-      		                + C2 * pressure
-      		                + C3 * pressure * pressure;
+                                + C2 * pressure
+                                + C3 * pressure * pressure;
 
       // melt fraction for peridotite with clinopyroxene
       double peridotite_melt_fraction;
@@ -338,11 +338,11 @@ namespace aspect
       const double R_cpx = r1 + r2 * pressure;
       const double F_max = M_cpx / R_cpx;
 
-      if(peridotite_melt_fraction > F_max && temperature < T_liquidus)
-      {
-        const double T_max = std::pow(F_max,1/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
-        peridotite_melt_fraction = F_max + (1 - F_max) * pow((temperature - T_max) / (T_liquidus - T_max),beta);
-      }
+      if (peridotite_melt_fraction > F_max && temperature < T_liquidus)
+        {
+          const double T_max = std::pow(F_max,1/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
+          peridotite_melt_fraction = F_max + (1 - F_max) * pow((temperature - T_max) / (T_liquidus - T_max),beta);
+        }
       return peridotite_melt_fraction;
 
     }
@@ -351,14 +351,14 @@ namespace aspect
     double
     LatentHeatMelt<dim>::
     pyroxenite_melt_fraction (const double temperature,
-                   const double pressure,
-                   const std::vector<double> &composition, /*composition*/
-                   const Point<dim> &position) const
+                              const double pressure,
+                              const std::vector<double> &composition, /*composition*/
+                              const Point<dim> &position) const
     {
       // melting of pyroxenite after Sobolev et al., 2011
       const double T_melting = D1 + 273.15
-	                           + D2 * pressure
-	                           + D3 * pressure * pressure;
+                               + D2 * pressure
+                               + D3 * pressure * pressure;
 
       const double discriminant = E1*E1/(E2*E2*4) + (temperature-T_melting)/E2;
 
@@ -382,14 +382,14 @@ namespace aspect
                    const Point<dim> &position) const
     {
       return (this->n_compositional_fields()>0
-    		 ?
-    		 pyroxenite_melt_fraction(temperature, pressure, composition, position)
-    		 * composition[0]
-    		 +
-    		 peridotite_melt_fraction(temperature, pressure, composition, position)
-    		 * (1.0 - composition[0])
-    		 :
-    		 peridotite_melt_fraction(temperature, pressure, composition, position));
+              ?
+              pyroxenite_melt_fraction(temperature, pressure, composition, position)
+              * composition[0]
+              +
+              peridotite_melt_fraction(temperature, pressure, composition, position)
+              * (1.0 - composition[0])
+              :
+              peridotite_melt_fraction(temperature, pressure, composition, position));
 
     }
 
@@ -607,11 +607,15 @@ namespace aspect
                              "function that approximates the solidus "
                              "of pyroxenite. "
                              "Units: $°C$.");
-          prm.declare_entry ("D2", "1.23e-7",
+          prm.declare_entry ("D2", "1.329e-7",
                              Patterns::Double (),
                              "Prefactor of the linear pressure term "
                              "in the quadratic function that approximates "
                              "the solidus of pyroxenite. "
+                             "Note that this factor is different from the "
+                             "value given in Sobolev, 2011, because they use "
+                             "the potential temperature whereas we use the "
+                             "absolute temperature. "
                              "Units: $°C/Pa$.");
           prm.declare_entry ("D3", "-5.1e-18",
                              Patterns::Double (),
@@ -692,7 +696,7 @@ namespace aspect
           r2              = prm.get_double ("r2");
           beta            = prm.get_double ("beta");
           peridotite_melting_entropy_change
-                          = prm.get_double ("Peridotite melting entropy change");
+            = prm.get_double ("Peridotite melting entropy change");
 
           M_cpx           = prm.get_double ("Mass fraction cpx");
           D1              = prm.get_double ("D1");
@@ -701,7 +705,7 @@ namespace aspect
           E1              = prm.get_double ("E1");
           E2              = prm.get_double ("E2");
           pyroxenite_melting_entropy_change
-                          = prm.get_double ("Pyroxenite melting entropy change");
+            = prm.get_double ("Pyroxenite melting entropy change");
 
           F_px_max        = prm.get_double ("Maximum pyroxenite melt fraction");
           relative_melt_density = prm.get_double ("Relative density of melt");

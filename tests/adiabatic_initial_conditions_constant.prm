@@ -1,0 +1,95 @@
+# The adiabatic initial conditions are intended to work
+# as well for models without adiabatic heating, by using
+# the adiabatic surface temperature. 
+# This test ensures that boundary layers are handled 
+# correctly in this case.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set End time                               = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = IMPES
+
+
+############ These parameters are of interest for this test: #########
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 3000.0
+    set Outer temperature = 300.0
+  end
+end
+
+
+set Adiabatic surface temperature = 1600
+subsection Initial conditions
+  set Model name = adiabatic
+
+  subsection Adiabatic
+    set Age top boundary layer = 3.16e15
+    set Age bottom boundary layer = 3.16e15
+    set Subadiabaticity = 200
+  end
+end
+
+
+########################################################################
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius = 3481000
+    set Outer radius = 6371000
+    set Opening angle = 90
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1613 # default: 293
+    set Thermal conductivity          = 4.125 # default: 4.7
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1    # default: 5e24
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0, 1
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 0, 2, 3
+  set Zero velocity boundary indicators       = 1
+  set Include adiabatic heating               = false
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, depth average
+end
+

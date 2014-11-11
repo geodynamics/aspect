@@ -1,0 +1,29 @@
+set %%\hyperref[parameters:Linear solver tolerance]{Linear solver tolerance}%                = 1e-12%% \index[prmindex]{Linear solver tolerance} \index[prmindexfull]{Linear solver tolerance} %
+
+# Boundary conditions
+subsection %%\hyperref[parameters:Model_20settings]{Model settings}%
+  set %%\hyperref[parameters:Model settings/Tangential velocity boundary indicators]{Tangential velocity boundary indicators}% =%% \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
+  set %%\hyperref[parameters:Model settings/Prescribed velocity boundary indicators]{Prescribed velocity boundary indicators}% = left  : BursteddeBoundary, \%% \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
+                                                right : BursteddeBoundary, \
+                                                front : BursteddeBoundary, \
+                                                back  : BursteddeBoundary, \
+                                                bottom: BursteddeBoundary, \
+                                                top   : BursteddeBoundary
+end
+
+subsection %%\hyperref[parameters:Material_20model]{Material model}%
+  set %%\hyperref[parameters:Material model/Model name]{Model name}% = BursteddeMaterial%% \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+end
+
+subsection %%\hyperref[parameters:Gravity_20model]{Gravity model}%
+  set %%\hyperref[parameters:Gravity model/Model name]{Model name}% = BursteddeGravity%% \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
+end
+
+subsection %%\hyperref[parameters:Burstedde_20benchmark]{Burstedde benchmark}%
+   # Viscosity parameter is beta  
+   set %%\hyperref[parameters:Burstedde benchmark/Viscosity parameter]{Viscosity parameter}%             = 20%% \index[prmindex]{Viscosity parameter} \index[prmindexfull]{Burstedde benchmark!Viscosity parameter} %
+end
+
+subsection %%\hyperref[parameters:Postprocess]{Postprocess}%
+  set %%\hyperref[parameters:Postprocess/List of postprocessors]{List of postprocessors}% = visualization, velocity statistics, BursteddePostprocessor%% \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
+end

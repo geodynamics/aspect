@@ -1,0 +1,50 @@
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Inner radius  = 1.22
+    set Opening angle = 360
+    set Outer radius  = 2.22 
+  end
+end
+
+# [...]
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1.
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1e-6
+    set Viscosity                     = 1
+  end
+end
+
+
+############### Parameters describing the temperature field
+# Angular mode is set to 4 in order to match the number of
+# convective cells reported by Davies et al.
+
+subsection Initial conditions
+  set Model name = spherical hexagonal perturbation
+  subsection Spherical hexagonal perturbation
+    set Angular mode          = 4
+    set Rotation offset       = 0
+  end
+end
+
+
+############### Prescribe the Rayleigh number as g*alpha
+# Here, Ra = 10^4 and alpha was chosen as 10^-6 above.
+subsection Gravity model
+  set Model name = radial constant 
+  subsection Radial constant
+    set Magnitude =  1e10
+  end
+end
+
+
+# [...]

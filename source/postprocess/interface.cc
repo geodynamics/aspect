@@ -222,10 +222,10 @@ namespace aspect
       for (unsigned int name=0; name<postprocessor_names.size(); ++name)
         {
           postprocessors.push_back (std_cxx1x::shared_ptr<Interface<dim> >
-          (std_cxx1x::get<dim>(registered_plugins)
-              .create_plugin (postprocessor_names[name],
-                  "Postprocessor plugins")));
-          if (SimulatorAccess<dim>* sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
+                                    (std_cxx1x::get<dim>(registered_plugins)
+                                     .create_plugin (postprocessor_names[name],
+                                                     "Postprocessor plugins")));
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
             sim->initialize (this->get_simulator());
 
           postprocessors.back()->parse_parameters (prm);

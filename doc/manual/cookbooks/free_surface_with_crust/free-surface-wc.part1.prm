@@ -1,0 +1,1 @@
+set Additional shared libraries            = ./plugin/libsimpler-with-crust.so

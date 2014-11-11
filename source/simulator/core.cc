@@ -174,15 +174,17 @@ namespace aspect
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true)
   {
-    if (parameters.resume_computation)
-      log_file_stream.open((parameters.output_directory + "log.txt").c_str(), std::ios_base::app);
-    else
-      log_file_stream.open((parameters.output_directory + "log.txt").c_str());
-
-    // we already printed the header to the screen, so here we just dump it
-    // into the logfile.
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-      print_aspect_header(log_file_stream);
+      {
+        // only open the logfile on processor 0, the other processors won't be
+        // writing into the stream anyway
+        log_file_stream.open((parameters.output_directory + "log.txt").c_str(),
+                             parameters.resume_computation ? std::ios_base::app : std::ios_base::out);
+
+        // we already printed the header to the screen, so here we just dump it
+        // into the logfile.
+        print_aspect_header(log_file_stream);
+      }
 
     computing_timer.enter_section("Initialization");
 
@@ -215,14 +217,14 @@ namespace aspect
                                    std::inserter(intersection, intersection.end()));
             AssertThrow (intersection.empty(),
                          ExcMessage ("Boundary indicator <"
-				     +
-				     Utilities::int_to_string(*intersection.begin())
-				     +
-				     "> with symbolic name <"
-				     +
-				     geometry_model->translate_id_to_symbol_name (*intersection.begin())
-				     +
-				     "> is listed as having more "
+                                     +
+                                     Utilities::int_to_string(*intersection.begin())
+                                     +
+                                     "> with symbolic name <"
+                                     +
+                                     geometry_model->translate_id_to_symbol_name (*intersection.begin())
+                                     +
+                                     "> is listed as having more "
                                      "than one type of velocity boundary condition in the input file."));
           }
 
@@ -619,39 +621,39 @@ namespace aspect
           // here we create a mask for interpolate_boundary_values out of the 'selector'
           std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
           Assert(introspection.component_masks.velocities[0]==true,
-		 ExcInternalError()); // in case we ever move the velocity around
+                 ExcInternalError()); // in case we ever move the velocity around
           const std::string &comp = parameters.prescribed_velocity_boundary_indicators[p->first].first;
 
           if (comp.length()>0)
             {
               for (std::string::const_iterator direction=comp.begin(); direction!=comp.end(); ++direction)
                 {
-		  switch (*direction)
-		    {
-		    case 'x':
-			  mask[0] = true;
-			  break;
-		    case 'y':
-			  mask[1] = true;
-			  break;
-		    case 'z':
-			  // we must be in 3d, or 'z' should never have gotten through
-			  Assert (dim==3, ExcInternalError());
-			  mask[2] = true;
-			  break;
-		    default:
-			  Assert (false, ExcInternalError());
-		    }
+                  switch (*direction)
+                    {
+                      case 'x':
+                        mask[0] = true;
+                        break;
+                      case 'y':
+                        mask[1] = true;
+                        break;
+                      case 'z':
+                        // we must be in 3d, or 'z' should never have gotten through
+                        Assert (dim==3, ExcInternalError());
+                        mask[2] = true;
+                        break;
+                      default:
+                        Assert (false, ExcInternalError());
+                    }
                 }
             }
           else
             {
-	      // no mask given -- take all velocities 
+              // no mask given -- take all velocities
               for (unsigned int i=0; i<introspection.component_masks.velocities.size(); ++i)
                 mask[i]=introspection.component_masks.velocities[i];
 
               Assert(introspection.component_masks.velocities[0]==true,
-		     ExcInternalError()); // in case we ever move the velocity down
+                     ExcInternalError()); // in case we ever move the velocity down
             }
 
           VectorTools::interpolate_boundary_values (dof_handler,
@@ -771,8 +773,15 @@ namespace aspect
     LinearAlgebra::CompressedBlockSparsityPattern sp(introspection.index_sets.system_relevant_partitioning);
 
 #else
+#  if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) > 801
+    TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
+                                               system_partitioning,
+                                               introspection.index_sets.system_relevant_partitioning,
+                                               mpi_communicator);
+#  else
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
                                                mpi_communicator);
+#  endif
 #endif
 
     DoFTools::make_sparsity_pattern (dof_handler,
@@ -823,8 +832,17 @@ namespace aspect
     LinearAlgebra::CompressedBlockSparsityPattern sp(introspection.index_sets.system_relevant_partitioning);
 
 #else
+
+#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) > 801
+    TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
+                                               system_partitioning,
+                                               introspection.index_sets.system_relevant_partitioning,
+                                               mpi_communicator);
+#else
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
                                                mpi_communicator);
+#endif
+    
 #endif
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
@@ -1272,13 +1290,13 @@ namespace aspect
 
     std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
     std::auto_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
-      freesurface_trans;
-    
+    freesurface_trans;
+
     if (parameters.free_surface_enabled)
       {
-	x_fs_system[0] = &free_surface->mesh_vertices;
-	freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
-				 (free_surface->free_surface_dof_handler));
+        x_fs_system[0] = &free_surface->mesh_vertices;
+        freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
+                                 (free_surface->free_surface_dof_handler));
       }
 
     triangulation.prepare_coarsening_and_refinement();
@@ -1335,10 +1353,10 @@ namespace aspect
       old_solution = old_distributed_system;
 
       if (parameters.free_surface_enabled)
-	{
-	  constraints.distribute (distributed_mesh_velocity);
-	  free_surface->mesh_velocity = distributed_mesh_velocity;
-	}
+        {
+          constraints.distribute (distributed_mesh_velocity);
+          free_surface->mesh_velocity = distributed_mesh_velocity;
+        }
     }
 
     // do the same as above also for the free surface solution
@@ -1346,7 +1364,7 @@ namespace aspect
       {
         LinearAlgebra::Vector distributed_mesh_vertices;
         distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned,
-					 mpi_communicator);
+                                         mpi_communicator);
 
         std::vector<LinearAlgebra::Vector *> system_tmp (1);
         system_tmp[0] = &distributed_mesh_vertices;

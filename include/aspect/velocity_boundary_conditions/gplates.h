@@ -23,6 +23,7 @@
 #define __aspect__velocity_boundary_conditions_gplates_h
 
 #include <aspect/velocity_boundary_conditions/interface.h>
+#include <deal.II/base/std_cxx1x/array.h>
 #include <aspect/simulator_access.h>
 
 
@@ -117,12 +118,11 @@ namespace aspect
           double delta_phi, delta_theta;
 
           /**
-           * The rotation axis and angle around which a 2D model needs to be
-           * rotated to be transformed to a plane that contains the origin and
+           * The matrix, which describes the rotation by which a 2D model needs
+           * to be transformed to a plane that contains the origin and
            * the two user prescribed points. Is not used for 3D.
            */
-          Tensor<1,3> rotation_axis;
-          double rotation_angle;
+          Tensor<2,3> rotation_matrix;
 
           /**
            * Determines the width of the velocity interpolation zone around
@@ -140,9 +140,34 @@ namespace aspect
            * defined angle
            */
           Tensor<1,3>
-          rotate (const Tensor<1,3> &position,
-                  const Tensor<1,3> &rotation_axis,
-                  const double angle) const;
+          rotate_around_axis (const Tensor<1,3> &position,
+                              const Tensor<1,3> &rotation_axis,
+                              const double angle) const;
+
+          /**
+           * A function that returns the corresponding paraview angles for a
+           * rotation described by a rotation matrix. These differ from the
+           * usually used euler angles by assuming a rotation around the coordinate
+           * axes in the order y-x-z (instead of the often used z-x-z)
+           */
+          std_cxx1x::array<double,3>
+          angles_from_matrix (const Tensor<2,3> &rotation_matrix) const;
+
+          /**
+           * A function that returns the corresponding rotation axis/angle for a
+           * rotation described by a rotation matrix.
+           */
+          double
+          rotation_axis_from_matrix (Tensor<1,3> &rotation_axis,
+                                     const Tensor<2,3> &rotation_matrix) const;
+
+          /**
+           * A function that returns the corresponding euler angles for a
+           * rotation described by rotation axis and angle.
+           */
+          Tensor<2,3>
+          rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
+                                     const double rotation_angle) const;
 
           /**
            * Convert a tensor of rank 1 and dimension in to rank 1 and

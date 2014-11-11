@@ -1,0 +1,17 @@
+subsection Material model
+  set Model name = simpler with crust
+  subsection Simpler with crust model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0.0
+    set Thermal conductivity          = 1.0 # low thermal conductivity for a sharp blob
+    set Thermal expansion coefficient = 4e-5
+  
+    # Parameters added for this cookbook:
+    # The box is 200km high and has its origin set at the bottom left corner.
+    # Setting the jump height to 170km creates a 30km thick crust
+    set Lower viscosity               = 1e20
+    set Upper viscosity               = 1e23
+    set Jump height                   = 170e3
+  end
+end

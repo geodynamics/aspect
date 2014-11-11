@@ -163,7 +163,13 @@ namespace aspect
   {
     return simulator->parameters.include_melt_transport;
   }
-
+  
+  template <int dim>
+  int
+  SimulatorAccess<dim>::get_stokes_velocity_degree () const
+  {
+    return simulator->parameters.stokes_velocity_degree;
+  }
 
   template <int dim>
   double

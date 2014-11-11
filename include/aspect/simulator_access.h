@@ -195,6 +195,12 @@ namespace aspect
        */
       bool
       include_melt_transport () const;
+      
+      /**
+       * Return the stokes velocity degree.
+       */
+      int
+      get_stokes_velocity_degree () const;
 
       /**
        * Return the adiabatic surface temperature.

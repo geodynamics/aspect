@@ -20,6 +20,9 @@
 
 #include <aspect/particle/generator.h>
 
+#include <boost/random.hpp>
+
+
 namespace aspect
 {
   namespace Particle
@@ -122,7 +125,7 @@ namespace aspect
             for (i=0; i<num_particles; ++i)
               {
                 // Select a cell based on relative volume
-                roulette_spin = total_volume*drand48();
+                roulette_spin = total_volume*uniform_distribution_01(random_number_generator);
                 select_cell = roulette_wheel.lower_bound(roulette_spin)->second;
 
                 const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
@@ -150,7 +153,8 @@ namespace aspect
                   {
                     for (d=0; d<dim; ++d)
                       {
-                        pt[d] = drand48()*(max_bounds[d]-min_bounds[d]) + min_bounds[d];
+                        pt[d] = uniform_distribution_01(random_number_generator) *
+                                (max_bounds[d]-min_bounds[d]) + min_bounds[d];
                       }
                     try
                       {
@@ -174,7 +178,16 @@ namespace aspect
 
                 cur_id++;
               }
-          };
+          }
+
+        private:
+          /**
+           * Random number generator and an object that describes a
+           * uniform distribution on the interval [0,1]. These
+           * will be used to generate particle locations at random.
+           */
+          boost::mt19937            random_number_generator;
+          boost::uniform_01<double> uniform_distribution_01;
       };
 
 

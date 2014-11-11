@@ -359,6 +359,19 @@ namespace aspect
         unsigned int group_files;
 
         /**
+         * deal.II offers the possibility to linearly interpolate
+         * output fields of higher order elements to a finer resolution.
+         * This somewhat compensates the fact that most visualization
+         * software only offers linear interpolation between grid points
+         * and therefore the output file is a very coarse representation
+         * of the actual solution field. Activating this option increases
+         * the spatial resolution in each dimension by a factor equal
+         * to the polynomial degree used for the velocity finite element
+         * (usually 2).
+         */
+        bool interpolate_output;
+
+        /**
          * Compute the next output time from the current one. In the simplest
          * case, this is simply the previous next output time plus the
          * interval, but in general we'd like to ensure that it is larger than

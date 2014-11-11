@@ -119,6 +119,10 @@ FOREACH(_test ${_tests})
 
     IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.cc)
       ADD_LIBRARY(${_test} SHARED EXCLUDE_FROM_ALL ${_test}.cc)
+      IF (ASPECT_USE_PETSC)
+        SET_PROPERTY(SOURCE ${_test}.cc
+	APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_PETSC="1")
+      ENDIF()
       DEAL_II_SETUP_TARGET(${_test})
       SET(_testlib 'set Additional shared libraries = ./lib${_test}.so')
       SET(_testdepends ${_test})
@@ -163,6 +167,16 @@ FOREACH(_test ${_tests})
     # the actual run command is a bit complicated because we have to figure out
     # whether we want the test to run in parallel using MPI or not
     GET_MPI_COUNT(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
+
+    # detect the optional script <testname>.sh that a test can use to process
+    # output (currently screen-output only).
+    IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh)
+        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh")
+        SET(_testdepends ${_testdepends} ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh)
+    ELSE()
+        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/default.sh")
+    ENDIF()
+
     IF("${_mpi_count}" STREQUAL "1")
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
 	COMMAND
@@ -173,8 +187,7 @@ FOREACH(_test ${_tests})
 	  done
 	COMMAND aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
 		> ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
-	COMMAND mv ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
-	  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
 	COMMAND ${PERL_EXECUTABLE} -pi
 		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
 		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
@@ -190,8 +203,7 @@ FOREACH(_test ${_tests})
 	  done
 	COMMAND mpirun -np ${_mpi_count} ${CMAKE_CURRENT_BINARY_DIR}/../aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
 		> ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
-	COMMAND mv ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
-	  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
 	COMMAND ${PERL_EXECUTABLE} -pi
 		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
 		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
