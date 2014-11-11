@@ -142,7 +142,7 @@ namespace aspect
           out.fluid_densities[i] = reference_rho_f;
           out.fluid_compressibilities[i] = 0.0;
 
-          porosity = std::max(std::min(porosity,0.9999999),1e-7);
+          porosity = std::max(std::min(porosity,0.9999),1e-4);
           out.compaction_viscosities[i] = eta_0 * (1.0 - porosity) / porosity;
         }
     }
