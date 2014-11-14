@@ -264,6 +264,8 @@ namespace aspect
     {
       LinearAlgebra::Vector utmp(src.block(0));
 
+      // first solve with the bottom left block, which we have built
+      // as a mass matrix with the inverse of the viscosity
       {
         SolverControl solver_control(1000, 1e-6 * src.block(1).l2_norm());
 
@@ -294,7 +296,7 @@ namespace aspect
               {
                 if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
                   AssertThrow (false,
-                               ExcMessage (std::string("The iterative solver in BlockSchurPreconditioner::vmult "
+                               ExcMessage (std::string("The iterative (bottom right) solver in BlockSchurPreconditioner::vmult "
                                                        "did not converge. It reported the following error:\n\n")
                                            +
                                            exc.what()))
@@ -306,12 +308,16 @@ namespace aspect
         dst.block(1) *= -1.0;
       }
 
+      // apply the top right block
       {
         stokes_matrix.block(0,1).vmult(utmp, dst.block(1)); //B^T
         utmp*=-1.0;
         utmp.add(src.block(0));
       }
 
+      // now either solve with the top left block (if do_solve_A==true)
+      // or just apply one preconditioner sweep (for the first few
+      // iterations of our two-stage outer GMRES iteration)
       if (do_solve_A == true)
         {
           SolverControl solver_control(1000, utmp.l2_norm()*1e-2);
@@ -333,7 +339,7 @@ namespace aspect
             {
               if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
                 AssertThrow (false,
-                             ExcMessage (std::string("The iterative solver in BlockSchurPreconditioner::vmult "
+                             ExcMessage (std::string("The iterative (top left) solver in BlockSchurPreconditioner::vmult "
                                                      "did not converge. It reported the following error:\n\n")
                                          +
                                          exc.what()))
