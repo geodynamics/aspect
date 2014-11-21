@@ -667,7 +667,7 @@ namespace aspect
     // do the same for the temperature variable: evaluate the current boundary temperature
     // and add these constraints as well
     {
-      //Update the temperature boundary conditon.
+      //Update the temperature boundary condition.
       boundary_temperature->update();
 
       // obtain the boundary indicators that belong to Dirichlet-type

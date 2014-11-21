@@ -94,6 +94,9 @@ namespace aspect
          * Function to compute the material properties in @p out given the
          * inputs in @p in. If MaterialModelInputs.strain_rate has the length
          * 0, then the viscosity does not need to be computed.
+         * Note that both the properties of the original MaterialModelOutputs
+         * (without melt) and the additional MaterialModelOutputs from the
+         * MeltInterface have to be filled.
          */
         virtual void evaluate_with_melt(const MaterialModelInputs &in, MaterialModelOutputs &out) const = 0;
 
