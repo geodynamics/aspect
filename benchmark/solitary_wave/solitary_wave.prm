@@ -5,11 +5,11 @@
 set Additional shared libraries            = ./libsolitary_wave.so
 
 set Adiabatic surface temperature          = 1623               # default: 0
-set CFL number                             = 0.5
-set Composition solver tolerance           = 1e-12
+set CFL number                             = 1.0
+set Composition solver tolerance           = 1e-20
+set Temperature solver tolerance           = 1e-20
 set Nonlinear solver scheme                = iterated IMPES
-set Output directory                       = output
-set Max nonlinear iterations               = 5
+set Max nonlinear iterations               = 10
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
@@ -29,7 +29,9 @@ set Use years in output instead of seconds = true
 set Use direct solver for Stokes system    = true
 
 subsection Discretization
-  set Stokes velocity polynomial degree = 2
+  subsection Stabilization parameters
+    set beta  = 0.01 # default: 0.078
+  end
 end
 
 subsection Compositional fields
@@ -99,6 +101,7 @@ subsection Compositional initial conditions
   set Model name = Solitary wave initial condition # default: 
   subsection Solitary wave initial condition
     set Offset = 200
+    set Read solution from file = true
   end
 end
 
@@ -115,21 +118,22 @@ subsection Mesh refinement
   set Refinement fraction                      = 0.0
 
   set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 3                    # default: 2
+  set Initial global refinement                = 2                    # default: 2
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
 
 
 subsection Model settings
-  set Fixed temperature boundary indicators   = 2,3        # default: 
-  set Fixed composition boundary indicators   = 2,3
-  set Prescribed velocity boundary indicators = 2:function,3:function 
+  set Fixed temperature boundary indicators   = 3        # default: 
+  set Fixed composition boundary indicators   = 3
+  set Prescribed velocity boundary indicators = 2:function, 3:function
 
   set Tangential velocity boundary indicators = 0,1
   set Zero velocity boundary indicators       = 
 
   set Include melt transport                  = true
+  set Melt transport threshold                = 1e-4
 end
 
 

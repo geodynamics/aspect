@@ -913,7 +913,7 @@ namespace aspect
       		                                                           this->get_geometry_model().maximal_depth()));
       }
 
-      double delta;
+      double delta=0;
 
       if (dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model()) != NULL)
         {
