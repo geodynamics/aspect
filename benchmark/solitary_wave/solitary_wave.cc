@@ -210,7 +210,7 @@ namespace aspect
     	     max_z_(max_z)
     	   {}
 
-    	   virtual void set_delta(const double delta)
+    	   void set_delta(const double delta)
     	   {
     		   delta_ = delta;
     	   }
@@ -218,7 +218,11 @@ namespace aspect
            virtual void vector_value (const Point< dim > &p,
                                       Vector< double >   &values) const
            {
-        	 const double index = static_cast<int>((p[dim-1]-delta_)/max_z_ * (initial_pressure_.size()-1));
+        	 double index = static_cast<int>((p[dim-1]-delta_)/max_z_ * (initial_pressure_.size()-1));
+        	 if (p[dim-1]-delta_ < 0)
+        	   index = 0;
+        	 else if (p[dim-1]-delta_ > max_z_)
+          	   index = initial_pressure_.size()-1;
         	 AssertThrow(index < initial_pressure_.size(), ExcMessage("not in range"));
         	 const double z_coordinate1 = static_cast<double>(index)/static_cast<double>(initial_pressure_.size()-1) * max_z_;
         	 const double z_coordinate2 = static_cast<double>(index+1)/static_cast<double>(initial_pressure_.size()-1) * max_z_;
@@ -646,7 +650,7 @@ namespace aspect
         unsigned int max_points;
         std::vector<double> initial_pressure;
         double maximum_pressure;
-        std_cxx1x::shared_ptr<Function<dim> > ref_func;
+        std_cxx1x::shared_ptr<AnalyticSolutions::FunctionSolitaryWave<dim> > ref_func;
 
     };
 
@@ -833,12 +837,13 @@ namespace aspect
 
       // The idea here is to first find the maximum, and then use the analytical solution of the
       // solitary wave to calculate a phase shift for every point.
-      // This has to be done separately for points left and right of the maximum.
+      // This has to be done separately for points left and right of the maximum, as the analytical
+      // solution is only defined for coordinates > 0.
       // In the end, these values for the phase shift are averaged.
 
       // compute the maximum composition by quadrature (because we also need the coordinate)
       double local_max_composition = -std::numeric_limits<double>::max();
-      double local_z_coordinate = -std::numeric_limits<double>::max();
+      double z_max_composition = -std::numeric_limits<double>::max();
 
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
@@ -853,11 +858,12 @@ namespace aspect
                 if(composition > local_max_composition)
                 {
                   local_max_composition = composition;
-                  local_z_coordinate = fe_values.quadrature_point(q)[dim-1];
+                  z_max_composition = fe_values.quadrature_point(q)[dim-1];
                 }
               }
           }
 
+      // iterate over all points and calculate the phase shift
       cell = this->get_dof_handler().begin_active();
       double phase_shift_integral = 0.0;
       unsigned int number_of_points = 0;
@@ -873,20 +879,27 @@ namespace aspect
               {
                 const double composition = compositional_values[q];
 
-                if(composition > background_porosity + (amplitude - background_porosity)*0.05  && composition <= amplitude)
+                // we do not want to include the constant-porosity background in the calculation
+                // nor the peak of the wave where we maximum of the composition is not a good indicator
+                // if we are left or right of the maximum of the analytical solution
+                if(composition > background_porosity + (amplitude - background_porosity)*0.05  && composition <= amplitude*0.9)
                 {
-                  double z = fe_values.quadrature_point(q)[dim-1];
-
-                  if(z > local_z_coordinate)
-                    z -= offset;
-                  else
-                    z = offset - z;
-
 				  double z_analytical = compaction_length
 									    * AnalyticSolutions::solitary_wave_solution(composition/background_porosity,
 																				    amplitude/background_porosity);
+                  double z = fe_values.quadrature_point(q)[dim-1];
 
-				  phase_shift_integral += std::abs(z - z_analytical);
+                  if(z > z_max_composition)
+                  {
+                    z -= offset;
+  				    phase_shift_integral += (z - z_analytical);
+                  }
+                  else
+                  {
+                    z = offset - z;
+  				    phase_shift_integral -= (z - z_analytical);
+                  }
+
 				  number_of_points += 1;
                 }
               }
@@ -906,6 +919,7 @@ namespace aspect
       AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
                   ExcNotImplemented());
 
+      // as we do not have an analytical solution for the pressure, we store the initial solution
       if(this->get_timestep_number()==0)
       {
     	store_initial_pressure();
@@ -923,8 +937,8 @@ namespace aspect
 
           delta = compute_phase_shift();
 
-          // TODO: we should use delta as an argument, but it does not work yet
-          // ref_func.set_delta(delta);
+          // reset the phase shift of the analytical solution so we can compare the shape of the wave
+          ref_func->set_delta(delta);
 
         }
       else
@@ -1019,7 +1033,7 @@ namespace aspect
       os << std::scientific << cellwise_errors_f.l2_norm() / (amplitude * sqrt(cellwise_errors_f.size()))
                     << ", " << cellwise_errors_p.l2_norm() / (maximum_pressure * sqrt(cellwise_errors_p.size()))
                     << ", " << error_c
-                    << ", " << delta;
+                    << ", " << std::abs(delta);
 
       return std::make_pair("Errors e_f, e_p, e_c, delta:", os.str());
     }
