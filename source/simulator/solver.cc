@@ -669,7 +669,7 @@ namespace aspect
                       double p_c = 0.0;
                       double phi = porosity_values[j];
                       double p_s;
-                      if (phi >(1.0-parameters.melt_transport_threshold) || (phi <parameters.melt_transport_threshold))
+                      if (phi >(1.0-parameters.melt_transport_threshold) || (phi == 0.0))
                         p_s = p_f;
                       else
                       {
@@ -679,8 +679,9 @@ namespace aspect
 
                       distributed_stokes_solution(local_dof_indices[pressure_idx]) = p_s;
                       distributed_stokes_solution(local_dof_indices[p_c_idx]) = p_f;
-		      //std::cout << "(p_f, p_c) -> (p_s, p_f) " << p_f << ", " << p_c << ", " << phi << " -> "
-		      //<< p_s << ", " << p_f << std::endl;
+//              if(phi <= 0.0)
+//		      std::cout << "(p_f, p_c) -> (p_s, p_f) " << p_f << ", " << p_c << ", " << phi << " -> "
+//		      << p_s << ", " << p_f << std::endl;
                     }
                 }
             distributed_stokes_solution.block(0).compress(VectorOperation::insert);

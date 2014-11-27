@@ -1346,6 +1346,7 @@ namespace aspect
                 const Tensor<1,dim>
                 gravity = gravity_model->gravity_vector (scratch.finite_element_face_values.quadrature_point(q));
                 const double density_f = melt_outputs.fluid_densities[q];
+                const double density_s = melt_outputs.densities[q];
 
                 const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
                 const double porosity = std::max(melt_inputs.composition[q][porosity_index],0.000);
@@ -1358,16 +1359,17 @@ namespace aspect
 
                 for (unsigned int i = 0; i < dofs_per_cell; ++i)
                   {
+                	// this corresponds to the boundary condition grad p_f = rho_s g
                     data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
-                                          * pressure_scaling * K_D * density_f *
+                                          * pressure_scaling * K_D * (density_f - density_s) *
                                          (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)
                                           * scratch.finite_element_face_values.JxW(q));
                     for (unsigned int j=0; j<dofs_per_cell; ++j)
-                      data.local_matrix(i,j) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
+                      data.local_matrix(i,j) += 0.0;/*(scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
                                                 * pressure_scaling * pressure_scaling * K_D *
                                                 (scratch.finite_element_face_values.get_normal_vectors()[q] *
                                                 scratch.finite_element_face_values[introspection.extractors.pressure].gradient(j, q))
-                                                * scratch.finite_element_face_values.JxW(q));
+                                                * scratch.finite_element_face_values.JxW(q));*/
                   }
               }
           }
