@@ -128,6 +128,11 @@ namespace aspect
         Point<dim> extents;
 
         /**
+         * Origin of the box in x, y, and z (in 3d) coordinates.
+         */
+        Point<dim> box_origin;
+
+        /**
          * Flag whether the box is periodic in the x-, y-, and z-direction.
          */
         bool periodic[dim];

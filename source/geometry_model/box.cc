@@ -39,8 +39,8 @@ namespace aspect
       std::vector<unsigned int> rep_vec(repetitions, repetitions+dim);
       GridGenerator::subdivided_hyper_rectangle (coarse_grid,
                                                  rep_vec,
-                                                 Point<dim>(),
-                                                 extents,
+                                                 box_origin,
+                                                 box_origin+extents,
                                                  true);
 
       //Tell p4est about the periodicity of the mesh.
@@ -155,7 +155,7 @@ namespace aspect
     double
     Box<dim>::depth(const Point<dim> &position) const
     {
-      const double d = maximal_depth()-position(dim-1);
+      const double d = maximal_depth()-(position(dim-1)-box_origin[dim-1]);
 
       // if we violate the bounds, check that we do so only very slightly and
       // then just return maximal or minimal depth
@@ -184,8 +184,9 @@ namespace aspect
               ExcMessage ("Given depth must be less than or equal to the maximal depth of this geometry."));
 
       // choose a point on the center axis of the domain
-      Point<dim> p = extents/2;
-      p[dim-1] = maximal_depth() - depth;
+      Point<dim> p = extents/2+box_origin;
+      p[dim-1] = extents[dim-1]+box_origin[dim-1]-depth;
+
       return p;
     }
 
@@ -216,6 +217,17 @@ namespace aspect
           prm.declare_entry ("Z extent", "1",
                              Patterns::Double (0),
                              "Extent of the box in z-direction. This value is ignored "
+                             "if the simulation is in 2d Units: m.");
+
+          prm.declare_entry ("Box origin X coordinate", "0",
+                             Patterns::Double (),
+                             "X coordinate of box origin.");
+          prm.declare_entry ("Box origin Y coordinate", "0",
+                             Patterns::Double (),
+                             "Y coordinate of box origin.");
+          prm.declare_entry ("Box origin Z coordinate", "0",
+                             Patterns::Double (),
+                             "Z coordinate of box origin. This value is ignored "
                              "if the simulation is in 2d Units: m.");
 
           prm.declare_entry ("X repetitions", "1",
@@ -254,12 +266,14 @@ namespace aspect
       {
         prm.enter_subsection("Box");
         {
+          box_origin[0] = prm.get_double ("Box origin X coordinate");
           extents[0] = prm.get_double ("X extent");
           periodic[0] = prm.get_bool ("X periodic");
           repetitions[0] = prm.get_integer ("X repetitions");
 
           if (dim >= 2)
             {
+              box_origin[1] = prm.get_double ("Box origin Y coordinate");
               extents[1] = prm.get_double ("Y extent");
               periodic[1] = prm.get_bool ("Y periodic");
               repetitions[1] = prm.get_integer ("Y repetitions");
@@ -267,6 +281,7 @@ namespace aspect
 
           if (dim >= 3)
             {
+              box_origin[2] = prm.get_double ("Box origin Z coordinate");
               extents[2] = prm.get_double ("Z extent");
               periodic[2] = prm.get_bool ("Z periodic");
               repetitions[2] = prm.get_integer ("Z repetitions");
