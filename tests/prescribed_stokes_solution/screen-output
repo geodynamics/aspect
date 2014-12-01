@@ -1,0 +1,135 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.2.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 2,756 (2,178+289+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.806 m/s, 1.45 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0.001951 W, -0.001951 W, -1 W, 1 W
+     Writing graphical output:           output-prescribed_stokes_solution/solution-00000
+
+*** Timestep 1:  t=0.0456198 seconds
+   Solving temperature system... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.806 m/s, 1.45 m/s
+     Temperature min/avg/max:            0 K, 0.5135 K, 1 K
+     Heat fluxes through boundary parts: 0.005529 W, -0.005053 W, -0.9134 W, 1.098 W
+     Writing graphical output:           output-prescribed_stokes_solution/solution-00001
+
+*** Timestep 2:  t=0.0912396 seconds
+   Solving temperature system... 12 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.806 m/s, 1.45 m/s
+     Temperature min/avg/max:            0 K, 0.5237 K, 1 K
+     Heat fluxes through boundary parts: 0.006846 W, -0.006146 W, -0.8623 W, 1.157 W
+     Writing graphical output:           output-prescribed_stokes_solution/solution-00002
+
+*** Timestep 3:  t=0.136859 seconds
+   Solving temperature system... 12 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.806 m/s, 1.45 m/s
+     Temperature min/avg/max:            0 K, 0.5307 K, 1 K
+     Heat fluxes through boundary parts: 0.007331 W, -0.006519 W, -0.8313 W, 1.195 W
+     Writing graphical output:           output-prescribed_stokes_solution/solution-00003
+
+*** Timestep 4:  t=0.182479 seconds
+   Solving temperature system... 11 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.806 m/s, 1.45 m/s
+     Temperature min/avg/max:            0 K, 0.5353 K, 1 K
+     Heat fluxes through boundary parts: 0.007509 W, -0.006645 W, -0.8116 W, 1.22 W
+     Writing graphical output:           output-prescribed_stokes_solution/solution-00004
+
+*** Timestep 5:  t=0.228099 seconds
+   Solving temperature system... 11 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.806 m/s, 1.45 m/s
+     Temperature min/avg/max:            0 K, 0.5382 K, 1 K
+     Heat fluxes through boundary parts: 0.007564 W, -0.006678 W, -0.7991 W, 1.236 W
+     Writing graphical output:           output-prescribed_stokes_solution/solution-00005
+
+*** Timestep 6:  t=0.273719 seconds
+   Solving temperature system... 11 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.806 m/s, 1.45 m/s
+     Temperature min/avg/max:            0 K, 0.54 K, 1 K
+     Heat fluxes through boundary parts: 0.00757 W, -0.006678 W, -0.7913 W, 1.246 W
+     Writing graphical output:           output-prescribed_stokes_solution/solution-00006
+
+*** Timestep 7:  t=0.319339 seconds
+   Solving temperature system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.806 m/s, 1.45 m/s
+     Temperature min/avg/max:            0 K, 0.5411 K, 1 K
+     Heat fluxes through boundary parts: 0.007563 W, -0.00667 W, -0.7866 W, 1.252 W
+     Writing graphical output:           output-prescribed_stokes_solution/solution-00007
+
+*** Timestep 8:  t=0.364958 seconds
+   Solving temperature system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.806 m/s, 1.45 m/s
+     Temperature min/avg/max:            0 K, 0.5418 K, 1 K
+     Heat fluxes through boundary parts: 0.007554 W, -0.006663 W, -0.7837 W, 1.255 W
+     Writing graphical output:           output-prescribed_stokes_solution/solution-00008
+
+*** Timestep 9:  t=0.410578 seconds
+   Solving temperature system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.806 m/s, 1.45 m/s
+     Temperature min/avg/max:            0 K, 0.5421 K, 1 K
+     Heat fluxes through boundary parts: 0.007548 W, -0.006658 W, -0.782 W, 1.257 W
+     Writing graphical output:           output-prescribed_stokes_solution/solution-00009
+
+*** Timestep 10:  t=0.456198 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.806 m/s, 1.45 m/s
+     Temperature min/avg/max:            0 K, 0.5424 K, 1 K
+     Heat fluxes through boundary parts: 0.007544 W, -0.006655 W, -0.781 W, 1.259 W
+     Writing graphical output:           output-prescribed_stokes_solution/solution-00010
+
+*** Timestep 11:  t=0.5 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.806 m/s, 1.45 m/s
+     Temperature min/avg/max:            0 K, 0.5425 K, 1 K
+     Heat fluxes through boundary parts: 0.007543 W, -0.006654 W, -0.7804 W, 1.259 W
+     Writing graphical output:           output-prescribed_stokes_solution/solution-00011
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      4.47s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble temperature system     |        12 |      1.65s |        37% |
+| Build temperature preconditioner|        12 |   0.00891s |       0.2% |
+| Solve temperature system        |        12 |    0.0262s |      0.59% |
+| Initialization                  |         2 |     0.154s |       3.4% |
+| Postprocessing                  |        12 |     0.973s |        22% |
+| Setup dof systems               |         1 |     0.178s |         4% |
++---------------------------------+-----------+------------+------------+
+

@@ -138,6 +138,7 @@ namespace aspect
                           :
                           BoundaryComposition::create_boundary_composition<dim>(prm)),
     initial_conditions (InitialConditions::create_initial_conditions<dim>(prm)),
+    prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
 
@@ -316,6 +317,16 @@ namespace aspect
         compositional_initial_conditions->parse_parameters (prm);
         compositional_initial_conditions->initialize ();
       }
+
+
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(prescribed_stokes_solution.get()))
+    	sim->initialize (*this);
+    if (prescribed_stokes_solution.get())
+    {
+    	prescribed_stokes_solution->parse_parameters (prm);
+    	prescribed_stokes_solution->initialize ();
+    }
+
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(adiabatic_conditions.get()))
       sim->initialize (*this);
@@ -1365,6 +1376,95 @@ namespace aspect
 
 
   template <int dim>
+  class VectorFunctionFromVectorFunctionObject : public Function<dim>
+  {
+  public:
+    /**
+     * Given a function object that takes a Point and a Vector,
+     * convert this into an object that matches the Function@<dim@>
+     * interface.
+     *
+     * @param function_object The scalar function that will form one component
+     *     of the resulting Function object.
+     * @param first_component The first components that should be
+     *     filled.
+     * @param n_object_components The number of components that should be
+     *     filled from the first.
+     * @param n_total_components The total number of vector components of the
+     *     resulting Function object.
+     **/
+
+    VectorFunctionFromVectorFunctionObject (const std_cxx1x::function<void (const Point<dim> &,Vector<double> &)> &function_object,
+                                            const unsigned int first_component,
+                                            const unsigned int n_object_components,
+                                            const unsigned int n_total_components)
+      :
+      Function<dim>(n_total_components),
+      function_object (function_object),
+      first_component (first_component),
+      n_object_components (n_object_components)
+    {
+//      Assert (n_object_components < this->n_total_components,
+//      ExcIndexRange (n_object_components, 0, this->n_total_components));
+    }
+
+    double
+    value (const Point<dim> &p,
+                                                        const unsigned int component) const
+    {
+      Assert (component < this->n_components,
+              ExcIndexRange (component, 0, this->n_components));
+
+      Vector<double> temp(n_object_components);
+
+      if (component < first_component)
+    	  return 0;
+      else if (component >= first_component + n_object_components)
+    	  return 0;
+      else
+      {
+        function_object (p, temp);
+        return temp(component - first_component);
+      }
+    }
+
+    void
+    vector_value (const Point<dim>   &p,
+                  Vector<double>     &values) const
+    {
+      AssertDimension(values.size(), this->n_components);
+
+      // set everything to zero, and then the right components to their correct values
+      values = 0;
+      Vector<double> temp(n_object_components);
+      function_object (p, temp);
+      for (unsigned int i = 0; i < n_object_components; i++)
+      {
+    	  values(first_component + i) = temp(i);
+      }
+    }
+
+  private:
+    /**
+     * The function object which we call when this class's solution() function is called.
+     **/
+    const std_cxx1x::function<void (const Point<dim> &,Vector<double> &)> function_object;
+
+    /**
+     * The first vector component whose value is to be filled by the given scalar
+     * function.
+     */
+    const unsigned int first_component;
+    /**
+     * The number of vector components whose values are to be filled by the given scalar
+     * function.
+     */
+    const unsigned int n_object_components;
+
+  };
+
+
+  template <int dim>
   void
   Simulator<dim>::
   solve_timestep ()
@@ -1628,6 +1728,55 @@ namespace aspect
                   = solution.block(introspection.block_indices.pressure);
 
               pcout << std::endl;
+            }
+
+          break;
+        }
+
+        case NonlinearSolver::Advection_only:
+        {
+          // Identical to IMRES except does not solve Stokes equation
+          if (parameters.free_surface_enabled)
+            free_surface->execute ();
+
+          LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
+
+          VectorFunctionFromVectorFunctionObject<dim> func(std_cxx1x::bind (&PrescribedStokesSolution::Interface<dim>::solution,
+                  std_cxx1x::cref(*prescribed_stokes_solution),
+                  std_cxx1x::_1,
+                  std_cxx1x::_2),
+                  0,
+                  dim+1, //velocity and pressure
+                  introspection.n_components);
+
+          VectorTools::interpolate (mapping, dof_handler, func, distributed_stokes_solution);
+
+          const unsigned int block_vel = introspection.block_indices.velocities;
+          const unsigned int block_p = introspection.block_indices.pressure;
+
+          // distribute hanging node and
+             // other constraints
+             current_constraints.distribute (distributed_stokes_solution);
+
+          solution.block(block_vel) = distributed_stokes_solution.block(block_vel);
+          solution.block(block_p) = distributed_stokes_solution.block(block_p);
+
+          assemble_advection_system (AdvectionField::temperature());
+          build_advection_preconditioner(AdvectionField::temperature(),
+                                         T_preconditioner);
+          solve_advection(AdvectionField::temperature());
+
+          current_linearization_point.block(introspection.block_indices.temperature)
+            = solution.block(introspection.block_indices.temperature);
+
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            {
+              assemble_advection_system (AdvectionField::composition(c));
+              build_advection_preconditioner(AdvectionField::composition(c),
+                                             C_preconditioner);
+              solve_advection(AdvectionField::composition(c));
+              current_linearization_point.block(introspection.block_indices.compositional_fields[c])
+                = solution.block(introspection.block_indices.compositional_fields[c]);
             }
 
           break;
