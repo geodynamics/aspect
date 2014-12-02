@@ -6,7 +6,19 @@
  *
  *
  * <ol>
- *<li> New: There is now the possibility to interpolate the visualization
+ * <li> Changed: The behaviour when one changed the visualization
+ * output_interval during a checkpoint restart was previously undefined, 
+ * and working in slightly unexpected ways like never writing output for 
+ * the first timestep after the restart. This now works as one would expect,
+ * e.g. every timestep that ends more than output_interval after the last 
+ * output time step will produce output. Old checkpoint files will continue
+ * to work, only with a possible short gap in visualization output right
+ * after restart.
+ * 
+ * <br>
+ * (Rene Gassmoeller, 2014/12/03)
+ *
+ * <li> New: There is now the possibility to interpolate the visualization
  * output to a refined output mesh. This accounts for the fact that most
  * visualization software only offers linear interpolation between grid points
  * and therefore the output file is a very coarse representation of the actual
