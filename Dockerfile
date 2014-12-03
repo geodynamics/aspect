@@ -2,10 +2,8 @@ FROM ubuntu:14.04
 
 MAINTAINER Rene Gassmoeller <r.gassmoeller@mailbox.org>
 
-ENV HOME /root
-
-RUN apt-get update
-RUN apt-get -yq install gcc \
+RUN apt-get update && \
+    apt-get -yq install gcc \
                         build-essential \
                         wget \
                         bzip2 \
@@ -14,7 +12,6 @@ RUN apt-get -yq install gcc \
                         gfortran \
                         libblas-dev \
                         liblapack-dev \
-                        libboost-dev \
                         libopenmpi-dev \
                         openmpi-bin \
                         cmake \
@@ -27,7 +24,7 @@ RUN wget http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.13.tar.bz2; \
     ./configure --enable-parallel \
                 --enable-shared \
                 --prefix=/usr/local/; \
-    make -j2 && make install; \
+    make -j4 && make install; \
     cd ..; \
     rm -rf /hdf5-1.8.13 /hdf5-1.8.13.tar.bz2 
 
@@ -75,16 +72,25 @@ RUN wget http://www.ces.clemson.edu/dealii/deal.II-8.1.0.tar.gz; \
     cd ../..; \
     rm -rf deal.II deal.II-8.1.0.tar.gz
 
+# Add and log in as a user
+RUN adduser aspect
+USER aspect
+
 #Build aspect
-RUN git clone https://github.com/geodynamics/aspect.git; \ 
-    mkdir aspect/build; \
+RUN cd /home/aspect; \
+    git clone https://github.com/geodynamics/aspect.git; \
+    mkdir aspect/build; \ 
     cd aspect/build; \
     cmake -DCMAKE_BUILD_TYPE=Release \
           -DDEAL_II_DIR=/usr/local/deal.II \
           .. ; \
     make -j4; \
-    mv aspect /usr/local/bin/; \
-    cd /\
-    rm -rf aspect
+    mv aspect ../; \
+    cd ..; \
+    rm -rf build
 
+#Set environment up to run aspect easily
+ENV PATH /home/aspect/aspect:$PATH
+ENV HOME /home/aspect
+WORKDIR /home/aspect/aspect
 CMD ["aspect"]
