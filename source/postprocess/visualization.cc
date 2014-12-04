@@ -144,7 +144,7 @@ namespace aspect
       output_interval (0),
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
-      next_output_time (std::numeric_limits<double>::quiet_NaN()),
+      last_output_time (std::numeric_limits<double>::quiet_NaN()),
       output_file_number (0)
     {}
 
@@ -172,16 +172,16 @@ namespace aspect
     std::pair<std::string,std::string>
     Visualization<dim>::execute (TableHandler &statistics)
     {
-      // if this is the first time we get here, set the next output time
-      // to the current time. this makes sure we always produce data during
-      // the first time step
-      if (std::isnan(next_output_time))
+      // if this is the first time we get here, set the last output time
+      // to the current time - output_interval. this makes sure we
+      // always produce data during the first time step
+      if (std::isnan(last_output_time))
         {
-          next_output_time = this->get_time();
+          last_output_time = this->get_time() - output_interval;
         }
 
-      // see if graphical output is requested at this time
-      if (this->get_time() < next_output_time)
+      // return if graphical output is not requested at this time
+      if (this->get_time() < last_output_time + output_interval)
         return std::pair<std::string,std::string>();
 
 
@@ -472,7 +472,7 @@ namespace aspect
       // up the counter of the number of the file by one; also
       // up the next time we need output
       ++output_file_number;
-      set_next_output_time (this->get_time());
+      set_last_output_time (this->get_time());
 
       // return what should be printed to the screen.
       return std::make_pair (std::string ("Writing graphical output:"),
@@ -724,6 +724,9 @@ namespace aspect
         prm.enter_subsection("Visualization");
         {
           output_interval = prm.get_double ("Time between graphical output");
+          if (this->convert_output_to_years())
+            output_interval *= year_in_seconds;
+
           output_format   = prm.get ("Output format");
           group_files     = prm.get_integer("Number of grouped files");
           interpolate_output = prm.get_bool("Interpolate output");
@@ -790,7 +793,7 @@ namespace aspect
     template <class Archive>
     void Visualization<dim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &next_output_time
+      ar &last_output_time
       & output_file_number
       & times_and_pvtu_names
       & output_file_names_by_timestep
@@ -830,26 +833,21 @@ namespace aspect
         }
 
 //TODO: do something about the visualization postprocessor plugins
-
-      // set next output time to something useful
-      set_next_output_time (this->get_time());
     }
 
 
     template <int dim>
     void
-    Visualization<dim>::set_next_output_time (const double current_time)
+    Visualization<dim>::set_last_output_time (const double current_time)
     {
-      // if output_interval is positive, then set the next output interval to
-      // a positive multiple.
+      // if output_interval is positive, then update the last supposed output
+      // time
       if (output_interval > 0)
         {
-          // the current time is always in seconds, so we need to convert the output_interval to the same unit
-          double output_interval_in_s = (this->convert_output_to_years()) ? (output_interval*year_in_seconds) : output_interval;
-
-          // we need to compute the smallest integer that is bigger than current_time/my_output_interval,
-          // even if it is a whole number already (otherwise we output twice in a row)
-          next_output_time = (std::floor(current_time/output_interval_in_s)+1.0) * output_interval_in_s;
+          // we need to find the last time output was supposed to be written.
+          // this is the last_output_time plus the largest positive multiple
+          // of output_intervals that passed since then
+          last_output_time = last_output_time + std::floor((current_time-last_output_time)/output_interval) * output_interval;
         }
     }
 
