@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -1028,7 +1028,7 @@ namespace aspect
     Amg_data.elliptic = true;
     Amg_data.higher_order_elements = true;
     Amg_data.smoother_sweeps = 2;
-    Amg_data.aggregation_threshold = 0.02;
+    Amg_data.aggregation_threshold = 0.001;
 #endif
 
     /*  The stabilization term for the free surface (Kaus et. al., 2010)
