@@ -97,7 +97,7 @@ namespace aspect
          std::string temp;
          std::ifstream in(filename.c_str(), std::ios::in);
          AssertThrow (in,
-                      ExcMessage (std::string("Couldn't open file <") + filename));
+                      ExcMessage (std::string("Couldn't open file <") + filename + std::string(">")));
 
          while (!in.eof())
            {
