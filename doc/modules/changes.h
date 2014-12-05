@@ -6,6 +6,12 @@
  *
  *
  * <ol>
+ * <li> New: The parameters for the inner Algebraic Multigrid preconditioner
+ * used in the Stokes solve have been tuned to achieve a speedup of the solver
+ * phase by a factor between 1.2 and 2, depending on application.
+ * <br>
+ * (Wolfgang Bangerth, 2014/12/05)
+ *
  *<li> New:  There is now the option to specify an origin when using the box
  * goemetry model.
  * <br>
@@ -19,7 +25,6 @@
  * output time step will produce output. Old checkpoint files will continue
  * to work, only with a possible short gap in visualization output right
  * after restart.
- * 
  * <br>
  * (Rene Gassmoeller, 2014/12/03)
  *
