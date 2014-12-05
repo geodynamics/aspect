@@ -1103,8 +1103,8 @@ namespace aspect
     const double melting_rate     = material_model_outputs.reaction_terms[q_point][porosity_index];
     const double solid_density    = material_model_outputs.densities[q_point];
     const double fluid_density    = material_model_outputs.fluid_densities[q_point];
-    const double fluid_compressibility = material_model_outputs.compressibilities[q_point];
-    const double solid_compressibility = material_model_outputs.fluid_compressibilities[q_point];
+    const double solid_compressibility = material_model_outputs.compressibilities[q_point];
+    const double fluid_compressibility = material_model_outputs.fluid_compressibilities[q_point];
     const Tensor<1,dim> current_u = scratch.velocity_values[q_point];
     const double porosity         = std::max(material_model_inputs.composition[q_point][porosity_index],0.0);
     const double K_D = (porosity > parameters.melt_transport_threshold
@@ -1357,19 +1357,29 @@ namespace aspect
                 	                :
                 	                0.0);
 
+                const double rho_s_0 = 1.2;
+                const double rho_f_0 = 1.0;
+                const double xi_0 = 0.5;
+                const double eta_0 = 0.375;
+                const double A = 0.1;
+                const double B = 0.2;
+                const double C = 1.0;
+                const double D = 0.3;
+                const double E = B * (xi_0 + 4.0/3.0 * eta_0) + A * eta_0 - C * D * (rho_s_0 - rho_f_0);
+                const double y = melt_inputs.position[q][1];
+                const double grad_p_f = (E * std::exp(y) - rho_f_0 * C) * std::exp(-y)/ (-C );
+
                 for (unsigned int i = 0; i < dofs_per_cell; ++i)
                   {
                 	// this corresponds to the boundary condition grad p_f = rho_s g
-                    data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
+/*                    data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
                                           * pressure_scaling * K_D * (density_f - density_s) *
                                          (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)
+                                          * scratch.finite_element_face_values.JxW(q));*/
+                    data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
+                                          * pressure_scaling * K_D * (density_f - grad_p_f) *
+                                         (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)
                                           * scratch.finite_element_face_values.JxW(q));
-                    for (unsigned int j=0; j<dofs_per_cell; ++j)
-                      data.local_matrix(i,j) += 0.0;/*(scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
-                                                * pressure_scaling * pressure_scaling * K_D *
-                                                (scratch.finite_element_face_values.get_normal_vectors()[q] *
-                                                scratch.finite_element_face_values[introspection.extractors.pressure].gradient(j, q))
-                                                * scratch.finite_element_face_values.JxW(q));*/
                   }
               }
           }
