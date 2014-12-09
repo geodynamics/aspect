@@ -1027,6 +1027,16 @@ namespace aspect
     Amg_data.constant_modes = constant_modes;
     Amg_data.elliptic = true;
     Amg_data.higher_order_elements = true;
+
+    // set the AMG parameters in a way that minimizes the run
+    // time. compared to some of the deal.II tutorial programs, we
+    // found that it pays off to set the aggregration threshold to
+    // zero, especially for ill-conditioned problems with large
+    // variations in the viscosity
+    //
+    // for extensive benchmarking of various settings of these
+    // parameters and others, see
+    // https://github.com/geodynamics/aspect/pull/234
     Amg_data.smoother_sweeps = 2;
     Amg_data.aggregation_threshold = 0.001;
 #endif
