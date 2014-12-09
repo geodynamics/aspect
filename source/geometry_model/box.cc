@@ -217,18 +217,18 @@ namespace aspect
           prm.declare_entry ("Z extent", "1",
                              Patterns::Double (0),
                              "Extent of the box in z-direction. This value is ignored "
-                             "if the simulation is in 2d Units: m.");
+                             "if the simulation is in 2d. Units: m.");
 
           prm.declare_entry ("Box origin X coordinate", "0",
                              Patterns::Double (),
-                             "X coordinate of box origin.");
+                             "X coordinate of box origin. Units: m.");
           prm.declare_entry ("Box origin Y coordinate", "0",
                              Patterns::Double (),
-                             "Y coordinate of box origin.");
+                             "Y coordinate of box origin. Units: m.");
           prm.declare_entry ("Box origin Z coordinate", "0",
                              Patterns::Double (),
                              "Z coordinate of box origin. This value is ignored "
-                             "if the simulation is in 2d Units: m.");
+                             "if the simulation is in 2d. Units: m.");
 
           prm.declare_entry ("X repetitions", "1",
                              Patterns::Integer (1),

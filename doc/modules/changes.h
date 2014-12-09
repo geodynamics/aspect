@@ -6,6 +6,11 @@
  *
  *
  * <ol>
+ *<li> New:  There is now the option to specify an origin when using the box
+ * goemetry model.
+ * <br>
+ * (Ryan Grove, 2014/12/09)
+ *
  *<li> New: There is now the possibility to interpolate the visualization
  * output to a refined output mesh. This accounts for the fact that most
  * visualization software only offers linear interpolation between grid points
