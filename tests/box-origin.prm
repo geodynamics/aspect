@@ -1,0 +1,78 @@
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = IMPES
+
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 3.3 # default: 1
+    set Y extent = 2.2
+    set Z extent = 1.1
+
+    set Box origin X coordinate = -1.9
+    set Box origin Y coordinate = 2.5
+    set Box origin Z coordinate = 3.1
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = perturbed box
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1    # default: 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1    # default: 293
+    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1    # default: 5e24
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0, 1
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 1
+  set Zero velocity boundary indicators       = 0, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics
+
+  subsection Visualization
+    set Output format                 = gnuplot
+
+    set Time between graphical output = 0   # default: 1e8
+  end
+end
+
