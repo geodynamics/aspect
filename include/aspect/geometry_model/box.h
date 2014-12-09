@@ -46,10 +46,16 @@ namespace aspect
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const;
 
         /**
-         * Return a point that denotes the upper right corner of the box
+         * Return a point that denotes the size of the box in each dimension of the
          * domain.
          */
         Point<dim> get_extents () const;
+
+        /**
+         * Return a point that denotes the lower left corner of the box
+         * domain.
+         */
+        Point<dim> get_origin () const;
 
         /**
          * Return the typical length scale one would expect of features in

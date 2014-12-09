@@ -141,6 +141,12 @@ namespace aspect
       return extents;
     }
 
+    template <int dim>
+    Point<dim>
+    Box<dim>::get_origin () const
+    {
+      return box_origin;
+    }
 
     template <int dim>
     double
