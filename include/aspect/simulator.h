@@ -918,8 +918,8 @@ namespace aspect
                                        std::vector<double> &values) const;
 
       /**
-       * Compute a depth average of the current temperature. The function
-       * fills a vector that contains average temperatures over slices of the
+       * Compute a depth average of the current viscosity. The function
+       * fills a vector that contains average viscosities over slices of the
        * domain of same depth. The function resizes the output vector to match
        * the number of depth slices.
        *
