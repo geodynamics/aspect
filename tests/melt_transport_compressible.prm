@@ -8,19 +8,19 @@
 # 
 
 set Adiabatic surface temperature          = 1623               # default: 0
-set CFL number                             = 1
+set CFL number                             = 1e-6
 set Composition solver tolerance           = 1e-12
-set Nonlinear solver scheme                = IMPES
-set Max nonlinear iterations               = 10
+set Nonlinear solver scheme                = iterated IMPES
+set Max nonlinear iterations               = 15
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
 
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
-set End time                               = 0 #0.06
+set End time                               = 0.0
 
-set Pressure normalization                 = no
+set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
@@ -74,7 +74,7 @@ end
 
 subsection Boundary velocity model
   subsection Function
-    set Function expression = 0.1*exp(y);0.2*exp(y)
+    set Function expression = 0.1*exp(y);-0.3/4.0*exp(y)
     set Variable names      = x,y
   end
 end  
@@ -110,7 +110,7 @@ subsection Mesh refinement
   set Refinement fraction                      = 0.0
 
   set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 7                    # default: 2
+  set Initial global refinement                = 6                    # default: 2
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
@@ -119,7 +119,7 @@ end
 subsection Model settings
   set Fixed temperature boundary indicators   = 2,3        # default: 
   set Fixed composition boundary indicators   = 0,1,2,3   
-  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function
+  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
 
   set Tangential velocity boundary indicators = 
   set Zero velocity boundary indicators       =           # default: 
@@ -134,7 +134,12 @@ subsection Postprocess
 
   subsection Visualization
 
-    set List of output variables      = density, viscosity, thermal expansivity, melt pressure, melt velocity, melt density, permeability, melt viscosity, compaction viscosity, gravity
+    set List of output variables      = melt pressure, melt velocity, melt density, permeability, melt viscosity, compaction viscosity, gravity, material properties, nonadiabatic pressure
+#    set List of output variables      = gravity, material properties, nonadiabatic pressure
+
+    subsection Material properties
+    set List of material properties   = density, viscosity, thermal expansivity, reaction terms, compressibility
+    end
 
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no

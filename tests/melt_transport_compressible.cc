@@ -74,7 +74,7 @@ namespace aspect
         for (unsigned int i=0;i<in.position.size();++i)
           {
             double porosity = in.composition[i][porosity_idx];
-            out.viscosities[i] = eta_0;
+            out.viscosities[i] = 0.5 * std::exp(2.0 * in.position[i][0]);
             out.thermal_expansion_coefficients[i] = 0.0;
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;
@@ -94,7 +94,7 @@ namespace aspect
         for (unsigned int i=0;i<in.position.size();++i)
           {
             double porosity = in.composition[i][porosity_idx];
-            out.compaction_viscosities[i] = xi_0;
+            out.compaction_viscosities[i] = xi_1 * std::exp(-in.position[i][1]) + 2.0/3.0 * std::exp(2.0 * in.position[i][0]) + xi_0;
             out.fluid_viscosities[i] = 1.0;
             out.permeabilities[i] = K_D_0 + 2.0 * B / E - rho_s_0 * B * D / E * (1.0/rho_s_0 - 1.0/rho_f_0) * std::exp(in.position[i][1]);
             out.fluid_compressibilities[i] = 1.0 / (rho_f_0 * C);
@@ -107,17 +107,18 @@ namespace aspect
       {
           rho_s_0 = 1.2;
           rho_f_0 = 1.0;
-          xi_0 = 0.5;
-          eta_0 = 0.375;
-          K_D_0 = -2.3;
+          xi_0 = 1.0;
+          xi_1 = 1.0;
 
           // A, B and C are constants from the velocity boundary conditions and gravity model
           // they have to be consistent!
           A = 0.1;
-          B = 0.2;
+          B = -3.0/4.0 * A;
           C = 1.0;
           D = 0.3;
-          E = B * (xi_0 + 4.0/3.0 * eta_0) + A * eta_0 - C * D * (rho_s_0 - rho_f_0);
+          E = - 3.0/4.0 * xi_0 * A + C * D *(rho_f_0 - rho_s_0);
+
+          K_D_0 = 2.2;
       }
 
 
@@ -125,7 +126,7 @@ namespace aspect
         double rho_s_0;
         double rho_f_0;
         double xi_0;
-        double eta_0;
+        double xi_1;
         double K_D_0;
         double A;
         double B;
