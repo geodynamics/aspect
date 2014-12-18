@@ -844,10 +844,14 @@ namespace aspect
       // time
       if (output_interval > 0)
         {
-          // we need to find the last time output was supposed to be written.
+          // We need to find the last time output was supposed to be written.
           // this is the last_output_time plus the largest positive multiple
-          // of output_intervals that passed since then
-          last_output_time = last_output_time + std::floor((current_time-last_output_time)/output_interval) * output_interval;
+          // of output_intervals that passed since then. We need to handle the
+          // edge case where last_output_time+output_interval==current_time,
+          // we did an output and std::floor sadly rounds to zero. This is done
+          // by forcing std::floor to round 1.0-eps to 1.0.
+          const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
+          last_output_time = last_output_time + std::floor((current_time-last_output_time)/output_interval*magic) * output_interval/magic;
         }
     }
 
