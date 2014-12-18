@@ -1359,13 +1359,13 @@ namespace aspect
 
                 const double rho_s_0 = 1.2;
                 const double rho_f_0 = 1.0;
-                const double xi_0 = 0.5;
-                const double eta_0 = 0.375;
+                const double xi_0 = 1.0;
+                const double xi_1 = 1.0;
                 const double A = 0.1;
-                const double B = 0.2;
+                const double B = -3.0/4.0 * A;
                 const double C = 1.0;
                 const double D = 0.3;
-                const double E = B * (xi_0 + 4.0/3.0 * eta_0) + A * eta_0 - C * D * (rho_s_0 - rho_f_0);
+                const double E = - 3.0/4.0 * xi_0 * A + C * D *(rho_f_0 - rho_s_0);
                 const double y = melt_inputs.position[q][1];
                 const double grad_p_f = (E * std::exp(y) - rho_f_0 * C) * std::exp(-y)/ (-C );
 
