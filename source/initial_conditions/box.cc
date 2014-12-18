@@ -42,7 +42,7 @@ namespace aspect
 
       double perturbation = 1;
       for (unsigned int d=0; d<dim; ++d)
-        perturbation *= std::sin(numbers::PI*position[d]/geometry->get_extents()[d]);
+        perturbation *= std::sin(numbers::PI*(position[d]-geometry->get_origin()[d])/geometry->get_extents()[d]);
       return 1 + perturbation/10;
     }
 
@@ -62,8 +62,8 @@ namespace aspect
       Point<dim> temporary1, temporary2;
       for (int d=0; d<dim; ++d)
         {
-          temporary1[d]=geometry->get_extents()[d]*0.625;
-          temporary2[d]=geometry->get_extents()[d]*0.375;
+          temporary1[d]=geometry->get_extents()[d]*0.625+geometry->get_origin()[d];
+          temporary2[d]=geometry->get_extents()[d]*0.375+geometry->get_origin()[d];
         }
 
       return 1+(1/exp(position.distance(temporary2)) - 1/exp(position.distance(temporary1)));
@@ -89,8 +89,8 @@ namespace aspect
       if (center[1] < ratio)
         ratio = center[1];
 
-      double zx = (position[0] - center[0])/ratio;
-      double zy = (position[1] - center[1])/ratio;
+      double zx = (position[0] - geometry->get_origin()[0] - center[0])/ratio;
+      double zy = (position[1] - geometry->get_origin()[1] - center[1])/ratio;
       double x = zx;
       double y = zy;
 
@@ -161,13 +161,13 @@ namespace aspect
             }
           else if (inclusion_gradient == "linear")
             {
-              perturbation = ((radius - position.distance (center)) / radius) * (inclusion_temperature - ambient_temperature);
+              perturbation = ((radius - position.distance(center)) / radius) * (inclusion_temperature - ambient_temperature);
             }
           else if (inclusion_gradient == "constant")
             {
               perturbation = inclusion_temperature - ambient_temperature;
             }
-          if (position.distance (center) > radius)
+          if (position.distance(center) > radius)
             perturbation = 0;
         }
 
