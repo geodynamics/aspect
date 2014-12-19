@@ -900,7 +900,7 @@ namespace aspect
 
     // TODO: currently does not work if velocity and
     // pressure are in the same block.
-    Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
+    AssertThrow(introspection.block_indices.velocities != introspection.block_indices.pressure,
            ExcNotImplemented());
 
     // In the following we integrate the normal velocity over every surface
