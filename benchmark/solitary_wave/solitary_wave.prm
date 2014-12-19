@@ -6,10 +6,12 @@ set Additional shared libraries            = ./libsolitary_wave.so
 
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0
-set Composition solver tolerance           = 1e-20
+set Composition solver tolerance           = 1e-24
 set Temperature solver tolerance           = 1e-20
 set Nonlinear solver scheme                = iterated IMPES
+set Output directory                       = output
 set Max nonlinear iterations               = 10
+set Nonlinear solver tolerance             = 1e-5
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
@@ -30,7 +32,7 @@ set Use direct solver for Stokes system    = true
 
 subsection Discretization
   subsection Stabilization parameters
-    set beta  = 0.01 # default: 0.078
+    set beta  = 0.001 # default: 0.078
   end
 end
 
@@ -57,9 +59,15 @@ subsection Boundary composition model
   set Model name = initial composition
 end
 
+# we apply the phase speed of the wave here, so that it always stays in the smae place in our model
+# the phase speed is c = 5.25e-11 m/s, but we have to convert it to m/years using the same conversion
+# that is used internally in Aspect: year_in_seconds = 60*60*24*365.2425
 subsection Boundary velocity model
   subsection Function
-    set Function expression = 0;-1.656774e-4
+#    set Function expression = 0;-8.2836999e-5
+    set Function expression = 0;-1.65673998e-4
+#    set Function expression = 0;-3.31347996e-4
+#    set Function expression = 0;-6.62695992e-4
   end
 end
 
@@ -91,8 +99,8 @@ end
 subsection Initial conditions
   set Model name = function # default: 
   subsection Function
-    set Function constants  = l=250000
-    set Function expression = 293+1e-5*sin(y/l)
+    set Function constants  = l=64000
+    set Function expression = 293+sin(y/l)
     set Variable names      = x,y
   end
 end
@@ -102,14 +110,17 @@ subsection Compositional initial conditions
   subsection Solitary wave initial condition
     set Offset = 200
     set Read solution from file = true
+    set Amplitude = 0.01
+    set Background porosity = 0.001
   end
 end
 
 
 subsection Material model
-
-  set Model name = Solitary Wave # default: 
-
+  set Model name = Solitary Wave
+  subsection Solitary wave
+    set Reference permeability = 5e-9
+  end
 end
 
 
@@ -118,15 +129,15 @@ subsection Mesh refinement
   set Refinement fraction                      = 0.0
 
   set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 2                    # default: 2
+  set Initial global refinement                = 4                    # default: 2
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
 
 
 subsection Model settings
-  set Fixed temperature boundary indicators   = 3        # default: 
-  set Fixed composition boundary indicators   = 3
+  set Fixed temperature boundary indicators   = 2,3        # default: 
+  set Fixed composition boundary indicators   = 2,3
   set Prescribed velocity boundary indicators = 2:function, 3:function
 
   set Tangential velocity boundary indicators = 0,1
@@ -134,6 +145,7 @@ subsection Model settings
 
   set Include melt transport                  = true
   set Melt transport threshold                = 1e-4
+  set Include shear heating                   = true
 end
 
 
