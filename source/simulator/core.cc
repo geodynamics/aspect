@@ -155,12 +155,16 @@ namespace aspect
 
     //Fourth order mapping doesn't really make sense for free surface
     //calculations (we disable curved boundaries) or we we only have straight
-    //boundaries
+    //boundaries. So we either pick MappingQ(4,true) or MappingQ(1,false)
     mapping (
       (parameters.free_surface_enabled
        ||
        geometry_model->has_curved_elements() == false
-      )?1:4),
+      )?1:4,
+      (parameters.free_surface_enabled
+       ||
+       geometry_model->has_curved_elements() == false
+      )?false:true),
   
     // define the finite element. obviously, what we do here needs
     // to match the data we provide in the Introspection class
