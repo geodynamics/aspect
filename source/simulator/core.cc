@@ -779,15 +779,10 @@ namespace aspect
     LinearAlgebra::CompressedBlockSparsityPattern sp(introspection.index_sets.system_relevant_partitioning);
 
 #else
-#  if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) > 801
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
                                                system_partitioning,
                                                introspection.index_sets.system_relevant_partitioning,
                                                mpi_communicator);
-#  else
-    TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
-                                               mpi_communicator);
-#  endif
 #endif
 
     DoFTools::make_sparsity_pattern (dof_handler,
@@ -839,16 +834,11 @@ namespace aspect
 
 #else
 
-#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) > 801
     TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
                                                system_partitioning,
                                                introspection.index_sets.system_relevant_partitioning,
                                                mpi_communicator);
-#else
-    TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
-                                               mpi_communicator);
-#endif
-    
+
 #endif
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
@@ -953,13 +943,11 @@ namespace aspect
                   == parameters.prescribed_velocity_boundary_indicators.end(),
                   ExcInternalError());
 
-#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
           DoFTools::make_periodicity_constraints(dof_handler,
                                                  (*p).first.first,  //first boundary id
                                                  (*p).first.second, //second boundary id
                                                  (*p).second,       //cartesian direction for translational symmetry
                                                  constraints);
-#endif
         }
 
 
