@@ -6,7 +6,11 @@
  *
  *
  * <ol>
- *<li> New:  There is now the option to specify an origin when using the box
+ * <li> ASPECT now requires deal.II version 8.2 or later.
+ * <br>
+ * (Timo Heister, 2015/01/13)
+ *
+ * <li> New:  There is now the option to specify an origin when using the box
  * goemetry model.
  * <br>
  * (Ryan Grove, 2014/12/09)
