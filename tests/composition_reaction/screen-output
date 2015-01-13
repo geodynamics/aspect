@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
+--     . version 1.2.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -14,7 +14,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving composition system 1... 11 iterations.
    Solving composition system 2... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.2262/1.01/0.9695 // -0.03313/1.223/0.02968
@@ -24,7 +24,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving composition system 1... 11 iterations.
    Solving composition system 2... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24 iterations.
+   Solving Stokes system... 29 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.03882/1.044/0.969 // -0.02427/1.008/0.03015
@@ -34,7 +34,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving composition system 1... 12 iterations.
    Solving composition system 2... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.05886/1.072/0.9642 // -0.0257/0.9568/0.03493
@@ -74,7 +74,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving composition system 1... 12 iterations.
    Solving composition system 2... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.04742/1.058/0.9325 // -0.007577/0.9952/0.06664
@@ -84,7 +84,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving composition system 1... 12 iterations.
    Solving composition system 2... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.04069/1.041/0.9261 // -0.005582/0.9845/0.07301
@@ -94,7 +94,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving composition system 1... 12 iterations.
    Solving composition system 2... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.03538/1.021/0.9199 // -0.003598/0.9756/0.07918
@@ -104,7 +104,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving composition system 1... 11 iterations.
    Solving composition system 2... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.03189/1.019/0.9144 // -0.002049/0.9688/0.08467
@@ -114,7 +114,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving composition system 1... 10 iterations.
    Solving composition system 2... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.03066/1.019/0.9104 // -0.002089/0.9857/0.08875

@@ -13,7 +13,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving temperature system... 0 iterations.
    Solving composition system 1... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+7 iterations.
+   Solving Stokes system... 30+9 iterations.
 
    Postprocessing:
      Internal heating rate (average/total):  1.855e-12 W/kg, 4.923e+05 W
@@ -21,7 +21,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 *** Timestep 1:  t=1e+06 years
    Solving temperature system... 11 iterations.
    Solving composition system 1... 12 iterations.
-   Solving Stokes system... 30+7 iterations.
+   Solving Stokes system... 30+9 iterations.
 
    Postprocessing:
      Internal heating rate (average/total):  1.422e-12 W/kg, 3.774e+05 W

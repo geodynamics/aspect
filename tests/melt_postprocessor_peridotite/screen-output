@@ -12,7 +12,7 @@ Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27 iterations.
+   Solving Stokes system... 26 iterations.
 
    Postprocessing:
      Writing graphical output: output-melt_postprocessor_peridotite/solution-00000

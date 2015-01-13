@@ -9,4 +9,4 @@
 # 9: Schur complement iterations in Stokes preconditioner
 # 10: Time step size (seconds)
 # 11: Visualization file name
-0 0.0000e+00 4096 37507 16641 0 27 28 81 3.8612e+03 output-melt_postprocessor_peridotite/solution-00000 
+0 0.0000e+00 4096 37507 16641 0 26 27 78 3.8612e+03 output-melt_postprocessor_peridotite/solution-00000 

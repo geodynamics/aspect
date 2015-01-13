@@ -1,5 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.2.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -13,10 +14,10 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 1.125996e-06, 2.994147e-03, 1.670008e-06, 9.778443e-03
+     Errors u_L1, p_L1, u_L2, p_L2: 1.125998e-06, 2.994139e-03, 1.670011e-06, 9.778440e-03
 
 Termination requested by criterion: end time
 

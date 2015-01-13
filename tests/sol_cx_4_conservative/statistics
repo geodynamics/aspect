@@ -8,4 +8,4 @@
 # 8: Velocity iterations in Stokes preconditioner
 # 9: Schur complement iterations in Stokes preconditioner
 # 10: Time step size (years)
-0 0.0000e+00 256 2946 1089 0 34 40 5 2.7917e-07 
+0 0.0000e+00 256 2946 1089 0 34 37 5 2.7917e-07 

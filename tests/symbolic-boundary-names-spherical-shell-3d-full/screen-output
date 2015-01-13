@@ -12,7 +12,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+23 iterations.
+   Solving Stokes system... 30+21 iterations.
 
    Postprocessing:
      Writing graphical output:           output-symbolic-boundary-names-spherical-shell-3d-full/solution-00000

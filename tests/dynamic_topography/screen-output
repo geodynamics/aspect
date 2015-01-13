@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
+--     . version 1.2.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -13,7 +13,7 @@ Number of degrees of freedom: 70,789 (33,282+4,225+16,641+16,641)
    Solving temperature system... 0 iterations.
    Solving composition system 1... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+15 iterations.
+   Solving Stokes system... 30+13 iterations.
 
 Number of active cells: 4,108 (on 8 levels)
 Number of degrees of freedom: 71,061 (33,410+4,241+16,705+16,705)
@@ -22,7 +22,7 @@ Number of degrees of freedom: 71,061 (33,410+4,241+16,705+16,705)
    Solving temperature system... 0 iterations.
    Solving composition system 1... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+16 iterations.
+   Solving Stokes system... 30+13 iterations.
 
 Number of active cells: 4,120 (on 9 levels)
 Number of degrees of freedom: 71,333 (33,538+4,257+16,769+16,769)
@@ -31,7 +31,7 @@ Number of degrees of freedom: 71,333 (33,538+4,257+16,769+16,769)
    Solving temperature system... 0 iterations.
    Solving composition system 1... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+15 iterations.
+   Solving Stokes system... 30+13 iterations.
 
 Number of active cells: 4,168 (on 10 levels)
 Number of degrees of freedom: 72,319 (34,002+4,315+17,001+17,001)
@@ -40,7 +40,7 @@ Number of degrees of freedom: 72,319 (34,002+4,315+17,001+17,001)
    Solving temperature system... 0 iterations.
    Solving composition system 1... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+15 iterations.
+   Solving Stokes system... 30+13 iterations.
 
    Postprocessing:
      Writing dynamic topography: output-dynamic_topography/dynamic_topography.00000

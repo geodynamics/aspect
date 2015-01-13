@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
+--     . version 1.2.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -15,18 +15,18 @@ Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+2 iterations.
       Nonlinear Stokes residual: 0.0056096
-   Solving Stokes system... 30 iterations.
+   Solving Stokes system... 26 iterations.
       Nonlinear Stokes residual: 0.0126531
-   Solving Stokes system... 23 iterations.
+   Solving Stokes system... 20 iterations.
       Nonlinear Stokes residual: 0.000344376
-   Solving Stokes system... 18 iterations.
-      Nonlinear Stokes residual: 2.5457e-05
-   Solving Stokes system... 11 iterations.
-      Nonlinear Stokes residual: 1.03191e-06
-   Solving Stokes system... 7 iterations.
-      Nonlinear Stokes residual: 7.36538e-08
+   Solving Stokes system... 15 iterations.
+      Nonlinear Stokes residual: 2.54573e-05
+   Solving Stokes system... 10 iterations.
+      Nonlinear Stokes residual: 1.03201e-06
+   Solving Stokes system... 6 iterations.
+      Nonlinear Stokes residual: 7.38617e-08
    Solving Stokes system... 2 iterations.
-      Nonlinear Stokes residual: 3.23924e-09
+      Nonlinear Stokes residual: 3.43053e-09
 
    Postprocessing:
      writing:                  output.csv
@@ -34,7 +34,7 @@ Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
 
 *** Timestep 1:  t=0.0001 seconds
    Solving Stokes system... 0 iterations.
-      Nonlinear Stokes residual: 1.18319e-09
+      Nonlinear Stokes residual: 1.11606e-09
 
    Postprocessing:
      writing:                  output.csv
