@@ -53,7 +53,10 @@ namespace aspect
                                                   adiabatic_surface_temperature;
 
       // then, get the temperature at the top and bottom boundary of the model
-      // if no boundary temperature is prescribed simply use the adiabatic
+      // if no boundary temperature is prescribed simply use the adiabatic.
+      // This implementation assumes that the top and bottom boundaries have
+      // prescribed temperatures and minimal_temperature() returns the value
+      // at the surface and maximal_temperature() the value at the bottom.
       const double T_surface = (&this->get_boundary_temperature() != 0)
                                ?
                                    this->get_boundary_temperature().minimal_temperature(
