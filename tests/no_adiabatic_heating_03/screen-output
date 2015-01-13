@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
+--     . version 1.2.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -17,7 +17,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system... 26 iterations.
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20 iterations.
+   Solving Stokes system... 21 iterations.
    Residual after nonlinear iteration 2: 0.0245986
 
    Rebuilding Stokes preconditioner...
@@ -25,12 +25,12 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Residual after nonlinear iteration 3: 0.00133812
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10 iterations.
-   Residual after nonlinear iteration 4: 4.59637e-05
+   Solving Stokes system... 11 iterations.
+   Residual after nonlinear iteration 4: 4.59626e-05
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5 iterations.
-   Residual after nonlinear iteration 5: 2.11765e-06
+   Residual after nonlinear iteration 5: 2.11507e-06
 
    Postprocessing:
 
@@ -53,23 +53,23 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 1:  t=0.0284091 seconds
    Solving temperature system... 25 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3 iterations.
+   Solving Stokes system... 2 iterations.
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+   Residual after nonlinear iteration 2: 0.463546
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 0.206557
+   Residual after nonlinear iteration 3: 0.398348
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 3: 0.206557
+   Residual after nonlinear iteration 4: 0.398348
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 4: 0.206557
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 5: 0.206557
+   Residual after nonlinear iteration 5: 0.398348
 
 
    Postprocessing:
@@ -79,23 +79,23 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 2:  t=0.0568181 seconds
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3 iterations.
+   Solving Stokes system... 2 iterations.
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 0.149268
+   Residual after nonlinear iteration 2: 0.267625
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 3: 0.149268
+   Residual after nonlinear iteration 3: 0.267625
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 4: 0.149268
+   Residual after nonlinear iteration 4: 0.267625
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 5: 0.149268
+   Residual after nonlinear iteration 5: 0.267625
 
 
    Postprocessing:
@@ -104,6 +104,32 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 3:  t=0.0852272 seconds
    Solving temperature system... 16 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+   Residual after nonlinear iteration 2: 0.30113
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+   Residual after nonlinear iteration 3: 0.30113
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+   Residual after nonlinear iteration 4: 0.30113
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+   Residual after nonlinear iteration 5: 0.30113
+
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.01126 K, 0.01244 K
+     RMS, max velocity:       1.05 m/s, 1.1 m/s
+
+*** Timestep 4:  t=0.1 seconds
+   Solving temperature system... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
 
@@ -122,32 +148,6 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
    Residual after nonlinear iteration 5: 1
-
-
-   Postprocessing:
-     Temperature min/avg/max: 0 K, 0.01126 K, 0.01244 K
-     RMS, max velocity:       1.05 m/s, 1.1 m/s
-
-*** Timestep 4:  t=0.1 seconds
-   Solving temperature system... 13 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2 iterations.
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 0.696779
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 3: 0.696779
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 4: 0.696779
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 5: 0.696779
 
 
    Postprocessing:

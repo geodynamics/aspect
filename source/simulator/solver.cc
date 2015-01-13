@@ -320,7 +320,7 @@ namespace aspect
       // iterations of our two-stage outer GMRES iteration)
       if (do_solve_A == true)
         {
-          SolverControl solver_control(1000, utmp.l2_norm()*1e-2);
+          SolverControl solver_control(10000, utmp.l2_norm()*1e-2);
 #ifdef ASPECT_USE_PETSC
           SolverCG<LinearAlgebra::Vector> solver(solver_control);
 #else

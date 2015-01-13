@@ -13,7 +13,7 @@ Number of degrees of freedom: 70,789 (33,282+4,225+16,641+16,641)
    Solving temperature system... 0 iterations.
    Solving composition system 1... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27 iterations.
+   Solving Stokes system... 26 iterations.
 
    Postprocessing:
      Writing graphical output: output-melt_postprocessor_pyroxenite/solution-00000

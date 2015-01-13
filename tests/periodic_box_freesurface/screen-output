@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
+--     . version 1.2.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -14,7 +14,7 @@ Number of free surface degrees of freedom: 8450
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+6 iterations.
+   Solving Stokes system... 30+7 iterations.
 
 Number of active cells: 1,444 (on 8 levels)
 Number of degrees of freedom: 20,706 (12,722+1,623+6,361)
@@ -53,35 +53,35 @@ Number of free surface degrees of freedom: 3246
      RMS, max velocity:  0.44 m/year, 0.997 m/year
      Topography min/max: -467.1 m, 512.7 m, 
 
-*** Timestep 2:  t=1538.39 years
+*** Timestep 2:  t=1538.64 years
    Solving mesh velocity system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+5 iterations.
+   Solving Stokes system... 30+8 iterations.
 
    Postprocessing:
      RMS, max velocity:  0.408 m/year, 0.951 m/year
-     Topography min/max: -643.6 m, 755.9 m, 
+     Topography min/max: -643.6 m, 756.6 m, 
 
-*** Timestep 3:  t=2488.17 years
+*** Timestep 3:  t=2488.34 years
+   Solving mesh velocity system... 11 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+6 iterations.
+
+   Postprocessing:
+     RMS, max velocity:  0.396 m/year, 0.933 m/year
+     Topography min/max: -729.1 m, 911.4 m, 
+
+*** Timestep 4:  t=3470.16 years
    Solving mesh velocity system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+5 iterations.
 
    Postprocessing:
-     RMS, max velocity:  0.396 m/year, 0.933 m/year
-     Topography min/max: -729.1 m, 911 m, 
-
-*** Timestep 4:  t=3470.04 years
-   Solving mesh velocity system... 11 iterations.
-   Solving temperature system... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+4 iterations.
-
-   Postprocessing:
      RMS, max velocity:  0.391 m/year, 0.923 m/year
-     Topography min/max: -774.3 m, 1012 m, 
+     Topography min/max: -774.2 m, 1012 m, 
 
 Termination requested by criterion: end step
 

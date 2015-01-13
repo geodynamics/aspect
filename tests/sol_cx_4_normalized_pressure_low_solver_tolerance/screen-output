@@ -1,4 +1,10 @@
--- Running with 1 MPI task using Trilinos.
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.2.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
 
 Loading shared library <./libsol_cx_4_normalized_pressure_low_solver_tolerance.so>
 
@@ -8,10 +14,10 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14 iterations.
+   Solving Stokes system... 15 iterations.
 
    Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 1.959820e-06, 3.094842e-03, 2.551764e-06, 9.798802e-03
+     Errors u_L1, p_L1, u_L2, p_L2: 2.005296e-06, 2.986431e-03, 2.624342e-06, 9.764480e-03
 
 Termination requested by criterion: end time
 
