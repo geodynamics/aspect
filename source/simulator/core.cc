@@ -124,7 +124,13 @@ namespace aspect
     material_model (MaterialModel::create_material_model<dim>(prm)),
     heating_model (HeatingModel::create_heating_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
-    boundary_temperature (BoundaryTemperature::create_boundary_temperature<dim>(prm)),
+    // create a boundary temperature model, but only if we actually need
+    // it. otherwise, allow the user to simply specify nothing at all
+    boundary_temperature (parameters.fixed_temperature_boundary_indicators.empty()
+                          ?
+                          0
+                          :
+                          BoundaryTemperature::create_boundary_temperature<dim>(prm)),
     // create a boundary composition model, but only if we actually need
     // it. otherwise, allow the user to simply specify nothing at all
     boundary_composition (parameters.fixed_composition_boundary_indicators.empty()
@@ -285,15 +291,18 @@ namespace aspect
     gravity_model->parse_parameters (prm);
     gravity_model->initialize ();
 
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature.get()))
-      sim->initialize (*this);
-    boundary_temperature->parse_parameters (prm);
-    boundary_temperature->initialize ();
+    if (boundary_temperature.get())
+      {
+        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature.get()))
+          sim->initialize (*this);
+        boundary_temperature->parse_parameters (prm);
+        boundary_temperature->initialize ();
+      }
 
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
-      sim->initialize (*this);
     if (boundary_composition.get())
       {
+        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
+          sim->initialize (*this);
         boundary_composition->parse_parameters (prm);
         boundary_composition->initialize ();
       }
@@ -666,8 +675,10 @@ namespace aspect
     // do the same for the temperature variable: evaluate the current boundary temperature
     // and add these constraints as well
     {
-      //Update the temperature boundary condition.
-      boundary_temperature->update();
+      // If there is a fixed boundary temperature,
+      // update the temperature boundary condition.
+      if (boundary_temperature.get())
+        boundary_temperature->update();
 
       // obtain the boundary indicators that belong to Dirichlet-type
       // temperature boundary conditions and interpolate the temperature
@@ -690,9 +701,10 @@ namespace aspect
                                                     current_constraints,
                                                     introspection.component_masks.temperature);
         }
+    }
 
       // now do the same for the composition variable:
-
+    {
       // If there are fixed boundary compositions,
       // update the composition boundary condition.
       if (boundary_composition.get())
