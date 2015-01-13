@@ -306,9 +306,7 @@ namespace aspect
           std::string     h5_solution_file_name = solution_file_prefix + ".h5";
           std::string     xdmf_filename = this->get_output_directory() + "solution.xdmf";
 
-          // Filter redundant values if the functionality is available in the current
-          // version of deal.II, otherwise use the old data format
-#if DEAL_II_VERSION_MAJOR*100 + DEAL_II_VERSION_MINOR > 800
+          // Filter redundant values
           DataOutBase::DataOutFilter   data_filter(DataOutBase::DataOutFilterFlags(true, true));
 
           // If the mesh changed since the last output, make a new mesh file
@@ -325,13 +323,6 @@ namespace aspect
                                                       h5_solution_file_name.c_str(),
                                                       time_in_years_or_seconds,
                                                       this->get_mpi_communicator());
-#else
-          data_out.write_hdf5_parallel((this->get_output_directory()+h5_solution_file_name).c_str(),
-                                       this->get_mpi_communicator());
-          new_xdmf_entry = data_out.create_xdmf_entry(h5_solution_file_name.c_str(),
-                                                      time_in_years_or_seconds,
-                                                      this->get_mpi_communicator());
-#endif
           xdmf_entries.push_back(new_xdmf_entry);
           data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(),
                                    this->get_mpi_communicator());
@@ -374,11 +365,10 @@ namespace aspect
               data_out.write_visit_record (visit_master, filenames);
 
               output_file_names_by_timestep.push_back (filenames);
-#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) > 800
+
               std::ofstream global_visit_master ((this->get_output_directory() +
                                                   "solution.visit").c_str());
               data_out.write_visit_record (global_visit_master, output_file_names_by_timestep);
-#endif
             }
         }
       else
@@ -389,13 +379,11 @@ namespace aspect
           {
             std::ostringstream tmp;
 
-            // if deal.II supports it (after 7.3.x), pass time step number and time as
-            // metadata into the output file
+            // pass time step number and time as metadata into the output file
             DataOutBase::VtkFlags vtk_flags;
-#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 704
             vtk_flags.cycle = this->get_timestep_number();
             vtk_flags.time = time_in_years_or_seconds;
-#endif
+
             data_out.set_flags (vtk_flags);
 
             data_out.write (tmp, DataOutBase::parse_output_format(output_format));
@@ -439,11 +427,10 @@ namespace aspect
               data_out.write_visit_record (visit_master, filenames);
 
               output_file_names_by_timestep.push_back (filenames);
-#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) > 800
+
               std::ofstream global_visit_master ((this->get_output_directory() +
                                                   "solution.visit").c_str());
               data_out.write_visit_record (global_visit_master, output_file_names_by_timestep);
-#endif
             }
 
           const std::string *filename
@@ -799,9 +786,7 @@ namespace aspect
       & output_file_names_by_timestep
       & mesh_changed
       & last_mesh_file_name
-#if DEAL_II_VERSION_MAJOR*100 + DEAL_II_VERSION_MINOR > 800
       & xdmf_entries
-#endif
       ;
     }
 
