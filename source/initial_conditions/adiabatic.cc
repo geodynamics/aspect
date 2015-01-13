@@ -40,13 +40,7 @@ namespace aspect
       const double age_bottom = (this->convert_output_to_years() ? age_bottom_boundary_layer * year_in_seconds
                                  : age_bottom_boundary_layer);
 
-      // first, get the temperature at the top and bottom boundary of the model
-      const double T_surface = this->get_boundary_temperature().minimal_temperature(
-                                 this->get_fixed_temperature_boundary_indicators());
-      const double T_bottom = this->get_boundary_temperature().maximal_temperature(
-                                this->get_fixed_temperature_boundary_indicators());
-
-      // then, get the temperature of the adiabatic profile at a representative
+      // First, get the temperature of the adiabatic profile at a representative
       // point at the top and bottom boundary of the model
       // if adiabatic heating is switched off, assume a constant profile
       const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
@@ -57,6 +51,24 @@ namespace aspect
                                                   this->get_adiabatic_conditions().temperature(bottom_point)
                                                   :
                                                   adiabatic_surface_temperature;
+
+      // then, get the temperature at the top and bottom boundary of the model
+      // if no boundary temperature is prescribed simply use the adiabatic.
+      // This implementation assumes that the top and bottom boundaries have
+      // prescribed temperatures and minimal_temperature() returns the value
+      // at the surface and maximal_temperature() the value at the bottom.
+      const double T_surface = (&this->get_boundary_temperature() != 0)
+                               ?
+                                   this->get_boundary_temperature().minimal_temperature(
+                                       this->get_fixed_temperature_boundary_indicators())
+                               :
+                                   adiabatic_surface_temperature;
+      const double T_bottom = (&this->get_boundary_temperature() != 0)
+                              ?
+                                  this->get_boundary_temperature().maximal_temperature(
+                                      this->get_fixed_temperature_boundary_indicators())
+                              :
+                                  adiabatic_surface_temperature;
 
       // get a representative profile of the compositional fields as an input
       // for the material model
