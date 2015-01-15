@@ -113,6 +113,15 @@ namespace aspect
         std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >
         get_periodic_boundary_pairs () const;
 
+	/**
+	 * @copydoc Interface::has_curved_elements()
+	 *
+	 * A box has only straight boundaries and cells, so return false.
+	 */
+	virtual
+	bool
+	has_curved_elements() const;
+
         /**
          * Declare the parameters this class takes through input files.
          */

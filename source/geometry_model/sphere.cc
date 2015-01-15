@@ -112,6 +112,13 @@ namespace aspect
       return R;
     }
 
+    template <int dim>
+    bool
+    Sphere<dim>::has_curved_elements () const
+    {
+      return true;
+    }
+
 
     template <int dim>
     void
