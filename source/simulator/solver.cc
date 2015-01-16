@@ -280,10 +280,11 @@ namespace aspect
         // convergence without
         // iterating. We simply skip
         // solving in this case.
-        if (src.block(1).l2_norm() > 1e-50 || dst.block(1).l2_norm() > 1e-50)
+        if (src.block(1).l2_norm() > 1e-50)
           {
             try
               {
+                dst.block(1) = 0.0;
                 solver.solve(stokes_preconditioner_matrix.block(1,1),
                              dst.block(1), src.block(1),
                              mp_preconditioner);
@@ -328,6 +329,7 @@ namespace aspect
 #endif
           try
             {
+              dst.block(0) = 0.0;
               solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
                            a_preconditioner);
               n_iterations_A_ += solver_control.last_step();
