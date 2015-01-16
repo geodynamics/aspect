@@ -41,7 +41,7 @@ subsection Initial conditions
 
   subsection Function
     set Variable names     = x,y
-    set Function expression = if(sqrt((x-900000)*(x-900000) + (y-300000)*(y-300000))<50000,1700,1600)
+    set Function expression = if(sqrt((x-900000)*(x-900000) + (y-650000)*(y-650000))<50000,1700,1600)
   end
 end
 
@@ -89,11 +89,11 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 3
+  set Initial adaptive refinement        = 2
   set Initial global refinement          = 6
-  set Refinement fraction                = 0.3
+  set Refinement fraction                = 0.5
   set Coarsening fraction                = 0.00
-  set Strategy                           = temperature
+  set Strategy                           = thermal energy density
 end
 
 
