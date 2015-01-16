@@ -12,4 +12,4 @@
 # 12: Minimal temperature (K)
 # 13: Average temperature (K)
 # 14: Maximal temperature (K)
-0 0.0000e+00 96 3060 970 0 45 101 90 1.2365e+13 output-initial_condition_S20RTS/solution-00000 1.40296152e+03 1.59850620e+03 1.72412345e+03 
+0 0.0000e+00 96 3060 970 0 46 108 92 1.8067e+13 output-initial_condition_S20RTS/solution-00000 1.37127768e+03 1.59924688e+03 1.72412345e+03 

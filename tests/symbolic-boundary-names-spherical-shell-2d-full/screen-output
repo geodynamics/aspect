@@ -12,30 +12,30 @@ Number of degrees of freedom: 792 (480+72+240)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27 iterations.
+   Solving Stokes system... 26 iterations.
 
    Postprocessing:
      Writing graphical output:           output-symbolic-boundary-names-spherical-shell-2d-full/solution-00000
-     RMS, max velocity:                  5.98e+09 m/s, 1.26e+10 m/s
-     Temperature min/avg/max:            0 K, 2708 K, 6000 K
-     Heat fluxes through boundary parts: -0.04666 W, 0.0818 W
+     RMS, max velocity:                  5.81e+09 m/s, 1.06e+10 m/s
+     Temperature min/avg/max:            0 K, 2707 K, 6000 K
+     Heat fluxes through boundary parts: -0.04625 W, 0.08232 W
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.385s |            |
+| Total wallclock time elapsed since start    |     0.257s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |    0.0678s |        18% |
-| Assemble temperature system     |         1 |    0.0698s |        18% |
-| Build Stokes preconditioner     |         1 |    0.0533s |        14% |
-| Build temperature preconditioner|         1 |   0.00151s |      0.39% |
-| Solve Stokes system             |         1 |    0.0192s |         5% |
-| Solve temperature system        |         1 |  0.000764s |       0.2% |
-| Initialization                  |         2 |    0.0624s |        16% |
-| Postprocessing                  |         1 |    0.0368s |       9.6% |
-| Setup dof systems               |         1 |    0.0403s |        10% |
+| Assemble Stokes system          |         1 |    0.0402s |        16% |
+| Assemble temperature system     |         1 |    0.0422s |        16% |
+| Build Stokes preconditioner     |         1 |    0.0421s |        16% |
+| Build temperature preconditioner|         1 |  0.000477s |      0.19% |
+| Solve Stokes system             |         1 |    0.0151s |       5.9% |
+| Solve temperature system        |         1 |  0.000613s |      0.24% |
+| Initialization                  |         2 |    0.0463s |        18% |
+| Postprocessing                  |         1 |    0.0249s |       9.7% |
+| Setup dof systems               |         1 |    0.0232s |         9% |
 +---------------------------------+-----------+------------+------------+
 

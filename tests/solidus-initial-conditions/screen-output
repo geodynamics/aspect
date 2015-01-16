@@ -15,32 +15,32 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Solving Stokes system... 30+9 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 250 K, 1589 K, 2260 K
+     Temperature min/avg/max: 250 K, 1589 K, 2255 K
      Writing depth average    output-solidus-initial-conditions/depth_average.gnuplot
 
 *** Timestep 1:  t=1.5e-09 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 250 K, 1589 K, 2260 K
+     Temperature min/avg/max: 250 K, 1589 K, 2255 K
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      13.2s |            |
+| Total wallclock time elapsed since start    |      7.24s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |      1.82s |        14% |
-| Assemble temperature system     |         2 |      2.31s |        17% |
-| Build Stokes preconditioner     |         1 |         1s |       7.6% |
-| Build temperature preconditioner|         2 |    0.0168s |      0.13% |
-| Solve Stokes system             |         2 |     0.514s |       3.9% |
-| Solve temperature system        |         2 |    0.0079s |      0.06% |
-| Initialization                  |         2 |     0.467s |       3.5% |
-| Postprocessing                  |         2 |      5.62s |        42% |
-| Setup dof systems               |         1 |     0.656s |         5% |
+| Assemble Stokes system          |         2 |      1.07s |        15% |
+| Assemble temperature system     |         2 |      1.52s |        21% |
+| Build Stokes preconditioner     |         1 |     0.464s |       6.4% |
+| Build temperature preconditioner|         2 |    0.0109s |      0.15% |
+| Solve Stokes system             |         2 |     0.217s |         3% |
+| Solve temperature system        |         2 |   0.00342s |     0.047% |
+| Initialization                  |         2 |     0.318s |       4.4% |
+| Postprocessing                  |         2 |      2.75s |        38% |
+| Setup dof systems               |         1 |     0.386s |       5.3% |
 +---------------------------------+-----------+------------+------------+
 

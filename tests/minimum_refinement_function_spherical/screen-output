@@ -19,7 +19,7 @@ Number of degrees of freedom: 740 (450+65+225)
      Reference density (kg/m^3):                    3300
      Reference gravity (m/s^2):                     10
      Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K): 3500
+     Temperature contrast across model domain (K):  3500
      Model domain depth (m):                        250000
      Reference thermal diffusivity (m^2/s):         1.13939e-06
      Reference viscosity (Pas):                     5e+24
@@ -29,9 +29,9 @@ Number of degrees of freedom: 740 (450+65+225)
      reference_thermal_diffusivity:                 1.13939e-06
 
      Writing graphical output:           output-minimum_refinement_function_spherical/solution-00000
-     RMS, max velocity:                  8.27e-07 m/year, 1.5e-06 m/year
-     Temperature min/avg/max:            1401 K, 1627 K, 1799 K
-     Heat fluxes through boundary parts: 1032 W, 1995 W, 2578 W, 2578 W
+     RMS, max velocity:                  8.27e-07 m/year, 1.47e-06 m/year
+     Temperature min/avg/max:            1400 K, 1627 K, 1800 K
+     Heat fluxes through boundary parts: 1037 W, 1978 W, 2572 W, 2572 W
      Writing depth average               output-minimum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 144 (on 4 levels)
@@ -40,14 +40,14 @@ Number of degrees of freedom: 2,124 (1,298+177+649)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+17 iterations.
+   Solving Stokes system... 30+16 iterations.
 
    Postprocessing:
 
      Reference density (kg/m^3):                    3300
      Reference gravity (m/s^2):                     10
      Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K): 3500
+     Temperature contrast across model domain (K):  3500
      Model domain depth (m):                        250000
      Reference thermal diffusivity (m^2/s):         1.13939e-06
      Reference viscosity (Pas):                     5e+24
@@ -57,13 +57,13 @@ Number of degrees of freedom: 2,124 (1,298+177+649)
      reference_thermal_diffusivity:                 1.13939e-06
 
      Writing graphical output:           output-minimum_refinement_function_spherical/solution-00001
-     RMS, max velocity:                  6.18e-07 m/year, 1.18e-06 m/year
-     Temperature min/avg/max:            1401 K, 1627 K, 1799 K
-     Heat fluxes through boundary parts: 963.6 W, 1922 W, 2480 W, 2480 W
+     RMS, max velocity:                  6.23e-07 m/year, 1.16e-06 m/year
+     Temperature min/avg/max:            1400 K, 1627 K, 1800 K
+     Heat fluxes through boundary parts: 960.2 W, 1927 W, 2479 W, 2479 W
      Writing depth average               output-minimum_refinement_function_spherical/depth_average.gnuplot
 
-Number of active cells: 348 (on 5 levels)
-Number of degrees of freedom: 5,088 (3,122+405+1,561)
+Number of active cells: 357 (on 5 levels)
+Number of degrees of freedom: 5,205 (3,194+414+1,597)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
@@ -75,7 +75,7 @@ Number of degrees of freedom: 5,088 (3,122+405+1,561)
      Reference density (kg/m^3):                    3300
      Reference gravity (m/s^2):                     10
      Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K): 3500
+     Temperature contrast across model domain (K):  3500
      Model domain depth (m):                        250000
      Reference thermal diffusivity (m^2/s):         1.13939e-06
      Reference viscosity (Pas):                     5e+24
@@ -85,13 +85,13 @@ Number of degrees of freedom: 5,088 (3,122+405+1,561)
      reference_thermal_diffusivity:                 1.13939e-06
 
      Writing graphical output:           output-minimum_refinement_function_spherical/solution-00002
-     RMS, max velocity:                  6.18e-07 m/year, 1.18e-06 m/year
-     Temperature min/avg/max:            1401 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 963.6 W, 1922 W, 2480 W, 2480 W
+     RMS, max velocity:                  6.23e-07 m/year, 1.16e-06 m/year
+     Temperature min/avg/max:            1400 K, 1627 K, 1800 K
+     Heat fluxes through boundary parts: 960.2 W, 1927 W, 2479 W, 2479 W
      Writing depth average               output-minimum_refinement_function_spherical/depth_average.gnuplot
 
-Number of active cells: 576 (on 6 levels)
-Number of degrees of freedom: 8,390 (5,154+659+2,577)
+Number of active cells: 573 (on 6 levels)
+Number of degrees of freedom: 8,325 (5,114+654+2,557)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
@@ -103,7 +103,7 @@ Number of degrees of freedom: 8,390 (5,154+659+2,577)
      Reference density (kg/m^3):                    3300
      Reference gravity (m/s^2):                     10
      Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K): 3500
+     Temperature contrast across model domain (K):  3500
      Model domain depth (m):                        250000
      Reference thermal diffusivity (m^2/s):         1.13939e-06
      Reference viscosity (Pas):                     5e+24
@@ -113,32 +113,32 @@ Number of degrees of freedom: 8,390 (5,154+659+2,577)
      reference_thermal_diffusivity:                 1.13939e-06
 
      Writing graphical output:           output-minimum_refinement_function_spherical/solution-00003
-     RMS, max velocity:                  6.18e-07 m/year, 1.18e-06 m/year
-     Temperature min/avg/max:            1401 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 963.6 W, 1922 W, 2480 W, 2480 W
+     RMS, max velocity:                  6.23e-07 m/year, 1.16e-06 m/year
+     Temperature min/avg/max:            1400 K, 1627 K, 1800 K
+     Heat fluxes through boundary parts: 960.2 W, 1927 W, 2479 W, 2479 W
      Writing depth average               output-minimum_refinement_function_spherical/depth_average.gnuplot
 
-Number of active cells: 576 (on 6 levels)
-Number of degrees of freedom: 8,390 (5,154+659+2,577)
+Number of active cells: 573 (on 6 levels)
+Number of degrees of freedom: 8,325 (5,114+654+2,557)
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      7.98s |            |
+| Total wallclock time elapsed since start    |      7.16s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         4 |     0.816s |        10% |
-| Assemble temperature system     |         4 |     0.759s |       9.5% |
-| Build Stokes preconditioner     |         4 |     0.646s |       8.1% |
-| Build temperature preconditioner|         4 |    0.0126s |      0.16% |
-| Solve Stokes system             |         4 |     0.711s |       8.9% |
-| Solve temperature system        |         4 |    0.0105s |      0.13% |
-| Initialization                  |         5 |     0.303s |       3.8% |
-| Postprocessing                  |         4 |      3.32s |        42% |
-| Refine mesh structure, part 1   |         4 |     0.346s |       4.3% |
-| Refine mesh structure, part 2   |         4 |    0.0293s |      0.37% |
-| Setup dof systems               |         5 |     0.801s |        10% |
+| Assemble Stokes system          |         4 |     0.764s |        11% |
+| Assemble temperature system     |         4 |     0.737s |        10% |
+| Build Stokes preconditioner     |         4 |     0.645s |         9% |
+| Build temperature preconditioner|         4 |   0.00805s |      0.11% |
+| Solve Stokes system             |         4 |     0.439s |       6.1% |
+| Solve temperature system        |         4 |   0.00823s |      0.11% |
+| Initialization                  |         5 |     0.297s |       4.2% |
+| Postprocessing                  |         4 |      3.15s |        44% |
+| Refine mesh structure, part 1   |         4 |     0.314s |       4.4% |
+| Refine mesh structure, part 2   |         4 |    0.0326s |      0.46% |
+| Setup dof systems               |         5 |     0.563s |       7.9% |
 +---------------------------------+-----------+------------+------------+
 

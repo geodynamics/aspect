@@ -19,4 +19,4 @@
 # 19: Outward heat flux through boundary with indicator 1 ("outer") (W)
 # 20: Outward heat flux through boundary with indicator 2 ("left") (W)
 # 21: Outward heat flux through boundary with indicator 3 ("right") (W)
-0 0.0000e+00 384 3739 1649 0 41 73 24 1.2628e-05 output-symbolic-boundary-names-spherical-shell-2d-180-degrees/solution-00000 5.21600225e+09 9.07993022e+09 0.00000000e+00 2.70916310e+03 6.00000000e+03 4.51527184e-01 -2.30683901e-02 4.15919628e-02 7.18349326e-04 -7.21539740e-04 
+0 0.0000e+00 384 3739 1649 0 40 62 22 1.2637e-05 output-symbolic-boundary-names-spherical-shell-2d-180-degrees/solution-00000 5.21614559e+09 9.07305145e+09 0.00000000e+00 2.70907009e+03 6.00000000e+03 4.51511682e-01 -2.30270328e-02 4.16724783e-02 7.00127270e-04 -7.38738668e-04 
