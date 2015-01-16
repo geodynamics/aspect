@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -335,7 +335,7 @@ namespace aspect
           // if the solver fails, report the error from processor 0 with some additional
           // information about its location, and throw a quiet exception on all other
           // processors
-          catch (const SolverControl::NoConvergence &exc)
+          catch (const std::exception &exc)
             {
               if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
                 AssertThrow (false,
@@ -421,7 +421,7 @@ namespace aspect
     // if the solver fails, report the error from processor 0 with some additional
     // information about its location, and throw a quiet exception on all other
     // processors
-    catch (const SolverControl::NoConvergence &exc)
+    catch (const std::exception &exc)
       {
         if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
           AssertThrow (false,
@@ -690,7 +690,7 @@ namespace aspect
         // if the solver fails, report the error from processor 0 with some additional
         // information about its location, and throw a quiet exception on all other
         // processors
-        catch (const SolverControl::NoConvergence &exc)
+        catch (const std::exception &exc)
           {
             if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
               AssertThrow (false,
