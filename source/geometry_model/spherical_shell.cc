@@ -235,6 +235,13 @@ namespace aspect
       return phi;
     }
 
+    template <int dim>
+    bool
+    SphericalShell<dim>::has_curved_elements () const
+    {
+      return true;
+    }
+    
 
     template <int dim>
     void

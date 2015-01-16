@@ -195,6 +195,12 @@ namespace aspect
       return extents[dim-1];
     }
 
+    template <int dim>
+    bool
+    Box<dim>::has_curved_elements() const
+    {
+      return false;
+    }
 
     template <int dim>
     void

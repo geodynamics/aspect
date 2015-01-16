@@ -6,11 +6,16 @@
  *
  *
  * <ol>
+ * <li> New: GeometryModel::has_curved_elements() will allow for optimizations
+ * if all boundaries (and manifold description) are straight.
+ * <br>
+ * (Timo Heister, 2015/01/16)
+ *
  * <li> Fixed: the inner solvers for the Stokes block preconditioner now start
  * with a zero initial guess. This should make the solvers more robust.
  * <br>
  * (Timo Heister, 2015/01/16)
-
+ *
  * <li> ASPECT now requires deal.II version 8.2 or later.
  * <br>
  * (Timo Heister, 2015/01/13)

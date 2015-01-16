@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
+--     . version 1.2.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -17,7 +17,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 26 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -2.627e-15/30/0.8203 // -30/1/0.1385
+     Compositions min/max/mass: -3.237e-15/30/0.8203 // -30/1/0.1385
 
 *** Timestep 1:  t=0.0625 seconds
    Solving temperature system... 15 iterations.
@@ -186,23 +186,23 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      17.6s |            |
+| Total wallclock time elapsed since start    |      20.7s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        17 |      4.29s |        24% |
-| Assemble composition system     |        34 |      3.47s |        20% |
-| Assemble temperature system     |        17 |      1.88s |        11% |
-| Build Stokes preconditioner     |        17 |      2.61s |        15% |
-| Build composition preconditioner|        34 |    0.0231s |      0.13% |
-| Build temperature preconditioner|        17 |    0.0189s |      0.11% |
-| Solve Stokes system             |        17 |    0.0723s |      0.41% |
-| Solve composition system        |        34 |    0.0909s |      0.52% |
-| Solve temperature system        |        17 |    0.0402s |      0.23% |
-| Initialization                  |         2 |     0.583s |       3.3% |
-| Postprocessing                  |        17 |    0.0969s |      0.55% |
-| Refine mesh structure, part 1   |         1 |     0.239s |       1.4% |
-| Refine mesh structure, part 2   |         1 |    0.0013s |    0.0074% |
-| Setup dof systems               |         2 |     0.182s |         1% |
+| Assemble Stokes system          |        17 |      6.06s |        29% |
+| Assemble composition system     |        34 |      2.59s |        12% |
+| Assemble temperature system     |        17 |       1.6s |       7.7% |
+| Build Stokes preconditioner     |        17 |      3.31s |        16% |
+| Build composition preconditioner|        34 |    0.0279s |      0.13% |
+| Build temperature preconditioner|        17 |     0.021s |       0.1% |
+| Solve Stokes system             |        17 |    0.0834s |       0.4% |
+| Solve composition system        |        34 |     0.172s |      0.83% |
+| Solve temperature system        |        17 |    0.0442s |      0.21% |
+| Initialization                  |         2 |     0.742s |       3.6% |
+| Postprocessing                  |        17 |    0.0942s |      0.45% |
+| Refine mesh structure, part 1   |         1 |     0.311s |       1.5% |
+| Refine mesh structure, part 2   |         1 |    0.0179s |     0.086% |
+| Setup dof systems               |         2 |     0.196s |      0.95% |
 +---------------------------------+-----------+------------+------------+
 

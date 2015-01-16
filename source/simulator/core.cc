@@ -153,10 +153,15 @@ namespace aspect
                     Triangulation<dim>::smoothing_on_coarsening),
                    parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning),
 
-    //Fourth order mapping doesn't really make sense for free surface calculations, since we detatch the
-    //boundary indicators anyways.
-    mapping (parameters.free_surface_enabled?1:4),
-
+    //Fourth order mapping doesn't really make sense for free surface
+    //calculations (we disable curved boundaries) or we we only have straight
+    //boundaries
+    mapping (
+      (parameters.free_surface_enabled
+       ||
+       geometry_model->has_curved_elements() == false
+      )?1:4),
+  
     // define the finite element. obviously, what we do here needs
     // to match the data we provide in the Introspection class
     finite_element(FE_Q<dim>(parameters.stokes_velocity_degree),
