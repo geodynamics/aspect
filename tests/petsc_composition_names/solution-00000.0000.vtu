@@ -30,7 +30,7 @@ AQAAAAEAAAABAAAACQAAAA==eNrjBAAACgAK
     <DataArray type="Float64" Name="velocity" NumberOfComponents="3" format="binary">
 AQAAAGAAAABgAAAADAAAAA==eNpjYKAtAAAAYAAB    </DataArray>
     <DataArray type="Float64" Name="p" format="binary">
-AQAAACAAAAAgAAAAIAAAAA==eNpjYGBQED7F68TAwHDgxWUw3ZC2OtkRSh8EAHojCQE=    </DataArray>
+AQAAACAAAAAgAAAAIAAAAA==eNpjYGBQ4LvP68TAwPDg8Qsw3ZC2OtkRSh8EAH+ZCUE=    </DataArray>
     <DataArray type="Float64" Name="T" format="binary">
 AQAAACAAAAAgAAAAFwAAAA==eNpjYAACl7kOIIohZiaERuIDAEEoBK0=    </DataArray>
     <DataArray type="Float64" Name="peridotite" format="binary">

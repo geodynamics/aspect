@@ -6,6 +6,18 @@
  *
  *
  * <ol>
+ * <li> New: ASPECT now uses meshes for the spherical shell where each node is
+ * placed on concentric shells. Previously, upon mesh refinement, new vertices
+ * were placed at an averaged location of the vertices of the mother cell,
+ * leading to a certain degree of distortion of cells. It also led to a
+ * situation where not all cells are equally shaped due to this
+ * distortion. The new mesh, in contrast, is completely
+ * symmetric. Addtionally, a higher order mapping to represent curved faces is
+ * now also used for the interior cells using the manifold description of the
+ * shell/sphere.
+ * <br>
+ * (Wolfgang Bangerth, Timo Heister, 2015/01/16)
+ *
  * <li> New: GeometryModel::has_curved_elements() will allow for optimizations
  * if all boundaries (and manifold description) are straight.
  * <br>
@@ -39,7 +51,6 @@
  * output time step will produce output. Old checkpoint files will continue
  * to work, only with a possible short gap in visualization output right
  * after restart.
- * 
  * <br>
  * (Rene Gassmoeller, 2014/12/03)
  *

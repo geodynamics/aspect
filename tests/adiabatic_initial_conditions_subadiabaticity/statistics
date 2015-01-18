@@ -9,4 +9,4 @@
 # 9: Schur complement iterations in Stokes preconditioner
 # 10: Time step size (seconds)
 # 11: Visualization file name
-0 0.0000e+00 3072 28291 12545 0 35 48 12 1.6994e-06 output-adiabatic_initial_conditions_subadiabaticity/solution-00000 
+0 0.0000e+00 3072 28291 12545 0 37 64 16 1.8547e-06 output-adiabatic_initial_conditions_subadiabaticity/solution-00000 

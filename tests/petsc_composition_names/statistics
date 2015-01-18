@@ -18,4 +18,4 @@
 # 18: Minimal value for composition eclogite
 # 19: Maximal value for composition eclogite
 # 20: Global mass for composition eclogite
-0 0.0000e+00 1 22 9 18 0 0 0 7 8 7 5.5412e+10 output-petsc_composition_names/solution-00000 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 1 22 9 18 0 0 0 7 8 7 4.9465e+10 output-petsc_composition_names/solution-00000 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 

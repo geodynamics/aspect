@@ -23,7 +23,7 @@
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria_boundary_lib.h>
-
+#include <deal.II/grid/manifold_lib.h>
 
 namespace aspect
 {
@@ -76,6 +76,36 @@ namespace aspect
           Assert (false, ExcInternalError());
         }
 
+      // Use a manifold description for all cells. use manifold_id 99 in order
+      // not to step on the boundary indicators used below
+      static const SphericalManifold<dim> spherical_manifold;
+      coarse_grid.set_manifold (99, spherical_manifold);
+
+      for (typename Triangulation<dim>::active_cell_iterator
+           cell = coarse_grid.begin_active();
+           cell != coarse_grid.end(); ++cell)
+        cell->set_all_manifold_ids (99);
+
+      // clear the manifold id from objects for which we have boundary
+      // objects (and need boundary objects because at the time of
+      // writing, only boundary objects provide normal vectors)
+      for (typename Triangulation<dim>::active_cell_iterator
+           cell = coarse_grid.begin_active();
+           cell != coarse_grid.end(); ++cell)
+        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          if (cell->at_boundary(f))
+            cell->face(f)->set_all_manifold_ids (numbers::invalid_manifold_id);
+
+      // deal.II wants boundary objects even for the straight boundaries
+      // when using manifolds in the interior:
+      static const StraightBoundary<dim> straight_boundary;
+      std::set<types::boundary_id> ids = get_used_boundary_indicators();
+      for (std::set<types::boundary_id>::iterator it = ids.begin();
+           it!=ids.end(); ++it)
+        if (*it > 1)
+          coarse_grid.set_boundary (*it, straight_boundary);
+
+      // attach boundary objects to the curved boundaries:
       static const HyperShellBoundary<dim> boundary_shell;
       coarse_grid.set_boundary (0, boundary_shell);
       coarse_grid.set_boundary (1, boundary_shell);

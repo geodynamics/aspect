@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
+--     . version 1.2.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -16,9 +16,9 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
 
    Postprocessing:
      Writing graphical output:           output-steinberger-incompressible/solution-00000
-     RMS, max velocity:                  0.507 m/year, 0.971 m/year
-     Temperature min/avg/max:            273 K, 1624 K, 4250 K
-     Heat fluxes through boundary parts: -6.131e+05 W, 4.773e+05 W, 1594 W, 1594 W
+     RMS, max velocity:                  0.507 m/year, 0.97 m/year
+     Temperature min/avg/max:            273 K, 1629 K, 4250 K
+     Heat fluxes through boundary parts: -5.703e+05 W, 5.112e+05 W, 1868 W, 1868 W
      Writing depth average               output-steinberger-incompressible/depth_average.gnuplot
 
 *** Timestep 1:  t=100000 years
@@ -28,27 +28,27 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
 
    Postprocessing:
      Writing graphical output:           output-steinberger-incompressible/solution-00001
-     RMS, max velocity:                  0.505 m/year, 0.973 m/year
-     Temperature min/avg/max:            273 K, 1626 K, 4250 K
-     Heat fluxes through boundary parts: -5.775e+05 W, 4.578e+05 W, 1340 W, 1340 W
+     RMS, max velocity:                  0.505 m/year, 0.972 m/year
+     Temperature min/avg/max:            273 K, 1631 K, 4250 K
+     Heat fluxes through boundary parts: -5.403e+05 W, 4.901e+05 W, 1613 W, 1613 W
      Writing depth average               output-steinberger-incompressible/depth_average.gnuplot
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      1.37s |            |
+| Total wallclock time elapsed since start    |      3.07s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |     0.118s |       8.6% |
-| Assemble temperature system     |         2 |     0.149s |        11% |
-| Build Stokes preconditioner     |         2 |      0.13s |       9.4% |
-| Build temperature preconditioner|         2 |   0.00612s |      0.45% |
-| Solve Stokes system             |         2 |    0.0501s |       3.7% |
-| Solve temperature system        |         2 |   0.00294s |      0.21% |
-| Initialization                  |         2 |     0.035s |       2.6% |
-| Postprocessing                  |         2 |     0.711s |        52% |
-| Setup dof systems               |         1 |    0.0329s |       2.4% |
+| Assemble Stokes system          |         2 |     0.334s |        11% |
+| Assemble temperature system     |         2 |      0.32s |        10% |
+| Build Stokes preconditioner     |         2 |     0.254s |       8.3% |
+| Build temperature preconditioner|         2 |   0.00229s |     0.075% |
+| Solve Stokes system             |         2 |    0.0353s |       1.1% |
+| Solve temperature system        |         2 |   0.00224s |     0.073% |
+| Initialization                  |         2 |     0.154s |         5% |
+| Postprocessing                  |         2 |      1.49s |        49% |
+| Setup dof systems               |         1 |     0.112s |       3.7% |
 +---------------------------------+-----------+------------+------------+
 
