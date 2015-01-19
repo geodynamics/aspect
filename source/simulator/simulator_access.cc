@@ -309,6 +309,22 @@ namespace aspect
 
 
   template <int dim>
+  const std::set<types::boundary_id> &
+  SimulatorAccess<dim>::get_fixed_composition_boundary_indicators () const
+  {
+    return simulator->parameters.fixed_composition_boundary_indicators;
+  }
+
+
+  template <int dim>
+  const std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
+  SimulatorAccess<dim>::get_prescribed_velocity_boundary_conditions () const
+  {
+    return simulator->velocity_boundary_conditions;
+  }
+
+
+  template <int dim>
   const GeometryModel::Interface<dim> &
   SimulatorAccess<dim>::get_geometry_model () const
   {
