@@ -1,0 +1,163 @@
+
+
+   Set up Ascii Data boundary module.
+   The grid extents to: 1.571
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_inner.0.csv.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_inner.0.csv.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Set up Ascii Data boundary module.
+   The grid extents to: 1.571
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_outer.0.csv.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_outer.0.csv.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Set up Ascii Data boundary module.
+   The grid extents to: 2855000.000
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_left.0.csv.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_left.0.csv.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Set up Ascii Data boundary module.
+   The grid extents to: 2855000.000
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_right.0.csv.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_right.0.csv.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+Number of active cells: 192 (on 4 levels)
+Number of degrees of freedom: 2,724 (1,666+225+833)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+6 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.587 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1597 K, 3000 K
+     Heat fluxes through boundary parts: -3.028e+05 W, 5.174e+05 W, -174.4 W, -174.4 W
+
+*** Timestep 1:  t=113912 years
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.587 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1594 K, 3000 K
+     Heat fluxes through boundary parts: -2.845e+05 W, 4.788e+05 W, -364.5 W, 78.74 W
+
+*** Timestep 2:  t=227825 years
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.587 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1590 K, 3000 K
+     Heat fluxes through boundary parts: -2.6e+05 W, 4.282e+05 W, -435.9 W, 241.3 W
+
+*** Timestep 3:  t=341737 years
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.587 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1585 K, 3000 K
+     Heat fluxes through boundary parts: -2.38e+05 W, 3.841e+05 W, -449.3 W, 354 W
+
+*** Timestep 4:  t=455649 years
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.587 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1581 K, 3000 K
+     Heat fluxes through boundary parts: -2.205e+05 W, 3.494e+05 W, -432.2 W, 442.1 W
+
+*** Timestep 5:  t=569562 years
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.587 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1578 K, 3000 K
+     Heat fluxes through boundary parts: -2.071e+05 W, 3.225e+05 W, -396 W, 518.7 W
+
+*** Timestep 6:  t=683474 years
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.587 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1575 K, 3000 K
+     Heat fluxes through boundary parts: -1.97e+05 W, 3.014e+05 W, -346.2 W, 591.2 W
+
+*** Timestep 7:  t=797386 years
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.587 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1572 K, 3000 K
+     Heat fluxes through boundary parts: -1.892e+05 W, 2.842e+05 W, -285.5 W, 663.9 W
+
+*** Timestep 8:  t=911299 years
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.588 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1570 K, 3000 K
+     Heat fluxes through boundary parts: -1.831e+05 W, 2.697e+05 W, -216.2 W, 739.3 W
+
+*** Timestep 9:  t=1e+06 years
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.588 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1568 K, 3000 K
+     Heat fluxes through boundary parts: -1.794e+05 W, 2.599e+05 W, -157 W, 800.7 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
