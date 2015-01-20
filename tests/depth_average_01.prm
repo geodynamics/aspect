@@ -106,6 +106,7 @@ subsection Postprocess
 
   subsection Depth average
     set Time between graphical output = 0.1
+    set Number of zones = 10
   end
 end
 

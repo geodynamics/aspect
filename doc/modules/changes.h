@@ -6,6 +6,12 @@
  *
  *
  * <ol>
+ * <li> The default for the number of zones in "depth average" got reduced
+ * from 100 to 10. A large number of zones causes erroneous output on coarse
+ * meshes.
+ * <br>
+ * (Timo Heister, 2015/01/19)
+ *
  * <li> New: ASPECT now uses meshes for the spherical shell where each node is
  * placed on concentric shells. Previously, upon mesh refinement, new vertices
  * were placed at an averaged location of the vertices of the mother cell,
