@@ -1,0 +1,131 @@
+# LINEAR ALGEBRA: PETSC
+# MPI: 3
+
+#idea: enable all mesh refinement strategies just to run the code
+
+
+set Dimension = 2
+
+
+set CFL number                             = 1.0
+
+set End time                               = 0
+
+
+set Resume computation                     = false
+
+set Start time                             = 0
+
+set Adiabatic surface temperature          = 0
+
+set Surface pressure                       = 0
+
+set Use years in output instead of seconds = false  # default: true
+
+set Nonlinear solver scheme                = IMPES
+
+
+subsection Boundary temperature model
+  set Model name = box
+
+end
+
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+
+  set Temperature polynomial degree           = 2
+
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    set alpha = 2
+
+    set beta  = 0.078
+
+    set cR    = 0.5   # default: 0.11
+  end
+
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+
+    set Y extent = 1
+
+    set Z extent = 1
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+end
+
+
+subsection Initial conditions
+  set Model name = perturbed box
+
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+
+subsection Material model
+  set Model name = simple compressible
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1                       # default: 2
+  set Initial global refinement          = 4                       # default: 2
+  set Run postprocessors on initial refinement = false
+
+  set Strategy                           = composition, density, maximum refinement function, minimum refinement function, nonadiabatic temperature, temperature, thermal energy density, topography, velocity, viscosity
+
+  subsection Maximum refinement function
+    set Coordinate system   = depth
+    set Function expression = 10
+  end
+end
+
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false # default: true
+
+
+  set Fixed temperature boundary indicators   = 0, 1
+
+  set Prescribed velocity boundary indicators =
+
+  set Tangential velocity boundary indicators = 0,1,2,3
+
+  set Zero velocity boundary indicators       =
+end
+
+
+subsection Postprocess
+  set List of postprocessors = depth average, visualization
+
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 6
+  end
+
+  subsection Visualization
+    set Number of grouped files       = 0
+
+    set Output format                 = gnuplot
+
+    set Time between graphical output = 0   # default: 1e8
+  end
+end
+
