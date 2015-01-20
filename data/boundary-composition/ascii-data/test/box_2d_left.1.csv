@@ -1,0 +1,7 @@
+# Test data for ascii data boundary composition.
+# Only next line is parsed in format: [nx] because of keyword "POINTS:"
+# POINTS: 3
+# Columns: x composition_1
+0.  0.
+0.5 1.
+1.  0.

@@ -1,0 +1,7 @@
+# Test data for ascii data boundary temperature.
+# Only next line is parsed in format: [nx] because of keyword "POINTS:"
+# POINTS: 3
+# Columns: x Temperature[K]
+0.  0.
+0.5 100.
+1.  0.
