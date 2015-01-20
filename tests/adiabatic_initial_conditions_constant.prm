@@ -91,5 +91,9 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, depth average
+
+  subsection Depth average
+    set Number of zones = 10
+  end
 end
 
