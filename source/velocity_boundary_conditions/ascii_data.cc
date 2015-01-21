@@ -53,8 +53,8 @@ namespace aspect
       const std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
         bvs = this->get_prescribed_velocity_boundary_conditions();
       for (typename std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::const_iterator
-           p = bvs.cbegin();
-           p != bvs.cend(); ++p)
+           p = bvs.begin();
+           p != bvs.end(); ++p)
         {
           if (p->second.get() == this)
             boundary_id = p->first;

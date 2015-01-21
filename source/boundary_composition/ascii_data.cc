@@ -50,8 +50,8 @@ namespace aspect
       const std::set<types::boundary_id> boundary_ids = this->get_fixed_composition_boundary_indicators();
 
       for (typename std::set<types::boundary_id>::const_iterator
-          boundary_id = boundary_ids.cbegin();
-          boundary_id != boundary_ids.cend(); ++boundary_id)
+          boundary_id = boundary_ids.begin();
+          boundary_id != boundary_ids.end(); ++boundary_id)
         {
 
           std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim,dim-1> > lookup;
@@ -132,8 +132,8 @@ namespace aspect
           if (need_update)
             for (typename std::map<types::boundary_id,
                 std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim,dim-1> > >::const_iterator
-                       boundary_id = lookups.cbegin();
-                       boundary_id != lookups.cend(); ++boundary_id)
+                       boundary_id = lookups.begin();
+                       boundary_id != lookups.end(); ++boundary_id)
                 update_data(boundary_id->first);
 
           time_weight = (this->get_time() - first_data_file_model_time) / data_file_time_step
