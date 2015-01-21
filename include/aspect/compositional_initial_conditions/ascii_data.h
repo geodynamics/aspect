@@ -23,8 +23,8 @@
 #define __aspect__compositional_initial_conditions_ascii_data_h
 
 #include <aspect/compositional_initial_conditions/interface.h>
-#include <aspect/velocity_boundary_conditions/ascii_data.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 
 namespace aspect
@@ -102,7 +102,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from
          * text files.
          */
-        std_cxx11::shared_ptr<::aspect::VelocityBoundaryConditions::internal::AsciiDataLookup<dim,dim> > lookup;
+        std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim,dim> > lookup;
     };
   }
 }

@@ -22,10 +22,6 @@
 #include <aspect/global.h>
 #include <aspect/boundary_composition/ascii_data.h>
 
-#include <aspect/geometry_model/box.h>
-#include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/utilities.h>
-
 #include <deal.II/base/parameter_handler.h>
 
 
@@ -58,9 +54,8 @@ namespace aspect
           boundary_id != boundary_ids.cend(); ++boundary_id)
         {
 
-          std_cxx11::shared_ptr<VelocityBoundaryConditions::internal::AsciiDataLookup<dim,dim-1> > lookup;
-          lookup.reset(new VelocityBoundaryConditions::internal::AsciiDataLookup<dim,dim-1>    (data_points,
-                                                                                                this->get_geometry_model(),
+          std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim,dim-1> > lookup;
+          lookup.reset(new Utilities::AsciiDataLookup<dim,dim-1>    (this->get_geometry_model(),
                                                                                                 this->n_compositional_fields(),
                                                                                                 scale_factor,
                                                                                                 *boundary_id));
@@ -136,7 +131,7 @@ namespace aspect
 
           if (need_update)
             for (typename std::map<types::boundary_id,
-                std_cxx11::shared_ptr<VelocityBoundaryConditions::internal::AsciiDataLookup<dim,dim-1> > >::const_iterator
+                std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim,dim-1> > >::const_iterator
                        boundary_id = lookups.cbegin();
                        boundary_id != lookups.cend(); ++boundary_id)
                 update_data(boundary_id->first);
@@ -368,9 +363,6 @@ namespace aspect
           data_file_name    = prm.get ("Data file name");
 
           scale_factor      = prm.get_double ("Scale factor");
-          data_points[0]    = prm.get_double ("Number of x grid points");
-          data_points[1]    = prm.get_double ("Number of y grid points");
-          data_points[2]    = prm.get_double ("Number of z grid points");
 
           data_file_time_step             = prm.get_double ("Data file time step");
           first_data_file_model_time      = prm.get_double ("First data file model time");
@@ -401,7 +393,11 @@ namespace aspect
                                                "Implementation of a model in which the boundary "
                                                "composition is derived from files containing data "
                                                "in ascii format. Note the required format of the "
-                                               "input data: The order of the columns "
+                                               "input data: The first lines may contain any number of comments"
+                                               "if they begin with '#', but one of these lines needs to"
+                                               "contain the number of grid points in each dimension as"
+                                               "for example '# POINTS: 3 3'."
+                                               "The order of the data columns "
                                                "has to be 'x', 'composition_1', 'composition_2', "
                                                "etc. in a 2d model and "
                                                "'x', 'y', 'composition_1', 'composition_2', "
@@ -412,7 +408,7 @@ namespace aspect
                                                "Note that the data in the input "
                                                "files need to be sorted in a specific order: "
                                                "the first coordinate needs to ascend first, "
-                                               "followed by the second and the third at last in order to "
+                                               "followed by the second in order to "
                                                "assign the correct data to the prescribed coordinates."
                                                "If you use a spherical model, "
                                                "then the data will still be handled as cartesian,"

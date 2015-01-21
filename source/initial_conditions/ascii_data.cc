@@ -24,7 +24,7 @@
 
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/utilities.h>
+
 
 namespace aspect
 {
@@ -42,8 +42,7 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      lookup.reset(new VelocityBoundaryConditions::internal::AsciiDataLookup<dim,dim> (data_points,
-                                                                                       this->get_geometry_model(),
+      lookup.reset(new Utilities::AsciiDataLookup<dim,dim> (this->get_geometry_model(),
                                                                                        1,
                                                                                        scale_factor));
 
@@ -138,9 +137,6 @@ namespace aspect
           data_file_name    = prm.get ("Data file name");
 
           scale_factor      = prm.get_double ("Scale factor");
-          data_points[0]    = prm.get_integer ("Number of x grid points");
-          data_points[1]    = prm.get_integer ("Number of y grid points");
-          data_points[2]    = prm.get_integer ("Number of z grid points");
         }
         prm.leave_subsection();
       }
@@ -160,7 +156,11 @@ namespace aspect
                                        "Implementation of a model in which the initial "
                                        "temperature is derived from files containing data "
                                        "in ascii format. Note the required format of the "
-                                       "input data: The order of the columns "
+                                       "input data: The first lines may contain any number of comments"
+                                       "if they begin with '#', but one of these lines needs to"
+                                       "contain the number of grid points in each dimension as"
+                                       "for example '# POINTS: 3 3'."
+                                       "The order of the data columns "
                                        "has to be 'x', 'y', 'Temperature [K]' in a 2d model and "
                                        " 'x', 'y', 'z', 'Temperature [K]' in a 3d model, which means that "
                                        "there has to be a single column "

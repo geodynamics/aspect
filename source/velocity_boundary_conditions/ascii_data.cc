@@ -22,7 +22,6 @@
 #include <aspect/global.h>
 #include <aspect/velocity_boundary_conditions/ascii_data.h>
 
-#include <aspect/utilities.h>
 
 #include <deal.II/base/parameter_handler.h>
 
@@ -64,8 +63,7 @@ namespace aspect
                   ExcMessage("Did not find the boundary indicator for the prescribed data plugin."));
 
 
-      lookup.reset(new internal::AsciiDataLookup<dim,dim-1>(data_points,
-                                                            this->get_geometry_model(),
+      lookup.reset(new Utilities::AsciiDataLookup<dim,dim-1>(this->get_geometry_model(),
                                                             dim,
                                                             scale_factor,
                                                             boundary_id));
@@ -378,9 +376,6 @@ namespace aspect
           data_file_name    = prm.get ("Data file name");
 
           scale_factor      = prm.get_double ("Scale factor");
-          data_points[0]    = prm.get_double ("Number of x grid points");
-          data_points[1]    = prm.get_double ("Number of y grid points");
-          data_points[2]    = prm.get_double ("Number of z grid points");
 
           data_file_time_step             = prm.get_double ("Data file time step");
           first_data_file_model_time      = prm.get_double ("First data file model time");
@@ -412,14 +407,18 @@ namespace aspect
                                                  "Implementation of a model in which the boundary "
                                                  "velocity is derived from files containing data "
 						 "in ascii format. Note the required format of the "
-                                                 "input data: The order of the columns "
+                                                 "input data: The first lines may contain any number of comments"
+                                                 "if they begin with '#', but one of these lines needs to"
+                                                 "contain the number of grid points in each dimension as"
+                                                 "for example '# POINTS: 3 3'."
+                                                 "The order of the data columns "
                                                  "has to be 'x', 'velocity_x', 'velocity_y' in a 2d model "
                                                  "or 'x', 'y', 'velocity_x', 'velocity_y', "
                                                  "'velocity_z' in a 3d model. "
                                                  "Note that the data in the input "
                                                  "files need to be sorted in a specific order: "
                                                  "the first coordinate needs to ascend first, "
-                                                 "followed by the second and the third at last in order to "
+                                                 "followed by the second in order to "
                                                  "assign the correct data to the prescribed coordinates."
                                                  "If you use a spherical model, "
                                                  "then the velocities will still be handled as cartesian,"

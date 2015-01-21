@@ -23,8 +23,8 @@
 #define __aspect__boundary_composition_ascii_data_h
 
 #include <aspect/boundary_composition/interface.h>
-#include <aspect/velocity_boundary_conditions/ascii_data.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 
 namespace aspect
@@ -170,7 +170,7 @@ namespace aspect
          * data we get from text files.
          */
         std::map<types::boundary_id,
-                  std_cxx11::shared_ptr<::aspect::VelocityBoundaryConditions::internal::AsciiDataLookup<dim,dim-1> > > lookups;
+                  std_cxx11::shared_ptr<::aspect::Utilities::AsciiDataLookup<dim,dim-1> > > lookups;
 
         /**
          * Handles the update of the data in lookup.
