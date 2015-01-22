@@ -164,7 +164,6 @@ namespace aspect
         std::vector<double> thermal_expansivities;
         std::vector<double> nvs; //Stress exponent, viscous rheology
         std::vector<double> nps;//Stress exponent, plastic rheology
-        double model_depth;
         double thermal_diffusivity;
         double gamma; // Coefficient of yield stress increase with depth
         double heat_capacity;
