@@ -99,7 +99,7 @@ namespace aspect
            * from.
            * @param [in] id_num The id number of the particle to read the data
            * for.
-	   * @return The position in the vector of the next unread double.
+           * @return The position in the vector of the next unread double.
            */
           virtual unsigned int read_data(const std::vector<double> &data, const unsigned int &pos, const double &id_num) = 0;
 

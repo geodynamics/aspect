@@ -86,9 +86,9 @@ namespace aspect
         get_used_boundary_indicators () const;
 
         /**
-         * Return symbolic names for all boundary components. Their names
-         * are described in the documentation of this plugin, at the bottom
-         * of the .cc file.
+         * Return symbolic names for all boundary components. Their names are
+         * described in the documentation of this plugin, at the bottom of the
+         * .cc file.
          */
         virtual
         std::map<std::string,types::boundary_id>

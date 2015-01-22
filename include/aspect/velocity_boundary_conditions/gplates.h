@@ -118,8 +118,8 @@ namespace aspect
           double delta_phi, delta_theta;
 
           /**
-           * The matrix, which describes the rotation by which a 2D model needs
-           * to be transformed to a plane that contains the origin and
+           * The matrix, which describes the rotation by which a 2D model
+           * needs to be transformed to a plane that contains the origin and
            * the two user prescribed points. Is not used for 3D.
            */
           Tensor<2,3> rotation_matrix;
@@ -147,15 +147,16 @@ namespace aspect
           /**
            * A function that returns the corresponding paraview angles for a
            * rotation described by a rotation matrix. These differ from the
-           * usually used euler angles by assuming a rotation around the coordinate
-           * axes in the order y-x-z (instead of the often used z-x-z)
+           * usually used euler angles by assuming a rotation around the
+           * coordinate axes in the order y-x-z (instead of the often used
+           * z-x-z)
            */
           std_cxx1x::array<double,3>
           angles_from_matrix (const Tensor<2,3> &rotation_matrix) const;
 
           /**
-           * A function that returns the corresponding rotation axis/angle for a
-           * rotation described by a rotation matrix.
+           * A function that returns the corresponding rotation axis/angle for
+           * a rotation described by a rotation matrix.
            */
           double
           rotation_axis_from_matrix (Tensor<1,3> &rotation_axis,

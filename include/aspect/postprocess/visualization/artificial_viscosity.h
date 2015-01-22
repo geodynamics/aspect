@@ -45,7 +45,7 @@ namespace aspect
           /**
            * The function classes have to implement that want to output
            * cellwise data.
-	   * @return A pair of values with the following meaning: - The first
+           * @return A pair of values with the following meaning: - The first
            * element provides the name by which this data should be written to
            * the output file. - The second element is a pointer to a vector
            * with one element per active cell on the current processor.

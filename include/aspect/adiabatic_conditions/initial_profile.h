@@ -54,22 +54,22 @@ namespace aspect
 
         /**
          * Initialization function. Because this function is called after
-         * initializing the SimulatorAccess, all of the necessary information is
-         * available to calculate the adiabatic profile. It computes the
-         * adiabatic conditions along a vertical transect of the geometry based
-         * on the given material model and other quantities.
+         * initializing the SimulatorAccess, all of the necessary information
+         * is available to calculate the adiabatic profile. It computes the
+         * adiabatic conditions along a vertical transect of the geometry
+         * based on the given material model and other quantities.
          */
         virtual void initialize ();
 
         /**
          * Some plugins need to know whether the adiabatic conditions are
-         * already calculated. This is for example the case for the simple com-
-         * pressible material model, which uses the adiabatic temperature as
-         * reference temperature to calculate the density. For the calculation
-         * of the adiabatic conditions this functionality is simply switched
-         * off, because we are always on the reference profile. This way the
-         * plugin behaves differently at initialization time of the adiabatic
-         * conditions and during the main model run.
+         * already calculated. This is for example the case for the simple
+         * com- pressible material model, which uses the adiabatic temperature
+         * as reference temperature to calculate the density. For the
+         * calculation of the adiabatic conditions this functionality is
+         * simply switched off, because we are always on the reference
+         * profile. This way the plugin behaves differently at initialization
+         * time of the adiabatic conditions and during the main model run.
          */
         virtual bool is_initialized() const;
 
@@ -89,8 +89,8 @@ namespace aspect
          * corresponding to increasing depth.
          *
          * @param values The output vector of depth averaged values. The
-         * function takes the pre-existing size of this vector as the number of
-         * depth slices.
+         * function takes the pre-existing size of this vector as the number
+         * of depth slices.
          */
         virtual void get_adiabatic_temperature_profile(std::vector<double> &values) const;
 

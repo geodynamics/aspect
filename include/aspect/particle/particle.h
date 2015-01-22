@@ -123,7 +123,7 @@ namespace aspect
          * @param [in] data The vector of double data to read from.
          * @param [in] pos The position in the data vector to start reading
          * from.
-	 * @return The position in the vector of the next unread double.
+         * @return The position in the vector of the next unread double.
          */
         virtual unsigned int read_data(const std::vector<double> &data, const unsigned int &pos);
 
@@ -305,7 +305,7 @@ namespace aspect
          * Return a reference to an element of the DataParticle data
          *
          * @param [in] ind Index of the data array
-	 * @return Reference to double value at the requested index
+         * @return Reference to double value at the requested index
          */
         double &operator[](const unsigned int &ind)
         {
@@ -317,7 +317,7 @@ namespace aspect
          * Return the value of an element of the DataParticle data
          *
          * @param [in] ind Index of the data array
-	 * @return Value at the requested index
+         * @return Value at the requested index
          */
         double operator[](const unsigned int &ind) const
         {

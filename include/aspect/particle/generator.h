@@ -71,7 +71,8 @@ namespace aspect
        * Create a generator object.
        *
        * @param[in] generator_type Name of the type of generator to create
-       * @return pointer to the generator. Caller needs to delete this pointer.
+       * @return pointer to the generator. Caller needs to delete this
+       * pointer.
        */
       template <int dim, class T>
       Interface<dim, T> *

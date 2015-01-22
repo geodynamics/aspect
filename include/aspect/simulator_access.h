@@ -110,11 +110,11 @@ namespace aspect
       introspection () const;
 
       /**
-       * Returns a reference to the Simulator itself. Note that you can not access
-       * any members or functions of the Simulator. This function exists so that
-       * any class with SimulatorAccess can create other objects with
-       * SimulatorAccess (because initializing them requires a reference to the
-       * Simulator).
+       * Returns a reference to the Simulator itself. Note that you can not
+       * access any members or functions of the Simulator. This function
+       * exists so that any class with SimulatorAccess can create other
+       * objects with SimulatorAccess (because initializing them requires a
+       * reference to the Simulator).
        */
       const Simulator<dim> &
       get_simulator() const;

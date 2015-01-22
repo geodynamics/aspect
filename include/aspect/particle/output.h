@@ -86,8 +86,8 @@ namespace aspect
            * @param [in] current_time Current time of the simulation, given as
            * either years or seconds, as selected in the input file. In other
            * words, output writers do not need to know the units in which time
-	   * is described.
-	   * @return The name of the file that was written, or any other
+           * is described.
+           * @return The name of the file that was written, or any other
            * information that describes what output was produced if for
            * example multiple files were created.
            */
