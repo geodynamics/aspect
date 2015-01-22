@@ -62,7 +62,7 @@ namespace aspect
     {
       return true;
     }
-    
+
 
     template <int dim>
     void

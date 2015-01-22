@@ -158,7 +158,7 @@ namespace aspect
          * fields and 1.0 is assumed to be the amount of background mantle.
          */
         std::vector<double> compute_volume_fractions(
-                const std::vector<double> &compositional_fields) const;
+          const std::vector<double> &compositional_fields) const;
         std::vector<double> densities;
         std::vector<double> activation_energies;
         std::vector<double> thermal_expansivities;

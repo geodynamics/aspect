@@ -78,14 +78,14 @@ namespace aspect
         std::map<std::string,types::boundary_id>
         get_symbolic_boundary_names_map () const;
 
-	/**
-	 * @copydoc Interface::has_curved_elements()
-	 *
-	 * Return true because we have a curved boundary.
-	 */
-	virtual
-	bool
-	has_curved_elements() const;
+        /**
+         * @copydoc Interface::has_curved_elements()
+         *
+         * Return true because we have a curved boundary.
+         */
+        virtual
+        bool
+        has_curved_elements() const;
 
         static
         void

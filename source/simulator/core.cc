@@ -165,7 +165,7 @@ namespace aspect
        ||
        geometry_model->has_curved_elements() == false
       )?false:true),
-  
+
     // define the finite element. obviously, what we do here needs
     // to match the data we provide in the Introspection class
     finite_element(FE_Q<dim>(parameters.stokes_velocity_degree),
@@ -712,7 +712,7 @@ namespace aspect
         }
     }
 
-      // now do the same for the composition variable:
+    // now do the same for the composition variable:
     {
       // If there are fixed boundary compositions,
       // update the composition boundary condition.
