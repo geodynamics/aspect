@@ -76,7 +76,7 @@ namespace aspect
           const std::vector<double> volume_fractions = compute_volume_fractions(composition);
           const SymmetricTensor<2,dim> strain_rate = in.strain_rate[i];
 
-          const double z = model_depth - ((dim == 2) ? position[1] : position[2]); // units: m
+          const double z = this->get_geometry_model().depth(position); // units: m
 
           double activation_energy = 0.0;
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
@@ -224,7 +224,7 @@ namespace aspect
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection ("Morency");
+        prm.enter_subsection ("Morency and Doin");
         {
           prm.declare_entry ("Densities", "3300.",
                              Patterns::List(Patterns::Double(0)),
@@ -277,30 +277,12 @@ namespace aspect
     void
     MorencyDoin<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Geometry model");
-      {
-        prm.enter_subsection("Box");
-        {
-          if (dim == 3)
-            model_depth     = prm.get_double("Z extent");
-          else
-            model_depth     = prm.get_double("Y extent");
-        }
-        prm.leave_subsection();
-      }
-      prm.leave_subsection();
-
-      unsigned int n_fields;
-      prm.enter_subsection ("Compositional fields");
-      {
-        n_fields = prm.get_integer ("Number of fields");
-      }
-      prm.leave_subsection();
-      n_fields++; //increment for background
+      //increment by one for background:
+      const unsigned int n_fields = this->n_compositional_fields() + 1;
 
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection ("Morency");
+        prm.enter_subsection ("Morency and Doin");
         {
           gamma = prm.get_double("Coefficient of yield stress increase with depth");
           thermal_diffusivity = prm.get_double("Thermal diffusivity");
@@ -368,7 +350,7 @@ namespace aspect
     }
 
     ASPECT_REGISTER_MATERIAL_MODEL(MorencyDoin,
-                                   "morency doin",
+                                   "Morency and Doin",
                                    "An implementation of the visco-plastic rheology described by (Morency"
                                    " and Doin, 2004). Compositional fields can each be assigned individual"
                                    " activation energies, reference densities, thermal expansivities,"
@@ -393,6 +375,6 @@ namespace aspect
                                    "\n\n"
                                    " The value for the components of this formula and additional"
                                    " parameters are read from the parameter file in subsection"
-                                   " 'Material model/Morency'.")
+                                   " 'Material model/Morency and Doin'.")
   }
 }

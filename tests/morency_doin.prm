@@ -44,9 +44,9 @@ subsection Initial conditions
 end
 
 subsection Material model
-  set Model name = morency doin
+  set Model name = Morency and Doin
 
-  subsection Morency
+  subsection Morency and Doin
     set Densities = 3300,2700,2700
     set Activation energies = 500,320,320
     set Coefficient of yield stress increase with depth = 0.25
