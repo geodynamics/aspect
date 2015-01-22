@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -49,10 +49,10 @@ namespace aspect
               // dT is only meaningful if boundary temperatures are prescribed, otherwise it is 0
               const double dT = (&this->get_boundary_temperature())
                                 ?
-                                    this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
-                                    - this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())
-                                    :
-                                    0;
+                                this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
+                                - this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())
+                                :
+                                0;
 
               // we do not compute the compositions but give the functions below the value 0.0 instead
               std::vector<double> composition_values(this->n_compositional_fields(),0.0);

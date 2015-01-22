@@ -71,16 +71,15 @@ namespace aspect
   typedef boost::archive::binary_oarchive oarchive;
 
   /**
-   * A class we throw in exceptions in parallel jobs and that we can
-   * silently treat in main(). We do this, for example, in
-   * read_parameters() where each processor would otherwise throw the
-   * same exception and every processor would produce a tangle of
-   * output that is impenetrable in large parallel jobs. The same
-   * situation happens if a linear solver fails. Rather, we make
-   * processor 0 throw the real exception and every other processor
-   * converts the exception it wants to throw to an object of the
-   * current type -- which is caught in main() but doesn't produce any
-   * output (because processor 0 will already produce the output).
+   * A class we throw in exceptions in parallel jobs and that we can silently
+   * treat in main(). We do this, for example, in read_parameters() where each
+   * processor would otherwise throw the same exception and every processor
+   * would produce a tangle of output that is impenetrable in large parallel
+   * jobs. The same situation happens if a linear solver fails. Rather, we
+   * make processor 0 throw the real exception and every other processor
+   * converts the exception it wants to throw to an object of the current type
+   * -- which is caught in main() but doesn't produce any output (because
+   * processor 0 will already produce the output).
    */
   class QuietException {};
 

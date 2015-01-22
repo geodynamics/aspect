@@ -34,8 +34,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements boundary temperature based on a
-     * functional description provided in the input file.
+     * A class that implements boundary temperature based on a functional
+     * description provided in the input file.
      *
      * @ingroup BoundaryTemperatures
      */

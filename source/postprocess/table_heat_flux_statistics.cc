@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -184,10 +184,10 @@ namespace aspect
           // dT is only meaningful if boundary temperatures are prescribed, otherwise it is 0
           const double dT = (&this->get_boundary_temperature())
                             ?
-                                this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
-                                - this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())
-                                :
-                                0;
+                            this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
+                            - this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())
+                            :
+                            0;
 
           const double conductive_heatflux = dT/h;
           const double nusselt_outer = global_boundary_fluxes[0]/conductive_heatflux;

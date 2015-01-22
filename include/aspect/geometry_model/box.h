@@ -46,8 +46,8 @@ namespace aspect
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const;
 
         /**
-         * Return a point that denotes the size of the box in each dimension of the
-         * domain.
+         * Return a point that denotes the size of the box in each dimension
+         * of the domain.
          */
         Point<dim> get_extents () const;
 
@@ -93,34 +93,34 @@ namespace aspect
          * Return a mapping from symbolic names of each part of the boundary
          * to the corresponding boundary indicator. This allows users to
          * specify *names*, not just *numbers* in their input files when
-         * describing which parts of the boundary have to satisfy which boundary
-         * conditions.
+         * describing which parts of the boundary have to satisfy which
+         * boundary conditions.
          *
-         * This geometry returns the map
-         * <code>{{"left"->0}, {"right"->1}, {"bottom"->2}, {"top"->3}}</code> in
-         * 2d, and
-         * <code>{{"left"->0}, {"right"->1}, {"front"->2}, {"back"->3}, {"bottom"->4}, {"top"->5}}</code>
-         * in 3d.
+         * This geometry returns the map <code>{{"left"->0}, {"right"->1},
+         * {"bottom"->2}, {"top"->3}}</code> in 2d, and <code>{{"left"->0},
+         * {"right"->1}, {"front"->2}, {"back"->3}, {"bottom"->4},
+         * {"top"->5}}</code> in 3d.
          */
         virtual
         std::map<std::string,types::boundary_id>
         get_symbolic_boundary_names_map () const;
 
         /**
-         * Return the set of periodic boundaries as described in the input file.
+         * Return the set of periodic boundaries as described in the input
+         * file.
          */
         virtual
         std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >
         get_periodic_boundary_pairs () const;
 
-	/**
-	 * @copydoc Interface::has_curved_elements()
-	 *
-	 * A box has only straight boundaries and cells, so return false.
-	 */
-	virtual
-	bool
-	has_curved_elements() const;
+        /**
+         * @copydoc Interface::has_curved_elements()
+         *
+         * A box has only straight boundaries and cells, so return false.
+         */
+        virtual
+        bool
+        has_curved_elements() const;
 
         /**
          * Declare the parameters this class takes through input files.

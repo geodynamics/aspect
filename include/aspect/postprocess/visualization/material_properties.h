@@ -36,12 +36,12 @@ namespace aspect
     {
       /**
        * A class derived from DataPostprocessor that takes an output vector
-       * and computes several scalar variables that represent the material model
-       * outputs for every point. The list of written variables can be chosen
-       * as input parameter. The principal functionality of this class is
-       * already implemented in some other visualization plugins, the purpose
-       * of this plugin is to efficiently compute all the wanted parameters in
-       * one call to the material model.
+       * and computes several scalar variables that represent the material
+       * model outputs for every point. The list of written variables can be
+       * chosen as input parameter. The principal functionality of this class
+       * is already implemented in some other visualization plugins, the
+       * purpose of this plugin is to efficiently compute all the wanted
+       * parameters in one call to the material model.
        *
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.

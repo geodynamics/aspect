@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -59,16 +59,16 @@ namespace aspect
       // at the surface and maximal_temperature() the value at the bottom.
       const double T_surface = (&this->get_boundary_temperature() != 0)
                                ?
-                                   this->get_boundary_temperature().minimal_temperature(
-                                       this->get_fixed_temperature_boundary_indicators())
+                               this->get_boundary_temperature().minimal_temperature(
+                                 this->get_fixed_temperature_boundary_indicators())
                                :
-                                   adiabatic_surface_temperature;
+                               adiabatic_surface_temperature;
       const double T_bottom = (&this->get_boundary_temperature() != 0)
                               ?
-                                  this->get_boundary_temperature().maximal_temperature(
-                                      this->get_fixed_temperature_boundary_indicators())
+                              this->get_boundary_temperature().maximal_temperature(
+                                this->get_fixed_temperature_boundary_indicators())
                               :
-                                  adiabatic_surface_temperature;
+                              adiabatic_surface_temperature;
 
       // get a representative profile of the compositional fields as an input
       // for the material model

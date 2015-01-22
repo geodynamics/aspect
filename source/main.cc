@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -122,7 +122,7 @@ int get_names_of_shared_libs (struct dl_phdr_info *info,
   reinterpret_cast<std::set<std::string>*>(data)->insert (info->dlpi_name);
   return 0;
 }
-#endif  
+#endif
 
 
 // make sure the list of shared libraries we currently link with

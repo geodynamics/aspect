@@ -32,10 +32,9 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A material model that implements latent heat of
-     * melting for two materials: peridotite and pyroxenite.
-     * The density and thermal expansivity depend on the
-     * melt fraction.
+     * A material model that implements latent heat of melting for two
+     * materials: peridotite and pyroxenite. The density and thermal
+     * expansivity depend on the melt fraction.
      *
      * @ingroup MaterialModels
      */
@@ -253,9 +252,8 @@ namespace aspect
         double pyroxenite_melting_entropy_change;
 
         /**
-         * Percentage of material that is molten. Melting model
-         * after Katz, 2003 (for peridotite) and Sobolev et al.,
-         * 2011 (for pyroxenite)
+         * Percentage of material that is molten. Melting model after Katz,
+         * 2003 (for peridotite) and Sobolev et al., 2011 (for pyroxenite)
          */
         virtual
         double

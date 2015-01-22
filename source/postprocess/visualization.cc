@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -291,9 +291,9 @@ namespace aspect
 
       // now build the patches and see how we can output these
       data_out.build_patches ((interpolate_output) ?
-                               this->get_stokes_velocity_degree()
-                               :
-                               0);
+                              this->get_stokes_velocity_degree()
+                              :
+                              0);
 
       std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);
       std::string mesh_file_prefix = "mesh-" + Utilities::int_to_string (output_file_number, 5);
@@ -656,10 +656,10 @@ namespace aspect
                              "\\end{center}"
                              "Here, the left picture shows one visualization cell per "
                              "computational cell (i.e., the option is switch off, as is the "
-			     "default), and the right picture shows the same simulation with the "
-			     "option switched on. The images show the same data, demonstrating "
-			     "that interpolating the solution onto bilinear shape functions as is "
-			     "commonly done in visualizing data loses information."
+                             "default), and the right picture shows the same simulation with the "
+                             "option switched on. The images show the same data, demonstrating "
+                             "that interpolating the solution onto bilinear shape functions as is "
+                             "commonly done in visualizing data loses information."
                              "\n\n"
                              "Of course, activating this option also greatly increases the amount of "
                              "data \\aspect{} will write to disk: approximately by a factor of 4 in 2d, "

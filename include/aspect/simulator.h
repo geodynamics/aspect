@@ -171,12 +171,13 @@ namespace aspect
 
         /**
          * Read run-time parameters from an object that has previously parsed
-         * an input file. This reads all parameters that do not require knowledge
-         * of the geometry model we use. There is a separate function
-         * parse_geometry_dependent_parameters() that is called as soon as
-         * the geometry object has been created and that can translate between the
-         * symbolic names for boundary components that the geometry model publishes
-         * and the boundary indicators used internally.
+         * an input file. This reads all parameters that do not require
+         * knowledge of the geometry model we use. There is a separate
+         * function parse_geometry_dependent_parameters() that is called as
+         * soon as the geometry object has been created and that can translate
+         * between the symbolic names for boundary components that the
+         * geometry model publishes and the boundary indicators used
+         * internally.
          *
          * @param prm The object from which to obtain the run-time parameters.
          *
@@ -188,18 +189,20 @@ namespace aspect
                                const MPI_Comm mpi_communicator);
 
         /**
-         * Read those run-time parameters from a ParameterHandler object that depend on
-         * knowing which geometry object we use. This function complements
-         * parse_parameters() but is only called once the geometry object has been
-         * created. This function is separate because we allow the use of symbolic
-         * names in defining which boundary components have which boundary conditions,
-         * and the names one can specify there are not available until after the
-         * geometry object has been created.
+         * Read those run-time parameters from a ParameterHandler object that
+         * depend on knowing which geometry object we use. This function
+         * complements parse_parameters() but is only called once the geometry
+         * object has been created. This function is separate because we allow
+         * the use of symbolic names in defining which boundary components
+         * have which boundary conditions, and the names one can specify there
+         * are not available until after the geometry object has been created.
          *
-         * This function is called from the GeometryModel::create_geometry() function.
+         * This function is called from the GeometryModel::create_geometry()
+         * function.
          *
          * @param prm The object from which to obtain the run-time parameters.
-         * @param geometry_model The geometry model that provides boundary names etc.
+         * @param geometry_model The geometry model that provides boundary
+         * names etc.
          */
         void parse_geometry_dependent_parameters (ParameterHandler &prm,
                                                   const GeometryModel::Interface<dim> &geometry_model);
@@ -472,20 +475,20 @@ namespace aspect
 
 
       /**
-       * A class that is empty but that can be used as a member variable
-       * and whose constructor will be run in the order in which the member
-       * variables are initialized. Because this class has a constructor
-       * that takes a function object that it will execute whenever the
-       * member variable is initialized, this allows running arbitrary actions
-       * in between member variable initializers, for example if some member
-       * variable is partially initialized at point A within the member variable
-       * initializer list, its initialization can only be finalized after point B
-       * (because it depends on what another member variable decides to do), but
-       * needs to be finished by point C within the member initialization. In such
-       * a case, one may have a member variable of the current time placed in the
-       * list of member variables such that it is initialized at point B, and then
-       * initialize it using a function object that performs the finalization of
-       * initialization.
+       * A class that is empty but that can be used as a member variable and
+       * whose constructor will be run in the order in which the member
+       * variables are initialized. Because this class has a constructor that
+       * takes a function object that it will execute whenever the member
+       * variable is initialized, this allows running arbitrary actions in
+       * between member variable initializers, for example if some member
+       * variable is partially initialized at point A within the member
+       * variable initializer list, its initialization can only be finalized
+       * after point B (because it depends on what another member variable
+       * decides to do), but needs to be finished by point C within the member
+       * initialization. In such a case, one may have a member variable of the
+       * current time placed in the list of member variables such that it is
+       * initialized at point B, and then initialize it using a function
+       * object that performs the finalization of initialization.
        */
       struct IntermediaryConstructorAction
       {
@@ -918,10 +921,10 @@ namespace aspect
                                        std::vector<double> &values) const;
 
       /**
-       * Compute a depth average of the current viscosity. The function
-       * fills a vector that contains average viscosities over slices of the
-       * domain of same depth. The function resizes the output vector to match
-       * the number of depth slices.
+       * Compute a depth average of the current viscosity. The function fills
+       * a vector that contains average viscosities over slices of the domain
+       * of same depth. The function resizes the output vector to match the
+       * number of depth slices.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
@@ -1570,12 +1573,14 @@ namespace aspect
           IndexSet mesh_locally_relevant;
 
           /**
-           * Storage for the mesh displacement constraints for solving the elliptic problem
+           * Storage for the mesh displacement constraints for solving the
+           * elliptic problem
            */
           ConstraintMatrix mesh_displacement_constraints;
 
           /**
-           * Storage for the mesh vertex constraints to keep hanging nodes well-behaved
+           * Storage for the mesh vertex constraints to keep hanging nodes
+           * well-behaved
            */
           ConstraintMatrix mesh_vertex_constraints;
 

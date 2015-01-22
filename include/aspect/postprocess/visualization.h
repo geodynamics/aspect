@@ -196,17 +196,18 @@ namespace aspect
         public:
           /**
            * The function classes have to implement that want to output
-           * cellwise data. @return A pair of values with the following
-           * meaning: - The first element provides the name by which this data
-           * should be written to the output file. - The second element is a
-           * pointer to a vector with one element per active cell on the
-           * current processor. Elements corresponding to active cells that
-           * are either artificial or ghost cells (in deal.II language, see
-           * the deal.II glossary) will be ignored but must nevertheless exist
-           * in the returned vector. While implementations of this function
-           * must create this vector, ownership is taken over by the caller of
-           * this function and the caller will take care of destroying the
-           * vector pointed to.
+           * cellwise data.
+           * @return A pair of values with the following meaning: - The first
+           * element provides the name by which this data should be written to
+           * the output file. - The second element is a pointer to a vector
+           * with one element per active cell on the current processor.
+           * Elements corresponding to active cells that are either artificial
+           * or ghost cells (in deal.II language, see the deal.II glossary)
+           * will be ignored but must nevertheless exist in the returned
+           * vector. While implementations of this function must create this
+           * vector, ownership is taken over by the caller of this function
+           * and the caller will take care of destroying the vector pointed
+           * to.
            */
           virtual
           std::pair<std::string, Vector<float> *>
@@ -354,15 +355,14 @@ namespace aspect
         unsigned int group_files;
 
         /**
-         * deal.II offers the possibility to linearly interpolate
-         * output fields of higher order elements to a finer resolution.
-         * This somewhat compensates the fact that most visualization
-         * software only offers linear interpolation between grid points
-         * and therefore the output file is a very coarse representation
-         * of the actual solution field. Activating this option increases
-         * the spatial resolution in each dimension by a factor equal
-         * to the polynomial degree used for the velocity finite element
-         * (usually 2).
+         * deal.II offers the possibility to linearly interpolate output
+         * fields of higher order elements to a finer resolution. This
+         * somewhat compensates the fact that most visualization software only
+         * offers linear interpolation between grid points and therefore the
+         * output file is a very coarse representation of the actual solution
+         * field. Activating this option increases the spatial resolution in
+         * each dimension by a factor equal to the polynomial degree used for
+         * the velocity finite element (usually 2).
          */
         bool interpolate_output;
 

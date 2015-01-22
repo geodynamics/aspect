@@ -142,8 +142,8 @@ namespace aspect
 
         /**
          * Initialization function. This function is called once at the
-         * beginning of the program after parse_parameters is run and after the
-         * SimulatorAccess (if applicable) is initialized.
+         * beginning of the program after parse_parameters is run and after
+         * the SimulatorAccess (if applicable) is initialized.
          */
         virtual
         void
@@ -576,38 +576,38 @@ namespace aspect
            * Change in composition due to chemical reactions at the given
            * positions. The term reaction_terms[i][c] is the change in
            * compositional field c at point i.
-          *
-          * The mental model behind prescribing actual changes in composition
-          * rather than reaction rates is that we
-          * assume that there is always an equilibrium between the
-          * compositional fields (because the time scale of reactions is
-          * normally much shorter than that of convection), so the quantity
-          * returned by this function is an actual change in the amount of
-          * material, which is added to or substracted from
-          * the current value of the compositional field, and NOT a reaction
-          * rate. The idea is, that in dependence of temperature, pressure,
-          * position and the compositional fields themselves an equilibrium can
-          * be calculated, and the difference between the current value and the
-          * equilibrium can be added to the respective compositional field.
-          *
-          * For mass conservation it should ALWAYS be checked that what is
-          * subtracted from one field is added to another field (and the other
-          * way round) and that one never substracts more than the actual
-          * value of a field (so it does not get negative).
-          *
-          * This function has a default implementation that sets the reaction
-          * term to zero (assuming no reactions).
-          *
-          * @note In cases where one has slow chemical reactions (or cases
-          * where compositional fields are used to track quantities different
-          * than actual compositions, for example accumulated strains in
-          * damage models), models are formulated as differential equations
-          * with right hand sides, not as instantaneous equations. In such
-          * cases, the reaction terms (i.e., the incremental additions to
-          * the previous state) are usually of the form reaction rate times
-          * time step size. To implement something like this, derive your
-          * material model from SimulatorAccess so you can query the time step
-          * used by the simulator in order to compute the reaction increment.
+           *
+           * The mental model behind prescribing actual changes in composition
+           * rather than reaction rates is that we assume that there is always
+           * an equilibrium between the compositional fields (because the time
+           * scale of reactions is normally much shorter than that of
+           * convection), so the quantity returned by this function is an
+           * actual change in the amount of material, which is added to or
+           * substracted from the current value of the compositional field,
+           * and NOT a reaction rate. The idea is, that in dependence of
+           * temperature, pressure, position and the compositional fields
+           * themselves an equilibrium can be calculated, and the difference
+           * between the current value and the equilibrium can be added to the
+           * respective compositional field.
+           *
+           * For mass conservation it should ALWAYS be checked that what is
+           * subtracted from one field is added to another field (and the
+           * other way round) and that one never substracts more than the
+           * actual value of a field (so it does not get negative).
+           *
+           * This function has a default implementation that sets the reaction
+           * term to zero (assuming no reactions).
+           *
+           * @note In cases where one has slow chemical reactions (or cases
+           * where compositional fields are used to track quantities different
+           * than actual compositions, for example accumulated strains in
+           * damage models), models are formulated as differential equations
+           * with right hand sides, not as instantaneous equations. In such
+           * cases, the reaction terms (i.e., the incremental additions to the
+           * previous state) are usually of the form reaction rate times time
+           * step size. To implement something like this, derive your material
+           * model from SimulatorAccess so you can query the time step used by
+           * the simulator in order to compute the reaction increment.
            */
           std::vector<std::vector<double> > reaction_terms;
         };
@@ -764,32 +764,32 @@ namespace aspect
          * assumed that there is always an equilibrium between the
          * compositional fields (because the time scale of reactions is
          * normally much shorter than that of convection), so the quantity
-        * returned by this function is an actual change in the amount of
-        * material, which is added to or substracted from
-         * the current value of the compositional field, and NOT a reaction
-         * rate. The idea is, that in dependence of temperature, pressure,
-         * position and the compositional fields themselves an equilibrium can
-         * be calculated, and the difference between the current value and the
-         * equilibrium can be added to the respective compositional field.
+         * returned by this function is an actual change in the amount of
+         * material, which is added to or substracted from the current value
+         * of the compositional field, and NOT a reaction rate. The idea is,
+         * that in dependence of temperature, pressure, position and the
+         * compositional fields themselves an equilibrium can be calculated,
+         * and the difference between the current value and the equilibrium
+         * can be added to the respective compositional field.
          *
          * For mass conservation it should ALWAYS be checked that what is
          * subtracted from one field is added to another field (and the other
-         * way round) and that one never substracts more than the actual
-         * value of a field (so it does not get negative).
+         * way round) and that one never substracts more than the actual value
+         * of a field (so it does not get negative).
          *
          * This function has a default implementation that sets the reaction
          * term to zero (assuming no reactions).
-        *
-        * @note In cases where one has slow chemical reactions (or cases
-        * where compositional fields are used to track quantities different
-        * than actual compositions, for example accumulated strains in
-        * damage models), models are formulated as differential equations
-        * with right hand sides, not as instantaneous equations. In such
-        * cases, the reaction terms (i.e., the incremental additions to
-        * the previous state) are usually of the form reaction rate times
-        * time step size. To implement something like this, derive your
-        * material model from SimulatorAccess so you can query the time step
-        * used by the simulator in order to compute the reaction increment.
+         *
+         * @note In cases where one has slow chemical reactions (or cases
+         * where compositional fields are used to track quantities different
+         * than actual compositions, for example accumulated strains in damage
+         * models), models are formulated as differential equations with right
+         * hand sides, not as instantaneous equations. In such cases, the
+         * reaction terms (i.e., the incremental additions to the previous
+         * state) are usually of the form reaction rate times time step size.
+         * To implement something like this, derive your material model from
+         * SimulatorAccess so you can query the time step used by the
+         * simulator in order to compute the reaction increment.
          */
         virtual double reaction_term (const double      temperature,
                                       const double      pressure,

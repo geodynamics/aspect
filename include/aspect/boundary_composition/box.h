@@ -77,9 +77,8 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * This function performs some basic
-         * sanity checks on the parameter values previously read from the
-         * input file.
+         * This function performs some basic sanity checks on the parameter
+         * values previously read from the input file.
          */
         virtual void initialize ();
 
