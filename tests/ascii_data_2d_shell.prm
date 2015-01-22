@@ -53,8 +53,6 @@ subsection Boundary velocity model
     set Data file name       = shell_2d_%s.0.csv
     
     set Data directory = $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/ascii-data/test/
-    set Number of x grid points = 3
-    set Number of y grid points = 3
     set Scale factor = 1
   end
 end

@@ -1,7 +1,7 @@
 
 
    Set up Ascii Data boundary module.
-   The grid extents to: 1.571
+   The grid extends to: 1.571
 
    Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_inner.0.csv.
 
@@ -14,7 +14,7 @@
 
 
    Set up Ascii Data boundary module.
-   The grid extents to: 1.571
+   The grid extends to: 1.571
 
    Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_outer.0.csv.
 
@@ -27,7 +27,7 @@
 
 
    Set up Ascii Data boundary module.
-   The grid extents to: 2855000.000
+   The grid extends to: 2855000.000
 
    Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_left.0.csv.
 
@@ -40,7 +40,7 @@
 
 
    Set up Ascii Data boundary module.
-   The grid extents to: 2855000.000
+   The grid extends to: 2855000.000
 
    Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_right.0.csv.
 

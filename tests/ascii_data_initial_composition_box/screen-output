@@ -1,7 +1,7 @@
 
 
    Set up Ascii Data boundary module.
-   The grid extents to: 660000.000 660000.000
+   The grid extends to: 660000.000 660000.000
 
    Loading Ascii data initial file ASPECT_DIR/data/compositional-initial-conditions/ascii-data/test/box_2d.csv.
 

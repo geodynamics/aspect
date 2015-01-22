@@ -1,7 +1,7 @@
 
 
    Set up Ascii Data boundary module.
-   The grid extents to: 3300000.000
+   The grid extends to: 3300000.000
 
    Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_2d_top.2.csv.
 

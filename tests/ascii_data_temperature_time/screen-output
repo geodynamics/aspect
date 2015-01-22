@@ -1,7 +1,7 @@
 
 
    Set up Ascii Data boundary module.
-   The grid extents to: 660000.000
+   The grid extends to: 660000.000
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-temperature/ascii-data/test/box_2d_left.0.csv.
 

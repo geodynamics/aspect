@@ -1,7 +1,7 @@
 
 
    Set up Ascii Data boundary module.
-   The grid extents to: 3300000.000 660000.000
+   The grid extends to: 3300000.000 660000.000
 
    Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_3d_left.0.csv.
 
@@ -14,7 +14,7 @@
 
 
    Set up Ascii Data boundary module.
-   The grid extents to: 3300000.000 660000.000
+   The grid extends to: 3300000.000 660000.000
 
    Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_3d_right.0.csv.
 
@@ -27,7 +27,7 @@
 
 
    Set up Ascii Data boundary module.
-   The grid extents to: 3300000.000 660000.000
+   The grid extends to: 3300000.000 660000.000
 
    Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_3d_front.0.csv.
 
@@ -40,7 +40,7 @@
 
 
    Set up Ascii Data boundary module.
-   The grid extents to: 3300000.000 660000.000
+   The grid extends to: 3300000.000 660000.000
 
    Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_3d_back.0.csv.
 
@@ -53,7 +53,7 @@
 
 
    Set up Ascii Data boundary module.
-   The grid extents to: 3300000.000 3300000.000
+   The grid extends to: 3300000.000 3300000.000
 
    Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_3d_bottom.0.csv.
 
@@ -66,7 +66,7 @@
 
 
    Set up Ascii Data boundary module.
-   The grid extents to: 3300000.000 3300000.000
+   The grid extends to: 3300000.000 3300000.000
 
    Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_3d_top.0.csv.
 
