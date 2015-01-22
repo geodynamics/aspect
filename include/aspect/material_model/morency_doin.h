@@ -171,7 +171,7 @@ namespace aspect
         double activation_volume;
         double ref_strain_rate;
         double B; //Preexponential constant in the viscous rheology law B
-        double tao_0; //cohesive strength of rocks at the surface
+        double tau_0; //cohesive strength of rocks at the surface
         double reference_T;
         double min_strain_rate;
 

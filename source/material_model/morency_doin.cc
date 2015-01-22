@@ -88,10 +88,10 @@ namespace aspect
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
             np += volume_fractions[j] * nps[j];
 
-          const double taoy = tao_0 + gamma*reference_density()*g*z;
+          const double tauy = tau_0 + gamma*reference_density()*g*z;
           const double e2inv = std::sqrt(std::pow(second_invariant(strain_rate),2) + std::pow(min_strain_rate,2));
           const double veffv = B * std::pow(e2inv/ref_strain_rate, -1.0+1.0/nv) * std::exp((activation_energy+activation_volume*reference_density()*g*z)/(nv*R*temperature));
-          const double veffp = taoy * (std::pow(e2inv, -1.0+1.0/np) / std::pow(ref_strain_rate, 1.0/np));
+          const double veffp = tauy * (std::pow(e2inv, -1.0+1.0/np) / std::pow(ref_strain_rate, 1.0/np));
           // Effective viscosity = harmonic mean of diffusion and dislocation creep. Range is limited to 1e17-1e28 for stability.
           const double veff = std::min(std::max(veff_coefficient * std::pow((1.0/veffp + 1.0/veffv), -1.0), min_visc), max_visc);
           out.viscosities[i] = veff;
@@ -257,7 +257,7 @@ namespace aspect
           prm.declare_entry ("Reference strain rate", "6.4e-16", Patterns::Double(0), "($\\dot{\\varepsilon}_{ref}$). Units: $1 / s$");
           prm.declare_entry ("Preexponential constant for viscous rheology law", "1.24e14", Patterns::Double(0), "($B$). Units: None");
           prm.declare_entry ("Coefficient of yield stress increase with depth", "0.25", Patterns::Double(0), "($\\gamma$). Units: None");
-          prm.declare_entry ("Cohesive strength of rocks at the surface", "117", Patterns::Double(0), "($\\tao_0$). Units: $Pa$");
+          prm.declare_entry ("Cohesive strength of rocks at the surface", "117", Patterns::Double(0), "($\\tau_0$). Units: $Pa$");
           prm.declare_entry ("Reference temperature", "293", Patterns::Double(0), "For calculating density by thermal expansivity. Units: $K$");
           prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::Double(0), "Stabilizes strain dependent viscosity. Units: $1 / s$");
 
@@ -308,7 +308,7 @@ namespace aspect
           activation_volume = prm.get_double("Activation volume");
           ref_strain_rate = prm.get_double("Reference strain rate");
           B = prm.get_double("Preexponential constant for viscous rheology law");
-          tao_0 = prm.get_double ("Cohesive strength of rocks at the surface");
+          tau_0 = prm.get_double ("Cohesive strength of rocks at the surface");
           min_strain_rate = prm.get_double("Minimum strain rate");
           reference_T = prm.get_double("Reference temperature");
 
@@ -385,7 +385,7 @@ namespace aspect
                                    " related to the second invariant of the strain rate tensor, $\\dot{\\varepsilon}_{ref}$ is a"
                                    " reference strain rate, $n_v$ and $n_p$ are stress exponents, $E_a$ is the activation energy,"
                                    " $V_a$ is the activation volume, $\\rho_m$ is the mantle density, $R$ is the gas constant, $T$"
-                                   " is temperature, $\\tao_0$ is the cohestive strength of rocks at the surface, $\\gamma$ is a"
+                                   " is temperature, $\\tau_0$ is the cohestive strength of rocks at the surface, $\\gamma$ is a"
                                    " coefficient of yield stress increase with depth, and $z$ is depth."
                                    " \n\n"
                                    " Morency, C., and M‐P. Doin. \"Numerical simulations of the mantle lithosphere delamination.\""
