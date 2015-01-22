@@ -73,15 +73,32 @@ namespace aspect
                         const double scale_factor,
                         const types::boundary_id boundary_id = numbers::invalid_boundary_id);
 
+        /**
+         * Checks whether a file named filename exists.
+         *
+         * @param filename File to check existence
+         */
         bool fexists(const std::string &filename);
 
+        /**
+         * Outputs the AsciiData module information at model start.
+         */
         void screen_output(const ConditionalOStream &pcout) const;
 
-
+        /**
+         * Loads a data text file. Throws an exception if the file does not exist,
+         * if the data file format is incorrect or if the file grid changes over model runtime.
+         */
         void
         load_file(const std::string &filename);
 
-
+        /**
+         * Returns the computed data (velocity, temperature, etc. - according to the used plugin)
+         * in cartesian coordinates.
+         *
+         * @param position The current position to compute the data (velocity, temperature, etc.)
+         * @param time_weight A weighting between the two current timesteps n and n+1
+         */
         double
         get_data(const Point<dim> &position,
                  const unsigned int component,
@@ -121,19 +138,41 @@ namespace aspect
         unsigned int boundary_dimensions[grid_dim];
 
         /**
-         * Scale the data boundary condition by a scalar factor. Can be
+         * Scales the data boundary condition by a scalar factor. Can be
          * used to transform the unit of the data.
          */
         const double scale_factor;
 
 
+        /**
+         * Gets the extents of the model in the relevant dimensions and returns
+         * the according minimum and maximum value of the boundary in each dimension.
+         * In case of a spherical shell the function returns the values in
+         * spherical coordinates.
+         */
         std_cxx11::array<std::pair<double,double>,dim>
         get_model_extent (const GeometryModel::Interface<dim> &geometry_model) const;
 
+
+        /**
+         * Determines which of the dimensions of the position is used to find
+         * the data point in the data grid. E.g. the left boundary of a box model extents in
+         * the y and z direction (position[1] and position[2]), therefore the function
+         * would return [1,2] for dim==3 or [1] for dim==2. We are lucky that these indices are
+         * identical for the box and the spherical shell (if we use spherical coordinates for the
+         * spherical shell), therefore we do not need to distinguish between them. For the initial
+         * condition this function is trivial, because the position in the data grid is the same as
+         * the actual position (the function returns [0,1,2] or [0,1]), but for the boundary
+         * conditions it matters.
+         */
         std_cxx11::array<unsigned int,grid_dim>
         get_boundary_dimensions (const types::boundary_id boundary_id) const;
 
 
+        /**
+         * Computes the table indices of each entry in the input data file.
+         * The index depends on dim, grid_dim and the number of components.
+         */
         TableIndices<grid_dim>
         compute_table_indices(const unsigned int i) const;
 
