@@ -33,6 +33,183 @@ namespace aspect
   {
     using namespace dealii;
 
+    namespace internal
+    {
+      template <int dim>
+      class AsciiDataBase : public SimulatorAccess<dim>
+      {
+        public:
+          /**
+           * Constructor
+           */
+          AsciiDataBase();
+
+          /**
+           * Declare the parameters all derived classes take from input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters from the parameter file.
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
+
+          /**
+           * Directory in which the data files are present.
+           */
+          std::string data_directory;
+
+          /**
+           * Filename of data file. The file names can contain
+           * the specifiers %s and/or %c (in this order), meaning the name of the
+           * boundary and the number of the data file time step.
+           */
+          std::string data_file_name;
+
+          /**
+           * Scale the data by a scalar factor. Can be
+           * used to transform the unit of the data (if they are not
+           * specified in SI units (m/s or m/yr depending on the
+           * "Use years in output instead of seconds" parameter).
+           */
+          double scale_factor;
+      };
+
+      template <int dim>
+      class AsciiDataBoundary : public AsciiDataBase<dim>
+      {
+        public:
+          /**
+           * Constructor
+           */
+          AsciiDataBoundary();
+
+        protected:
+
+          /**
+           * Initialization function. This function is called once at the
+           * beginning of the program. Checks preconditions.
+           */
+          virtual
+          void
+          initialize (const std::set<types::boundary_id> &boundary_ids,
+                      const unsigned int components);
+
+          /**
+           * A function that is called at the beginning of each time step. For
+           * the current plugin, this function loads the next data files if
+           * necessary and outputs a warning if the end of the set of data
+           * files is reached.
+           */
+          virtual
+          void
+          update();
+
+          double
+          get_data_component (const types::boundary_id             boundary_indicator,
+                              const Point<dim>                    &position,
+                              const unsigned int                   component) const;
+
+          /**
+           * A variable that stores the currently used data file of a
+           * series. It gets updated if necessary by update_data().
+           */
+          int  current_file_number;
+
+          /**
+           * Time from which on the data file with number 'First data
+           * file number' is used as boundary condition. Previous to this
+           * time, 0 is returned for every field. Depending on the setting
+           * of the global 'Use years in output instead of seconds' flag
+           * in the input file, this number is either interpreted as seconds or as years."
+           */
+          double first_data_file_model_time;
+
+          /**
+           * Number of the first data file to be loaded when the model time
+           * is larger than 'First data file model time'.
+           */
+          int first_data_file_number;
+
+          /**
+           * In some cases the boundary files are not numbered in increasing
+           * but in decreasing order (e.g. 'Ma BP'). If this flag is set to
+           * 'True' the plugin will first load the file with the number
+           * 'First data file number' and decrease the file number during
+           * the model run.
+           */
+          bool decreasing_file_order;
+
+          /**
+           * Time in model units (depends on other model inputs) between two
+           * data files.
+           */
+          double data_file_time_step;
+
+          /**
+           * Weight between data file n and n+1 while the current time is
+           * between the two values t(n) and t(n+1).
+           */
+          double time_weight;
+
+          /**
+           * State whether we have time_dependent boundary conditions. Switched
+           * off after finding no more data files to suppress attempts to
+           * read in new files.
+           */
+          bool time_dependent;
+
+          /**
+           * Map between the boundary id and an object that reads and processes
+           * data we get from text files.
+           */
+          std::map<types::boundary_id,
+                    std_cxx11::shared_ptr<::aspect::Utilities::AsciiDataLookup<dim,dim-1> > > lookups;
+
+          /**
+           * Handles the update of the data in lookup.
+           */
+          void
+          update_data (const types::boundary_id boundary_id);
+
+          /**
+           * Handles settings and user notification in case the time-dependent
+           * part of the boundary condition is over.
+           */
+          void
+          end_time_dependence (const int timestep,
+                               const types::boundary_id boundary_id);
+
+          /**
+           * Create a filename out of the name template.
+           */
+          std::string
+          create_filename (const int timestep,
+                           const types::boundary_id boundary_id) const;
+
+
+          /**
+           * Declare the parameters all derived classes take from input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters from the parameter file.
+           */
+          void
+          parse_parameters (ParameterHandler &prm);
+
+
+      };
+    }
+
+
     /**
      * A class that implements prescribed velocity boundary conditions
      * determined from a AsciiData input file.
@@ -40,7 +217,7 @@ namespace aspect
      * @ingroup VelocityBoundaryConditionsModels
      */
     template <int dim>
-    class AsciiData : public Interface<dim>, public SimulatorAccess<dim>
+    class AsciiData : public internal::AsciiDataBoundary<dim>, public Interface<dim>
     {
       public:
         /**
@@ -87,106 +264,9 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
+
       private:
-        /**
-         * A variable that stores the currently used data file of a
-         * series. It gets updated if necessary by set_current_time.
-         */
-        int  current_file_number;
-
-        /**
-         * Time from which on the data file with number 'First data
-         * file number' is used as boundary condition. Previous to this
-         * time, a no-slip boundary condition is assumed. Depending on the setting
-         * of the global 'Use years in output instead of seconds' flag
-         * in the input file, this number is either interpreted as seconds or as years."
-         */
-        double first_data_file_model_time;
-
-        /**
-         * Number of the first data file to be loaded when the model time
-         * is larger than 'First data file model time'.
-         */
-        int first_data_file_number;
-
-        /**
-         * In some cases the boundary files are not numbered in increasing
-         * but in decreasing order (e.g. 'Ma BP'). If this flag is set to
-         * 'True' the plugin will first load the file with the number
-         * 'First data file number' and decrease the file number during
-         * the model run.
-         */
-        bool decreasing_file_order;
-
-        /**
-         * Directory in which the data files are present.
-         */
-        std::string data_directory;
-
-        /**
-         * Filename of data file. The file names can contain
-         * the specifiers %s and/or %c (in this order), meaning the name of the
-         * boundary and the number of the data file time step.
-         */
-        std::string data_file_name;
-
-        /**
-         * Boundary id for which this plugin is created. Is initialized in
-         * initialize() and used to determine the appropriate file name.
-         */
-        types::boundary_id boundary_id;
-
-        /**
-         * Time in model units (depends on other model inputs) between two
-         * data files.
-         */
-        double data_file_time_step;
-
-        /**
-         * Weight between data file n and n+1 while the current time is
-         * between the two values t(n) and t(n+1).
-         */
-        double time_weight;
-
-        /**
-         * State whether we have time_dependent boundary conditions. Switched
-         * off after finding no more data files to suppress attempts to
-         * read in new files.
-         */
-        bool time_dependent;
-
-        /**
-         * Scale the boundary condition by a scalar factor. Can be
-         * used to transform the unit of the velocities (if they are not
-         * specified in the default unit (m/s or m/yr depending on the
-         * "Use years in output instead of seconds" parameter).
-         */
-        double scale_factor;
-
-        /**
-         * Pointer to an object that reads and processes data we get from
-         * text files.
-         */
-        std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim,dim-1> > lookup;
-
-        /**
-         * Handles the update of the data in lookup.
-         */
-        void
-        update_data ();
-
-        /**
-         * Handles settings and user notification in case the time-dependent
-         * part of the boundary condition is over.
-         */
-        void
-        end_time_dependence (const int timestep);
-
-        /**
-         * Create a filename out of the name template.
-         */
-        std::string
-        create_filename (const int timestep) const;
+        std::set<types::boundary_id> boundary_ids;
     };
   }
 }
