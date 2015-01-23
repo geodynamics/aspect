@@ -22,7 +22,6 @@
 #include <aspect/global.h>
 #include <aspect/velocity_boundary_conditions/ascii_data.h>
 
-
 #include <deal.II/base/parameter_handler.h>
 
 

@@ -21,11 +21,8 @@ end
 subsection Initial conditions
   set Model name = ascii data
   subsection Ascii data model
+    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-conditions/ascii-data/test/
     set Data file name       = shell_3d.csv
-    
-    set Number of x grid points = 3
-    set Number of y grid points = 3
-    set Number of z grid points = 3
   end
 end
 

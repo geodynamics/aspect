@@ -40,7 +40,7 @@ namespace aspect
      * @ingroup CompositionalInitialConditionsModels
      */
     template <int dim>
-    class AsciiData : public Interface<dim>, public SimulatorAccess<dim>
+    class AsciiData : public Interface<dim>, public Utilities::AsciiDataBase<dim>
     {
       public:
         /**
@@ -78,25 +78,6 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
-        /**
-         * Directory in which the data files are present.
-         */
-        std::string data_directory;
-
-        /**
-         * Filename of data file.
-         */
-        std::string data_file_name;
-
-        /**
-         * Number of grid points in data file
-         */
-        std_cxx11::array<unsigned int,3> data_points;
-
-        /**
-         * Scale the data by a scalar factor.
-         */
-        double scale_factor;
 
         /**
          * Pointer to an object that reads and processes data we get from

@@ -23,6 +23,7 @@
 #define __aspect__boundary_temperature_ascii_data_h
 
 #include <aspect/boundary_temperature/interface.h>
+#include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
 
