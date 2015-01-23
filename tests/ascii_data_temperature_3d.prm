@@ -30,10 +30,6 @@ subsection Boundary temperature model
 
   subsection Ascii data model
     set Data file name       = box_3d_%s.0.csv
-
-    set Number of x grid points = 3
-    set Number of y grid points = 3
-    set Number of z grid points = 3
   end
 end
 

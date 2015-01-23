@@ -23,7 +23,6 @@
 #define __aspect__boundary_temperature_ascii_data_h
 
 #include <aspect/boundary_temperature/interface.h>
-#include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
 
@@ -40,7 +39,7 @@ namespace aspect
      * @ingroup BoundaryTemperatures
      */
     template <int dim>
-    class AsciiData : public Interface<dim>, public SimulatorAccess<dim>
+    class AsciiData : public Utilities::AsciiDataBoundary<dim>, public Interface<dim>
     {
       public:
         /**
@@ -108,109 +107,6 @@ namespace aspect
          */
         void
         parse_parameters (ParameterHandler &prm);
-
-      private:
-        /**
-         * A variable that stores the currently used data file of a
-         * series. It gets updated if necessary by update_data().
-         */
-        int  current_file_number;
-
-        /**
-         * Time from which on the data file with number 'First data
-         * file number' is used as boundary condition. Previous to this
-         * time, a temperature of 0 is returned. Depending on the setting
-         * of the global 'Use years in output instead of seconds' flag
-         * in the input file, this number is either interpreted as seconds or as years."
-         */
-        double first_data_file_model_time;
-
-        /**
-         * Number of the first data file to be loaded when the model time
-         * is larger than 'First data file model time'.
-         */
-        int first_data_file_number;
-
-        /**
-         * In some cases the boundary files are not numbered in increasing
-         * but in decreasing order (e.g. 'Ma BP'). If this flag is set to
-         * 'True' the plugin will first load the file with the number
-         * 'First data file number' and decrease the file number during
-         * the model run.
-         */
-        bool decreasing_file_order;
-
-        /**
-         * Directory in which the data files are present.
-         */
-        std::string data_directory;
-
-        /**
-         * Filename of data file. The file names can contain
-         * the specifiers %s and/or %c (in this order), meaning the name of the
-         * boundary as provided by the geometry model and the number of the
-         * data file time step.
-         */
-        std::string data_file_name;
-
-        /**
-         * Time in model units (depends on other model inputs) between two
-         * data files.
-         */
-        double data_file_time_step;
-
-        /**
-         * Number of grid points in data file. To set this parameter in the
-         * parameter file is optional, if a header is provided in the first
-         * file.
-         */
-        std_cxx11::array<unsigned int,3> data_points;
-
-        /**
-         * Weight between data file n and n+1 while the current time is
-         * between the two values t(n) and t(n+1).
-         */
-        double time_weight;
-
-        /**
-         * State whether we have time_dependent boundary conditions. Switched
-         * off after finding no more data files to suppress attempts to
-         * read in new files.
-         */
-        bool time_dependent;
-
-        /**
-         * Scale the data boundary condition by a scalar factor.
-         */
-        double scale_factor;
-
-        /**
-         * Map between the boundary id and an object that reads and processes
-         * data we get from text files.
-         */
-        std::map<types::boundary_id,
-                  std_cxx11::shared_ptr<::aspect::Utilities::AsciiDataLookup<dim,dim-1> > > lookups;
-
-        /**
-         * Handles the update of the data in lookup.
-         */
-        void
-        update_data (const types::boundary_id boundary_id);
-
-        /**
-         * Handles settings and user notification in case the time-dependent
-         * part of the boundary condition is over.
-         */
-        void
-        end_time_dependence (const int timestep,
-                             const types::boundary_id boundary_id);
-
-        /**
-         * Create a filename out of the name template.
-         */
-        std::string
-        create_filename (const int timestep,
-                         const types::boundary_id boundary_id) const;
     };
   }
 }
