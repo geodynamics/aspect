@@ -59,6 +59,31 @@
        dealii@googlegroups.com
 
 
+Announcement for 1.2 (January 23rd, 2015)
+---------------------
+We are pleased to announce the release of ASPECT 1.2. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible and extensible mantle convection solver. ASPECT is
+available from
+
+                   http://aspect.dealii.org/
+
+This release includes the following changes:
+- manifolds to have truly concentric shells without distorted cells
+- linear solver improvements which give up to 2x speedup
+- boundary names like "top" instead of numbers are now supported in input files
+- new example: free surface computation with a crust as a stagnant lid
+- new: benchmarks proposed by Davies et al. and Burstedde et al.
+- new initial condition: S40RTS perturbation based on shear wave data
+- fixes to minimum/maximum refinement plugins
+- better error messages when linear solvers fail
+- various other fixes (direct solver, file output, checkpointing, etc.)
+
+Wolfgang Bangerth, Timo Heister, and many other contributors.
+
+
+
 Announcement for 1.1 (June 1st, 2014)
 ---------------------
 We are pleased to announce the release of ASPECT 1.1. ASPECT is the Advanced
