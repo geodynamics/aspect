@@ -4,20 +4,21 @@
     are up to date in the manual
   . check that readme.html is okay and the links to the mailinglists are working (also in manual.pdf)
   . setup:
-      export OLDVER=1.0;export VER=1.1;export NEXTVER=1.2.pre
+      export OLDVER=1.1;export VER=1.2;export NEXTVER=1.3.pre
+      export DEALSRCDIR=...
   . fix doxygen errors:
-      find include -name "*h" -print | xargs -n 1 deal-trunk/tests/scripts/checkdoxygen.py
+      find include -name "*h" -print | xargs -n 1 $DEALSRCDIR/tests/scripts/checkdoxygen.py
     and commit.
   . fix formatting, apply astyle, copyright years:
-      find . -name "*.h" -print | while read file;do deal.II/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
+      find . -name "*.h" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
       astyle --options=doc/astyle.rc `find include source | egrep '\.(h|cc)$'`
-      find . -name "*.h" -o -name "*.cc" -print | while read file;do sed -i 's/^.*Copyright.*/  Copyright (C) 2011 - 2014 by the authors of the ASPECT code./' $file; done
+      find . -name "*.h" -o -name "*.cc" -print | while read file;do sed -i '0,/^.*Copyright.*/{s/^.*Copyright.*/  Copyright (C) 2011 - 2015 by the authors of the ASPECT code./}' $file; done
       git status # check!
-      git commit -a -m "doxygen formatting, astyle, comment wrapping"
+      git commit -a -m "doxygen formatting, astyle, comment wrapping" # or rather create a pull-request
   . update changes.h in doc/modules:
       cd doc/modules; ./increment_version.sh $OLDVER $VER;cd ../..
       cd doc;./bump_version.sh $NEXTVER; cd ..
-      git commit -m "release task: update version and changes.h"
+      git commit -m "release task: update version and changes.h" # or rather create a pull-request
   . create a branch:
       git checkout master
       git checkout -b aspect-$VER
@@ -34,8 +35,8 @@
       include/aspect/postprocess/table_velocity_statistics.h \
       include/aspect/postprocess/table_heat_flux_statistics.h
       git commit -m "release task: remove table model"
-  . compile aspect
-  . update doc/manual/parameters.tex and documentation
+  . compile aspect, make sure you have a symlink in the main directory for the next step
+  . update doc/manual/parameters.tex and documentation:
       cd doc;./update_parameters.sh; make manual.pdf; cd ..
       git add doc/manual/parameters.tex doc/manual.pdf
       git commit -m "release task: update manual"
@@ -48,7 +49,7 @@
   . make public (branch and tag):
       git push cig aspect-$VER
       git push cig v$VER
-  . upload tar file
+  . create a release on github
   . link it on download.html, update version info etc.
   . ask Eric to update http://geodynamics.org/cig/software/aspect/
   . announce on
@@ -57,6 +58,31 @@
        cig-mc@geodynamics.org
        cig-cs@geodynamics.org
        dealii@googlegroups.com
+
+
+Announcement for 1.2 (January 23rd, 2015)
+---------------------
+We are pleased to announce the release of ASPECT 1.2. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible and extensible mantle convection solver. ASPECT is
+available from
+
+                   http://aspect.dealii.org/
+
+This release includes the following changes:
+- manifolds to have truly concentric shells without distorted cells
+- linear solver improvements which give up to 2x speedup
+- boundary names like "top" instead of numbers are now supported in input files
+- new example: free surface computation with a crust as a stagnant lid
+- new: benchmarks proposed by Davies et al. and Burstedde et al.
+- new initial condition: S40RTS perturbation based on shear wave data
+- fixes to minimum/maximum refinement plugins
+- better error messages when linear solvers fail
+- various other fixes (direct solver, file output, checkpointing, etc.)
+
+Wolfgang Bangerth, Timo Heister, and many other contributors.
+
 
 
 Announcement for 1.1 (June 1st, 2014)
