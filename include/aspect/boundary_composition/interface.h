@@ -92,6 +92,8 @@ namespace aspect
          * composition.
          * @param compositional_field The number of the compositional field
          * for which we are requesting the composition.
+         * @param compositional_field The index of the compositional field
+         * between 0 and @p parameters.n_compositional_fields.
          */
         virtual
         double composition (const GeometryModel::Interface<dim> &geometry_model,

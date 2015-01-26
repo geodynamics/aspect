@@ -56,9 +56,9 @@ namespace aspect
        * Constructor.
        * @param split_vel_pressure Set to true if velocity and pressure should
        * be in separate blocks.
-       * @param composition_names The names of compositional fields that will
-       * be used in this simulation. This is used in initializing the fields
-       * of this class.
+       * @param names_of_compositional_fields The names of compositional
+       * fields that will be used in this simulation. This is used in
+       * initializing the fields of this class.
        */
       Introspection (const bool split_vel_pressure,
                      const std::vector<std::string> &names_of_compositional_fields);
