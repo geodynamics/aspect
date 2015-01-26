@@ -1,0 +1,8 @@
+.gitattributes export-ignore
+.gitignore export-ignore
+doc/bump_version.sh export-ignore
+doc/filter export-ignore
+doc/release-tasklist export-ignore
+doc/manual/ export-ignore
+doc/release-tasklist export-ignore
+doc/update_parameters.sh export-ignore
