@@ -161,6 +161,28 @@ namespace aspect
           }
       };
 
+      template <int dim>
+      class RefFunctionFluid : public Function<dim>
+      {
+        public:
+          RefFunctionFluid () : Function<dim>(dim+2) {}
+          virtual void vector_value (const Point< dim >   &p,
+                                     Vector< double >   &values) const
+          {
+            double x = p(0);
+            double y = p(1);
+            double porosity = 1.0 - 0.3 * std::exp(y);
+            double K_D = 2.2 + 2.0 * 0.075/0.135 + (1.0 - 5.0/6.0) * 0.075 * 0.3 * 1.2 / 0.135 * std::exp(y);
+
+            values[0]=0.1 * std::exp(y);       //x melt vel
+            values[1]=-0.075 * std::exp(y) + 0.135 * std::exp(y) * K_D / porosity;    //y melt vel
+            values[2]=0;  // p_s
+            values[3]=0.75 * (std::exp(-y) + 2.0/3.0 * std::exp(2.0*x) + 1.0) * 0.1 * std::exp(y);  // p_c
+            values[4]=0; // T
+            values[5]=porosity;
+          }
+      };
+
 
     /**
       * A postprocessor that evaluates the accuracy of the solution
@@ -199,15 +221,135 @@ namespace aspect
                   ExcNotImplemented());
 
       RefFunction<dim> ref_func;
+      RefFunctionFluid<dim> ref_func_fluid;
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
+
+      // we need the compaction pressure and the melt velocity, but we only have
+      // the solid and the fluid pressure stored in the solution vector.
+      // Hence, we create a new vector only with the compaction pressure.
+      LinearAlgebra::BlockVector compaction_pressure(this->get_solution());
+      LinearAlgebra::BlockVector melt_velocity(this->get_solution());
+
+      const unsigned int por_idx = this->introspection().compositional_index_for_name("porosity");
+      const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.velocities).get_unit_support_points());
+      std::vector<double> porosity_values(quadrature.size());
+      std::vector<Tensor<1,dim> > pressure_gradients(quadrature.size());
+      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature.size()));
+
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_fe(),
+                               quadrature,
+                               update_quadrature_points | update_values | update_gradients);
+
+      typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(fe_values.n_quadrature_points, this->n_compositional_fields());
+      typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());
+
+      std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+      for (; cell != endc; ++cell)
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit(cell);
+            cell->get_dof_indices (local_dof_indices);
+
+            fe_values[this->introspection().extractors.compositional_fields[por_idx]].get_function_values (
+            		this->get_solution(), porosity_values);
+            fe_values[this->introspection().extractors.compaction_pressure].get_function_gradients (
+            		this->get_solution(), pressure_gradients);
+
+            // get the various components of the solution, then
+            // evaluate the material properties there
+            fe_values[this->introspection().extractors.temperature]
+            .get_function_values (this->get_solution(), in.temperature);
+            fe_values[this->introspection().extractors.pressure]
+            .get_function_values (this->get_solution(), in.pressure);
+            fe_values[this->introspection().extractors.velocities]
+            .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
+
+            in.position = fe_values.get_quadrature_points();
+
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              fe_values[this->introspection().extractors.compositional_fields[c]]
+              .get_function_values(this->get_solution(),
+                                   composition_values[c]);
+            for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
+              {
+                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                  in.composition[i][c] = composition_values[c][i];
+              }
+
+            const typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
+            AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
+            melt_mat->evaluate_with_melt(in, out);
+
+            for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.pressure).dofs_per_cell; ++j)
+              {
+                unsigned int pressure_idx
+                = this->get_fe().component_to_system_index(this->introspection().component_indices.pressure,
+                    /*dof index within component=*/ j);
+
+                // skip entries that are not locally owned:
+                if (!this->get_dof_handler().locally_owned_dofs().is_element(pressure_idx))
+                  continue;
+
+                unsigned int p_f_idx
+                = this->get_fe().component_to_system_index(this->introspection().component_indices.compaction_pressure,
+                    /*dof index within component=*/ j);
+
+                double p_s = this->get_solution()(local_dof_indices[pressure_idx]);
+                double p_f = this->get_solution()(local_dof_indices[p_f_idx]);
+
+                double phi = porosity_values[j];
+                double p_c;
+                p_c = (1.0-phi) * (p_s - p_f);
+
+                compaction_pressure(local_dof_indices[p_f_idx]) = p_c;
+              }
+
+            unsigned int end = this->get_fe().base_element(this->introspection().base_elements.velocities).dofs_per_cell;
+            for (unsigned int j=0; j<end; ++j)
+              {
+                unsigned int velocity_idx[dim];
+                for (unsigned int d=0; d<dim; ++d)
+                  velocity_idx[d] = this->get_fe().component_to_system_index(this->introspection().component_indices.velocities[d],
+                     j);
+
+                Tensor<1,dim> u_f;
+                for (unsigned int d=0; d<dim; ++d)
+                  u_f[d] = this->get_solution()(local_dof_indices[velocity_idx[d]]);
+
+                double phi = porosity_values[j];
+
+                if (phi > 1e-7)
+                  {
+                    double K_D = out.permeabilities[j] / out.fluid_viscosities[j];
+                    Tensor<1,dim> grad_p_f = pressure_gradients[j];
+                    const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(in.position[j]);
+
+                    // v_f =  v_s - K_D (nabla p_f - rho_f g) / phi
+                    Tensor<1,dim> correction = - K_D * (grad_p_f - out.fluid_densities[j] * gravity) / phi;
+                    u_f += correction;
+//                    std::cout << K_D << " " << grad_p_f << " " << out.fluid_densities[j] << " " << gravity << std::endl;
+//                    std::cout << j << " "<< in.position[j](1) << " " << u_f << std::endl;
+//                    std::cout << j << " " << out.permeabilities[j] << " " << out.fluid_viscosities[j] << std::endl;
+                  }
+
+                for (unsigned int d=0; d<dim; ++d)
+                  melt_velocity(local_dof_indices[velocity_idx[d]]) = u_f[d];
+              }
+          }
 
       Vector<float> cellwise_errors_porosity (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
+      Vector<float> cellwise_errors_p_c (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
+      Vector<float> cellwise_errors_u_f (this->get_triangulation().n_active_cells());
 
       ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
                                           dim+4);
-      ComponentSelectFunction<dim> comp_pf(dim+1, dim+4);
+      ComponentSelectFunction<dim> comp_p(dim+1, dim+4);
       ComponentSelectFunction<dim> comp_porosity(dim+3, dim+4);
 
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
@@ -223,7 +365,14 @@ namespace aspect
                                          cellwise_errors_p,
                                          quadrature_formula,
                                          VectorTools::L2_norm,
-                                         &comp_pf);
+                                         &comp_p);
+      VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+    		                             compaction_pressure,
+                                         ref_func_fluid,
+                                         cellwise_errors_p_c,
+                                         quadrature_formula,
+                                         VectorTools::L2_norm,
+                                         &comp_p);
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                          this->get_solution(),
                                          ref_func,
@@ -231,12 +380,22 @@ namespace aspect
                                          quadrature_formula,
                                          VectorTools::L2_norm,
                                          &comp_porosity);
+      VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+                                         melt_velocity,
+                                         ref_func_fluid,
+                                         cellwise_errors_u_f,
+                                         quadrature_formula,
+                                         VectorTools::L2_norm,
+                                         &comp_u);
+
       std::ostringstream os;
       os << std::scientific << cellwise_errors_u.l2_norm()
          << ", " << cellwise_errors_p.l2_norm()
-         << ", " << cellwise_errors_porosity.l2_norm();
+         << ", " << cellwise_errors_p_c.l2_norm()
+         << ", " << cellwise_errors_porosity.l2_norm()
+         << ", " << cellwise_errors_u_f.l2_norm();
 
-      return std::make_pair("Errors u_L2, p_fL2, porosity_L2:", os.str());
+      return std::make_pair("Errors u_L2, p_fL2, p_cL2, porosity_L2, u_fL2:", os.str());
     }
 
   
