@@ -1,5 +1,6 @@
 #include <aspect/material_model/melt_interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/fluid_pressure_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
@@ -238,6 +239,40 @@ namespace aspect
       return std::make_pair("Errors u_L2, p_fL2, porosity_L2:", os.str());
     }
 
+  
+  template <int dim>
+  class PressureBdry:
+      
+      public FluidPressureBoundaryConditions::Interface<dim>
+  {
+    public:
+      virtual
+      void fluid_pressure (
+	const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
+	const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
+	std::vector<double> & output
+      ) const
+	{
+	  for (unsigned int q=0; q<output.size(); ++q)
+	    {
+	      const double rho_s_0 = 1.2;
+	      const double rho_f_0 = 1.0;
+	      const double xi_0 = 1.0;
+	      const double xi_1 = 1.0;
+	      const double A = 0.1;
+	      const double B = -3.0/4.0 * A;
+	      const double C = 1.0;
+	      const double D = 0.3;
+	      const double E = - 3.0/4.0 * xi_0 * A + C * D *(rho_f_0 - rho_s_0);
+	      const double y = material_model_inputs.position[q][1];
+	      output[q] = (E * std::exp(y) - rho_f_0 * C) * std::exp(-y)/ (-C );
+	    }	  
+	}
+      
+
+      
+  };
+
 }
 
 // explicit instantiations
@@ -254,4 +289,9 @@ namespace aspect
                                   "A postprocessor that compares the numerical solution to the analytical "
                                   "solution derived for compressible melt transport in a 2D box described in "
                                   "the manuscript and reports the error.")
+
+    ASPECT_REGISTER_FLUID_PRESSURE_BOUNDARY_CONDITIONS(PressureBdry,
+						       "PressureBdry",
+						       "")
+						       
 }

@@ -33,6 +33,9 @@ subsection Compositional fields
   set Names of fields = porosity
 end
 
+subsection Fluid Pressure Boundary Condition
+ set Plugin name = PressureBdry
+end
 
 subsection Boundary temperature model
   set Model name = initial temperature
