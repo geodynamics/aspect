@@ -1050,15 +1050,16 @@ the various coefficients as discussed in Section~\ref{sec:coefficients}.
 That said, over time compositional fields have shown to be a much more useful
 tool than originally intended. For example, they can be used to track where
 material comes from and goes to (see Section~\ref{sec:cookbooks-composition})
-and, if one allows for a reaction term on the right hand side,
+and, if one allows for a reaction rate $\mathfrak q$ on the right hand side,
 \begin{align*}
   \frac{\partial \mathfrak c}{\partial t} + \mathbf u \cdot \nabla \mathfrak c
   = \mathfrak q,
 \end{align*}
-then one can also model reactions between species -- for example to simulate
+then one can also model interaction between species -- for example to simulate
 phase changes where one compositional field indicating a particular phase
 transforms into another phase depending on pressure and temperature, or where
-several phases combine to other phases.
+several phases combine to other phases. Inside the material model, the interaction is given by {\tt reaction\_term}
+which is defined as $\triangle t \cdot \mathfrak q$.
 
 Modeling reactions between different compositional fields often involves
 finding an equilibrium state between state between different fields because
@@ -1095,7 +1096,7 @@ of the material: more damage means lower viscosity because the rocks are weaker.
 In cases like this, there is only a single compositional field and it is not
 in permanent equilibrium. Consequently, the increment implementations of
 material models in \aspect{} need to compute is typically the rate $q(T,c)$
-times the time step.
+times the time step.  In other words, if you want your reaction term to be a rate, you need to multiply by the time step size.
 
 Compositional fields have proven to be surprisingly versatile tools to model
 all sorts of components of models that go beyond the simple Stokes plus
