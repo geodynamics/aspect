@@ -6,16 +6,17 @@ aspect-files      = $(shell echo ../include/aspect/*.h \
                             ../include/aspect/*/*h     \
                             ../include/aspect/*/*/*h   \
                             modules/*h)
-aspect-manual-pix = $(shell find manual/cookbooks/ -name \*.png)
+aspect-manual-pix = $(shell find manual/cookbooks/ -name \*.png 2>/dev/null)
 
 
-aspect-prms = $(shell find manual/cookbooks/ -name \*.prm)
+aspect-prms = $(shell find manual/cookbooks/ -name \*.prm 2>/dev/null)
 aspect-prms-out = $(aspect-prms:=.out)
 
-test:
-	@echo "prms: ${aspect-prms}"
-	@echo "prm-out: ${aspect-prms-out}"
-
+default:
+	@echo "make targets:"
+	@echo "  aspect.tag  - generates doxygen documentation into doxygen/"
+	@echo "  manual.pdf  - generates manual.pdf"
+	@echo "  all         - generates both"
 
 all: aspect.tag manual.pdf
 
@@ -75,6 +76,17 @@ manual.pdf: manual/manual.tex manual/manual.bib manual/parameters.tex \
 	  echo "------------------------------------------------------" ; \
 	  false ; \
 	 fi
+
+# This rule will only trigger if the file is missing, which happens if the
+# user has a release tarball.
+manual/manual.tex:
+	@echo "------------------------------------------------------"
+	@echo "Error: Can not generate manual.pdf without the source"
+	@echo "files in manual/. If you are currently using a release"
+	@echo "of ASPECT, download the latest development version of"
+	@echo "ASPECT instead."
+	@echo "------------------------------------------------------"
+	@false
 
 clean:
 	-rm -f aspect.dox aspect.tag

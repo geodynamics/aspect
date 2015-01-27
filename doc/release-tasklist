@@ -43,13 +43,13 @@
   . make sure the .prm and .xml files we ship match the default values of
     parameters
   . Tag the release:
-      git tag -a v$VER -m 'tag version $VER'
+      git tag -a v$VER -m "tag version $VER"
   . create a tar file:
       git archive --format=tar.gz --prefix=aspect-$VER/ v$VER >aspect-$VER.tar.gz
   . make public (branch and tag):
       git push cig aspect-$VER
       git push cig v$VER
-  . create a release on github
+  . create a release on github, upload tarball
   . link it on download.html, update version info etc.
   . ask Eric to update http://geodynamics.org/cig/software/aspect/
   . announce on
