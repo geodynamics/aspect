@@ -963,12 +963,12 @@ namespace aspect
         FunctorDepthAverageField(const FEValuesExtractors::Scalar &field)
           : field_(field) {}
 
-        bool need_material_properties()
+        bool need_material_properties() const
         {
           return false;
         }
 
-        void setup(unsigned int q_points)
+        void setup(const unsigned int q_points)
         {
         }
 
@@ -1006,12 +1006,12 @@ namespace aspect
     class FunctorDepthAverageViscosity
     {
       public:
-        bool need_material_properties()
+        bool need_material_properties() const
         {
           return true;
         }
 
-        void setup(unsigned int q_points)
+        void setup(const unsigned int q_points)
         {}
 
         void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
@@ -1041,12 +1041,12 @@ namespace aspect
         FunctorDepthAverageVelocityMagnitude(const FEValuesExtractors::Vector &field)
           : field_(field) {}
 
-        bool need_material_properties()
+        bool need_material_properties() const
         {
           return false;
         }
 
-        void setup(unsigned int q_points)
+        void setup(const unsigned int q_points)
         {
           velocity_values.resize(q_points);
         }
@@ -1084,12 +1084,12 @@ namespace aspect
         FunctorDepthAverageSinkingVelocity(const FEValuesExtractors::Vector &field, GravityModel::Interface<dim> *gravity)
           : field_(field), gravity_(gravity) {}
 
-        bool need_material_properties()
+        bool need_material_properties() const
         {
           return false;
         }
 
-        void setup(unsigned int q_points)
+        void setup(const unsigned int q_points)
         {
           velocity_values.resize(q_points);
         }
@@ -1133,12 +1133,12 @@ namespace aspect
           : material_model(mm), vs_(vs)
         {}
 
-        bool need_material_properties()
+        bool need_material_properties() const
         {
           return true;
         }
 
-        void setup(unsigned int q_points)
+        void setup(const unsigned int q_points)
         {}
 
         void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,

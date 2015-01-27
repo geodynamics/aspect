@@ -59,8 +59,10 @@ namespace aspect
           /**
            * Constructor.
            *
-           * @param[in] The directory into which output files shall be placed.
-           * @param[in] The MPI communicator that describes this simulation.
+           * @param[in] output_directory The directory into which output files
+           * shall be placed.
+           * @param[in] communicator The MPI communicator that describes this
+           * simulation.
            */
           Interface(const std::string &output_directory,
                     const MPI_Comm     communicator)

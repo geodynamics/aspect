@@ -883,21 +883,41 @@ namespace aspect
 
       /**
        * Fills a vector with the artificial viscosity for the temperature on
-       * each local cell
+       * each local cell.
        */
       void get_artificial_viscosity (Vector<float> &viscosity_per_cell) const;
 
       /**
        * Internal routine to compute the depth average of a certain quantitiy.
-       * The functor @p fctr should implement: 1. bool
-       * need_material_properties() 2. void setup(unsigned int q_points) 3.
-       * double operator()(const MaterialModelInputs & in, const
-       * MaterialModelOutputs & out, FEValues<dim> & fe_values, const
-       * LinearAlgebra::BlockVector &solution, std::vector<double> & output)
+       *
+       * The functor @p fctr must be an object of a user defined type that can
+       * be arbitrary but has to satisfy certain requirements. In essence,
+       * this class type needs to implement the following interface of member
+       * functions:
+       * @code
+       * template <int dim>
+       * class Functor
+       * {
+       *   public:
+       *     // operator() will have @p in and @p out filled out if @p true
+       *     bool need_material_properties() const;
+       *
+       *     // called once at the beginning with the number of quadrature points
+       *     void setup(const unsigned int q_points);
+       *
+       *     // fill @p output for each quadrature point
+       *     void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+       *        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
+       *        FEValues<dim> &fe_values,
+       *        const LinearAlgebra::BlockVector &solution,
+       *        std::vector<double> &output);
+       * };
+       * @endcode
        *
        * @param values The output vector of depth averaged values. The
        * function takes the pre-existing size of this vector as the number of
        * depth slices.
+       * @param fctr Instance of a class satisfying the signature above.
        */
       template<class FUNCTOR>
       void compute_depth_average(std::vector<double> &values,
@@ -913,6 +933,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        *
+       * @param advection_field Temperature or compositional field to average.
        * @param values The output vector of depth averaged values. The
        * function takes the pre-existing size of this vector as the number of
        * depth slices.
