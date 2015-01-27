@@ -62,7 +62,7 @@ namespace aspect
 
 
         /**
-         * Compute the gradient of the fluid pressure in the direction of gravity
+         * Compute the gradient of the fluid pressure
          * for each quadrature point.
          *
          * The return value can typically contain @p material_model_outputs.fluid_densities[q]
@@ -73,7 +73,7 @@ namespace aspect
          * @param output Result to be filled.
          */
         virtual
-        void fluid_pressure (
+        void fluid_pressure_gradient (
             const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
             const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
             std::vector<double> & output

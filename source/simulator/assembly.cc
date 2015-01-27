@@ -1342,7 +1342,7 @@ namespace aspect
             melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
 
             std::vector<double> grad_p_f(n_face_q_points);
-            fluid_pressure_boundary_conditions->fluid_pressure(melt_inputs,
+            fluid_pressure_boundary_conditions->fluid_pressure_gradient(melt_inputs,
                 melt_outputs,
                 grad_p_f);
 
@@ -1364,11 +1364,7 @@ namespace aspect
 
                 for (unsigned int i = 0; i < dofs_per_cell; ++i)
                   {
-                	// this corresponds to the boundary condition grad p_f = rho_s g
-/*                    data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
-                                          * pressure_scaling * K_D * (density_f - density_s) *
-                                         (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)
-                                          * scratch.finite_element_face_values.JxW(q));*/
+                	// apply the fluid pressure boundary condition
                     data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
                                           * pressure_scaling * K_D * (density_f - grad_p_f[q]) *
                                          (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)

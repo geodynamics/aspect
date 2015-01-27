@@ -33,7 +33,7 @@ namespace aspect
     template <int dim>
     void
     Density<dim>::
-    fluid_pressure (
+    fluid_pressure_gradient (
                 const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
                 const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
                 std::vector<double> & output
@@ -52,10 +52,18 @@ namespace aspect
       {
         prm.enter_subsection("Density");
         {
-          prm.declare_entry ("Include Fluid Density", "true", Patterns::Bool(),
-              "");
-          prm.declare_entry ("Include Solid Density", "false", Patterns::Bool(),
-              "");
+          prm.declare_entry ("Include Fluid Density", "false", Patterns::Bool(),
+              "Prescribing the gradient of the fluid pressure as "
+              "fluid density times gravity causes melt to flow in "
+              "with the same velocity as inflowing solid material, "
+              "or no melt flowing in or out if the solid velocity "
+              "normal to the boundary is zero.");
+          prm.declare_entry ("Include Solid Density", "true", Patterns::Bool(),
+              "Prescribing the gradient of the fluid pressure as "
+              "solid density times gravity (which is the lithostatic "
+              "pressure) leads to approximately the same pressure in "
+              "the melt as in the solid, so that fluid is only flowing "
+              "in or out due to differences in dynamic pressure. ");
         }
         prm.leave_subsection ();
       }
@@ -97,6 +105,8 @@ namespace aspect
   {
     ASPECT_REGISTER_FLUID_PRESSURE_BOUNDARY_CONDITIONS(Density,
                                                "density",
-                                               "A plugin based on fluid/solid density from the material model.")
+                                               "A plugin that prescribes the fluid pressure gradient at "
+                                               "the boundary based on fluid/solid density from the material "
+                                               "model. ")
   }
 }

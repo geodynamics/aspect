@@ -247,7 +247,7 @@ namespace aspect
   {
     public:
       virtual
-      void fluid_pressure (
+      void fluid_pressure_gradient (
 	const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
 	const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
 	std::vector<double> & output
@@ -287,11 +287,13 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(CompressibleMeltPostprocessor,
                                   "compressible melt error",
                                   "A postprocessor that compares the numerical solution to the analytical "
-                                  "solution derived for compressible melt transport in a 2D box described in "
-                                  "the manuscript and reports the error.")
+                                  "solution derived for compressible melt transport in a 2D box as described "
+                                  "in the manuscript and reports the error.")
 
     ASPECT_REGISTER_FLUID_PRESSURE_BOUNDARY_CONDITIONS(PressureBdry,
 						       "PressureBdry",
-						       "")
+						       "A fluid pressure boundary condition that prescribes the "
+						       "gradient of the fluid pressure at the boundaries as "
+						       "calculated in the analytical solution. ")
 						       
 }

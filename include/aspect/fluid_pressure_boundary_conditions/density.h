@@ -41,10 +41,10 @@ namespace aspect
     {
       public:
         /**
-         * @copydoc Interface::fluid_pressure
+         * @copydoc Interface::fluid_pressure_gradient
          */
         virtual
-        void fluid_pressure (
+        void fluid_pressure_gradient (
             const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
             const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
             std::vector<double> & output
