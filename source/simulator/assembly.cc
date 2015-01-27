@@ -1341,6 +1341,11 @@ namespace aspect
             AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
             melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
 
+            std::vector<double> grad_p_f(n_face_q_points);
+            fluid_pressure_boundary_conditions->fluid_pressure(melt_inputs,
+                melt_outputs,
+                grad_p_f);
+
             for (unsigned int q=0; q<n_face_q_points; ++q)
               {
                 const Tensor<1,dim>
@@ -1357,18 +1362,6 @@ namespace aspect
                 	                :
                 	                0.0);
 
-                const double rho_s_0 = 1.2;
-                const double rho_f_0 = 1.0;
-                const double xi_0 = 1.0;
-                const double xi_1 = 1.0;
-                const double A = 0.1;
-                const double B = -3.0/4.0 * A;
-                const double C = 1.0;
-                const double D = 0.3;
-                const double E = - 3.0/4.0 * xi_0 * A + C * D *(rho_f_0 - rho_s_0);
-                const double y = melt_inputs.position[q][1];
-                const double grad_p_f = (E * std::exp(y) - rho_f_0 * C) * std::exp(-y)/ (-C );
-
                 for (unsigned int i = 0; i < dofs_per_cell; ++i)
                   {
                 	// this corresponds to the boundary condition grad p_f = rho_s g
@@ -1377,7 +1370,7 @@ namespace aspect
                                          (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)
                                           * scratch.finite_element_face_values.JxW(q));*/
                     data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
-                                          * pressure_scaling * K_D * (density_f - grad_p_f) *
+                                          * pressure_scaling * K_D * (density_f - grad_p_f[q]) *
                                          (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)
                                           * scratch.finite_element_face_values.JxW(q));
                   }
@@ -2051,7 +2044,7 @@ namespace aspect
   template void Simulator<dim>::copy_local_to_global_advection_system ( \
                                                                         const internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::assemble_advection_system (const AdvectionField     &advection_field); \
-   
+
 
 
   ASPECT_INSTANTIATE(INSTANTIATE)

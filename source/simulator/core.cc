@@ -317,6 +317,17 @@ namespace aspect
     adiabatic_conditions->parse_parameters (prm);
     adiabatic_conditions->initialize ();
 
+    if (parameters.include_melt_transport)
+      {
+	fluid_pressure_boundary_conditions.reset(FluidPressureBoundaryConditions::create_fluid_pressure_boundary<dim>(prm));
+
+	if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(fluid_pressure_boundary_conditions.get()))
+	  sim->initialize (*this);
+
+	fluid_pressure_boundary_conditions->parse_parameters (prm);
+	fluid_pressure_boundary_conditions->initialize ();
+      }
+    
 
     // Initialize the free surface handler
     if (parameters.free_surface_enabled)

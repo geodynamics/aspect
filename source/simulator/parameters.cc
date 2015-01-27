@@ -1097,6 +1097,7 @@ namespace aspect
     BoundaryComposition::declare_parameters<dim> (prm);
     AdiabaticConditions::declare_parameters<dim> (prm);
     VelocityBoundaryConditions::declare_parameters<dim> (prm);
+    FluidPressureBoundaryConditions::declare_parameters<dim> (prm);
   }
 }
 
