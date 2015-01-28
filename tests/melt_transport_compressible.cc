@@ -226,7 +226,8 @@ namespace aspect
 
       // we need the compaction pressure and the melt velocity, but we only have
       // the solid and the fluid pressure stored in the solution vector.
-      // Hence, we create a new vector only with the compaction pressure.
+      // Hence, we create a new vector only with the compaction pressure
+      // and a new vector only with the fluid velocity.
       LinearAlgebra::BlockVector compaction_pressure(this->get_solution());
       LinearAlgebra::BlockVector melt_velocity(this->get_solution());
 
@@ -241,6 +242,8 @@ namespace aspect
                                quadrature,
                                update_quadrature_points | update_values | update_gradients);
 
+      // we need the material properties to calculate the fluid velocity
+      // (using the Darcy equation)
       typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(fe_values.n_quadrature_points, this->n_compositional_fields());
       typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
@@ -284,6 +287,7 @@ namespace aspect
             AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
             melt_mat->evaluate_with_melt(in, out);
 
+            // calculate the compaction pressure
             for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.pressure).dofs_per_cell; ++j)
               {
                 unsigned int pressure_idx
@@ -308,6 +312,7 @@ namespace aspect
                 compaction_pressure(local_dof_indices[p_f_idx]) = p_c;
               }
 
+            // calculate the fluid velocity
             unsigned int end = this->get_fe().base_element(this->introspection().base_elements.velocities).dofs_per_cell;
             for (unsigned int j=0; j<end; ++j)
               {
