@@ -37,17 +37,17 @@ namespace aspect
      * @ingroup FluidPressureBoundaryConditions
      */
     template <int dim>
-    class Density : public Interface<dim>
+    class Density : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
-         * @copydoc Interface::fluid_pressure_gradient
+         * @copydoc Interface::fluid_pressure
          */
         virtual
         void fluid_pressure_gradient (
             const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
             const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
-            std::vector<double> & output
+            std::vector<Tensor<1,dim> > & output
             ) const;
 
         /**

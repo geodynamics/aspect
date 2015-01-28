@@ -1341,7 +1341,7 @@ namespace aspect
             AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
             melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
 
-            std::vector<double> grad_p_f(n_face_q_points);
+            std::vector<Tensor<1,dim> > grad_p_f(n_face_q_points);
             fluid_pressure_boundary_conditions->fluid_pressure_gradient(melt_inputs,
                 melt_outputs,
                 grad_p_f);
@@ -1366,8 +1366,10 @@ namespace aspect
                   {
                 	// apply the fluid pressure boundary condition
                     data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
-                                          * pressure_scaling * K_D * (density_f - grad_p_f[q]) *
-                                         (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)
+                                          * pressure_scaling * K_D *
+                                          (density_f
+                                          * (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)
+                                          - (scratch.finite_element_face_values.get_normal_vectors()[q] * grad_p_f[q]))
                                           * scratch.finite_element_face_values.JxW(q));
                   }
               }

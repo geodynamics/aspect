@@ -414,7 +414,7 @@ namespace aspect
       void fluid_pressure_gradient (
 	const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
 	const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
-	std::vector<double> & output
+	std::vector<Tensor<1,dim> > & output
       ) const
 	{
 	  for (unsigned int q=0; q<output.size(); ++q)
@@ -429,7 +429,9 @@ namespace aspect
 	      const double D = 0.3;
 	      const double E = - 3.0/4.0 * xi_0 * A + C * D *(rho_f_0 - rho_s_0);
 	      const double y = material_model_inputs.position[q][1];
-	      output[q] = (E * std::exp(y) - rho_f_0 * C) * std::exp(-y)/ (-C );
+	      Tensor<1,dim> gravity;
+	      gravity[dim-1] = 1.0;
+	      output[q] = (E * std::exp(y) - rho_f_0 * C) * gravity;
 	    }	  
 	}
       
