@@ -471,10 +471,10 @@ int main (int argc, char *argv[])
     }
   catch (aspect::QuietException &)
     {
-      // quitly treat an exception used on processors other than
+      // Quietly treat an exception used on processors other than
       // root when we already know that processor 0 will generate
-      // an exception. we do this to avoid creating too much
-      // (duplicate) screen output
+      // an exception. We do this to avoid creating too much
+      // (duplicate) screen output.
       return 1;
     }
   catch (...)
