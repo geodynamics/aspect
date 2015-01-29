@@ -63,7 +63,7 @@ namespace aspect
       return scoord;
     }
 
-   template <int dim>
+    template <int dim>
     Point<dim>
     cartesian_coordinates(const std_cxx1x::array<double,dim> &scoord)
     {
@@ -93,62 +93,25 @@ namespace aspect
     }
 
 
-    template <int dim, int grid_dim>
-    AsciiDataLookup<dim,grid_dim>::AsciiDataLookup(const GeometryModel::Interface<dim> &geometry_model,
-                                                   const unsigned int components,
-                                                   const double scale_factor,
-                                                   const types::boundary_id boundary_id)
-      :
-        components(components),
-        geometry_model(geometry_model),
-        data(components),
-        old_data(components),
-        scale_factor(scale_factor)
-      {
-
-
-             Assert (grid_dim <= dim,
-              ExcMessage("You can only create an AsciiDataLookup object for a grid of at "
-                  "most the number of dimensions your model uses."));
-
-          const std_cxx11::array<unsigned int,grid_dim> dimensions = get_boundary_dimensions(boundary_id);
-          const std_cxx11::array<std::pair<double,double>,dim> model_extent = get_model_extent(geometry_model);
-
-          for (unsigned int i = 0; i < grid_dim; i++)
-            {
-              boundary_dimensions[i] = dimensions[i];
-              grid_extent[i] = model_extent[boundary_dimensions[i]];
-            }
-      }
-
-    template <int dim, int grid_dim>
     bool
-    AsciiDataLookup<dim,grid_dim>::fexists(const std::string &filename)
-                {
-                  std::ifstream ifile(filename.c_str());
-                  return !(!ifile); // only in c++11 you can convert to bool directly
-                }
+    fexists(const std::string &filename)
+    {
+      std::ifstream ifile(filename.c_str());
+      return !(!ifile); // only in c++11 you can convert to bool directly
+    }
 
-    template <int dim, int grid_dim>
+    template <int dim>
+    AsciiDataLookup<dim>::AsciiDataLookup(const unsigned int components,
+                                          const double scale_factor)
+        :
+        components(components),
+        data(components),
+        scale_factor(scale_factor)
+      {}
+
+    template <int dim>
     void
-    AsciiDataLookup<dim,grid_dim>::screen_output(const ConditionalOStream &pcout) const
-        {
-          std::ostringstream output;
-
-          output << std::setprecision (3) << std::setw(3) << std::fixed << std::endl
-              << "   Set up Ascii Data boundary module."  << std::endl
-              << "   The grid extends to:";
-          for (unsigned int i = 0; i < grid_dim; i++)
-            output << " " << grid_extent[i].second;
-
-          output << std::endl;
-
-          pcout << output.str();
-        }
-
-    template <int dim, int grid_dim>
-    void
-    AsciiDataLookup<dim,grid_dim>::load_file(const std::string &filename)
+    AsciiDataLookup<dim>::load_file(const std::string &filename)
         {
           // Check whether file exists, we do not want to throw
           // an exception in case it does not, because it could be by purpose
@@ -173,7 +136,7 @@ namespace aspect
               std::string word;
               while (linestream >> word)
                 if (word == "POINTS:")
-                  for (unsigned int i = 0; i < grid_dim; i++)
+                  for (unsigned int i = 0; i < dim; i++)
                     {
                       unsigned int temp_index;
                       linestream >> temp_index;
@@ -194,9 +157,9 @@ namespace aspect
            * there is no constructor for Table, which takes TableIndices as
            * argument.
            */
-          Table<grid_dim,double> data_table;
-          data_table.TableBase<grid_dim,double>::reinit(table_points);
-          std::vector<Table<grid_dim,double> > data_tables(components+grid_dim,data_table);
+          Table<dim,double> data_table;
+          data_table.TableBase<dim,double>::reinit(table_points);
+          std::vector<Table<dim,double> > data_tables(components+dim,data_table);
 
           // Read data lines
           unsigned int i = 0;
@@ -204,169 +167,67 @@ namespace aspect
 
           while (in >> temp_data)
             {
-              data_tables[i%(components+grid_dim)](compute_table_indices(i)) = temp_data * scale_factor;
+              data_tables[i%(components+dim)](compute_table_indices(i)) = temp_data * scale_factor;
               i++;
 
               // TODO: add checks for coordinate ordering in data files
             }
 
-          AssertThrow(i == (components + grid_dim) * data_table.n_elements(),
+          AssertThrow(i == (components + dim) * data_table.n_elements(),
                       ExcMessage (std::string("Number of read in points does not match number of expected points. File corrupted?")));
 
-          std_cxx11::array<unsigned int,grid_dim> table_intervals;
-          for (unsigned int i = 0; i < grid_dim; i++)
-            table_intervals[i] = table_points[i] - 1;
+          std_cxx11::array<unsigned int,dim> table_intervals;
+
+          for (unsigned int i = 0; i < dim; i++)
+            {
+              table_intervals[i] = table_points[i] - 1;
+
+              TableIndices<dim> idx;
+              grid_extent[i].first = data_tables[i](idx);
+              idx[i] = table_points[i] - 1;
+              grid_extent[i].second = data_tables[i](idx);
+            }
 
           for (unsigned int i = 0; i < components; i++)
             {
-              if (old_data[i])
-                delete old_data[i];
-              old_data[i] = data[i];
-              data[i] = new Functions::InterpolatedUniformGridData<grid_dim> (grid_extent,
-                                                                              table_intervals,
-                                                                              data_tables[grid_dim+i]);
+              if (data[i])
+                delete data[i];
+              data[i] = new Functions::InterpolatedUniformGridData<dim> (grid_extent,
+                                                                         table_intervals,
+                                                                         data_tables[dim+i]);
             }
         }
 
 
-    template <int dim, int grid_dim>
+    template <int dim>
     double
-    AsciiDataLookup<dim,grid_dim>::get_data(const Point<dim> &position,
-                 const unsigned int component,
-                 const double time_weight) const
+    AsciiDataLookup<dim>::get_data(const Point<dim> &position,
+                                   const unsigned int component) const
         {
-          Point<dim> internal_position = position;
-
-          if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model) != 0)
-            {
-              const std_cxx11::array<double,dim> spherical_position =
-                  ::aspect::Utilities::spherical_coordinates(position);
-
-              const GeometryModel::SphericalShell<dim> *geometry_model_spherical_shell =
-                            dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&geometry_model);
-
-              internal_position[0] = spherical_position[0] - geometry_model_spherical_shell->inner_radius();
-
-              for (unsigned int i = 1; i < dim; i++)
-                internal_position[i] = spherical_position[i];
-            }
-
-
-          Point<grid_dim> data_position;
-          for (unsigned int i = 0; i < grid_dim; i++)
-            data_position[i] = internal_position[boundary_dimensions[i]];
-
-          return time_weight * data[component]->value(data_position)
-              + (1 - time_weight) * old_data[component]->value(data_position);
+          return data[component]->value(position);
         }
 
 
+    template <int dim>
+    TableIndices<dim>
+    AsciiDataLookup<dim>::compute_table_indices(const unsigned int i) const
+    {
+      TableIndices<dim> idx;
+      idx[0] = (i / (components+dim)) % table_points[0];
+      if (dim >= 2)
+        idx[1] = ((i / (components+dim)) / table_points[0]) % table_points[1];
+      if (dim == 3)
+        idx[2] = (i / (components+dim)) / (table_points[0] * table_points[1]);
 
-        template <int dim, int grid_dim>
-        std_cxx11::array<std::pair<double,double>,dim>
-        AsciiDataLookup<dim,grid_dim>::get_model_extent (const GeometryModel::Interface<dim> &geometry_model) const
-        {
-          std_cxx11::array<std::pair<double,double>,dim> data_extent;
-
-          if (dynamic_cast<const GeometryModel::Box<dim>*> (&geometry_model) != 0)
-            {
-              const GeometryModel::Box<dim> *geometry_model_box = dynamic_cast<const GeometryModel::Box<dim> *>(&geometry_model);
-              const Point<dim> box_origin = geometry_model_box->get_origin();
-              const Point<dim> box_upper_bound = box_origin + geometry_model_box->get_extents();
-
-              for (unsigned int i=0;i<dim;i++)
-                data_extent[i] = std::make_pair<double,double> (box_origin[i],box_upper_bound[i]);
-            }
-          else if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model) != 0)
-            {
-              const GeometryModel::SphericalShell<dim> *geometry_model_spherical_shell =
-                  dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&geometry_model);
-
-              data_extent[0] = std::make_pair(0,geometry_model_spherical_shell->maximal_depth());
-              data_extent[1] = std::make_pair(0,geometry_model_spherical_shell->opening_angle() * numbers::PI / 180);
-              if (dim==3)
-                data_extent[2] = std::make_pair<double,double> (0,geometry_model_spherical_shell->opening_angle() * numbers::PI / 180);
-            }
-          else Assert (false, ExcNotImplemented());
-
-          return data_extent;
-        }
-
-        template <int dim, int grid_dim>
-        std_cxx11::array<unsigned int,grid_dim>
-        AsciiDataLookup<dim,grid_dim>::get_boundary_dimensions (const types::boundary_id boundary_id) const
-        {
-          std_cxx11::array<unsigned int,grid_dim> boundary_dimensions;
-
-          if (boundary_id != numbers::invalid_boundary_id)
-            {
-          switch (dim)
-          {
-          case 2:
-            if ((boundary_id == 2) || (boundary_id == 3))
-              {
-                boundary_dimensions[0] = 0;
-              }
-            else if ((boundary_id == 0) || (boundary_id == 1))
-              {
-                boundary_dimensions[0] = 1;
-              }
-            else
-              AssertThrow(false,ExcNotImplemented());
-
-            break;
-
-          case 3:
-            if ((boundary_id == 4) || (boundary_id == 5))
-              {
-                boundary_dimensions[0] = 0;
-                boundary_dimensions[1] = 1;
-              }
-            else if ((boundary_id == 0) || (boundary_id == 1))
-              {
-                boundary_dimensions[0] = 1;
-                boundary_dimensions[1] = 2;
-              }
-            else if ((boundary_id == 2) || (boundary_id == 3))
-              {
-                boundary_dimensions[0] = 0;
-                boundary_dimensions[1] = 2;
-              }
-            else
-              AssertThrow(false,ExcNotImplemented());
-
-            break;
-
-          default:
-            AssertThrow(false,ExcNotImplemented());
-          }
-            }
-          else
-            for (unsigned int i = 0; i < grid_dim; i++)
-              boundary_dimensions[i] = i;
-          return boundary_dimensions;
-        }
+      return idx;
+    }
 
 
-        template <int dim, int grid_dim>
-        TableIndices<grid_dim>
-        AsciiDataLookup<dim,grid_dim>::compute_table_indices(const unsigned int i) const
-        {
-          TableIndices<grid_dim> idx;
-          idx[0] = (i / (components+grid_dim)) % table_points[0];
-          if (grid_dim >= 2)
-            idx[1] = ((i / (components+grid_dim)) / table_points[0]) % table_points[1];
-          if (grid_dim == 3)
-            idx[2] = (i / (components+grid_dim)) / (table_points[0] * table_points[1]);
-
-          return idx;
-        }
 
         template <int dim>
         AsciiDataBase<dim>::AsciiDataBase ()
-          :
-        scale_factor(1.0)
         {}
+
 
         template <int dim>
         void
@@ -435,6 +296,45 @@ namespace aspect
         }
 
         template <int dim>
+         AsciiDataInitial<dim>::AsciiDataInitial ()
+         {}
+
+
+         template <int dim>
+         void
+         AsciiDataInitial<dim>::initialize (const unsigned int components)
+         {
+           lookup.reset(new Utilities::AsciiDataLookup<dim> (components,
+                                                             Utilities::AsciiDataBase<dim>::scale_factor));
+
+           const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
+                                      + Utilities::AsciiDataBase<dim>::data_file_name;
+
+           this->get_pcout() << std::endl << "   Loading Ascii data initial file "
+               << filename << "." << std::endl << std::endl;
+           lookup->load_file(filename);
+         }
+
+         template <int dim>
+         double
+         AsciiDataInitial<dim>::
+         get_data_component (const Point<dim>                    &position,
+                             const unsigned int                   component) const
+         {
+           Point<dim> internal_position = position;
+
+           if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0)
+             {
+               const std_cxx11::array<double,dim> spherical_position =
+                   ::aspect::Utilities::spherical_coordinates(position);
+
+               for (unsigned int i = 1; i < dim; i++)
+                 internal_position[i] = spherical_position[i];
+             }
+           return lookup->get_data(internal_position,component);
+         }
+
+        template <int dim>
         AsciiDataBoundary<dim>::AsciiDataBoundary ()
           :
         current_file_number(0),
@@ -444,7 +344,8 @@ namespace aspect
         data_file_time_step(0.0),
         time_weight(0.0),
         time_dependent(true),
-        lookups()
+        lookups(),
+        old_lookups()
         {}
 
         template <int dim>
@@ -456,16 +357,14 @@ namespace aspect
                 boundary_id = boundary_ids.begin();
                 boundary_id != boundary_ids.end(); ++boundary_id)
               {
+                const std_cxx11::array<unsigned int,dim-1> dimensions = get_boundary_dimensions(*boundary_id);
 
-                std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim,dim-1> > lookup;
-                lookup.reset(new Utilities::AsciiDataLookup<dim,dim-1>    (this->get_geometry_model(),
-                                                                           components,
-                                                                           AsciiDataBase<dim>::scale_factor,
-                                                                           *boundary_id));
+                std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim-1> > lookup;
+                lookup.reset(new Utilities::AsciiDataLookup<dim-1> (components,
+                                                                    AsciiDataBase<dim>::scale_factor));
 
                 lookups.insert(std::make_pair(*boundary_id,lookup));
 
-                lookups.find(*boundary_id)->second->screen_output(this->get_pcout());
 
                 // Set the first file number and load the first files
                 current_file_number = first_data_file_number;
@@ -503,6 +402,56 @@ namespace aspect
               }
         }
 
+
+        template <int dim>
+        std_cxx11::array<unsigned int,dim-1>
+        AsciiDataBoundary<dim>::get_boundary_dimensions (const types::boundary_id boundary_id) const
+        {
+          std_cxx11::array<unsigned int,dim-1> boundary_dimensions;
+
+          switch (dim)
+          {
+          case 2:
+            if ((boundary_id == 2) || (boundary_id == 3))
+              {
+                boundary_dimensions[0] = 0;
+              }
+            else if ((boundary_id == 0) || (boundary_id == 1))
+              {
+                boundary_dimensions[0] = 1;
+              }
+            else
+              AssertThrow(false,ExcNotImplemented());
+
+            break;
+
+          case 3:
+            if ((boundary_id == 4) || (boundary_id == 5))
+              {
+                boundary_dimensions[0] = 0;
+                boundary_dimensions[1] = 1;
+              }
+            else if ((boundary_id == 0) || (boundary_id == 1))
+              {
+                boundary_dimensions[0] = 1;
+                boundary_dimensions[1] = 2;
+              }
+            else if ((boundary_id == 2) || (boundary_id == 3))
+              {
+                boundary_dimensions[0] = 0;
+                boundary_dimensions[1] = 2;
+              }
+            else
+              AssertThrow(false,ExcNotImplemented());
+
+            break;
+
+          default:
+            AssertThrow(false,ExcNotImplemented());
+          }
+        return boundary_dimensions;
+        }
+
         template <int dim>
         std::string
         AsciiDataBoundary<dim>::create_filename (const int filenumber,
@@ -534,7 +483,7 @@ namespace aspect
 
               if (need_update)
                 for (typename std::map<types::boundary_id,
-                    std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim,dim-1> > >::iterator
+                    std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim-1> > >::iterator
                            boundary_id = lookups.begin();
                            boundary_id != lookups.end(); ++boundary_id)
                     update_data(boundary_id->first);
@@ -664,7 +613,28 @@ namespace aspect
         {
           if (this->get_time() - first_data_file_model_time >= 0.0)
             {
-              return lookups.find(boundary_indicator)->second->get_data(position,component,time_weight);
+              Point<dim> internal_position = position;
+
+              if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0)
+                {
+                  const std_cxx11::array<double,dim> spherical_position =
+                      ::aspect::Utilities::spherical_coordinates(position);
+
+                  for (unsigned int i = 1; i < dim; i++)
+                    internal_position[i] = spherical_position[i];
+                }
+
+              const std_cxx11::array<unsigned int,dim-1> boundary_dimensions =
+                  get_boundary_dimensions(boundary_indicator);
+
+              Point<dim-1> data_position;
+              for (unsigned int i = 0; i < dim; i++)
+                data_position[i] = internal_position[boundary_dimensions[i]];
+
+              const double old_data = old_lookups.find(boundary_indicator)->second->get_data(data_position,component);
+              const double data = lookups.find(boundary_indicator)->second->get_data(data_position,component);
+
+              return time_weight * data + (1 - time_weight) * old_data;
             }
           else
             return 0.0;
@@ -738,13 +708,12 @@ namespace aspect
         template class AsciiDataBase<3>;
         template class AsciiDataBoundary<2>;
         template class AsciiDataBoundary<3>;
+        template class AsciiDataInitial<2>;
+        template class AsciiDataInitial<3>;
 
         // Explicit instantiations
-        template class AsciiDataLookup<2,2>;
-        template class AsciiDataLookup<2,1>;
-        template class AsciiDataLookup<3,3>;
-        template class AsciiDataLookup<3,2>;
+        template class AsciiDataLookup<1>;
+        template class AsciiDataLookup<2>;
+        template class AsciiDataLookup<3>;
     }
-
-
   }

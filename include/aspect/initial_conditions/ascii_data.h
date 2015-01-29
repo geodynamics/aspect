@@ -40,7 +40,7 @@ namespace aspect
      * @ingroup InitialConditionsModels
      */
     template <int dim>
-    class AsciiData : public Utilities::AsciiDataBase<dim>, public Interface<dim>
+    class AsciiData : public Utilities::AsciiDataInitial<dim>, public Interface<dim>
     {
       public:
         /**
@@ -75,13 +75,6 @@ namespace aspect
          */
         void
         parse_parameters (ParameterHandler &prm);
-
-      private:
-        /**
-         * Pointer to an object that reads and processes data we get from
-         * text files.
-         */
-        std_cxx11::shared_ptr<::aspect::Utilities::AsciiDataLookup<dim,dim> > lookup;
     };
   }
 }

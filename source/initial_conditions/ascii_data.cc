@@ -29,8 +29,6 @@ namespace aspect
   {
     template <int dim>
     AsciiData<dim>::AsciiData ()
-      :
-    lookup()
     {}
 
 
@@ -38,22 +36,7 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      lookup.reset(new Utilities::AsciiDataLookup<dim,dim> (this->get_geometry_model(),
-                                                           1,
-                                                           Utilities::AsciiDataBase<dim>::scale_factor));
-
-      lookup->screen_output(this->get_pcout());
-
-      const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
-                                 + Utilities::AsciiDataBase<dim>::data_file_name;
-
-      this->get_pcout() << std::endl << "   Loading Ascii data initial file "
-          << filename << "." << std::endl << std::endl;
-
-      // We load the file twice, this is because AsciiDataLookup also performs time
-      // interpolation for the boundary conditions, which is not necessary here.
-      lookup->load_file(filename);
-      lookup->load_file(filename);
+      Utilities::AsciiDataInitial<dim>::initialize(1);
     }
 
 
@@ -62,7 +45,7 @@ namespace aspect
     AsciiData<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      return lookup->get_data(position,0,0);
+      return Utilities::AsciiDataInitial<dim>::get_data_component(position,0);
     }
 
 

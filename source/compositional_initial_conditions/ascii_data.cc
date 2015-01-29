@@ -29,8 +29,6 @@ namespace aspect
   {
     template <int dim>
     AsciiData<dim>::AsciiData ()
-      :
-    lookup()
     {}
 
 
@@ -38,26 +36,7 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      std_cxx11::array<unsigned int,dim> boundary_dimensions;
-      for (unsigned int i = 0; i < dim; i++)
-        boundary_dimensions[i] = i;
-
-      lookup.reset(new Utilities::AsciiDataLookup<dim,dim>    (this->get_geometry_model(),
-                                                               this->n_compositional_fields(),
-                                                               Utilities::AsciiDataBase<dim>::scale_factor));
-
-      lookup->screen_output(this->get_pcout());
-
-      const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
-                                 + Utilities::AsciiDataBase<dim>::data_file_name;
-
-      this->get_pcout() << std::endl << "   Loading Ascii data initial file "
-          << filename << "." << std::endl << std::endl;
-
-      // We load the file twice, this is because AsciiDataLookup also performs time
-      // interpolation for the boundary conditions, which is not necessary here.
-      lookup->load_file(filename);
-      lookup->load_file(filename);
+      Utilities::AsciiDataInitial<dim>::initialize(this->n_compositional_fields());
     }
 
 
@@ -67,7 +46,7 @@ namespace aspect
     initial_composition (const Point<dim> &position,
                          const unsigned int n_comp) const
     {
-      return lookup->get_data(position,n_comp,0);
+      return Utilities::AsciiDataInitial<dim>::get_data_component(position,n_comp);
     }
 
 
