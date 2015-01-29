@@ -7,5 +7,13 @@
  *
  * <ol>
  *
+ * <li> Fixed: The Steinberger material model had a bug in case a
+ * material table was used that had not the same number of points in
+ * temperature and pressure direction. The table was truncated in pressure
+ * dimension to the number of lines of the temperature dimension. This is
+ * fixed now.
+ * <br>
+ * (Rene Gassmoeller, 2015/01/29)
+ *
  * </ol>
  */
