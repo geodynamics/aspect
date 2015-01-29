@@ -1501,8 +1501,11 @@ namespace aspect
               assemble_advection_system(AdvectionField::temperature());
 
               if (iteration == 0)
-                build_advection_preconditioner(AdvectionField::temperature(),
-                                               T_preconditioner);
+                {
+                  build_advection_preconditioner(AdvectionField::temperature(),
+                                                 T_preconditioner);
+                  initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
+                }
 
               const double temperature_residual = solve_advection(AdvectionField::temperature());
 
@@ -1516,6 +1519,9 @@ namespace aspect
                   assemble_advection_system (AdvectionField::composition(c));
                   build_advection_preconditioner(AdvectionField::composition(c),
                                                  C_preconditioner);
+                  if (iteration == 0)
+                    initial_composition_residual[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
+
                   composition_residual[c]
                     = solve_advection(AdvectionField::composition(c));
                   current_linearization_point.block(introspection.block_indices.compositional_fields[c])
@@ -1532,39 +1538,38 @@ namespace aspect
 
               assemble_stokes_system();
               if (iteration == 0)
-                build_stokes_preconditioner();
+                {
+                  build_stokes_preconditioner();
+                  initial_stokes_residual = compute_initial_stokes_residual();
+                }
 
               const double stokes_residual = solve_stokes();
 
               current_linearization_point = solution;
 
-              pcout << "      Nonlinear residuals: " << temperature_residual
-                    << ", " << stokes_residual;
+              // write the residual output in the same order as the output when
+              // solving the equations
+              pcout << "      Nonlinear residuals: " << temperature_residual;
 
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 pcout << ", " << composition_residual[c];
 
+              pcout << ", " << stokes_residual;
+
               pcout << std::endl
                     << std::endl;
 
-              if (iteration == 0)
-                {
-                  initial_temperature_residual = temperature_residual;
-                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                    initial_composition_residual[c] = composition_residual[c];
-                  initial_stokes_residual      = stokes_residual;
-                }
-              else
-                {
-                  double max = 0.0;
-                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                    max = std::max(composition_residual[c]/initial_composition_residual[c],max);
-                  max = std::max(stokes_residual/initial_stokes_residual, max);
-                  max = std::max(temperature_residual/initial_temperature_residual, max);
-                  pcout << "      residual: " << max << std::endl;
-                  if (max < parameters.nonlinear_tolerance)
-                    break;
-                }
+              double max = 0.0;
+              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                if(initial_composition_residual[c]>0)
+                  max = std::max(composition_residual[c]/initial_composition_residual[c],max);
+              if(initial_stokes_residual>0)
+                max = std::max(stokes_residual/initial_stokes_residual, max);
+              if(initial_temperature_residual>0)
+                max = std::max(temperature_residual/initial_temperature_residual, max);
+              pcout << "      residual: " << max << std::endl;
+              if (max < parameters.nonlinear_tolerance)
+                break;
 
               ++iteration;
 //TODO: terminate here if the number of iterations is too large and we see no convergence
