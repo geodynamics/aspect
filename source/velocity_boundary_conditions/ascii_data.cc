@@ -72,8 +72,8 @@ namespace aspect
       Tensor<1,dim> velocity;
       for (unsigned int i = 0; i < dim;i++)
         velocity[i] = Utilities::AsciiDataBoundary<dim>::get_data_component(*(boundary_ids.begin()),
-                                                                 position,
-                                                                 i);
+                                                                            position,
+                                                                            i);
       return velocity;
     }
 

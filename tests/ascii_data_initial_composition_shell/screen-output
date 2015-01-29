@@ -1,8 +1,5 @@
 
 
-   Set up Ascii Data boundary module.
-   The grid extends to: 2855000.000 1.571 1.571
-
    Loading Ascii data initial file ASPECT_DIR/data/compositional-initial-conditions/ascii-data/test/shell_3d.csv.
 
 Number of active cells: 24 (on 2 levels)
@@ -21,7 +18,7 @@ Number of degrees of freedom: 1,582 (915+57+305+305)
 
 *** Timestep 1:  t=100000 years
    Solving temperature system... 8 iterations.
-   Solving composition system 1... 8 iterations.
+   Solving composition system 1... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+29 iterations.
 

@@ -362,8 +362,11 @@ namespace aspect
                 std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim-1> > lookup;
                 lookup.reset(new Utilities::AsciiDataLookup<dim-1> (components,
                                                                     AsciiDataBase<dim>::scale_factor));
-
                 lookups.insert(std::make_pair(*boundary_id,lookup));
+
+                lookup.reset(new Utilities::AsciiDataLookup<dim-1> (components,
+                                                                    AsciiDataBase<dim>::scale_factor));
+                old_lookups.insert(std::make_pair(*boundary_id,lookup));
 
 
                 // Set the first file number and load the first files
@@ -384,6 +387,7 @@ namespace aspect
                 // If not, also load the second file for interpolation.
                 if (create_filename (current_file_number,*boundary_id) == create_filename (current_file_number+1,*boundary_id))
                   {
+                    lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
                     end_time_dependence (current_file_number, *boundary_id);
                   }
                 else
@@ -392,6 +396,7 @@ namespace aspect
                     {
                         this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                               << create_filename (next_file_number,*boundary_id) << "." << std::endl << std::endl;
+                        lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
                         lookups.find(*boundary_id)->second->load_file(create_filename (next_file_number,*boundary_id));
                     }
                     catch (...)
@@ -533,6 +538,7 @@ namespace aspect
               {
                 this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                       << create_filename (current_file_number,boundary_id) << "." << std::endl << std::endl;
+                lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
                 lookups.find(boundary_id)->second->load_file(create_filename (current_file_number,boundary_id));
               }
             catch (...)
@@ -567,6 +573,7 @@ namespace aspect
             {
               this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                     << create_filename (next_file_number,boundary_id) << "." << std::endl << std::endl;
+              lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
               lookups.find(boundary_id)->second->load_file(create_filename (next_file_number,boundary_id));
             }
 
@@ -584,19 +591,11 @@ namespace aspect
         template <int dim>
         void
         AsciiDataBoundary<dim>::end_time_dependence (const int file_number,
-                                             const types::boundary_id boundary_id)
+                                                     const types::boundary_id boundary_id)
         {
-          // Next data file not found --> Constant data
-          // by simply loading the old file twice
-          this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                << create_filename (file_number,boundary_id) << "." << std::endl << std::endl;
-          lookups.find(boundary_id)->second->load_file(create_filename (file_number,boundary_id));
-
           // no longer consider the problem time dependent from here on out
           // this cancels all attempts to read files at the next time steps
           time_dependent = false;
-          // this cancels the time interpolation in lookup
-          time_weight = 1.0;
           // Give warning if first processor
           this->get_pcout() << std::endl
                             << "   Loading new data file did not succeed." << std::endl
@@ -628,10 +627,14 @@ namespace aspect
                   get_boundary_dimensions(boundary_indicator);
 
               Point<dim-1> data_position;
-              for (unsigned int i = 0; i < dim; i++)
+              for (unsigned int i = 0; i < dim-1; i++)
                 data_position[i] = internal_position[boundary_dimensions[i]];
 
               const double old_data = old_lookups.find(boundary_indicator)->second->get_data(data_position,component);
+
+              if (!time_dependent)
+                return old_data;
+
               const double data = lookups.find(boundary_indicator)->second->get_data(data_position,component);
 
               return time_weight * data + (1 - time_weight) * old_data;
