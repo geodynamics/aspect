@@ -1096,7 +1096,7 @@ of the material: more damage means lower viscosity because the rocks are weaker.
 In cases like this, there is only a single compositional field and it is not
 in permanent equilibrium. Consequently, the increment implementations of
 material models in \aspect{} need to compute is typically the rate $q(T,c)$
-times the time step.  In other words, if you want your reaction term to be a rate, you need to multiply by the time step size.
+times the time step.  In other words, if you compute a reaction rate inside the material model you need to multiply it by the time step size before returning the value.
 
 Compositional fields have proven to be surprisingly versatile tools to model
 all sorts of components of models that go beyond the simple Stokes plus
