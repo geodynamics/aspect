@@ -1,5 +1,6 @@
 #include <aspect/material_model/melt_interface.h>
 #include <aspect/compositional_initial_conditions/interface.h>
+#include <aspect/geometry_model/box.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
@@ -10,7 +11,9 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
-
+#include <deal.II/base/table.h>
+#include <deal.II/base/table_indices.h>
+#include <deal.II/base/std_cxx1x/array.h>
 
 
 namespace aspect
@@ -293,6 +296,8 @@ namespace aspect
       private:
         double noise_amplitude;
         double background_porosity;
+        std_cxx1x::array<unsigned int,dim> grid_intervals;
+        Functions::InterpolatedUniformGridData<dim> *interpolate_noise;
     };
 
 
@@ -312,7 +317,7 @@ namespace aspect
       else
         {
           AssertThrow(false,
-                      ExcMessage("Initial condition shear bands only works with the material model shear bands ."));
+                      ExcMessage("Initial condition shear bands only works with the material model shear bands."));
         }
 
 
@@ -320,7 +325,52 @@ namespace aspect
                   ExcMessage("Amplitude of the white noise must be smaller "
                       "than the background porosity."));
 
+      Point<dim> extents;
+      TableIndices<dim> size_idx;
+      for (unsigned int d=0; d<dim; ++d)
+    	size_idx[d] = grid_intervals[d]+1;
+
+      Table<dim,double> white_noise;
+      white_noise.TableBase<dim,double>::reinit(size_idx);
+      std_cxx1x::array<std::pair<double,double>,dim> grid_extents;
+
+      if (dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model()) != NULL)
+      {
+        const GeometryModel::Box<dim> *
+        geometry_model
+          = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
+
+        extents = geometry_model->get_extents();
+      }
+      else
+        {
+          AssertThrow(false,
+                      ExcMessage("Initial condition shear bands only works with the box geometry model."));
+        }
+
+      for (unsigned int d=0; d<dim; ++d)
+      {
+    	grid_extents[d].first=0;
+    	grid_extents[d].second=extents[d];
+      }
+
       std::srand(std::time(0)); // use current time as seed for random generator
+
+      TableIndices<dim> idx;
+
+      for (unsigned int i=0; i<white_noise.size()[0]; ++i)
+      {
+    	idx[0] = i;
+        for (unsigned int j=0; j<white_noise.size()[1]; ++j)
+        {
+          idx[1] = j;
+          white_noise(idx) = noise_amplitude * ((std::rand() % 10000) / 5000.0 - 1.0);
+        }
+      }
+
+      interpolate_noise = new Functions::InterpolatedUniformGridData<dim> (grid_extents,
+    		                                                              grid_intervals,
+    		                                                              white_noise);
     }
 
 
@@ -329,9 +379,7 @@ namespace aspect
     ShearBandsInitialCondition<dim>::
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
     {
-      double noise = noise_amplitude * ((std::rand() % 10000) / 5000.0 - 1.0);
-      return background_porosity + noise;
-//             + 0.5 * noise_amplitude * std::sin(position[0]*1000*3.1416) * std::sin(position[1]*1000*3.1416);
+      return background_porosity + interpolate_noise->value(position);
     }
 
 
@@ -347,6 +395,18 @@ namespace aspect
               Patterns::Double (0),
               "Amplitude of the white noise added to the initial "
               "porosity. Units: none.");
+          prm.declare_entry ("Grid intervals for noise X", "100",
+              Patterns::Integer (0),
+              "Grid intervals in X directions for the white noise added to "
+              "the initial background porosity that will then be interpolated "
+              "to the model grid. "
+              "Units: none.");
+          prm.declare_entry ("Grid intervals for noise Y", "25",
+              Patterns::Integer (0),
+              "Grid intervals in Y directions for the white noise added to "
+              "the initial background porosity that will then be interpolated "
+              "to the model grid. "
+              "Units: none.");
         }
         prm.leave_subsection();
       }
@@ -364,6 +424,8 @@ namespace aspect
         prm.enter_subsection("Shear bands initial condition");
         {
           noise_amplitude      = prm.get_double ("Noise amplitude");
+          grid_intervals[0]    = prm.get_integer ("Grid intervals for noise X");
+          grid_intervals[1]    = prm.get_integer ("Grid intervals for noise Y");
         }
         prm.leave_subsection();
       }
