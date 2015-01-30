@@ -52,7 +52,8 @@ namespace aspect
                                 const Quadrature<dim-1>  &face_quadrature,
                                 const Mapping<dim>       &mapping,
                                 const UpdateFlags         update_flags,
-                                const unsigned int        n_compositional_fields);
+                                const unsigned int        n_compositional_fields,
+				const bool                add_compaction_pressure);
           StokesPreconditioner (const StokesPreconditioner &data);
 
           virtual ~StokesPreconditioner ();
@@ -83,7 +84,8 @@ namespace aspect
                               const Quadrature<dim-1>  &face_quadrature,
                               const Mapping<dim>       &mapping,
                               const UpdateFlags         update_flags,
-                              const unsigned int        n_compositional_fields)
+                              const unsigned int        n_compositional_fields,
+			      const bool                add_compaction_pressure)
           :
           finite_element_values (mapping, finite_element, quadrature,
                                  update_flags),
@@ -93,6 +95,8 @@ namespace aspect
                                       update_JxW_values)),
           grads_phi_u (finite_element.dofs_per_cell),
           phi_p (finite_element.dofs_per_cell),
+          phi_p_c (add_compaction_pressure ? finite_element.dofs_per_cell : 0),
+          grad_phi_p (add_compaction_pressure ? finite_element.dofs_per_cell : 0),
           temperature_values (quadrature.size()),
           pressure_values (quadrature.size()),
           strain_rates (quadrature.size()),
@@ -118,6 +122,8 @@ namespace aspect
                                       scratch.finite_element_face_values.get_update_flags()),
           grads_phi_u (scratch.grads_phi_u),
           phi_p (scratch.phi_p),
+	phi_p_c (scratch.phi_p_c),
+	grad_phi_p(scratch.grad_phi_p),
           temperature_values (scratch.temperature_values),
           pressure_values (scratch.pressure_values),
           strain_rates (scratch.strain_rates),
@@ -155,8 +161,6 @@ namespace aspect
           std::vector<Tensor<1,dim> >          phi_u;
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  div_phi_u;
-          std::vector<Tensor<1,dim> >          grad_phi_p;
-          std::vector<double>                  phi_p_c;
           std::vector<Tensor<1,dim> >          velocity_values;
         };
 
@@ -174,12 +178,12 @@ namespace aspect
           :
           StokesPreconditioner<dim> (finite_element, quadrature, face_quadrature,
                                      mapping,
-                                     update_flags, n_compositional_fields),
+                                     update_flags,
+				     n_compositional_fields,
+				     add_compaction_pressure),
           phi_u (finite_element.dofs_per_cell),
           grads_phi_u (finite_element.dofs_per_cell),
           div_phi_u (finite_element.dofs_per_cell),
-          grad_phi_p (add_compaction_pressure ? finite_element.dofs_per_cell : 0),
-          phi_p_c (add_compaction_pressure ? finite_element.dofs_per_cell : 0),
           velocity_values (quadrature.size())
         {}
 
@@ -193,8 +197,6 @@ namespace aspect
           phi_u (scratch.phi_u),
           grads_phi_u (scratch.grads_phi_u),
           div_phi_u (scratch.div_phi_u),
-          grad_phi_p(scratch.grad_phi_p),
-          phi_p_c (scratch.phi_p_c),
           velocity_values (scratch.velocity_values)
         {}
 
@@ -929,13 +931,33 @@ namespace aspect
     scratch.finite_element_values.reinit (cell);
 
     data.local_matrix = 0;
+    typename MaterialModel::MeltInterface<dim>::MaterialModelInputs melt_inputs(n_q_points, parameters.n_compositional_fields);
+    typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs melt_outputs(n_q_points, parameters.n_compositional_fields);
+    typename MaterialModel::Interface<dim>::MaterialModelOutputs *outputs;
 
-    compute_material_model_input_values (current_linearization_point,
-                                         scratch.finite_element_values,
-                                         true,
-                                         scratch.material_model_inputs);
+    if (!parameters.include_melt_transport)
+      {
+	compute_material_model_input_values (current_linearization_point,
+					     scratch.finite_element_values,
+					     true, // TODO: use rebuild_stokes_matrix here?
+					     scratch.material_model_inputs);
+        material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+        outputs = &scratch.material_model_outputs;
+      }
+    else
+      {
+        compute_material_model_input_values (current_linearization_point,
+                                             scratch.finite_element_values,
+                                             rebuild_stokes_matrix,
+                                             melt_inputs);
+        // TODO: fill other inputs
 
-    material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+        typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
+        AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
+        melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
+        outputs = &melt_outputs;
+      }
+
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
@@ -943,10 +965,59 @@ namespace aspect
           {
             scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
             scratch.phi_p[k]       = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
-          }
+	    if (parameters.include_melt_transport)
+              {
+                scratch.phi_p_c[k] = scratch.finite_element_values[introspection.extractors.compaction_pressure].value (k, q);
+                scratch.grad_phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].gradient (k, q);
+              }
+	  }
 
-        const double eta = scratch.material_model_outputs.viscosities[q];
+        const double eta = outputs->viscosities[q];
 
+	if (parameters.include_melt_transport)
+	  {
+					     /*
+					       - R = 1/eta M_p + K_D L_p for p
+					       S = - (1/eta + 1/viscosity_c)  M_p  for p_c
+					     */
+            const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+            double porosity = std::max(melt_inputs.composition[q][porosity_index], 0.0);
+
+            double K_D = (porosity > parameters.melt_transport_threshold
+            	   ?
+            	   melt_outputs.permeabilities[q] / melt_outputs.fluid_viscosities[q]
+            	   :
+            	   0.0);
+	    double viscosity_c = melt_outputs.compaction_viscosities[q];
+
+	    for (unsigned int i=0; i<dofs_per_cell; ++i)
+	      for (unsigned int j=0; j<dofs_per_cell; ++j)
+		if (finite_element.system_to_component_index(i).first
+		    ==
+		    finite_element.system_to_component_index(j).first)
+		  data.local_matrix(i,j) += (eta *
+					     (scratch.grads_phi_u[i] *
+					      scratch.grads_phi_u[j])
+					     +
+					     (1./eta *
+					     pressure_scaling *
+					     pressure_scaling)
+					     * scratch.phi_p[i] * scratch.phi_p[j]
+					     +
+					     (K_D *
+					         pressure_scaling *
+					         pressure_scaling) *
+					      scratch.grad_phi_p[i] *
+					      scratch.grad_phi_p[j]
+					     +
+					     (1./eta + 1./viscosity_c) *
+					     pressure_scaling *
+					     pressure_scaling *
+					     (scratch.phi_p_c[i] * scratch.phi_p_c[j])
+					     )
+					    * scratch.finite_element_values.JxW(q);
+	  }
+	else
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           for (unsigned int j=0; j<dofs_per_cell; ++j)
             if (finite_element.system_to_component_index(i).first
@@ -1015,7 +1086,8 @@ namespace aspect
                                     update_values |
                                     update_gradients |
                                     update_quadrature_points,
-                                    parameters.n_compositional_fields),
+                                    parameters.n_compositional_fields,
+				    parameters.include_melt_transport),
          internal::Assembly::CopyData::
          StokesPreconditioner<dim> (finite_element));
 
@@ -1203,7 +1275,7 @@ namespace aspect
           {
             scratch.phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
             scratch.phi_p[k]   = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
-            if(parameters.include_melt_transport)
+            if (parameters.include_melt_transport)
               {
                 scratch.phi_p_c[k] = scratch.finite_element_values[introspection.extractors.compaction_pressure].value (k, q);
                 scratch.grad_phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].gradient (k, q);
