@@ -959,6 +959,90 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::convert_pressure_blocks(const LinearAlgebra::BlockVector &input_solution,
+                                               const bool                       solid_to_fluid_pressure,
+                                               LinearAlgebra::BlockVector       &output_solution)
+  {
+    if (!parameters.include_melt_transport)
+      return;
+
+    // for the direct solver we have to copy the whole block,
+    // because the velocity is included as well.
+    output_solution.block(0) = input_solution.block(0);
+
+    // Think what we need to do if the pressure is not an FE_Q...
+    Assert(parameters.use_locally_conservative_discretization == false, ExcNotImplemented());
+
+    const unsigned int por_idx = introspection.compositional_index_for_name("porosity");
+    const Quadrature<dim> quadrature(finite_element.base_element(introspection.base_elements.pressure).get_unit_support_points());
+    std::vector<double> porosity_values(quadrature.size());
+    FEValues<dim> fe_values (mapping,
+                             finite_element,
+                             quadrature,
+                             update_quadrature_points | update_values);
+
+    std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
+    for (; cell != endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit(cell);
+          cell->get_dof_indices (local_dof_indices);
+          fe_values[introspection.extractors.compositional_fields[por_idx]].get_function_values (
+              current_linearization_point, porosity_values);
+
+          for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
+            {
+              unsigned int pressure_idx
+              = finite_element.component_to_system_index(introspection.component_indices.pressure,
+                  /*dof index within component=*/ j);
+
+              // skip entries that are not locally owned:
+              if (!dof_handler.locally_owned_dofs().is_element(pressure_idx))
+                continue;
+
+              unsigned int p_c_idx
+              = finite_element.component_to_system_index(introspection.component_indices.compaction_pressure,
+                  /*dof index within component=*/ j);
+
+              double phi = porosity_values[j];
+
+              if (solid_to_fluid_pressure)
+                // (p_s, p_f) -> (p_f, p_c)
+                {
+                  double p_s = input_solution(local_dof_indices[pressure_idx]);
+                  double p_f = input_solution(local_dof_indices[p_c_idx]);
+                  double p_c = (1-phi)*(p_s-p_f);
+
+                  output_solution(local_dof_indices[pressure_idx]) = p_f;
+                  output_solution(local_dof_indices[p_c_idx]) = p_c;
+                }
+              else
+                // (p_f, p_c) -> (p_s, p_f)
+                {
+                  double p_f = input_solution(local_dof_indices[pressure_idx]);
+                  double p_c = 0.0;
+                  double p_s;
+                  if (phi >(1.0-parameters.melt_transport_threshold) || (phi == 0.0))
+                    p_s = p_f;
+                  else
+                  {
+                    p_c = input_solution(local_dof_indices[p_c_idx]);
+                    p_s = (p_c - (phi-1.0) * p_f) / (1.0-phi);
+                  }
+
+                  output_solution(local_dof_indices[pressure_idx]) = p_s;
+                  output_solution(local_dof_indices[p_c_idx]) = p_f;
+                }
+            }
+        }
+    output_solution.block(0).compress(VectorOperation::insert);
+  }
+
+
+  template <int dim>
   template<class FUNCTOR>
   void Simulator<dim>::compute_depth_average(std::vector<double> &values,
                                              FUNCTOR &fctr) const
@@ -1306,6 +1390,7 @@ namespace aspect
   template void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const; \
   template void Simulator<dim>::output_program_stats(); \
   template void Simulator<dim>::output_statistics(); \
+  template void Simulator<dim>::convert_pressure_blocks(const LinearAlgebra::BlockVector &input_solution, const bool solid_to_fluid_pressure, LinearAlgebra::BlockVector &output_solution); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);
 
