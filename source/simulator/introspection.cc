@@ -37,18 +37,24 @@ namespace aspect
       std::vector<unsigned int> components_to_blocks (n_components, 0U);
 
       // velocity is always 0, so start at pressure:
-      unsigned int start_idx = dim;
-
-      if (!split_vel_pressure)
-        ++start_idx; // skip pressure, so it will be block 0
-
-      if (!split_vel_pressure && add_compaction_pressure)
-        ++start_idx; // skip compaction pressure, so it will be block 0
-
-      // number the remainder increasing from 1:
+      unsigned int component = dim;
       unsigned int block = 0;
-      for (unsigned int i=start_idx; i < n_components; ++i)
-        components_to_blocks[i] = (++block);
+
+				       // pressure is block 0 or 1:
+      if (split_vel_pressure)
+	++block;
+
+				       // set pressure:
+      components_to_blocks[component++] = block;
+				       // compaction pressure is always the same block as pressure
+      if (add_compaction_pressure)
+	components_to_blocks[component++] = block;
+
+      ++block;
+      
+      // number the remainder of components with increasing blocks:
+      while (component < n_components)
+        components_to_blocks[component++] = block++;
 
       return components_to_blocks;
     }
