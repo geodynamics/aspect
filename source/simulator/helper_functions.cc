@@ -1021,25 +1021,18 @@ namespace aspect
 
                   output_solution(local_dof_indices[pressure_idx]) = p_f;
                   output_solution(local_dof_indices[p_c_idx]) = p_c;
-
-//                  std::cout << "(p_s, p_f) -> (p_f, p_c) " << p_s << ", " << p_f << ", " << phi << " -> "
-//                            << p_f << ", " << p_c << std::endl;
                 }
               else
                 // (p_f, p_c) -> (p_s, p_f)
                 {
                   double p_f = input_solution(local_dof_indices[pressure_idx]);
-                  double p_c = 0.0;
                   double p_s;
-                  if (phi >(1.0-parameters.melt_transport_threshold) || (phi == 0.0))
+                  if (phi >(1.0-parameters.melt_transport_threshold) || (phi <= 0.0))
                     p_s = p_f;
                   else
                   {
-                    p_c = input_solution(local_dof_indices[p_c_idx]);
+                    double p_c = input_solution(local_dof_indices[p_c_idx]);
                     p_s = (p_c - (phi-1.0) * p_f) / (1.0-phi);
-
-//                    std::cout << "(p_f, p_c) -> (p_s, p_f) " << p_f << ", " << p_c << ", " << phi << " -> "
-//                              << p_s << ", " << p_f << std::endl;
                   }
 
                   output_solution(local_dof_indices[pressure_idx]) = p_s;
