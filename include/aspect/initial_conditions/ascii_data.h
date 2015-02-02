@@ -33,6 +33,40 @@ namespace aspect
   {
     using namespace dealii;
 
+    namespace internal
+    {
+      template <int dim>
+           class AsciiDataInitial : public Utilities::AsciiDataBase<dim>
+           {
+             public:
+               /**
+                * Constructor
+                */
+               AsciiDataInitial();
+
+               /**
+                * Initialization function. This function is called once at the
+                * beginning of the program. Checks preconditions.
+                */
+               virtual
+               void
+               initialize (const unsigned int components);
+
+
+               double
+               get_data_component (const Point<dim>                    &position,
+                                   const unsigned int                   component) const;
+
+             protected:
+               /**
+                * Pointer to an object that reads and processes data we get from
+                * text files.
+                */
+               std_cxx11::shared_ptr<::aspect::Utilities::AsciiDataLookup<dim> > lookup;
+
+           };
+    }
+
     /**
      * A class that implements a prescribed temperature field
      * determined from a AsciiData input file.
@@ -40,7 +74,7 @@ namespace aspect
      * @ingroup InitialConditionsModels
      */
     template <int dim>
-    class AsciiData : public Utilities::AsciiDataInitial<dim>, public Interface<dim>
+    class AsciiData : public internal::AsciiDataInitial<dim>, public Interface<dim>
     {
       public:
         /**

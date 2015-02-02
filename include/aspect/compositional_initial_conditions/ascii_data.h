@@ -23,6 +23,8 @@
 #define __aspect__compositional_initial_conditions_ascii_data_h
 
 #include <aspect/compositional_initial_conditions/interface.h>
+#include <aspect/initial_conditions/ascii_data.h>
+
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
@@ -40,7 +42,7 @@ namespace aspect
      * @ingroup CompositionalInitialConditionsModels
      */
     template <int dim>
-    class AsciiData : public Interface<dim>, public Utilities::AsciiDataInitial<dim>
+    class AsciiData : public Interface<dim>, public InitialConditions::internal::AsciiDataInitial<dim>
     {
       public:
         /**

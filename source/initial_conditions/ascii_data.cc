@@ -22,11 +22,55 @@
 #include <aspect/global.h>
 #include <aspect/initial_conditions/ascii_data.h>
 
+#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/spherical_shell.h>
 
 namespace aspect
 {
   namespace InitialConditions
   {
+    namespace internal
+    {
+      template <int dim>
+      AsciiDataInitial<dim>::AsciiDataInitial ()
+      {}
+
+
+      template <int dim>
+      void
+      AsciiDataInitial<dim>::initialize (const unsigned int components)
+      {
+        lookup.reset(new Utilities::AsciiDataLookup<dim> (components,
+            Utilities::AsciiDataBase<dim>::scale_factor));
+
+        const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
+            + Utilities::AsciiDataBase<dim>::data_file_name;
+
+        this->get_pcout() << std::endl << "   Loading Ascii data initial file "
+            << filename << "." << std::endl << std::endl;
+        lookup->load_file(filename);
+      }
+
+      template <int dim>
+      double
+      AsciiDataInitial<dim>::
+      get_data_component (const Point<dim>                    &position,
+          const unsigned int                   component) const
+          {
+        Point<dim> internal_position = position;
+
+        if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0)
+          {
+            const std_cxx11::array<double,dim> spherical_position =
+                ::aspect::Utilities::spherical_coordinates(position);
+
+            for (unsigned int i = 0; i < dim; i++)
+              internal_position[i] = spherical_position[i];
+          }
+        return lookup->get_data(internal_position,component);
+          }
+    }
+
     template <int dim>
     AsciiData<dim>::AsciiData ()
     {}
@@ -36,7 +80,7 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      Utilities::AsciiDataInitial<dim>::initialize(1);
+      internal::AsciiDataInitial<dim>::initialize(1);
     }
 
 
@@ -45,7 +89,7 @@ namespace aspect
     AsciiData<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      return Utilities::AsciiDataInitial<dim>::get_data_component(position,0);
+      return internal::AsciiDataInitial<dim>::get_data_component(position,0);
     }
 
 
@@ -81,6 +125,12 @@ namespace aspect
 {
   namespace InitialConditions
   {
+    namespace internal
+    {
+      template class AsciiDataInitial<2>;
+      template class AsciiDataInitial<3>;
+    }
+
     ASPECT_REGISTER_INITIAL_CONDITIONS(AsciiData,
                                        "ascii data",
                                        "Implementation of a model in which the initial "
