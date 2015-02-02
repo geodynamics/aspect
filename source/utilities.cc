@@ -167,7 +167,13 @@ namespace aspect
 
           while (in >> temp_data)
             {
-              data_tables[i%(components+dim)](compute_table_indices(i)) = temp_data * scale_factor;
+              const unsigned int column_num = i%(components+dim);
+
+              if (column_num >= dim)
+                temp_data *= scale_factor;
+
+              data_tables[column_num](compute_table_indices(i)) = temp_data;
+
               i++;
 
               // TODO: add checks for coordinate ordering in data files
@@ -328,7 +334,7 @@ namespace aspect
                const std_cxx11::array<double,dim> spherical_position =
                    ::aspect::Utilities::spherical_coordinates(position);
 
-               for (unsigned int i = 1; i < dim; i++)
+               for (unsigned int i = 0; i < dim; i++)
                  internal_position[i] = spherical_position[i];
              }
            return lookup->get_data(internal_position,component);
@@ -619,7 +625,7 @@ namespace aspect
                   const std_cxx11::array<double,dim> spherical_position =
                       ::aspect::Utilities::spherical_coordinates(position);
 
-                  for (unsigned int i = 1; i < dim; i++)
+                  for (unsigned int i = 0; i < dim; i++)
                     internal_position[i] = spherical_position[i];
                 }
 

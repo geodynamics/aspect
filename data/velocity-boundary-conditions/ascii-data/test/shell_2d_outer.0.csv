@@ -3,5 +3,5 @@
 # POINTS: 3
 # Columns: latitude velocity_x velocity_y
 0.      0.     0.
-1.5707  0.707 -0.707
-3.1416  0.     0.
+0.7854  0.     0.
+1.5708  0.     0.
