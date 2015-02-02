@@ -76,7 +76,7 @@ namespace aspect
       {
         Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
                                                               "$ASPECT_SOURCE_DIR/data/boundary-composition/ascii-data/test/",
-                                                              "box_2d_%s.%d.csv");
+                                                              "box_2d_%s.%d.txt");
       }
       prm.leave_subsection();
     }

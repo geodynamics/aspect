@@ -34,7 +34,7 @@ subsection Boundary composition model
   set Model name = ascii data
 
   subsection Ascii data model
-    set Data file name       = box_3d_%s.0.csv
+    set Data file name       = box_3d_%s.0.txt
   end
 end
 

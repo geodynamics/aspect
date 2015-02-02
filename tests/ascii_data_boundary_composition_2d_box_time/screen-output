@@ -1,9 +1,9 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-composition/ascii-data/test/box_2d_left.0.csv.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-composition/ascii-data/test/box_2d_left.0.txt.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-composition/ascii-data/test/box_2d_left.1.csv.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-composition/ascii-data/test/box_2d_left.1.txt.
 
 Number of active cells: 80 (on 3 levels)
 Number of degrees of freedom: 1,581 (738+105+369+369)
@@ -58,7 +58,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
 
 *** Timestep 4:  t=327698 years
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-composition/ascii-data/test/box_2d_left.2.csv.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-composition/ascii-data/test/box_2d_left.2.txt.
 
    Solving temperature system... 12 iterations.
    Solving composition system 1... 16 iterations.
@@ -97,7 +97,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
 
 *** Timestep 7:  t=574010 years
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-composition/ascii-data/test/box_2d_left.3.csv.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-composition/ascii-data/test/box_2d_left.3.txt.
 
 
    Loading new data file did not succeed.

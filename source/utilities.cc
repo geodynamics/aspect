@@ -97,7 +97,7 @@ namespace aspect
     fexists(const std::string &filename)
     {
       std::ifstream ifile(filename.c_str());
-      return !(!ifile); // only in c++11 you can convert to bool directly
+      return static_cast<bool>(ifile); // only in c++11 you can convert to bool directly
     }
 
     template <int dim>
@@ -125,7 +125,11 @@ namespace aspect
 
           std::ifstream in(filename.c_str(), std::ios::in);
           AssertThrow (in,
-                       ExcMessage (std::string("Couldn't find data. Is file format correct?")));
+                       ExcMessage (std::string("Couldn't open data file <"
+                           +
+                           filename
+                           +
+                           ">.")));
 
           // Read header lines and if necessary reinit tables
           while (in.peek() == '#')
@@ -254,7 +258,7 @@ namespace aspect
                                "compiled. This interpretation allows, for example, to reference "
                                "files located in the 'data/' subdirectory of ASPECT. ");
             prm.declare_entry ("Data file name",
-                               "box_2d_%s.%d.csv",
+                               default_filename,
                                Patterns::Anything (),
                                "The file name of the material data. Provide file in format: "
                                "(Velocity file name).\\%s%d where \\\\%s is a string specifying "

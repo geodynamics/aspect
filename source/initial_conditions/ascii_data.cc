@@ -57,7 +57,7 @@ namespace aspect
        {
          Utilities::AsciiDataBase<dim>::declare_parameters(prm,
                                                            "$ASPECT_SOURCE_DIR/data/initial-conditions/ascii-data/test/",
-                                                           "box_2d.csv");
+                                                           "box_2d.txt");
        }
        prm.leave_subsection();
      }

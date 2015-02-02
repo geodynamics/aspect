@@ -34,7 +34,7 @@ subsection Compositional initial conditions
 
   subsection Ascii data model
     set Data directory       = $ASPECT_SOURCE_DIR/data/compositional-initial-conditions/ascii-data/test/
-    set Data file name       = box_2d.csv
+    set Data file name       = box_2d.txt
   end
 end
 
