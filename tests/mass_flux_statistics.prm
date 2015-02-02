@@ -1,0 +1,57 @@
+# Test to check the status of the mass flux statistics postprocessor.
+# Simple model with prescribed flux through the boundaries.
+
+set Dimension                              = 2
+set CFL number                             = 1.0
+set End time                               = 0
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = harmonic perturbation
+end
+
+
+subsection Material model
+  set Model name = simpler
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+end
+
+
+subsection Model settings
+  set Prescribed velocity boundary indicators = left:function,right:function,top:function,bottom:function
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Function expression = 1;1
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics
+end
+
