@@ -716,7 +716,9 @@ namespace aspect
 
     if (parameters.use_locally_conservative_discretization == false)
       {
-        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+        if ((introspection.block_indices.velocities != introspection.block_indices.pressure)
+            &&
+            (introspection.component_indices.compaction_pressure == numbers::invalid_unsigned_int))
           distributed_vector.block(introspection.block_indices.pressure).add(pressure_adjustment);
         else
           {
@@ -806,7 +808,9 @@ namespace aspect
 
     if (parameters.use_locally_conservative_discretization == false)
       {
-        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+        if ((introspection.block_indices.velocities != introspection.block_indices.pressure)
+            &&
+            (introspection.component_indices.compaction_pressure == numbers::invalid_unsigned_int))
           vector.block(introspection.block_indices.pressure).add(-1.0 * pressure_adjustment);
         else
           {
@@ -968,7 +972,8 @@ namespace aspect
 
     // for the direct solver we have to copy the whole block,
     // because the velocity is included as well.
-    output_solution.block(0) = input_solution.block(0);
+    const unsigned int block_p = introspection.block_indices.pressure;
+    output_solution.block(block_p) = input_solution.block(block_p);
 
     // Think what we need to do if the pressure is not an FE_Q...
     Assert(parameters.use_locally_conservative_discretization == false, ExcNotImplemented());
@@ -1018,6 +1023,9 @@ namespace aspect
 
                   output_solution(local_dof_indices[pressure_idx]) = p_f;
                   output_solution(local_dof_indices[p_c_idx]) = p_c;
+
+//                  std::cout << "(p_s, p_f) -> (p_f, p_c) " << p_s << ", " << p_f << ", " << phi << " -> "
+//                            << p_f << ", " << p_c << std::endl;
                 }
               else
                 // (p_f, p_c) -> (p_s, p_f)
@@ -1031,6 +1039,9 @@ namespace aspect
                   {
                     p_c = input_solution(local_dof_indices[p_c_idx]);
                     p_s = (p_c - (phi-1.0) * p_f) / (1.0-phi);
+
+//                    std::cout << "(p_f, p_c) -> (p_s, p_f) " << p_f << ", " << p_c << ", " << phi << " -> "
+//                              << p_s << ", " << p_f << std::endl;
                   }
 
                   output_solution(local_dof_indices[pressure_idx]) = p_s;
@@ -1038,7 +1049,7 @@ namespace aspect
                 }
             }
         }
-    output_solution.block(0).compress(VectorOperation::insert);
+    output_solution.block(block_p).compress(VectorOperation::insert);
   }
 
 

@@ -573,8 +573,10 @@ namespace aspect
     // wrapper. Let us make sure that this holds (and shorten their names):
     const unsigned int block_vel = introspection.block_indices.velocities;
     const unsigned int block_p = introspection.block_indices.pressure;
+    const unsigned int block_p_c = introspection.block_indices.compaction_pressure;
     Assert(block_vel == 0, ExcNotImplemented());
     Assert(block_p == 1, ExcNotImplemented());
+    Assert(block_p_c == 1, ExcNotImplemented());
 
     const internal::StokesBlock stokes_block(system_matrix);
 
@@ -589,7 +591,14 @@ namespace aspect
     // layout than current_linearization_point, which also contains all the
     // other solution variables.
     remap.block (block_vel) = current_linearization_point.block (block_vel);
-    remap.block (block_p) = current_linearization_point.block (block_p);
+
+    if (parameters.include_melt_transport)
+      {
+        convert_pressure_blocks(current_linearization_point, true, distributed_stokes_solution);
+        remap.block (block_p) = distributed_stokes_solution.block (block_p);
+      }
+    else
+      remap.block (block_p) = current_linearization_point.block (block_p);
 
     // before solving we scale the initial solution to the right dimensions
     denormalize_pressure (remap);
@@ -731,6 +740,13 @@ namespace aspect
     remove_nullspace(solution, distributed_stokes_solution);
 
     normalize_pressure(solution);
+
+    // convert melt pressures:
+    if (parameters.include_melt_transport)
+      {
+        convert_pressure_blocks(solution, false, distributed_stokes_solution);
+        solution.block(block_p) = distributed_stokes_solution.block(block_p);
+      }
 
     // print the number of iterations to screen and record it in the
     // statistics file
