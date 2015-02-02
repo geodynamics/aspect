@@ -1,0 +1,71 @@
+# In ASPECT 1.2, we managed to get the adiabatic initial conditions
+# wrong in the rare case of no prescribed boundary temperature and a 
+# prescribed bottom thermal boundary layer age. This case makes no sense,
+# but it might occur by accident. The expected result is no boundary layer,
+# however previously we computed a boundary layer against the adiabatic
+# surface temperature. This test veryfies the solution of this bug.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+
+
+############ These parameters are of interest for this test: #########
+
+set Adiabatic surface temperature = 1200
+subsection Initial conditions
+  set Model name = adiabatic
+
+  subsection Adiabatic
+    set Age top boundary layer = 1e8
+    set Age bottom boundary layer = 1e8
+  end
+end
+
+
+########################################################################
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius = 3481000
+    set Outer radius = 6371000
+    set Opening angle = 90
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+end
+
+
+subsection Model settings
+  set Include adiabatic heating               = true
+  set Fixed temperature boundary indicators   =
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 0, 2, 3
+  set Zero velocity boundary indicators       = 1
+end
+
+subsection Postprocess
+  set List of postprocessors = temperature statistics
+end
+

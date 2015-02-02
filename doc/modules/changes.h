@@ -7,6 +7,13 @@
  *
  * <ol>
  *
+ * <li> Fixed: There was a small bug in ASPECT 1.2 that only occured in
+ * the adiabatic initial temperature plugin, when no temperature
+ * was prescribed at any boundary, the model was compressible and a
+ * bottom thermal boundary layer was included. This is fixed now.
+ * <br>
+ * (Rene Gassmoeller, 2015/02/02)
+ *
  * <li> Fixed: The Steinberger material model had a bug in case a
  * material table was used that had not the same number of points in
  * temperature and pressure direction. The table was truncated in pressure

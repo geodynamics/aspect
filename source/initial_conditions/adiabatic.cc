@@ -68,7 +68,7 @@ namespace aspect
                               this->get_boundary_temperature().maximal_temperature(
                                 this->get_fixed_temperature_boundary_indicators())
                               :
-                              adiabatic_surface_temperature;
+                              adiabatic_bottom_temperature;
 
       // get a representative profile of the compositional fields as an input
       // for the material model
