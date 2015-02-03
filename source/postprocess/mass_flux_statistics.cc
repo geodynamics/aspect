@@ -51,15 +51,15 @@ namespace aspect
     {
       // First determine the units for the output
       const std::string unit = (this->convert_output_to_years())
-          ?
-              "kg/yr"
-              :
-              "kg/s";
+                               ?
+                               "kg/yr"
+                               :
+                               "kg/s";
       const double in_years = (this->convert_output_to_years())
-         ?
-             year_in_seconds
-             :
-             1.0;
+                              ?
+                              year_in_seconds
+                              :
+                              1.0;
 
       // create a quadrature formula based on the temperature element alone.
       const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+1);
