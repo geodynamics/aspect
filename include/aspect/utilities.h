@@ -74,6 +74,20 @@ namespace aspect
 
 
 
+    /**
+     * AsciiDataLookup reads in files containing input data
+       in ascii format. Note the required format of the
+       input data: The first lines may contain any number of comments
+       if they begin with '#', but one of these lines needs to
+       contain the number of grid points in each dimension as
+       for example '# POINTS: 3 3'. The order of the columns
+       has to be 'coordinates data' with @p dim coordinate columns
+       and @p components data columns. Note that the data in the input
+       files need to be sorted in a specific order:
+       the first coordinate needs to ascend first,
+       followed by the second and so on in order to
+       assign the correct data to the prescribed coordinates.
+     */
     template <int dim>
     class AsciiDataLookup
     {
@@ -135,6 +149,10 @@ namespace aspect
 
     };
 
+    /**
+     * AsciDataBase is a generic plugin used for declaring and
+     * reading the parameters from the parameter file.
+     */
     template <int dim>
     class AsciiDataBase : public SimulatorAccess<dim>
     {

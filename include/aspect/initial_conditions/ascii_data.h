@@ -35,36 +35,40 @@ namespace aspect
 
     namespace internal
     {
+      /**
+       * A base class that implements initial conditions
+       * determined from a AsciiData input file.
+       */
       template <int dim>
-           class AsciiDataInitial : public Utilities::AsciiDataBase<dim>
-           {
-             public:
-               /**
-                * Constructor
-                */
-               AsciiDataInitial();
+      class AsciiDataInitial : public Utilities::AsciiDataBase<dim>
+      {
+        public:
+          /**
+           * Constructor
+           */
+          AsciiDataInitial();
 
-               /**
-                * Initialization function. This function is called once at the
-                * beginning of the program. Checks preconditions.
-                */
-               virtual
-               void
-               initialize (const unsigned int components);
+          /**
+           * Initialization function. This function is called once at the
+           * beginning of the program. Checks preconditions.
+           */
+          virtual
+          void
+          initialize (const unsigned int components);
 
 
-               double
-               get_data_component (const Point<dim>                    &position,
-                                   const unsigned int                   component) const;
+          double
+          get_data_component (const Point<dim>                    &position,
+                              const unsigned int                   component) const;
 
-             protected:
-               /**
-                * Pointer to an object that reads and processes data we get from
-                * text files.
-                */
-               std_cxx11::shared_ptr<::aspect::Utilities::AsciiDataLookup<dim> > lookup;
+        protected:
+          /**
+           * Pointer to an object that reads and processes data we get from
+           * text files.
+           */
+          std_cxx11::shared_ptr<::aspect::Utilities::AsciiDataLookup<dim> > lookup;
 
-           };
+      };
     }
 
     /**

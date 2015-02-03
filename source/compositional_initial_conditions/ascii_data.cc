@@ -51,29 +51,29 @@ namespace aspect
 
 
     template <int dim>
-     void
-     AsciiData<dim>::declare_parameters (ParameterHandler &prm)
-     {
-       prm.enter_subsection("Compositional initial conditions");
-       {
-         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                           "$ASPECT_SOURCE_DIR/data/compositional-initial-conditions/ascii-data/test/",
-                                                           "box_2d.txt");
-       }
-       prm.leave_subsection();
-     }
+    void
+    AsciiData<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Compositional initial conditions");
+      {
+        Utilities::AsciiDataBase<dim>::declare_parameters(prm,
+                                                          "$ASPECT_SOURCE_DIR/data/compositional-initial-conditions/ascii-data/test/",
+                                                          "box_2d.txt");
+      }
+      prm.leave_subsection();
+    }
 
 
-     template <int dim>
-     void
-     AsciiData<dim>::parse_parameters (ParameterHandler &prm)
-     {
-       prm.enter_subsection("Compositional initial conditions");
-       {
-         Utilities::AsciiDataBase<dim>::parse_parameters(prm);
-       }
-       prm.leave_subsection();
-     }
+    template <int dim>
+    void
+    AsciiData<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Compositional initial conditions");
+      {
+        Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+      }
+      prm.leave_subsection();
+    }
   }
 }
 

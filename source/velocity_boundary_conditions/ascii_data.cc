@@ -39,7 +39,7 @@ namespace aspect
     AsciiData<dim>::initialize ()
     {
       const std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
-        bvs = this->get_prescribed_velocity_boundary_conditions();
+      bvs = this->get_prescribed_velocity_boundary_conditions();
       for (typename std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::const_iterator
            p = bvs.begin();
            p != bvs.end(); ++p)
@@ -51,7 +51,7 @@ namespace aspect
                   ExcMessage("Did not find the boundary indicator for the prescribed data plugin."));
 
       BoundaryTemperature::internal::AsciiDataBoundary<dim>::initialize(boundary_ids,
-                                                   dim);
+                                                                        dim);
     }
 
     template <int dim>
@@ -70,10 +70,10 @@ namespace aspect
     boundary_velocity (const Point<dim> &position) const
     {
       Tensor<1,dim> velocity;
-      for (unsigned int i = 0; i < dim;i++)
+      for (unsigned int i = 0; i < dim; i++)
         velocity[i] = BoundaryTemperature::internal::AsciiDataBoundary<dim>::get_data_component(*(boundary_ids.begin()),
-                                                                            position,
-                                                                            i);
+                      position,
+                      i);
       return velocity;
     }
 
@@ -85,8 +85,8 @@ namespace aspect
       prm.enter_subsection("Boundary velocity model");
       {
         BoundaryTemperature::internal::AsciiDataBoundary<dim>::declare_parameters(prm,
-                                                              "$ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/ascii-data/test/",
-                                                              "box_2d_%s.%d.txt");
+                                                                                  "$ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/ascii-data/test/",
+                                                                                  "box_2d_%s.%d.txt");
       }
       prm.leave_subsection();
     }
@@ -121,7 +121,7 @@ namespace aspect
                                                  "ascii data",
                                                  "Implementation of a model in which the boundary "
                                                  "velocity is derived from files containing data "
-						 "in ascii format. Note the required format of the "
+                                                 "in ascii format. Note the required format of the "
                                                  "input data: The first lines may contain any number of comments"
                                                  "if they begin with '#', but one of these lines needs to"
                                                  "contain the number of grid points in each dimension as"

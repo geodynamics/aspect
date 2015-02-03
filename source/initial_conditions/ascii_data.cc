@@ -41,13 +41,13 @@ namespace aspect
       AsciiDataInitial<dim>::initialize (const unsigned int components)
       {
         lookup.reset(new Utilities::AsciiDataLookup<dim> (components,
-            Utilities::AsciiDataBase<dim>::scale_factor));
+                                                          Utilities::AsciiDataBase<dim>::scale_factor));
 
         const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
-            + Utilities::AsciiDataBase<dim>::data_file_name;
+                                     + Utilities::AsciiDataBase<dim>::data_file_name;
 
         this->get_pcout() << std::endl << "   Loading Ascii data initial file "
-            << filename << "." << std::endl << std::endl;
+                          << filename << "." << std::endl << std::endl;
         lookup->load_file(filename);
       }
 
@@ -55,20 +55,20 @@ namespace aspect
       double
       AsciiDataInitial<dim>::
       get_data_component (const Point<dim>                    &position,
-          const unsigned int                   component) const
-          {
+                          const unsigned int                   component) const
+      {
         Point<dim> internal_position = position;
 
         if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0)
           {
             const std_cxx11::array<double,dim> spherical_position =
-                ::aspect::Utilities::spherical_coordinates(position);
+              ::aspect::Utilities::spherical_coordinates(position);
 
             for (unsigned int i = 0; i < dim; i++)
               internal_position[i] = spherical_position[i];
           }
         return lookup->get_data(internal_position,component);
-          }
+      }
     }
 
     template <int dim>
@@ -94,29 +94,29 @@ namespace aspect
 
 
     template <int dim>
-     void
-     AsciiData<dim>::declare_parameters (ParameterHandler &prm)
-     {
-       prm.enter_subsection("Initial conditions");
-       {
-         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                           "$ASPECT_SOURCE_DIR/data/initial-conditions/ascii-data/test/",
-                                                           "box_2d.txt");
-       }
-       prm.leave_subsection();
-     }
+    void
+    AsciiData<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Initial conditions");
+      {
+        Utilities::AsciiDataBase<dim>::declare_parameters(prm,
+                                                          "$ASPECT_SOURCE_DIR/data/initial-conditions/ascii-data/test/",
+                                                          "box_2d.txt");
+      }
+      prm.leave_subsection();
+    }
 
 
-     template <int dim>
-     void
-     AsciiData<dim>::parse_parameters (ParameterHandler &prm)
-     {
-       prm.enter_subsection("Initial conditions");
-       {
-         Utilities::AsciiDataBase<dim>::parse_parameters(prm);
-       }
-       prm.leave_subsection();
-     }
+    template <int dim>
+    void
+    AsciiData<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Initial conditions");
+      {
+        Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+      }
+      prm.leave_subsection();
+    }
   }
 }
 
