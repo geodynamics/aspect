@@ -262,9 +262,16 @@ namespace aspect
 
         /**
          * Pressure unknowns that are locally owned. This IndexSet is needed
-         * if velocity and pressure end up in the same block.
+         * if velocity and pressure end up in the same block. If melt transport
+         * is enabled, this will contain both pressures.
          */
         IndexSet locally_owned_pressure_dofs;
+
+        /**
+         * Fluid pressure unknowns that are locally owned. Only valid if
+         * melt transport is enabled.
+         */
+        IndexSet locally_owned_fluid_pressure_dofs;
       };
       /**
        * A variable that contains index sets describing which of the globally

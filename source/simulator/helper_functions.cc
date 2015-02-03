@@ -958,51 +958,20 @@ namespace aspect
         // we need to operate only on p_f not on p_c
         double pressure_sum = 0.0;
 
-        std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
-
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = dof_handler.begin_active(),
-        endc = dof_handler.end();
-        for (; cell != endc; ++cell)
-          if (cell->is_locally_owned())
-            {
-              cell->get_dof_indices (local_dof_indices);
-              for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
-                {
-                  const unsigned int pressure_idx
-                  = finite_element.component_to_system_index(introspection.component_indices.pressure,
-                      /*dof index within component=*/ j);
-                  const unsigned int global_pressure_idx = local_dof_indices[pressure_idx];
-
-                  // skip entries that are not locally owned:
-                  if (!dof_handler.locally_owned_dofs().is_element(global_pressure_idx))
-                    continue;
-
-                  pressure_sum += vector(global_pressure_idx);
-                }
-            }
+        for (unsigned int i=0; i < introspection.index_sets.locally_owned_fluid_pressure_dofs.n_elements(); ++i)
+           {
+             types::global_dof_index idx = introspection.index_sets.locally_owned_fluid_pressure_dofs.nth_index_in_set(i);
+             pressure_sum += vector(idx);
+           }
 
         const double global_pressure_sum = Utilities::MPI::sum(pressure_sum, mpi_communicator);
         const double correction = (global_normal_velocity_integral - global_pressure_sum) / global_volume;
 
-        for (cell = dof_handler.begin_active(); cell != endc; ++cell)
-          if (cell->is_locally_owned())
-            {
-              cell->get_dof_indices (local_dof_indices);
-              for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
-                {
-                  const unsigned int pressure_idx
-                  = finite_element.component_to_system_index(introspection.component_indices.pressure,
-                      /*dof index within component=*/ j);
-                  const unsigned int global_pressure_idx = local_dof_indices[pressure_idx];
-
-                  // skip entries that are not locally owned:
-                  if (!dof_handler.locally_owned_dofs().is_element(global_pressure_idx))
-                    continue;
-
-                  vector(global_pressure_idx) += correction * pressure_shape_function_integrals(global_pressure_idx);
-                }
-            }
+        for (unsigned int i=0; i < introspection.index_sets.locally_owned_fluid_pressure_dofs.n_elements(); ++i)
+           {
+             types::global_dof_index idx = introspection.index_sets.locally_owned_fluid_pressure_dofs.nth_index_in_set(i);
+             vector(idx) += correction * pressure_shape_function_integrals(idx);
+           }
 
         vector.compress(VectorOperation::insert);
       }

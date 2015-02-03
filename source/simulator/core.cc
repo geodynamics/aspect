@@ -1187,6 +1187,7 @@ namespace aspect
       if (parameters.include_melt_transport)
         {
            introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure | introspection.component_masks.compaction_pressure);
+           introspection.index_sets.locally_owned_fluid_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
         }
       else
 	{
