@@ -196,17 +196,18 @@ namespace aspect
         public:
           /**
            * The function classes have to implement that want to output
-           * cellwise data. @return A pair of values with the following
-           * meaning: - The first element provides the name by which this data
-           * should be written to the output file. - The second element is a
-           * pointer to a vector with one element per active cell on the
-           * current processor. Elements corresponding to active cells that
-           * are either artificial or ghost cells (in deal.II language, see
-           * the deal.II glossary) will be ignored but must nevertheless exist
-           * in the returned vector. While implementations of this function
-           * must create this vector, ownership is taken over by the caller of
-           * this function and the caller will take care of destroying the
-           * vector pointed to.
+           * cellwise data.
+           * @return A pair of values with the following meaning: - The first
+           * element provides the name by which this data should be written to
+           * the output file. - The second element is a pointer to a vector
+           * with one element per active cell on the current processor.
+           * Elements corresponding to active cells that are either artificial
+           * or ghost cells (in deal.II language, see the deal.II glossary)
+           * will be ignored but must nevertheless exist in the returned
+           * vector. While implementations of this function must create this
+           * vector, ownership is taken over by the caller of this function
+           * and the caller will take care of destroying the vector pointed
+           * to.
            */
           virtual
           std::pair<std::string, Vector<float> *>
@@ -325,19 +326,14 @@ namespace aspect
          * Interval between the generation of graphical output. This parameter
          * is read from the input file and consequently is not part of the
          * state that needs to be saved and restored.
-         *
-         * For technical reasons, this value is stored as given in the input
-         * file and upon use is either interpreted as seconds or years,
-         * depending on how the global flag in the input parameter file is
-         * set.
          */
         double output_interval;
 
         /**
-         * A time (in years) after which the next time step should produce
-         * graphical output again.
+         * A time (in seconds) at which the last graphical output was supposed
+         * to be produced. Used to check for the next necessary output time.
          */
-        double next_output_time;
+        double last_output_time;
 
         /**
          * Consecutively counted number indicating the how-manyth time we will
@@ -359,26 +355,26 @@ namespace aspect
         unsigned int group_files;
 
         /**
-         * deal.II offers the possibility to linearly interpolate
-         * output fields of higher order elements to a finer resolution.
-         * This somewhat compensates the fact that most visualization
-         * software only offers linear interpolation between grid points
-         * and therefore the output file is a very coarse representation
-         * of the actual solution field. Activating this option increases
-         * the spatial resolution in each dimension by a factor equal
-         * to the polynomial degree used for the velocity finite element
-         * (usually 2).
+         * deal.II offers the possibility to linearly interpolate output
+         * fields of higher order elements to a finer resolution. This
+         * somewhat compensates the fact that most visualization software only
+         * offers linear interpolation between grid points and therefore the
+         * output file is a very coarse representation of the actual solution
+         * field. Activating this option increases the spatial resolution in
+         * each dimension by a factor equal to the polynomial degree used for
+         * the velocity finite element (usually 2).
          */
         bool interpolate_output;
 
         /**
-         * Compute the next output time from the current one. In the simplest
-         * case, this is simply the previous next output time plus the
-         * interval, but in general we'd like to ensure that it is larger than
-         * the current time to avoid falling behind with next_output_time and
-         * having to catch up once the time step becomes larger.
+         * Set the time output was supposed to be written. In the simplest
+         * case, this is the previous last output time plus the interval, but
+         * in general we'd like to ensure that it is the largest supposed
+         * output time, which is smaller than the current time, to avoid
+         * falling behind with last_output_time and having to catch up once
+         * the time step becomes larger. This is done after every output.
          */
-        void set_next_output_time (const double current_time);
+        void set_last_output_time (const double current_time);
 
         /**
          * Record that the mesh changed. This helps some output writers avoid

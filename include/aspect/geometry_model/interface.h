@@ -64,8 +64,8 @@ namespace aspect
 
         /**
          * Initialization function. This function is called once at the
-         * beginning of the program after parse_parameters is run and after the
-         * SimulatorAccess (if applicable) is initialized.
+         * beginning of the program after parse_parameters is run and after
+         * the SimulatorAccess (if applicable) is initialized.
          */
         virtual void initialize ();
 
@@ -139,79 +139,83 @@ namespace aspect
          * Return a mapping from symbolic names of each part of the boundary
          * to the corresponding boundary indicator. This allows users to
          * specify *names*, not just *numbers* in their input files when
-         * describing which parts of the boundary have to satisfy which boundary
-         * conditions.
+         * describing which parts of the boundary have to satisfy which
+         * boundary conditions.
          *
-         * An example would be that the "box" geometry returns a map of the form
-         * <code>{{"left"->0}, {"right"->1}, {"bottom"->2}, {"top"->3}}</code> in
-         * 2d.
+         * An example would be that the "box" geometry returns a map of the
+         * form <code>{{"left"->0}, {"right"->1}, {"bottom"->2},
+         * {"top"->3}}</code> in 2d.
          *
-         * The default implementation of this function returns an empty map. This
-         * still allows the use of a geometry model that does not implement this
-         * function but forces the user to identify parts of the boundary by their
-         * boundary indicator number, rather than using a symbolic name.
+         * The default implementation of this function returns an empty map.
+         * This still allows the use of a geometry model that does not
+         * implement this function but forces the user to identify parts of
+         * the boundary by their boundary indicator number, rather than using
+         * a symbolic name.
          *
-         * @note Names may contain spaces and numbers, but they may not contain
-         * special characters and they should not equal the text representation
-         * of numbers (e.g., a name "10" is ill-advised).
-        *
-        * @note Since in practice boundary indicators can be provided either
-        * via number or symbolic name, the mapping from something given in the
-        * input is not entirely trivial -- in particular, because a function also
-        * has to do some error checking that a given string in fact matches any
-        * known boundary indicator. To this end, use
-        * GeometryModel::translate_boundary_indicator() and
-        * GeometryModel::translate_boundary_indicators().
+         * @note Names may contain spaces and numbers, but they may not
+         * contain special characters and they should not equal the text
+         * representation of numbers (e.g., a name "10" is ill-advised).
+         *
+         * @note Since in practice boundary indicators can be provided either
+         * via number or symbolic name, the mapping from something given in
+         * the input is not entirely trivial -- in particular, because a
+         * function also has to do some error checking that a given string in
+         * fact matches any known boundary indicator. To this end, use
+         * GeometryModel::translate_boundary_indicator() and
+         * GeometryModel::translate_boundary_indicators().
          *
          * @return A map from symbolic names to boundary indicators. The map
          * should provide a symbolic name for each used boundary indicator as
          * returned by get_user_boundary_indicators(). In the end, however, a
-         * geometry model may define multiple symbolic names for the same boundary
-         * or not define any.
+         * geometry model may define multiple symbolic names for the same
+         * boundary or not define any.
          */
         virtual
         std::map<std::string,types::boundary_id>
         get_symbolic_boundary_names_map () const;
 
         /**
-         * For a given name of a boundary component, translate it to
-         * its numeric value -- either by using one of the symbolic values in the
-         * mapping that derived classes provide through the get_symbolic_boundary_names_map()
-         * function, or by converting its string representation into a number.
+         * For a given name of a boundary component, translate it to its
+         * numeric value -- either by using one of the symbolic values in the
+         * mapping that derived classes provide through the
+         * get_symbolic_boundary_names_map() function, or by converting its
+         * string representation into a number.
          *
-         * @param name A name or number (as string). Leading and trailing spaces
-         *   are removed from this string.
+         * @param name A name or number (as string). Leading and trailing
+         * spaces are removed from this string.
          * @return A boundary indicator number corresponding to the given
-         *   name. If the name does not represent either
-         *   a symbolic name or a number, this function will throw an exception
-         *   of type std::string that explains the error.
+         * name. If the name does not represent either a symbolic name or a
+         * number, this function will throw an exception of type std::string
+         * that explains the error.
          */
         types::boundary_id
         translate_symbolic_boundary_name_to_id (const std::string &name) const;
 
         /**
-         * For each one of the given names of boundary components, translate it to
-         * its numeric value -- either by using one of the symbolic values in the
-         * mapping that derived classes provide through the get_symbolic_boundary_names_map()
-         * function, or by converting its string representation into a number.
+         * For each one of the given names of boundary components, translate
+         * it to its numeric value -- either by using one of the symbolic
+         * values in the mapping that derived classes provide through the
+         * get_symbolic_boundary_names_map() function, or by converting its
+         * string representation into a number.
          *
-         * @param names A list of names or numbers (as strings). Leading and trailing spaces
-         *   are removed from the strings.
-         * @return A list of boundary indicator numbers corresponding to the given
-         *   list of names. If one of the given names does not represent either
-         *   a symbolic name or a number, this function will throw an exception
-         *   of type std::string that explains the error.
+         * @param names A list of names or numbers (as strings). Leading and
+         * trailing spaces are removed from the strings.
+         * @return A list of boundary indicator numbers corresponding to the
+         * given list of names. If one of the given names does not represent
+         * either a symbolic name or a number, this function will throw an
+         * exception of type std::string that explains the error.
          */
         std::vector<types::boundary_id>
         translate_symbolic_boundary_names_to_ids (const std::vector<std::string> &names) const;
 
         /**
          * Given a boundary indicator, try and see whether this geometry model
-         * provides a symbolic name for it. If the geometry model does not provide
-         * a symbolic name, return the empty string.
+         * provides a symbolic name for it. If the geometry model does not
+         * provide a symbolic name, return the empty string.
          *
          * @param boundary_id The boundary indicator to be translated.
-         * @return A string representation for this boundary indicator, if one is available.
+         * @return A string representation for this boundary indicator, if one
+         * is available.
          */
         std::string
         translate_id_to_symbol_name (const types::boundary_id boundary_id) const;
@@ -225,6 +229,16 @@ namespace aspect
         virtual
         std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >
         get_periodic_boundary_pairs () const;
+
+        /**
+         * If true, the geometry contains cells with boundaries that are not straight
+         * and have a deal.II boundary object attached to it. If the return value is
+         * @p false, certain operation can be optimized.The default implementation of
+         * this function will return @p true.
+         */
+        virtual
+        bool
+        has_curved_elements() const;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -245,6 +259,7 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+
     };
 
 

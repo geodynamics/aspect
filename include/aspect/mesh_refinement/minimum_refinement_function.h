@@ -69,8 +69,8 @@ namespace aspect
 
       private:
         /**
-         * The coordinate representation to evaluate the function.
-         * Possible choices are depth, cartesian and spherical.
+         * The coordinate representation to evaluate the function. Possible
+         * choices are depth, cartesian and spherical.
          */
         enum coordinates
         {

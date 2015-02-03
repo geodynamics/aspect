@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,6 +34,11 @@ namespace aspect
   {
     template <int dim>
     Interface<dim>::~Interface ()
+    {}
+
+    template <int dim>
+    void
+    Interface<dim>::update ()
     {}
 
     template <int dim>

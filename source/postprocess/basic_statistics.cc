@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -46,8 +46,14 @@ namespace aspect
 
               const double h = this->get_geometry_model().maximal_depth();
 
-              const double dT = this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
-                                - this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators());
+              // dT is only meaningful if boundary temperatures are prescribed, otherwise it is 0
+              const double dT = (&this->get_boundary_temperature())
+                                ?
+                                this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
+                                - this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())
+                                :
+                                0;
+
               // we do not compute the compositions but give the functions below the value 0.0 instead
               std::vector<double> composition_values(this->n_compositional_fields(),0.0);
 
@@ -70,7 +76,7 @@ namespace aspect
               this->get_pcout()<< "     Reference thermal expansion (1/K):             "
                                << material_model.reference_thermal_expansion_coefficient()
                                << std::endl;
-              this->get_pcout()<< "     Temperature contrast across model domain (K): "
+              this->get_pcout()<< "     Temperature contrast across model domain (K):  "
                                << dT
                                << std::endl;
               this->get_pcout()<< "     Model domain depth (m):                        "

@@ -59,8 +59,10 @@ namespace aspect
           /**
            * Constructor.
            *
-           * @param[in] The directory into which output files shall be placed.
-           * @param[in] The MPI communicator that describes this simulation.
+           * @param[in] output_directory The directory into which output files
+           * shall be placed.
+           * @param[in] communicator The MPI communicator that describes this
+           * simulation.
            */
           Interface(const std::string &output_directory,
                     const MPI_Comm     communicator)
@@ -86,9 +88,10 @@ namespace aspect
            * @param [in] current_time Current time of the simulation, given as
            * either years or seconds, as selected in the input file. In other
            * words, output writers do not need to know the units in which time
-           * is described. @return The name of the file that was written, or
-           * any other information that describes what output was produced if
-           * for example multiple files were created.
+           * is described.
+           * @return The name of the file that was written, or any other
+           * information that describes what output was produced if for
+           * example multiple files were created.
            */
           virtual
           std::string
@@ -115,7 +118,9 @@ namespace aspect
        * @param[in] output_directory Directory into which to put the data
        * files
        * @param[in] communicator MPI communicator object that describes this
-       * simulation @return
+       * simulation
+       * @return a pointer to an output object, needs to be deleted by the
+       * caller.
        */
       template <int dim, class T>
       Interface<dim, T> *

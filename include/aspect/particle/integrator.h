@@ -98,8 +98,8 @@ namespace aspect
            * @param [in] pos The position in the data vector to start reading
            * from.
            * @param [in] id_num The id number of the particle to read the data
-           * for. @return The position in the vector of the next unread
-           * double.
+           * for.
+           * @return The position in the vector of the next unread double.
            */
           virtual unsigned int read_data(const std::vector<double> &data, const unsigned int &pos, const double &id_num) = 0;
 
@@ -119,8 +119,8 @@ namespace aspect
       /**
        * Create an integrator object.
        *
-       * @param[in] integrator_name Name of the type of integrator. @return
-       * Pointer to instantiated generator object
+       * @param[in] integrator_name Name of the type of integrator.
+       * @return Pointer to instantiated generator object
        */
       template <int dim, class T>
       Interface<dim, T> *

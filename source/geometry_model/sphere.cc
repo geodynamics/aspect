@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -110,6 +110,13 @@ namespace aspect
     double Sphere<dim>::radius () const
     {
       return R;
+    }
+
+    template <int dim>
+    bool
+    Sphere<dim>::has_curved_elements () const
+    {
+      return true;
     }
 
 

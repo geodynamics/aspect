@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -126,8 +126,13 @@ namespace aspect
       AssertThrow(solidus_curve.is_radius==true,ExcMessage("The solidus curve has to be radius dependent."));
       const GeometryModel::SphericalShell<dim> *spherical_geometry_model=
         dynamic_cast< const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
+
       AssertThrow(spherical_geometry_model!=0,
                   ExcMessage("This initial condition can only be used with spherical shell geometry model."));
+
+      AssertThrow(&this->get_boundary_temperature()!=0,
+                  ExcMessage("This initial condition can only be used with a prescribed boundary temperature."));
+
       T_min=(this->get_boundary_temperature()).minimal_temperature();
 
       // In case of spherical shell calculate spherical coordinates

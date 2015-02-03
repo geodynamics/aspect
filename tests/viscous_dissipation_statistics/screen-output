@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
+--     . version 1.2.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -13,7 +13,7 @@ Number of degrees of freedom: 3,770 (2,187+125+729+729)
    Solving temperature system... 0 iterations.
    Solving composition system 1... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25 iterations.
+   Solving Stokes system... 27 iterations.
 
 Number of active cells: 120 (on 4 levels)
 Number of degrees of freedom: 7,248 (4,215+223+1,405+1,405)
@@ -22,7 +22,7 @@ Number of degrees of freedom: 7,248 (4,215+223+1,405+1,405)
    Solving temperature system... 0 iterations.
    Solving composition system 1... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26 iterations.
+   Solving Stokes system... 28 iterations.
 
 Number of active cells: 176 (on 5 levels)
 Number of degrees of freedom: 10,726 (6,243+321+2,081+2,081)
@@ -31,7 +31,7 @@ Number of degrees of freedom: 10,726 (6,243+321+2,081+2,081)
    Solving temperature system... 0 iterations.
    Solving composition system 1... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26 iterations.
+   Solving Stokes system... 30+1 iterations.
 
    Postprocessing:
      Writing graphical output: output-viscous_dissipation_statistics/solution-00000

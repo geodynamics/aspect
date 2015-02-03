@@ -71,16 +71,15 @@ namespace aspect
   typedef boost::archive::binary_oarchive oarchive;
 
   /**
-   * A class we throw in exceptions in parallel jobs and that we can
-   * silently treat in main(). We do this, for example, in
-   * read_parameters() where each processor would otherwise throw the
-   * same exception and every processor would produce a tangle of
-   * output that is impenetrable in large parallel jobs. The same
-   * situation happens if a linear solver fails. Rather, we make
-   * processor 0 throw the real exception and every other processor
-   * converts the exception it wants to throw to an object of the
-   * current type -- which is caught in main() but doesn't produce any
-   * output (because processor 0 will already produce the output).
+   * A class we throw in exceptions in parallel jobs and that we can silently
+   * treat in main(). We do this, for example, in read_parameters() where each
+   * processor would otherwise throw the same exception and every processor
+   * would produce a tangle of output that is impenetrable in large parallel
+   * jobs. The same situation happens if a linear solver fails. Rather, we
+   * make processor 0 throw the real exception and every other processor
+   * converts the exception it wants to throw to an object of the current type
+   * -- which is caught in main() but doesn't produce any output (because
+   * processor 0 will already produce the output).
    */
   class QuietException {};
 
@@ -202,18 +201,16 @@ void print_aspect_header(Stream &stream)
 
   stream << "-----------------------------------------------------------------------------\n"
          << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
-         << "--     . version 1.2.pre\n" //VERSION-INFO. Do not edit by hand.
+         << "--     . version 1.3.pre\n" //VERSION-INFO. Do not edit by hand.
 #ifdef DEBUG
          << "--     . running in DEBUG mode\n"
 #else
          << "--     . running in OPTIMIZED mode\n"
 #endif
          << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
-#if (DEAL_II_MAJOR*100 + DEAL_II_MINOR) >= 801
   const int n_threads = dealii::multithread_info.n_threads();
   if (n_threads>1)
     stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
-#endif
 #ifdef ASPECT_USE_PETSC
   stream << "--     . using PETSc\n";
 #else

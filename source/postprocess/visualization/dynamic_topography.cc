@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -42,7 +42,9 @@ namespace aspect
 
         // evaluate a single point per cell
         const QMidpoint<dim> quadrature_formula;
-        const unsigned int n_q_points = quadrature_formula.size();
+        const QMidpoint<dim-1> quadrature_formula_face;
+
+        Assert(quadrature_formula_face.size()==1, ExcInternalError());
 
         FEValues<dim> fe_values (this->get_mapping(),
                                  this->get_fe(),
@@ -50,6 +52,11 @@ namespace aspect
                                  update_values   |
                                  update_gradients   |
                                  update_quadrature_points );
+
+        FEFaceValues<dim> fe_face_values (this->get_mapping(),
+                                          this->get_fe(),
+                                          quadrature_formula_face,
+                                          update_JxW_values);
 
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_values.n_quadrature_points, this->n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());
@@ -74,12 +81,11 @@ namespace aspect
                 {
                   bool is_at_top = false;
                   for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                    if (cell->at_boundary(f))
-                      if (this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
-                        {
-                          is_at_top = true;
-                          break;
-                        }
+                    if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
+                      {
+                        is_at_top = true;
+                        break;
+                      }
 
                   if (is_at_top == false)
                     {
@@ -117,6 +123,13 @@ namespace aspect
                 // for each of the quadrature points, evaluate the
                 // stress and compute the component in direction of the
                 // gravity vector
+
+                double dynamic_topography_x_volume = 0;
+                double volume = 0;
+
+                // Compute the integral of the dynamic topography function
+                // over the entire cell, by looping over all quadrature points
+                // (currently, there is only one, but the code is generic).
                 for (unsigned int q=0; q<quadrature_formula.size(); ++q)
                   {
                     const Point<dim> location = fe_values.quadrature_point(q);
@@ -134,13 +147,29 @@ namespace aspect
                     const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
                     const double dynamic_topography = - sigma_rr / gravity.norm() / density;
 
-                    integrated_topography += dynamic_topography * fe_values.JxW(q);
-                    integrated_surface_area += fe_values.JxW(q);
-
-                    (*return_value.second)(cell_index) = dynamic_topography;
+                    // JxW provides the volume quadrature weights. This is a general formulation
+                    // necessary for when a quadrature formula is used that has more than one point.
+                    dynamic_topography_x_volume += dynamic_topography * fe_values.JxW(q);
+                    volume += fe_values.JxW(q);
                   }
+
+                const double dynamic_topography_cell_average = dynamic_topography_x_volume / volume;
+                // Compute the associated surface area to later compute the surfaces weighted integral
+                double surface = 0;
+                for (unsigned int f = 0; f < GeometryInfo<dim>::faces_per_cell; ++f)
+                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
+                    {
+                      fe_face_values.reinit(cell,f);
+                      surface = fe_face_values.JxW(0);
+                    }
+
+                integrated_topography += dynamic_topography_cell_average*surface;
+                integrated_surface_area += surface;
+
+                (*return_value.second)(cell_index) = dynamic_topography_cell_average;
               }
 
+        // Calculate surface weighted average dynamic topography
         const double average_topography = Utilities::MPI::sum (integrated_topography,this->get_mpi_communicator()) / Utilities::MPI::sum (integrated_surface_area,this->get_mpi_communicator());
 
         // if (DT_mean_switch == true) subtract the average dynamic topography,

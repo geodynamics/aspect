@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -90,7 +90,7 @@ namespace aspect
 
 
             max_temp = min_temp + (numtemp-1) * delta_temp;
-            max_press = min_press + (numtemp-1) * delta_press;
+            max_press = min_press + (numpress-1) * delta_press;
 
             density_values.reinit(numtemp,numpress);
             thermal_expansivity_values.reinit(numtemp,numpress);

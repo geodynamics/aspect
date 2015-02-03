@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
+--     . version 1.2.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -16,7 +16,7 @@ Number of free surface degrees of freedom: 2142
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+11 iterations.
+   Solving Stokes system... 0+10 iterations.
 
    Postprocessing:
 

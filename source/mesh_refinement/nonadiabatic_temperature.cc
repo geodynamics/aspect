@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -88,9 +88,12 @@ namespace aspect
               }
           }
 
+      vec_distributed.compress(VectorOperation::insert);
+
       // now create a vector with the requisite ghost elements
       // and use it for estimating the gradients
-      LinearAlgebra::BlockVector vec (this->introspection().index_sets.system_relevant_partitioning,
+      LinearAlgebra::BlockVector vec (this->introspection().index_sets.system_partitioning,
+                                      this->introspection().index_sets.system_relevant_partitioning,
                                       this->get_mpi_communicator());
       vec = vec_distributed;
 

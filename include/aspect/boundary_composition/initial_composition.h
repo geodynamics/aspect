@@ -43,19 +43,10 @@ namespace aspect
     {
       public:
         /**
-         * Return the composition that is to hold at a particular location on
-         * the boundary of the domain. This function returns the constant
-         * compositions read from the parameter file for the inner and outer
-         * boundaries.
+         * This function returns the constant compositions read from the
+         * parameter file for the inner and outer boundaries.
          *
-         * @param geometry_model The geometry model that describes the domain.
-         * This may be used to determine whether the boundary composition
-         * model is implemented for this geometry.
-         * @param boundary_indicator The boundary indicator of the part of the
-         * boundary of the domain on which the point is located at which we
-         * are requesting the composition.
-         * @param location The location of the point at which we ask for the
-         * composition.
+         * @copydoc aspect::BoundaryComposition::Interface::composition()
          */
         virtual
         double composition (const GeometryModel::Interface<dim> &geometry_model,

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -197,11 +197,11 @@ namespace aspect
                              "Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
-          prm.declare_entry ("Number of zones", "100",
+          prm.declare_entry ("Number of zones", "10",
                              Patterns::Integer (1),
                              "The number of zones in depth direction within which we "
                              "are to compute averages. By default, we subdivide the entire "
-                             "domain into 100 depth zones and compute temperature and other "
+                             "domain into 10 depth zones and compute temperature and other "
                              "averages within each of these zones. However, if you have a "
                              "very coarse mesh, it may not make much sense to subdivide "
                              "the domain into so many zones and you may wish to choose "

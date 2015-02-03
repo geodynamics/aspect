@@ -378,6 +378,7 @@ subsection Postprocess
     # step. Units: years if the 'Use years in output instead of seconds'
     # parameter is set; seconds otherwise.
     set Time between graphical output = 1
+    set Number of zones = 10
   end
 
   subsection Visualization

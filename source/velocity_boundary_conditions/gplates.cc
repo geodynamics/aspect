@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -240,7 +240,7 @@ namespace aspect
             // Currently it would not be necessary to update the grid positions at every timestep
             // since they are not allowed to change. In case we allow this later, do it anyway.
             Tensor<1,3> spherical_position = get_grid_point_position(idx_theta,idx_phi,false);
-            if(idx_theta==0 || idx_theta==n_theta-1)
+            if (idx_theta==0 || idx_theta==n_theta-1)
               // Gplate gpml files set the longitude of all points at poles to zero instead of vary from -180 to 180 degrees,
               // we set this here as well to make sure that we get the correct cartesian velocity.
               spherical_position[1]=0.;

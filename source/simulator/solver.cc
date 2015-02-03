@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -265,6 +265,8 @@ namespace aspect
     {
       LinearAlgebra::Vector utmp(src.block(0));
 
+      // first solve with the bottom left block, which we have built
+      // as a mass matrix with the inverse of the viscosity
       {
         SolverControl solver_control(1000, 1e-6 * src.block(1).l2_norm());
 
@@ -279,10 +281,11 @@ namespace aspect
         // convergence without
         // iterating. We simply skip
         // solving in this case.
-        if (src.block(1).l2_norm() > 1e-50 || dst.block(1).l2_norm() > 1e-50)
+        if (src.block(1).l2_norm() > 1e-50)
           {
             try
               {
+                dst.block(1) = 0.0;
                 solver.solve(stokes_preconditioner_matrix.block(1,1),
                              dst.block(1), src.block(1),
                              mp_preconditioner);
@@ -291,11 +294,11 @@ namespace aspect
             // if the solver fails, report the error from processor 0 with some additional
             // information about its location, and throw a quiet exception on all other
             // processors
-            catch (const SolverControl::NoConvergence &exc)
+            catch (const std::exception &exc)
               {
                 if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
                   AssertThrow (false,
-                               ExcMessage (std::string("The iterative solver in BlockSchurPreconditioner::vmult "
+                               ExcMessage (std::string("The iterative (bottom right) solver in BlockSchurPreconditioner::vmult "
                                                        "did not converge. It reported the following error:\n\n")
                                            +
                                            exc.what()))
@@ -307,15 +310,19 @@ namespace aspect
         dst.block(1) *= -1.0;
       }
 
+      // apply the top right block
       {
         stokes_matrix.block(0,1).vmult(utmp, dst.block(1)); //B^T
         utmp*=-1.0;
         utmp.add(src.block(0));
       }
 
+      // now either solve with the top left block (if do_solve_A==true)
+      // or just apply one preconditioner sweep (for the first few
+      // iterations of our two-stage outer GMRES iteration)
       if (do_solve_A == true)
         {
-          SolverControl solver_control(1000, utmp.l2_norm()*1e-2);
+          SolverControl solver_control(10000, utmp.l2_norm()*1e-2);
 #ifdef ASPECT_USE_PETSC
           SolverCG<LinearAlgebra::Vector> solver(solver_control);
 #else
@@ -323,6 +330,7 @@ namespace aspect
 #endif
           try
             {
+              dst.block(0) = 0.0;
               solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
                            a_preconditioner);
               n_iterations_A_ += solver_control.last_step();
@@ -330,11 +338,11 @@ namespace aspect
           // if the solver fails, report the error from processor 0 with some additional
           // information about its location, and throw a quiet exception on all other
           // processors
-          catch (const SolverControl::NoConvergence &exc)
+          catch (const std::exception &exc)
             {
               if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
                 AssertThrow (false,
-                             ExcMessage (std::string("The iterative solver in BlockSchurPreconditioner::vmult "
+                             ExcMessage (std::string("The iterative (top left) solver in BlockSchurPreconditioner::vmult "
                                                      "did not converge. It reported the following error:\n\n")
                                          +
                                          exc.what()))
@@ -393,7 +401,6 @@ namespace aspect
       introspection.index_sets.system_partitioning[block_idx],
       mpi_communicator);
 
-    // solve the linear system:
     current_constraints.set_zero(distributed_solution);
 
     // Compute the residual before we solve and return this at the end.
@@ -403,6 +410,7 @@ namespace aspect
                                      distributed_solution.block(block_idx),
                                      system_rhs.block(block_idx));
 
+    // solve the linear system:
     try
       {
         solver.solve (system_matrix.block(block_idx,block_idx),
@@ -417,7 +425,7 @@ namespace aspect
     // if the solver fails, report the error from processor 0 with some additional
     // information about its location, and throw a quiet exception on all other
     // processors
-    catch (const SolverControl::NoConvergence &exc)
+    catch (const std::exception &exc)
       {
         if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
           AssertThrow (false,
@@ -708,7 +716,7 @@ namespace aspect
         // if the solver fails, report the error from processor 0 with some additional
         // information about its location, and throw a quiet exception on all other
         // processors
-        catch (const SolverControl::NoConvergence &exc)
+        catch (const std::exception &exc)
           {
             if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
               AssertThrow (false,

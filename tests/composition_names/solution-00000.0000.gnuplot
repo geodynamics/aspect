@@ -5,8 +5,8 @@
 # For a description of the GNUPLOT format see the GNUPLOT manual.
 #
 # <x> <y> <velocity> <velocity> <p> <T> <peridotite> <eclogite> 
-0 0 0 0 1.5993e+10 1873 0 0 
-500000 0 0 0 1.60137e+10 1623 0 0 
+0 0 0 0 1.6037e+10 1873 0 0 
+500000 0 0 0 1.60577e+10 1623 0 0 
 
 0 500000 0 0 1.03125e+07 1873 0 0 
 500000 500000 0 0 -1.03125e+07 1623 0 0 
