@@ -412,15 +412,16 @@ namespace aspect
          ++p)
       open_velocity_boundary_indicators.erase (*p);
 
-    // we need to do the rhs compatibility modification, if the model is
-    // compressible, and there is no open boundary to balance the pressure
-    // in the case of melt migration we use the direct solver and can't
-    // do this modification (TODO: do we need it?)
-    do_pressure_rhs_compatibility_modification = (material_model->is_compressible()
+    // We need to do the rhs compatibility modification, if the model is
+    // compressible or compactible (in the case of melt transport), and
+    // there is no open boundary to balance the pressure.
+    // In the case of the direct solver we can't  do this modification
+    // (TODO: do we need it?)
+    do_pressure_rhs_compatibility_modification = ((material_model->is_compressible() || parameters.include_melt_transport)
                                                   &&
                                                   (open_velocity_boundary_indicators.size() == 0)
                                                   &&
-                                                  (!parameters.include_melt_transport));
+                                                  (!parameters.use_direct_stokes_solver));
 
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
