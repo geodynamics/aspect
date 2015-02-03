@@ -36,7 +36,7 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      InitialConditions::internal::AsciiDataInitial<dim>::initialize(this->n_compositional_fields());
+      Utilities::AsciiDataInitial<dim>::initialize(this->n_compositional_fields());
     }
 
 
@@ -46,7 +46,7 @@ namespace aspect
     initial_composition (const Point<dim> &position,
                          const unsigned int n_comp) const
     {
-      return InitialConditions::internal::AsciiDataInitial<dim>::get_data_component(position,n_comp);
+      return Utilities::AsciiDataInitial<dim>::get_data_component(position,n_comp);
     }
 
 

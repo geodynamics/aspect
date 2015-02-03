@@ -23,7 +23,7 @@
 #define __aspect__boundary_composition_ascii_data_h
 
 #include <aspect/boundary_composition/interface.h>
-#include <aspect/boundary_temperature/ascii_data.h>
+
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
@@ -41,7 +41,7 @@ namespace aspect
      * @ingroup BoundaryCompositions
      */
     template <int dim>
-    class AsciiData : public BoundaryTemperature::internal::AsciiDataBoundary<dim>, public Interface<dim>
+    class AsciiData : public Utilities::AsciiDataBoundary<dim>, public Interface<dim>
     {
       public:
         /**

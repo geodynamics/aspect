@@ -39,7 +39,7 @@ namespace aspect
     {
       const std::set<types::boundary_id> boundary_ids = this->get_fixed_composition_boundary_indicators();
 
-      BoundaryTemperature::internal::AsciiDataBoundary<dim>::initialize(boundary_ids,
+      Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids,
                                                                         this->n_compositional_fields());
     }
 
@@ -50,7 +50,7 @@ namespace aspect
     {
       Interface<dim>::update ();
 
-      BoundaryTemperature::internal::AsciiDataBoundary<dim>::update();
+      Utilities::AsciiDataBoundary<dim>::update();
     }
 
 
@@ -63,7 +63,7 @@ namespace aspect
                  const unsigned int                   compositional_field) const
     {
       const types::boundary_id boundary_id(boundary_indicator);
-      return BoundaryTemperature::internal::AsciiDataBoundary<dim>::get_data_component(boundary_id,
+      return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_id,
              position,
              compositional_field);
     }
@@ -74,7 +74,7 @@ namespace aspect
     {
       prm.enter_subsection("Boundary composition model");
       {
-        BoundaryTemperature::internal::AsciiDataBoundary<dim>::declare_parameters(prm,
+        Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
                                                                                   "$ASPECT_SOURCE_DIR/data/boundary-composition/ascii-data/test/",
                                                                                   "box_2d_%s.%d.txt");
       }
@@ -88,7 +88,7 @@ namespace aspect
     {
       prm.enter_subsection("Boundary composition model");
       {
-        BoundaryTemperature::internal::AsciiDataBoundary<dim>::parse_parameters(prm);
+        Utilities::AsciiDataBoundary<dim>::parse_parameters(prm);
       }
       prm.leave_subsection();
     }
