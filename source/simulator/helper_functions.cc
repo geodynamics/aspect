@@ -1047,12 +1047,12 @@ namespace aspect
 
           for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
             {
-              unsigned int pressure_idx
+              const unsigned int pressure_idx
               = finite_element.component_to_system_index(introspection.component_indices.pressure,
                   /*dof index within component=*/ j);
 
               // skip entries that are not locally owned:
-              if (!dof_handler.locally_owned_dofs().is_element(pressure_idx))
+              if (!dof_handler.locally_owned_dofs().is_element(local_dof_indices[pressure_idx]))
                 continue;
 
               unsigned int p_c_idx
