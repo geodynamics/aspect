@@ -1069,10 +1069,15 @@ namespace aspect
       /**
        * Invert the action of the function above.
        *
+       * This function modifies @p vector in-place and uses a second copy with relevant
+       * dofs (@p relevant_vector) for accessing the pressure values. Both @p vector and @p relevant_vector are expected to already contain
+       * the correct pressure values.
+       *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void denormalize_pressure(LinearAlgebra::BlockVector &vector);
+      void denormalize_pressure(LinearAlgebra::BlockVector &vector,
+          const LinearAlgebra::BlockVector &relevant_vector);
 
 
       /**

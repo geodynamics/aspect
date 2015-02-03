@@ -481,8 +481,8 @@ namespace aspect
         // nonlinear residual (see initial_residual below).
         // TODO: if there was an easy way to know if the caller needs the
         // initial residual we could skip all of this stuff.
-        denormalize_pressure (solution);
         distributed_stokes_solution.block(0) = solution.block(0);
+        denormalize_pressure (distributed_stokes_solution, solution);
         current_constraints.set_zero (distributed_stokes_solution);
 
         // Undo the pressure scaling:
@@ -601,7 +601,7 @@ namespace aspect
       remap.block (block_p) = current_linearization_point.block (block_p);
 
     // before solving we scale the initial solution to the right dimensions
-    denormalize_pressure (remap);
+    denormalize_pressure (remap, current_linearization_point);
     current_constraints.set_zero (remap);
     remap.block (block_p) /= pressure_scaling;
     // if the model is compressible then we need to adjust the right hand

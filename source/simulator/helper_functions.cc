@@ -801,7 +801,7 @@ namespace aspect
    * inverse to normalize_pressure.
    */
   template <int dim>
-  void Simulator<dim>::denormalize_pressure (LinearAlgebra::BlockVector &vector)
+  void Simulator<dim>::denormalize_pressure (LinearAlgebra::BlockVector &vector, const LinearAlgebra::BlockVector &relevant_vector)
   {
     if (parameters.pressure_normalization == "no")
       return;
@@ -817,9 +817,6 @@ namespace aspect
             // velocity and pressure are in the same block, so we have to modify the values manually
 
             const unsigned int block_idx = introspection.block_indices.pressure;
-            LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.stokes_partitioning,
-                                                           mpi_communicator);
-            distributed_vector.block(block_idx) = vector.block(block_idx);
 
             std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
             typename DoFHandler<dim>::active_cell_iterator
@@ -838,12 +835,11 @@ namespace aspect
                       // then adjust its value. Note that because we end up touching
                       // entries more than once, we are not simply incrementing
                       // distributed_vector but copy from the unchanged vector.
-                      distributed_vector(local_dof_indices[local_dof_index])
-                        = vector(local_dof_indices[local_dof_index]) - pressure_adjustment;
+                      vector(local_dof_indices[local_dof_index])
+                        = relevant_vector(local_dof_indices[local_dof_index]) - pressure_adjustment;
                     }
                 }
-            distributed_vector.compress(VectorOperation::insert);
-            vector.block(block_idx) = distributed_vector.block(block_idx);
+            vector.compress(VectorOperation::insert);
           }
       }
     else
@@ -883,6 +879,8 @@ namespace aspect
               // then adjust its value
               vector (local_dof_indices[first_pressure_dof]) -= pressure_adjustment;
             }
+
+        vector.compress(VectorOperation::insert);
       }
   }
 
@@ -1023,25 +1021,18 @@ namespace aspect
 
                   output_solution(local_dof_indices[pressure_idx]) = p_f;
                   output_solution(local_dof_indices[p_c_idx]) = p_c;
-
-//                  std::cout << "(p_s, p_f) -> (p_f, p_c) " << p_s << ", " << p_f << ", " << phi << " -> "
-//                            << p_f << ", " << p_c << std::endl;
                 }
               else
                 // (p_f, p_c) -> (p_s, p_f)
                 {
                   double p_f = input_solution(local_dof_indices[pressure_idx]);
-                  double p_c = 0.0;
                   double p_s;
-                  if (phi >(1.0-parameters.melt_transport_threshold) || (phi == 0.0))
+                  if (phi >(1.0-parameters.melt_transport_threshold) || (phi <= 0.0))
                     p_s = p_f;
                   else
                   {
-                    p_c = input_solution(local_dof_indices[p_c_idx]);
+                    double p_c = input_solution(local_dof_indices[p_c_idx]);
                     p_s = (p_c - (phi-1.0) * p_f) / (1.0-phi);
-
-//                    std::cout << "(p_f, p_c) -> (p_s, p_f) " << p_f << ", " << p_c << ", " << phi << " -> "
-//                              << p_s << ", " << p_f << std::endl;
                   }
 
                   output_solution(local_dof_indices[pressure_idx]) = p_s;
@@ -1388,7 +1379,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template struct Simulator<dim>::AdvectionField; \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector); \
+  template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector, const LinearAlgebra::BlockVector &relevant_vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
   template std::pair<double,bool> Simulator<dim>::compute_time_step () const; \
