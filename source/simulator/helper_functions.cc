@@ -897,13 +897,6 @@ namespace aspect
   {
     if (parameters.use_locally_conservative_discretization)
       AssertThrow(false, ExcNotImplemented());
-    Assert(!parameters.include_melt_transport,
-        ExcMessage("compressible models do not work with melt transport yet."));
-
-    // TODO: currently does not work if velocity and
-    // pressure are in the same block.
-    AssertThrow(introspection.block_indices.velocities != introspection.block_indices.pressure,
-           ExcNotImplemented());
 
     // In the following we integrate the normal velocity over every surface
     // of the model. This integral is part of the correction term that needs
@@ -953,10 +946,66 @@ namespace aspect
     const double global_normal_velocity_integral =
       Utilities::MPI::sum (local_normal_velocity_integral,mpi_communicator);
 
-    const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
-    const double correction = (global_normal_velocity_integral - mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
+    if (!parameters.include_melt_transport && introspection.block_indices.velocities != introspection.block_indices.pressure)
+      {
+        const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
+        const double correction = (global_normal_velocity_integral - mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
 
-    vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
+        vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
+      }
+    else
+      {
+        // we need to operate only on p_f not on p_c
+        double pressure_sum = 0.0;
+
+        std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = dof_handler.begin_active(),
+        endc = dof_handler.end();
+        for (; cell != endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              cell->get_dof_indices (local_dof_indices);
+              for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
+                {
+                  const unsigned int pressure_idx
+                  = finite_element.component_to_system_index(introspection.component_indices.pressure,
+                      /*dof index within component=*/ j);
+                  const unsigned int global_pressure_idx = local_dof_indices[pressure_idx];
+
+                  // skip entries that are not locally owned:
+                  if (!dof_handler.locally_owned_dofs().is_element(global_pressure_idx))
+                    continue;
+
+                  pressure_sum += vector(global_pressure_idx);
+                }
+            }
+
+        const double global_pressure_sum = Utilities::MPI::sum(pressure_sum, mpi_communicator);
+        const double correction = (global_normal_velocity_integral - global_pressure_sum) / global_volume;
+
+        for (cell = dof_handler.begin_active(); cell != endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              cell->get_dof_indices (local_dof_indices);
+              for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
+                {
+                  const unsigned int pressure_idx
+                  = finite_element.component_to_system_index(introspection.component_indices.pressure,
+                      /*dof index within component=*/ j);
+                  const unsigned int global_pressure_idx = local_dof_indices[pressure_idx];
+
+                  // skip entries that are not locally owned:
+                  if (!dof_handler.locally_owned_dofs().is_element(global_pressure_idx))
+                    continue;
+
+                  vector(global_pressure_idx) += correction * pressure_shape_function_integrals(global_pressure_idx);
+                }
+            }
+
+        vector.compress(VectorOperation::insert);
+      }
   }
 
 
