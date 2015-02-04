@@ -27,6 +27,7 @@
 #include <deal.II/base/table.h>
 #include <deal.II/base/table_indices.h>
 #include <deal.II/base/function_lib.h>
+#include <deal.II/base/exceptions.h>
 
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
@@ -374,7 +375,7 @@ namespace aspect
                   lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
                   lookups.find(*boundary_id)->second->load_file(create_filename (next_file_number,*boundary_id));
                 }
-              catch (...)
+              catch (ExcMessage &e)
                 {
                   end_time_dependence (current_file_number, *boundary_id);
                 }
@@ -516,7 +517,7 @@ namespace aspect
             lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
             lookups.find(boundary_id)->second->load_file(create_filename (current_file_number,boundary_id));
           }
-        catch (...)
+        catch (ExcMessage &e)
           // If loading current_time_step failed, end time dependent part with old_file_number.
           {
             try
@@ -524,7 +525,7 @@ namespace aspect
                 end_time_dependence (old_file_number,boundary_id);
                 return;
               }
-            catch (...)
+            catch (ExcMessage &e)
               {
                 // If loading the old file fails (e.g. there was no old file), cancel the model run.
                 // We might get here, if the model time step is so large that step t is before the
@@ -557,7 +558,7 @@ namespace aspect
       // at least tried to be loaded before, and if it fails, it should have done before (except from
       // hard drive errors, in which case the exception is the right thing to be thrown).
 
-      catch (...)
+      catch (ExcMessage &e)
         {
           end_time_dependence (current_file_number,boundary_id);
         }

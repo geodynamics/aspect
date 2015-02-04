@@ -53,7 +53,6 @@ namespace aspect
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
-        virtual
         void
         initialize ();
 
@@ -63,7 +62,6 @@ namespace aspect
          * necessary and outputs a warning if the end of the set of data
          * files is reached.
          */
-        virtual
         void
         update ();
 

@@ -154,7 +154,7 @@ namespace aspect
      * reading the parameters from the parameter file.
      */
     template <int dim>
-    class AsciiDataBase : public SimulatorAccess<dim>
+    class AsciiDataBase
     {
       public:
         /**
@@ -174,7 +174,6 @@ namespace aspect
         /**
          * Read the parameters from the parameter file.
          */
-        virtual
         void
         parse_parameters (ParameterHandler &prm);
 
@@ -204,7 +203,7 @@ namespace aspect
      * determined from a AsciiData input file.
      */
     template <int dim>
-    class AsciiDataBoundary : public Utilities::AsciiDataBase<dim>
+    class AsciiDataBoundary : public Utilities::AsciiDataBase<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -243,10 +242,12 @@ namespace aspect
          * necessary and outputs a warning if the end of the set of data
          * files is reached.
          */
-        virtual
         void
         update();
 
+        /**
+         * Returns the data component at the given position.
+         */
         double
         get_data_component (const types::boundary_id             boundary_indicator,
                             const Point<dim>                    &position,
@@ -357,7 +358,7 @@ namespace aspect
      * determined from a AsciiData input file.
      */
     template <int dim>
-    class AsciiDataInitial : public Utilities::AsciiDataBase<dim>
+    class AsciiDataInitial : public Utilities::AsciiDataBase<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -374,6 +375,9 @@ namespace aspect
         initialize (const unsigned int components);
 
 
+        /**
+         * Returns the data component at the given position.
+         */
         double
         get_data_component (const Point<dim>                    &position,
                             const unsigned int                   component) const;

@@ -52,7 +52,6 @@ namespace aspect
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
-        virtual
         void
         initialize ();
 
@@ -62,7 +61,6 @@ namespace aspect
          * necessary and outputs a warning if the end of the set of data
          * files is reached.
          */
-        virtual
         void
         update ();
 
@@ -82,7 +80,6 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        virtual
         double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
@@ -92,7 +89,6 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        virtual
         double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
 
