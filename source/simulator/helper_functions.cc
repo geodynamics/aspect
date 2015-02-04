@@ -1024,7 +1024,7 @@ namespace aspect
               if (!dof_handler.locally_owned_dofs().is_element(local_dof_indices[pressure_idx]))
                 continue;
 
-              unsigned int p_c_idx
+              const unsigned int p_c_idx
               = finite_element.component_to_system_index(introspection.component_indices.compaction_pressure,
                   /*dof index within component=*/ j);
 
