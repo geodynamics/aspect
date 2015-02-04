@@ -51,7 +51,7 @@ namespace aspect
                   ExcMessage("Did not find the boundary indicator for the prescribed data plugin."));
 
       Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids,
-                                                                        dim);
+                                                    dim);
     }
 
     template <int dim>
@@ -72,8 +72,8 @@ namespace aspect
       Tensor<1,dim> velocity;
       for (unsigned int i = 0; i < dim; i++)
         velocity[i] = Utilities::AsciiDataBoundary<dim>::get_data_component(*(boundary_ids.begin()),
-                      position,
-                      i);
+                                                                            position,
+                                                                            i);
       return velocity;
     }
 
@@ -85,8 +85,8 @@ namespace aspect
       prm.enter_subsection("Boundary velocity model");
       {
         Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
-                                                                                  "$ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/ascii-data/test/",
-                                                                                  "box_2d_%s.%d.txt");
+                                                              "$ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/ascii-data/test/",
+                                                              "box_2d_%s.%d.txt");
       }
       prm.leave_subsection();
     }

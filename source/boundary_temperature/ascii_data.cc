@@ -41,7 +41,7 @@ namespace aspect
     {
       const std::set<types::boundary_id> boundary_ids = this->get_fixed_temperature_boundary_indicators();
       Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids,
-                                                   1);
+                                                    1);
     }
 
 
@@ -62,8 +62,8 @@ namespace aspect
     {
       const types::boundary_id boundary_id(boundary_indicator);
       return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_id,
-                                                                  position,
-                                                                  0);
+                                                                   position,
+                                                                   0);
     }
 
 
@@ -90,8 +90,8 @@ namespace aspect
       prm.enter_subsection("Boundary temperature model");
       {
         Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
-                                                             "$ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/",
-                                                             "box_2d_%s.%d.txt");
+                                                              "$ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/",
+                                                              "box_2d_%s.%d.txt");
       }
       prm.leave_subsection();
     }

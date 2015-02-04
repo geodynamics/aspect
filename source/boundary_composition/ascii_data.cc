@@ -40,7 +40,7 @@ namespace aspect
       const std::set<types::boundary_id> boundary_ids = this->get_fixed_composition_boundary_indicators();
 
       Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids,
-                                                                        this->n_compositional_fields());
+                                                    this->n_compositional_fields());
     }
 
 
@@ -64,8 +64,8 @@ namespace aspect
     {
       const types::boundary_id boundary_id(boundary_indicator);
       return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_id,
-             position,
-             compositional_field);
+                                                                   position,
+                                                                   compositional_field);
     }
 
     template <int dim>
@@ -75,8 +75,8 @@ namespace aspect
       prm.enter_subsection("Boundary composition model");
       {
         Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
-                                                                                  "$ASPECT_SOURCE_DIR/data/boundary-composition/ascii-data/test/",
-                                                                                  "box_2d_%s.%d.txt");
+                                                              "$ASPECT_SOURCE_DIR/data/boundary-composition/ascii-data/test/",
+                                                              "box_2d_%s.%d.txt");
       }
       prm.leave_subsection();
     }
