@@ -1536,10 +1536,13 @@ namespace aspect
               assemble_advection_system(AdvectionField::temperature());
 
               if (iteration == 0)
-                build_advection_preconditioner(AdvectionField::temperature(),
-                                               T_preconditioner);
-
+                {
+                  build_advection_preconditioner(AdvectionField::temperature(),
+                                                 T_preconditioner);
+                  initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
+                }
               const double temperature_residual = solve_advection(AdvectionField::temperature());
+
 
               current_linearization_point.block(introspection.block_indices.temperature)
                 = solution.block(introspection.block_indices.temperature);
@@ -1551,6 +1554,9 @@ namespace aspect
                   assemble_advection_system (AdvectionField::composition(c));
                   build_advection_preconditioner(AdvectionField::composition(c),
                                                  C_preconditioner);
+                  if (iteration == 0)
+                    initial_composition_residual[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
+
                   composition_residual[c]
                     = solve_advection(AdvectionField::composition(c));
                   current_linearization_point.block(introspection.block_indices.compositional_fields[c])
@@ -1567,7 +1573,33 @@ namespace aspect
 
               assemble_stokes_system();
               if (iteration == 0)
-                build_stokes_preconditioner();
+                {
+                  build_stokes_preconditioner();
+
+                  const double residual_p = system_rhs.block(introspection.block_indices.pressure).l2_norm();
+                  if(introspection.block_indices.pressure == introspection.block_indices.velocities)
+                    initial_stokes_residual = residual_p;
+                  else
+                    {
+                      LinearAlgebra::BlockVector residual (introspection.index_sets.stokes_partitioning, mpi_communicator);
+                      LinearAlgebra::BlockVector remap (introspection.index_sets.stokes_partitioning, mpi_communicator);
+                      const unsigned int block_p = introspection.block_indices.pressure;
+                      if (parameters.include_melt_transport)
+                        convert_pressure_blocks(current_linearization_point, true, remap);
+                      else
+                        remap.block (block_p) = current_linearization_point.block (block_p);
+                      denormalize_pressure (remap, current_linearization_point);
+                      current_constraints.set_zero (remap);
+                      remap.block (block_p) /= pressure_scaling;
+                      if (do_pressure_rhs_compatibility_modification)
+                        make_pressure_rhs_compatible(system_rhs);
+
+                      const double residual_u = system_matrix.block(0,1).residual (residual.block(0),
+                                                                                   remap.block(1),
+                                                                                   system_rhs.block(0));
+                      initial_stokes_residual = sqrt(residual_u*residual_u+residual_p*residual_p);
+                    }
+                }
 
               const double stokes_residual = solve_stokes();
 
@@ -1585,24 +1617,17 @@ namespace aspect
               pcout << std::endl
                     << std::endl;
 
-              if (iteration == 0)
-                {
-                  initial_temperature_residual = temperature_residual;
-                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                    initial_composition_residual[c] = composition_residual[c];
-                  initial_stokes_residual      = stokes_residual;
-                }
-              else
-                {
-                  double max = 0.0;
-                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                    max = std::max(composition_residual[c]/initial_composition_residual[c],max);
-                  max = std::max(stokes_residual/initial_stokes_residual, max);
-                  max = std::max(temperature_residual/initial_temperature_residual, max);
-                  pcout << "      residual: " << max << std::endl;
-                  if (max < parameters.nonlinear_tolerance)
-                    break;
-                }
+              double max = 0.0;
+              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                if(initial_composition_residual[c]>0)
+                  max = std::max(composition_residual[c]/initial_composition_residual[c],max);
+              if(initial_stokes_residual>0)
+                max = std::max(stokes_residual/initial_stokes_residual, max);
+              if(initial_temperature_residual>0)
+                max = std::max(temperature_residual/initial_temperature_residual, max);
+              pcout << "      residual: " << max << std::endl;
+              if (max < parameters.nonlinear_tolerance)
+                break;
 
               ++iteration;
 //TODO: terminate here if the number of iterations is too large and we see no convergence
