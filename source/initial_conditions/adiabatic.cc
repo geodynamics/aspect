@@ -140,11 +140,14 @@ namespace aspect
             }
           else if (const GeometryModel::Box<dim> *
                    box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
-            // for the box geometry, choose a point at the center of the bottom face.
-            // (note that the loop only runs over the first dim-1 coordinates, leaving
-            // the depth variable at zero)
-            for (unsigned int i=0; i<dim-1; ++i)
-              mid_point(i) += 0.5 * box_geometry_model->get_extents()[i];
+            {
+              // for the box geometry, choose a point at the center of the bottom face.
+              // (note that the loop only runs over the first dim-1 coordinates, leaving
+              // the depth variable at zero)
+              mid_point = box_geometry_model->get_origin();
+              for (unsigned int i=0; i<dim-1; ++i)
+                mid_point(i) += 0.5 * box_geometry_model->get_extents()[i];
+            }
           else
             AssertThrow (false,
                          ExcMessage ("Not a valid geometry model for the initial conditions model"

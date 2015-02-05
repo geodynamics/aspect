@@ -1,0 +1,89 @@
+##### simple test for ascii data
+
+set Dimension                              = 3
+
+set Use years in output instead of seconds = true
+set End time                               = 1e3
+
+set Adiabatic surface temperature          = 1613.0
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Opening angle = 90
+    set Inner radius = 3481000
+    set Outer radius = 6336000
+  end
+end
+
+subsection Initial conditions
+  set Model name = harmonic perturbation
+  subsection Harmonic perturbation
+    set Magnitude = 30
+    set Reference temperature = 1613
+  end
+end
+
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 3000
+    set Outer temperature = 273
+  end
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = inner, outer
+
+  set Zero velocity boundary indicators       =
+  set Prescribed velocity boundary indicators = west:ascii data, east:ascii data, south:ascii data, inner:ascii data, outer: ascii data
+
+  set Tangential velocity boundary indicators = 
+
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+end
+
+
+subsection Boundary velocity model
+  subsection Ascii data model
+    set Data file name       = shell_3d_%s.0.txt
+    
+    set Data directory = $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/ascii-data/test/
+    set Scale factor = 10
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Viscosity = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = temperature
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics
+end
+

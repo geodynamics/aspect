@@ -6,6 +6,15 @@
  *
  *
  * <ol>
+ * <li> New: A new plugin called 'ascii data' is available for boundary and
+ * initial conditions that reads in text data from files provided by the user.
+ * The plugin works for box and shell geometries and allows for time-dependent
+ * or constant boundary conditions. The data files must provide data for the
+ * whole model domain and the plugin interpolates the data from a structured
+ * grid to Aspect's mesh linearly.
+ * <br>
+ * (Eva Bredow, Rene Gassmoeller, 2015/02/03)
+ *
  *
  * <li> New: There is now a mass flux statistics postprocessor that
  * calculates the mass flux through every boundary interface. This 

@@ -1,0 +1,91 @@
+##### simple test for ascii data
+
+set Dimension                              = 3
+
+set Use years in output instead of seconds = true
+set End time                               = 1e6
+
+set Adiabatic surface temperature          = 1613.0
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 3300000
+    set Y extent = 3300000
+    set Z extent = 660000
+    set X repetitions = 5
+    set Y repetitions = 5
+  end
+end
+
+subsection Initial conditions
+  set Model name = adiabatic
+  subsection Adiabatic
+    set Amplitude = 300
+    set Radius    = 250000
+  end
+end
+
+
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+  set Bottom temperature = 1613
+  set Top temperature = 273
+  end
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = top,bottom
+
+  set Zero velocity boundary indicators       =
+  set Prescribed velocity boundary indicators = bottom:ascii data,left:ascii data,right:ascii data,top:ascii data,front:ascii data,back:ascii data
+
+  set Tangential velocity boundary indicators = 
+
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+end
+
+
+subsection Boundary velocity model
+  subsection Ascii data model
+    set Data file name       = box_3d_%s.0.txt
+    
+    set Data directory = $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/ascii-data/test/
+    set Scale factor = 0.01
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Viscosity = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = temperature
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics
+end
+

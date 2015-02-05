@@ -369,11 +369,11 @@ namespace aspect
         VelocityBoundaryConditions::Interface<dim> *bv
           = VelocityBoundaryConditions::create_velocity_boundary_conditions<dim>
             (p->second.second);
+        velocity_boundary_conditions[p->first].reset (bv);
         if (dynamic_cast<SimulatorAccess<dim>*>(bv) != 0)
           dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
         bv->parse_parameters (prm);
         bv->initialize ();
-        velocity_boundary_conditions[p->first].reset (bv);
       }
 
     // determine how to treat the pressure. we have to scale it for the solver

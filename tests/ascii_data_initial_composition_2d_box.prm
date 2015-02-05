@@ -1,0 +1,94 @@
+##### simple test for ascii data initial composition
+
+set Dimension                              = 2
+
+set Use years in output instead of seconds = true
+set End time                               = 1e6
+
+set Adiabatic surface temperature          = 1613.0
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 660000
+    set Y extent = 660000
+  end
+end
+
+subsection Initial conditions
+  set Model name = adiabatic
+  subsection Adiabatic
+    set Amplitude = 300
+    set Radius    = 250000
+  end
+end
+
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Compositional initial conditions
+  set Model name = ascii data
+
+  subsection Ascii data model
+    set Data directory       = $ASPECT_SOURCE_DIR/data/compositional-initial-conditions/ascii-data/test/
+    set Data file name       = box_2d.txt
+  end
+end
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = top,bottom
+
+  set Zero velocity boundary indicators       =
+  set Prescribed velocity boundary indicators = bottom:function,left:function,right:function,top:function
+
+  set Tangential velocity boundary indicators = 
+
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+end
+
+
+subsection Boundary velocity model
+  subsection Function
+    set Function expression = 1;0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Viscosity = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 2
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = temperature
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, composition statistics
+end
+
