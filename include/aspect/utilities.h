@@ -255,7 +255,7 @@ namespace aspect
 
         /**
          * A variable that stores the currently used data file of a
-         * series. It gets updated if necessary by update_data().
+         * series. It gets updated if necessary by update().
          */
         int  current_file_number;
 
@@ -319,15 +319,15 @@ namespace aspect
          * Handles the update of the data in lookup.
          */
         void
-        update_data (const types::boundary_id boundary_id);
+        update_data (const types::boundary_id boundary_id,
+                     const bool reload_both_files);
 
         /**
          * Handles settings and user notification in case the time-dependent
          * part of the boundary condition is over.
          */
         void
-        end_time_dependence (const int timestep,
-                             const types::boundary_id boundary_id);
+        end_time_dependence ();
 
         /**
          * Create a filename out of the name template.
