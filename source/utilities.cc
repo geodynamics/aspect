@@ -112,16 +112,6 @@ namespace aspect
     void
     AsciiDataLookup<dim>::load_file(const std::string &filename)
     {
-      // Check whether file exists, we do not want to throw
-      // an exception in case it does not, because it could be by purpose
-      // (i.e. the end of the boundary condition is reached)
-      AssertThrow (fexists(filename),
-                   ExcMessage (std::string("Ascii data file <")
-                               +
-                               filename
-                               +
-                               "> not found!"));
-
       std::ifstream in(filename.c_str(), std::ios::in);
       AssertThrow (in,
                    ExcMessage (std::string("Couldn't open data file <"
@@ -130,7 +120,7 @@ namespace aspect
                                            +
                                            ">.")));
 
-      // Read header lines and if necessary reinit tables
+      // Read header lines and table size
       while (in.peek() == '#')
         {
           std::string line;
@@ -356,29 +346,38 @@ namespace aspect
 
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                             << create_filename (current_file_number,*boundary_id) << "." << std::endl << std::endl;
-          lookups.find(*boundary_id)->second->load_file(create_filename (current_file_number,*boundary_id));
 
-          // If the boundary condition is constant, switch
-          // off time_dependence immediately. This also sets time_weight to 1.0.
-          // If not, also load the second file for interpolation.
+          const std::string filename (create_filename (current_file_number,*boundary_id));
+          if (fexists(filename))
+            lookups.find(*boundary_id)->second->load_file(filename);
+          else
+            AssertThrow(false,
+                        ExcMessage (std::string("Ascii data file <")
+                                   +
+                                   filename
+                                   +
+                                   "> not found!"));
+
+          // If the boundary condition is constant, switch off time_dependence
+          // immediately. If not, also load the second file for interpolation.
+          // This catches the case that many files are present, but the
+          // parameter file requests a single file.
           if (create_filename (current_file_number,*boundary_id) == create_filename (current_file_number+1,*boundary_id))
             {
-              lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
-              end_time_dependence (current_file_number, *boundary_id);
+              end_time_dependence ();
             }
           else
             {
-              try
+              const std::string filename (create_filename (next_file_number,*boundary_id));
+              this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
+                                << filename << "." << std::endl << std::endl;
+              if (fexists(filename))
                 {
-                  this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                                    << create_filename (next_file_number,*boundary_id) << "." << std::endl << std::endl;
                   lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
-                  lookups.find(*boundary_id)->second->load_file(create_filename (next_file_number,*boundary_id));
+                  lookups.find(*boundary_id)->second->load_file(filename);
                 }
-              catch (ExcMessage &e)
-                {
-                  end_time_dependence (current_file_number, *boundary_id);
-                }
+              else
+                end_time_dependence ();
             }
         }
     }
@@ -455,21 +454,45 @@ namespace aspect
     {
       if (time_dependent && (this->get_time() - first_data_file_model_time >= 0.0))
         {
+          const double time_steps_since_start = (this->get_time() - first_data_file_model_time)
+                                                / data_file_time_step;
           // whether we need to update our data files. This looks so complicated
           // because we need to catch increasing and decreasing file orders and all
           // possible first_data_file_model_times and first_data_file_numbers.
           const bool need_update =
-            static_cast<int> ((this->get_time() - first_data_file_model_time) / data_file_time_step)
+            static_cast<int> (time_steps_since_start)
             > std::abs(current_file_number - first_data_file_number);
 
           if (need_update)
+            {
+              // The last file, which was tried to be loaded was
+              // number current_file_number +/- 1, because current_file_number
+              // is the file older than the current model time
+              const int old_file_number =
+                (decreasing_file_order) ?
+                current_file_number - 1
+                :
+                current_file_number + 1;
+
+              //Calculate new file_number
+              current_file_number =
+                (decreasing_file_order) ?
+                first_data_file_number
+                - static_cast<unsigned int> (time_steps_since_start)
+                :
+                first_data_file_number
+                + static_cast<unsigned int> (time_steps_since_start);
+
+              const bool load_both_files = std::abs(current_file_number - old_file_number) >= 1;
+
             for (typename std::map<types::boundary_id,
                  std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim-1> > >::iterator
                  boundary_id = lookups.begin();
                  boundary_id != lookups.end(); ++boundary_id)
-              update_data(boundary_id->first);
+              update_data(boundary_id->first,load_both_files);
+            }
 
-          time_weight = (this->get_time() - first_data_file_model_time) / data_file_time_step
+          time_weight = time_steps_since_start
                         - std::abs(current_file_number - first_data_file_number);
 
           Assert ((0 <= time_weight) && (time_weight <= 1),
@@ -480,94 +503,52 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataBoundary<dim>::update_data (const types::boundary_id boundary_id)
+    AsciiDataBoundary<dim>::update_data (const types::boundary_id boundary_id,
+                                         const bool load_both_files)
     {
-      // The last file, which was tried to be loaded was
-      // number current_file_number +/- 1, because current_file_number
-      // is the file older than the current model time
-      const int old_file_number =
-        (decreasing_file_order) ?
-        current_file_number - 1
-        :
-        current_file_number + 1;
+      // If the time step was large enough to move forward more
+      // then one data file we need to load both current files
+      // to stay accurate in interpolation
+      if (load_both_files)
+        {
+          const std::string filename (create_filename (current_file_number,boundary_id));
+          this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
+                            << filename << "." << std::endl << std::endl;
+          if (fexists(filename))
+            {
+              lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
+              lookups.find(boundary_id)->second->load_file(filename);
+            }
 
-      //Calculate new file_number
-      current_file_number =
-        (decreasing_file_order) ?
-        first_data_file_number
-        - static_cast<unsigned int> ((this->get_time() - first_data_file_model_time) / data_file_time_step)
-        :
-        first_data_file_number
-        + static_cast<unsigned int> ((this->get_time() - first_data_file_model_time) / data_file_time_step);
+          // If loading current_time_step failed, end time dependent part with old_file_number.
+          else
+            end_time_dependence ();
+        }
 
+      // Now load the next data file. This part is the main purpose of this function.
       const int next_file_number =
         (decreasing_file_order) ?
         current_file_number - 1
         :
         current_file_number + 1;
 
-      // If the time step was large enough to move forward more
-      // then one data file we need to load both current files
-      // to stay accurate in interpolation
-      if (std::abs(current_file_number - old_file_number) >= 1)
-        try
-          {
-            this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                              << create_filename (current_file_number,boundary_id) << "." << std::endl << std::endl;
-            lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
-            lookups.find(boundary_id)->second->load_file(create_filename (current_file_number,boundary_id));
-          }
-        catch (ExcMessage &e)
-          // If loading current_time_step failed, end time dependent part with old_file_number.
-          {
-            try
-              {
-                end_time_dependence (old_file_number,boundary_id);
-                return;
-              }
-            catch (ExcMessage &e)
-              {
-                // If loading the old file fails (e.g. there was no old file), cancel the model run.
-                // We might get here, if the model time step is so large that step t is before the
-                // whole boundary condition while step t+1 is already behind all files in time.
-                AssertThrow (false,
-                             ExcMessage (
-                               "Loading new and old data file did not succeed. "
-                               "Maybe the time step was so large we jumped over all files "
-                               "or the files were removed during the model run. "
-                               "Another possible way here is to restart a model with "
-                               "previously time-dependent boundary condition after the "
-                               "last file was already read. Aspect has no way to find the "
-                               "last readable file from the current model time. Please "
-                               "prescribe the last data file manually in such a case. "
-                               "Cancelling calculation."));
-              }
-          }
-
-      // Now load the data file. This part is the main purpose of this function.
-      try
+      const std::string filename (create_filename (next_file_number,boundary_id));
+      this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
+                        << filename << "." << std::endl << std::endl;
+      if (fexists(filename))
         {
-          this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                            << create_filename (next_file_number,boundary_id) << "." << std::endl << std::endl;
           lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
-          lookups.find(boundary_id)->second->load_file(create_filename (next_file_number,boundary_id));
+          lookups.find(boundary_id)->second->load_file(filename);
         }
 
-      // If loading current_time_step + 1 failed, end time dependent part with current_time_step.
-      // We do not need to check for success here, because current_file_number was guaranteed to be
-      // at least tried to be loaded before, and if it fails, it should have done before (except from
-      // hard drive errors, in which case the exception is the right thing to be thrown).
-
-      catch (ExcMessage &e)
-        {
-          end_time_dependence (current_file_number,boundary_id);
-        }
+      // If next file does not exist, end time dependent part with current_time_step.
+      else
+        end_time_dependence ();
     }
 
     template <int dim>
     void
-    AsciiDataBoundary<dim>::end_time_dependence (const int file_number,
-                                                 const types::boundary_id boundary_id)
+    AsciiDataBoundary<dim>::end_time_dependence ()
     {
       // no longer consider the problem time dependent from here on out
       // this cancels all attempts to read files at the next time steps
@@ -606,12 +587,12 @@ namespace aspect
           for (unsigned int i = 0; i < dim-1; i++)
             data_position[i] = internal_position[boundary_dimensions[i]];
 
-          const double old_data = old_lookups.find(boundary_indicator)->second->get_data(data_position,component);
+          const double data = lookups.find(boundary_indicator)->second->get_data(data_position,component);
 
           if (!time_dependent)
-            return old_data;
+            return data;
 
-          const double data = lookups.find(boundary_indicator)->second->get_data(data_position,component);
+          const double old_data = old_lookups.find(boundary_indicator)->second->get_data(data_position,component);
 
           return time_weight * data + (1 - time_weight) * old_data;
         }
@@ -705,7 +686,16 @@ namespace aspect
 
         this->get_pcout() << std::endl << "   Loading Ascii data initial file "
                           << filename << "." << std::endl << std::endl;
-        lookup->load_file(filename);
+
+        if (fexists(filename))
+          lookup->load_file(filename);
+        else
+          AssertThrow(false,
+                      ExcMessage (std::string("Ascii data file <")
+                                 +
+                                 filename
+                                 +
+                                 "> not found!"));
       }
 
       template <int dim>
