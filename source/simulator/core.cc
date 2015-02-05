@@ -1575,30 +1575,7 @@ namespace aspect
               if (iteration == 0)
                 {
                   build_stokes_preconditioner();
-
-                  const double residual_p = system_rhs.block(introspection.block_indices.pressure).l2_norm();
-                  if(introspection.block_indices.pressure == introspection.block_indices.velocities)
-                    initial_stokes_residual = residual_p;
-                  else
-                    {
-                      LinearAlgebra::BlockVector residual (introspection.index_sets.stokes_partitioning, mpi_communicator);
-                      LinearAlgebra::BlockVector remap (introspection.index_sets.stokes_partitioning, mpi_communicator);
-                      const unsigned int block_p = introspection.block_indices.pressure;
-                      if (parameters.include_melt_transport)
-                        convert_pressure_blocks(current_linearization_point, true, remap);
-                      else
-                        remap.block (block_p) = current_linearization_point.block (block_p);
-                      denormalize_pressure (remap, current_linearization_point);
-                      current_constraints.set_zero (remap);
-                      remap.block (block_p) /= pressure_scaling;
-                      if (do_pressure_rhs_compatibility_modification)
-                        make_pressure_rhs_compatible(system_rhs);
-
-                      const double residual_u = system_matrix.block(0,1).residual (residual.block(0),
-                                                                                   remap.block(1),
-                                                                                   system_rhs.block(0));
-                      initial_stokes_residual = sqrt(residual_u*residual_u+residual_p*residual_p);
-                    }
+                  initial_stokes_residual = compute_initial_stokes_residual();
                 }
 
               const double stokes_residual = solve_stokes();

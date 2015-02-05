@@ -1329,6 +1329,21 @@ namespace aspect
       void convert_pressure_blocks(const LinearAlgebra::BlockVector &input_solution,
                                    const bool                       solid_to_fluid_pressure,
                                    LinearAlgebra::BlockVector       &output_solution);
+
+      /**
+       * This routine computes the initial Stokes residual that is
+       * needed as a convergence criterion in models with the iterated
+       * IMPES solver. We calculate it in the same way as the
+       * tolerance for the linear solver, using the norm of the pressure
+       * RHS for the pressure part and a residual with zero velocity
+       * for the velocity part to get the part of the RHS not balanced
+       * by the static pressure.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      double
+      compute_initial_stokes_residual();
       /**
        * @}
        */

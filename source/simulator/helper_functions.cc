@@ -1064,6 +1064,79 @@ namespace aspect
 
 
   template <int dim>
+  double
+  Simulator<dim>::compute_initial_stokes_residual()
+  {
+    LinearAlgebra::BlockVector remap (introspection.index_sets.stokes_partitioning, mpi_communicator);
+    LinearAlgebra::BlockVector residual (introspection.index_sets.stokes_partitioning, mpi_communicator);
+    LinearAlgebra::BlockVector pressure_rhs(introspection.index_sets.stokes_partitioning);
+    const unsigned int block_p = introspection.block_indices.pressure;
+
+    // if velocity and pressure are in the same block, we have to copy the
+    // pressure to the solution and RHS vector with a zero velocity
+    if(introspection.block_indices.pressure == introspection.block_indices.velocities)
+      {
+        for (unsigned int i=0; i < introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
+          {
+            types::global_dof_index idx =
+                introspection.index_sets.locally_owned_fluid_pressure_dofs.nth_index_in_set(i);
+            remap(idx)        = current_linearization_point(idx);
+            pressure_rhs(idx) = system_rhs(idx);
+          }
+        remap.block(block_p).compress(VectorOperation::insert);
+        pressure_rhs.block(block_p).compress(VectorOperation::insert);
+      }
+
+    // we have to do the same conversions and rescaling we do before solving
+    // the Stokes system: conversion of the pressure blocks (p_s, p_f --> p_f, p_c),
+    // denormalizing the pressure and applying the pressure scaling
+    residual = remap;
+    if (parameters.include_melt_transport)
+      convert_pressure_blocks(residual, true, remap);
+    residual = remap;
+
+    denormalize_pressure (remap, residual);
+    current_constraints.set_zero (remap);
+    remap.block (block_p) /= pressure_scaling;
+    if (do_pressure_rhs_compatibility_modification)
+      make_pressure_rhs_compatible(system_rhs);
+
+    // we calculate the velocity residual with a zero velocity,
+    // computing only the part of the RHS not balanced by the static pressure
+    double residual_u, residual_p = 0;
+    if(introspection.block_indices.pressure == introspection.block_indices.velocities)
+      {
+        // we can use the whole block here because we set the velocity to zero above
+        residual_u = system_matrix.block(0,0).residual (residual.block(0),
+                                                        remap.block(0),
+                                                        system_rhs.block(0));
+
+        // now we have to set the velocity entries to zero, so that we only get
+        // the norm of the pressure RHS
+        for (unsigned int i=0; i < introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
+          {
+            types::global_dof_index idx =
+                introspection.index_sets.locally_owned_fluid_pressure_dofs.nth_index_in_set(i);
+            residual(idx) = 0.0;
+          }
+        residual.block(block_p).compress(VectorOperation::insert);
+
+        residual_u = residual.block(0).l2_norm();
+        residual_p = pressure_rhs.block(block_p).l2_norm();
+      }
+    else
+      {
+        residual_u = system_matrix.block(0,1).residual (residual.block(0),
+                                                        remap.block(1),
+                                                        system_rhs.block(0));
+        residual_p = system_rhs.block(block_p).l2_norm();
+      }
+
+    return sqrt(residual_u*residual_u+residual_p*residual_p);
+  }
+
+
+  template <int dim>
   template<class FUNCTOR>
   void Simulator<dim>::compute_depth_average(std::vector<double> &values,
                                              FUNCTOR &fctr) const
@@ -1412,6 +1485,7 @@ namespace aspect
   template void Simulator<dim>::output_program_stats(); \
   template void Simulator<dim>::output_statistics(); \
   template void Simulator<dim>::convert_pressure_blocks(const LinearAlgebra::BlockVector &input_solution, const bool solid_to_fluid_pressure, LinearAlgebra::BlockVector &output_solution); \
+  template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);
 
