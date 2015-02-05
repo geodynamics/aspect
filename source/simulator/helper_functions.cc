@@ -814,7 +814,8 @@ namespace aspect
           vector.block(introspection.block_indices.pressure).add(-1.0 * pressure_adjustment);
         else
           {
-            // velocity and pressure are in the same block, so we have to modify the values manually
+            // velocity and pressure are in the same block, or we have several pressures in one block,
+            // so we have to modify the values manually
 
             const unsigned int block_idx = introspection.block_indices.pressure;
 
