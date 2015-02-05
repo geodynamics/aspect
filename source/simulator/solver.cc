@@ -604,12 +604,19 @@ namespace aspect
       {
         convert_pressure_blocks(current_linearization_point, true, distributed_stokes_solution);
         remap.block (block_p) = distributed_stokes_solution.block (block_p);
+        // before solving we scale the initial solution to the right dimensions
+        // because have to go through the elements of the pressure block individually,
+        // we need the distributed_stokes_solution as input here, as its pressure
+        // blocks are converted to p_f, p_c
+        denormalize_pressure (remap, distributed_stokes_solution);
       }
     else
-      remap.block (block_p) = current_linearization_point.block (block_p);
+      {
+        remap.block (block_p) = current_linearization_point.block (block_p);
+        // before solving we scale the initial solution to the right dimensions
+        denormalize_pressure (remap, current_linearization_point);
+      }
 
-    // before solving we scale the initial solution to the right dimensions
-    denormalize_pressure (remap, current_linearization_point);
     current_constraints.set_zero (remap);
     remap.block (block_p) /= pressure_scaling;
     // if the model is compressible then we need to adjust the right hand
