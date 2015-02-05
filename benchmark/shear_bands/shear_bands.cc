@@ -354,7 +354,9 @@ namespace aspect
     	grid_extents[d].second=extents[d];
       }
 
-      std::srand(std::time(0)); // use current time as seed for random generator
+      // use a fixed number as seed for random generator
+      // this is important if we run the code on more than 1 processor
+      std::srand(0);
 
       TableIndices<dim> idx;
 
