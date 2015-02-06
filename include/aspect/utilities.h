@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2014, 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -307,13 +307,13 @@ namespace aspect
          * data we get from text files.
          */
         std::map<types::boundary_id,
-            std_cxx11::shared_ptr<::aspect::Utilities::AsciiDataLookup<dim-1> > > lookups;
+            std_cxx11::shared_ptr<aspect::Utilities::AsciiDataLookup<dim-1> > > lookups;
 
         /**
          * Map between the boundary id and the old data objects.
          */
         std::map<types::boundary_id,
-            std_cxx11::shared_ptr<::aspect::Utilities::AsciiDataLookup<dim-1> > > old_lookups;
+            std_cxx11::shared_ptr<aspect::Utilities::AsciiDataLookup<dim-1> > > old_lookups;
 
         /**
          * Handles the update of the data in lookup.
@@ -387,8 +387,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from
          * text files.
          */
-        std_cxx11::shared_ptr<::aspect::Utilities::AsciiDataLookup<dim> > lookup;
-
+        std_cxx11::shared_ptr<aspect::Utilities::AsciiDataLookup<dim> > lookup;
     };
   }
 }
