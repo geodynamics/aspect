@@ -1069,7 +1069,6 @@ namespace aspect
   {
     LinearAlgebra::BlockVector remap (introspection.index_sets.stokes_partitioning, mpi_communicator);
     LinearAlgebra::BlockVector residual (introspection.index_sets.stokes_partitioning, mpi_communicator);
-    LinearAlgebra::BlockVector pressure_rhs(introspection.index_sets.stokes_partitioning);
     const unsigned int block_p = introspection.block_indices.pressure;
 
     // if velocity and pressure are in the same block, we have to copy the
@@ -1081,10 +1080,8 @@ namespace aspect
             types::global_dof_index idx =
                 introspection.index_sets.locally_owned_fluid_pressure_dofs.nth_index_in_set(i);
             remap(idx)        = current_linearization_point(idx);
-            pressure_rhs(idx) = system_rhs(idx);
           }
-        remap.block(block_p).compress(VectorOperation::insert);
-        pressure_rhs.block(block_p).compress(VectorOperation::insert);
+        remap.block(0).compress(VectorOperation::insert);
       }
 
     // we have to do the same conversions and rescaling we do before solving
@@ -1107,22 +1104,9 @@ namespace aspect
     if(introspection.block_indices.pressure == introspection.block_indices.velocities)
       {
         // we can use the whole block here because we set the velocity to zero above
-        residual_u = system_matrix.block(0,0).residual (residual.block(0),
-                                                        remap.block(0),
-                                                        system_rhs.block(0));
-
-        // now we have to set the velocity entries to zero, so that we only get
-        // the norm of the pressure RHS
-        for (unsigned int i=0; i < introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
-          {
-            types::global_dof_index idx =
-                introspection.index_sets.locally_owned_fluid_pressure_dofs.nth_index_in_set(i);
-            residual(idx) = 0.0;
-          }
-        residual.block(block_p).compress(VectorOperation::insert);
-
-        residual_u = residual.block(0).l2_norm();
-        residual_p = pressure_rhs.block(block_p).l2_norm();
+        return system_matrix.block(0,0).residual (residual.block(0),
+                                                  remap.block(0),
+                                                  system_rhs.block(0));
       }
     else
       {
@@ -1130,9 +1114,8 @@ namespace aspect
                                                         remap.block(1),
                                                         system_rhs.block(0));
         residual_p = system_rhs.block(block_p).l2_norm();
+        return sqrt(residual_u*residual_u+residual_p*residual_p);
       }
-
-    return sqrt(residual_u*residual_u+residual_p*residual_p);
   }
 
 
