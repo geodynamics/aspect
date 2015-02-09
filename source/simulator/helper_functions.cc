@@ -338,6 +338,7 @@ namespace aspect
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                     in.composition[q][c] = composition_values_at_q_point[c];
                 }
+              in.cell = cell;
 
               material_model->evaluate(in, out);
 
@@ -982,6 +983,8 @@ namespace aspect
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                     in.composition[i][c] = composition_values[c][i];
                 }
+              in.cell = cell;
+
               material_model->evaluate(in, out);
             }
 

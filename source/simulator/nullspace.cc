@@ -236,6 +236,8 @@ namespace aspect
               in.position[i] = q_points[i];
 
             }
+          in.cell = cell;
+
           material_model->evaluate(in, out);
 
           Point<dim> r_vec;
