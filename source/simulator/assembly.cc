@@ -1693,8 +1693,7 @@ namespace aspect
                                       const AdvectionField     &advection_field,
                                       const unsigned int q_point) const
   {
-
-    if (!advection_field.is_porosity(introspection))
+    if ((!advection_field.is_porosity(introspection)) || (!parameters.include_melt_transport))
       return 0.0;
 
     Assert (scratch.material_model_outputs.densities[q_point] > 0,
@@ -1929,7 +1928,8 @@ namespace aspect
                                                   advection_field,
                                                   q);
         const double reaction_term =
-          ((advection_field.is_temperature() || advection_field.is_porosity(introspection))
+          ((advection_field.is_temperature() || (advection_field.is_porosity(introspection)
+                                                 && parameters.include_melt_transport))
            ?
            0.0
            :
