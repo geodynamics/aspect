@@ -1077,12 +1077,17 @@ namespace aspect
       {
         for (unsigned int i=0; i < introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
           {
-            types::global_dof_index idx =
-                introspection.index_sets.locally_owned_fluid_pressure_dofs.nth_index_in_set(i);
+            types::global_dof_index idx;
+            if (parameters.include_melt_transport)
+              idx = introspection.index_sets.locally_owned_fluid_pressure_dofs.nth_index_in_set(i);
+            else
+              idx = introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
             remap(idx)        = current_linearization_point(idx);
           }
         remap.block(0).compress(VectorOperation::insert);
       }
+    else
+      remap.block (block_p) = current_linearization_point.block (block_p);
 
     // we have to do the same conversions and rescaling we do before solving
     // the Stokes system: conversion of the pressure blocks (p_s, p_f --> p_f, p_c),
