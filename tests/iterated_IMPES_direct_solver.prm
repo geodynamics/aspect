@@ -4,7 +4,7 @@
 # Both the calculation of the residuum and the convergence 
 # with prescribed boundary conditions are tested, as well 
 # as agreement with the respective test for the iterative
-# solver (iterted_IMPES).
+# solver (iterated_IMPES).
 
 set Adiabatic surface temperature          = 0               # default: 0
 set CFL number                             = 0.5
