@@ -6,6 +6,18 @@
  *
  *
  * <ol>
+ * <li> Changed: We use a new method to calculate the initial residuals 
+ * used for the iterated IMPES solver. Instead of using the first solution,
+ * we use the norm of the right-hand side, so that the residual is small
+ * for cases where the initial guess of a time step is already very good, 
+ * and the number of iterations is decreased for these cases (e.g. when
+ * using a smaller time step size).
+ * Moreover, the screen output of the residuals is now in the same order as 
+ * the output before (about which system is solved and how many iterations were 
+ * needed).  
+ * <br>
+ * (Juliane Dannberg, 2015/02/09)
+ *
  * <li> New: A new plugin called 'ascii data' is available for boundary and
  * initial conditions that reads in text data from files provided by the user.
  * The plugin works for box and shell geometries and allows for time-dependent
@@ -32,6 +44,13 @@
  * bottom thermal boundary layer was included. This is fixed now.
  * <br>
  * (Rene Gassmoeller, 2015/02/02)
+ *
+ * <li> Fixed: The residual of the iterated IMPES solver used to be 
+ * nan when the initial residual of one of the solution variable was
+ * zero. This is fixed now, so that this variable is not considered
+ * for the overall residual anymore.
+ * <br>
+ * (Juliane Dannberg, 2015/01/30)
  *
  * <li> Fixed: The Steinberger material model had a bug in case a
  * material table was used that had not the same number of points in
