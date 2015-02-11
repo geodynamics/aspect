@@ -1075,13 +1075,14 @@ namespace aspect
     // pressure to the solution and RHS vector with a zero velocity
     if(introspection.block_indices.pressure == introspection.block_indices.velocities)
       {
-        for (unsigned int i=0; i < introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
+        const IndexSet & idxset = (parameters.include_melt_transport) ?
+            introspection.index_sets.locally_owned_fluid_pressure_dofs
+            :
+            introspection.index_sets.locally_owned_pressure_dofs;
+
+        for (unsigned int i=0; i < idxset.n_elements(); ++i)
           {
-            types::global_dof_index idx;
-            if (parameters.include_melt_transport)
-              idx = introspection.index_sets.locally_owned_fluid_pressure_dofs.nth_index_in_set(i);
-            else
-              idx = introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
+            types::global_dof_index idx = idxset.nth_index_in_set(i);
             remap(idx)        = current_linearization_point(idx);
           }
         remap.block(0).compress(VectorOperation::insert);
@@ -1105,7 +1106,6 @@ namespace aspect
 
     // we calculate the velocity residual with a zero velocity,
     // computing only the part of the RHS not balanced by the static pressure
-    double residual_u, residual_p = 0;
     if(introspection.block_indices.pressure == introspection.block_indices.velocities)
       {
         // we can use the whole block here because we set the velocity to zero above
@@ -1115,10 +1115,10 @@ namespace aspect
       }
     else
       {
-        residual_u = system_matrix.block(0,1).residual (residual.block(0),
+        double residual_u = system_matrix.block(0,1).residual (residual.block(0),
                                                         remap.block(1),
                                                         system_rhs.block(0));
-        residual_p = system_rhs.block(block_p).l2_norm();
+        double residual_p = system_rhs.block(block_p).l2_norm();
         return sqrt(residual_u*residual_u+residual_p*residual_p);
       }
   }
