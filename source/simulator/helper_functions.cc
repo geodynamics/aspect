@@ -1098,8 +1098,15 @@ namespace aspect
       convert_pressure_blocks(residual, true, remap);
     residual = remap;
 
-    denormalize_pressure (remap, residual);
+    // TODO: we don't have .stokes_relevant_partitioning so I am creating a much
+    // bigger vector here, oh well.
+    LinearAlgebra::BlockVector ghosted (introspection.index_sets.system_partitioning,
+        introspection.index_sets.system_relevant_partitioning,
+        mpi_communicator);
+    ghosted.block(block_p) = remap.block(block_p);
+    denormalize_pressure (remap, ghosted);
     current_constraints.set_zero (remap);
+
     remap.block (block_p) /= pressure_scaling;
     if (do_pressure_rhs_compatibility_modification)
       make_pressure_rhs_compatible(system_rhs);
