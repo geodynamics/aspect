@@ -461,8 +461,53 @@ namespace aspect
     std::pair<std::string,std::string>
     ShearBandsPostprocessor<dim>::execute (TableHandler &statistics)
     {
-      // calclulate the angle of the shear bands
-      return std::make_pair (std::string(),std::string());
+      // write output that can be used to calculate the angle of the shear bands
+
+      // TODO: make it work in parallel
+      AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
+                  ExcNotImplemented());
+
+      double ref=1.0/this->get_triangulation().begin_active()->minimum_vertex_distance();
+      std::ofstream f ((this->get_output_directory() + "shear_bands_" +
+                        Utilities::int_to_string(static_cast<unsigned int>(ref)) +
+                        ".csv").c_str());
+      f.precision (16);
+      // write header
+      f << "x                      y                      porosity               JxW" << std::endl;
+      f << std::scientific;
+
+      // we want to have equidistant points in the output
+      // TODO: interpolation in case of adaptive mesh?
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
+
+      const unsigned int n_q_points =  quadrature_formula.size();
+      FEValues<dim> fe_values (this->get_mapping(), this->get_fe(),  quadrature_formula,
+                               update_JxW_values | update_values | update_quadrature_points);
+
+      std::vector<double>         porosity_values (quadrature_formula.size());
+      const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+      for (; cell != endc; ++cell)
+        {
+          fe_values.reinit (cell);
+          fe_values[this->introspection().extractors.compositional_fields[porosity_idx]].get_function_values (this->get_solution(), porosity_values);
+
+          for (unsigned int q = 0; q < n_q_points; ++q)
+            {
+              f
+                  <<  fe_values.quadrature_point (q) (0)
+                  << ' ' << fe_values.quadrature_point (q) (1)
+                  << ' ' << porosity_values[q]
+                  << ' ' << fe_values.JxW (q)
+                  << std::endl;
+            }
+        }
+
+      return std::make_pair("writing:", "shear_bands.csv");
+
     }
 
   }
@@ -483,8 +528,9 @@ namespace aspect
 
     ASPECT_REGISTER_POSTPROCESSOR(ShearBandsPostprocessor,
                                   "shear bands statistics",
-                                  "A postprocessor that computes the angle of the generated shear bands"
-                                  "using FFT as described in Katz et al., Nature, 2006.")
+                                  "A postprocessor that writes output for the porosity field, "
+                                  "which can be used to calculate the angle of the shear "
+                                  "bands in the model. ")
 
    ASPECT_REGISTER_COMPOSITIONAL_INITIAL_CONDITIONS(ShearBandsInitialCondition,
                                                     "shear bands initial condition",
