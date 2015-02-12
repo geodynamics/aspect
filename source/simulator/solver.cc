@@ -608,7 +608,13 @@ namespace aspect
         // because have to go through the elements of the pressure block individually,
         // we need the distributed_stokes_solution as input here, as its pressure
         // blocks are converted to p_f, p_c
-        denormalize_pressure (remap, distributed_stokes_solution);
+        // TODO: we don't have .stokes_relevant_partitioning so I am creating a much
+        // bigger vector here, oh well.
+        LinearAlgebra::BlockVector ghosted (introspection.index_sets.system_partitioning,
+                                            introspection.index_sets.system_relevant_partitioning,
+                                            mpi_communicator);
+        ghosted.block(block_p) = remap.block(block_p);
+        denormalize_pressure (remap, ghosted);
       }
     else
       {
@@ -646,6 +652,7 @@ namespace aspect
                                                                  remap.block(1),
                                                                  system_rhs.block(0));
     const double residual_p = system_rhs.block(1).l2_norm();
+
     const double solver_tolerance = parameters.linear_stokes_solver_tolerance *
                                     sqrt(residual_u*residual_u+residual_p*residual_p);
 
