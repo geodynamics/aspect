@@ -144,6 +144,7 @@ subsection Material model
     set Reference temperature    = 1623.15      # 1350°C adiabat 
     set Pyroxenite melting entropy change = -300
     set Thermal conductivity     = 0.0
+    set Compressibility          = 0.0
   end
 end
 

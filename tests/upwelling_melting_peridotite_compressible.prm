@@ -1,12 +1,5 @@
-# This test is used to check if the latent heat of
-# melting of peridotite is calculated correctly. 
-# The material is upwelling with a constant velocity
-# (without seperation of melt and solid) and without
-# conduction of heat, so that the steady state of the 
-# model is an adiabatic temperature profile. An approximated
-# analytical solution for this profile to compare the solution 
-# to is described in Katz et al., 2003 (A new parameterization 
-# of hydrous mantle melting). 
+# This test is used to check if the compressible variation
+# of the upwelling_melting_peridotite test is calculated correctly. 
 
 # At the top, we define the number of space dimensions we would like to
 # work in:
@@ -112,7 +105,7 @@ subsection Material model
     set Reference temperature    = 1623.15      # 1350°C adiabat 
     set Peridotite melting entropy change = -300
     set Thermal conductivity     = 0.0
-    set Compressibility          = 0.0
+    set Compressibility          = 4e-12
   end
 end
 

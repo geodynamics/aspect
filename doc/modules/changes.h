@@ -6,6 +6,12 @@
  *
  *
  * <ol>
+ * <li> Fixed: The compressibility in the 'latent heat' and 'latent heat melt'
+ * material models was used incorrectly to calculate the density. This did only
+ * affect compressible models with these material models and is fixed now.
+ * <br>
+ * (Rene Gassmoeller, 2015/02/12)
+ *
  * <li> Changed: We use a new method to calculate the initial residuals 
  * used for the iterated IMPES solver. Instead of using the first solution,
  * we use the norm of the right-hand side, so that the residual is small

@@ -146,14 +146,8 @@ namespace aspect
                                             0.0;
 
       // third, pressure dependence of density
-      double pressure_dependence = 0.0;
-      if (is_compressible() && this->get_adiabatic_conditions().is_initialized())
-        {
-          const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
-          const double adiabatic_surface_pressure = this->get_adiabatic_conditions().pressure(surface_point);
-          const double kappa = compressibility(temperature,pressure,compositional_fields,position);
-          pressure_dependence = kappa * (pressure - adiabatic_surface_pressure);
-        }
+      const double kappa = compressibility(temperature,pressure,compositional_fields,position);
+      const double pressure_dependence = reference_rho * kappa * (pressure - this->get_surface_pressure());
 
       // fourth, melt fraction dependence
       double melt_dependence = (1.0 - relative_melt_density)
