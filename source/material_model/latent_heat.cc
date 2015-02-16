@@ -517,12 +517,6 @@ namespace aspect
                              "viscosity for each phase. "
                              "List must have one more entry than Phase transition depths. "
                              "Units: non-dimensional.");
-          prm.declare_entry ("Activation enthalpies", "",
-                             Patterns::List (Patterns::Double(0)),
-                             "A list of activation enthalpies for the temperature dependence of the "
-                             "viscosity of each phase. "
-                             "List must have one more entry than Phase transition depths. "
-                             "Units: $1/K$.");
         }
         prm.leave_subsection();
       }
@@ -564,16 +558,13 @@ namespace aspect
                               (Utilities::split_string_list(prm.get ("Corresponding phase for density jump")));
           phase_prefactors = Utilities::string_to_double
                              (Utilities::split_string_list(prm.get ("Viscosity prefactors")));
-          activation_enthalpies = Utilities::string_to_double
-                                  (Utilities::split_string_list(prm.get ("Activation enthalpies")));
 
           if (transition_widths.size() != transition_depths.size() ||
               transition_temperatures.size() != transition_depths.size() ||
               transition_slopes.size() != transition_depths.size() ||
               density_jumps.size() != transition_depths.size() ||
               transition_phases.size() != transition_depths.size() ||
-              phase_prefactors.size() != transition_depths.size()+1 ||
-              activation_enthalpies.size() != transition_depths.size()+1)
+              phase_prefactors.size() != transition_depths.size()+1)
             AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase transitions has the wrong size."));
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
