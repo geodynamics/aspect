@@ -6,6 +6,13 @@
  *
  *
  * <ol>
+ * <li> Changed: The unused parameter 'Activation enthalpies' was removed from
+ * the 'latent heat' material model. The active parameter for the same purpose
+ * is 'Thermal viscosity exponent'. If there are parameter files specifying
+ * the removed parameter it is safe to just remove the line.
+ * <br>
+ * (Rene Gassmoeller, 2015/02/16)
+ *
  * <li> Fixed: The compressibility in the 'latent heat' and 'latent heat melt'
  * material models was used incorrectly to calculate the density. This did only
  * affect compressible models with these material models and is fixed now.
