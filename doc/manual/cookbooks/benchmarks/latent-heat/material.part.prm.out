@@ -38,6 +38,5 @@ subsection %%\hyperref[parameters:Material_20model]{Material model}%
     set %%\hyperref[parameters:Material model/Latent heat/Viscosity]{Viscosity}%                                      = 8.44e21 %% \index[prmindex]{Viscosity} \index[prmindexfull]{Material model!Latent heat!Viscosity} %
     set %%\hyperref[parameters:Material model/Latent heat/Viscosity prefactors]{Viscosity prefactors}%                           = 1.0, 1.0 %% \index[prmindex]{Viscosity prefactors} \index[prmindexfull]{Material model!Latent heat!Viscosity prefactors} %
     set %%\hyperref[parameters:Material model/Latent heat/Composition viscosity prefactor]{Composition viscosity prefactor}%                = 1.0 %% \index[prmindex]{Composition viscosity prefactor} \index[prmindexfull]{Material model!Latent heat!Composition viscosity prefactor} %
-    set %%\hyperref[parameters:Material model/Latent heat/Activation enthalpies]{Activation enthalpies}%                          = 3.9473e-3, 3.9473e-3  %% \index[prmindex]{Activation enthalpies} \index[prmindexfull]{Material model!Latent heat!Activation enthalpies} %
   end
 end

@@ -239,7 +239,6 @@ namespace aspect
         std::vector<double> density_jumps;
         std::vector<int> transition_phases;
         std::vector<double> phase_prefactors;
-        std::vector<double> activation_enthalpies;
     };
 
   }
