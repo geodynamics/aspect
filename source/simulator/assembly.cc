@@ -1714,8 +1714,7 @@ namespace aspect
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
 
     double melt_transport_RHS = melting_rate / density
-    		                    + (1.0 - current_phi)
-    		                    * (divergence_u + compressibility * density * (current_u * gravity));
+    		                + divergence_u + compressibility * density * (current_u * gravity);
 
     if(current_phi < parameters.melt_transport_threshold && melting_rate < parameters.melt_transport_threshold
     		                                             && (!material_model->is_compressible()))
@@ -1863,8 +1862,7 @@ namespace aspect
       }
     else
       {
-    // TODO: why do we use the old solution here?
-        compute_material_model_input_values (old_solution,
+        compute_material_model_input_values (current_linearization_point,
                                              scratch.finite_element_values,
                                              true,
                                              scratch.material_model_inputs);
@@ -1959,6 +1957,21 @@ namespace aspect
         if (parameters.free_surface_enabled)
           current_u -= scratch.mesh_velocity_values[q];
 
+        const double melt_transport_LHS =
+          ((parameters.include_melt_transport && advection_field.is_porosity(introspection))
+           ?
+           scratch.current_velocity_divergences[q]
+           + (material_model->is_compressible()
+              ?
+              scratch.material_model_outputs.compressibilities[q]
+              * scratch.material_model_outputs.densities[q]
+              * current_u
+              * gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q))
+              :
+              0.0)
+           :
+           0.0);
+
         const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
                                                   (time_step + old_time_step)) : 1.0;
 
@@ -1985,6 +1998,7 @@ namespace aspect
                      + ((time_step * (current_u * scratch.grad_phi_field[j] * scratch.phi_field[i]))
                         + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
                      (density_c_P + latent_heat_LHS)
+                     + time_step * scratch.phi_field[i] * scratch.phi_field[j] * melt_transport_LHS
                    )
                    * scratch.finite_element_values.JxW(q);
               }
