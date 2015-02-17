@@ -12,6 +12,7 @@ set Nonlinear solver scheme                = iterated IMPES
 set Output directory                       = output
 set Max nonlinear iterations               = 10
 set Nonlinear solver tolerance             = 1e-5
+set Linear solver tolerance                = 1e-10
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
@@ -29,6 +30,7 @@ set Start time                             = 0
 
 set Use years in output instead of seconds = true
 set Use direct solver for Stokes system    = true
+set Number of cheap Stokes solver steps    = 0
 
 subsection Discretization
   subsection Stabilization parameters
@@ -99,9 +101,7 @@ end
 subsection Initial conditions
   set Model name = function # default: 
   subsection Function
-    set Function constants  = l=64000
-    set Function expression = 293+sin(y/l)
-    set Variable names      = x,y
+    set Function expression = 0
   end
 end
 
@@ -145,7 +145,7 @@ subsection Model settings
 
   set Include melt transport                  = true
   set Melt transport threshold                = 1e-4
-  set Include shear heating                   = true
+  set Include shear heating                   = false
 end
 
 
