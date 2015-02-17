@@ -415,9 +415,11 @@ namespace aspect
     // We need to do the rhs compatibility modification, if the model is
     // compressible or compactible (in the case of melt transport), and
     // there is no open boundary to balance the pressure.
-    do_pressure_rhs_compatibility_modification = ((material_model->is_compressible() || parameters.include_melt_transport)
+    do_pressure_rhs_compatibility_modification = ((material_model->is_compressible())
                                                   &&
-                                                  (open_velocity_boundary_indicators.size() == 0));
+                                                  (open_velocity_boundary_indicators.size() == 0)
+                                                  &&
+                                                  (!parameters.include_melt_transport));
 
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
@@ -1559,9 +1561,13 @@ namespace aspect
 
                   composition_residual[c]
                     = solve_advection(AdvectionField::composition(c));
-                  current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-                    = solution.block(introspection.block_indices.compositional_fields[c]);
                 }
+
+              // for consistency we update the current linearization point only after we have solved
+              // all fields, so that we use the same point in time for every field when solving
+              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                current_linearization_point.block(introspection.block_indices.compositional_fields[c])
+                  = solution.block(introspection.block_indices.compositional_fields[c]);
 
               // the Stokes matrix depends on the viscosity. if the viscosity
               // depends on other solution variables, then after we need to
