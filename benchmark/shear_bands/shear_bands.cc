@@ -462,25 +462,15 @@ namespace aspect
     ShearBandsPostprocessor<dim>::execute (TableHandler &statistics)
     {
       // write output that can be used to calculate the angle of the shear bands
-
-      // TODO: make it work in parallel
-      AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
-                  ExcNotImplemented());
-
-      double ref=1.0/this->get_triangulation().begin_active()->minimum_vertex_distance();
-      std::ofstream f ((this->get_output_directory() + "shear_bands_" +
-                        Utilities::int_to_string(static_cast<unsigned int>(ref)) +
-                        ".csv").c_str());
-      f.precision (16);
-      // write header
-      f << "x                      y                      porosity               JxW" << std::endl;
-      f << std::scientific;
-
+      const unsigned int max_lvl = this->get_triangulation().n_global_levels();
+      
+      std::vector< Point<3> > data;  //x, y, porosity
+      
       // we want to have equidistant points in the output
-      // TODO: interpolation in case of adaptive mesh?
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
-
+      const QMidpoint<1> mp_rule;
+      const QIterated<dim> quadrature_formula (mp_rule, 2);
       const unsigned int n_q_points =  quadrature_formula.size();
+      
       FEValues<dim> fe_values (this->get_mapping(), this->get_fe(),  quadrature_formula,
                                update_JxW_values | update_values | update_quadrature_points);
 
@@ -492,21 +482,70 @@ namespace aspect
       endc = this->get_dof_handler().end();
       for (; cell != endc; ++cell)
         {
+	  if (!cell->is_locally_owned())
+	    continue;
+
+	  AssertThrow(cell->level() == (int)max_lvl-1, ExcMessage("Adaptivity not implemented!"));
+	  
           fe_values.reinit (cell);
           fe_values[this->introspection().extractors.compositional_fields[porosity_idx]].get_function_values (this->get_solution(), porosity_values);
 
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
-              f
-                  <<  fe_values.quadrature_point (q) (0)
-                  << ' ' << fe_values.quadrature_point (q) (1)
-                  << ' ' << porosity_values[q]
-                  << ' ' << fe_values.JxW (q)
-                  << std::endl;
+	      data.push_back(Point<3>(fe_values.quadrature_point (q) (0),
+				      fe_values.quadrature_point (q) (1),
+				      porosity_values[q]));
             }
         }
 
-      return std::make_pair("writing:", "shear_bands.csv");
+      unsigned int myid = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+      unsigned int nprc = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+
+      std::string filename = this->get_output_directory() + "shear_bands_" +
+			    Utilities::int_to_string(max_lvl) +
+			    ".csv";
+      
+      if (myid==0)
+	{
+	  std::ofstream f (filename.c_str());
+	  f.precision (16);
+	  // write header
+	  f << "x                      y                      porosity" << std::endl;
+	  f << std::scientific;
+
+	  // output my data
+	  for (unsigned int i=0;i<data.size();++i)
+	    f << data[i] << std::endl;
+
+	  // receive data
+	  for (unsigned int p=0;p<nprc-1;++p)
+	    {
+	      MPI_Status status;
+	      MPI_Probe(MPI_ANY_SOURCE, 42, this->get_mpi_communicator(), &status);
+	      int incoming_size = 0;	      
+	      MPI_Get_count(&status, MPI_BYTE, &incoming_size);
+	      int n_points = incoming_size / sizeof(Point<3>);
+	      data.resize(n_points);
+	      //std::cout << "I got " << n_points << " points (" << incoming_size << " bytes) from " << status.MPI_SOURCE << std::endl;
+	      MPI_Recv(&data[0], incoming_size, MPI_BYTE, status.MPI_SOURCE, 42, this->get_mpi_communicator(), &status);
+
+	      // output received data
+	      for (unsigned int i=0;i<data.size();++i)
+		f << data[i] << std::endl;
+	    }
+	  
+	}
+      else
+	{
+	  //send data
+	  AssertThrow(data.size()>0, ExcInternalError());
+	  //std::cout << "I am proc " << myid << " and I am sending " << data.size() << " entries (" << data.size()*sizeof(Point<3>) << " bytes)" << std::endl;
+	  MPI_Send(&data[0], sizeof(Point<3>)*data.size(), MPI_BYTE, 0, 42, this->get_mpi_communicator());
+	}
+      
+
+      
+      return std::make_pair("writing:", filename);
 
     }
 
