@@ -1500,14 +1500,14 @@ namespace aspect
     scratch.finite_element_values[solution_field].get_function_laplacians (old_old_solution,
                                                                            scratch.old_old_field_laplacians);
 
+    compute_material_model_input_values (current_linearization_point,
+                                         scratch.finite_element_values,
+                                         true,
+                                         scratch.material_model_inputs);
+    material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+
     if (advection_field.is_temperature())
       {
-        compute_material_model_input_values (current_linearization_point,
-                                             scratch.finite_element_values,
-                                             true,
-                                             scratch.material_model_inputs);
-        material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
-
         for (unsigned int q=0; q<n_q_points; ++q)
           {
             scratch.explicit_material_model_inputs.temperature[q] = (scratch.old_temperature_values[q] + scratch.old_old_temperature_values[q]) / 2;
@@ -1518,14 +1518,6 @@ namespace aspect
             scratch.explicit_material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
           }
         material_model->evaluate(scratch.explicit_material_model_inputs,scratch.explicit_material_model_outputs);
-      }
-    else
-      {
-        compute_material_model_input_values (old_solution,
-                                             scratch.finite_element_values,
-                                             true,
-                                             scratch.material_model_inputs);
-        material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
       }
 
     // TODO: Compute artificial viscosity once per timestep instead of each time

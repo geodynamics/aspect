@@ -1,0 +1,132 @@
+#########################################################
+# This is a variation of the composition-reaction test,
+# with the exception that we use a reaction term that
+# requires the iterated IMPES solver scheme to reach the 
+# correct reaction rate, which is one for the second 
+# field and the value of the second field for the first 
+# and the third field. Without iterating, the fields will
+# use the value from the previous time step. In addition,
+# this test checks if the results are the same for the 
+# first and third field, independent of the order of 
+# solving, and thus if our solver scheme is consistent.
+
+
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0.01
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = iterated IMPES
+set Max nonlinear iterations               = 10
+
+
+############### Parameters describing the model
+# Let us here choose again a box domain of size 2x1
+# where we fix the temperature at the bottom and top,
+# allow free slip along the bottom, left and right,
+# and prescribe the velocity along the top using the
+# `function' description.
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 1
+  end
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2, 3
+  set Zero velocity boundary indicators       = 
+  set Tangential velocity boundary indicators = 0, 1, 2
+  set Prescribed velocity boundary indicators = 3: function
+end
+
+
+subsection Compositional fields
+  set Number of fields = 3
+end
+
+
+# We then set the temperature to one at the bottom and zero
+# at the top: 
+subsection Boundary temperature model
+  set Model name = box
+  
+  subsection Box
+    set Bottom temperature = 1
+    set Top temperature    = 0
+  end
+end
+
+
+# The velocity along the top boundary models a spreading
+# center that is moving left and right:
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,z,t
+    set Function constants  = pi=3.1415926
+    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
+  end
+end
+
+
+# We then choose a vertical gravity model and describe the
+# initial temperature with a vertical gradient. The default
+# strength for gravity is one. The material model is the
+# same as before.
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Initial conditions
+  set Model name = function
+  
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = (1-z)    
+  end
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926
+    set Function expression = 0.0;0.0;0.0
+  end
+end
+
+
+subsection Material model
+  set Model name = iterated reaction
+
+  subsection Composition reaction model
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 1e-4
+    set Viscosity                     = 1
+    set Density differential for compositional field 1 = -5
+    set Density differential for compositional field 2 = 5
+  end
+end
+
+
+# The final part of this input file describes how many times the
+# mesh is refined and what to do with the solution once computed
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, visualization
+end
+
+

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.2.pre
+--     . version 1.3.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -37,7 +37,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.05886/1.072/0.9642 // -0.0257/0.9568/0.03493
+     Compositions min/max/mass: -0.05886/1.072/0.9599 // -0.02348/0.9933/0.03923
 
 *** Timestep 3:  t=0.09375 seconds
    Solving temperature system... 12 iterations.
@@ -47,7 +47,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.06562/1.075/0.9562 // -0.02472/0.9421/0.04302
+     Compositions min/max/mass: -0.06562/1.075/0.9541 // -0.02728/0.9625/0.04511
 
 *** Timestep 4:  t=0.125 seconds
    Solving temperature system... 13 iterations.
@@ -57,7 +57,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.06213/1.074/0.9474 // -0.03111/0.9764/0.05175
+     Compositions min/max/mass: -0.06213/1.074/0.9462 // -0.02989/0.9692/0.05291
 
 *** Timestep 5:  t=0.15625 seconds
    Solving temperature system... 12 iterations.
@@ -67,7 +67,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.05478/1.069/0.9394 // -0.01816/1/0.05976
+     Compositions min/max/mass: -0.05479/1.069/0.9396 // -0.01007/0.9687/0.05953
 
 *** Timestep 6:  t=0.1875 seconds
    Solving temperature system... 12 iterations.
@@ -77,17 +77,17 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.04742/1.058/0.9325 // -0.007577/0.9952/0.06664
+     Compositions min/max/mass: -0.04743/1.058/0.9331 // -0.006904/0.9638/0.06609
 
 *** Timestep 7:  t=0.21875 seconds
    Solving temperature system... 12 iterations.
    Solving composition system 1... 12 iterations.
-   Solving composition system 2... 11 iterations.
+   Solving composition system 2... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.04069/1.041/0.9261 // -0.005582/0.9845/0.07301
+     Compositions min/max/mass: -0.0407/1.041/0.9263 // -0.004706/0.9681/0.07278
 
 *** Timestep 8:  t=0.25 seconds
    Solving temperature system... 12 iterations.
@@ -97,17 +97,17 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.03538/1.021/0.9199 // -0.003598/0.9756/0.07918
+     Compositions min/max/mass: -0.03539/1.021/0.9202 // -0.00319/0.9636/0.07891
 
 *** Timestep 9:  t=0.28125 seconds
    Solving temperature system... 12 iterations.
-   Solving composition system 1... 11 iterations.
+   Solving composition system 1... 12 iterations.
    Solving composition system 2... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.03189/1.019/0.9144 // -0.002049/0.9688/0.08467
+     Compositions min/max/mass: -0.03189/1.019/0.9152 // -0.002531/0.9603/0.08391
 
 *** Timestep 10:  t=0.3 seconds
    Solving temperature system... 10 iterations.
@@ -117,27 +117,27 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.03066/1.019/0.9104 // -0.002089/0.9857/0.08875
+     Compositions min/max/mass: -0.03066/1.019/0.9109 // -0.00173/0.9697/0.08823
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      8.21s |            |
+| Total wallclock time elapsed since start    |      13.9s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        11 |      2.05s |        25% |
-| Assemble composition system     |        22 |      1.68s |        20% |
-| Assemble temperature system     |        11 |      1.03s |        13% |
-| Build Stokes preconditioner     |        11 |       1.8s |        22% |
-| Build composition preconditioner|        22 |    0.0889s |       1.1% |
-| Build temperature preconditioner|        11 |    0.0583s |      0.71% |
-| Solve Stokes system             |        11 |     0.806s |       9.8% |
-| Solve composition system        |        22 |    0.0881s |       1.1% |
-| Solve temperature system        |        11 |    0.0355s |      0.43% |
-| Initialization                  |         2 |     0.115s |       1.4% |
-| Postprocessing                  |        11 |    0.0512s |      0.62% |
-| Setup dof systems               |         1 |    0.0853s |         1% |
+| Assemble Stokes system          |        11 |       4.9s |        35% |
+| Assemble composition system     |        22 |      2.04s |        15% |
+| Assemble temperature system     |        11 |      1.29s |       9.2% |
+| Build Stokes preconditioner     |        11 |      3.06s |        22% |
+| Build composition preconditioner|        22 |    0.0348s |      0.25% |
+| Build temperature preconditioner|        11 |    0.0176s |      0.13% |
+| Solve Stokes system             |        11 |     0.464s |       3.3% |
+| Solve composition system        |        22 |    0.0533s |      0.38% |
+| Solve temperature system        |        11 |    0.0251s |      0.18% |
+| Initialization                  |         2 |     0.414s |         3% |
+| Postprocessing                  |        11 |    0.0808s |      0.58% |
+| Setup dof systems               |         1 |     0.171s |       1.2% |
 +---------------------------------+-----------+------------+------------+
 

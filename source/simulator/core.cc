@@ -1426,10 +1426,11 @@ namespace aspect
               build_advection_preconditioner(AdvectionField::composition(c),
                                              C_preconditioner);
               solve_advection(AdvectionField::composition(c));
-              current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-                = solution.block(introspection.block_indices.compositional_fields[c]);
             }
 
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            current_linearization_point.block(introspection.block_indices.compositional_fields[c])
+              = solution.block(introspection.block_indices.compositional_fields[c]);
 
           // the Stokes matrix depends on the viscosity. if the viscosity
           // depends on other solution variables, then after we need to
@@ -1524,9 +1525,13 @@ namespace aspect
 
                   composition_residual[c]
                     = solve_advection(AdvectionField::composition(c));
-                  current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-                    = solution.block(introspection.block_indices.compositional_fields[c]);
                 }
+
+              // for consistency we update the current linearization point only after we have solved
+              // all fields, so that we use the same point in time for every field when solving
+              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                current_linearization_point.block(introspection.block_indices.compositional_fields[c])
+                  = solution.block(introspection.block_indices.compositional_fields[c]);
 
               // the Stokes matrix depends on the viscosity. if the viscosity
               // depends on other solution variables, then after we need to
@@ -1595,10 +1600,11 @@ namespace aspect
               build_advection_preconditioner (AdvectionField::composition (c),
                                               C_preconditioner);
               solve_advection(AdvectionField::composition(c));
-              current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-                = solution.block(introspection.block_indices.compositional_fields[c]);
             }
 
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              current_linearization_point.block(introspection.block_indices.compositional_fields[c])
+                = solution.block(introspection.block_indices.compositional_fields[c]);
 
           // residual vector (only for the velocity)
           LinearAlgebra::Vector residual (introspection.index_sets.system_partitioning[0], mpi_communicator);
