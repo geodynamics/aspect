@@ -585,7 +585,7 @@ namespace aspect
                              "Exponent of the melting temperature in "
                              "the melt fraction calculation. "
                              "Units: non-dimensional.");
-          prm.declare_entry ("Peridotite melting entropy change", "300",
+          prm.declare_entry ("Peridotite melting entropy change", "-300",
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt of peridotite. "
@@ -629,7 +629,7 @@ namespace aspect
                              "in the quadratic function that approximates "
                              "the melt fraction of pyroxenite. "
                              "Units: $°C/(Pa^2)$.");
-          prm.declare_entry ("Pyroxenite melting entropy change", "400",
+          prm.declare_entry ("Pyroxenite melting entropy change", "-400",
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt of pyroxenite. "
