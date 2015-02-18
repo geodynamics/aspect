@@ -82,7 +82,7 @@ namespace aspect
       in.pressure[0]=this->get_adiabatic_conditions().pressure(position);
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         in.composition[0][c] = function->value(Point<1>(depth),c);
-      in.strain_rate[0] = SymmetricTensor<2,dim>(); // adiabat has strain=0.
+      in.strain_rate.resize(0); // adiabat has strain=0.
       this->get_material_model().evaluate(in, out);
 
       const double kappa = out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0]);
