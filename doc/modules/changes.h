@@ -6,6 +6,14 @@
  *
  *
  * <ol>
+ * <li> Changed: The default values for the latent heat release of melting in
+ * the 'latent heat melt' material model had the wrong sign. This likely
+ * resulted from a change in the latent heat terms in the assembly long ago.
+ * All tests were correctly set up, but the default values were forgotten.
+ * This is fixed now.
+ * <br>
+ * (Rene Gassmoeller, 2015/02/18)
+ *
  * <li> Changed: The unused parameter 'Activation enthalpies' was removed from
  * the 'latent heat' material model. The active parameter for the same purpose
  * is 'Thermal viscosity exponent'. If there are parameter files specifying
