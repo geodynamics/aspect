@@ -23,7 +23,9 @@
 #define __aspect__initial_conditions_harmonic_perturbation_h
 
 #include <aspect/initial_conditions/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
+
+#include <aspect/geometry_model/interface.h>
 
 
 namespace aspect
@@ -31,6 +33,68 @@ namespace aspect
   namespace InitialConditions
   {
     using namespace dealii;
+
+    namespace internal
+    {
+      // NOTE: this module uses the Boost spherical harmonics package which is not designed
+      // for very high order (> 100) spherical harmonics computation. If you use harmonic
+      // perturbations of a high order be sure to confirm the accuracy first.
+      // For more information, see:
+      // http://www.boost.org/doc/libs/1_49_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_poly/sph_harm.html
+      //
+      template <int dim>
+      class HarmonicPerturbation
+      {
+        public:
+          /**
+           * Return the initial temperature as a function of position.
+           */
+          double get_harmonic_perturbation (const Point<dim> &position,
+                                            const GeometryModel::Interface<dim> &geometry_model) const;
+
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          void
+          parse_parameters (ParameterHandler &prm);
+
+        private:
+
+          /**
+           * The radial/depth wave number of the harmonic perturbation. All wave
+           * number variables are in fact twice the wave number in a
+           * mathematical sense. This allows the user to prescribe a single up-
+           * / downswing or half periods.
+           */
+          int vertical_wave_number;
+
+          /**
+           * The lateral wave number  of the harmonic perturbation in the first
+           * dimension. This is the only lateral wave number in 2D and equals
+           * the degree of the spherical harmonics in a 3D spherical shell.
+           */
+          int lateral_wave_number_1;
+
+          /**
+           * The lateral wave number of the harmonic perturbation in the second
+           * dimension. This is not used in 2D and equals the order of the
+           * spherical harmonics in a 3D spherical shell.
+           */
+          int lateral_wave_number_2;
+
+          /**
+           * The maximal magnitude of the harmonic perturbation.
+           */
+          double magnitude;
+      };
+    }
 
     /**
      * A class that describes a perturbed initially constant temperature field
@@ -67,34 +131,6 @@ namespace aspect
 
 
       private:
-
-        /**
-         * The radial/depth wave number of the harmonic perturbation. All wave
-         * number variables are in fact twice the wave number in a
-         * mathematical sense. This allows the user to prescribe a single up-
-         * / downswing or half periods.
-         */
-        int vertical_wave_number;
-
-        /**
-         * The lateral wave number  of the harmonic perturbation in the first
-         * dimension. This is the only lateral wave number in 2D and equals
-         * the degree of the spherical harmonics in a 3D spherical shell.
-         */
-        int lateral_wave_number_1;
-
-        /**
-         * The lateral wave number of the harmonic perturbation in the second
-         * dimension. This is not used in 2D and equals the order of the
-         * spherical harmonics in a 3D spherical shell.
-         */
-        int lateral_wave_number_2;
-
-        /**
-         * The maximal magnitude of the harmonic perturbation.
-         */
-        double magnitude;
-
         /**
          * The background temperature the harmonic perturbation is applied on
          * in an incompressible material model. In case of a compressible
@@ -102,6 +138,12 @@ namespace aspect
          * profile and this variable is not used at all.
          */
         double reference_temperature;
+
+        /**
+         * The object, which calculates the harmonic perturbation given the
+         * position and the geometry model.
+         */
+        internal::HarmonicPerturbation<dim> harmonic_perturbation;
     };
   }
 }
