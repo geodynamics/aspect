@@ -2404,397 +2404,397 @@ namespace aspect
       *
       * @ingroup MaterialModels
       */
-     template <int dim>
-     class SolCxMaterial : public MaterialModel::InterfaceCompatibility<dim>
-     {
-       public:
-         /**
-          * @name Physical parameters used in the basic equations
-          * @{
-          */
-         virtual double viscosity (const double                  temperature,
-                                   const double                  pressure,
-                                   const std::vector<double>    &compositional_fields,
-                                   const SymmetricTensor<2,dim> &strain_rate,
-                                   const Point<dim>             &position) const;
+    template <int dim>
+    class SolCxMaterial : public MaterialModel::InterfaceCompatibility<dim>
+    {
+      public:
+        /**
+         * @name Physical parameters used in the basic equations
+         * @{
+         */
+        virtual double viscosity (const double                  temperature,
+                                  const double                  pressure,
+                                  const std::vector<double>    &compositional_fields,
+                                  const SymmetricTensor<2,dim> &strain_rate,
+                                  const Point<dim>             &position) const;
 
-         virtual double density (const double temperature,
-                                 const double pressure,
-                                 const std::vector<double> &compositional_fields,
-                                 const Point<dim> &position) const;
+        virtual double density (const double temperature,
+                                const double pressure,
+                                const std::vector<double> &compositional_fields,
+                                const Point<dim> &position) const;
 
-         virtual double compressibility (const double temperature,
-                                         const double pressure,
-                                         const std::vector<double> &compositional_fields,
-                                         const Point<dim> &position) const;
+        virtual double compressibility (const double temperature,
+                                        const double pressure,
+                                        const std::vector<double> &compositional_fields,
+                                        const Point<dim> &position) const;
 
-         virtual double specific_heat (const double temperature,
-                                       const double pressure,
-                                       const std::vector<double> &compositional_fields,
-                                       const Point<dim> &position) const;
+        virtual double specific_heat (const double temperature,
+                                      const double pressure,
+                                      const std::vector<double> &compositional_fields,
+                                      const Point<dim> &position) const;
 
-         virtual double thermal_expansion_coefficient (const double      temperature,
-                                                       const double      pressure,
-                                                       const std::vector<double> &compositional_fields,
-                                                       const Point<dim> &position) const;
+        virtual double thermal_expansion_coefficient (const double      temperature,
+                                                      const double      pressure,
+                                                      const std::vector<double> &compositional_fields,
+                                                      const Point<dim> &position) const;
 
-         virtual double thermal_conductivity (const double temperature,
-                                              const double pressure,
-                                              const std::vector<double> &compositional_fields,
-                                              const Point<dim> &position) const;
-         /**
-          * @}
-          */
+        virtual double thermal_conductivity (const double temperature,
+                                             const double pressure,
+                                             const std::vector<double> &compositional_fields,
+                                             const Point<dim> &position) const;
+        /**
+         * @}
+         */
 
-         /**
-          * @name Qualitative properties one can ask a material model
-          * @{
-          */
+        /**
+         * @name Qualitative properties one can ask a material model
+         * @{
+         */
 
-         /**
-          * Return true if the viscosity() function returns something that
-          * may depend on the variable identifies by the argument.
-          */
-         virtual bool
-         viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+        /**
+         * Return true if the viscosity() function returns something that
+         * may depend on the variable identifies by the argument.
+         */
+        virtual bool
+        viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
-         /**
-          * Return true if the density() function returns something that may
-          * depend on the variable identifies by the argument.
-          */
-         virtual bool
-         density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+        /**
+         * Return true if the density() function returns something that may
+         * depend on the variable identifies by the argument.
+         */
+        virtual bool
+        density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
-         /**
-          * Return true if the compressibility() function returns something
-          * that may depend on the variable identifies by the argument.
-          *
-          * This function must return false for all possible arguments if the
-          * is_compressible() function returns false.
-          */
-         virtual bool
-         compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+        /**
+         * Return true if the compressibility() function returns something
+         * that may depend on the variable identifies by the argument.
+         *
+         * This function must return false for all possible arguments if the
+         * is_compressible() function returns false.
+         */
+        virtual bool
+        compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
-         /**
-          * Return true if the specific_heat() function returns something
-          * that may depend on the variable identifies by the argument.
-          */
-         virtual bool
-         specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+        /**
+         * Return true if the specific_heat() function returns something
+         * that may depend on the variable identifies by the argument.
+         */
+        virtual bool
+        specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
-         /**
-          * Return true if the thermal_conductivity() function returns
-          * something that may depend on the variable identifies by the
-          * argument.
-          */
-         virtual bool
-         thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+        /**
+         * Return true if the thermal_conductivity() function returns
+         * something that may depend on the variable identifies by the
+         * argument.
+         */
+        virtual bool
+        thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
-         /**
-          * Return whether the model is compressible or not.
-          * Incompressibility does not necessarily imply that the density is
-          * constant; rather, it may still depend on temperature or pressure.
-          * In the current context, compressibility means whether we should
-          * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
-          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
-          * (incompressible Stokes).
-          */
-         virtual bool is_compressible () const;
-         /**
-          * @}
-          */
-
-
-         /**
-          * Declare the parameters this class takes through input files.
-          */
-         static
-         void
-         declare_parameters (ParameterHandler &prm);
-
-         /**
-          * Read the parameters this class declares from the parameter file.
-          */
-         virtual
-         void
-         parse_parameters (ParameterHandler &prm);
+        /**
+         * Return whether the model is compressible or not.
+         * Incompressibility does not necessarily imply that the density is
+         * constant; rather, it may still depend on temperature or pressure.
+         * In the current context, compressibility means whether we should
+         * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
+         * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
+         * (incompressible Stokes).
+         */
+        virtual bool is_compressible () const;
+        /**
+         * @}
+         */
 
 
-         /**
-          * @name Reference quantities
-          * @{
-          */
-         virtual double reference_viscosity () const;
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
 
-         virtual double reference_density () const;
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
 
-         virtual double reference_thermal_expansion_coefficient () const;
+
+        /**
+         * @name Reference quantities
+         * @{
+         */
+        virtual double reference_viscosity () const;
+
+        virtual double reference_density () const;
+
+        virtual double reference_thermal_expansion_coefficient () const;
 
 //TODO: should we make this a virtual function as well? where is it used?
-         double reference_thermal_diffusivity () const;
+        double reference_thermal_diffusivity () const;
 
-         double reference_cp () const;
-         /**
-          * @}
-          */
+        double reference_cp () const;
+        /**
+         * @}
+         */
 
-         /**
-          * Returns the viscosity value on the right half of the domain,
-          * typically 1 or 1e6
-          */
-         double get_eta_B() const;
+        /**
+         * Returns the viscosity value on the right half of the domain,
+         * typically 1 or 1e6
+         */
+        double get_eta_B() const;
 
-         /**
-          * Returns the background density of this model. See the
-          * corresponding member variable of this class for more information.
-          */
-         double get_background_density() const;
+        /**
+         * Returns the background density of this model. See the
+         * corresponding member variable of this class for more information.
+         */
+        double get_background_density() const;
 
-       private:
-         /**
-          * Viscosity value on the right half of the domain, typically 1 or
-          * 1e6
-          */
-         double eta_B;
+      private:
+        /**
+         * Viscosity value on the right half of the domain, typically 1 or
+         * 1e6
+         */
+        double eta_B;
 
-         /**
-          * A constant background density over which the density variations
-          * are overlaid. This constant density has no effect on the dynamic
-          * pressure and consequently on the flow field, but it contributes
-          * to the total pressure via the adiabatic pressure. We use this
-          * field to support our claim in the first ASPECT paper that the
-          * accuracy of the solutions is guaranteed even if we don't subtract
-          * the adiabatic pressure in our computations.
-          */
-         double background_density;
-     };
-
-
+        /**
+         * A constant background density over which the density variations
+         * are overlaid. This constant density has no effect on the dynamic
+         * pressure and consequently on the flow field, but it contributes
+         * to the total pressure via the adiabatic pressure. We use this
+         * field to support our claim in the first ASPECT paper that the
+         * accuracy of the solutions is guaranteed even if we don't subtract
+         * the adiabatic pressure in our computations.
+         */
+        double background_density;
+    };
 
 
 
 
-     template <int dim>
-     double
-     SolCxMaterial<dim>::
-     viscosity (const double,
-                const double,
-                const std::vector<double> &,       /*composition*/
-                const SymmetricTensor<2,dim> &,
-                const Point<dim> &p) const
-     {
-       // defined as given in the Duretz et al. paper
-       return (p[0] < 0.5 ? 1 : eta_B);
-     }
 
 
-     template <int dim>
-     double
-     SolCxMaterial<dim>::
-     reference_viscosity () const
-     {
-       return 1;
-     }
-
-     template <int dim>
-     double
-     SolCxMaterial<dim>::
-     reference_density () const
-     {
-       return background_density;
-     }
-
-     template <int dim>
-     double
-     SolCxMaterial<dim>::
-     reference_thermal_expansion_coefficient () const
-     {
-       return 0;
-     }
-
-     template <int dim>
-     double
-     SolCxMaterial<dim>::
-     specific_heat (const double,
-                    const double,
-                    const std::vector<double> &, /*composition*/
-                    const Point<dim> &) const
-     {
-       return 0;
-     }
-
-     template <int dim>
-     double
-     SolCxMaterial<dim>::
-     reference_cp () const
-     {
-       return 0;
-     }
-
-     template <int dim>
-     double
-     SolCxMaterial<dim>::
-     thermal_conductivity (const double,
-                           const double,
-                           const std::vector<double> &, /*composition*/
-                           const Point<dim> &) const
-     {
-       return 0;
-     }
-
-     template <int dim>
-     double
-     SolCxMaterial<dim>::
-     reference_thermal_diffusivity () const
-     {
-       return 0;
-     }
-
-     template <int dim>
-     double
-     SolCxMaterial<dim>::
-     density (const double,
-              const double,
-              const std::vector<double> &, /*composition*/
-              const Point<dim> &p) const
-     {
-       // defined as given in the paper, plus the constant
-       // background density
-       return background_density-std::sin(numbers::PI*p[1])*std::cos(numbers::PI*p[0]);
-     }
+    template <int dim>
+    double
+    SolCxMaterial<dim>::
+    viscosity (const double,
+               const double,
+               const std::vector<double> &,       /*composition*/
+               const SymmetricTensor<2,dim> &,
+               const Point<dim> &p) const
+    {
+      // defined as given in the Duretz et al. paper
+      return (p[0] < 0.5 ? 1 : eta_B);
+    }
 
 
-     template <int dim>
-     double
-     SolCxMaterial<dim>::
-     thermal_expansion_coefficient (const double temperature,
-                                    const double,
-                                    const std::vector<double> &, /*composition*/
-                                    const Point<dim> &) const
-     {
-       return 0;
-     }
+    template <int dim>
+    double
+    SolCxMaterial<dim>::
+    reference_viscosity () const
+    {
+      return 1;
+    }
+
+    template <int dim>
+    double
+    SolCxMaterial<dim>::
+    reference_density () const
+    {
+      return background_density;
+    }
+
+    template <int dim>
+    double
+    SolCxMaterial<dim>::
+    reference_thermal_expansion_coefficient () const
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolCxMaterial<dim>::
+    specific_heat (const double,
+                   const double,
+                   const std::vector<double> &, /*composition*/
+                   const Point<dim> &) const
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolCxMaterial<dim>::
+    reference_cp () const
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolCxMaterial<dim>::
+    thermal_conductivity (const double,
+                          const double,
+                          const std::vector<double> &, /*composition*/
+                          const Point<dim> &) const
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolCxMaterial<dim>::
+    reference_thermal_diffusivity () const
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolCxMaterial<dim>::
+    density (const double,
+             const double,
+             const std::vector<double> &, /*composition*/
+             const Point<dim> &p) const
+    {
+      // defined as given in the paper, plus the constant
+      // background density
+      return background_density-std::sin(numbers::PI*p[1])*std::cos(numbers::PI*p[0]);
+    }
 
 
-     template <int dim>
-     double
-     SolCxMaterial<dim>::
-     compressibility (const double,
-                      const double,
-                      const std::vector<double> &, /*composition*/
-                      const Point<dim> &) const
-     {
-       return 0.0;
-     }
+    template <int dim>
+    double
+    SolCxMaterial<dim>::
+    thermal_expansion_coefficient (const double temperature,
+                                   const double,
+                                   const std::vector<double> &, /*composition*/
+                                   const Point<dim> &) const
+    {
+      return 0;
+    }
 
 
-
-     template <int dim>
-     bool
-     SolCxMaterial<dim>::
-     viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-     {
-       return false;
-     }
-
-
-     template <int dim>
-     bool
-     SolCxMaterial<dim>::
-     density_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-     {
-       return false;
-     }
-
-     template <int dim>
-     bool
-     SolCxMaterial<dim>::
-     compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-     {
-       return false;
-     }
-
-     template <int dim>
-     bool
-     SolCxMaterial<dim>::
-     specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-     {
-       return false;
-     }
-
-     template <int dim>
-     bool
-     SolCxMaterial<dim>::
-     thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-     {
-       return false;
-     }
-
-
-     template <int dim>
-     bool
-     SolCxMaterial<dim>::
-     is_compressible () const
-     {
-       return false;
-     }
-
-     template <int dim>
-     void
-     SolCxMaterial<dim>::declare_parameters (ParameterHandler &prm)
-     {
-       prm.enter_subsection("Material model");
-       {
-         prm.enter_subsection("SolCx");
-         {
-           prm.declare_entry ("Viscosity jump", "1e6",
-                              Patterns::Double (0),
-                              "Viscosity in the right half of the domain.");
-           prm.declare_entry ("Background density", "0",
-                              Patterns::Double (0),
-                              "Density value upon which the variation of this testcase "
-                              "is overlaid. Since this background density is constant "
-                              "it does not affect the flow pattern but it adds to the "
-                              "total pressure since it produces a nonzero adiabatic "
-                              "pressure if set to a nonzero value.");
-         }
-         prm.leave_subsection();
-       }
-       prm.leave_subsection();
-     }
+    template <int dim>
+    double
+    SolCxMaterial<dim>::
+    compressibility (const double,
+                     const double,
+                     const std::vector<double> &, /*composition*/
+                     const Point<dim> &) const
+    {
+      return 0.0;
+    }
 
 
 
-     template <int dim>
-     void
-     SolCxMaterial<dim>::parse_parameters (ParameterHandler &prm)
-     {
-       prm.enter_subsection("Material model");
-       {
-         prm.enter_subsection("SolCx");
-         {
-           eta_B = prm.get_double ("Viscosity jump");
-           background_density = prm.get_double("Background density");
-         }
-         prm.leave_subsection();
-       }
-       prm.leave_subsection();
-     }
-
-     template <int dim>
-     double
-     SolCxMaterial<dim>::get_eta_B() const
-     {
-       return eta_B;
-     }
+    template <int dim>
+    bool
+    SolCxMaterial<dim>::
+    viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
+    {
+      return false;
+    }
 
 
-     template <int dim>
-     double
-     SolCxMaterial<dim>::get_background_density() const
-     {
-       return background_density;
-     }
+    template <int dim>
+    bool
+    SolCxMaterial<dim>::
+    density_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
+    {
+      return false;
+    }
+
+    template <int dim>
+    bool
+    SolCxMaterial<dim>::
+    compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
+    {
+      return false;
+    }
+
+    template <int dim>
+    bool
+    SolCxMaterial<dim>::
+    specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
+    {
+      return false;
+    }
+
+    template <int dim>
+    bool
+    SolCxMaterial<dim>::
+    thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
+    {
+      return false;
+    }
+
+
+    template <int dim>
+    bool
+    SolCxMaterial<dim>::
+    is_compressible () const
+    {
+      return false;
+    }
+
+    template <int dim>
+    void
+    SolCxMaterial<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Material model");
+      {
+        prm.enter_subsection("SolCx");
+        {
+          prm.declare_entry ("Viscosity jump", "1e6",
+                             Patterns::Double (0),
+                             "Viscosity in the right half of the domain.");
+          prm.declare_entry ("Background density", "0",
+                             Patterns::Double (0),
+                             "Density value upon which the variation of this testcase "
+                             "is overlaid. Since this background density is constant "
+                             "it does not affect the flow pattern but it adds to the "
+                             "total pressure since it produces a nonzero adiabatic "
+                             "pressure if set to a nonzero value.");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+
+
+    template <int dim>
+    void
+    SolCxMaterial<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Material model");
+      {
+        prm.enter_subsection("SolCx");
+        {
+          eta_B = prm.get_double ("Viscosity jump");
+          background_density = prm.get_double("Background density");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+    template <int dim>
+    double
+    SolCxMaterial<dim>::get_eta_B() const
+    {
+      return eta_B;
+    }
+
+
+    template <int dim>
+    double
+    SolCxMaterial<dim>::get_background_density() const
+    {
+      return background_density;
+    }
 
 
 
@@ -2832,7 +2832,7 @@ namespace aspect
             = dynamic_cast<const SolCxMaterial<dim> *>(&this->get_material_model());
 
           ref_func.reset (new AnalyticSolutions::FunctionSolCx<dim>(material_model->get_eta_B(),
-                                                                      material_model->get_background_density()));
+                                                                    material_model->get_background_density()));
         }
       else
         {

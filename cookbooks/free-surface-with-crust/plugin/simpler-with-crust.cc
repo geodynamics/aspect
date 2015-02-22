@@ -272,6 +272,6 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(SimplerWithCrust,
                                    "simpler with crust",
                                    "A material model that is like the ``simpler'' model but "
-				   "has a jump in the viscosity.")
+                                   "has a jump in the viscosity.")
   }
 }

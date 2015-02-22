@@ -879,12 +879,12 @@ namespace aspect
 
     // if velocity and pressure are in the same block, we have to copy the
     // pressure to the solution and RHS vector with a zero velocity
-    if(introspection.block_indices.pressure == introspection.block_indices.velocities)
+    if (introspection.block_indices.pressure == introspection.block_indices.velocities)
       {
         for (unsigned int i=0; i < introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
           {
             types::global_dof_index idx =
-                introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
+              introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
             remap(idx)        = current_linearization_point(idx);
           }
         remap.block(0).compress(VectorOperation::insert);
@@ -893,7 +893,7 @@ namespace aspect
       remap.block (block_p) = current_linearization_point.block (block_p);
 
     // we have to do the same conversions and rescaling we do before solving
-    // the Stokes system: 
+    // the Stokes system:
     // denormalizing the pressure and applying the pressure scaling
     denormalize_pressure (remap);
     current_constraints.set_zero (remap);
@@ -904,7 +904,7 @@ namespace aspect
     // we calculate the velocity residual with a zero velocity,
     // computing only the part of the RHS not balanced by the static pressure
     double residual_u, residual_p = 0;
-    if(introspection.block_indices.pressure == introspection.block_indices.velocities)
+    if (introspection.block_indices.pressure == introspection.block_indices.velocities)
       {
         // we can use the whole block here because we set the velocity to zero above
         return system_matrix.block(0,0).residual (residual.block(0),

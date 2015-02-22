@@ -314,9 +314,9 @@ namespace aspect
                                        const unsigned int components)
     {
       AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
-          || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
-          ExcMessage ("This ascii data plugin can only be used when using "
-                      "a spherical shell or box geometry."));
+                   || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
+                   ExcMessage ("This ascii data plugin can only be used when using "
+                               "a spherical shell or box geometry."));
 
 
       for (typename std::set<types::boundary_id>::const_iterator
@@ -353,10 +353,10 @@ namespace aspect
           else
             AssertThrow(false,
                         ExcMessage (std::string("Ascii data file <")
-                                   +
-                                   filename
-                                   +
-                                   "> not found!"));
+                                    +
+                                    filename
+                                    +
+                                    "> not found!"));
 
           // If the boundary condition is constant, switch off time_dependence
           // immediately. If not, also load the second file for interpolation.
@@ -485,11 +485,11 @@ namespace aspect
 
               const bool load_both_files = std::abs(current_file_number - old_file_number) >= 1;
 
-            for (typename std::map<types::boundary_id,
-                 std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim-1> > >::iterator
-                 boundary_id = lookups.begin();
-                 boundary_id != lookups.end(); ++boundary_id)
-              update_data(boundary_id->first,load_both_files);
+              for (typename std::map<types::boundary_id,
+                   std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim-1> > >::iterator
+                   boundary_id = lookups.begin();
+                   boundary_id != lookups.end(); ++boundary_id)
+                update_data(boundary_id->first,load_both_files);
             }
 
           time_weight = time_steps_since_start
@@ -665,57 +665,57 @@ namespace aspect
     }
 
     template <int dim>
-      AsciiDataInitial<dim>::AsciiDataInitial ()
-      {}
+    AsciiDataInitial<dim>::AsciiDataInitial ()
+    {}
 
 
-      template <int dim>
-      void
-      AsciiDataInitial<dim>::initialize (const unsigned int components)
-      {
-        AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
-            || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
-            ExcMessage ("This ascii data plugin can only be used when using "
-                        "a spherical shell or box geometry."));
+    template <int dim>
+    void
+    AsciiDataInitial<dim>::initialize (const unsigned int components)
+    {
+      AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
+                   || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
+                   ExcMessage ("This ascii data plugin can only be used when using "
+                               "a spherical shell or box geometry."));
 
-        lookup.reset(new Utilities::AsciiDataLookup<dim> (components,
-                                                          Utilities::AsciiDataBase<dim>::scale_factor));
+      lookup.reset(new Utilities::AsciiDataLookup<dim> (components,
+                                                        Utilities::AsciiDataBase<dim>::scale_factor));
 
-        const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
-                                     + Utilities::AsciiDataBase<dim>::data_file_name;
+      const std::string filename = Utilities::AsciiDataBase<dim>::data_directory
+                                   + Utilities::AsciiDataBase<dim>::data_file_name;
 
-        this->get_pcout() << std::endl << "   Loading Ascii data initial file "
-                          << filename << "." << std::endl << std::endl;
+      this->get_pcout() << std::endl << "   Loading Ascii data initial file "
+                        << filename << "." << std::endl << std::endl;
 
-        if (fexists(filename))
-          lookup->load_file(filename);
-        else
-          AssertThrow(false,
-                      ExcMessage (std::string("Ascii data file <")
-                                 +
-                                 filename
-                                 +
-                                 "> not found!"));
-      }
+      if (fexists(filename))
+        lookup->load_file(filename);
+      else
+        AssertThrow(false,
+                    ExcMessage (std::string("Ascii data file <")
+                                +
+                                filename
+                                +
+                                "> not found!"));
+    }
 
-      template <int dim>
-      double
-      AsciiDataInitial<dim>::
-      get_data_component (const Point<dim>                    &position,
-                          const unsigned int                   component) const
-      {
-        Point<dim> internal_position = position;
+    template <int dim>
+    double
+    AsciiDataInitial<dim>::
+    get_data_component (const Point<dim>                    &position,
+                        const unsigned int                   component) const
+    {
+      Point<dim> internal_position = position;
 
-        if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0)
-          {
-            const std_cxx11::array<double,dim> spherical_position =
-              ::aspect::Utilities::spherical_coordinates(position);
+      if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0)
+        {
+          const std_cxx11::array<double,dim> spherical_position =
+            ::aspect::Utilities::spherical_coordinates(position);
 
-            for (unsigned int i = 0; i < dim; i++)
-              internal_position[i] = spherical_position[i];
-          }
-        return lookup->get_data(internal_position,component);
-      }
+          for (unsigned int i = 0; i < dim; i++)
+            internal_position[i] = spherical_position[i];
+        }
+      return lookup->get_data(internal_position,component);
+    }
 
     // Explicit instantiations
     template class AsciiDataLookup<1>;
