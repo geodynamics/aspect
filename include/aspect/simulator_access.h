@@ -245,6 +245,14 @@ namespace aspect
       void
       get_artificial_viscosity(Vector<float> &viscosity_per_cell) const;
 
+      /**
+       * Returns the entropy viscosity on each locally owned cell as it is
+       * used to stabilize the composition equation.
+       */
+      void
+      get_artificial_viscosity_composition(Vector<float> &viscosity_per_cell,
+                                           const unsigned int compositional_variable) const;
+
       /** @} */
 
 
