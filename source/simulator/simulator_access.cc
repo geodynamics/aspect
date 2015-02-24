@@ -196,9 +196,10 @@ namespace aspect
   void
   SimulatorAccess<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell) const
   {
-    const typename Simulator<dim>::AdvectionField::FieldType field_type = Simulator<dim>::AdvectionField::FieldType::temperature_field;
+    const typename Simulator<dim>::AdvectionField temperature_field(Simulator<dim>::AdvectionField::FieldType::temperature_field,
+                                                                    numbers::invalid_unsigned_int);
     simulator->get_artificial_viscosity(viscosity_per_cell,
-                                        field_type,
+                                        temperature_field.field_type,
                                         numbers::invalid_unsigned_int);
   }
 
@@ -207,8 +208,9 @@ namespace aspect
   SimulatorAccess<dim>::get_artificial_viscosity_composition (Vector<float> &viscosity_per_cell,
                                                               const unsigned int compositional_variable) const
   {
-    const typename Simulator<dim>::AdvectionField::FieldType field_type = Simulator<dim>::AdvectionField::FieldType::compositional_field;
-    simulator->get_artificial_viscosity(viscosity_per_cell, field_type, compositional_variable);
+    const typename Simulator<dim>::AdvectionField temperature_field(Simulator<dim>::AdvectionField::FieldType::compositional_field,
+                                                                    compositional_variable);
+    simulator->get_artificial_viscosity(viscosity_per_cell, temperature_field.field_type, compositional_variable);
   }
 
   template <int dim>
