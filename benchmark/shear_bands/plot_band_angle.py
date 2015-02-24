@@ -109,7 +109,7 @@ for i in range(0,int(ncols)):
 # And now we plot it:
 # input data
 im0 = ax[0].imshow(grid, interpolation='nearest', 
-        extent=(xmin, xmax, ymax, ymin))
+        extent=(xmin, xmax, ymin, ymax), origin='lower', cmap='RdBu_r')
 # fourier transporm
 im1 = ax[1].imshow((np.log(np.absolute(fourier_centered)/fouriermax)), interpolation='nearest', 
         extent=(xmin, xmax, ymax, ymin), aspect=1.0/aspect_ratio)
