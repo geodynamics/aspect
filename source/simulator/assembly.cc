@@ -782,19 +782,18 @@ namespace aspect
   void
   Simulator<dim>::
   get_artificial_viscosity (Vector<float> &viscosity_per_cell,
-                            const typename AdvectionField::FieldType field_type,
-                            const unsigned int compositional_variable) const
+                            const AdvectionField &advection_field) const
   {
     Assert(viscosity_per_cell.size()==triangulation.n_active_cells(), ExcInternalError());
 
-    if(field_type == AdvectionField::compositional_field)
+    if(advection_field.field_type == AdvectionField::compositional_field)
       Assert(parameters.n_compositional_fields > compositional_variable, ExcInternalError());
 
     viscosity_per_cell = 0.0;
 
     // this function computes the artificial viscosity for the temperature
     // equation only. create an object that signifies this.
-    const AdvectionField torc (field_type, compositional_variable);
+    const AdvectionField torc (advection_field.field_type, advection_field.compositional_variable);
     const std::pair<double,double>
     global_field_range = get_extrapolated_advection_field_range (torc);
     double global_entropy_variation = get_entropy_variation ((global_field_range.first +
@@ -805,13 +804,13 @@ namespace aspect
 
     internal::Assembly::Scratch::
     AdvectionSystem<dim> scratch (finite_element,
-                                  finite_element.base_element(field_type == AdvectionField::temperature_field
+                                  finite_element.base_element(advection_field.field_type == AdvectionField::temperature_field
                                                               ?
                                                               introspection.block_indices.temperature
                                                               :
-                                                              introspection.block_indices.compositional_fields[compositional_variable]),
+                                                              introspection.block_indices.compositional_fields[advection_field.compositional_variable]),
                                   mapping,
-                                  QGauss<dim>((field_type == AdvectionField::temperature_field
+                                  QGauss<dim>((advection_field.field_type == AdvectionField::temperature_field
                                                ?
                                                parameters.temperature_degree
                                                :
@@ -842,18 +841,18 @@ namespace aspect
         Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
 
         const unsigned int solution_component
-          = (field_type == AdvectionField::temperature_field
+          = (advection_field.field_type == AdvectionField::temperature_field
              ?
              introspection.component_indices.temperature
              :
-             introspection.component_indices.compositional_fields[compositional_variable]);
+             introspection.component_indices.compositional_fields[advection_field.compositional_variable]);
 
         const FEValuesExtractors::Scalar solution_field
-          = (field_type == AdvectionField::temperature_field
+          = (advection_field.field_type == AdvectionField::temperature_field
              ?
              introspection.extractors.temperature
              :
-             introspection.extractors.compositional_fields[compositional_variable]);
+             introspection.extractors.compositional_fields[advection_field.compositional_variable]);
 
         scratch.finite_element_values.reinit (cell);
 
@@ -893,16 +892,16 @@ namespace aspect
             scratch.current_velocity_values);
 
 
-        scratch.old_field_values = (field_type == AdvectionField::temperature_field
+        scratch.old_field_values = (advection_field.field_type == AdvectionField::temperature_field
                                     ?
                                     &scratch.old_temperature_values
                                     :
-                                    &scratch.old_composition_values[compositional_variable]);
-        scratch.old_old_field_values = (field_type == AdvectionField::temperature_field
+                                    &scratch.old_composition_values[advection_field.compositional_variable]);
+        scratch.old_old_field_values = (advection_field.field_type == AdvectionField::temperature_field
                                     ?
                                     &scratch.old_old_temperature_values
                                     :
-                                    &scratch.old_old_composition_values[compositional_variable]);
+                                    &scratch.old_old_composition_values[advection_field.compositional_variable]);
 
         scratch.finite_element_values[solution_field].get_function_gradients (old_solution,
                                                                               scratch.old_field_grads);
@@ -2197,8 +2196,7 @@ namespace aspect
                                                                      const internal::Assembly::CopyData::StokesSystem<dim> &data); \
   template void Simulator<dim>::assemble_stokes_system (); \
   template void Simulator<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,  \
-                                                          const typename AdvectionField::FieldType field_type, \
-                                                          const unsigned int compositional_variable) const; \
+                                                          const AdvectionField &advection_field) const; \
   template void Simulator<dim>::build_advection_preconditioner (const AdvectionField &, \
                                                                 std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
   template void Simulator<dim>::local_assemble_advection_system ( \
