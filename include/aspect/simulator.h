@@ -961,11 +961,12 @@ namespace aspect
       void
       compute_advection_system_residual(internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
                                         const double                        average_field,
-                                        const AdvectionField     &advection_field,
+                                        const AdvectionField               &advection_field,
                                         double                             &max_residual,
                                         double                             &max_velocity,
                                         double                             &max_density,
-                                        double                             &max_specific_heat) const;
+                                        double                             &max_specific_heat,
+                                        double                             &conductivity) const;
 
       /**
        * Extract the values of temperature, pressure, composition and optional

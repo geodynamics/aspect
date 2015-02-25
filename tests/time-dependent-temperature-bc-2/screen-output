@@ -21,10 +21,10 @@ Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 1:  t=1 seconds
    Solving temperature system... 11 iterations.
-   Solving Stokes system... 4 iterations.
+   Solving Stokes system... 11 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: -0.1463 K, 0.02943 K, 1 K
+     Temperature min/avg/max: -0.1464 K, 0.02941 K, 1 K
 
 Termination requested by criterion: end time
 

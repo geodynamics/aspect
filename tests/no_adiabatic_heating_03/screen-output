@@ -37,7 +37,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Reference density (kg/m^3):                    1
      Reference gravity (m/s^2):                     10
      Reference thermal expansion (1/K):             0
-     Temperature contrast across model domain (K): 0
+     Temperature contrast across model domain (K):  0
      Model domain depth (m):                        1
      Reference thermal diffusivity (m^2/s):         1e-06
      Reference viscosity (Pas):                     10
@@ -51,7 +51,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing graphical output: output-no_adiabatic_heating_03/solution-00000
 
 *** Timestep 1:  t=0.0284091 seconds
-   Solving temperature system... 25 iterations.
+   Solving temperature system... 17 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2 iterations.
 
@@ -73,7 +73,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0.00385 K, 0.004155 K
+     Temperature min/avg/max: 0 K, 0.003842 K, 0.004154 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 2:  t=0.0568181 seconds
@@ -99,7 +99,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0.007611 K, 0.008302 K
+     Temperature min/avg/max: 0 K, 0.007599 K, 0.008302 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 3:  t=0.0852272 seconds
@@ -125,7 +125,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0.01126 K, 0.01244 K
+     Temperature min/avg/max: 0 K, 0.01125 K, 0.01244 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 4:  t=0.1 seconds
@@ -151,7 +151,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     Temperature min/avg/max:  0 K, 0.01312 K, 0.01459 K
+     Temperature min/avg/max:  0 K, 0.01311 K, 0.01459 K
      RMS, max velocity:        1.05 m/s, 1.1 m/s
      Writing graphical output: output-no_adiabatic_heating_03/solution-00001
 
