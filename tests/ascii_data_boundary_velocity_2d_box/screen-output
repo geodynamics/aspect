@@ -1,0 +1,59 @@
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_2d_left.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_2d_right.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_2d_bottom.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/box_2d_top.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+Number of active cells: 80 (on 3 levels)
+Number of degrees of freedom: 1,212 (738+105+369)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+11 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.00616 m/year, 0.0156 m/year
+     Temperature min/avg/max:            0 K, 1488 K, 1913 K
+     Heat fluxes through boundary parts: 1.121e-11 W, 0 W, 4.647e+05 W, 4.549e+05 W
+
+*** Timestep 1:  t=1e+06 years
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+6 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.00627 m/year, 0.0157 m/year
+     Temperature min/avg/max:            0 K, 1478 K, 1977 K
+     Heat fluxes through boundary parts: 2.239 W, 3.621 W, 4.518e+05 W, 4.358e+05 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

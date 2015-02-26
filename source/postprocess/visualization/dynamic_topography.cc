@@ -78,21 +78,20 @@ namespace aspect
             if (cell->at_boundary())
               {
                 // see if the cell is at the *top* boundary, not just any boundary
+                unsigned int top_face_idx = numbers::invalid_unsigned_int;
                 {
-                  bool is_at_top = false;
                   for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
                     if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
                       {
-                        is_at_top = true;
+                        top_face_idx = f;
                         break;
                       }
-
-                  if (is_at_top == false)
-                    {
-                      (*return_value.second)(cell_index) = 0;
-                      continue;
-                    }
                 }
+                if (top_face_idx == numbers::invalid_unsigned_int)
+                  {
+                    (*return_value.second)(cell_index) = 0;
+                    continue;
+                  }
                 fe_values.reinit (cell);
 
                 // get the various components of the solution, then
@@ -155,13 +154,8 @@ namespace aspect
 
                 const double dynamic_topography_cell_average = dynamic_topography_x_volume / volume;
                 // Compute the associated surface area to later compute the surfaces weighted integral
-                double surface = 0;
-                for (unsigned int f = 0; f < GeometryInfo<dim>::faces_per_cell; ++f)
-                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
-                    {
-                      fe_face_values.reinit(cell,f);
-                      surface = fe_face_values.JxW(0);
-                    }
+                fe_face_values.reinit(cell, top_face_idx);
+                const double surface = fe_face_values.JxW(0);
 
                 integrated_topography += dynamic_topography_cell_average*surface;
                 integrated_surface_area += surface;
@@ -170,31 +164,24 @@ namespace aspect
               }
 
         // Calculate surface weighted average dynamic topography
-        const double average_topography = Utilities::MPI::sum (integrated_topography,this->get_mpi_communicator()) / Utilities::MPI::sum (integrated_surface_area,this->get_mpi_communicator());
+        const double average_topography = Utilities::MPI::sum (integrated_topography,this->get_mpi_communicator())
+                                          / Utilities::MPI::sum (integrated_surface_area,this->get_mpi_communicator());
 
-        // if (DT_mean_switch == true) subtract the average dynamic topography,
-        // otherwise leave as is
+        // subtract the average dynamic topography
         cell_index = 0;
         cell = this->get_dof_handler().begin_active();
-        for (; cell!=endc; ++cell,++cell_index)
-          if (cell->is_locally_owned() && (*return_value.second)(cell_index) != 0)
-            if (cell->at_boundary())
+        if (subtract_mean_dyn_topography)
+          for (; cell!=endc; ++cell,++cell_index)
+            if (cell->is_locally_owned()
+                && (*return_value.second)(cell_index) != 0
+                && cell->at_boundary())
               {
-                // see if the cell is at the *top* boundary, not just any boundary
-                {
-                  bool is_at_top = false;
-                  for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                    if (cell->at_boundary(f))
-                      if (this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
-                        {
-                          (*return_value.second)(cell_index) -= (subtract_mean_dyn_topography
-                                                                 ?
-                                                                 average_topography
-                                                                 :
-                                                                 0);
-                          break;
-                        }
-                }
+                for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
+                    {
+                      (*return_value.second)(cell_index) -= average_topography;
+                      break;
+                    }
               }
 
         return return_value;

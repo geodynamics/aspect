@@ -441,6 +441,19 @@ namespace aspect
       get_fixed_temperature_boundary_indicators () const;
 
       /**
+       * Return a set of boundary indicators that describes which of the
+       * boundaries have a fixed composition.
+       */
+      const std::set<types::boundary_id> &
+      get_fixed_composition_boundary_indicators () const;
+
+      /**
+       * Return the map of prescribed_velocity_boundary_conditions
+       */
+      const std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
+      get_prescribed_velocity_boundary_conditions () const;
+
+      /**
        * Return a pointer to the heating model.
        */
       const HeatingModel::Interface<dim> &

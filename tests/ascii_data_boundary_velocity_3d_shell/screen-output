@@ -1,0 +1,66 @@
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_3d_inner.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_3d_outer.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_3d_east.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_3d_west.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_3d_south.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+Number of active cells: 24 (on 2 levels)
+Number of degrees of freedom: 1,277 (915+57+305)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+32 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  3.79 m/year, 10.9 m/year
+     Temperature min/avg/max:            273 K, 1423 K, 3000 K
+     Heat fluxes through boundary parts: -3.689e+11 W, 6.046e+11 W, -7.913e+08 W, -8.023e+08 W, 9.968e+08 W
+
+*** Timestep 1:  t=1000 years
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  3.79 m/year, 10.9 m/year
+     Temperature min/avg/max:            273 K, 1422 K, 3000 K
+     Heat fluxes through boundary parts: -3.682e+11 W, 6.027e+11 W, -8.738e+08 W, -6.786e+08 W, 9.998e+08 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

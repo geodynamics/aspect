@@ -1,0 +1,13 @@
+# Test data for ascii data boundary composition.
+# Only next line is parsed in format: [nx] [ny] because of keyword "POINTS:"
+# POINTS: 3 3
+# Columns: x y composition_1.
+0.      0.      0.
+330000. 0.      0.
+660000. 0.      0.
+0.      330000. 1.
+330000. 330000. 1.
+660000. 330000. 1.
+0.      660000. 0.
+330000. 660000. 0.
+660000. 660000. 0.

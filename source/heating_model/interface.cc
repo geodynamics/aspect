@@ -186,8 +186,8 @@ namespace aspect
   \
   template \
   Interface<dim> * \
-  create_heating_model<dim> (ParameterHandler &prm); \
-   
+  create_heating_model<dim> (ParameterHandler &prm);
+
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }
