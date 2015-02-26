@@ -3,12 +3,14 @@
 # this script can be used to generate plots from csv files
 
 import numpy as np
-import scipy.fftpack as fft
+import numpy.fft as fft
 import scipy.interpolate
 import matplotlib.pyplot as plt
 import csv as csv
 import math
 import sys
+from scipy import stats
+from scipy.optimize import curve_fit
 
 if len(sys.argv)!=2:
 	print "usage: shear_bands.csv"
@@ -16,10 +18,6 @@ if len(sys.argv)!=2:
 filename = sys.argv[1]
 
 nplots=3
-
-#resolution=[2000]#[128000]
-#label=['refinement 2','refinement 3','refinement 4','analytical']
-#label=['resolution 2.5 m','resolution 1.25 m','resolution 0.63 m','analytical solution']
 
 data = []
 
@@ -37,7 +35,8 @@ for i in range(0,len(data)):
 
 x = np.asarray(coordsX)
 y = np.asarray(coordsY)
-p = np.asarray(porosity) - 0.05
+p = np.asarray(porosity)
+p = p - p.mean()
 
 print len(x), len(y), len(p)
 
@@ -65,10 +64,6 @@ nrows = np.round((ymax - ymin) / dy)+1
 ncols = np.round((xmax - xmin) / dx)+1
 aspect_ratio = nrows/ncols
 
-# First we convert our x and y positions to indicies...
-idx = np.round((x - xmin) / dx).astype(np.int)
-idy = np.round((ymax - y) / dy).astype(np.int)
-
 # Then we make an empty 2D grid...
 grid = np.zeros((nrows, ncols), dtype=np.float)
 xg = np.arange(xmin, xmax, dx)
@@ -82,8 +77,15 @@ xy=np.transpose(np.array([x,y]))
 xyg = np.meshgrid(xg, yg)
 grid = scipy.interpolate.griddata(xy, p, xyg, method='linear')
 
+# apply a hamming window function to make porosity periodic
+hx = np.ones(len(xg))
+hy = np.hanning(len(yg))
+ham2d = np.outer(hx,hy)
+ham2d_trans = np.transpose(ham2d)
+grid_window = np.multiply(grid,ham2d_trans)
+
 # make the fourier transformation
-fourier = fft.fft2(grid)
+fourier = fft.fft2(grid_window)
 fourier_centered = fft.fftshift(fourier)
 
 fig, ax = plt.subplots(nplots)
@@ -101,25 +103,39 @@ angle=np.copy(grid)
 # calculate the angle for each point
 for i in range(0,int(ncols)):
 	for j in range(0,int(nrows)):
-		a = -math.atan2((i-(ncols-1)/2)*aspect_ratio, (j-(nrows-1)/2))
+		a = math.atan2((j-(nrows)/2),(i-(ncols)/2)*aspect_ratio)
 		if (a<0):
 			a+=np.pi
 		angle[j][i] = a/np.pi*180.0
 
 # And now we plot it:
 # input data
-im0 = ax[0].imshow(grid, interpolation='nearest', 
+im0 = ax[0].imshow(grid_window, interpolation='nearest', 
         extent=(xmin, xmax, ymin, ymax), origin='lower', cmap='RdBu_r')
 # fourier transporm
-im1 = ax[1].imshow((np.log(np.absolute(fourier_centered)/fouriermax)), interpolation='nearest', 
-        extent=(xmin, xmax, ymax, ymin), aspect=1.0/aspect_ratio)
+#im1 = ax[1].imshow((np.log(np.absolute(fourier_centered)/fouriermax)), interpolation='nearest', 
+#        extent=(xmin, xmax, ymin, ymax), origin='lower', aspect=1.0/aspect_ratio)
+fourier2plot = fourierabs[np.round(len(yg)*7/16):np.round(len(yg)*9/16),np.round(len(xg)*7/16):np.round(len(xg)*9/16)]
+im1 = ax[1].imshow(fourier2plot, interpolation='nearest',
+        extent=(xmin, xmax, ymin, ymax), origin='lower', aspect=1.0/aspect_ratio)
+ax[1].axis('off')
 #plt.colorbar(im0)
 
 # band angle histogram
 angle_flat = angle.flatten()
 fourier_flat = fourierabs.flatten()
-bins=np.linspace(0,90,17)
+bins=np.linspace(0.1,90,17)
 ax[2].hist(angle_flat, bins, normed=True, weights=fourier_flat, rwidth=0.7)
+
+# fit lognormal
+bins_fit=np.linspace(0.1,90,35)
+y_hist, bin_edges = np.histogram(angle_flat, bins_fit, normed=True, weights=fourier_flat)
+x_hist=bins_fit[1:]
+
+(shape_out, scale_out), pcov = curve_fit(lambda xdata, shape, scale: stats.lognorm.pdf(xdata, shape, loc=0, scale=scale), x_hist, y_hist, p0=[0.25, 75])
+
+ax[2].plot(x_hist,stats.lognorm.pdf(x_hist, shape_out, loc=0, scale=scale_out), 'r-', lw=3, label='Fitted distribution')
+print shape_out, scale_out
 
 fig.savefig('fft', dpi=200)
 
