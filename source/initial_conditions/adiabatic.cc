@@ -82,7 +82,7 @@ namespace aspect
       in.pressure[0]=this->get_adiabatic_conditions().pressure(position);
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         in.composition[0][c] = function->value(Point<1>(depth),c);
-      in.strain_rate[0] = SymmetricTensor<2,dim>(); // adiabat has strain=0.
+      in.strain_rate.resize(0); // adiabat has strain=0.
       this->get_material_model().evaluate(in, out);
 
       const double kappa = out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0]);
@@ -140,11 +140,14 @@ namespace aspect
             }
           else if (const GeometryModel::Box<dim> *
                    box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
-            // for the box geometry, choose a point at the center of the bottom face.
-            // (note that the loop only runs over the first dim-1 coordinates, leaving
-            // the depth variable at zero)
-            for (unsigned int i=0; i<dim-1; ++i)
-              mid_point(i) += 0.5 * box_geometry_model->get_extents()[i];
+            {
+              // for the box geometry, choose a point at the center of the bottom face.
+              // (note that the loop only runs over the first dim-1 coordinates, leaving
+              // the depth variable at zero)
+              mid_point = box_geometry_model->get_origin();
+              for (unsigned int i=0; i<dim-1; ++i)
+                mid_point(i) += 0.5 * box_geometry_model->get_extents()[i];
+            }
           else
             AssertThrow (false,
                          ExcMessage ("Not a valid geometry model for the initial conditions model"

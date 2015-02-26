@@ -75,16 +75,16 @@ namespace aspect
           if (cell->at_boundary())
             {
               // see if the cell is at the *top* boundary, not just any boundary
+              unsigned int top_face_idx = numbers::invalid_unsigned_int;
               {
-                bool is_at_top = false;
                 for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
                   if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
                     {
-                      is_at_top = true;
+                      top_face_idx = f;
                       break;
                     }
 
-                if (is_at_top == false)
+                if (top_face_idx == numbers::invalid_unsigned_int)
                   continue;
               }
               fe_values.reinit (cell);
@@ -149,15 +149,9 @@ namespace aspect
 
               const double dynamic_topography_cell_average = dynamic_topography_x_volume / volume;
               // Compute the associated surface area to later compute the surfaces weighted integral
-              double surface;
-              Point<dim> midpoint_at_surface;
-              for (unsigned int f = 0; f < GeometryInfo<dim>::faces_per_cell; ++f)
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
-                  {
-                    fe_face_values.reinit(cell,f);
-                    surface = fe_face_values.JxW(0);
-                    midpoint_at_surface = cell->face(f)->center();
-                  }
+              fe_face_values.reinit(cell, top_face_idx);
+              const double surface = fe_face_values.JxW(0);
+              const Point<dim> midpoint_at_surface = cell->face(top_face_idx)->center();
 
               integrated_topography += dynamic_topography_cell_average*surface;
               integrated_surface_area += surface;

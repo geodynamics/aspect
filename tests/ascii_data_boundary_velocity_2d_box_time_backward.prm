@@ -1,0 +1,92 @@
+##### simple test for ascii data
+# This test is particularly designed to test the time dependent behaviour with
+# a set of files labeled with decreasing file order.
+
+set Dimension                              = 2
+
+set Use years in output instead of seconds = true
+set End time                               = 6e5
+
+set Adiabatic surface temperature          = 1613.0
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 3300000
+    set Y extent = 660000
+    set X repetitions = 5
+  end
+end
+
+subsection Initial conditions
+  set Model name = adiabatic
+  subsection Adiabatic
+    set Amplitude = 300
+    set Radius    = 250000
+  end
+end
+
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = top,bottom
+  set Prescribed velocity boundary indicators = top: ascii data, bottom: function
+  set Tangential velocity boundary indicators = left,right
+
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+end
+
+
+subsection Boundary velocity model
+  subsection Ascii data model
+    set Data file name       = box_2d_%s.%d.txt
+    
+    set Data directory = $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/ascii-data/test/
+    set First data file model time = 1e5
+    set First data file number = 2
+    set Data file time step = 2e5
+    set Decreasing file order = true
+    set Scale factor = 1
+  end
+
+  subsection Function
+    set Function expression = 1;0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Viscosity = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 2
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = temperature
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics
+end
+

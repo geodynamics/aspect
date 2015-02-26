@@ -1,0 +1,13 @@
+# Test data for ascii data boundary velocity.
+# Only next line is parsed in format: [nx] [ny] because of keyword "POINTS:"
+# POINTS: 3 3
+# Columns: x z velocity_x velocity_y velocity_z
+0.      0.       0. 0. 0.
+330000  0.       0. 0. 0.
+660000  0.       0. 0. 0.
+0.      1650000  1. 0. 0.
+330000  1650000  1. 0. 0.
+660000  1650000  1. 0. 0.
+0.      3300000  0. 0. 0.
+330000  3300000  0. 0. 0.
+660000  3300000  0. 0. 0.

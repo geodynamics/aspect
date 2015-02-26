@@ -381,11 +381,11 @@ namespace aspect
         VelocityBoundaryConditions::Interface<dim> *bv
           = VelocityBoundaryConditions::create_velocity_boundary_conditions<dim>
             (p->second.second);
+        velocity_boundary_conditions[p->first].reset (bv);
         if (dynamic_cast<SimulatorAccess<dim>*>(bv) != 0)
           dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
         bv->parse_parameters (prm);
         bv->initialize ();
-        velocity_boundary_conditions[p->first].reset (bv);
       }
 
     // determine how to treat the pressure. we have to scale it for the solver
@@ -1463,10 +1463,11 @@ namespace aspect
               build_advection_preconditioner(AdvectionField::composition(c),
                                              C_preconditioner);
               solve_advection(AdvectionField::composition(c));
-              current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-                = solution.block(introspection.block_indices.compositional_fields[c]);
             }
 
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            current_linearization_point.block(introspection.block_indices.compositional_fields[c])
+              = solution.block(introspection.block_indices.compositional_fields[c]);
 
           // the Stokes matrix depends on the viscosity. if the viscosity
           // depends on other solution variables, then after we need to
@@ -1543,6 +1544,7 @@ namespace aspect
                                                  T_preconditioner);
                   initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
                 }
+
               const double temperature_residual = solve_advection(AdvectionField::temperature());
 
 
@@ -1602,11 +1604,11 @@ namespace aspect
 
               double max = 0.0;
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                if(initial_composition_residual[c]>0)
+                if (initial_composition_residual[c]>0)
                   max = std::max(composition_residual[c]/initial_composition_residual[c],max);
-              if(initial_stokes_residual>0)
+              if (initial_stokes_residual>0)
                 max = std::max(stokes_residual/initial_stokes_residual, max);
-              if(initial_temperature_residual>0)
+              if (initial_temperature_residual>0)
                 max = std::max(temperature_residual/initial_temperature_residual, max);
               pcout << "      residual: " << max << std::endl;
               if (max < parameters.nonlinear_tolerance)
@@ -1636,10 +1638,11 @@ namespace aspect
               build_advection_preconditioner (AdvectionField::composition (c),
                                               C_preconditioner);
               solve_advection(AdvectionField::composition(c));
-              current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-                = solution.block(introspection.block_indices.compositional_fields[c]);
             }
 
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            current_linearization_point.block(introspection.block_indices.compositional_fields[c])
+              = solution.block(introspection.block_indices.compositional_fields[c]);
 
           // residual vector (only for the velocity)
           LinearAlgebra::Vector residual (introspection.index_sets.system_partitioning[0], mpi_communicator);

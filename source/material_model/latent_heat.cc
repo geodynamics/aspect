@@ -270,14 +270,8 @@ namespace aspect
           }
 
       // fourth, pressure dependence of density
-      double pressure_dependence = 0.0;
-      if (is_compressible() && this->get_adiabatic_conditions().is_initialized())
-        {
-          const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
-          const double adiabatic_surface_pressure = this->get_adiabatic_conditions().pressure(surface_point);
-          const double kappa = compressibility(temperature,pressure,compositional_fields,position);
-          pressure_dependence = kappa * (pressure - adiabatic_surface_pressure);
-        }
+      const double kappa = compressibility(temperature,pressure,compositional_fields,position);
+      const double pressure_dependence = reference_rho * kappa * (pressure - this->get_surface_pressure());
 
       // in the end, all the influences are added up
       return (reference_rho + composition_dependence + pressure_dependence + phase_dependence) * temperature_dependence;
@@ -523,12 +517,6 @@ namespace aspect
                              "viscosity for each phase. "
                              "List must have one more entry than Phase transition depths. "
                              "Units: non-dimensional.");
-          prm.declare_entry ("Activation enthalpies", "",
-                             Patterns::List (Patterns::Double(0)),
-                             "A list of activation enthalpies for the temperature dependence of the "
-                             "viscosity of each phase. "
-                             "List must have one more entry than Phase transition depths. "
-                             "Units: $1/K$.");
         }
         prm.leave_subsection();
       }
@@ -570,16 +558,13 @@ namespace aspect
                               (Utilities::split_string_list(prm.get ("Corresponding phase for density jump")));
           phase_prefactors = Utilities::string_to_double
                              (Utilities::split_string_list(prm.get ("Viscosity prefactors")));
-          activation_enthalpies = Utilities::string_to_double
-                                  (Utilities::split_string_list(prm.get ("Activation enthalpies")));
 
           if (transition_widths.size() != transition_depths.size() ||
               transition_temperatures.size() != transition_depths.size() ||
               transition_slopes.size() != transition_depths.size() ||
               density_jumps.size() != transition_depths.size() ||
               transition_phases.size() != transition_depths.size() ||
-              phase_prefactors.size() != transition_depths.size()+1 ||
-              activation_enthalpies.size() != transition_depths.size()+1)
+              phase_prefactors.size() != transition_depths.size()+1)
             AssertThrow(false, ExcMessage("Error: At least one list that gives input parameters for the phase transitions has the wrong size."));
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)

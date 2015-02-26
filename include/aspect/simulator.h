@@ -1303,7 +1303,6 @@ namespace aspect
        */
       void output_statistics();
 
-
       /**
        * This routine exchanges the solid and fluid pressure for the fluid
        * and the compaction pressure in the solution vector (or the other

@@ -1,0 +1,119 @@
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_inner.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_outer.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_left.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/shell_2d_right.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+Number of active cells: 192 (on 4 levels)
+Number of degrees of freedom: 2,724 (1,666+225+833)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+6 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.55 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1597 K, 3000 K
+     Heat fluxes through boundary parts: -3.028e+05 W, 5.174e+05 W, -174.4 W, -174.4 W
+
+*** Timestep 1:  t=148925 years
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.55 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1595 K, 3000 K
+     Heat fluxes through boundary parts: -2.889e+05 W, 4.924e+05 W, -164.2 W, -121.5 W
+
+*** Timestep 2:  t=297850 years
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.55 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1592 K, 3000 K
+     Heat fluxes through boundary parts: -2.731e+05 W, 4.561e+05 W, -130.8 W, -67.06 W
+
+*** Timestep 3:  t=446775 years
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.55 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1589 K, 3000 K
+     Heat fluxes through boundary parts: -2.573e+05 W, 4.208e+05 W, -95.94 W, -27.86 W
+
+*** Timestep 4:  t=595700 years
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.55 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1585 K, 3000 K
+     Heat fluxes through boundary parts: -2.43e+05 W, 3.9e+05 W, -63.31 W, -3.113 W
+
+*** Timestep 5:  t=744625 years
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.55 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1582 K, 3000 K
+     Heat fluxes through boundary parts: -2.314e+05 W, 3.639e+05 W, -30.95 W, 10.31 W
+
+*** Timestep 6:  t=893550 years
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.55 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1579 K, 3000 K
+     Heat fluxes through boundary parts: -2.226e+05 W, 3.419e+05 W, 1.848 W, 16.19 W
+
+*** Timestep 7:  t=1e+06 years
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 23 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.55 m/year, 0.963 m/year
+     Temperature min/avg/max:            273 K, 1576 K, 3000 K
+     Heat fluxes through boundary parts: -2.183e+05 W, 3.296e+05 W, 14.63 W, 7.905 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

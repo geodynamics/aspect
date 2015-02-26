@@ -112,7 +112,6 @@ subsection Material model
     set Viscosity                                      = 8.44e21
     set Viscosity prefactors                           = 1.0, 1.0
     set Composition viscosity prefactor                = 1.0
-    set Activation enthalpies                          = 3.9473e-3, 3.9473e-3 
   end
 end
 
