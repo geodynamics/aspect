@@ -1931,14 +1931,6 @@ namespace aspect
           }
         material_model->evaluate(scratch.explicit_material_model_inputs,scratch.explicit_material_model_outputs);
       }
-    else
-      {
-        compute_material_model_input_values (current_linearization_point,
-                                             scratch.finite_element_values,
-                                             true,
-                                             scratch.material_model_inputs);
-        material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
-      }
 
     // TODO: Compute artificial viscosity once per timestep instead of each time
     // temperature system is assembled (as this might happen more than once per
