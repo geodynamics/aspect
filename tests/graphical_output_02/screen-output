@@ -11,8 +11,8 @@ Number of degrees of freedom: 430 (162+25+81+81+81)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
-   Solving composition system 1... 0 iterations.
-   Solving composition system 2... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 25 iterations.
 
@@ -21,7 +21,7 @@ Number of degrees of freedom: 430 (162+25+81+81+81)
      Reference density (kg/m^3):                    1
      Reference gravity (m/s^2):                     1
      Reference thermal expansion (1/K):             2e-05
-     Temperature contrast across model domain (K): 1
+     Temperature contrast across model domain (K):  1
      Model domain depth (m):                        1
      Reference thermal diffusivity (m^2/s):         8e-10
      Reference viscosity (Pas):                     1
