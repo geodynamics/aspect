@@ -106,7 +106,7 @@ for i in range(0,int(ncols)):
 		a = math.atan2((j-(nrows)/2),(i-(ncols)/2)*aspect_ratio)
 		if (a<0):
 			a+=np.pi
-		angle[j][i] = a/np.pi*180.0
+		angle[j][i] = 90.0 - a/np.pi*180.0
 
 # And now we plot it:
 # input data
@@ -124,15 +124,15 @@ ax[1].axis('off')
 # band angle histogram
 angle_flat = angle.flatten()
 fourier_flat = fourierabs.flatten()
-bins=np.linspace(0.1,90,17)
+bins=np.linspace(0.1,90,18)
 ax[2].hist(angle_flat, bins, normed=True, weights=fourier_flat, rwidth=0.7)
 
 # fit lognormal
-bins_fit=np.linspace(0.1,90,35)
+bins_fit=np.linspace(0.1,90,100)
 y_hist, bin_edges = np.histogram(angle_flat, bins_fit, normed=True, weights=fourier_flat)
 x_hist=bins_fit[1:]
 
-(shape_out, scale_out), pcov = curve_fit(lambda xdata, shape, scale: stats.lognorm.pdf(xdata, shape, loc=0, scale=scale), x_hist, y_hist, p0=[0.25, 75])
+(shape_out, scale_out), pcov = curve_fit(lambda xdata, shape, scale: stats.lognorm.pdf(xdata, shape, loc=0, scale=scale), x_hist, y_hist, p0=[0.25, 20])
 
 ax[2].plot(x_hist,stats.lognorm.pdf(x_hist, shape_out, loc=0, scale=scale_out), 'r-', lw=3, label='Fitted distribution')
 print shape_out, scale_out
