@@ -174,8 +174,8 @@ namespace aspect
                   if (c == peridotite_idx && this->get_timestep()>0)
                     out.reaction_terms[i][c] = melting_rate(in.temperature[i], in.pressure[i], in.composition[i]);
                   else if (c == porosity_idx && this->get_timestep()>0)
-                	out.reaction_terms[i][c] = melting_rate(in.temperature[i], in.pressure[i], in.composition[i])
-                	                           * reference_rho_s  / this->get_timestep();
+                    out.reaction_terms[i][c] = melting_rate(in.temperature[i], in.pressure[i], in.composition[i])
+                	                       * reference_rho_s  / this->get_timestep();
                   else
                     out.reaction_terms[i][c] = 0.0;
                 }
