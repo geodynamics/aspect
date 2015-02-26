@@ -787,7 +787,7 @@ namespace aspect
     Assert(viscosity_per_cell.size()==triangulation.n_active_cells(), ExcInternalError());
 
     if(advection_field.field_type == AdvectionField::compositional_field)
-      Assert(parameters.n_compositional_fields > compositional_variable, ExcInternalError());
+      Assert(parameters.n_compositional_fields > advection_field.compositional_variable, ExcInternalError());
 
     viscosity_per_cell = 0.0;
 
