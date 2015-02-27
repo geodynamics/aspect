@@ -11,8 +11,8 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
-   Solving composition system 1... 0 iterations.
-   Solving composition system 2... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22 iterations.
 
@@ -26,8 +26,8 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
-   Solving composition system 1... 0 iterations.
-   Solving composition system 2... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22 iterations.
 
@@ -41,8 +41,8 @@ Number of degrees of freedom: 1,703 (646+88+323+323+323)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
-   Solving composition system 1... 0 iterations.
-   Solving composition system 2... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22 iterations.
 
@@ -56,8 +56,8 @@ Number of degrees of freedom: 2,694 (1,022+139+511+511+511)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
-   Solving composition system 1... 0 iterations.
-   Solving composition system 2... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22 iterations.
 
@@ -68,8 +68,8 @@ Number of degrees of freedom: 2,694 (1,022+139+511+511+511)
 
 *** Timestep 1:  t=1e-15 seconds
    Solving temperature system... 0 iterations.
-   Solving composition system 1... 0 iterations.
-   Solving composition system 2... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0 iterations.
 
