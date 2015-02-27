@@ -1259,7 +1259,7 @@ namespace aspect
        */
       template <class fevalues>
       void
-      compute_material_model_input_values (const LinearAlgebra::BlockVector                    &input_solution,
+      compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
                                            const fevalues                                      &input_finite_element_values,
                                            const bool                                                   compute_strainrate,
                                            typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const;

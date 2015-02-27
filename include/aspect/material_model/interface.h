@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2013, 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -26,6 +26,7 @@
 #include <deal.II/base/point.h>
 #include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/dofs/dof_handler.h>
 
 namespace aspect
 {
@@ -520,6 +521,16 @@ namespace aspect
            * \mathbf 1$.
            */
           std::vector<SymmetricTensor<2,dim> > strain_rate;
+
+          /**
+           * Optional reference to the cell that contains these quadrature
+           * points. This allows for evaluating properties at the cell vertices
+           * and interpolating to the quadrature points. Note that not all
+           * calling functions can set this reference, so make sure that
+           * your material model either fails with a proper error message in
+           * these cases or provide an alternative calculation for these cases.
+           */
+          typename DoFHandler<dim>::active_cell_iterator cell;
         };
 
         /**

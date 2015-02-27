@@ -11,7 +11,7 @@ Number of degrees of freedom: 3,770 (2,187+125+729+729)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
-   Solving composition system 1... 0 iterations.
+   Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27 iterations.
 
@@ -20,7 +20,7 @@ Number of degrees of freedom: 7,248 (4,215+223+1,405+1,405)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
-   Solving composition system 1... 0 iterations.
+   Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28 iterations.
 
@@ -29,7 +29,7 @@ Number of degrees of freedom: 10,726 (6,243+321+2,081+2,081)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
-   Solving composition system 1... 0 iterations.
+   Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+1 iterations.
 

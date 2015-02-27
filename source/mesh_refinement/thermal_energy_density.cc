@@ -92,6 +92,8 @@ namespace aspect
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   in.composition[i][c] = prelim_composition_values[c][i];
               }
+            in.cell = cell;
+
             this->get_material_model().evaluate(in, out);
 
             // for each temperature dof, write into the output
