@@ -1016,7 +1016,7 @@ namespace aspect
 					     scratch.finite_element_values,
 					     true, // TODO: use rebuild_stokes_matrix here?
 					     scratch.material_model_inputs);
-    scratch.material_model_inputs.cell = cell;
+        scratch.material_model_inputs.cell = cell;
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
         outputs = &scratch.material_model_outputs;
       }
@@ -1027,7 +1027,7 @@ namespace aspect
                                              rebuild_stokes_matrix,
                                              melt_inputs);
         // TODO: fill other inputs
-
+        melt_inputs.cell = cell;
         typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
         AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
         melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
@@ -1335,7 +1335,7 @@ namespace aspect
                                              scratch.finite_element_values,
                                              rebuild_stokes_matrix,
                                              scratch.material_model_inputs);
-    scratch.material_model_inputs.cell = cell;
+        scratch.material_model_inputs.cell = cell;
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
         outputs = &scratch.material_model_outputs;
       }
@@ -1346,7 +1346,7 @@ namespace aspect
                                              rebuild_stokes_matrix,
                                              melt_inputs);
         // TODO: fill other inputs
-
+        melt_inputs.cell = cell;
         typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
         AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
         melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
@@ -1495,7 +1495,7 @@ namespace aspect
                                                  rebuild_stokes_matrix,
                                                  melt_inputs);
             // TODO: fill other inputs
-
+            melt_inputs.cell = cell;
             typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
             AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
             melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);

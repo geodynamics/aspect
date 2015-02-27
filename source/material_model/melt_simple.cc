@@ -21,6 +21,7 @@
 
 #include <aspect/material_model/melt_simple.h>
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/numerics/fe_field_function.h>
 
 using namespace dealii;
 
@@ -103,9 +104,8 @@ namespace aspect
     template <int dim>
     double
     MeltSimple<dim>::
-    melting_rate (const double temperature,
-                  const double pressure,
-                  const std::vector<double> &composition) const
+    melt_fraction (const double temperature,
+                   const double pressure) const
     {
       // anhydrous melting of peridotite after Katz, 2003
       const double T_solidus  = A1 + 273.15
@@ -136,22 +136,86 @@ namespace aspect
         const double T_max = std::pow(F_max,1/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
         peridotite_melt_fraction = F_max + (1 - F_max) * pow((temperature - T_max) / (T_liquidus - T_max),beta);
       }
+      return peridotite_melt_fraction;
+    }
 
-      if (this->get_timestep_number() < 0)
-    	peridotite_melt_fraction = 0.0;
 
+    template <int dim>
+    double
+    MeltSimple<dim>::
+    entropy_change (const double temperature,
+                    const double pressure,
+                    const double maximum_melt_fraction,
+                    const NonlinearDependence::Dependence dependence) const
+    {
+      double entropy_gradient = 0.0;
 
-      AssertThrow(this->introspection().compositional_name_exists("peridotite"),
-                  ExcMessage("Material model Melt simple only works if there is a compositional field called peridotite."));
-      const unsigned int peridotite_index = this->introspection().compositional_index_for_name("peridotite");
+      // calculate latent heat of melting
+      // we need the change of melt fraction in dependence of pressure and temperature
 
-      const double melt_fraction = (peridotite_melt_fraction > composition[peridotite_index]
-                                    ?
-                                    peridotite_melt_fraction - composition[peridotite_index]
-                                    :
-                                    0.0);
+      // for peridotite after Katz, 2003
+      const double T_solidus        = A1 + 273.15
+                                      + A2 * pressure
+                                      + A3 * pressure * pressure;
+      const double T_lherz_liquidus = B1 + 273.15
+                                      + B2 * pressure
+                                      + B3 * pressure * pressure;
+      const double T_liquidus       = C1 + 273.15
+                                      + C2 * pressure
+                                      + C3 * pressure * pressure;
 
-      return melt_fraction;
+      const double dT_solidus_dp        = A2 + 2 * A3 * pressure;
+      const double dT_lherz_liquidus_dp = B2 + 2 * B3 * pressure;
+      const double dT_liquidus_dp       = C2 + 2 * C3 * pressure;
+
+      if (temperature > T_solidus && temperature < T_liquidus && pressure < 1.3e10)
+        {
+          // melt fraction when clinopyroxene is still present
+          double melt_fraction_derivative_temperature
+            = beta * pow((temperature - T_solidus)/(T_lherz_liquidus - T_solidus),beta-1)
+              / (T_lherz_liquidus - T_solidus);
+
+          double melt_fraction_derivative_pressure
+            = beta * pow((temperature - T_solidus)/(T_lherz_liquidus - T_solidus),beta-1)
+              * (dT_solidus_dp * (temperature - T_lherz_liquidus)
+                 + dT_lherz_liquidus_dp * (T_solidus - temperature))
+              / pow(T_lherz_liquidus - T_solidus,2);
+
+          // melt fraction after melting of all clinopyroxene
+          const double R_cpx = r1 + r2 * pressure;
+          const double F_max = M_cpx / R_cpx;
+
+          if (melt_fraction(temperature, pressure) > F_max)
+            {
+              const double T_max = std::pow(F_max,1.0/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
+              const double dF_max_dp = - M_cpx * std::pow(r1 + r2 * pressure,-2) * r2;
+              const double dT_max_dp = dT_solidus_dp
+                                       + 1.0/beta * std::pow(F_max,1.0/beta - 1.0) * dF_max_dp * (T_lherz_liquidus - T_solidus)
+                                       + std::pow(F_max,1.0/beta) * (dT_lherz_liquidus_dp - dT_solidus_dp);
+
+              melt_fraction_derivative_temperature
+                = (1.0 - F_max) * beta * std::pow((temperature - T_max)/(T_liquidus - T_max),beta-1)
+                  / (T_liquidus - T_max);
+
+              melt_fraction_derivative_pressure
+                = dF_max_dp
+                  - dF_max_dp * std::pow((temperature - T_max)/(T_liquidus - T_max),beta)
+                  + (1.0 - F_max) * beta * std::pow((temperature - T_max)/(T_liquidus - T_max),beta-1)
+                  * (dT_max_dp * (T_max - T_liquidus) - (dT_liquidus_dp - dT_max_dp) * (temperature - T_max)) / std::pow(T_liquidus - T_max, 2);
+            }
+
+          double melt_fraction_derivative = 0;
+          if (dependence == NonlinearDependence::temperature)
+            melt_fraction_derivative = melt_fraction_derivative_temperature;
+          else if (dependence == NonlinearDependence::pressure)
+            melt_fraction_derivative = melt_fraction_derivative_pressure;
+          else
+            AssertThrow(false, ExcMessage("not implemented"));
+
+          if (melt_fraction(temperature, pressure) >= maximum_melt_fraction)
+            entropy_gradient = melt_fraction_derivative * peridotite_melting_entropy_change;
+        }
+      return entropy_gradient;
     }
 
 
@@ -160,21 +224,60 @@ namespace aspect
     MeltSimple<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
+      std::vector<double> maximum_melt_fractions(in.position.size());
+
+      // we want to get the peridotite field from the old solution here,
+      // because it tells us how much of the material was already molten
+      if(this->include_melt_transport() && in.cell != this->get_dof_handler().end())
+        {
+          // Prepare the field function
+          Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
+            fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
+
+          // only get peridotite field from the old the solution
+          Assert(this->introspection().compositional_name_exists("peridotite"),
+                 ExcMessage("Material model Melt simple only works if there is a "
+                            "compositional field called peridotite."));
+          const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
+
+          fe_value.set_active_cell(in.cell);
+          fe_value.value_list(in.position,
+                              maximum_melt_fractions,
+                              this->introspection().component_indices.compositional_fields[peridotite_idx]);
+        }
+
       for (unsigned int i=0;i<in.position.size();++i)
         {
           if (this->include_melt_transport())
             {
+              AssertThrow(this->introspection().compositional_name_exists("peridotite"),
+                          ExcMessage("Material model Melt simple only works if there is a "
+                                     "compositional field called peridotite."));
+              AssertThrow(this->introspection().compositional_name_exists("porosity"),
+                          ExcMessage("Material model Melt simple with melt transport only "
+                                     "works if there is a compositional field called porosity."));
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
               const double porosity = std::max(in.composition[i][porosity_idx],0.0);
               out.viscosities[i] = eta_0 * exp(- alpha_phi * porosity);
 
+              double melting_rate = 0.0;
+              if (this->get_timestep_number() > 0)
+                {
+                  const double F = melt_fraction(in.temperature[i], in.pressure[i]);
+                  melting_rate = (F > maximum_melt_fractions[i]
+                                  ?
+                                  F - maximum_melt_fractions[i]
+                                  :
+                                  0.0);
+                }
+
               for (unsigned int c=0;c<in.composition[i].size();++c)
                 {
-                  if (c == peridotite_idx && this->get_timestep()>0)
-                    out.reaction_terms[i][c] = melting_rate(in.temperature[i], in.pressure[i], in.composition[i]);
-                  else if (c == porosity_idx && this->get_timestep()>0)
-                    out.reaction_terms[i][c] = melting_rate(in.temperature[i], in.pressure[i], in.composition[i])
+                  if (c == peridotite_idx)
+                    out.reaction_terms[i][c] = melting_rate;
+                  else if (c == porosity_idx && this->get_timestep_number() > 0)
+                    out.reaction_terms[i][c] = melting_rate
                 	                       * reference_rho_s  / this->get_timestep();
                   else
                     out.reaction_terms[i][c] = 0.0;
@@ -186,6 +289,9 @@ namespace aspect
             for (unsigned int c=0;c<in.composition[i].size();++c)
               out.reaction_terms[i][c] = 0.0;
           }
+
+          out.entropy_derivative_pressure[i]    = entropy_change (in.temperature[i], in.pressure[i], maximum_melt_fractions[i], NonlinearDependence::pressure);
+          out.entropy_derivative_temperature[i] = entropy_change (in.temperature[i], in.pressure[i], maximum_melt_fractions[i], NonlinearDependence::temperature);
 
           out.densities[i] = reference_rho_s * (1 - thermal_expansivity * (in.temperature[i] - reference_T));
           out.thermal_expansion_coefficients[i] = thermal_expansivity;
@@ -211,7 +317,6 @@ namespace aspect
           out.permeabilities[i] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
           out.fluid_densities[i] = reference_rho_f;
           out.fluid_compressibilities[i] = 0.0;
-
           porosity = std::max(std::min(porosity,0.995),5e-3);
           out.compaction_viscosities[i] = eta_0 * (1.0 - porosity) / porosity;
         }
@@ -346,11 +451,16 @@ namespace aspect
                              "Exponent of the melting temperature in "
                              "the melt fraction calculation. "
                              "Units: non-dimensional.");
-          prm.declare_entry ("Peridotite melting entropy change", "300",
+          prm.declare_entry ("Peridotite melting entropy change", "-300",
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt of peridotite. "
                              "Units: $J/(kg K)$.");
+          prm.declare_entry ("Mass fraction cpx", "0.15",
+                             Patterns::Double (),
+                             "Mass fraction of clinopyroxene in the "
+                             "peridotite to be molten. "
+                             "Units: non-dimensional.");
         }
         prm.leave_subsection();
       }
@@ -396,6 +506,7 @@ namespace aspect
           beta            = prm.get_double ("beta");
           peridotite_melting_entropy_change
                           = prm.get_double ("Peridotite melting entropy change");
+          M_cpx           = prm.get_double ("Mass fraction cpx");
         }
         prm.leave_subsection();
       }

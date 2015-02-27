@@ -409,6 +409,7 @@ namespace aspect
                     in.composition[q][c] = composition_values_at_q_point[c];
                 }
 
+              in.cell = cell;
               const typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&*material_model);
               AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
               melt_mat->evaluate_with_melt(in, out);

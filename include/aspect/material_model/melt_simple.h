@@ -182,9 +182,15 @@ namespace aspect
 
         virtual
         double
-        melting_rate (const double temperature,
-                      const double pressure,
-                      const std::vector<double> &compositional_fields) const;
+        melt_fraction (const double temperature,
+                       const double pressure) const;
+
+        virtual
+        double
+        entropy_change (const double temperature,
+                        const double pressure,
+                        const double maximum_melt_fraction,
+                        const NonlinearDependence::Dependence dependence) const;
     };
 
   }
