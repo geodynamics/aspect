@@ -208,7 +208,7 @@ namespace aspect
                 else if (step == 3)
                   {
                     k4 = dt*vel;
-                    it->second.set_location(loc0[id_num] + (k1[id_num]+2*k2[id_num]+2*k3[id_num]+k4)/6.0);
+                    it->second.set_location(loc0[id_num] + (k1[id_num]+2.0*k2[id_num]+2.0*k3[id_num]+k4)/6.0);
                   }
                 else
                   {
@@ -436,7 +436,7 @@ namespace aspect
                       else if (step == 3)
                         {
                           k4 = dt*vel;
-                          it->second.set_location(loc0[id_num] + (k1[id_num]+2*k2[id_num]+2*k3[id_num]+k4)/6.0);
+                          it->second.set_location(loc0[id_num] + (k1[id_num]+2.0*k2[id_num]+2.0*k3[id_num]+k4)/6.0);
                         }
                       break;
                     default:
