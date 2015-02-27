@@ -90,104 +90,110 @@ namespace aspect
    */
   namespace LinearAlgebra
   {
-    using namespace dealii;
-
 #ifdef ASPECT_USE_PETSC
     /**
      * Typedef for the vector type used.
      */
-    typedef PETScWrappers::MPI::Vector Vector;
+    typedef dealii::PETScWrappers::MPI::Vector Vector;
 
     /**
      * Typedef for the type used to describe vectors that consist of multiple
      * blocks.
      */
-    typedef PETScWrappers::MPI::BlockVector BlockVector;
+    typedef dealii::PETScWrappers::MPI::BlockVector BlockVector;
 
     /**
      * Typedef for the sparse matrix type used.
      */
-    typedef PETScWrappers::MPI::SparseMatrix SparseMatrix;
+    typedef dealii::PETScWrappers::MPI::SparseMatrix SparseMatrix;
 
     /**
      * Typedef for the type used to describe sparse matrices that consist of
      * multiple blocks.
      */
-    typedef PETScWrappers::MPI::BlockSparseMatrix BlockSparseMatrix;
+    typedef dealii::PETScWrappers::MPI::BlockSparseMatrix BlockSparseMatrix;
 
     /**
      * Typedef for the AMG preconditioner type used for the top left block of
      * the Stokes matrix.
      */
-    typedef PETScWrappers::PreconditionBoomerAMG PreconditionAMG;
+    typedef dealii::PETScWrappers::PreconditionBoomerAMG PreconditionAMG;
 
     /**
      * Typedef for the Incomplete Cholesky preconditioner used for other
      * blocks of the system matrix.
      */
-    typedef PETScWrappers::PreconditionICC PreconditionIC;
+    typedef dealii::PETScWrappers::PreconditionICC PreconditionIC;
 
     /**
      * Typedef for the Incomplete LU decomposition preconditioner used for
      * other blocks of the system matrix. Note that PETSc does not support a
      * communicating ILU, so we use Jacobi here.
      */
-    typedef PETScWrappers::PreconditionBlockJacobi PreconditionILU;
+    typedef dealii::PETScWrappers::PreconditionBlockJacobi PreconditionILU;
 
     /**
      * Typedef for the Jacobi preconditioner used for free surface velocity
      * projection.
      */
-    typedef PETScWrappers::PreconditionJacobi PreconditionJacobi;
+    typedef dealii::PETScWrappers::PreconditionJacobi PreconditionJacobi;
 
-    typedef LinearAlgebraPETSc::MPI::CompressedBlockSparsityPattern CompressedBlockSparsityPattern;
+    /**
+     * Typedef for the block compressed sparsity pattern type.
+     */
+    typedef dealii::BlockCompressedSimpleSparsityPattern BlockCompressedSparsityPattern;
 
 #else
     /**
      * Typedef for the vector type used.
      */
-    typedef TrilinosWrappers::MPI::Vector Vector;
+    typedef dealii::TrilinosWrappers::MPI::Vector Vector;
 
     /**
      * Typedef for the type used to describe vectors that consist of multiple
      * blocks.
      */
-    typedef TrilinosWrappers::MPI::BlockVector BlockVector;
+    typedef dealii::TrilinosWrappers::MPI::BlockVector BlockVector;
 
     /**
      * Typedef for the sparse matrix type used.
      */
-    typedef TrilinosWrappers::SparseMatrix SparseMatrix;
+    typedef dealii::TrilinosWrappers::SparseMatrix SparseMatrix;
 
     /**
      * Typedef for the type used to describe sparse matrices that consist of
      * multiple blocks.
      */
-    typedef TrilinosWrappers::BlockSparseMatrix BlockSparseMatrix;
+    typedef dealii::TrilinosWrappers::BlockSparseMatrix BlockSparseMatrix;
 
     /**
      * Typedef for the AMG preconditioner type used for the top left block of
      * the Stokes matrix.
      */
-    typedef TrilinosWrappers::PreconditionAMG PreconditionAMG;
+    typedef dealii::TrilinosWrappers::PreconditionAMG PreconditionAMG;
 
     /**
      * Typedef for the Incomplete Cholesky preconditioner used for other
      * blocks of the system matrix.
      */
-    typedef TrilinosWrappers::PreconditionIC PreconditionIC;
+    typedef dealii::TrilinosWrappers::PreconditionIC PreconditionIC;
 
     /**
      * Typedef for the Incomplete LU decomposition preconditioner used for
      * other blocks of the system matrix.
      */
-    typedef TrilinosWrappers::PreconditionILU PreconditionILU;
+    typedef dealii::TrilinosWrappers::PreconditionILU PreconditionILU;
 
     /**
      * Typedef for the Jacobi preconditioner used for free surface velocity
      * projection.
      */
-    typedef TrilinosWrappers::PreconditionJacobi PreconditionJacobi;
+    typedef dealii::TrilinosWrappers::PreconditionJacobi PreconditionJacobi;
+
+    /**
+     * Typedef for the block compressed sparsity pattern type.
+     */
+    typedef dealii::TrilinosWrappers::BlockSparsityPattern BlockCompressedSparsityPattern;
 
 #endif
   }
