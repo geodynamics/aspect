@@ -784,14 +784,14 @@ namespace aspect
           = DoFTools::always;
     }
 
+    LinearAlgebra::BlockCompressedSparsityPattern sp;
 #ifdef ASPECT_USE_PETSC
-    LinearAlgebra::CompressedBlockSparsityPattern sp(introspection.index_sets.system_relevant_partitioning);
-
+    sp.reinit (introspection.index_sets.system_relevant_partitioning);
 #else
-    TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
-                                               system_partitioning,
-                                               introspection.index_sets.system_relevant_partitioning,
-                                               mpi_communicator);
+    sp.reinit (system_partitioning,
+               system_partitioning,
+               introspection.index_sets.system_relevant_partitioning,
+               mpi_communicator);
 #endif
 
     DoFTools::make_sparsity_pattern (dof_handler,
@@ -837,18 +837,16 @@ namespace aspect
         else
           coupling[c][d] = DoFTools::none;
 
-
+    LinearAlgebra::BlockCompressedSparsityPattern sp;
 #ifdef ASPECT_USE_PETSC
-    LinearAlgebra::CompressedBlockSparsityPattern sp(introspection.index_sets.system_relevant_partitioning);
-
+    sp.reinit (introspection.index_sets.system_relevant_partitioning);
 #else
-
-    TrilinosWrappers::BlockSparsityPattern sp (system_partitioning,
-                                               system_partitioning,
-                                               introspection.index_sets.system_relevant_partitioning,
-                                               mpi_communicator);
-
+    sp.reinit (system_partitioning,
+               system_partitioning,
+               introspection.index_sets.system_relevant_partitioning,
+               mpi_communicator);
 #endif
+
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
                                      constraints, false,
