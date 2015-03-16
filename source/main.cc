@@ -397,10 +397,9 @@ int main (int argc, char *argv[])
         std::ifstream parameter_file(parameter_filename.c_str());
         if (!parameter_file)
           {
-            const std::string message = (std::string("Input parameter file <")
-                                         + parameter_filename + "> not found.");
             if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
-              AssertThrow(false, ExcMessage (message));
+              AssertThrow(false, ExcMessage (std::string("Input parameter file <")
+                                             + parameter_filename + "> not found."));
             return 3;
           }
       }
