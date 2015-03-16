@@ -34,15 +34,15 @@
 
 
 
-// get the value of a particular parameter from the input
+// get the value of a particular parameter from the contents of the input
 // file. return an empty string if not found
 std::string
-get_last_value_of_parameter(const std::string &parameter_filename,
+get_last_value_of_parameter(const std::string &parameters,
                             const std::string &parameter_name)
 {
   std::string return_value;
 
-  std::ifstream x_file(parameter_filename.c_str());
+  std::istringstream x_file(parameters);
   while (x_file)
     {
       // get one line and strip spaces at the front and back
@@ -95,14 +95,14 @@ get_last_value_of_parameter(const std::string &parameter_filename,
 
 
 // extract the dimension in which to run ASPECT from the
-// parameter file. this is something that we need to do
-// before processing the parameter file since we need to
-// know whether to use the dim=2 or dim=3 instantiation
+// the contents of the parameter file. this is something that
+// we need to do before processing the parameter file since we
+// need to know whether to use the dim=2 or dim=3 instantiation
 // of the main classes
 unsigned int
-get_dimension(const std::string &parameter_filename)
+get_dimension(const std::string &parameters)
 {
-  const std::string dimension = get_last_value_of_parameter(parameter_filename, "Dimension");
+  const std::string dimension = get_last_value_of_parameter(parameters, "Dimension");
   if (dimension.size() > 0)
     return dealii::Utilities::string_to_int (dimension);
   else
@@ -188,13 +188,13 @@ void validate_shared_lib_list (const bool before_loading_shared_libs)
 
 // retrieve a list of shared libraries from the parameter file and
 // dlopen them so that we can load plugins declared in them
-void possibly_load_shared_libs (const std::string &parameter_filename)
+void possibly_load_shared_libs (const std::string &parameters)
 {
   using namespace dealii;
 
 
   const std::string shared_libs
-    = get_last_value_of_parameter(parameter_filename,
+    = get_last_value_of_parameter(parameters,
                                   "Additional shared libraries");
   if (shared_libs.size() > 0)
     {
@@ -266,13 +266,12 @@ void possibly_load_shared_libs (const std::string &parameter_filename)
  *  in backslashes.
  */
 std::string
-expand_backslashes (const std::string &filename)
+expand_backslashes (std::istream &input)
 {
   std::string result;
 
   unsigned int need_empty_lines = 0;
 
-  std::ifstream input (filename.c_str());
   while (input)
     {
       // get one line and strip spaces at the back
@@ -406,10 +405,14 @@ int main (int argc, char *argv[])
           }
       }
       // now that we know that the file can, at least in principle, be read
+      // do so:
+      std::ifstream input (parameter_filename);
+      const std::string input_as_string = expand_backslashes (input);
+
       // try to determine the dimension we want to work in. the default
       // is 2, but if we find a line of the kind "set Dimension = ..."
       // then the last such line wins
-      const unsigned int dim = get_dimension(parameter_filename);
+      const unsigned int dim = get_dimension(input_as_string);
 
       // do the same with lines potentially indicating shared libs to
       // be loaded. these shared libs could contain additional module
@@ -417,7 +420,7 @@ int main (int argc, char *argv[])
       // available as part of the possible parameters of the input
       // file, so they need to be loaded before we even start processing
       // the parameter file
-      possibly_load_shared_libs (parameter_filename);
+      possibly_load_shared_libs (input_as_string);
 
       // now switch between the templates that code for 2d or 3d. it
       // would be nicer if we didn't have to duplicate code, but the
@@ -425,7 +428,6 @@ int main (int argc, char *argv[])
       // is only read at run-time
       ParameterHandler prm;
 
-      const std::string input_as_string = expand_backslashes (parameter_filename);
       switch (dim)
         {
           case 2:
