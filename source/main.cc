@@ -385,28 +385,42 @@ int main (int argc, char *argv[])
         {
           // print usage info only on processor 0
           if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
-            std::cout << "\tUsage: ./aspect <parameter_file.prm>" << std::endl;
+            {
+              std::cout << "Usage: ./aspect <parameter_file.prm>   (to read from an input file)"
+                        << std::endl
+                        << "    or ./aspect --                     (to read from stdin)"
+                        << std::endl
+                        << std::endl;
+            }
           return 2;
         }
 
-      // see which parameter file to use
+      // see where to read input from, then do the reading and
+      // put the contents of the input into a string
+      //
+      // as stated above, treat "--" as special: as is common
+      // on unix, treat it as a way to read input from stdin
       std::string parameter_filename = argv[1];
+      std::string input_as_string;
 
-      // verify that it can be opened
-      {
-        std::ifstream parameter_file(parameter_filename.c_str());
-        if (!parameter_file)
-          {
-            if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
-              AssertThrow(false, ExcMessage (std::string("Input parameter file <")
-                                             + parameter_filename + "> not found."));
-            return 3;
-          }
-      }
-      // now that we know that the file can, at least in principle, be read
-      // do so:
-      std::ifstream input (parameter_filename);
-      const std::string input_as_string = expand_backslashes (input);
+      if (parameter_filename != "--")
+        {
+          std::ifstream parameter_file(parameter_filename.c_str());
+          if (!parameter_file)
+            {
+              if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+                AssertThrow(false, ExcMessage (std::string("Input parameter file <")
+                                               + parameter_filename + "> not found."));
+              return 3;
+            }
+
+          input_as_string = expand_backslashes (parameter_file);
+        }
+      else
+        {
+          input_as_string = expand_backslashes (std::cin);
+        }
+
 
       // try to determine the dimension we want to work in. the default
       // is 2, but if we find a line of the kind "set Dimension = ..."
