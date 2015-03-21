@@ -418,7 +418,41 @@ int main (int argc, char *argv[])
         }
       else
         {
-          input_as_string = expand_backslashes (std::cin);
+          // read parameters from stdin. unfortunately, if you do
+          //    echo "abc" | mpirun -np 4 ./aspect
+          // then only MPI process 0 gets the data. so we have to
+          // read it there, then broadcast it to the other processors
+          if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+            {
+              input_as_string = expand_backslashes (std::cin);
+	      int size = input_as_string.size()+1;
+              MPI_Bcast (&size,
+                         1,
+                         MPI_INT,
+                         /*root=*/0, MPI_COMM_WORLD);
+              MPI_Bcast (const_cast<char*>(input_as_string.c_str()),
+			 size,
+                         MPI_CHAR,
+                         /*root=*/0, MPI_COMM_WORLD);
+            }
+          else
+            {
+              // on this side, read what processor zero has broadcast about
+              // the size of the input file. then create a buffer to put the
+              // text in, get it from processor 0, and copy it to
+              // input_as_string
+	      int size;
+              MPI_Bcast (&size, 1,
+                         MPI_INT,
+                         /*root=*/0, MPI_COMM_WORLD);
+
+              char *p = new char[size];
+              MPI_Bcast (p, size,
+                         MPI_CHAR,
+                         /*root=*/0, MPI_COMM_WORLD);
+              input_as_string = p;
+              delete[] p;
+            }
         }
 
 
