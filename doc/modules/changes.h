@@ -6,6 +6,12 @@
  *
  *
  * <ol>
+ * <li> New: ASPECT can now read the list of input arguments from the
+ * default input stdin, instead of a file, by specifying "--" for
+ * the name of the input file.
+ * <br>
+ * (Wolfgang Bangerth, 2015/03/20)
+ *
  * <li> Changed: We use the current linearization point instead of the old 
  * solution in the assembly of the composition advection system now, and 
  * update the current linearization point with the solution after we have 
