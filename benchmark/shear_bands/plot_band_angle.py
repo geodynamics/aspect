@@ -69,13 +69,12 @@ grid = np.zeros((nrows, ncols), dtype=np.float)
 xg = np.arange(xmin, xmax, dx)
 yg = np.arange(ymin, ymax, dy)
 
-
 #f = scipy.interpolate.griddata(x, y, p, kind='linear')
 #grid = f(xg, yg)
 
 xy=np.transpose(np.array([x,y]))
 xyg = np.meshgrid(xg, yg)
-grid = scipy.interpolate.griddata(xy, p, xyg, method='linear')
+grid = scipy.interpolate.griddata(xy, p, tuple(xyg), method='nearest')
 
 # apply a hamming window function to make porosity periodic
 hx = np.ones(len(xg))
