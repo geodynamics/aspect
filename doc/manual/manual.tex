@@ -1670,7 +1670,13 @@ cumbersome). A more common case would be to use Unix pipes so that the default
 input of \aspect{} is the output of another program, as in a command like
 \texttt{cat parameter-file.prm.in | mypreprocessor | ./aspect --}, where
 \texttt{mypreprocessor} would be a program of your choice that somehow
-transforms the file \texttt{parameter-file.prm.in} into a valid input file.}
+transforms the file \texttt{parameter-file.prm.in} into a valid input file.
+
+If you want to run \aspect{} in parallel, you can do something like
+\texttt{cat parameter-file.prm.in | mypreprocessor | mpirun -np 4 ./aspect
+  --}. In cases like this, \texttt{mpirun} only forwards the output of
+\texttt{mypreprocessor} to the first of the four MPI processes, which then
+sends the text to all other processors.}
 When you download \aspect{}, there are a number of sample input files in the
 \texttt{cookbooks} directory, corresponding to the examples discussed in
 Section~\ref{sec:cookbooks}, and input files for some of the benchmarks discussed

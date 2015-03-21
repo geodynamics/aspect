@@ -425,13 +425,13 @@ int main (int argc, char *argv[])
           if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
             {
               input_as_string = expand_backslashes (std::cin);
-	      int size = input_as_string.size()+1;
+              int size = input_as_string.size()+1;
               MPI_Bcast (&size,
                          1,
                          MPI_INT,
                          /*root=*/0, MPI_COMM_WORLD);
-              MPI_Bcast (const_cast<char*>(input_as_string.c_str()),
-			 size,
+              MPI_Bcast (const_cast<char *>(input_as_string.c_str()),
+                         size,
                          MPI_CHAR,
                          /*root=*/0, MPI_COMM_WORLD);
             }
@@ -441,7 +441,7 @@ int main (int argc, char *argv[])
               // the size of the input file. then create a buffer to put the
               // text in, get it from processor 0, and copy it to
               // input_as_string
-	      int size;
+              int size;
               MPI_Bcast (&size, 1,
                          MPI_INT,
                          /*root=*/0, MPI_COMM_WORLD);
