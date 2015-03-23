@@ -289,17 +289,22 @@ namespace aspect
       std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
+
+
     template <int dim>
-    Interface<dim>::MaterialModelInputs::MaterialModelInputs(unsigned int n_points, unsigned int n_comp)
+    Interface<dim>::MaterialModelInputs::MaterialModelInputs(const unsigned int n_points,
+                                                             const unsigned int n_comp)
     {
       position.resize(n_points);
       temperature.resize(n_points);
       pressure.resize(n_points);
       composition.resize(n_points);
-      for (unsigned int i=0; i<n_points; ++i)
-        composition[i].resize(n_comp);
+      for (unsigned int q=0; q<n_points; ++q)
+        composition[q].resize(n_comp);
       strain_rate.resize(n_points);
     }
+
+
 
     template <int dim>
     Interface<dim>::MaterialModelOutputs::MaterialModelOutputs(const unsigned int n_points,
@@ -314,8 +319,8 @@ namespace aspect
       entropy_derivative_pressure.resize(n_points);
       entropy_derivative_temperature.resize(n_points);
       reaction_terms.resize(n_points);
-      for (unsigned int i=0; i<n_points; ++i)
-        reaction_terms[i].resize(n_comp);
+      for (unsigned int q=0; q<n_points; ++q)
+        reaction_terms[q].resize(n_comp);
     }
 
 

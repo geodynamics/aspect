@@ -485,27 +485,43 @@ namespace aspect
          */
         struct MaterialModelInputs
         {
-          MaterialModelInputs(unsigned int n_points, unsigned int n_comp);
+          /**
+           * Constructor. Initialize the various arrays of this structure
+           * with the given number of quadrature points and (finite element)
+           * components.
+           *
+           * @param n_points The number of quadrature points for which
+           *   input quantities will be provided.
+           * @param n_comp The number of vector quantities (in the order in
+           *   which the Introspection class reports them) for which input
+           *   will be provided.
+           */
+          MaterialModelInputs(const unsigned int n_points,
+                              const unsigned int n_comp);
 
           /**
            * Vector with global positions where the material has to be
            * evaluated in evaluate().
            */
           std::vector<Point<dim> > position;
+
           /**
            * Temperature values at the points given in the #position vector.
            */
           std::vector<double> temperature;
+
           /**
            * Pressure values at the points given in the #position vector.
            */
           std::vector<double> pressure;
+
           /**
            * Values of the compositional fields at the points given in the
            * #position vector: composition[i][c] is the compositional field c
            * at point i.
            */
           std::vector<std::vector<double> > composition;
+
           /**
            * Strain rate at the points given in the #position vector. Only the
            * viscosity may depend on these values. This std::vector can be set
@@ -530,6 +546,17 @@ namespace aspect
          */
         struct MaterialModelOutputs
         {
+          /**
+           * Constructor. Initialize the various arrays of this structure
+           * with the given number of quadrature points and (finite element)
+           * components.
+           *
+           * @param n_points The number of quadrature points for which
+           *   input quantities will be provided.
+           * @param n_comp The number of vector quantities (in the order in
+           *   which the Introspection class reports them) for which input
+           *   will be provided.
+           */
           MaterialModelOutputs (const unsigned int n_points,
                                 const unsigned int n_comp);
 
@@ -537,27 +564,33 @@ namespace aspect
            * Viscosity $\eta$ values at the given positions.
            */
           std::vector<double> viscosities;
+
           /**
            * Density values at the given positions.
            */
           std::vector<double> densities;
+
           /**
            * Thermal expansion coefficients at the given positions.
            */
           std::vector<double> thermal_expansion_coefficients;
+
           /**
            * Specific heat at the given positions.
            */
           std::vector<double> specific_heat;
+
           /**
            * Thermal conductivity at the given positions.
            */
           std::vector<double> thermal_conductivities;
+
           /**
            * Compressibility at the given positions. The compressibility is
            * given as $\frac 1\rho \frac{\partial\rho}{\partial p}$.
            */
           std::vector<double> compressibilities;
+
           /**
            * The product of the change of entropy $\Delta S$ at a phase
            * transition and the derivative of the phase function
@@ -565,6 +598,7 @@ namespace aspect
            * given positions.
            */
           std::vector<double> entropy_derivative_pressure;
+
           /**
            * The product of (minus) the change of entropy $-\Delta S$ at a
            * phase transition and the derivative of the phase function
@@ -572,6 +606,7 @@ namespace aspect
            * the given positions.
            */
           std::vector<double> entropy_derivative_temperature;
+
           /**
            * Change in composition due to chemical reactions at the given
            * positions. The term reaction_terms[i][c] is the change in
@@ -612,12 +647,14 @@ namespace aspect
           std::vector<std::vector<double> > reaction_terms;
         };
 
+
         /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in. If MaterialModelInputs.strain_rate has the length
          * 0, then the viscosity does not need to be computed.
          */
-        virtual void evaluate(const MaterialModelInputs &in, MaterialModelOutputs &out) const = 0;
+        virtual void evaluate(const MaterialModelInputs &in,
+                              MaterialModelOutputs &out) const = 0;
 
         /**
          * @name Functions used in dealing with run-time parameters
