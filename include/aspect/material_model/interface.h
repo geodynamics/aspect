@@ -109,6 +109,179 @@ namespace aspect
 
 
     /**
+     * A data structure with all inputs for the
+     * MaterialModel::Interface::evaluate() method. The
+     * vectors all have the same length and refer to different evaluation
+     * points (given in #position).
+     */
+    template <int dim>
+    struct MaterialModelInputs
+    {
+      /**
+       * Constructor. Initialize the various arrays of this structure
+       * with the given number of quadrature points and (finite element)
+       * components.
+       *
+       * @param n_points The number of quadrature points for which
+       *   input quantities will be provided.
+       * @param n_comp The number of vector quantities (in the order in
+       *   which the Introspection class reports them) for which input
+       *   will be provided.
+       */
+      MaterialModelInputs(const unsigned int n_points,
+                          const unsigned int n_comp);
+
+      /**
+       * Vector with global positions where the material has to be
+       * evaluated in evaluate().
+       */
+      std::vector<Point<dim> > position;
+
+      /**
+       * Temperature values at the points given in the #position vector.
+       */
+      std::vector<double> temperature;
+
+      /**
+       * Pressure values at the points given in the #position vector.
+       */
+      std::vector<double> pressure;
+
+      /**
+       * Values of the compositional fields at the points given in the
+       * #position vector: composition[i][c] is the compositional field c
+       * at point i.
+       */
+      std::vector<std::vector<double> > composition;
+
+      /**
+       * Strain rate at the points given in the #position vector. Only the
+       * viscosity may depend on these values. This std::vector can be set
+       * to size 0 if the viscosity is not needed.
+       *
+       * @note The strain rate is computed as $\varepsilon(\mathbf
+       * u)=\frac 12 (\nabla \mathbf u + \nabla \mathbf u^T)$, regardless
+       * of whether the model is compressible or not. This is relevant
+       * since in some other contexts, the strain rate in the compressible
+       * case is computed as $\varepsilon(\mathbf u)=\frac 12 (\nabla
+       * \mathbf u + \nabla \mathbf u^T) - \frac 13 \nabla \cdot \mathbf u
+       * \mathbf 1$.
+       */
+      std::vector<SymmetricTensor<2,dim> > strain_rate;
+    };
+
+
+    /**
+     * A data structure with the output field of the
+     * MaterialModel::Interface::evaluate() function. The vectors are the
+     * values at the different positions given by
+     * MaterialModelInputs::position.
+     */
+    struct MaterialModelOutputs
+    {
+      /**
+       * Constructor. Initialize the various arrays of this structure
+       * with the given number of quadrature points and (finite element)
+       * components.
+       *
+       * @param n_points The number of quadrature points for which
+       *   input quantities will be provided.
+       * @param n_comp The number of vector quantities (in the order in
+       *   which the Introspection class reports them) for which input
+       *   will be provided.
+       */
+      MaterialModelOutputs (const unsigned int n_points,
+                            const unsigned int n_comp);
+
+      /**
+       * Viscosity $\eta$ values at the given positions.
+       */
+      std::vector<double> viscosities;
+
+      /**
+       * Density values at the given positions.
+       */
+      std::vector<double> densities;
+
+      /**
+       * Thermal expansion coefficients at the given positions.
+       */
+      std::vector<double> thermal_expansion_coefficients;
+
+      /**
+       * Specific heat at the given positions.
+       */
+      std::vector<double> specific_heat;
+
+      /**
+       * Thermal conductivity at the given positions.
+       */
+      std::vector<double> thermal_conductivities;
+
+      /**
+       * Compressibility at the given positions. The compressibility is
+       * given as $\frac 1\rho \frac{\partial\rho}{\partial p}$.
+       */
+      std::vector<double> compressibilities;
+
+      /**
+       * The product of the change of entropy $\Delta S$ at a phase
+       * transition and the derivative of the phase function
+       * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to pressure at the
+       * given positions.
+       */
+      std::vector<double> entropy_derivative_pressure;
+
+      /**
+       * The product of (minus) the change of entropy $-\Delta S$ at a
+       * phase transition and the derivative of the phase function
+       * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to temperature at
+       * the given positions.
+       */
+      std::vector<double> entropy_derivative_temperature;
+
+      /**
+       * Change in composition due to chemical reactions at the given
+       * positions. The term reaction_terms[i][c] is the change in
+       * compositional field c at point i.
+       *
+       * The mental model behind prescribing actual changes in composition
+       * rather than reaction rates is that we assume that there is always
+       * an equilibrium between the compositional fields (because the time
+       * scale of reactions is normally much shorter than that of
+       * convection), so the quantity returned by this function is an
+       * actual change in the amount of material, which is added to or
+       * subtracted from the current value of the compositional field,
+       * and NOT a reaction rate. The idea is, that in dependence of
+       * temperature, pressure, position and the compositional fields
+       * themselves an equilibrium can be calculated, and the difference
+       * between the current value and the equilibrium can be added to the
+       * respective compositional field.
+       *
+       * For mass conservation it should ALWAYS be checked that what is
+       * subtracted from one field is added to another field (and the
+       * other way round) and that one never subtracts more than the
+       * actual value of a field (so it does not get negative).
+       *
+       * This function has a default implementation that sets the reaction
+       * term to zero (assuming no reactions).
+       *
+       * @note In cases where one has slow chemical reactions (or cases
+       * where compositional fields are used to track quantities different
+       * than actual compositions, for example accumulated strains in
+       * damage models), models are formulated as differential equations
+       * with right hand sides, not as instantaneous equations. In such
+       * cases, the reaction terms (i.e., the incremental additions to the
+       * previous state) are usually of the form reaction rate times time
+       * step size. To implement something like this, derive your material
+       * model from SimulatorAccess so you can query the time step used by
+       * the simulator in order to compute the reaction increment.
+       */
+      std::vector<std::vector<double> > reaction_terms;
+    };
+
+
+    /**
      * A base class for parameterizations of material models. Classes derived
      * from this class will need to implement functions that provide material
      * parameters such as the viscosity, density, etc, typically as a function
@@ -134,6 +307,21 @@ namespace aspect
     class Interface
     {
       public:
+        /**
+         * A typedef to import the MatertialModelInputs name into the
+         * current class. This typedef primarily exists as a backward
+         * compatibility measure given that the referenced structure
+         * used to be a member of the current class.
+         */
+        typedef MaterialModel::MaterialModelInputs<dim> MaterialModelInputs;
+        /**
+         * A typedef to import the MatertialModelOutputs name into the
+         * current class. This typedef primarily exists as a backward
+         * compatibility measure given that the referenced structure
+         * used to be a member of the current class.
+         */
+        typedef MaterialModel::MaterialModelOutputs MaterialModelOutputs;
+
         /**
          * Destructor. Made virtual to enforce that derived classes also have
          * virtual destructors.
@@ -477,176 +665,6 @@ namespace aspect
         /**
          * @}
          */
-
-        /**
-         * Data structure with all inputs for the evaluate() method. The
-         * vectors all have the same length and refer to different evaluation
-         * points (given in #position).
-         */
-        struct MaterialModelInputs
-        {
-          /**
-           * Constructor. Initialize the various arrays of this structure
-           * with the given number of quadrature points and (finite element)
-           * components.
-           *
-           * @param n_points The number of quadrature points for which
-           *   input quantities will be provided.
-           * @param n_comp The number of vector quantities (in the order in
-           *   which the Introspection class reports them) for which input
-           *   will be provided.
-           */
-          MaterialModelInputs(const unsigned int n_points,
-                              const unsigned int n_comp);
-
-          /**
-           * Vector with global positions where the material has to be
-           * evaluated in evaluate().
-           */
-          std::vector<Point<dim> > position;
-
-          /**
-           * Temperature values at the points given in the #position vector.
-           */
-          std::vector<double> temperature;
-
-          /**
-           * Pressure values at the points given in the #position vector.
-           */
-          std::vector<double> pressure;
-
-          /**
-           * Values of the compositional fields at the points given in the
-           * #position vector: composition[i][c] is the compositional field c
-           * at point i.
-           */
-          std::vector<std::vector<double> > composition;
-
-          /**
-           * Strain rate at the points given in the #position vector. Only the
-           * viscosity may depend on these values. This std::vector can be set
-           * to size 0 if the viscosity is not needed.
-           *
-           * @note The strain rate is computed as $\varepsilon(\mathbf
-           * u)=\frac 12 (\nabla \mathbf u + \nabla \mathbf u^T)$, regardless
-           * of whether the model is compressible or not. This is relevant
-           * since in some other contexts, the strain rate in the compressible
-           * case is computed as $\varepsilon(\mathbf u)=\frac 12 (\nabla
-           * \mathbf u + \nabla \mathbf u^T) - \frac 13 \nabla \cdot \mathbf u
-           * \mathbf 1$.
-           */
-          std::vector<SymmetricTensor<2,dim> > strain_rate;
-        };
-
-        /**
-         * Data structure with the output field of this material model. These
-         * values are supposed to be filled in evaluate(). The vectors are the
-         * values at the different positions given by
-         * MaterialModelInputs::position.
-         */
-        struct MaterialModelOutputs
-        {
-          /**
-           * Constructor. Initialize the various arrays of this structure
-           * with the given number of quadrature points and (finite element)
-           * components.
-           *
-           * @param n_points The number of quadrature points for which
-           *   input quantities will be provided.
-           * @param n_comp The number of vector quantities (in the order in
-           *   which the Introspection class reports them) for which input
-           *   will be provided.
-           */
-          MaterialModelOutputs (const unsigned int n_points,
-                                const unsigned int n_comp);
-
-          /**
-           * Viscosity $\eta$ values at the given positions.
-           */
-          std::vector<double> viscosities;
-
-          /**
-           * Density values at the given positions.
-           */
-          std::vector<double> densities;
-
-          /**
-           * Thermal expansion coefficients at the given positions.
-           */
-          std::vector<double> thermal_expansion_coefficients;
-
-          /**
-           * Specific heat at the given positions.
-           */
-          std::vector<double> specific_heat;
-
-          /**
-           * Thermal conductivity at the given positions.
-           */
-          std::vector<double> thermal_conductivities;
-
-          /**
-           * Compressibility at the given positions. The compressibility is
-           * given as $\frac 1\rho \frac{\partial\rho}{\partial p}$.
-           */
-          std::vector<double> compressibilities;
-
-          /**
-           * The product of the change of entropy $\Delta S$ at a phase
-           * transition and the derivative of the phase function
-           * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to pressure at the
-           * given positions.
-           */
-          std::vector<double> entropy_derivative_pressure;
-
-          /**
-           * The product of (minus) the change of entropy $-\Delta S$ at a
-           * phase transition and the derivative of the phase function
-           * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to temperature at
-           * the given positions.
-           */
-          std::vector<double> entropy_derivative_temperature;
-
-          /**
-           * Change in composition due to chemical reactions at the given
-           * positions. The term reaction_terms[i][c] is the change in
-           * compositional field c at point i.
-           *
-           * The mental model behind prescribing actual changes in composition
-           * rather than reaction rates is that we assume that there is always
-           * an equilibrium between the compositional fields (because the time
-           * scale of reactions is normally much shorter than that of
-           * convection), so the quantity returned by this function is an
-           * actual change in the amount of material, which is added to or
-           * subtracted from the current value of the compositional field,
-           * and NOT a reaction rate. The idea is, that in dependence of
-           * temperature, pressure, position and the compositional fields
-           * themselves an equilibrium can be calculated, and the difference
-           * between the current value and the equilibrium can be added to the
-           * respective compositional field.
-           *
-           * For mass conservation it should ALWAYS be checked that what is
-           * subtracted from one field is added to another field (and the
-           * other way round) and that one never subtracts more than the
-           * actual value of a field (so it does not get negative).
-           *
-           * This function has a default implementation that sets the reaction
-           * term to zero (assuming no reactions).
-           *
-           * @note In cases where one has slow chemical reactions (or cases
-           * where compositional fields are used to track quantities different
-           * than actual compositions, for example accumulated strains in
-           * damage models), models are formulated as differential equations
-           * with right hand sides, not as instantaneous equations. In such
-           * cases, the reaction terms (i.e., the incremental additions to the
-           * previous state) are usually of the form reaction rate times time
-           * step size. To implement something like this, derive your material
-           * model from SimulatorAccess so you can query the time step used by
-           * the simulator in order to compute the reaction increment.
-           */
-          std::vector<std::vector<double> > reaction_terms;
-        };
-
 
         /**
          * Function to compute the material properties in @p out given the

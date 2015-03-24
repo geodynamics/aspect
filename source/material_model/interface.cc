@@ -292,8 +292,8 @@ namespace aspect
 
 
     template <int dim>
-    Interface<dim>::MaterialModelInputs::MaterialModelInputs(const unsigned int n_points,
-                                                             const unsigned int n_comp)
+    MaterialModelInputs<dim>::MaterialModelInputs(const unsigned int n_points,
+                                                  const unsigned int n_comp)
     {
       position.resize(n_points);
       temperature.resize(n_points);
@@ -306,9 +306,8 @@ namespace aspect
 
 
 
-    template <int dim>
-    Interface<dim>::MaterialModelOutputs::MaterialModelOutputs(const unsigned int n_points,
-                                                               const unsigned int n_comp)
+    MaterialModelOutputs::MaterialModelOutputs(const unsigned int n_points,
+                                               const unsigned int n_comp)
     {
       viscosities.resize(n_points);
       densities.resize(n_points);
@@ -428,7 +427,9 @@ namespace aspect
   \
   template \
   Interface<dim> * \
-  create_material_model<dim> (ParameterHandler &prm);
+  create_material_model<dim> (ParameterHandler &prm); \
+  \
+  template class MaterialModelInputs<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
