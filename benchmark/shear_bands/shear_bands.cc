@@ -485,8 +485,6 @@ namespace aspect
 	  if (!cell->is_locally_owned())
 	    continue;
 
-	  AssertThrow(cell->level() == (int)max_lvl-1, ExcMessage("Adaptivity not implemented!"));
-	  
           fe_values.reinit (cell);
           fe_values[this->introspection().extractors.compositional_fields[porosity_idx]].get_function_values (this->get_solution(), porosity_values);
 
