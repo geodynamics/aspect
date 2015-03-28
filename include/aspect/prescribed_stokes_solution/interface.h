@@ -19,10 +19,7 @@
 */
 
 
-  /**
-   * This plug in allows the user to prescribe a Stokes solution and can be thought of as
-   * velocity's equivalent of the initial conditions plug-in.
-   */
+
 #ifndef __aspect__prescribed_stokes_solution_interface_h
 #define __aspect__prescribed_stokes_solution_interface_h
 
@@ -46,7 +43,10 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A base class for parameterizations of prescribed Stokes solution.
+     * This plug in allows the user to prescribe a Stokes solution and can be thought of as
+     * velocity and pressure's equivalent of the initial conditions plug-in.
+     *
+     * Note: Only used if solver type  is "Advection only".
      *
      * @ingroup PrescribedStokesSolution
      */
@@ -70,7 +70,7 @@ namespace aspect
         initialize ();
 
         /**
-         * Fills an inputed Vector with a user-inputed solution as a function of position.
+         * Given a position @p p, fill in desired velocity and pressure at that point into @p value, which will have dim+1 components.
          */
         virtual
         void   solution (const Point<dim>   &p, Vector<double>     &value) const = 0;

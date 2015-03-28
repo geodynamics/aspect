@@ -463,7 +463,7 @@ namespace aspect
          * interface.
          *
          * @param n_components total number of components of the finite element system.
-         * @param function_object The scalar function that will form one component
+         * @param function_object The function that will form one component
          *     of the resulting Function object.
          */
         VectorFunctionFromVelocityFunctionObject (const unsigned int n_components,
@@ -1380,13 +1380,12 @@ namespace aspect
   {
   public:
     /**
-     * Given a function object that takes a Point and a Vector,
-     * convert this into an object that matches the Function@<dim@>
-     * interface.
+     * Converts a function with @p n_object_components components into a Function@dim@
+     * while optionally providing additional components that are set to zero.
      *
-     * @param function_object The scalar function that will form one component
+     * @param function_object The function that will form one component
      *     of the resulting Function object.
-     * @param first_component The first components that should be
+     * @param first_component The first component that should be
      *     filled.
      * @param n_object_components The number of components that should be
      *     filled from the first.
@@ -1404,8 +1403,10 @@ namespace aspect
       first_component (first_component),
       n_object_components (n_object_components)
     {
-//      Assert (n_object_components < this->n_total_components,
-//      ExcIndexRange (n_object_components, 0, this->n_total_components));
+        Assert ((n_object_components > 0
+    	&&
+    	first_component+n_object_components <= n_total_components),
+        ExcMessage ("Number of objects components needs to be less than number of total components"));
     }
 
     double
@@ -1415,14 +1416,13 @@ namespace aspect
       Assert (component < this->n_components,
               ExcIndexRange (component, 0, this->n_components));
 
-      Vector<double> temp(n_object_components);
-
       if (component < first_component)
     	  return 0;
       else if (component >= first_component + n_object_components)
     	  return 0;
       else
       {
+        Vector<double> temp(n_object_components);
         function_object (p, temp);
         return temp(component - first_component);
       }
@@ -1451,12 +1451,12 @@ namespace aspect
     const std_cxx1x::function<void (const Point<dim> &,Vector<double> &)> function_object;
 
     /**
-     * The first vector component whose value is to be filled by the given scalar
+     * The first vector component whose value is to be filled by the given
      * function.
      */
     const unsigned int first_component;
     /**
-     * The number of vector components whose values are to be filled by the given scalar
+     * The number of vector components whose values are to be filled by the given
      * function.
      */
     const unsigned int n_object_components;
