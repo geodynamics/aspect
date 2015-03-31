@@ -318,6 +318,22 @@ namespace aspect
         compositional_initial_conditions->initialize ();
       }
 
+    // Make sure we only have a prescribed Stokes plugin if needed
+    if (parameters.nonlinear_solver==NonlinearSolver::Advection_only)
+    {
+    	 AssertThrow(prescribed_stokes_solution.get()!=NULL,
+    			 ExcMessage("For 'Advection only' solver you need to provide a Stokes plugin")
+    			 );
+    }
+    else
+    {
+    	 AssertThrow(prescribed_stokes_solution.get()==NULL,
+    			 ExcMessage("The prescribed stokes pulgin you selected only works with solver type 'Advection only' ")
+    			 );
+    }
+
+
+
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(prescribed_stokes_solution.get()))
     	sim->initialize (*this);
