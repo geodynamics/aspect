@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2013, 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2013, 2014, 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -279,6 +279,75 @@ namespace aspect
        */
       std::vector<std::vector<double> > reaction_terms;
     };
+
+
+    /**
+     * A namespace in which we define how material model outputs
+     * should be averaged on each cell.
+     *
+     * Material models compute output quantities such as the
+     * viscosity, the density, etc, based on pressures, temperatures,
+     * composition, and location at every quadrature point. For some
+     * models, these values vary drastically from quadrature point to
+     * quadrature point, and this creates difficulties both for the
+     * stability of the discretization as well as for the linear
+     * solvers. Some of this can be ameliorated by averaging values on
+     * every cell, although this of course reduces the ideal
+     * convergence order. This namespace defines the means to achieve
+     * such averaging.
+     */
+    namespace MaterialAveraging
+    {
+      /**
+       * An enum to define what kind of averaging operations are
+       * implemented. These are:
+       * - No averaging, i.e., leave the values as they were provided
+       *   by the material model.
+       * - Arithmetic averaging: set the values of each output quantity
+       *   at every quadrature point to
+       *   $$ \bar x = \frac 1Q \sum_{q=1}^Q x_q $$
+       *   where $x_q$ are the values at the $Q$ quadrature points.
+       * - Harmonic averaging: set the values of each output quantity
+       *   at every quadrature point to
+       *   $$ \bar x = \left(\frac 1Q \sum_{q=1}^Q \frac{1}{x_q}\right)^{-1} $$
+       *   where $x_q$ are the values at the $Q$ quadrature points.
+       * - Pick largest: set the values of each output quantity
+       *   at every quadrature point to
+       *   $$ \bar x = \max_{1\le q\le Q} x_q $$
+       *   where $x_q$ are the values at the $Q$ quadrature points.
+       */
+      enum AveragingOperation
+      {
+        none,
+        arithmetic_average,
+        harmonic_average,
+        pick_largest
+      };
+
+
+      /**
+       * Return a string that represents the various averaging options laid
+       * out above and that can be used in the claration of an input
+       * parameter. The options are separated by "|" so that they can be used
+       * in a dealii::Patterns::Selection argument.
+       */
+      std::string get_averaging_operation_names ();
+
+      /**
+       * Parse a string representing one of the options returned by
+       * get_averaging_operation_names(), and return the corresponding
+       * AveragingOperation value.
+       */
+      AveragingOperation parse_averaging_operation_name (const std::string &s);
+
+      /**
+       * Given the averaging @p operation, perform this operation on all
+       * elements of the @p values structure.
+       */
+      void average (const AveragingOperation operation,
+                    MaterialModelOutputs    &values);
+    }
+
 
 
     /**

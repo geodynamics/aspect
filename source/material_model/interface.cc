@@ -387,6 +387,119 @@ namespace aspect
             out.reaction_terms[i][c]            = reaction_term                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i], c);
         }
     }
+
+
+    namespace MaterialAveraging
+    {
+      std::string get_averaging_operation_names ()
+      {
+        return "none|arithmetic average|harmonic average|pick largest";
+      }
+
+
+      AveragingOperation parse_averaging_operation_name (const std::string &s)
+      {
+        if (s == "none")
+          return none;
+        else if (s == "arithmetic average")
+          return arithmetic_average;
+        else if (s == "harmonic average")
+          return harmonic_average;
+        else if (s == "pick largest")
+          return pick_largest;
+        else
+          AssertThrow (false,
+                       ExcMessage ("The value <" + s + "> for a material "
+                                   "averaging operation is not one of the "
+                                   "valid values."));
+
+        return none;
+      }
+
+
+      namespace
+      {
+        // do the requested averaging operation for one array
+        void average (const AveragingOperation operation,
+                      std::vector<double>     &values)
+        {
+          // if an output field has not been filled (because it was
+          // not requested), then simply do nothing -- no harm no foul
+          if (values.size() == 0)
+            return;
+
+          // otherwise do as instructed
+          switch (operation)
+            {
+              case none:
+              {
+                break;
+              }
+
+              case arithmetic_average:
+              {
+                const unsigned int N=values.size();
+                double sum = 0;
+                for (unsigned int i=0; i<N; ++i)
+                  sum += values[i];
+
+                const double average = sum/N;
+                for (unsigned int i=0; i<N; ++i)
+                  values[i] = average;
+                break;
+              }
+
+              case harmonic_average:
+              {
+                const unsigned int N=values.size();
+                double sum = 0;
+                for (unsigned int i=0; i<N; ++i)
+                  sum += 1./values[i];
+
+                const double average = 1./(sum/N);
+                for (unsigned int i=0; i<N; ++i)
+                  values[i] = average;
+                break;
+              }
+
+              case pick_largest:
+              {
+                const unsigned int N=values.size();
+                double max = -std::numeric_limits<double>::max();
+                for (unsigned int i=0; i<N; ++i)
+                  max = std::max(max, values[i]);
+
+                for (unsigned int i=0; i<N; ++i)
+                  values[i] = max;
+                break;
+              }
+
+              default:
+              {
+                AssertThrow (false,
+                             ExcMessage ("This averaging operation is not implemented."));
+              }
+            }
+        }
+      }
+
+
+
+      void average (const AveragingOperation operation,
+                    MaterialModelOutputs    &values)
+      {
+        average (operation, values.viscosities);
+        average (operation, values.densities);
+        average (operation, values.thermal_expansion_coefficients);
+        average (operation, values.specific_heat);
+        average (operation, values.compressibilities);
+        average (operation, values.entropy_derivative_pressure);
+        average (operation, values.entropy_derivative_temperature);
+        for (unsigned int r=0; r<values.reaction_terms.size(); ++r)
+          average (operation, values.reaction_terms[r]);
+      }
+
+    }
   }
 }
 

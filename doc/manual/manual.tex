@@ -2640,7 +2640,7 @@ point where the output quantities start to change significantly. This is the
 point where you will want to stop.
 
 
-\subsubsection{Using lower order of temperature/compositional discretization}
+\subsubsection{Using lower order elements for the temperature/compositional discretization}
 The default settings of \aspect{} use quadratic finite elements for the
 velocity. Given that the temperature and compositional fields essentially (up
 to material parameters) satisfy advection equations of the kind $\partial_t T +
@@ -2710,6 +2710,16 @@ Section~\ref{parameters:global}.
 \index[prmindex]{Pressure normalization}
 \index[prmindexfull]{Pressure normalization}
 
+
+\subsubsection{Regularizing models with large coefficient variation}
+Models with large jumps in viscosity and other coefficients present
+significant challenges to both discretizations and solvers. In particular,
+they can lead to very long solver
+times. Section~\ref{sec:sinker-with-averaging} presents parameters that can
+help regularize models and these typically also include significant
+improvements in run-time.
+\index[prmindex]{Material averaging for linear systems}
+\index[prmindexfull]{Material model!Material averaging for linear systems}
 
 
 \section{Run-time input parameters}
@@ -4374,6 +4384,109 @@ topography returns to zero after some time.
   thermal anomaly spreads horizontally as it collides with the highly viscous crust (left). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right). }
   \label{fig:freesurfaceWC}
 \end{figure}
+
+
+\subsubsection{Averaging material properties}
+\label{sec:sinker-with-averaging}
+
+Geophysical models are often characterized by abrupt and large jumps in material
+properties, in particular in the viscosity. An example is a subducting, cold
+slab surrounded by the hot mantle: Here, the strong
+temperature-dependence of the viscosity will lead to a sudden jump in the
+viscosity between mantle and slab. The length scale over which this jump happens
+will be a few or a few tens of kilometers. Such length scales cannot be
+adequately resolved in three-dimensional computations with typical meshes for
+global computations.
+
+Having large viscosity variations in models poses a variety of problems to
+numerical computations. First, you will find that they lead to very long compute
+times because our solvers and preconditioners break down. This may be
+acceptable if it would at least lead to accurate solution, but large viscosity
+gradients lead also to large pressure gradients, and this in turn leads to over-
+and undershots in the numerical approximation of the gradient. We will 
+demonstrate both of these issues experimentally below.
+
+One of the solution to such problems is the realization that one can mitigate
+some of the effects by averaging material properties on each cell somehow.
+Before going into detail, it is important to realize that if we choose material
+properties not per quadrature point when doing the integrals for forming the
+finite element matrix, but per cell, then we will lose accuracy in the solution
+in those cases where the solution is smooth. More specifically, we will likely
+lose one or more orders of convergence. In other words, it would be a bad idea
+to do this averging unconditionally. On the other hand, if the solution has
+essentially discontinuous gradients and kinks in the velocity field, then at
+least at these locations we cannot expect a particularly high convergence order
+anyway, and the averaging will not hurt very much either. In cases where the
+solution features due to strongly varying viscosities or other parameters
+dominate, we may then as well do the averaging per cell.
+
+To support such cases, \aspect{} supports an operation where we evaluate the
+material model at every quadrature point, given the temperature, pressure,
+strain rate, and compositions at this point, and then either (i) use these
+values, (ii) replace the values by their arithmetic average $\bar x = \frac 1N
+\sum_{i=1}^N x_i$, (iii) replace the values by their harmonic average $\bar x =
+\left(\frac 1N \sum_{i=1}^N \frac{1}{x_i}\right)^{-1}$, or (iv) replace the
+values by the largest value over all quadrature points on this cell. We do this
+operation for all quantities that the material model computes, i.e., in
+particular, the viscosity, the density, the compressibility, and the various
+thermal and thermodynamic properties.
+
+We demonstrate the effect of all of this with the ``sinker'' benchmark. This
+benchmark is defined by a high-viscosity, heavy sphere at the center of a
+two-dimensional box. This is achieved by defining a compositional field that is
+one inside and zero outside the sphere, and assigning a compositional dependence
+to the viscosity and density. We run only a single time step for this benchmark.
+This is all modeled in the following input file that can also be found in
+\url{cookbooks/sinker-with-averaging/sinker-with-averaging.prm}:
+\lstinputlisting[language=prmfile]{cookbooks/sinker-with-averaging/full.prm.out}
+
+The type of averaging on each cell is chosen using this part of the input file:
+\lstinputlisting[language=prmfile]{cookbooks/sinker-with-averaging/harmonic.prm.out}
+For the various different cases of averaging, and for different levels of mesh
+refinement, Fig.~\ref{fig:sinker-with-averaging-iteration-pressure} shows
+pressure plots that illustrate the problem with oscillations of the discrete
+pressure, and
+Table~\ref{tab:sinker-with-averaging-iteration-counts} shows the number
+of outer GMRES iterations when solving the Stokes equations
+\eqref{eq:stokes-1}--\eqref{eq:stokes-2}.%
+\footnote{The outer iterations are only part of the problem. As discussed in
+  \cite{KHB12}, each GMRES iteration requires solving a linear system with the
+  elliptic operator $-\nabla \cdot 2 \eta \varepsilon(\cdot)$. For highly
+  heterogeneous models, such as the one discussed in the current section, this
+  may require a lot of Conjugate Gradient iterations. For example, for 8
+  global refinement steps, the 30+188 outer iterations without averaging whosn
+  in Table~\ref{tab:sinker-with-averaging-iteration-counts} require a total of
+  22,096 inner CG iterations for the elliptic block (and a total of 837 for the
+  aproximate Schur complement). Using harmonic averaging, the 30+26 outer
+  iterations require only 1258 iterations on the elliptic block (and 84 on the
+  Schur complement). In other words, the number of inner iterations per outer
+  iteration (taking into account the split into ``cheap'' and ``expensive''
+  outer iterations, see \cite{KHB12}) is reduced from 117 to 47 for the
+  elliptic block and from 3.8 to 1.5 for the Schur complement. The end effect
+  is that the total run time for 8 global refinement steps is reduced from
+  5250s to 358s for this particular example.}
+
+
+\begin{table}
+  \center
+  \begin{tabular}{|c|cccc|}
+    \hline
+    \# global refinement steps & no averaging & arithmetic averaging & harmonic
+    averaging & pick largest
+    \\ \hline
+    4          & 30+64   & 30+13      & 30+10    & 30+13 \\
+    5          & 30+87   & 30+14      & 30+13    & 30+14 \\
+    6          & 30+171  & 30+14      & 30+15    & 30+15 \\
+    7          & 30+143  & 30+27      & 30+28    & 30+26 \\
+    8          & 30+188  & 30+27      & 30+26    & 30+28 \\ \hline
+  \end{tabular}
+  \caption{\it Number of outer GMRES iterations to solve the Stokes equations
+  for various numbers of global mesh refinement steps and for different
+  material averaging operations. The GMRES solver first tries to run 30
+  iterations with a cheaper preconditioner before switching to a more expensive
+  preconditioner (see Section~\ref{parameters:Nonlinear solver tolerance}).}
+  \label{tab:sinker-with-averaging-iteration-counts}
+\end{table}
 
 
 \subsection{Geophysical setups}

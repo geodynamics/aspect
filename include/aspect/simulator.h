@@ -312,6 +312,8 @@ namespace aspect
         unsigned int                   temperature_degree;
         unsigned int                   composition_degree;
         std::string                    pressure_normalization;
+        MaterialModel::MaterialAveraging::AveragingOperation material_averaging_for_linear_systems;
+        MaterialModel::MaterialAveraging::AveragingOperation material_averaging_for_preconditioners;
         /**
          * @}
          */

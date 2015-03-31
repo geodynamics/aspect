@@ -605,6 +605,36 @@ namespace aspect
     }
     prm.leave_subsection ();
 
+    // Finally declare a couple of parameters related how we should
+    // evaluate the material models when assembling the matrix and
+    // preconditioner
+    prm.enter_subsection ("Material model");
+    {
+      prm.declare_entry ("Material averaging for linear systems", "none",
+                         Patterns::Selection(MaterialModel::MaterialAveraging::
+                                             get_averaging_operation_names()),
+                         "Whether or not (and in the first case, how) to do any averaging of "
+                         "material model output data when constructing the linear systems "
+                         "for velocity/pressure, temperature, and compositions in each "
+                         "time step."
+			 "\n\n"
+			 "The process of averaging, and where it may be used, is "
+			 "discussed in more detail in "
+			 "Section~\\ref{sec:sinker-with-averaging}.");
+      prm.declare_entry ("Material averaging for preconditioners", "none",
+                         Patterns::Selection(MaterialModel::MaterialAveraging::
+                                             get_averaging_operation_names()),
+                         "Whether or not (and in the first case, how) to do any averaging of "
+                         "material model output data when constructing the preconditioners "
+                         "for the linear systems for velocity/pressure, temperature, and "
+                         "compositions."
+			 "\n\n"
+			 "The process of averaging, and where it may be used, is "
+			 "discussed in more detail in "
+			 "Section~\\ref{sec:sinker-with-averaging}.");
+    }
+    prm.leave_subsection ();
+
     //Also declare the parameters that the FreeSurfaceHandler needs
     FreeSurfaceHandler::declare_parameters( prm );
   }
@@ -856,6 +886,24 @@ namespace aspect
 
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
+    }
+    prm.leave_subsection ();
+
+
+    // now also get the parameters related to material model averaging
+    prm.enter_subsection ("Material model");
+    {
+      material_averaging_for_linear_systems
+        = MaterialModel::MaterialAveraging::parse_averaging_operation_name
+          (prm.get ("Material averaging for linear systems"));
+      material_averaging_for_preconditioners
+        = MaterialModel::MaterialAveraging::parse_averaging_operation_name
+          (prm.get ("Material averaging for preconditioners"));
+
+      // implement the special rule that if the linear systems use some
+      // averaging, then the preconditioner needs to use the same
+      if (material_averaging_for_linear_systems != MaterialModel::MaterialAveraging::none)
+        material_averaging_for_preconditioners = material_averaging_for_linear_systems;
     }
     prm.leave_subsection ();
   }

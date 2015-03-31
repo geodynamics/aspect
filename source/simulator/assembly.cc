@@ -906,7 +906,10 @@ namespace aspect
                                          true,
                                          scratch.material_model_inputs);
 
-    material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+    material_model->evaluate(scratch.material_model_inputs,
+                             scratch.material_model_outputs);
+    MaterialModel::MaterialAveraging::average (parameters.material_averaging_for_preconditioners,
+                                               scratch.material_model_outputs);
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
@@ -1093,7 +1096,10 @@ namespace aspect
                                          rebuild_stokes_matrix,
                                          scratch.material_model_inputs);
 
-    material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+    material_model->evaluate(scratch.material_model_inputs,
+                             scratch.material_model_outputs);
+    MaterialModel::MaterialAveraging::average (parameters.material_averaging_for_linear_systems,
+                                               scratch.material_model_outputs);
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
@@ -1510,7 +1516,10 @@ namespace aspect
                                          scratch.finite_element_values,
                                          true,
                                          scratch.material_model_inputs);
-    material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+    material_model->evaluate(scratch.material_model_inputs,
+                             scratch.material_model_outputs);
+    MaterialModel::MaterialAveraging::average (parameters.material_averaging_for_linear_systems,
+                                               scratch.material_model_outputs);
 
     if (advection_field.is_temperature())
       {
