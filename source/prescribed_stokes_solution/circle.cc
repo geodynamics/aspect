@@ -53,7 +53,7 @@ namespace aspect
   {
     ASPECT_REGISTER_PRESCRIBED_STOKES_SOLUTION(Circle,
                                        "circle",
-                                       "description pending :: middle point (0,0)")
+                                       "Zero pressure and velocity rotating around origin")
   }
  }
 
