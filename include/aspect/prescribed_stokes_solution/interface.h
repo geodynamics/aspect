@@ -118,9 +118,9 @@ namespace aspect
     template <int dim>
     void
     register_prescribed_stokes_solution_model (const std::string &name,
-                                       const std::string &description,
-                                       void (*declare_parameters_function) (ParameterHandler &),
-                                       Interface<dim> *(*factory_function) ());
+                                               const std::string &description,
+                                               void (*declare_parameters_function) (ParameterHandler &),
+                                               Interface<dim> *(*factory_function) ());
 
     /**
      * A function that given the name of a model returns a pointer to an

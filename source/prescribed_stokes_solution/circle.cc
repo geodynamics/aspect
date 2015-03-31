@@ -32,18 +32,18 @@ namespace aspect
   {
     template <int dim>
     class Circle: public Interface<dim>
-      {
+    {
       public:
 
-    	virtual
-    	void   solution (const Point<dim>   &p, Vector<double>     &value) const
-    	{
-    		value(0) = -p(1);
-    		value(1) = p(0);
-    		value(dim) = 0;
-    	}
-};
-}
+        virtual
+        void   solution (const Point<dim>   &p, Vector<double>     &value) const
+        {
+          value(0) = -p(1);
+          value(1) = p(0);
+          value(dim) = 0;
+        }
+    };
+  }
 }
 
 // explicit instantiations
@@ -52,8 +52,8 @@ namespace aspect
   namespace PrescribedStokesSolution
   {
     ASPECT_REGISTER_PRESCRIBED_STOKES_SOLUTION(Circle,
-                                       "circle",
-                                       "Zero pressure and velocity rotating around origin")
+                                               "circle",
+                                               "Zero pressure and velocity rotating around origin")
   }
- }
+}
 

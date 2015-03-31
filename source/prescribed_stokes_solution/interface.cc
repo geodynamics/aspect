@@ -73,9 +73,9 @@ namespace aspect
     template <int dim>
     void
     register_prescribed_stokes_solution_model (const std::string &name,
-                                       const std::string &description,
-                                       void (*declare_parameters_function) (ParameterHandler &),
-                                       Interface<dim> *(*factory_function) ())
+                                               const std::string &description,
+                                               void (*declare_parameters_function) (ParameterHandler &),
+                                               Interface<dim> *(*factory_function) ())
     {
       std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
@@ -96,7 +96,7 @@ namespace aspect
       prm.leave_subsection ();
 
       if (model_name == "")
-    	  return NULL;
+        return NULL;
 
       Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
                                                                                       "Prescribed Stokes solution::Model name");
@@ -159,9 +159,9 @@ namespace aspect
   template \
   void \
   register_prescribed_stokes_solution_model<dim> (const std::string &, \
-                                          const std::string &, \
-                                          void ( *) (ParameterHandler &), \
-                                          Interface<dim> *( *) ()); \
+                                                  const std::string &, \
+                                                  void ( *) (ParameterHandler &), \
+                                                  Interface<dim> *( *) ()); \
   \
   template  \
   void \
