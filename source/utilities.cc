@@ -402,7 +402,10 @@ namespace aspect
                 boundary_dimensions[0] = 1;
               }
             else
-              AssertThrow(false,ExcNotImplemented());
+              {
+                boundary_dimensions[0] = numbers::invalid_unsigned_int;
+                AssertThrow(false,ExcNotImplemented());
+              }
 
             break;
 
@@ -423,11 +426,17 @@ namespace aspect
                 boundary_dimensions[1] = 2;
               }
             else
-              AssertThrow(false,ExcNotImplemented());
+              {
+                boundary_dimensions[0] = numbers::invalid_unsigned_int;
+                boundary_dimensions[1] = numbers::invalid_unsigned_int;
+                AssertThrow(false,ExcNotImplemented());
+              }
 
             break;
 
           default:
+            for (unsigned int d=0; d<dim-1; ++d)
+              boundary_dimensions[d] = numbers::invalid_unsigned_int;
             AssertThrow(false,ExcNotImplemented());
         }
       return boundary_dimensions;
