@@ -20,11 +20,12 @@
 
 
 #include <aspect/postprocess/geoid.h>
-#include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
+#include <aspect/geometry_model/spherical_shell.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
+#include <boost/math/special_functions/spherical_harmonic.hpp>
 
 namespace aspect
 {
@@ -34,38 +35,61 @@ namespace aspect
     {
       HarmonicCoefficients::HarmonicCoefficients(const unsigned int max_degree)
       {
-        //TODO: find real size
-        sine_coefficients.resize(max_degree);
-        cosine_coefficients.resize(max_degree);
+        unsigned int k=0;
+        for (unsigned int i=0;i<=max_degree;i++)
+          {
+          for (unsigned int j=0; j<=i; ++j)
+            {
+              ++k;
+            }
+          }
+
+        sine_coefficients.resize(k);
+        cosine_coefficients.resize(k);
       }
 
       template <int dim>
       SphericalHarmonicsExpansion<dim>::SphericalHarmonicsExpansion(const unsigned int max_degree)
       :
+      max_degree(max_degree),
       coefficients(max_degree)
-      {
-
-        // Set up coefficients with right sizes according to max_degree
-      }
+      {}
 
       template <int dim>
       void
-      SphericalHarmonicsExpansion<dim>::add_point (const Point<dim> &position,
+      SphericalHarmonicsExpansion<dim>::add_data_point (const Point<dim> &position,
                                                   const double value)
       {
-        const std_cxx1x::array<dim,double> spherical_position =
+        const std_cxx1x::array<double,dim> spherical_position =
             Utilities::spherical_coordinates(position);
-        // calculate contribution of value to coefficients
+
+        for (int i = 0, k = 0; i < max_degree; ++i)
+          for (int j = 0; j <= i; ++j, ++k)
+          {
+              coefficients.sine_coefficients[k] += value
+                                                  * boost::math::spherical_harmonic_r(i,j,spherical_position[2],spherical_position[1]);
+                                                  //* boost::math::legendre_p(i,j,cos(spherical_position[2]))
+                                                  // * cos(j*spherical_position[1]);
+              coefficients.cosine_coefficients[k] += value
+                                                  * boost::math::spherical_harmonic_i(i,j,spherical_position[2],spherical_position[1]);
+                                                  //* boost::math::legendre_p(i,j,cos(spherical_position[2]))
+                                                  // * sin(j*spherical_position[1]);
+          }
       }
 
       template <int dim>
       HarmonicCoefficients
       SphericalHarmonicsExpansion<dim>::get_coefficients () const
       {
-        // TODO: How to calculate the summed coefficients?
-        // What about parallelization?
-
         return coefficients;
+      }
+
+      template <int dim>
+      void
+      SphericalHarmonicsExpansion<dim>::mpi_sum_coefficients (MPI_Comm mpi_communicator)
+      {
+        dealii::Utilities::MPI::sum(coefficients.sine_coefficients,mpi_communicator,coefficients.sine_coefficients);
+        dealii::Utilities::MPI::sum(coefficients.cosine_coefficients,mpi_communicator,coefficients.cosine_coefficients);
       }
     }
 
@@ -74,8 +98,10 @@ namespace aspect
     Geoid<dim>::execute (TableHandler &statistics)
     {
       // create a quadrature formula based on the temperature element alone.
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
+      const QMidpoint<dim> quadrature_formula;
       const unsigned int n_q_points = quadrature_formula.size();
+
+      Assert(quadrature_formula.size()==1, ExcInternalError());
 
       const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
                                                     (&this->get_geometry_model());
@@ -83,6 +109,17 @@ namespace aspect
       AssertThrow (geometry_model != 0,
                    ExcMessage("The geoid postprocessor is currently only implemented for "
                        "the spherical shell geometry model."));
+
+      // TODO AssertThrow (no_free_surface);
+
+      expansions.resize(number_of_layers);
+      for (unsigned int i = 0; i < number_of_layers; ++i)
+        expansions[i].reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
+
+      surface_topography_expansion.reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
+      bottom_topography_expansion.reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
+
+      internal::SphericalHarmonicsExpansion<dim> example_expansion(max_degree);
 
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
@@ -96,9 +133,14 @@ namespace aspect
 
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
-      // have a stream into which we write the data. the text stream is then
-      // later sent to processor 0
-      std::ostringstream output;
+      std::vector<double> average_densities(number_of_layers);
+      this->get_depth_average_density(average_densities);
+
+      // Some constant that are used several times
+      const double inner_radius = geometry_model->inner_radius();
+      const double outer_radius = geometry_model->outer_radius();
+      const double layer_thickness = geometry_model->maximal_depth() / number_of_layers;
+      const double gravitational_constant = 6.67384e-11;
 
       // loop over all of the surface cells and if one less than h/3 away from
       // the top surface, evaluate the stress at its center
@@ -134,112 +176,188 @@ namespace aspect
 
               this->get_material_model().evaluate(in, out);
 
+              // see if the cell is at the *top* boundary
+              bool surface_cell = false;
+              bool bottom_cell = false;
+
+              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                {
+                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
+                  {
+                    surface_cell = true;
+                    break;
+                  }
+                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - cell->face(f)->minimum_vertex_distance()/3))
+                  {
+                    bottom_cell = true;
+                    break;
+                  }
+                }
               // for each of the quadrature points, evaluate the
               // density and add its contribution to the spherical harmonics
 
               for (unsigned int q=0; q<quadrature_formula.size(); ++q)
                 {
                   const Point<dim> location = fe_values.quadrature_point(q);
-                  const double viscosity = out.viscosities[q];
-                  const double density   = out.densities[q];
+
                   const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
-
                   const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
-
                   const unsigned int layer_id = static_cast<unsigned int> (geometry_model->depth(location) / geometry_model->maximal_depth() * (number_of_layers-1));
 
-                  expansions[layer_id].AddPoint(location,density);
-                }
+                  const double density   = out.densities[q];
+                  const double buoyancy = -1.0 * (density - average_densities[layer_id]) * gravity.norm();
 
-              // see if the cell is at the *top* boundary
-              bool surface_cell = false;
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
-                  {
-                    surface_cell = true;
-                    break;
-                  }
+                  expansions[layer_id]->add_data_point(location,buoyancy);
 
-              if (surface_cell)
-                {
-                  // Add topography contribution
+                  const std_cxx1x::array<double,dim> spherical_position =
+                      Utilities::spherical_coordinates(location);
+                  example_expansion.add_data_point(location,boost::math::spherical_harmonic_r(3,2,spherical_position[2],spherical_position[1]));
+
+                  if (surface_cell)
+                    {
+                      const double viscosity = out.viscosities[q];
+
+                      const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
+                      const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
+
+                      // Subtract the adiabatic pressure
+                      const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
+                      const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
+                      const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
+
+                      // Add topography contribution
+                      surface_topography_expansion->add_data_point(location,dynamic_topography);
+                    }
+                  if (bottom_cell)
+                    {
+                      const double viscosity = out.viscosities[q];
+
+                      const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
+                      const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
+
+                      // Subtract the adiabatic pressure
+                      const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
+                      const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
+                      const double dynamic_topography = - sigma_rr / gravity.norm() / (density_below - density);
+
+                      // Add topography contribution
+                      bottom_topography_expansion->add_data_point(location,dynamic_topography);
+                    }
                 }
             }
 
-      //TODO: loop over all layer_ids and compute coefficients, afterwards sum coefficients for surface geoid
-      HarmonicCoefficients geoid_expansion;
+      const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(geometry_model->representative_point(0.0));
+
+      const double scaling = 4.0 * numbers::PI * outer_radius * gravitational_constant / gravity.norm();
+
+      internal::HarmonicCoefficients buoyancy_contribution(max_degree);
+
+      internal::HarmonicCoefficients surface_geoid_expansion(max_degree);
+      internal::HarmonicCoefficients bottom_geoid_expansion(max_degree);
+
       for (unsigned int layer_id = 0; layer_id < number_of_layers; ++layer_id)
         {
-          const HarmonicCoefficients layer_contribution = expansions[layer_id].get_coefficients();
+          expansions[layer_id]->mpi_sum_coefficients(this->get_mpi_communicator());
+          const internal::HarmonicCoefficients layer_coefficients = expansions[layer_id]->get_coefficients();
 
-          //TODO scaling for depth
-          geoid_expansion += layer_contribution;
+          const double layer_radius = inner_radius + (layer_id + 0.5) * layer_thickness;
+
+          for (unsigned int i = 0, k = 0; i < max_degree; ++i)
+            {
+              const double con1 = scaling * layer_thickness / (2 * i + 1.0);
+              const double cont = pow (layer_radius/outer_radius,i+2);
+              const double conb = layer_radius / outer_radius * pow(inner_radius / layer_radius, i);
+
+              for (unsigned int j = 0; j <= i; ++j, ++k)
+                {
+                  surface_geoid_expansion.sine_coefficients[k] += con1 * cont * layer_coefficients.sine_coefficients[k];
+                  surface_geoid_expansion.cosine_coefficients[k] += con1 * cont * layer_coefficients.cosine_coefficients[k];
+
+                  buoyancy_contribution.sine_coefficients[k] += con1 * cont * layer_coefficients.sine_coefficients[k];
+                  buoyancy_contribution.cosine_coefficients[k] += con1 * cont * layer_coefficients.cosine_coefficients[k];
+                  //bottom_geoid_expansion.sine_coefficients[index] += con1 * conb * layer_coefficients.sine_coefficients[index];
+                  //bottom_geoid_expansion.cosine_coefficients[index] += con1 * conb * layer_coefficients.cosine_coefficients[index];
+
+                }
+            }
         }
 
-      // Write the solution to an output file
-      for (unsigned int i=0; i<stored_values.size(); ++i)
+      internal::HarmonicCoefficients topography_contribution(max_degree);
+
+      if (include_topography_contribution)
         {
-          output << stored_values[i].first
-                 << ' '
-                 << stored_values[i].second -
-                 (subtract_mean_dyn_topography
-                  ?
-                  average_topography
-                  :
-                  0.)
-                 << std::endl;
+          surface_topography_expansion->mpi_sum_coefficients(this->get_mpi_communicator());
+          const internal::HarmonicCoefficients topography_coefficients = surface_topography_expansion->get_coefficients();
+
+          // Use the average density at the surface to compute density jump across the surface
+          const double density_contrast = average_densities.front() - density_above;
+
+          for (unsigned int i = 0, k = 0; i < max_degree; i++)
+            {
+              const double con1 = scaling * density_contrast / (2.0 * i + 1.0);
+
+              for (unsigned int j = 0; j <= i; ++j, ++k)
+                {
+                  surface_geoid_expansion.sine_coefficients[k] += con1 * topography_coefficients.sine_coefficients[k];
+                  surface_geoid_expansion.cosine_coefficients[k] += con1 * topography_coefficients.cosine_coefficients[k];
+
+                  topography_contribution.sine_coefficients[k] += con1 * topography_coefficients.sine_coefficients[k];
+                  topography_contribution.cosine_coefficients[k] += con1 * topography_coefficients.cosine_coefficients[k];
+                }
+            }
+        }
+
+      if (include_topography_contribution)
+        {
+          bottom_topography_expansion->mpi_sum_coefficients(this->get_mpi_communicator());
+          const internal::HarmonicCoefficients topography_coefficients = bottom_topography_expansion->get_coefficients();
+
+          // Use the average density at the bottom to compute density jump across the bottom surface
+          const double density_contrast = density_below - average_densities.back();
+
+          for (unsigned int i = 0, k = 0; i < max_degree; i++)
+            {
+              const double con1 = density_contrast * scaling / (2.0 * i + 1.0);
+              const double con2 = con1 * pow(inner_radius, i+2);
+
+              for (unsigned int j = 0; j <= i; ++j, ++k)
+                {
+                  surface_geoid_expansion.sine_coefficients[k] += con2 * topography_coefficients.sine_coefficients[k];
+                  surface_geoid_expansion.cosine_coefficients[k] += con2 * topography_coefficients.cosine_coefficients[k];
+                }
+            }
         }
 
 
       const std::string filename = this->get_output_directory() +
-                                   "dynamic_topography." +
-                                   Utilities::int_to_string(this->get_timestep_number(), 5);
+                                   "surface_geoid." +
+                                   dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
 
-      const unsigned int max_data_length = Utilities::MPI::max (output.str().size()+1,
-                                                                this->get_mpi_communicator());
-      const unsigned int mpi_tag = 124;
-
-      // on processor 0, collect all of the data the individual processors send
-      // and concatenate them into one file
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+      // On process 0 write output file
+      if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           std::ofstream file (filename.c_str());
 
-          // first write out the data we have created locally
-          file << output.str();
-
-          std::string tmp;
-          tmp.resize (max_data_length, '\0');
-
-          // then loop through all of the other processors and collect
-          // data, then write it to the file
-          for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
+          file << "# Timestep Maximum_degree Time" << std::endl;
+          file << this->get_timestep_number() << " " << max_degree << " " << this->get_time() << std::endl;
+          file << "# degree order geoid_sine_coefficient geoid_cosine_coefficient buoyancy_sine buoyancy_cosine topography_sine topography_cosine" << std::endl;
+          // Write the solution to an output file
+          for (unsigned int i=0, k=0; i < max_degree; ++i)
             {
-              MPI_Status status;
-              // get the data. note that MPI says that an MPI_Recv may receive
-              // less data than the length specified here. since we have already
-              // determined the maximal message length, we use this feature here
-              // rather than trying to find out the exact message length with
-              // a call to MPI_Probe.
-              MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
-                        this->get_mpi_communicator(), &status);
-
-              // output the string. note that 'tmp' has length max_data_length,
-              // but we only wrote a certain piece of it in the MPI_Recv, ended
-              // by a \0 character. write only this part by outputting it as a
-              // C string object, rather than as a std::string
-              file << tmp.c_str();
+              for (unsigned int j = 0; j <= i; ++j, ++k)
+                {
+                  file << i << " " << j << " "
+                       << surface_geoid_expansion.sine_coefficients[k] << " "
+                       << surface_geoid_expansion.cosine_coefficients[k] << " "
+                       << buoyancy_contribution.sine_coefficients[k] << " "
+                       << buoyancy_contribution.cosine_coefficients[k] << " "
+                       << topography_contribution.sine_coefficients[k] << " "
+                       << topography_contribution.cosine_coefficients[k] << std::endl;
+                }
             }
         }
-      else
-        // on other processors, send the data to processor zero. include the \0
-        // character at the end of the string
-        {
-          MPI_Send (&output.str()[0], output.str().size()+1, MPI_CHAR, 0, mpi_tag,
-                    this->get_mpi_communicator());
-        }
 
-      return std::pair<std::string,std::string>("Writing dynamic topography:",
+      return std::pair<std::string,std::string>("Writing geoid:",
                                                 filename);
     }
 
@@ -262,7 +380,15 @@ namespace aspect
                              "sets the number of layers. Similar to the depth-average "
                              "postprocessor, the number of layers should correspond roughly to "
                              "the available model resolution.");
-
+          prm.declare_entry ("Density below", "8000",
+                             Patterns::Double(0),
+                             "");
+          prm.declare_entry ("Density above", "0",
+                             Patterns::Double(),
+                             "");
+          prm.declare_entry ("Maximum degree of expansion", "7",
+                             Patterns::Integer (1),
+                             "");
         }
         prm.leave_subsection();
       }
@@ -279,6 +405,9 @@ namespace aspect
         {
           include_topography_contribution   = prm.get_bool("Include topography contribution");
           number_of_layers                  = prm.get_integer("Number of layers");
+          density_below                     = prm.get_double("Density below");
+          density_above                     = prm.get_double("Density above");
+          max_degree                        = prm.get_integer("Maximum degree of expansion");
         }
         prm.leave_subsection();
       }
@@ -297,6 +426,6 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(Geoid,
                                   "geoid",
                                   "A postprocessor that computes a measure of geoid height "
-                                  "based on the")
+                                  "based on the internal buoyancy and top and bottom topography")
   }
 }
