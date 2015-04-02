@@ -25,7 +25,6 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 
-
 namespace aspect
 {
   namespace Postprocess
@@ -56,13 +55,18 @@ namespace aspect
         public:
           SphericalHarmonicsExpansion(const unsigned int max_degree);
 
-          void add_point (const Point<dim> &position,
+          void add_data_point (const Point<dim> &position,
                          const double value);
 
           HarmonicCoefficients
           get_coefficients () const;
 
+          void
+          mpi_sum_coefficients (MPI_Comm mpi_communicator);
+
         private:
+          const unsigned int max_degree;
+
           HarmonicCoefficients coefficients;
       };
     }
@@ -113,12 +117,19 @@ namespace aspect
          */
         unsigned int number_of_layers;
 
+        double density_below;
+        double density_above;
+        unsigned int max_degree;
+
         /**
          * The geoid contribution is added on a per-layer basis. These are the
          * coefficients for each layer, which will be finally added to a
          * combined contribution at the surface.
          */
-        std::vector <std::auto_ptr<SphericalHarmonicsExpansion<dim> > > expansions;
+        std::vector <std::auto_ptr<internal::SphericalHarmonicsExpansion<dim> > > expansions;
+
+        std::auto_ptr<internal::SphericalHarmonicsExpansion<dim> > surface_topography_expansion;
+        std::auto_ptr<internal::SphericalHarmonicsExpansion<dim> > bottom_topography_expansion;
     };
   }
 }
