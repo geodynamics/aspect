@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,10 +22,6 @@
 #include <aspect/global.h>
 #include <aspect/prescribed_stokes_solution/interface.h>
 
-#include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx1x/tuple.h>
-
-#include <list>
 namespace aspect
 {
   namespace PrescribedStokesSolution
@@ -53,7 +49,11 @@ namespace aspect
   {
     ASPECT_REGISTER_PRESCRIBED_STOKES_SOLUTION(Circle,
                                                "circle",
-                                               "Zero pressure and velocity rotating around origin")
+                                               "This value describes a vector field that rotates "
+                                               "around the z-axis with constant angular velocity "
+                                               "(i.e., with a velocity that increases with "
+                                               "distance from the axis). The pressure is set "
+                                               "to zero.")
   }
 }
 

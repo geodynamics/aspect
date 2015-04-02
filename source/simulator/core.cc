@@ -1751,7 +1751,7 @@ namespace aspect
 
         case NonlinearSolver::Advection_only:
         {
-          // Identical to IMRES except does not solve Stokes equation
+          // Identical to IMPES except does not solve Stokes equation
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 

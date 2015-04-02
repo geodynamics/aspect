@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,12 +21,6 @@
 
 #include <aspect/global.h>
 #include <aspect/prescribed_stokes_solution/interface.h>
-
-#include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx1x/tuple.h>
-
-#include <list>
-
 
 namespace aspect
 {
